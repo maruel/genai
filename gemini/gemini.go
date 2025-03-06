@@ -5,18 +5,14 @@
 package gemini
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
 	"log/slog"
-	"net/http"
 	"strings"
-	"time"
 	"unicode"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/httpjson"
 )
 
 type partInlineData struct {
@@ -171,7 +167,7 @@ func (c *Client) cacheContent(ctx context.Context, data []byte, mime, systemInst
 		TTL:               "120s",
 	}
 	response := cacheContentResponse{}
-	if err := c.post(ctx, url, &request, &response); err != nil {
+	if err := httpjson.Default.Post(ctx, url, &request, &response); err != nil {
 		return "", err
 	}
 	// TODO: delete cache.
@@ -225,7 +221,7 @@ func (c *Client) QueryContent(ctx context.Context, systemPrompt, query, mime str
 		}
 	}
 	request.Contents = append(request.Contents, content{Parts: []part{{Text: query}}, Role: genai.User})
-	if err := c.post(ctx, url, &request, &response); err != nil {
+	if err := httpjson.Default.Post(ctx, url, &request, &response); err != nil {
 		return "", err
 	}
 	if len(response.Candidates) != 1 {
@@ -235,44 +231,4 @@ func (c *Client) QueryContent(ctx context.Context, systemPrompt, query, mime str
 	t := strings.TrimRightFunc(parts[len(parts)-1].Text, unicode.IsSpace)
 	slog.Info("gemini", "query", query, "response", t, "usage", response.UsageMetadata)
 	return t, nil
-}
-
-func (c *Client) post(ctx context.Context, url string, request, response any) error {
-	rawData, err := json.Marshal(request)
-	if err != nil {
-		return err
-	}
-	start := time.Now()
-	slog.Debug("gemini", "method", "post", "url", url, "in", string(rawData))
-	req, err := http.NewRequestWithContext(ctx, "POST", url, bytes.NewReader(rawData))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		slog.Error("gemini", "method", "post", "duration", time.Since(start), "err", err)
-		return err
-	}
-	defer resp.Body.Close()
-	if rawData, err = io.ReadAll(resp.Body); err != nil {
-		err = fmt.Errorf("failed to read response for URL %s: %w", url, err)
-		slog.Error("gemini", "method", "post", "duration", time.Since(start), "err", err)
-		return err
-	}
-	if resp.StatusCode != 200 {
-		// TODO: process .Error.
-		err = fmt.Errorf("unexpected status code for URL %s: status %d\nOriginal data: %s", url, resp.StatusCode, rawData)
-		slog.Error("gemini", "method", "post", "duration", time.Since(start), "err", err)
-		return err
-	}
-	d := json.NewDecoder(bytes.NewReader(rawData))
-	d.DisallowUnknownFields()
-	if err := d.Decode(response); err != nil {
-		err = fmt.Errorf("failed to decode: %w\nOriginal data: %s", err, rawData)
-		slog.Error("gemini", "method", "post", "duration", time.Since(start), "err", err)
-		return err
-	}
-	slog.Debug("gemini", "method", "post", "duration", time.Since(start), "response", string(rawData))
-	return nil
 }

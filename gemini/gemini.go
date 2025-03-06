@@ -5,6 +5,7 @@
 package gemini
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -184,7 +185,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, 
 	return c.CompletionContent(ctx, msgs, maxtoks, seed, temperature, "", nil)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
 	return "", errors.New("not implemented")
 }
 
@@ -266,15 +267,20 @@ func (c *Client) initPrompt(r *generateContentRequest, msgs []genai.Message) (st
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	if err := httpjson.Default.Post(ctx, url, in, out); err != nil {
-		if err, ok := err.(*httpjson.Error); ok {
+	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
+	if err := httpjson.Default.Post(ctx, url, nil, in, out); err != nil {
+		if err2, ok := err.(*httpjson.Error); ok {
 			er := errorResponse{}
-			if err := json.Unmarshal(err.ResponseBody, &er); err == nil {
+			d := json.NewDecoder(bytes.NewReader(err2.ResponseBody))
+			d.DisallowUnknownFields()
+			if err3 := d.Decode(&er); err3 == nil {
 				return fmt.Errorf("error %d (%s): %s", er.Error.Code, er.Error.Status, er.Error.Message)
 			}
-			slog.WarnContext(ctx, "gemini", "url", url, "err", err, "response", string(err.ResponseBody))
+			slog.WarnContext(ctx, "gemini", "url", url, "err", err2, "response", string(err2.ResponseBody))
 		}
 		return err
 	}
 	return nil
 }
+
+var _ genai.Backend = &Client{}

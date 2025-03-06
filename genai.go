@@ -9,7 +9,7 @@ import "context"
 // Backend is the generic interface to interact with a LLM backend.
 type Backend interface {
 	Completion(ctx context.Context, msgs []Message, maxtoks, seed int, temperature float64) (string, error)
-	CompletionStream(ctx context.Context, msgs []Message, maxtoks, seed int, temperature float64) (string, error)
+	CompletionStream(ctx context.Context, msgs []Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error)
 	CompletionContent(ctx context.Context, msgs []Message, maxtoks, seed int, temperature float64, mime string, content []byte) (string, error)
 }
 

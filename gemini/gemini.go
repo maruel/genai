@@ -89,6 +89,10 @@ type safetyRatings struct {
 }
 
 type errorResponse struct {
+	Error errorResponseError `json:"error"`
+}
+
+type errorResponseError struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 	Status  string `json:"status"`
@@ -262,17 +266,13 @@ func (c *Client) initPrompt(r *generateContentRequest, msgs []genai.Message) (st
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	slog.InfoContext(ctx, "gemini", "url", url)
 	if err := httpjson.Default.Post(ctx, url, in, out); err != nil {
-		slog.InfoContext(ctx, "gemini", "url", url, "err", err)
 		if err, ok := err.(*httpjson.Error); ok {
-			slog.InfoContext(ctx, "gemini", "url", url, "err", err)
 			er := errorResponse{}
 			if err := json.Unmarshal(err.ResponseBody, &er); err == nil {
-				slog.InfoContext(ctx, "gemini", "url", url, "err", err)
-				return fmt.Errorf("error %d (%s): %s", er.Code, er.Status, er.Message)
+				return fmt.Errorf("error %d (%s): %s", er.Error.Code, er.Error.Status, er.Error.Message)
 			}
-			slog.ErrorContext(ctx, "gemini", "error", err)
+			slog.WarnContext(ctx, "gemini", "url", url, "err", err, "response", string(err.ResponseBody))
 		}
 		return err
 	}

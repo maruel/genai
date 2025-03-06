@@ -268,7 +268,10 @@ func (c *Client) initPrompt(r *generateContentRequest, msgs []genai.Message) (st
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
-	if err := httpjson.Default.Post(ctx, url, nil, in, out); err != nil {
+	p := httpjson.Default
+	// Google only support gzip but it's better than nothing.
+	p.Compress = "gzip"
+	if err := p.Post(ctx, url, nil, in, out); err != nil {
 		if err2, ok := err.(*httpjson.Error); ok {
 			er := errorResponse{}
 			d := json.NewDecoder(bytes.NewReader(err2.ResponseBody))

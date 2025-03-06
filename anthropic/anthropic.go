@@ -118,7 +118,6 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, ma
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
 	p := httpjson.Default
 	// Anthropic doesn't support compression. lol.
 	p.Compress = ""

@@ -160,7 +160,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, 
 	if err := httpjson.Default.Post(ctx, c.BaseURL+"/completion", data, &msg); err != nil {
 		return "", fmt.Errorf("failed to get llama server response: %w", err)
 	}
-	slog.Debug("llm", "prompt tok", msg.Timings.PromptN, "gen tok", msg.Timings.PredictedN, "prompt tok/ms", msg.Timings.PromptPerTokenMS, "gen tok/ms", msg.Timings.PredictedPerTokenMS)
+	slog.DebugContext(ctx, "llm", "prompt tok", msg.Timings.PromptN, "gen tok", msg.Timings.PredictedN, "prompt tok/ms", msg.Timings.PromptPerTokenMS, "gen tok/ms", msg.Timings.PredictedPerTokenMS)
 	// Mistral Nemo really likes "▁".
 	return strings.ReplaceAll(msg.Content, "\u2581", " "), nil
 }
@@ -212,7 +212,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genai.Message, max
 			return reply, fmt.Errorf("failed to decode llama server response %q: %w", string(line), err)
 		}
 		word := msg.Content
-		slog.Debug("llm", "word", word, "stop", msg.Stop, "prompt tok", msg.Timings.PromptN, "gen tok", msg.Timings.PredictedN, "prompt tok/ms", msg.Timings.PromptPerTokenMS, "gen tok/ms", msg.Timings.PredictedPerTokenMS, "duration", time.Since(start).Round(time.Millisecond))
+		slog.DebugContext(ctx, "llm", "word", word, "stop", msg.Stop, "prompt tok", msg.Timings.PromptN, "gen tok", msg.Timings.PredictedN, "prompt tok/ms", msg.Timings.PromptPerTokenMS, "gen tok/ms", msg.Timings.PredictedPerTokenMS, "duration", time.Since(start).Round(time.Millisecond))
 		if word != "" {
 			// Mistral Nemo really likes "▁".
 			word = strings.ReplaceAll(msg.Content, "\u2581", " ")

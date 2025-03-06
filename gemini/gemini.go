@@ -6,6 +6,7 @@ package gemini
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -97,7 +98,6 @@ type generateContentResponse struct {
 	Candidates    []generateContentResponseCandidate `json:"candidates"`
 	UsageMetadata usageMetadata                      `json:"usageMetadata"`
 	ModelVersion  string                             `json:"modelVersion"`
-	Error         errorResponse                      `json:"error"`
 }
 
 type generateContentResponseCandidate struct {
@@ -168,11 +168,11 @@ func (c *Client) cacheContent(ctx context.Context, data []byte, mime, systemInst
 		TTL:               "120s",
 	}
 	response := cacheContentResponse{}
-	if err := httpjson.Default.Post(ctx, url, &request, &response); err != nil {
+	if err := c.post(ctx, url, &request, &response); err != nil {
 		return "", err
 	}
 	// TODO: delete cache.
-	slog.Info("gemini", "cached", response.Name)
+	slog.InfoContext(ctx, "gemini", "cached", response.Name)
 	return response.Name, nil
 }
 
@@ -228,7 +228,7 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, ma
 			*/
 		}
 	}
-	if err := httpjson.Default.Post(ctx, url, &request, &response); err != nil {
+	if err := c.post(ctx, url, &request, &response); err != nil {
 		return "", err
 	}
 	if len(response.Candidates) != 1 {
@@ -236,7 +236,7 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, ma
 	}
 	parts := response.Candidates[0].Content.Parts
 	t := strings.TrimRightFunc(parts[len(parts)-1].Text, unicode.IsSpace)
-	slog.Info("gemini", "response", t, "usage", response.UsageMetadata)
+	slog.InfoContext(ctx, "gemini", "response", t, "usage", response.UsageMetadata)
 	return t, nil
 }
 
@@ -259,4 +259,22 @@ func (c *Client) initPrompt(r *generateContentRequest, msgs []genai.Message) (st
 		}
 	}
 	return sp, nil
+}
+
+func (c *Client) post(ctx context.Context, url string, in, out any) error {
+	slog.InfoContext(ctx, "gemini", "url", url)
+	if err := httpjson.Default.Post(ctx, url, in, out); err != nil {
+		slog.InfoContext(ctx, "gemini", "url", url, "err", err)
+		if err, ok := err.(*httpjson.Error); ok {
+			slog.InfoContext(ctx, "gemini", "url", url, "err", err)
+			er := errorResponse{}
+			if err := json.Unmarshal(err.ResponseBody, &er); err == nil {
+				slog.InfoContext(ctx, "gemini", "url", url, "err", err)
+				return fmt.Errorf("error %d (%s): %s", er.Code, er.Status, er.Message)
+			}
+			slog.ErrorContext(ctx, "gemini", "error", err)
+		}
+		return err
+	}
+	return nil
 }

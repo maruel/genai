@@ -74,7 +74,7 @@ type streamChoices struct {
 	// FinishReason is one of null, "stop", "length", "content_filter" or "tool_calls".
 	FinishReason string `json:"finish_reason"`
 	Index        int    `json:"index"`
-	//Message      genai.Message `json:"message"`
+	// Message      genai.Message `json:"message"`
 }
 
 type openAIStreamDelta struct {
@@ -153,7 +153,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genai.Message, max
 			return reply, fmt.Errorf("llama server returned an unexpected number of choices, expected 1, got %d", len(msg.Choices))
 		}
 		word := msg.Choices[0].Delta.Content
-		slog.Debug("llm", "word", word, "duration", time.Since(start).Round(time.Millisecond))
+		slog.DebugContext(ctx, "llm", "word", word, "duration", time.Since(start).Round(time.Millisecond))
 		// TODO: Remove.
 		switch word {
 		// Llama-3, Gemma-2, Phi-3

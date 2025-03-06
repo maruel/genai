@@ -26,12 +26,34 @@ import (
 // chatCompletionRequest is documented at
 // https://platform.openai.com/docs/api-reference/chat/create
 type chatCompletionRequest struct {
-	Model       string          `json:"model"`
-	MaxTokens   int             `json:"max_tokens,omitempty"`
-	Stream      bool            `json:"stream"`
-	Messages    []genai.Message `json:"messages"`
-	Seed        int             `json:"seed,omitempty"`
-	Temperature float64         `json:"temperature,omitempty"`
+	Model               string             `json:"model"`
+	MaxTokens           int                `json:"max_tokens,omitzero"` // Deprecated
+	MaxCompletionTokens int                `json:"max_completion_tokens,omitzero"`
+	Stream              bool               `json:"stream"`
+	Messages            []genai.Message    `json:"messages"`
+	Seed                int                `json:"seed,omitzero"`
+	Temperature         float64            `json:"temperature,omitzero"` // [0, 2]
+	Store               bool               `json:"store,omitzero"`
+	ReasoningEffort     string             `json:"reasoning_effort,omitempty"` // low, medium, high
+	Metadata            map[string]string  `json:"metadata,omitempty"`
+	FrequencyPenalty    float64            `json:"frequency_penalty,omitempty"` // [-2.0, 2.0]
+	LogitBias           map[string]float64 `json:"logit_bias,omitempty"`
+	LogProbs            bool               `json:"logprobs,omitzero"`
+	TopLogProbs         int                `json:"top_logprobs,omitzero"`     // [0, 20]
+	N                   int                `json:"n,omitzero"`                // Number of choices
+	Modalities          []string           `json:"modalities,omitempty"`      // text, audio
+	Prediction          any                `json:"prediction,omitempty"`      // TODO
+	Audio               any                `json:"audio,omitempty"`           // TODO
+	PresencePenalty     float64            `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
+	ResponseFormat      any                `json:"response_format,omitempty"` // TODO e.g. json_object with json_schema
+	ServiceTier         string             `json:"service_tier,omitzero"`     // "auto", "default"
+	Stop                []string           `json:"stop,omitempty"`            // keywords to stop completion
+	StreamOptions       any                `json:"stream_options,omitempty"`  // TODO
+	TopP                float64            `json:"top_p,omitzero"`            // [0, 1]
+	Tools               []any              `json:"tools,omitempty"`           // TODO
+	ToolChoices         []any              `json:"tool_choices,omitempty"`    // TODO
+	ParallelToolCalls   bool               `json:"parallel_tool_calls,omitzero"`
+	User                string             `json:"user,omitzero"`
 }
 
 // chatCompletionsResponse is documented at
@@ -112,9 +134,13 @@ type errorResponseError struct {
 }
 
 type Client struct {
+	// BaseURL defaults to OpenAI's API endpoint. See billing information at
+	// https://platform.openai.com/settings/organization/billing/overview
 	BaseURL string
-	ApiKey  string
-	Model   string
+	// ApiKey can be retrieved from https://platform.openai.com/settings/organization/api-keys
+	ApiKey string
+	// Model to use, from https://platform.openai.com/docs/api-reference/models
+	Model string
 }
 
 func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64) (string, error) {

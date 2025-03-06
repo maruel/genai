@@ -6,9 +6,11 @@ package genai
 
 import "context"
 
+// Backend is the generic interface to interact with a LLM backend.
 type Backend interface {
-	Query(ctx context.Context, systemPrompt, query string) (string, error)
-	QueryContent(ctx context.Context, systemPrompt, query, mime string, content []byte) (string, error)
+	Completion(ctx context.Context, msgs []Message, maxtoks, seed int, temperature float64) (string, error)
+	CompletionStream(ctx context.Context, msgs []Message, maxtoks, seed int, temperature float64) (string, error)
+	CompletionContent(ctx context.Context, msgs []Message, maxtoks, seed int, temperature float64, mime string, content []byte) (string, error)
 }
 
 // Role is one of the LLM known roles.

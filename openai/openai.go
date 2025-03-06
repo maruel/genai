@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -84,7 +85,7 @@ type Client struct {
 	BaseURL string
 }
 
-func (c *Client) PromptBlocking(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64) (string, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64) (string, error) {
 	data := chatCompletionRequest{
 		Model:       "ignored",
 		MaxTokens:   maxtoks,
@@ -102,7 +103,7 @@ func (c *Client) PromptBlocking(ctx context.Context, msgs []genai.Message, maxto
 	return msg.Choices[0].Message.Content, nil
 }
 
-func (c *Client) PromptStreaming(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
 	start := time.Now()
 	data := chatCompletionRequest{
 		Model:       "ignored",
@@ -164,4 +165,8 @@ func (c *Client) PromptStreaming(ctx context.Context, msgs []genai.Message, maxt
 			reply += word
 		}
 	}
+}
+
+func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, mime string, content []byte) (string, error) {
+	return "", errors.New("not implemented")
 }

@@ -6,6 +6,7 @@ package gemini
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"strings"
@@ -175,21 +176,29 @@ func (c *Client) cacheContent(ctx context.Context, data []byte, mime, systemInst
 	return response.Name, nil
 }
 
-func (c *Client) Query(ctx context.Context, systemPrompt, query string) (string, error) {
-	return c.QueryContent(ctx, systemPrompt, query, "", nil)
+func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64) (string, error) {
+	return c.CompletionContent(ctx, msgs, maxtoks, seed, temperature, "", nil)
 }
 
-func (c *Client) QueryContent(ctx context.Context, systemPrompt, query, mime string, context []byte) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64) (string, error) {
+	return "", errors.New("not implemented")
+}
+
+func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, mime string, context []byte) (string, error) {
 	// https://ai.google.dev/gemini-api/docs?hl=en#rest
 	url := "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":generateContent?key=" + c.ApiKey
 	request := generateContentRequest{Model: "models/" + c.Model}
 	response := generateContentResponse{}
+	sp, err := c.initPrompt(&request, msgs)
+	if err != nil {
+		return "", err
+	}
 	if len(context) > 0 {
 		if len(context) >= 32768 {
 			// If more than 20MB, we need to use https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#large-pdfs-urls
 
 			// Pass the system instruction as a cached content while at it.
-			cacheName, err := c.cacheContent(ctx, context, mime, systemPrompt)
+			cacheName, err := c.cacheContent(ctx, context, mime, sp)
 			if err != nil {
 				return "", err
 			}
@@ -197,14 +206,13 @@ func (c *Client) QueryContent(ctx context.Context, systemPrompt, query, mime str
 			request.CachedContent = cacheName
 		} else {
 			// It's stronger when put there.
-			request.SystemInstruction = content{Parts: []part{{Text: systemPrompt}}}
-			request.Contents = append(request.Contents, content{
-				Parts: []part{{InlineData: partInlineData{
-					MimeType: "text/plain",
-					Data:     context,
-				}}},
-				Role: genai.User,
-			})
+			request.SystemInstruction = content{Parts: []part{{Text: sp}}}
+			request.Contents = append([]content{
+				{
+					Parts: []part{{InlineData: partInlineData{MimeType: "text/plain", Data: context}}},
+					Role:  genai.User,
+				},
+			}, request.Contents...)
 			/* TODO
 			request.Tools = []tool{
 				{
@@ -220,7 +228,6 @@ func (c *Client) QueryContent(ctx context.Context, systemPrompt, query, mime str
 			*/
 		}
 	}
-	request.Contents = append(request.Contents, content{Parts: []part{{Text: query}}, Role: genai.User})
 	if err := httpjson.Default.Post(ctx, url, &request, &response); err != nil {
 		return "", err
 	}
@@ -229,6 +236,27 @@ func (c *Client) QueryContent(ctx context.Context, systemPrompt, query, mime str
 	}
 	parts := response.Candidates[0].Content.Parts
 	t := strings.TrimRightFunc(parts[len(parts)-1].Text, unicode.IsSpace)
-	slog.Info("gemini", "query", query, "response", t, "usage", response.UsageMetadata)
+	slog.Info("gemini", "response", t, "usage", response.UsageMetadata)
 	return t, nil
+}
+
+func (c *Client) initPrompt(r *generateContentRequest, msgs []genai.Message) (string, error) {
+	state := 0
+	sp := ""
+	for i, m := range msgs {
+		switch m.Role {
+		case genai.System:
+			if state != 0 {
+				return "", fmt.Errorf("unexpected system message at index %d; state %d", i, state)
+			}
+			sp = m.Content
+			state = 1
+		case genai.User, genai.Assistant:
+			state = 1
+			r.Contents = append(r.Contents, content{Parts: []part{{Text: m.Content}}, Role: m.Role})
+		default:
+			return sp, fmt.Errorf("unexpected role %q", m.Role)
+		}
+	}
+	return sp, nil
 }

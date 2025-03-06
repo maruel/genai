@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -147,7 +148,7 @@ type Client struct {
 	Encoding *PromptEncoding
 }
 
-func (c *Client) PromptBlocking(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64) (string, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64) (string, error) {
 	data := completionRequest{Seed: int64(seed), Temperature: temperature, NPredict: int64(maxtoks)}
 	// Doc mentions it causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
@@ -164,7 +165,7 @@ func (c *Client) PromptBlocking(ctx context.Context, msgs []genai.Message, maxto
 	return strings.ReplaceAll(msg.Content, "\u2581", " "), nil
 }
 
-func (c *Client) PromptStreaming(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
 	start := time.Now()
 	data := completionRequest{
 		Stream:      true,
@@ -222,6 +223,10 @@ func (c *Client) PromptStreaming(ctx context.Context, msgs []genai.Message, maxt
 			return reply, nil
 		}
 	}
+}
+
+func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, mime string, content []byte) (string, error) {
+	return "", errors.New("not implemented")
 }
 
 func (c *Client) GetHealth(ctx context.Context) (string, error) {

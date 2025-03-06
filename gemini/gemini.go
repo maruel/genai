@@ -15,6 +15,8 @@ import (
 	"strings"
 	"time"
 	"unicode"
+
+	"github.com/maruel/genai"
 )
 
 type partInlineData struct {
@@ -38,7 +40,7 @@ type part struct {
 type content struct {
 	Parts []part `json:"parts"`
 	// Must be either 'user' or 'model'.
-	Role string `json:"role,omitempty"`
+	Role genai.Role `json:"role,omitempty"`
 }
 
 type toolData struct {
@@ -162,7 +164,7 @@ func (c *Client) cacheContent(ctx context.Context, data []byte, mime, systemInst
 		Contents: []content{
 			{
 				Parts: []part{{InlineData: partInlineData{MimeType: mime, Data: data}}},
-				Role:  "user",
+				Role:  genai.User,
 			},
 		},
 		SystemInstruction: content{Parts: []part{{Text: systemInstruction}}},
@@ -205,7 +207,7 @@ func (c *Client) QueryContent(ctx context.Context, systemPrompt, query, mime str
 					MimeType: "text/plain",
 					Data:     context,
 				}}},
-				Role: "user",
+				Role: genai.User,
 			})
 			/* TODO
 			request.Tools = []tool{
@@ -222,7 +224,7 @@ func (c *Client) QueryContent(ctx context.Context, systemPrompt, query, mime str
 			*/
 		}
 	}
-	request.Contents = append(request.Contents, content{Parts: []part{{Text: query}}, Role: "user"})
+	request.Contents = append(request.Contents, content{Parts: []part{{Text: query}}, Role: genai.User})
 	if err := c.post(ctx, url, &request, &response); err != nil {
 		return "", err
 	}

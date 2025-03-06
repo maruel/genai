@@ -267,7 +267,7 @@ func (c *Client) post(ctx context.Context, url string, request, response any) er
 	d := json.NewDecoder(bytes.NewReader(rawData))
 	d.DisallowUnknownFields()
 	if err := d.Decode(response); err != nil {
-		err = fmt.Errorf("Failed to decode: %w\nOriginal data: %s", err, rawData)
+		err = fmt.Errorf("failed to decode: %w\nOriginal data: %s", err, rawData)
 		slog.Error("gemini", "method", "post", "duration", time.Since(start), "err", err)
 		return err
 	}

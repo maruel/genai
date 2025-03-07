@@ -118,7 +118,7 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, ma
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	p := httpjson.Default
+	p := httpjson.DefaultClient
 	// Anthropic doesn't support compression. lol.
 	p.Compress = ""
 	h := make(http.Header)

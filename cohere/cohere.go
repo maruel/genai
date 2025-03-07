@@ -150,7 +150,7 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, ma
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
-	p := httpjson.Default
+	p := httpjson.DefaultClient
 	// Cohere doesn't support any compression. lol.
 	p.Compress = ""
 	if err := p.Post(ctx, url, h, in, out); err != nil {

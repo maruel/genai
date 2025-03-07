@@ -157,7 +157,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, 
 		return "", err
 	}
 	msg := completionResponse{}
-	if err := httpjson.Default.Post(ctx, c.BaseURL+"/completion", nil, data, &msg); err != nil {
+	if err := httpjson.DefaultClient.Post(ctx, c.BaseURL+"/completion", nil, data, &msg); err != nil {
 		return "", fmt.Errorf("failed to get llama server response: %w", err)
 	}
 	slog.DebugContext(ctx, "llm", "prompt tok", msg.Timings.PromptN, "gen tok", msg.Timings.PredictedN, "prompt tok/ms", msg.Timings.PromptPerTokenMS, "gen tok/ms", msg.Timings.PredictedPerTokenMS)
@@ -179,7 +179,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genai.Message, max
 	if err := c.initPrompt(&data, msgs); err != nil {
 		return "", err
 	}
-	resp, err := httpjson.Default.PostRequest(ctx, c.BaseURL+"/completion", nil, data)
+	resp, err := httpjson.DefaultClient.PostRequest(ctx, c.BaseURL+"/completion", nil, data)
 	if err != nil {
 		return "", fmt.Errorf("failed to get llama server response: %w", err)
 	}

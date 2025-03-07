@@ -175,7 +175,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genai.Message, max
 	}
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
-	resp, err := httpjson.Default.PostRequest(ctx, c.baseURL()+"/v1/chat/completions", h, data)
+	resp, err := httpjson.DefaultClient.PostRequest(ctx, c.baseURL()+"/v1/chat/completions", h, data)
 	if err != nil {
 		return "", fmt.Errorf("failed to get server response: %w", err)
 	}
@@ -236,7 +236,7 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, ma
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
-	p := httpjson.Default
+	p := httpjson.DefaultClient
 	// OpenAI doesn't support any compression. lol.
 	p.Compress = ""
 	if err := p.Post(ctx, url, h, in, out); err != nil {

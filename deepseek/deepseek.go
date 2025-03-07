@@ -148,7 +148,7 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, ma
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	p := httpjson.Default
+	p := httpjson.DefaultClient
 	p.Compress = ""
 	h := make(http.Header)
 	h.Set("Authorization", "Bearer "+c.ApiKey)

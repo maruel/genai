@@ -17,3 +17,4 @@ the quotas (other limits apply):
 Running [llama.cpp](https://github.com/ggml-org/llama.cpp) locally is free. :)
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/maruel/genai/.svg)](https://pkg.go.dev/github.com/maruel/genai/)
+[![codecov](https://codecov.io/gh/maruel/genai/graph/badge.svg?token=VLBH363B6N)](https://codecov.io/gh/maruel/genai)

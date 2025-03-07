@@ -47,19 +47,6 @@ type messagesRequest struct {
 	TopLogProb    int      `json:"top_logprobs,omitzero"`
 }
 
-type messageResponse struct {
-	Content          string `json:"content"`
-	ReasoningContent string `json:"reasoning_content"`
-	ToolCalls        []struct {
-		ID       string `json:"id"`
-		Type     string `json:"type"`
-		Function struct {
-			Name      string `json:"name"`
-			Arguments string `json:"arguments"`
-		} `json:"function"`
-	} `json:"tool_calls"`
-}
-
 type choice struct {
 	FinishReason string  `json:"finish_reason"`
 	Index        int     `json:"index"`

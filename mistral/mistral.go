@@ -118,6 +118,9 @@ type Client struct {
 // https://codestral.mistral.ai/v1/chat/completions
 
 func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64) (string, error) {
+	if err := c.validate(); err != nil {
+		return "", err
+	}
 	data := chatCompletionRequest{
 		Model:       c.Model,
 		MaxTokens:   maxtoks, // If it's too high, it returns a 429.
@@ -136,10 +139,16 @@ func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, 
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
+	if err := c.validate(); err != nil {
+		return "", err
+	}
 	return "", errors.New("not implemented")
 }
 
 func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, mime string, content []byte) (string, error) {
+	if err := c.validate(); err != nil {
+		return "", err
+	}
 	return "", errors.New("not implemented")
 }
 
@@ -172,6 +181,16 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 			slog.WarnContext(ctx, "mistral", "url", url, "err", err2, "response", string(err2.ResponseBody))
 		}
 		return err
+	}
+	return nil
+}
+
+func (c *Client) validate() error {
+	if c.ApiKey == "" {
+		return errors.New("missing API key")
+	}
+	if c.Model == "" {
+		return errors.New("missing model")
 	}
 	return nil
 }

@@ -2,12 +2,18 @@
 
 Barebone generic LLM API client for Go. Has very little dependencies.
 
-Has support for Anthropic, DeepSeek, Google's Gemini, Groq, OpenAI and llama.cpp.
+Has support for Anthropic, Cohere, DeepSeek, Google's Gemini, Groq, Mistral,
+OpenAI and llama.cpp.
 
 Implementation is in flux.
 
-As of March 2025, the following services offer a free tier:
-- Google's Gemini
-- Groq
+As of March 2025, the following services offer a free tier with an highlight of
+the quotas (other limits apply):
+- [Cohere](https://docs.cohere.com/docs/rate-limits) (1000 RPCs/month)
+- [Google's Gemini](https://ai.google.dev/gemini-api/docs/rate-limits) 0.25qps, 1m tokens/month
+- [Groq](https://console.groq.com/docs/rate-limits) 0.5qps, 500k tokens/day
+- [Mistral](https://help.mistral.ai/en/articles/225174-what-are-the-limits-of-the-free-tier) 1qps, 1B tokens/month
+
+Running [llama.cpp](https://github.com/ggml-org/llama.cpp) locally is free. :)
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/maruel/genai/.svg)](https://pkg.go.dev/github.com/maruel/genai/)

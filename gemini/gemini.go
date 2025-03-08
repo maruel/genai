@@ -201,7 +201,7 @@ type candidate struct {
 	CitationMetadata      citationMetadata       `json:"citationMetadata"`
 	TokenCount            int64                  `json:"tokenCount"`
 	GroundingAttributions []groundingAttribution `json:"groundingAttributions"`
-	GroundingMetadata     any                    `json:"groundingMetadata"`
+	GroundingMetadata     groundingMetadata      `json:"groundingMetadata"`
 	AvgLogprobs           float64                `json:"avgLogprobs"`
 	LogprobsResult        any                    `json:"logprobsResult"`
 	Index                 int64                  `json:"index"`

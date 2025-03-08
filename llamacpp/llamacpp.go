@@ -426,7 +426,7 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 		}
 		// Search for these strings in
 		// https://github.com/ggerganov/llama.cpp/blob/master/examples/server/server.cpp
-		f := 1.0
+		f := 0.0
 		if parts[1] == "nan" || parts[1] == "-nan" {
 			f = math.NaN()
 		} else {

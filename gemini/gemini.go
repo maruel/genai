@@ -445,7 +445,7 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message,
 	}
 	parts := out.Candidates[0].Content.Parts
 	t := strings.TrimRightFunc(parts[len(parts)-1].Text, unicode.IsSpace)
-	slog.InfoContext(ctx, "gemini", "response", t, "usage", out.UsageMetadata)
+	// slog.InfoContext(ctx, "gemini", "response", t, "usage", out.UsageMetadata)
 	return t, nil
 }
 

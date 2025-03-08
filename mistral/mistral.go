@@ -5,9 +5,7 @@
 package mistral
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -75,6 +73,8 @@ type choices struct {
 	Index        int64  `json:"index"`
 	Message      choice `json:"message"`
 }
+
+//
 
 // errorResponseAuth is used when simple issue like auth failure.
 type errorResponseAuth struct {
@@ -160,31 +160,32 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	p := httpjson.DefaultClient
 	// Mistral doesn't support any compression. lol.
 	p.Compress = ""
-	if err := p.Post(ctx, url, h, in, out); err != nil {
-		if err2, ok := err.(*httpjson.Error); ok {
-			erAuth := errorResponseAuth{}
-			d := json.NewDecoder(bytes.NewReader(err2.ResponseBody))
-			d.DisallowUnknownFields()
-			if err3 := d.Decode(&erAuth); err3 == nil {
-				return errors.New(erAuth.Message)
-			}
-			erAPI1 := errorResponseAPI1{}
-			d = json.NewDecoder(bytes.NewReader(err2.ResponseBody))
-			d.DisallowUnknownFields()
-			if err3 := d.Decode(&erAPI1); err3 == nil {
-				return fmt.Errorf("error %s: %s", erAPI1.Type, erAPI1.Message)
-			}
-			erAPI2 := errorResponseAPI2{}
-			d = json.NewDecoder(bytes.NewReader(err2.ResponseBody))
-			d.DisallowUnknownFields()
-			if err3 := d.Decode(&erAPI2); err3 == nil {
-				return fmt.Errorf("error %s/%s: %s at %s", erAPI2.Type, erAPI2.Message.Detail[0].Type, erAPI2.Message.Detail[0].Msg, erAPI2.Message.Detail[0].Loc)
-			}
-			slog.WarnContext(ctx, "mistral", "url", url, "err", err2, "response", string(err2.ResponseBody))
+	resp, err := p.PostRequest(ctx, url, h, in)
+	if err != nil {
+		return err
+	}
+	// This is so cute.
+	erAuth := errorResponseAuth{}
+	erAPI1 := errorResponseAPI1{}
+	erAPI2 := errorResponseAPI2{}
+	switch i, err := httpjson.DecodeResponse(resp, out, &erAuth, &erAPI1, &erAPI2); i {
+	case 0:
+		return nil
+	case 1:
+		return errors.New(erAuth.Message)
+	case 2:
+		return fmt.Errorf("error %s: %s", erAPI1.Type, erAPI1.Message)
+	case 3:
+		return fmt.Errorf("error %s/%s: %s at %s", erAPI2.Type, erAPI2.Message.Detail[0].Type, erAPI2.Message.Detail[0].Msg, erAPI2.Message.Detail[0].Loc)
+	default:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			slog.WarnContext(ctx, "anthropic", "url", url, "err", err, "response", string(herr.ResponseBody))
+		} else {
+			slog.WarnContext(ctx, "anthropic", "url", url, "err", err)
 		}
 		return err
 	}
-	return nil
 }
 
 func (c *Client) validate() error {

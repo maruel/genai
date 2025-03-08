@@ -25,23 +25,23 @@ import (
 // https://github.com/ggerganov/llama.cpp/blob/master/examples/server/README.md#api-endpoints
 type healthResponse struct {
 	Status          string
-	SlotsIdle       int `json:"slots_idle"`
-	SlotsProcessing int `json:"slots_processing"`
+	SlotsIdle       int64 `json:"slots_idle"`
+	SlotsProcessing int64 `json:"slots_processing"`
 }
 
 // https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 
 type completionRequest struct {
-	SystemPrompt     string      `json:"system_prompt,omitempty"`
-	Prompt           string      `json:"prompt"`
-	Grammar          string      `json:"grammar,omitempty"`
-	JSONSchema       interface{} `json:"json_schema,omitempty"`
-	Seed             int64       `json:"seed,omitempty"`
-	Temperature      float64     `json:"temperature,omitempty"`
-	DynaTempRange    float64     `json:"dynatemp_range,omitempty"`
-	DynaTempExponent float64     `json:"dynatemp_exponent,omitempty"`
-	CachePrompt      bool        `json:"cache_prompt,omitempty"`
-	Stream           bool        `json:"stream"`
+	SystemPrompt     string  `json:"system_prompt,omitempty"`
+	Prompt           string  `json:"prompt"`
+	Grammar          string  `json:"grammar,omitempty"`
+	JSONSchema       any     `json:"json_schema,omitempty"`
+	Seed             int64   `json:"seed,omitempty"`
+	Temperature      float64 `json:"temperature,omitempty"`
+	DynaTempRange    float64 `json:"dynatemp_range,omitempty"`
+	DynaTempExponent float64 `json:"dynatemp_exponent,omitempty"`
+	CachePrompt      bool    `json:"cache_prompt,omitempty"`
+	Stream           bool    `json:"stream"`
 	// top_k             float64
 	// top_p             float64
 	// min_p             float64
@@ -60,7 +60,7 @@ type completionRequest struct {
 	// mirostat_tau      float64
 	// mirostat_eta      float64
 	// ignore_eos   bool
-	// logit_bias   []interface{}
+	// logit_bias   []any
 	// n_probs      int64
 	// min_keep     int64
 	// image_data   []byte
@@ -69,15 +69,15 @@ type completionRequest struct {
 }
 
 type completionResponse struct {
-	Content            string      `json:"content"`
-	Stop               bool        `json:"stop"`
-	GenerationSettings interface{} `json:"generation_settings"`
-	Model              string      `json:"model"`
-	Prompt             string      `json:"prompt"`
-	StoppedEOS         bool        `json:"stopped_eos"`
-	StoppedLimit       bool        `json:"stopped_limit"`
-	StoppedWord        bool        `json:"stopped_word"`
-	StoppingWord       string      `json:"stopping_word"`
+	Content            string `json:"content"`
+	Stop               bool   `json:"stop"`
+	GenerationSettings any    `json:"generation_settings"`
+	Model              string `json:"model"`
+	Prompt             string `json:"prompt"`
+	StoppedEOS         bool   `json:"stopped_eos"`
+	StoppedLimit       bool   `json:"stopped_limit"`
+	StoppedWord        bool   `json:"stopped_word"`
+	StoppingWord       string `json:"stopping_word"`
 	Timings            struct {
 		// Undocumented:
 		PromptN             int64   `json:"prompt_n"`
@@ -105,14 +105,12 @@ type completionResponse struct {
 	Index           int64 `json:"index"`
 	TokensPredicted int64 `json:"tokens_predicted"`
 	Multimodal      bool  `json:"multimodal"`
-	// Error case:
-	Error errorResponse `json:"error"`
 }
 
 //
 
 type errorResponse struct {
-	Code    int
+	Code    int64
 	Message string
 	Type    string
 }
@@ -168,7 +166,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 		return "", err
 	}
 	out := completionResponse{}
-	if err := httpjson.DefaultClient.Post(ctx, c.BaseURL+"/completion", nil, in, &out); err != nil {
+	if err := c.post(ctx, c.BaseURL+"/completion", nil, &out); err != nil {
 		return "", fmt.Errorf("failed to get llama server response: %w", err)
 	}
 	slog.DebugContext(ctx, "llm", "prompt tok", out.Timings.PromptN, "gen tok", out.Timings.PredictedN, "prompt tok/ms", out.Timings.PromptPerTokenMS, "gen tok/ms", out.Timings.PredictedPerTokenMS)
@@ -253,6 +251,7 @@ func (c *Client) GetHealth(ctx context.Context) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("failed to get health response: %w", err)
 	}
+	fmt.Printf("encoding: %s\n", resp.Header["Content-Encoding"])
 	d := json.NewDecoder(resp.Body)
 	d.DisallowUnknownFields()
 	msg := healthResponse{}
@@ -299,6 +298,30 @@ func (c *Client) initPrompt(in *completionRequest, msgs []genaiapi.Message) erro
 		}
 	}
 	return nil
+}
+
+func (c *Client) post(ctx context.Context, url string, in, out any) error {
+	p := httpjson.DefaultClient
+	p.Compress = ""
+	resp, err := p.PostRequest(ctx, url, nil, in)
+	if err != nil {
+		return err
+	}
+	er := errorResponse{}
+	switch i, err := httpjson.DecodeResponse(resp, out, &er); i {
+	case 0:
+		return nil
+	case 1:
+		return fmt.Errorf("error %d (%s): %s", er.Code, er.Type, er.Message)
+	default:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			slog.WarnContext(ctx, "llamacpp", "url", url, "err", err, "response", string(herr.ResponseBody))
+		} else {
+			slog.WarnContext(ctx, "llamacpp", "url", url, "err", err)
+		}
+		return err
+	}
 }
 
 var _ genaiapi.CompletionProvider = &Client{}

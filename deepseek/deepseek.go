@@ -143,6 +143,7 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message,
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	p := httpjson.DefaultClient
+	// DeepSeek doesn't support any compression. lol.
 	p.Compress = ""
 	h := make(http.Header)
 	h.Set("Authorization", "Bearer "+c.ApiKey)

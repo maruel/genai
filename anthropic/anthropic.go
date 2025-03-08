@@ -5,9 +5,7 @@
 package anthropic
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -124,19 +122,25 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	h := make(http.Header)
 	h.Set("x-api-key", c.ApiKey)
 	h.Set("anthropic-version", "2023-06-01")
-	if err := p.Post(ctx, url, h, in, out); err != nil {
-		if err2, ok := err.(*httpjson.Error); ok {
-			er := errorResponse{}
-			d := json.NewDecoder(bytes.NewReader(err2.ResponseBody))
-			d.DisallowUnknownFields()
-			if err3 := d.Decode(&er); err3 == nil {
-				return fmt.Errorf("error %s: %s", er.Error.Type, er.Error.Message)
-			}
-			slog.WarnContext(ctx, "anthropic", "url", url, "err", err2, "response", string(err2.ResponseBody))
+	resp, err := p.PostRequest(ctx, url, h, in)
+	if err != nil {
+		return err
+	}
+	er := errorResponse{}
+	switch i, err := httpjson.DecodeResponse(resp, out, &er); i {
+	case 0:
+		return nil
+	case 1:
+		return fmt.Errorf("error %s: %s", er.Error.Type, er.Error.Message)
+	default:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			slog.WarnContext(ctx, "anthropic", "url", url, "err", err, "response", string(herr.ResponseBody))
+		} else {
+			slog.WarnContext(ctx, "anthropic", "url", url, "err", err)
 		}
 		return err
 	}
-	return nil
 }
 
 var _ genaiapi.ChatProvider = &Client{}

@@ -34,54 +34,134 @@ type healthResponse struct {
 // https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 
 type completionRequest struct {
-	SystemPrompt     string  `json:"system_prompt,omitempty"`
-	Prompt           string  `json:"prompt"`
-	Grammar          string  `json:"grammar,omitempty"`
-	JSONSchema       any     `json:"json_schema,omitempty"`
-	Seed             int64   `json:"seed,omitempty"`
-	Temperature      float64 `json:"temperature,omitempty"`
-	DynaTempRange    float64 `json:"dynatemp_range,omitempty"`
-	DynaTempExponent float64 `json:"dynatemp_exponent,omitempty"`
-	CachePrompt      bool    `json:"cache_prompt,omitempty"`
-	Stream           bool    `json:"stream"`
-	// top_k             float64
-	// top_p             float64
-	// min_p             float64
-	NPredict int64 `json:"n_predict,omitempty"` // Maximum number of tokens to predict
-	// n_keep            int64
-	// stop              []string
-	// tfs_z             float64
-	// typical_p         float64
-	// repeat_penalty    float64
-	// repeat_last_n     int64
-	// penalize_nl       bool
-	// presence_penalty  float64
-	// frequency_penalty float64
-	// penalty_prompt    *string
-	// mirostat          int32
-	// mirostat_tau      float64
-	// mirostat_eta      float64
-	// ignore_eos   bool
-	// logit_bias   []any
-	// n_probs      int64
-	// min_keep     int64
-	// image_data   []byte
-	// id_slot      int64
-	// samplers     []string
+	// TODO: Can be a string, a list of tokens or a mix.
+	Prompt              string   `json:"prompt"`
+	Temperature         float64  `json:"temperature,omitempty"`
+	DynaTempRange       float64  `json:"dynatemp_range,omitempty"`
+	DynaTempExponent    float64  `json:"dynatemp_exponent,omitempty"`
+	TopK                int64    `json:"top_k,omitempty"`
+	TopP                float64  `json:"top_p,omitempty"`
+	MinP                float64  `json:"min_p,omitempty"`
+	NPredict            int64    `json:"n_predict,omitempty"` // Maximum number of tokens to predict
+	NIndent             int64    `json:"n_indent,omitempty"`
+	NKeep               int64    `json:"n_keep,omitempty"`
+	Stream              bool     `json:"stream"`
+	Stop                []string `json:"stop,omitempty"`
+	TypicalP            float64  `json:"typical_p,omitempty"`
+	RepeatPenalty       float64  `json:"repeat_penalty,omitempty"`
+	RepeatLastN         int64    `json:"repeat_last_n,omitempty"`
+	PresencePenalty     float64  `json:"presence_penalty,omitempty"`
+	FrequencyPenalty    float64  `json:"frequency_penalty,omitempty"`
+	DryMultiplier       float64  `json:"dry_multiplier,omitempty"`
+	DryBase             float64  `json:"dry_base,omitempty"`
+	DryAllowedLength    int64    `json:"dry_allowed_length,omitempty"`
+	DryPenaltyLastN     int64    `json:"dry_penalty_last_n,omitempty"`
+	DrySequenceBreakers []string `json:"dry_sequence_breakers,omitempty"`
+	XTCProbability      float64  `json:"xtc_probability,omitempty"`
+	XTCThreshold        float64  `json:"xtc_threshold,omitempty"`
+	Mirostat            int32    `json:"mirostat,omitempty"`
+	MirostatTau         float64  `json:"mirostat_tau,omitempty"`
+	MirostatEta         float64  `json:"mirostat_eta,omitempty"`
+	Grammar             string   `json:"grammar,omitempty"`
+	JSONSchema          any      `json:"json_schema,omitempty"`
+	Seed                int64    `json:"seed,omitempty"`
+	IgnoreEos           bool     `json:"ignore_eos,omitempty"`
+	LogitBias           []any    `json:"logit_bias,omitempty"`
+	Nprobs              int64    `json:"n_probs,omitempty"`
+	MinKeep             int64    `json:"min_keep,omitempty"`
+	TMaxPredictMS       int64    `json:"t_max_predict_ms,omitempty"`
+	ImageData           []any    `json:"image_data,omitempty"`
+	IDSlot              int64    `json:"id_slot,omitempty"`
+	CachePrompt         bool     `json:"cache_prompt,omitempty"`
+	ReturnTokens        bool     `json:"return_tokens,omitempty"`
+	Samplers            []string `json:"samplers,omitempty"`
+	TimingsPerToken     bool     `json:"timings_per_token,omitempty"`
+	PostSamplingProbs   bool     `json:"post_sampling_probs,omitempty"`
+	ResponseFields      []string `json:"response_fields,omitempty"`
+	Lora                []any    `json:"lora,omitempty"`
 }
 
+/*
+	{
+		"n_predict": 10,
+		"seed": 1,
+		"temperature": 0.800000011920929,
+		"dynatemp_range": 0.0,
+		"dynatemp_exponent": 1.0,
+		"top_k": 40,
+		"top_p": 0.949999988079071,
+		"min_p": 0.05000000074505806,
+		"xtc_probability": 0.0,
+		"xtc_threshold": 0.10000000149011612,
+		"typical_p": 1.0,
+		"repeat_last_n": 64,
+		"repeat_penalty": 1.0,
+		"presence_penalty": 0.0,
+		"frequency_penalty": 0.0,
+		"dry_multiplier": 0.0,
+		"dry_base": 1.75,
+		"dry_allowed_length": 2,
+		"dry_penalty_last_n": 4096,
+		"dry_sequence_breakers": [
+			"\n",
+			":",
+			"\"",
+			"*"
+		],
+		"mirostat": 0,
+		"mirostat_tau": 5.0,
+		"mirostat_eta": 0.10000000149011612,
+		"stop": [],
+		"max_tokens": 10,
+		"n_keep": 0,
+		"n_discard": 0,
+		"ignore_eos": false,
+		"stream": false,
+		"logit_bias": [],
+		"n_probs": 0,
+		"min_keep": 0,
+		"grammar": "",
+		"grammar_lazy": false,
+		"grammar_triggers": [],
+		"preserved_tokens": [],
+		"chat_format": "Content-only",
+		"samplers": [
+			"penalties",
+			"dry",
+			"top_k",
+			"typ_p",
+			"top_p",
+			"min_p",
+			"xtc",
+			"temperature"
+		],
+		"speculative.n_max": 16,
+		"speculative.n_min": 0,
+		"speculative.p_min": 0.75,
+		"timings_per_token": false,
+		"post_sampling_probs": false,
+		"lora": []
+	}
+*/
+type generationSettings map[string]any
+
 type completionResponse struct {
-	Content            string `json:"content"`
-	Stop               bool   `json:"stop"`
-	GenerationSettings any    `json:"generation_settings"`
-	Model              string `json:"model"`
-	Prompt             string `json:"prompt"`
-	StoppedEOS         bool   `json:"stopped_eos"`
-	StoppedLimit       bool   `json:"stopped_limit"`
-	StoppedWord        bool   `json:"stopped_word"`
-	StoppingWord       string `json:"stopping_word"`
+	Index              int64              `json:"index"`
+	Content            string             `json:"content"`
+	Tokens             []int64            `json:"tokens"`
+	IDSlot             int64              `json:"id_slot"`
+	Stop               bool               `json:"stop"`
+	Model              string             `json:"model"`
+	TokensPredicted    int64              `json:"tokens_predicted"`
+	TokensEvaluated    int64              `json:"tokens_evaluated"`
+	GenerationSettings generationSettings `json:"generation_settings"`
+	Prompt             string             `json:"prompt"`
+	HasNewLine         bool               `json:"has_new_line"`
+	Truncated          bool               `json:"truncated"`
+	StopType           string             `json:"stop_type"`
+	StoppingWord       string             `json:"stopping_word"`
+	TokensCached       int64              `json:"tokens_cached"`
 	Timings            struct {
-		// Undocumented:
 		PromptN             int64   `json:"prompt_n"`
 		PromptMS            float64 `json:"prompt_ms"`
 		PromptPerTokenMS    float64 `json:"prompt_per_token_ms"`
@@ -90,23 +170,46 @@ type completionResponse struct {
 		PredictedMS         float64 `json:"predicted_ms"`
 		PredictedPerTokenMS float64 `json:"predicted_per_token_ms"`
 		PredictedPerSecond  float64 `json:"predicted_per_second"`
-	}
-	TokensCached            int64 `json:"tokens_cached"`
-	TokensEvaluated         int64 `json:"tokens_evaluated"`
-	Truncated               bool  `json:"truncated"`
-	CompletionProbabilities []struct {
-		Content string
-		Probs   []struct {
-			Prob   float64
-			TokStr string `json:"tok_str"`
-		}
-	} `json:"completion_probabilities"`
-	// Undocumented:
-	HasNewLine      bool  `json:"has_new_line"`
-	IDSlot          int64 `json:"id_slot"`
-	Index           int64 `json:"index"`
-	TokensPredicted int64 `json:"tokens_predicted"`
-	Multimodal      bool  `json:"multimodal"`
+	} `json:"timings"`
+}
+
+type completionStreamResponse struct {
+	// Always
+	Index           int64   `json:"index"`
+	Content         string  `json:"content"`
+	Tokens          []int64 `json:"tokens"`
+	Stop            bool    `json:"stop"`
+	IDSlot          int64   `json:"id_slot"`
+	TokensPredicted int64   `json:"tokens_predicted"`
+	TokensEvaluated int64   `json:"tokens_evaluated"`
+
+	// Last message
+	Model              string `json:"model"`
+	GenerationSettings any    `json:"generation_settings"`
+	Prompt             string `json:"prompt"`
+	HasNewLine         bool   `json:"has_new_line"`
+	Truncated          bool   `json:"truncated"`
+	StopType           string `json:"stop_type"`
+	StoppingWord       string `json:"stopping_word"`
+	TokensCached       int64  `json:"tokens_cached"`
+	Timings            struct {
+		PromptN             int64   `json:"prompt_n"`
+		PromptMS            float64 `json:"prompt_ms"`
+		PromptPerTokenMS    float64 `json:"prompt_per_token_ms"`
+		PromptPerSecond     float64 `json:"prompt_per_second"`
+		PredictedN          int64   `json:"predicted_n"`
+		PredictedMS         float64 `json:"predicted_ms"`
+		PredictedPerTokenMS float64 `json:"predicted_per_token_ms"`
+		PredictedPerSecond  float64 `json:"predicted_per_second"`
+	} `json:"timings"`
+}
+
+type applyTemplateRequest struct {
+	Messages []genaiapi.Message `json:"messages"`
+}
+
+type applyTemplateResponse struct {
+	Prompt string `json:"prompt"`
 }
 
 //
@@ -166,11 +269,11 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	// Doc mentions it causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
 	in.CachePrompt = true
-	if err := c.initPrompt(&in, msgs); err != nil {
+	if err := c.initPrompt(ctx, &in, msgs); err != nil {
 		return "", err
 	}
 	out := completionResponse{}
-	if err := c.post(ctx, c.BaseURL+"/completion", nil, &out); err != nil {
+	if err := c.post(ctx, c.BaseURL+"/completion", in, &out); err != nil {
 		return "", fmt.Errorf("failed to get llama server response: %w", err)
 	}
 	slog.DebugContext(ctx, "llm", "prompt tok", out.Timings.PromptN, "gen tok", out.Timings.PredictedN, "prompt tok/ms", out.Timings.PromptPerTokenMS, "gen tok/ms", out.Timings.PredictedPerTokenMS)
@@ -192,10 +295,12 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 	// Doc mentions it causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
 	in.CachePrompt = true
-	if err := c.initPrompt(&in, msgs); err != nil {
+	if err := c.initPrompt(ctx, &in, msgs); err != nil {
 		return "", err
 	}
-	resp, err := httpjson.DefaultClient.PostRequest(ctx, c.BaseURL+"/completion", nil, in)
+	p := httpjson.DefaultClient
+	p.Compress = ""
+	resp, err := p.PostRequest(ctx, c.BaseURL+"/completion", nil, in)
 	if err != nil {
 		return "", fmt.Errorf("failed to get llama server response: %w", err)
 	}
@@ -223,7 +328,8 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 		}
 		d := json.NewDecoder(bytes.NewReader(line[len(prefix):]))
 		d.DisallowUnknownFields()
-		msg := completionResponse{}
+		d.UseNumber()
+		msg := completionStreamResponse{}
 		if err = d.Decode(&msg); err != nil {
 			return reply, fmt.Errorf("failed to decode llama server response %q: %w", string(line), err)
 		}
@@ -357,7 +463,18 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 	return nil
 }
 
-func (c *Client) initPrompt(in *completionRequest, msgs []genaiapi.Message) error {
+func (c *Client) initPrompt(ctx context.Context, in *completionRequest, msgs []genaiapi.Message) error {
+	if c.Encoding == nil {
+		// Use the server to convert the OpenAI style format into a templated form.
+		in2 := applyTemplateRequest{Messages: msgs}
+		out := applyTemplateResponse{}
+		if err := c.post(ctx, c.BaseURL+"/apply-template", &in2, &out); err != nil {
+			return err
+		}
+		in.Prompt = out.Prompt
+		return nil
+	}
+
 	// Do a quick validation. 1 == available_tools, 2 = system, 3 = rest
 	state := 0
 	in.Prompt = c.Encoding.BeginOfText

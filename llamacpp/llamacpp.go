@@ -13,7 +13,9 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
+	"math"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -110,9 +112,11 @@ type completionResponse struct {
 //
 
 type errorResponse struct {
-	Code    int64
-	Message string
-	Type    string
+	Error struct {
+		Code    int64
+		Message string
+		Type    string
+	} `json:"error"`
 }
 
 //
@@ -251,7 +255,6 @@ func (c *Client) GetHealth(ctx context.Context) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("failed to get health response: %w", err)
 	}
-	fmt.Printf("encoding: %s\n", resp.Header["Content-Encoding"])
 	d := json.NewDecoder(resp.Body)
 	d.DisallowUnknownFields()
 	msg := healthResponse{}
@@ -261,6 +264,97 @@ func (c *Client) GetHealth(ctx context.Context) (string, error) {
 		return msg.Status, fmt.Errorf("failed to decode health response: %w", err)
 	}
 	return msg.Status, nil
+}
+
+// TokenPerformance is the performance for the metrics
+type TokenPerformance struct {
+	Count    int
+	Duration time.Duration
+}
+
+// Rate is the number of token per second.
+func (t *TokenPerformance) Rate() float64 {
+	if t.Duration == 0 {
+		return 0
+	}
+	return float64(t.Count) / (float64(t.Duration) / float64(time.Second))
+}
+
+// Metrics represents the metrics for the LLM server.
+type Metrics struct {
+	Prompt             TokenPerformance
+	Generated          TokenPerformance
+	KVCacheUsage       float64
+	KVCacheTokens      int
+	RequestsProcessing int
+	RequestedPending   int
+}
+
+// GetMetrics retrieves the performance statistics from the server.
+func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
+	// TODO: Generalize.
+	req, err := http.NewRequestWithContext(ctx, "GET", c.BaseURL+"/metrics", nil)
+	if err != nil {
+		return fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("failed to get metrics response: %w", err)
+	}
+	b, err := io.ReadAll(resp.Body)
+	if err2 := resp.Body.Close(); err == nil {
+		err = err2
+	}
+	if err != nil {
+		return fmt.Errorf("failed to get metrics response: %w", err)
+	}
+	// We hardcode things here since we know which server we are talking to. See
+	// the commit history if you want the generic prometheus style data.
+	for l := range strings.SplitSeq(strings.TrimSpace(string(b)), "\n") {
+		if strings.HasPrefix(l, "#") {
+			continue
+		}
+		parts := strings.Split(l, " ")
+		if len(parts) != 2 {
+			return fmt.Errorf("failed to parse line %q: %w", l, err)
+		}
+		// Search for these strings in
+		// https://github.com/ggerganov/llama.cpp/blob/master/examples/server/server.cpp
+		f := 1.0
+		if parts[1] == "nan" || parts[1] == "-nan" {
+			f = math.NaN()
+		} else {
+			if f, err = strconv.ParseFloat(parts[1], 64); err != nil {
+				return fmt.Errorf("failed to parse line %q: %w", l, err)
+			}
+		}
+		i, _ := strconv.Atoi(parts[1])
+		switch parts[0] {
+		case "llamacpp:prompt_tokens_total":
+			m.Prompt.Count = i
+		case "llamacpp:prompt_seconds_total":
+			m.Prompt.Duration = time.Duration(f*1000) * time.Millisecond
+		case "llamacpp:tokens_predicted_total":
+			m.Generated.Count = i
+		case "llamacpp:tokens_predicted_seconds_total":
+			m.Generated.Duration = time.Duration(f*1000) * time.Millisecond
+		case "llamacpp:prompt_tokens_seconds", "llamacpp:predicted_tokens_seconds":
+			// Ignore.
+		case "llamacpp:kv_cache_usage_ratio":
+			m.KVCacheUsage = f
+		case "llamacpp:kv_cache_tokens":
+			m.KVCacheTokens = i
+		case "llamacpp:requests_processing":
+			m.RequestsProcessing = i
+		case "llamacpp:requests_deferred":
+			m.RequestedPending = i
+		case "llamacpp:n_decode_total":
+		case "llamacpp:n_busy_slots_per_decode":
+		default:
+			return fmt.Errorf("unknown metric %q", l)
+		}
+	}
+	return nil
 }
 
 func (c *Client) initPrompt(in *completionRequest, msgs []genaiapi.Message) error {
@@ -302,6 +396,7 @@ func (c *Client) initPrompt(in *completionRequest, msgs []genaiapi.Message) erro
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	p := httpjson.DefaultClient
+	// Llama.cpp doesn't support compression. lol.
 	p.Compress = ""
 	resp, err := p.PostRequest(ctx, url, nil, in)
 	if err != nil {
@@ -312,7 +407,7 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	case 0:
 		return nil
 	case 1:
-		return fmt.Errorf("error %d (%s): %s", er.Code, er.Type, er.Message)
+		return fmt.Errorf("error %d (%s): %s", er.Error.Code, er.Error.Type, er.Error.Message)
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {

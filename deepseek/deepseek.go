@@ -15,6 +15,8 @@ import (
 	"github.com/maruel/httpjson"
 )
 
+// https://api-docs.deepseek.com/api/create-chat-completion
+
 type message struct {
 	Role             genaiapi.Role `json:"role"`
 	Content          string        `json:"content"`
@@ -24,14 +26,13 @@ type message struct {
 	ToolCallID       string        `json:"tool_call_id,omitzero"`
 }
 
-// https://api-docs.deepseek.com/api/create-chat-completion
 type messagesRequest struct {
 	Model            string    `json:"model,omitempty"`
 	Messages         []message `json:"messages"`
 	Stream           bool      `json:"stream"`
 	Temperature      float64   `json:"temperature,omitzero"`       // [0, 2]
 	FrequencyPenalty float64   `json:"frequency_penalty,omitzero"` // [-2, 2]
-	MaxToks          int       `json:"max_tokens,omitzero"`        // [1, 8192]
+	MaxToks          int64     `json:"max_tokens,omitzero"`        // [1, 8192]
 	PresencePenalty  float64   `json:"presence_penalty,omitzero"`  // [-2, 2]
 	ResponseFormat   struct {
 		Type string `json:"type,omitzero"` // text, json_object
@@ -42,22 +43,22 @@ type messagesRequest struct {
 	ToolChoice    any      `json:"tool_choice,omitempty"`
 	Tools         any      `json:"tools,omitempty"`
 	LogProbs      bool     `json:"logprobs,omitzero"`
-	TopLogProb    int      `json:"top_logprobs,omitzero"`
+	TopLogProb    int64    `json:"top_logprobs,omitzero"`
 }
 
 type choice struct {
 	FinishReason string  `json:"finish_reason"`
-	Index        int     `json:"index"`
+	Index        int64   `json:"index"`
 	Message      message `json:"message"`
 	LogProbs     struct {
 		Content []struct {
 			Token       string  `json:"token"`
 			LogProb     float64 `json:"logprob"`
-			Bytes       []int   `json:"bytes"`
+			Bytes       []int64 `json:"bytes"`
 			TopLogProbs []struct {
 				Token   string  `json:"token"`
 				LogProb float64 `json:"logprob"`
-				Bytes   []int   `json:"bytes"`
+				Bytes   []int64 `json:"bytes"`
 			} `json:"top_logprobs"`
 		} `json:"content"`
 	} `json:"logprobs"`
@@ -66,24 +67,26 @@ type choice struct {
 type messagesResponse struct {
 	ID                string   `json:"id"`
 	Choices           []choice `json:"choices"`
-	Created           int      `json:"created"` // Unix timestamp
+	Created           int64    `json:"created"` // Unix timestamp
 	Model             string   `json:"model"`
 	SystemFingerPrint string   `json:"system_fingerprint"`
 	Object            string   `json:"object"` // chat.completion
 	Usage             struct {
-		CompletionTokens      int `json:"completion_tokens"`
-		PromptTokens          int `json:"prompt_tokens"`
-		PromptCacheHitTokens  int `json:"prompt_cache_hit_tokens"`
-		PromptCacheMissTokens int `json:"prompt_cache_miss_tokens"`
-		TotalTokens           int `json:"total_tokens"`
+		CompletionTokens      int64 `json:"completion_tokens"`
+		PromptTokens          int64 `json:"prompt_tokens"`
+		PromptCacheHitTokens  int64 `json:"prompt_cache_hit_tokens"`
+		PromptCacheMissTokens int64 `json:"prompt_cache_miss_tokens"`
+		TotalTokens           int64 `json:"total_tokens"`
 		PromptTokensDetails   struct {
-			CachedTokens int `json:"cached_tokens"`
+			CachedTokens int64 `json:"cached_tokens"`
 		} `json:"prompt_tokens_details"`
 		CompletionTokensDetails struct {
-			ReasoningTokens int `json:"reasoning_tokens"`
+			ReasoningTokens int64 `json:"reasoning_tokens"`
 		} `json:"completion_tokens_details"`
 	} `json:"usage"`
 }
+
+//
 
 type errorResponse struct {
 	// Type  string `json:"type"`
@@ -102,13 +105,9 @@ type Client struct {
 	Model string
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64) (string, error) {
-	in := messagesRequest{
-		Model:       c.Model,
-		Messages:    make([]message, 0, len(msgs)),
-		MaxToks:     maxtoks,
-		Temperature: temperature,
-	}
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
+	// https://api-docs.deepseek.com/api/create-chat-completion
+	in := messagesRequest{Model: c.Model, Messages: make([]message, 0, len(msgs))}
 	for _, m := range msgs {
 		switch m.Role {
 		case genaiapi.System, genaiapi.User, genaiapi.Assistant:
@@ -117,6 +116,16 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, maxtok
 			return "", fmt.Errorf("unsupported role %v", m.Role)
 		}
 	}
+	switch v := opts.(type) {
+	case *genaiapi.CompletionOptions:
+		in.MaxToks = v.MaxTokens
+		in.Temperature = v.Temperature
+		if v.Seed != 0 {
+			return "", errors.New("seed is not supported")
+		}
+	default:
+		return "", fmt.Errorf("unsupported options type %T", opts)
+	}
 	out := messagesResponse{}
 	if err := c.post(ctx, "https://api.deepseek.com/chat/completions", &in, &out); err != nil {
 		return "", err
@@ -124,11 +133,11 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, maxtok
 	return out.Choices[0].Message.Content, nil
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) (string, error) {
 	return "", errors.New("not implemented")
 }
 
-func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, mime string, context []byte) (string, error) {
+func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, context []byte) (string, error) {
 	return "", errors.New("not implemented")
 }
 
@@ -158,4 +167,4 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	}
 }
 
-var _ genaiapi.ChatProvider = &Client{}
+var _ genaiapi.CompletionProvider = &Client{}

@@ -21,12 +21,6 @@ import (
 	"github.com/maruel/httpjson"
 )
 
-type errorResponse struct {
-	Code    int
-	Message string
-	Type    string
-}
-
 // healthResponse is documented at
 // https://github.com/ggerganov/llama.cpp/blob/master/examples/server/README.md#api-endpoints
 type healthResponse struct {
@@ -35,8 +29,8 @@ type healthResponse struct {
 	SlotsProcessing int `json:"slots_processing"`
 }
 
-// completionRequest is documented at
-// https://github.com/ggerganov/llama.cpp/blob/master/examples/server/README.md#api-endpoints
+// https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
+
 type completionRequest struct {
 	SystemPrompt     string      `json:"system_prompt,omitempty"`
 	Prompt           string      `json:"prompt"`
@@ -74,8 +68,6 @@ type completionRequest struct {
 	// samplers     []string
 }
 
-// completionResponse is documented at
-// https://github.com/ggerganov/llama.cpp/blob/master/examples/server/README.md#result-json
 type completionResponse struct {
 	Content            string      `json:"content"`
 	Stop               bool        `json:"stop"`
@@ -117,6 +109,16 @@ type completionResponse struct {
 	Error errorResponse `json:"error"`
 }
 
+//
+
+type errorResponse struct {
+	Code    int
+	Message string
+	Type    string
+}
+
+//
+
 // PromptEncoding describes how to encode the prompt.
 type PromptEncoding struct {
 	// Prompt encoding.
@@ -148,38 +150,50 @@ type Client struct {
 	Encoding *PromptEncoding
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64) (string, error) {
-	data := completionRequest{Seed: int64(seed), Temperature: temperature, NPredict: int64(maxtoks)}
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
+	// https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
+	in := completionRequest{}
+	switch v := opts.(type) {
+	case *genaiapi.CompletionOptions:
+		in.NPredict = v.MaxTokens
+		in.Seed = v.Seed
+		in.Temperature = v.Temperature
+	default:
+		return "", fmt.Errorf("unsupported options type %T", opts)
+	}
 	// Doc mentions it causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
-	data.CachePrompt = true
-	if err := c.initPrompt(&data, msgs); err != nil {
+	in.CachePrompt = true
+	if err := c.initPrompt(&in, msgs); err != nil {
 		return "", err
 	}
-	msg := completionResponse{}
-	if err := httpjson.DefaultClient.Post(ctx, c.BaseURL+"/completion", nil, data, &msg); err != nil {
+	out := completionResponse{}
+	if err := httpjson.DefaultClient.Post(ctx, c.BaseURL+"/completion", nil, in, &out); err != nil {
 		return "", fmt.Errorf("failed to get llama server response: %w", err)
 	}
-	slog.DebugContext(ctx, "llm", "prompt tok", msg.Timings.PromptN, "gen tok", msg.Timings.PredictedN, "prompt tok/ms", msg.Timings.PromptPerTokenMS, "gen tok/ms", msg.Timings.PredictedPerTokenMS)
+	slog.DebugContext(ctx, "llm", "prompt tok", out.Timings.PromptN, "gen tok", out.Timings.PredictedN, "prompt tok/ms", out.Timings.PromptPerTokenMS, "gen tok/ms", out.Timings.PredictedPerTokenMS)
 	// Mistral Nemo really likes "▁".
-	return strings.ReplaceAll(msg.Content, "\u2581", " "), nil
+	return strings.ReplaceAll(out.Content, "\u2581", " "), nil
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) (string, error) {
 	start := time.Now()
-	data := completionRequest{
-		Stream:      true,
-		Seed:        int64(seed),
-		Temperature: temperature,
-		NPredict:    int64(maxtoks),
+	in := completionRequest{Stream: true}
+	switch v := opts.(type) {
+	case *genaiapi.CompletionOptions:
+		in.NPredict = v.MaxTokens
+		in.Seed = v.Seed
+		in.Temperature = v.Temperature
+	default:
+		return "", fmt.Errorf("unsupported options type %T", opts)
 	}
 	// Doc mentions it causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
-	data.CachePrompt = true
-	if err := c.initPrompt(&data, msgs); err != nil {
+	in.CachePrompt = true
+	if err := c.initPrompt(&in, msgs); err != nil {
 		return "", err
 	}
-	resp, err := httpjson.DefaultClient.PostRequest(ctx, c.BaseURL+"/completion", nil, data)
+	resp, err := httpjson.DefaultClient.PostRequest(ctx, c.BaseURL+"/completion", nil, in)
 	if err != nil {
 		return "", fmt.Errorf("failed to get llama server response: %w", err)
 	}
@@ -225,7 +239,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 	}
 }
 
-func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, mime string, content []byte) (string, error) {
+func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, content []byte) (string, error) {
 	return "", errors.New("not implemented")
 }
 
@@ -250,10 +264,10 @@ func (c *Client) GetHealth(ctx context.Context) (string, error) {
 	return msg.Status, nil
 }
 
-func (c *Client) initPrompt(data *completionRequest, msgs []genaiapi.Message) error {
+func (c *Client) initPrompt(in *completionRequest, msgs []genaiapi.Message) error {
 	// Do a quick validation. 1 == available_tools, 2 = system, 3 = rest
 	state := 0
-	data.Prompt = c.Encoding.BeginOfText
+	in.Prompt = c.Encoding.BeginOfText
 	for i, m := range msgs {
 		switch m.Role {
 		case genaiapi.AvailableTools:
@@ -261,25 +275,25 @@ func (c *Client) initPrompt(data *completionRequest, msgs []genaiapi.Message) er
 				return fmt.Errorf("unexpected available_tools message at index %d; state %d", i, state)
 			}
 			state = 1
-			data.Prompt += c.Encoding.ToolsAvailableTokenStart + m.Content + c.Encoding.ToolsAvailableTokenEnd
+			in.Prompt += c.Encoding.ToolsAvailableTokenStart + m.Content + c.Encoding.ToolsAvailableTokenEnd
 		case genaiapi.System:
 			if state > 1 {
 				return fmt.Errorf("unexpected system message at index %d; state %d", i, state)
 			}
 			state = 2
-			data.Prompt += c.Encoding.SystemTokenStart + m.Content + c.Encoding.SystemTokenEnd
+			in.Prompt += c.Encoding.SystemTokenStart + m.Content + c.Encoding.SystemTokenEnd
 		case genaiapi.User:
 			state = 3
-			data.Prompt += c.Encoding.UserTokenStart + m.Content + c.Encoding.UserTokenEnd
+			in.Prompt += c.Encoding.UserTokenStart + m.Content + c.Encoding.UserTokenEnd
 		case genaiapi.Assistant:
 			state = 3
-			data.Prompt += c.Encoding.AssistantTokenStart + m.Content + c.Encoding.AssistantTokenEnd
+			in.Prompt += c.Encoding.AssistantTokenStart + m.Content + c.Encoding.AssistantTokenEnd
 		case genaiapi.ToolCall:
 			state = 3
-			data.Prompt += c.Encoding.ToolCallTokenStart + m.Content + c.Encoding.ToolCallTokenEnd
+			in.Prompt += c.Encoding.ToolCallTokenStart + m.Content + c.Encoding.ToolCallTokenEnd
 		case genaiapi.ToolCallResult:
 			state = 3
-			data.Prompt += c.Encoding.ToolCallResultTokenStart + m.Content + c.Encoding.ToolCallResultTokenEnd
+			in.Prompt += c.Encoding.ToolCallResultTokenStart + m.Content + c.Encoding.ToolCallResultTokenEnd
 		default:
 			return fmt.Errorf("unexpected role %q", m.Role)
 		}
@@ -287,4 +301,4 @@ func (c *Client) initPrompt(data *completionRequest, msgs []genaiapi.Message) er
 	return nil
 }
 
-var _ genaiapi.ChatProvider = &Client{}
+var _ genaiapi.CompletionProvider = &Client{}

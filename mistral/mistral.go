@@ -22,17 +22,17 @@ type chatCompletionRequest struct {
 	Model            string             `json:"model"`
 	Temperature      float64            `json:"temperature,omitzero"` // [0, 2]
 	TopP             float64            `json:"top_p,omitzero"`       // [0, 1]
-	MaxTokens        int                `json:"max_tokens,omitzero"`
+	MaxTokens        int64              `json:"max_tokens,omitzero"`
 	Stream           bool               `json:"stream"`
 	Stop             []string           `json:"stop,omitempty"` // keywords to stop completion
-	RandomSeed       int                `json:"random_seed,omitzero"`
+	RandomSeed       int64              `json:"random_seed,omitzero"`
 	Messages         []genaiapi.Message `json:"messages"`
 	ResponseFormat   any                `json:"response_format,omitempty"`   // TODO e.g. json_object with json_schema
 	Tools            []any              `json:"tools,omitempty"`             // TODO
 	ToolChoices      []any              `json:"tool_choices,omitempty"`      // TODO
 	PresencePenalty  float64            `json:"presence_penalty,omitzero"`   // [-2.0, 2.0]
 	FrequencyPenalty float64            `json:"frequency_penalty,omitempty"` // [-2.0, 2.0]
-	N                int                `json:"n,omitzero"`                  // Number of choices
+	N                int64              `json:"n,omitzero"`                  // Number of choices
 	Prediction       any                `json:"prediction,omitempty"`        // TODO
 	SafePrompt       bool               `json:"safe_prompt,omitzero"`
 }
@@ -65,14 +65,14 @@ type choice struct {
 			Name      string `json:"name"`
 			Arguments []any  `json:"arguments"`
 		} `json:"function"`
-		Index int `json:"index"`
+		Index int64 `json:"index"`
 	} `json:"tool_calls"`
 }
 
 type choices struct {
 	// FinishReason is one of "stop", "length", "content_filter" or "tool_calls".
 	FinishReason string `json:"finish_reason"`
-	Index        int    `json:"index"`
+	Index        int64  `json:"index"`
 	Message      choice `json:"message"`
 }
 
@@ -87,7 +87,7 @@ type errorResponseAPI1 struct {
 	Message string `json:"message"`
 	Type    string `json:"type"`
 	Param   string `json:"param"`
-	Code    int    `json:"code"`
+	Code    int64  `json:"code"`
 }
 
 type errorResponseAPI2 struct {
@@ -104,7 +104,7 @@ type errorResponseAPI2 struct {
 	} `json:"message"`
 	Type  string `json:"type"`
 	Param string `json:"param"`
-	Code  int    `json:"code"`
+	Code  int64  `json:"code"`
 }
 
 type Client struct {
@@ -117,35 +117,37 @@ type Client struct {
 // https://codestral.mistral.ai/v1/fim/completions
 // https://codestral.mistral.ai/v1/chat/completions
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64) (string, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
 	if err := c.validate(); err != nil {
 		return "", err
 	}
-	data := chatCompletionRequest{
-		Model:       c.Model,
-		MaxTokens:   maxtoks, // If it's too high, it returns a 429.
-		Messages:    msgs,
-		RandomSeed:  seed,
-		Temperature: temperature,
+	in := chatCompletionRequest{Model: c.Model, Messages: msgs}
+	switch v := opts.(type) {
+	case *genaiapi.CompletionOptions:
+		in.MaxTokens = v.MaxTokens
+		in.RandomSeed = v.Seed
+		in.Temperature = v.Temperature
+	default:
+		return "", fmt.Errorf("unsupported options type %T", opts)
 	}
-	msg := chatCompletionsResponse{}
-	if err := c.post(ctx, "https://api.mistral.ai/v1/chat/completions", data, &msg); err != nil {
+	out := chatCompletionsResponse{}
+	if err := c.post(ctx, "https://api.mistral.ai/v1/chat/completions", in, &out); err != nil {
 		return "", fmt.Errorf("failed to get chat response: %w", err)
 	}
-	if len(msg.Choices) != 1 {
-		return "", fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(msg.Choices))
+	if len(out.Choices) != 1 {
+		return "", fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(out.Choices))
 	}
-	return msg.Choices[0].Message.Content, nil
+	return out.Choices[0].Message.Content, nil
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) (string, error) {
 	if err := c.validate(); err != nil {
 		return "", err
 	}
 	return "", errors.New("not implemented")
 }
 
-func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, mime string, content []byte) (string, error) {
+func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, content []byte) (string, error) {
 	if err := c.validate(); err != nil {
 		return "", err
 	}
@@ -195,4 +197,4 @@ func (c *Client) validate() error {
 	return nil
 }
 
-var _ genaiapi.ChatProvider = &Client{}
+var _ genaiapi.CompletionProvider = &Client{}

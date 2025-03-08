@@ -15,6 +15,8 @@ import (
 	"github.com/maruel/httpjson"
 )
 
+// https://docs.cohere.com/reference/chat
+
 type message struct {
 	Role genaiapi.Role `json:"role"`
 	// Assistant, System or User.
@@ -37,7 +39,6 @@ type message struct {
 	ToolCallID string `json:"tool_call_id,omitempty"`
 }
 
-// https://docs.cohere.com/reference/chat
 type chatCompletionRequest struct {
 	Stream           bool      `json:"stream"`
 	Model            string    `json:"model"`
@@ -47,10 +48,10 @@ type chatCompletionRequest struct {
 	CitationOptions  any       `json:"citation_options,omitempty"` // TODO
 	ResponseFormat   any       `json:"response_format,omitempty"`  // TODO e.g. json_object with json_schema
 	SafetyMode       string    `json:"safety_mode,omitempty"`      // "CONTEXTUAL", "STRICT", "OFF"
-	MaxTokens        int       `json:"max_tokens,omitzero"`
+	MaxTokens        int64     `json:"max_tokens,omitzero"`
 	StopSequences    []string  `json:"stop_sequences,omitempty"` // keywords to stop completion
 	Temperature      float64   `json:"temperature,omitzero"`
-	Seed             int       `json:"seed,omitzero"`
+	Seed             int64     `json:"seed,omitzero"`
 	FrequencyPenalty float64   `json:"frequency_penalty,omitempty"` // [0, 1.0]
 	PresencePenalty  float64   `json:"presence_penalty,omitzero"`   // [0, 1.0]
 	K                float64   `json:"k,omitzero"`                  // [0, 500.0]
@@ -99,11 +100,13 @@ type chatCompletionsResponse struct {
 		} `json:"tokens"`
 	} `json:"usage"`
 	LogProbs struct {
-		TokenIDs []int     `json:"token_ids"`
+		TokenIDs []int64   `json:"token_ids"`
 		Text     string    `json:"text"`
 		LogProbs []float64 `json:"logprobs"`
 	} `json:"logprobs"`
 }
+
+//
 
 type errorResponse struct {
 	Message   string `json:"message"`
@@ -117,31 +120,34 @@ type Client struct {
 	Model string
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64) (string, error) {
-	data := chatCompletionRequest{
-		Model:       c.Model,
-		MaxTokens:   maxtoks, // If it's too high, it returns a 429.
-		Messages:    make([]message, len(msgs)),
-		Seed:        seed,
-		Temperature: temperature,
-	}
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
+	// https://docs.cohere.com/reference/chat
+	in := chatCompletionRequest{Model: c.Model, Messages: make([]message, len(msgs))}
 	for i, m := range msgs {
-		data.Messages[i].Role = m.Role
-		data.Messages[i].Content.Type = "text"
-		data.Messages[i].Content.Text = m.Content
+		in.Messages[i].Role = m.Role
+		in.Messages[i].Content.Type = "text"
+		in.Messages[i].Content.Text = m.Content
 	}
-	msg := chatCompletionsResponse{}
-	if err := c.post(ctx, "https://api.cohere.com/v2/chat", data, &msg); err != nil {
+	switch v := opts.(type) {
+	case *genaiapi.CompletionOptions:
+		in.MaxTokens = v.MaxTokens
+		in.Seed = v.Seed
+		in.Temperature = v.Temperature
+	default:
+		return "", fmt.Errorf("unsupported options type %T", opts)
+	}
+	out := chatCompletionsResponse{}
+	if err := c.post(ctx, "https://api.cohere.com/v2/chat", in, &out); err != nil {
 		return "", fmt.Errorf("failed to get chat response: %w", err)
 	}
-	return msg.Message.Content[0].Text, nil
+	return out.Message.Content[0].Text, nil
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) (string, error) {
 	return "", errors.New("not implemented")
 }
 
-func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, mime string, content []byte) (string, error) {
+func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, content []byte) (string, error) {
 	return "", errors.New("not implemented")
 }
 
@@ -172,4 +178,4 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	}
 }
 
-var _ genaiapi.ChatProvider = &Client{}
+var _ genaiapi.CompletionProvider = &Client{}

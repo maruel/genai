@@ -6,11 +6,18 @@ package genaiapi
 
 import "context"
 
-// ChatProvider is the generic interface to interact with a LLM backend.
-type ChatProvider interface {
-	Completion(ctx context.Context, msgs []Message, maxtoks, seed int, temperature float64) (string, error)
-	CompletionStream(ctx context.Context, msgs []Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error)
-	CompletionContent(ctx context.Context, msgs []Message, maxtoks, seed int, temperature float64, mime string, content []byte) (string, error)
+// CompletionOptions is a list of frequent options supported by most CompletionProvider.
+type CompletionOptions struct {
+	Seed        int64   // Seed for the random number generator. Default is 0 which means non-deterministic.
+	Temperature float64 // Temperature of the sampling.
+	MaxTokens   int64   // Maximum number of tokens to generate.
+}
+
+// CompletionProvider is the generic interface to interact with a LLM backend.
+type CompletionProvider interface {
+	Completion(ctx context.Context, msgs []Message, opts any) (string, error)
+	CompletionStream(ctx context.Context, msgs []Message, opts any, words chan<- string) (string, error)
+	CompletionContent(ctx context.Context, msgs []Message, opts any, mime string, content []byte) (string, error)
 }
 
 // Role is one of the LLM known roles.

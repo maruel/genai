@@ -26,7 +26,8 @@ func ExampleClient_Completion() {
 		msgs := []genaiapi.Message{
 			{Role: genaiapi.User, Content: "Say hello. Use only one word."},
 		}
-		resp, err := c.Completion(ctx, msgs, 4096, 0, 0)
+		opts := genaiapi.CompletionOptions{MaxTokens: 4096}
+		resp, err := c.Completion(ctx, msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -15,15 +15,16 @@ import (
 	"github.com/maruel/httpjson"
 )
 
+// https://docs.anthropic.com/en/api/messages
+
 type message struct {
 	Role    genaiapi.Role `json:"role"`
 	Content string        `json:"content"`
 }
 
-// https://docs.anthropic.com/en/api/messages
 type messagesRequest struct {
 	Model         string    `json:"model,omitempty"`
-	MaxToks       int       `json:"max_tokens"`
+	MaxToks       int64     `json:"max_tokens"`
 	Messages      []message `json:"messages"`
 	Metadata      any       `json:"metadata,omitempty"`
 	StopSequences []string  `json:"stop_sequences,omitempty"`
@@ -53,12 +54,14 @@ type messagesResponse struct {
 	StopSequence string            `json:"stop_sequence"`
 	Type         string            `json:"type"`
 	Usage        struct {
-		InputTokens              int `json:"input_tokens"`
-		OutputTokens             int `json:"output_tokens"`
-		CacheCreationInputTokens int `json:"cache_creation_input_tokens"`
-		CacheReadInputTokens     int `json:"cache_read_input_tokens"`
+		InputTokens              int64 `json:"input_tokens"`
+		OutputTokens             int64 `json:"output_tokens"`
+		CacheCreationInputTokens int64 `json:"cache_creation_input_tokens"`
+		CacheReadInputTokens     int64 `json:"cache_read_input_tokens"`
 	} `json:"usage"`
 }
+
+//
 
 type errorResponse struct {
 	Type  string `json:"type"`
@@ -75,16 +78,21 @@ type Client struct {
 	Model string
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64) (string, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
 	// https://docs.anthropic.com/en/api/messages
-	in := messagesRequest{
-		Model:       c.Model,
-		Messages:    make([]message, 0, len(msgs)),
-		MaxToks:     maxtoks,
-		Temperature: temperature,
+	in := messagesRequest{Model: c.Model, Messages: make([]message, 0, len(msgs))}
+	switch v := opts.(type) {
+	case *genaiapi.CompletionOptions:
+		in.MaxToks = v.MaxTokens
+		in.Temperature = v.Temperature
+		if v.Seed != 0 {
+			return "", errors.New("seed is not supported")
+		}
+	default:
+		return "", fmt.Errorf("unsupported options type %T", opts)
 	}
 	if in.MaxToks == 0 {
-		// TODO: Query the model?
+		// TODO: Query the model. Anthropic requires a value!
 		in.MaxToks = 8192
 	}
 	for _, m := range msgs {
@@ -107,11 +115,11 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, maxtok
 	return out.Content[0].Text, nil
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) (string, error) {
 	return "", errors.New("not implemented")
 }
 
-func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, mime string, context []byte) (string, error) {
+func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, context []byte) (string, error) {
 	return "", errors.New("not implemented")
 }
 
@@ -143,4 +151,4 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	}
 }
 
-var _ genaiapi.ChatProvider = &Client{}
+var _ genaiapi.CompletionProvider = &Client{}

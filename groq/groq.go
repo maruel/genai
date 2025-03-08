@@ -17,17 +17,18 @@ import (
 	"github.com/maruel/httpjson"
 )
 
-// Messages. https://console.groq.com/docs/api-reference#chat-create
+// https://console.groq.com/docs/api-reference#chat-create
+
 type chatCompletionRequest struct {
 	FrequencyPenalty    float64            `json:"frequency_penalty,omitempty"` // [-2.0, 2.0]
-	MaxCompletionTokens int                `json:"max_completion_tokens,omitzero"`
+	MaxCompletionTokens int64              `json:"max_completion_tokens,omitzero"`
 	Messages            []genaiapi.Message `json:"messages"`
 	Model               string             `json:"model"`
 	ParallelToolCalls   bool               `json:"parallel_tool_calls,omitzero"`
 	PresencePenalty     float64            `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
 	ReasoningFormat     string             `json:"reasoning_format,omitempty"`
 	ResponseFormat      any                `json:"response_format,omitempty"` // TODO e.g. json_object with json_schema
-	Seed                int                `json:"seed,omitzero"`
+	Seed                int64              `json:"seed,omitzero"`
 	ServiceTier         string             `json:"service_tier,omitzero"` // "on_demand", "auto", "flex"
 	Stop                []string           `json:"stop,omitempty"`        // keywords to stop completion
 	Stream              bool               `json:"stream"`
@@ -41,8 +42,8 @@ type chatCompletionRequest struct {
 	// Explicitly Unsupported:
 	// LogitBias           map[string]float64 `json:"logit_bias,omitempty"`
 	// LogProbs            bool               `json:"logprobs,omitzero"`
-	// TopLogProbs         int                `json:"top_logprobs,omitzero"`     // [0, 20]
-	// N                   int                `json:"n,omitzero"`                // Number of choices
+	// TopLogProbs         int64                `json:"top_logprobs,omitzero"`     // [0, 20]
+	// N                   int64                `json:"n,omitzero"`                // Number of choices
 }
 
 type chatCompletionsResponse struct {
@@ -74,10 +75,12 @@ type choice struct {
 type choices struct {
 	// FinishReason is one of "stop", "length", "content_filter" or "tool_calls".
 	FinishReason string `json:"finish_reason"`
-	Index        int    `json:"index"`
+	Index        int64  `json:"index"`
 	Message      choice `json:"message"`
 	Logprobs     any    `json:"logprobs"`
 }
+
+//
 
 type errorResponse struct {
 	Error struct {
@@ -94,29 +97,32 @@ type Client struct {
 	Model string
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64) (string, error) {
-	data := chatCompletionRequest{
-		Model:               c.Model,
-		MaxCompletionTokens: maxtoks,
-		Messages:            msgs,
-		Seed:                seed,
-		Temperature:         temperature,
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
+	// https://console.groq.com/docs/api-reference#chat-create
+	in := chatCompletionRequest{Model: c.Model, Messages: msgs}
+	switch v := opts.(type) {
+	case *genaiapi.CompletionOptions:
+		in.MaxCompletionTokens = v.MaxTokens
+		in.Seed = v.Seed
+		in.Temperature = v.Temperature
+	default:
+		return "", fmt.Errorf("unsupported options type %T", opts)
 	}
-	msg := chatCompletionsResponse{}
-	if err := c.post(ctx, "https://api.groq.com/openai/v1/chat/completions", data, &msg); err != nil {
+	out := chatCompletionsResponse{}
+	if err := c.post(ctx, "https://api.groq.com/openai/v1/chat/completions", in, &out); err != nil {
 		return "", fmt.Errorf("failed to get chat response: %w", err)
 	}
-	if len(msg.Choices) != 1 {
-		return "", fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(msg.Choices))
+	if len(out.Choices) != 1 {
+		return "", fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(out.Choices))
 	}
-	return msg.Choices[0].Message.Content, nil
+	return out.Choices[0].Message.Content, nil
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) (string, error) {
 	return "", errors.New("not implemented")
 }
 
-func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, mime string, content []byte) (string, error) {
+func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, content []byte) (string, error) {
 	return "", errors.New("not implemented")
 }
 
@@ -141,4 +147,4 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	return nil
 }
 
-var _ genaiapi.ChatProvider = &Client{}
+var _ genaiapi.CompletionProvider = &Client{}

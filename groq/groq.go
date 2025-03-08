@@ -125,6 +125,9 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message,
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
+	if c.ApiKey == "" {
+		return errors.New("groq ApiKey is required; get one at " + apiKeyURL)
+	}
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
 	p := httpjson.DefaultClient
@@ -139,16 +142,25 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	case 0:
 		return nil
 	case 1:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			if herr.StatusCode == http.StatusUnauthorized {
+				return fmt.Errorf("http %d: error %s (%s): %s. You can get a new API key at %s", herr.StatusCode, er.Error.Code, er.Error.Type, er.Error.Message, apiKeyURL)
+			}
+			return fmt.Errorf("http %d: error %s (%s): %s", herr.StatusCode, er.Error.Code, er.Error.Type, er.Error.Message)
+		}
 		return fmt.Errorf("error %s (%s): %s", er.Error.Code, er.Error.Type, er.Error.Message)
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
-			slog.WarnContext(ctx, "groq", "url", url, "err", err, "response", string(herr.ResponseBody))
+			slog.WarnContext(ctx, "groq", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
 		} else {
 			slog.WarnContext(ctx, "groq", "url", url, "err", err)
 		}
 		return err
 	}
 }
+
+const apiKeyURL = "https://console.groq.com/keys"
 
 var _ genaiapi.CompletionProvider = &Client{}

@@ -528,7 +528,7 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
-			slog.WarnContext(ctx, "llamacpp", "url", url, "err", err, "response", string(herr.ResponseBody))
+			slog.WarnContext(ctx, "llamacpp", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
 		} else {
 			slog.WarnContext(ctx, "llamacpp", "url", url, "err", err)
 		}

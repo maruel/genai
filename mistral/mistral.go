@@ -155,6 +155,9 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message,
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
+	if c.ApiKey == "" {
+		return errors.New("mistral ApiKey is required; get one at " + apiKeyURL)
+	}
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
 	p := httpjson.DefaultClient
@@ -172,6 +175,13 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	case 0:
 		return nil
 	case 1:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			if herr.StatusCode == http.StatusUnauthorized {
+				return fmt.Errorf("http %d: %s. You can get a new API key at %s", herr.StatusCode, erAuth.Message, apiKeyURL)
+			}
+			return fmt.Errorf("http %d: %s", herr.StatusCode, erAuth.Message)
+		}
 		return errors.New(erAuth.Message)
 	case 2:
 		return fmt.Errorf("error %s: %s", erAPI1.Type, erAPI1.Message)
@@ -180,9 +190,9 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
-			slog.WarnContext(ctx, "anthropic", "url", url, "err", err, "response", string(herr.ResponseBody))
+			slog.WarnContext(ctx, "mistral", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
 		} else {
-			slog.WarnContext(ctx, "anthropic", "url", url, "err", err)
+			slog.WarnContext(ctx, "mistral", "url", url, "err", err)
 		}
 		return err
 	}
@@ -197,5 +207,7 @@ func (c *Client) validate() error {
 	}
 	return nil
 }
+
+const apiKeyURL = "https://console.mistral.ai/api-keys"
 
 var _ genaiapi.CompletionProvider = &Client{}

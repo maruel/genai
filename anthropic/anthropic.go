@@ -124,6 +124,9 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message,
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
+	if c.ApiKey == "" {
+		return errors.New("anthropic ApiKey is required; get one at " + apiKeyURL)
+	}
 	p := httpjson.DefaultClient
 	// Anthropic doesn't support compression. lol.
 	p.Compress = ""
@@ -139,16 +142,25 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	case 0:
 		return nil
 	case 1:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			if herr.StatusCode == http.StatusUnauthorized {
+				return fmt.Errorf("http %d: error %s: %s. You can get a new API key at %s", herr.StatusCode, er.Error.Type, er.Error.Message, apiKeyURL)
+			}
+			return fmt.Errorf("http %d: error %s: %s", herr.StatusCode, er.Error.Type, er.Error.Message)
+		}
 		return fmt.Errorf("error %s: %s", er.Error.Type, er.Error.Message)
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
-			slog.WarnContext(ctx, "anthropic", "url", url, "err", err, "response", string(herr.ResponseBody))
+			slog.WarnContext(ctx, "anthropic", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
 		} else {
 			slog.WarnContext(ctx, "anthropic", "url", url, "err", err)
 		}
 		return err
 	}
 }
+
+const apiKeyURL = "https://console.anthropic.com/settings/keys"
 
 var _ genaiapi.CompletionProvider = &Client{}

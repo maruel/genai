@@ -130,7 +130,7 @@ type errorResponse struct {
 }
 
 type errorResponseError struct {
-	Code    int64  `json:"code"`
+	Code    string `json:"code"`
 	Message string `json:"message"`
 	Status  string `json:"status"`
 	Type    string `json:"type"`
@@ -244,6 +244,9 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message,
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
+	if c.ApiKey == "" {
+		return errors.New("openai ApiKey is required; get one at " + apiKeyURL)
+	}
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
 	p := httpjson.DefaultClient
@@ -258,14 +261,15 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	case 0:
 		return nil
 	case 1:
-		if er.Error.Code == 0 {
+		// OpenAI error message prints the URL already.
+		if er.Error.Code == "" {
 			return fmt.Errorf("error %s: %s", er.Error.Type, er.Error.Message)
 		}
-		return fmt.Errorf("error %d (%s): %s", er.Error.Code, er.Error.Status, er.Error.Message)
+		return fmt.Errorf("error %s (%s): %s", er.Error.Code, er.Error.Status, er.Error.Message)
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
-			slog.WarnContext(ctx, "openai", "url", url, "err", err, "response", string(herr.ResponseBody))
+			slog.WarnContext(ctx, "openai", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
 		} else {
 			slog.WarnContext(ctx, "openai", "url", url, "err", err)
 		}
@@ -279,5 +283,7 @@ func (c *Client) baseURL() string {
 	}
 	return "https://api.openai.com"
 }
+
+const apiKeyURL = "https://platform.openai.com/settings/organization/api-keys"
 
 var _ genaiapi.CompletionProvider = &Client{}

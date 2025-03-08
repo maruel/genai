@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"net/http"
 	"strings"
 	"unicode"
 
@@ -328,7 +329,7 @@ type cacheContentResponse struct {
 	DisplayName       string               `json:"displayName"`
 	Model             string               `json:"model"`
 	SystemInstruction content              `json:"systemInstruction"`
-	ToolConfig        toolConfig           `json:"toolConfig,omitempty"`
+	ToolConfig        toolConfig           `json:"toolConfig,omitzero"`
 }
 
 type expiration struct {
@@ -351,13 +352,23 @@ type errorResponseError struct {
 	Code    int64  `json:"code"`
 	Message string `json:"message"`
 	Status  string `json:"status"`
+	Details []struct {
+		Type     string `json:"@type"`
+		Reason   string `json:"reason"`
+		Domain   string `json:"domain"`
+		Metadata struct {
+			Service string `json:"service"`
+		} `json:"metadata"`
+		Locale  string `json:"locale"`
+		Message string `json:"message"`
+	} `json:"details"`
 }
 
-// https://ai.google.dev/gemini-api/docs/pricing?hl=en
+// https://ai.google.dev/gemini-api/docs/pricing
 // https://pkg.go.dev/github.com/google/generative-ai-go/genai no need to use this package, it imports too much.
 type Client struct {
 	ApiKey string
-	// See models at https://ai.google.dev/gemini-api/docs/models/gemini?hl=en.
+	// See models at https://ai.google.dev/gemini-api/docs/models/gemini
 	// Using large files (over 32KB) requires a pinned model with caching
 	// support.
 	Model string
@@ -474,6 +485,9 @@ func (c *Client) initPrompt(r *generateContentRequest, msgs []genaiapi.Message) 
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
+	if c.ApiKey == "" {
+		return errors.New("gemini ApiKey is required; get one at " + apiKeyURL)
+	}
 	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
 	p := httpjson.DefaultClient
 	// Google only support gzip but it's better than nothing.
@@ -487,16 +501,25 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	case 0:
 		return nil
 	case 1:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			if herr.StatusCode == http.StatusBadRequest || herr.StatusCode == http.StatusUnauthorized {
+				return fmt.Errorf("http %d: error %d (%s): %s You can get a new API key at %s", herr.StatusCode, er.Error.Code, er.Error.Status, er.Error.Message, apiKeyURL)
+			}
+			return fmt.Errorf("http %d: error %d (%s): %s", herr.StatusCode, er.Error.Code, er.Error.Status, er.Error.Message)
+		}
 		return fmt.Errorf("error %d (%s): %s", er.Error.Code, er.Error.Status, er.Error.Message)
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
-			slog.WarnContext(ctx, "gemini", "url", url, "err", err, "response", string(herr.ResponseBody))
+			slog.WarnContext(ctx, "gemini", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
 		} else {
 			slog.WarnContext(ctx, "gemini", "url", url, "err", err)
 		}
 		return err
 	}
 }
+
+const apiKeyURL = "https://ai.google.dev/gemini-api/docs/getting-started"
 
 var _ genaiapi.CompletionProvider = &Client{}

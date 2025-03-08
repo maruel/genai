@@ -10,7 +10,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/maruel/genai"
+	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/genai/openai"
 )
 
@@ -23,8 +23,8 @@ func ExampleClient_Completion() {
 			Model:  "gpt-4o-mini",
 		}
 		ctx := context.Background()
-		msgs := []genai.Message{
-			{Role: genai.User, Content: "Say hello. Use only one word."},
+		msgs := []genaiapi.Message{
+			{Role: genaiapi.User, Content: "Say hello. Use only one word."},
 		}
 		resp, err := c.Completion(ctx, msgs, 0, 0, 0)
 		if err != nil {

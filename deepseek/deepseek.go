@@ -13,17 +13,17 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/maruel/genai"
+	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/httpjson"
 )
 
 type message struct {
-	Role             genai.Role `json:"role"`
-	Content          string     `json:"content"`
-	Name             string     `json:"name,omitzero"`
-	Prefix           bool       `json:"prefix,omitzero"`
-	ReasoningContent string     `json:"reasoning_content,omitzero"`
-	ToolCallID       string     `json:"tool_call_id,omitzero"`
+	Role             genaiapi.Role `json:"role"`
+	Content          string        `json:"content"`
+	Name             string        `json:"name,omitzero"`
+	Prefix           bool          `json:"prefix,omitzero"`
+	ReasoningContent string        `json:"reasoning_content,omitzero"`
+	ToolCallID       string        `json:"tool_call_id,omitzero"`
 }
 
 // https://api-docs.deepseek.com/api/create-chat-completion
@@ -104,7 +104,7 @@ type Client struct {
 	Model string
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64) (string, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64) (string, error) {
 	in := messagesRequest{
 		Model:       c.Model,
 		Messages:    make([]message, 0, len(msgs)),
@@ -113,7 +113,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, 
 	}
 	for _, m := range msgs {
 		switch m.Role {
-		case genai.System, genai.User, genai.Assistant:
+		case genaiapi.System, genaiapi.User, genaiapi.Assistant:
 			in.Messages = append(in.Messages, message{Role: m.Role, Content: m.Content})
 		default:
 			return "", fmt.Errorf("unsupported role %v", m.Role)
@@ -126,11 +126,11 @@ func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, 
 	return out.Choices[0].Message.Content, nil
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
 	return "", errors.New("not implemented")
 }
 
-func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, mime string, context []byte) (string, error) {
+func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, mime string, context []byte) (string, error) {
 	return "", errors.New("not implemented")
 }
 
@@ -154,4 +154,4 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	return nil
 }
 
-var _ genai.Backend = &Client{}
+var _ genaiapi.ChatProvider = &Client{}

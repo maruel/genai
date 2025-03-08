@@ -17,7 +17,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/maruel/genai"
+	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/httpjson"
 )
 
@@ -148,7 +148,7 @@ type Client struct {
 	Encoding *PromptEncoding
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64) (string, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64) (string, error) {
 	data := completionRequest{Seed: int64(seed), Temperature: temperature, NPredict: int64(maxtoks)}
 	// Doc mentions it causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
@@ -165,7 +165,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, 
 	return strings.ReplaceAll(msg.Content, "\u2581", " "), nil
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
 	start := time.Now()
 	data := completionRequest{
 		Stream:      true,
@@ -225,7 +225,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genai.Message, max
 	}
 }
 
-func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, mime string, content []byte) (string, error) {
+func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, mime string, content []byte) (string, error) {
 	return "", errors.New("not implemented")
 }
 
@@ -250,34 +250,34 @@ func (c *Client) GetHealth(ctx context.Context) (string, error) {
 	return msg.Status, nil
 }
 
-func (c *Client) initPrompt(data *completionRequest, msgs []genai.Message) error {
+func (c *Client) initPrompt(data *completionRequest, msgs []genaiapi.Message) error {
 	// Do a quick validation. 1 == available_tools, 2 = system, 3 = rest
 	state := 0
 	data.Prompt = c.Encoding.BeginOfText
 	for i, m := range msgs {
 		switch m.Role {
-		case genai.AvailableTools:
+		case genaiapi.AvailableTools:
 			if state != 0 || i != 0 {
 				return fmt.Errorf("unexpected available_tools message at index %d; state %d", i, state)
 			}
 			state = 1
 			data.Prompt += c.Encoding.ToolsAvailableTokenStart + m.Content + c.Encoding.ToolsAvailableTokenEnd
-		case genai.System:
+		case genaiapi.System:
 			if state > 1 {
 				return fmt.Errorf("unexpected system message at index %d; state %d", i, state)
 			}
 			state = 2
 			data.Prompt += c.Encoding.SystemTokenStart + m.Content + c.Encoding.SystemTokenEnd
-		case genai.User:
+		case genaiapi.User:
 			state = 3
 			data.Prompt += c.Encoding.UserTokenStart + m.Content + c.Encoding.UserTokenEnd
-		case genai.Assistant:
+		case genaiapi.Assistant:
 			state = 3
 			data.Prompt += c.Encoding.AssistantTokenStart + m.Content + c.Encoding.AssistantTokenEnd
-		case genai.ToolCall:
+		case genaiapi.ToolCall:
 			state = 3
 			data.Prompt += c.Encoding.ToolCallTokenStart + m.Content + c.Encoding.ToolCallTokenEnd
-		case genai.ToolCallResult:
+		case genaiapi.ToolCallResult:
 			state = 3
 			data.Prompt += c.Encoding.ToolCallResultTokenStart + m.Content + c.Encoding.ToolCallResultTokenEnd
 		default:
@@ -287,4 +287,4 @@ func (c *Client) initPrompt(data *completionRequest, msgs []genai.Message) error
 	return nil
 }
 
-var _ genai.Backend = &Client{}
+var _ genaiapi.ChatProvider = &Client{}

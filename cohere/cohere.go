@@ -13,12 +13,12 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/maruel/genai"
+	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/httpjson"
 )
 
 type message struct {
-	Role genai.Role `json:"role"`
+	Role genaiapi.Role `json:"role"`
 	// Assistant, System or User.
 	Content struct {
 		Type     string `json:"type"` // "text", "image_url" or "document"
@@ -66,7 +66,7 @@ type chatCompletionsResponse struct {
 	ID           string `json:"id"`
 	FinishReason string `json:"finish_reason"` // COMPLETE, STOP_SEQUENCe, MAX_TOKENS, TOOL_CALL, ERROR
 	Message      struct {
-		Role      genai.Role `json:"role"`
+		Role      genaiapi.Role `json:"role"`
 		ToolCalls []struct {
 			ID       string `json:"id"`
 			Type     string `json:"type"` // function
@@ -119,7 +119,7 @@ type Client struct {
 	Model string
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64) (string, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64) (string, error) {
 	data := chatCompletionRequest{
 		Model:       c.Model,
 		MaxTokens:   maxtoks, // If it's too high, it returns a 429.
@@ -139,11 +139,11 @@ func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, 
 	return msg.Message.Content[0].Text, nil
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
 	return "", errors.New("not implemented")
 }
 
-func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, mime string, content []byte) (string, error) {
+func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, mime string, content []byte) (string, error) {
 	return "", errors.New("not implemented")
 }
 
@@ -168,4 +168,4 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	return nil
 }
 
-var _ genai.Backend = &Client{}
+var _ genaiapi.ChatProvider = &Client{}

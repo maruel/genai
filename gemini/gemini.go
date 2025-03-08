@@ -14,7 +14,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/maruel/genai"
+	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/httpjson"
 )
 
@@ -39,7 +39,7 @@ type part struct {
 type content struct {
 	Parts []part `json:"parts"`
 	// Must be either 'user' or 'model'.
-	Role genai.Role `json:"role,omitempty"`
+	Role genaiapi.Role `json:"role,omitempty"`
 }
 
 type toolData struct {
@@ -166,7 +166,7 @@ func (c *Client) cacheContent(ctx context.Context, data []byte, mime, systemInst
 		Contents: []content{
 			{
 				Parts: []part{{InlineData: partInlineData{MimeType: mime, Data: data}}},
-				Role:  genai.User,
+				Role:  genaiapi.User,
 			},
 		},
 		SystemInstruction: content{Parts: []part{{Text: systemInstruction}}},
@@ -181,15 +181,15 @@ func (c *Client) cacheContent(ctx context.Context, data []byte, mime, systemInst
 	return response.Name, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64) (string, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64) (string, error) {
 	return c.CompletionContent(ctx, msgs, maxtoks, seed, temperature, "", nil)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
 	return "", errors.New("not implemented")
 }
 
-func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, mime string, context []byte) (string, error) {
+func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, mime string, context []byte) (string, error) {
 	// https://ai.google.dev/gemini-api/docs?hl=en#rest
 	url := "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":generateContent?key=" + c.ApiKey
 	request := generateContentRequest{Model: "models/" + c.Model}
@@ -215,7 +215,7 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, ma
 			request.Contents = append([]content{
 				{
 					Parts: []part{{InlineData: partInlineData{MimeType: "text/plain", Data: context}}},
-					Role:  genai.User,
+					Role:  genaiapi.User,
 				},
 			}, request.Contents...)
 			/* TODO
@@ -245,18 +245,18 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, ma
 	return t, nil
 }
 
-func (c *Client) initPrompt(r *generateContentRequest, msgs []genai.Message) (string, error) {
+func (c *Client) initPrompt(r *generateContentRequest, msgs []genaiapi.Message) (string, error) {
 	state := 0
 	sp := ""
 	for i, m := range msgs {
 		switch m.Role {
-		case genai.System:
+		case genaiapi.System:
 			if state != 0 {
 				return "", fmt.Errorf("unexpected system message at index %d; state %d", i, state)
 			}
 			sp = m.Content
 			state = 1
-		case genai.User, genai.Assistant:
+		case genaiapi.User, genaiapi.Assistant:
 			state = 1
 			r.Contents = append(r.Contents, content{Parts: []part{{Text: m.Content}}, Role: m.Role})
 		default:
@@ -286,4 +286,4 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	return nil
 }
 
-var _ genai.Backend = &Client{}
+var _ genaiapi.ChatProvider = &Client{}

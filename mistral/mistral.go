@@ -13,28 +13,28 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/maruel/genai"
+	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/httpjson"
 )
 
 // Messages.
 type chatCompletionRequest struct {
-	Model            string          `json:"model"`
-	Temperature      float64         `json:"temperature,omitzero"` // [0, 2]
-	TopP             float64         `json:"top_p,omitzero"`       // [0, 1]
-	MaxTokens        int             `json:"max_tokens,omitzero"`
-	Stream           bool            `json:"stream"`
-	Stop             []string        `json:"stop,omitempty"` // keywords to stop completion
-	RandomSeed       int             `json:"random_seed,omitzero"`
-	Messages         []genai.Message `json:"messages"`
-	ResponseFormat   any             `json:"response_format,omitempty"`   // TODO e.g. json_object with json_schema
-	Tools            []any           `json:"tools,omitempty"`             // TODO
-	ToolChoices      []any           `json:"tool_choices,omitempty"`      // TODO
-	PresencePenalty  float64         `json:"presence_penalty,omitzero"`   // [-2.0, 2.0]
-	FrequencyPenalty float64         `json:"frequency_penalty,omitempty"` // [-2.0, 2.0]
-	N                int             `json:"n,omitzero"`                  // Number of choices
-	Prediction       any             `json:"prediction,omitempty"`        // TODO
-	SafePrompt       bool            `json:"safe_prompt,omitzero"`
+	Model            string             `json:"model"`
+	Temperature      float64            `json:"temperature,omitzero"` // [0, 2]
+	TopP             float64            `json:"top_p,omitzero"`       // [0, 1]
+	MaxTokens        int                `json:"max_tokens,omitzero"`
+	Stream           bool               `json:"stream"`
+	Stop             []string           `json:"stop,omitempty"` // keywords to stop completion
+	RandomSeed       int                `json:"random_seed,omitzero"`
+	Messages         []genaiapi.Message `json:"messages"`
+	ResponseFormat   any                `json:"response_format,omitempty"`   // TODO e.g. json_object with json_schema
+	Tools            []any              `json:"tools,omitempty"`             // TODO
+	ToolChoices      []any              `json:"tool_choices,omitempty"`      // TODO
+	PresencePenalty  float64            `json:"presence_penalty,omitzero"`   // [-2.0, 2.0]
+	FrequencyPenalty float64            `json:"frequency_penalty,omitempty"` // [-2.0, 2.0]
+	N                int                `json:"n,omitzero"`                  // Number of choices
+	Prediction       any                `json:"prediction,omitempty"`        // TODO
+	SafePrompt       bool               `json:"safe_prompt,omitzero"`
 }
 
 type chatCompletionsResponse struct {
@@ -55,9 +55,9 @@ type chatCompletionsResponse struct {
 }
 
 type choice struct {
-	Role      genai.Role `json:"role"`
-	Content   string     `json:"content"`
-	Prefix    bool       `json:"prefix"`
+	Role      genaiapi.Role `json:"role"`
+	Content   string        `json:"content"`
+	Prefix    bool          `json:"prefix"`
 	ToolCalls []struct {
 		ID       string `json:"id"`
 		Type     string `json:"type"`
@@ -117,7 +117,7 @@ type Client struct {
 // https://codestral.mistral.ai/v1/fim/completions
 // https://codestral.mistral.ai/v1/chat/completions
 
-func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64) (string, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64) (string, error) {
 	if err := c.validate(); err != nil {
 		return "", err
 	}
@@ -138,14 +138,14 @@ func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, 
 	return msg.Choices[0].Message.Content, nil
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
 	if err := c.validate(); err != nil {
 		return "", err
 	}
 	return "", errors.New("not implemented")
 }
 
-func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, mime string, content []byte) (string, error) {
+func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, mime string, content []byte) (string, error) {
 	if err := c.validate(); err != nil {
 		return "", err
 	}
@@ -195,4 +195,4 @@ func (c *Client) validate() error {
 	return nil
 }
 
-var _ genai.Backend = &Client{}
+var _ genaiapi.ChatProvider = &Client{}

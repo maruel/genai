@@ -10,8 +10,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/maruel/genai"
 	"github.com/maruel/genai/cohere"
+	"github.com/maruel/genai/genaiapi"
 )
 
 func ExampleClient_Completion() {
@@ -23,8 +23,8 @@ func ExampleClient_Completion() {
 			Model:  "command-r7b-12-2024",
 		}
 		ctx := context.Background()
-		msgs := []genai.Message{
-			{Role: genai.User, Content: "Say hello. Use only one word."},
+		msgs := []genaiapi.Message{
+			{Role: genaiapi.User, Content: "Say hello. Use only one word."},
 		}
 		resp, err := c.Completion(ctx, msgs, 0, 0, 0)
 		if err != nil {

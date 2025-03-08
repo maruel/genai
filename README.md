@@ -7,8 +7,8 @@ OpenAI and llama.cpp.
 
 Implementation is in flux.
 
-As of March 2025, the following services offer a free tier with an highlight of
-the quotas (other limits apply):
+As of March 2025, the following services offer a free tier (other limits
+apply):
 - [Cohere](https://docs.cohere.com/docs/rate-limits) (1000 RPCs/month)
 - [Google's Gemini](https://ai.google.dev/gemini-api/docs/rate-limits) 0.25qps, 1m tokens/month
 - [Groq](https://console.groq.com/docs/rate-limits) 0.5qps, 500k tokens/day

@@ -13,30 +13,30 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/maruel/genai"
+	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/httpjson"
 )
 
 // Messages. https://console.groq.com/docs/api-reference#chat-create
 type chatCompletionRequest struct {
-	FrequencyPenalty    float64         `json:"frequency_penalty,omitempty"` // [-2.0, 2.0]
-	MaxCompletionTokens int             `json:"max_completion_tokens,omitzero"`
-	Messages            []genai.Message `json:"messages"`
-	Model               string          `json:"model"`
-	ParallelToolCalls   bool            `json:"parallel_tool_calls,omitzero"`
-	PresencePenalty     float64         `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
-	ReasoningFormat     string          `json:"reasoning_format,omitempty"`
-	ResponseFormat      any             `json:"response_format,omitempty"` // TODO e.g. json_object with json_schema
-	Seed                int             `json:"seed,omitzero"`
-	ServiceTier         string          `json:"service_tier,omitzero"` // "on_demand", "auto", "flex"
-	Stop                []string        `json:"stop,omitempty"`        // keywords to stop completion
-	Stream              bool            `json:"stream"`
-	StreamOptions       any             `json:"stream_options,omitempty"` // TODO
-	Temperature         float64         `json:"temperature,omitzero"`     // [0, 2]
-	Tools               []any           `json:"tools,omitempty"`          // TODO
-	ToolChoices         []any           `json:"tool_choices,omitempty"`   // TODO
-	TopP                float64         `json:"top_p,omitzero"`           // [0, 1]
-	User                string          `json:"user,omitzero"`
+	FrequencyPenalty    float64            `json:"frequency_penalty,omitempty"` // [-2.0, 2.0]
+	MaxCompletionTokens int                `json:"max_completion_tokens,omitzero"`
+	Messages            []genaiapi.Message `json:"messages"`
+	Model               string             `json:"model"`
+	ParallelToolCalls   bool               `json:"parallel_tool_calls,omitzero"`
+	PresencePenalty     float64            `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
+	ReasoningFormat     string             `json:"reasoning_format,omitempty"`
+	ResponseFormat      any                `json:"response_format,omitempty"` // TODO e.g. json_object with json_schema
+	Seed                int                `json:"seed,omitzero"`
+	ServiceTier         string             `json:"service_tier,omitzero"` // "on_demand", "auto", "flex"
+	Stop                []string           `json:"stop,omitempty"`        // keywords to stop completion
+	Stream              bool               `json:"stream"`
+	StreamOptions       any                `json:"stream_options,omitempty"` // TODO
+	Temperature         float64            `json:"temperature,omitzero"`     // [0, 2]
+	Tools               []any              `json:"tools,omitempty"`          // TODO
+	ToolChoices         []any              `json:"tool_choices,omitempty"`   // TODO
+	TopP                float64            `json:"top_p,omitzero"`           // [0, 1]
+	User                string             `json:"user,omitzero"`
 
 	// Explicitly Unsupported:
 	// LogitBias           map[string]float64 `json:"logit_bias,omitempty"`
@@ -67,8 +67,8 @@ type chatCompletionsResponse struct {
 }
 
 type choice struct {
-	Role    genai.Role `json:"role"`
-	Content string     `json:"content"`
+	Role    genaiapi.Role `json:"role"`
+	Content string        `json:"content"`
 }
 
 type choices struct {
@@ -94,7 +94,7 @@ type Client struct {
 	Model string
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64) (string, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64) (string, error) {
 	data := chatCompletionRequest{
 		Model:               c.Model,
 		MaxCompletionTokens: maxtoks,
@@ -112,11 +112,11 @@ func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, 
 	return msg.Choices[0].Message.Content, nil
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
 	return "", errors.New("not implemented")
 }
 
-func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, mime string, content []byte) (string, error) {
+func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, mime string, content []byte) (string, error) {
 	return "", errors.New("not implemented")
 }
 
@@ -141,4 +141,4 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	return nil
 }
 
-var _ genai.Backend = &Client{}
+var _ genaiapi.ChatProvider = &Client{}

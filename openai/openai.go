@@ -17,7 +17,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/maruel/genai"
+	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/httpjson"
 )
 
@@ -30,7 +30,7 @@ type chatCompletionRequest struct {
 	MaxTokens           int                `json:"max_tokens,omitzero"` // Deprecated
 	MaxCompletionTokens int                `json:"max_completion_tokens,omitzero"`
 	Stream              bool               `json:"stream"`
-	Messages            []genai.Message    `json:"messages"`
+	Messages            []genaiapi.Message `json:"messages"`
 	Seed                int                `json:"seed,omitzero"`
 	Temperature         float64            `json:"temperature,omitzero"` // [0, 2]
 	Store               bool               `json:"store,omitzero"`
@@ -84,9 +84,9 @@ type chatCompletionsResponse struct {
 }
 
 type choice struct {
-	Role    genai.Role `json:"role"`
-	Content string     `json:"content"`
-	Refusal string     `json:"refusal"`
+	Role    genaiapi.Role `json:"role"`
+	Content string        `json:"content"`
+	Refusal string        `json:"refusal"`
 }
 
 type choices struct {
@@ -116,7 +116,7 @@ type streamChoices struct {
 	// FinishReason is one of null, "stop", "length", "content_filter" or "tool_calls".
 	FinishReason string `json:"finish_reason"`
 	Index        int    `json:"index"`
-	// Message      genai.Message `json:"message"`
+	// Message      genaiapi.Message `json:"message"`
 }
 
 type openAIStreamDelta struct {
@@ -145,7 +145,7 @@ type Client struct {
 	Model string
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64) (string, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64) (string, error) {
 	data := chatCompletionRequest{
 		Model:       c.Model,
 		MaxTokens:   maxtoks,
@@ -163,7 +163,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, 
 	return msg.Choices[0].Message.Content, nil
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
 	start := time.Now()
 	data := chatCompletionRequest{
 		Model:       c.Model,
@@ -229,7 +229,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genai.Message, max
 	}
 }
 
-func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, mime string, content []byte) (string, error) {
+func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, mime string, content []byte) (string, error) {
 	return "", errors.New("not implemented")
 }
 
@@ -264,4 +264,4 @@ func (c *Client) baseURL() string {
 	return "https://api.openai.com"
 }
 
-var _ genai.Backend = &Client{}
+var _ genaiapi.ChatProvider = &Client{}

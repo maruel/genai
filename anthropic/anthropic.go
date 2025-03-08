@@ -13,13 +13,13 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/maruel/genai"
+	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/httpjson"
 )
 
 type message struct {
-	Role    genai.Role `json:"role"`
-	Content string     `json:"content"`
+	Role    genaiapi.Role `json:"role"`
+	Content string        `json:"content"`
 }
 
 // https://docs.anthropic.com/en/api/messages
@@ -77,7 +77,7 @@ type Client struct {
 	Model string
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64) (string, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64) (string, error) {
 	// https://docs.anthropic.com/en/api/messages
 	in := messagesRequest{
 		Model:       c.Model,
@@ -91,12 +91,12 @@ func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, 
 	}
 	for _, m := range msgs {
 		switch m.Role {
-		case genai.System:
+		case genaiapi.System:
 			if in.System != "" {
 				return "", errors.New("only one system message is supported")
 			}
 			in.System = m.Content
-		case genai.User, genai.Assistant:
+		case genaiapi.User, genaiapi.Assistant:
 			in.Messages = append(in.Messages, message{Role: m.Role, Content: m.Content})
 		default:
 			return "", fmt.Errorf("unsupported role %v", m.Role)
@@ -109,11 +109,11 @@ func (c *Client) Completion(ctx context.Context, msgs []genai.Message, maxtoks, 
 	return out.Content[0].Text, nil
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, words chan<- string) (string, error) {
 	return "", errors.New("not implemented")
 }
 
-func (c *Client) CompletionContent(ctx context.Context, msgs []genai.Message, maxtoks, seed int, temperature float64, mime string, context []byte) (string, error) {
+func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, maxtoks, seed int, temperature float64, mime string, context []byte) (string, error) {
 	return "", errors.New("not implemented")
 }
 
@@ -139,4 +139,4 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	return nil
 }
 
-var _ genai.Backend = &Client{}
+var _ genaiapi.ChatProvider = &Client{}

@@ -405,8 +405,8 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	return c.CompletionContent(ctx, msgs, opts, "", nil)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) (string, error) {
-	return "", errors.New("not implemented")
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
+	return errors.New("not implemented")
 }
 
 func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, context []byte) (string, error) {

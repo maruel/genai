@@ -281,7 +281,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	return strings.ReplaceAll(out.Content, "\u2581", " "), nil
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
 	start := time.Now()
 	in := completionRequest{Stream: true}
 	switch v := opts.(type) {
@@ -290,48 +290,47 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 		in.Seed = v.Seed
 		in.Temperature = v.Temperature
 	default:
-		return "", fmt.Errorf("unsupported options type %T", opts)
+		return fmt.Errorf("unsupported options type %T", opts)
 	}
 	// Doc mentions it causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
 	in.CachePrompt = true
 	if err := c.initPrompt(ctx, &in, msgs); err != nil {
-		return "", err
+		return err
 	}
 	p := httpjson.DefaultClient
 	p.Compress = ""
 	resp, err := p.PostRequest(ctx, c.BaseURL+"/completion", nil, in)
 	if err != nil {
-		return "", fmt.Errorf("failed to get llama server response: %w", err)
+		return fmt.Errorf("failed to get llama server response: %w", err)
 	}
 	defer resp.Body.Close()
 	r := bufio.NewReader(resp.Body)
-	reply := ""
 	for {
 		line, err := r.ReadBytes('\n')
 		line = bytes.TrimSpace(line)
 		if err == io.EOF {
 			err = nil
 			if len(line) == 0 {
-				return reply, nil
+				return nil
 			}
 		}
 		if err != nil {
-			return reply, fmt.Errorf("failed to get llama server response: %w", err)
+			return fmt.Errorf("failed to get llama server response: %w", err)
 		}
 		if len(line) == 0 {
 			continue
 		}
 		const prefix = "data: "
 		if !bytes.HasPrefix(line, []byte(prefix)) {
-			return reply, fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
+			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
 		}
 		d := json.NewDecoder(bytes.NewReader(line[len(prefix):]))
 		d.DisallowUnknownFields()
 		d.UseNumber()
 		msg := completionStreamResponse{}
 		if err = d.Decode(&msg); err != nil {
-			return reply, fmt.Errorf("failed to decode llama server response %q: %w", string(line), err)
+			return fmt.Errorf("failed to decode llama server response %q: %w", string(line), err)
 		}
 		word := msg.Content
 		slog.DebugContext(ctx, "llm", "word", word, "stop", msg.Stop, "prompt tok", msg.Timings.PromptN, "gen tok", msg.Timings.PredictedN, "prompt tok/ms", msg.Timings.PromptPerTokenMS, "gen tok/ms", msg.Timings.PredictedPerTokenMS, "duration", time.Since(start).Round(time.Millisecond))
@@ -339,10 +338,9 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 			// Mistral Nemo really likes "▁".
 			word = strings.ReplaceAll(msg.Content, "\u2581", " ")
 			words <- word
-			reply += word
 		}
 		if msg.Stop {
-			return reply, nil
+			return nil
 		}
 	}
 }

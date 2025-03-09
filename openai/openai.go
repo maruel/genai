@@ -169,7 +169,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	return out.Choices[0].Message.Content, nil
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
 	start := time.Now()
 	in := chatCompletionRequest{Model: c.Model, Messages: msgs, Stream: true}
 	switch v := opts.(type) {
@@ -178,7 +178,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 		in.Seed = v.Seed
 		in.Temperature = v.Temperature
 	default:
-		return "", fmt.Errorf("unsupported options type %T", opts)
+		return fmt.Errorf("unsupported options type %T", opts)
 	}
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
@@ -187,42 +187,41 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 	p.Compress = ""
 	resp, err := p.PostRequest(ctx, c.baseURL()+"/v1/chat/completions", h, in)
 	if err != nil {
-		return "", fmt.Errorf("failed to get server response: %w", err)
+		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
 	r := bufio.NewReader(resp.Body)
-	reply := ""
 	for {
 		line, err := r.ReadBytes('\n')
 		line = bytes.TrimSpace(line)
 		if err == io.EOF {
 			err = nil
 			if len(line) == 0 {
-				return reply, nil
+				return nil
 			}
 		}
 		if err != nil {
-			return reply, fmt.Errorf("failed to get server response: %w", err)
+			return fmt.Errorf("failed to get server response: %w", err)
 		}
 		if len(line) == 0 {
 			continue
 		}
 		const prefix = "data: "
 		if !bytes.HasPrefix(line, []byte(prefix)) {
-			return reply, fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
+			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
 		}
 		suffix := string(line[len(prefix):])
 		if suffix == "[DONE]" {
-			return reply, nil
+			return nil
 		}
 		d := json.NewDecoder(strings.NewReader(suffix))
 		d.DisallowUnknownFields()
 		out := chatCompletionsStreamResponse{}
 		if err = d.Decode(&out); err != nil {
-			return reply, fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
 		}
 		if len(out.Choices) != 1 {
-			return reply, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(out.Choices))
+			return fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(out.Choices))
 		}
 		word := out.Choices[0].Delta.Content
 		slog.DebugContext(ctx, "openai", "word", word, "duration", time.Since(start).Round(time.Millisecond))
@@ -230,11 +229,10 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 		switch word {
 		// Llama-3, Gemma-2, Phi-3
 		case "<|eot_id|>", "<end_of_turn>", "<|end|>", "<|endoftext|>":
-			return reply, nil
+			return nil
 		case "":
 		default:
 			words <- word
-			reply += word
 		}
 	}
 }

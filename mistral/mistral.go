@@ -140,11 +140,11 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	return out.Choices[0].Message.Content, nil
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) (string, error) {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
 	if err := c.validate(); err != nil {
-		return "", err
+		return err
 	}
-	return "", errors.New("not implemented")
+	return errors.New("not implemented")
 }
 
 func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, content []byte) (string, error) {

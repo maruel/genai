@@ -5,11 +5,16 @@
 package mistral
 
 import (
+	"bufio"
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
+	"strings"
 
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/httpjson"
@@ -67,6 +72,26 @@ type CompletionResponse struct {
 		// CompletionTime   float64 `json:"completion_time"`
 		TotalTokens int64 `json:"total_tokens"`
 		// TotalTime        float64 `json:"total_time"`
+	} `json:"usage"`
+}
+
+type CompletionStreamChunkResponse struct {
+	ID      string `json:"id"`
+	Object  string `json:"object"` // chat.completion.chunk
+	Created int64  `json:"created"`
+	Model   string `json:"model"`
+	Choices []struct {
+		Index int64 `json:"index"`
+		Delta struct {
+			Role    genaiapi.Role `json:"role"`
+			Content string        `json:"content"`
+		} `json:"delta"`
+		FinishReason string `json:"finish_reason"`
+	} `json:"choices"`
+	Usage struct {
+		PromptTokens     int64 `json:"prompt_tokens"`
+		CompletionTokens int64 `json:"completion_tokens"`
+		TotalTokens      int64 `json:"total_tokens"`
 	} `json:"usage"`
 }
 
@@ -144,7 +169,77 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 	if err := c.validate(); err != nil {
 		return err
 	}
-	return errors.New("not implemented")
+	in := CompletionRequest{Model: c.Model, Messages: msgs, Stream: true}
+	switch v := opts.(type) {
+	case *genaiapi.CompletionOptions:
+		in.MaxTokens = v.MaxTokens
+		in.RandomSeed = v.Seed
+		in.Temperature = v.Temperature
+	default:
+		return fmt.Errorf("unsupported options type %T", opts)
+	}
+	ch := make(chan CompletionStreamChunkResponse)
+	end := make(chan struct{})
+	go func() {
+		for msg := range ch {
+			if len(msg.Choices) != 1 {
+				continue
+			}
+			word := msg.Choices[0].Delta.Content
+			if word != "" {
+				words <- word
+			}
+		}
+		end <- struct{}{}
+	}()
+	err := c.CompletionStreamRaw(ctx, &in, ch)
+	close(ch)
+	<-end
+	return err
+}
+
+func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
+	h := make(http.Header)
+	h.Add("Authorization", "Bearer "+c.ApiKey)
+	// Mistral doesn't HTTP POST support compression.
+	resp, err := httpjson.DefaultClient.PostRequest(ctx, "https://api.mistral.ai/v1/chat/completions", h, in)
+	if err != nil {
+		return fmt.Errorf("failed to get server response: %w", err)
+	}
+	defer resp.Body.Close()
+	r := bufio.NewReader(resp.Body)
+	for {
+		line, err := r.ReadBytes('\n')
+		line = bytes.TrimSpace(line)
+		if err == io.EOF {
+			err = nil
+			if len(line) == 0 {
+				return nil
+			}
+		}
+		if err != nil {
+			return fmt.Errorf("failed to get server response: %w", err)
+		}
+		if len(line) == 0 {
+			continue
+		}
+		const prefix = "data: "
+		if !bytes.HasPrefix(line, []byte(prefix)) {
+			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
+		}
+		suffix := string(line[len(prefix):])
+		if suffix == "[DONE]" {
+			return nil
+		}
+		d := json.NewDecoder(strings.NewReader(suffix))
+		d.DisallowUnknownFields()
+		d.UseNumber()
+		msg := CompletionStreamChunkResponse{}
+		if err = d.Decode(&msg); err != nil {
+			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+		}
+		out <- msg
+	}
 }
 
 func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, content []byte) (string, error) {

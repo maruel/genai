@@ -172,9 +172,9 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
 			if herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("http %d: error: %s. You can get a new API key at %s", herr.StatusCode, er.Message, apiKeyURL)
+				return fmt.Errorf("%w: error: %s. You can get a new API key at %s", herr, er.Message, apiKeyURL)
 			}
-			return fmt.Errorf("http %d: error: %s", herr.StatusCode, er.Message)
+			return fmt.Errorf("%w: error: %s", herr, er.Message)
 		}
 		return fmt.Errorf("error: %s", er.Message)
 	default:

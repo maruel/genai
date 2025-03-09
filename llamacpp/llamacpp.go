@@ -524,6 +524,10 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	case 0:
 		return nil
 	case 1:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			return fmt.Errorf("%w: error %d (%s): %s", herr, er.Error.Code, er.Error.Type, er.Error.Message)
+		}
 		return fmt.Errorf("error %d (%s): %s", er.Error.Code, er.Error.Type, er.Error.Message)
 	default:
 		var herr *httpjson.Error

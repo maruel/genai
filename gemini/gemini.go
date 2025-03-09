@@ -504,9 +504,9 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
 			if herr.StatusCode == http.StatusBadRequest || herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("http %d: error %d (%s): %s You can get a new API key at %s", herr.StatusCode, er.Error.Code, er.Error.Status, er.Error.Message, apiKeyURL)
+				return fmt.Errorf("%w: error %d (%s): %s You can get a new API key at %s", herr, er.Error.Code, er.Error.Status, er.Error.Message, apiKeyURL)
 			}
-			return fmt.Errorf("http %d: error %d (%s): %s", herr.StatusCode, er.Error.Code, er.Error.Status, er.Error.Message)
+			return fmt.Errorf("%w: error %d (%s): %s", herr, er.Error.Code, er.Error.Status, er.Error.Message)
 		}
 		return fmt.Errorf("error %d (%s): %s", er.Error.Code, er.Error.Status, er.Error.Message)
 	default:

@@ -261,7 +261,14 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	case 0:
 		return nil
 	case 1:
-		// OpenAI error message prints the URL already.
+		// OpenAI error message prints the api key URL already.
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			if er.Error.Code == "" {
+				return fmt.Errorf("%w: error %s: %s", herr, er.Error.Type, er.Error.Message)
+			}
+			return fmt.Errorf("%w: error %s (%s): %s", herr, er.Error.Code, er.Error.Status, er.Error.Message)
+		}
 		if er.Error.Code == "" {
 			return fmt.Errorf("error %s: %s", er.Error.Type, er.Error.Message)
 		}

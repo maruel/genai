@@ -178,14 +178,22 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
 			if herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("http %d: %s. You can get a new API key at %s", herr.StatusCode, erAuth.Message, apiKeyURL)
+				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, erAuth.Message, apiKeyURL)
 			}
-			return fmt.Errorf("http %d: %s", herr.StatusCode, erAuth.Message)
+			return fmt.Errorf("%w: %s", herr, erAuth.Message)
 		}
 		return errors.New(erAuth.Message)
 	case 2:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			return fmt.Errorf("%w: error %s: %s", herr, erAPI1.Type, erAPI1.Message)
+		}
 		return fmt.Errorf("error %s: %s", erAPI1.Type, erAPI1.Message)
 	case 3:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			return fmt.Errorf("%w: error %s/%s: %s at %s", herr, erAPI2.Type, erAPI2.Message.Detail[0].Type, erAPI2.Message.Detail[0].Msg, erAPI2.Message.Detail[0].Loc)
+		}
 		return fmt.Errorf("error %s/%s: %s at %s", erAPI2.Type, erAPI2.Message.Detail[0].Type, erAPI2.Message.Detail[0].Msg, erAPI2.Message.Detail[0].Loc)
 	default:
 		var herr *httpjson.Error

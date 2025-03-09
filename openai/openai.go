@@ -105,34 +105,30 @@ type Logprobs struct {
 	Refusal string `json:"refusal"`
 }
 
-// chatCompletionsStreamResponse is not documented?
-type chatCompletionsStreamResponse struct {
-	Choices           []streamChoices `json:"choices"`
-	Created           int64           `json:"created"`
-	ID                string          `json:"id"`
-	Model             string          `json:"model"`
-	Object            string          `json:"object"`
-	ServiceTier       string          `json:"service_tier"`
-	SystemFingerprint string          `json:"system_fingerprint"`
+// CompletionStreamChunkResponse is not documented?
+type CompletionStreamChunkResponse struct {
+	Choices []struct {
+		Delta struct {
+			Content  string `json:"content"`
+			Role     string `json:"role"`
+			Refulsal string `json:"refusal"`
+		} `json:"delta"`
+		// FinishReason is one of null, "stop", "length", "content_filter" or "tool_calls".
+		FinishReason string   `json:"finish_reason"`
+		Index        int64    `json:"index"`
+		Logprobs     Logprobs `json:"logprobs"`
+	} `json:"choices"`
+	Created           int64  `json:"created"`
+	ID                string `json:"id"`
+	Model             string `json:"model"`
+	Object            string `json:"object"`
+	ServiceTier       string `json:"service_tier"`
+	SystemFingerprint string `json:"system_fingerprint"`
 	Usage             struct {
 		CompletionTokens int64 `json:"completion_tokens"`
 		PromptTokens     int64 `json:"prompt_tokens"`
 		TotalTokens      int64 `json:"total_tokens"`
 	} `json:"usage"`
-}
-
-type streamChoices struct {
-	Delta openAIStreamDelta `json:"delta"`
-	// FinishReason is one of null, "stop", "length", "content_filter" or "tool_calls".
-	FinishReason string   `json:"finish_reason"`
-	Index        int64    `json:"index"`
-	Logprobs     Logprobs `json:"logprobs"`
-}
-
-type openAIStreamDelta struct {
-	Content  string `json:"content"`
-	Role     string `json:"role"`
-	Refulsal string `json:"refusal"`
 }
 
 //
@@ -186,7 +182,6 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
-	start := time.Now()
 	in := CompletionRequest{Model: c.Model, Messages: msgs, Stream: true, Logprobs: true}
 	switch v := opts.(type) {
 	case *genaiapi.CompletionOptions:
@@ -196,6 +191,32 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 	default:
 		return fmt.Errorf("unsupported options type %T", opts)
 	}
+	ch := make(chan CompletionStreamChunkResponse)
+	end := make(chan struct{})
+	start := time.Now()
+	go func() {
+		for msg := range ch {
+			word := msg.Choices[0].Delta.Content
+			slog.DebugContext(ctx, "openai", "word", word, "duration", time.Since(start).Round(time.Millisecond))
+			// TODO: Remove.
+			switch word {
+			// Llama-3, Gemma-2, Phi-3
+			case "<|eot_id|>", "<end_of_turn>", "<|end|>", "<|endoftext|>":
+				continue
+			case "":
+			default:
+				words <- word
+			}
+		}
+		end <- struct{}{}
+	}()
+	err := c.CompletionStreamRaw(ctx, &in, ch)
+	close(ch)
+	<-end
+	return err
+}
+
+func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
 	p := httpjson.DefaultClient
@@ -233,24 +254,14 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 		d := json.NewDecoder(strings.NewReader(suffix))
 		d.DisallowUnknownFields()
 		d.UseNumber()
-		out := chatCompletionsStreamResponse{}
-		if err = d.Decode(&out); err != nil {
+		msg := CompletionStreamChunkResponse{}
+		if err = d.Decode(&msg); err != nil {
 			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
 		}
-		if len(out.Choices) != 1 {
-			return fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(out.Choices))
+		if len(msg.Choices) != 1 {
+			return fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(msg.Choices))
 		}
-		word := out.Choices[0].Delta.Content
-		slog.DebugContext(ctx, "openai", "word", word, "duration", time.Since(start).Round(time.Millisecond))
-		// TODO: Remove.
-		switch word {
-		// Llama-3, Gemma-2, Phi-3
-		case "<|eot_id|>", "<end_of_turn>", "<|end|>", "<|endoftext|>":
-			return nil
-		case "":
-		default:
-			words <- word
-		}
+		out <- msg
 	}
 }
 

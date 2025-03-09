@@ -153,7 +153,7 @@ type CompletionResponse struct {
 	} `json:"timings"`
 }
 
-type completionStreamResponse struct {
+type CompletionStreamChunkResponse struct {
 	// Always
 	Index           int64   `json:"index"`
 	Content         string  `json:"content"`
@@ -282,6 +282,27 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 	if err := c.initPrompt(ctx, &in, msgs); err != nil {
 		return err
 	}
+	ch := make(chan CompletionStreamChunkResponse)
+	end := make(chan struct{})
+	go func() {
+		for msg := range ch {
+			word := msg.Content
+			slog.DebugContext(ctx, "llm", "word", word, "stop", msg.Stop, "prompt tok", msg.Timings.PromptN, "gen tok", msg.Timings.PredictedN, "prompt tok/ms", msg.Timings.PromptPerTokenMS, "gen tok/ms", msg.Timings.PredictedPerTokenMS, "duration", time.Since(start).Round(time.Millisecond))
+			if word != "" {
+				// Mistral Nemo really likes "▁".
+				word = strings.ReplaceAll(msg.Content, "\u2581", " ")
+				words <- word
+			}
+		}
+		end <- struct{}{}
+	}()
+	err := c.CompletionStreamRaw(ctx, &in, ch)
+	close(ch)
+	<-end
+	return err
+}
+
+func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
 	p := httpjson.DefaultClient
 	p.Compress = ""
 	resp, err := p.PostRequest(ctx, c.BaseURL+"/completion", nil, in)
@@ -312,17 +333,11 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 		d := json.NewDecoder(bytes.NewReader(line[len(prefix):]))
 		d.DisallowUnknownFields()
 		d.UseNumber()
-		msg := completionStreamResponse{}
+		msg := CompletionStreamChunkResponse{}
 		if err = d.Decode(&msg); err != nil {
 			return fmt.Errorf("failed to decode llama server response %q: %w", string(line), err)
 		}
-		word := msg.Content
-		slog.DebugContext(ctx, "llm", "word", word, "stop", msg.Stop, "prompt tok", msg.Timings.PromptN, "gen tok", msg.Timings.PredictedN, "prompt tok/ms", msg.Timings.PromptPerTokenMS, "gen tok/ms", msg.Timings.PredictedPerTokenMS, "duration", time.Since(start).Round(time.Millisecond))
-		if word != "" {
-			// Mistral Nemo really likes "▁".
-			word = strings.ReplaceAll(msg.Content, "\u2581", " ")
-			words <- word
-		}
+		out <- msg
 		if msg.Stop {
 			return nil
 		}

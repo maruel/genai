@@ -2,7 +2,7 @@ module github.com/maruel/genai
 
 go 1.24.1
 
-require github.com/maruel/httpjson v0.0.0-20250309151328-5c713912b6ce
+require github.com/maruel/httpjson v0.0.0-20250309152049-dbe0fa4b047e
 
 require (
 	github.com/DataDog/zstd v1.5.6 // indirect

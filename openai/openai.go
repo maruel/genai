@@ -38,22 +38,23 @@ type CompletionRequest struct {
 	Metadata            map[string]string  `json:"metadata,omitempty"`
 	FrequencyPenalty    float64            `json:"frequency_penalty,omitempty"` // [-2.0, 2.0]
 	LogitBias           map[string]float64 `json:"logit_bias,omitempty"`
-	Logprobs            bool               `json:"logprobs,omitzero"`
-	TopLogprobs         int64              `json:"top_logprobs,omitzero"`     // [0, 20]
-	N                   int64              `json:"n,omitzero"`                // Number of choices
-	Modalities          []string           `json:"modalities,omitempty"`      // text, audio
-	Prediction          any                `json:"prediction,omitempty"`      // TODO
-	Audio               any                `json:"audio,omitempty"`           // TODO
-	PresencePenalty     float64            `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
-	ResponseFormat      any                `json:"response_format,omitempty"` // TODO e.g. json_object with json_schema
-	ServiceTier         string             `json:"service_tier,omitzero"`     // "auto", "default"
-	Stop                []string           `json:"stop,omitempty"`            // keywords to stop completion
-	StreamOptions       any                `json:"stream_options,omitempty"`  // TODO
-	TopP                float64            `json:"top_p,omitzero"`            // [0, 1]
-	Tools               []any              `json:"tools,omitempty"`           // TODO
-	ToolChoices         []any              `json:"tool_choices,omitempty"`    // TODO
-	ParallelToolCalls   bool               `json:"parallel_tool_calls,omitzero"`
-	User                string             `json:"user,omitzero"`
+	// See https://cookbook.openai.com/examples/using_logprobs
+	Logprobs          bool     `json:"logprobs,omitzero"`
+	TopLogprobs       int64    `json:"top_logprobs,omitzero"`     // [0, 20]
+	N                 int64    `json:"n,omitzero"`                // Number of choices
+	Modalities        []string `json:"modalities,omitempty"`      // text, audio
+	Prediction        any      `json:"prediction,omitempty"`      // TODO
+	Audio             any      `json:"audio,omitempty"`           // TODO
+	PresencePenalty   float64  `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
+	ResponseFormat    any      `json:"response_format,omitempty"` // TODO e.g. json_object with json_schema
+	ServiceTier       string   `json:"service_tier,omitzero"`     // "auto", "default"
+	Stop              []string `json:"stop,omitempty"`            // keywords to stop completion
+	StreamOptions     any      `json:"stream_options,omitempty"`  // TODO
+	TopP              float64  `json:"top_p,omitzero"`            // [0, 1]
+	Tools             []any    `json:"tools,omitempty"`           // TODO
+	ToolChoices       []any    `json:"tool_choices,omitempty"`    // TODO
+	ParallelToolCalls bool     `json:"parallel_tool_calls,omitzero"`
+	User              string   `json:"user,omitzero"`
 }
 
 // CompletionResponse is documented at

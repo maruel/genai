@@ -563,8 +563,6 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message,
 	return t, nil
 }
 
-/* TODO
-
 // https://ai.google.dev/api/models#Model
 type Model struct {
 	Name                       string   `json:"name"`
@@ -583,20 +581,13 @@ type Model struct {
 
 func (c *Client) ListModels(ctx context.Context) ([]Model, error) {
 	// https://ai.google.dev/api/models?hl=en#method:-models.list
-	h := make(http.Header)
-	h.Add("Authorization", "Bearer "+c.ApiKey)
 	var out struct {
 		Models        []Model `json:"models"`
 		NextPageToken string  `json:"nextPageToken"`
 	}
-	err := httpjson.DefaultClient.Get(ctx, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.ApiKey, h, &out)
-	var herr *httpjson.Error
-	if errors.As(err, &herr) {
-		slog.ErrorContext(ctx, "gemini", "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
-	}
+	err := httpjson.DefaultClient.Get(ctx, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.ApiKey, nil, &out)
 	return out.Models, err
 }
-*/
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	if c.ApiKey == "" {

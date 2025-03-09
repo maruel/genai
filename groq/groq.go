@@ -260,10 +260,6 @@ func (c *Client) ListModels(ctx context.Context) ([]Model, error) {
 		Data   []Model `json:"data"`
 	}
 	err := httpjson.DefaultClient.Get(ctx, "https://api.groq.com/openai/v1/models", h, &out)
-	var herr *httpjson.Error
-	if errors.As(err, &herr) {
-		slog.ErrorContext(ctx, "gemini", "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
-	}
 	return out.Data, err
 }
 

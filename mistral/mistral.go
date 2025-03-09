@@ -16,7 +16,7 @@ import (
 )
 
 // Messages.
-type chatCompletionRequest struct {
+type CompletionRequest struct {
 	Model            string             `json:"model"`
 	Temperature      float64            `json:"temperature,omitzero"` // [0, 2]
 	TopP             float64            `json:"top_p,omitzero"`       // [0, 1]
@@ -35,13 +35,31 @@ type chatCompletionRequest struct {
 	SafePrompt       bool               `json:"safe_prompt,omitzero"`
 }
 
-type chatCompletionsResponse struct {
-	ID      string    `json:"id"`
-	Object  string    `json:"object"` // chat.completion
-	Model   string    `json:"model"`
-	Created int64     `json:"created"` // Unix timestamp
-	Choices []choices `json:"choices"`
-	Usage   struct {
+type CompletionResponse struct {
+	ID      string `json:"id"`
+	Object  string `json:"object"` // chat.completion
+	Model   string `json:"model"`
+	Created int64  `json:"created"` // Unix timestamp
+	Choices []struct {
+		// FinishReason is one of "stop", "length", "content_filter" or "tool_calls".
+		FinishReason string `json:"finish_reason"`
+		Index        int64  `json:"index"`
+		Message      struct {
+			Role      genaiapi.Role `json:"role"`
+			Content   string        `json:"content"`
+			Prefix    bool          `json:"prefix"`
+			ToolCalls []struct {
+				ID       string `json:"id"`
+				Type     string `json:"type"`
+				Function struct {
+					Name      string `json:"name"`
+					Arguments []any  `json:"arguments"`
+				} `json:"function"`
+				Index int64 `json:"index"`
+			} `json:"tool_calls"`
+		} `json:"message"`
+	} `json:"choices"`
+	Usage struct {
 		// QueueTime        float64 `json:"queue_time"`
 		PromptTokens int64 `json:"prompt_tokens"`
 		// PromptTime       float64 `json:"prompt_time"`
@@ -50,28 +68,6 @@ type chatCompletionsResponse struct {
 		TotalTokens int64 `json:"total_tokens"`
 		// TotalTime        float64 `json:"total_time"`
 	} `json:"usage"`
-}
-
-type choice struct {
-	Role      genaiapi.Role `json:"role"`
-	Content   string        `json:"content"`
-	Prefix    bool          `json:"prefix"`
-	ToolCalls []struct {
-		ID       string `json:"id"`
-		Type     string `json:"type"`
-		Function struct {
-			Name      string `json:"name"`
-			Arguments []any  `json:"arguments"`
-		} `json:"function"`
-		Index int64 `json:"index"`
-	} `json:"tool_calls"`
-}
-
-type choices struct {
-	// FinishReason is one of "stop", "length", "content_filter" or "tool_calls".
-	FinishReason string `json:"finish_reason"`
-	Index        int64  `json:"index"`
-	Message      choice `json:"message"`
 }
 
 //
@@ -121,7 +117,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	if err := c.validate(); err != nil {
 		return "", err
 	}
-	in := chatCompletionRequest{Model: c.Model, Messages: msgs}
+	in := CompletionRequest{Model: c.Model, Messages: msgs}
 	switch v := opts.(type) {
 	case *genaiapi.CompletionOptions:
 		in.MaxTokens = v.MaxTokens
@@ -130,14 +126,18 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	default:
 		return "", fmt.Errorf("unsupported options type %T", opts)
 	}
-	out := chatCompletionsResponse{}
-	if err := c.post(ctx, "https://api.mistral.ai/v1/chat/completions", in, &out); err != nil {
+	out := CompletionResponse{}
+	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
 		return "", fmt.Errorf("failed to get chat response: %w", err)
 	}
 	if len(out.Choices) != 1 {
 		return "", fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(out.Choices))
 	}
 	return out.Choices[0].Message.Content, nil
+}
+
+func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
+	return c.post(ctx, "https://api.mistral.ai/v1/chat/completions", in, out)
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {

@@ -17,7 +17,7 @@ import (
 
 // https://docs.cohere.com/reference/chat
 
-type message struct {
+type Message struct {
 	Role genaiapi.Role `json:"role"`
 	// Assistant, System or User.
 	Content struct {
@@ -39,10 +39,10 @@ type message struct {
 	ToolCallID string `json:"tool_call_id,omitempty"`
 }
 
-type chatCompletionRequest struct {
+type CompletionRequest struct {
 	Stream           bool      `json:"stream"`
 	Model            string    `json:"model"`
-	Messages         []message `json:"messages"`
+	Messages         []Message `json:"messages"`
 	Tools            []any     `json:"tools,omitempty"`            // TODO
 	Documents        []any     `json:"documents,omitempty"`        // TODO
 	CitationOptions  any       `json:"citation_options,omitempty"` // TODO
@@ -61,7 +61,7 @@ type chatCompletionRequest struct {
 	StrictTools      bool      `json:"strict_tools,omitzero"`
 }
 
-type chatCompletionsResponse struct {
+type CompletionResponse struct {
 	ID           string `json:"id"`
 	FinishReason string `json:"finish_reason"` // COMPLETE, STOP_SEQUENCe, MAX_TOKENS, TOOL_CALL, ERROR
 	Message      struct {
@@ -122,7 +122,7 @@ type Client struct {
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
 	// https://docs.cohere.com/reference/chat
-	in := chatCompletionRequest{Model: c.Model, Messages: make([]message, len(msgs))}
+	in := CompletionRequest{Model: c.Model, Messages: make([]Message, len(msgs))}
 	for i, m := range msgs {
 		in.Messages[i].Role = m.Role
 		in.Messages[i].Content.Type = "text"
@@ -136,11 +136,15 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	default:
 		return "", fmt.Errorf("unsupported options type %T", opts)
 	}
-	out := chatCompletionsResponse{}
-	if err := c.post(ctx, "https://api.cohere.com/v2/chat", in, &out); err != nil {
+	out := CompletionResponse{}
+	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
 		return "", fmt.Errorf("failed to get chat response: %w", err)
 	}
 	return out.Message.Content[0].Text, nil
+}
+
+func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
+	return c.post(ctx, "https://api.cohere.com/v2/chat", in, out)
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {

@@ -17,7 +17,7 @@ import (
 
 // https://api-docs.deepseek.com/api/create-chat-completion
 
-type message struct {
+type Message struct {
 	Role             genaiapi.Role `json:"role"`
 	Content          string        `json:"content"`
 	Name             string        `json:"name,omitzero"`
@@ -26,9 +26,9 @@ type message struct {
 	ToolCallID       string        `json:"tool_call_id,omitzero"`
 }
 
-type messagesRequest struct {
+type CompletionRequest struct {
 	Model            string    `json:"model,omitempty"`
-	Messages         []message `json:"messages"`
+	Messages         []Message `json:"messages"`
 	Stream           bool      `json:"stream"`
 	Temperature      float64   `json:"temperature,omitzero"`       // [0, 2]
 	FrequencyPenalty float64   `json:"frequency_penalty,omitzero"` // [-2, 2]
@@ -46,31 +46,29 @@ type messagesRequest struct {
 	TopLogprob    int64    `json:"top_logprobs,omitzero"`
 }
 
-type choice struct {
-	FinishReason string  `json:"finish_reason"`
-	Index        int64   `json:"index"`
-	Message      message `json:"message"`
-	Logprobs     struct {
-		Content []struct {
-			Token       string  `json:"token"`
-			Logprob     float64 `json:"logprob"`
-			Bytes       []int64 `json:"bytes"`
-			TopLogprobs []struct {
-				Token   string  `json:"token"`
-				Logprob float64 `json:"logprob"`
-				Bytes   []int64 `json:"bytes"`
-			} `json:"top_logprobs"`
-		} `json:"content"`
-	} `json:"logprobs"`
-}
-
-type messagesResponse struct {
-	ID                string   `json:"id"`
-	Choices           []choice `json:"choices"`
-	Created           int64    `json:"created"` // Unix timestamp
-	Model             string   `json:"model"`
-	SystemFingerPrint string   `json:"system_fingerprint"`
-	Object            string   `json:"object"` // chat.completion
+type CompletionResponse struct {
+	ID      string `json:"id"`
+	Choices []struct {
+		FinishReason string  `json:"finish_reason"`
+		Index        int64   `json:"index"`
+		Message      Message `json:"message"`
+		Logprobs     struct {
+			Content []struct {
+				Token       string  `json:"token"`
+				Logprob     float64 `json:"logprob"`
+				Bytes       []int64 `json:"bytes"`
+				TopLogprobs []struct {
+					Token   string  `json:"token"`
+					Logprob float64 `json:"logprob"`
+					Bytes   []int64 `json:"bytes"`
+				} `json:"top_logprobs"`
+			} `json:"content"`
+		} `json:"logprobs"`
+	} `json:"choices"`
+	Created           int64  `json:"created"` // Unix timestamp
+	Model             string `json:"model"`
+	SystemFingerPrint string `json:"system_fingerprint"`
+	Object            string `json:"object"` // chat.completion
 	Usage             struct {
 		CompletionTokens      int64 `json:"completion_tokens"`
 		PromptTokens          int64 `json:"prompt_tokens"`
@@ -107,11 +105,11 @@ type Client struct {
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
 	// https://api-docs.deepseek.com/api/create-chat-completion
-	in := messagesRequest{Model: c.Model, Messages: make([]message, 0, len(msgs))}
+	in := CompletionRequest{Model: c.Model, Messages: make([]Message, 0, len(msgs))}
 	for _, m := range msgs {
 		switch m.Role {
 		case genaiapi.System, genaiapi.User, genaiapi.Assistant:
-			in.Messages = append(in.Messages, message{Role: m.Role, Content: m.Content})
+			in.Messages = append(in.Messages, Message{Role: m.Role, Content: m.Content})
 		default:
 			return "", fmt.Errorf("unsupported role %v", m.Role)
 		}
@@ -126,11 +124,15 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	default:
 		return "", fmt.Errorf("unsupported options type %T", opts)
 	}
-	out := messagesResponse{}
-	if err := c.post(ctx, "https://api.deepseek.com/chat/completions", &in, &out); err != nil {
+	out := CompletionResponse{}
+	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
 		return "", err
 	}
 	return out.Choices[0].Message.Content, nil
+}
+
+func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
+	return c.post(ctx, "https://api.deepseek.com/chat/completions", in, out)
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {

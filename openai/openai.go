@@ -23,9 +23,9 @@ import (
 
 // Messages. https://platform.openai.com/docs/api-reference/making-requests
 
-// chatCompletionRequest is documented at
+// CompletionRequest is documented at
 // https://platform.openai.com/docs/api-reference/chat/create
-type chatCompletionRequest struct {
+type CompletionRequest struct {
 	Model               string             `json:"model"`
 	MaxTokens           int64              `json:"max_tokens,omitzero"` // Deprecated
 	MaxCompletionTokens int64              `json:"max_completion_tokens,omitzero"`
@@ -56,14 +56,24 @@ type chatCompletionRequest struct {
 	User                string             `json:"user,omitzero"`
 }
 
-// chatCompletionsResponse is documented at
+// CompletionResponse is documented at
 // https://platform.openai.com/docs/api-reference/chat/object
-type chatCompletionsResponse struct {
-	Choices []choices `json:"choices"`
-	Created int64     `json:"created"`
-	ID      string    `json:"id"`
-	Model   string    `json:"model"`
-	Object  string    `json:"object"`
+type CompletionResponse struct {
+	Choices []struct {
+		// FinishReason is one of "stop", "length", "content_filter" or "tool_calls".
+		FinishReason string `json:"finish_reason"`
+		Index        int64  `json:"index"`
+		Message      struct {
+			Role    genaiapi.Role `json:"role"`
+			Content string        `json:"content"`
+			Refusal string        `json:"refusal"`
+		} `json:"message"`
+		Logprobs Logprobs `json:"logprobs"`
+	} `json:"choices"`
+	Created int64  `json:"created"`
+	ID      string `json:"id"`
+	Model   string `json:"model"`
+	Object  string `json:"object"`
 	Usage   struct {
 		PromptTokens        int64 `json:"prompt_tokens"`
 		CompletionTokens    int64 `json:"completion_tokens"`
@@ -83,21 +93,7 @@ type chatCompletionsResponse struct {
 	SystemFingerprint string `json:"system_fingerprint"`
 }
 
-type choice struct {
-	Role    genaiapi.Role `json:"role"`
-	Content string        `json:"content"`
-	Refusal string        `json:"refusal"`
-}
-
-type choices struct {
-	// FinishReason is one of "stop", "length", "content_filter" or "tool_calls".
-	FinishReason string   `json:"finish_reason"`
-	Index        int64    `json:"index"`
-	Message      choice   `json:"message"`
-	Logprobs     logprobs `json:"logprobs"`
-}
-
-type logprobs struct {
+type Logprobs struct {
 	Content []struct {
 		Token       string  `json:"token"`
 		Logprob     float64 `json:"logprob"`
@@ -130,7 +126,7 @@ type streamChoices struct {
 	// FinishReason is one of null, "stop", "length", "content_filter" or "tool_calls".
 	FinishReason string   `json:"finish_reason"`
 	Index        int64    `json:"index"`
-	Logprobs     logprobs `json:"logprobs"`
+	Logprobs     Logprobs `json:"logprobs"`
 }
 
 type openAIStreamDelta struct {
@@ -166,7 +162,7 @@ type Client struct {
 }
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
-	in := chatCompletionRequest{Model: c.Model, Messages: msgs, Logprobs: true}
+	in := CompletionRequest{Model: c.Model, Messages: msgs}
 	switch v := opts.(type) {
 	case *genaiapi.CompletionOptions:
 		in.MaxTokens = v.MaxTokens
@@ -175,8 +171,8 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	default:
 		return "", fmt.Errorf("unsupported options type %T", opts)
 	}
-	out := chatCompletionsResponse{}
-	if err := c.post(ctx, c.baseURL()+"/v1/chat/completions", in, &out); err != nil {
+	out := CompletionResponse{}
+	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
 		return "", fmt.Errorf("failed to get chat response: %w", err)
 	}
 	if len(out.Choices) != 1 {
@@ -185,9 +181,13 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	return out.Choices[0].Message.Content, nil
 }
 
+func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
+	return c.post(ctx, c.baseURL()+"/v1/chat/completions", in, out)
+}
+
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
 	start := time.Now()
-	in := chatCompletionRequest{Model: c.Model, Messages: msgs, Stream: true, Logprobs: true}
+	in := CompletionRequest{Model: c.Model, Messages: msgs, Stream: true, Logprobs: true}
 	switch v := opts.(type) {
 	case *genaiapi.CompletionOptions:
 		in.MaxTokens = v.MaxTokens

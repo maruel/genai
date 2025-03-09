@@ -17,15 +17,15 @@ import (
 
 // https://docs.anthropic.com/en/api/messages
 
-type message struct {
+type Message struct {
 	Role    genaiapi.Role `json:"role"`
 	Content string        `json:"content"`
 }
 
-type messagesRequest struct {
+type CompletionRequest struct {
 	Model         string    `json:"model,omitempty"`
 	MaxToks       int64     `json:"max_tokens"`
-	Messages      []message `json:"messages"`
+	Messages      []Message `json:"messages"`
 	Metadata      any       `json:"metadata,omitempty"`
 	StopSequences []string  `json:"stop_sequences,omitempty"`
 	Stream        bool      `json:"stream,omitempty"`
@@ -38,21 +38,19 @@ type messagesRequest struct {
 	TopP          float64   `json:"top_p,omitzero"` // [0, 1]
 }
 
-type messageResponse struct {
-	Type      string `json:"type"`
-	Text      string `json:"text"`
-	Citations any    `json:"citations,omitempty"`
-	// TODO Add rest.
-}
-
-type messagesResponse struct {
-	Content      []messageResponse `json:"content"`
-	ID           string            `json:"id"`
-	Model        string            `json:"model"`
-	Role         string            `json:"role"` // Always "assistant"
-	StopReason   string            `json:"stop_reason"`
-	StopSequence string            `json:"stop_sequence"`
-	Type         string            `json:"type"`
+type CompletionResponse struct {
+	Content []struct {
+		Type      string `json:"type"`
+		Text      string `json:"text"`
+		Citations any    `json:"citations,omitempty"`
+		// TODO Add rest.
+	} `json:"content"`
+	ID           string `json:"id"`
+	Model        string `json:"model"`
+	Role         string `json:"role"` // Always "assistant"
+	StopReason   string `json:"stop_reason"`
+	StopSequence string `json:"stop_sequence"`
+	Type         string `json:"type"`
 	Usage        struct {
 		InputTokens              int64 `json:"input_tokens"`
 		OutputTokens             int64 `json:"output_tokens"`
@@ -80,7 +78,7 @@ type Client struct {
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
 	// https://docs.anthropic.com/en/api/messages
-	in := messagesRequest{Model: c.Model, Messages: make([]message, 0, len(msgs))}
+	in := CompletionRequest{Model: c.Model, Messages: make([]Message, 0, len(msgs))}
 	switch v := opts.(type) {
 	case *genaiapi.CompletionOptions:
 		in.MaxToks = v.MaxTokens
@@ -103,16 +101,20 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 			}
 			in.System = m.Content
 		case genaiapi.User, genaiapi.Assistant:
-			in.Messages = append(in.Messages, message{Role: m.Role, Content: m.Content})
+			in.Messages = append(in.Messages, Message{Role: m.Role, Content: m.Content})
 		default:
 			return "", fmt.Errorf("unsupported role %v", m.Role)
 		}
 	}
-	out := messagesResponse{}
-	if err := c.post(ctx, "https://api.anthropic.com/v1/messages", &in, &out); err != nil {
+	out := CompletionResponse{}
+	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
 		return "", err
 	}
 	return out.Content[0].Text, nil
+}
+
+func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
+	return c.post(ctx, "https://api.anthropic.com/v1/messages", in, out)
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {

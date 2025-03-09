@@ -17,7 +17,7 @@ import (
 
 // https://console.groq.com/docs/api-reference#chat-create
 
-type chatCompletionRequest struct {
+type CompletionRequest struct {
 	FrequencyPenalty    float64            `json:"frequency_penalty,omitempty"` // [-2.0, 2.0]
 	MaxCompletionTokens int64              `json:"max_completion_tokens,omitzero"`
 	Messages            []genaiapi.Message `json:"messages"`
@@ -44,12 +44,21 @@ type chatCompletionRequest struct {
 	// N                   int64                `json:"n,omitzero"`                // Number of choices
 }
 
-type chatCompletionsResponse struct {
-	Choices []choices `json:"choices"`
-	Created int64     `json:"created"` // Unix timestamp
-	ID      string    `json:"id"`
-	Model   string    `json:"model"`
-	Object  string    `json:"object"` // chat.completion
+type CompletionResponse struct {
+	Choices []struct {
+		// FinishReason is one of "stop", "length", "content_filter" or "tool_calls".
+		FinishReason string `json:"finish_reason"`
+		Index        int64  `json:"index"`
+		Message      struct {
+			Role    genaiapi.Role `json:"role"`
+			Content string        `json:"content"`
+		} `json:"message"`
+		Logprobs any `json:"logprobs"`
+	} `json:"choices"`
+	Created int64  `json:"created"` // Unix timestamp
+	ID      string `json:"id"`
+	Model   string `json:"model"`
+	Object  string `json:"object"` // chat.completion
 	Usage   struct {
 		QueueTime        float64 `json:"queue_time"`
 		PromptTokens     int64   `json:"prompt_tokens"`
@@ -63,19 +72,6 @@ type chatCompletionsResponse struct {
 	Xgroq             struct {
 		ID string `json:"id"`
 	} `json:"x_groq"`
-}
-
-type choice struct {
-	Role    genaiapi.Role `json:"role"`
-	Content string        `json:"content"`
-}
-
-type choices struct {
-	// FinishReason is one of "stop", "length", "content_filter" or "tool_calls".
-	FinishReason string `json:"finish_reason"`
-	Index        int64  `json:"index"`
-	Message      choice `json:"message"`
-	Logprobs     any    `json:"logprobs"`
 }
 
 //
@@ -97,7 +93,7 @@ type Client struct {
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
 	// https://console.groq.com/docs/api-reference#chat-create
-	in := chatCompletionRequest{Model: c.Model, Messages: msgs}
+	in := CompletionRequest{Model: c.Model, Messages: msgs}
 	switch v := opts.(type) {
 	case *genaiapi.CompletionOptions:
 		in.MaxCompletionTokens = v.MaxTokens
@@ -106,14 +102,18 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	default:
 		return "", fmt.Errorf("unsupported options type %T", opts)
 	}
-	out := chatCompletionsResponse{}
-	if err := c.post(ctx, "https://api.groq.com/openai/v1/chat/completions", in, &out); err != nil {
+	out := CompletionResponse{}
+	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
 		return "", fmt.Errorf("failed to get chat response: %w", err)
 	}
 	if len(out.Choices) != 1 {
 		return "", fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(out.Choices))
 	}
 	return out.Choices[0].Message.Content, nil
+}
+
+func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
+	return c.post(ctx, "https://api.groq.com/openai/v1/chat/completions", in, out)
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {

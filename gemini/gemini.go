@@ -18,52 +18,52 @@ import (
 )
 
 // https://ai.google.dev/api/caching?hl=en#Blob
-type blob struct {
+type Blob struct {
 	MimeType string `json:"mimeType,omitempty"`
 	Data     []byte `json:"data,omitempty"`
 }
 
 // https://ai.google.dev/api/caching?hl=en#FileData
-type fileData struct {
+type FileData struct {
 	MimeType string `json:"mimeType,omitempty"`
 	FileURI  string `json:"fileUri,omitempty"`
 }
 
 // https://protobuf.dev/reference/protobuf/google.protobuf/#struct
-type structValue map[string]value
+type structValue map[string]Value
 
 // https://protobuf.dev/reference/protobuf/google.protobuf/#value
 // TODO: Confirm.
-type value struct {
+type Value struct {
 	NullValue   int64       `json:"null_value,omitempty"`
 	NumberValue float64     `json:"number_value,omitempty"`
 	StringValue string      `json:"string_value,omitempty"`
 	BoolValue   bool        `json:"bool_value,omitempty"`
 	StructValue structValue `json:"struct_value,omitempty"`
-	ListValue   []value     `json:"list_value,omitempty"`
+	ListValue   []Value     `json:"list_value,omitempty"`
 }
 
 // https://ai.google.dev/api/caching?hl=en#CodeExecutionResult
-type codeExecutionResult struct {
+type CodeExecutionResult struct {
 	Outcome string `json:"outcome,omitempty"` // One of OUTCOME_UNSPECIFIED, OUTCOME_OK, OUTCOME_FAILED, OUTCOME_DEADLINE_EXCEEDED
 	Output  string `json:"output,omitempty"`
 }
 
 // https://ai.google.dev/api/caching?hl=en#ExecutableCode
-type executableCode struct {
+type ExecutableCode struct {
 	Language string `json:"language,omitempty"` // Only PYTHON is supported as of March 2025.
 	Code     string `json:"code,omitempty"`
 }
 
 // https://ai.google.dev/api/caching?hl=en#FunctionCall
-type functionCall struct {
+type FunctionCall struct {
 	ID   string      `json:"id,omitempty"`
 	Name string      `json:"name,omitempty"`
 	Args structValue `json:"args,omitempty"`
 }
 
 // https://ai.google.dev/api/caching?hl=en#FunctionResponse
-type functionResponse struct {
+type FunctionResponse struct {
 	ID       string      `json:"id,omitempty"`
 	Name     string      `json:"name,omitempty"`
 	Response structValue `json:"response,omitempty"`
@@ -71,28 +71,28 @@ type functionResponse struct {
 
 // https://ai.google.dev/api/caching?hl=en#Part
 //
-// part is a union that only has one of the field set.
-type part struct {
+// Part is a union that only has one of the field set.
+type Part struct {
 	Text string `json:"text,omitempty"`
 	// Uploaded with /v1beta/cachedContents. Content is deleted after 1 hour.
-	InlineData       blob             `json:"inlineData,omitzero"`
-	FunctionCall     functionCall     `json:"functionCall,omitzero"`
-	FunctionResponse functionResponse `json:"functionResponse,omitzero"`
+	InlineData       Blob             `json:"inlineData,omitzero"`
+	FunctionCall     FunctionCall     `json:"functionCall,omitzero"`
+	FunctionResponse FunctionResponse `json:"functionResponse,omitzero"`
 	// Uploaded with /upload/v1beta/files. Files are deleted after 2 days.
-	FileData            fileData            `json:"fileData,omitzero"`
-	ExecutableCode      executableCode      `json:"executableCode,omitzero"`      // TODO
-	CodeExecutionResult codeExecutionResult `json:"codeExecutionResult,omitzero"` // TODO
+	FileData            FileData            `json:"fileData,omitzero"`
+	ExecutableCode      ExecutableCode      `json:"executableCode,omitzero"`      // TODO
+	CodeExecutionResult CodeExecutionResult `json:"codeExecutionResult,omitzero"` // TODO
 }
 
 // https://ai.google.dev/api/caching?hl=en#Content
-type content struct {
-	Parts []part `json:"parts"`
+type Content struct {
+	Parts []Part `json:"parts"`
 	// Must be either 'user' or 'model'.
 	Role string `json:"role,omitempty"`
 }
 
 // https://ai.google.dev/api/generate-content?hl=en#v1beta.GenerationConfig
-type generationConfig struct {
+type GenerationConfig struct {
 	StopSequences              []string `json:"stopSequences,omitempty"`
 	ResponseMimeType           string   `json:"responseMimeType,omitempty"`
 	ResponseSchema             any      `json:"responseSchema,omitempty"` // TODO
@@ -113,27 +113,27 @@ type generationConfig struct {
 }
 
 // https://ai.google.dev/api/generate-content?hl=en#v1beta.SafetySetting
-type safetySetting struct {
+type SafetySetting struct {
 	Category  string `json:"category"`  // https://ai.google.dev/api/generate-content?hl=en#v1beta.HarmCategory
 	Threshold int64  `json:"threshold"` // https://ai.google.dev/api/generate-content?hl=en#HarmBlockThreshold
 }
 
 // https://ai.google.dev/api/caching?hl=en#GoogleSearchRetrieval
-type googleSearchRetrieval struct {
-	DynamicRetrievalConfig dynamicRetrievalConfig `json:"dynamicRetrievalConfig,omitzero"`
+type GoogleSearchRetrieval struct {
+	DynamicRetrievalConfig DynamicRetrievalConfig `json:"dynamicRetrievalConfig,omitzero"`
 }
 
 // https://ai.google.dev/api/caching?hl=en#DynamicRetrievalConfig
-type dynamicRetrievalConfig struct {
+type DynamicRetrievalConfig struct {
 	// https://ai.google.dev/api/caching?hl=en#Mode
 	Mode             string  `json:"mode,omitempty"` // MODE_UNSPECIFIED, MODE_DYNAMIC
 	DynamicThreshold float64 `json:"dynamicThreshold,omitempty"`
 }
 
 // https://ai.google.dev/api/caching?hl=en#Tool
-type tool struct {
+type Tool struct {
 	FunctionDeclarations  []functionDeclaration `json:"functionDeclaration,omitempty"`
-	GoogleSearchRetrieval googleSearchRetrieval `json:"googleSearchRetrieval,omitempty"`
+	GoogleSearchRetrieval GoogleSearchRetrieval `json:"googleSearchRetrieval,omitempty"`
 	CodeExecution         struct{}              `json:"codeExecution,omitempty"`
 	GoogleSearch          struct{}              `json:"googleSearch,omitempty"`
 }
@@ -163,7 +163,7 @@ type schema struct {
 }
 
 // https://ai.google.dev/api/caching?hl=en#ToolConfig
-type toolConfig struct {
+type ToolConfig struct {
 	FunctionCallingConfig functionCallingConfig `json:"functionCallingConfig,omitempty"`
 }
 
@@ -175,129 +175,103 @@ type functionCallingConfig struct {
 }
 
 // https://ai.google.dev/api/generate-content?hl=en#text_gen_text_only_prompt-SHELL
-type generateContentRequest struct {
-	Contents          []content        `json:"contents"`
-	Tools             []tool           `json:"tools,omitempty"`
-	ToolConfig        toolConfig       `json:"toolConfig,omitempty"`
-	SafetySettings    []safetySetting  `json:"safetySettings,omitempty"`
-	SystemInstruction content          `json:"systemInstruction,omitzero"`
-	GenerationConfig  generationConfig `json:"generationConfig,omitempty"`
+type CompletionRequest struct {
+	Contents          []Content        `json:"contents"`
+	Tools             []Tool           `json:"tools,omitempty"`
+	ToolConfig        ToolConfig       `json:"toolConfig,omitempty"`
+	SafetySettings    []SafetySetting  `json:"safetySettings,omitempty"`
+	SystemInstruction Content          `json:"systemInstruction,omitzero"`
+	GenerationConfig  GenerationConfig `json:"generationConfig,omitempty"`
 	CachedContent     string           `json:"cachedContent,omitempty"`
 }
 
 // https://ai.google.dev/api/generate-content?hl=en#v1beta.GenerateContentResponse
-type generateContentResponse struct {
-	Candidates     []candidate                  `json:"candidates"`
-	PromptFeedback any                          `json:"promptFeedback,omitempty"`
-	UsageMetadata  generateContentUsageMetadata `json:"usageMetadata"`
-	ModelVersion   string                       `json:"modelVersion"`
-}
-
-// https://ai.google.dev/api/generate-content?hl=en#v1beta.Candidate
-type candidate struct {
-	Content content `json:"content"`
-	// https://ai.google.dev/api/generate-content?hl=en#FinishReason
-	FinishReason          string                 `json:"finishReason"`
-	SafetyRatings         []safetyRating         `json:"safetyRatings"`
-	CitationMetadata      citationMetadata       `json:"citationMetadata"`
-	TokenCount            int64                  `json:"tokenCount"`
-	GroundingAttributions []groundingAttribution `json:"groundingAttributions"`
-	GroundingMetadata     groundingMetadata      `json:"groundingMetadata"`
-	AvgLogprobs           float64                `json:"avgLogprobs"`
-	LogprobsResult        any                    `json:"logprobsResult"`
-	Index                 int64                  `json:"index"`
-}
-
-// https://ai.google.dev/api/generate-content?hl=en#v1beta.CitationMetadata
-type citationMetadata struct {
-	CitaionSources []citationSource `json:"citaionSources"`
-}
-
-// https://ai.google.dev/api/generate-content?hl=en#CitationSource
-type citationSource struct {
-	StartIndex int64  `json:"startIndex"`
-	EndIndex   int64  `json:"endIndex"`
-	URI        string `json:"uri"`
-	License    string `json:"license"`
-}
-
-// https://ai.google.dev/api/generate-content?hl=en#GroundingAttribution
-type groundingAttribution struct {
-	SourceID string  `json:"sourceId"`
-	Countent content `json:"countent"`
-}
-
-// https://ai.google.dev/api/generate-content?hl=en#GroundingMetadata
-type groundingMetadata struct {
-	GroundingChuncks  []groundingChunk   `json:"groundingChuncks"`
-	GroundingSupports []groundingSupport `json:"groundingSupports"`
-	WebSearchQueries  []string           `json:"webSearchQueries"`
-	SearchEntryPoint  searchEntryPoint   `json:"searchEntryPoint"`
-	RetrievalMetadata retrievalMetadata  `json:"retrievalMetadata"`
-}
-
-// https://ai.google.dev/api/generate-content?hl=en#GroundingChunk
-type groundingChunk struct {
-	Web web `json:"web"`
-}
-
-// https://ai.google.dev/api/generate-content?hl=en#Web
-type web struct {
-	URI   string `json:"uri"`
-	Title string `json:"title"`
-}
-
-// https://ai.google.dev/api/generate-content?hl=en#GroundingSupport
-type groundingSupport struct {
-	GroundingChunkIndices []int64   `json:"groundingChunkIndices"`
-	ConfidenceScores      []float64 `json:"confidenceScores"`
-	Segment               segment   `json:"segment"`
-}
-
-// https://ai.google.dev/api/generate-content?hl=en#Segment
-type segment struct {
-	PartIndex  int64  `json:"partIndex"`
-	StartIndex int64  `json:"startIndex"`
-	EndIndex   int64  `json:"endIndex"`
-	Text       string `json:"text"`
-}
-
-// https://ai.google.dev/api/generate-content?hl=en#SearchEntryPoint
-type searchEntryPoint struct {
-	RenderedContent string `json:"renderedContent"`
-	SDKBlob         []byte `json:"sdkBlob"` // JSON encoded list of (search term,search url) results
-}
-
-// https://ai.google.dev/api/generate-content?hl=en#RetrievalMetadata
-type retrievalMetadata struct {
-	GoogleSearchDynamicRetrievalScore float64 `json:"googleSearchDynamicRetrievalScore"`
-}
-
-// https://ai.google.dev/api/generate-content?hl=en#v1beta.SafetyRating
-type safetyRating struct {
-	// https://ai.google.dev/api/generate-content?hl=en#v1beta.HarmCategory
-	Category string `json:"category"`
-	// https://ai.google.dev/api/generate-content?hl=en#HarmProbability
-	Probability string `json:"probability"`
-	Blocked     bool   `json:"blocked"`
-}
-
-// https://ai.google.dev/api/generate-content?hl=en#UsageMetadata
-type generateContentUsageMetadata struct {
-	PromptTokenCount           int64                `json:"promptTokenCount"`
-	CachedContentTokenCount    int64                `json:"cachedContentTokenCount"`
-	CandidatesTokenCount       int64                `json:"candidatesTokenCount"`
-	ToolUsePromptTokenCount    int64                `json:"toolUsePromptTokenCount"`
-	ThoughtsTokenCount         int64                `json:"thoughtsTokenCount"`
-	TotalTokenCount            int64                `json:"totalTokenCount"`
-	PromptTokensDetails        []modalityTokenCount `json:"promptTokensDetails"`
-	CacheTokensDetails         []modalityTokenCount `json:"cacheTokensDetails"`
-	CandidatesTokensDetails    []modalityTokenCount `json:"candidatesTokensDetails"`
-	ToolUsePromptTokensDetails []modalityTokenCount `json:"toolUsePromptTokensDetails"`
+type CompletionResponse struct {
+	// https://ai.google.dev/api/generate-content?hl=en#v1beta.Candidate
+	Candidates []struct {
+		Content Content `json:"content"`
+		// https://ai.google.dev/api/generate-content?hl=en#FinishReason
+		FinishReason string `json:"finishReason"`
+		// https://ai.google.dev/api/generate-content?hl=en#v1beta.SafetyRating
+		SafetyRatings []struct {
+			// https://ai.google.dev/api/generate-content?hl=en#v1beta.HarmCategory
+			Category string `json:"category"`
+			// https://ai.google.dev/api/generate-content?hl=en#HarmProbability
+			Probability string `json:"probability"`
+			Blocked     bool   `json:"blocked"`
+		} `json:"safetyRatings"`
+		// https://ai.google.dev/api/generate-content?hl=en#v1beta.CitationMetadata
+		CitationMetadata struct {
+			// https://ai.google.dev/api/generate-content?hl=en#CitationSource
+			CitationSources []struct {
+				StartIndex int64  `json:"startIndex"`
+				EndIndex   int64  `json:"endIndex"`
+				URI        string `json:"uri"`
+				License    string `json:"license"`
+			} `json:"citaionSources"`
+		} `json:"citationMetadata"`
+		TokenCount int64 `json:"tokenCount"`
+		// https://ai.google.dev/api/generate-content?hl=en#GroundingAttribution
+		GroundingAttributions []struct {
+			SourceID string  `json:"sourceId"`
+			Countent Content `json:"countent"`
+		} `json:"groundingAttributions"`
+		// https://ai.google.dev/api/generate-content?hl=en#GroundingMetadata
+		GroundingMetadata struct {
+			// https://ai.google.dev/api/generate-content?hl=en#GroundingChunk
+			GroundingChuncks []struct {
+				// https://ai.google.dev/api/generate-content?hl=en#Web
+				Web struct {
+					URI   string `json:"uri"`
+					Title string `json:"title"`
+				} `json:"web"`
+			} `json:"groundingChuncks"`
+			// https://ai.google.dev/api/generate-content?hl=en#GroundingSupport
+			GroundingSupports []struct {
+				GroundingChunkIndices []int64   `json:"groundingChunkIndices"`
+				ConfidenceScores      []float64 `json:"confidenceScores"`
+				// https://ai.google.dev/api/generate-content?hl=en#Segment
+				Segment struct {
+					PartIndex  int64  `json:"partIndex"`
+					StartIndex int64  `json:"startIndex"`
+					EndIndex   int64  `json:"endIndex"`
+					Text       string `json:"text"`
+				} `json:"segment"`
+			} `json:"groundingSupports"`
+			WebSearchQueries []string `json:"webSearchQueries"`
+			// https://ai.google.dev/api/generate-content?hl=en#SearchEntryPoint
+			SearchEntryPoint struct {
+				RenderedContent string `json:"renderedContent"`
+				SDKBlob         []byte `json:"sdkBlob"` // JSON encoded list of (search term,search url) results
+			} `json:"searchEntryPoint"`
+			// https://ai.google.dev/api/generate-content?hl=en#RetrievalMetadata
+			RetrievalMetadata struct {
+				GoogleSearchDynamicRetrievalScore float64 `json:"googleSearchDynamicRetrievalScore"`
+			} `json:"retrievalMetadata"`
+		} `json:"groundingMetadata"`
+		AvgLogprobs    float64 `json:"avgLogprobs"`
+		LogprobsResult any     `json:"logprobsResult"`
+		Index          int64   `json:"index"`
+	} `json:"candidates"`
+	PromptFeedback any `json:"promptFeedback,omitempty"`
+	// https://ai.google.dev/api/generate-content?hl=en#UsageMetadata
+	UsageMetadata struct {
+		PromptTokenCount           int64                `json:"promptTokenCount"`
+		CachedContentTokenCount    int64                `json:"cachedContentTokenCount"`
+		CandidatesTokenCount       int64                `json:"candidatesTokenCount"`
+		ToolUsePromptTokenCount    int64                `json:"toolUsePromptTokenCount"`
+		ThoughtsTokenCount         int64                `json:"thoughtsTokenCount"`
+		TotalTokenCount            int64                `json:"totalTokenCount"`
+		PromptTokensDetails        []ModalityTokenCount `json:"promptTokensDetails"`
+		CacheTokensDetails         []ModalityTokenCount `json:"cacheTokensDetails"`
+		CandidatesTokensDetails    []ModalityTokenCount `json:"candidatesTokensDetails"`
+		ToolUsePromptTokensDetails []ModalityTokenCount `json:"toolUsePromptTokensDetails"`
+	} `json:"usageMetadata"`
+	ModelVersion string `json:"modelVersion"`
 }
 
 // https://ai.google.dev/api/generate-content?hl=en#v1beta.ModalityTokenCount
-type modalityTokenCount struct {
+type ModalityTokenCount struct {
 	// https://ai.google.dev/api/generate-content?hl=en#v1beta.ModalityTokenCount
 	Modality   string `json:"modality"` // MODALITY_UNSPECIFIED, TEXT, IMAGE, AUDIO
 	TokenCount int64  `json:"tokenCount"`
@@ -307,20 +281,20 @@ type modalityTokenCount struct {
 
 // https://ai.google.dev/api/caching?hl=en#request-body
 type cachedContentRequest struct {
-	Contents          []content  `json:"contents"`
-	Tools             []tool     `json:"tools,omitempty"`
+	Contents          []Content  `json:"contents"`
+	Tools             []Tool     `json:"tools,omitempty"`
 	Expiration        expiration `json:"expiration,omitempty"`
 	Name              string     `json:"name,omitempty"`
 	DisplayName       string     `json:"displayName,omitempty"`
 	Model             string     `json:"model"`
-	SystemInstruction content    `json:"systemInstruction"`
-	ToolConfig        toolConfig `json:"toolConfig,omitempty"`
+	SystemInstruction Content    `json:"systemInstruction"`
+	ToolConfig        ToolConfig `json:"toolConfig,omitempty"`
 }
 
 // https://ai.google.dev/api/caching?hl=en#CachedContent
 type cacheContentResponse struct {
-	Contents          []content            `json:"contents"`
-	Tools             []tool               `json:"tools,omitempty"`
+	Contents          []Content            `json:"contents"`
+	Tools             []Tool               `json:"tools,omitempty"`
 	CreateTime        string               `json:"createTime"`
 	UpdateTime        string               `json:"updateTime"`
 	UsageMetadata     cachingUsageMetadata `json:"usageMetadata"`
@@ -328,8 +302,8 @@ type cacheContentResponse struct {
 	Name              string               `json:"name"`
 	DisplayName       string               `json:"displayName"`
 	Model             string               `json:"model"`
-	SystemInstruction content              `json:"systemInstruction"`
-	ToolConfig        toolConfig           `json:"toolConfig,omitzero"`
+	SystemInstruction Content              `json:"systemInstruction"`
+	ToolConfig        ToolConfig           `json:"toolConfig,omitzero"`
 }
 
 type expiration struct {
@@ -385,13 +359,13 @@ func (c *Client) cacheContent(ctx context.Context, data []byte, mime, systemInst
 	in := cachedContentRequest{
 		// This requires a pinned model, with trailing -001.
 		Model: "models/" + c.Model,
-		Contents: []content{
+		Contents: []Content{
 			{
-				Parts: []part{{InlineData: blob{MimeType: mime, Data: data}}},
+				Parts: []Part{{InlineData: Blob{MimeType: mime, Data: data}}},
 				Role:  "user",
 			},
 		},
-		SystemInstruction: content{Parts: []part{{Text: systemInstruction}}},
+		SystemInstruction: Content{Parts: []Part{{Text: systemInstruction}}},
 		Expiration: expiration{
 			TTL: "120s",
 		},
@@ -414,9 +388,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 }
 
 func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, context []byte) (string, error) {
-	// https://ai.google.dev/api/generate-content?hl=en#text_gen_text_only_prompt-SHELL
-	url := "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":generateContent?key=" + c.ApiKey
-	in := generateContentRequest{}
+	in := CompletionRequest{}
 	sp, err := c.initPrompt(&in, msgs)
 	if err != nil {
 		return "", err
@@ -433,10 +405,10 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message,
 			in.CachedContent = cacheName
 		} else {
 			// It's stronger when put there.
-			in.SystemInstruction = content{Parts: []part{{Text: sp}}}
-			in.Contents = append([]content{
+			in.SystemInstruction = Content{Parts: []Part{{Text: sp}}}
+			in.Contents = append([]Content{
 				{
-					Parts: []part{{InlineData: blob{MimeType: "text/plain", Data: context}}},
+					Parts: []Part{{InlineData: Blob{MimeType: "text/plain", Data: context}}},
 					Role:  "user",
 				},
 			}, in.Contents...)
@@ -453,8 +425,8 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message,
 		return "", fmt.Errorf("unsupported options type %T", opts)
 	}
 
-	out := generateContentResponse{}
-	if err := c.post(ctx, url, &in, &out); err != nil {
+	out := CompletionResponse{}
+	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
 		return "", err
 	}
 	if len(out.Candidates) != 1 {
@@ -466,7 +438,13 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message,
 	return t, nil
 }
 
-func (c *Client) initPrompt(r *generateContentRequest, msgs []genaiapi.Message) (string, error) {
+func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
+	// https://ai.google.dev/api/generate-content?hl=en#text_gen_text_only_prompt-SHELL
+	url := "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":generateContent?key=" + c.ApiKey
+	return c.post(ctx, url, in, out)
+}
+
+func (c *Client) initPrompt(r *CompletionRequest, msgs []genaiapi.Message) (string, error) {
 	state := 0
 	sp := ""
 	for i, m := range msgs {
@@ -479,10 +457,10 @@ func (c *Client) initPrompt(r *generateContentRequest, msgs []genaiapi.Message) 
 			state = 1
 		case genaiapi.Assistant:
 			state = 1
-			r.Contents = append(r.Contents, content{Parts: []part{{Text: m.Content}}, Role: "model"})
+			r.Contents = append(r.Contents, Content{Parts: []Part{{Text: m.Content}}, Role: "model"})
 		case genaiapi.User:
 			state = 1
-			r.Contents = append(r.Contents, content{Parts: []part{{Text: m.Content}}, Role: "user"})
+			r.Contents = append(r.Contents, Content{Parts: []Part{{Text: m.Content}}, Role: "user"})
 		default:
 			return sp, fmt.Errorf("unexpected role %q", m.Role)
 		}

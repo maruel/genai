@@ -32,9 +32,8 @@ type healthResponse struct {
 }
 
 // https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
-
-type completionRequest struct {
-	// TODO: Can be a string, a list of tokens or a mix.
+type CompletionRequest struct {
+	// TODO: Prompt can be a string, a list of tokens or a mix.
 	Prompt              string   `json:"prompt"`
 	Temperature         float64  `json:"temperature,omitempty"`
 	DynaTempRange       float64  `json:"dynatemp_range,omitempty"`
@@ -143,9 +142,9 @@ type completionRequest struct {
 		"lora": []
 	}
 */
-type generationSettings map[string]any
+type GenerationSettings map[string]any
 
-type completionResponse struct {
+type CompletionResponse struct {
 	Index              int64              `json:"index"`
 	Content            string             `json:"content"`
 	Tokens             []int64            `json:"tokens"`
@@ -154,7 +153,7 @@ type completionResponse struct {
 	Model              string             `json:"model"`
 	TokensPredicted    int64              `json:"tokens_predicted"`
 	TokensEvaluated    int64              `json:"tokens_evaluated"`
-	GenerationSettings generationSettings `json:"generation_settings"`
+	GenerationSettings GenerationSettings `json:"generation_settings"`
 	Prompt             string             `json:"prompt"`
 	HasNewLine         bool               `json:"has_new_line"`
 	Truncated          bool               `json:"truncated"`
@@ -257,7 +256,7 @@ type Client struct {
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
 	// https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
-	in := completionRequest{}
+	in := CompletionRequest{}
 	switch v := opts.(type) {
 	case *genaiapi.CompletionOptions:
 		in.NPredict = v.MaxTokens
@@ -272,8 +271,8 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	if err := c.initPrompt(ctx, &in, msgs); err != nil {
 		return "", err
 	}
-	out := completionResponse{}
-	if err := c.post(ctx, c.BaseURL+"/completion", in, &out); err != nil {
+	out := CompletionResponse{}
+	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
 		return "", fmt.Errorf("failed to get llama server response: %w", err)
 	}
 	slog.DebugContext(ctx, "llm", "prompt tok", out.Timings.PromptN, "gen tok", out.Timings.PredictedN, "prompt tok/ms", out.Timings.PromptPerTokenMS, "gen tok/ms", out.Timings.PredictedPerTokenMS)
@@ -281,9 +280,13 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	return strings.ReplaceAll(out.Content, "\u2581", " "), nil
 }
 
+func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
+	return c.post(ctx, c.BaseURL+"/completion", in, out)
+}
+
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
 	start := time.Now()
-	in := completionRequest{Stream: true}
+	in := CompletionRequest{Stream: true}
 	switch v := opts.(type) {
 	case *genaiapi.CompletionOptions:
 		in.NPredict = v.MaxTokens
@@ -461,7 +464,7 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 	return nil
 }
 
-func (c *Client) initPrompt(ctx context.Context, in *completionRequest, msgs []genaiapi.Message) error {
+func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs []genaiapi.Message) error {
 	if c.Encoding == nil {
 		// Use the server to convert the OpenAI style format into a templated form.
 		in2 := applyTemplateRequest{Messages: msgs}

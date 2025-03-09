@@ -39,8 +39,8 @@ type chatCompletionRequest struct {
 
 	// Explicitly Unsupported:
 	// LogitBias           map[string]float64 `json:"logit_bias,omitempty"`
-	// LogProbs            bool               `json:"logprobs,omitzero"`
-	// TopLogProbs         int64                `json:"top_logprobs,omitzero"`     // [0, 20]
+	// Logprobs            bool               `json:"logprobs,omitzero"`
+	// TopLogprobs         int64                `json:"top_logprobs,omitzero"`     // [0, 20]
 	// N                   int64                `json:"n,omitzero"`                // Number of choices
 }
 

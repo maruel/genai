@@ -42,22 +42,22 @@ type messagesRequest struct {
 	TopP          float64  `json:"top_p,omitzero"` // [0, 1]
 	ToolChoice    any      `json:"tool_choice,omitempty"`
 	Tools         any      `json:"tools,omitempty"`
-	LogProbs      bool     `json:"logprobs,omitzero"`
-	TopLogProb    int64    `json:"top_logprobs,omitzero"`
+	Logprobs      bool     `json:"logprobs,omitzero"`
+	TopLogprob    int64    `json:"top_logprobs,omitzero"`
 }
 
 type choice struct {
 	FinishReason string  `json:"finish_reason"`
 	Index        int64   `json:"index"`
 	Message      message `json:"message"`
-	LogProbs     struct {
+	Logprobs     struct {
 		Content []struct {
 			Token       string  `json:"token"`
-			LogProb     float64 `json:"logprob"`
+			Logprob     float64 `json:"logprob"`
 			Bytes       []int64 `json:"bytes"`
-			TopLogProbs []struct {
+			TopLogprobs []struct {
 				Token   string  `json:"token"`
-				LogProb float64 `json:"logprob"`
+				Logprob float64 `json:"logprob"`
 				Bytes   []int64 `json:"bytes"`
 			} `json:"top_logprobs"`
 		} `json:"content"`

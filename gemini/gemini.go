@@ -105,8 +105,8 @@ type generationConfig struct {
 	Seed                       int64    `json:"seed,omitempty"`
 	PresencePenalty            float64  `json:"presencePenalty,omitempty"`
 	FrequencyPenalty           float64  `json:"frequencyPenalty,omitempty"`
-	ResponseLogProbs           bool     `json:"responseLogProbs,omitempty"`
-	LogProbs                   int64    `json:"logProbs,omitempty"`
+	ResponseLogprobs           bool     `json:"responseLogprobs,omitempty"`
+	Logprobs                   int64    `json:"logProbs,omitempty"`
 	EnableEnhancedCivicAnswers bool     `json:"enableEnhancedCivicAnswers,omitempty"`
 	SpeechConfig               any      `json:"speechConfig,omitempty"` // TODO
 	MediaResolution            string   `json:"mediaResolution,omitempty"`
@@ -359,6 +359,10 @@ type errorResponseError struct {
 		Metadata struct {
 			Service string `json:"service"`
 		} `json:"metadata"`
+		FieldViolations []struct {
+			Field       string `json:"field"`
+			Description string `json:"description"`
+		} `json:"fieldViolations"`
 		Locale  string `json:"locale"`
 		Message string `json:"message"`
 	} `json:"details"`
@@ -438,6 +442,8 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message,
 			}, in.Contents...)
 		}
 	}
+	// This doesn't seem to be well supported yet:
+	//    in.GenerationConfig.ResponseLogprobs = true
 	switch v := opts.(type) {
 	case *genaiapi.CompletionOptions:
 		in.GenerationConfig.MaxOutputTokens = v.MaxTokens
@@ -503,6 +509,7 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	case 1:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
+			// It's annoying that Google returns 400 instead of 401 for invalid API key.
 			if herr.StatusCode == http.StatusBadRequest || herr.StatusCode == http.StatusUnauthorized {
 				return fmt.Errorf("%w: error %d (%s): %s You can get a new API key at %s", herr, er.Error.Code, er.Error.Status, er.Error.Message, apiKeyURL)
 			}

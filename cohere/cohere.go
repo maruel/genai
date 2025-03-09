@@ -56,7 +56,7 @@ type chatCompletionRequest struct {
 	PresencePenalty  float64   `json:"presence_penalty,omitzero"`   // [0, 1.0]
 	K                float64   `json:"k,omitzero"`                  // [0, 500.0]
 	P                float64   `json:"p,omitzero"`                  // [0.01, 0.99]
-	LogProbs         bool      `json:"logprobs,omitzero"`
+	Logprobs         bool      `json:"logprobs,omitzero"`
 	ToolChoices      []any     `json:"tool_choices,omitempty"` // TODO
 	StrictTools      bool      `json:"strict_tools,omitzero"`
 }
@@ -99,10 +99,10 @@ type chatCompletionsResponse struct {
 			OutputTokens int64 `json:"output_tokens"`
 		} `json:"tokens"`
 	} `json:"usage"`
-	LogProbs struct {
+	Logprobs []struct {
 		TokenIDs []int64   `json:"token_ids"`
 		Text     string    `json:"text"`
-		LogProbs []float64 `json:"logprobs"`
+		Logprobs []float64 `json:"logprobs"`
 	} `json:"logprobs"`
 }
 

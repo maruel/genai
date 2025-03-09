@@ -38,8 +38,8 @@ type chatCompletionRequest struct {
 	Metadata            map[string]string  `json:"metadata,omitempty"`
 	FrequencyPenalty    float64            `json:"frequency_penalty,omitempty"` // [-2.0, 2.0]
 	LogitBias           map[string]float64 `json:"logit_bias,omitempty"`
-	LogProbs            bool               `json:"logprobs,omitzero"`
-	TopLogProbs         int64              `json:"top_logprobs,omitzero"`     // [0, 20]
+	Logprobs            bool               `json:"logprobs,omitzero"`
+	TopLogprobs         int64              `json:"top_logprobs,omitzero"`     // [0, 20]
 	N                   int64              `json:"n,omitzero"`                // Number of choices
 	Modalities          []string           `json:"modalities,omitempty"`      // text, audio
 	Prediction          any                `json:"prediction,omitempty"`      // TODO
@@ -91,10 +91,22 @@ type choice struct {
 
 type choices struct {
 	// FinishReason is one of "stop", "length", "content_filter" or "tool_calls".
-	FinishReason string `json:"finish_reason"`
-	Index        int64  `json:"index"`
-	Message      choice `json:"message"`
-	Logprobs     any    `json:"logprobs"`
+	FinishReason string   `json:"finish_reason"`
+	Index        int64    `json:"index"`
+	Message      choice   `json:"message"`
+	Logprobs     logprobs `json:"logprobs"`
+}
+
+type logprobs struct {
+	Content []struct {
+		Token       string  `json:"token"`
+		Logprob     float64 `json:"logprob"`
+		Bytes       []int   `json:"bytes"`
+		TopLogprobs []struct {
+			TODO string `json:"todo"`
+		} `json:"top_logprobs"`
+	} `json:"content"`
+	Refusal string `json:"refusal"`
 }
 
 // chatCompletionsStreamResponse is not documented?
@@ -116,9 +128,9 @@ type chatCompletionsStreamResponse struct {
 type streamChoices struct {
 	Delta openAIStreamDelta `json:"delta"`
 	// FinishReason is one of null, "stop", "length", "content_filter" or "tool_calls".
-	FinishReason string `json:"finish_reason"`
-	Index        int64  `json:"index"`
-	Logprobs     any    `json:"logprobs"`
+	FinishReason string   `json:"finish_reason"`
+	Index        int64    `json:"index"`
+	Logprobs     logprobs `json:"logprobs"`
 }
 
 type openAIStreamDelta struct {
@@ -154,7 +166,7 @@ type Client struct {
 }
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
-	in := chatCompletionRequest{Model: c.Model, Messages: msgs}
+	in := chatCompletionRequest{Model: c.Model, Messages: msgs, Logprobs: true}
 	switch v := opts.(type) {
 	case *genaiapi.CompletionOptions:
 		in.MaxTokens = v.MaxTokens
@@ -175,7 +187,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
 	start := time.Now()
-	in := chatCompletionRequest{Model: c.Model, Messages: msgs, Stream: true}
+	in := chatCompletionRequest{Model: c.Model, Messages: msgs, Stream: true, Logprobs: true}
 	switch v := opts.(type) {
 	case *genaiapi.CompletionOptions:
 		in.MaxTokens = v.MaxTokens

@@ -43,6 +43,41 @@ type CompletionRequest struct {
 	TopP          float64   `json:"top_p,omitzero"` // [0, 1]
 }
 
+func (c *CompletionRequest) fromOpts(opts any) error {
+	switch v := opts.(type) {
+	case *genaiapi.CompletionOptions:
+		c.MaxToks = v.MaxTokens
+		c.Temperature = v.Temperature
+		if v.Seed != 0 {
+			return errors.New("seed is not supported")
+		}
+	default:
+		return fmt.Errorf("unsupported options type %T", opts)
+	}
+	if c.MaxToks == 0 {
+		// TODO: Query the model. Anthropic requires a value! Use the lowest common denominator for now.
+		c.MaxToks = 4096
+	}
+	return nil
+}
+
+func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
+	for _, m := range msgs {
+		switch m.Role {
+		case genaiapi.System:
+			if c.System != "" {
+				return errors.New("only one system message is supported")
+			}
+			c.System = m.Content
+		case genaiapi.User, genaiapi.Assistant:
+			c.Messages = append(c.Messages, Message{Role: m.Role, Content: m.Content})
+		default:
+			return fmt.Errorf("unsupported role %v", m.Role)
+		}
+	}
+	return nil
+}
+
 type CompletionResponse struct {
 	Content []struct {
 		Type      string `json:"type"`
@@ -122,32 +157,11 @@ type Client struct {
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
 	// https://docs.anthropic.com/en/api/messages
 	in := CompletionRequest{Model: c.Model, Messages: make([]Message, 0, len(msgs))}
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		in.MaxToks = v.MaxTokens
-		in.Temperature = v.Temperature
-		if v.Seed != 0 {
-			return "", errors.New("seed is not supported")
-		}
-	default:
-		return "", fmt.Errorf("unsupported options type %T", opts)
+	if err := in.fromOpts(opts); err != nil {
+		return "", err
 	}
-	if in.MaxToks == 0 {
-		// TODO: Query the model. Anthropic requires a value!
-		in.MaxToks = 8192
-	}
-	for _, m := range msgs {
-		switch m.Role {
-		case genaiapi.System:
-			if in.System != "" {
-				return "", errors.New("only one system message is supported")
-			}
-			in.System = m.Content
-		case genaiapi.User, genaiapi.Assistant:
-			in.Messages = append(in.Messages, Message{Role: m.Role, Content: m.Content})
-		default:
-			return "", fmt.Errorf("unsupported role %v", m.Role)
-		}
+	if err := in.fromMsgs(msgs); err != nil {
+		return "", err
 	}
 	out := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
@@ -157,37 +171,19 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
+	if err := c.validate(true); err != nil {
+		return err
+	}
 	return c.post(ctx, "https://api.anthropic.com/v1/messages", in, out)
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
 	in := CompletionRequest{Model: c.Model, Messages: make([]Message, 0, len(msgs)), Stream: true}
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		in.MaxToks = v.MaxTokens
-		in.Temperature = v.Temperature
-		if v.Seed != 0 {
-			return errors.New("seed is not supported")
-		}
-	default:
-		return fmt.Errorf("unsupported options type %T", opts)
+	if err := in.fromOpts(opts); err != nil {
+		return err
 	}
-	if in.MaxToks == 0 {
-		// TODO: Query the model. Anthropic requires a value!
-		in.MaxToks = 8192
-	}
-	for _, m := range msgs {
-		switch m.Role {
-		case genaiapi.System:
-			if in.System != "" {
-				return errors.New("only one system message is supported")
-			}
-			in.System = m.Content
-		case genaiapi.User, genaiapi.Assistant:
-			in.Messages = append(in.Messages, Message{Role: m.Role, Content: m.Content})
-		default:
-			return fmt.Errorf("unsupported role %v", m.Role)
-		}
+	if err := in.fromMsgs(msgs); err != nil {
+		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
 	end := make(chan struct{})
@@ -216,6 +212,9 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
+	if err := c.validate(true); err != nil {
+		return err
+	}
 	h := make(http.Header)
 	h.Set("x-api-key", c.ApiKey)
 	h.Set("anthropic-version", "2023-06-01")
@@ -278,10 +277,39 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message,
 	return "", errors.New("not implemented")
 }
 
-func (c *Client) post(ctx context.Context, url string, in, out any) error {
+type Model struct {
+	CreatedAt   time.Time `json:"created_at"`
+	DisplayName string    `json:"display_name"`
+	ID          string    `json:"id"`
+	Type        string    `json:"type"`
+}
+
+func (c *Client) ListModels(ctx context.Context) ([]Model, error) {
+	// https://docs.anthropic.com/en/api/models-list
+	h := make(http.Header)
+	h.Set("x-api-key", c.ApiKey)
+	h.Set("anthropic-version", "2023-06-01")
+	var out struct {
+		Data    []Model `json:"data"`
+		FirstID string  `json:"first_id"`
+		HasMore bool    `json:"has_more"`
+		LastID  string  `json:"last_id"`
+	}
+	err := httpjson.DefaultClient.Get(ctx, "https://api.anthropic.com/v1/models?limit=1000", h, &out)
+	return out.Data, err
+}
+
+func (c *Client) validate(needModel bool) error {
 	if c.ApiKey == "" {
 		return errors.New("anthropic ApiKey is required; get one at " + apiKeyURL)
 	}
+	if needModel && c.Model == "" {
+		return errors.New("a Model is required")
+	}
+	return nil
+}
+
+func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	h := make(http.Header)
 	h.Set("x-api-key", c.ApiKey)
 	h.Set("anthropic-version", "2023-06-01")

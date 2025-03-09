@@ -57,6 +57,23 @@ type CompletionRequest struct {
 	User              string   `json:"user,omitzero"`
 }
 
+func (c *CompletionRequest) fromOpts(opts any) error {
+	switch v := opts.(type) {
+	case *genaiapi.CompletionOptions:
+		c.MaxTokens = v.MaxTokens
+		c.Seed = v.Seed
+		c.Temperature = v.Temperature
+	default:
+		return fmt.Errorf("unsupported options type %T", opts)
+	}
+	return nil
+}
+
+func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
+	c.Messages = msgs
+	return nil
+}
+
 // CompletionResponse is documented at
 // https://platform.openai.com/docs/api-reference/chat/object
 type CompletionResponse struct {
@@ -159,14 +176,12 @@ type Client struct {
 }
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
-	in := CompletionRequest{Model: c.Model, Messages: msgs}
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		in.MaxTokens = v.MaxTokens
-		in.Seed = v.Seed
-		in.Temperature = v.Temperature
-	default:
-		return "", fmt.Errorf("unsupported options type %T", opts)
+	in := CompletionRequest{Model: c.Model}
+	if err := in.fromOpts(opts); err != nil {
+		return "", err
+	}
+	if err := in.fromMsgs(msgs); err != nil {
+		return "", err
 	}
 	out := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
@@ -183,14 +198,12 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
-	in := CompletionRequest{Model: c.Model, Messages: msgs, Stream: true}
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		in.MaxTokens = v.MaxTokens
-		in.Seed = v.Seed
-		in.Temperature = v.Temperature
-	default:
-		return fmt.Errorf("unsupported options type %T", opts)
+	in := CompletionRequest{Model: c.Model, Stream: true}
+	if err := in.fromOpts(opts); err != nil {
+		return err
+	}
+	if err := in.fromMsgs(msgs); err != nil {
+		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
 	end := make(chan struct{})
@@ -266,6 +279,26 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 
 func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, content []byte) (string, error) {
 	return "", errors.New("not implemented")
+}
+
+// https://platform.openai.com/docs/api-reference/models/object
+type Model struct {
+	ID      string `json:"id"`
+	Object  string `json:"object"`
+	Created int64  `json:"created"`
+	OwnedBy string `json:"owned_by"`
+}
+
+func (c *Client) ListModels(ctx context.Context) ([]Model, error) {
+	// https://platform.openai.com/docs/api-reference/models/list
+	h := make(http.Header)
+	h.Add("Authorization", "Bearer "+c.ApiKey)
+	var out struct {
+		Object string  `json:"object"` // list
+		Data   []Model `json:"data"`
+	}
+	err := httpjson.DefaultClient.Get(ctx, "https://api.openai.com/v1/models", h, &out)
+	return out.Data, err
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {

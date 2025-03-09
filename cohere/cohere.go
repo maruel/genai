@@ -66,6 +66,27 @@ type CompletionRequest struct {
 	StrictTools      bool      `json:"strict_tools,omitzero"`
 }
 
+func (c *CompletionRequest) fromOpts(opts any) error {
+	switch v := opts.(type) {
+	case *genaiapi.CompletionOptions:
+		c.MaxTokens = v.MaxTokens
+		c.Seed = v.Seed
+		c.Temperature = v.Temperature
+	default:
+		return fmt.Errorf("unsupported options type %T", opts)
+	}
+	return nil
+}
+
+func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
+	for i, m := range msgs {
+		c.Messages[i].Role = m.Role
+		c.Messages[i].Content.Type = "text"
+		c.Messages[i].Content.Text = m.Content
+	}
+	return nil
+}
+
 type CompletionResponse struct {
 	ID           string `json:"id"`
 	FinishReason string `json:"finish_reason"` // COMPLETE, STOP_SEQUENCe, MAX_TOKENS, TOOL_CALL, ERROR
@@ -180,18 +201,11 @@ type Client struct {
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
 	// https://docs.cohere.com/reference/chat
 	in := CompletionRequest{Model: c.Model, Messages: make([]Message, len(msgs))}
-	for i, m := range msgs {
-		in.Messages[i].Role = m.Role
-		in.Messages[i].Content.Type = "text"
-		in.Messages[i].Content.Text = m.Content
+	if err := in.fromOpts(opts); err != nil {
+		return "", err
 	}
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		in.MaxTokens = v.MaxTokens
-		in.Seed = v.Seed
-		in.Temperature = v.Temperature
-	default:
-		return "", fmt.Errorf("unsupported options type %T", opts)
+	if err := in.fromMsgs(msgs); err != nil {
+		return "", err
 	}
 	out := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
@@ -206,18 +220,11 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
 	in := CompletionRequest{Model: c.Model, Messages: make([]Message, len(msgs)), Stream: true}
-	for i, m := range msgs {
-		in.Messages[i].Role = m.Role
-		in.Messages[i].Content.Type = "text"
-		in.Messages[i].Content.Text = m.Content
+	if err := in.fromOpts(opts); err != nil {
+		return err
 	}
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		in.MaxTokens = v.MaxTokens
-		in.Seed = v.Seed
-		in.Temperature = v.Temperature
-	default:
-		return fmt.Errorf("unsupported options type %T", opts)
+	if err := in.fromMsgs(msgs); err != nil {
+		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
 	end := make(chan struct{})
@@ -265,6 +272,9 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		switch {
 		case bytes.HasPrefix(line, []byte(dataPrefix)):
 			suffix := string(line[len(dataPrefix):])
+			if suffix == "[DONE]" {
+				return nil
+			}
 			d := json.NewDecoder(strings.NewReader(suffix))
 			d.DisallowUnknownFields()
 			d.UseNumber()
@@ -290,6 +300,29 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 
 func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, content []byte) (string, error) {
 	return "", errors.New("not implemented")
+}
+
+type Model struct {
+	Name             string   `json:"name"`
+	Endpoints        []string `json:"endpoints"` // chat, embed, classify, summarize, rerank, rate, generate
+	Features         []string `json:"features"`  // json_mode, json_schema, safety_modes, strict_tools, tools
+	Finetuned        bool     `json:"finetuned"`
+	ContextLength    int64    `json:"context_length"`
+	TokenizerURL     string   `json:"tokenizer_url"`
+	SupportsVision   bool     `json:"supports_vision"`
+	DefaultEndpoints []string `json:"default_endpoints"`
+}
+
+func (c *Client) ListModels(ctx context.Context) ([]Model, error) {
+	// https://docs.cohere.com/reference/list-models
+	h := make(http.Header)
+	h.Add("Authorization", "Bearer "+c.ApiKey)
+	var out struct {
+		Models        []Model `json:"models"`
+		NextPageToken string  `json:"next_page_token"`
+	}
+	err := httpjson.DefaultClient.Get(ctx, "https://api.cohere.com/v1/models?page_size=1000", h, &out)
+	return out.Models, err
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {

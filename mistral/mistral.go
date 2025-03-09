@@ -40,6 +40,23 @@ type CompletionRequest struct {
 	SafePrompt       bool               `json:"safe_prompt,omitzero"`
 }
 
+func (c *CompletionRequest) fromOpts(opts any) error {
+	switch v := opts.(type) {
+	case *genaiapi.CompletionOptions:
+		c.MaxTokens = v.MaxTokens
+		c.RandomSeed = v.Seed
+		c.Temperature = v.Temperature
+	default:
+		return fmt.Errorf("unsupported options type %T", opts)
+	}
+	return nil
+}
+
+func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
+	c.Messages = msgs
+	return nil
+}
+
 type CompletionResponse struct {
 	ID      string `json:"id"`
 	Object  string `json:"object"` // chat.completion
@@ -142,14 +159,12 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	if err := c.validate(); err != nil {
 		return "", err
 	}
-	in := CompletionRequest{Model: c.Model, Messages: msgs}
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		in.MaxTokens = v.MaxTokens
-		in.RandomSeed = v.Seed
-		in.Temperature = v.Temperature
-	default:
-		return "", fmt.Errorf("unsupported options type %T", opts)
+	in := CompletionRequest{Model: c.Model}
+	if err := in.fromOpts(opts); err != nil {
+		return "", err
+	}
+	if err := in.fromMsgs(msgs); err != nil {
+		return "", err
 	}
 	out := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
@@ -169,14 +184,12 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 	if err := c.validate(); err != nil {
 		return err
 	}
-	in := CompletionRequest{Model: c.Model, Messages: msgs, Stream: true}
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		in.MaxTokens = v.MaxTokens
-		in.RandomSeed = v.Seed
-		in.Temperature = v.Temperature
-	default:
-		return fmt.Errorf("unsupported options type %T", opts)
+	in := CompletionRequest{Model: c.Model, Stream: true}
+	if err := in.fromOpts(opts); err != nil {
+		return err
+	}
+	if err := in.fromMsgs(msgs); err != nil {
+		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
 	end := make(chan struct{})
@@ -247,6 +260,40 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message,
 		return "", err
 	}
 	return "", errors.New("not implemented")
+}
+
+// https://docs.mistral.ai/api/#tag/models/operation/retrieve_model_v1_models__model_id__get
+type Model struct {
+	ID           string `json:"id"`
+	Object       string `json:"object"`
+	Created      int64  `json:"created"`
+	OwnedBy      string `json:"owned_by"`
+	Capabilities struct {
+		CompletionChat  bool `json:"completion_chat"`
+		CompletionFim   bool `json:"completion_fim"`
+		FunctionCalling bool `json:"function_calling"`
+		FineTuning      bool `json:"fine_tuning"`
+		Vision          bool `json:"vision"`
+	} `json:"capabilities"`
+	Name                    string   `json:"name"`
+	Description             string   `json:"description"`
+	MaxContextLength        int64    `json:"max_context_length"`
+	Aliases                 []string `json:"aliases"`
+	Deprecation             string   `json:"deprecation"`
+	DefaultModelTemperature float64  `json:"default_model_temperature"`
+	Type                    string   `json:"type"`
+}
+
+func (c *Client) ListModels(ctx context.Context) ([]Model, error) {
+	// https://docs.mistral.ai/api/#tag/models
+	h := make(http.Header)
+	h.Add("Authorization", "Bearer "+c.ApiKey)
+	var out struct {
+		Object string  `json:"object"` // list
+		Data   []Model `json:"data"`
+	}
+	err := httpjson.DefaultClient.Get(ctx, "https://api.mistral.ai/v1/models", h, &out)
+	return out.Data, err
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {

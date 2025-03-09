@@ -189,6 +189,44 @@ type CompletionRequest struct {
 	CachedContent     string           `json:"cachedContent,omitempty"`
 }
 
+func (c *CompletionRequest) fromOpts(opts any) error {
+	// This doesn't seem to be well supported yet:
+	//    in.GenerationConfig.ResponseLogprobs = true
+	switch v := opts.(type) {
+	case *genaiapi.CompletionOptions:
+		c.GenerationConfig.MaxOutputTokens = v.MaxTokens
+		c.GenerationConfig.Temperature = v.Temperature
+		c.GenerationConfig.Seed = v.Seed
+	default:
+		return fmt.Errorf("unsupported options type %T", opts)
+	}
+	return nil
+}
+
+func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) (string, error) {
+	state := 0
+	sp := ""
+	for i, m := range msgs {
+		switch m.Role {
+		case genaiapi.System:
+			if state != 0 {
+				return sp, fmt.Errorf("unexpected system message at index %d; state %d", i, state)
+			}
+			sp = m.Content
+			state = 1
+		case genaiapi.Assistant:
+			state = 1
+			c.Contents = append(c.Contents, Content{Parts: []Part{{Text: m.Content}}, Role: "model"})
+		case genaiapi.User:
+			state = 1
+			c.Contents = append(c.Contents, Content{Parts: []Part{{Text: m.Content}}, Role: "user"})
+		default:
+			return sp, fmt.Errorf("unexpected role %q", m.Role)
+		}
+	}
+	return sp, nil
+}
+
 // https://ai.google.dev/api/generate-content?hl=en#v1beta.GenerateContentResponse
 type CompletionResponse struct {
 	// https://ai.google.dev/api/generate-content?hl=en#v1beta.Candidate
@@ -410,19 +448,11 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
 	in := CompletionRequest{}
-	_, err := c.initPrompt(&in, msgs)
-	if err != nil {
+	if err := in.fromOpts(opts); err != nil {
 		return err
 	}
-	// This doesn't seem to be well supported yet:
-	//    in.GenerationConfig.ResponseLogprobs = true
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		in.GenerationConfig.MaxOutputTokens = v.MaxTokens
-		in.GenerationConfig.Temperature = v.Temperature
-		in.GenerationConfig.Seed = v.Seed
-	default:
-		return fmt.Errorf("unsupported options type %T", opts)
+	if _, err := in.fromMsgs(msgs); err != nil {
+		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
 	end := make(chan struct{})
@@ -439,7 +469,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 		}
 		end <- struct{}{}
 	}()
-	err = c.CompletionStreamRaw(ctx, &in, ch)
+	err := c.CompletionStreamRaw(ctx, &in, ch)
 	close(ch)
 	<-end
 	return err
@@ -491,7 +521,10 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 
 func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, context []byte) (string, error) {
 	in := CompletionRequest{}
-	sp, err := c.initPrompt(&in, msgs)
+	if err := in.fromOpts(opts); err != nil {
+		return "", err
+	}
+	sp, err := in.fromMsgs(msgs)
 	if err != nil {
 		return "", err
 	}
@@ -516,16 +549,6 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message,
 			}, in.Contents...)
 		}
 	}
-	// This doesn't seem to be well supported yet:
-	//    in.GenerationConfig.ResponseLogprobs = true
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		in.GenerationConfig.MaxOutputTokens = v.MaxTokens
-		in.GenerationConfig.Temperature = v.Temperature
-		in.GenerationConfig.Seed = v.Seed
-	default:
-		return "", fmt.Errorf("unsupported options type %T", opts)
-	}
 
 	out := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
@@ -540,29 +563,40 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message,
 	return t, nil
 }
 
-func (c *Client) initPrompt(r *CompletionRequest, msgs []genaiapi.Message) (string, error) {
-	state := 0
-	sp := ""
-	for i, m := range msgs {
-		switch m.Role {
-		case genaiapi.System:
-			if state != 0 {
-				return "", fmt.Errorf("unexpected system message at index %d; state %d", i, state)
-			}
-			sp = m.Content
-			state = 1
-		case genaiapi.Assistant:
-			state = 1
-			r.Contents = append(r.Contents, Content{Parts: []Part{{Text: m.Content}}, Role: "model"})
-		case genaiapi.User:
-			state = 1
-			r.Contents = append(r.Contents, Content{Parts: []Part{{Text: m.Content}}, Role: "user"})
-		default:
-			return sp, fmt.Errorf("unexpected role %q", m.Role)
-		}
-	}
-	return sp, nil
+/* TODO
+
+// https://ai.google.dev/api/models#Model
+type Model struct {
+	Name                       string   `json:"name"`
+	BaseModelID                string   `json:"baseModelId"`
+	Version                    string   `json:"version"`
+	DisplayName                string   `json:"displayName"`
+	Description                string   `json:"description"`
+	InputTokenLimit            int64    `json:"inputTokenLimit"`
+	OutputTokenLimit           int64    `json:"outputTokenLimit"`
+	SupportedGenerationMethods []string `json:"supportedGenerationMethods"`
+	Temperature                float64  `json:"temperature"`
+	MaxTemperature             float64  `json:"maxTemperature"`
+	TopP                       float64  `json:"topP"`
+	TopK                       int64    `json:"topK"`
 }
+
+func (c *Client) ListModels(ctx context.Context) ([]Model, error) {
+	// https://ai.google.dev/api/models?hl=en#method:-models.list
+	h := make(http.Header)
+	h.Add("Authorization", "Bearer "+c.ApiKey)
+	var out struct {
+		Models        []Model `json:"models"`
+		NextPageToken string  `json:"nextPageToken"`
+	}
+	err := httpjson.DefaultClient.Get(ctx, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.ApiKey, h, &out)
+	var herr *httpjson.Error
+	if errors.As(err, &herr) {
+		slog.ErrorContext(ctx, "gemini", "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
+	}
+	return out.Models, err
+}
+*/
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	if c.ApiKey == "" {

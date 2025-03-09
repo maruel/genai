@@ -49,6 +49,23 @@ type CompletionRequest struct {
 	// N                   int64                `json:"n,omitzero"`                // Number of choices
 }
 
+func (c *CompletionRequest) fromOpts(opts any) error {
+	switch v := opts.(type) {
+	case *genaiapi.CompletionOptions:
+		c.MaxCompletionTokens = v.MaxTokens
+		c.Seed = v.Seed
+		c.Temperature = v.Temperature
+	default:
+		return fmt.Errorf("unsupported options type %T", opts)
+	}
+	return nil
+}
+
+func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
+	c.Messages = msgs
+	return nil
+}
+
 type CompletionResponse struct {
 	Choices []struct {
 		// FinishReason is one of "stop", "length", "content_filter" or "tool_calls".
@@ -127,14 +144,12 @@ type Client struct {
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
 	// https://console.groq.com/docs/api-reference#chat-create
-	in := CompletionRequest{Model: c.Model, Messages: msgs}
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		in.MaxCompletionTokens = v.MaxTokens
-		in.Seed = v.Seed
-		in.Temperature = v.Temperature
-	default:
-		return "", fmt.Errorf("unsupported options type %T", opts)
+	in := CompletionRequest{Model: c.Model}
+	if err := in.fromOpts(opts); err != nil {
+		return "", err
+	}
+	if err := in.fromMsgs(msgs); err != nil {
+		return "", err
 	}
 	out := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
@@ -151,14 +166,12 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
-	in := CompletionRequest{Model: c.Model, Messages: msgs, Stream: true}
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		in.MaxCompletionTokens = v.MaxTokens
-		in.Seed = v.Seed
-		in.Temperature = v.Temperature
-	default:
-		return fmt.Errorf("unsupported options type %T", opts)
+	in := CompletionRequest{Model: c.Model, Stream: true}
+	if err := in.fromOpts(opts); err != nil {
+		return err
+	}
+	if err := in.fromMsgs(msgs); err != nil {
+		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
 	end := make(chan struct{})
@@ -226,6 +239,32 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 
 func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, content []byte) (string, error) {
 	return "", errors.New("not implemented")
+}
+
+type Model struct {
+	ID            string   `json:"id"`
+	Object        string   `json:"object"`
+	Created       int64    `json:"created"`
+	OwnedBy       string   `json:"owned_by"`
+	Active        bool     `json:"active"`
+	ContextWindow int64    `json:"context_window"`
+	PublicApps    []string `json:"public_apps"`
+}
+
+func (c *Client) ListModels(ctx context.Context) ([]Model, error) {
+	// https://console.groq.com/docs/api-reference#models-list
+	h := make(http.Header)
+	h.Add("Authorization", "Bearer "+c.ApiKey)
+	var out struct {
+		Object string  `json:"object"` // list
+		Data   []Model `json:"data"`
+	}
+	err := httpjson.DefaultClient.Get(ctx, "https://api.groq.com/openai/v1/models", h, &out)
+	var herr *httpjson.Error
+	if errors.As(err, &herr) {
+		slog.ErrorContext(ctx, "gemini", "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
+	}
+	return out.Data, err
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {

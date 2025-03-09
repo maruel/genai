@@ -51,6 +51,32 @@ type CompletionRequest struct {
 	TopLogprob    int64    `json:"top_logprobs,omitzero"`
 }
 
+func (c *CompletionRequest) fromOpts(opts any) error {
+	switch v := opts.(type) {
+	case *genaiapi.CompletionOptions:
+		c.MaxToks = v.MaxTokens
+		c.Temperature = v.Temperature
+		if v.Seed != 0 {
+			return errors.New("seed is not supported")
+		}
+	default:
+		return fmt.Errorf("unsupported options type %T", opts)
+	}
+	return nil
+}
+
+func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
+	for _, m := range msgs {
+		switch m.Role {
+		case genaiapi.System, genaiapi.User, genaiapi.Assistant:
+			c.Messages = append(c.Messages, Message{Role: m.Role, Content: m.Content})
+		default:
+			return fmt.Errorf("unsupported role %v", m.Role)
+		}
+	}
+	return nil
+}
+
 type CompletionResponse struct {
 	ID      string `json:"id"`
 	Choices []struct {
@@ -137,23 +163,11 @@ type Client struct {
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
 	// https://api-docs.deepseek.com/api/create-chat-completion
 	in := CompletionRequest{Model: c.Model, Messages: make([]Message, 0, len(msgs))}
-	for _, m := range msgs {
-		switch m.Role {
-		case genaiapi.System, genaiapi.User, genaiapi.Assistant:
-			in.Messages = append(in.Messages, Message{Role: m.Role, Content: m.Content})
-		default:
-			return "", fmt.Errorf("unsupported role %v", m.Role)
-		}
+	if err := in.fromOpts(opts); err != nil {
+		return "", err
 	}
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		in.MaxToks = v.MaxTokens
-		in.Temperature = v.Temperature
-		if v.Seed != 0 {
-			return "", errors.New("seed is not supported")
-		}
-	default:
-		return "", fmt.Errorf("unsupported options type %T", opts)
+	if err := in.fromMsgs(msgs); err != nil {
+		return "", err
 	}
 	out := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
@@ -168,23 +182,11 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
 	in := CompletionRequest{Model: c.Model, Messages: make([]Message, 0, len(msgs)), Stream: true}
-	for _, m := range msgs {
-		switch m.Role {
-		case genaiapi.System, genaiapi.User, genaiapi.Assistant:
-			in.Messages = append(in.Messages, Message{Role: m.Role, Content: m.Content})
-		default:
-			return fmt.Errorf("unsupported role %v", m.Role)
-		}
+	if err := in.fromOpts(opts); err != nil {
+		return err
 	}
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		in.MaxToks = v.MaxTokens
-		in.Temperature = v.Temperature
-		if v.Seed != 0 {
-			return errors.New("seed is not supported")
-		}
-	default:
-		return fmt.Errorf("unsupported options type %T", opts)
+	if err := in.fromMsgs(msgs); err != nil {
+		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
 	end := make(chan struct{})
@@ -251,6 +253,24 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 
 func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, context []byte) (string, error) {
 	return "", errors.New("not implemented")
+}
+
+type Model struct {
+	ID      string `json:"id"`
+	Object  string `json:"object"` // model
+	OwnedBy string `json:"owned_by"`
+}
+
+func (c *Client) ListModels(ctx context.Context) ([]Model, error) {
+	// https://api-docs.deepseek.com/api/list-models
+	h := make(http.Header)
+	h.Add("Authorization", "Bearer "+c.ApiKey)
+	var out struct {
+		Object string  `json:"object"` // list
+		Data   []Model `json:"data"`
+	}
+	err := httpjson.DefaultClient.Get(ctx, "https://api.deepseek.com/models", h, &out)
+	return out.Data, err
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {

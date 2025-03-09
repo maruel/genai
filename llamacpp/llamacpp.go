@@ -80,6 +80,18 @@ type CompletionRequest struct {
 	Lora                []any    `json:"lora,omitempty"`
 }
 
+func (c *CompletionRequest) fromOpts(opts any) error {
+	switch v := opts.(type) {
+	case *genaiapi.CompletionOptions:
+		c.NPredict = v.MaxTokens
+		c.Seed = v.Seed
+		c.Temperature = v.Temperature
+	default:
+		return fmt.Errorf("unsupported options type %T", opts)
+	}
+	return nil
+}
+
 type CompletionResponse struct {
 	Index              int64   `json:"index"`
 	Content            string  `json:"content"`
@@ -237,18 +249,12 @@ type Client struct {
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
 	// https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
-	in := CompletionRequest{}
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		in.NPredict = v.MaxTokens
-		in.Seed = v.Seed
-		in.Temperature = v.Temperature
-	default:
-		return "", fmt.Errorf("unsupported options type %T", opts)
-	}
-	// Doc mentions it causes non-determinism even if a non-zero seed is
+	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
-	in.CachePrompt = true
+	in := CompletionRequest{CachePrompt: true}
+	if err := in.fromOpts(opts); err != nil {
+		return "", err
+	}
 	if err := c.initPrompt(ctx, &in, msgs); err != nil {
 		return "", err
 	}
@@ -267,18 +273,12 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
 	start := time.Now()
-	in := CompletionRequest{Stream: true}
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		in.NPredict = v.MaxTokens
-		in.Seed = v.Seed
-		in.Temperature = v.Temperature
-	default:
-		return fmt.Errorf("unsupported options type %T", opts)
-	}
-	// Doc mentions it causes non-determinism even if a non-zero seed is
+	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
-	in.CachePrompt = true
+	in := CompletionRequest{CachePrompt: true, Stream: true}
+	if err := in.fromOpts(opts); err != nil {
+		return err
+	}
 	if err := c.initPrompt(ctx, &in, msgs); err != nil {
 		return err
 	}

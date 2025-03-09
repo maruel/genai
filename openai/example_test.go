@@ -39,3 +39,49 @@ func ExampleClient_Completion() {
 	fmt.Println("Hello, world!")
 	// Output: Hello, world!
 }
+
+func ExampleClient_CompletionStream() {
+	if key := os.Getenv("OPENAI_API_KEY"); key != "" {
+		// Using very small model for testing.
+		// See https://platform.openai.com/docs/models
+		c := openai.Client{
+			ApiKey: key,
+			Model:  "gpt-4o-mini",
+		}
+		ctx := context.Background()
+		msgs := []genaiapi.Message{
+			{Role: genaiapi.User, Content: "Say hello. Use only one word."},
+		}
+		words := make(chan string, 10)
+		end := make(chan struct{})
+		go func() {
+			resp := ""
+			for {
+				select {
+				case <-ctx.Done():
+					goto end
+				case w, ok := <-words:
+					if !ok {
+						goto end
+					}
+					resp += w
+				}
+			}
+		end:
+			close(end)
+			if len(resp) < 2 || len(resp) > 100 {
+				log.Fatalf("Unexpected response: %s", resp)
+			}
+		}()
+		opts := genaiapi.CompletionOptions{}
+		err := c.CompletionStream(ctx, msgs, &opts, words)
+		close(words)
+		<-end
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	// Print something so the example runs.
+	fmt.Println("Hello, world!")
+	// Output: Hello, world!
+}

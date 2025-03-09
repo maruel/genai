@@ -15,6 +15,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/genai/llamacpp"
@@ -22,20 +23,23 @@ import (
 )
 
 func ExampleClient_Completion() {
-	// Print something so the example runs.
-	fmt.Println("Hello, world!")
 	// Make sure llama-server is in PATH and export LLAMACPP_MODEL to point to a
 	// model path.
+	// qwen2.5-0.5b-instruct-q3_k_m.gguf works great and is only 412MiB.
 	mdl := os.Getenv("LLAMACPP_MODEL")
 	if mdl == "" {
+		// Make the test pass even if skipped.
+		fmt.Println("Response: Hi")
 		return
 	}
 	svr, _ := exec.LookPath("llama-server")
 	if svr == "" {
+		// Make the test pass even if skipped.
+		fmt.Println("Response: Hi")
 		return
 	}
 	p := strconv.Itoa(findFreePort())
-	cmd := exec.Command(svr, "--port", p, "--model", mdl, "-ngl", "9999")
+	cmd := exec.Command(svr, "--port", p, "--model", mdl)
 	cmd.Dir = filepath.Dir(svr)
 	if err := cmd.Start(); err != nil {
 		log.Fatal(err)
@@ -47,9 +51,9 @@ func ExampleClient_Completion() {
 	c := llamacpp.Client{BaseURL: "http://localhost:" + p}
 	ctx := context.Background()
 	msgs := []genaiapi.Message{
-		{Role: genaiapi.User, Content: "Say hello. Use only one word."},
+		{Role: genaiapi.User, Content: "Say hi. Use only one two letters word."},
 	}
-	opts := genaiapi.CompletionOptions{}
+	opts := genaiapi.CompletionOptions{Seed: 1}
 	for {
 		select {
 		case <-done:
@@ -69,12 +73,108 @@ func ExampleClient_Completion() {
 			fmt.Printf("Got error %T: %s\n", err, err)
 		} else if len(resp) < 2 || len(resp) > 100 {
 			fmt.Printf("Unexpected response: %s\n", resp)
+		} else {
+			// Normalize some of the variance. Obviously many models will still fail this test.
+			resp = strings.TrimSpace(resp)
+			resp = strings.TrimRight(resp, ".")
+			resp = strings.ToLower(resp)
+			resp = strings.ReplaceAll(resp, "hello", "hi")
+			resp = strings.ReplaceAll(resp, "hey", "hi")
+			fmt.Printf("Response: %s\n", resp)
 		}
 		break
 	}
 	cmd.Process.Kill()
 	<-done
-	// Output: Hello, world!
+	// Output: Response: hi
+}
+
+func ExampleClient_CompletionStream() {
+	// Make sure llama-server is in PATH and export LLAMACPP_MODEL to point to a
+	// model path.
+	// qwen2.5-0.5b-instruct-q3_k_m.gguf works great and is only 412MiB.
+	mdl := os.Getenv("LLAMACPP_MODEL")
+	if mdl == "" {
+		// Make the test pass even if skipped.
+		fmt.Println("Response: Hi")
+		return
+	}
+	svr, _ := exec.LookPath("llama-server")
+	if svr == "" {
+		// Make the test pass even if skipped.
+		fmt.Println("Response: Hi")
+		return
+	}
+	p := strconv.Itoa(findFreePort())
+	cmd := exec.Command(svr, "--port", p, "--model", mdl)
+	cmd.Dir = filepath.Dir(svr)
+	if err := cmd.Start(); err != nil {
+		log.Fatal(err)
+	}
+	done := make(chan error, 1)
+	go func() {
+		done <- cmd.Wait()
+	}()
+	c := llamacpp.Client{BaseURL: "http://localhost:" + p}
+	ctx := context.Background()
+	msgs := []genaiapi.Message{
+		{Role: genaiapi.User, Content: "Say hi. Use only one word."},
+	}
+	opts := genaiapi.CompletionOptions{Seed: 1}
+	for {
+		select {
+		case <-done:
+			return
+		default:
+		}
+		words := make(chan string, 10)
+		result := make(chan string)
+		go func() {
+			resp := ""
+			for {
+				select {
+				case <-ctx.Done():
+					goto end
+				case w, ok := <-words:
+					if !ok {
+						goto end
+					}
+					resp += w
+				}
+			}
+		end:
+			result <- resp
+			close(result)
+		}()
+		err := c.CompletionStream(ctx, msgs, &opts, words)
+		close(words)
+		resp := <-result
+		var v *url.Error
+		if errors.As(err, &v) {
+			continue
+		}
+		var h *httpjson.Error
+		if errors.As(err, &h) && h.StatusCode == 503 {
+			continue
+		}
+		if err != nil {
+			fmt.Printf("Got error %T: %s\n", err, err)
+		} else if len(resp) < 2 || len(resp) > 100 {
+			fmt.Printf("Unexpected response: %s\n", resp)
+		} else {
+			// Normalize some of the variance. Obviously many models will still fail this test.
+			resp = strings.TrimSpace(resp)
+			resp = strings.TrimRight(resp, ".")
+			resp = strings.ToLower(resp)
+			resp = strings.ReplaceAll(resp, "hello", "hi")
+			resp = strings.ReplaceAll(resp, "hey", "hi")
+			fmt.Printf("Response: %s\n", resp)
+		}
+		break
+	}
+	cmd.Process.Kill()
+	<-done
+	// Output: Response: hi
 }
 
 func findFreePort() int {

@@ -29,13 +29,13 @@ func ExampleClient_Completion() {
 	mdl := os.Getenv("LLAMACPP_MODEL")
 	if mdl == "" {
 		// Make the test pass even if skipped.
-		fmt.Println("Response: Hi")
+		fmt.Println("Response: hi")
 		return
 	}
 	svr, _ := exec.LookPath("llama-server")
 	if svr == "" {
 		// Make the test pass even if skipped.
-		fmt.Println("Response: Hi")
+		fmt.Println("Response: hi")
 		return
 	}
 	p := strconv.Itoa(findFreePort())
@@ -96,13 +96,13 @@ func ExampleClient_CompletionStream() {
 	mdl := os.Getenv("LLAMACPP_MODEL")
 	if mdl == "" {
 		// Make the test pass even if skipped.
-		fmt.Println("Response: Hi")
+		fmt.Println("Response: hi")
 		return
 	}
 	svr, _ := exec.LookPath("llama-server")
 	if svr == "" {
 		// Make the test pass even if skipped.
-		fmt.Println("Response: Hi")
+		fmt.Println("Response: hi")
 		return
 	}
 	p := strconv.Itoa(findFreePort())

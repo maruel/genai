@@ -80,87 +80,68 @@ type CompletionRequest struct {
 	Lora                []any    `json:"lora,omitempty"`
 }
 
-/*
-	{
-		"n_predict": 10,
-		"seed": 1,
-		"temperature": 0.800000011920929,
-		"dynatemp_range": 0.0,
-		"dynatemp_exponent": 1.0,
-		"top_k": 40,
-		"top_p": 0.949999988079071,
-		"min_p": 0.05000000074505806,
-		"xtc_probability": 0.0,
-		"xtc_threshold": 0.10000000149011612,
-		"typical_p": 1.0,
-		"repeat_last_n": 64,
-		"repeat_penalty": 1.0,
-		"presence_penalty": 0.0,
-		"frequency_penalty": 0.0,
-		"dry_multiplier": 0.0,
-		"dry_base": 1.75,
-		"dry_allowed_length": 2,
-		"dry_penalty_last_n": 4096,
-		"dry_sequence_breakers": [
-			"\n",
-			":",
-			"\"",
-			"*"
-		],
-		"mirostat": 0,
-		"mirostat_tau": 5.0,
-		"mirostat_eta": 0.10000000149011612,
-		"stop": [],
-		"max_tokens": 10,
-		"n_keep": 0,
-		"n_discard": 0,
-		"ignore_eos": false,
-		"stream": false,
-		"logit_bias": [],
-		"n_probs": 0,
-		"min_keep": 0,
-		"grammar": "",
-		"grammar_lazy": false,
-		"grammar_triggers": [],
-		"preserved_tokens": [],
-		"chat_format": "Content-only",
-		"samplers": [
-			"penalties",
-			"dry",
-			"top_k",
-			"typ_p",
-			"top_p",
-			"min_p",
-			"xtc",
-			"temperature"
-		],
-		"speculative.n_max": 16,
-		"speculative.n_min": 0,
-		"speculative.p_min": 0.75,
-		"timings_per_token": false,
-		"post_sampling_probs": false,
-		"lora": []
-	}
-*/
-type GenerationSettings map[string]any
-
 type CompletionResponse struct {
-	Index              int64              `json:"index"`
-	Content            string             `json:"content"`
-	Tokens             []int64            `json:"tokens"`
-	IDSlot             int64              `json:"id_slot"`
-	Stop               bool               `json:"stop"`
-	Model              string             `json:"model"`
-	TokensPredicted    int64              `json:"tokens_predicted"`
-	TokensEvaluated    int64              `json:"tokens_evaluated"`
-	GenerationSettings GenerationSettings `json:"generation_settings"`
-	Prompt             string             `json:"prompt"`
-	HasNewLine         bool               `json:"has_new_line"`
-	Truncated          bool               `json:"truncated"`
-	StopType           string             `json:"stop_type"`
-	StoppingWord       string             `json:"stopping_word"`
-	TokensCached       int64              `json:"tokens_cached"`
-	Timings            struct {
+	Index              int64   `json:"index"`
+	Content            string  `json:"content"`
+	Tokens             []int64 `json:"tokens"`
+	IDSlot             int64   `json:"id_slot"`
+	Stop               bool    `json:"stop"`
+	Model              string  `json:"model"`
+	TokensPredicted    int64   `json:"tokens_predicted"`
+	TokensEvaluated    int64   `json:"tokens_evaluated"`
+	GenerationSettings struct {
+		NPredict            int64    `json:"n_predict"`
+		Seed                int64    `json:"seed"`
+		Temperature         float64  `json:"temperature"`
+		DynaTempRange       float64  `json:"dynatemp_range"`
+		DynaTempExponent    float64  `json:"dynatemp_exponent"`
+		TopK                int64    `json:"top_k"`
+		TopP                float64  `json:"top_p"`
+		MinP                float64  `json:"min_p"`
+		XTCProbability      float64  `json:"xtc_probability"`
+		XTCThreshold        float64  `json:"xtc_threshold"`
+		TypicalP            float64  `json:"typical_p"`
+		RepeatLastN         int64    `json:"repeat_last_n"`
+		RepeatPenalty       float64  `json:"repeat_penalty"`
+		PresencePenalty     float64  `json:"presence_penalty"`
+		FrequencyPenalty    float64  `json:"frequency_penalty"`
+		DryMultiplier       float64  `json:"dry_multiplier"`
+		DryBase             float64  `json:"dry_base"`
+		DryAllowedLength    int64    `json:"dry_allowed_length"`
+		DryPenaltyLastN     int64    `json:"dry_penalty_last_n"`
+		DrySequenceBreakers []string `json:"dry_sequence_breakers"`
+		Mirostat            int32    `json:"mirostat"`
+		MirostatTau         float64  `json:"mirostat_tau"`
+		MirostatEta         float64  `json:"mirostat_eta"`
+		Stop                []string `json:"stop"`
+		MaxTokens           int64    `json:"max_tokens"`
+		NKeep               int64    `json:"n_keep"`
+		NDiscard            int64    `json:"n_discard"`
+		IgnoreEos           bool     `json:"ignore_eos"`
+		Stream              bool     `json:"stream"`
+		LogitBias           []any    `json:"logit_bias"`
+		NProbs              int64    `json:"n_probs"`
+		MinKeep             int64    `json:"min_keep"`
+		Grammar             string   `json:"grammar"`
+		GrammarLazy         bool     `json:"grammar_lazy"`
+		GrammarTriggers     []string `json:"grammar_triggers"`
+		PreservedTokens     []string `json:"preserved_tokens"`
+		ChatFormat          string   `json:"chat_format"`
+		Samplers            []string `json:"samplers"`
+		SpeculativeNMax     int64    `json:"speculative.n_max"`
+		SpeculativeNMin     int64    `json:"speculative.n_min"`
+		SpeculativePMin     float64  `json:"speculative.p_min"`
+		TimingsPerToken     bool     `json:"timings_per_token"`
+		PostSamplingProbs   bool     `json:"post_sampling_probs"`
+		Lora                []any    `json:"lora"`
+	} `json:"generation_settings"`
+	Prompt       string `json:"prompt"`
+	HasNewLine   bool   `json:"has_new_line"`
+	Truncated    bool   `json:"truncated"`
+	StopType     string `json:"stop_type"`
+	StoppingWord string `json:"stopping_word"`
+	TokensCached int64  `json:"tokens_cached"`
+	Timings      struct {
 		PromptN             int64   `json:"prompt_n"`
 		PromptMS            float64 `json:"prompt_ms"`
 		PromptPerTokenMS    float64 `json:"prompt_per_token_ms"`

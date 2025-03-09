@@ -14,21 +14,21 @@ import (
 	"github.com/maruel/genai/genaiapi"
 )
 
+var (
+	key = os.Getenv("DEEPSEEK_API_KEY")
+	// DeepSeek doesn't have a small model. It's also quite slow (often 10s)
+	// compared to other service providers.
+	// See https://api-docs.deepseek.com/quick_start/pricing
+	model = "deepseek-chat"
+)
+
 func ExampleClient_Completion() {
-	if key := os.Getenv("DEEPSEEK_API_KEY"); key != "" {
-		// DeepSeek doesn't have a small model. It's also quite slow (often 10s)
-		// compared to other service providers.
-		// See https://api-docs.deepseek.com/quick_start/pricing
-		c := deepseek.Client{
-			ApiKey: key,
-			Model:  "deepseek-chat",
-		}
-		ctx := context.Background()
+	if key != "" {
+		c := deepseek.Client{ApiKey: key, Model: model}
 		msgs := []genaiapi.Message{
 			{Role: genaiapi.User, Content: "Say hello. Use only one word."},
 		}
-		opts := genaiapi.CompletionOptions{}
-		resp, err := c.Completion(ctx, msgs, &opts)
+		resp, err := c.Completion(context.Background(), msgs, &genaiapi.CompletionOptions{})
 		if err != nil {
 			log.Fatal(err)
 		}

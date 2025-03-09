@@ -183,7 +183,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
-	in := CompletionRequest{Model: c.Model, Messages: msgs, Stream: true, Logprobs: true}
+	in := CompletionRequest{Model: c.Model, Messages: msgs, Stream: true}
 	switch v := opts.(type) {
 	case *genaiapi.CompletionOptions:
 		in.MaxTokens = v.MaxTokens

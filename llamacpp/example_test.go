@@ -22,12 +22,13 @@ import (
 	"github.com/maruel/httpjson"
 )
 
+// qwen2.5-0.5b-instruct-q3_k_m.gguf works great and is only 412MiB.
+var model = os.Getenv("LLAMACPP_MODEL")
+
 func ExampleClient_Completion() {
 	// Make sure llama-server is in PATH and export LLAMACPP_MODEL to point to a
 	// model path.
-	// qwen2.5-0.5b-instruct-q3_k_m.gguf works great and is only 412MiB.
-	mdl := os.Getenv("LLAMACPP_MODEL")
-	if mdl == "" {
+	if model == "" {
 		// Make the test pass even if skipped.
 		fmt.Println("Response: hi")
 		return
@@ -39,7 +40,7 @@ func ExampleClient_Completion() {
 		return
 	}
 	p := strconv.Itoa(findFreePort())
-	cmd := exec.Command(svr, "--port", p, "--model", mdl)
+	cmd := exec.Command(svr, "--port", p, "--model", model)
 	cmd.Dir = filepath.Dir(svr)
 	if err := cmd.Start(); err != nil {
 		log.Fatal(err)
@@ -92,9 +93,7 @@ func ExampleClient_Completion() {
 func ExampleClient_CompletionStream() {
 	// Make sure llama-server is in PATH and export LLAMACPP_MODEL to point to a
 	// model path.
-	// qwen2.5-0.5b-instruct-q3_k_m.gguf works great and is only 412MiB.
-	mdl := os.Getenv("LLAMACPP_MODEL")
-	if mdl == "" {
+	if model == "" {
 		// Make the test pass even if skipped.
 		fmt.Println("Response: hi")
 		return
@@ -106,7 +105,7 @@ func ExampleClient_CompletionStream() {
 		return
 	}
 	p := strconv.Itoa(findFreePort())
-	cmd := exec.Command(svr, "--port", p, "--model", mdl)
+	cmd := exec.Command(svr, "--port", p, "--model", model)
 	cmd.Dir = filepath.Dir(svr)
 	if err := cmd.Start(); err != nil {
 		log.Fatal(err)

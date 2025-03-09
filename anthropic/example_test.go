@@ -14,25 +14,67 @@ import (
 	"github.com/maruel/genai/genaiapi"
 )
 
+var (
+	key = os.Getenv("ANTHROPIC_API_KEY")
+	// Using very small model for testing.
+	// https://docs.anthropic.com/en/docs/about-claude/models/all-models
+	model = "claude-3-haiku-20240307"
+)
+
 func ExampleClient_Completion() {
-	if key := os.Getenv("ANTHROPIC_API_KEY"); key != "" {
-		// Using very small model for testing.
-		// https://docs.anthropic.com/en/docs/about-claude/models/all-models
-		c := anthropic.Client{
-			ApiKey: key,
-			Model:  "claude-3-haiku-20240307",
-		}
-		ctx := context.Background()
+	if key != "" {
+		c := anthropic.Client{ApiKey: key, Model: model}
 		msgs := []genaiapi.Message{
 			{Role: genaiapi.User, Content: "Say hello. Use only one word."},
 		}
 		opts := genaiapi.CompletionOptions{MaxTokens: 4096}
-		resp, err := c.Completion(ctx, msgs, &opts)
+		resp, err := c.Completion(context.Background(), msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}
 		if len(resp) < 2 || len(resp) > 100 {
 			log.Fatalf("Unexpected response: %s", resp)
+		}
+	}
+	// Print something so the example runs.
+	fmt.Println("Hello, world!")
+	// Output: Hello, world!
+}
+
+func ExampleClient_CompletionStream() {
+	if key != "" {
+		c := anthropic.Client{ApiKey: key, Model: model}
+		ctx := context.Background()
+		msgs := []genaiapi.Message{
+			{Role: genaiapi.User, Content: "Say hello. Use only one word."},
+		}
+		words := make(chan string, 10)
+		end := make(chan struct{})
+		go func() {
+			resp := ""
+			for {
+				select {
+				case <-ctx.Done():
+					goto end
+				case w, ok := <-words:
+					if !ok {
+						goto end
+					}
+					resp += w
+				}
+			}
+		end:
+			close(end)
+			if len(resp) < 2 || len(resp) > 100 {
+				log.Printf("Unexpected response: %s", resp)
+			}
+		}()
+		opts := genaiapi.CompletionOptions{MaxTokens: 4096}
+		err := c.CompletionStream(ctx, msgs, &opts, words)
+		close(words)
+		<-end
+		if err != nil {
+			log.Fatal(err)
 		}
 	}
 	// Print something so the example runs.

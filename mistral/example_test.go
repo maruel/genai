@@ -14,20 +14,20 @@ import (
 	"github.com/maruel/genai/mistral"
 )
 
+var (
+	key = os.Getenv("MISTRAL_API_KEY")
+	// Using very small model for testing.
+	// See https://docs.mistral.ai/getting-started/models/models_overview/
+	model = "ministral-3b-latest"
+)
+
 func ExampleClient_Completion() {
-	if key := os.Getenv("MISTRAL_API_KEY"); key != "" {
-		// Using very small model for testing.
-		// See https://docs.mistral.ai/getting-started/models/models_overview/
-		c := mistral.Client{
-			ApiKey: key,
-			Model:  "ministral-3b-latest",
-		}
-		ctx := context.Background()
+	if key != "" {
+		c := mistral.Client{ApiKey: key, Model: model}
 		msgs := []genaiapi.Message{
 			{Role: genaiapi.User, Content: "Say hello. Use only one word."},
 		}
-		opts := genaiapi.CompletionOptions{}
-		resp, err := c.Completion(ctx, msgs, &opts)
+		resp, err := c.Completion(context.Background(), msgs, &genaiapi.CompletionOptions{})
 		if err != nil {
 			log.Fatal(err)
 		}

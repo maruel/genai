@@ -14,20 +14,20 @@ import (
 	"github.com/maruel/genai/groq"
 )
 
+var (
+	key = os.Getenv("GROQ_API_KEY")
+	// Using very small model for testing.
+	// See https://console.groq.com/docs/models
+	model = "llama-3.2-1b-preview"
+)
+
 func ExampleClient_Completion() {
-	if key := os.Getenv("GROQ_API_KEY"); key != "" {
-		// Using very small model for testing.
-		// See https://console.groq.com/docs/models
-		c := groq.Client{
-			ApiKey: key,
-			Model:  "llama-3.2-1b-preview",
-		}
-		ctx := context.Background()
+	if key != "" {
+		c := groq.Client{ApiKey: key, Model: model}
 		msgs := []genaiapi.Message{
 			{Role: genaiapi.User, Content: "Say hello. Use only one word."},
 		}
-		opts := genaiapi.CompletionOptions{}
-		resp, err := c.Completion(ctx, msgs, &opts)
+		resp, err := c.Completion(context.Background(), msgs, &genaiapi.CompletionOptions{})
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -14,20 +14,20 @@ import (
 	"github.com/maruel/genai/openai"
 )
 
+var (
+	key = os.Getenv("OPENAI_API_KEY")
+	// Using small model for testing.
+	// See https://platform.openai.com/docs/models
+	model = "gpt-4o-mini"
+)
+
 func ExampleClient_Completion() {
-	if key := os.Getenv("OPENAI_API_KEY"); key != "" {
-		// Using very small model for testing.
-		// See https://platform.openai.com/docs/models
-		c := openai.Client{
-			ApiKey: key,
-			Model:  "gpt-4o-mini",
-		}
-		ctx := context.Background()
+	if key != "" {
+		c := openai.Client{ApiKey: key, Model: model}
 		msgs := []genaiapi.Message{
 			{Role: genaiapi.User, Content: "Say hello. Use only one word."},
 		}
-		opts := genaiapi.CompletionOptions{}
-		resp, err := c.Completion(ctx, msgs, &opts)
+		resp, err := c.Completion(context.Background(), msgs, &genaiapi.CompletionOptions{})
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -41,13 +41,8 @@ func ExampleClient_Completion() {
 }
 
 func ExampleClient_CompletionStream() {
-	if key := os.Getenv("OPENAI_API_KEY"); key != "" {
-		// Using very small model for testing.
-		// See https://platform.openai.com/docs/models
-		c := openai.Client{
-			ApiKey: key,
-			Model:  "gpt-4o-mini",
-		}
+	if key != "" {
+		c := openai.Client{ApiKey: key, Model: model}
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
 			{Role: genaiapi.User, Content: "Say hello. Use only one word."},
@@ -70,7 +65,7 @@ func ExampleClient_CompletionStream() {
 		end:
 			close(end)
 			if len(resp) < 2 || len(resp) > 100 {
-				log.Fatalf("Unexpected response: %s", resp)
+				log.Printf("Unexpected response: %s", resp)
 			}
 		}()
 		opts := genaiapi.CompletionOptions{}

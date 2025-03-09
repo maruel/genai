@@ -14,20 +14,20 @@ import (
 	"github.com/maruel/genai/genaiapi"
 )
 
+var (
+	key = os.Getenv("COHERE_API_KEY")
+	// Using very small model for testing.
+	// See https://docs.cohere.com/v2/docs/models
+	model = "command-r7b-12-2024"
+)
+
 func ExampleClient_Completion() {
-	if key := os.Getenv("COHERE_API_KEY"); key != "" {
-		// Using very small model for testing.
-		// See https://docs.cohere.com/v2/docs/models
-		c := cohere.Client{
-			ApiKey: key,
-			Model:  "command-r7b-12-2024",
-		}
-		ctx := context.Background()
+	if key != "" {
+		c := cohere.Client{ApiKey: key, Model: model}
 		msgs := []genaiapi.Message{
 			{Role: genaiapi.User, Content: "Say hello. Use only one word."},
 		}
-		opts := genaiapi.CompletionOptions{}
-		resp, err := c.Completion(ctx, msgs, &opts)
+		resp, err := c.Completion(context.Background(), msgs, &genaiapi.CompletionOptions{})
 		if err != nil {
 			log.Fatal(err)
 		}

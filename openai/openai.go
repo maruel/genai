@@ -91,20 +91,22 @@ type choice struct {
 
 type choices struct {
 	// FinishReason is one of "stop", "length", "content_filter" or "tool_calls".
-	FinishReason string      `json:"finish_reason"`
-	Index        int64       `json:"index"`
-	Message      choice      `json:"message"`
-	Logprobs     interface{} `json:"logprobs"`
+	FinishReason string `json:"finish_reason"`
+	Index        int64  `json:"index"`
+	Message      choice `json:"message"`
+	Logprobs     any    `json:"logprobs"`
 }
 
 // chatCompletionsStreamResponse is not documented?
 type chatCompletionsStreamResponse struct {
-	Choices []streamChoices `json:"choices"`
-	Created int64           `json:"created"`
-	ID      string          `json:"id"`
-	Model   string          `json:"model"`
-	Object  string          `json:"object"`
-	Usage   struct {
+	Choices           []streamChoices `json:"choices"`
+	Created           int64           `json:"created"`
+	ID                string          `json:"id"`
+	Model             string          `json:"model"`
+	Object            string          `json:"object"`
+	ServiceTier       string          `json:"service_tier"`
+	SystemFingerprint string          `json:"system_fingerprint"`
+	Usage             struct {
 		CompletionTokens int64 `json:"completion_tokens"`
 		PromptTokens     int64 `json:"prompt_tokens"`
 		TotalTokens      int64 `json:"total_tokens"`
@@ -116,11 +118,13 @@ type streamChoices struct {
 	// FinishReason is one of null, "stop", "length", "content_filter" or "tool_calls".
 	FinishReason string `json:"finish_reason"`
 	Index        int64  `json:"index"`
-	// Message      genaiapi.Message `json:"message"`
+	Logprobs     any    `json:"logprobs"`
 }
 
 type openAIStreamDelta struct {
-	Content string `json:"content"`
+	Content  string `json:"content"`
+	Role     string `json:"role"`
+	Refulsal string `json:"refusal"`
 }
 
 //
@@ -216,6 +220,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 		}
 		d := json.NewDecoder(strings.NewReader(suffix))
 		d.DisallowUnknownFields()
+		d.UseNumber()
 		out := chatCompletionsStreamResponse{}
 		if err = d.Decode(&out); err != nil {
 			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)

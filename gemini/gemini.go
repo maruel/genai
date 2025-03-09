@@ -474,8 +474,8 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	}
 	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
 	p := httpjson.DefaultClient
-	// Google only support gzip but it's better than nothing.
-	p.Compress = "gzip"
+	// Google supports HTTP POST gzip compression!
+	p.PostCompress = "gzip"
 	resp, err := p.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return err

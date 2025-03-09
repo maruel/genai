@@ -303,9 +303,8 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
-	p := httpjson.DefaultClient
-	p.Compress = ""
-	resp, err := p.PostRequest(ctx, c.BaseURL+"/completion", nil, in)
+	// llama.cpp doesn't HTTP POST support compression.
+	resp, err := httpjson.DefaultClient.PostRequest(ctx, c.BaseURL+"/completion", nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get llama server response: %w", err)
 	}
@@ -354,6 +353,7 @@ func (c *Client) GetHealth(ctx context.Context) (string, error) {
 		return "", fmt.Errorf("failed to create HTTP request: %w", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
+	// llama.cpp doesn't HTTP POST support compression.
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("failed to get health response: %w", err)
@@ -400,6 +400,7 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 	if err != nil {
 		return fmt.Errorf("failed to create HTTP request: %w", err)
 	}
+	// llama.cpp doesn't HTTP POST support compression.
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return fmt.Errorf("failed to get metrics response: %w", err)
@@ -509,10 +510,8 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs []g
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	p := httpjson.DefaultClient
-	// Llama.cpp doesn't support compression. lol.
-	p.Compress = ""
-	resp, err := p.PostRequest(ctx, url, nil, in)
+	// llama.cpp doesn't HTTP POST support compression.
+	resp, err := httpjson.DefaultClient.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return err
 	}

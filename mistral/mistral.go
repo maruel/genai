@@ -160,10 +160,8 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	}
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
-	p := httpjson.DefaultClient
-	// Mistral doesn't support any compression. lol.
-	p.Compress = ""
-	resp, err := p.PostRequest(ctx, url, h, in)
+	// Mistral doesn't HTTP POST support compression.
+	resp, err := httpjson.DefaultClient.PostRequest(ctx, url, h, in)
 	if err != nil {
 		return err
 	}

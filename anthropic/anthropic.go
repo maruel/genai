@@ -129,13 +129,11 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	if c.ApiKey == "" {
 		return errors.New("anthropic ApiKey is required; get one at " + apiKeyURL)
 	}
-	p := httpjson.DefaultClient
-	// Anthropic doesn't support compression. lol.
-	p.Compress = ""
 	h := make(http.Header)
 	h.Set("x-api-key", c.ApiKey)
 	h.Set("anthropic-version", "2023-06-01")
-	resp, err := p.PostRequest(ctx, url, h, in)
+	// Anthropic doesn't HTTP POST support compression.
+	resp, err := httpjson.DefaultClient.PostRequest(ctx, url, h, in)
 	if err != nil {
 		return err
 	}

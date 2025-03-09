@@ -147,12 +147,10 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	if c.ApiKey == "" {
 		return errors.New("deepseek ApiKey is required; get one at " + apiKeyURL)
 	}
-	p := httpjson.DefaultClient
-	// DeepSeek doesn't support any compression. lol.
-	p.Compress = ""
 	h := make(http.Header)
 	h.Set("Authorization", "Bearer "+c.ApiKey)
-	resp, err := p.PostRequest(ctx, url, h, in)
+	// DeepSeek doesn't HTTP POST support compression.
+	resp, err := httpjson.DefaultClient.PostRequest(ctx, url, h, in)
 	if err != nil {
 		return err
 	}

@@ -5,9 +5,13 @@
 package gemini
 
 import (
+	"bufio"
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
 	"strings"
@@ -277,6 +281,21 @@ type ModalityTokenCount struct {
 	TokenCount int64  `json:"tokenCount"`
 }
 
+type CompletionStreamChunkResponse struct {
+	Candidates []struct {
+		Content      Content `json:"content"`
+		FinishReason string  `json:"finishReason"` // STOP
+	} `json:"candidates"`
+	UsageMetadata struct {
+		CandidatesTokenCount    int64                `json:"candidatesTokenCount"`
+		PromptTokenCount        int64                `json:"promptTokenCount"`
+		TotalTokenCount         int64                `json:"totalTokenCount"`
+		PromptTokensDetails     []ModalityTokenCount `json:"promptTokensDetails"`
+		CandidatesTokensDetails []ModalityTokenCount `json:"candidatesTokensDetails"`
+	} `json:"usageMetadata"`
+	ModelVersion string `json:"modelVersion"`
+}
+
 // Caching
 
 // https://ai.google.dev/api/caching?hl=en#request-body
@@ -383,8 +402,91 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	return c.CompletionContent(ctx, msgs, opts, "", nil)
 }
 
+func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
+	// https://ai.google.dev/api/generate-content?hl=en#text_gen_text_only_prompt-SHELL
+	url := "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":generateContent?key=" + c.ApiKey
+	return c.post(ctx, url, in, out)
+}
+
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
-	return errors.New("not implemented")
+	in := CompletionRequest{}
+	_, err := c.initPrompt(&in, msgs)
+	if err != nil {
+		return err
+	}
+	// This doesn't seem to be well supported yet:
+	//    in.GenerationConfig.ResponseLogprobs = true
+	switch v := opts.(type) {
+	case *genaiapi.CompletionOptions:
+		in.GenerationConfig.MaxOutputTokens = v.MaxTokens
+		in.GenerationConfig.Temperature = v.Temperature
+		in.GenerationConfig.Seed = v.Seed
+	default:
+		return fmt.Errorf("unsupported options type %T", opts)
+	}
+	ch := make(chan CompletionStreamChunkResponse)
+	end := make(chan struct{})
+	go func() {
+		for msg := range ch {
+			if len(msg.Candidates) != 1 {
+				continue
+			}
+			parts := msg.Candidates[0].Content.Parts
+			word := strings.TrimRightFunc(parts[len(parts)-1].Text, unicode.IsSpace)
+			if word != "" {
+				words <- word
+			}
+		}
+		end <- struct{}{}
+	}()
+	err = c.CompletionStreamRaw(ctx, &in, ch)
+	close(ch)
+	<-end
+	return err
+}
+
+func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
+	// https://ai.google.dev/api/generate-content?hl=en#v1beta.GenerateContentResponse
+	url := "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":streamGenerateContent?alt=sse&key=" + c.ApiKey
+	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
+	p := httpjson.DefaultClient
+	// Google supports HTTP POST gzip compression!
+	p.PostCompress = "gzip"
+	resp, err := p.PostRequest(ctx, url, nil, in)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	r := bufio.NewReader(resp.Body)
+	for {
+		line, err := r.ReadBytes('\n')
+		line = bytes.TrimSpace(line)
+		if err == io.EOF {
+			err = nil
+			if len(line) == 0 {
+				return nil
+			}
+		}
+		if err != nil {
+			return fmt.Errorf("failed to get server response: %w", err)
+		}
+		if len(line) == 0 {
+			continue
+		}
+		const prefix = "data: "
+		if !bytes.HasPrefix(line, []byte(prefix)) {
+			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
+		}
+		suffix := string(line[len(prefix):])
+		d := json.NewDecoder(strings.NewReader(suffix))
+		d.DisallowUnknownFields()
+		d.UseNumber()
+		msg := CompletionStreamChunkResponse{}
+		if err = d.Decode(&msg); err != nil {
+			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+		}
+		out <- msg
+	}
 }
 
 func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, context []byte) (string, error) {
@@ -436,12 +538,6 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message,
 	t := strings.TrimRightFunc(parts[len(parts)-1].Text, unicode.IsSpace)
 	// slog.InfoContext(ctx, "gemini", "response", t, "usage", out.UsageMetadata)
 	return t, nil
-}
-
-func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
-	// https://ai.google.dev/api/generate-content?hl=en#text_gen_text_only_prompt-SHELL
-	url := "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":generateContent?key=" + c.ApiKey
-	return c.post(ctx, url, in, out)
 }
 
 func (c *Client) initPrompt(r *CompletionRequest, msgs []genaiapi.Message) (string, error) {

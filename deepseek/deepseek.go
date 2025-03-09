@@ -5,11 +5,16 @@
 package deepseek
 
 import (
+	"bufio"
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
+	"strings"
 
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/httpjson"
@@ -49,21 +54,10 @@ type CompletionRequest struct {
 type CompletionResponse struct {
 	ID      string `json:"id"`
 	Choices []struct {
-		FinishReason string  `json:"finish_reason"`
-		Index        int64   `json:"index"`
-		Message      Message `json:"message"`
-		Logprobs     struct {
-			Content []struct {
-				Token       string  `json:"token"`
-				Logprob     float64 `json:"logprob"`
-				Bytes       []int64 `json:"bytes"`
-				TopLogprobs []struct {
-					Token   string  `json:"token"`
-					Logprob float64 `json:"logprob"`
-					Bytes   []int64 `json:"bytes"`
-				} `json:"top_logprobs"`
-			} `json:"content"`
-		} `json:"logprobs"`
+		FinishReason string   `json:"finish_reason"`
+		Index        int64    `json:"index"`
+		Message      Message  `json:"message"`
+		Logprobs     Logprobs `json:"logprobs"`
 	} `json:"choices"`
 	Created           int64  `json:"created"` // Unix timestamp
 	Model             string `json:"model"`
@@ -81,6 +75,43 @@ type CompletionResponse struct {
 		CompletionTokensDetails struct {
 			ReasoningTokens int64 `json:"reasoning_tokens"`
 		} `json:"completion_tokens_details"`
+	} `json:"usage"`
+}
+
+type Logprobs struct {
+	Content []struct {
+		Token       string  `json:"token"`
+		Logprob     float64 `json:"logprob"`
+		Bytes       []int64 `json:"bytes"`
+		TopLogprobs []struct {
+			Token   string  `json:"token"`
+			Logprob float64 `json:"logprob"`
+			Bytes   []int64 `json:"bytes"`
+		} `json:"top_logprobs"`
+	} `json:"content"`
+}
+
+type CompletionStreamChunkResponse struct {
+	ID                string `json:"id"`
+	Object            string `json:"object"`  // chat.completion.chunk
+	Created           int64  `json:"created"` // Unix timestamp
+	Model             string `json:"model"`
+	SystemFingerprint string `json:"system_fingerprint"`
+	Choices           []struct {
+		Index        int64    `json:"index"`
+		Delta        Message  `json:"delta"`
+		Logprobs     Logprobs `json:"logprobs"`
+		FinishReason string   `json:"finish_reason"`
+	} `json:"choices"`
+	Usage struct {
+		CompletionTokens      int64 `json:"completion_tokens"`
+		PromptTokens          int64 `json:"prompt_tokens"`
+		PromptCacheHitTokens  int64 `json:"prompt_cache_hit_tokens"`
+		PromptCacheMissTokens int64 `json:"prompt_cache_miss_tokens"`
+		TotalTokens           int64 `json:"total_tokens"`
+		PromptTokensDetails   struct {
+			CachedTokens int64 `json:"cached_tokens"`
+		} `json:"prompt_tokens_details"`
 	} `json:"usage"`
 }
 
@@ -136,7 +167,86 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
-	return errors.New("not implemented")
+	in := CompletionRequest{Model: c.Model, Messages: make([]Message, 0, len(msgs)), Stream: true}
+	for _, m := range msgs {
+		switch m.Role {
+		case genaiapi.System, genaiapi.User, genaiapi.Assistant:
+			in.Messages = append(in.Messages, Message{Role: m.Role, Content: m.Content})
+		default:
+			return fmt.Errorf("unsupported role %v", m.Role)
+		}
+	}
+	switch v := opts.(type) {
+	case *genaiapi.CompletionOptions:
+		in.MaxToks = v.MaxTokens
+		in.Temperature = v.Temperature
+		if v.Seed != 0 {
+			return errors.New("seed is not supported")
+		}
+	default:
+		return fmt.Errorf("unsupported options type %T", opts)
+	}
+	ch := make(chan CompletionStreamChunkResponse)
+	end := make(chan struct{})
+	go func() {
+		for msg := range ch {
+			if len(msg.Choices) == 1 {
+				word := msg.Choices[0].Delta.Content
+				if word != "" {
+					words <- word
+				}
+			}
+		}
+		end <- struct{}{}
+	}()
+	err := c.CompletionStreamRaw(ctx, &in, ch)
+	close(ch)
+	<-end
+	return err
+}
+
+func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
+	h := make(http.Header)
+	h.Add("Authorization", "Bearer "+c.ApiKey)
+	// DeepSeek doesn't HTTP POST support compression.
+	resp, err := httpjson.DefaultClient.PostRequest(ctx, "https://api.deepseek.com/chat/completions", h, in)
+	if err != nil {
+		return fmt.Errorf("failed to get server response: %w", err)
+	}
+	defer resp.Body.Close()
+	r := bufio.NewReader(resp.Body)
+	for {
+		line, err := r.ReadBytes('\n')
+		line = bytes.TrimSpace(line)
+		if err == io.EOF {
+			err = nil
+			if len(line) == 0 {
+				return nil
+			}
+		}
+		if err != nil {
+			return fmt.Errorf("failed to get server response: %w", err)
+		}
+		if len(line) == 0 {
+			continue
+		}
+		const prefix = "data: "
+		if !bytes.HasPrefix(line, []byte(prefix)) {
+			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
+		}
+		suffix := string(line[len(prefix):])
+		if suffix == "[DONE]" {
+			return nil
+		}
+		d := json.NewDecoder(strings.NewReader(suffix))
+		d.DisallowUnknownFields()
+		d.UseNumber()
+		msg := CompletionStreamChunkResponse{}
+		if err = d.Decode(&msg); err != nil {
+			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+		}
+		out <- msg
+	}
 }
 
 func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, context []byte) (string, error) {

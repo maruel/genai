@@ -5,11 +5,16 @@
 package cohere
 
 import (
+	"bufio"
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
+	"strings"
 
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/httpjson"
@@ -106,6 +111,58 @@ type CompletionResponse struct {
 	} `json:"logprobs"`
 }
 
+type CompletionStreamChunkResponse struct {
+	ID    string `json:"id"`
+	Type  string `json:"type"` // "message_start", "content-start", "message-end"
+	Index int64  `json:"index"`
+	Delta struct {
+		Message struct {
+			Role    genaiapi.Role `json:"role"`
+			Content struct {
+				Type string `json:"type"` // text
+				Text string `json:"text"`
+			} `json:"content"`
+			ToolPlan  string     `json:"tool_plan"`
+			ToolCalls []struct{} `json:"tool_calls"`
+			Citations []struct{} `json:"citations"`
+		} `json:"message"`
+		FinishReason string `json:"finish_reason"` // COMPLETE
+		Usage        struct {
+			BilledUnits struct {
+				InputTokens  int64 `json:"input_tokens"`
+				OutputTokens int64 `json:"output_tokens"`
+			} `json:"billed_units"`
+			Tokens struct {
+				InputTokens  int64 `json:"input_tokens"`
+				OutputTokens int64 `json:"output_tokens"`
+			} `json:"tokens"`
+		} `json:"usage"`
+	} `json:"delta"`
+}
+
+// content can be a struct or an empty list. Go doesn't like that.
+type completionStreamChunkMsgStartResponse struct {
+	ID    string `json:"id"`
+	Type  string `json:"type"` // "message_start"
+	Delta struct {
+		Message struct {
+			Role genaiapi.Role `json:"role"`
+			// WTF are they doing?
+			Content   []struct{} `json:"content"`
+			ToolPlan  string     `json:"tool_plan"`
+			ToolCalls []struct{} `json:"tool_calls"`
+			Citations []struct{} `json:"citations"`
+		} `json:"message"`
+	} `json:"delta"`
+}
+
+func (c *completionStreamChunkMsgStartResponse) translateTo(msg *CompletionStreamChunkResponse) {
+	msg.ID = c.ID
+	msg.Type = c.Type
+	msg.Delta.Message.Role = c.Delta.Message.Role
+	msg.Delta.Message.ToolPlan = c.Delta.Message.ToolPlan
+}
+
 //
 
 type errorResponse struct {
@@ -148,7 +205,87 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
-	return errors.New("not implemented")
+	in := CompletionRequest{Model: c.Model, Messages: make([]Message, len(msgs)), Stream: true}
+	for i, m := range msgs {
+		in.Messages[i].Role = m.Role
+		in.Messages[i].Content.Type = "text"
+		in.Messages[i].Content.Text = m.Content
+	}
+	switch v := opts.(type) {
+	case *genaiapi.CompletionOptions:
+		in.MaxTokens = v.MaxTokens
+		in.Seed = v.Seed
+		in.Temperature = v.Temperature
+	default:
+		return fmt.Errorf("unsupported options type %T", opts)
+	}
+	ch := make(chan CompletionStreamChunkResponse)
+	end := make(chan struct{})
+	go func() {
+		for msg := range ch {
+			word := msg.Delta.Message.Content.Text
+			if word != "" {
+				words <- word
+			}
+		}
+		end <- struct{}{}
+	}()
+	err := c.CompletionStreamRaw(ctx, &in, ch)
+	close(ch)
+	<-end
+	return err
+}
+
+func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
+	h := make(http.Header)
+	h.Add("Authorization", "Bearer "+c.ApiKey)
+	// Cohere doesn't HTTP POST support compression.
+	resp, err := httpjson.DefaultClient.PostRequest(ctx, "https://api.cohere.com/v2/chat", h, in)
+	if err != nil {
+		return fmt.Errorf("failed to get server response: %w", err)
+	}
+	defer resp.Body.Close()
+	r := bufio.NewReader(resp.Body)
+	for {
+		line, err := r.ReadBytes('\n')
+		line = bytes.TrimSpace(line)
+		if err == io.EOF {
+			err = nil
+			if len(line) == 0 {
+				return nil
+			}
+		}
+		if err != nil {
+			return fmt.Errorf("failed to get server response: %w", err)
+		}
+		if len(line) == 0 {
+			continue
+		}
+		const dataPrefix = "data: "
+		switch {
+		case bytes.HasPrefix(line, []byte(dataPrefix)):
+			suffix := string(line[len(dataPrefix):])
+			d := json.NewDecoder(strings.NewReader(suffix))
+			d.DisallowUnknownFields()
+			d.UseNumber()
+			msg := CompletionStreamChunkResponse{}
+			if err = d.Decode(&msg); err != nil {
+				fallback := completionStreamChunkMsgStartResponse{}
+				d := json.NewDecoder(strings.NewReader(suffix))
+				d.DisallowUnknownFields()
+				d.UseNumber()
+				if err = d.Decode(&fallback); err != nil {
+					return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+				}
+				fallback.translateTo(&msg)
+			}
+			out <- msg
+		case bytes.HasPrefix(line, []byte("event:")):
+			// Ignore for now.
+		default:
+			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
+		}
+	}
 }
 
 func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, content []byte) (string, error) {

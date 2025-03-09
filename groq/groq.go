@@ -5,11 +5,16 @@
 package groq
 
 import (
+	"bufio"
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
+	"strings"
 
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/httpjson"
@@ -74,6 +79,35 @@ type CompletionResponse struct {
 	} `json:"x_groq"`
 }
 
+type CompletionStreamChunkResponse struct {
+	ID                string `json:"id"`
+	Object            string `json:"object"`
+	Created           int64  `json:"created"`
+	Model             string `json:"model"`
+	SystemFingerprint string `json:"system_fingerprint"`
+	Choices           []struct {
+		Index int64 `json:"index"`
+		Delta struct {
+			Role    genaiapi.Role `json:"role"`
+			Content string        `json:"content"`
+		} `json:"delta"`
+		Logprobs     any    `json:"logprobs"`
+		FinishReason string `json:"finish_reason"` // stop
+	} `json:"choices"`
+	Xgroq struct {
+		ID    string `json:"id"`
+		Usage struct {
+			QueueTime        float64 `json:"queue_time"`
+			PromptTokens     int64   `json:"prompt_tokens"`
+			PromptTime       float64 `json:"prompt_time"`
+			CompletionTokens int64   `json:"completion_tokens"`
+			CompletionTime   float64 `json:"completion_time"`
+			TotalTokens      int64   `json:"total_tokens"`
+			TotalTime        float64 `json:"total_time"`
+		} `json:"usage"`
+	} `json:"x_groq"`
+}
+
 //
 
 type errorResponse struct {
@@ -117,7 +151,77 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
-	return errors.New("not implemented")
+	in := CompletionRequest{Model: c.Model, Messages: msgs, Stream: true}
+	switch v := opts.(type) {
+	case *genaiapi.CompletionOptions:
+		in.MaxCompletionTokens = v.MaxTokens
+		in.Seed = v.Seed
+		in.Temperature = v.Temperature
+	default:
+		return fmt.Errorf("unsupported options type %T", opts)
+	}
+	ch := make(chan CompletionStreamChunkResponse)
+	end := make(chan struct{})
+	go func() {
+		for msg := range ch {
+			if len(msg.Choices) != 1 {
+				continue
+			}
+			word := msg.Choices[0].Delta.Content
+			if word != "" {
+				words <- word
+			}
+		}
+		end <- struct{}{}
+	}()
+	err := c.CompletionStreamRaw(ctx, &in, ch)
+	close(ch)
+	<-end
+	return err
+}
+
+func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
+	h := make(http.Header)
+	h.Add("Authorization", "Bearer "+c.ApiKey)
+	// Groq doesn't HTTP POST support compression.
+	resp, err := httpjson.DefaultClient.PostRequest(ctx, "https://api.groq.com/openai/v1/chat/completions", h, in)
+	if err != nil {
+		return fmt.Errorf("failed to get server response: %w", err)
+	}
+	defer resp.Body.Close()
+	r := bufio.NewReader(resp.Body)
+	for {
+		line, err := r.ReadBytes('\n')
+		line = bytes.TrimSpace(line)
+		if err == io.EOF {
+			err = nil
+			if len(line) == 0 {
+				return nil
+			}
+		}
+		if err != nil {
+			return fmt.Errorf("failed to get server response: %w", err)
+		}
+		if len(line) == 0 {
+			continue
+		}
+		const prefix = "data: "
+		if !bytes.HasPrefix(line, []byte(prefix)) {
+			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
+		}
+		suffix := string(line[len(prefix):])
+		if suffix == "[DONE]" {
+			return nil
+		}
+		d := json.NewDecoder(strings.NewReader(suffix))
+		d.DisallowUnknownFields()
+		d.UseNumber()
+		msg := CompletionStreamChunkResponse{}
+		if err = d.Decode(&msg); err != nil {
+			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+		}
+		out <- msg
+	}
 }
 
 func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, content []byte) (string, error) {

@@ -12,6 +12,7 @@ Implements support for:
 - HuggingFace
 - Mistral
 - OpenAI
+- Perplexity
 - llama.cpp
 
 Implementation is in flux.
@@ -50,6 +51,7 @@ As for March 2025, here's the HTTP POST compression supported by each provider:
 | HuggingFace | gzip&br&zstd | none |
 | Mistral | none | br |
 | OpenAI | none | br |
+| Perplexity | none | none |
 
 It may matter if you care about your egress bandwidth. Only HuggingFace
 supports brotli and zstd as POST data but replies uncompressed (!). Google

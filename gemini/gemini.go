@@ -212,6 +212,9 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) (string, error) {
 	state := 0
 	sp := ""
 	for i, m := range msgs {
+		if m.Content == "" {
+			return "", errors.New("empty message content")
+		}
 		switch m.Role {
 		case genaiapi.System:
 			if state != 0 {

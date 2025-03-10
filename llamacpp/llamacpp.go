@@ -202,7 +202,20 @@ type CompletionStreamChunkResponse struct {
 }
 
 type applyTemplateRequest struct {
-	Messages []genaiapi.Message `json:"messages"`
+	Messages []Message `json:"messages"`
+}
+
+func (a *applyTemplateRequest) fromMsgs(msgs []genaiapi.Message) error {
+	a.Messages = make([]Message, len(msgs))
+	for i, m := range msgs {
+		a.Messages[i] = Message{Role: string(m.Role), Content: m.Content}
+	}
+	return nil
+}
+
+type Message struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
 }
 
 type applyTemplateResponse struct {
@@ -473,7 +486,10 @@ func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs []genaiapi.Message) error {
 	if c.Encoding == nil {
 		// Use the server to convert the OpenAI style format into a templated form.
-		in2 := applyTemplateRequest{Messages: msgs}
+		in2 := applyTemplateRequest{}
+		if err := in2.fromMsgs(msgs); err != nil {
+			return err
+		}
 		out := applyTemplateResponse{}
 		if err := c.post(ctx, c.BaseURL+"/apply-template", &in2, &out); err != nil {
 			return err

@@ -30,7 +30,7 @@ type CompletionRequest struct {
 	MaxTokens           int64              `json:"max_tokens,omitzero"` // Deprecated
 	MaxCompletionTokens int64              `json:"max_completion_tokens,omitzero"`
 	Stream              bool               `json:"stream"`
-	Messages            []genaiapi.Message `json:"messages"`
+	Messages            []Message          `json:"messages"`
 	Seed                int64              `json:"seed,omitzero"`
 	Temperature         float64            `json:"temperature,omitzero"` // [0, 2]
 	Store               bool               `json:"store,omitzero"`
@@ -70,8 +70,44 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 }
 
 func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
-	c.Messages = msgs
+	c.Messages = make([]Message, len(msgs))
+	for i, m := range msgs {
+		switch m.Role {
+		case genaiapi.System:
+			// Starting with 01.
+			c.Messages[i].Role = "developer"
+		case genaiapi.User, genaiapi.Assistant, genaiapi.Tool:
+			c.Messages[i].Role = string(m.Role)
+		default:
+			return fmt.Errorf("unsupported role %s", m.Role)
+		}
+		if m.Content == "" {
+			return errors.New("empty message content")
+		}
+		c.Messages[i].Content = m.Content
+	}
 	return nil
+}
+
+type Message struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+	Name    string `json:"name,omitempty"`
+	Refusal string `json:"refusal,omitempty"`
+	Audio   struct {
+		ID string `json:"id,omitzero"`
+	} `json:"audio,omitzero"`
+	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
+	ToolCallID string     `json:"tool_call_id,omitempty"`
+}
+
+type ToolCall struct {
+	ID       string `json:"id"`
+	Type     string `json:"type"` // function
+	Function struct {
+		Name      string `json:"name"`
+		Arguments string `json:"arguments"` // Generally JSON
+	} `json:"function"`
 }
 
 // CompletionResponse is documented at
@@ -79,14 +115,10 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 type CompletionResponse struct {
 	Choices []struct {
 		// FinishReason is one of "stop", "length", "content_filter" or "tool_calls".
-		FinishReason string `json:"finish_reason"`
-		Index        int64  `json:"index"`
-		Message      struct {
-			Role    genaiapi.Role `json:"role"`
-			Content string        `json:"content"`
-			Refusal string        `json:"refusal"`
-		} `json:"message"`
-		Logprobs Logprobs `json:"logprobs"`
+		FinishReason string   `json:"finish_reason"`
+		Index        int64    `json:"index"`
+		Message      Message  `json:"message"`
+		Logprobs     Logprobs `json:"logprobs"`
 	} `json:"choices"`
 	Created Time   `json:"created"`
 	ID      string `json:"id"`

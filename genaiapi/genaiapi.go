@@ -2,6 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
+// Package genaiapi provides a generic interface to interact with a LLM backend.
 package genaiapi
 
 import "context"
@@ -35,9 +36,11 @@ type Role string
 
 // LLM known roles. Not all systems support all roles.
 const (
-	System         Role = "system"
-	User           Role = "user"
-	Assistant      Role = "assistant"
+	System    Role = "system"
+	User      Role = "user"
+	Assistant Role = "assistant"
+	// The following has to be revised.
+	Tool           Role = "tool"
 	AvailableTools Role = "available_tools"
 	ToolCall       Role = "tool_call"
 	ToolCallResult Role = "tool_call_result"

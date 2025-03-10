@@ -27,7 +27,17 @@ import (
 
 type Message struct {
 	Role    genaiapi.Role `json:"role"`
-	Content string        `json:"content"`
+	Content []Content     `json:"content"`
+}
+
+type Content struct {
+	Type   string `json:"type"` // text, image
+	Text   string `json:"text,omitzero"`
+	Source struct {
+		Type      string `json:"type,omitzero"`       // base64
+		MediaType string `json:"media_type,omitzero"` // image/jpeg, image/png, image/gif or image/webp
+		Data      []byte `json:"data,omitzero"`
+	} `json:"source,omitzero"`
 }
 
 // https://docs.anthropic.com/en/api/messages
@@ -66,7 +76,11 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 }
 
 func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
+	c.Messages = make([]Message, 0, len(msgs))
 	for _, m := range msgs {
+		if m.Content == "" {
+			return errors.New("empty message content")
+		}
 		switch m.Role {
 		case genaiapi.System:
 			if c.System != "" {
@@ -74,9 +88,12 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 			}
 			c.System = m.Content
 		case genaiapi.User, genaiapi.Assistant:
-			c.Messages = append(c.Messages, Message{Role: m.Role, Content: m.Content})
+			c.Messages = append(c.Messages, Message{
+				Role:    m.Role,
+				Content: []Content{{Type: "text", Text: m.Content}},
+			})
 		default:
-			return fmt.Errorf("unsupported role %v", m.Role)
+			return fmt.Errorf("unsupported role %s", m.Role)
 		}
 	}
 	return nil
@@ -84,9 +101,9 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 
 type CompletionResponse struct {
 	Content []struct {
-		Type      string `json:"type"`
-		Text      string `json:"text"`
-		Citations any    `json:"citations,omitempty"`
+		Type      string   `json:"type"`
+		Text      string   `json:"text"`
+		Citations struct{} `json:"citations,omitempty"`
 		// TODO Add rest.
 	} `json:"content"`
 	ID           string `json:"id"`
@@ -160,7 +177,7 @@ type Client struct {
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
 	// https://docs.anthropic.com/en/api/messages
-	in := CompletionRequest{Model: c.Model, Messages: make([]Message, 0, len(msgs))}
+	in := CompletionRequest{Model: c.Model}
 	if err := in.fromOpts(opts); err != nil {
 		return "", err
 	}
@@ -182,7 +199,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
-	in := CompletionRequest{Model: c.Model, Messages: make([]Message, 0, len(msgs)), Stream: true}
+	in := CompletionRequest{Model: c.Model, Stream: true}
 	if err := in.fromOpts(opts); err != nil {
 		return err
 	}

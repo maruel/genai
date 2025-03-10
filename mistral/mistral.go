@@ -26,22 +26,22 @@ import (
 
 // https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post
 type CompletionRequest struct {
-	Model            string             `json:"model"`
-	Temperature      float64            `json:"temperature,omitzero"` // [0, 2]
-	TopP             float64            `json:"top_p,omitzero"`       // [0, 1]
-	MaxTokens        int64              `json:"max_tokens,omitzero"`
-	Stream           bool               `json:"stream"`
-	Stop             []string           `json:"stop,omitempty"` // keywords to stop completion
-	RandomSeed       int64              `json:"random_seed,omitzero"`
-	Messages         []genaiapi.Message `json:"messages"`
-	ResponseFormat   any                `json:"response_format,omitempty"`   // TODO e.g. json_object with json_schema
-	Tools            []any              `json:"tools,omitempty"`             // TODO
-	ToolChoices      []any              `json:"tool_choices,omitempty"`      // TODO
-	PresencePenalty  float64            `json:"presence_penalty,omitzero"`   // [-2.0, 2.0]
-	FrequencyPenalty float64            `json:"frequency_penalty,omitempty"` // [-2.0, 2.0]
-	N                int64              `json:"n,omitzero"`                  // Number of choices
-	Prediction       any                `json:"prediction,omitempty"`        // TODO
-	SafePrompt       bool               `json:"safe_prompt,omitzero"`
+	Model            string    `json:"model"`
+	Temperature      float64   `json:"temperature,omitzero"` // [0, 2]
+	TopP             float64   `json:"top_p,omitzero"`       // [0, 1]
+	MaxTokens        int64     `json:"max_tokens,omitzero"`
+	Stream           bool      `json:"stream"`
+	Stop             []string  `json:"stop,omitempty"` // keywords to stop completion
+	RandomSeed       int64     `json:"random_seed,omitzero"`
+	Messages         []Message `json:"messages"`
+	ResponseFormat   any       `json:"response_format,omitempty"`   // TODO e.g. json_object with json_schema
+	Tools            []any     `json:"tools,omitempty"`             // TODO
+	ToolChoices      []any     `json:"tool_choices,omitempty"`      // TODO
+	PresencePenalty  float64   `json:"presence_penalty,omitzero"`   // [-2.0, 2.0]
+	FrequencyPenalty float64   `json:"frequency_penalty,omitempty"` // [-2.0, 2.0]
+	N                int64     `json:"n,omitzero"`                  // Number of choices
+	Prediction       any       `json:"prediction,omitempty"`        // TODO
+	SafePrompt       bool      `json:"safe_prompt,omitzero"`
 }
 
 func (c *CompletionRequest) fromOpts(opts any) error {
@@ -57,8 +57,34 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 }
 
 func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
-	c.Messages = msgs
+	c.Messages = make([]Message, len(msgs))
+	for i, m := range msgs {
+		switch m.Role {
+		case genaiapi.User, genaiapi.Assistant, genaiapi.System, genaiapi.Tool:
+			c.Messages[i].Role = string(m.Role)
+		default:
+			return fmt.Errorf("unsupported role %s", m.Role)
+		}
+		if m.Content == "" {
+			return errors.New("empty message content")
+		}
+		c.Messages[i].Content = []Content{{Type: "text", Text: m.Content}}
+	}
 	return nil
+}
+
+type Message struct {
+	Role    string    `json:"role"`
+	Content []Content `json:"content"`
+}
+
+type Content struct {
+	Type         string  `json:"type"` // text, reference, document_url, image_url
+	Text         string  `json:"text,omitempty"`
+	ReferenceIDs []int64 `json:"reference_ids,omitempty"`
+	DocumentURL  string  `json:"document_url,omitempty"`
+	DocumentName string  `json:"document_name,omitempty"`
+	ImageURL     string  `json:"image_url,omitempty"`
 }
 
 type CompletionResponse struct {

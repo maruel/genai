@@ -65,9 +65,11 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 	c.Messages = nil
 	for i := range msgs {
-		if msgs[i].Content != "" {
-			c.Messages = append(c.Messages, Message{Role: msgs[i].Role, Content: []Content{{Type: "text", Text: msgs[i].Content}}})
+		if msgs[i].Content == "" {
+			return errors.New("empty message content")
 		}
+		// We don't filter the role here.
+		c.Messages = append(c.Messages, Message{Role: msgs[i].Role, Content: []Content{{Type: "text", Text: msgs[i].Content}}})
 	}
 	return nil
 }

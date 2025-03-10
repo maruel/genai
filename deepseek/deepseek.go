@@ -62,21 +62,24 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 	for _, m := range msgs {
 		switch m.Role {
 		case genaiapi.System, genaiapi.User, genaiapi.Assistant:
-			c.Messages = append(c.Messages, Message{Role: m.Role, Content: m.Content})
+			c.Messages = append(c.Messages, Message{Role: string(m.Role), Content: m.Content})
 		default:
 			return fmt.Errorf("unsupported role %v", m.Role)
+		}
+		if m.Content == "" {
+			return errors.New("empty message content")
 		}
 	}
 	return nil
 }
 
 type Message struct {
-	Role             genaiapi.Role `json:"role"`
-	Content          string        `json:"content"`
-	Name             string        `json:"name,omitzero"`
-	Prefix           bool          `json:"prefix,omitzero"`
-	ReasoningContent string        `json:"reasoning_content,omitzero"`
-	ToolCallID       string        `json:"tool_call_id,omitzero"`
+	Role             string `json:"role"`
+	Content          string `json:"content"`
+	Name             string `json:"name,omitzero"`
+	Prefix           bool   `json:"prefix,omitzero"`
+	ReasoningContent string `json:"reasoning_content,omitzero"`
+	ToolCallID       string `json:"tool_call_id,omitzero"`
 }
 
 type CompletionResponse struct {

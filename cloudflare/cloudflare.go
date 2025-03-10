@@ -176,7 +176,15 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 	c.Messages = make([]Message, len(msgs))
 	for i, m := range msgs {
-		c.Messages[i].Role = string(m.Role)
+		switch m.Role {
+		case genaiapi.User, genaiapi.Assistant, genaiapi.System, genaiapi.Tool:
+			c.Messages[i].Role = string(m.Role)
+		default:
+			return fmt.Errorf("unsupported role %s", m.Role)
+		}
+		if m.Content == "" {
+			return errors.New("empty message content")
+		}
 		c.Messages[i].Content = m.Content
 	}
 	return nil

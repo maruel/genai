@@ -60,8 +60,17 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 }
 
 func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
+	c.Messages = make([]Message, len(msgs))
 	for i, m := range msgs {
-		c.Messages[i].Role = m.Role
+		switch m.Role {
+		case genaiapi.User, genaiapi.Assistant, genaiapi.System, genaiapi.Tool:
+			c.Messages[i].Role = string(m.Role)
+		default:
+			return fmt.Errorf("unsupported role %s", m.Role)
+		}
+		if m.Content == "" {
+			return errors.New("empty message content")
+		}
 		c.Messages[i].Content.Type = "text"
 		c.Messages[i].Content.Text = m.Content
 	}
@@ -69,7 +78,7 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 }
 
 type Message struct {
-	Role genaiapi.Role `json:"role"`
+	Role string `json:"role"`
 	// Assistant, System or User.
 	Content struct {
 		Type     string `json:"type"` // "text", "image_url" or "document"
@@ -203,7 +212,7 @@ type Client struct {
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
 	// https://docs.cohere.com/reference/chat
-	in := CompletionRequest{Model: c.Model, Messages: make([]Message, len(msgs))}
+	in := CompletionRequest{Model: c.Model}
 	if err := in.fromOpts(opts); err != nil {
 		return "", err
 	}
@@ -225,7 +234,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
-	in := CompletionRequest{Model: c.Model, Messages: make([]Message, len(msgs)), Stream: true}
+	in := CompletionRequest{Model: c.Model, Stream: true}
 	if err := in.fromOpts(opts); err != nil {
 		return err
 	}

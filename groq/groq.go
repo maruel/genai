@@ -26,24 +26,24 @@ import (
 
 // https://console.groq.com/docs/api-reference#chat-create
 type CompletionRequest struct {
-	FrequencyPenalty    float64            `json:"frequency_penalty,omitempty"` // [-2.0, 2.0]
-	MaxCompletionTokens int64              `json:"max_completion_tokens,omitzero"`
-	Messages            []genaiapi.Message `json:"messages"`
-	Model               string             `json:"model"`
-	ParallelToolCalls   bool               `json:"parallel_tool_calls,omitzero"`
-	PresencePenalty     float64            `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
-	ReasoningFormat     string             `json:"reasoning_format,omitempty"`
-	ResponseFormat      any                `json:"response_format,omitempty"` // TODO e.g. json_object with json_schema
-	Seed                int64              `json:"seed,omitzero"`
-	ServiceTier         string             `json:"service_tier,omitzero"` // "on_demand", "auto", "flex"
-	Stop                []string           `json:"stop,omitempty"`        // keywords to stop completion
-	Stream              bool               `json:"stream"`
-	StreamOptions       any                `json:"stream_options,omitempty"` // TODO
-	Temperature         float64            `json:"temperature,omitzero"`     // [0, 2]
-	Tools               []any              `json:"tools,omitempty"`          // TODO
-	ToolChoices         []any              `json:"tool_choices,omitempty"`   // TODO
-	TopP                float64            `json:"top_p,omitzero"`           // [0, 1]
-	User                string             `json:"user,omitzero"`
+	FrequencyPenalty    float64   `json:"frequency_penalty,omitempty"` // [-2.0, 2.0]
+	MaxCompletionTokens int64     `json:"max_completion_tokens,omitzero"`
+	Messages            []Message `json:"messages"`
+	Model               string    `json:"model"`
+	ParallelToolCalls   bool      `json:"parallel_tool_calls,omitzero"`
+	PresencePenalty     float64   `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
+	ReasoningFormat     string    `json:"reasoning_format,omitempty"`
+	ResponseFormat      any       `json:"response_format,omitempty"` // TODO e.g. json_object with json_schema
+	Seed                int64     `json:"seed,omitzero"`
+	ServiceTier         string    `json:"service_tier,omitzero"` // "on_demand", "auto", "flex"
+	Stop                []string  `json:"stop,omitempty"`        // keywords to stop completion
+	Stream              bool      `json:"stream"`
+	StreamOptions       any       `json:"stream_options,omitempty"` // TODO
+	Temperature         float64   `json:"temperature,omitzero"`     // [0, 2]
+	Tools               []any     `json:"tools,omitempty"`          // TODO
+	ToolChoices         []any     `json:"tool_choices,omitempty"`   // TODO
+	TopP                float64   `json:"top_p,omitzero"`           // [0, 1]
+	User                string    `json:"user,omitzero"`
 
 	// Explicitly Unsupported:
 	// LogitBias           map[string]float64 `json:"logit_bias,omitempty"`
@@ -65,8 +65,35 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 }
 
 func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
-	c.Messages = msgs
+	c.Messages = make([]Message, len(msgs))
+	for i, m := range msgs {
+		switch m.Role {
+		case genaiapi.User, genaiapi.Assistant, genaiapi.System, genaiapi.Tool:
+			c.Messages[i].Role = string(m.Role)
+		default:
+			return fmt.Errorf("unsupported role %s", m.Role)
+		}
+		if m.Content == "" {
+			return errors.New("empty message content")
+		}
+		c.Messages[i].Content = []Content{{Type: "text", Text: m.Content}}
+	}
 	return nil
+}
+
+type Message struct {
+	Role    string    `json:"role"`
+	Content []Content `json:"content,omitzero"`
+	Name    string    `json:"name,omitzero"`
+}
+
+type Content struct {
+	Text     string `json:"text,omitzero"`
+	ImageURL struct {
+		Detail string `json:"detail,omitzero"` // auto
+		URL    string `json:"url,omitzero"`    // URL or base64 encoded image
+	} `json:"image_url,omitzero"`
+	Type string `json:"type,omitzero"` // "text", "image"
 }
 
 type CompletionResponse struct {

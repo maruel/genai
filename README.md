@@ -37,21 +37,24 @@ TODO: Investigate providers at https://github.com/cheahjs/free-llm-api-resources
 
 ## Fun stats
 
-As for March 2025, here's the HTTP compression supported by each provider:
+As for March 2025, here's the HTTP POST compression supported by each provider:
 
-| Provider | Compression (in/out) |
-|----------|-------------|
-| Anthropic | none/gzip |
-| Cloudflare Workers AI | none/gzip |
-| Cohere | none/none |
-| DeepSeek | none/gzip |
-| Google's Gemini | gzip/gzip |
-| Groq | none/br |
-| HuggingFace | gzip&br&zstd/none |
-| Mistral | none/br |
-| OpenAI | none/br |
+| Provider | Compression accepted for POST data | Response compressed as |
+|----------|-------------|-------------|
+| Anthropic | none | gzip |
+| Cloudflare Workers AI | none | gzip |
+| Cohere | none | none |
+| DeepSeek | none | gzip |
+| Google's Gemini | gzip | gzip |
+| Groq | none | br |
+| HuggingFace | gzip&br&zstd | none |
+| Mistral | none | br |
+| OpenAI | none | br |
 
-None support zstd. brotli is popular. Only Google support compressed HTTP POST requests!
+It may matter if you care about your egress bandwidth. Only HuggingFace
+supports brotli and zstd as POST data but replies uncompressed (!). Google
+supports gzip.
+
 
 ## TODO
 

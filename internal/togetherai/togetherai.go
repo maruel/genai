@@ -227,7 +227,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	h.Add("Authorization", "Bearer "+c.ApiKey)
 	// Together.ai doesn't HTTP POST support compression.
 	// TODO Test
-	// httpjson.DefaultClient.PostCompression = "gzip"
+	// httpjson.DefaultClient.PostCompress = "gzip"
 	resp, err := httpjson.DefaultClient.PostRequest(ctx, "https://api.together.xyz/v1/chat/completions", h, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)

@@ -8,6 +8,7 @@ Implements support for:
 - DeepSeek
 - Google's Gemini
 - Groq
+- HuggingFace
 - Mistral
 - OpenAI
 - llama.cpp
@@ -26,6 +27,7 @@ apply):
 - [Cohere](https://docs.cohere.com/docs/rate-limits) (1000 RPCs/month)
 - [Google's Gemini](https://ai.google.dev/gemini-api/docs/rate-limits) 0.25qps, 1m tokens/month
 - [Groq](https://console.groq.com/docs/rate-limits) 0.5qps, 500k tokens/day
+- [HuggingFace](https://huggingface.co/docs/api-inference/pricing) 10¢/month
 - [Mistral](https://help.mistral.ai/en/articles/225174-what-are-the-limits-of-the-free-tier) 1qps, 1B tokens/month
 - Running [llama.cpp](https://github.com/ggml-org/llama.cpp) locally is free. :)
 
@@ -41,6 +43,7 @@ As for March 2025, here's the HTTP compression supported by each provider:
 | DeepSeek | none/gzip |
 | Google's Gemini | gzip/gzip |
 | Groq | none/br |
+| HuggingFace | gzip&br&zstd/none |
 | Mistral | none/br |
 | OpenAI | none/br |
 

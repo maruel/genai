@@ -304,7 +304,7 @@ func (m *Model) GetID() string {
 }
 
 func (m *Model) String() string {
-	return fmt.Sprintf("%s released on %s", m.ID, m.Created.AsTime().Format("2006-01-02"))
+	return fmt.Sprintf("%s (%s)", m.ID, m.Created.AsTime().Format("2006-01-02"))
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {

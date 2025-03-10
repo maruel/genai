@@ -329,8 +329,12 @@ func (m *Model) String() string {
 	if m.Deprecation != "" {
 		suffix += " (deprecated)"
 	}
+	prefix := m.ID
+	if m.ID != m.Name {
+		prefix += " (" + m.Name + ")"
+	}
 	// Not including Created and Description because Created is not set and Description is not useful.
-	return fmt.Sprintf("%s (%s) Supports: %s Context: %d%s", m.Name, m.ID, strings.Join(caps, "/"), m.MaxContextLength, suffix)
+	return fmt.Sprintf("%s: %s Context: %d%s", prefix, strings.Join(caps, "/"), m.MaxContextLength, suffix)
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {

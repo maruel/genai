@@ -275,7 +275,7 @@ func (m *Model) String() string {
 	if !m.Active {
 		suffix = " (inactive)"
 	}
-	return fmt.Sprintf("%s released on %s. Context: %d%s", m.ID, m.Created.AsTime().Format("2006-01-02"), m.ContextWindow, suffix)
+	return fmt.Sprintf("%s (%s) Context: %d%s", m.ID, m.Created.AsTime().Format("2006-01-02"), m.ContextWindow, suffix)
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {

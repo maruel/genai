@@ -594,11 +594,11 @@ type Model struct {
 }
 
 func (m *Model) GetID() string {
-	return m.Name
+	return strings.TrimPrefix(m.Name, "models/")
 }
 
 func (m *Model) String() string {
-	return fmt.Sprintf("%s (%s): %s. Context: %d", m.DisplayName, m.Name, m.Description, m.InputTokenLimit)
+	return fmt.Sprintf("%s: %s (%s) Context: %d", m.GetID(), m.DisplayName, m.Description, m.InputTokenLimit)
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {

@@ -344,7 +344,7 @@ func (m *Model) String() string {
 		sort.Strings(features)
 		f = " with " + strings.Join(features, "/")
 	}
-	return fmt.Sprintf("%s support %s%s. Context: %d%s", m.Name, strings.Join(endpoints, "/"), f, m.ContextLength, suffix)
+	return fmt.Sprintf("%s: %s%s. Context: %d%s", m.Name, strings.Join(endpoints, "/"), f, m.ContextLength, suffix)
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {

@@ -307,6 +307,10 @@ func (m *Model) String() string {
 	return fmt.Sprintf("%s (%s)", m.ID, m.Created.AsTime().Format("2006-01-02"))
 }
 
+func (m *Model) Context() int64 {
+	return 0
+}
+
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	// https://platform.openai.com/docs/api-reference/models/list
 	if err := c.validate(false); err != nil {

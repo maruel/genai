@@ -23,6 +23,7 @@ type CompletionProvider interface {
 type Model interface {
 	GetID() string
 	String() string
+	Context() int64
 }
 
 type ModelProvider interface {

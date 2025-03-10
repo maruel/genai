@@ -277,6 +277,10 @@ func (m *Model) String() string {
 	return m.ID
 }
 
+func (m *Model) Context() int64 {
+	return 0
+}
+
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	if err := c.validate(false); err != nil {
 		return nil, err

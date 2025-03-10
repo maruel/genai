@@ -337,6 +337,10 @@ func (m *Model) String() string {
 	return fmt.Sprintf("%s: %s Context: %d%s", prefix, strings.Join(caps, "/"), m.MaxContextLength, suffix)
 }
 
+func (m *Model) Context() int64 {
+	return m.MaxContextLength
+}
+
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	// https://docs.mistral.ai/api/#tag/models
 	if err := c.validate(false); err != nil {

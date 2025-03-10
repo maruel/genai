@@ -601,6 +601,10 @@ func (m *Model) String() string {
 	return fmt.Sprintf("%s: %s (%s) Context: %d", m.GetID(), m.DisplayName, m.Description, m.InputTokenLimit)
 }
 
+func (m *Model) Context() int64 {
+	return m.InputTokenLimit
+}
+
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	// https://ai.google.dev/api/models?hl=en#method:-models.list
 	if err := c.validate(false); err != nil {

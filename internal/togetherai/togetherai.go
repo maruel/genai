@@ -309,6 +309,10 @@ func (m *Model) String() string {
 	return fmt.Sprintf("%s (%s): %s Context: %d; in: %.1f$/Mt out: %.1f$/Mt", m.ID, m.Created.AsTime().Format("2006-01-02"), m.Type, m.ContextLength, m.Pricing.Input, m.Pricing.Output)
 }
 
+func (m *Model) Context() int64 {
+	return m.ContextLength
+}
+
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	// https://docs.together.ai/reference/models-1
 	if err := c.validate(false); err != nil {

@@ -347,6 +347,10 @@ func (m *Model) String() string {
 	return fmt.Sprintf("%s: %s%s. Context: %d%s", m.Name, strings.Join(endpoints, "/"), f, m.ContextLength, suffix)
 }
 
+func (m *Model) Context() int64 {
+	return m.ContextLength
+}
+
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	if err := c.validate(false); err != nil {
 		return nil, err

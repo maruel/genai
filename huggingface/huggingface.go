@@ -332,6 +332,10 @@ func (m *Model) String() string {
 	return fmt.Sprintf("%s (%s) %s Trending: %.1f", m.ID, m.CreatedAt.Format("2006-01-02"), m.PipelineTag, m.TrendingScore)
 }
 
+func (m *Model) Context() int64 {
+	return 0
+}
+
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	// https://huggingface.co/docs/hub/api
 

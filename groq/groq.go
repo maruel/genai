@@ -278,6 +278,10 @@ func (m *Model) String() string {
 	return fmt.Sprintf("%s (%s) Context: %d%s", m.ID, m.Created.AsTime().Format("2006-01-02"), m.ContextWindow, suffix)
 }
 
+func (m *Model) Context() int64 {
+	return m.ContextWindow
+}
+
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	// https://console.groq.com/docs/api-reference#models-list
 	if err := c.validate(false); err != nil {

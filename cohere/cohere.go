@@ -352,10 +352,10 @@ func (m *Model) Context() int64 {
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
+	// https://docs.cohere.com/reference/list-models
 	if err := c.validate(false); err != nil {
 		return nil, err
 	}
-	// https://docs.cohere.com/reference/list-models
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
 	var out struct {

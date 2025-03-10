@@ -4,6 +4,7 @@ Barebone generic LLM API client for Go. Has very little dependencies.
 
 Implements support for:
 - Anthropic
+- Cloudflare Workers AI
 - Cohere
 - DeepSeek
 - Google's Gemini
@@ -24,6 +25,7 @@ Implementation is in flux.
 As of March 2025, the following services offer a free tier (other limits
 apply):
 
+- [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/platform/pricing/) about 10k tokens/day
 - [Cohere](https://docs.cohere.com/docs/rate-limits) (1000 RPCs/month)
 - [Google's Gemini](https://ai.google.dev/gemini-api/docs/rate-limits) 0.25qps, 1m tokens/month
 - [Groq](https://console.groq.com/docs/rate-limits) 0.5qps, 500k tokens/day
@@ -31,6 +33,7 @@ apply):
 - [Mistral](https://help.mistral.ai/en/articles/225174-what-are-the-limits-of-the-free-tier) 1qps, 1B tokens/month
 - Running [llama.cpp](https://github.com/ggml-org/llama.cpp) locally is free. :)
 
+TODO: Investigate providers at https://github.com/cheahjs/free-llm-api-resources
 
 ## Fun stats
 
@@ -39,6 +42,7 @@ As for March 2025, here's the HTTP compression supported by each provider:
 | Provider | Compression (in/out) |
 |----------|-------------|
 | Anthropic | none/gzip |
+| Cloudflare Workers AI | none/gzip |
 | Cohere | none/none |
 | DeepSeek | none/gzip |
 | Google's Gemini | gzip/gzip |

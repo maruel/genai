@@ -15,6 +15,7 @@ import (
 	"log/slog"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/httpjson"
@@ -61,7 +62,7 @@ type CompletionResponse struct {
 	ID      string `json:"id"`
 	Object  string `json:"object"` // chat.completion
 	Model   string `json:"model"`
-	Created int64  `json:"created"` // Unix timestamp
+	Created Time   `json:"created"` // Unix timestamp
 	Choices []struct {
 		// FinishReason is one of "stop", "length", "content_filter" or "tool_calls".
 		FinishReason string `json:"finish_reason"`
@@ -95,7 +96,7 @@ type CompletionResponse struct {
 type CompletionStreamChunkResponse struct {
 	ID      string `json:"id"`
 	Object  string `json:"object"` // chat.completion.chunk
-	Created int64  `json:"created"`
+	Created Time   `json:"created"`
 	Model   string `json:"model"`
 	Choices []struct {
 		Index int64 `json:"index"`
@@ -262,11 +263,17 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message,
 	return "", errors.New("not implemented")
 }
 
+type Time int64
+
+func (t *Time) AsTime() time.Time {
+	return time.Unix(int64(*t), 0)
+}
+
 // https://docs.mistral.ai/api/#tag/models/operation/retrieve_model_v1_models__model_id__get
 type Model struct {
 	ID           string `json:"id"`
 	Object       string `json:"object"`
-	Created      int64  `json:"created"`
+	Created      Time   `json:"created"`
 	OwnedBy      string `json:"owned_by"`
 	Capabilities struct {
 		CompletionChat  bool `json:"completion_chat"`
@@ -284,7 +291,36 @@ type Model struct {
 	Type                    string   `json:"type"`
 }
 
-func (c *Client) ListModels(ctx context.Context) ([]Model, error) {
+func (m *Model) GetID() string {
+	return m.ID
+}
+
+func (m *Model) String() string {
+	var caps []string
+	if m.Capabilities.CompletionChat {
+		caps = append(caps, "chat")
+	}
+	if m.Capabilities.CompletionFim {
+		caps = append(caps, "fim")
+	}
+	if m.Capabilities.FunctionCalling {
+		caps = append(caps, "function")
+	}
+	if m.Capabilities.FineTuning {
+		caps = append(caps, "fine-tuning")
+	}
+	if m.Capabilities.Vision {
+		caps = append(caps, "vision")
+	}
+	suffix := ""
+	if m.Deprecation != "" {
+		suffix += " (deprecated)"
+	}
+	// Not including Created and Description because Created is not set and Description is not useful.
+	return fmt.Sprintf("%s (%s) Supports: %s Context: %d%s", m.Name, m.ID, strings.Join(caps, "/"), m.MaxContextLength, suffix)
+}
+
+func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	// https://docs.mistral.ai/api/#tag/models
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
@@ -293,7 +329,14 @@ func (c *Client) ListModels(ctx context.Context) ([]Model, error) {
 		Data   []Model `json:"data"`
 	}
 	err := httpjson.DefaultClient.Get(ctx, "https://api.mistral.ai/v1/models", h, &out)
-	return out.Data, err
+	if err != nil {
+		return nil, err
+	}
+	models := make([]genaiapi.Model, len(out.Data))
+	for i := range out.Data {
+		models[i] = &out.Data[i]
+	}
+	return models, err
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {

@@ -461,6 +461,10 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 	return nil
 }
 
+func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
+	return nil, errors.New("not implemented")
+}
+
 func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs []genaiapi.Message) error {
 	if c.Encoding == nil {
 		// Use the server to convert the OpenAI style format into a templated form.

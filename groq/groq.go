@@ -15,6 +15,7 @@ import (
 	"log/slog"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/httpjson"
@@ -77,7 +78,7 @@ type CompletionResponse struct {
 		} `json:"message"`
 		Logprobs any `json:"logprobs"`
 	} `json:"choices"`
-	Created int64  `json:"created"` // Unix timestamp
+	Created Time   `json:"created"`
 	ID      string `json:"id"`
 	Model   string `json:"model"`
 	Object  string `json:"object"` // chat.completion
@@ -99,7 +100,7 @@ type CompletionResponse struct {
 type CompletionStreamChunkResponse struct {
 	ID                string `json:"id"`
 	Object            string `json:"object"`
-	Created           int64  `json:"created"`
+	Created           Time   `json:"created"`
 	Model             string `json:"model"`
 	SystemFingerprint string `json:"system_fingerprint"`
 	Choices           []struct {
@@ -241,17 +242,35 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message,
 	return "", errors.New("not implemented")
 }
 
+type Time int64
+
+func (t *Time) AsTime() time.Time {
+	return time.Unix(int64(*t), 0)
+}
+
 type Model struct {
 	ID            string   `json:"id"`
 	Object        string   `json:"object"`
-	Created       int64    `json:"created"`
+	Created       Time     `json:"created"`
 	OwnedBy       string   `json:"owned_by"`
 	Active        bool     `json:"active"`
 	ContextWindow int64    `json:"context_window"`
 	PublicApps    []string `json:"public_apps"`
 }
 
-func (c *Client) ListModels(ctx context.Context) ([]Model, error) {
+func (m *Model) GetID() string {
+	return m.ID
+}
+
+func (m *Model) String() string {
+	suffix := ""
+	if !m.Active {
+		suffix = " (inactive)"
+	}
+	return fmt.Sprintf("%s released on %s. Context: %d%s", m.ID, m.Created.AsTime().Format("2006-01-02"), m.ContextWindow, suffix)
+}
+
+func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	// https://console.groq.com/docs/api-reference#models-list
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
@@ -260,7 +279,14 @@ func (c *Client) ListModels(ctx context.Context) ([]Model, error) {
 		Data   []Model `json:"data"`
 	}
 	err := httpjson.DefaultClient.Get(ctx, "https://api.groq.com/openai/v1/models", h, &out)
-	return out.Data, err
+	if err != nil {
+		return nil, err
+	}
+	models := make([]genaiapi.Model, len(out.Data))
+	for i := range out.Data {
+		models[i] = &out.Data[i]
+	}
+	return models, err
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {

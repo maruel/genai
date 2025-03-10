@@ -20,6 +20,15 @@ type CompletionProvider interface {
 	CompletionContent(ctx context.Context, msgs []Message, opts any, mime string, content []byte) (string, error)
 }
 
+type Model interface {
+	GetID() string
+	String() string
+}
+
+type ModelProvider interface {
+	ListModels(ctx context.Context) ([]Model, error)
+}
+
 // Role is one of the LLM known roles.
 type Role string
 

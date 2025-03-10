@@ -261,7 +261,15 @@ type Model struct {
 	OwnedBy string `json:"owned_by"`
 }
 
-func (c *Client) ListModels(ctx context.Context) ([]Model, error) {
+func (m *Model) GetID() string {
+	return m.ID
+}
+
+func (m *Model) String() string {
+	return m.ID
+}
+
+func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	// https://api-docs.deepseek.com/api/list-models
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
@@ -270,7 +278,14 @@ func (c *Client) ListModels(ctx context.Context) ([]Model, error) {
 		Data   []Model `json:"data"`
 	}
 	err := httpjson.DefaultClient.Get(ctx, "https://api.deepseek.com/models", h, &out)
-	return out.Data, err
+	if err != nil {
+		return nil, err
+	}
+	models := make([]genaiapi.Model, len(out.Data))
+	for i := range out.Data {
+		models[i] = &out.Data[i]
+	}
+	return models, err
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {

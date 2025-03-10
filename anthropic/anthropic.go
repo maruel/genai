@@ -284,7 +284,15 @@ type Model struct {
 	Type        string    `json:"type"`
 }
 
-func (c *Client) ListModels(ctx context.Context) ([]Model, error) {
+func (m *Model) GetID() string {
+	return m.ID
+}
+
+func (m *Model) String() string {
+	return fmt.Sprintf("%s (%s) released on %s", m.ID, m.DisplayName, m.CreatedAt.Format("2006-01-02"))
+}
+
+func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	// https://docs.anthropic.com/en/api/models-list
 	h := make(http.Header)
 	h.Set("x-api-key", c.ApiKey)
@@ -296,7 +304,14 @@ func (c *Client) ListModels(ctx context.Context) ([]Model, error) {
 		LastID  string  `json:"last_id"`
 	}
 	err := httpjson.DefaultClient.Get(ctx, "https://api.anthropic.com/v1/models?limit=1000", h, &out)
-	return out.Data, err
+	if err != nil {
+		return nil, err
+	}
+	models := make([]genaiapi.Model, len(out.Data))
+	for i := range out.Data {
+		models[i] = &out.Data[i]
+	}
+	return models, err
 }
 
 func (c *Client) validate(needModel bool) error {

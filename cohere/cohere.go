@@ -14,6 +14,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"sort"
 	"strings"
 
 	"github.com/maruel/genai/genaiapi"
@@ -313,7 +314,32 @@ type Model struct {
 	DefaultEndpoints []string `json:"default_endpoints"`
 }
 
-func (c *Client) ListModels(ctx context.Context) ([]Model, error) {
+func (m *Model) GetID() string {
+	return m.Name
+}
+
+func (m *Model) String() string {
+	suffix := ""
+	if m.Finetuned {
+		suffix += " (finetuned)"
+	}
+	if m.SupportsVision {
+		suffix += " (vision)"
+	}
+	endpoints := make([]string, len(m.Endpoints))
+	copy(endpoints, m.Endpoints)
+	sort.Strings(endpoints)
+	f := ""
+	if len(m.Features) > 0 {
+		features := make([]string, len(m.Features))
+		copy(features, m.Features)
+		sort.Strings(features)
+		f = " with " + strings.Join(features, "/")
+	}
+	return fmt.Sprintf("%s support %s%s. Context: %d%s", m.Name, strings.Join(endpoints, "/"), f, m.ContextLength, suffix)
+}
+
+func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	// https://docs.cohere.com/reference/list-models
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
@@ -322,7 +348,14 @@ func (c *Client) ListModels(ctx context.Context) ([]Model, error) {
 		NextPageToken string  `json:"next_page_token"`
 	}
 	err := httpjson.DefaultClient.Get(ctx, "https://api.cohere.com/v1/models?page_size=1000", h, &out)
-	return out.Models, err
+	if err != nil {
+		return nil, err
+	}
+	models := make([]genaiapi.Model, len(out.Models))
+	for i := range out.Models {
+		models[i] = &out.Models[i]
+	}
+	return models, err
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {

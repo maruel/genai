@@ -579,14 +579,29 @@ type Model struct {
 	TopK                       int64    `json:"topK"`
 }
 
-func (c *Client) ListModels(ctx context.Context) ([]Model, error) {
+func (m *Model) GetID() string {
+	return m.Name
+}
+
+func (m *Model) String() string {
+	return fmt.Sprintf("%s (%s): %s. Context: %d", m.DisplayName, m.Name, m.Description, m.InputTokenLimit)
+}
+
+func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	// https://ai.google.dev/api/models?hl=en#method:-models.list
 	var out struct {
 		Models        []Model `json:"models"`
 		NextPageToken string  `json:"nextPageToken"`
 	}
 	err := httpjson.DefaultClient.Get(ctx, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.ApiKey, nil, &out)
-	return out.Models, err
+	if err != nil {
+		return nil, err
+	}
+	models := make([]genaiapi.Model, len(out.Models))
+	for i := range out.Models {
+		models[i] = &out.Models[i]
+	}
+	return models, err
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {

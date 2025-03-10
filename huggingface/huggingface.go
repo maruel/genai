@@ -63,10 +63,11 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 }
 
 func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
-	c.Messages = make([]Message, len(msgs))
+	c.Messages = nil
 	for i := range msgs {
-		c.Messages[i].Role = msgs[i].Role
-		c.Messages[i].Content = []Content{{Type: "text", Text: msgs[i].Content}}
+		if msgs[i].Content != "" {
+			c.Messages = append(c.Messages, Message{Role: msgs[i].Role, Content: []Content{{Type: "text", Text: msgs[i].Content}}})
+		}
 	}
 	return nil
 }
@@ -249,7 +250,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	h.Add("Authorization", "Bearer "+c.ApiKey)
 	// HuggingFace support all three of gzip, br and zstd!
 	p := httpjson.DefaultClient
-	p.PostCompress = "zstd"
+	// p.PostCompress = "zstd"
 	url := "https://router.huggingface.co/hf-inference/models/" + c.Model + "/v1/chat/completions"
 	resp, err := p.PostRequest(ctx, url, h, in)
 	if err != nil {
@@ -257,7 +258,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	}
 	defer resp.Body.Close()
 	r := bufio.NewReader(resp.Body)
-	for {
+	for first := true; ; first = false {
 		line, err := r.ReadBytes('\n')
 		line = bytes.TrimSpace(line)
 		if err == io.EOF {
@@ -274,6 +275,12 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		}
 		const prefix = "data: "
 		if !bytes.HasPrefix(line, []byte(prefix)) {
+			// HuggingFace has the bad habit of returning errors as HTML pages.
+			if first {
+				// Often has a 503 in there as a <div>.
+				rest, _ := io.ReadAll(r)
+				return fmt.Errorf("unexpected error: %s\n%s", line, rest)
+			}
 			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
 		}
 		suffix := string(line[len(prefix):])

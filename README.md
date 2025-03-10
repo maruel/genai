@@ -59,3 +59,4 @@ None support zstd. brotli is popular. Only Google support compressed HTTP POST r
 - Batch
 - Tuning
 - Embeddings
+- RAG

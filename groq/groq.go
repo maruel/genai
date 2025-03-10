@@ -279,10 +279,10 @@ func (m *Model) String() string {
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
+	// https://console.groq.com/docs/api-reference#models-list
 	if err := c.validate(false); err != nil {
 		return nil, err
 	}
-	// https://console.groq.com/docs/api-reference#models-list
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
 	var out struct {

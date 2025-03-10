@@ -2,6 +2,9 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
+// Package groq implements a client for the Groq API.
+//
+// It is described at https://console.groq.com/docs/api-reference
 package groq
 
 import (
@@ -22,7 +25,6 @@ import (
 )
 
 // https://console.groq.com/docs/api-reference#chat-create
-
 type CompletionRequest struct {
 	FrequencyPenalty    float64            `json:"frequency_penalty,omitempty"` // [-2.0, 2.0]
 	MaxCompletionTokens int64              `json:"max_completion_tokens,omitzero"`
@@ -163,6 +165,9 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
+	if err := c.validate(true); err != nil {
+		return err
+	}
 	return c.post(ctx, "https://api.groq.com/openai/v1/chat/completions", in, out)
 }
 
@@ -195,6 +200,9 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
+	if err := c.validate(true); err != nil {
+		return err
+	}
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
 	// Groq doesn't HTTP POST support compression.
@@ -271,6 +279,9 @@ func (m *Model) String() string {
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
+	if err := c.validate(false); err != nil {
+		return nil, err
+	}
 	// https://console.groq.com/docs/api-reference#models-list
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
@@ -289,10 +300,17 @@ func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	return models, err
 }
 
-func (c *Client) post(ctx context.Context, url string, in, out any) error {
+func (c *Client) validate(needModel bool) error {
 	if c.ApiKey == "" {
 		return errors.New("groq ApiKey is required; get one at " + apiKeyURL)
 	}
+	if needModel && c.Model == "" {
+		return errors.New("a Model is required")
+	}
+	return nil
+}
+
+func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
 	// Groq doesn't HTTP POST support compression.

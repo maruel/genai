@@ -45,3 +45,17 @@ As for March 2025, here's the HTTP compression supported by each provider:
 | OpenAI | none/br |
 
 None support zstd. brotli is popular. Only Google support compressed HTTP POST requests!
+
+## TODO
+
+- Schema
+- Tools
+- Files
+    - PDF in
+    - Audio in
+    - Video in
+- Audio out
+- Video out
+- Batch
+- Tuning
+- Embeddings

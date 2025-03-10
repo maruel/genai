@@ -2,6 +2,9 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
+// Package mistral implements a client for the Mistral API.
+//
+// It is described at https://docs.mistral.ai/api/
 package mistral
 
 import (
@@ -21,7 +24,7 @@ import (
 	"github.com/maruel/httpjson"
 )
 
-// Messages.
+// https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post
 type CompletionRequest struct {
 	Model            string             `json:"model"`
 	Temperature      float64            `json:"temperature,omitzero"` // [0, 2]
@@ -157,9 +160,6 @@ type Client struct {
 // https://codestral.mistral.ai/v1/chat/completions
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
-	if err := c.validate(); err != nil {
-		return "", err
-	}
 	in := CompletionRequest{Model: c.Model}
 	if err := in.fromOpts(opts); err != nil {
 		return "", err
@@ -178,13 +178,14 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
+	// https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post
+	if err := c.validate(true); err != nil {
+		return err
+	}
 	return c.post(ctx, "https://api.mistral.ai/v1/chat/completions", in, out)
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
-	if err := c.validate(); err != nil {
-		return err
-	}
 	in := CompletionRequest{Model: c.Model, Stream: true}
 	if err := in.fromOpts(opts); err != nil {
 		return err
@@ -213,6 +214,9 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
+	if err := c.validate(true); err != nil {
+		return err
+	}
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
 	// Mistral doesn't HTTP POST support compression.
@@ -250,14 +254,23 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		d.UseNumber()
 		msg := CompletionStreamChunkResponse{}
 		if err = d.Decode(&msg); err != nil {
-			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+			d = json.NewDecoder(strings.NewReader(suffix))
+			d.DisallowUnknownFields()
+			d.UseNumber()
+			erAuth := errorResponseAuth{}
+			if err = d.Decode(&erAuth); err != nil {
+				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+			}
+			// Happens with Requests rate limit exceeded.
+			// TODO: Wrap it so it can be retried like a 429.
+			return errors.New(erAuth.Message)
 		}
 		out <- msg
 	}
 }
 
 func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, content []byte) (string, error) {
-	if err := c.validate(); err != nil {
+	if err := c.validate(true); err != nil {
 		return "", err
 	}
 	return "", errors.New("not implemented")
@@ -322,6 +335,9 @@ func (m *Model) String() string {
 
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	// https://docs.mistral.ai/api/#tag/models
+	if err := c.validate(false); err != nil {
+		return nil, err
+	}
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
 	var out struct {
@@ -337,6 +353,16 @@ func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 		models[i] = &out.Data[i]
 	}
 	return models, err
+}
+
+func (c *Client) validate(needModel bool) error {
+	if c.ApiKey == "" {
+		return errors.New("mistral ApiKey is required; get one at " + apiKeyURL)
+	}
+	if needModel && c.Model == "" {
+		return errors.New("a Model is required")
+	}
+	return nil
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
@@ -387,16 +413,6 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 		}
 		return err
 	}
-}
-
-func (c *Client) validate() error {
-	if c.ApiKey == "" {
-		return errors.New("missing API key")
-	}
-	if c.Model == "" {
-		return errors.New("missing model")
-	}
-	return nil
 }
 
 const apiKeyURL = "https://console.mistral.ai/api-keys"

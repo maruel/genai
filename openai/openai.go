@@ -2,6 +2,9 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
+// Package openai implements a client for the OpenAI API.
+//
+// It is described at https://platform.openai.com/docs/api-reference/
 package openai
 
 import (
@@ -21,9 +24,6 @@ import (
 	"github.com/maruel/httpjson"
 )
 
-// Messages. https://platform.openai.com/docs/api-reference/making-requests
-
-// CompletionRequest is documented at
 // https://platform.openai.com/docs/api-reference/chat/create
 type CompletionRequest struct {
 	Model               string             `json:"model"`
@@ -166,9 +166,6 @@ type errorResponseError struct {
 //
 
 type Client struct {
-	// BaseURL defaults to OpenAI's API endpoint. See billing information at
-	// https://platform.openai.com/settings/organization/billing/overview
-	BaseURL string
 	// ApiKey can be retrieved from https://platform.openai.com/settings/organization/api-keys
 	ApiKey string
 	// Model to use, from https://platform.openai.com/docs/api-reference/models
@@ -194,7 +191,11 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
-	return c.post(ctx, c.baseURL()+"/v1/chat/completions", in, out)
+	// https://platform.openai.com/docs/api-reference/chat/create
+	if err := c.validate(true); err != nil {
+		return err
+	}
+	return c.post(ctx, "https://api.openai.com/v1/chat/completions", in, out)
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
@@ -231,10 +232,13 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
+	if err := c.validate(true); err != nil {
+		return err
+	}
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
 	// OpenAI doesn't HTTP POST support compression.
-	resp, err := httpjson.DefaultClient.PostRequest(ctx, c.baseURL()+"/v1/chat/completions", h, in)
+	resp, err := httpjson.DefaultClient.PostRequest(ctx, "https://api.openai.com/v1/chat/completions", h, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
@@ -305,6 +309,9 @@ func (m *Model) String() string {
 
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	// https://platform.openai.com/docs/api-reference/models/list
+	if err := c.validate(false); err != nil {
+		return nil, err
+	}
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
 	var out struct {
@@ -322,10 +329,17 @@ func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	return models, err
 }
 
-func (c *Client) post(ctx context.Context, url string, in, out any) error {
+func (c *Client) validate(needModel bool) error {
 	if c.ApiKey == "" {
 		return errors.New("openai ApiKey is required; get one at " + apiKeyURL)
 	}
+	if needModel && c.Model == "" {
+		return errors.New("a Model is required")
+	}
+	return nil
+}
+
+func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
 	// OpenAI doesn't HTTP POST support compression.
@@ -359,13 +373,6 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 		}
 		return err
 	}
-}
-
-func (c *Client) baseURL() string {
-	if c.BaseURL != "" {
-		return c.BaseURL
-	}
-	return "https://api.openai.com"
 }
 
 const apiKeyURL = "https://platform.openai.com/settings/organization/api-keys"

@@ -2,6 +2,9 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
+// Package deepseek implements a client for the DeepSeek API.
+//
+// It is described at https://api-docs.deepseek.com/
 package deepseek
 
 import (
@@ -21,16 +24,6 @@ import (
 )
 
 // https://api-docs.deepseek.com/api/create-chat-completion
-
-type Message struct {
-	Role             genaiapi.Role `json:"role"`
-	Content          string        `json:"content"`
-	Name             string        `json:"name,omitzero"`
-	Prefix           bool          `json:"prefix,omitzero"`
-	ReasoningContent string        `json:"reasoning_content,omitzero"`
-	ToolCallID       string        `json:"tool_call_id,omitzero"`
-}
-
 type CompletionRequest struct {
 	Model            string    `json:"model,omitempty"`
 	Messages         []Message `json:"messages"`
@@ -75,6 +68,15 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 		}
 	}
 	return nil
+}
+
+type Message struct {
+	Role             genaiapi.Role `json:"role"`
+	Content          string        `json:"content"`
+	Name             string        `json:"name,omitzero"`
+	Prefix           bool          `json:"prefix,omitzero"`
+	ReasoningContent string        `json:"reasoning_content,omitzero"`
+	ToolCallID       string        `json:"tool_call_id,omitzero"`
 }
 
 type CompletionResponse struct {
@@ -177,6 +179,9 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
+	if err := c.validate(true); err != nil {
+		return err
+	}
 	return c.post(ctx, "https://api.deepseek.com/chat/completions", in, out)
 }
 
@@ -208,6 +213,9 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
+	if err := c.validate(true); err != nil {
+		return err
+	}
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
 	// DeepSeek doesn't HTTP POST support compression.
@@ -270,6 +278,9 @@ func (m *Model) String() string {
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
+	if err := c.validate(false); err != nil {
+		return nil, err
+	}
 	// https://api-docs.deepseek.com/api/list-models
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
@@ -288,10 +299,17 @@ func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	return models, err
 }
 
-func (c *Client) post(ctx context.Context, url string, in, out any) error {
+func (c *Client) validate(needModel bool) error {
 	if c.ApiKey == "" {
 		return errors.New("deepseek ApiKey is required; get one at " + apiKeyURL)
 	}
+	if needModel && c.Model == "" {
+		return errors.New("a Model is required")
+	}
+	return nil
+}
+
+func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	h := make(http.Header)
 	h.Set("Authorization", "Bearer "+c.ApiKey)
 	// DeepSeek doesn't HTTP POST support compression.

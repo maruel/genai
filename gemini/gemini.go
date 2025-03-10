@@ -2,6 +2,11 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
+// Package gemini implements a client for Google's Gemini API.
+//
+// Not to be confused with Google's Vertex AI.
+//
+// It is described at https://ai.google.dev/api/?lang=rest but the doc is weirdly organized.
 package gemini
 
 import (
@@ -182,10 +187,10 @@ type functionCallingConfig struct {
 type CompletionRequest struct {
 	Contents          []Content        `json:"contents"`
 	Tools             []Tool           `json:"tools,omitempty"`
-	ToolConfig        ToolConfig       `json:"toolConfig,omitempty"`
+	ToolConfig        ToolConfig       `json:"toolConfig,omitzero"`
 	SafetySettings    []SafetySetting  `json:"safetySettings,omitempty"`
 	SystemInstruction Content          `json:"systemInstruction,omitzero"`
-	GenerationConfig  GenerationConfig `json:"generationConfig,omitempty"`
+	GenerationConfig  GenerationConfig `json:"generationConfig,omitzero"`
 	CachedContent     string           `json:"cachedContent,omitempty"`
 }
 
@@ -442,6 +447,9 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
 	// https://ai.google.dev/api/generate-content?hl=en#text_gen_text_only_prompt-SHELL
+	if err := c.validate(true); err != nil {
+		return err
+	}
 	url := "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":generateContent?key=" + c.ApiKey
 	return c.post(ctx, url, in, out)
 }
@@ -477,6 +485,9 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
 	// https://ai.google.dev/api/generate-content?hl=en#v1beta.GenerateContentResponse
+	if err := c.validate(true); err != nil {
+		return err
+	}
 	url := "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":streamGenerateContent?alt=sse&key=" + c.ApiKey
 	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
 	p := httpjson.DefaultClient
@@ -520,6 +531,9 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 }
 
 func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, context []byte) (string, error) {
+	if err := c.validate(true); err != nil {
+		return "", err
+	}
 	in := CompletionRequest{}
 	if err := in.fromOpts(opts); err != nil {
 		return "", err
@@ -589,6 +603,9 @@ func (m *Model) String() string {
 
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	// https://ai.google.dev/api/models?hl=en#method:-models.list
+	if err := c.validate(false); err != nil {
+		return nil, err
+	}
 	var out struct {
 		Models        []Model `json:"models"`
 		NextPageToken string  `json:"nextPageToken"`
@@ -604,10 +621,17 @@ func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	return models, err
 }
 
-func (c *Client) post(ctx context.Context, url string, in, out any) error {
+func (c *Client) validate(needModel bool) error {
 	if c.ApiKey == "" {
 		return errors.New("gemini ApiKey is required; get one at " + apiKeyURL)
 	}
+	if needModel && c.Model == "" {
+		return errors.New("a Model is required")
+	}
+	return nil
+}
+
+func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
 	p := httpjson.DefaultClient
 	// Google supports HTTP POST gzip compression!

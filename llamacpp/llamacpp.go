@@ -2,6 +2,11 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
+// Package llamacpp implements a client for the llama-server native API, not
+// the OpenAI compatible one.
+//
+// It is described at
+// https://github.com/ggerganov/llama.cpp/blob/master/examples/server/README.md#api-endpoints
 package llamacpp
 
 import (

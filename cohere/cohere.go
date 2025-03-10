@@ -2,6 +2,9 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
+// Package cohere implements a client for the Cohere API.
+//
+// It is described at https://docs.cohere.com/reference/
 package cohere
 
 import (
@@ -22,29 +25,6 @@ import (
 )
 
 // https://docs.cohere.com/reference/chat
-
-type Message struct {
-	Role genaiapi.Role `json:"role"`
-	// Assistant, System or User.
-	Content struct {
-		Type     string `json:"type"` // "text", "image_url" or "document"
-		Text     string `json:"text,omitempty"`
-		ImageURL struct {
-			URL string `json:"url,omitempty"`
-		} `json:"image_url,omitzero"`
-		Document struct {
-			Data map[string]any `json:"data,omitempty"` // TODO
-			ID   string         `json:"id,omitempty"`   // TODO
-		} `json:"document,omitempty"`
-	} `json:"content"`
-	// Assistant
-	Citations any `json:"citations,omitempty"` // TODO
-	// Assistant
-	ToolCalls []any `json:"tool_calls,omitempty"` // TODO
-	// Tool
-	ToolCallID string `json:"tool_call_id,omitempty"`
-}
-
 type CompletionRequest struct {
 	Stream           bool      `json:"stream"`
 	Model            string    `json:"model"`
@@ -86,6 +66,28 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 		c.Messages[i].Content.Text = m.Content
 	}
 	return nil
+}
+
+type Message struct {
+	Role genaiapi.Role `json:"role"`
+	// Assistant, System or User.
+	Content struct {
+		Type     string `json:"type"` // "text", "image_url" or "document"
+		Text     string `json:"text,omitempty"`
+		ImageURL struct {
+			URL string `json:"url,omitempty"`
+		} `json:"image_url,omitzero"`
+		Document struct {
+			Data map[string]any `json:"data,omitempty"` // TODO
+			ID   string         `json:"id,omitempty"`   // TODO
+		} `json:"document,omitempty"`
+	} `json:"content"`
+	// Assistant
+	Citations any `json:"citations,omitempty"` // TODO
+	// Assistant
+	ToolCalls []any `json:"tool_calls,omitempty"` // TODO
+	// Tool
+	ToolCallID string `json:"tool_call_id,omitempty"`
 }
 
 type CompletionResponse struct {
@@ -216,6 +218,9 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
+	if err := c.validate(true); err != nil {
+		return err
+	}
 	return c.post(ctx, "https://api.cohere.com/v2/chat", in, out)
 }
 
@@ -245,6 +250,9 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
+	if err := c.validate(true); err != nil {
+		return err
+	}
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
 	// Cohere doesn't HTTP POST support compression.
@@ -340,6 +348,9 @@ func (m *Model) String() string {
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
+	if err := c.validate(false); err != nil {
+		return nil, err
+	}
 	// https://docs.cohere.com/reference/list-models
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
@@ -358,10 +369,17 @@ func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	return models, err
 }
 
-func (c *Client) post(ctx context.Context, url string, in, out any) error {
+func (c *Client) validate(needModel bool) error {
 	if c.ApiKey == "" {
 		return errors.New("cohere ApiKey is required; get one at " + apiKeyURL)
 	}
+	if needModel && c.Model == "" {
+		return errors.New("a Model is required")
+	}
+	return nil
+}
+
+func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.ApiKey)
 	// Cohere doesn't HTTP POST support compression.

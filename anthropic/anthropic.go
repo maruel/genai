@@ -2,6 +2,10 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
+// Package groq implements a client for the Anthropic API, to use Claude.
+//
+// It is described at
+// https://docs.anthropic.com/en/api/messages
 package anthropic
 
 import (
@@ -293,6 +297,9 @@ func (m *Model) String() string {
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
+	if err := c.validate(false); err != nil {
+		return nil, err
+	}
 	// https://docs.anthropic.com/en/api/models-list
 	h := make(http.Header)
 	h.Set("x-api-key", c.ApiKey)

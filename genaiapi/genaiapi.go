@@ -18,7 +18,6 @@ type CompletionOptions struct {
 type CompletionProvider interface {
 	Completion(ctx context.Context, msgs []Message, opts any) (string, error)
 	CompletionStream(ctx context.Context, msgs []Message, opts any, words chan<- string) error
-	CompletionContent(ctx context.Context, msgs []Message, opts any, mime string, content []byte) (string, error)
 }
 
 type Model interface {
@@ -49,21 +48,27 @@ const (
 type ContentType string
 
 const (
-	Text ContentType = "text"
-	// Image ContentType = "image"
+	Text  ContentType = "text"
+	Image ContentType = "image"
 )
 
 // Message is a message to send to the LLM as part of the exchange.
 type Message struct {
 	Role Role
 	Type ContentType
-	// Content is the content of the message. It can be raw binary data.
-	Content string
+
+	// Type == "text"
+	// Text is the content of the text message.
+	Text string
+
+	// Type == "image"
+	// Image is raw image data.
+	Image []byte
+	// MimeType is the MIME type of the content if not text and inline.
+	MimeType string
 }
 
 /*
    // Inline determines if the data is embedded in the message or externally referenced.
    Inline bool
-   // MimeType is the MIME type of the content if not text and inline.
-   MimeType string
 */

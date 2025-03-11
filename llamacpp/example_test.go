@@ -53,9 +53,9 @@ func ExampleClient_Completion() {
 	ctx := context.Background()
 	msgs := []genaiapi.Message{
 		{
-			Role:    genaiapi.User,
-			Type:    genaiapi.Text,
-			Content: "Say hello. Use only one word.",
+			Role: genaiapi.User,
+			Type: genaiapi.Text,
+			Text: "Say hello. Use only one word.",
 		},
 	}
 	opts := genaiapi.CompletionOptions{Seed: 1}
@@ -122,9 +122,9 @@ func ExampleClient_CompletionStream() {
 	ctx := context.Background()
 	msgs := []genaiapi.Message{
 		{
-			Role:    genaiapi.User,
-			Type:    genaiapi.Text,
-			Content: "Say hello. Use only one word.",
+			Role: genaiapi.User,
+			Type: genaiapi.Text,
+			Text: "Say hello. Use only one word.",
 		},
 	}
 	opts := genaiapi.CompletionOptions{Seed: 1}

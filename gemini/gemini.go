@@ -208,7 +208,7 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) (string, error) {
 		// system prompt is passed differently so check content first.
 		switch m.Type {
 		case genaiapi.Text:
-			if m.Content == "" {
+			if m.Text == "" {
 				return "", fmt.Errorf("message %d: missing text content", i)
 			}
 		default:
@@ -219,11 +219,11 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) (string, error) {
 			if i != 0 {
 				return "", fmt.Errorf("message %d: system message must be first message", i)
 			}
-			sp = m.Content
+			sp = m.Text
 		case genaiapi.User:
-			c.Contents = append(c.Contents, Content{Parts: []Part{{Text: m.Content}}, Role: "user"})
+			c.Contents = append(c.Contents, Content{Parts: []Part{{Text: m.Text}}, Role: "user"})
 		case genaiapi.Assistant:
-			c.Contents = append(c.Contents, Content{Parts: []Part{{Text: m.Content}}, Role: "model"})
+			c.Contents = append(c.Contents, Content{Parts: []Part{{Text: m.Text}}, Role: "model"})
 		default:
 			return "", fmt.Errorf("message %d: unexpected role %q", i, m.Role)
 		}

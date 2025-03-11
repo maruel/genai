@@ -78,7 +78,7 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 		}
 		switch m.Type {
 		case genaiapi.Text:
-			if m.Content == "" {
+			if m.Text == "" {
 				return fmt.Errorf("message %d: missing text content", i)
 			}
 		default:
@@ -86,7 +86,7 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 		}
 		c.Messages[i].Role = string(m.Role)
 		c.Messages[i].Content.Type = "text"
-		c.Messages[i].Content.Text = m.Content
+		c.Messages[i].Content.Text = m.Text
 	}
 	return nil
 }

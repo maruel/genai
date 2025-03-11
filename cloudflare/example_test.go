@@ -27,9 +27,9 @@ func ExampleClient_Completion() {
 		c := cloudflare.Client{AccountID: accountID, ApiKey: key, Model: model}
 		msgs := []genaiapi.Message{
 			{
-				Role:    genaiapi.User,
-				Type:    genaiapi.Text,
-				Content: "Say hello. Use only one word.",
+				Role: genaiapi.User,
+				Type: genaiapi.Text,
+				Text: "Say hello. Use only one word.",
 			},
 		}
 		resp, err := c.Completion(context.Background(), msgs, &genaiapi.CompletionOptions{})
@@ -51,9 +51,9 @@ func ExampleClient_CompletionStream() {
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
 			{
-				Role:    genaiapi.User,
-				Type:    genaiapi.Text,
-				Content: "Say hello. Use only one word.",
+				Role: genaiapi.User,
+				Type: genaiapi.Text,
+				Text: "Say hello. Use only one word.",
 			},
 		}
 		words := make(chan string, 10)

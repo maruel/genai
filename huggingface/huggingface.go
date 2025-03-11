@@ -81,14 +81,14 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 		// We don't filter the role here.
 		switch m.Type {
 		case genaiapi.Text:
-			if m.Content == "" {
+			if m.Text == "" {
 				return fmt.Errorf("message %d: missing text content", i)
 			}
 		default:
 			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
 		}
 		c.Messages[i].Role = string(m.Role)
-		c.Messages[i].Content = []Content{{Type: "text", Text: m.Content}}
+		c.Messages[i].Content = []Content{{Type: "text", Text: m.Text}}
 	}
 	return nil
 }

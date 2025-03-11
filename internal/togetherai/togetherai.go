@@ -64,16 +64,33 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 
 func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 	c.Messages = make([]Message, len(msgs))
-	for i := range msgs {
-		c.Messages[i].Role = msgs[i].Role
+	for i, m := range msgs {
+		switch m.Role {
+		case genaiapi.System:
+			if i != 0 {
+				return fmt.Errorf("message %d: system message must be first message", i)
+			}
+		case genaiapi.User, genaiapi.Assistant:
+		default:
+			return fmt.Errorf("message %d: unexpected role %q", i, m.Role)
+		}
+		switch m.Type {
+		case genaiapi.Text:
+			if m.Text == "" {
+				return fmt.Errorf("message %d: missing text content", i)
+			}
+		default:
+			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
+		}
+		c.Messages[i].Role = string(m.Role)
 		c.Messages[i].Content.Type = "text"
-		c.Messages[i].Content.Text = msgs[i].Content
+		c.Messages[i].Content.Text = msgs[i].Text
 	}
 	return nil
 }
 
 type Message struct {
-	Role    genaiapi.Role `json:"role"`
+	Role    string `json:"role"`
 	Content struct {
 		Type     string `json:"content"` // text,image_url,video_url
 		Text     string `json:"text"`

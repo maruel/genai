@@ -26,9 +26,9 @@ func ExampleClient_Completion() {
 		c := anthropic.Client{ApiKey: key, Model: model}
 		msgs := []genaiapi.Message{
 			{
-				Role:    genaiapi.User,
-				Type:    genaiapi.Text,
-				Content: "Say hello. Use only one word.",
+				Role: genaiapi.User,
+				Type: genaiapi.Text,
+				Text: "Say hello. Use only one word.",
 			},
 		}
 		opts := genaiapi.CompletionOptions{MaxTokens: 4096}
@@ -51,9 +51,9 @@ func ExampleClient_CompletionStream() {
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
 			{
-				Role:    genaiapi.User,
-				Type:    genaiapi.Text,
-				Content: "Say hello. Use only one word.",
+				Role: genaiapi.User,
+				Type: genaiapi.Text,
+				Text: "Say hello. Use only one word.",
 			},
 		}
 		words := make(chan string, 10)

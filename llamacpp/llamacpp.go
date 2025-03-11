@@ -211,13 +211,13 @@ func (a *applyTemplateRequest) fromMsgs(msgs []genaiapi.Message) error {
 		// We don't filter the role here.
 		switch m.Type {
 		case genaiapi.Text:
-			if m.Content == "" {
+			if m.Text == "" {
 				return fmt.Errorf("message %d: missing text content", i)
 			}
 		default:
 			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
 		}
-		a.Messages[i] = Message{Role: string(m.Role), Content: m.Content}
+		a.Messages[i] = Message{Role: string(m.Role), Content: m.Text}
 	}
 	return nil
 }
@@ -513,25 +513,25 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs []g
 				return fmt.Errorf("unexpected available_tools message at index %d; state %d", i, state)
 			}
 			state = 1
-			in.Prompt += c.Encoding.ToolsAvailableTokenStart + m.Content + c.Encoding.ToolsAvailableTokenEnd
+			in.Prompt += c.Encoding.ToolsAvailableTokenStart + m.Text + c.Encoding.ToolsAvailableTokenEnd
 		case genaiapi.System:
 			if state > 1 {
 				return fmt.Errorf("unexpected system message at index %d; state %d", i, state)
 			}
 			state = 2
-			in.Prompt += c.Encoding.SystemTokenStart + m.Content + c.Encoding.SystemTokenEnd
+			in.Prompt += c.Encoding.SystemTokenStart + m.Text + c.Encoding.SystemTokenEnd
 		case genaiapi.User:
 			state = 3
-			in.Prompt += c.Encoding.UserTokenStart + m.Content + c.Encoding.UserTokenEnd
+			in.Prompt += c.Encoding.UserTokenStart + m.Text + c.Encoding.UserTokenEnd
 		case genaiapi.Assistant:
 			state = 3
-			in.Prompt += c.Encoding.AssistantTokenStart + m.Content + c.Encoding.AssistantTokenEnd
+			in.Prompt += c.Encoding.AssistantTokenStart + m.Text + c.Encoding.AssistantTokenEnd
 		case genaiapi.ToolCall:
 			state = 3
-			in.Prompt += c.Encoding.ToolCallTokenStart + m.Content + c.Encoding.ToolCallTokenEnd
+			in.Prompt += c.Encoding.ToolCallTokenStart + m.Text + c.Encoding.ToolCallTokenEnd
 		case genaiapi.ToolCallResult:
 			state = 3
-			in.Prompt += c.Encoding.ToolCallResultTokenStart + m.Content + c.Encoding.ToolCallResultTokenEnd
+			in.Prompt += c.Encoding.ToolCallResultTokenStart + m.Text + c.Encoding.ToolCallResultTokenEnd
 		default:
 			return fmt.Errorf("unexpected role %q", m.Role)
 		}

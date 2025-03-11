@@ -208,7 +208,6 @@ type applyTemplateRequest struct {
 func (a *applyTemplateRequest) fromMsgs(msgs []genaiapi.Message) error {
 	a.Messages = make([]Message, len(msgs))
 	for i, m := range msgs {
-		// We don't filter the role here.
 		switch m.Type {
 		case genaiapi.Text:
 			if m.Text == "" {
@@ -216,6 +215,17 @@ func (a *applyTemplateRequest) fromMsgs(msgs []genaiapi.Message) error {
 			}
 		default:
 			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
+		}
+		switch m.Role {
+		case genaiapi.System:
+			if i != 0 {
+				return fmt.Errorf("message %d: system message must be first message", i)
+			}
+			if m.Type != genaiapi.Text {
+				return fmt.Errorf("message %d: system message must be text", i)
+			}
+		default:
+			// We don't filter the role here.
 		}
 		a.Messages[i] = Message{Role: string(m.Role), Content: m.Text}
 	}

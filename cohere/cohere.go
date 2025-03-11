@@ -72,6 +72,9 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 			if i != 0 {
 				return fmt.Errorf("message %d: system message must be first message", i)
 			}
+			if m.Type != genaiapi.Text {
+				return fmt.Errorf("message %d: system message must be text", i)
+			}
 		case genaiapi.User, genaiapi.Assistant, genaiapi.Tool:
 		default:
 			return fmt.Errorf("message %d: unexpected role %q", i, m.Role)
@@ -341,6 +344,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 				fallback.translateTo(&msg)
 			}
 			out <- msg
+		case bytes.Equal(line, []byte(": keep-alive")):
 		case bytes.HasPrefix(line, []byte("event:")):
 			// Ignore for now.
 		default:

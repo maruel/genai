@@ -1,6 +1,6 @@
 # genai
 
-Barebone generic LLM API client for Go. Has very little dependencies.
+The _high performance_ native Go client for LLMs.
 
 Implements support for:
 - Anthropic
@@ -16,7 +16,15 @@ Implements support for:
 - Perplexity
 - llama.cpp
 
-Implementation is in flux.
+Features:
+
+- Has very few dependencies.
+- Densified API surface while keeping 100% of the underlying backend specific support available.
+- Optimized for speed: minimize memory allocations, compress data when possible.
+- Safe and strict API implementation. All you love from a statically type
+  language. Fails on unknown RPC fields. Error code paths are properly
+  implemented.
+- Implementation is in flux. :)
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/maruel/genai/.svg)](https://pkg.go.dev/github.com/maruel/genai/)
 [![codecov](https://codecov.io/gh/maruel/genai/graph/badge.svg?token=VLBH363B6N)](https://codecov.io/gh/maruel/genai)

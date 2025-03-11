@@ -6,6 +6,7 @@ package anthropic_test
 
 import (
 	"context"
+	_ "embed"
 	"fmt"
 	"log"
 	"os"
@@ -14,9 +15,14 @@ import (
 	"github.com/maruel/genai/genaiapi"
 )
 
+//go:embed testdata/banana.jpg
+var bananaJpg []byte
+
 var (
 	key = os.Getenv("ANTHROPIC_API_KEY")
-	// Using very small model for testing.
+	// Using very small model for testing. As of March 2025,
+	// claude-3-haiku-20240307 is 0.20$/1.25$ while claude-3-5-haiku-20241022 is
+	// 0.80$/4.00$.
 	// https://docs.anthropic.com/en/docs/about-claude/models/all-models
 	model = "claude-3-haiku-20240307"
 )
@@ -24,6 +30,22 @@ var (
 func ExampleClient_Completion() {
 	if key != "" {
 		c := anthropic.Client{ApiKey: key, Model: model}
+		/* Soon!
+		msgs := []genaiapi.Message{
+			{
+				Role:     genaiapi.User,
+				Type:     genaiapi.Document,
+				Inline:   true,
+				MimeType: "image/jpeg",
+				Data:     bananaJpg,
+			},
+			{
+				Role: genaiapi.User,
+				Type: genaiapi.Text,
+				Text: "Is it a banana? Reply with only one word.",
+			},
+		}
+		*/
 		msgs := []genaiapi.Message{
 			{
 				Role: genaiapi.User,
@@ -31,8 +53,7 @@ func ExampleClient_Completion() {
 				Text: "Say hello. Use only one word.",
 			},
 		}
-		opts := genaiapi.CompletionOptions{MaxTokens: 4096}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
+		resp, err := c.Completion(context.Background(), msgs, &genaiapi.CompletionOptions{MaxTokens: 4096})
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -77,8 +98,7 @@ func ExampleClient_CompletionStream() {
 				log.Printf("Unexpected response: %s", resp)
 			}
 		}()
-		opts := genaiapi.CompletionOptions{MaxTokens: 4096}
-		err := c.CompletionStream(ctx, msgs, &opts, words)
+		err := c.CompletionStream(ctx, msgs, &genaiapi.CompletionOptions{MaxTokens: 4096}, words)
 		close(words)
 		<-end
 		if err != nil {

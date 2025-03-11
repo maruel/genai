@@ -48,8 +48,8 @@ const (
 type ContentType string
 
 const (
-	Text  ContentType = "text"
-	Image ContentType = "image"
+	Text     ContentType = "text"
+	Document ContentType = "document"
 )
 
 // Message is a message to send to the LLM as part of the exchange.
@@ -61,14 +61,11 @@ type Message struct {
 	// Text is the content of the text message.
 	Text string
 
-	// Type == "image"
-	// Image is raw image data.
-	Image []byte
-	// MimeType is the MIME type of the content if not text and inline.
+	// Type == "document"
+	// Inline determines if the data is embedded in the message or externally referenced.
+	Inline bool
+	// Data is raw document data.
+	Data []byte
+	// MimeType is the MIME type of the data if relevant.
 	MimeType string
 }
-
-/*
-   // Inline determines if the data is embedded in the message or externally referenced.
-   Inline bool
-*/

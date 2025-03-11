@@ -205,28 +205,53 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) (string, error) {
 	c.Contents = make([]Content, 0, len(msgs))
 	sp := ""
 	for i, m := range msgs {
-		// system prompt is passed differently so check content first.
-		switch m.Type {
-		case genaiapi.Text:
-			if m.Text == "" {
-				return "", fmt.Errorf("message %d: missing text content", i)
-			}
-		default:
-			return "", fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
-		}
+		role := ""
 		switch m.Role {
 		case genaiapi.System:
 			if i != 0 {
 				return "", fmt.Errorf("message %d: system message must be first message", i)
 			}
+			if m.Type != genaiapi.Text {
+				return "", fmt.Errorf("message %d: system message must be text", i)
+			}
+			// System prompt is passed differently.
 			sp = m.Text
+			continue
 		case genaiapi.User:
-			c.Contents = append(c.Contents, Content{Parts: []Part{{Text: m.Text}}, Role: "user"})
+			role = "user"
 		case genaiapi.Assistant:
-			c.Contents = append(c.Contents, Content{Parts: []Part{{Text: m.Text}}, Role: "model"})
+			role = "model"
 		default:
 			return "", fmt.Errorf("message %d: unexpected role %q", i, m.Role)
 		}
+		cont := Content{Parts: []Part{{}}, Role: role}
+		switch m.Type {
+		case genaiapi.Text:
+			if m.Text == "" {
+				return "", fmt.Errorf("message %d: missing text content", i)
+			}
+			cont.Parts[0].Text = m.Text
+		case genaiapi.Document:
+			if m.Text != "" {
+				return "", fmt.Errorf("message %d: unexpected text content: %q", i, m.Text)
+			}
+			if !m.Inline {
+				return "", fmt.Errorf("message %d: external document is not yet supported", i)
+			}
+			if len(m.Data) >= 20*1024*1024 {
+				// If more than 20MB, we need to use
+				// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#large-pdfs-urls
+				// cacheName, err := c.cacheContent(ctx, context, mime, sp)
+				// When using cached content, system instruction, tools or tool_config cannot be used. Weird.
+				// in.CachedContent = cacheName
+				return "", fmt.Errorf("message %d: document is too large; to be implemented later", i)
+			}
+			cont.Parts[0].InlineData.MimeType = m.MimeType
+			cont.Parts[0].InlineData.Data = m.Data
+		default:
+			return "", fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
+		}
+		c.Contents = append(c.Contents, cont)
 	}
 	return sp, nil
 }
@@ -403,8 +428,53 @@ type errorResponseError struct {
 	} `json:"details"`
 }
 
+// Client implements the REST JSON based API.
+//
+// See https://ai.google.dev/gemini-api/docs/file-prompting-strategies?hl=en
+// for good ideas on how to prompt with images.
+//
 // https://ai.google.dev/gemini-api/docs/pricing
-// https://pkg.go.dev/github.com/google/generative-ai-go/genai no need to use this package, it imports too much.
+// Supported mime types for images:
+// https://ai.google.dev/gemini-api/docs/vision?hl=en&lang=rest#prompting-images
+// - image/png
+// - image/jpeg
+// - image/webp
+// - image/heic
+// - image/heif
+//
+// Supported mime types for videos:
+// https://ai.google.dev/gemini-api/docs/vision?hl=en&lang=rest#technical-details-video
+// - video/mp4
+// - video/mpeg
+// - video/mov
+// - video/avi
+// - video/x-flv
+// - video/mpg
+// - video/webm
+// - video/wmv
+// - video/3gpp
+//
+// Supported mime types for audio:
+// https://ai.google.dev/gemini-api/docs/audio?hl=en&lang=rest#supported-formats
+// - audio/wav
+// - audio/mp3
+// - audio/aiff
+// - audio/aac
+// - audio/ogg
+// - audio/flac
+//
+// Supported mime types for documents:
+// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#technical-details
+// - application/pdf
+// - application/x-javascript, text/javascript
+// - application/x-python, text/x-python
+// - text/plain
+// - text/html
+// - text/css
+// - text/md
+// - text/csv
+// - text/xml
+// - text/rtf
 type Client struct {
 	ApiKey string
 	// See models at https://ai.google.dev/gemini-api/docs/models/gemini
@@ -441,7 +511,26 @@ func (c *Client) cacheContent(ctx context.Context, data []byte, mime, systemInst
 }
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
-	return c.CompletionContent(ctx, msgs, opts, "", nil)
+	in := CompletionRequest{}
+	if err := in.fromOpts(opts); err != nil {
+		return "", err
+	}
+	sp, err := in.fromMsgs(msgs)
+	if err != nil {
+		return "", err
+	}
+	if sp != "" {
+		in.SystemInstruction.Parts = []Part{{Text: sp}}
+	}
+	out := CompletionResponse{}
+	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
+		return "", err
+	}
+	if len(out.Candidates) != 1 {
+		return "", fmt.Errorf("unexpected number of candidates; expected 1, got %v", out.Candidates)
+	}
+	parts := out.Candidates[0].Content.Parts
+	return parts[len(parts)-1].Text, nil
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
@@ -527,53 +616,6 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		}
 		out <- msg
 	}
-}
-
-func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, context []byte) (string, error) {
-	if err := c.validate(true); err != nil {
-		return "", err
-	}
-	in := CompletionRequest{}
-	if err := in.fromOpts(opts); err != nil {
-		return "", err
-	}
-	sp, err := in.fromMsgs(msgs)
-	if err != nil {
-		return "", err
-	}
-	if len(context) > 0 {
-		if len(context) >= 32768 {
-			// If more than 20MB, we need to use https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#large-pdfs-urls
-			// Pass the system instruction as a cached content while at it.
-			cacheName, err := c.cacheContent(ctx, context, mime, sp)
-			if err != nil {
-				return "", err
-			}
-			// When using cached content, system instruction, tools or tool_config cannot be used. Weird.
-			in.CachedContent = cacheName
-		} else {
-			// It's stronger when put there.
-			in.SystemInstruction = Content{Parts: []Part{{Text: sp}}}
-			in.Contents = append([]Content{
-				{
-					Parts: []Part{{InlineData: Blob{MimeType: "text/plain", Data: context}}},
-					Role:  "user",
-				},
-			}, in.Contents...)
-		}
-	}
-
-	out := CompletionResponse{}
-	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
-		return "", err
-	}
-	if len(out.Candidates) != 1 {
-		return "", fmt.Errorf("unexpected number of candidates; expected 1, got %v", out.Candidates)
-	}
-	parts := out.Candidates[0].Content.Parts
-	t := strings.TrimRightFunc(parts[len(parts)-1].Text, unicode.IsSpace)
-	// slog.InfoContext(ctx, "gemini", "response", t, "usage", out.UsageMetadata)
-	return t, nil
 }
 
 // https://ai.google.dev/api/models#Model

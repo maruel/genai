@@ -104,6 +104,9 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 			if i != 0 {
 				return fmt.Errorf("message %d: system message must be first message", i)
 			}
+			if m.Type != genaiapi.Text {
+				return fmt.Errorf("message %d: system message must be text", i)
+			}
 			// Starting with 01.
 			c.Messages[i].Role = "developer"
 		case genaiapi.User, genaiapi.Assistant, genaiapi.Tool:

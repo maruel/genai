@@ -5,7 +5,7 @@
 // Package groq implements a client for the Anthropic API, to use Claude.
 //
 // It is described at
-// https://docs.anthropic.com/en/api/messages
+// https://docs.anthropic.com/en/api/
 package anthropic
 
 import (
@@ -25,6 +25,7 @@ import (
 	"github.com/maruel/httpjson"
 )
 
+// https://docs.anthropic.com/en/api/messages
 type Message struct {
 	Role    string    `json:"role"`
 	Content []Content `json:"content"`
@@ -112,8 +113,8 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 		return fmt.Errorf("unsupported options type %T", opts)
 	}
 	if c.MaxToks == 0 {
-		// TODO: Query the model. Anthropic requires a value! Use the lowest common denominator for now.
-		c.MaxToks = 4096
+		// TODO: Query the model. Anthropic requires a value! Use the lowest common denominator for 3.5+.
+		c.MaxToks = 8192
 	}
 	return nil
 }
@@ -121,29 +122,55 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 	c.Messages = make([]Message, 0, len(msgs))
 	for i, m := range msgs {
-		// system prompt is passed differently so check content first.
-		switch m.Type {
-		case genaiapi.Text:
-			if m.Text == "" {
-				return fmt.Errorf("message %d: missing text content", i)
-			}
-		default:
-			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
-		}
 		switch m.Role {
 		case genaiapi.System:
 			if i != 0 {
 				return fmt.Errorf("message %d: system message must be first message", i)
 			}
+			if m.Type != genaiapi.Text {
+				return fmt.Errorf("message %d: system message must be text", i)
+			}
+			// System prompt is passed differently.
 			c.System = m.Text
+			continue
 		case genaiapi.User, genaiapi.Assistant:
-			c.Messages = append(c.Messages, Message{
-				Role:    string(m.Role),
-				Content: []Content{{Type: "text", Text: m.Text}},
-			})
 		default:
 			return fmt.Errorf("message %d: unexpected role %q", i, m.Role)
 		}
+		msg := Message{Role: string(m.Role), Content: []Content{{}}}
+		switch m.Type {
+		case genaiapi.Text:
+			if m.Text == "" {
+				return fmt.Errorf("message %d: missing text content", i)
+			}
+			msg.Content[0].Type = "text"
+			msg.Content[0].Text = m.Text
+		case genaiapi.Document:
+			if m.Text != "" {
+				return fmt.Errorf("message %d: unexpected text content: %q", i, m.Text)
+			}
+			if !m.Inline {
+				return fmt.Errorf("message %d: external document is not yet supported", i)
+			}
+			msg.Content[0].CacheControl.Type = "ephemeral"
+			switch {
+			case strings.HasPrefix(m.MimeType, "image/"):
+				msg.Content[0].Type = "image"
+				msg.Content[0].Source.MediaType = m.MimeType
+				msg.Content[0].Source.Type = "base64"
+				msg.Content[0].Source.Data = m.Data
+			case m.MimeType == "application/pdf":
+				msg.Content[0].Type = "document"
+				msg.Content[0].Source.MediaType = m.MimeType
+				msg.Content[0].Source.Type = "base64"
+				msg.Content[0].Source.Data = m.Data
+			default:
+				return fmt.Errorf("message %d: unsupported content mime-type %s", i, m.MimeType)
+			}
+		default:
+			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
+		}
+		c.Messages = append(c.Messages, msg)
 	}
 	return nil
 }

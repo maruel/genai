@@ -250,10 +250,6 @@ func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message,
 	return "", errors.New("not implemented")
 }
 
-func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
-	return nil, errors.New("unsupported")
-}
-
 func (c *Client) validate() error {
 	if c.ApiKey == "" {
 		return errors.New("perplexity ApiKey is required; get one at " + apiKeyURL)

@@ -4,6 +4,7 @@ Barebone generic LLM API client for Go. Has very little dependencies.
 
 Implements support for:
 - Anthropic
+- Cerebras
 - Cloudflare Workers AI
 - Cohere
 - DeepSeek
@@ -26,6 +27,7 @@ Implementation is in flux.
 As of March 2025, the following services offer a free tier (other limits
 apply):
 
+- [Cerebras](https://cerebras.ai/inference) has unspecified "generous" free tier
 - [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/platform/pricing/) about 10k tokens/day
 - [Cohere](https://docs.cohere.com/docs/rate-limits) (1000 RPCs/month)
 - [Google's Gemini](https://ai.google.dev/gemini-api/docs/rate-limits) 0.25qps, 1m tokens/month
@@ -43,6 +45,7 @@ As for March 2025, here's the HTTP POST compression supported by each provider:
 | Provider | Compression accepted for POST data | Response compressed as |
 |----------|-------------|-------------|
 | Anthropic | none | gzip |
+| Cerebras | none | none |
 | Cloudflare Workers AI | none | gzip |
 | Cohere | none | none |
 | DeepSeek | none | gzip |

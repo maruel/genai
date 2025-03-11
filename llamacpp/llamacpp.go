@@ -208,6 +208,15 @@ type applyTemplateRequest struct {
 func (a *applyTemplateRequest) fromMsgs(msgs []genaiapi.Message) error {
 	a.Messages = make([]Message, len(msgs))
 	for i, m := range msgs {
+		// We don't filter the role here.
+		switch m.Type {
+		case genaiapi.Text:
+			if m.Content == "" {
+				return fmt.Errorf("message %d: missing text content", i)
+			}
+		default:
+			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
+		}
 		a.Messages[i] = Message{Role: string(m.Role), Content: m.Content}
 	}
 	return nil

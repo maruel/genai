@@ -202,27 +202,30 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 }
 
 func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) (string, error) {
-	state := 0
+	c.Contents = make([]Content, 0, len(msgs))
 	sp := ""
 	for i, m := range msgs {
-		if m.Content == "" {
-			return "", errors.New("empty message content")
+		// system prompt is passed differently so check content first.
+		switch m.Type {
+		case genaiapi.Text:
+			if m.Content == "" {
+				return "", fmt.Errorf("message %d: missing text content", i)
+			}
+		default:
+			return "", fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
 		}
 		switch m.Role {
 		case genaiapi.System:
-			if state != 0 {
-				return sp, fmt.Errorf("unexpected system message at index %d; state %d", i, state)
+			if i != 0 {
+				return "", fmt.Errorf("message %d: system message must be first message", i)
 			}
 			sp = m.Content
-			state = 1
-		case genaiapi.Assistant:
-			state = 1
-			c.Contents = append(c.Contents, Content{Parts: []Part{{Text: m.Content}}, Role: "model"})
 		case genaiapi.User:
-			state = 1
 			c.Contents = append(c.Contents, Content{Parts: []Part{{Text: m.Content}}, Role: "user"})
+		case genaiapi.Assistant:
+			c.Contents = append(c.Contents, Content{Parts: []Part{{Text: m.Content}}, Role: "model"})
 		default:
-			return sp, fmt.Errorf("unexpected role %q", m.Role)
+			return "", fmt.Errorf("message %d: unexpected role %q", i, m.Role)
 		}
 	}
 	return sp, nil

@@ -25,7 +25,11 @@ func ExampleClient_Completion() {
 	if key != "" {
 		c := anthropic.Client{ApiKey: key, Model: model}
 		msgs := []genaiapi.Message{
-			{Role: genaiapi.User, Content: "Say hello. Use only one word."},
+			{
+				Role:    genaiapi.User,
+				Type:    genaiapi.Text,
+				Content: "Say hello. Use only one word.",
+			},
 		}
 		opts := genaiapi.CompletionOptions{MaxTokens: 4096}
 		resp, err := c.Completion(context.Background(), msgs, &opts)
@@ -46,7 +50,11 @@ func ExampleClient_CompletionStream() {
 		c := anthropic.Client{ApiKey: key, Model: model}
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
-			{Role: genaiapi.User, Content: "Say hello. Use only one word."},
+			{
+				Role:    genaiapi.User,
+				Type:    genaiapi.Text,
+				Content: "Say hello. Use only one word.",
+			},
 		}
 		words := make(chan string, 10)
 		end := make(chan struct{})

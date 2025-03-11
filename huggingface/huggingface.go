@@ -76,20 +76,26 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 }
 
 func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
-	c.Messages = nil
-	for i := range msgs {
-		if msgs[i].Content == "" {
-			return errors.New("empty message content")
-		}
+	c.Messages = make([]Message, len(msgs))
+	for i, m := range msgs {
 		// We don't filter the role here.
-		c.Messages = append(c.Messages, Message{Role: msgs[i].Role, Content: []Content{{Type: "text", Text: msgs[i].Content}}})
+		switch m.Type {
+		case genaiapi.Text:
+			if m.Content == "" {
+				return fmt.Errorf("message %d: missing text content", i)
+			}
+		default:
+			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
+		}
+		c.Messages[i].Role = string(m.Role)
+		c.Messages[i].Content = []Content{{Type: "text", Text: m.Content}}
 	}
 	return nil
 }
 
 type Message struct {
-	Role      genaiapi.Role `json:"role"`
-	Content   []Content     `json:"content,omitzero"`
+	Role      string    `json:"role"`
+	Content   []Content `json:"content,omitzero"`
 	ToolCalls []struct {
 		ID       string   `json:"id,omitzero"`
 		Type     string   `json:"type,omitzero"` // "function"

@@ -75,3 +75,4 @@ supports gzip.
 - Tuning
 - Embeddings
 - RAG
+- Handle rate limiting

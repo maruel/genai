@@ -25,7 +25,11 @@ func ExampleClient_Completion() {
 	if key != "" {
 		c := cohere.Client{ApiKey: key, Model: model}
 		msgs := []genaiapi.Message{
-			{Role: genaiapi.User, Content: "Say hello. Use only one word."},
+			{
+				Role:    genaiapi.User,
+				Type:    genaiapi.Text,
+				Content: "Say hello. Use only one word.",
+			},
 		}
 		resp, err := c.Completion(context.Background(), msgs, &genaiapi.CompletionOptions{})
 		if err != nil {
@@ -45,7 +49,11 @@ func ExampleClient_CompletionStream() {
 		c := cohere.Client{ApiKey: key, Model: model}
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
-			{Role: genaiapi.User, Content: "Say hello. Use only one word."},
+			{
+				Role:    genaiapi.User,
+				Type:    genaiapi.Text,
+				Content: "Say hello. Use only one word.",
+			},
 		}
 		words := make(chan string, 10)
 		end := make(chan struct{})

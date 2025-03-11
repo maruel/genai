@@ -180,14 +180,23 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 	c.Messages = make([]Message, len(msgs))
 	for i, m := range msgs {
 		switch m.Role {
-		case genaiapi.User, genaiapi.Assistant, genaiapi.System, genaiapi.Tool:
-			c.Messages[i].Role = string(m.Role)
+		case genaiapi.System:
+			if i != 0 {
+				return fmt.Errorf("message %d: system message must be first message", i)
+			}
+		case genaiapi.User, genaiapi.Assistant, genaiapi.Tool:
 		default:
-			return fmt.Errorf("unsupported role %s", m.Role)
+			return fmt.Errorf("message %d: unexpected role %q", i, m.Role)
 		}
-		if m.Content == "" {
-			return errors.New("empty message content")
+		switch m.Type {
+		case genaiapi.Text:
+			if m.Content == "" {
+				return fmt.Errorf("message %d: missing text content", i)
+			}
+		default:
+			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
 		}
+		c.Messages[i].Role = string(m.Role)
 		c.Messages[i].Content = m.Content
 	}
 	return nil

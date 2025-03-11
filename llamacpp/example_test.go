@@ -52,7 +52,11 @@ func ExampleClient_Completion() {
 	c := llamacpp.Client{BaseURL: "http://localhost:" + p}
 	ctx := context.Background()
 	msgs := []genaiapi.Message{
-		{Role: genaiapi.User, Content: "Say hi. Use only one two letters word."},
+		{
+			Role:    genaiapi.User,
+			Type:    genaiapi.Text,
+			Content: "Say hello. Use only one word.",
+		},
 	}
 	opts := genaiapi.CompletionOptions{Seed: 1}
 	for {
@@ -117,7 +121,11 @@ func ExampleClient_CompletionStream() {
 	c := llamacpp.Client{BaseURL: "http://localhost:" + p}
 	ctx := context.Background()
 	msgs := []genaiapi.Message{
-		{Role: genaiapi.User, Content: "Say hi. Use only one word."},
+		{
+			Role:    genaiapi.User,
+			Type:    genaiapi.Text,
+			Content: "Say hello. Use only one word.",
+		},
 	}
 	opts := genaiapi.CompletionOptions{Seed: 1}
 	for {

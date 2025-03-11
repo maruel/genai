@@ -46,8 +46,24 @@ const (
 	ToolCallResult Role = "tool_call_result"
 )
 
+type ContentType string
+
+const (
+	Text ContentType = "text"
+	// Image ContentType = "image"
+)
+
 // Message is a message to send to the LLM as part of the exchange.
 type Message struct {
-	Role    Role   `json:"role"`
-	Content string `json:"content"`
+	Role Role
+	Type ContentType
+	// Content is the content of the message. It can be raw binary data.
+	Content string
 }
+
+/*
+   // Inline determines if the data is embedded in the message or externally referenced.
+   Inline bool
+   // MimeType is the MIME type of the content if not text and inline.
+   MimeType string
+*/

@@ -69,16 +69,27 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 }
 
 func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
-	for _, m := range msgs {
+	c.Messages = make([]Message, len(msgs))
+	for i, m := range msgs {
 		switch m.Role {
-		case genaiapi.System, genaiapi.User, genaiapi.Assistant:
-			c.Messages = append(c.Messages, Message{Role: string(m.Role), Content: m.Content})
+		case genaiapi.System:
+			if i != 0 {
+				return fmt.Errorf("message %d: system message must be first message", i)
+			}
+		case genaiapi.User, genaiapi.Assistant:
 		default:
-			return fmt.Errorf("unsupported role %v", m.Role)
+			return fmt.Errorf("message %d: unexpected role %q", i, m.Role)
 		}
-		if m.Content == "" {
-			return errors.New("empty message content")
+		switch m.Type {
+		case genaiapi.Text:
+			if m.Content == "" {
+				return fmt.Errorf("message %d: missing text content", i)
+			}
+		default:
+			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
 		}
+		c.Messages[i].Role = string(m.Role)
+		c.Messages[i].Content = m.Content
 	}
 	return nil
 }

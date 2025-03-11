@@ -6,6 +6,7 @@ package mistral_test
 
 import (
 	"context"
+	_ "embed"
 	"fmt"
 	"log"
 	"os"
@@ -13,6 +14,9 @@ import (
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/genai/mistral"
 )
+
+//go:embed testdata/banana.jpg
+var bananaJpg []byte
 
 var (
 	key = os.Getenv("MISTRAL_API_KEY")
@@ -26,9 +30,16 @@ func ExampleClient_Completion() {
 		c := mistral.Client{ApiKey: key, Model: model}
 		msgs := []genaiapi.Message{
 			{
+				Role:     genaiapi.User,
+				Type:     genaiapi.Document,
+				Inline:   true,
+				MimeType: "image/jpeg",
+				Data:     bananaJpg,
+			},
+			{
 				Role: genaiapi.User,
 				Type: genaiapi.Text,
-				Text: "Say hello. Use only one word.",
+				Text: "Is it a banana? Reply with only one word.",
 			},
 		}
 		resp, err := c.Completion(context.Background(), msgs, &genaiapi.CompletionOptions{})

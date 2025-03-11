@@ -2,8 +2,8 @@
 
 The _high performance_ native Go client for LLMs.
 
-| Provider | Chat | Streaming Chat | Image |
-| -------- | ---- | -------------- | ----- |
+| Provider | Chat | Streaming Chat | Image input |
+| -------- | ---- | -------------- | ----------- |
 | Anthropic | ✅ | ✅ | ✅ |
 | Cerebras | ✅ | ✅ | |
 | Cloudflare Workers AI | ✅ | ✅ | |
@@ -12,7 +12,7 @@ The _high performance_ native Go client for LLMs.
 | Google's Gemini | ✅ | ✅ | ✅ |
 | Groq | ✅ | ✅ | |
 | HuggingFace | ✅ | ✅ | |
-| Mistral | ✅ | ✅ | |
+| Mistral | ✅ | ✅ | ✅ |
 | OpenAI | ✅ | ✅ | ✅ |
 | Perplexity | ✅ | ✅ | |
 | llama.cpp | ✅ | ✅ | |

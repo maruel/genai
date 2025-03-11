@@ -11,6 +11,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -99,6 +100,18 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 		}
 		switch m.Type {
 		case genaiapi.Text:
+		case genaiapi.Document:
+			if !m.Inline {
+				return fmt.Errorf("message %d: external document is not yet supported", i)
+			}
+			switch {
+			case strings.HasPrefix(m.MimeType, "image/"):
+				cnt := []Content{{Type: "image_url"}}
+				cnt[0].ImageURL = fmt.Sprintf("data:%s;base64,%s", m.MimeType, base64.StdEncoding.EncodeToString(m.Data))
+				c.Messages[i].Content = cnt
+			default:
+				return fmt.Errorf("message %d: unsupported mime type %s", i, m.MimeType)
+			}
 		default:
 			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
 		}
@@ -115,7 +128,7 @@ type Message struct {
 
 type Content struct {
 	Type         string  `json:"type"` // text, reference, document_url, image_url
-	Text         string  `json:"text,omitzero"`
+	Text         string  `json:"text"` // Weirdly enough, the API will fail if this is not provided.
 	ReferenceIDs []int64 `json:"reference_ids,omitzero"`
 	DocumentURL  string  `json:"document_url,omitzero"`
 	DocumentName string  `json:"document_name,omitzero"`
@@ -204,20 +217,23 @@ type errorResponseAPI1 struct {
 }
 
 type errorResponseAPI2 struct {
-	Object  string `json:"object"` // error
-	Message struct {
-		Detail []struct {
-			Msg   string   `json:"msg"`
-			Type  string   `json:"type"`
-			Loc   []string `json:"loc"`
-			Input any      `json:"input"`
-			Ctx   any      `json:"ctx"`
-			URL   string   `json:"url"`
-		} `json:"detail"`
-	} `json:"message"`
-	Type  string `json:"type"`
-	Param string `json:"param"`
-	Code  int64  `json:"code"`
+	Detail []struct {
+		Type string `json:"type"` // "string_type", "missing"
+		Msg  string `json:"msg"`
+		Loc  []any  `json:"loc"` // to be joined, a mix of string and nuber
+		// Input is either a list or an instance of struct { Type string `json:"type"` }.
+		Input any    `json:"input"`
+		Ctx   any    `json:"ctx"`
+		URL   string `json:"url"`
+	} `json:"detail"`
+}
+
+type errorResponseAPI3 struct {
+	Object  string            `json:"object"` // error
+	Message errorResponseAPI2 `json:"message"`
+	Type    string            `json:"type"`
+	Param   string            `json:"param"`
+	Code    int64             `json:"code"`
 }
 
 type Client struct {
@@ -459,7 +475,8 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	erAuth := errorResponseAuth{}
 	erAPI1 := errorResponseAPI1{}
 	erAPI2 := errorResponseAPI2{}
-	switch i, err := httpjson.DecodeResponse(resp, out, &erAuth, &erAPI1, &erAPI2); i {
+	erAPI3 := errorResponseAPI3{}
+	switch i, err := httpjson.DecodeResponse(resp, out, &erAuth, &erAPI1, &erAPI2, &erAPI3); i {
 	case 0:
 		return nil
 	case 1:
@@ -480,9 +497,15 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	case 3:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
-			return fmt.Errorf("%w: error %s/%s: %s at %s", herr, erAPI2.Type, erAPI2.Message.Detail[0].Type, erAPI2.Message.Detail[0].Msg, erAPI2.Message.Detail[0].Loc)
+			return fmt.Errorf("%w: error %s: %s at %s", herr, erAPI2.Detail[0].Type, erAPI2.Detail[0].Msg, erAPI2.Detail[0].Loc)
 		}
-		return fmt.Errorf("error %s/%s: %s at %s", erAPI2.Type, erAPI2.Message.Detail[0].Type, erAPI2.Message.Detail[0].Msg, erAPI2.Message.Detail[0].Loc)
+		return fmt.Errorf("error %s: %s at %s", erAPI2.Detail[0].Type, erAPI2.Detail[0].Msg, erAPI2.Detail[0].Loc)
+	case 4:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			return fmt.Errorf("%w: error %s/%s: %s at %s", herr, erAPI3.Type, erAPI3.Message.Detail[0].Type, erAPI3.Message.Detail[0].Msg, erAPI3.Message.Detail[0].Loc)
+		}
+		return fmt.Errorf("error %s/%s: %s at %s", erAPI3.Type, erAPI3.Message.Detail[0].Type, erAPI3.Message.Detail[0].Msg, erAPI3.Message.Detail[0].Loc)
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {

@@ -256,7 +256,14 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		}
 		const prefix = "data: "
 		if !bytes.HasPrefix(line, []byte(prefix)) {
-			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
+			d := json.NewDecoder(bytes.NewReader(line))
+			d.DisallowUnknownFields()
+			d.UseNumber()
+			er := errorResponse{}
+			if err = d.Decode(&er); err != nil {
+				return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
+			}
+			return fmt.Errorf("server error %s (%s): %s", er.Error.Code, er.Error.Type, er.Error.Message)
 		}
 		suffix := string(line[len(prefix):])
 		if suffix == "[DONE]" {

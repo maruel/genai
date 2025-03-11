@@ -13,6 +13,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -81,14 +82,28 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 		default:
 			return fmt.Errorf("message %d: unsupported role %q", i, m.Role)
 		}
+		c.Messages[i].Role = string(m.Role)
+		c.Messages[i].Content = []Content{{}}
 		switch m.Type {
 		case genaiapi.Text:
+			c.Messages[i].Content[0].Type = "text"
+			c.Messages[i].Content[0].Text = m.Text
+		case genaiapi.Document:
+			// Currently fails with: http 400: error: invalid request: all elements in history must have a message
+			// TODO: Investigate one day.
+			if !m.Inline {
+				return fmt.Errorf("message %d: external document is not yet supported", i)
+			}
+			switch {
+			case strings.HasPrefix(m.MimeType, "image/"):
+				c.Messages[i].Content[0].Type = "image_url"
+				c.Messages[i].Content[0].ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", m.MimeType, base64.StdEncoding.EncodeToString(m.Data))
+			default:
+				return fmt.Errorf("message %d: unsupported mime type %s", i, m.MimeType)
+			}
 		default:
 			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
 		}
-		c.Messages[i].Role = string(m.Role)
-		c.Messages[i].Content.Type = "text"
-		c.Messages[i].Content.Text = m.Text
 	}
 	return nil
 }
@@ -96,23 +111,25 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 type Message struct {
 	Role string `json:"role"`
 	// Assistant, System or User.
-	Content struct {
-		Type     string `json:"type,omitzero"` // "text", "image_url" or "document"
-		Text     string `json:"text,omitzero"`
-		ImageURL struct {
-			URL string `json:"url,omitzero"`
-		} `json:"image_url,omitzero"`
-		Document struct {
-			Data map[string]any `json:"data,omitzero"` // TODO
-			ID   string         `json:"id,omitzero"`   // TODO
-		} `json:"document,omitzero"`
-	} `json:"content"`
+	Content []Content `json:"content"`
 	// Assistant
 	Citations any `json:"citations,omitzero"` // TODO
 	// Assistant
 	ToolCalls []any `json:"tool_calls,omitzero"` // TODO
 	// Tool
 	ToolCallID string `json:"tool_call_id,omitzero"`
+}
+
+type Content struct {
+	Type     string `json:"type,omitzero"` // "text", "image_url" or "document"
+	Text     string `json:"text,omitzero"`
+	ImageURL struct {
+		URL string `json:"url,omitzero"`
+	} `json:"image_url,omitzero"`
+	Document struct {
+		Data map[string]any `json:"data,omitzero"` // TODO
+		ID   string         `json:"id,omitzero"`   // TODO
+	} `json:"document,omitzero"`
 }
 
 type Tool struct {

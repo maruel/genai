@@ -52,11 +52,6 @@ type Message struct {
 	Role    string `json:"role"`
 }
 
-type function struct {
-	Code string `json:"code"`
-	Name string `json:"name"`
-}
-
 type Tool struct {
 	Function ToolFunction `json:"function"`
 	Type     string       `json:"type"` // function
@@ -77,6 +72,13 @@ type ToolParameters struct {
 type ToolParameter struct {
 	Description string `json:"description"`
 	Type        string `json:"type"`
+}
+
+/* Maybe later
+
+type function struct {
+	Code string `json:"code"`
+	Name string `json:"name"`
 }
 
 type prompt struct {
@@ -160,6 +162,7 @@ type imageToText struct {
 	TopK              int64   `json:"top_k,omitzero"`
 	TopP              float64 `json:"top_p,omitzero"`
 }
+*/
 
 func (c *CompletionRequest) fromOpts(opts any) error {
 	switch v := opts.(type) {

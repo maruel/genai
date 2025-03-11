@@ -34,27 +34,54 @@ type CompletionRequest struct {
 	Seed                int64              `json:"seed,omitzero"`
 	Temperature         float64            `json:"temperature,omitzero"` // [0, 2]
 	Store               bool               `json:"store,omitzero"`
-	ReasoningEffort     string             `json:"reasoning_effort,omitempty"` // low, medium, high
-	Metadata            map[string]string  `json:"metadata,omitempty"`
-	FrequencyPenalty    float64            `json:"frequency_penalty,omitempty"` // [-2.0, 2.0]
-	LogitBias           map[string]float64 `json:"logit_bias,omitempty"`
+	ReasoningEffort     string             `json:"reasoning_effort,omitzero"` // low, medium, high
+	Metadata            map[string]string  `json:"metadata,omitzero"`
+	FrequencyPenalty    float64            `json:"frequency_penalty,omitzero"` // [-2.0, 2.0]
+	LogitBias           map[string]float64 `json:"logit_bias,omitzero"`
 	// See https://cookbook.openai.com/examples/using_logprobs
-	Logprobs          bool     `json:"logprobs,omitzero"`
-	TopLogprobs       int64    `json:"top_logprobs,omitzero"`     // [0, 20]
-	N                 int64    `json:"n,omitzero"`                // Number of choices
-	Modalities        []string `json:"modalities,omitempty"`      // text, audio
-	Prediction        any      `json:"prediction,omitempty"`      // TODO
-	Audio             any      `json:"audio,omitempty"`           // TODO
-	PresencePenalty   float64  `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
-	ResponseFormat    any      `json:"response_format,omitempty"` // TODO e.g. json_object with json_schema
-	ServiceTier       string   `json:"service_tier,omitzero"`     // "auto", "default"
-	Stop              []string `json:"stop,omitempty"`            // keywords to stop completion
-	StreamOptions     any      `json:"stream_options,omitempty"`  // TODO
-	TopP              float64  `json:"top_p,omitzero"`            // [0, 1]
-	Tools             []any    `json:"tools,omitempty"`           // TODO
-	ToolChoices       []any    `json:"tool_choices,omitempty"`    // TODO
-	ParallelToolCalls bool     `json:"parallel_tool_calls,omitzero"`
-	User              string   `json:"user,omitzero"`
+	Logprobs    bool     `json:"logprobs,omitzero"`
+	TopLogprobs int64    `json:"top_logprobs,omitzero"` // [0, 20]
+	N           int64    `json:"n,omitzero"`            // Number of choices
+	Modalities  []string `json:"modalities,omitzero"`   // text, audio
+	Prediction  struct {
+		Type    string `json:"type,omitzero"` // "content"
+		Content []struct {
+			Type string `json:"type,omitzero"` // "text"
+			Text string `json:"text,omitzero"`
+		} `json:"content,omitzero"`
+	} `json:"prediction,omitzero"`
+	Audio struct {
+		Voice  string `json:"voice,omitzero"`  // "ash", "ballad", "coral", "sage", "verse", "alloy", "echo", "shimmer"
+		Format string `json:"format,omitzero"` // "mp3", "wav", "flac", "opus", "pcm16"
+	} `json:"audio,omitzero"`
+	PresencePenalty float64 `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
+	ResponseFormat  struct {
+		Type       string `json:"type,omitzero"` // "text", "json_object", "json_schema"
+		JSONSchema struct {
+			Description string     `json:"description,omitzero"`
+			Name        string     `json:"name,omitzero"`
+			Schema      JSONSchema `json:"schema,omitzero"`
+			Strict      bool       `json:"strict,omitzero"`
+		} `json:"json_schema,omitzero"`
+	} `json:"response_format,omitzero"`
+	ServiceTier   string   `json:"service_tier,omitzero"` // "auto", "default"
+	Stop          []string `json:"stop,omitzero"`         // keywords to stop completion
+	StreamOptions struct {
+		IncludeUsage bool `json:"include_usage,omitzero"`
+	} `json:"stream_options,omitzero"`
+	TopP  float64 `json:"top_p,omitzero"` // [0, 1]
+	Tools []Tool  `json:"tools,omitzero"`
+	// Alternative when forcing a specific function. This can probably be achieved
+	// by providing a single tool and ToolChoice == "required".
+	// ToolChoice struct {
+	// 	Type     string `json:"type,omitzero"` // "function"
+	// 	Function struct {
+	// 		Name string `json:"name,omitzero"`
+	// 	} `json:"function,omitzero"`
+	// } `json:"tool_choice,omitzero"`
+	ToolChoice        string `json:"tool_choice,omitzero"` // "none", "auto", "required"
+	ParallelToolCalls bool   `json:"parallel_tool_calls,omitzero"`
+	User              string `json:"user,omitzero"`
 }
 
 func (c *CompletionRequest) fromOpts(opts any) error {
@@ -90,15 +117,15 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 }
 
 type Message struct {
-	Role    string `json:"role"`
-	Content string `json:"content"`
-	Name    string `json:"name,omitempty"`
-	Refusal string `json:"refusal,omitempty"`
+	Role    string `json:"role,omitzero"`
+	Content string `json:"content,omitzero"`
+	Name    string `json:"name,omitzero"`
+	Refusal string `json:"refusal,omitzero"`
 	Audio   struct {
 		ID string `json:"id,omitzero"`
 	} `json:"audio,omitzero"`
 	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
-	ToolCallID string     `json:"tool_call_id,omitempty"`
+	ToolCallID string     `json:"tool_call_id,omitzero"`
 }
 
 type ToolCall struct {
@@ -109,6 +136,18 @@ type ToolCall struct {
 		Arguments string `json:"arguments"` // Generally JSON
 	} `json:"function"`
 }
+
+type Tool struct {
+	Type     string `json:"type,omitzero"` // "function"
+	Function struct {
+		Description string         `json:"description,omitzero"`
+		Name        string         `json:"name,omitzero"`
+		Parameters  map[string]any `json:"parameters,omitzero"`
+		Strict      bool           `json:"strict,omitzero"`
+	} `json:"function,omitzero"`
+}
+
+type JSONSchema any
 
 // CompletionResponse is documented at
 // https://platform.openai.com/docs/api-reference/chat/object
@@ -192,7 +231,7 @@ type errorResponseError struct {
 	Message string `json:"message"`
 	Status  string `json:"status"`
 	Type    string `json:"type"`
-	Param   any    `json:"param"`
+	Param   string `json:"param"`
 }
 
 //

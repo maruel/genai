@@ -26,25 +26,30 @@ import (
 
 // https://docs.cohere.com/reference/chat
 type CompletionRequest struct {
-	Stream           bool      `json:"stream"`
-	Model            string    `json:"model"`
-	Messages         []Message `json:"messages"`
-	Tools            []any     `json:"tools,omitempty"`            // TODO
-	Documents        []any     `json:"documents,omitempty"`        // TODO
-	CitationOptions  any       `json:"citation_options,omitempty"` // TODO
-	ResponseFormat   any       `json:"response_format,omitempty"`  // TODO e.g. json_object with json_schema
-	SafetyMode       string    `json:"safety_mode,omitempty"`      // "CONTEXTUAL", "STRICT", "OFF"
-	MaxTokens        int64     `json:"max_tokens,omitzero"`
-	StopSequences    []string  `json:"stop_sequences,omitempty"` // keywords to stop completion
-	Temperature      float64   `json:"temperature,omitzero"`
-	Seed             int64     `json:"seed,omitzero"`
-	FrequencyPenalty float64   `json:"frequency_penalty,omitempty"` // [0, 1.0]
-	PresencePenalty  float64   `json:"presence_penalty,omitzero"`   // [0, 1.0]
-	K                float64   `json:"k,omitzero"`                  // [0, 500.0]
-	P                float64   `json:"p,omitzero"`                  // [0.01, 0.99]
-	Logprobs         bool      `json:"logprobs,omitzero"`
-	ToolChoices      []any     `json:"tool_choices,omitempty"` // TODO
-	StrictTools      bool      `json:"strict_tools,omitzero"`
+	Stream          bool       `json:"stream"`
+	Model           string     `json:"model"`
+	Messages        []Message  `json:"messages"`
+	Tools           []Tool     `json:"tools,omitzero"`
+	Documents       []Document `json:"documents,omitzero"`
+	CitationOptions struct {
+		Mode string `json:"mode,omitzero"` // "fast", "accurate", "off"; default "fast"
+	} `json:"citation_options,omitzero"`
+	ResponseFormat struct {
+		Type       string     `json:"type,omitzero"` // "text", "json_object"
+		JSONSchema JSONSchema `json:"json_schema,omitzero"`
+	} `json:"response_format,omitzero"`
+	SafetyMode       string   `json:"safety_mode,omitzero"` // "CONTEXTUAL", "STRICT", "OFF"
+	MaxTokens        int64    `json:"max_tokens,omitzero"`
+	StopSequences    []string `json:"stop_sequences,omitzero"` // keywords to stop completion
+	Temperature      float64  `json:"temperature,omitzero"`
+	Seed             int64    `json:"seed,omitzero"`
+	FrequencyPenalty float64  `json:"frequency_penalty,omitzero"` // [0, 1.0]
+	PresencePenalty  float64  `json:"presence_penalty,omitzero"`  // [0, 1.0]
+	K                float64  `json:"k,omitzero"`                 // [0, 500.0]
+	P                float64  `json:"p,omitzero"`                 // [0.01, 0.99]
+	Logprobs         bool     `json:"logprobs,omitzero"`
+	ToolChoice       string   `json:"tool_choice,omitzero"` // "required", "none"
+	StrictTools      bool     `json:"strict_tools,omitzero"`
 }
 
 func (c *CompletionRequest) fromOpts(opts any) error {
@@ -81,23 +86,42 @@ type Message struct {
 	Role string `json:"role"`
 	// Assistant, System or User.
 	Content struct {
-		Type     string `json:"type"` // "text", "image_url" or "document"
-		Text     string `json:"text,omitempty"`
+		Type     string `json:"type,omitzero"` // "text", "image_url" or "document"
+		Text     string `json:"text,omitzero"`
 		ImageURL struct {
-			URL string `json:"url,omitempty"`
+			URL string `json:"url,omitzero"`
 		} `json:"image_url,omitzero"`
 		Document struct {
-			Data map[string]any `json:"data,omitempty"` // TODO
-			ID   string         `json:"id,omitempty"`   // TODO
-		} `json:"document,omitempty"`
+			Data map[string]any `json:"data,omitzero"` // TODO
+			ID   string         `json:"id,omitzero"`   // TODO
+		} `json:"document,omitzero"`
 	} `json:"content"`
 	// Assistant
-	Citations any `json:"citations,omitempty"` // TODO
+	Citations any `json:"citations,omitzero"` // TODO
 	// Assistant
-	ToolCalls []any `json:"tool_calls,omitempty"` // TODO
+	ToolCalls []any `json:"tool_calls,omitzero"` // TODO
 	// Tool
-	ToolCallID string `json:"tool_call_id,omitempty"`
+	ToolCallID string `json:"tool_call_id,omitzero"`
 }
+
+type Tool struct {
+	Type     string `json:"type,omitzero"` // "function"
+	Function struct {
+		Name        string         `json:"name,omitzero"`
+		Parameters  map[string]any `json:"parameters,omitzero"`
+		Description string         `json:"description,omitzero"`
+	} `json:"function,omitzero"`
+}
+
+type Document struct {
+	// Or a string.
+	Document struct {
+		ID   string         `json:"id,omitzero"`
+		Data map[string]any `json:"data,omitzero"`
+	} `json:"document,omitzero"`
+}
+
+type JSONSchema any
 
 type CompletionResponse struct {
 	ID           string `json:"id"`

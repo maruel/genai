@@ -36,16 +36,29 @@ type CompletionRequest struct {
 	Logprobs         bool      `json:"logprobs,omitzero"`
 	MaxTokens        int64     `json:"max_tokens,omitzero"`
 	PresencePenalty  float64   `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
-	ResponseFormat   any       `json:"response_format,omitzero"`  // TODO
-	Seed             int64     `json:"seed,omitzero"`
-	Stop             []string  `json:"stop,omitzero"`
-	StreamOptions    struct {
+	ResponseFormat   struct {
+		Type string `json:"type"` // "json", "regex"
+		// Type == "regexp": a regex string.
+		// Type == "json": a JSONSchema.
+		Value JSONSchema `json:"value"`
+	} `json:"response_format,omitzero"`
+	Seed          int64    `json:"seed,omitzero"`
+	Stop          []string `json:"stop,omitzero"`
+	StreamOptions struct {
 		IncludeUsage bool `json:"include_usage,omitzero"`
 	} `json:"stream_options,omitzero"`
 	Temperature float64 `json:"temperature,omitzero"` // [0, 2.0]
-	ToolChoice  []any   `json:"tool_choice,omitzero"` // TODO
+	// Alternative when forcing a specific function. This can probably be achieved
+	// by providing a single tool and ToolChoice == "required".
+	// ToolChoice struct {
+	// 	Type     string `json:"type,omitzero"` // "function"
+	// 	Function struct {
+	// 		Name string `json:"name,omitzero"`
+	// 	} `json:"function,omitzero"`
+	// } `json:"tool_choice,omitzero"`
+	ToolChoice  string  `json:"tool_choice,omitzero"` // "auto", "none", "required"
 	ToolPrompt  string  `json:"tool_prompt,omitzero"`
-	Tools       []any   `json:"tools,omitzero"` // TODO
+	Tools       []Tool  `json:"tools,omitzero"`
 	TopLogprobs int64   `json:"top_logprobs,omitzero"`
 	TopP        float64 `json:"top_p,omitzero"` // [0, 1]
 }
@@ -78,13 +91,9 @@ type Message struct {
 	Role      genaiapi.Role `json:"role"`
 	Content   []Content     `json:"content,omitzero"`
 	ToolCalls []struct {
-		ID       string `json:"id,omitzero"`
-		Type     string `json:"type,omitzero"` // function
-		Function struct {
-			Name        string   `json:"name,omitzero"`
-			Arguments   []string `json:"arguments,omitzero"`
-			Description string   `json:"description,omitzero"`
-		} `json:"function,omitzero"`
+		ID       string   `json:"id,omitzero"`
+		Type     string   `json:"type,omitzero"` // "function"
+		Function Function `json:"function,omitzero"`
 	} `json:"tool_calls,omitzero"`
 }
 
@@ -95,6 +104,19 @@ type Content struct {
 		URL string `json:"url,omitzero"`
 	} `json:"image_url,omitzero"`
 }
+
+type Tool struct {
+	Type     string   `json:"type,omitzero"` // "function"
+	Function Function `json:"function,omitzero"`
+}
+
+type Function struct {
+	Name        string   `json:"name,omitzero"`
+	Description string   `json:"description,omitzero"`
+	Arguments   []string `json:"arguments,omitzero"`
+}
+
+type JSONSchema any
 
 type CompletionResponse struct {
 	Object            string `json:"object"`

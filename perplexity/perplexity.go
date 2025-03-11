@@ -31,15 +31,16 @@ type CompletionRequest struct {
 	MaxTokens              int64     `json:"max_tokens,omitzero"`
 	Temperature            float64   `json:"temperature,omitzero"`
 	TopP                   float64   `json:"top_p,omitzero"` // [0, 1.0]
-	SearchDomainFilter     []string  `json:"search_domain_filter,omitempty"`
-	ReturnImages           bool      `json:"return_images,omitempty"`
-	ReturnRelatedQuestions bool      `json:"return_related_questions,omitempty"`
-	SearchRecencyFilter    string    `json:"search_recency_filter,omitempty"` // month, week, day, hour
-	TopK                   int64     `json:"top_k,omitzero"`                  // [0, 2048^]
+	SearchDomainFilter     []string  `json:"search_domain_filter,omitzero"`
+	ReturnImages           bool      `json:"return_images,omitzero"`
+	ReturnRelatedQuestions bool      `json:"return_related_questions,omitzero"`
+	SearchRecencyFilter    string    `json:"search_recency_filter,omitzero"` // month, week, day, hour
+	TopK                   int64     `json:"top_k,omitzero"`                 // [0, 2048^]
 	Stream                 bool      `json:"stream"`
 	PresencePenalty        float64   `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
-	FrequencyPenalty       float64   `json:"frequency_penalty,omitempty"`
-	ResponseFormat         any       `json:"response_format,omitempty"` // TODO e.g. json_object with json_schema
+	FrequencyPenalty       float64   `json:"frequency_penalty,omitzero"`
+	// Only available in higher tiers, see https://docs.perplexity.ai/guides/usage-tiers
+	ResponseFormat JSONSchema `json:"response_format,omitzero"`
 }
 
 func (c *CompletionRequest) fromOpts(opts any) error {
@@ -74,6 +75,8 @@ type Message struct {
 	Role    genaiapi.Role `json:"role"`
 	Content string        `json:"content"`
 }
+
+type JSONSchema any
 
 type CompletionResponse struct {
 	ID        string   `json:"id"`

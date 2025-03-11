@@ -25,7 +25,7 @@ import (
 
 // https://api-docs.deepseek.com/api/create-chat-completion
 type CompletionRequest struct {
-	Model            string    `json:"model,omitempty"`
+	Model            string    `json:"model"`
 	Messages         []Message `json:"messages"`
 	Stream           bool      `json:"stream"`
 	Temperature      float64   `json:"temperature,omitzero"`       // [0, 2]
@@ -33,15 +33,25 @@ type CompletionRequest struct {
 	MaxToks          int64     `json:"max_tokens,omitzero"`        // [1, 8192]
 	PresencePenalty  float64   `json:"presence_penalty,omitzero"`  // [-2, 2]
 	ResponseFormat   struct {
-		Type string `json:"type,omitzero"` // text, json_object
+		Type string `json:"type,omitzero"` // "text", "json_object"
 	} `json:"response_format,omitzero"`
-	Stop          []string `json:"stop,omitempty"`
-	StreamOptions any      `json:"stream_options,omitempty"`
-	TopP          float64  `json:"top_p,omitzero"` // [0, 1]
-	ToolChoice    any      `json:"tool_choice,omitempty"`
-	Tools         any      `json:"tools,omitempty"`
-	Logprobs      bool     `json:"logprobs,omitzero"`
-	TopLogprob    int64    `json:"top_logprobs,omitzero"`
+	Stop          []string `json:"stop,omitzero"`
+	StreamOptions struct {
+		IncludeUsage bool `json:"include_usage,omitzero"`
+	} `json:"stream_options,omitzero"`
+	TopP float64 `json:"top_p,omitzero"` // [0, 1]
+	// Alternative when forcing a specific function. This can probably be achieved
+	// by providing a single tool and ToolChoice == "required".
+	// ToolChoice struct {
+	// 	Type     string `json:"type,omitzero"` // "function"
+	// 	Function struct {
+	// 		Name string `json:"name,omitzero"`
+	// 	} `json:"function,omitzero"`
+	// } `json:"tool_choice,omitzero"`
+	ToolChoice string `json:"tool_choice,omitzero"` // "none", "auto", "required"
+	Tools      []Tool `json:"tools,omitzero"`
+	Logprobs   bool   `json:"logprobs,omitzero"`
+	TopLogprob int64  `json:"top_logprobs,omitzero"`
 }
 
 func (c *CompletionRequest) fromOpts(opts any) error {
@@ -81,6 +91,17 @@ type Message struct {
 	ReasoningContent string `json:"reasoning_content,omitzero"`
 	ToolCallID       string `json:"tool_call_id,omitzero"`
 }
+
+type Tool struct {
+	Type     string `json:"type"` // "function"
+	Function struct {
+		Name        string     `json:"name,omitzero"`
+		Description string     `json:"description,omitzero"`
+		Parameters  JSONSchema `json:"parameters,omitzero"`
+	} `json:"function"`
+}
+
+type JSONSchema any
 
 type CompletionResponse struct {
 	ID      string `json:"id"`
@@ -153,7 +174,7 @@ type errorResponse struct {
 	Error struct {
 		Message string `json:"message"`
 		Type    string `json:"type"`
-		Param   any    `json:"param"`
+		Param   string `json:"param"`
 		Code    string `json:"code"`
 	} `json:"error"`
 }

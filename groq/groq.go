@@ -26,27 +26,39 @@ import (
 
 // https://console.groq.com/docs/api-reference#chat-create
 type CompletionRequest struct {
-	FrequencyPenalty    float64   `json:"frequency_penalty,omitempty"` // [-2.0, 2.0]
+	FrequencyPenalty    float64   `json:"frequency_penalty,omitzero"` // [-2.0, 2.0]
 	MaxCompletionTokens int64     `json:"max_completion_tokens,omitzero"`
 	Messages            []Message `json:"messages"`
 	Model               string    `json:"model"`
 	ParallelToolCalls   bool      `json:"parallel_tool_calls,omitzero"`
 	PresencePenalty     float64   `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
-	ReasoningFormat     string    `json:"reasoning_format,omitempty"`
-	ResponseFormat      any       `json:"response_format,omitempty"` // TODO e.g. json_object with json_schema
-	Seed                int64     `json:"seed,omitzero"`
-	ServiceTier         string    `json:"service_tier,omitzero"` // "on_demand", "auto", "flex"
-	Stop                []string  `json:"stop,omitempty"`        // keywords to stop completion
-	Stream              bool      `json:"stream"`
-	StreamOptions       any       `json:"stream_options,omitempty"` // TODO
-	Temperature         float64   `json:"temperature,omitzero"`     // [0, 2]
-	Tools               []any     `json:"tools,omitempty"`          // TODO
-	ToolChoices         []any     `json:"tool_choices,omitempty"`   // TODO
-	TopP                float64   `json:"top_p,omitzero"`           // [0, 1]
-	User                string    `json:"user,omitzero"`
+	ReasoningFormat     string    `json:"reasoning_format,omitzero"`
+	ResponseFormat      struct {
+		Type string `json:"type,omitzero"` // "json_object"
+	} `json:"response_format,omitzero"`
+	Seed          int64    `json:"seed,omitzero"`
+	ServiceTier   string   `json:"service_tier,omitzero"` // "on_demand", "auto", "flex"
+	Stop          []string `json:"stop,omitzero"`         // keywords to stop completion
+	Stream        bool     `json:"stream"`
+	StreamOptions struct {
+		IncludeUsage bool `json:"include_usage,omitzero"`
+	} `json:"stream_options,omitzero"`
+	Temperature float64 `json:"temperature,omitzero"` // [0, 2]
+	Tools       []Tool  `json:"tools,omitzero"`
+	// Alternative when forcing a specific function. This can probably be achieved
+	// by providing a single tool and ToolChoice == "required".
+	// ToolChoice struct {
+	// 	Type     string `json:"type,omitzero"` // "function"
+	// 	Function struct {
+	// 		Name string `json:"name,omitzero"`
+	// 	} `json:"function,omitzero"`
+	// } `json:"tool_choice,omitzero"`
+	ToolChoice string  `json:"tool_choice,omitzero"` // "none", "auto", "required"
+	TopP       float64 `json:"top_p,omitzero"`       // [0, 1]
+	User       string  `json:"user,omitzero"`
 
 	// Explicitly Unsupported:
-	// LogitBias           map[string]float64 `json:"logit_bias,omitempty"`
+	// LogitBias           map[string]float64 `json:"logit_bias,omitzero"`
 	// Logprobs            bool               `json:"logprobs,omitzero"`
 	// TopLogprobs         int64                `json:"top_logprobs,omitzero"`     // [0, 20]
 	// N                   int64                `json:"n,omitzero"`                // Number of choices
@@ -96,6 +108,15 @@ type Content struct {
 	Type string `json:"type,omitzero"` // "text", "image"
 }
 
+type Tool struct {
+	Type     string `json:"type,omitzero"` // "function"
+	Function struct {
+		Name        string         `json:"name,omitzero"`
+		Description string         `json:"description,omitzero"`
+		Parameters  map[string]any `json:"parameters,omitzero"`
+	} `json:"function,omitzero"`
+}
+
 type CompletionResponse struct {
 	Choices []struct {
 		// FinishReason is one of "stop", "length", "content_filter" or "tool_calls".
@@ -105,7 +126,7 @@ type CompletionResponse struct {
 			Role    genaiapi.Role `json:"role"`
 			Content string        `json:"content"`
 		} `json:"message"`
-		Logprobs any `json:"logprobs"`
+		Logprobs struct{} `json:"logprobs"`
 	} `json:"choices"`
 	Created Time   `json:"created"`
 	ID      string `json:"id"`
@@ -138,8 +159,8 @@ type CompletionStreamChunkResponse struct {
 			Role    genaiapi.Role `json:"role"`
 			Content string        `json:"content"`
 		} `json:"delta"`
-		Logprobs     any    `json:"logprobs"`
-		FinishReason string `json:"finish_reason"` // stop
+		Logprobs     struct{} `json:"logprobs"`
+		FinishReason string   `json:"finish_reason"` // stop
 	} `json:"choices"`
 	Xgroq struct {
 		ID    string `json:"id"`

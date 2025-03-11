@@ -28,97 +28,68 @@ import (
 
 // https://ai.google.dev/api/caching?hl=en#Blob
 type Blob struct {
-	MimeType string `json:"mimeType,omitempty"`
-	Data     []byte `json:"data,omitempty"`
+	MimeType string `json:"mimeType,omitzero"`
+	Data     []byte `json:"data,omitzero"`
 }
 
 // https://ai.google.dev/api/caching?hl=en#FileData
 type FileData struct {
-	MimeType string `json:"mimeType,omitempty"`
-	FileURI  string `json:"fileUri,omitempty"`
+	MimeType string `json:"mimeType,omitzero"`
+	FileURI  string `json:"fileUri,omitzero"`
 }
 
 // https://protobuf.dev/reference/protobuf/google.protobuf/#struct
-type structValue map[string]Value
+type StructValue map[string]Value
 
 // https://protobuf.dev/reference/protobuf/google.protobuf/#value
 // TODO: Confirm.
 type Value struct {
-	NullValue   int64       `json:"null_value,omitempty"`
-	NumberValue float64     `json:"number_value,omitempty"`
-	StringValue string      `json:"string_value,omitempty"`
-	BoolValue   bool        `json:"bool_value,omitempty"`
-	StructValue structValue `json:"struct_value,omitempty"`
-	ListValue   []Value     `json:"list_value,omitempty"`
-}
-
-// https://ai.google.dev/api/caching?hl=en#CodeExecutionResult
-type CodeExecutionResult struct {
-	Outcome string `json:"outcome,omitempty"` // One of OUTCOME_UNSPECIFIED, OUTCOME_OK, OUTCOME_FAILED, OUTCOME_DEADLINE_EXCEEDED
-	Output  string `json:"output,omitempty"`
-}
-
-// https://ai.google.dev/api/caching?hl=en#ExecutableCode
-type ExecutableCode struct {
-	Language string `json:"language,omitempty"` // Only PYTHON is supported as of March 2025.
-	Code     string `json:"code,omitempty"`
-}
-
-// https://ai.google.dev/api/caching?hl=en#FunctionCall
-type FunctionCall struct {
-	ID   string      `json:"id,omitempty"`
-	Name string      `json:"name,omitempty"`
-	Args structValue `json:"args,omitempty"`
-}
-
-// https://ai.google.dev/api/caching?hl=en#FunctionResponse
-type FunctionResponse struct {
-	ID       string      `json:"id,omitempty"`
-	Name     string      `json:"name,omitempty"`
-	Response structValue `json:"response,omitempty"`
+	NullValue   int64       `json:"null_value,omitzero"`
+	NumberValue float64     `json:"number_value,omitzero"`
+	StringValue string      `json:"string_value,omitzero"`
+	BoolValue   bool        `json:"bool_value,omitzero"`
+	StructValue StructValue `json:"struct_value,omitzero"`
+	ListValue   []Value     `json:"list_value,omitzero"`
 }
 
 // https://ai.google.dev/api/caching?hl=en#Part
 //
 // Part is a union that only has one of the field set.
 type Part struct {
-	Text string `json:"text,omitempty"`
+	Text string `json:"text,omitzero"`
 	// Uploaded with /v1beta/cachedContents. Content is deleted after 1 hour.
-	InlineData       Blob             `json:"inlineData,omitzero"`
-	FunctionCall     FunctionCall     `json:"functionCall,omitzero"`
-	FunctionResponse FunctionResponse `json:"functionResponse,omitzero"`
+	InlineData Blob `json:"inlineData,omitzero"`
+	// https://ai.google.dev/api/caching?hl=en#FunctionCall
+	FunctionCall struct {
+		ID   string      `json:"id,omitzero"`
+		Name string      `json:"name,omitzero"`
+		Args StructValue `json:"args,omitzero"`
+	} `json:"functionCall,omitzero"`
+	// https://ai.google.dev/api/caching?hl=en#FunctionResponse
+	FunctionResponse struct {
+		ID       string      `json:"id,omitzero"`
+		Name     string      `json:"name,omitzero"`
+		Response StructValue `json:"response,omitzero"`
+	} `json:"functionResponse,omitzero"`
 	// Uploaded with /upload/v1beta/files. Files are deleted after 2 days.
-	FileData            FileData            `json:"fileData,omitzero"`
-	ExecutableCode      ExecutableCode      `json:"executableCode,omitzero"`      // TODO
-	CodeExecutionResult CodeExecutionResult `json:"codeExecutionResult,omitzero"` // TODO
+	FileData FileData `json:"fileData,omitzero"`
+	// https://ai.google.dev/api/caching?hl=en#ExecutableCode
+	ExecutableCode struct {
+		Language string `json:"language,omitzero"` // Only PYTHON is supported as of March 2025.
+		Code     string `json:"code,omitzero"`
+	} `json:"executableCode,omitzero"` // TODO
+	// https://ai.google.dev/api/caching?hl=en#CodeExecutionResult
+	CodeExecutionResult struct {
+		Outcome string `json:"outcome,omitzero"` // One of OUTCOME_UNSPECIFIED, OUTCOME_OK, OUTCOME_FAILED, OUTCOME_DEADLINE_EXCEEDED
+		Output  string `json:"output,omitzero"`
+	} `json:"codeExecutionResult,omitzero"` // TODO
 }
 
 // https://ai.google.dev/api/caching?hl=en#Content
 type Content struct {
 	Parts []Part `json:"parts"`
 	// Must be either 'user' or 'model'.
-	Role string `json:"role,omitempty"`
-}
-
-// https://ai.google.dev/api/generate-content?hl=en#v1beta.GenerationConfig
-type GenerationConfig struct {
-	StopSequences              []string `json:"stopSequences,omitempty"`
-	ResponseMimeType           string   `json:"responseMimeType,omitempty"`
-	ResponseSchema             any      `json:"responseSchema,omitempty"` // TODO
-	ResponseModalities         []string `json:"responseModalities,omitempty"`
-	CandidateCount             int64    `json:"candidateCount,omitempty"`
-	MaxOutputTokens            int64    `json:"maxOutputTokens,omitempty"`
-	Temperature                float64  `json:"temperature,omitempty"` // [0, 2]
-	TopP                       float64  `json:"topP,omitempty"`
-	TopK                       int64    `json:"topK,omitempty"`
-	Seed                       int64    `json:"seed,omitempty"`
-	PresencePenalty            float64  `json:"presencePenalty,omitempty"`
-	FrequencyPenalty           float64  `json:"frequencyPenalty,omitempty"`
-	ResponseLogprobs           bool     `json:"responseLogprobs,omitempty"`
-	Logprobs                   int64    `json:"logProbs,omitempty"`
-	EnableEnhancedCivicAnswers bool     `json:"enableEnhancedCivicAnswers,omitempty"`
-	SpeechConfig               any      `json:"speechConfig,omitempty"` // TODO
-	MediaResolution            string   `json:"mediaResolution,omitempty"`
+	Role string `json:"role,omitzero"`
 }
 
 // https://ai.google.dev/api/generate-content?hl=en#v1beta.SafetySetting
@@ -127,71 +98,93 @@ type SafetySetting struct {
 	Threshold int64  `json:"threshold"` // https://ai.google.dev/api/generate-content?hl=en#HarmBlockThreshold
 }
 
-// https://ai.google.dev/api/caching?hl=en#GoogleSearchRetrieval
-type GoogleSearchRetrieval struct {
-	DynamicRetrievalConfig DynamicRetrievalConfig `json:"dynamicRetrievalConfig,omitzero"`
-}
-
-// https://ai.google.dev/api/caching?hl=en#DynamicRetrievalConfig
-type DynamicRetrievalConfig struct {
-	// https://ai.google.dev/api/caching?hl=en#Mode
-	Mode             string  `json:"mode,omitempty"` // MODE_UNSPECIFIED, MODE_DYNAMIC
-	DynamicThreshold float64 `json:"dynamicThreshold,omitempty"`
-}
-
 // https://ai.google.dev/api/caching?hl=en#Tool
 type Tool struct {
-	FunctionDeclarations  []functionDeclaration `json:"functionDeclaration,omitempty"`
-	GoogleSearchRetrieval GoogleSearchRetrieval `json:"googleSearchRetrieval,omitempty"`
-	CodeExecution         struct{}              `json:"codeExecution,omitempty"`
-	GoogleSearch          struct{}              `json:"googleSearch,omitempty"`
+	FunctionDeclarations []FunctionDeclaration `json:"nunctionDeclaration,omitzero"`
+	// https://ai.google.dev/api/caching?hl=en#GoogleSearchRetrieval
+	GoogleSearchRetrieval struct {
+		// https://ai.google.dev/api/caching?hl=en#DynamicRetrievalConfig
+		DynamicRetrievalConfig struct {
+			// https://ai.google.dev/api/caching?hl=en#Mode
+			Mode             string  `json:"mode,omitzero"` // MODE_UNSPECIFIED, MODE_DYNAMIC
+			DynamicThreshold float64 `json:"dynamicThreshold,omitzero"`
+		} `json:"dynamicRetrievalConfig,omitzero"`
+	} `json:"googleSearchRetrieval,omitzero"`
+	CodeExecution struct{} `json:"codeExecution,omitzero"`
+	GoogleSearch  struct{} `json:"googleSearch,omitzero"`
 }
 
 // https://ai.google.dev/api/caching?hl=en#FunctionDeclaration
-type functionDeclaration struct {
-	Name        string `json:"name,omitempty"`
-	Description string `json:"description,omitempty"`
-	Parameters  schema `json:"parameters,omitempty"`
-	Response    schema `json:"response,omitempty"`
+type FunctionDeclaration struct {
+	Name        string `json:"name,omitzero"`
+	Description string `json:"description,omitzero"`
+	Parameters  Schema `json:"parameters,omitzero"`
+	Response    Schema `json:"response,omitzero"`
 }
 
 // https://ai.google.dev/api/caching?hl=en#Schema
-type schema struct {
+type Schema struct {
 	// https://ai.google.dev/api/caching?hl=en#Type
-	Type             string            `json:"type,omitempty"`   // TYPE_UNSPECIFIED, STRING, NUMBER, INTEGER, BOOLEAN, ARRAY, OBJECT
-	Format           string            `json:"format,omitempty"` // "json-schema"
-	Description      string            `json:"description,omitempty"`
-	Nullable         bool              `json:"nullable,omitempty"`
-	Enum             []string          `json:"enum,omitempty"`
-	MaxItems         int64             `json:"maxItems,omitempty"`
-	MinItems         int64             `json:"minItems,omitempty"`
-	Properties       map[string]schema `json:"properties,omitempty"`
-	Required         []string          `json:"required,omitempty"`
-	PropertyOrdering []string          `json:"propertyOrdering,omitempty"`
-	Items            *schema           `json:"items,omitempty"` // When type is "array"
+	Type             string            `json:"type,omitzero"`   // TYPE_UNSPECIFIED, STRING, NUMBER, INTEGER, BOOLEAN, ARRAY, OBJECT
+	Format           string            `json:"format,omitzero"` // "json-schema"
+	Description      string            `json:"description,omitzero"`
+	Nullable         bool              `json:"nullable,omitzero"`
+	Enum             []string          `json:"enum,omitzero"`
+	MaxItems         int64             `json:"maxItems,omitzero"`
+	MinItems         int64             `json:"minItems,omitzero"`
+	Properties       map[string]Schema `json:"properties,omitzero"`
+	Required         []string          `json:"required,omitzero"`
+	PropertyOrdering []string          `json:"propertyOrdering,omitzero"`
+	Items            *Schema           `json:"items,omitzero"` // When type is "array"
 }
 
 // https://ai.google.dev/api/caching?hl=en#ToolConfig
 type ToolConfig struct {
-	FunctionCallingConfig functionCallingConfig `json:"functionCallingConfig,omitempty"`
-}
-
-// https://ai.google.dev/api/caching?hl=en#FunctionCallingConfig
-type functionCallingConfig struct {
-	// https://ai.google.dev/api/caching?hl=en#Mode_1
-	Mode                 string   `json:"mode,omitempty"` // MODE_UNSPECIFIED, AUTO, ANY, NONE
-	AllowedFunctionNames []string `json:"allowedFunctionNames,omitempty"`
+	// https://ai.google.dev/api/caching?hl=en#FunctionCallingConfig
+	FunctionCallingConfig struct {
+		// https://ai.google.dev/api/caching?hl=en#Mode_1
+		Mode                 string   `json:"mode,omitzero"` // MODE_UNSPECIFIED, AUTO, ANY, NONE
+		AllowedFunctionNames []string `json:"allowedFunctionNames,omitzero"`
+	} `json:"functionCallingConfig,omitzero"`
 }
 
 // https://ai.google.dev/api/generate-content?hl=en#text_gen_text_only_prompt-SHELL
 type CompletionRequest struct {
-	Contents          []Content        `json:"contents"`
-	Tools             []Tool           `json:"tools,omitempty"`
-	ToolConfig        ToolConfig       `json:"toolConfig,omitzero"`
-	SafetySettings    []SafetySetting  `json:"safetySettings,omitempty"`
-	SystemInstruction Content          `json:"systemInstruction,omitzero"`
-	GenerationConfig  GenerationConfig `json:"generationConfig,omitzero"`
-	CachedContent     string           `json:"cachedContent,omitempty"`
+	Contents          []Content       `json:"contents"`
+	Tools             []Tool          `json:"tools,omitzero"`
+	ToolConfig        ToolConfig      `json:"toolConfig,omitzero"`
+	SafetySettings    []SafetySetting `json:"safetySettings,omitzero"`
+	SystemInstruction Content         `json:"systemInstruction,omitzero"`
+	// https://ai.google.dev/api/generate-content?hl=en#v1beta.GenerationConfig
+	GenerationConfig struct {
+		StopSequences              []string `json:"stopSequences,omitzero"`
+		ResponseMimeType           string   `json:"responseMimeType,omitzero"`
+		ResponseSchema             Schema   `json:"responseSchema,omitzero"`
+		ResponseModalities         []string `json:"responseModalities,omitzero"`
+		CandidateCount             int64    `json:"candidateCount,omitzero"`
+		MaxOutputTokens            int64    `json:"maxOutputTokens,omitzero"`
+		Temperature                float64  `json:"temperature,omitzero"` // [0, 2]
+		TopP                       float64  `json:"topP,omitzero"`
+		TopK                       int64    `json:"topK,omitzero"`
+		Seed                       int64    `json:"seed,omitzero"`
+		PresencePenalty            float64  `json:"presencePenalty,omitzero"`
+		FrequencyPenalty           float64  `json:"frequencyPenalty,omitzero"`
+		ResponseLogprobs           bool     `json:"responseLogprobs,omitzero"`
+		Logprobs                   int64    `json:"logProbs,omitzero"`
+		EnableEnhancedCivicAnswers bool     `json:"enableEnhancedCivicAnswers,omitzero"`
+		// https://ai.google.dev/api/generate-content?hl=en#SpeechConfig
+		SpeechConfig struct {
+			// https://ai.google.dev/api/generate-content?hl=en#VoiceConfig
+			VoiceConfig struct {
+				// https://ai.google.dev/api/generate-content?hl=en#PrebuiltVoiceConfig
+				PrebuiltVoiceConfig struct {
+					VoiceName string `json:"voiceName,omitzero"`
+				} `json:"prebuiltVoiceConfig,omitzero"`
+			} `json:"voiceConfig,omitzero"`
+		} `json:"speechConfig,omitzero"`
+		MediaResolution string `json:"mediaResolution,omitzero"`
+	} `json:"generationConfig,omitzero"`
+	CachedContent string `json:"cachedContent,omitzero"`
 }
 
 func (c *CompletionRequest) fromOpts(opts any) error {
@@ -303,7 +296,7 @@ type CompletionResponse struct {
 		LogprobsResult any     `json:"logprobsResult"`
 		Index          int64   `json:"index"`
 	} `json:"candidates"`
-	PromptFeedback any `json:"promptFeedback,omitempty"`
+	PromptFeedback any `json:"promptFeedback,omitzero"`
 	// https://ai.google.dev/api/generate-content?hl=en#UsageMetadata
 	UsageMetadata struct {
 		PromptTokenCount           int64                `json:"promptTokenCount"`
@@ -347,19 +340,19 @@ type CompletionStreamChunkResponse struct {
 // https://ai.google.dev/api/caching?hl=en#request-body
 type cachedContentRequest struct {
 	Contents          []Content  `json:"contents"`
-	Tools             []Tool     `json:"tools,omitempty"`
-	Expiration        expiration `json:"expiration,omitempty"`
-	Name              string     `json:"name,omitempty"`
-	DisplayName       string     `json:"displayName,omitempty"`
+	Tools             []Tool     `json:"tools,omitzero"`
+	Expiration        expiration `json:"expiration,omitzero"`
+	Name              string     `json:"name,omitzero"`
+	DisplayName       string     `json:"displayName,omitzero"`
 	Model             string     `json:"model"`
 	SystemInstruction Content    `json:"systemInstruction"`
-	ToolConfig        ToolConfig `json:"toolConfig,omitempty"`
+	ToolConfig        ToolConfig `json:"toolConfig,omitzero"`
 }
 
 // https://ai.google.dev/api/caching?hl=en#CachedContent
 type cacheContentResponse struct {
 	Contents          []Content            `json:"contents"`
-	Tools             []Tool               `json:"tools,omitempty"`
+	Tools             []Tool               `json:"tools,omitzero"`
 	CreateTime        string               `json:"createTime"`
 	UpdateTime        string               `json:"updateTime"`
 	UsageMetadata     cachingUsageMetadata `json:"usageMetadata"`

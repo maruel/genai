@@ -26,22 +26,48 @@ import (
 
 // https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post
 type CompletionRequest struct {
-	Model            string    `json:"model"`
-	Temperature      float64   `json:"temperature,omitzero"` // [0, 2]
-	TopP             float64   `json:"top_p,omitzero"`       // [0, 1]
-	MaxTokens        int64     `json:"max_tokens,omitzero"`
-	Stream           bool      `json:"stream"`
-	Stop             []string  `json:"stop,omitempty"` // keywords to stop completion
-	RandomSeed       int64     `json:"random_seed,omitzero"`
-	Messages         []Message `json:"messages"`
-	ResponseFormat   any       `json:"response_format,omitempty"`   // TODO e.g. json_object with json_schema
-	Tools            []any     `json:"tools,omitempty"`             // TODO
-	ToolChoices      []any     `json:"tool_choices,omitempty"`      // TODO
-	PresencePenalty  float64   `json:"presence_penalty,omitzero"`   // [-2.0, 2.0]
-	FrequencyPenalty float64   `json:"frequency_penalty,omitempty"` // [-2.0, 2.0]
-	N                int64     `json:"n,omitzero"`                  // Number of choices
-	Prediction       any       `json:"prediction,omitempty"`        // TODO
-	SafePrompt       bool      `json:"safe_prompt,omitzero"`
+	Model          string    `json:"model"`
+	Temperature    float64   `json:"temperature,omitzero"` // [0, 2]
+	TopP           float64   `json:"top_p,omitzero"`       // [0, 1]
+	MaxTokens      int64     `json:"max_tokens,omitzero"`
+	Stream         bool      `json:"stream"`
+	Stop           []string  `json:"stop,omitzero"` // keywords to stop completion
+	RandomSeed     int64     `json:"random_seed,omitzero"`
+	Messages       []Message `json:"messages"`
+	ResponseFormat struct {
+		Type       string `json:"type,omitzero"` // "text", "json_object", "json_schema"
+		JSONSchema struct {
+			Name        string `json:"name,omitzero"`
+			Description string `json:"description,omitzero"`
+			Strict      bool   `json:"strict,omitzero"`
+			Schema      struct {
+				// JSONSchema.
+				Property string `json:"property,omitzero"`
+			} `json:"schema,omitzero"`
+		} `json:"json_schema,omitzero"`
+	} `json:"response_format,omitzero"`
+	Tools []Tool `json:"tools,omitzero"`
+	// Alternative when forcing a specific function. This can probably be achieved
+	// by providing a single tool and ToolChoice == "required".
+	// ToolChoice struct {
+	// 	Type     string `json:"type,omitzero"` // "function"
+	// 	Function struct {
+	// 		Name string `json:"name,omitzero"`
+	// 	} `json:"function,omitzero"`
+	// } `json:"tool_choice,omitzero"`
+	ToolChoice       string  `json:"tool_choice,omitzero"`       // "auto", "none", "any", "required"
+	PresencePenalty  float64 `json:"presence_penalty,omitzero"`  // [-2.0, 2.0]
+	FrequencyPenalty float64 `json:"frequency_penalty,omitzero"` // [-2.0, 2.0]
+	N                int64   `json:"n,omitzero"`                 // Number of choices
+	Prediction       struct {
+		// Enable users to specify expected results, optimizing response times by
+		// leveraging known or predictable content. This approach is especially
+		// effective for updating text documents or code files with minimal
+		// changes, reducing latency while maintaining high-quality results.
+		Type    string `json:"type,omitzero"` // "content"
+		Content string `json:"content,omitzero"`
+	} `json:"prediction,omitzero"`
+	SafePrompt bool `json:"safe_prompt,omitzero"`
 }
 
 func (c *CompletionRequest) fromOpts(opts any) error {
@@ -80,11 +106,21 @@ type Message struct {
 
 type Content struct {
 	Type         string  `json:"type"` // text, reference, document_url, image_url
-	Text         string  `json:"text,omitempty"`
-	ReferenceIDs []int64 `json:"reference_ids,omitempty"`
-	DocumentURL  string  `json:"document_url,omitempty"`
-	DocumentName string  `json:"document_name,omitempty"`
-	ImageURL     string  `json:"image_url,omitempty"`
+	Text         string  `json:"text,omitzero"`
+	ReferenceIDs []int64 `json:"reference_ids,omitzero"`
+	DocumentURL  string  `json:"document_url,omitzero"`
+	DocumentName string  `json:"document_name,omitzero"`
+	ImageURL     string  `json:"image_url,omitzero"`
+}
+
+type Tool struct {
+	Type     string `json:"type,omitzero"` // "function"
+	Function struct {
+		Name        string         `json:"name,omitzero"`
+		Description string         `json:"description,omitzero"`
+		String      bool           `json:"string,omitzero"`
+		Parameters  map[string]any `json:"parameters,omitzero"`
+	} `json:"function,omitzero"`
 }
 
 type CompletionResponse struct {
@@ -269,7 +305,16 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		}
 		const prefix = "data: "
 		if !bytes.HasPrefix(line, []byte(prefix)) {
-			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
+			d := json.NewDecoder(bytes.NewReader(line))
+			d.DisallowUnknownFields()
+			d.UseNumber()
+			erAuth := errorResponseAuth{}
+			if err = d.Decode(&erAuth); err != nil {
+				return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
+			}
+			// Happens with Requests rate limit exceeded.
+			// TODO: Wrap it so it can be retried like a 429.
+			return errors.New(erAuth.Message)
 		}
 		suffix := string(line[len(prefix):])
 		if suffix == "[DONE]" {
@@ -280,16 +325,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		d.UseNumber()
 		msg := CompletionStreamChunkResponse{}
 		if err = d.Decode(&msg); err != nil {
-			d = json.NewDecoder(strings.NewReader(suffix))
-			d.DisallowUnknownFields()
-			d.UseNumber()
-			erAuth := errorResponseAuth{}
-			if err = d.Decode(&erAuth); err != nil {
-				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
-			}
-			// Happens with Requests rate limit exceeded.
-			// TODO: Wrap it so it can be retried like a 429.
-			return errors.New(erAuth.Message)
+			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
 		}
 		out <- msg
 	}

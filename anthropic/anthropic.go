@@ -31,30 +31,73 @@ type Message struct {
 }
 
 type Content struct {
-	Type   string `json:"type"` // text, image
-	Text   string `json:"text,omitzero"`
+	Type string `json:"type"` // "text", "image", "tool_use", "tool_result", "document"
+	// Type == "text"
+	Text string `json:"text,omitzero"`
+
+	// Type == "text", "image", "tool_use", "tool_result", "document"
+	CacheControl struct {
+		Type string `json:"type,omitzero"` // ephemeral
+	} `json:"cache_control,omitzero"`
+
+	// Type == "text", "document"
+	Citations Citation `json:"citations,omitzero"`
+
+	// Type == "image", "document"
 	Source struct {
-		Type      string `json:"type,omitzero"`       // base64
-		MediaType string `json:"media_type,omitzero"` // image/jpeg, image/png, image/gif or image/webp
-		Data      []byte `json:"data,omitzero"`
+		// Content.Type == "image": "base64", "url"
+		// Content.Type == "document": "base64, "url", "text", "content"
+		Type string `json:"type,omitzero"`
+
+		// Type == "base64", "url", "text"
+		// Content.Type == "image": "image/jpeg", "image/png", "image/gif", "image/webp"
+		// Content.Type == "document": "application/pdf"
+		MediaType string `json:"media_type,omitzero"`
+
+		// Type == "base64", "text"
+		Data []byte `json:"data,omitzero"` // base64 encoded if base64, else as is.
+
+		// Type == "url"
+		URL string `json:"url,omitzero"`
+
+		// Type == "content"
+		// Only "text" and "image" are allowed.
+		Content []Content `json:"content,omitzero"`
 	} `json:"source,omitzero"`
+
+	// Type == "tool_use"
+	ID    string   `json:"id,omitzero"`
+	Input struct{} `json:"input,omitzero"`
+	Name  string   `json:"name,omitzero"`
+
+	// Type == "tool_result"
+	ToolUseID string `json:"tool_use_id,omitzero"`
+	IsError   bool   `json:"is_error,omitzero"`
+	// Only "text" and "image" are allowed.
+	Content []Content `json:"content,omitzero"`
+
+	// "document"
+	Context string `json:"context,omitzero"`
+	Title   string `json:"title,omitzero"`
 }
 
 // https://docs.anthropic.com/en/api/messages
 type CompletionRequest struct {
-	Model         string    `json:"model,omitempty"`
-	MaxToks       int64     `json:"max_tokens"`
-	Messages      []Message `json:"messages"`
-	Metadata      any       `json:"metadata,omitempty"`
-	StopSequences []string  `json:"stop_sequences,omitempty"`
-	Stream        bool      `json:"stream,omitempty"`
-	System        string    `json:"system,omitzero"`
-	Temperature   float64   `json:"temperature,omitzero"` // [0, 1]
-	Thinking      any       `json:"thinking,omitempty"`
-	ToolChoice    any       `json:"tool_choice,omitempty"`
-	Tools         any       `json:"tools,omitempty"`
-	TopK          int64     `json:"top_k,omitzero"` // [1, ]
-	TopP          float64   `json:"top_p,omitzero"` // [0, 1]
+	Model    string    `json:"model,omitzero"`
+	MaxToks  int64     `json:"max_tokens"`
+	Messages []Message `json:"messages"`
+	Metadata struct {
+		UserID string `json:"user_id,omitzero"`
+	} `json:"metadata,omitzero"`
+	StopSequences []string   `json:"stop_sequences,omitzero"`
+	Stream        bool       `json:"stream,omitzero"`
+	System        string     `json:"system,omitzero"`
+	Temperature   float64    `json:"temperature,omitzero"` // [0, 1]
+	Thinking      Thinking   `json:"thinking,omitzero"`
+	ToolChoice    ToolChoice `json:"tool_choice,omitzero"`
+	Tools         []Tool     `json:"tools,omitzero"`
+	TopK          int64      `json:"top_k,omitzero"` // [1, ]
+	TopP          float64    `json:"top_p,omitzero"` // [0, 1]
 }
 
 func (c *CompletionRequest) fromOpts(opts any) error {
@@ -99,19 +142,78 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 	return nil
 }
 
+type Citation struct {
+	// Content.Type == "text"
+	CitedText     string `json:"cited_text,omitzero"`
+	DocumentIndex int64  `json:"document_index,omitzero"`
+	DocumentTitle string `json:"document_title,omitzero"`
+	Type          string `json:"type,omitzero"` // "char_location", "page_location", "content_block_location"
+	// Type == "char_location"
+	EndCharIndex   int64 `json:"end_char_index,omitzero"`
+	StartCharIndex int64 `json:"start_char_index,omitzero"`
+	// Type == "page_location"
+	EndPageNumber   int64 `json:"end_page_number,omitzero"`
+	StartPageNumber int64 `json:"start_page_number,omitzero"`
+	// Type == "content_block_location"
+	EndBlockIndex   int64 `json:"end_block_index,omitzero"`
+	StartBlockIndex int64 `json:"start_block_index,omitzero"`
+
+	// Content.Type == "document"
+	Enabled bool `json:"enabled,omitzero"`
+}
+
+type Thinking struct {
+	BudgetTokens int64  `json:"budget_tokens,omitzero"` // >1024 and less than max_tokens
+	Type         string `json:"type,omitzero"`          // "enabled", "disabled"
+}
+
+type ToolChoice struct {
+	Type string `json:"type,omitzero"` // "auto", "any", "tool", "none"
+
+	// Type == "auto", "any", "tool"
+	DisableParallelToolUse bool `json:"disable_parallel_tool_use,omitzero"` // default false
+
+	// Type == "tool"
+	Name string `json:"name,omitzero"`
+}
+
+type Tool struct {
+	Type string `json:"type,omitzero"` // "custom", "computer_20241022", "computer_20250124", "bash_20241022", "bash_20250124", "text_editor_20241022", "text_editor_20250124"
+	// Type == "custom"
+	Description string     `json:"description,omitzero"`
+	InputSchema JSONSchema `json:"input_schema,omitzero"`
+
+	// Type == "custom": tool name
+	// Type == "computer_20241022", "computer_20250124": "computer"
+	// Type == "bash_20241022", "bash_20250124": "bash"
+	// Type == "text_editor_20241022", "text_editor_20250124": "str_replace_editor"
+	Name string `json:"name,omitzero"`
+
+	// Type == "custom", "computer_20241022", "computer_20250124", "bash_20241022", "bash_20250124", "text_editor_20241022", "text_editor_20250124"
+	CacheControl struct {
+		Type string `json:"type,omitzero"` // "ephemeral"
+	} `json:"cache_control,omitzero"`
+
+	// Type == "computer_20241022", "computer_20250124"
+	DisplayNumber   int64 `json:"display_number,omitzero"`
+	DisplayHeightPX int64 `json:"display_height_px,omitzero"`
+	DisplayWidthPX  int64 `json:"display_width_px,omitzero"`
+}
+
+// TODO
+type JSONSchema struct {
+	Type       string         `json:"type"` // "object"
+	Properties map[string]any `json:"properties"`
+}
+
 type CompletionResponse struct {
-	Content []struct {
-		Type      string   `json:"type"`
-		Text      string   `json:"text"`
-		Citations struct{} `json:"citations,omitempty"`
-		// TODO Add rest.
-	} `json:"content"`
-	ID           string `json:"id"`
-	Model        string `json:"model"`
-	Role         string `json:"role"` // Always "assistant"
-	StopReason   string `json:"stop_reason"`
-	StopSequence string `json:"stop_sequence"`
-	Type         string `json:"type"`
+	Content      []Content `json:"content"`
+	ID           string    `json:"id"`
+	Model        string    `json:"model"`
+	Role         string    `json:"role"` // Always "assistant"
+	StopReason   string    `json:"stop_reason"`
+	StopSequence string    `json:"stop_sequence"`
+	Type         string    `json:"type"`
 	Usage        struct {
 		InputTokens              int64 `json:"input_tokens"`
 		OutputTokens             int64 `json:"output_tokens"`

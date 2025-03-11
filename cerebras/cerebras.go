@@ -26,20 +26,20 @@ import (
 
 // https://inference-docs.cerebras.ai/api-reference/chat-completions
 type CompletionRequest struct {
-	Model               string    `json:"model"`
-	Messages            []Message `json:"messages"`
-	MaxCompletionTokens int64     `json:"max_completion_tokens,omitzero"`
-	ResponseFormat      any       `json:"response_format,omitzero"` // TODO
-	Seed                int64     `json:"seed,omitzero"`
-	Stop                []string  `json:"stop,omitempty"`
-	Stream              bool      `json:"stream,omitempty"`
-	Temperature         float64   `json:"temperature,omitzero"`
-	TopP                float64   `json:"top_p,omitzero"`        // [0, 1.0]
-	ToolChoice          string    `json:"tool_choice,omitempty"` // TODO
-	Tools               any       `json:"tools,omitempty"`       // TODO
-	User                string    `json:"user,omitempty"`
-	Logprobs            bool      `json:"logprobs,omitempty"`
-	TopLogprobs         int64     `json:"top_logprobs,omitzero"` // [0, 20]
+	Model               string         `json:"model"`
+	Messages            []Message      `json:"messages"`
+	MaxCompletionTokens int64          `json:"max_completion_tokens,omitzero"`
+	ResponseFormat      ResponseFormat `json:"response_format,omitzero"`
+	Seed                int64          `json:"seed,omitzero"`
+	Stop                []string       `json:"stop,omitzero"`
+	Stream              bool           `json:"stream,omitzero"`
+	Temperature         float64        `json:"temperature,omitzero"`
+	TopP                float64        `json:"top_p,omitzero"` // [0, 1.0]
+	ToolChoice          string         `json:"tool_choice,omitzero"`
+	Tools               Tools          `json:"tools,omitzero"`
+	User                string         `json:"user,omitzero"`
+	Logprobs            bool           `json:"logprobs,omitzero"`
+	TopLogprobs         int64          `json:"top_logprobs,omitzero"` // [0, 20]
 }
 
 func (c *CompletionRequest) fromOpts(opts any) error {
@@ -74,6 +74,27 @@ type Message struct {
 	Role    string `json:"role"`
 	Content string `json:"content"`
 }
+
+// https://inference-docs.cerebras.ai/capabilities/structured-outputs
+type ResponseFormat struct {
+	JSONSchema struct {
+		Name   string     `json:"name,omitzero"`
+		Strict bool       `json:"strict,omitzero"`
+		Schema JSONSchema `json:"schema,omitzero"`
+	} `json:"json_schema,omitzero"`
+}
+
+type Tools struct {
+	Function struct {
+		Description string     `json:"description"`
+		Name        string     `json:"name"`
+		Parameters  JSONSchema `json:"parameters"`
+		Type        string     `json:"type"` // function
+	} `json:"function"`
+}
+
+// TODO
+type JSONSchema any
 
 type CompletionResponse struct {
 	ID                string `json:"id"`

@@ -63,7 +63,7 @@ supports gzip.
 
 ## TODO
 
-- Schema
+- JSON Schema
 - Tools
 - Files
     - PDF in

@@ -98,25 +98,26 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 		default:
 			return fmt.Errorf("message %d: unsupported role %q", i, m.Role)
 		}
+		c.Messages[i].Role = string(m.Role)
+		c.Messages[i].Content = []Content{{}}
 		switch m.Type {
 		case genaiapi.Text:
+			c.Messages[i].Content[0].Type = "text"
+			c.Messages[i].Content[0].Text = m.Text
 		case genaiapi.Document:
 			if !m.Inline {
 				return fmt.Errorf("message %d: external document is not yet supported", i)
 			}
 			switch {
 			case strings.HasPrefix(m.MimeType, "image/"):
-				cnt := []Content{{Type: "image_url"}}
-				cnt[0].ImageURL = fmt.Sprintf("data:%s;base64,%s", m.MimeType, base64.StdEncoding.EncodeToString(m.Data))
-				c.Messages[i].Content = cnt
+				c.Messages[i].Content[0].Type = "image_url"
+				c.Messages[i].Content[0].ImageURL = fmt.Sprintf("data:%s;base64,%s", m.MimeType, base64.StdEncoding.EncodeToString(m.Data))
 			default:
 				return fmt.Errorf("message %d: unsupported mime type %s", i, m.MimeType)
 			}
 		default:
 			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
 		}
-		c.Messages[i].Role = string(m.Role)
-		c.Messages[i].Content = []Content{{Type: "text", Text: m.Text}}
 	}
 	return nil
 }

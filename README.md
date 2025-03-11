@@ -10,7 +10,7 @@ The _high performance_ native Go client for LLMs.
 | Cohere | ✅ | ✅ | |
 | DeepSeek | ✅ | ✅ | |
 | Google's Gemini | ✅ | ✅ | ✅ |
-| Groq | ✅ | ✅ | |
+| Groq | ✅ | ✅ | ✅ |
 | HuggingFace | ✅ | ✅ | |
 | Mistral | ✅ | ✅ | ✅ |
 | OpenAI | ✅ | ✅ | ✅ |

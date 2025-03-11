@@ -6,6 +6,7 @@ package groq_test
 
 import (
 	"context"
+	_ "embed"
 	"fmt"
 	"log"
 	"os"
@@ -14,21 +15,30 @@ import (
 	"github.com/maruel/genai/groq"
 )
 
-var (
-	key = os.Getenv("GROQ_API_KEY")
-	// Using very small model for testing.
-	// See https://console.groq.com/docs/models
-	model = "llama-3.2-1b-preview"
-)
+//go:embed testdata/banana.jpg
+var bananaJpg []byte
+
+var key = os.Getenv("GROQ_API_KEY")
 
 func ExampleClient_Completion() {
 	if key != "" {
-		c := groq.Client{ApiKey: key, Model: model}
+		// We must select a model that supports vision.
+		// See https://console.groq.com/docs/vision
+		c := groq.Client{ApiKey: key, Model: "llama-3.2-11b-vision-preview"}
 		msgs := []genaiapi.Message{
+			{
+				Role:     genaiapi.User,
+				Type:     genaiapi.Document,
+				Inline:   true,
+				MimeType: "image/jpeg",
+				// Groq requires higher quality image than Gemini. See
+				// ../gemini/testdata/banana.jpg to compare.
+				Data: bananaJpg,
+			},
 			{
 				Role: genaiapi.User,
 				Type: genaiapi.Text,
-				Text: "Say hello. Use only one word.",
+				Text: "Is it a banana? Reply with only one word.",
 			},
 		}
 		resp, err := c.Completion(context.Background(), msgs, &genaiapi.CompletionOptions{})
@@ -46,7 +56,9 @@ func ExampleClient_Completion() {
 
 func ExampleClient_CompletionStream() {
 	if key != "" {
-		c := groq.Client{ApiKey: key, Model: model}
+		// Using very small model for testing.
+		// See https://console.groq.com/docs/models
+		c := groq.Client{ApiKey: key, Model: "llama-3.2-1b-preview"}
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
 			{

@@ -11,6 +11,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -91,30 +92,49 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 		default:
 			return fmt.Errorf("message %d: unsupported role %q", i, m.Role)
 		}
+		c.Messages[i].Role = string(m.Role)
+		c.Messages[i].Content = []Content{{}}
 		switch m.Type {
 		case genaiapi.Text:
+			c.Messages[i].Content[0].Type = "text"
+			c.Messages[i].Content[0].Text = m.Text
+		case genaiapi.Document:
+			if !m.Inline {
+				return fmt.Errorf("message %d: external document is not yet supported", i)
+			}
+			switch {
+			case strings.HasPrefix(m.MimeType, "image/"):
+				c.Messages[i].Content[0].Type = "image_url"
+				c.Messages[i].Content[0].ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", m.MimeType, base64.StdEncoding.EncodeToString(m.Data))
+			default:
+				return fmt.Errorf("message %d: unsupported mime type %s", i, m.MimeType)
+			}
 		default:
 			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
 		}
-		c.Messages[i].Role = string(m.Role)
-		c.Messages[i].Content = []Content{{Type: "text", Text: m.Text}}
 	}
 	return nil
 }
 
 type Message struct {
-	Role    string    `json:"role"`
-	Content []Content `json:"content,omitzero"`
-	Name    string    `json:"name,omitzero"`
+	Role       string     `json:"role"`
+	Content    []Content  `json:"content,omitzero"`
+	Name       string     `json:"name,omitzero"`
+	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
+	ToolCallID string     `json:"tool_call_id,omitzero"`
 }
 
 type Content struct {
-	Text     string `json:"text,omitzero"`
+	Type string `json:"type,omitzero"` // "text", "image_url"
+
+	// Type == "text"
+	Text string `json:"text,omitzero"`
+
+	// Type == "image_url"
 	ImageURL struct {
-		Detail string `json:"detail,omitzero"` // auto
+		Detail string `json:"detail,omitzero"` // "auto", "low", "high"
 		URL    string `json:"url,omitzero"`    // URL or base64 encoded image
 	} `json:"image_url,omitzero"`
-	Type string `json:"type,omitzero"` // "text", "image"
 }
 
 type Tool struct {
@@ -123,6 +143,15 @@ type Tool struct {
 		Name        string         `json:"name,omitzero"`
 		Description string         `json:"description,omitzero"`
 		Parameters  map[string]any `json:"parameters,omitzero"`
+	} `json:"function,omitzero"`
+}
+
+type ToolCall struct {
+	Type     string `json:"type,omitzero"` // "function"
+	ID       string `json:"id,omitzero"`
+	Function struct {
+		Name      string `json:"name,omitzero"`
+		Arguments string `json:"arguments,omitzero"`
 	} `json:"function,omitzero"`
 }
 

@@ -118,9 +118,11 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 		default:
 			return fmt.Errorf("message %d: unsupported role %q", i, m.Role)
 		}
+		c.Messages[i].Content = []Content{{}}
 		switch m.Type {
 		case genaiapi.Text:
-			c.Messages[i].Content = []Content{{Type: "text", Text: m.Text}}
+			c.Messages[i].Content[0].Type = "text"
+			c.Messages[i].Content[0].Text = m.Text
 		case genaiapi.Document:
 			// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
 			if !m.Inline {
@@ -128,19 +130,16 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 			}
 			switch {
 			case strings.HasPrefix(m.MimeType, "image/"):
-				cnt := []Content{{Type: "image_url"}}
-				cnt[0].ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", m.MimeType, base64.StdEncoding.EncodeToString(m.Data))
-				c.Messages[i].Content = cnt
+				c.Messages[i].Content[0].Type = "image_url"
+				c.Messages[i].Content[0].ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", m.MimeType, base64.StdEncoding.EncodeToString(m.Data))
 			case m.MimeType == "audio/mpeg":
-				cnt := []Content{{Type: "input_audio"}}
-				cnt[0].InputAudio.Data = m.Data
-				cnt[0].InputAudio.Format = "mp3"
-				c.Messages[i].Content = cnt
+				c.Messages[i].Content[0].Type = "input_audio"
+				c.Messages[i].Content[0].InputAudio.Data = m.Data
+				c.Messages[i].Content[0].InputAudio.Format = "mp3"
 			case m.MimeType == "audio/wav":
-				cnt := []Content{{Type: "input_audio"}}
-				cnt[0].InputAudio.Data = m.Data
-				cnt[0].InputAudio.Format = "wav"
-				c.Messages[i].Content = cnt
+				c.Messages[i].Content[0].Type = "input_audio"
+				c.Messages[i].Content[0].InputAudio.Data = m.Data
+				c.Messages[i].Content[0].InputAudio.Format = "wav"
 			default:
 				exts, err := mime.ExtensionsByType(m.MimeType)
 				if err != nil {
@@ -149,10 +148,9 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 				if len(exts) == 0 {
 					return fmt.Errorf("message %d: unsupported mime type %s", i, m.MimeType)
 				}
-				cnt := []Content{{Type: "input_file"}}
-				cnt[0].Filename = "content" + exts[0]
-				cnt[0].FileData = m.Data
-				c.Messages[i].Content = cnt
+				c.Messages[i].Content[0].Type = "input_file"
+				c.Messages[i].Content[0].Filename = "content" + exts[0]
+				c.Messages[i].Content[0].FileData = m.Data
 			}
 		default:
 			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)

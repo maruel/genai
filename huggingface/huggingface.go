@@ -78,24 +78,21 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 	c.Messages = make([]Message, len(msgs))
 	for i, m := range msgs {
-		switch m.Type {
-		case genaiapi.Text:
-			if m.Text == "" {
-				return fmt.Errorf("message %d: missing text content", i)
-			}
-		default:
-			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
+		if err := m.Validate(); err != nil {
+			return fmt.Errorf("message %d: %w", i, err)
 		}
 		switch m.Role {
 		case genaiapi.System:
 			if i != 0 {
 				return fmt.Errorf("message %d: system message must be first message", i)
 			}
-			if m.Type != genaiapi.Text {
-				return fmt.Errorf("message %d: system message must be text", i)
-			}
 		default:
 			// We don't filter the role here.
+		}
+		switch m.Type {
+		case genaiapi.Text:
+		default:
+			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
 		}
 		c.Messages[i].Role = string(m.Role)
 		c.Messages[i].Content = []Content{{Type: "text", Text: m.Text}}

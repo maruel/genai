@@ -205,14 +205,14 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) (string, error) {
 	c.Contents = make([]Content, 0, len(msgs))
 	sp := ""
 	for i, m := range msgs {
+		if err := m.Validate(); err != nil {
+			return "", fmt.Errorf("message %d: %w", i, err)
+		}
 		role := ""
 		switch m.Role {
 		case genaiapi.System:
 			if i != 0 {
 				return "", fmt.Errorf("message %d: system message must be first message", i)
-			}
-			if m.Type != genaiapi.Text {
-				return "", fmt.Errorf("message %d: system message must be text", i)
 			}
 			// System prompt is passed differently.
 			sp = m.Text
@@ -222,19 +222,13 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) (string, error) {
 		case genaiapi.Assistant:
 			role = "model"
 		default:
-			return "", fmt.Errorf("message %d: unexpected role %q", i, m.Role)
+			return "", fmt.Errorf("message %d: unsupported role %q", i, m.Role)
 		}
 		cont := Content{Parts: []Part{{}}, Role: role}
 		switch m.Type {
 		case genaiapi.Text:
-			if m.Text == "" {
-				return "", fmt.Errorf("message %d: missing text content", i)
-			}
 			cont.Parts[0].Text = m.Text
 		case genaiapi.Document:
-			if m.Text != "" {
-				return "", fmt.Errorf("message %d: unexpected text content: %q", i, m.Text)
-			}
 			if !m.Inline {
 				return "", fmt.Errorf("message %d: external document is not yet supported", i)
 			}

@@ -5,7 +5,11 @@
 // Package genaiapi provides a generic interface to interact with a LLM backend.
 package genaiapi
 
-import "context"
+import (
+	"context"
+	"errors"
+	"fmt"
+)
 
 // CompletionOptions is a list of frequent options supported by most CompletionProvider.
 type CompletionOptions struct {
@@ -68,4 +72,49 @@ type Message struct {
 	Data []byte
 	// MimeType is the MIME type of the data if relevant.
 	MimeType string
+}
+
+// Validate ensures the message is valid.
+func (m Message) Validate() error {
+	switch m.Role {
+	case System:
+		if m.Type != Text {
+			return errors.New("field Role is system but Type is not text")
+		}
+	case User, Assistant, Tool, AvailableTools, ToolCall, ToolCallResult:
+	case "":
+		return errors.New("field Role is required")
+	default:
+		return fmt.Errorf("field Role %q is not supported", m.Role)
+	}
+	switch m.Type {
+	case Text:
+		if m.Text == "" {
+			return errors.New("field Type is text but no text is provided")
+		}
+		if m.Inline {
+			return errors.New("field Inline is not supported for text")
+		}
+		if len(m.Data) != 0 {
+			return errors.New("field Data is not supported for text")
+		}
+		if m.MimeType != "" {
+			return errors.New("field MimeType is not supported for text")
+		}
+	case Document:
+		if m.Text != "" {
+			return errors.New("field Type is document but text is provided")
+		}
+		if len(m.Data) == 0 {
+			return errors.New("field Data is required")
+		}
+		if m.MimeType == "" {
+			return errors.New("field MimeType is required")
+		}
+	case "":
+		return errors.New("field Type is required")
+	default:
+		return fmt.Errorf("field Type %q is not supported", m.Type)
+	}
+	return nil
 }

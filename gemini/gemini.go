@@ -359,6 +359,7 @@ type CompletionStreamChunkResponse struct {
 
 // Caching
 
+/*
 // https://ai.google.dev/api/caching?hl=en#request-body
 type cachedContentRequest struct {
 	Contents          []Content  `json:"contents"`
@@ -395,6 +396,7 @@ type expiration struct {
 type cachingUsageMetadata struct {
 	TotakTokenCount int64 `json:"totalTokenCount"`
 }
+*/
 
 //
 
@@ -477,6 +479,7 @@ type Client struct {
 	Model string
 }
 
+/*
 func (c *Client) cacheContent(ctx context.Context, data []byte, mime, systemInstruction string) (string, error) {
 	// See https://ai.google.dev/gemini-api/docs/caching?hl=en&lang=rest#considerations
 	// It's only useful when reusing the same large data multiple times.
@@ -503,6 +506,7 @@ func (c *Client) cacheContent(ctx context.Context, data []byte, mime, systemInst
 	slog.InfoContext(ctx, "gemini", "cached", out.Name)
 	return out.Name, nil
 }
+*/
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
 	in := CompletionRequest{}

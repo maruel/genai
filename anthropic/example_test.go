@@ -15,8 +15,10 @@ import (
 	"github.com/maruel/genai/genaiapi"
 )
 
+/*
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
+*/
 
 var (
 	key = os.Getenv("ANTHROPIC_API_KEY")

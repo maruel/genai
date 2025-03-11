@@ -8,6 +8,8 @@
 // https://docs.anthropic.com/en/api/
 package anthropic
 
+// See official client at https://github.com/anthropics/anthropic-sdk-go
+
 import (
 	"bufio"
 	"bytes"

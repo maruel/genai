@@ -7,6 +7,8 @@
 // It is described at https://platform.openai.com/docs/api-reference/
 package openai
 
+// See official client at https://github.com/openai/openai-go
+
 import (
 	"bufio"
 	"bytes"

@@ -7,6 +7,8 @@
 // It is described at https://developers.cloudflare.com/api/resources/ai/
 package cloudflare
 
+// See official client at https://github.com/cloudflare/cloudflare-go
+
 import (
 	"bufio"
 	"bytes"

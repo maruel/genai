@@ -20,8 +20,9 @@ Features:
 
 - Has very few dependencies.
 - Densified API surface while keeping 100% of the underlying backend specific support available.
-- Optimized for speed: minimize memory allocations, compress data when possible.
-- Safe and strict API implementation. All you love from a statically type
+- No unnecessary internal abstractions. Use the raw API without weird wrappers.
+- Optimized for speed: minimize memory allocations, compress data at the transport layer when possible.
+- Safe and strict API implementation. All you love from a statically typed
   language. Fails on unknown RPC fields. Error code paths are properly
   implemented.
 - Implementation is in flux. :)

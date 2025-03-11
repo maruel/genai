@@ -7,6 +7,8 @@
 // It is described at https://docs.cohere.com/reference/
 package cohere
 
+// See official client at https://github.com/cohere-ai/cohere-go
+
 import (
 	"bufio"
 	"bytes"

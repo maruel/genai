@@ -9,6 +9,8 @@
 // It is described at https://ai.google.dev/api/?lang=rest but the doc is weirdly organized.
 package gemini
 
+// See official client at https://github.com/google/generative-ai-go
+
 import (
 	"bufio"
 	"bytes"

@@ -13,11 +13,13 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"log/slog"
+	"mime"
 	"net/http"
 	"strings"
 	"time"
@@ -36,7 +38,7 @@ type CompletionRequest struct {
 	Seed                int64              `json:"seed,omitzero"`
 	Temperature         float64            `json:"temperature,omitzero"` // [0, 2]
 	Store               bool               `json:"store,omitzero"`
-	ReasoningEffort     string             `json:"reasoning_effort,omitzero"` // low, medium, high
+	ReasoningEffort     string             `json:"reasoning_effort,omitzero"` // "low", "medium", "high"
 	Metadata            map[string]string  `json:"metadata,omitzero"`
 	FrequencyPenalty    float64            `json:"frequency_penalty,omitzero"` // [-2.0, 2.0]
 	LogitBias           map[string]float64 `json:"logit_bias,omitzero"`
@@ -118,24 +120,100 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 		}
 		switch m.Type {
 		case genaiapi.Text:
+			c.Messages[i].Content = []Content{{Type: "text", Text: m.Text}}
+		case genaiapi.Document:
+			// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
+			if !m.Inline {
+				return fmt.Errorf("message %d: external document is not yet supported", i)
+			}
+			switch {
+			case strings.HasPrefix(m.MimeType, "image/"):
+				cnt := []Content{{Type: "image_url"}}
+				cnt[0].ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", m.MimeType, base64.StdEncoding.EncodeToString(m.Data))
+				c.Messages[i].Content = cnt
+			case m.MimeType == "audio/mpeg":
+				cnt := []Content{{Type: "input_audio"}}
+				cnt[0].InputAudio.Data = m.Data
+				cnt[0].InputAudio.Format = "mp3"
+				c.Messages[i].Content = cnt
+			case m.MimeType == "audio/wav":
+				cnt := []Content{{Type: "input_audio"}}
+				cnt[0].InputAudio.Data = m.Data
+				cnt[0].InputAudio.Format = "wav"
+				c.Messages[i].Content = cnt
+			default:
+				exts, err := mime.ExtensionsByType(m.MimeType)
+				if err != nil {
+					return fmt.Errorf("message %d: unsupported mime type %s: %w", i, m.MimeType, err)
+				}
+				if len(exts) == 0 {
+					return fmt.Errorf("message %d: unsupported mime type %s", i, m.MimeType)
+				}
+				cnt := []Content{{Type: "input_file"}}
+				cnt[0].Filename = "content" + exts[0]
+				cnt[0].FileData = m.Data
+				c.Messages[i].Content = cnt
+			}
 		default:
 			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
 		}
-		c.Messages[i].Content = m.Text
 	}
 	return nil
 }
 
 type Message struct {
-	Role    string `json:"role,omitzero"`
-	Content string `json:"content,omitzero"`
-	Name    string `json:"name,omitzero"`
-	Refusal string `json:"refusal,omitzero"`
+	Role    string   `json:"role,omitzero"`
+	Content Contents `json:"content,omitzero"`
+	Name    string   `json:"name,omitzero"`
+	Refusal string   `json:"refusal,omitzero"`
 	Audio   struct {
 		ID string `json:"id,omitzero"`
 	} `json:"audio,omitzero"`
-	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
-	ToolCallID string     `json:"tool_call_id,omitzero"`
+	ToolCalls   []ToolCall `json:"tool_calls,omitzero"`
+	ToolCallID  string     `json:"tool_call_id,omitzero"`
+	Annotations []struct{} `json:"annotations,omitzero"`
+}
+
+type Contents []Content
+
+// OpenAI replies with content as a string.
+func (c *Contents) UnmarshalJSON(data []byte) error {
+	var v []Content
+	if err := json.Unmarshal(data, &v); err != nil {
+		s := ""
+		if err = json.Unmarshal(data, &s); err != nil {
+			return err
+		}
+		*c = []Content{{Type: "text", Text: s}}
+		return nil
+	}
+	*c = Contents(v)
+	return nil
+}
+
+type Content struct {
+	Type string `json:"type,omitzero"` // "text", "image_url", "input_file", "input_audio"
+
+	// Type == "text"
+	Text string `json:"text,omitzero"`
+
+	// Type == "image_url"
+	ImageURL struct {
+		URL    string `json:"url,omitzero"`
+		Detail string `json:"detail,omitzero"` // "auto", "low", "high"
+	} `json:"image_url,omitzero"`
+
+	// Type == "input_audio"
+	InputAudio struct {
+		Data   []byte `json:"data,omitzero"`
+		Format string `json:"format,omitzero"` // "mp3", "wav"
+	} `json:"input_audio,omitzero"`
+
+	// Type == "input_file"
+	// Either FileID or both Filename and FileData.
+	FileID   string `json:"file_id,omitzero"`
+	Filename string `json:"filename,omitzero"`
+	FileData []byte `json:"file_data,omitzero"`
 }
 
 type ToolCall struct {
@@ -253,6 +331,10 @@ type Client struct {
 	Model string
 }
 
+// TODO: Upload files
+// https://platform.openai.com/docs/api-reference/uploads/create
+// TTL 1h
+
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
 	in := CompletionRequest{Model: c.Model}
 	if err := in.fromOpts(opts); err != nil {
@@ -268,7 +350,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	if len(out.Choices) != 1 {
 		return "", fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(out.Choices))
 	}
-	return out.Choices[0].Message.Content, nil
+	return out.Choices[0].Message.Content[0].Text, nil
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {

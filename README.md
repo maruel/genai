@@ -2,19 +2,20 @@
 
 The _high performance_ native Go client for LLMs.
 
-Implements support for:
-- Anthropic
-- Cerebras
-- Cloudflare Workers AI
-- Cohere
-- DeepSeek
-- Google's Gemini
-- Groq
-- HuggingFace
-- Mistral
-- OpenAI
-- Perplexity
-- llama.cpp
+| Provider | Chat | Streaming Chat | Image |
+| -------- | ---- | -------------- | ----- |
+| Anthropic | ✅ | ✅ | ✅ |
+| Cerebras | ✅ | ✅ | |
+| Cloudflare Workers AI | ✅ | ✅ | |
+| Cohere | ✅ | ✅ | |
+| DeepSeek | ✅ | ✅ | |
+| Google's Gemini | ✅ | ✅ | ✅ |
+| Groq | ✅ | ✅ | |
+| HuggingFace | ✅ | ✅ | |
+| Mistral | ✅ | ✅ | |
+| OpenAI | ✅ | ✅ | ✅ |
+| Perplexity | ✅ | ✅ | |
+| llama.cpp | ✅ | ✅ | |
 
 Features:
 

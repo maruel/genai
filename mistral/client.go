@@ -175,9 +175,9 @@ type CompletionResponse struct {
 		FinishReason string `json:"finish_reason"`
 		Index        int64  `json:"index"`
 		Message      struct {
-			Role      genaiapi.Role `json:"role"`
-			Content   string        `json:"content"`
-			Prefix    bool          `json:"prefix"`
+			Role      string `json:"role"`
+			Content   string `json:"content"`
+			Prefix    bool   `json:"prefix"`
 			ToolCalls []struct {
 				ID       string `json:"id"`
 				Type     string `json:"type"`
@@ -263,25 +263,35 @@ type Client struct {
 	Model string
 }
 
+// TODO:
 // https://codestral.mistral.ai/v1/fim/completions
 // https://codestral.mistral.ai/v1/chat/completions
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.Message, error) {
+	msg := genaiapi.Message{}
 	in := CompletionRequest{Model: c.Model}
 	if err := in.fromOpts(opts); err != nil {
-		return "", err
+		return msg, err
 	}
 	if err := in.fromMsgs(msgs); err != nil {
-		return "", err
+		return msg, err
 	}
 	out := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
-		return "", fmt.Errorf("failed to get chat response: %w", err)
+		return msg, fmt.Errorf("failed to get chat response: %w", err)
 	}
 	if len(out.Choices) != 1 {
-		return "", fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(out.Choices))
+		return msg, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(out.Choices))
 	}
-	return out.Choices[0].Message.Content, nil
+	msg.Type = genaiapi.Text
+	msg.Text = out.Choices[0].Message.Content
+	switch role := out.Choices[0].Message.Role; role {
+	case "system", "assistant", "user":
+		msg.Role = genaiapi.Role(role)
+	default:
+		return msg, fmt.Errorf("unsupported role %q", role)
+	}
+	return msg, nil
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {

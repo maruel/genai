@@ -33,8 +33,9 @@ func ExampleClient_Completion() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		if len(resp) < 2 || len(resp) > 100 {
-			log.Fatalf("Unexpected response: %s", resp)
+		txt := resp.Text
+		if len(txt) < 2 || len(txt) > 100 {
+			log.Fatalf("Unexpected response: %s", txt)
 		}
 	}
 	// Print something so the example runs.

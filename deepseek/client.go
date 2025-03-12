@@ -199,20 +199,31 @@ type Client struct {
 	Model string
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.Message, error) {
 	// https://api-docs.deepseek.com/api/create-chat-completion
+	msg := genaiapi.Message{}
 	in := CompletionRequest{Model: c.Model, Messages: make([]Message, 0, len(msgs))}
 	if err := in.fromOpts(opts); err != nil {
-		return "", err
+		return msg, err
 	}
 	if err := in.fromMsgs(msgs); err != nil {
-		return "", err
+		return msg, err
 	}
 	out := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
-		return "", err
+		return msg, err
 	}
-	return out.Choices[0].Message.Content, nil
+	msg.Type = genaiapi.Text
+	msg.Text = out.Choices[0].Message.Content
+	switch role := out.Choices[0].Message.Role; role {
+	case "system", "user":
+		msg.Role = genaiapi.Role(role)
+	case "assistant", "model":
+		msg.Role = genaiapi.Assistant
+	default:
+		return msg, fmt.Errorf("unsupported role %q", role)
+	}
+	return msg, nil
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {

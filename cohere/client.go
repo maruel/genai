@@ -270,20 +270,29 @@ type Client struct {
 	Model string
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.Message, error) {
 	// https://docs.cohere.com/reference/chat
+	msg := genaiapi.Message{}
 	in := CompletionRequest{Model: c.Model}
 	if err := in.fromOpts(opts); err != nil {
-		return "", err
+		return msg, err
 	}
 	if err := in.fromMsgs(msgs); err != nil {
-		return "", err
+		return msg, err
 	}
 	out := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
-		return "", fmt.Errorf("failed to get chat response: %w", err)
+		return msg, fmt.Errorf("failed to get chat response: %w", err)
 	}
-	return out.Message.Content[0].Text, nil
+	msg.Type = genaiapi.Text
+	msg.Text = out.Message.Content[0].Text
+	switch role := out.Message.Role; role {
+	case "system", "assistant", "user":
+		msg.Role = genaiapi.Role(role)
+	default:
+		return msg, fmt.Errorf("unsupported role %q", role)
+	}
+	return msg, nil
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {

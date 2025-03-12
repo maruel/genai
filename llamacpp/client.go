@@ -283,24 +283,28 @@ type Client struct {
 	Encoding *PromptEncoding
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.Message, error) {
 	// https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
+	msg := genaiapi.Message{}
 	in := CompletionRequest{CachePrompt: true}
 	if err := in.fromOpts(opts); err != nil {
-		return "", err
+		return msg, err
 	}
 	if err := c.initPrompt(ctx, &in, msgs); err != nil {
-		return "", err
+		return msg, err
 	}
 	out := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
-		return "", fmt.Errorf("failed to get llama server response: %w", err)
+		return msg, fmt.Errorf("failed to get llama server response: %w", err)
 	}
 	slog.DebugContext(ctx, "llm", "prompt tok", out.Timings.PromptN, "gen tok", out.Timings.PredictedN, "prompt tok/ms", out.Timings.PromptPerTokenMS, "gen tok/ms", out.Timings.PredictedPerTokenMS)
 	// Mistral Nemo really likes "▁".
-	return strings.ReplaceAll(out.Content, "\u2581", " "), nil
+	msg.Type = genaiapi.Text
+	msg.Text = strings.ReplaceAll(out.Content, "\u2581", " ")
+	msg.Role = genaiapi.Assistant
+	return msg, nil
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {

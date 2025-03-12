@@ -358,22 +358,35 @@ type Client struct {
 // https://platform.openai.com/docs/api-reference/uploads/create
 // TTL 1h
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.Message, error) {
+	msg := genaiapi.Message{}
 	in := CompletionRequest{Model: c.Model}
 	if err := in.fromOpts(opts); err != nil {
-		return "", err
+		return msg, err
 	}
 	if err := in.fromMsgs(msgs); err != nil {
-		return "", err
+		return msg, err
 	}
 	out := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
-		return "", fmt.Errorf("failed to get chat response: %w", err)
+		return msg, fmt.Errorf("failed to get chat response: %w", err)
 	}
 	if len(out.Choices) != 1 {
-		return "", fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(out.Choices))
+		return msg, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(out.Choices))
 	}
-	return out.Choices[0].Message.Content[0].Text, nil
+	msg.Type = genaiapi.Text
+	msg.Text = out.Choices[0].Message.Content[0].Text
+	switch role := out.Choices[0].Message.Role; role {
+	case "assistant", "model":
+		msg.Role = genaiapi.Assistant
+	case "developer":
+		msg.Role = genaiapi.System
+	case "user":
+		msg.Role = genaiapi.User
+	default:
+		return msg, fmt.Errorf("unsupported role %q", role)
+	}
+	return msg, nil
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {

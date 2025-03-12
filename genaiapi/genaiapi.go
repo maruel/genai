@@ -21,7 +21,7 @@ type CompletionOptions struct {
 
 // CompletionProvider is the generic interface to interact with a LLM backend.
 type CompletionProvider interface {
-	Completion(ctx context.Context, msgs []Message, opts any) (string, error)
+	Completion(ctx context.Context, msgs []Message, opts any) (Message, error)
 	CompletionStream(ctx context.Context, msgs []Message, opts any, words chan<- string) error
 }
 

@@ -76,16 +76,11 @@ func ExampleClient_Completion() {
 		}
 		if err != nil {
 			fmt.Printf("Got error %T: %s\n", err, err)
-		} else if len(resp) < 2 || len(resp) > 100 {
-			fmt.Printf("Unexpected response: %s\n", resp)
-		} else {
-			// Normalize some of the variance. Obviously many models will still fail this test.
-			resp = strings.TrimSpace(resp)
-			resp = strings.TrimRight(resp, ".")
-			resp = strings.ToLower(resp)
-			resp = strings.ReplaceAll(resp, "hello", "hi")
-			resp = strings.ReplaceAll(resp, "hey", "hi")
-			fmt.Printf("Response: %s\n", resp)
+			continue
+		}
+		txt := resp.Text
+		if len(txt) < 2 || len(txt) > 100 {
+			log.Fatalf("Unexpected response: %s", txt)
 		}
 		break
 	}

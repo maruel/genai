@@ -523,27 +523,38 @@ func (c *Client) cacheContent(ctx context.Context, data []byte, mime, systemInst
 }
 */
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (string, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.Message, error) {
+	msg := genaiapi.Message{}
 	in := CompletionRequest{}
 	if err := in.fromOpts(opts); err != nil {
-		return "", err
+		return msg, err
 	}
 	sp, err := in.fromMsgs(msgs)
 	if err != nil {
-		return "", err
+		return msg, err
 	}
 	if sp != "" {
 		in.SystemInstruction.Parts = []Part{{Text: sp}}
 	}
 	out := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
-		return "", err
+		return msg, err
 	}
 	if len(out.Candidates) != 1 {
-		return "", fmt.Errorf("unexpected number of candidates; expected 1, got %v", out.Candidates)
+		return msg, fmt.Errorf("unexpected number of candidates; expected 1, got %v", out.Candidates)
 	}
 	parts := out.Candidates[0].Content.Parts
-	return parts[len(parts)-1].Text, nil
+	msg.Type = genaiapi.Text
+	msg.Text = parts[len(parts)-1].Text
+	switch role := out.Candidates[0].Content.Role; role {
+	case "system", "user":
+		msg.Role = genaiapi.Role(role)
+	case "model":
+		msg.Role = genaiapi.Assistant
+	default:
+		return msg, fmt.Errorf("unsupported role %q", role)
+	}
+	return msg, nil
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {

@@ -39,8 +39,8 @@ type CompletionRequest struct {
 		Mode string `json:"mode,omitzero"` // "fast", "accurate", "off"; default "fast"
 	} `json:"citation_options,omitzero"`
 	ResponseFormat struct {
-		Type       string     `json:"type,omitzero"` // "text", "json_object"
-		JSONSchema JSONSchema `json:"json_schema,omitzero"`
+		Type       string              `json:"type,omitzero"` // "text", "json_object"
+		JSONSchema genaiapi.JSONSchema `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	SafetyMode       string   `json:"safety_mode,omitzero"` // "CONTEXTUAL", "STRICT", "OFF"
 	MaxTokens        int64    `json:"max_tokens,omitzero"`
@@ -63,6 +63,12 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 			c.MaxTokens = v.MaxTokens
 			c.Seed = v.Seed
 			c.Temperature = v.Temperature
+			if v.ReplyAsJSON {
+				c.ResponseFormat.Type = "json_object"
+			}
+			if !v.JSONSchema.IsZero() {
+				return errors.New("to be implemented")
+			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
 		}
@@ -156,8 +162,6 @@ type Document struct {
 		Data map[string]any `json:"data,omitzero"`
 	} `json:"document,omitzero"`
 }
-
-type JSONSchema any
 
 type CompletionResponse struct {
 	ID           string `json:"id"`

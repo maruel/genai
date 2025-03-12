@@ -8,9 +8,11 @@ import (
 	"bytes"
 	"context"
 	_ "embed"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/genai/groq"
@@ -38,21 +40,34 @@ func ExampleClient_Completion() {
 			{
 				Role: genaiapi.User,
 				Type: genaiapi.Text,
-				Text: "Is it a banana? Reply with only one word.",
+				Text: "Is it a banana? Reply as JSON with the form {\"banana\": false} or {\"banana\": true}.",
 			},
 		}
-		resp, err := c.Completion(context.Background(), msgs, &genaiapi.CompletionOptions{})
+		opts := genaiapi.CompletionOptions{
+			Seed:        1,
+			Temperature: 0.01,
+			MaxTokens:   50,
+			ReplyAsJSON: true,
+		}
+		resp, err := c.Completion(context.Background(), msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}
-		txt := resp.Text
-		if len(txt) < 2 || len(txt) > 100 {
-			log.Fatalf("Unexpected response: %s", txt)
+		log.Printf("Response: %#v", resp)
+		var expected struct {
+			Banana bool `json:"banana"`
 		}
+		d := json.NewDecoder(strings.NewReader(resp.Text))
+		d.DisallowUnknownFields()
+		if err := d.Decode(&expected); err != nil {
+			log.Fatalf("Failed to decode JSON: %v", err)
+		}
+		fmt.Printf("Banana: %v\n", expected.Banana)
+	} else {
+		// Print something so the example runs.
+		fmt.Println("Banana: true")
 	}
-	// Print something so the example runs.
-	fmt.Println("Hello, world!")
-	// Output: Hello, world!
+	// Output: Banana: true
 }
 
 func ExampleClient_CompletionStream() {

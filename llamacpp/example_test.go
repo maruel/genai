@@ -58,7 +58,11 @@ func ExampleClient_Completion() {
 			Text: "Say hello. Use only one word.",
 		},
 	}
-	opts := genaiapi.CompletionOptions{Seed: 1}
+	opts := genaiapi.CompletionOptions{
+		Seed:        1,
+		Temperature: 0.01,
+		MaxTokens:   50,
+	}
 	for {
 		select {
 		case <-done:
@@ -78,6 +82,7 @@ func ExampleClient_Completion() {
 			fmt.Printf("Got error %T: %s\n", err, err)
 			continue
 		}
+		log.Printf("Response: %#v", resp)
 		txt := resp.Text
 		if len(txt) < 2 || len(txt) > 100 {
 			log.Fatalf("Unexpected response: %s", txt)

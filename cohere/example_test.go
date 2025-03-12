@@ -6,9 +6,11 @@ package cohere_test
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/maruel/genai/cohere"
 	"github.com/maruel/genai/genaiapi"
@@ -28,21 +30,34 @@ func ExampleClient_Completion() {
 			{
 				Role: genaiapi.User,
 				Type: genaiapi.Text,
-				Text: "Say hello. Use only one word.",
+				Text: "Is a circle round? Reply as JSON with the form {\"round\": false} or {\"round\": true}.",
 			},
 		}
-		resp, err := c.Completion(context.Background(), msgs, &genaiapi.CompletionOptions{})
+		opts := genaiapi.CompletionOptions{
+			Seed:        1,
+			Temperature: 0.01,
+			MaxTokens:   50,
+			ReplyAsJSON: true,
+		}
+		resp, err := c.Completion(context.Background(), msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}
-		txt := resp.Text
-		if len(txt) < 2 || len(txt) > 100 {
-			log.Fatalf("Unexpected response: %s", txt)
+		log.Printf("Response: %#v", resp)
+		var expected struct {
+			Round bool `json:"round"`
 		}
+		d := json.NewDecoder(strings.NewReader(resp.Text))
+		d.DisallowUnknownFields()
+		if err := d.Decode(&expected); err != nil {
+			log.Fatalf("Failed to decode JSON: %v", err)
+		}
+		fmt.Printf("Round: %v\n", expected.Round)
+	} else {
+		// Print something so the example runs.
+		fmt.Println("Round: true")
 	}
-	// Print something so the example runs.
-	fmt.Println("Hello, world!")
-	// Output: Hello, world!
+	// Output: Round: true
 }
 
 func ExampleClient_CompletionStream() {

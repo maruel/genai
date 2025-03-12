@@ -28,25 +28,23 @@ import (
 
 // https://developers.cloudflare.com/api/resources/ai/methods/run/
 type CompletionRequest struct {
-	Messages          []Message      `json:"messages"`
-	FrequencyPenalty  float64        `json:"frequency_penalty,omitzero"` // [0, 2.0]
-	MaxTokens         int64          `json:"max_tokens,omitzero"`
-	PresencePenalty   float64        `json:"presence_penalty,omitzero"`   // [0, 2.0]
-	RepetitionPenalty float64        `json:"repetition_penalty,omitzero"` // [0, 2.0]
-	ResponseFormat    ResponseFormat `json:"response_format,omitzero"`
-	Seed              int64          `json:"seed,omitzero"`
-	Stream            bool           `json:"stream,omitzero"`
-	Temperature       float64        `json:"temperature,omitzero"` // [0, 5]
-	Tools             []Tool         `json:"tools,omitzero"`       // Can be ToolFunction or ToolParameter
-	TopK              int64          `json:"top_k,omitzero"`       // [1, 50]
-	TopP              float64        `json:"top_p,omitzero"`       // [0, 2.0]
+	Messages          []Message `json:"messages"`
+	FrequencyPenalty  float64   `json:"frequency_penalty,omitzero"` // [0, 2.0]
+	MaxTokens         int64     `json:"max_tokens,omitzero"`
+	PresencePenalty   float64   `json:"presence_penalty,omitzero"`   // [0, 2.0]
+	RepetitionPenalty float64   `json:"repetition_penalty,omitzero"` // [0, 2.0]
+	ResponseFormat    struct {
+		Type       string              `json:"type,omitzero"` // json_object, json_schema
+		JSONSchema genaiapi.JSONSchema `json:"json_schema,omitzero"`
+	} `json:"response_format,omitzero"`
+	Seed        int64   `json:"seed,omitzero"`
+	Stream      bool    `json:"stream,omitzero"`
+	Temperature float64 `json:"temperature,omitzero"` // [0, 5]
+	Tools       []Tool  `json:"tools,omitzero"`       // Can be ToolFunction or ToolParameter
+	TopK        int64   `json:"top_k,omitzero"`       // [1, 50]
+	TopP        float64 `json:"top_p,omitzero"`       // [0, 2.0]
 
 	// Functions         []function     `json:"functions,omitzero"`
-}
-
-type ResponseFormat struct {
-	JSONSchema any    `json:"json_schema,omitzero"`
-	Type       string `json:"type,omitzero"` // json_object, json_schema
 }
 
 type Message struct {
@@ -76,7 +74,8 @@ type ToolParameter struct {
 	Type        string `json:"type"`
 }
 
-/* Maybe later
+/*
+Maybe later
 
 type function struct {
 	Code string `json:"code"`
@@ -84,19 +83,22 @@ type function struct {
 }
 
 type prompt struct {
-	Prompt            string         `json:"prompt"`
-	FrequencyPenalty  float64        `json:"frequency_penalty,omitzero"` // [0, 2.0]
-	Lora              string         `json:"lora,omitzero"`
-	MaxTokens         int64          `json:"max_tokens,omitzero"`
-	PresencePenalty   float64        `json:"presence_penalty,omitzero"`   // [0, 2.0]
-	Raw               bool           `json:"raw,omitzero"`                // Do not aply chat template
-	RepetitionPenalty float64        `json:"repetition_penalty,omitzero"` // [0, 2.0]
-	ResponseFormat    ResponseFormat `json:"response_format,omitzero"`
-	Seed              int64          `json:"seed,omitzero"`
-	Stream            bool           `json:"stream,omitzero"`
-	Temperature       float64        `json:"temperature,omitzero"` // [0, 5]
-	TopK              int64          `json:"top_k,omitzero"`       // [1, 50]
-	TopP              float64        `json:"top_p,omitzero"`       // [0, 2.0]
+	Prompt            string  `json:"prompt"`
+	FrequencyPenalty  float64 `json:"frequency_penalty,omitzero"` // [0, 2.0]
+	Lora              string  `json:"lora,omitzero"`
+	MaxTokens         int64   `json:"max_tokens,omitzero"`
+	PresencePenalty   float64 `json:"presence_penalty,omitzero"`   // [0, 2.0]
+	Raw               bool    `json:"raw,omitzero"`                // Do not aply chat template
+	RepetitionPenalty float64 `json:"repetition_penalty,omitzero"` // [0, 2.0]
+	ResponseFormat    struct {
+		Type       string              `json:"type,omitzero"` // json_object, json_schema
+		JSONSchema genaiapi.JSONSchema `json:"json_schema,omitzero"`
+	} `json:"response_format,omitzero"`
+	Seed        int64   `json:"seed,omitzero"`
+	Stream      bool    `json:"stream,omitzero"`
+	Temperature float64 `json:"temperature,omitzero"` // [0, 5]
+	TopK        int64   `json:"top_k,omitzero"`       // [1, 50]
+	TopP        float64 `json:"top_p,omitzero"`       // [0, 2.0]
 }
 
 type textClassification struct {
@@ -173,6 +175,12 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 			c.MaxTokens = v.MaxTokens
 			c.Seed = v.Seed
 			c.Temperature = v.Temperature
+			if v.ReplyAsJSON {
+				c.ResponseFormat.Type = "json_object"
+			}
+			if !v.JSONSchema.IsZero() {
+				return errors.New("to be implemented")
+			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
 		}

@@ -63,6 +63,12 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 			if v.Seed != 0 {
 				return errors.New("seed is not supported")
 			}
+			if v.ReplyAsJSON {
+				c.ResponseFormat.Type = "json_object"
+			}
+			if !v.JSONSchema.IsZero() {
+				return errors.New("deepseek doesn't support JSON schema")
+			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
 		}
@@ -108,13 +114,11 @@ type Message struct {
 type Tool struct {
 	Type     string `json:"type"` // "function"
 	Function struct {
-		Name        string     `json:"name,omitzero"`
-		Description string     `json:"description,omitzero"`
-		Parameters  JSONSchema `json:"parameters,omitzero"`
+		Name        string              `json:"name,omitzero"`
+		Description string              `json:"description,omitzero"`
+		Parameters  genaiapi.JSONSchema `json:"parameters,omitzero"`
 	} `json:"function"`
 }
-
-type JSONSchema any
 
 type CompletionResponse struct {
 	ID      string `json:"id"`

@@ -2,20 +2,24 @@
 
 The _high performance_ native Go client for LLMs.
 
-| Provider | Chat | Streaming Chat | Vision |
-| -------- | ---- | -------------- | ----------- |
-| Anthropic | ✅ | ✅ | ✅ |
-| Cerebras | ✅ | ✅ | |
-| Cloudflare Workers AI | ✅ | ✅ | |
-| Cohere | ✅ | ✅ | |
-| DeepSeek | ✅ | ✅ | |
-| Google's Gemini | ✅ | ✅ | ✅ |
-| Groq | ✅ | ✅ | ✅ |
-| HuggingFace | ✅ | ✅ | |
-| Mistral | ✅ | ✅ | ✅ |
-| OpenAI | ✅ | ✅ | ✅ |
-| Perplexity | ✅ | ✅ | |
-| llama.cpp | ✅ | ✅ | |
+| Provider        | Chat | Streaming Chat | Vision | JSON output | Deterministic Seed |
+| --------------- | ---- | -------------- | ------ | ----------- | ------------------ |
+| Anthropic       | ✅   | ✅             | ✅     | ❌          | ❌                 |
+| Cerebras        | ✅   | ✅             | ❌     | ✅          | ✅                 |
+| Cloudflare Workers AI | ✅ | ✅         | ⏳     | ✅          | ✅                 |
+| Cohere          | ✅   | ✅             | ⏳     | ✅          | ✅                 |
+| DeepSeek        | ✅   | ✅             | ❌     | ✅          | ❌                 |
+| Google's Gemini | ✅   | ✅             | ✅     | ⏳          | ✅                 |
+| Groq            | ✅   | ✅             | ✅     | ✅          | ✅                 |
+| HuggingFace     | ✅   | ✅             |        | ⏳          | ✅                 |
+| Mistral         | ✅   | ✅             | ✅     | ✅          | ✅                 |
+| OpenAI          | ✅   | ✅             | ✅     | ✅          | ✅                 |
+| Perplexity      | ✅   | ✅             | ❌     | ⏳          | ❌                 |
+| llama.cpp       | ✅   | ✅             | ⏳     | ⏳          | ✅                 |
+
+- ✅ Implemented
+- ⏳ To be implemented
+- ❌ Not supported
 
 Features:
 

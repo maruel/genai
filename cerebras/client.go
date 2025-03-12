@@ -26,20 +26,24 @@ import (
 
 // https://inference-docs.cerebras.ai/api-reference/chat-completions
 type CompletionRequest struct {
-	Model               string         `json:"model"`
-	Messages            []Message      `json:"messages"`
-	MaxCompletionTokens int64          `json:"max_completion_tokens,omitzero"`
-	ResponseFormat      ResponseFormat `json:"response_format,omitzero"`
-	Seed                int64          `json:"seed,omitzero"`
-	Stop                []string       `json:"stop,omitzero"`
-	Stream              bool           `json:"stream,omitzero"`
-	Temperature         float64        `json:"temperature,omitzero"`
-	TopP                float64        `json:"top_p,omitzero"` // [0, 1.0]
-	ToolChoice          string         `json:"tool_choice,omitzero"`
-	Tools               Tools          `json:"tools,omitzero"`
-	User                string         `json:"user,omitzero"`
-	Logprobs            bool           `json:"logprobs,omitzero"`
-	TopLogprobs         int64          `json:"top_logprobs,omitzero"` // [0, 20]
+	Model               string    `json:"model"`
+	Messages            []Message `json:"messages"`
+	MaxCompletionTokens int64     `json:"max_completion_tokens,omitzero"`
+	ResponseFormat      struct {
+		// https://inference-docs.cerebras.ai/capabilities/structured-outputs
+		Type       string              `json:"type"` // "json_object", "json_schema"
+		JSONSchema genaiapi.JSONSchema `json:"json_schema,omitzero"`
+	} `json:"response_format,omitzero"`
+	Seed        int64    `json:"seed,omitzero"`
+	Stop        []string `json:"stop,omitzero"`
+	Stream      bool     `json:"stream,omitzero"`
+	Temperature float64  `json:"temperature,omitzero"`
+	TopP        float64  `json:"top_p,omitzero"` // [0, 1.0]
+	ToolChoice  string   `json:"tool_choice,omitzero"`
+	Tools       []Tool   `json:"tools,omitzero"`
+	User        string   `json:"user,omitzero"`
+	Logprobs    bool     `json:"logprobs,omitzero"`
+	TopLogprobs int64    `json:"top_logprobs,omitzero"` // [0, 20]
 }
 
 func (c *CompletionRequest) fromOpts(opts any) error {
@@ -48,8 +52,12 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 		case *genaiapi.CompletionOptions:
 			c.MaxCompletionTokens = v.MaxTokens
 			c.Temperature = v.Temperature
-			if v.Seed != 0 {
-				return errors.New("cerebras doesn't support seed")
+			c.Seed = v.Seed
+			if v.ReplyAsJSON {
+				c.ResponseFormat.Type = "json_object"
+			}
+			if !v.JSONSchema.IsZero() {
+				return errors.New("to be implemented")
 			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
@@ -89,26 +97,14 @@ type Message struct {
 	Content string `json:"content"`
 }
 
-// https://inference-docs.cerebras.ai/capabilities/structured-outputs
-type ResponseFormat struct {
-	JSONSchema struct {
-		Name   string     `json:"name,omitzero"`
-		Strict bool       `json:"strict,omitzero"`
-		Schema JSONSchema `json:"schema,omitzero"`
-	} `json:"json_schema,omitzero"`
-}
-
-type Tools struct {
+type Tool struct {
 	Function struct {
-		Description string     `json:"description"`
-		Name        string     `json:"name"`
-		Parameters  JSONSchema `json:"parameters"`
-		Type        string     `json:"type"` // function
+		Description string              `json:"description"`
+		Name        string              `json:"name"`
+		Parameters  genaiapi.JSONSchema `json:"parameters"`
+		Type        string              `json:"type"` // function
 	} `json:"function"`
 }
-
-// TODO
-type JSONSchema any
 
 type CompletionResponse struct {
 	ID                string `json:"id"`

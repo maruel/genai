@@ -63,10 +63,10 @@ type CompletionRequest struct {
 	ResponseFormat  struct {
 		Type       string `json:"type,omitzero"` // "text", "json_object", "json_schema"
 		JSONSchema struct {
-			Description string     `json:"description,omitzero"`
-			Name        string     `json:"name,omitzero"`
-			Schema      JSONSchema `json:"schema,omitzero"`
-			Strict      bool       `json:"strict,omitzero"`
+			Description string              `json:"description,omitzero"`
+			Name        string              `json:"name,omitzero"`
+			Schema      genaiapi.JSONSchema `json:"schema,omitzero"`
+			Strict      bool                `json:"strict,omitzero"`
 		} `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	ServiceTier   string   `json:"service_tier,omitzero"` // "auto", "default"
@@ -96,6 +96,12 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 			c.MaxTokens = v.MaxTokens
 			c.Seed = v.Seed
 			c.Temperature = v.Temperature
+			if v.ReplyAsJSON {
+				c.ResponseFormat.Type = "json_object"
+			}
+			if !v.JSONSchema.IsZero() {
+				return errors.New("to be implemented")
+			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
 		}
@@ -257,8 +263,6 @@ type Tool struct {
 		Strict      bool           `json:"strict,omitzero"`
 	} `json:"function,omitzero"`
 }
-
-type JSONSchema any
 
 // CompletionResponse is documented at
 // https://platform.openai.com/docs/api-reference/chat/object

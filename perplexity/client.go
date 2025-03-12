@@ -39,8 +39,18 @@ type CompletionRequest struct {
 	Stream                 bool      `json:"stream"`
 	PresencePenalty        float64   `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
 	FrequencyPenalty       float64   `json:"frequency_penalty,omitzero"`
-	// Only available in higher tiers, see https://docs.perplexity.ai/guides/usage-tiers
-	ResponseFormat JSONSchema `json:"response_format,omitzero"`
+	// Only available in higher tiers, see
+	// https://docs.perplexity.ai/guides/usage-tiers and
+	// https://docs.perplexity.ai/guides/structured-outputs
+	ResponseFormat struct {
+		Type       string `json:"type,omitzero"` // "json_schema", "regex"
+		JSONSchema struct {
+			Schema genaiapi.JSONSchema `json:"schema,omitzero"`
+		} `json:"json_schema,omitzero"`
+		Regex struct {
+			Regex string `json:"regex,omitzero"`
+		} `json:"regex,omitzero"`
+	} `json:"response_format,omitzero"`
 }
 
 func (c *CompletionRequest) fromOpts(opts any) error {
@@ -51,6 +61,9 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 			c.Temperature = v.Temperature
 			if v.Seed != 0 {
 				return errors.New("perplexity doesn't support seed")
+			}
+			if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
+				return errors.New("to be implemented")
 			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
@@ -89,8 +102,6 @@ type Message struct {
 	Role    genaiapi.Role `json:"role"`
 	Content string        `json:"content"`
 }
-
-type JSONSchema any
 
 type CompletionResponse struct {
 	ID        string   `json:"id"`

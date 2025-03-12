@@ -56,6 +56,9 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 		c.MaxTokens = v.MaxTokens
 		c.Seed = v.Seed
 		c.Temperature = v.Temperature
+		if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
+			return errors.New("to be implemented")
+		}
 	default:
 		return fmt.Errorf("unsupported options type %T", opts)
 	}

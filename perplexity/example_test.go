@@ -29,10 +29,15 @@ func ExampleClient_Completion() {
 				Text: "Say hello. Use only one word.",
 			},
 		}
-		resp, err := c.Completion(context.Background(), msgs, &genaiapi.CompletionOptions{})
+		opts := genaiapi.CompletionOptions{
+			Temperature: 0.01,
+			MaxTokens:   50,
+		}
+		resp, err := c.Completion(context.Background(), msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}
+		log.Printf("Response: %#v", resp)
 		txt := resp.Text
 		if len(txt) < 2 || len(txt) > 100 {
 			log.Fatalf("Unexpected response: %s", txt)

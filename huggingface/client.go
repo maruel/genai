@@ -42,7 +42,7 @@ type CompletionRequest struct {
 		Type string `json:"type"` // "json", "regex"
 		// Type == "regexp": a regex string.
 		// Type == "json": a JSONSchema.
-		Value JSONSchema `json:"value"`
+		Value genaiapi.JSONSchema `json:"value"`
 	} `json:"response_format,omitzero"`
 	Seed          int64    `json:"seed,omitzero"`
 	Stop          []string `json:"stop,omitzero"`
@@ -72,6 +72,9 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 			c.MaxTokens = v.MaxTokens
 			c.Seed = v.Seed
 			c.Temperature = v.Temperature
+			if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
+				return errors.New("to be implemented")
+			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
 		}
@@ -150,8 +153,6 @@ type Function struct {
 	Description string   `json:"description,omitzero"`
 	Arguments   []string `json:"arguments,omitzero"`
 }
-
-type JSONSchema any
 
 type CompletionResponse struct {
 	Object            string `json:"object"`

@@ -12,25 +12,41 @@ import (
 	"io"
 )
 
-// CompletionOptions is a list of frequent options supported by most CompletionProvider.
+// CompletionOptions is a list of frequent options supported by most
+// CompletionProvider. Each provider is free to support more options through a
+// specialized struct.
 type CompletionOptions struct {
-	Seed        int64   // Seed for the random number generator. Default is 0 which means non-deterministic.
-	Temperature float64 // Temperature of the sampling.
-	MaxTokens   int64   // Maximum number of tokens to generate.
+	Seed        int64      // Seed for the random number generator. Default is 0 which means non-deterministic.
+	Temperature float64    // Temperature of the sampling.
+	MaxTokens   int64      // Maximum number of tokens to generate.
+	ReplyAsJSON bool       // If true, the output is JSON. If false, the output is text. It is important to tell the model to reply in JSON.
+	JSONSchema  JSONSchema // Enforces a reply JSON format. Not all providers support this.
+
+	_ struct{}
 }
 
 // CompletionProvider is the generic interface to interact with a LLM backend.
 type CompletionProvider interface {
+	// Completion runs completion synchronously.
+	//
+	// opts must be either nil, *CompletionOptions or a provider-specialized
+	// option struct.
 	Completion(ctx context.Context, msgs []Message, opts any) (Message, error)
+	// CompletionStream runs completion synchronously, streaming the results to channel words.
+	//
+	// opts must be either nil, *CompletionOptions or a provider-specialized
+	// option struct.
 	CompletionStream(ctx context.Context, msgs []Message, opts any, words chan<- string) error
 }
 
+// Model represents a served model by the provider.
 type Model interface {
 	GetID() string
 	String() string
 	Context() int64
 }
 
+// ModelProvider represents a provider that can list models.
 type ModelProvider interface {
 	ListModels(ctx context.Context) ([]Model, error)
 }
@@ -76,6 +92,8 @@ type Message struct {
 	Document io.ReadSeeker
 	// URL is the reference to the raw data. When set, the mime-type is derived from the URL.
 	URL string
+
+	_ struct{}
 }
 
 // Validate ensures the message is valid.
@@ -127,4 +145,47 @@ func (m Message) Validate() error {
 		return fmt.Errorf("field Type %q is not supported", m.Type)
 	}
 	return nil
+}
+
+// JSONSchema is a minimalist representation of a normalized JSON schema to be
+// used to force the LLM to return a specific JSON schema.
+//
+// It doesn't implement dependentSchemas, patternProperties,
+// additionalProperties, unevaluatedProperties, allOf, nor if/then/else.
+type JSONSchema struct {
+	Type string `json:"type,omitzero"` // "object", "array", "string", "integer", "number", "boolean", "null" or empty for enum.
+
+	// Type == "object"
+	Properties    map[string]JSONSchema `json:"properties,omitzero"`
+	Required      []string              `json:"required,omitzero"`
+	MinProperties int64                 `json:"minProperties,omitzero"`
+	MaxProperties int64                 `json:"maxProperties,omitzero"`
+
+	// Type == "array"
+	Items *JSONSchema `json:"items,omitzero"`
+
+	// Type == "string", "integer", "boolean"
+	Description string `json:"description,omitzero"`
+
+	// Type == "string"
+	Pattern   string `json:"pattern,omitzero"` // regexp
+	MinLength int64  `json:"minLength,omitzero"`
+	MaxLength int64  `json:"maxLength,omitzero"`
+
+	// Type == "integer", "number"
+	// TODO: This is strictly incorrect. It should be a union of int64 and
+	// float64 and they should be pointers.
+	Minimum          int64 `json:"minimum,omitzero"`
+	ExclusiveMinimum int64 `json:"exclusiveMinimum,omitzero"`
+	Maximum          int64 `json:"maximum,omitzero"`
+	ExclusiveMaximum int64 `json:"exclusiveMaximum,omitzero"`
+	MultipleOf       int64 `json:"multipleOf,omitzero"`
+
+	Enum []any `json:"enum,omitzero"`
+
+	_ struct{}
+}
+
+func (j *JSONSchema) IsZero() bool {
+	return j.Type == "" && len(j.Enum) == 0
 }

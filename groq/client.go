@@ -73,6 +73,12 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 			c.MaxCompletionTokens = v.MaxTokens
 			c.Seed = v.Seed
 			c.Temperature = v.Temperature
+			if v.ReplyAsJSON {
+				c.ResponseFormat.Type = "json_object"
+			}
+			if !v.JSONSchema.IsZero() {
+				return errors.New("groq doesn't support JSONSchema")
+			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
 		}

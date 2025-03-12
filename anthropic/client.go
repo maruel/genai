@@ -113,6 +113,9 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 			if v.Seed != 0 {
 				return errors.New("seed is not supported")
 			}
+			if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
+				return errors.New("anthropic doesn't support JSON schema")
+			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
 		}
@@ -227,8 +230,8 @@ type ToolChoice struct {
 type Tool struct {
 	Type string `json:"type,omitzero"` // "custom", "computer_20241022", "computer_20250124", "bash_20241022", "bash_20250124", "text_editor_20241022", "text_editor_20250124"
 	// Type == "custom"
-	Description string     `json:"description,omitzero"`
-	InputSchema JSONSchema `json:"input_schema,omitzero"`
+	Description string              `json:"description,omitzero"`
+	InputSchema genaiapi.JSONSchema `json:"input_schema,omitzero"`
 
 	// Type == "custom": tool name
 	// Type == "computer_20241022", "computer_20250124": "computer"
@@ -245,12 +248,6 @@ type Tool struct {
 	DisplayNumber   int64 `json:"display_number,omitzero"`
 	DisplayHeightPX int64 `json:"display_height_px,omitzero"`
 	DisplayWidthPX  int64 `json:"display_width_px,omitzero"`
-}
-
-// TODO
-type JSONSchema struct {
-	Type       string         `json:"type"` // "object"
-	Properties map[string]any `json:"properties"`
 }
 
 type CompletionResponse struct {

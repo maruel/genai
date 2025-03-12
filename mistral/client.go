@@ -39,13 +39,10 @@ type CompletionRequest struct {
 	ResponseFormat struct {
 		Type       string `json:"type,omitzero"` // "text", "json_object", "json_schema"
 		JSONSchema struct {
-			Name        string `json:"name,omitzero"`
-			Description string `json:"description,omitzero"`
-			Strict      bool   `json:"strict,omitzero"`
-			Schema      struct {
-				// JSONSchema.
-				Property string `json:"property,omitzero"`
-			} `json:"schema,omitzero"`
+			Name        string              `json:"name,omitzero"`
+			Description string              `json:"description,omitzero"`
+			Strict      bool                `json:"strict,omitzero"`
+			Schema      genaiapi.JSONSchema `json:"schema,omitzero"`
 		} `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	Tools []Tool `json:"tools,omitzero"`
@@ -79,6 +76,12 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 			c.MaxTokens = v.MaxTokens
 			c.RandomSeed = v.Seed
 			c.Temperature = v.Temperature
+			if v.ReplyAsJSON {
+				c.ResponseFormat.Type = "json_object"
+			}
+			if !v.JSONSchema.IsZero() {
+				return errors.New("to be implemented")
+			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
 		}

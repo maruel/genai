@@ -360,10 +360,6 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	}
 }
 
-func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, content []byte) (string, error) {
-	return "", errors.New("not implemented")
-}
-
 type Model struct {
 	ID          string `json:"id"`
 	Source      int64  `json:"source"`

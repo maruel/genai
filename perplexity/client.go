@@ -263,10 +263,6 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	}
 }
 
-func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, content []byte) (string, error) {
-	return "", errors.New("not implemented")
-}
-
 func (c *Client) validate() error {
 	if c.ApiKey == "" {
 		return errors.New("perplexity ApiKey is required; get one at " + apiKeyURL)

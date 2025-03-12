@@ -376,13 +376,6 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	}
 }
 
-func (c *Client) CompletionContent(ctx context.Context, msgs []genaiapi.Message, opts any, mime string, content []byte) (string, error) {
-	if err := c.validate(true); err != nil {
-		return "", err
-	}
-	return "", errors.New("not implemented")
-}
-
 type Time int64
 
 func (t *Time) AsTime() time.Time {

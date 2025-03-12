@@ -25,9 +25,9 @@ import (
 )
 
 func Example_modelProvider() {
-	// Pro-tip: Using os.Stderr so if you modify this file and append a "//
-	// Output: foo" at the end of this function, "go test" will run the code and
-	// stream the output to you.
+	// Pro-tip: Using os.Stderr so if you modify this file and append a "// Output: foo"
+	// at the end of this function, "go test" will run the code and stream the
+	// output to you.
 
 	// Notably missing: "llamacpp" and "perplexity".
 	providers := map[string]genaiapi.ModelProvider{
@@ -58,9 +58,9 @@ func Example_modelProvider() {
 }
 
 func Example_completionProvider() {
-	// Pro-tip: Using os.Stderr so if you modify this file and append a "//
-	// Output: foo" at the end of this function, "go test" will run the code and
-	// stream the output to you.
+	// Pro-tip: Using os.Stderr so if you modify this file and append a "// Output: foo"
+	// at the end of this function, "go test" will run the code and stream the
+	// output to you.
 
 	providers := map[string]genaiapi.CompletionProvider{
 		"anthropic": &anthropic.Client{

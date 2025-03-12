@@ -3,4 +3,6 @@
 // that can be found in the LICENSE file.
 
 // Package genai is the high performance native Go client for LLMs.
+//
+// Check out the examples for a quick start.
 package genai

@@ -105,15 +105,17 @@ type CompletionRequest struct {
 }
 
 func (c *CompletionRequest) fromOpts(opts any) error {
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		c.MaxToks = v.MaxTokens
-		c.Temperature = v.Temperature
-		if v.Seed != 0 {
-			return errors.New("seed is not supported")
+	if opts != nil {
+		switch v := opts.(type) {
+		case *genaiapi.CompletionOptions:
+			c.MaxToks = v.MaxTokens
+			c.Temperature = v.Temperature
+			if v.Seed != 0 {
+				return errors.New("seed is not supported")
+			}
+		default:
+			return fmt.Errorf("unsupported options type %T", opts)
 		}
-	default:
-		return fmt.Errorf("unsupported options type %T", opts)
 	}
 	if c.MaxToks == 0 {
 		// TODO: Query the model. Anthropic requires a value! Use the lowest common denominator for 3.5+.

@@ -44,15 +44,17 @@ type CompletionRequest struct {
 }
 
 func (c *CompletionRequest) fromOpts(opts any) error {
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		c.MaxTokens = v.MaxTokens
-		c.Temperature = v.Temperature
-		if v.Seed != 0 {
-			return errors.New("perplexity doesn't support seed")
+	if opts != nil {
+		switch v := opts.(type) {
+		case *genaiapi.CompletionOptions:
+			c.MaxTokens = v.MaxTokens
+			c.Temperature = v.Temperature
+			if v.Seed != 0 {
+				return errors.New("perplexity doesn't support seed")
+			}
+		default:
+			return fmt.Errorf("unsupported options type %T", opts)
 		}
-	default:
-		return fmt.Errorf("unsupported options type %T", opts)
 	}
 	return nil
 }

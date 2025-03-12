@@ -167,13 +167,15 @@ type imageToText struct {
 */
 
 func (c *CompletionRequest) fromOpts(opts any) error {
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		c.MaxTokens = v.MaxTokens
-		c.Seed = v.Seed
-		c.Temperature = v.Temperature
-	default:
-		return fmt.Errorf("unsupported options type %T", opts)
+	if opts != nil {
+		switch v := opts.(type) {
+		case *genaiapi.CompletionOptions:
+			c.MaxTokens = v.MaxTokens
+			c.Seed = v.Seed
+			c.Temperature = v.Temperature
+		default:
+			return fmt.Errorf("unsupported options type %T", opts)
+		}
 	}
 	return nil
 }

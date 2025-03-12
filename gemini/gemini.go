@@ -193,15 +193,17 @@ type CompletionRequest struct {
 }
 
 func (c *CompletionRequest) fromOpts(opts any) error {
-	// This doesn't seem to be well supported yet:
-	//    in.GenerationConfig.ResponseLogprobs = true
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		c.GenerationConfig.MaxOutputTokens = v.MaxTokens
-		c.GenerationConfig.Temperature = v.Temperature
-		c.GenerationConfig.Seed = v.Seed
-	default:
-		return fmt.Errorf("unsupported options type %T", opts)
+	if opts != nil {
+		// This doesn't seem to be well supported yet:
+		//    in.GenerationConfig.ResponseLogprobs = true
+		switch v := opts.(type) {
+		case *genaiapi.CompletionOptions:
+			c.GenerationConfig.MaxOutputTokens = v.MaxTokens
+			c.GenerationConfig.Temperature = v.Temperature
+			c.GenerationConfig.Seed = v.Seed
+		default:
+			return fmt.Errorf("unsupported options type %T", opts)
+		}
 	}
 	return nil
 }

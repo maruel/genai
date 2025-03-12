@@ -24,6 +24,7 @@ import (
 	"time"
 
 	"github.com/maruel/genai/genaiapi"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
 )
 
@@ -145,23 +146,38 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 			msg.Content[0].Type = "text"
 			msg.Content[0].Text = m.Text
 		case genaiapi.Document:
-			if !m.Inline {
-				return fmt.Errorf("message %d: external document is not yet supported", i)
+			mimeType, data, err := internal.ParseDocument(&m, 10*1024*1024)
+			if err != nil {
+				return fmt.Errorf("message %d: %w", i, err)
+			}
+			// Anthropic require a mime-type to determine if image or PDF.
+			if mimeType == "" {
+				return fmt.Errorf("message %d: unspecified mime type for URL %q", i, m.URL)
 			}
 			msg.Content[0].CacheControl.Type = "ephemeral"
 			switch {
-			case strings.HasPrefix(m.MimeType, "image/"):
+			case strings.HasPrefix(mimeType, "image/"):
 				msg.Content[0].Type = "image"
-				msg.Content[0].Source.MediaType = m.MimeType
-				msg.Content[0].Source.Type = "base64"
-				msg.Content[0].Source.Data = m.Data
-			case m.MimeType == "application/pdf":
+				if m.URL != "" {
+					msg.Content[0].Source.Type = "url"
+					msg.Content[0].Source.URL = m.URL
+				} else {
+					msg.Content[0].Source.MediaType = mimeType
+					msg.Content[0].Source.Type = "base64"
+					msg.Content[0].Source.Data = data
+				}
+			case mimeType == "application/pdf":
 				msg.Content[0].Type = "document"
-				msg.Content[0].Source.MediaType = m.MimeType
-				msg.Content[0].Source.Type = "base64"
-				msg.Content[0].Source.Data = m.Data
+				if m.URL != "" {
+					msg.Content[0].Source.Type = "url"
+					msg.Content[0].Source.URL = m.URL
+				} else {
+					msg.Content[0].Source.MediaType = mimeType
+					msg.Content[0].Source.Type = "base64"
+					msg.Content[0].Source.Data = data
+				}
 			default:
-				return fmt.Errorf("message %d: unsupported content mime-type %s", i, m.MimeType)
+				return fmt.Errorf("message %d: unsupported content mime-type %s", i, mimeType)
 			}
 		default:
 			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)

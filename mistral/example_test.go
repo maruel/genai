@@ -5,6 +5,7 @@
 package mistral_test
 
 import (
+	"bytes"
 	"context"
 	_ "embed"
 	"fmt"
@@ -18,23 +19,19 @@ import (
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
 
-var (
-	key = os.Getenv("MISTRAL_API_KEY")
-	// Using very small model for testing.
-	// See https://docs.mistral.ai/getting-started/models/models_overview/
-	model = "ministral-3b-latest"
-)
+var key = os.Getenv("MISTRAL_API_KEY")
 
 func ExampleClient_Completion() {
 	if key != "" {
-		c := mistral.Client{ApiKey: key, Model: model}
+		// Require a model which has the "vision" capability.
+		c := mistral.Client{ApiKey: key, Model: "pixtral-12b-2409"}
 		msgs := []genaiapi.Message{
 			{
 				Role:     genaiapi.User,
 				Type:     genaiapi.Document,
-				Inline:   true,
-				MimeType: "image/jpeg",
-				Data:     bananaJpg,
+				Filename: "banana.jpg",
+				// Mistral supports highly compressed jpg.
+				Document: bytes.NewReader(bananaJpg),
 			},
 			{
 				Role: genaiapi.User,
@@ -57,7 +54,9 @@ func ExampleClient_Completion() {
 
 func ExampleClient_CompletionStream() {
 	if key != "" {
-		c := mistral.Client{ApiKey: key, Model: model}
+		// Using very small model for testing.
+		// See https://docs.mistral.ai/getting-started/models/models_overview/
+		c := mistral.Client{ApiKey: key, Model: "ministral-3b-latest"}
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
 			{

@@ -5,6 +5,7 @@
 package groq_test
 
 import (
+	"bytes"
 	"context"
 	_ "embed"
 	"fmt"
@@ -29,11 +30,10 @@ func ExampleClient_Completion() {
 			{
 				Role:     genaiapi.User,
 				Type:     genaiapi.Document,
-				Inline:   true,
-				MimeType: "image/jpeg",
-				// Groq requires higher quality image than Gemini. See
+				Filename: "banana.jpg",
+				// Groq requires higher quality image than Gemini or Mistral. See
 				// ../gemini/testdata/banana.jpg to compare.
-				Data: bananaJpg,
+				Document: bytes.NewReader(bananaJpg),
 			},
 			{
 				Role: genaiapi.User,

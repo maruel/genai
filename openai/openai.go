@@ -25,6 +25,7 @@ import (
 	"time"
 
 	"github.com/maruel/genai/genaiapi"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
 )
 
@@ -125,32 +126,54 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 			c.Messages[i].Content[0].Text = m.Text
 		case genaiapi.Document:
 			// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
-			if !m.Inline {
-				return fmt.Errorf("message %d: external document is not yet supported", i)
+			mimeType, data, err := internal.ParseDocument(&m, 10*1024*1024)
+			if err != nil {
+				return fmt.Errorf("message %d: %w", i, err)
+			}
+			// OpenAI require a mime-type to determine if image, sound or PDF.
+			if mimeType == "" {
+				return fmt.Errorf("message %d: unspecified mime type for URL %q", i, m.URL)
 			}
 			switch {
-			case strings.HasPrefix(m.MimeType, "image/"):
+			case strings.HasPrefix(mimeType, "image/"):
 				c.Messages[i].Content[0].Type = "image_url"
-				c.Messages[i].Content[0].ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", m.MimeType, base64.StdEncoding.EncodeToString(m.Data))
-			case m.MimeType == "audio/mpeg":
+				if m.URL == "" {
+					c.Messages[i].Content[0].ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+				} else {
+					c.Messages[i].Content[0].ImageURL.URL = m.URL
+				}
+			case mimeType == "audio/mpeg":
+				if m.URL != "" {
+					return fmt.Errorf("message %d: URL to audio file not supported", i)
+				}
 				c.Messages[i].Content[0].Type = "input_audio"
-				c.Messages[i].Content[0].InputAudio.Data = m.Data
+				c.Messages[i].Content[0].InputAudio.Data = data
 				c.Messages[i].Content[0].InputAudio.Format = "mp3"
-			case m.MimeType == "audio/wav":
+			case mimeType == "audio/wav":
+				if m.URL != "" {
+					return fmt.Errorf("message %d: URL to audio file not supported", i)
+				}
 				c.Messages[i].Content[0].Type = "input_audio"
-				c.Messages[i].Content[0].InputAudio.Data = m.Data
+				c.Messages[i].Content[0].InputAudio.Data = data
 				c.Messages[i].Content[0].InputAudio.Format = "wav"
 			default:
-				exts, err := mime.ExtensionsByType(m.MimeType)
-				if err != nil {
-					return fmt.Errorf("message %d: unsupported mime type %s: %w", i, m.MimeType, err)
+				if m.URL != "" {
+					return fmt.Errorf("message %d: URL to %s file not supported", i, mimeType)
 				}
-				if len(exts) == 0 {
-					return fmt.Errorf("message %d: unsupported mime type %s", i, m.MimeType)
+				filename := m.Filename
+				if filename == "" {
+					exts, err := mime.ExtensionsByType(mimeType)
+					if err != nil {
+						return fmt.Errorf("message %d: %w", i, err)
+					}
+					if len(exts) == 0 {
+						return fmt.Errorf("message %d: unknown extension for mime type %s", i, mimeType)
+					}
+					filename = "content" + exts[0]
 				}
 				c.Messages[i].Content[0].Type = "input_file"
-				c.Messages[i].Content[0].Filename = "content" + exts[0]
-				c.Messages[i].Content[0].FileData = m.Data
+				c.Messages[i].Content[0].Filename = filename
+				c.Messages[i].Content[0].FileData = data
 			}
 		default:
 			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)

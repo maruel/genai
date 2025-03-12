@@ -5,6 +5,7 @@
 package gemini_test
 
 import (
+	"bytes"
 	"context"
 	_ "embed"
 	"fmt"
@@ -30,11 +31,11 @@ func ExampleClient_Completion() {
 		c := gemini.Client{ApiKey: key, Model: model}
 		msgs := []genaiapi.Message{
 			{
-				Role:     genaiapi.User,
-				Type:     genaiapi.Document,
-				Inline:   true,
-				MimeType: "image/jpeg",
-				Data:     bananaJpg,
+				Role: genaiapi.User,
+				Type: genaiapi.Document,
+				// Gemini supports highly compressed jpg.
+				Filename: "banana.jpg",
+				Document: bytes.NewReader(bananaJpg),
 			},
 			{
 				Role: genaiapi.User,

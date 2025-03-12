@@ -5,6 +5,7 @@
 package genaiapi
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -34,8 +35,8 @@ func TestMessage_Validate(t *testing.T) {
 			message: Message{
 				Role:     User,
 				Type:     Document,
-				Data:     []byte("document content"),
-				MimeType: "text/plain",
+				Filename: "document.txt",
+				Document: strings.NewReader("document content"),
 			},
 		},
 		{
@@ -75,8 +76,8 @@ func TestMessage_Validate_Error(t *testing.T) {
 			message: Message{
 				Role:     System,
 				Type:     Document,
-				Data:     []byte("data"),
-				MimeType: "application/pdf",
+				Filename: "document.txt",
+				Document: strings.NewReader("document content"),
 			},
 			errMsg: "field Role is system but Type is not text",
 		},
@@ -123,34 +124,34 @@ func TestMessage_Validate_Error(t *testing.T) {
 			errMsg: "field Type is text but no text is provided",
 		},
 		{
-			name: "Text type with invalid Inline flag",
-			message: Message{
-				Role:   User,
-				Type:   Text,
-				Text:   "Content",
-				Inline: true,
-			},
-			errMsg: "field Inline is not supported for text",
-		},
-		{
-			name: "Text type with invalid Data",
-			message: Message{
-				Role: User,
-				Type: Text,
-				Text: "Content",
-				Data: []byte("data"),
-			},
-			errMsg: "field Data is not supported for text",
-		},
-		{
-			name: "Text type with invalid MimeType",
+			name: "Text type with invalid Filename flag",
 			message: Message{
 				Role:     User,
 				Type:     Text,
 				Text:     "Content",
-				MimeType: "text/plain",
+				Filename: "document.txt",
 			},
-			errMsg: "field MimeType is not supported for text",
+			errMsg: "field Filename is not supported for text",
+		},
+		{
+			name: "Text type with invalid Document",
+			message: Message{
+				Role:     User,
+				Type:     Text,
+				Text:     "Content",
+				Document: strings.NewReader("document content"),
+			},
+			errMsg: "field Document is not supported for text",
+		},
+		{
+			name: "Text type with invalid MimeType",
+			message: Message{
+				Role: User,
+				Type: Text,
+				Text: "Content",
+				URL:  "http://localhost",
+			},
+			errMsg: "field URL is not supported for text",
 		},
 		{
 			name: "Document type with invalid Text",
@@ -158,35 +159,46 @@ func TestMessage_Validate_Error(t *testing.T) {
 				Role:     User,
 				Type:     Document,
 				Text:     "Content",
-				Data:     []byte("data"),
-				MimeType: "text/plain",
+				Filename: "document.txt",
+				Document: strings.NewReader("document content"),
 			},
 			errMsg: "field Type is document but text is provided",
 		},
 		{
-			name: "Document type without Data",
+			name: "Document type without Document",
 			message: Message{
 				Role:     User,
 				Type:     Document,
-				MimeType: "text/plain",
+				Filename: "document.txt",
 			},
-			errMsg: "field Data is required",
+			errMsg: "field Document or URL is required",
 		},
 		{
-			name: "Document type without MimeType",
+			name: "Document type without Filename",
 			message: Message{
-				Role: User,
-				Type: Document,
-				Data: []byte("data"),
+				Role:     User,
+				Type:     Document,
+				Document: strings.NewReader("document content"),
 			},
-			errMsg: "field MimeType is required",
+			errMsg: "field Filename is required with Document",
+		},
+		{
+			name: "Document type with URL",
+			message: Message{
+				Role:     User,
+				Type:     Document,
+				Filename: "document.txt",
+				Document: strings.NewReader("document content"),
+				URL:      "http://localhost",
+			},
+			errMsg: "field Document and URL are mutually exclusive",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := tt.message.Validate()
 			if err == nil || err.Error() != tt.errMsg {
-				t.Fatalf("expected error %q, got %v", tt.errMsg, err)
+				t.Fatalf("expected error %q, got %q", tt.errMsg, err.Error())
 			}
 		})
 	}

@@ -20,11 +20,14 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
+	"mime"
 	"net/http"
+	"path"
 	"strings"
 	"unicode"
 
 	"github.com/maruel/genai/genaiapi"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
 )
 
@@ -231,19 +234,27 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) (string, error) {
 		case genaiapi.Text:
 			cont.Parts[0].Text = m.Text
 		case genaiapi.Document:
-			if !m.Inline {
-				return "", fmt.Errorf("message %d: external document is not yet supported", i)
-			}
-			if len(m.Data) >= 20*1024*1024 {
+			mimeType := ""
+			var data []byte
+			if m.URL == "" {
 				// If more than 20MB, we need to use
 				// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#large-pdfs-urls
 				// cacheName, err := c.cacheContent(ctx, context, mime, sp)
 				// When using cached content, system instruction, tools or tool_config cannot be used. Weird.
 				// in.CachedContent = cacheName
-				return "", fmt.Errorf("message %d: document is too large; to be implemented later", i)
+				var err error
+				if mimeType, data, err = internal.ParseDocument(&m, 10*1024*1024); err != nil {
+					return "", fmt.Errorf("message %d: %w", i, err)
+				}
+				cont.Parts[0].InlineData.MimeType = mimeType
+				cont.Parts[0].InlineData.Data = data
+			} else {
+				if mimeType = mime.TypeByExtension(path.Base(m.URL)); mimeType == "" {
+					return "", fmt.Errorf("message %d: unsupported mime type for URL %q", i, m.URL)
+				}
+				cont.Parts[0].FileData.MimeType = mimeType
+				cont.Parts[0].FileData.FileURI = m.URL
 			}
-			cont.Parts[0].InlineData.MimeType = m.MimeType
-			cont.Parts[0].InlineData.Data = m.Data
 		default:
 			return "", fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
 		}

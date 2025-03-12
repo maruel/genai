@@ -5,6 +5,7 @@
 package openai_test
 
 import (
+	"bytes"
 	"context"
 	_ "embed"
 	"fmt"
@@ -32,11 +33,10 @@ func ExampleClient_Completion() {
 			{
 				Role:     genaiapi.User,
 				Type:     genaiapi.Document,
-				Inline:   true,
-				MimeType: "image/jpeg",
-				// OpenAI requires higher quality image than Gemini. See
+				Filename: "banana.jpg",
+				// OpenAI requires higher quality image than Gemini or Mistral. See
 				// ../gemini/testdata/banana.jpg to compare.
-				Data: bananaJpg,
+				Document: bytes.NewReader(bananaJpg),
 			},
 			{
 				Role: genaiapi.User,

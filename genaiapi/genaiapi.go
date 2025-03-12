@@ -9,6 +9,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 )
 
 // CompletionOptions is a list of frequent options supported by most CompletionProvider.
@@ -65,13 +66,16 @@ type Message struct {
 	// Text is the content of the text message.
 	Text string
 
-	// Type == "document"
-	// Inline determines if the data is embedded in the message or externally referenced.
-	Inline bool
-	// Data is raw document data.
-	Data []byte
-	// MimeType is the MIME type of the data if relevant.
-	MimeType string
+	// Type == "document". In this case, one of Document or URL must be set.
+	// Filename is the name of the file. For many providers, only the extension
+	// is relevant. They only use mime-type, which is derived from the filename's
+	// extension. When an URL is provided, Filename is optional.
+	Filename string
+	// Document is raw document data. It is perfectly fine to use a
+	// bytes.Buffer{}, bytes.NewReader() or *os.File.
+	Document io.ReadSeeker
+	// URL is the reference to the raw data. When set, the mime-type is derived from the URL.
+	URL string
 }
 
 // Validate ensures the message is valid.
@@ -92,24 +96,30 @@ func (m Message) Validate() error {
 		if m.Text == "" {
 			return errors.New("field Type is text but no text is provided")
 		}
-		if m.Inline {
-			return errors.New("field Inline is not supported for text")
+		if m.Filename != "" {
+			return errors.New("field Filename is not supported for text")
 		}
-		if len(m.Data) != 0 {
-			return errors.New("field Data is not supported for text")
+		if m.Document != nil {
+			return errors.New("field Document is not supported for text")
 		}
-		if m.MimeType != "" {
-			return errors.New("field MimeType is not supported for text")
+		if m.URL != "" {
+			return errors.New("field URL is not supported for text")
 		}
 	case Document:
 		if m.Text != "" {
 			return errors.New("field Type is document but text is provided")
 		}
-		if len(m.Data) == 0 {
-			return errors.New("field Data is required")
-		}
-		if m.MimeType == "" {
-			return errors.New("field MimeType is required")
+		if m.Document == nil {
+			if m.URL == "" {
+				return errors.New("field Document or URL is required")
+			}
+		} else {
+			if m.URL != "" {
+				return errors.New("field Document and URL are mutually exclusive")
+			}
+			if m.Filename == "" {
+				return errors.New("field Filename is required with Document")
+			}
 		}
 	case "":
 		return errors.New("field Type is required")

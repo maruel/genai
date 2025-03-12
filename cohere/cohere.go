@@ -24,6 +24,7 @@ import (
 	"strings"
 
 	"github.com/maruel/genai/genaiapi"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
 )
 
@@ -90,16 +91,21 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 			c.Messages[i].Content[0].Text = m.Text
 		case genaiapi.Document:
 			// Currently fails with: http 400: error: invalid request: all elements in history must have a message
-			// TODO: Investigate one day.
-			if !m.Inline {
-				return fmt.Errorf("message %d: external document is not yet supported", i)
+			// TODO: Investigate one day. Maybe because trial key.
+			mimeType, data, err := internal.ParseDocument(&m, 10*1024*1024)
+			if err != nil {
+				return fmt.Errorf("message %d: %w", i, err)
 			}
 			switch {
-			case strings.HasPrefix(m.MimeType, "image/"):
+			case (m.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
 				c.Messages[i].Content[0].Type = "image_url"
-				c.Messages[i].Content[0].ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", m.MimeType, base64.StdEncoding.EncodeToString(m.Data))
+				if m.URL != "" {
+					c.Messages[i].Content[0].ImageURL.URL = m.URL
+				} else {
+					c.Messages[i].Content[0].ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+				}
 			default:
-				return fmt.Errorf("message %d: unsupported mime type %s", i, m.MimeType)
+				return fmt.Errorf("message %d: unsupported mime type %s", i, mimeType)
 			}
 		default:
 			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
@@ -360,7 +366,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 				fallback.translateTo(&msg)
 			}
 			out <- msg
-		case bytes.Equal(line, []byte(": keep-alive")):
+		case string(line) == ": keep-alive":
 		case bytes.HasPrefix(line, []byte("event:")):
 			// Ignore for now.
 		default:

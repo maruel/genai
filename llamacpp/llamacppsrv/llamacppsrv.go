@@ -179,7 +179,8 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 		if err == nil {
 			// This is tricky because in the case of image generation, we may want to
 			// run on the CPU instead.
-			zipname = "llama-" + build + "-bin-win-cuda-cu12.2.0-x64.zip"
+			// TODO: We'll have to list the files on GH to determine the cuda version to get the exact filename. :(
+			zipname = "llama-" + build + "-bin-win-cuda-cu12.4-x64.zip"
 		} else if cpu.X86.HasAVX512BF16 {
 			zipname = "llama-" + build + "-bin-win-avx512-x64.zip"
 		} else if cpu.X86.HasAVX2 {
@@ -187,7 +188,7 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 		} else {
 			zipname = "llama-" + build + "-bin-win-avx-x64.zip"
 		}
-		wantedFiles = append(wantedFiles, "ggml.dll", "llama.dll")
+		wantedFiles = append(wantedFiles, "*.dll")
 	}
 	zippath := filepath.Join(cache, zipname)
 	if err := downloadFile(ctx, url+zipname, zippath); err != nil {

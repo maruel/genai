@@ -85,6 +85,9 @@ func Example() {
 		MaxTokens:   50,
 	}
 	resp, err := c.Completion(ctx, msgs, &opts)
+	if err != nil {
+		log.Fatal(err)
+	}
 	// Normalize some of the variance. Obviously many models will still fail this test.
 	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Text)), ".!")
 	fmt.Printf("Response: %s\n", txt)

@@ -19,19 +19,17 @@ import (
 var (
 	accountID = os.Getenv("CLOUDFLARE_ACCOUNT_ID")
 	key       = os.Getenv("CLOUDFLARE_API_KEY")
-	// Using very small model for testing.
-	// See
-	model = "@cf/meta/llama-3.2-3b-instruct"
 )
 
 func ExampleClient_Completion() {
 	if accountID != "" && key != "" {
-		c := cloudflare.Client{AccountID: accountID, ApiKey: key, Model: model}
+		// We need to use a model that supports structured output.
+		c := cloudflare.Client{AccountID: accountID, ApiKey: key, Model: "@hf/nousresearch/hermes-2-pro-mistral-7b"}
 		msgs := []genaiapi.Message{
 			{
 				Role: genaiapi.User,
 				Type: genaiapi.Text,
-				Text: "Is a circle round? Reply as JSON with the form {\"round\": false} or {\"round\": true}.",
+				Text: "Is a circle round? Reply as JSON.",
 			},
 		}
 		opts := genaiapi.CompletionOptions{
@@ -39,6 +37,15 @@ func ExampleClient_Completion() {
 			Temperature: 0.01,
 			MaxTokens:   50,
 			ReplyAsJSON: true,
+			JSONSchema: genaiapi.JSONSchema{
+				Type: "object",
+				Properties: map[string]genaiapi.JSONSchema{
+					"round": {
+						Type: "boolean",
+					},
+				},
+				Required: []string{"round"},
+			},
 		}
 		resp, err := c.Completion(context.Background(), msgs, &opts)
 		if err != nil {
@@ -63,7 +70,9 @@ func ExampleClient_Completion() {
 
 func ExampleClient_CompletionStream() {
 	if accountID != "" && key != "" {
-		c := cloudflare.Client{AccountID: accountID, ApiKey: key, Model: model}
+		// Using very small model for testing.
+		// See https://developers.cloudflare.com/workers-ai/models/
+		c := cloudflare.Client{AccountID: accountID, ApiKey: key, Model: "@cf/meta/llama-3.2-3b-instruct"}
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
 			{

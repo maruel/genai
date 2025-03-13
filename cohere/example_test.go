@@ -18,19 +18,18 @@ import (
 
 var (
 	key = os.Getenv("COHERE_API_KEY")
-	// Using very small model for testing.
-	// See https://docs.cohere.com/v2/docs/models
-	model = "command-r7b-12-2024"
 )
 
 func ExampleClient_Completion() {
 	if key != "" {
-		c := cohere.Client{ApiKey: key, Model: model}
+		// https://docs.cohere.com/v2/docs/structured-outputs
+		// We need to use a model that supports structured output.
+		c := cohere.Client{ApiKey: key, Model: "command-r-08-2024"}
 		msgs := []genaiapi.Message{
 			{
 				Role: genaiapi.User,
 				Type: genaiapi.Text,
-				Text: "Is a circle round? Reply as JSON with the form {\"round\": false} or {\"round\": true}.",
+				Text: "Is a circle round? Reply as JSON.",
 			},
 		}
 		opts := genaiapi.CompletionOptions{
@@ -38,6 +37,15 @@ func ExampleClient_Completion() {
 			Temperature: 0.01,
 			MaxTokens:   50,
 			ReplyAsJSON: true,
+			JSONSchema: genaiapi.JSONSchema{
+				Type: "object",
+				Properties: map[string]genaiapi.JSONSchema{
+					"round": {
+						Type: "boolean",
+					},
+				},
+				Required: []string{"round"},
+			},
 		}
 		resp, err := c.Completion(context.Background(), msgs, &opts)
 		if err != nil {
@@ -62,7 +70,9 @@ func ExampleClient_Completion() {
 
 func ExampleClient_CompletionStream() {
 	if key != "" {
-		c := cohere.Client{ApiKey: key, Model: model}
+		// Using very small model for testing.
+		// See https://docs.cohere.com/v2/docs/models
+		c := cohere.Client{ApiKey: key, Model: "command-r7b-12-2024"}
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
 			{

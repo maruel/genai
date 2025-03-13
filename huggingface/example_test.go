@@ -15,10 +15,7 @@ import (
 	"github.com/maruel/genai/huggingface"
 )
 
-// Using very small model for testing.
-// See https://huggingface.co/models?inference=warm&sort=trending
 var (
-	model     = "meta-llama/Llama-3.2-1B-Instruct"
 	shouldRun = func() bool {
 		h, err := os.UserHomeDir()
 		if err != nil {
@@ -32,7 +29,9 @@ var (
 
 func ExampleClient_Completion() {
 	if shouldRun {
-		c := huggingface.Client{Model: model}
+		// See https://huggingface.co/models?inference=warm&sort=trending
+		// Eventually use one that supports structured output.
+		c := huggingface.Client{Model: "meta-llama/Llama-3.2-1B-Instruct"}
 		msgs := []genaiapi.Message{
 			{
 				Role: genaiapi.User,
@@ -62,7 +61,9 @@ func ExampleClient_Completion() {
 
 func ExampleClient_CompletionStream() {
 	if shouldRun {
-		c := huggingface.Client{Model: model}
+		// Using very small model for testing.
+		// See https://huggingface.co/models?inference=warm&sort=trending
+		c := huggingface.Client{Model: "meta-llama/Llama-3.2-1B-Instruct"}
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
 			{

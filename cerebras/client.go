@@ -31,8 +31,12 @@ type CompletionRequest struct {
 	MaxCompletionTokens int64     `json:"max_completion_tokens,omitzero"`
 	ResponseFormat      struct {
 		// https://inference-docs.cerebras.ai/capabilities/structured-outputs
-		Type       string              `json:"type"` // "json_object", "json_schema"
-		JSONSchema genaiapi.JSONSchema `json:"json_schema,omitzero"`
+		Type       string `json:"type"` // "json_object", "json_schema"
+		JSONSchema struct {
+			Name   string              `json:"name"`
+			Schema genaiapi.JSONSchema `json:"schema"`
+			Strict bool                `json:"strict"`
+		} `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	Seed        int64    `json:"seed,omitzero"`
 	Stop        []string `json:"stop,omitzero"`
@@ -57,7 +61,10 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 				c.ResponseFormat.Type = "json_object"
 			}
 			if !v.JSONSchema.IsZero() {
-				return errors.New("to be implemented")
+				c.ResponseFormat.Type = "json_schema"
+				// Cerebras will fail if additonalProperties is present, even if false.
+				c.ResponseFormat.JSONSchema.Schema = v.JSONSchema
+				c.ResponseFormat.JSONSchema.Strict = true
 			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
@@ -167,8 +174,15 @@ func (t *Time) AsTime() time.Time {
 
 //
 
-type errorResponse struct {
+type errorResponse1 struct {
 	Detail string `json:"detail"`
+}
+
+type errorResponse2 struct {
+	Message string `json:"message"`
+	Type    string `json:"type"`
+	Param   string `json:"param"`
+	Code    string `json:"code"`
 }
 
 type Client struct {
@@ -273,11 +287,11 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 			d := json.NewDecoder(bytes.NewReader(line))
 			d.DisallowUnknownFields()
 			d.UseNumber()
-			er := errorResponse{}
-			if err = d.Decode(&er); err != nil {
+			er1 := errorResponse1{}
+			if err = d.Decode(&er1); err != nil {
 				return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
 			}
-			return fmt.Errorf("server error: %s", er.Detail)
+			return fmt.Errorf("server error: %s", er1.Detail)
 		}
 		suffix := string(line[len(dataPrefix):])
 		d := json.NewDecoder(strings.NewReader(suffix))
@@ -349,19 +363,29 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	if err != nil {
 		return err
 	}
-	er := errorResponse{}
-	switch i, err := httpjson.DecodeResponse(resp, out, &er); i {
+	er1 := errorResponse1{}
+	er2 := errorResponse2{}
+	switch i, err := httpjson.DecodeResponse(resp, out, &er1, &er2); i {
 	case 0:
 		return nil
 	case 1:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
 			if herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: error: %s. You can get a new API key at %s", herr, er.Detail, apiKeyURL)
+				return fmt.Errorf("%w: error: %s. You can get a new API key at %s", herr, er1.Detail, apiKeyURL)
 			}
-			return fmt.Errorf("%w: error: %s", herr, er.Detail)
+			return fmt.Errorf("%w: error: %s", herr, er1.Detail)
 		}
-		return fmt.Errorf("error: %s", er.Detail)
+		return fmt.Errorf("error: %s", er1.Detail)
+	case 2:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			if herr.StatusCode == http.StatusUnauthorized {
+				return fmt.Errorf("%w: error: %s/%s/%s: %s. You can get a new API key at %s", herr, er2.Type, er2.Param, er2.Code, er2.Message, apiKeyURL)
+			}
+			return fmt.Errorf("%w: error: %s/%s/%s: %s", herr, er2.Type, er2.Param, er2.Code, er2.Message)
+		}
+		return fmt.Errorf("error: %s/%s/%s: %s", er2.Type, er2.Param, er2.Code, er2.Message)
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {

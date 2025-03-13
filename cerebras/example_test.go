@@ -28,7 +28,7 @@ func ExampleClient_Completion() {
 			{
 				Role: genaiapi.User,
 				Type: genaiapi.Text,
-				Text: "Is a circle round? Reply as JSON with the form {\"round\": false} or {\"round\": true}.",
+				Text: "Is a circle round? Reply as JSON.",
 			},
 		}
 		opts := genaiapi.CompletionOptions{
@@ -36,6 +36,15 @@ func ExampleClient_Completion() {
 			Temperature: 0.01,
 			MaxTokens:   50,
 			ReplyAsJSON: true,
+			JSONSchema: genaiapi.JSONSchema{
+				Type: "object",
+				Properties: map[string]genaiapi.JSONSchema{
+					"round": {
+						Type: "boolean",
+					},
+				},
+				Required: []string{"round"},
+			},
 		}
 		resp, err := c.Completion(context.Background(), msgs, &opts)
 		if err != nil {

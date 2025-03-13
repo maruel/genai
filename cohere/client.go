@@ -67,7 +67,8 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 				c.ResponseFormat.Type = "json_object"
 			}
 			if !v.JSONSchema.IsZero() {
-				return errors.New("to be implemented")
+				c.ResponseFormat.Type = "json_schema"
+				c.ResponseFormat.JSONSchema = v.JSONSchema
 			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)

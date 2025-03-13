@@ -62,7 +62,11 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 			if v.Seed != 0 {
 				return errors.New("perplexity doesn't support seed")
 			}
-			if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
+			if v.ReplyAsJSON && !v.JSONSchema.IsZero() {
+				// Doesn't seem to work in practice.
+				c.ResponseFormat.Type = "json_schema"
+				c.ResponseFormat.JSONSchema.Schema = v.JSONSchema
+			} else if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
 				return errors.New("to be implemented")
 			}
 		default:

@@ -179,7 +179,8 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 				c.ResponseFormat.Type = "json_object"
 			}
 			if !v.JSONSchema.IsZero() {
-				return errors.New("to be implemented")
+				c.ResponseFormat.Type = "json_schema"
+				c.ResponseFormat.JSONSchema = v.JSONSchema
 			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
@@ -216,7 +217,8 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 
 type CompletionResponse struct {
 	Result struct {
-		Response  string `json:"response"`
+		// Normally a string, or an object if response_format.type == "json_schema".
+		Response  any `json:"response"`
 		ToolCalls []struct {
 			Arguments []string `json:"arguments"`
 			Name      string   `json:"name"`
@@ -276,8 +278,23 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
 		return msg, fmt.Errorf("failed to get chat response: %w", err)
 	}
-	msg.Type = genaiapi.Text
-	msg.Text = out.Result.Response
+	switch v := out.Result.Response.(type) {
+	case string:
+		msg.Type = genaiapi.Text
+		msg.Text = v
+	default:
+		if in.ResponseFormat.Type == "json_schema" {
+			// Marshal back into JSON for now.
+			b, err := json.Marshal(v)
+			if err != nil {
+				return msg, fmt.Errorf("failed to JSON marshal type %T: %v: %w", v, v, err)
+			}
+			msg.Type = genaiapi.Text
+			msg.Text = string(b)
+		} else {
+			return msg, fmt.Errorf("unexpected type %T: %v", v, v)
+		}
+	}
 	msg.Role = genaiapi.Assistant
 	return msg, nil
 }

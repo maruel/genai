@@ -63,10 +63,10 @@ type CompletionRequest struct {
 	ResponseFormat  struct {
 		Type       string `json:"type,omitzero"` // "text", "json_object", "json_schema"
 		JSONSchema struct {
-			Description string              `json:"description,omitzero"`
-			Name        string              `json:"name,omitzero"`
-			Schema      genaiapi.JSONSchema `json:"schema,omitzero"`
-			Strict      bool                `json:"strict,omitzero"`
+			Description string         `json:"description,omitzero"`
+			Name        string         `json:"name,omitzero"`
+			Schema      map[string]any `json:"schema,omitzero"`
+			Strict      bool           `json:"strict,omitzero"`
 		} `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	ServiceTier   string   `json:"service_tier,omitzero"` // "auto", "default"
@@ -100,7 +100,20 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 				c.ResponseFormat.Type = "json_object"
 			}
 			if !v.JSONSchema.IsZero() {
-				return errors.New("to be implemented")
+				c.ResponseFormat.Type = "json_schema"
+				// OpenAI requires a name.
+				c.ResponseFormat.JSONSchema.Name = "response"
+				c.ResponseFormat.JSONSchema.Strict = true
+				// OpenAI strictly enforce valid schema.
+				// OpenAI requires "additionalProperties": false. Hack this for now in the most horrible way.
+				b, err := json.Marshal(v.JSONSchema)
+				if err != nil {
+					return fmt.Errorf("failed to encode JSONSchema: %w", err)
+				}
+				if err := json.Unmarshal(b, &c.ResponseFormat.JSONSchema.Schema); err != nil {
+					return fmt.Errorf("failed to decode JSONSchema: %w", err)
+				}
+				c.ResponseFormat.JSONSchema.Schema["additionalProperties"] = false
 			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)

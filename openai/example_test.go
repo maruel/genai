@@ -43,7 +43,7 @@ func ExampleClient_Completion() {
 			{
 				Role: genaiapi.User,
 				Type: genaiapi.Text,
-				Text: "Is it a banana? Reply as JSON with the form {\"banana\": false} or {\"banana\": true}.",
+				Text: "Is it a banana? Reply as JSON.",
 			},
 		}
 		opts := genaiapi.CompletionOptions{
@@ -51,6 +51,15 @@ func ExampleClient_Completion() {
 			Temperature: 0.01,
 			MaxTokens:   50,
 			ReplyAsJSON: true,
+			JSONSchema: genaiapi.JSONSchema{
+				Type: "object",
+				Properties: map[string]genaiapi.JSONSchema{
+					"banana": {
+						Type: "boolean",
+					},
+				},
+				Required: []string{"banana"},
+			},
 		}
 		resp, err := c.Completion(context.Background(), msgs, &opts)
 		if err != nil {

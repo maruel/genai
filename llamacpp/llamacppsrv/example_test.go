@@ -1,8 +1,8 @@
-// Copyright 2025 Marc-Antoine Ruel. All rights reserved.
+// Copyright 2024 Marc-Antoine Ruel. All rights reserved.
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-package llamacpp_test
+package llamacppsrv_test
 
 import (
 	"context"
@@ -18,6 +18,15 @@ import (
 	"github.com/maruel/genai/llamacpp/llamacppsrv"
 	"github.com/maruel/huggingface"
 )
+
+func findFreePort() int {
+	l, err := net.Listen("tcp", "localhost:0")
+	if err != nil {
+		panic(err)
+	}
+	defer l.Close()
+	return l.Addr().(*net.TCPAddr).Port
+}
 
 // startServer starts a server with Qwen2 0.5B in Q2_K quantization.
 func startServer(ctx context.Context) (*llamacppsrv.Server, error) {
@@ -52,7 +61,7 @@ func startServer(ctx context.Context) (*llamacppsrv.Server, error) {
 	return llamacppsrv.NewServer(ctx, exe, modelPath, l, port, 0, nil)
 }
 
-func ExampleClient_Completion() {
+func Example() {
 	ctx := context.Background()
 	srv, err := startServer(ctx)
 	if err != nil {
@@ -80,69 +89,4 @@ func ExampleClient_Completion() {
 	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Text)), ".!")
 	fmt.Printf("Response: %s\n", txt)
 	// Output: Response: hello
-}
-
-func ExampleClient_CompletionStream() {
-	ctx := context.Background()
-	srv, err := startServer(ctx)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer srv.Close()
-	c, err := llamacpp.New(srv.URL(), nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	msgs := []genaiapi.Message{
-		{
-			Role: genaiapi.User,
-			Type: genaiapi.Text,
-			Text: "Say hello. Reply with only one word.",
-		},
-	}
-	opts := genaiapi.CompletionOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	words := make(chan string, 10)
-	result := make(chan string)
-	go func() {
-		resp := ""
-		for {
-			select {
-			case <-ctx.Done():
-				goto end
-			case <-srv.Done():
-				goto end
-			case w, ok := <-words:
-				if !ok {
-					goto end
-				}
-				resp += w
-			}
-		}
-	end:
-		result <- resp
-		close(result)
-	}()
-	err = c.CompletionStream(ctx, msgs, &opts, words)
-	close(words)
-	resp := <-result
-	if err != nil {
-		log.Fatal(err)
-	}
-	// Normalize some of the variance. Obviously many models will still fail this test.
-	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp)), ".!")
-	fmt.Printf("Response: %s\n", txt)
-	// Output: Response: hello
-}
-
-func findFreePort() int {
-	l, err := net.Listen("tcp", "localhost:0")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer l.Close()
-	return l.Addr().(*net.TCPAddr).Port
 }

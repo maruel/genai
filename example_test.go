@@ -111,6 +111,7 @@ func Example_completionProvider() {
 		completionProviders["huggingface"] = c
 	}
 	if false {
+		// See llamacpp/llamacppsrv to see how to run a local server.
 		if c, err := llamacpp.New("http://localhost:8080", nil); err == nil {
 			completionProviders["llamacpp"] = c
 		}

@@ -3,15 +3,15 @@ module github.com/maruel/genai
 go 1.24.1
 
 require (
-	github.com/maruel/httpjson v0.0.0-20250310175526-cef4d3a1f686
+	github.com/maruel/httpjson v0.0.0-20250313200659-4479c805d017
 	github.com/maruel/huggingface v0.0.0-20250313181651-d85dcc86b10e
 	golang.org/x/sys v0.31.0
 )
 
 require (
-	github.com/DataDog/zstd v1.5.6 // indirect
 	github.com/andybalholm/brotli v1.1.1 // indirect
 	github.com/edsrzf/mmap-go v1.2.0 // indirect
+	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/maruel/safetensors v1.2.0 // indirect
 	github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect

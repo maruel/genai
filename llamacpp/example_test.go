@@ -25,37 +25,55 @@ import (
 // qwen2.5-0.5b-instruct-q3_k_m.gguf works great and is only 412MiB.
 var model = os.Getenv("LLAMACPP_MODEL")
 
-func ExampleClient_Completion() {
+func startServer(ctx context.Context) (string, <-chan error, func()) {
 	// Make sure llama-server is in PATH and export LLAMACPP_MODEL to point to a
 	// model path.
 	if model == "" {
-		// Make the test pass even if skipped.
-		fmt.Println("Response: hi")
-		return
+		return "", nil, func() {}
 	}
 	svr, _ := exec.LookPath("llama-server")
 	if svr == "" {
-		// Make the test pass even if skipped.
-		fmt.Println("Response: hi")
-		return
+		return "", nil, func() {}
 	}
 	p := strconv.Itoa(findFreePort())
-	cmd := exec.Command(svr, "--port", p, "--model", model)
+	log.Printf("Starting llama-server on port %s with model %s", p, model)
+	cmd := exec.CommandContext(ctx, svr, "--port", p, "--model", model)
 	cmd.Dir = filepath.Dir(svr)
 	if err := cmd.Start(); err != nil {
 		log.Fatal(err)
 	}
+	log.Printf("llama-server pid %d", cmd.Process.Pid)
 	done := make(chan error, 1)
 	go func() {
-		done <- cmd.Wait()
+		err2 := cmd.Wait()
+		log.Print("llama-server exited")
+		done <- err2
+		done <- nil
 	}()
-	c := llamacpp.Client{BaseURL: "http://localhost:" + p}
+	return "http://localhost:" + p, done, func() {
+		cmd.Process.Kill()
+		<-done
+	}
+}
+
+func ExampleClient_Completion() {
 	ctx := context.Background()
+	baseURL, done, cleanup := startServer(ctx)
+	if baseURL == "" {
+		// Make the test pass even if skipped.
+		fmt.Println("Response: hello")
+		return
+	}
+	defer cleanup()
+	c, err := llamacpp.New(baseURL, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 	msgs := []genaiapi.Message{
 		{
 			Role: genaiapi.User,
 			Type: genaiapi.Text,
-			Text: "Say hello. Use only one word.",
+			Text: "Say hello. Reply with only one word.",
 		},
 	}
 	opts := genaiapi.CompletionOptions{
@@ -87,44 +105,34 @@ func ExampleClient_Completion() {
 		if len(txt) < 2 || len(txt) > 100 {
 			log.Fatalf("Unexpected response: %s", txt)
 		}
+		// Normalize some of the variance. Obviously many models will still fail this test.
+		txt = strings.TrimSpace(txt)
+		txt = strings.TrimRight(txt, ".!")
+		txt = strings.ToLower(txt)
+		fmt.Printf("Response: %s\n", txt)
 		break
 	}
-	cmd.Process.Kill()
-	<-done
-	// Output: Response: hi
+	// Output: Response: hello
 }
 
 func ExampleClient_CompletionStream() {
-	// Make sure llama-server is in PATH and export LLAMACPP_MODEL to point to a
-	// model path.
-	if model == "" {
+	ctx := context.Background()
+	baseURL, done, cleanup := startServer(ctx)
+	if baseURL == "" {
 		// Make the test pass even if skipped.
-		fmt.Println("Response: hi")
+		fmt.Println("Response: hello")
 		return
 	}
-	svr, _ := exec.LookPath("llama-server")
-	if svr == "" {
-		// Make the test pass even if skipped.
-		fmt.Println("Response: hi")
-		return
-	}
-	p := strconv.Itoa(findFreePort())
-	cmd := exec.Command(svr, "--port", p, "--model", model)
-	cmd.Dir = filepath.Dir(svr)
-	if err := cmd.Start(); err != nil {
+	defer cleanup()
+	c, err := llamacpp.New(baseURL, nil)
+	if err != nil {
 		log.Fatal(err)
 	}
-	done := make(chan error, 1)
-	go func() {
-		done <- cmd.Wait()
-	}()
-	c := llamacpp.Client{BaseURL: "http://localhost:" + p}
-	ctx := context.Background()
 	msgs := []genaiapi.Message{
 		{
 			Role: genaiapi.User,
 			Type: genaiapi.Text,
-			Text: "Say hello. Use only one word.",
+			Text: "Say hello. Reply with only one word.",
 		},
 	}
 	opts := genaiapi.CompletionOptions{Seed: 1}
@@ -171,17 +179,13 @@ func ExampleClient_CompletionStream() {
 		} else {
 			// Normalize some of the variance. Obviously many models will still fail this test.
 			resp = strings.TrimSpace(resp)
-			resp = strings.TrimRight(resp, ".")
+			resp = strings.TrimRight(resp, ".!")
 			resp = strings.ToLower(resp)
-			resp = strings.ReplaceAll(resp, "hello", "hi")
-			resp = strings.ReplaceAll(resp, "hey", "hi")
 			fmt.Printf("Response: %s\n", resp)
 		}
 		break
 	}
-	cmd.Process.Kill()
-	<-done
-	// Output: Response: hi
+	// Output: Response: hello
 }
 
 func findFreePort() int {

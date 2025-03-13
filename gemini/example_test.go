@@ -10,7 +10,6 @@ import (
 	_ "embed"
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/maruel/genai/gemini"
 	"github.com/maruel/genai/genaiapi"
@@ -19,16 +18,14 @@ import (
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
 
-var (
-	key = os.Getenv("GEMINI_API_KEY")
-	// Using very small model for testing.
-	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	model = "gemini-2.0-flash-lite"
-)
+// Using small model for testing.
+// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
+var model = "gemini-2.0-flash-lite"
 
 func ExampleClient_Completion() {
-	if key != "" {
-		c := gemini.Client{ApiKey: key, Model: model}
+	// This code will run when GEMINI_API_KEY is set.
+	// As of March 2025, you can try it out for free.
+	if c, err := gemini.New("", model); err == nil {
 		msgs := []genaiapi.Message{
 			{
 				Role: genaiapi.User,
@@ -64,8 +61,9 @@ func ExampleClient_Completion() {
 }
 
 func ExampleClient_CompletionStream() {
-	if key != "" {
-		c := gemini.Client{ApiKey: key, Model: model}
+	// This code will run when GEMINI_API_KEY is set.
+	// As of March 2025, you can try it out for free.
+	if c, err := gemini.New("", model); err == nil {
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
 			{

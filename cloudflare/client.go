@@ -19,6 +19,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
@@ -256,12 +257,34 @@ type errorResponse struct {
 	Messages []struct{} `json:"messages"` // Annoyingly, it's included all the time
 }
 
+// Client implements the REST JSON based API.
 type Client struct {
-	// AccountID and ApiKey can be retrieved as "Workers AI" from https://dash.cloudflare.com/profile/api-tokens
-	AccountID string
-	ApiKey    string
-	// Model to use, see https://developers.cloudflare.com/workers-ai/models/
-	Model string
+	accountID string
+	apiKey    string
+	model     string
+}
+
+// New creates a new client to talk to the Cloudflare Workers AI platform API.
+//
+// If accountID is not provided, it tries to load it from the CLOUDFLARE_ACCOUNT_ID environment variable.
+// If apiKey is not provided, it tries to load it from the CLOUDFLARE_API_KEY environment variable.
+// If none is found, it returns an error.
+// Get your account ID and API key at https://dash.cloudflare.com/profile/api-tokens
+// If no model is provided, only functions that do not require a model, like ListModels, will work.
+// To use multiple models, create multiple clients.
+// Use one of the model from https://developers.cloudflare.com/workers-ai/models/
+func New(accountID, apiKey, model string) (*Client, error) {
+	if accountID == "" {
+		if accountID = os.Getenv("CLOUDFLARE_ACCOUNT_ID"); accountID == "" {
+			return nil, errors.New("cloudflare account ID is required; get one at " + apiKeyURL)
+		}
+	}
+	if apiKey == "" {
+		if apiKey = os.Getenv("CLOUDFLARE_API_KEY"); apiKey == "" {
+			return nil, errors.New("cloudflare API key is required; get one at " + apiKeyURL)
+		}
+	}
+	return &Client{accountID: accountID, apiKey: apiKey, model: model}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.Message, error) {
@@ -300,10 +323,10 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
-	if err := c.validate(true); err != nil {
+	if err := c.validate(); err != nil {
 		return err
 	}
-	url := "https://api.cloudflare.com/client/v4/accounts/" + c.AccountID + "/ai/run/" + c.Model
+	url := "https://api.cloudflare.com/client/v4/accounts/" + c.accountID + "/ai/run/" + c.model
 	return c.post(ctx, url, in, out)
 }
 
@@ -333,12 +356,12 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
-	if err := c.validate(true); err != nil {
+	if err := c.validate(); err != nil {
 		return err
 	}
 	h := make(http.Header)
-	h.Add("Authorization", "Bearer "+c.ApiKey)
-	url := "https://api.cloudflare.com/client/v4/accounts/" + c.AccountID + "/ai/run/" + c.Model
+	h.Add("Authorization", "Bearer "+c.apiKey)
+	url := "https://api.cloudflare.com/client/v4/accounts/" + c.accountID + "/ai/run/" + c.model
 	// Cloudflare doesn't HTTP POST support compression.
 	resp, err := httpjson.DefaultClient.PostRequest(ctx, url, h, in)
 	if err != nil {
@@ -436,11 +459,8 @@ func (m *Model) Context() int64 {
 
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	// https://developers.cloudflare.com/api/resources/ai/subresources/models/methods/list/
-	if err := c.validate(false); err != nil {
-		return nil, err
-	}
 	h := make(http.Header)
-	h.Add("Authorization", "Bearer "+c.ApiKey)
+	h.Add("Authorization", "Bearer "+c.apiKey)
 	// See https://github.com/cloudflare/cloudflare-go/blob/main/internal/requestconfig/requestconfig.go
 	h.Set("X-Stainless-Retry-Count", "0")
 	h.Set("X-Stainless-Timeout", "0")
@@ -459,7 +479,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 			Messages []struct{} `json:"messages"` // Annoyingly, it's included all the time
 		}
 		// Cloudflare's pagination is surprisingly brittle.
-		url := fmt.Sprintf("https://api.cloudflare.com/client/v4/accounts/%s/ai/models/search?page=%d&per_page=100&hide_experimental=false", c.AccountID, page)
+		url := fmt.Sprintf("https://api.cloudflare.com/client/v4/accounts/%s/ai/models/search?page=%d&per_page=100&hide_experimental=false", c.accountID, page)
 		err := httpjson.DefaultClient.Get(ctx, url, h, &out)
 		if err != nil {
 			return nil, err
@@ -474,22 +494,16 @@ func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	return models, nil
 }
 
-func (c *Client) validate(needModel bool) error {
-	if c.AccountID == "" {
-		return errors.New("cloudflare account ID is required; get one at " + apiKeyURL)
-	}
-	if c.ApiKey == "" {
-		return errors.New("cloudflare Workers AI ApiKey is required; get one at " + apiKeyURL)
-	}
-	if needModel && c.Model == "" {
-		return errors.New("a Model is required")
+func (c *Client) validate() error {
+	if c.model == "" {
+		return errors.New("a model is required")
 	}
 	return nil
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	h := make(http.Header)
-	h.Add("Authorization", "Bearer "+c.ApiKey)
+	h.Add("Authorization", "Bearer "+c.apiKey)
 	resp, err := httpjson.DefaultClient.PostRequest(ctx, url, h, in)
 	if err != nil {
 		return err
@@ -524,4 +538,7 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 
 const apiKeyURL = "https://dash.cloudflare.com/profile/api-tokens"
 
-var _ genaiapi.CompletionProvider = &Client{}
+var (
+	_ genaiapi.CompletionProvider = &Client{}
+	_ genaiapi.ModelProvider      = &Client{}
+)

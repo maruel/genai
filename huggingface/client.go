@@ -237,15 +237,43 @@ type CompletionStreamChunkResponse struct {
 	} `json:"usage"`
 }
 
+// Client implements the REST JSON based API.
 type Client struct {
-	// ApiKey can be retrieved from https://huggingface.co/settings/tokens. It
-	// will be loaded from the huggingface python library cache by default.
-	ApiKey string
-	// Model to use, tens of thousands to chose from at https://huggingface.co/models?inference=warm&sort=trending
-	Model string
+	apiKey string
+	model  string
 }
 
 // TODO: Investigate https://huggingface.co/blog/inference-providers and https://huggingface.co/docs/inference-endpoints/
+
+// New creates a new client to talk to the HuggingFace serverless inference API.
+//
+// If apiKey is not provided, it tries to load it from the HUGGINGFACE_API_KEY environment variable.
+// Otherwise, it tries to load it from the huggingface python client's cache.
+// If none is found, it returns an error.
+// Get your API key at https://huggingface.co/settings/tokens
+// If no model is provided, only functions that do not require a model, like ListModels, will work.
+// To use multiple models, create multiple clients.
+// Use one of the tens of thousands of models to chose from at https://huggingface.co/models?inference=warm&sort=trending
+func New(apiKey, model string) (*Client, error) {
+	if apiKey == "" {
+		if apiKey = os.Getenv("HUGGINGFACE_API_KEY"); apiKey == "" {
+			// Fallback to loading from the python client's cache.
+			h, err := os.UserHomeDir()
+			if err != nil {
+				return nil, fmt.Errorf("can't find home directory; failed to load hugginface key; get one at %s: %w", apiKeyURL, err)
+			}
+			// TODO: Windows.
+			b, err := os.ReadFile(filepath.Join(h, ".cache", "huggingface", "token"))
+			if err != nil {
+				return nil, fmt.Errorf("no cached token file; failed to load hugginface key; get one at %s: %w", apiKeyURL, err)
+			}
+			if apiKey = strings.TrimSpace(string(b)); apiKey == "" {
+				return nil, errors.New("token file exist but is empty; huggingface API key is required; get one at " + apiKeyURL)
+			}
+		}
+	}
+	return &Client{apiKey: apiKey, model: model}, nil
+}
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.Message, error) {
 	// https://huggingface.co/docs/api-inference/tasks/chat-completion#api-specification
@@ -276,10 +304,10 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
-	if err := c.validate(true); err != nil {
+	if err := c.validate(); err != nil {
 		return err
 	}
-	url := "https://router.huggingface.co/hf-inference/models/" + c.Model + "/v1/chat/completions"
+	url := "https://router.huggingface.co/hf-inference/models/" + c.model + "/v1/chat/completions"
 	return c.post(ctx, url, in, out)
 }
 
@@ -312,15 +340,15 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
-	if err := c.validate(true); err != nil {
+	if err := c.validate(); err != nil {
 		return err
 	}
 	h := make(http.Header)
-	h.Add("Authorization", "Bearer "+c.ApiKey)
+	h.Add("Authorization", "Bearer "+c.apiKey)
 	// HuggingFace support all three of gzip, br and zstd!
 	p := httpjson.DefaultClient
 	// p.PostCompress = "zstd"
-	url := "https://router.huggingface.co/hf-inference/models/" + c.Model + "/v1/chat/completions"
+	url := "https://router.huggingface.co/hf-inference/models/" + c.model + "/v1/chat/completions"
 	resp, err := p.PostRequest(ctx, url, h, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
@@ -412,11 +440,8 @@ func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	// https://huggingface.co/docs/hub/api
 
 	// return nil, errors.New("not implemented; there's just too many, tens of thousands to chose from at https://huggingface.co/models?inference=warm&sort=trending")
-	if err := c.validate(false); err != nil {
-		return nil, err
-	}
 	h := make(http.Header)
-	h.Add("Authorization", "Bearer "+c.ApiKey)
+	h.Add("Authorization", "Bearer "+c.apiKey)
 	var out []Model
 	// There's 20k models warm as of March 2025. There's no way to sort by
 	// trending. Sorting by download is not useful.
@@ -431,32 +456,16 @@ func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	return models, err
 }
 
-func (c *Client) validate(needModel bool) error {
-	if c.ApiKey == "" {
-		// Fallback to loading from the python client's cache.
-		h, err := os.UserHomeDir()
-		if err != nil {
-			return fmt.Errorf("failed to load hugginface key, get one at %s: %w", apiKeyURL, err)
-		}
-		// TODO: Windows.
-		b, err := os.ReadFile(filepath.Join(h, ".cache", "huggingface", "token"))
-		if err != nil {
-			return fmt.Errorf("failed to load hugginface key, get one at %s: %w", apiKeyURL, err)
-		}
-		c.ApiKey = strings.TrimSpace(string(b))
-		if c.ApiKey == "" {
-			return fmt.Errorf("loaded an empty api key, get one at %s", apiKeyURL)
-		}
-	}
-	if needModel && c.Model == "" {
-		return errors.New("a Model is required")
+func (c *Client) validate() error {
+	if c.model == "" {
+		return errors.New("a model is required")
 	}
 	return nil
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	h := make(http.Header)
-	h.Add("Authorization", "Bearer "+c.ApiKey)
+	h.Add("Authorization", "Bearer "+c.apiKey)
 	// HuggingFace support all three of gzip, br and zstd!
 	p := httpjson.DefaultClient
 	p.PostCompress = "zstd"
@@ -483,4 +492,7 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 
 const apiKeyURL = "https://huggingface.co/settings/tokens"
 
-var _ genaiapi.CompletionProvider = &Client{}
+var (
+	_ genaiapi.CompletionProvider = &Client{}
+	_ genaiapi.ModelProvider      = &Client{}
+)

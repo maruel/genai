@@ -11,7 +11,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/maruel/genai/genaiapi"
@@ -21,13 +20,12 @@ import (
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
 
-var key = os.Getenv("GROQ_API_KEY")
-
 func ExampleClient_Completion() {
-	if key != "" {
-		// We must select a model that supports vision.
-		// See https://console.groq.com/docs/vision
-		c := groq.Client{ApiKey: key, Model: "llama-3.2-11b-vision-preview"}
+	// This code will run when GROQ_API_KEY is set.
+	// As of March 2025, you can try it out for free.
+	// We must select a model that supports vision.
+	// See https://console.groq.com/docs/vision
+	if c, err := groq.New("", "llama-3.2-11b-vision-preview"); err == nil {
 		msgs := []genaiapi.Message{
 			{
 				Role:     genaiapi.User,
@@ -71,10 +69,11 @@ func ExampleClient_Completion() {
 }
 
 func ExampleClient_CompletionStream() {
-	if key != "" {
-		// Using very small model for testing.
-		// See https://console.groq.com/docs/models
-		c := groq.Client{ApiKey: key, Model: "llama-3.2-1b-preview"}
+	// This code will run when GROQ_API_KEY is set.
+	// As of March 2025, you can try it out for free.
+	// Using very small model for testing.
+	// See https://console.groq.com/docs/models
+	if c, err := groq.New("", "llama-3.2-1b-preview"); err == nil {
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
 			{

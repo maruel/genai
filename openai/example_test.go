@@ -11,7 +11,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/maruel/genai/genaiapi"
@@ -21,16 +20,13 @@ import (
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
 
-var (
-	key = os.Getenv("OPENAI_API_KEY")
-	// Using small model for testing.
-	// See https://platform.openai.com/docs/models
-	model = "gpt-4o-mini"
-)
+// Using small model for testing.
+// See https://platform.openai.com/docs/models
+var model = "gpt-4o-mini"
 
 func ExampleClient_Completion() {
-	if key != "" {
-		c := openai.Client{ApiKey: key, Model: model}
+	// This code will run when OPENAI_API_KEY is set.
+	if c, err := openai.New("", model); err == nil {
 		msgs := []genaiapi.Message{
 			{
 				Role:     genaiapi.User,
@@ -83,8 +79,8 @@ func ExampleClient_Completion() {
 }
 
 func ExampleClient_CompletionStream() {
-	if key != "" {
-		c := openai.Client{ApiKey: key, Model: model}
+	// This code will run when OPENAI_API_KEY is set.
+	if c, err := openai.New("", model); err == nil {
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
 			{

@@ -281,9 +281,20 @@ func (p *PromptEncoding) Validate() error {
 	return nil
 }
 
+// Client implements the REST JSON based API.
 type Client struct {
-	BaseURL  string
-	Encoding *PromptEncoding
+	baseURL  string
+	encoding *PromptEncoding
+}
+
+// New creates a new client to talk to a llama-server instance.
+//
+// encoding is optional.
+func New(baseURL string, encoding *PromptEncoding) (*Client, error) {
+	if baseURL == "" {
+		return nil, errors.New("baseURL is required")
+	}
+	return &Client{baseURL: baseURL, encoding: encoding}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.Message, error) {
@@ -311,7 +322,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
-	return c.post(ctx, c.BaseURL+"/completion", in, out)
+	return c.post(ctx, c.baseURL+"/completion", in, out)
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
@@ -347,7 +358,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
 	// llama.cpp doesn't HTTP POST support compression.
-	resp, err := httpjson.DefaultClient.PostRequest(ctx, c.BaseURL+"/completion", nil, in)
+	resp, err := httpjson.DefaultClient.PostRequest(ctx, c.baseURL+"/completion", nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get llama server response: %w", err)
 	}
@@ -387,7 +398,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 }
 
 func (c *Client) GetHealth(ctx context.Context) (string, error) {
-	req, err := http.NewRequestWithContext(ctx, "GET", c.BaseURL+"/health", nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", c.baseURL+"/health", nil)
 	if err != nil {
 		return "", fmt.Errorf("failed to create HTTP request: %w", err)
 	}
@@ -435,7 +446,7 @@ type Metrics struct {
 // GetMetrics retrieves the performance statistics from the server.
 func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 	// TODO: Generalize.
-	req, err := http.NewRequestWithContext(ctx, "GET", c.BaseURL+"/metrics", nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", c.baseURL+"/metrics", nil)
 	if err != nil {
 		return fmt.Errorf("failed to create HTTP request: %w", err)
 	}
@@ -501,14 +512,14 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 }
 
 func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs []genaiapi.Message) error {
-	if c.Encoding == nil {
+	if c.encoding == nil {
 		// Use the server to convert the OpenAI style format into a templated form.
 		in2 := applyTemplateRequest{}
 		if err := in2.fromMsgs(msgs); err != nil {
 			return err
 		}
 		out := applyTemplateResponse{}
-		if err := c.post(ctx, c.BaseURL+"/apply-template", &in2, &out); err != nil {
+		if err := c.post(ctx, c.baseURL+"/apply-template", &in2, &out); err != nil {
 			return err
 		}
 		in.Prompt = out.Prompt
@@ -517,7 +528,7 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs []g
 
 	// Do a quick validation. 1 == available_tools, 2 = system, 3 = rest
 	state := 0
-	in.Prompt = c.Encoding.BeginOfText
+	in.Prompt = c.encoding.BeginOfText
 	for i, m := range msgs {
 		switch m.Role {
 		case genaiapi.AvailableTools:
@@ -525,25 +536,25 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs []g
 				return fmt.Errorf("unexpected available_tools message at index %d; state %d", i, state)
 			}
 			state = 1
-			in.Prompt += c.Encoding.ToolsAvailableTokenStart + m.Text + c.Encoding.ToolsAvailableTokenEnd
+			in.Prompt += c.encoding.ToolsAvailableTokenStart + m.Text + c.encoding.ToolsAvailableTokenEnd
 		case genaiapi.System:
 			if state > 1 {
 				return fmt.Errorf("unexpected system message at index %d; state %d", i, state)
 			}
 			state = 2
-			in.Prompt += c.Encoding.SystemTokenStart + m.Text + c.Encoding.SystemTokenEnd
+			in.Prompt += c.encoding.SystemTokenStart + m.Text + c.encoding.SystemTokenEnd
 		case genaiapi.User:
 			state = 3
-			in.Prompt += c.Encoding.UserTokenStart + m.Text + c.Encoding.UserTokenEnd
+			in.Prompt += c.encoding.UserTokenStart + m.Text + c.encoding.UserTokenEnd
 		case genaiapi.Assistant:
 			state = 3
-			in.Prompt += c.Encoding.AssistantTokenStart + m.Text + c.Encoding.AssistantTokenEnd
+			in.Prompt += c.encoding.AssistantTokenStart + m.Text + c.encoding.AssistantTokenEnd
 		case genaiapi.ToolCall:
 			state = 3
-			in.Prompt += c.Encoding.ToolCallTokenStart + m.Text + c.Encoding.ToolCallTokenEnd
+			in.Prompt += c.encoding.ToolCallTokenStart + m.Text + c.encoding.ToolCallTokenEnd
 		case genaiapi.ToolCallResult:
 			state = 3
-			in.Prompt += c.Encoding.ToolCallResultTokenStart + m.Text + c.Encoding.ToolCallResultTokenEnd
+			in.Prompt += c.encoding.ToolCallResultTokenStart + m.Text + c.encoding.ToolCallResultTokenEnd
 		default:
 			return fmt.Errorf("unexpected role %q", m.Role)
 		}

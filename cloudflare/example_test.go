@@ -9,22 +9,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/maruel/genai/cloudflare"
 	"github.com/maruel/genai/genaiapi"
 )
 
-var (
-	accountID = os.Getenv("CLOUDFLARE_ACCOUNT_ID")
-	key       = os.Getenv("CLOUDFLARE_API_KEY")
-)
-
 func ExampleClient_Completion() {
-	if accountID != "" && key != "" {
-		// We need to use a model that supports structured output.
-		c := cloudflare.Client{AccountID: accountID, ApiKey: key, Model: "@hf/nousresearch/hermes-2-pro-mistral-7b"}
+	// This code will run when both CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_KEY are set.
+	// As of March 2025, you can try it out for free.
+	// We need to use a model that supports structured output.
+	if c, err := cloudflare.New("", "", "@hf/nousresearch/hermes-2-pro-mistral-7b"); err == nil {
 		msgs := []genaiapi.Message{
 			{
 				Role: genaiapi.User,
@@ -69,10 +64,11 @@ func ExampleClient_Completion() {
 }
 
 func ExampleClient_CompletionStream() {
-	if accountID != "" && key != "" {
-		// Using very small model for testing.
-		// See https://developers.cloudflare.com/workers-ai/models/
-		c := cloudflare.Client{AccountID: accountID, ApiKey: key, Model: "@cf/meta/llama-3.2-3b-instruct"}
+	// This code will run when both CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_KEY are set.
+	// As of March 2025, you can try it out for free.
+	// Using very small model for testing.
+	// See https://developers.cloudflare.com/workers-ai/models/
+	if c, err := cloudflare.New("", "", "@cf/meta/llama-3.2-3b-instruct"); err == nil {
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
 			{

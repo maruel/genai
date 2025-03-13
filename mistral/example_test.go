@@ -11,7 +11,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/maruel/genai/genaiapi"
@@ -21,12 +20,11 @@ import (
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
 
-var key = os.Getenv("MISTRAL_API_KEY")
-
 func ExampleClient_Completion() {
-	if key != "" {
-		// Require a model which has the "vision" capability.
-		c := mistral.Client{ApiKey: key, Model: "pixtral-12b-2409"}
+	// This code will run when MISTRAL_API_KEY is set.
+	// As of March 2025, you can try it out for free.
+	// Require a model which has the "vision" capability.
+	if c, err := mistral.New("", "pixtral-12b-2409"); err == nil {
 		msgs := []genaiapi.Message{
 			{
 				Role:     genaiapi.User,
@@ -78,10 +76,11 @@ func ExampleClient_Completion() {
 }
 
 func ExampleClient_CompletionStream() {
-	if key != "" {
-		// Using very small model for testing.
-		// See https://docs.mistral.ai/getting-started/models/models_overview/
-		c := mistral.Client{ApiKey: key, Model: "ministral-3b-latest"}
+	// This code will run when MISTRAL_API_KEY is set.
+	// As of March 2025, you can try it out for free.
+	// Using very small model for testing.
+	// See https://docs.mistral.ai/getting-started/models/models_overview/
+	if c, err := mistral.New("", "ministral-3b-latest"); err == nil {
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
 			{

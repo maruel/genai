@@ -17,6 +17,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -154,20 +155,30 @@ type errorResponse2 struct {
 	} `json:"error"`
 }
 
+// Client implements the REST JSON based API.
 type Client struct {
-	// ApiKey can be retrieved from https://www.perplexity.ai/settings/api
-	ApiKey string
-	// Model to use, defaults to "sonar".
-	Model string
+	apiKey string
+	model  string
+}
+
+// New creates a new client to talk to the Perplexity platform API.
+//
+// If apiKey is not provided, it tries to load it from the PERPLEXITY_API_KEY environment variable.
+// If none is found, it returns an error.
+// Get your API key at https://www.perplexity.ai/settings/api
+func New(apiKey string) (*Client, error) {
+	if apiKey == "" {
+		if apiKey = os.Getenv("PERPLEXITY_API_KEY"); apiKey == "" {
+			return nil, errors.New("perplexity API key is required; get one at " + apiKeyURL)
+		}
+	}
+	return &Client{apiKey: apiKey, model: "sonar"}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.Message, error) {
 	// https://docs.perplexity.ai/api-reference/chat-completions
 	msg := genaiapi.Message{}
-	if err := c.validate(); err != nil {
-		return msg, err
-	}
-	in := CompletionRequest{Model: c.Model}
+	in := CompletionRequest{Model: c.model}
 	if err := in.fromOpts(opts); err != nil {
 		return msg, err
 	}
@@ -193,17 +204,11 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
-	if err := c.validate(); err != nil {
-		return err
-	}
 	return c.post(ctx, "https://api.perplexity.ai/chat/completions", in, out)
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
-	if err := c.validate(); err != nil {
-		return err
-	}
-	in := CompletionRequest{Model: c.Model, Stream: true}
+	in := CompletionRequest{Model: c.model, Stream: true}
 	if err := in.fromOpts(opts); err != nil {
 		return err
 	}
@@ -231,11 +236,8 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
-	if err := c.validate(); err != nil {
-		return err
-	}
 	h := make(http.Header)
-	h.Add("Authorization", "Bearer "+c.ApiKey)
+	h.Add("Authorization", "Bearer "+c.apiKey)
 	resp, err := httpjson.DefaultClient.PostRequest(ctx, "https://api.perplexity.ai/chat/completions", h, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
@@ -287,19 +289,9 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	}
 }
 
-func (c *Client) validate() error {
-	if c.ApiKey == "" {
-		return errors.New("perplexity ApiKey is required; get one at " + apiKeyURL)
-	}
-	if c.Model == "" {
-		c.Model = "sonar"
-	}
-	return nil
-}
-
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	h := make(http.Header)
-	h.Add("Authorization", "Bearer "+c.ApiKey)
+	h.Add("Authorization", "Bearer "+c.apiKey)
 	resp, err := httpjson.DefaultClient.PostRequest(ctx, url, h, in)
 	if err != nil {
 		return err

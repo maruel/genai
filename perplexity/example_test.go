@@ -8,20 +8,14 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/genai/perplexity"
 )
 
-var (
-	key   = os.Getenv("PERPLEXITY_API_KEY")
-	model = "sonar"
-)
-
 func ExampleClient_Completion() {
-	if key != "" {
-		c := perplexity.Client{ApiKey: key, Model: model}
+	// This code will run when PERPLEXITY_API_KEY is set.
+	if c, err := perplexity.New(""); err == nil {
 		msgs := []genaiapi.Message{
 			{
 				Role: genaiapi.User,
@@ -49,8 +43,8 @@ func ExampleClient_Completion() {
 }
 
 func ExampleClient_CompletionStream() {
-	if key != "" {
-		c := perplexity.Client{ApiKey: key, Model: model}
+	// This code will run when PERPLEXITY_API_KEY is set.
+	if c, err := perplexity.New(""); err == nil {
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
 			{

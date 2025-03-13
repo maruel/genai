@@ -8,23 +8,19 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/genai/internal/togetherai"
 )
 
-var (
-	key = os.Getenv("TOGETHERAI_API_KEY")
-	// Not all models seem to work with the initial key. They just return with
-	// invalid_request_error which is quite odd.
-	// See https://api.together.ai/models
-	model = "Qwen/Qwen2.5-7B-Instruct-Turbo"
-)
+// Not all models seem to work with the initial key. They just return with
+// invalid_request_error which is quite odd.
+// See https://api.together.ai/models
+var model = "Qwen/Qwen2.5-7B-Instruct-Turbo"
 
 func ExampleClient_Completion() {
-	if key != "" {
-		c := togetherai.Client{ApiKey: key, Model: model}
+	// This code will run when TOGETHERAI_API_KEY is set.
+	if c, err := togetherai.New("", model); err == nil {
 		msgs := []genaiapi.Message{
 			{
 				Role: genaiapi.User,
@@ -47,8 +43,8 @@ func ExampleClient_Completion() {
 }
 
 func ExampleClient_CompletionStream() {
-	if key != "" {
-		c := togetherai.Client{ApiKey: key, Model: model}
+	// This code will run when TOGETHERAI_API_KEY is set.
+	if c, err := togetherai.New("", model); err == nil {
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
 			{

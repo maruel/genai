@@ -17,6 +17,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -185,17 +186,33 @@ type errorResponse2 struct {
 	Code    string `json:"code"`
 }
 
+// Client implements the REST JSON based API.
 type Client struct {
-	// ApiKey can be retrieved from https://cloud.cerebras.ai/platform/
-	ApiKey string
-	// Model to use.
-	Model string
+	apiKey string
+	model  string
+}
+
+// New creates a new client to talk to the Cerebras platform API.
+//
+// If apiKey is not provided, it tries to load it from the CEREBRAS_API_KEY environment variable.
+// If none is found, it returns an error.
+// Get an API key at http://cloud.cerebras.ai/
+// If no model is provided, only functions that do not require a model, like ListModels, will work.
+// To use multiple models, create multiple clients.
+// Use one of the model from https://cerebras.ai/inference
+func New(apiKey, model string) (*Client, error) {
+	if apiKey == "" {
+		if apiKey = os.Getenv("CEREBRAS_API_KEY"); apiKey == "" {
+			return nil, errors.New("cerebras API key is required; get one at " + apiKeyURL)
+		}
+	}
+	return &Client{apiKey: apiKey, model: model}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.Message, error) {
 	// https://inference-docs.cerebras.ai/api-reference/chat-completions
 	msg := genaiapi.Message{}
-	in := CompletionRequest{Model: c.Model}
+	in := CompletionRequest{Model: c.model}
 	if err := in.fromOpts(opts); err != nil {
 		return msg, err
 	}
@@ -221,14 +238,14 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
-	if err := c.validate(true); err != nil {
+	if err := c.validate(); err != nil {
 		return err
 	}
 	return c.post(ctx, "https://api.cerebras.ai/v1/chat/completions", in, out)
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
-	in := CompletionRequest{Model: c.Model, Stream: true}
+	in := CompletionRequest{Model: c.model, Stream: true}
 	if err := in.fromOpts(opts); err != nil {
 		return err
 	}
@@ -256,11 +273,11 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
-	if err := c.validate(true); err != nil {
+	if err := c.validate(); err != nil {
 		return err
 	}
 	h := make(http.Header)
-	h.Add("Authorization", "Bearer "+c.ApiKey)
+	h.Add("Authorization", "Bearer "+c.apiKey)
 	resp, err := httpjson.DefaultClient.PostRequest(ctx, "https://api.cerebras.ai/v1/chat/completions", h, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
@@ -305,12 +322,9 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	}
 }
 
-func (c *Client) validate(needModel bool) error {
-	if c.ApiKey == "" {
-		return errors.New("cerebras ApiKey is required; get one at " + apiKeyURL)
-	}
-	if needModel && c.Model == "" {
-		return errors.New("a Model is required")
+func (c *Client) validate() error {
+	if c.model == "" {
+		return errors.New("a model is required")
 	}
 	return nil
 }
@@ -336,11 +350,8 @@ func (m *Model) Context() int64 {
 
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	// https://inference-docs.cerebras.ai/api-reference/models
-	if err := c.validate(false); err != nil {
-		return nil, err
-	}
 	h := make(http.Header)
-	h.Add("Authorization", "Bearer "+c.ApiKey)
+	h.Add("Authorization", "Bearer "+c.apiKey)
 	var out struct {
 		Object string  `json:"object"`
 		Data   []Model `json:"data"`
@@ -358,7 +369,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	h := make(http.Header)
-	h.Add("Authorization", "Bearer "+c.ApiKey)
+	h.Add("Authorization", "Bearer "+c.apiKey)
 	resp, err := httpjson.DefaultClient.PostRequest(ctx, url, h, in)
 	if err != nil {
 		return err
@@ -399,4 +410,7 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 
 const apiKeyURL = "https://cloud.cerebras.ai/platform/"
 
-var _ genaiapi.CompletionProvider = &Client{}
+var (
+	_ genaiapi.CompletionProvider = &Client{}
+	_ genaiapi.ModelProvider      = &Client{}
+)

@@ -8,30 +8,17 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
-	"path/filepath"
 
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/genai/huggingface"
 )
 
-var (
-	shouldRun = func() bool {
-		h, err := os.UserHomeDir()
-		if err != nil {
-			return false
-		}
-		// TODO: Windows.
-		_, err = os.ReadFile(filepath.Join(h, ".cache", "huggingface", "token"))
-		return err == nil
-	}()
-)
-
 func ExampleClient_Completion() {
-	if shouldRun {
-		// See https://huggingface.co/models?inference=warm&sort=trending
-		// Eventually use one that supports structured output.
-		c := huggingface.Client{Model: "meta-llama/Llama-3.2-1B-Instruct"}
+	// This code will run when HUGGINGFACE_API_KEY is set or ~/.cache/huggingface/token exists.
+	// As of March 2025, you can try it out for free.
+	// See https://huggingface.co/models?inference=warm&sort=trending
+	// Eventually use one that supports structured output.
+	if c, err := huggingface.New("", "meta-llama/Llama-3.2-1B-Instruct"); err == nil {
 		msgs := []genaiapi.Message{
 			{
 				Role: genaiapi.User,
@@ -60,10 +47,11 @@ func ExampleClient_Completion() {
 }
 
 func ExampleClient_CompletionStream() {
-	if shouldRun {
-		// Using very small model for testing.
-		// See https://huggingface.co/models?inference=warm&sort=trending
-		c := huggingface.Client{Model: "meta-llama/Llama-3.2-1B-Instruct"}
+	// This code will run when HUGGINGFACE_API_KEY is set or ~/.cache/huggingface/token exists.
+	// As of March 2025, you can try it out for free.
+	// See https://huggingface.co/models?inference=warm&sort=trending
+	// Eventually use one that supports structured output.
+	if c, err := huggingface.New("", "meta-llama/Llama-3.2-1B-Instruct"); err == nil {
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
 			{

@@ -10,7 +10,6 @@ import (
 	_ "embed"
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/maruel/genai/anthropic"
 	"github.com/maruel/genai/genaiapi"
@@ -19,18 +18,15 @@ import (
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
 
-var (
-	key = os.Getenv("ANTHROPIC_API_KEY")
-	// Using very small model for testing. As of March 2025,
-	// claude-3-haiku-20240307 is 0.20$/1.25$ while claude-3-5-haiku-20241022 is
-	// 0.80$/4.00$.
-	// https://docs.anthropic.com/en/docs/about-claude/models/all-models
-	model = "claude-3-haiku-20240307"
-)
+// Using very small model for testing. As of March 2025,
+// claude-3-haiku-20240307 is 0.20$/1.25$ while claude-3-5-haiku-20241022 is
+// 0.80$/4.00$.
+// https://docs.anthropic.com/en/docs/about-claude/models/all-models
+var model = "claude-3-haiku-20240307"
 
 func ExampleClient_Completion() {
-	if key != "" {
-		c := anthropic.Client{ApiKey: key, Model: model}
+	// This code will run when ANTHROPIC_API_KEY is set.
+	if c, err := anthropic.New("", model); err == nil {
 		msgs := []genaiapi.Message{
 			{
 				Role:     genaiapi.User,
@@ -66,8 +62,8 @@ func ExampleClient_Completion() {
 }
 
 func ExampleClient_CompletionStream() {
-	if key != "" {
-		c := anthropic.Client{ApiKey: key, Model: model}
+	// This code will run when ANTHROPIC_API_KEY is set.
+	if c, err := anthropic.New("", model); err == nil {
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
 			{

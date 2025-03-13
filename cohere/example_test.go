@@ -9,22 +9,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/maruel/genai/cohere"
 	"github.com/maruel/genai/genaiapi"
 )
 
-var (
-	key = os.Getenv("COHERE_API_KEY")
-)
-
 func ExampleClient_Completion() {
-	if key != "" {
-		// https://docs.cohere.com/v2/docs/structured-outputs
-		// We need to use a model that supports structured output.
-		c := cohere.Client{ApiKey: key, Model: "command-r-08-2024"}
+	// This code will run when COHERE_API_KEY is set.
+	// As of March 2025, you can try it out for free with limitations on which
+	// functionalities are available.
+	// We need to use a model that supports structured output.
+	// https://docs.cohere.com/v2/docs/structured-outputs
+	if c, err := cohere.New("", "command-r-08-2024"); err == nil {
 		msgs := []genaiapi.Message{
 			{
 				Role: genaiapi.User,
@@ -69,10 +66,12 @@ func ExampleClient_Completion() {
 }
 
 func ExampleClient_CompletionStream() {
-	if key != "" {
-		// Using very small model for testing.
-		// See https://docs.cohere.com/v2/docs/models
-		c := cohere.Client{ApiKey: key, Model: "command-r7b-12-2024"}
+	// This code will run when COHERE_API_KEY is set.
+	// As of March 2025, you can try it out for free with limitations on which
+	// functionalities are available.
+	// Using very small model for testing.
+	// See https://docs.cohere.com/v2/docs/models
+	if c, err := cohere.New("", "command-r7b-12-2024"); err == nil {
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
 			{

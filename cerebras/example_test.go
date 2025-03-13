@@ -9,21 +9,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/maruel/genai/cerebras"
 	"github.com/maruel/genai/genaiapi"
 )
 
-var (
-	key   = os.Getenv("CEREBRAS_API_KEY")
-	model = "llama3.1-8b"
-)
-
 func ExampleClient_Completion() {
-	if key != "" {
-		c := cerebras.Client{ApiKey: key, Model: model}
+	// This code will run when CEREBRAS_API_KEY is set.
+	// As of March 2025, you can try it out for free.
+	// Cerebras supports a limited set of models.
+	if c, err := cerebras.New("", "llama3.1-8b"); err == nil {
 		msgs := []genaiapi.Message{
 			{
 				Role: genaiapi.User,
@@ -68,8 +64,10 @@ func ExampleClient_Completion() {
 }
 
 func ExampleClient_CompletionStream() {
-	if key != "" {
-		c := cerebras.Client{ApiKey: key, Model: model}
+	// This code will run when CEREBRAS_API_KEY is set.
+	// As of March 2025, you can try it out for free.
+	// Cerebras supports a limited set of models.
+	if c, err := cerebras.New("", "llama3.1-8b"); err == nil {
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
 			{

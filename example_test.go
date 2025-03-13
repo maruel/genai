@@ -24,24 +24,44 @@ import (
 	"github.com/maruel/genai/perplexity"
 )
 
-// Notably missing: "llamacpp" and "perplexity".
-var modelProviders = map[string]genaiapi.ModelProvider{
-	"anthropic":   &anthropic.Client{ApiKey: os.Getenv("ANTHROPIC_API_KEY")},
-	"cerebras":    &cerebras.Client{ApiKey: os.Getenv("CEREBRAS_API_KEY")},
-	"cloudflare":  &cloudflare.Client{AccountID: os.Getenv("CLOUDFLARE_ACCOUNT_ID"), ApiKey: os.Getenv("CLOUDFLARE_API_KEY")},
-	"cohere":      &cohere.Client{ApiKey: os.Getenv("COHERE_API_KEY")},
-	"deepseek":    &deepseek.Client{ApiKey: os.Getenv("DEEPSEEK_API_KEY")},
-	"gemini":      &gemini.Client{ApiKey: os.Getenv("GEMINI_API_KEY")},
-	"groq":        &groq.Client{ApiKey: os.Getenv("GROQ_API_KEY")},
-	"huggingface": &huggingface.Client{},
-	"mistral":     &mistral.Client{ApiKey: os.Getenv("MISTRAL_API_KEY")},
-	"openai":      &openai.Client{ApiKey: os.Getenv("OPENAI_API_KEY")},
-}
-
 func Example_modelProvider() {
 	// Pro-tip: Using os.Stderr so if you modify this file and append a "// Output: foo"
 	// at the end of this function, "go test" will run the code and stream the
 	// output to you.
+
+	modelProviders := map[string]genaiapi.ModelProvider{}
+	if c, err := anthropic.New("", ""); err == nil {
+		modelProviders["anthropic"] = c
+	}
+	if c, err := cerebras.New("", ""); err == nil {
+		modelProviders["cerebras"] = c
+	}
+	if c, err := cloudflare.New("", "", ""); err == nil {
+		modelProviders["cloudflare"] = c
+	}
+	if c, err := cohere.New("", ""); err == nil {
+		modelProviders["cohere"] = c
+	}
+	if c, err := deepseek.New("", ""); err == nil {
+		modelProviders["deepseek"] = c
+	}
+	if c, err := gemini.New("", ""); err == nil {
+		modelProviders["gemini"] = c
+	}
+	if c, err := groq.New("", ""); err == nil {
+		modelProviders["groq"] = c
+	}
+	if c, err := huggingface.New("", ""); err == nil {
+		modelProviders["huggingface"] = c
+	}
+	// llamapcpp doesn't implement ModelProvider.
+	if c, err := mistral.New("", ""); err == nil {
+		modelProviders["mistral"] = c
+	}
+	if c, err := openai.New("", ""); err == nil {
+		modelProviders["openai"] = c
+	}
+	// perplexity doesn't implement ModelProvider.
 
 	for name, p := range modelProviders {
 		models, err := p.ListModels(context.Background())
@@ -55,67 +75,57 @@ func Example_modelProvider() {
 	}
 }
 
-var completionProviders = map[string]genaiapi.CompletionProvider{
-	"anthropic": &anthropic.Client{
-		ApiKey: os.Getenv("ANTHROPIC_API_KEY"),
-		// https://docs.anthropic.com/en/docs/about-claude/models/all-models
-		Model: "claude-3-7-sonnet-latest",
-	},
-	"cerebras": &cerebras.Client{
-		ApiKey: os.Getenv("CEREBRAS_API_KEY"),
-		Model:  "llama-3.3-70b",
-	},
-	"cloudflare": &cloudflare.Client{
-		AccountID: os.Getenv("CLOUDFLARE_ACCOUNT_ID"),
-		ApiKey:    os.Getenv("CLOUDFLARE_API_KEY"),
-		// https://developers.cloudflare.com/workers-ai/models/
-		Model: "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b",
-	},
-	"cohere": &cohere.Client{
-		ApiKey: os.Getenv("COHERE_API_KEY"),
-		// https://docs.cohere.com/v2/docs/models
-		Model: "command-r-plus",
-	},
-	"deepseek": &deepseek.Client{
-		ApiKey: os.Getenv("DEEPSEEK_API_KEY"),
-		Model:  "deepseek-reasoner",
-	},
-	"gemini": &gemini.Client{
-		ApiKey: os.Getenv("GEMINI_API_KEY"),
-		// https://ai.google.dev/gemini-api/docs/models/gemini
-		Model: "gemini-2.0-flash",
-	},
-	"groq": &groq.Client{
-		ApiKey: os.Getenv("GROQ_API_KEY"),
-		// https://console.groq.com/docs/models
-		Model: "qwen-qwq-32b",
-	},
-	"huggingface": &huggingface.Client{
-		// https://huggingface.co/models?inference=warm&sort=trending
-		Model: "Qwen/QwQ-32B",
-	},
-	"llamacpp": &llamacpp.Client{
-		BaseURL: "http://localhost:8080",
-	},
-	"mistral": &mistral.Client{
-		ApiKey: os.Getenv("MISTRAL_API_KEY"),
-		// https://docs.mistral.ai/getting-started/models/models_overview/
-		Model: "mistral-large-latest",
-	},
-	"openai": &openai.Client{
-		ApiKey: os.Getenv("OPENAI_API_KEY"),
-		// https://platform.openai.com/docs/api-reference/models
-		Model: "o3-mini",
-	},
-	"perplexity": &perplexity.Client{
-		ApiKey: os.Getenv("PERPLEXITY_API_KEY"),
-	},
-}
-
 func Example_completionProvider() {
 	// Pro-tip: Using os.Stderr so if you modify this file and append a "// Output: foo"
 	// at the end of this function, "go test" will run the code and stream the
 	// output to you.
+	completionProviders := map[string]genaiapi.CompletionProvider{}
+	// https://docs.anthropic.com/en/docs/about-claude/models/all-models
+	if c, err := anthropic.New("", "claude-3-7-sonnet-latest"); err == nil {
+		completionProviders["anthropic"] = c
+	}
+	if c, err := cerebras.New("", "llama-3.3-70b"); err == nil {
+		completionProviders["cerebras"] = c
+	}
+	// https://developers.cloudflare.com/workers-ai/models/
+	if c, err := cloudflare.New("", "", "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b"); err == nil {
+		completionProviders["cloudflare"] = c
+	}
+	// https://docs.cohere.com/v2/docs/models
+	if c, err := cohere.New("", "command-r-plus"); err == nil {
+		completionProviders["cohere"] = c
+	}
+	if c, err := deepseek.New("", "deepseek-reasoner"); err == nil {
+		completionProviders["deepseek"] = c
+	}
+	// https://ai.google.dev/gemini-api/docs/models/gemini
+	if c, err := gemini.New("", "gemini-2.0-flash"); err == nil {
+		completionProviders["gemini"] = c
+	}
+	// https://console.groq.com/docs/models
+	if c, err := groq.New("", "qwen-qwq-32b"); err == nil {
+		completionProviders["groq"] = c
+	}
+	// https://huggingface.co/models?inference=warm&sort=trending
+	if c, err := huggingface.New("", "Qwen/QwQ-32B"); err == nil {
+		completionProviders["huggingface"] = c
+	}
+	if false {
+		if c, err := llamacpp.New("http://localhost:8080", nil); err == nil {
+			completionProviders["llamacpp"] = c
+		}
+	}
+	// https://docs.mistral.ai/getting-started/models/models_overview/
+	if c, err := mistral.New("", "mistral-large-latest"); err == nil {
+		completionProviders["mistral"] = c
+	}
+	// https://platform.openai.com/docs/api-reference/models
+	if c, err := openai.New("", "o3-mini"); err == nil {
+		completionProviders["openai"] = c
+	}
+	if c, err := perplexity.New(""); err == nil {
+		completionProviders["perplexity"] = c
+	}
 
 	for name, provider := range completionProviders {
 		msgs := []genaiapi.Message{

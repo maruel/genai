@@ -22,6 +22,7 @@ import (
 	"log/slog"
 	"mime"
 	"net/http"
+	"os"
 	"path"
 	"strings"
 	"unicode"
@@ -443,11 +444,27 @@ type errorResponseError struct {
 }
 
 // Client implements the REST JSON based API.
+type Client struct {
+	apiKey string
+	model  string
+}
+
+// New creates a new client to talk to Google's Gemini platform API.
+//
+// If apiKey is not provided, it tries to load it from the GEMINI_API_KEY environment variable.
+// If none is found, it returns an error.
+// Get your API key at https://ai.google.dev/gemini-api/docs/getting-started
+// If no model is provided, only functions that do not require a model, like ListModels, will work.
+// To use multiple models, create multiple clients.
+// Use one of the model from https://ai.google.dev/gemini-api/docs/models/gemini
 //
 // See https://ai.google.dev/gemini-api/docs/file-prompting-strategies?hl=en
 // for good ideas on how to prompt with images.
 //
 // https://ai.google.dev/gemini-api/docs/pricing
+//
+// Using large files requires a pinned model with caching support.
+//
 // Supported mime types for images:
 // https://ai.google.dev/gemini-api/docs/vision?hl=en&lang=rest#prompting-images
 // - image/png
@@ -489,22 +506,23 @@ type errorResponseError struct {
 // - text/csv
 // - text/xml
 // - text/rtf
-type Client struct {
-	ApiKey string
-	// See models at https://ai.google.dev/gemini-api/docs/models/gemini
-	// Using large files (over 32KB) requires a pinned model with caching
-	// support.
-	Model string
+func New(apiKey, model string) (*Client, error) {
+	if apiKey == "" {
+		if apiKey = os.Getenv("GEMINI_API_KEY"); apiKey == "" {
+			return nil, errors.New("gemini API key is required; get one at " + apiKeyURL)
+		}
+	}
+	return &Client{apiKey: apiKey, model: model}, nil
 }
 
 /*
 func (c *Client) cacheContent(ctx context.Context, data []byte, mime, systemInstruction string) (string, error) {
 	// See https://ai.google.dev/gemini-api/docs/caching?hl=en&lang=rest#considerations
 	// It's only useful when reusing the same large data multiple times.
-	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents?key=" + c.ApiKey
+	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents?key=" + c.apiKey
 	in := cachedContentRequest{
 		// This requires a pinned model, with trailing -001.
-		Model: "models/" + c.Model,
+		Model: "models/" + c.model,
 		Contents: []Content{
 			{
 				Parts: []Part{{InlineData: Blob{MimeType: mime, Data: data}}},
@@ -562,10 +580,10 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
 	// https://ai.google.dev/api/generate-content?hl=en#text_gen_text_only_prompt-SHELL
-	if err := c.validate(true); err != nil {
+	if err := c.validate(); err != nil {
 		return err
 	}
-	url := "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":generateContent?key=" + c.ApiKey
+	url := "https://generativelanguage.googleapis.com/v1beta/models/" + c.model + ":generateContent?key=" + c.apiKey
 	return c.post(ctx, url, in, out)
 }
 
@@ -600,10 +618,10 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
 	// https://ai.google.dev/api/generate-content?hl=en#v1beta.GenerateContentResponse
-	if err := c.validate(true); err != nil {
+	if err := c.validate(); err != nil {
 		return err
 	}
-	url := "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":streamGenerateContent?alt=sse&key=" + c.ApiKey
+	url := "https://generativelanguage.googleapis.com/v1beta/models/" + c.model + ":streamGenerateContent?alt=sse&key=" + c.apiKey
 	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
 	p := httpjson.DefaultClient
 	// Google supports HTTP POST gzip compression!
@@ -675,14 +693,11 @@ func (m *Model) Context() int64 {
 
 func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	// https://ai.google.dev/api/models?hl=en#method:-models.list
-	if err := c.validate(false); err != nil {
-		return nil, err
-	}
 	var out struct {
 		Models        []Model `json:"models"`
 		NextPageToken string  `json:"nextPageToken"`
 	}
-	err := httpjson.DefaultClient.Get(ctx, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.ApiKey, nil, &out)
+	err := httpjson.DefaultClient.Get(ctx, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.apiKey, nil, &out)
 	if err != nil {
 		return nil, err
 	}
@@ -693,12 +708,9 @@ func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	return models, err
 }
 
-func (c *Client) validate(needModel bool) error {
-	if c.ApiKey == "" {
-		return errors.New("gemini ApiKey is required; get one at " + apiKeyURL)
-	}
-	if needModel && c.Model == "" {
-		return errors.New("a Model is required")
+func (c *Client) validate() error {
+	if c.model == "" {
+		return errors.New("a model is required")
 	}
 	return nil
 }
@@ -739,4 +751,7 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 
 const apiKeyURL = "https://ai.google.dev/gemini-api/docs/getting-started"
 
-var _ genaiapi.CompletionProvider = &Client{}
+var (
+	_ genaiapi.CompletionProvider = &Client{}
+	_ genaiapi.ModelProvider      = &Client{}
+)

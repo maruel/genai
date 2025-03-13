@@ -71,6 +71,9 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 				c.ResponseFormat.Type = "json_schema"
 				c.ResponseFormat.JSONSchema = v.JSONSchema
 			}
+			if len(v.Tools) != 0 {
+				return errors.New("tools support is not implemented yet")
+			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
 		}

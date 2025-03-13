@@ -117,6 +117,9 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 			if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
 				return errors.New("anthropic doesn't support JSON schema")
 			}
+			if len(v.Tools) != 0 {
+				return errors.New("tools support is not implemented yet")
+			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
 		}

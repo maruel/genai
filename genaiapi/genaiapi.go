@@ -21,6 +21,7 @@ type CompletionOptions struct {
 	MaxTokens   int64      // Maximum number of tokens to generate.
 	ReplyAsJSON bool       // If true, the output is JSON. If false, the output is text. It is important to tell the model to reply in JSON.
 	JSONSchema  JSONSchema // Enforces a reply JSON format. Not all providers support this.
+	Tools       []ToolDef  // List of tools that the LLM can request to call. Not all providers support this.
 
 	_ struct{}
 }
@@ -188,4 +189,11 @@ type JSONSchema struct {
 
 func (j *JSONSchema) IsZero() bool {
 	return j.Type == "" && len(j.Enum) == 0
+}
+
+// Tool describes a tool that the LLM can request to use.
+type ToolDef struct {
+	Name        string
+	Description string
+	Parameters  JSONSchema
 }

@@ -70,6 +70,9 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 			} else if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
 				return errors.New("to be implemented")
 			}
+			if len(v.Tools) != 0 {
+				return errors.New("perplexity doesn't support tools yet")
+			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
 		}

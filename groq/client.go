@@ -80,6 +80,9 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 			if !v.JSONSchema.IsZero() {
 				return errors.New("groq doesn't support JSONSchema")
 			}
+			if len(v.Tools) != 0 {
+				return errors.New("tools support is not implemented yet")
+			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
 		}
@@ -155,9 +158,9 @@ type Content struct {
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
-		Name        string         `json:"name,omitzero"`
-		Description string         `json:"description,omitzero"`
-		Parameters  map[string]any `json:"parameters,omitzero"`
+		Name        string              `json:"name,omitzero"`
+		Description string              `json:"description,omitzero"`
+		Parameters  genaiapi.JSONSchema `json:"parameters,omitzero"`
 	} `json:"function,omitzero"`
 }
 

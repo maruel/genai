@@ -2,24 +2,27 @@
 
 The _high performance_ native Go client for LLMs.
 
-| Provider              | Chat | Streaming | Vision | JSON output | JSON schema | Deterministic Seed |
-| --------------------- | ---- | --------- | ------ | ----------- | ----------- | ------------------ |
-| Anthropic             | ✅   | ✅        | ✅     | ❌          | ❌          | ❌                 |
-| Cerebras              | ✅   | ✅        | ❌     | ✅          | ✅          | ✅                 |
-| Cloudflare Workers AI | ✅   | ✅        | ⏳     | ✅          | ✅          | ✅                 |
-| Cohere                | ✅   | ✅        | ⏳     | ✅          | ✅          | ✅                 |
-| DeepSeek              | ✅   | ✅        | ❌     | ✅          | ❌          | ❌                 |
-| Google's Gemini       | ✅   | ✅        | ✅     | ⏳          | ⏳          | ✅                 |
-| Groq                  | ✅   | ✅        | ✅     | ✅          | ❌          | ✅                 |
-| HuggingFace           | ✅   | ✅        | ⏳     | ⏳          | ⏳          | ✅                 |
-| Mistral               | ✅   | ✅        | ✅     | ✅          | ✅          | ✅                 |
-| OpenAI                | ✅   | ✅        | ✅     | ✅          | ✅          | ✅                 |
-| Perplexity            | ✅   | ✅        | ❌     | ❌          | ⏳          | ❌                 |
-| llama.cpp             | ✅   | ✅        | ⏳     | ⏳          | ⏳          | ✅                 |
+| Provider              | Chat | Streaming | Vision | JSON output | JSON schema | Seed | Tools |
+| --------------------- | ---- | --------- | ------ | ----------- | ----------- | ---- | ----- |
+| Anthropic             | ✅   | ✅        | ✅     | ❌          | ❌          | ❌   | ⏳    |
+| Cerebras              | ✅   | ✅        | ❌     | ✅          | ✅          | ✅   | ⏳    |
+| Cloudflare Workers AI | ✅   | ✅        | ⏳     | ✅          | ✅          | ✅   | ⏳    |
+| Cohere                | ✅   | ✅        | ⏳     | ✅          | ✅          | ✅   | ⏳    |
+| DeepSeek              | ✅   | ✅        | ❌     | ✅          | ❌          | ❌   | ⏳    |
+| Google's Gemini       | ✅   | ✅        | ✅     | ⏳          | ⏳          | ✅   | ⏳    |
+| Groq                  | ✅   | ✅        | ✅     | ✅          | ❌          | ✅   | ⏳    |
+| HuggingFace           | ✅   | ✅        | ⏳     | ⏳          | ⏳          | ✅   | ⏳    |
+| Mistral               | ✅   | ✅        | ✅     | ✅          | ✅          | ✅   | ⏳    |
+| OpenAI                | ✅   | ✅        | ✅     | ✅          | ✅          | ✅   | ⏳    |
+| Perplexity            | ✅   | ✅        | ❌     | ❌          | ⏳          | ❌   | ❌    |
+| llama.cpp             | ✅   | ✅        | ⏳     | ⏳          | ⏳          | ✅   | ⏳    |
 
 - ✅ Implemented
-- ⏳ To be implemented
+- ⏳ To be implemented^
 - ❌ Not supported
+- Streaming: chat streaming
+- Seed: deterministic seed for reproducibility
+- Tools: tool calling
 
 Features:
 

@@ -112,9 +112,9 @@ func ExampleClient_Completion_tool_use() {
 			log.Fatalf("Unexpected response: %#v", resp)
 		}
 		log.Printf("Response: %#v", resp)
-		// Warning: there's a bug where it returns two identical tool calls. To verify.
+		// Warning: when the model is undecided, it call both.
 		if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "best_country" {
-			log.Fatal("Expected 1 best_country tool call")
+			log.Fatal("Expected at least one best_country tool call")
 		}
 		var expected struct {
 			Country string `json:"country"`

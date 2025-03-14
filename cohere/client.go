@@ -34,7 +34,6 @@ type CompletionRequest struct {
 	Stream          bool       `json:"stream"`
 	Model           string     `json:"model"`
 	Messages        []Message  `json:"messages"`
-	Tools           []Tool     `json:"tools,omitzero"`
 	Documents       []Document `json:"documents,omitzero"`
 	CitationOptions struct {
 		Mode string `json:"mode,omitzero"` // "fast", "accurate", "off"; default "fast"
@@ -53,6 +52,7 @@ type CompletionRequest struct {
 	K                float64  `json:"k,omitzero"`                 // [0, 500.0]
 	P                float64  `json:"p,omitzero"`                 // [0.01, 0.99]
 	Logprobs         bool     `json:"logprobs,omitzero"`
+	Tools            []Tool   `json:"tools,omitzero"`
 	ToolChoice       string   `json:"tool_choice,omitzero"` // "required", "none"
 	StrictTools      bool     `json:"strict_tools,omitzero"`
 }
@@ -72,7 +72,15 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 				c.ResponseFormat.JSONSchema = v.JSONSchema
 			}
 			if len(v.Tools) != 0 {
-				return errors.New("tools support is not implemented yet")
+				// Let's assume if the user provides tools, they want to use them.
+				c.ToolChoice = "required"
+				c.Tools = make([]Tool, len(v.Tools))
+				for i, t := range v.Tools {
+					c.Tools[i].Type = "function"
+					c.Tools[i].Function.Name = t.Name
+					c.Tools[i].Function.Description = t.Description
+					c.Tools[i].Function.Parameters = t.Parameters
+				}
 			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
@@ -154,9 +162,9 @@ type Content struct {
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
-		Name        string         `json:"name,omitzero"`
-		Parameters  map[string]any `json:"parameters,omitzero"`
-		Description string         `json:"description,omitzero"`
+		Name        string              `json:"name,omitzero"`
+		Parameters  genaiapi.JSONSchema `json:"parameters,omitzero"`
+		Description string              `json:"description,omitzero"`
 	} `json:"function,omitzero"`
 }
 
@@ -312,11 +320,22 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	// What about BilledUnits, especially for SearchUnits and Classifications?
 	out.InputTokens = rpcout.Usage.Tokens.InputTokens
 	out.OutputTokens = rpcout.Usage.Tokens.OutputTokens
-	if len(rpcout.Message.Content) != 1 {
-		return out, fmt.Errorf("unexpected number of messages %d", len(rpcout.Message.Content))
+	if len(rpcout.Message.ToolCalls) != 0 {
+		out.Role = genaiapi.Assistant
+		out.Type = genaiapi.ToolCalls
+		out.ToolCalls = make([]genaiapi.ToolCall, len(rpcout.Message.ToolCalls))
+		for i, t := range rpcout.Message.ToolCalls {
+			out.ToolCalls[i].ID = t.ID
+			out.ToolCalls[i].Name = t.Function.Name
+			out.ToolCalls[i].Arguments = t.Function.Arguments
+		}
+	} else {
+		if len(rpcout.Message.Content) != 1 {
+			return out, fmt.Errorf("unexpected number of messages %d", len(rpcout.Message.Content))
+		}
+		out.Type = genaiapi.Text
+		out.Text = rpcout.Message.Content[0].Text
 	}
-	out.Type = genaiapi.Text
-	out.Text = rpcout.Message.Content[0].Text
 	switch role := rpcout.Message.Role; role {
 	case "system", "assistant", "user":
 		out.Role = genaiapi.Role(role)

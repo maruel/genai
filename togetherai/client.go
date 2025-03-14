@@ -295,7 +295,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	if len(rpcout.Choices[0].Message.ToolCalls) != 0 {
 		out.Type = genaiapi.ToolCalls
 		for _, t := range rpcout.Choices[0].Message.ToolCalls {
-			out.ToolCalls = append(out.ToolCalls, genaiapi.ToolCall{Name: t.Function.Name, Arguments: t.Function.Arguments})
+			out.ToolCalls = append(out.ToolCalls, genaiapi.ToolCall{ID: t.ID, Name: t.Function.Name, Arguments: t.Function.Arguments})
 		}
 	} else {
 		out.Type = genaiapi.Text

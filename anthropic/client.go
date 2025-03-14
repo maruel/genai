@@ -42,7 +42,7 @@ type Content struct {
 
 	// Type == "text", "image", "tool_use", "tool_result", "document"
 	CacheControl struct {
-		Type string `json:"type,omitzero"` // ephemeral
+		Type string `json:"type,omitzero"` // "ephemeral"
 	} `json:"cache_control,omitzero"`
 
 	// Type == "text", "document"
@@ -71,9 +71,9 @@ type Content struct {
 	} `json:"source,omitzero"`
 
 	// Type == "tool_use"
-	ID    string   `json:"id,omitzero"`
-	Input struct{} `json:"input,omitzero"`
-	Name  string   `json:"name,omitzero"`
+	ID    string `json:"id,omitzero"`
+	Input any    `json:"input,omitzero"`
+	Name  string `json:"name,omitzero"`
 
 	// Type == "tool_result"
 	ToolUseID string `json:"tool_use_id,omitzero"`
@@ -118,7 +118,16 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 				return errors.New("anthropic doesn't support JSON schema")
 			}
 			if len(v.Tools) != 0 {
-				return errors.New("tools support is not implemented yet")
+				c.ToolChoice.Type = "any"
+				c.Tools = make([]Tool, len(v.Tools))
+				for i, t := range v.Tools {
+					// Weirdly enough, we must not set it. See example at https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview
+					// c.Tools[i].Type = "custom"
+					c.Tools[i].Name = t.Name
+					c.Tools[i].Description = t.Description
+					c.Tools[i].InputSchema = t.Parameters
+					// Unclear if this has any impact: c.Tools[i].CacheControl.Type = "ephemeral"
+				}
 			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
@@ -231,6 +240,7 @@ type ToolChoice struct {
 	Name string `json:"name,omitzero"`
 }
 
+// https://docs.anthropic.com/en/api/messages#body-tools
 type Tool struct {
 	Type string `json:"type,omitzero"` // "custom", "computer_20241022", "computer_20250124", "bash_20241022", "bash_20250124", "text_editor_20241022", "text_editor_20250124"
 	// Type == "custom"
@@ -258,10 +268,10 @@ type CompletionResponse struct {
 	Content      []Content `json:"content"`
 	ID           string    `json:"id"`
 	Model        string    `json:"model"`
-	Role         string    `json:"role"` // Always "assistant"
-	StopReason   string    `json:"stop_reason"`
+	Role         string    `json:"role"`        // Always "assistant"
+	StopReason   string    `json:"stop_reason"` // "end_turn", "tool_use", "stop_sequence", "max_tokens"
 	StopSequence string    `json:"stop_sequence"`
-	Type         string    `json:"type"`
+	Type         string    `json:"type"` // "message"
 	Usage        struct {
 		InputTokens              int64 `json:"input_tokens"`
 		OutputTokens             int64 `json:"output_tokens"`
@@ -392,8 +402,24 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	if len(rpcout.Content) != 1 {
 		return out, fmt.Errorf("expected 1 choice, got %#v", rpcout.Content)
 	}
-	out.Type = genaiapi.Text
-	out.Text = rpcout.Content[0].Text
+	switch rpcout.Content[0].Type {
+	case "text":
+		out.Type = genaiapi.Text
+		out.Text = rpcout.Content[0].Text
+	case "tool_use":
+		out.Type = genaiapi.ToolCalls
+		raw, err := json.Marshal(rpcout.Content[0].Input)
+		if err != nil {
+			return out, fmt.Errorf("failed to marshal input: %w; for tool call: %#v", err, rpcout.Content[0])
+		}
+		out.ToolCalls = []genaiapi.ToolCall{{
+			ID:        rpcout.Content[0].ID,
+			Name:      rpcout.Content[0].Name,
+			Arguments: string(raw),
+		}}
+	default:
+		return out, fmt.Errorf("unsupported content type %q", rpcout.Content[0].Type)
+	}
 	switch role := rpcout.Role; role {
 	case "system", "assistant", "user":
 		out.Role = genaiapi.Role(role)

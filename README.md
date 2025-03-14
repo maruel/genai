@@ -4,7 +4,7 @@ The _high performance_ native Go client for LLMs.
 
 | Provider                                                    | Chat | Streaming | Vision | JSON output | JSON schema | Seed | Tools |
 | ----------------------------------------------------------- | ---- | --------- | ------ | ----------- | ----------- | ---- | ----- |
-| [Anthropic](https://console.anthropic.com/settings/billing) | ✅   | ✅        | ✅     | ❌          | ❌          | ❌   | ⏳    |
+| [Anthropic](https://console.anthropic.com/settings/billing) | ✅   | ✅        | ✅     | ❌          | ❌          | ❌   | ✅    |
 | [Cerebras](https://cloud.cerebras.ai)                       | ✅   | ✅        | ❌     | ✅          | ✅          | ✅   | ⏳    |
 | [Cloudflare Workers AI](https://dash.cloudflare.com)        | ✅   | ✅        | ⏳     | ✅          | ✅          | ✅   | ⏳    |
 | [Cohere](https://dashboard.cohere.com/billing)              | ✅   | ✅        | ⏳     | ✅          | ✅          | ✅   | ⏳    |

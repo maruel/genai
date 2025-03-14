@@ -8,13 +8,17 @@ import (
 	"bytes"
 	"context"
 	_ "embed"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/maruel/genai/anthropic"
 	"github.com/maruel/genai/genaiapi"
+	"github.com/maruel/httpjson"
 )
 
 // See the 3kib banana jpg online at
@@ -51,26 +55,94 @@ func ExampleClient_Completion_vision() {
 			Temperature: 0.01,
 			MaxTokens:   50,
 		}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
-		if err != nil {
-			log.Fatal(err)
-		}
-		// Print to stderr so the test doesn't capture it.
-		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
-		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.Text {
-			log.Fatalf("Unexpected response: %#v", resp)
-		}
-		// Normalize some of the variance. Obviously many models will still fail this test.
-		txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Text)), ".!")
-		fmt.Printf("Response: %s\n", txt)
-		if resp.InputTokens < 100 || resp.OutputTokens < 2 {
-			log.Fatalf("Missing usage token")
+		for i := range 3 {
+			resp, err := c.Completion(context.Background(), msgs, &opts)
+			if err != nil {
+				var herr *httpjson.Error
+				// See https://docs.anthropic.com/en/api/errors#http-errors
+				if errors.As(err, &herr) && herr.StatusCode == 529 && i != 2 {
+					log.Printf("retrying after 2s")
+					time.Sleep(2 * time.Second)
+					continue
+				}
+				log.Fatal(err)
+			}
+			// Print to stderr so the test doesn't capture it.
+			fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
+			if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.Text {
+				log.Fatalf("Unexpected response: %#v", resp)
+			}
+			// Normalize some of the variance. Obviously many models will still fail this test.
+			txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Text)), ".!")
+			fmt.Printf("Response: %s\n", txt)
+			if resp.InputTokens < 100 || resp.OutputTokens < 2 {
+				log.Fatalf("Missing usage token")
+			}
+			break
 		}
 	} else {
 		// Print something so the example runs.
 		fmt.Println("Response: yes")
 	}
 	// Output: Response: yes
+}
+
+func ExampleClient_Completion_tool_use() {
+	// This code will run when ANTHROPIC_API_KEY is set.
+	// Claude 3.5 is required for tool use. ? "claude-3-5-haiku-20241022"
+	if c, err := anthropic.New("", model); err == nil {
+		msgs := []genaiapi.Message{
+			{
+				Role: genaiapi.User,
+				Type: genaiapi.Text,
+				Text: "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one.",
+			},
+		}
+		opts := genaiapi.CompletionOptions{
+			Temperature: 0.01,
+			MaxTokens:   50,
+			Tools: []genaiapi.ToolDef{
+				{
+					Name:        "best_country",
+					Description: "A tool to determine the best country",
+					Parameters: genaiapi.JSONSchema{
+						Type: "object",
+						Properties: map[string]genaiapi.JSONSchema{
+							"country": {
+								Type: "string",
+								Enum: []any{"Canada", "US"},
+							},
+						},
+						Required: []string{"country"},
+					},
+				},
+			},
+		}
+		resp, err := c.Completion(context.Background(), msgs, &opts)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.ToolCalls {
+			log.Fatalf("Unexpected response: %#v", resp)
+		}
+		log.Printf("Response: %#v", resp)
+		if len(resp.ToolCalls) != 1 || resp.ToolCalls[0].Name != "best_country" {
+			log.Fatal("Expected 1 best_country tool call")
+		}
+		var expected struct {
+			Country string `json:"country"`
+		}
+		d := json.NewDecoder(strings.NewReader(resp.ToolCalls[0].Arguments))
+		d.DisallowUnknownFields()
+		if err := d.Decode(&expected); err != nil {
+			log.Fatalf("Failed to decode %q as JSON: %v", resp.ToolCalls[0].Arguments, err)
+		}
+		fmt.Printf("Best: %v\n", expected.Country)
+	} else {
+		// Print something so the example runs.
+		fmt.Println("Best: Canada")
+	}
+	// Output: Best: Canada
 }
 
 func ExampleClient_CompletionStream() {

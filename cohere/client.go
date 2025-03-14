@@ -295,29 +295,32 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{apiKey: apiKey, model: model}, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.Message, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.CompletionResult, error) {
 	// https://docs.cohere.com/reference/chat
-	msg := genaiapi.Message{}
-	in := CompletionRequest{Model: c.model}
-	if err := in.fromOpts(opts); err != nil {
-		return msg, err
+	out := genaiapi.CompletionResult{}
+	rpcin := CompletionRequest{Model: c.model}
+	if err := rpcin.fromOpts(opts); err != nil {
+		return out, err
 	}
-	if err := in.fromMsgs(msgs); err != nil {
-		return msg, err
+	if err := rpcin.fromMsgs(msgs); err != nil {
+		return out, err
 	}
-	out := CompletionResponse{}
-	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
-		return msg, fmt.Errorf("failed to get chat response: %w", err)
+	rpcout := CompletionResponse{}
+	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
+		return out, fmt.Errorf("failed to get chat response: %w", err)
 	}
-	msg.Type = genaiapi.Text
-	msg.Text = out.Message.Content[0].Text
-	switch role := out.Message.Role; role {
+	// What about BilledUnits, especially for SearchUnits and Classifications?
+	out.InputTokens = rpcout.Usage.Tokens.InputTokens
+	out.OutputTokens = rpcout.Usage.Tokens.OutputTokens
+	out.Type = genaiapi.Text
+	out.Text = rpcout.Message.Content[0].Text
+	switch role := rpcout.Message.Role; role {
 	case "system", "assistant", "user":
-		msg.Role = genaiapi.Role(role)
+		out.Role = genaiapi.Role(role)
 	default:
-		return msg, fmt.Errorf("unsupported role %q", role)
+		return out, fmt.Errorf("unsupported role %q", role)
 	}
-	return msg, nil
+	return out, nil
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {

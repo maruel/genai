@@ -58,6 +58,9 @@ func ExampleClient_Completion_jSONSchema() {
 			log.Fatalf("Failed to decode JSON: %v", err)
 		}
 		fmt.Printf("Round: %v\n", expected.Round)
+		if resp.InputTokens != 0 || resp.OutputTokens != 0 {
+			log.Fatalf("Did cloudflare finally start filling the usage fields?")
+		}
 	} else {
 		// Print something so the example runs.
 		fmt.Println("Round: true")

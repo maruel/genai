@@ -546,38 +546,40 @@ func (c *Client) cacheContent(ctx context.Context, data []byte, mime, systemInst
 }
 */
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.Message, error) {
-	msg := genaiapi.Message{}
-	in := CompletionRequest{}
-	if err := in.fromOpts(opts); err != nil {
-		return msg, err
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.CompletionResult, error) {
+	out := genaiapi.CompletionResult{}
+	rpcin := CompletionRequest{}
+	if err := rpcin.fromOpts(opts); err != nil {
+		return out, err
 	}
-	sp, err := in.fromMsgs(msgs)
+	sp, err := rpcin.fromMsgs(msgs)
 	if err != nil {
-		return msg, err
+		return out, err
 	}
 	if sp != "" {
-		in.SystemInstruction.Parts = []Part{{Text: sp}}
+		rpcin.SystemInstruction.Parts = []Part{{Text: sp}}
 	}
-	out := CompletionResponse{}
-	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
-		return msg, err
+	rpcout := CompletionResponse{}
+	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
+		return out, err
 	}
-	if len(out.Candidates) != 1 {
-		return msg, fmt.Errorf("unexpected number of candidates; expected 1, got %v", out.Candidates)
+	out.InputTokens = rpcout.UsageMetadata.PromptTokenCount
+	out.OutputTokens = rpcout.UsageMetadata.CandidatesTokenCount + rpcout.UsageMetadata.ToolUsePromptTokenCount + rpcout.UsageMetadata.ThoughtsTokenCount
+	if len(rpcout.Candidates) != 1 {
+		return out, fmt.Errorf("unexpected number of candidates; expected 1, got %v", rpcout.Candidates)
 	}
-	parts := out.Candidates[0].Content.Parts
-	msg.Type = genaiapi.Text
-	msg.Text = parts[len(parts)-1].Text
-	switch role := out.Candidates[0].Content.Role; role {
+	parts := rpcout.Candidates[0].Content.Parts
+	out.Type = genaiapi.Text
+	out.Text = parts[len(parts)-1].Text
+	switch role := rpcout.Candidates[0].Content.Role; role {
 	case "system", "user":
-		msg.Role = genaiapi.Role(role)
+		out.Role = genaiapi.Role(role)
 	case "model":
-		msg.Role = genaiapi.Assistant
+		out.Role = genaiapi.Assistant
 	default:
-		return msg, fmt.Errorf("unsupported role %q", role)
+		return out, fmt.Errorf("unsupported role %q", role)
 	}
-	return msg, nil
+	return out, nil
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {

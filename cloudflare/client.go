@@ -293,39 +293,41 @@ func New(accountID, apiKey, model string) (*Client, error) {
 	return &Client{accountID: accountID, apiKey: apiKey, model: model}, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.Message, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.CompletionResult, error) {
 	// https://developers.cloudflare.com/api/resources/ai/methods/run/
-	msg := genaiapi.Message{}
-	in := CompletionRequest{}
-	if err := in.fromOpts(opts); err != nil {
-		return msg, err
+	out := genaiapi.CompletionResult{}
+	rpcin := CompletionRequest{}
+	if err := rpcin.fromOpts(opts); err != nil {
+		return out, err
 	}
-	if err := in.fromMsgs(msgs); err != nil {
-		return msg, err
+	if err := rpcin.fromMsgs(msgs); err != nil {
+		return out, err
 	}
-	out := CompletionResponse{}
-	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
-		return msg, fmt.Errorf("failed to get chat response: %w", err)
+	rpcout := CompletionResponse{}
+	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
+		return out, fmt.Errorf("failed to get chat response: %w", err)
 	}
-	switch v := out.Result.Response.(type) {
+	out.InputTokens = rpcout.Result.Usage.PromptTokens
+	out.OutputTokens = rpcout.Result.Usage.CompletionTokens
+	switch v := rpcout.Result.Response.(type) {
 	case string:
-		msg.Type = genaiapi.Text
-		msg.Text = v
+		out.Type = genaiapi.Text
+		out.Text = v
 	default:
-		if in.ResponseFormat.Type == "json_schema" {
+		if rpcin.ResponseFormat.Type == "json_schema" {
 			// Marshal back into JSON for now.
 			b, err := json.Marshal(v)
 			if err != nil {
-				return msg, fmt.Errorf("failed to JSON marshal type %T: %v: %w", v, v, err)
+				return out, fmt.Errorf("failed to JSON marshal type %T: %v: %w", v, v, err)
 			}
-			msg.Type = genaiapi.Text
-			msg.Text = string(b)
+			out.Type = genaiapi.Text
+			out.Text = string(b)
 		} else {
-			return msg, fmt.Errorf("unexpected type %T: %v", v, v)
+			return out, fmt.Errorf("unexpected type %T: %v", v, v)
 		}
 	}
-	msg.Role = genaiapi.Assistant
-	return msg, nil
+	out.Role = genaiapi.Assistant
+	return out, nil
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {

@@ -39,14 +39,17 @@ func ExampleClient_Completion() {
 		}
 		// Print to stderr so the test doesn't capture it.
 		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
-		txt := resp.Text
-		if len(txt) < 2 || len(txt) > 100 {
-			log.Fatalf("Unexpected response: %s", txt)
+		// Normalize some of the variance. Obviously many models will still fail this test.
+		txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Text)), ".!")
+		fmt.Printf("Response: %s\n", txt)
+		if resp.InputTokens < 10 || resp.OutputTokens < 2 {
+			log.Fatalf("Missing usage token")
 		}
+	} else {
+		// Print something so the example runs.
+		fmt.Println("Response: hello")
 	}
-	// Print something so the example runs.
-	fmt.Println("Hello, world!")
-	// Output: Hello, world!
+	// Output: Response: hello
 }
 
 func ExampleClient_CompletionStream() {

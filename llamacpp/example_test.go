@@ -84,6 +84,9 @@ func ExampleClient_Completion() {
 	// Normalize some of the variance. Obviously many models will still fail this test.
 	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Text)), ".!")
 	fmt.Printf("Response: %s\n", txt)
+	if resp.InputTokens < 2 || resp.OutputTokens < 2 {
+		log.Fatalf("Missing usage token")
+	}
 	// Output: Response: hello
 }
 

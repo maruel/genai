@@ -39,6 +39,9 @@ func ExampleClient_Completion() {
 		if len(txt) < 2 || len(txt) > 100 {
 			log.Fatalf("Unexpected response: %s", txt)
 		}
+		if resp.InputTokens < 5 || resp.OutputTokens < 2 {
+			log.Fatalf("Missing usage token")
+		}
 	}
 	// Print something so the example runs.
 	fmt.Println("Hello, world!")

@@ -32,7 +32,7 @@ type CompletionProvider interface {
 	//
 	// opts must be either nil, *CompletionOptions or a provider-specialized
 	// option struct.
-	Completion(ctx context.Context, msgs []Message, opts any) (Message, error)
+	Completion(ctx context.Context, msgs []Message, opts any) (CompletionResult, error)
 	// CompletionStream runs completion synchronously, streaming the results to channel replies.
 	//
 	// opts must be either nil, *CompletionOptions or a provider-specialized
@@ -121,6 +121,18 @@ type Message struct {
 	ToolCalls []ToolCall
 
 	_ struct{}
+}
+
+// CompletionResult is the result of a completion.
+type CompletionResult struct {
+	Message
+	Usage
+}
+
+// Usage from the LLM provider.
+type Usage struct {
+	InputTokens  int64
+	OutputTokens int64
 }
 
 // MessageChunk is a fragment of a message the LLM is sending back as part of the CompletionStream().

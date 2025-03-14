@@ -395,35 +395,37 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{apiKey: apiKey, model: model}, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.Message, error) {
-	msg := genaiapi.Message{}
-	in := CompletionRequest{Model: c.model}
-	if err := in.fromOpts(opts); err != nil {
-		return msg, err
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.CompletionResult, error) {
+	out := genaiapi.CompletionResult{}
+	rpcin := CompletionRequest{Model: c.model}
+	if err := rpcin.fromOpts(opts); err != nil {
+		return out, err
 	}
-	if err := in.fromMsgs(msgs); err != nil {
-		return msg, err
+	if err := rpcin.fromMsgs(msgs); err != nil {
+		return out, err
 	}
-	out := CompletionResponse{}
-	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
-		return msg, fmt.Errorf("failed to get chat response: %w", err)
+	rpcout := CompletionResponse{}
+	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
+		return out, fmt.Errorf("failed to get chat response: %w", err)
 	}
-	if len(out.Choices) != 1 {
-		return msg, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(out.Choices))
+	out.InputTokens = rpcout.Usage.PromptTokens
+	out.OutputTokens = rpcout.Usage.CompletionTokens
+	if len(rpcout.Choices) != 1 {
+		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(rpcout.Choices))
 	}
-	msg.Type = genaiapi.Text
-	msg.Text = out.Choices[0].Message.Content[0].Text
-	switch role := out.Choices[0].Message.Role; role {
+	out.Type = genaiapi.Text
+	out.Text = rpcout.Choices[0].Message.Content[0].Text
+	switch role := rpcout.Choices[0].Message.Role; role {
 	case "assistant", "model":
-		msg.Role = genaiapi.Assistant
+		out.Role = genaiapi.Assistant
 	case "developer":
-		msg.Role = genaiapi.System
+		out.Role = genaiapi.System
 	case "user":
-		msg.Role = genaiapi.User
+		out.Role = genaiapi.User
 	default:
-		return msg, fmt.Errorf("unsupported role %q", role)
+		return out, fmt.Errorf("unsupported role %q", role)
 	}
-	return msg, nil
+	return out, nil
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {

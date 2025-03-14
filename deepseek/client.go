@@ -223,31 +223,33 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{apiKey: apiKey, model: model}, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.Message, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.CompletionResult, error) {
 	// https://api-docs.deepseek.com/api/create-chat-completion
-	msg := genaiapi.Message{}
-	in := CompletionRequest{Model: c.model, Messages: make([]Message, 0, len(msgs))}
-	if err := in.fromOpts(opts); err != nil {
-		return msg, err
+	out := genaiapi.CompletionResult{}
+	rpcin := CompletionRequest{Model: c.model, Messages: make([]Message, 0, len(msgs))}
+	if err := rpcin.fromOpts(opts); err != nil {
+		return out, err
 	}
-	if err := in.fromMsgs(msgs); err != nil {
-		return msg, err
+	if err := rpcin.fromMsgs(msgs); err != nil {
+		return out, err
 	}
-	out := CompletionResponse{}
-	if err := c.CompletionRaw(ctx, &in, &out); err != nil {
-		return msg, err
+	rpcout := CompletionResponse{}
+	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
+		return out, err
 	}
-	msg.Type = genaiapi.Text
-	msg.Text = out.Choices[0].Message.Content
-	switch role := out.Choices[0].Message.Role; role {
+	out.InputTokens = rpcout.Usage.PromptTokens
+	out.OutputTokens = rpcout.Usage.CompletionTokens
+	out.Type = genaiapi.Text
+	out.Text = rpcout.Choices[0].Message.Content
+	switch role := rpcout.Choices[0].Message.Role; role {
 	case "system", "user":
-		msg.Role = genaiapi.Role(role)
+		out.Role = genaiapi.Role(role)
 	case "assistant", "model":
-		msg.Role = genaiapi.Assistant
+		out.Role = genaiapi.Assistant
 	default:
-		return msg, fmt.Errorf("unsupported role %q", role)
+		return out, fmt.Errorf("unsupported role %q", role)
 	}
-	return msg, nil
+	return out, nil
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
@@ -326,7 +328,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		if err != nil {
 			return fmt.Errorf("failed to get server response: %w", err)
 		}
-		if len(line) == 0 {
+		if len(line) == 0 || string(line) == ": keep-alive" {
 			continue
 		}
 		const prefix = "data: "

@@ -60,6 +60,9 @@ func ExampleClient_Completion_jSONSchema() {
 			log.Fatalf("Failed to decode JSON: %v", err)
 		}
 		fmt.Printf("Round: %v\n", expected.Round)
+		if resp.InputTokens < 100 || resp.OutputTokens < 2 {
+			log.Fatalf("Missing usage token")
+		}
 	} else {
 		// Print something so the example runs.
 		fmt.Println("Round: true")

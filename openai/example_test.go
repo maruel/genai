@@ -76,6 +76,9 @@ func ExampleClient_Completion_vision_and_JSONSchema() {
 			log.Fatalf("Failed to decode JSON: %v", err)
 		}
 		fmt.Printf("Banana: %v\n", expected.Banana)
+		if resp.InputTokens < 100 || resp.OutputTokens < 2 {
+			log.Fatalf("Missing usage token")
+		}
 	} else {
 		// Print something so the example runs.
 		fmt.Println("Banana: true")

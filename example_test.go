@@ -140,7 +140,7 @@ func Example_completionProvider() {
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "- %s: %v\n", name, err)
 		} else {
-			fmt.Fprintf(os.Stderr, "- %s: %s\n", name, response)
+			fmt.Fprintf(os.Stderr, "- %s: %v\n", name, response)
 		}
 	}
 }

@@ -14,6 +14,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"encoding/xml"
 	"errors"
 	"fmt"
 	"io"
@@ -41,9 +42,9 @@ type CompletionRequest struct {
 	Seed        int64   `json:"seed,omitzero"`
 	Stream      bool    `json:"stream,omitzero"`
 	Temperature float64 `json:"temperature,omitzero"` // [0, 5]
-	Tools       []Tool  `json:"tools,omitzero"`       // Can be ToolFunction or ToolParameter
-	TopK        int64   `json:"top_k,omitzero"`       // [1, 50]
-	TopP        float64 `json:"top_p,omitzero"`       // [0, 2.0]
+	Tools       []Tool  `json:"tools,omitzero"`
+	TopK        int64   `json:"top_k,omitzero"` // [1, 50]
+	TopP        float64 `json:"top_p,omitzero"` // [0, 2.0]
 
 	// Functions         []function     `json:"functions,omitzero"`
 }
@@ -54,25 +55,12 @@ type Message struct {
 }
 
 type Tool struct {
-	Function ToolFunction `json:"function"`
-	Type     string       `json:"type"` // function
-}
-
-type ToolFunction struct {
-	Description string         `json:"description"`
-	Name        string         `json:"name"`
-	Parameters  ToolParameters `json:"parameters"`
-}
-
-type ToolParameters struct {
-	Properties map[string]ToolParameter `json:"properties"`
-	Type       string                   `json:"type"`
-	Required   []string                 `json:"required"`
-}
-
-type ToolParameter struct {
-	Description string `json:"description"`
-	Type        string `json:"type"`
+	Type     string `json:"type"` // function
+	Function struct {
+		Description string              `json:"description"`
+		Name        string              `json:"name"`
+		Parameters  genaiapi.JSONSchema `json:"parameters"`
+	} `json:"function"`
 }
 
 /*
@@ -184,7 +172,14 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 				c.ResponseFormat.JSONSchema = v.JSONSchema
 			}
 			if len(v.Tools) != 0 {
-				return errors.New("tools support is not implemented yet")
+				// Cloudflare doesn't provide a way to force tool use.
+				c.Tools = make([]Tool, len(v.Tools))
+				for i, t := range v.Tools {
+					c.Tools[i].Type = "function"
+					c.Tools[i].Function.Name = t.Name
+					c.Tools[i].Function.Description = t.Description
+					c.Tools[i].Function.Parameters = t.Parameters
+				}
 			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
@@ -224,12 +219,9 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 type CompletionResponse struct {
 	Result struct {
 		// Normally a string, or an object if response_format.type == "json_schema".
-		Response  any `json:"response"`
-		ToolCalls []struct {
-			Arguments []string `json:"arguments"`
-			Name      string   `json:"name"`
-		} `json:"tool_calls"`
-		Usage struct {
+		Response  any        `json:"response"`
+		ToolCalls []struct{} `json:"tool_calls"` // Doesn't seem to be used at all.
+		Usage     struct {
 			CompletionTokens int64 `json:"completion_tokens"`
 			PromptTokens     int64 `json:"prompt_tokens"`
 			TotalTokens      int64 `json:"total_tokens"`
@@ -249,6 +241,16 @@ type CompletionStreamChunkResponse struct {
 		PromptTokens     int64 `json:"prompt_tokens"`
 		TotalTokens      int64 `json:"total_tokens"`
 	} `json:"usage"`
+}
+
+type ToolCalls struct {
+	XMLName xml.Name `xml:"root"`
+	Content []string `xml:"tool_call"`
+}
+
+type ToolCall struct {
+	Arguments any    `json:"arguments"`
+	Name      string `json:"name"`
 }
 
 //
@@ -311,8 +313,38 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	out.OutputTokens = rpcout.Result.Usage.CompletionTokens
 	switch v := rpcout.Result.Response.(type) {
 	case string:
-		out.Type = genaiapi.Text
-		out.Text = v
+		// This is just sad.
+		if strings.HasPrefix(v, "<tool_call>") {
+			out.Type = genaiapi.ToolCalls
+			// Example with "@hf/nousresearch/hermes-2-pro-mistral-7b" that is
+			// supposed to support tool calling (and yes it supply the tool call XML
+			// tags):
+			// "<tool_call>\n{'arguments': {'country': 'Canada'}, 'name': 'best_country'}\n</tool_call>\n<tool_call>\n{'arguments': {'country': 'US'}, 'name': 'best_country'}\n</tool_call>"
+
+			var toolCalls ToolCalls
+			if err := xml.Unmarshal([]byte("<root>"+v+"</root>"), &toolCalls); err != nil {
+				return out, fmt.Errorf("failed to unmarshal tool calls XML: %w; content: %q", err, v)
+			}
+			for i, tc := range toolCalls.Content {
+				var toolCall ToolCall
+				tc = strings.TrimSpace(tc)
+				if err := json.Unmarshal([]byte(tc), &toolCall); err != nil {
+					// This is ugly.
+					tc2 := strings.ReplaceAll(tc, "'", "\"")
+					if err := json.Unmarshal([]byte(tc2), &toolCall); err != nil {
+						return out, fmt.Errorf("failed to unmarshal tool call as JSON: %w; content: %q", err, tc)
+					}
+				}
+				raw, err := json.Marshal(toolCall.Arguments)
+				if err != nil {
+					return out, fmt.Errorf("failed to marshal tool call arguments: %w", err)
+				}
+				out.ToolCalls = append(out.ToolCalls, genaiapi.ToolCall{ID: fmt.Sprintf("tool_call%d", i), Name: toolCall.Name, Arguments: string(raw)})
+			}
+		} else {
+			out.Type = genaiapi.Text
+			out.Text = v
+		}
 	default:
 		if rpcin.ResponseFormat.Type == "json_schema" {
 			// Marshal back into JSON for now.

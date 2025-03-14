@@ -219,6 +219,8 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 	return nil
 }
 
+// https://developers.cloudflare.com/api/resources/ai/methods/run/
+// See UnionMember7
 type CompletionResponse struct {
 	Result struct {
 		// Normally a string, or an object if response_format.type == "json_schema".
@@ -238,6 +240,7 @@ type CompletionResponse struct {
 	Messages []struct{} `json:"messages"` // Annoyingly, it's included all the time
 }
 
+// If you find the documentation for this please tell me!
 type CompletionStreamChunkResponse struct {
 	Response string `json:"response"`
 	P        string `json:"p"`
@@ -333,7 +336,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, url, in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, chunks chan<- genaiapi.MessageChunk) error {
 	in := CompletionRequest{Stream: true}
 	if err := in.fromOpts(opts); err != nil {
 		return err
@@ -342,23 +345,29 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
-	end := make(chan struct{})
+	end := make(chan error)
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 	go func() {
-		for msg := range ch {
-			word := msg.Response
-			if word != "" {
-				words <- word
+		for pkt := range ch {
+			if word := pkt.Response; word != "" {
+				chunks <- genaiapi.MessageChunk{Role: genaiapi.Assistant, Type: genaiapi.Text, Text: word}
 			}
 		}
-		end <- struct{}{}
+		end <- nil
 	}()
 	err := c.CompletionStreamRaw(ctx, &in, ch)
 	close(ch)
-	<-end
+	if err2 := <-end; err2 != nil {
+		err = err2
+	}
 	return err
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
+	// Investigate websockets?
+	// https://blog.cloudflare.com/workers-ai-streaming/ and
+	// https://developers.cloudflare.com/workers/examples/websockets/
 	if err := c.validate(); err != nil {
 		return err
 	}

@@ -270,13 +270,23 @@ type CompletionResponse struct {
 	} `json:"usage"`
 }
 
+// https://docs.anthropic.com/en/api/messages-streaming
+// Each stream uses the following event flow:
+//   - message_start: contains a Message object with empty content.
+//   - A series of content blocks, each of which have a content_block_start, one
+//     or more content_block_delta events, and a content_block_stop event. Each
+//     content block will have an index that corresponds to its index in the final
+//     Message content array.
+//   - One or more message_delta events, indicating top-level changes to the
+//     final Message object.
+//   - A final message_stop event.
 type CompletionStreamChunkResponse struct {
-	// "message_start", "content_block_start", "content_block_delta"
-	Type string `json:"type"`
-	// "message_start"
+	Type string `json:"type"` // // "message_start", "content_block_start", "content_block_delta", "mesage_delta", "message_stop"
+
+	// Type == "message_start"
 	Message struct {
 		ID           string   `json:"id"`
-		Type         string   `json:"type"`
+		Type         string   `json:"type"` // "message"
 		Role         string   `json:"role"`
 		Model        string   `json:"model"`
 		Content      []string `json:"content"`
@@ -291,16 +301,38 @@ type CompletionStreamChunkResponse struct {
 	} `json:"message"`
 
 	Index int64 `json:"index"`
-	// "content_block_start"
+
+	// Type == "content_block_start"
 	ContentBlock struct {
-		Type string `json:"type"` // text
+		Type string `json:"type"` // "text", "tool_use", "thinking"
+
+		// Type == "text"
 		Text string `json:"text"`
+
+		// Type == "tool_use"
+		ID    string `json:"id"`
+		Name  string `json:"name"`
+		Input any    `json:"input"`
 	} `json:"content_block"`
-	// "content_block_delta"
+
+	// Type == "content_block_delta"
 	Delta struct {
-		Type         string `json:"type"` // text_delta
-		Text         string `json:"text"`
-		StopReason   string `json:"stop_reason"` // end_turn
+		Type string `json:"type"` // "text_delta", "input_json_delta", "thinking_delta", "signature_delta", ""
+
+		// Type == "text_delta"
+		Text string `json:"text"`
+
+		// Type == "input_json_delta"
+		PartialJSON string `json:"partial_json"`
+
+		// Type == "thinking_delta"
+		Thinking string `json:"thinking"`
+
+		// Type == "signature_delta"
+		Signature []byte `json:"signature"`
+
+		// Type == ""
+		StopReason   string `json:"stop_reason"` // "end_turn", "tool_use", "stop_sequence", "max_tokens"
 		StopSequence string `json:"stop_sequence"`
 	} `json:"delta"`
 	Usage struct {
@@ -373,7 +405,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, "https://api.anthropic.com/v1/messages", in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, chunks chan<- genaiapi.MessageChunk) error {
 	in := CompletionRequest{Model: c.model, Stream: true}
 	if err := in.fromOpts(opts); err != nil {
 		return err
@@ -382,24 +414,39 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
-	end := make(chan struct{})
+	end := make(chan error)
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 	start := time.Now()
 	go func() {
-		for msg := range ch {
+		lastRole := genaiapi.System
+		for pkg := range ch {
 			word := ""
-			switch msg.Type {
+			switch pkg.Type {
 			case "message_start":
+				switch pkg.Message.Role {
+				case "system", "assistant", "user":
+					lastRole = genaiapi.Role(pkg.Message.Role)
+				case "":
+				default:
+					cancel()
+					// We need to empty the channel to avoid blocking the goroutine.
+					for range ch {
+					}
+					end <- fmt.Errorf("unexpected role %q", pkg.Message.Role)
+					return
+				}
 			case "content_block_start":
-				word = msg.ContentBlock.Text
+				word = pkg.ContentBlock.Text
 			case "content_block_delta":
-				word = msg.Delta.Text
+				word = pkg.Delta.Text
 			}
 			slog.DebugContext(ctx, "anthropic", "word", word, "duration", time.Since(start).Round(time.Millisecond))
 			if word != "" {
-				words <- word
+				chunks <- genaiapi.MessageChunk{Role: lastRole, Type: genaiapi.Text, Text: word}
 			}
 		}
-		end <- struct{}{}
+		end <- nil
 	}()
 	err := c.CompletionStreamRaw(ctx, &in, ch)
 	close(ch)

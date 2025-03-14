@@ -329,8 +329,8 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, c.baseURL+"/completion", in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
-	start := time.Now()
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, chunks chan<- genaiapi.MessageChunk) error {
+	// start := time.Now()
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
 	in := CompletionRequest{CachePrompt: true, Stream: true}
@@ -341,22 +341,25 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
-	end := make(chan struct{})
+	end := make(chan error)
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 	go func() {
 		for msg := range ch {
-			word := msg.Content
-			slog.DebugContext(ctx, "llm", "word", word, "stop", msg.Stop, "prompt tok", msg.Timings.PromptN, "gen tok", msg.Timings.PredictedN, "prompt tok/ms", msg.Timings.PromptPerTokenMS, "gen tok/ms", msg.Timings.PredictedPerTokenMS, "duration", time.Since(start).Round(time.Millisecond))
-			if word != "" {
+			// slog.DebugContext(ctx, "llm", "word", word, "stop", msg.Stop, "prompt tok", msg.Timings.PromptN, "gen tok", msg.Timings.PredictedN, "prompt tok/ms", msg.Timings.PromptPerTokenMS, "gen tok/ms", msg.Timings.PredictedPerTokenMS, "duration", time.Since(start).Round(time.Millisecond))
+			if word := msg.Content; word != "" {
 				// Mistral Nemo really likes "▁".
-				word = strings.ReplaceAll(msg.Content, "\u2581", " ")
-				words <- word
+				// word = strings.ReplaceAll(msg.Content, "\u2581", " ")
+				chunks <- genaiapi.MessageChunk{Role: genaiapi.Assistant, Type: genaiapi.Text, Text: word}
 			}
 		}
-		end <- struct{}{}
+		end <- nil
 	}()
 	err := c.CompletionStreamRaw(ctx, &in, ch)
 	close(ch)
-	<-end
+	if err2 := <-end; err2 != nil {
+		err = err2
+	}
 	return err
 }
 

@@ -33,11 +33,11 @@ type CompletionProvider interface {
 	// opts must be either nil, *CompletionOptions or a provider-specialized
 	// option struct.
 	Completion(ctx context.Context, msgs []Message, opts any) (Message, error)
-	// CompletionStream runs completion synchronously, streaming the results to channel words.
+	// CompletionStream runs completion synchronously, streaming the results to channel replies.
 	//
 	// opts must be either nil, *CompletionOptions or a provider-specialized
 	// option struct.
-	CompletionStream(ctx context.Context, msgs []Message, opts any, words chan<- string) error
+	CompletionStream(ctx context.Context, msgs []Message, opts any, replies chan<- MessageChunk) error
 }
 
 // Model represents a served model by the provider.
@@ -95,6 +95,12 @@ type Message struct {
 	URL string
 
 	_ struct{}
+}
+
+type MessageChunk struct {
+	Role Role
+	Type ContentType
+	Text string
 }
 
 // Validate ensures the message is valid.

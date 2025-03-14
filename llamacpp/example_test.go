@@ -108,36 +108,40 @@ func ExampleClient_CompletionStream() {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	words := make(chan string, 10)
-	result := make(chan string)
+	chunks := make(chan genaiapi.MessageChunk)
+	end := make(chan string)
 	go func() {
 		resp := ""
 		for {
 			select {
 			case <-ctx.Done():
-				goto end
+				end <- resp
+				return
 			case <-srv.Done():
-				goto end
-			case w, ok := <-words:
+				end <- resp
+				return
+			case w, ok := <-chunks:
 				if !ok {
-					goto end
+					end <- resp
+					return
 				}
-				resp += w
+				if w.Type != genaiapi.Text {
+					end <- fmt.Sprintf("Got %q; Unexpected type: %v", resp, w.Type)
+					return
+				}
+				resp += w.Text
 			}
 		}
-	end:
-		result <- resp
-		close(result)
 	}()
-	err = c.CompletionStream(ctx, msgs, &opts, words)
-	close(words)
-	resp := <-result
+	err = c.CompletionStream(ctx, msgs, &opts, chunks)
+	close(chunks)
+	response := <-end
 	if err != nil {
 		log.Fatal(err)
 	}
 	// Normalize some of the variance. Obviously many models will still fail this test.
-	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp)), ".!")
-	fmt.Printf("Response: %s\n", txt)
+	response = strings.TrimRight(strings.TrimSpace(strings.ToLower(response)), ".!")
+	fmt.Printf("Response: %s\n", response)
 	// Output: Response: hello
 }
 

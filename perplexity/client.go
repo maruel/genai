@@ -210,7 +210,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, "https://api.perplexity.ai/chat/completions", in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, words chan<- string) error {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, chunks chan<- genaiapi.MessageChunk) error {
 	in := CompletionRequest{Model: c.model, Stream: true}
 	if err := in.fromOpts(opts); err != nil {
 		return err
@@ -219,22 +219,38 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
-	end := make(chan struct{})
+	end := make(chan error)
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 	go func() {
-		for msg := range ch {
-			if len(msg.Choices) != 1 {
+		lastRole := genaiapi.System
+		for pkt := range ch {
+			if len(pkt.Choices) != 1 {
 				continue
 			}
-			word := msg.Choices[0].Message.Content
-			if word != "" {
-				words <- word
+			switch role := pkt.Choices[0].Delta.Role; role {
+			case "system", "assistant", "user":
+				lastRole = genaiapi.Role(role)
+			case "":
+			default:
+				cancel()
+				// We need to empty the channel to avoid blocking the goroutine.
+				for range ch {
+				}
+				end <- fmt.Errorf("unexpected role %q", role)
+				return
+			}
+			if word := pkt.Choices[0].Delta.Content; word != "" {
+				chunks <- genaiapi.MessageChunk{Role: lastRole, Type: genaiapi.Text, Text: word}
 			}
 		}
-		end <- struct{}{}
+		end <- nil
 	}()
 	err := c.CompletionStreamRaw(ctx, &in, ch)
 	close(ch)
-	<-end
+	if err2 := <-end; err2 != nil {
+		err = err2
+	}
 	return err
 }
 

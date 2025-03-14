@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/genai/huggingface"
@@ -60,35 +61,44 @@ func ExampleClient_CompletionStream() {
 				Text: "Say hello. Use only one word.",
 			},
 		}
-		words := make(chan string, 10)
-		end := make(chan struct{})
+		chunks := make(chan genaiapi.MessageChunk)
+		end := make(chan string)
 		go func() {
 			resp := ""
 			for {
 				select {
 				case <-ctx.Done():
-					goto end
-				case w, ok := <-words:
+					end <- resp
+					return
+				case w, ok := <-chunks:
 					if !ok {
-						goto end
+						end <- resp
+						return
 					}
-					resp += w
+					if w.Type != genaiapi.Text {
+						end <- fmt.Sprintf("Got %q; Unexpected type: %v", resp, w.Type)
+						return
+					}
+					resp += w.Text
 				}
 			}
-		end:
-			close(end)
-			if len(resp) < 2 || len(resp) > 100 {
-				log.Printf("Unexpected response: %s", resp)
-			}
 		}()
-		err := c.CompletionStream(ctx, msgs, &genaiapi.CompletionOptions{}, words)
-		close(words)
-		<-end
+		opts := genaiapi.CompletionOptions{
+			Temperature: 0.01,
+			MaxTokens:   50,
+		}
+		err := c.CompletionStream(ctx, msgs, &opts, chunks)
+		close(chunks)
+		response := <-end
 		if err != nil {
 			log.Fatal(err)
 		}
+		// Normalize some of the variance. Obviously many models will still fail this test.
+		response = strings.TrimRight(strings.TrimSpace(strings.ToLower(response)), ".!")
+		fmt.Printf("Response: %s\n", response)
+	} else {
+		// Print something so the example runs.
+		fmt.Println("Response: hello")
 	}
-	// Print something so the example runs.
-	fmt.Println("Hello, world!")
-	// Output: Hello, world!
+	// Output: Response: hello
 }

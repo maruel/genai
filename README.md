@@ -13,7 +13,7 @@ The _high performance_ native Go client for LLMs.
 | [Groq](https://console.groq.com/dashboard/usage)            | ✅   | ✅        | ✅     | ✅          | ❌          | ✅   | ✅    |
 | [HuggingFace](https://huggingface.co/settings)              | ✅   | ✅        | ⏳     | ⏳          | ⏳          | ✅   | ⏳    |
 | [Mistral](https://console.mistral.ai/usage)                 | ✅   | ✅        | ✅     | ✅          | ✅          | ✅   | ✅    |
-| [OpenAI](https://platform.openai.com/usage)                 | ✅   | ✅        | ✅     | ✅          | ✅          | ✅   | ⏳    |
+| [OpenAI](https://platform.openai.com/usage)                 | ✅   | ✅        | ✅     | ✅          | ✅          | ✅   | ✅    |
 | [Perplexity](https://www.perplexity.ai/settings/api)        | ✅   | ✅        | ❌     | ❌          | ⏳          | ❌   | ❌    |
 | [TogetherAI](https://api.together.ai/settings/billing)      | ✅   | ✅        | ✅     | ✅          | ✅          | ✅   | ✅    |
 | [llama.cpp](https://github.com/ggml-org/llama.cpp)          | ✅   | ✅        | ⏳     | ⏳          | ⏳          | ✅   | ⏳    |

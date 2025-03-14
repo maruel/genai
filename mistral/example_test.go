@@ -17,10 +17,13 @@ import (
 	"github.com/maruel/genai/mistral"
 )
 
+// See the 1kib banana jpg online at
+// https://github.com/maruel/genai/blob/main/mistral/testdata/banana.jpg
+//
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
 
-func ExampleClient_Completion() {
+func ExampleClient_Completion_vision_and_JSONSchema() {
 	// This code will run when MISTRAL_API_KEY is set.
 	// As of March 2025, you can try it out for free.
 	// Require a model which has the "vision" capability.

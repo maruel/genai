@@ -20,7 +20,7 @@ import (
 // See https://api-docs.deepseek.com/quick_start/pricing
 var model = "deepseek-chat"
 
-func ExampleClient_Completion() {
+func ExampleClient_Completion_jSON() {
 	// This code will run when DEEPSEEK_API_KEY is set.
 	if c, err := deepseek.New("", model); err == nil {
 		msgs := []genaiapi.Message{

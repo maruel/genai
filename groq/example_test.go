@@ -17,10 +17,13 @@ import (
 	"github.com/maruel/genai/groq"
 )
 
+// See the 3kib banana jpg online at
+// https://github.com/maruel/genai/blob/main/groq/testdata/banana.jpg
+//
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
 
-func ExampleClient_Completion() {
+func ExampleClient_Completion_vision_and_JSON() {
 	// This code will run when GROQ_API_KEY is set.
 	// As of March 2025, you can try it out for free.
 	// We must select a model that supports vision.

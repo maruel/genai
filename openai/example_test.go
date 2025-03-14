@@ -17,6 +17,9 @@ import (
 	"github.com/maruel/genai/openai"
 )
 
+// See the 3kib banana jpg online at
+// https://github.com/maruel/genai/blob/main/openai/testdata/banana.jpg
+//
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
 
@@ -24,7 +27,7 @@ var bananaJpg []byte
 // See https://platform.openai.com/docs/models
 var model = "gpt-4o-mini"
 
-func ExampleClient_Completion() {
+func ExampleClient_Completion_vision_and_JSONSchema() {
 	// This code will run when OPENAI_API_KEY is set.
 	if c, err := openai.New("", model); err == nil {
 		msgs := []genaiapi.Message{

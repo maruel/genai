@@ -16,6 +16,9 @@ import (
 	"github.com/maruel/genai/genaiapi"
 )
 
+// See the 1kib banana jpg online at
+// https://github.com/maruel/genai/blob/main/gemini/testdata/banana.jpg
+//
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
 
@@ -23,7 +26,7 @@ var bananaJpg []byte
 // See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 var model = "gemini-2.0-flash-lite"
 
-func ExampleClient_Completion() {
+func ExampleClient_Completion_vison() {
 	// This code will run when GEMINI_API_KEY is set.
 	// As of March 2025, you can try it out for free.
 	if c, err := gemini.New("", model); err == nil {

@@ -2,7 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Package groq implements a client for the Anthropic API, to use Claude.
+// Package anthropic implements a client for the Anthropic API, to use Claude.
 //
 // It is described at
 // https://docs.anthropic.com/en/api/

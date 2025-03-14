@@ -16,6 +16,9 @@ import (
 	"github.com/maruel/genai/genaiapi"
 )
 
+// See the 3kib banana jpg online at
+// https://github.com/maruel/genai/blob/main/anthropic/testdata/banana.jpg
+//
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
 
@@ -25,7 +28,7 @@ var bananaJpg []byte
 // https://docs.anthropic.com/en/docs/about-claude/models/all-models
 var model = "claude-3-haiku-20240307"
 
-func ExampleClient_Completion() {
+func ExampleClient_Completion_vision() {
 	// This code will run when ANTHROPIC_API_KEY is set.
 	if c, err := anthropic.New("", model); err == nil {
 		msgs := []genaiapi.Message{

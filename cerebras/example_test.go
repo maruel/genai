@@ -15,7 +15,7 @@ import (
 	"github.com/maruel/genai/genaiapi"
 )
 
-func ExampleClient_Completion() {
+func ExampleClient_Completion_jSONSchema() {
 	// This code will run when CEREBRAS_API_KEY is set.
 	// As of March 2025, you can try it out for free.
 	// Cerebras supports a limited set of models.

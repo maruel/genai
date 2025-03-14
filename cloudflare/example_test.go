@@ -15,7 +15,7 @@ import (
 	"github.com/maruel/genai/genaiapi"
 )
 
-func ExampleClient_Completion() {
+func ExampleClient_Completion_jSONSchema() {
 	// This code will run when both CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_KEY are set.
 	// As of March 2025, you can try it out for free.
 	// We need to use a model that supports structured output.

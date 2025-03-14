@@ -229,7 +229,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	out.InputTokens = rpcout.Usage.PromptTokens
 	out.OutputTokens = rpcout.Usage.CompletionTokens
 	if len(rpcout.Choices) != 1 {
-		return out, errors.New("expected 1 choice")
+		return out, fmt.Errorf("expected 1 choice, got %#v", rpcout.Choices)
 	}
 	out.Type = genaiapi.Text
 	out.Text = rpcout.Choices[0].Message.Content

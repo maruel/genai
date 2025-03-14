@@ -389,6 +389,9 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	}
 	out.InputTokens = rpcout.Usage.InputTokens
 	out.OutputTokens = rpcout.Usage.OutputTokens
+	if len(rpcout.Content) != 1 {
+		return out, fmt.Errorf("expected 1 choice, got %#v", rpcout.Content)
+	}
 	out.Type = genaiapi.Text
 	out.Text = rpcout.Content[0].Text
 	switch role := rpcout.Role; role {

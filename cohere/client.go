@@ -312,6 +312,9 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	// What about BilledUnits, especially for SearchUnits and Classifications?
 	out.InputTokens = rpcout.Usage.Tokens.InputTokens
 	out.OutputTokens = rpcout.Usage.Tokens.OutputTokens
+	if len(rpcout.Message.Content) != 1 {
+		return out, fmt.Errorf("unexpected number of messages %d", len(rpcout.Message.Content))
+	}
 	out.Type = genaiapi.Text
 	out.Text = rpcout.Message.Content[0].Text
 	switch role := rpcout.Message.Role; role {

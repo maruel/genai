@@ -140,8 +140,7 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 }
 
 type Message struct {
-	Role string `json:"role,omitzero"`
-	// This seems like for text it must be a string, not a struct.
+	Role    string    `json:"role,omitzero"`
 	Content []Content `json:"content,omitzero"`
 }
 
@@ -182,9 +181,9 @@ type CompletionResponse struct {
 		// FinishReason is one of "stop", "eos", "length", "function_call" or "tool_calls".
 		FinishReason string `json:"finish_reason"`
 		Message      struct {
-			Role      genaiapi.Role `json:"role"`
-			Content   string        `json:"content"`
-			ToolCalls []ToolCall    `json:"tool_calls"`
+			Role      string     `json:"role"`
+			Content   string     `json:"content"`
+			ToolCalls []ToolCall `json:"tool_calls"`
 		} `json:"message"`
 		Logprobs struct {
 			TokenIDs      []int64   `json:"token_ids"`

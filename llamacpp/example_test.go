@@ -79,6 +79,8 @@ func ExampleClient_Completion() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// Print to stderr so the test doesn't capture it.
+	fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
 	// Normalize some of the variance. Obviously many models will still fail this test.
 	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Text)), ".!")
 	fmt.Printf("Response: %s\n", txt)

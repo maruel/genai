@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/maruel/genai/genaiapi"
@@ -32,7 +33,8 @@ func ExampleClient_Completion() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Printf("Response: %#v", resp)
+		// Print to stderr so the test doesn't capture it.
+		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
 		txt := resp.Text
 		if len(txt) < 2 || len(txt) > 100 {
 			log.Fatalf("Unexpected response: %s", txt)

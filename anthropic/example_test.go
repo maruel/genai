@@ -10,6 +10,7 @@ import (
 	_ "embed"
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/maruel/genai/anthropic"
@@ -54,7 +55,8 @@ func ExampleClient_Completion_vision() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Printf("Response: %#v", resp)
+		// Print to stderr so the test doesn't capture it.
+		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
 		txt := resp.Text
 		if len(txt) < 2 || len(txt) > 100 {
 			log.Fatalf("Unexpected response: %s", txt)
@@ -116,4 +118,22 @@ func ExampleClient_CompletionStream() {
 		fmt.Println("Response: hello")
 	}
 	// Output: Response: hello
+}
+
+func ExampleClient_ListModels() {
+	// Print something so the example runs.
+	fmt.Println("Got models")
+	if c, err := anthropic.New("", ""); err == nil {
+		models, err := c.ListModels(context.Background())
+		if err != nil {
+			fmt.Printf("Failed to get models: %v\n", err)
+			return
+		}
+		for _, model := range models {
+			// The list of models will change over time. Print them to stderr so the
+			// test doesn't capture them.
+			fmt.Fprintf(os.Stderr, "- %s\n", model)
+		}
+	}
+	// Output: Got models
 }

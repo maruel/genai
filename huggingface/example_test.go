@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/maruel/genai/genaiapi"
@@ -36,7 +37,8 @@ func ExampleClient_Completion() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Printf("Response: %#v", resp)
+		// Print to stderr so the test doesn't capture it.
+		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
 		txt := resp.Text
 		if len(txt) < 2 || len(txt) > 100 {
 			log.Fatalf("Unexpected response: %s", txt)
@@ -101,4 +103,18 @@ func ExampleClient_CompletionStream() {
 		fmt.Println("Response: hello")
 	}
 	// Output: Response: hello
+}
+
+func ExampleClient_ListModels() {
+	if c, err := huggingface.New("", ""); err == nil {
+		models, err := c.ListModels(context.Background())
+		if err != nil {
+			fmt.Printf("Failed to get models: %v\n", err)
+			return
+		}
+		// Warning: Hugginface hosts a lot of models!
+		for _, model := range models {
+			fmt.Printf("- %s\n", model)
+		}
+	}
 }

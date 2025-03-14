@@ -53,7 +53,7 @@ jobs:
         PERPLEXITY_API_KEY    : $({ secrets.PERPLEXITY_API_KEY    })
       run: go test -timeout=600s -v -covermode=count -coverprofile coverage.txt -bench=. -benchtime=1x ./...
     - name: 'Check: go test -cover'
-      if: matrix.os == 'windows-latest' or matrix.os == 'macos-latest'
+      if: matrix.os == 'windows-latest' || matrix.os == 'macos-latest'
       run: go test -timeout=600s -v -covermode=count -coverprofile coverage.txt -bench=. -benchtime=1x ./...
       # Don't send code coverage if anything failed to reduce spam.
     - uses: codecov/codecov-action@v4

@@ -76,7 +76,15 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 				return errors.New("to be implemented")
 			}
 			if len(v.Tools) != 0 {
-				return errors.New("tools support is not implemented yet")
+				// Let's assume if the user provides tools, they want to use them.
+				c.ToolChoice = "required"
+				c.Tools = make([]Tool, len(v.Tools))
+				for i, t := range v.Tools {
+					c.Tools[i].Type = "function"
+					c.Tools[i].Function.Name = t.Name
+					c.Tools[i].Function.Description = t.Description
+					c.Tools[i].Function.Arguments = t.Parameters
+				}
 			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
@@ -132,9 +140,12 @@ type Message struct {
 	Role      string    `json:"role"`
 	Content   []Content `json:"content,omitzero"`
 	ToolCalls []struct {
-		ID       string   `json:"id,omitzero"`
-		Type     string   `json:"type,omitzero"` // "function"
-		Function Function `json:"function,omitzero"`
+		ID       string `json:"id,omitzero"`
+		Type     string `json:"type,omitzero"` // "function"
+		Function struct {
+			Name      string `json:"name,omitzero"`
+			Arguments string `json:"arguments,omitzero"`
+		} `json:"function,omitzero"`
 	} `json:"tool_calls,omitzero"`
 }
 
@@ -147,14 +158,12 @@ type Content struct {
 }
 
 type Tool struct {
-	Type     string   `json:"type,omitzero"` // "function"
-	Function Function `json:"function,omitzero"`
-}
-
-type Function struct {
-	Name        string   `json:"name,omitzero"`
-	Description string   `json:"description,omitzero"`
-	Arguments   []string `json:"arguments,omitzero"`
+	Type     string `json:"type,omitzero"` // "function"
+	Function struct {
+		Name        string              `json:"name,omitzero"`
+		Description string              `json:"description,omitzero"`
+		Arguments   genaiapi.JSONSchema `json:"arguments,omitzero"`
+	} `json:"function,omitzero"`
 }
 
 type CompletionResponse struct {
@@ -176,8 +185,8 @@ type CompletionResponse struct {
 				Type     string `json:"type"` // function
 				Function struct {
 					Name        string   `json:"name"`
-					Description string   `json:"description"`
-					Arguments   []string `json:"arguments"`
+					Description struct{} `json:"description"` // Passed in as null
+					Arguments   any      `json:"arguments"`
 				} `json:"function"`
 			} `json:"tool_calls"`
 		} `json:"message"`
@@ -217,8 +226,8 @@ type CompletionStreamChunkResponse struct {
 				Type     string `json:"type"` // function
 				Function struct {
 					Name        string   `json:"name"`
-					Description string   `json:"description"`
-					Arguments   []string `json:"arguments"`
+					Description struct{} `json:"description"`
+					Arguments   any      `json:"arguments"`
 				} `json:"function"`
 			} `json:"tool_calls"`
 		} `json:"delta"`
@@ -297,8 +306,22 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	if len(rpcout.Choices) != 1 {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(rpcout.Choices))
 	}
-	out.Type = genaiapi.Text
-	out.Text = rpcout.Choices[0].Message.Content
+	if len(rpcout.Choices[0].Message.ToolCalls) != 0 {
+		out.Type = genaiapi.ToolCalls
+		out.ToolCalls = make([]genaiapi.ToolCall, len(rpcout.Choices[0].Message.ToolCalls))
+		for i, t := range rpcout.Choices[0].Message.ToolCalls {
+			out.ToolCalls[i].ID = t.ID
+			out.ToolCalls[i].Name = t.Function.Name
+			b, err := json.Marshal(t.Function.Arguments)
+			if err != nil {
+				return out, fmt.Errorf("failed to marshal arguments: %w", err)
+			}
+			out.ToolCalls[i].Arguments = string(b)
+		}
+	} else {
+		out.Type = genaiapi.Text
+		out.Text = rpcout.Choices[0].Message.Content
+	}
 	switch role := rpcout.Choices[0].Message.Role; role {
 	case "system", "assistant", "user":
 		out.Role = genaiapi.Role(role)

@@ -6,6 +6,7 @@ package huggingface_test
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -53,6 +54,67 @@ func ExampleClient_Completion() {
 		fmt.Println("Response: hello")
 	}
 	// Output: Response: hello
+}
+
+func ExampleClient_Completion_tool_use() {
+	// This code will run when HUGGINGFACE_API_KEY is set or ~/.cache/huggingface/token exists.
+	// As of March 2025, you can try it out for free.
+	// See https://huggingface.co/models?inference=warm&sort=trending
+	// Eventually use one that supports structured output.
+	if c, err := huggingface.New("", "meta-llama/Llama-3.2-3B-Instruct"); err == nil {
+		msgs := []genaiapi.Message{
+			{
+				Role: genaiapi.User,
+				Type: genaiapi.Text,
+				Text: "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one.",
+			},
+		}
+		opts := genaiapi.CompletionOptions{
+			Seed:        1,
+			Temperature: 0.01,
+			MaxTokens:   200,
+			Tools: []genaiapi.ToolDef{
+				{
+					Name:        "best_country",
+					Description: "A tool to determine the best country",
+					Parameters: genaiapi.JSONSchema{
+						Type: "object",
+						Properties: map[string]genaiapi.JSONSchema{
+							"country": {
+								Type: "string",
+								Enum: []any{"Canada", "US"},
+							},
+						},
+						Required: []string{"country"},
+					},
+				},
+			},
+		}
+		resp, err := c.Completion(context.Background(), msgs, &opts)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.ToolCalls {
+			log.Fatalf("Unexpected response: %#v", resp)
+		}
+		log.Printf("Response: %#v", resp)
+		if len(resp.ToolCalls) != 1 || resp.ToolCalls[0].Name != "best_country" {
+			log.Fatal("Expected at least one best_country tool call")
+		}
+		var expected struct {
+			Country string `json:"country"`
+		}
+		d := json.NewDecoder(strings.NewReader(resp.ToolCalls[0].Arguments))
+		d.DisallowUnknownFields()
+		if err := d.Decode(&expected); err != nil {
+			log.Fatalf("Failed to decode %q as JSON: %v", resp.ToolCalls[0].Arguments, err)
+		}
+		fmt.Printf("Best: %v\n", expected.Country)
+	} else {
+		// Print something so the example runs.
+		fmt.Println("Best: Canada")
+	}
+	// Output: Best: Canada
 }
 
 func ExampleClient_CompletionStream() {

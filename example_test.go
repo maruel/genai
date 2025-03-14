@@ -22,6 +22,7 @@ import (
 	"github.com/maruel/genai/mistral"
 	"github.com/maruel/genai/openai"
 	"github.com/maruel/genai/perplexity"
+	"github.com/maruel/genai/togetherai"
 )
 
 func Example_modelProvider() {
@@ -62,6 +63,9 @@ func Example_modelProvider() {
 		modelProviders["openai"] = c
 	}
 	// perplexity doesn't implement ModelProvider.
+	if c, err := togetherai.New("", ""); err == nil {
+		modelProviders["togetherai"] = c
+	}
 
 	for name, p := range modelProviders {
 		models, err := p.ListModels(context.Background())
@@ -126,6 +130,9 @@ func Example_completionProvider() {
 	}
 	if c, err := perplexity.New(""); err == nil {
 		completionProviders["perplexity"] = c
+	}
+	if c, err := togetherai.New("", "deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free"); err == nil {
+		completionProviders["togetherai"] = c
 	}
 
 	for name, provider := range completionProviders {

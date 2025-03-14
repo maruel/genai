@@ -11,6 +11,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -23,13 +24,16 @@ import (
 	"time"
 
 	"github.com/maruel/genai/genaiapi"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
 )
+
+// Oficial python client library at https://github.com/togethercomputer/together-python/tree/main/src/together
 
 // https://docs.together.ai/reference/chat-completions-1
 type CompletionRequest struct {
 	Model                         string             `json:"model"`
-	Stream                        bool               `json:"stream"`
+	StreamTokens                  bool               `json:"stream_tokens"`
 	Messages                      []Message          `json:"messages"`
 	MaxTokens                     int64              `json:"max_tokens,omitzero"`
 	Stop                          []string           `json:"stop,omitzero"`
@@ -45,10 +49,13 @@ type CompletionRequest struct {
 	FrequencyPenalty              float64            `json:"frequency_penalty,omitzero"` // [-2.0, 2.0]
 	LogitBias                     map[string]float64 `json:"logit_bias,omitzero"`
 	Seed                          int64              `json:"seed,omitzero"`
-	ResponseFormat                any                `json:"response_format,omitzero"` // TODO
-	Tools                         []any              `json:"tools,omitzero"`           // TODO
-	ToolChoices                   []any              `json:"tool_choices,omitzero"`    // TODO
-	SafetyModel                   string             `json:"safety_model,omitzero"`    // https://docs.together.ai/docs/inference-models#moderation-models
+	ResponseFormat                struct {
+		Type   string              `json:"type,omitzero"` // "json_object", "json_schema" according to python library.
+		Schema genaiapi.JSONSchema `json:"schema,omitzero"`
+	} `json:"response_format,omitzero"`
+	Tools       []Tool `json:"tools,omitzero"`
+	ToolChoice  string `json:"tool_choice,omitzero"`  // "auto" or a []Tool
+	SafetyModel string `json:"safety_model,omitzero"` // https://docs.together.ai/docs/inference-models#moderation-models
 }
 
 func (c *CompletionRequest) fromOpts(opts any) error {
@@ -57,8 +64,23 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 		c.MaxTokens = v.MaxTokens
 		c.Seed = v.Seed
 		c.Temperature = v.Temperature
-		if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
-			return errors.New("to be implemented")
+		if v.ReplyAsJSON {
+			c.ResponseFormat.Type = "json_object"
+		}
+		if !v.JSONSchema.IsZero() {
+			// Warning: using a model small may fail.
+			c.ResponseFormat.Type = "json_schema"
+			c.ResponseFormat.Schema = v.JSONSchema
+		}
+		if len(v.Tools) != 0 {
+			c.ToolChoice = "required"
+			c.Tools = make([]Tool, len(v.Tools))
+			for i, t := range v.Tools {
+				c.Tools[i].Type = "function"
+				c.Tools[i].Function.Name = t.Name
+				c.Tools[i].Function.Description = t.Description
+				c.Tools[i].Function.Parameters = t.Parameters
+			}
 		}
 	default:
 		return fmt.Errorf("unsupported options type %T", opts)
@@ -69,6 +91,9 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 	c.Messages = make([]Message, len(msgs))
 	for i, m := range msgs {
+		if err := m.Validate(); err != nil {
+			return fmt.Errorf("message %d: %w", i, err)
+		}
 		switch m.Role {
 		case genaiapi.System:
 			if i != 0 {
@@ -76,39 +101,82 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 			}
 		case genaiapi.User, genaiapi.Assistant:
 		default:
-			return fmt.Errorf("message %d: unexpected role %q", i, m.Role)
+			return fmt.Errorf("message %d: unsupported role %q", i, m.Role)
 		}
+		c.Messages[i].Role = string(m.Role)
+		c.Messages[i].Content = []Content{{}}
 		switch m.Type {
 		case genaiapi.Text:
-			if m.Text == "" {
-				return fmt.Errorf("message %d: missing text content", i)
+			c.Messages[i].Content[0].Type = "text"
+			c.Messages[i].Content[0].Text = m.Text
+		case genaiapi.Document:
+			mimeType, data, err := internal.ParseDocument(&m, 10*1024*1024)
+			if err != nil {
+				return fmt.Errorf("message %d: %w", i, err)
+			}
+			switch {
+			case strings.HasPrefix(mimeType, "image/"):
+				c.Messages[i].Content[0].Type = "image_url"
+				if m.URL == "" {
+					c.Messages[i].Content[0].ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+				} else {
+					c.Messages[i].Content[0].ImageURL.URL = m.URL
+				}
+			case strings.HasPrefix(mimeType, "video/"):
+				c.Messages[i].Content[0].Type = "video_url"
+				if m.URL == "" {
+					c.Messages[i].Content[0].VideoURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+				} else {
+					c.Messages[i].Content[0].VideoURL.URL = m.URL
+				}
+			default:
+				return fmt.Errorf("message %d: unsupported mime type %s", i, mimeType)
 			}
 		default:
 			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
 		}
-		c.Messages[i].Role = string(m.Role)
-		c.Messages[i].Content.Type = "text"
-		c.Messages[i].Content.Text = msgs[i].Text
 	}
 	return nil
 }
 
 type Message struct {
-	Role    string `json:"role"`
-	Content struct {
-		Type     string `json:"content"` // text,image_url,video_url
-		Text     string `json:"text"`
-		ImageURL string `json:"image_url"`
-		VideoURL string `json:"video_url"`
-	} `json:"content"`
+	Role string `json:"role,omitzero"`
+	// This seems like for text it must be a string, not a struct.
+	Content []Content `json:"content,omitzero"`
+}
+
+type Content struct {
+	Type string `json:"type,omitzero"` // "text", "image_url", "video_url"
+
+	// Type == "text"
+	Text string `json:"text,omitzero"`
+
+	// Type == "image_url"
+	ImageURL struct {
+		URL string `json:"url,omitzero"`
+	} `json:"image_url,omitzero"`
+
+	// Type == "video_url"
+	VideoURL struct {
+		URL string `json:"url,omitzero"`
+	} `json:"video_url,omitzero"`
+}
+
+type Tool struct {
+	Type     string `json:"type,omitzero"` // "function"
+	Function struct {
+		Name        string              `json:"name,omitzero"`
+		Description string              `json:"description,omitzero"`
+		Parameters  genaiapi.JSONSchema `json:"parameters,omitzero"`
+	} `json:"function,omitzero"`
 }
 
 type CompletionResponse struct {
 	ID      string   `json:"id"`
 	Prompt  []string `json:"prompt"`
 	Choices []struct {
-		Text  string `json:"text"`
-		Index int64  `json:"index"`
+		// Text  string `json:"text"`
+		Index int64 `json:"index"`
 		// The seed is returned as a int128.
 		Seed big.Int `json:"seed"`
 		// FinishReason is one of "stop", "eos", "length", "function_call" or "tool_calls".
@@ -116,19 +184,7 @@ type CompletionResponse struct {
 		Message      struct {
 			Role      genaiapi.Role `json:"role"`
 			Content   string        `json:"content"`
-			ToolCalls []struct {
-				Index    int64  `json:"index"`
-				ID       string `json:"id"`
-				Type     string `json:"type"` // function
-				Function struct {
-					Name      string   `json:"name"`
-					Arguments []string `json:"arguments"`
-				} `json:"function"`
-			} `json:"tool_calls"`
-			FunctionCall struct {
-				Name      string   `json:"name"`
-				Arguments []string `json:"arguments"`
-			} `json:"function_call"`
+			ToolCalls []ToolCall    `json:"tool_calls"`
 		} `json:"message"`
 		Logprobs struct {
 			TokenIDs      []int64   `json:"token_ids"`
@@ -143,26 +199,43 @@ type CompletionResponse struct {
 	} `json:"usage"`
 	Created Time   `json:"created"`
 	Model   string `json:"model"`
-	Object  string `json:"object"` // chat.completion
+	Object  string `json:"object"` // "chat.completion"
+}
+
+type ToolCall struct {
+	Index    int64  `json:"index"`
+	ID       string `json:"id"`
+	Type     string `json:"type"` // function
+	Function struct {
+		Name      string `json:"name"`
+		Arguments string `json:"arguments"`
+	} `json:"function"`
 }
 
 type CompletionStreamChunkResponse struct {
-	/*
-		ID                string `json:"id"`
-		Object            string `json:"object"`
-		Created           Time   `json:"created"`
-		Model             string `json:"model"`
-		SystemFingerprint string `json:"system_fingerprint"`
-		Choices           []struct {
-			Index int64 `json:"index"`
-			Delta struct {
-				Role    genaiapi.Role `json:"role"`
-				Content string        `json:"content"`
-			} `json:"delta"`
-			Logprobs     any    `json:"logprobs"`
-			FinishReason string `json:"finish_reason"` // stop
-		} `json:"choices"`
-	*/
+	ID      string `json:"id"`
+	Object  string `json:"object"` // "chat.completion.chunk"
+	Created Time   `json:"created"`
+	Model   string `json:"model"`
+	Choices []struct {
+		Index int64  `json:"index"`
+		Text  string `json:"text"` // Duplicated to Delta.Text
+		Seed  int64  `json:"seed"`
+		Delta struct {
+			TokenID   int64         `json:"token_id"`
+			Role      genaiapi.Role `json:"role"`
+			Content   string        `json:"content"`
+			ToolCalls []ToolCall    `json:"tool_calls"`
+		} `json:"delta"`
+		Logprobs     struct{} `json:"logprobs"`
+		FinishReason string   `json:"finish_reason"` //
+	} `json:"choices"`
+	// SystemFingerprint string `json:"system_fingerprint"`
+	Usage struct {
+		PromptTokens     int64 `json:"prompt_tokens"`
+		CompletionTokens int64 `json:"completion_tokens"`
+		TotalTokens      int64 `json:"total_tokens"`
+	} `json:"usage"`
 }
 
 //
@@ -185,7 +258,7 @@ type Client struct {
 
 // New creates a new client to talk to the Together.AI platform API.
 //
-// If apiKey is not provided, it tries to load it from the TOGETHERAI_API_KEY environment variable.
+// If apiKey is not provided, it tries to load it from the TOGETHER_API_KEY environment variable.
 // If none is found, it returns an error.
 // Get your API key at https://api.together.ai/settings/api-keys
 // If no model is provided, only functions that do not require a model, like ListModels, will work.
@@ -193,7 +266,7 @@ type Client struct {
 // Use one of the model from https://docs.together.ai/docs/serverless-models
 func New(apiKey, model string) (*Client, error) {
 	if apiKey == "" {
-		if apiKey = os.Getenv("TOGETHERAI_API_KEY"); apiKey == "" {
+		if apiKey = os.Getenv("TOGETHER_API_KEY"); apiKey == "" {
 			return nil, errors.New("together.ai API key is required; get one at " + apiKeyURL)
 		}
 	}
@@ -219,8 +292,16 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	if len(rpcout.Choices) != 1 {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(rpcout.Choices))
 	}
-	out.Type = genaiapi.Text
-	out.Text = rpcout.Choices[0].Message.Content
+	// Warning: using a model small may fail.
+	if len(rpcout.Choices[0].Message.ToolCalls) != 0 {
+		out.Type = genaiapi.ToolCalls
+		for _, t := range rpcout.Choices[0].Message.ToolCalls {
+			out.ToolCalls = append(out.ToolCalls, genaiapi.ToolCall{Name: t.Function.Name, Arguments: t.Function.Arguments})
+		}
+	} else {
+		out.Type = genaiapi.Text
+		out.Text = rpcout.Choices[0].Message.Content
+	}
 	switch role := rpcout.Choices[0].Message.Role; role {
 	case "system", "assistant", "user":
 		out.Role = genaiapi.Role(role)
@@ -238,7 +319,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, chunks chan<- genaiapi.MessageChunk) error {
-	in := CompletionRequest{Model: c.model, Stream: true}
+	in := CompletionRequest{Model: c.model, StreamTokens: true}
 	if err := in.fromOpts(opts); err != nil {
 		return err
 	}
@@ -250,9 +331,8 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 	go func() {
-		// lastRole := genaiapi.System
-		for range ch {
-			/* TODO
+		lastRole := genaiapi.System
+		for pkt := range ch {
 			if len(pkt.Choices) != 1 {
 				continue
 			}
@@ -271,7 +351,6 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 			if word := pkt.Choices[0].Delta.Content; word != "" {
 				chunks <- genaiapi.MessageChunk{Role: lastRole, Type: genaiapi.Text, Text: word}
 			}
-			*/
 		}
 		end <- nil
 	}()
@@ -318,6 +397,9 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
 		}
 		suffix := string(line[len(prefix):])
+		if suffix == "[DONE]" {
+			return nil
+		}
 		d := json.NewDecoder(strings.NewReader(suffix))
 		d.DisallowUnknownFields()
 		d.UseNumber()
@@ -349,8 +431,8 @@ type Model struct {
 	Config        struct {
 		ChatTemplate string   `json:"chat_template"`
 		Stop         []string `json:"stop"`
-		BosToken     string   `json:"bos"`
-		EosToken     string   `json:"eos"`
+		BosToken     string   `json:"bos_token"`
+		EosToken     string   `json:"eos_token"`
 	} `json:"config"`
 	Pricing struct {
 		Hourly   float64 `json:"hourly"`
@@ -366,7 +448,7 @@ func (m *Model) GetID() string {
 }
 
 func (m *Model) String() string {
-	return fmt.Sprintf("%s (%s): %s Context: %d; in: %.1f$/Mt out: %.1f$/Mt", m.ID, m.Created.AsTime().Format("2006-01-02"), m.Type, m.ContextLength, m.Pricing.Input, m.Pricing.Output)
+	return fmt.Sprintf("%s (%s): %s Context: %d; in: %.2f$/Mt out: %.2f$/Mt", m.ID, m.Created.AsTime().Format("2006-01-02"), m.Type, m.ContextLength, m.Pricing.Input, m.Pricing.Output)
 }
 
 func (m *Model) Context() int64 {

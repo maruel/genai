@@ -15,6 +15,7 @@ The _high performance_ native Go client for LLMs.
 | [Mistral](https://console.mistral.ai/usage)                 | ✅   | ✅        | ✅     | ✅          | ✅          | ✅   | ⏳    |
 | [OpenAI](https://platform.openai.com/usage)                 | ✅   | ✅        | ✅     | ✅          | ✅          | ✅   | ⏳    |
 | [Perplexity](https://www.perplexity.ai/settings/api)        | ✅   | ✅        | ❌     | ❌          | ⏳          | ❌   | ❌    |
+| [TogetherAI](https://api.together.ai/settings/billing)      | ✅   | ✅        | ✅     | ✅          | ✅          | ✅   | ✅    |
 | [llama.cpp](https://github.com/ggml-org/llama.cpp)          | ✅   | ✅        | ⏳     | ⏳          | ⏳          | ✅   | ⏳    |
 
 - ✅ Implemented
@@ -53,6 +54,7 @@ apply):
 - [Groq](https://console.groq.com/docs/rate-limits) 0.5qps, 500k tokens/day
 - [HuggingFace](https://huggingface.co/docs/api-inference/pricing) 10¢/month
 - [Mistral](https://help.mistral.ai/en/articles/225174-what-are-the-limits-of-the-free-tier) 1qps, 1B tokens/month
+- [Together.AI](https://api.together.ai/settings/plans) provides many models for free at 1qps
 - Running [llama.cpp](https://github.com/ggml-org/llama.cpp) locally is free. :)
 
 TODO: Investigate providers at https://github.com/cheahjs/free-llm-api-resources

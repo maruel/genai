@@ -8,7 +8,7 @@ The _high performance_ native Go client for LLMs.
 | [Cerebras](https://cloud.cerebras.ai)                       | ✅   | ✅        | ❌     | ✅          | ✅          | ✅   | ✅    |
 | [Cloudflare Workers AI](https://dash.cloudflare.com)        | ✅   | ✅        | ⏳     | ✅          | ✅          | ✅   | ✅    |
 | [Cohere](https://dashboard.cohere.com/billing)              | ✅   | ✅        | ⏳     | ✅          | ✅          | ✅   | ✅    |
-| [DeepSeek](https://platform.deepseek.com)                   | ✅   | ✅        | ❌     | ✅          | ❌          | ❌   | ⏳    |
+| [DeepSeek](https://platform.deepseek.com)                   | ✅   | ✅        | ❌     | ✅          | ❌          | ❌   | ✅    |
 | [Google's Gemini](http://aistudio.google.com)               | ✅   | ✅        | ✅     | ⏳          | ⏳          | ✅   | ⏳    |
 | [Groq](https://console.groq.com/dashboard/usage)            | ✅   | ✅        | ✅     | ✅          | ❌          | ✅   | ✅    |
 | [HuggingFace](https://huggingface.co/settings)              | ✅   | ✅        | ⏳     | ⏳          | ⏳          | ✅   | ⏳    |

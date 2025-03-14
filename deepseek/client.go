@@ -71,7 +71,15 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 				return errors.New("deepseek doesn't support JSON schema")
 			}
 			if len(v.Tools) != 0 {
-				return errors.New("tools support is not implemented yet")
+				// Let's assume if the user provides tools, they want to use them.
+				c.ToolChoice = "required"
+				c.Tools = make([]Tool, len(v.Tools))
+				for i, t := range v.Tools {
+					c.Tools[i].Type = "function"
+					c.Tools[i].Function.Name = t.Name
+					c.Tools[i].Function.Description = t.Description
+					c.Tools[i].Function.Parameters = t.Parameters
+				}
 			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
@@ -107,12 +115,20 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 }
 
 type Message struct {
-	Role             string `json:"role"`
-	Content          string `json:"content"`
+	Role             string `json:"role,omitzero"`
+	Content          string `json:"content,omitzero"`
 	Name             string `json:"name,omitzero"`
 	Prefix           bool   `json:"prefix,omitzero"`
 	ReasoningContent string `json:"reasoning_content,omitzero"`
-	ToolCallID       string `json:"tool_call_id,omitzero"`
+	ToolCall         []struct {
+		Index    int64  `json:"index,omitzero"`
+		ID       string `json:"id,omitzero"`
+		Type     string `json:"type,omitzero"` // "function"
+		Function struct {
+			Name      string `json:"name,omitzero"`
+			Arguments string `json:"arguments,omitzero"`
+		} `json:"function,omitzero"`
+	} `json:"tool_calls,omitzero"`
 }
 
 type Tool struct {
@@ -127,7 +143,7 @@ type Tool struct {
 type CompletionResponse struct {
 	ID      string `json:"id"`
 	Choices []struct {
-		FinishReason string   `json:"finish_reason"`
+		FinishReason string   `json:"finish_reason"` // "tool_calls"
 		Index        int64    `json:"index"`
 		Message      Message  `json:"message"`
 		Logprobs     Logprobs `json:"logprobs"`
@@ -242,8 +258,17 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	if len(rpcout.Choices) != 1 {
 		return out, fmt.Errorf("expected 1 choice, got %#v", rpcout.Choices)
 	}
-	out.Type = genaiapi.Text
-	out.Text = rpcout.Choices[0].Message.Content
+	if len(rpcout.Choices[0].Message.ToolCall) != 0 {
+		out.Type = genaiapi.ToolCalls
+		out.ToolCalls = make([]genaiapi.ToolCall, len(rpcout.Choices[0].Message.ToolCall))
+		for i, t := range rpcout.Choices[0].Message.ToolCall {
+			out.ToolCalls[i].Name = t.Function.Name
+			out.ToolCalls[i].Arguments = t.Function.Arguments
+		}
+	} else {
+		out.Type = genaiapi.Text
+		out.Text = rpcout.Choices[0].Message.Content
+	}
 	switch role := rpcout.Choices[0].Message.Role; role {
 	case "system", "user":
 		out.Role = genaiapi.Role(role)

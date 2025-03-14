@@ -73,7 +73,7 @@ func ExampleClient_CompletionStream() {
 				Text: "Say hello. Use only one word.",
 			},
 		}
-		chunks := make(chan genaiapi.MessageChunk, 10)
+		chunks := make(chan genaiapi.MessageChunk)
 		end := make(chan string)
 		go func() {
 			resp := ""

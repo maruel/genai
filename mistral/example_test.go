@@ -9,13 +9,17 @@ import (
 	"context"
 	_ "embed"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/genai/mistral"
+	"github.com/maruel/httpjson"
 )
 
 // See the 1kib banana jpg online at
@@ -94,42 +98,54 @@ func ExampleClient_CompletionStream() {
 				Text: "Say hello. Use only one word.",
 			},
 		}
-		chunks := make(chan genaiapi.MessageChunk)
-		end := make(chan string)
-		go func() {
-			resp := ""
-			for {
-				select {
-				case <-ctx.Done():
-					end <- resp
-					return
-				case w, ok := <-chunks:
-					if !ok {
+		for i := range 3 {
+			chunks := make(chan genaiapi.MessageChunk)
+			end := make(chan string)
+			go func() {
+				resp := ""
+				for {
+					select {
+					case <-ctx.Done():
 						end <- resp
 						return
+					case w, ok := <-chunks:
+						if !ok {
+							end <- resp
+							return
+						}
+						if w.Type != genaiapi.Text {
+							end <- fmt.Sprintf("Got %q; Unexpected type: %v", resp, w.Type)
+							return
+						}
+						resp += w.Text
 					}
-					if w.Type != genaiapi.Text {
-						end <- fmt.Sprintf("Got %q; Unexpected type: %v", resp, w.Type)
-						return
-					}
-					resp += w.Text
 				}
+			}()
+			opts := genaiapi.CompletionOptions{
+				Seed:        1,
+				Temperature: 0.01,
+				MaxTokens:   50,
 			}
-		}()
-		opts := genaiapi.CompletionOptions{
-			Seed:        1,
-			Temperature: 0.01,
-			MaxTokens:   50,
+			err := c.CompletionStream(ctx, msgs, &opts, chunks)
+			close(chunks)
+			response := <-end
+			if err != nil && i != 2 {
+				// Mistral has a very good rate limiting implementation.
+				var herr *httpjson.Error
+				if errors.As(err, &herr) {
+					if herr.StatusCode == http.StatusTooManyRequests {
+						fmt.Fprintf(os.Stderr, "Rate limited, waiting 2s\n")
+						time.Sleep(2 * time.Second)
+						continue
+					}
+				}
+				log.Fatal(err)
+			}
+			// Normalize some of the variance. Obviously many models will still fail this test.
+			response = strings.TrimRight(strings.TrimSpace(strings.ToLower(response)), ".!")
+			fmt.Printf("Response: %s\n", response)
+			break
 		}
-		err := c.CompletionStream(ctx, msgs, &opts, chunks)
-		close(chunks)
-		response := <-end
-		if err != nil {
-			log.Fatal(err)
-		}
-		// Normalize some of the variance. Obviously many models will still fail this test.
-		response = strings.TrimRight(strings.TrimSpace(strings.ToLower(response)), ".!")
-		fmt.Printf("Response: %s\n", response)
 	} else {
 		// Print something so the example runs.
 		fmt.Println("Response: hello")

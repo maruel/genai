@@ -420,8 +420,14 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 			if err = d.Decode(&erAuth); err != nil {
 				return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
 			}
-			// Happens with Requests rate limit exceeded.
-			// TODO: Wrap it so it can be retried like a 429.
+			// This is clunky but the best we can do.
+			if erAuth.Message == "Requests rate limit exceeded" {
+				return &httpjson.Error{
+					ResponseBody: []byte(erAuth.Message),
+					StatusCode:   http.StatusTooManyRequests,
+					Status:       erAuth.Message,
+				}
+			}
 			return errors.New(erAuth.Message)
 		}
 		suffix := string(line[len(prefix):])

@@ -54,6 +54,9 @@ func ExampleClient_Completion_vison() {
 		if err != nil {
 			log.Fatal(err)
 		}
+		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.Text {
+			log.Fatalf("Unexpected response: %#v", resp)
+		}
 		// Print to stderr so the test doesn't capture it.
 		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
 		// Normalize some of the variance. Obviously many models will still fail this test.

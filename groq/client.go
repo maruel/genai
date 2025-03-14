@@ -81,7 +81,16 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 				return errors.New("groq doesn't support JSONSchema")
 			}
 			if len(v.Tools) != 0 {
-				return errors.New("tools support is not implemented yet")
+				// Documentation states max is 128 tools.
+				// Let's assume if the user provides tools, they want to use them.
+				c.ToolChoice = "required"
+				c.Tools = make([]Tool, len(v.Tools))
+				for i, t := range v.Tools {
+					c.Tools[i].Type = "function"
+					c.Tools[i].Function.Name = t.Name
+					c.Tools[i].Function.Description = t.Description
+					c.Tools[i].Function.Parameters = t.Parameters
+				}
 			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
@@ -179,15 +188,23 @@ type CompletionResponse struct {
 		FinishReason string `json:"finish_reason"`
 		Index        int64  `json:"index"`
 		Message      struct {
-			Role    genaiapi.Role `json:"role"`
-			Content string        `json:"content"`
+			Role      genaiapi.Role `json:"role"`
+			Content   string        `json:"content"`
+			ToolCalls []struct {
+				ID       string `json:"id"`
+				Type     string `json:"type"` // "function"
+				Function struct {
+					Name      string `json:"name"`
+					Arguments string `json:"arguments"` // JSON
+				} `json:"function"`
+			} `json:"tool_calls"`
 		} `json:"message"`
 		Logprobs struct{} `json:"logprobs"`
 	} `json:"choices"`
 	Created Time   `json:"created"`
 	ID      string `json:"id"`
 	Model   string `json:"model"`
-	Object  string `json:"object"` // chat.completion
+	Object  string `json:"object"` // "chat.completion"
 	Usage   struct {
 		QueueTime        float64 `json:"queue_time"`
 		PromptTokens     int64   `json:"prompt_tokens"`
@@ -236,9 +253,10 @@ type CompletionStreamChunkResponse struct {
 
 type errorResponse struct {
 	Error struct {
-		Message string `json:"message"`
-		Type    string `json:"type"`
-		Code    string `json:"code"`
+		Message          string `json:"message"`
+		Type             string `json:"type"`
+		Code             string `json:"code"`
+		FailedGeneration string `json:"failed_generation"`
 	} `json:"error"`
 }
 
@@ -284,8 +302,19 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	if len(rpcout.Choices) != 1 {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(rpcout.Choices))
 	}
-	out.Type = genaiapi.Text
-	out.Text = rpcout.Choices[0].Message.Content
+	switch rpcout.Choices[0].FinishReason {
+	case "tool_calls":
+		out.Type = genaiapi.ToolCalls
+		out.ToolCalls = make([]genaiapi.ToolCall, len(rpcout.Choices[0].Message.ToolCalls))
+		for i, t := range rpcout.Choices[0].Message.ToolCalls {
+			out.ToolCalls[i].ID = t.ID
+			out.ToolCalls[i].Name = t.Function.Name
+			out.ToolCalls[i].Arguments = t.Function.Arguments
+		}
+	default:
+		out.Type = genaiapi.Text
+		out.Text = rpcout.Choices[0].Message.Content
+	}
 	switch role := rpcout.Choices[0].Message.Role; role {
 	case "system", "assistant", "user":
 		out.Role = genaiapi.Role(role)
@@ -383,7 +412,11 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 			if err = d.Decode(&er); err != nil {
 				return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
 			}
-			return fmt.Errorf("server error %s (%s): %s", er.Error.Code, er.Error.Type, er.Error.Message)
+			suffix := ""
+			if er.Error.FailedGeneration != "" {
+				suffix = fmt.Sprintf(" Failed generation: %q", er.Error.FailedGeneration)
+			}
+			return fmt.Errorf("server error %s (%s): %s%s", er.Error.Code, er.Error.Type, er.Error.Message, suffix)
 		}
 		suffix := string(line[len(prefix):])
 		if suffix == "[DONE]" {
@@ -471,14 +504,18 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	case 0:
 		return nil
 	case 1:
+		suffix := ""
+		if er.Error.FailedGeneration != "" {
+			suffix = fmt.Sprintf(" Failed generation: %q", er.Error.FailedGeneration)
+		}
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
 			if herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: error %s (%s): %s. You can get a new API key at %s", herr, er.Error.Code, er.Error.Type, er.Error.Message, apiKeyURL)
+				return fmt.Errorf("%w: error %s (%s): %s%s. You can get a new API key at %s", herr, er.Error.Code, er.Error.Type, er.Error.Message, suffix, apiKeyURL)
 			}
-			return fmt.Errorf("%w: error %s (%s): %s", herr, er.Error.Code, er.Error.Type, er.Error.Message)
+			return fmt.Errorf("%w: error %s (%s): %s%s", herr, er.Error.Code, er.Error.Type, er.Error.Message, suffix)
 		}
-		return fmt.Errorf("error %s (%s): %s", er.Error.Code, er.Error.Type, er.Error.Message)
+		return fmt.Errorf("error %s (%s): %s%s", er.Error.Code, er.Error.Type, er.Error.Message, suffix)
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {

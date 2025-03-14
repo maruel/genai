@@ -26,9 +26,12 @@ var bananaJpg []byte
 
 func ExampleClient_Completion_vision_and_JSON() {
 	// This code will run when GROQ_API_KEY is set.
+	//
 	// As of March 2025, you can try it out for free.
-	// We must select a model that supports vision.
-	// See https://console.groq.com/docs/vision
+	//
+	// We must select a model that supports vision *and* JSON mode (not
+	// necessarily tool use).
+	// See "JSON Mode with Images" at https://console.groq.com/docs/vision
 	if c, err := groq.New("", "llama-3.2-11b-vision-preview"); err == nil {
 		msgs := []genaiapi.Message{
 			{
@@ -57,13 +60,16 @@ func ExampleClient_Completion_vision_and_JSON() {
 		}
 		// Print to stderr so the test doesn't capture it.
 		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
+		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.Text {
+			log.Fatalf("Unexpected response: %#v", resp)
+		}
 		var expected struct {
 			Banana bool `json:"banana"`
 		}
 		d := json.NewDecoder(strings.NewReader(resp.Text))
 		d.DisallowUnknownFields()
 		if err := d.Decode(&expected); err != nil {
-			log.Fatalf("Failed to decode JSON: %v", err)
+			log.Fatalf("Failed to decode %q as JSON: %v", resp.Text, err)
 		}
 		fmt.Printf("Banana: %v\n", expected.Banana)
 		if resp.InputTokens < 10 || resp.OutputTokens < 2 {
@@ -74,6 +80,69 @@ func ExampleClient_Completion_vision_and_JSON() {
 		fmt.Println("Banana: true")
 	}
 	// Output: Banana: true
+}
+
+func ExampleClient_Completion_tool_use() {
+	// This code will run when GROQ_API_KEY is set.
+	//
+	// As of March 2025, you can try it out for free.
+	//
+	// We must select a model that supports tool use. Use the smallest one.
+	// See https://console.groq.com/docs/tool-use
+	if c, err := groq.New("", "llama-3.1-8b-instant"); err == nil {
+		msgs := []genaiapi.Message{
+			{
+				Role: genaiapi.User,
+				Type: genaiapi.Text,
+				Text: "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one.",
+			},
+		}
+		opts := genaiapi.CompletionOptions{
+			Seed:        1,
+			Temperature: 0.01,
+			MaxTokens:   50,
+			Tools: []genaiapi.ToolDef{
+				{
+					Name:        "best_country",
+					Description: "A tool to determine the best country",
+					Parameters: genaiapi.JSONSchema{
+						Type: "object",
+						Properties: map[string]genaiapi.JSONSchema{
+							"country": {
+								Type: "string",
+								Enum: []any{"Canada", "US"},
+							},
+						},
+						Required: []string{"country"},
+					},
+				},
+			},
+		}
+		resp, err := c.Completion(context.Background(), msgs, &opts)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.ToolCalls {
+			log.Fatalf("Unexpected response: %#v", resp)
+		}
+		log.Printf("Response: %#v", resp)
+		if len(resp.ToolCalls) != 1 || resp.ToolCalls[0].Name != "best_country" {
+			log.Fatal("Expected 1 best_country tool call")
+		}
+		var expected struct {
+			Country string `json:"country"`
+		}
+		d := json.NewDecoder(strings.NewReader(resp.ToolCalls[0].Arguments))
+		d.DisallowUnknownFields()
+		if err := d.Decode(&expected); err != nil {
+			log.Fatalf("Failed to decode %q as JSON: %v", resp.ToolCalls[0].Arguments, err)
+		}
+		fmt.Printf("Best: %v\n", expected.Country)
+	} else {
+		// Print something so the example runs.
+		fmt.Println("Best: Canada")
+	}
+	// Output: Best: Canada
 }
 
 func ExampleClient_CompletionStream() {

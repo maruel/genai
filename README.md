@@ -10,7 +10,7 @@ The _high performance_ native Go client for LLMs.
 | [Cohere](https://dashboard.cohere.com/billing)              | ✅   | ✅        | ⏳     | ✅          | ✅          | ✅   | ⏳    |
 | [DeepSeek](https://platform.deepseek.com)                   | ✅   | ✅        | ❌     | ✅          | ❌          | ❌   | ⏳    |
 | [Google's Gemini](http://aistudio.google.com)               | ✅   | ✅        | ✅     | ⏳          | ⏳          | ✅   | ⏳    |
-| [Groq](https://console.groq.com/dashboard/usage)            | ✅   | ✅        | ✅     | ✅          | ❌          | ✅   | ⏳    |
+| [Groq](https://console.groq.com/dashboard/usage)            | ✅   | ✅        | ✅     | ✅          | ❌          | ✅   | ✅    |
 | [HuggingFace](https://huggingface.co/settings)              | ✅   | ✅        | ⏳     | ⏳          | ⏳          | ✅   | ⏳    |
 | [Mistral](https://console.mistral.ai/usage)                 | ✅   | ✅        | ✅     | ✅          | ✅          | ✅   | ⏳    |
 | [OpenAI](https://platform.openai.com/usage)                 | ✅   | ✅        | ✅     | ✅          | ✅          | ✅   | ⏳    |
@@ -21,6 +21,8 @@ The _high performance_ native Go client for LLMs.
 - ⏳ To be implemented
 - ❌ Not supported
 - Streaming: chat streaming
+- Vision: ability to process an image as input
+- JSON output/schema: ability to output JSON in free form or with a schema
 - Seed: deterministic seed for reproducibility
 - Tools: tool calling
 

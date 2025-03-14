@@ -5,7 +5,7 @@ The _high performance_ native Go client for LLMs.
 | Provider                                                    | Chat | Streaming | Vision | JSON output | JSON schema | Seed | Tools |
 | ----------------------------------------------------------- | ---- | --------- | ------ | ----------- | ----------- | ---- | ----- |
 | [Anthropic](https://console.anthropic.com/settings/billing) | ✅   | ✅        | ✅     | ❌          | ❌          | ❌   | ✅    |
-| [Cerebras](https://cloud.cerebras.ai)                       | ✅   | ✅        | ❌     | ✅          | ✅          | ✅   | ⏳    |
+| [Cerebras](https://cloud.cerebras.ai)                       | ✅   | ✅        | ❌     | ✅          | ✅          | ✅   | ✅    |
 | [Cloudflare Workers AI](https://dash.cloudflare.com)        | ✅   | ✅        | ⏳     | ✅          | ✅          | ✅   | ⏳    |
 | [Cohere](https://dashboard.cohere.com/billing)              | ✅   | ✅        | ⏳     | ✅          | ✅          | ✅   | ⏳    |
 | [DeepSeek](https://platform.deepseek.com)                   | ✅   | ✅        | ❌     | ✅          | ❌          | ❌   | ⏳    |
@@ -36,7 +36,7 @@ The _high performance_ native Go client for LLMs.
 - Very few dependencies.
 - Densified API surface while exposing 100% of each backend-specific functionality.
 - No unnecessary internal abstractions. Use the raw API without weird wrappers.
-- Implementation is in flux. :)
+- Implementation is in flux. :) For example, tool call may not work in stream mode yet.
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/maruel/genai/.svg)](https://pkg.go.dev/github.com/maruel/genai/)
 [![codecov](https://codecov.io/gh/maruel/genai/graph/badge.svg?token=VLBH363B6N)](https://codecov.io/gh/maruel/genai)

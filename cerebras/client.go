@@ -43,8 +43,8 @@ type CompletionRequest struct {
 	Stop        []string `json:"stop,omitzero"`
 	Stream      bool     `json:"stream,omitzero"`
 	Temperature float64  `json:"temperature,omitzero"`
-	TopP        float64  `json:"top_p,omitzero"` // [0, 1.0]
-	ToolChoice  string   `json:"tool_choice,omitzero"`
+	TopP        float64  `json:"top_p,omitzero"`       // [0, 1.0]
+	ToolChoice  string   `json:"tool_choice,omitzero"` // "none", "auto", "required" or a struct.
 	Tools       []Tool   `json:"tools,omitzero"`
 	User        string   `json:"user,omitzero"`
 	Logprobs    bool     `json:"logprobs,omitzero"`
@@ -68,7 +68,15 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 				c.ResponseFormat.JSONSchema.Strict = true
 			}
 			if len(v.Tools) != 0 {
-				return errors.New("tools support is not implemented yet")
+				// Let's assume if the user provides tools, they want to use them.
+				c.ToolChoice = "required"
+				c.Tools = make([]Tool, len(v.Tools))
+				for i, t := range v.Tools {
+					c.Tools[i].Type = "function"
+					c.Tools[i].Function.Name = t.Name
+					c.Tools[i].Function.Description = t.Description
+					c.Tools[i].Function.Parameters = t.Parameters
+				}
 			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
@@ -104,28 +112,36 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 }
 
 type Message struct {
-	Role    string `json:"role"`
-	Content string `json:"content"`
+	Role      string `json:"role,omitzero"`
+	Content   string `json:"content,omitzero"`
+	ToolCalls []struct {
+		Type     string `json:"type,omitzero"` // "function"
+		ID       string `json:"id,omitzero"`
+		Function struct {
+			Name      string `json:"name,omitzero"`
+			Arguments string `json:"arguments,omitzero"`
+		} `json:"function,omitzero"`
+	} `json:"tool_calls,omitzero"`
 }
 
 type Tool struct {
+	Type     string `json:"type"` // function
 	Function struct {
-		Description string              `json:"description"`
 		Name        string              `json:"name"`
+		Description string              `json:"description"`
 		Parameters  genaiapi.JSONSchema `json:"parameters"`
-		Type        string              `json:"type"` // function
 	} `json:"function"`
 }
 
 type CompletionResponse struct {
 	ID                string `json:"id"`
 	Model             string `json:"model"`
-	Object            string `json:"object"`
+	Object            string `json:"object"` // "chat.completion"
 	SystemFingerprint string `json:"system_fingerprint"`
 	Created           Time   `json:"created"`
 	Choices           []struct {
 		Index        int64   `json:"index"`
-		FinishReason string  `json:"finish_reason"`
+		FinishReason string  `json:"finish_reason"` // "tool_calls"
 		Message      Message `json:"message"`
 	} `json:"choices"`
 	Usage struct {
@@ -231,8 +247,19 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	if len(rpcout.Choices) != 1 {
 		return out, fmt.Errorf("expected 1 choice, got %#v", rpcout.Choices)
 	}
-	out.Type = genaiapi.Text
-	out.Text = rpcout.Choices[0].Message.Content
+	if len(rpcout.Choices[0].Message.ToolCalls) != 0 {
+		out.Role = genaiapi.Assistant
+		out.Type = genaiapi.ToolCalls
+		out.ToolCalls = make([]genaiapi.ToolCall, len(rpcout.Choices[0].Message.ToolCalls))
+		for i, t := range rpcout.Choices[0].Message.ToolCalls {
+			out.ToolCalls[i].ID = t.ID
+			out.ToolCalls[i].Name = t.Function.Name
+			out.ToolCalls[i].Arguments = t.Function.Arguments
+		}
+	} else {
+		out.Type = genaiapi.Text
+		out.Text = rpcout.Choices[0].Message.Content
+	}
 	switch role := rpcout.Choices[0].Message.Role; role {
 	case "system", "assistant", "user":
 		out.Role = genaiapi.Role(role)

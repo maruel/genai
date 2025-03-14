@@ -262,6 +262,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 		out.Type = genaiapi.ToolCalls
 		out.ToolCalls = make([]genaiapi.ToolCall, len(rpcout.Choices[0].Message.ToolCall))
 		for i, t := range rpcout.Choices[0].Message.ToolCall {
+			out.ToolCalls[i].ID = t.ID
 			out.ToolCalls[i].Name = t.Function.Name
 			out.ToolCalls[i].Arguments = t.Function.Arguments
 		}

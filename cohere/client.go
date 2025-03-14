@@ -74,6 +74,7 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 			if len(v.Tools) != 0 {
 				// Let's assume if the user provides tools, they want to use them.
 				c.ToolChoice = "required"
+				c.StrictTools = true
 				c.Tools = make([]Tool, len(v.Tools))
 				for i, t := range v.Tools {
 					c.Tools[i].Type = "function"

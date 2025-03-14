@@ -90,6 +90,78 @@ func ExampleClient_Completion_vision_and_JSONSchema() {
 	// Output: Banana: true
 }
 
+func ExampleClient_Completion_tool_use() {
+	// This code will run when MISTRAL_API_KEY is set.
+	// As of March 2025, you can try it out for free.
+	// Require a model which has the tool capability. See https://docs.mistral.ai/capabilities/function_calling/
+	if c, err := mistral.New("", "ministral-3b-latest"); err == nil {
+		msgs := []genaiapi.Message{
+			{
+				Role: genaiapi.User,
+				Type: genaiapi.Text,
+				Text: "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one.",
+			},
+		}
+		opts := genaiapi.CompletionOptions{
+			Seed:        1,
+			Temperature: 0.01,
+			MaxTokens:   200,
+			Tools: []genaiapi.ToolDef{
+				{
+					Name:        "best_country",
+					Description: "A tool to determine the best country",
+					Parameters: genaiapi.JSONSchema{
+						Type: "object",
+						Properties: map[string]genaiapi.JSONSchema{
+							"country": {
+								Type: "string",
+								Enum: []any{"Canada", "US"},
+							},
+						},
+						Required: []string{"country"},
+					},
+				},
+			},
+		}
+		var resp genaiapi.CompletionResult
+		for i := range 3 {
+			// Mistral has a very good rate limiting implementation.
+			if resp, err = c.Completion(context.Background(), msgs, &opts); err != nil && i != 2 {
+				var herr *httpjson.Error
+				if errors.As(err, &herr) {
+					if herr.StatusCode == http.StatusTooManyRequests {
+						fmt.Fprintf(os.Stderr, "Rate limited, waiting 2s\n")
+						time.Sleep(2 * time.Second)
+						continue
+					}
+				}
+				log.Fatal(err)
+			}
+			break
+		}
+		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.ToolCalls {
+			log.Fatalf("Unexpected response: %#v", resp)
+		}
+		log.Printf("Response: %#v", resp)
+		if len(resp.ToolCalls) != 1 || resp.ToolCalls[0].Name != "best_country" {
+			log.Fatal("Expected at least one best_country tool call")
+		}
+		var expected struct {
+			Country string `json:"country"`
+		}
+		d := json.NewDecoder(strings.NewReader(resp.ToolCalls[0].Arguments))
+		d.DisallowUnknownFields()
+		if err := d.Decode(&expected); err != nil {
+			log.Fatalf("Failed to decode %q as JSON: %v", resp.ToolCalls[0].Arguments, err)
+		}
+		fmt.Printf("Best: %v\n", expected.Country)
+	} else {
+		// Print something so the example runs.
+		fmt.Println("Best: Canada")
+	}
+	// Output: Best: Canada
+}
+
 func ExampleClient_CompletionStream() {
 	// This code will run when MISTRAL_API_KEY is set.
 	// As of March 2025, you can try it out for free.

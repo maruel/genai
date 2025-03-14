@@ -12,7 +12,7 @@ The _high performance_ native Go client for LLMs.
 | [Google's Gemini](http://aistudio.google.com)               | ✅   | ✅        | ✅     | ⏳          | ⏳          | ✅   | ⏳    |
 | [Groq](https://console.groq.com/dashboard/usage)            | ✅   | ✅        | ✅     | ✅          | ❌          | ✅   | ✅    |
 | [HuggingFace](https://huggingface.co/settings)              | ✅   | ✅        | ⏳     | ⏳          | ⏳          | ✅   | ⏳    |
-| [Mistral](https://console.mistral.ai/usage)                 | ✅   | ✅        | ✅     | ✅          | ✅          | ✅   | ⏳    |
+| [Mistral](https://console.mistral.ai/usage)                 | ✅   | ✅        | ✅     | ✅          | ✅          | ✅   | ✅    |
 | [OpenAI](https://platform.openai.com/usage)                 | ✅   | ✅        | ✅     | ✅          | ✅          | ✅   | ⏳    |
 | [Perplexity](https://www.perplexity.ai/settings/api)        | ✅   | ✅        | ❌     | ❌          | ⏳          | ❌   | ❌    |
 | [TogetherAI](https://api.together.ai/settings/billing)      | ✅   | ✅        | ✅     | ✅          | ✅          | ✅   | ✅    |

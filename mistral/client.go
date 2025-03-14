@@ -87,18 +87,23 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 				c.ResponseFormat.JSONSchema.Strict = true
 				// Mistral doesn't enforce strictness in the schema, e.g. a required
 				// field not existing.
-				// Mistral requires "additionalProperties": false. Hack this for now in the most horrible way.
-				b, err := json.Marshal(v.JSONSchema)
-				if err != nil {
-					return fmt.Errorf("failed to encode JSONSchema: %w", err)
+				if err := mangleSchema(v.JSONSchema, &c.ResponseFormat.JSONSchema.Schema); err != nil {
+					return err
 				}
-				if err := json.Unmarshal(b, &c.ResponseFormat.JSONSchema.Schema); err != nil {
-					return fmt.Errorf("failed to decode JSONSchema: %w", err)
-				}
-				c.ResponseFormat.JSONSchema.Schema["additionalProperties"] = false
 			}
 			if len(v.Tools) != 0 {
-				return errors.New("tools support is not implemented yet")
+				// Let's assume if the user provides tools, they want to use them.
+				c.ToolChoice = "required"
+				c.Tools = make([]Tool, len(v.Tools))
+				for i, t := range v.Tools {
+					c.Tools[i].Type = "function"
+					c.Tools[i].Function.Name = t.Name
+					c.Tools[i].Function.Description = t.Description
+					if err := mangleSchema(t.Parameters, &c.Tools[i].Function.Parameters); err != nil {
+						return err
+					}
+					c.Tools[i].Function.Strict = true
+				}
 			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
@@ -151,6 +156,19 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 	return nil
 }
 
+// Mistral requires "additionalProperties": false. Hack this for now in the most horrible way.
+func mangleSchema(in genaiapi.JSONSchema, out *map[string]any) error {
+	b, err := json.Marshal(in)
+	if err != nil {
+		return fmt.Errorf("failed to encode JSONSchema: %w", err)
+	}
+	if err := json.Unmarshal(b, out); err != nil {
+		return fmt.Errorf("failed to decode JSONSchema: %w", err)
+	}
+	(*out)["additionalProperties"] = false
+	return nil
+}
+
 type Message struct {
 	Role    string    `json:"role"`
 	Content []Content `json:"content"`
@@ -181,16 +199,16 @@ type Tool struct {
 	Function struct {
 		Name        string         `json:"name,omitzero"`
 		Description string         `json:"description,omitzero"`
-		String      bool           `json:"string,omitzero"`
+		Strict      bool           `json:"strict,omitzero"`
 		Parameters  map[string]any `json:"parameters,omitzero"`
 	} `json:"function,omitzero"`
 }
 
 type CompletionResponse struct {
 	ID      string `json:"id"`
-	Object  string `json:"object"` // chat.completion
+	Object  string `json:"object"` // "chat.completion"
 	Model   string `json:"model"`
-	Created Time   `json:"created"` // Unix timestamp
+	Created Time   `json:"created"`
 	Choices []struct {
 		// FinishReason is one of "stop", "length", "content_filter" or "tool_calls".
 		FinishReason string `json:"finish_reason"`
@@ -201,10 +219,10 @@ type CompletionResponse struct {
 			Prefix    bool   `json:"prefix"`
 			ToolCalls []struct {
 				ID       string `json:"id"`
-				Type     string `json:"type"`
+				Type     string `json:"type"` // Omitted
 				Function struct {
 					Name      string `json:"name"`
-					Arguments []any  `json:"arguments"`
+					Arguments string `json:"arguments"`
 				} `json:"function"`
 				Index int64 `json:"index"`
 			} `json:"tool_calls"`
@@ -318,8 +336,18 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	if len(rpcout.Choices) != 1 {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(rpcout.Choices))
 	}
-	out.Type = genaiapi.Text
-	out.Text = rpcout.Choices[0].Message.Content
+	if len(rpcout.Choices[0].Message.ToolCalls) != 0 {
+		out.Type = genaiapi.ToolCalls
+		out.ToolCalls = make([]genaiapi.ToolCall, len(rpcout.Choices[0].Message.ToolCalls))
+		for i, t := range rpcout.Choices[0].Message.ToolCalls {
+			out.ToolCalls[i].ID = t.ID
+			out.ToolCalls[i].Name = t.Function.Name
+			out.ToolCalls[i].Arguments = t.Function.Arguments
+		}
+	} else {
+		out.Type = genaiapi.Text
+		out.Text = rpcout.Choices[0].Message.Content
+	}
 	switch role := rpcout.Choices[0].Message.Role; role {
 	case "system", "assistant", "user":
 		out.Role = genaiapi.Role(role)
@@ -443,6 +471,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	}
 }
 
+// Time is a JSON encoded unix timestamp.
 type Time int64
 
 func (t *Time) AsTime() time.Time {

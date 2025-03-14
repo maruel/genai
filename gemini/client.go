@@ -763,6 +763,10 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
 			slog.WarnContext(ctx, "gemini", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
+			// Google may return an HTML page on invalid API key.
+			if bytes.HasPrefix(herr.ResponseBody, []byte("<!DOCTYPE html>")) {
+				return fmt.Errorf("%w: You can get a new API key at %s", herr, apiKeyURL)
+			}
 		} else {
 			slog.WarnContext(ctx, "gemini", "url", url, "err", err)
 		}

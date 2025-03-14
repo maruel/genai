@@ -331,6 +331,10 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
+			// Perplexity may return an HTML page on invalid API key.
+			if bytes.HasPrefix(herr.ResponseBody, []byte("<html>")) {
+				return fmt.Errorf("%w: You can get a new API key at %s", herr, apiKeyURL)
+			}
 			slog.WarnContext(ctx, "perplexity", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
 		} else {
 			slog.WarnContext(ctx, "perplexity", "url", url, "err", err)

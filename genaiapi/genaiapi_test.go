@@ -9,6 +9,32 @@ import (
 	"testing"
 )
 
+func TestRole_Validate(t *testing.T) {
+	for _, role := range []Role{System, User, Assistant} {
+		if err := role.Validate(); err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+	}
+	for _, role := range []Role{"invalid", ""} {
+		if err := role.Validate(); err == nil {
+			t.Fatalf("expected error, got nil")
+		}
+	}
+}
+
+func TestContentType_Validate(t *testing.T) {
+	for _, contentType := range []ContentType{Text, Document, ToolCalls} {
+		if err := contentType.Validate(); err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+	}
+	for _, contentType := range []ContentType{"invalid", ""} {
+		if err := contentType.Validate(); err == nil {
+			t.Fatalf("expected error, got nil")
+		}
+	}
+}
+
 func TestMessage_Validate(t *testing.T) {
 	tests := []struct {
 		name    string
@@ -47,14 +73,6 @@ func TestMessage_Validate(t *testing.T) {
 				Text: "I can help with that",
 			},
 		},
-		{
-			name: "Valid tool message",
-			message: Message{
-				Role: Tool,
-				Type: Text,
-				Text: "Tool response",
-			},
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -87,7 +105,7 @@ func TestMessage_Validate_Error(t *testing.T) {
 				Type: Text,
 				Text: "Content",
 			},
-			errMsg: "field Role is required",
+			errMsg: "field Role: a valid role is required",
 		},
 		{
 			name: "Unsupported role",
@@ -96,7 +114,7 @@ func TestMessage_Validate_Error(t *testing.T) {
 				Type: Text,
 				Text: "Content",
 			},
-			errMsg: "field Role \"UnsupportedRole\" is not supported",
+			errMsg: "field Role: role \"UnsupportedRole\" is not supported",
 		},
 		{
 			name: "Missing type",
@@ -104,7 +122,7 @@ func TestMessage_Validate_Error(t *testing.T) {
 				Role: User,
 				Text: "Content",
 			},
-			errMsg: "field Type is required",
+			errMsg: "field ContentType: a valid content type is required",
 		},
 		{
 			name: "Unsupported type",
@@ -113,7 +131,7 @@ func TestMessage_Validate_Error(t *testing.T) {
 				Type: "UnsupportedType",
 				Text: "Content",
 			},
-			errMsg: "field Type \"UnsupportedType\" is not supported",
+			errMsg: "field ContentType: content type \"UnsupportedType\" is not supported",
 		},
 		{
 			name: "Text type without text",
@@ -193,12 +211,48 @@ func TestMessage_Validate_Error(t *testing.T) {
 			},
 			errMsg: "field Document and URL are mutually exclusive",
 		},
+		{
+			name: "ToolCalls not implemented",
+			message: Message{
+				Role: Assistant,
+				Type: ToolCalls,
+			},
+			errMsg: "todo",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := tt.message.Validate()
 			if err == nil || err.Error() != tt.errMsg {
 				t.Fatalf("expected error %q, got %q", tt.errMsg, err.Error())
+			}
+		})
+	}
+}
+
+func TestJSONSchema_IsZero(t *testing.T) {
+	tests := []struct {
+		name string
+		s    JSONSchema
+		want bool
+	}{
+		{
+			name: "Zero value",
+			s:    JSONSchema{},
+			want: true,
+		},
+		{
+			name: "Non-zero value",
+			s: JSONSchema{
+				Type: "object",
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.s.IsZero(); got != tt.want {
+				t.Fatalf("expected %t, got %t", tt.want, got)
 			}
 		})
 	}

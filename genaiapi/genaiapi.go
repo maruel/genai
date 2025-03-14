@@ -60,19 +60,39 @@ const (
 	System    Role = "system"
 	User      Role = "user"
 	Assistant Role = "assistant"
-	// The following has to be revised.
-	Tool           Role = "tool"
-	AvailableTools Role = "available_tools"
-	ToolCall       Role = "tool_call"
-	ToolCallResult Role = "tool_call_result"
 )
+
+// Validate ensures the role is valid.
+func (r Role) Validate() error {
+	switch r {
+	case System, User, Assistant:
+		return nil
+	case "":
+		return errors.New("a valid role is required")
+	default:
+		return fmt.Errorf("role %q is not supported", r)
+	}
+}
 
 type ContentType string
 
 const (
-	Text     ContentType = "text"
-	Document ContentType = "document"
+	Text      ContentType = "text"
+	Document  ContentType = "document"
+	ToolCalls ContentType = "tool_calls"
 )
+
+// Validate ensures the content type is valid.
+func (c ContentType) Validate() error {
+	switch c {
+	case Text, Document, ToolCalls:
+		return nil
+	case "":
+		return errors.New("a valid content type is required")
+	default:
+		return fmt.Errorf("content type %q is not supported", c)
+	}
+}
 
 // Message is a message to send to the LLM as part of the exchange.
 type Message struct {
@@ -83,7 +103,9 @@ type Message struct {
 	// Text is the content of the text message.
 	Text string
 
-	// Type == "document". In this case, one of Document or URL must be set.
+	// Type == "document"
+	// In this case, one of Document or URL must be set.
+	//
 	// Filename is the name of the file. For many providers, only the extension
 	// is relevant. They only use mime-type, which is derived from the filename's
 	// extension. When an URL is provided, Filename is optional.
@@ -94,27 +116,39 @@ type Message struct {
 	// URL is the reference to the raw data. When set, the mime-type is derived from the URL.
 	URL string
 
+	// Type == "tool_calls"
+	// ToolCalls is a list of tool calls that the LLM requested to make.
+	ToolCalls []ToolCall
+
 	_ struct{}
 }
 
+// MessageChunk is a fragment of a message the LLM is sending back as part of the CompletionStream().
 type MessageChunk struct {
-	Role Role
+	Role Role // Almost (?) always (?) Assistant.
 	Type ContentType
+
+	// Type == "text"
 	Text string
+
+	// Type == "tool_calls"
+	// ToolCalls is a list of tool calls that the LLM requested to make.
+	ToolCalls []ToolCall
 }
 
 // Validate ensures the message is valid.
 func (m Message) Validate() error {
+	if err := m.Role.Validate(); err != nil {
+		return fmt.Errorf("field Role: %w", err)
+	}
+	if err := m.Type.Validate(); err != nil {
+		return fmt.Errorf("field ContentType: %w", err)
+	}
 	switch m.Role {
 	case System:
 		if m.Type != Text {
 			return errors.New("field Role is system but Type is not text")
 		}
-	case User, Assistant, Tool, AvailableTools, ToolCall, ToolCallResult:
-	case "":
-		return errors.New("field Role is required")
-	default:
-		return fmt.Errorf("field Role %q is not supported", m.Role)
 	}
 	switch m.Type {
 	case Text:
@@ -146,10 +180,8 @@ func (m Message) Validate() error {
 				return errors.New("field Filename is required with Document")
 			}
 		}
-	case "":
-		return errors.New("field Type is required")
-	default:
-		return fmt.Errorf("field Type %q is not supported", m.Type)
+	case ToolCalls:
+		return errors.New("todo")
 	}
 	return nil
 }
@@ -188,6 +220,7 @@ type JSONSchema struct {
 	ExclusiveMaximum int64 `json:"exclusiveMaximum,omitzero"`
 	MultipleOf       int64 `json:"multipleOf,omitzero"`
 
+	// Type == "boolean", "string", "integer", "number"; I'm guessing.
 	Enum []any `json:"enum,omitzero"`
 
 	_ struct{}
@@ -197,9 +230,16 @@ func (j *JSONSchema) IsZero() bool {
 	return j.Type == "" && len(j.Enum) == 0
 }
 
-// Tool describes a tool that the LLM can request to use.
+// ToolDef describes a tool that the LLM can request to use.
 type ToolDef struct {
 	Name        string
 	Description string
 	Parameters  JSONSchema
+}
+
+// ToolCall is a tool call that the LLM requested to make.
+type ToolCall struct {
+	ID        string // Unique identifier for the tool call. Necessary for parallel tool calling.
+	Name      string // Tool being called.
+	Arguments string // encoded as JSON
 }

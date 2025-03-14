@@ -139,7 +139,7 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 			}
 			// Starting with 01.
 			c.Messages[i].Role = "developer"
-		case genaiapi.User, genaiapi.Assistant, genaiapi.Tool:
+		case genaiapi.User, genaiapi.Assistant:
 			c.Messages[i].Role = string(m.Role)
 		default:
 			return fmt.Errorf("message %d: unsupported role %q", i, m.Role)

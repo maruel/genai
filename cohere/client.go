@@ -92,7 +92,7 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 			if i != 0 {
 				return fmt.Errorf("message %d: system message must be first message", i)
 			}
-		case genaiapi.User, genaiapi.Assistant, genaiapi.Tool:
+		case genaiapi.User, genaiapi.Assistant:
 		default:
 			return fmt.Errorf("message %d: unsupported role %q", i, m.Role)
 		}

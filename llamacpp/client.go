@@ -538,12 +538,14 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs []g
 	in.Prompt = c.encoding.BeginOfText
 	for i, m := range msgs {
 		switch m.Role {
+		/* TODO
 		case genaiapi.AvailableTools:
 			if state != 0 || i != 0 {
 				return fmt.Errorf("unexpected available_tools message at index %d; state %d", i, state)
 			}
 			state = 1
 			in.Prompt += c.encoding.ToolsAvailableTokenStart + m.Text + c.encoding.ToolsAvailableTokenEnd
+		*/
 		case genaiapi.System:
 			if state > 1 {
 				return fmt.Errorf("unexpected system message at index %d; state %d", i, state)
@@ -556,12 +558,14 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs []g
 		case genaiapi.Assistant:
 			state = 3
 			in.Prompt += c.encoding.AssistantTokenStart + m.Text + c.encoding.AssistantTokenEnd
-		case genaiapi.ToolCall:
-			state = 3
-			in.Prompt += c.encoding.ToolCallTokenStart + m.Text + c.encoding.ToolCallTokenEnd
-		case genaiapi.ToolCallResult:
-			state = 3
-			in.Prompt += c.encoding.ToolCallResultTokenStart + m.Text + c.encoding.ToolCallResultTokenEnd
+			/* TODO
+			case genaiapi.ToolCall:
+				state = 3
+				in.Prompt += c.encoding.ToolCallTokenStart + m.Text + c.encoding.ToolCallTokenEnd
+			case genaiapi.ToolCallResult:
+				state = 3
+				in.Prompt += c.encoding.ToolCallResultTokenStart + m.Text + c.encoding.ToolCallResultTokenEnd
+			*/
 		default:
 			return fmt.Errorf("unexpected role %q", m.Role)
 		}

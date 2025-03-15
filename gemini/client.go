@@ -233,6 +233,7 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 			c.GenerationConfig.Seed = v.Seed
 			c.GenerationConfig.TopP = v.TopP
 			c.GenerationConfig.TopK = v.TopK
+			c.GenerationConfig.StopSequences = v.Stop
 			if v.ReplyAsJSON {
 				c.GenerationConfig.ResponseMimeType = "application/json"
 			}

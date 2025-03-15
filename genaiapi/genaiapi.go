@@ -21,6 +21,7 @@ type CompletionOptions struct {
 	MaxTokens   int64      // Maximum number of tokens to generate.
 	TopP        float64    // Top-p sampling.
 	TopK        int64      // Top-k sampling.
+	Stop        []string   // List of tokens to stop generation.
 	ReplyAsJSON bool       // If true, the output is JSON. If false, the output is text. It is important to tell the model to reply in JSON.
 	JSONSchema  JSONSchema // Enforces a reply JSON format. Not all providers support this.
 	Tools       []ToolDef  // List of tools that the LLM can request to call. Not all providers support this.

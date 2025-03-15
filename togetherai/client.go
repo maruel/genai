@@ -70,6 +70,7 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 		if v.ReplyAsJSON {
 			c.ResponseFormat.Type = "json_object"
 		}
+		c.Stop = v.Stop
 		if !v.JSONSchema.IsZero() {
 			// Warning: using a model small may fail.
 			c.ResponseFormat.Type = "json_schema"

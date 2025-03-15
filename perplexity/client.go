@@ -66,6 +66,9 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 			}
 			c.TopP = v.TopP
 			c.TopK = v.TopK
+			if len(v.Stop) != 0 {
+				errs = append(errs, errors.New("perplexity doesn't support stop tokens"))
+			}
 			if v.ReplyAsJSON && !v.JSONSchema.IsZero() {
 				// Doesn't seem to work in practice.
 				c.ResponseFormat.Type = "json_schema"

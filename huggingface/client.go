@@ -77,6 +77,7 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 			if v.TopK != 0 {
 				errs = append(errs, errors.New("huggingface does not support TopK"))
 			}
+			c.Stop = v.Stop
 			if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
 				errs = append(errs, errors.New("hugginface client doesn't support JSON yet; to be implemented"))
 			}

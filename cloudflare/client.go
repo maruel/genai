@@ -59,6 +59,9 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 			c.Temperature = v.Temperature
 			c.TopP = v.TopP
 			c.TopK = v.TopK
+			if len(v.Stop) != 0 {
+				errs = append(errs, errors.New("cloudflare doesn't support stop tokens"))
+			}
 			if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}

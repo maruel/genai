@@ -82,6 +82,7 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 			if v.TopK != 0 {
 				errs = append(errs, errors.New("mistral does not support TopK"))
 			}
+			c.Stop = v.Stop
 			if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}

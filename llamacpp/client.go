@@ -95,6 +95,7 @@ func (c *CompletionRequest) Init(opts any) error {
 			c.Temperature = v.Temperature
 			c.TopP = v.TopP
 			c.TopK = v.TopK
+			c.Stop = v.Stop
 			if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
 				errs = append(errs, errors.New("llama-server client doesn't support JSON yet; to be implemented"))
 			}

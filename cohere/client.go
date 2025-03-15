@@ -67,6 +67,7 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 			c.Temperature = v.Temperature
 			c.P = v.TopP
 			c.K = v.TopK
+			c.StopSequences = v.Stop
 			if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}

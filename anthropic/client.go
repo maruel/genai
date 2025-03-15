@@ -60,6 +60,7 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 			}
 			c.TopP = v.TopP
 			c.TopK = v.TopK
+			c.StopSequences = v.Stop
 			if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
 				errs = append(errs, errors.New("anthropic doesn't support JSON schema"))
 			}

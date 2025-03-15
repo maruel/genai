@@ -85,7 +85,7 @@ type CompletionRequest struct {
 	Lora                []any               `json:"lora,omitzero"`
 }
 
-func (c *CompletionRequest) fromOpts(opts any) error {
+func (c *CompletionRequest) Init(opts any) error {
 	if opts != nil {
 		switch v := opts.(type) {
 		case *genaiapi.CompletionOptions:
@@ -307,7 +307,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	// specified. Disable if it becomes a problem.
 	out := genaiapi.CompletionResult{}
 	rpcin := CompletionRequest{CachePrompt: true}
-	if err := rpcin.fromOpts(opts); err != nil {
+	if err := rpcin.Init(opts); err != nil {
 		return out, err
 	}
 	if err := c.initPrompt(ctx, &rpcin, msgs); err != nil {
@@ -328,6 +328,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
+	in.Stream = false
 	return c.post(ctx, c.baseURL+"/completion", in, out)
 }
 
@@ -335,8 +336,8 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 	// start := time.Now()
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
-	in := CompletionRequest{CachePrompt: true, Stream: true}
-	if err := in.fromOpts(opts); err != nil {
+	in := CompletionRequest{CachePrompt: true}
+	if err := in.Init(opts); err != nil {
 		return err
 	}
 	if err := c.initPrompt(ctx, &in, msgs); err != nil {
@@ -366,6 +367,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
+	in.Stream = true
 	// llama.cpp doesn't HTTP POST support compression.
 	resp, err := httpjson.DefaultClient.PostRequest(ctx, c.baseURL+"/completion", nil, in)
 	if err != nil {

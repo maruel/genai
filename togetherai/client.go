@@ -58,7 +58,7 @@ type CompletionRequest struct {
 	SafetyModel string `json:"safety_model,omitzero"` // https://docs.together.ai/docs/inference-models#moderation-models
 }
 
-func (c *CompletionRequest) fromOpts(opts any) error {
+func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 	switch v := opts.(type) {
 	case *genaiapi.CompletionOptions:
 		c.MaxTokens = v.MaxTokens
@@ -85,10 +85,7 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 	default:
 		return fmt.Errorf("unsupported options type %T", opts)
 	}
-	return nil
-}
 
-func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 	c.Messages = make([]Message, len(msgs))
 	for i, m := range msgs {
 		if err := m.Validate(); err != nil {
@@ -276,10 +273,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	// https://docs.together.ai/docs/chat-overview
 	out := genaiapi.CompletionResult{}
 	rpcin := CompletionRequest{Model: c.model}
-	if err := rpcin.fromOpts(opts); err != nil {
-		return out, err
-	}
-	if err := rpcin.fromMsgs(msgs); err != nil {
+	if err := rpcin.Init(msgs, opts); err != nil {
 		return out, err
 	}
 	rpcout := CompletionResponse{}
@@ -314,15 +308,13 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	if err := c.validate(); err != nil {
 		return err
 	}
+	in.StreamTokens = false
 	return c.post(ctx, "https://api.together.xyz/v1/chat/completions", in, out)
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, chunks chan<- genaiapi.MessageChunk) error {
-	in := CompletionRequest{Model: c.model, StreamTokens: true}
-	if err := in.fromOpts(opts); err != nil {
-		return err
-	}
-	if err := in.fromMsgs(msgs); err != nil {
+	in := CompletionRequest{Model: c.model}
+	if err := in.Init(msgs, opts); err != nil {
 		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
@@ -365,6 +357,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	if err := c.validate(); err != nil {
 		return err
 	}
+	in.StreamTokens = true
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.apiKey)
 	// Together.ai doesn't HTTP POST support compression.

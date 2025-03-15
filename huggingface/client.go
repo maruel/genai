@@ -65,7 +65,7 @@ type CompletionRequest struct {
 	TopP        float64 `json:"top_p,omitzero"` // [0, 1]
 }
 
-func (c *CompletionRequest) fromOpts(opts any) error {
+func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 	if opts != nil {
 		switch v := opts.(type) {
 		case *genaiapi.CompletionOptions:
@@ -90,10 +90,7 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 			return fmt.Errorf("unsupported options type %T", opts)
 		}
 	}
-	return nil
-}
 
-func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 	c.Messages = make([]Message, len(msgs))
 	for i, m := range msgs {
 		if err := m.Validate(); err != nil {
@@ -291,10 +288,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	// https://huggingface.co/docs/api-inference/tasks/chat-completion#api-specification
 	out := genaiapi.CompletionResult{}
 	rpcin := CompletionRequest{}
-	if err := rpcin.fromOpts(opts); err != nil {
-		return out, err
-	}
-	if err := rpcin.fromMsgs(msgs); err != nil {
+	if err := rpcin.Init(msgs, opts); err != nil {
 		return out, err
 	}
 	rpcout := CompletionResponse{}
@@ -335,16 +329,14 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	if err := c.validate(); err != nil {
 		return err
 	}
+	in.Stream = false
 	url := "https://router.huggingface.co/hf-inference/models/" + c.model + "/v1/chat/completions"
 	return c.post(ctx, url, in, out)
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, chunks chan<- genaiapi.MessageChunk) error {
-	in := CompletionRequest{Stream: true}
-	if err := in.fromOpts(opts); err != nil {
-		return err
-	}
-	if err := in.fromMsgs(msgs); err != nil {
+	in := CompletionRequest{}
+	if err := in.Init(msgs, opts); err != nil {
 		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
@@ -387,6 +379,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	if err := c.validate(); err != nil {
 		return err
 	}
+	in.Stream = true
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.apiKey)
 	// HuggingFace support all three of gzip, br and zstd!

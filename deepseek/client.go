@@ -55,7 +55,7 @@ type CompletionRequest struct {
 	TopLogprob int64  `json:"top_logprobs,omitzero"`
 }
 
-func (c *CompletionRequest) fromOpts(opts any) error {
+func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 	if opts != nil {
 		switch v := opts.(type) {
 		case *genaiapi.CompletionOptions:
@@ -85,10 +85,7 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 			return fmt.Errorf("unsupported options type %T", opts)
 		}
 	}
-	return nil
-}
 
-func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) error {
 	c.Messages = make([]Message, len(msgs))
 	for i, m := range msgs {
 		if err := m.Validate(); err != nil {
@@ -242,11 +239,8 @@ func New(apiKey, model string) (*Client, error) {
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.CompletionResult, error) {
 	// https://api-docs.deepseek.com/api/create-chat-completion
 	out := genaiapi.CompletionResult{}
-	rpcin := CompletionRequest{Model: c.model, Messages: make([]Message, 0, len(msgs))}
-	if err := rpcin.fromOpts(opts); err != nil {
-		return out, err
-	}
-	if err := rpcin.fromMsgs(msgs); err != nil {
+	rpcin := CompletionRequest{Model: c.model}
+	if err := rpcin.Init(msgs, opts); err != nil {
 		return out, err
 	}
 	rpcout := CompletionResponse{}
@@ -285,15 +279,13 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	if err := c.validate(); err != nil {
 		return err
 	}
+	in.Stream = false
 	return c.post(ctx, "https://api.deepseek.com/chat/completions", in, out)
 }
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, chunks chan<- genaiapi.MessageChunk) error {
-	in := CompletionRequest{Model: c.model, Messages: make([]Message, 0, len(msgs)), Stream: true}
-	if err := in.fromOpts(opts); err != nil {
-		return err
-	}
-	if err := in.fromMsgs(msgs); err != nil {
+	in := CompletionRequest{Model: c.model}
+	if err := in.Init(msgs, opts); err != nil {
 		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
@@ -336,6 +328,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	if err := c.validate(); err != nil {
 		return err
 	}
+	in.Stream = true
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.apiKey)
 	// DeepSeek doesn't HTTP POST support compression.

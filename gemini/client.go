@@ -227,7 +227,7 @@ type CompletionRequest struct {
 	CachedContent string `json:"cachedContent,omitzero"`
 }
 
-func (c *CompletionRequest) fromOpts(opts any) error {
+func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 	if opts != nil {
 		// This doesn't seem to be well supported yet:
 		//    in.GenerationConfig.ResponseLogprobs = true
@@ -262,31 +262,27 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 			return fmt.Errorf("unsupported options type %T", opts)
 		}
 	}
-	return nil
-}
 
-func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) (string, error) {
 	c.Contents = make([]Content, 0, len(msgs))
-	sp := ""
 	for i, m := range msgs {
 		if err := m.Validate(); err != nil {
-			return "", fmt.Errorf("message %d: %w", i, err)
+			return fmt.Errorf("message %d: %w", i, err)
 		}
 		role := ""
 		switch m.Role {
 		case genaiapi.System:
 			if i != 0 {
-				return "", fmt.Errorf("message %d: system message must be first message", i)
+				return fmt.Errorf("message %d: system message must be first message", i)
 			}
 			// System prompt is passed differently.
-			sp = m.Text
+			c.SystemInstruction.Parts = []Part{{Text: m.Text}}
 			continue
 		case genaiapi.User:
 			role = "user"
 		case genaiapi.Assistant:
 			role = "model"
 		default:
-			return "", fmt.Errorf("message %d: unsupported role %q", i, m.Role)
+			return fmt.Errorf("message %d: unsupported role %q", i, m.Role)
 		}
 		cont := Content{Parts: []Part{{}}, Role: role}
 		switch m.Type {
@@ -303,23 +299,23 @@ func (c *CompletionRequest) fromMsgs(msgs []genaiapi.Message) (string, error) {
 				// in.CachedContent = cacheName
 				var err error
 				if mimeType, data, err = internal.ParseDocument(&m, 10*1024*1024); err != nil {
-					return "", fmt.Errorf("message %d: %w", i, err)
+					return fmt.Errorf("message %d: %w", i, err)
 				}
 				cont.Parts[0].InlineData.MimeType = mimeType
 				cont.Parts[0].InlineData.Data = data
 			} else {
 				if mimeType = mime.TypeByExtension(path.Base(m.URL)); mimeType == "" {
-					return "", fmt.Errorf("message %d: unsupported mime type for URL %q", i, m.URL)
+					return fmt.Errorf("message %d: unsupported mime type for URL %q", i, m.URL)
 				}
 				cont.Parts[0].FileData.MimeType = mimeType
 				cont.Parts[0].FileData.FileURI = m.URL
 			}
 		default:
-			return "", fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
+			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
 		}
 		c.Contents = append(c.Contents, cont)
 	}
-	return sp, nil
+	return nil
 }
 
 // https://ai.google.dev/api/generate-content?hl=en#v1beta.GenerateContentResponse
@@ -600,15 +596,8 @@ func (c *Client) cacheContent(ctx context.Context, data []byte, mime, systemInst
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.CompletionResult, error) {
 	out := genaiapi.CompletionResult{}
 	rpcin := CompletionRequest{}
-	if err := rpcin.fromOpts(opts); err != nil {
+	if err := rpcin.Init(msgs, opts); err != nil {
 		return out, err
-	}
-	sp, err := rpcin.fromMsgs(msgs)
-	if err != nil {
-		return out, err
-	}
-	if sp != "" {
-		rpcin.SystemInstruction.Parts = []Part{{Text: sp}}
 	}
 	rpcout := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
@@ -679,10 +668,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 
 func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, chunks chan<- genaiapi.MessageChunk) error {
 	in := CompletionRequest{}
-	if err := in.fromOpts(opts); err != nil {
-		return err
-	}
-	if _, err := in.fromMsgs(msgs); err != nil {
+	if err := in.Init(msgs, opts); err != nil {
 		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)

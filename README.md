@@ -122,11 +122,6 @@ func main() {
     if err != nil {
         log.Fatal(err)
     }
-    if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.Text {
-        log.Fatalf("Unexpected response: %#v", resp)
-    }
-    // Print to stderr so the test doesn't capture it.
-    fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
     var expected struct {
         Round bool `json:"round"`
     }
@@ -136,9 +131,6 @@ func main() {
         log.Fatalf("Failed to decode JSON: %v", err)
     }
     fmt.Printf("Round: %v\n", expected.Round)
-    if resp.InputTokens < 100 || resp.OutputTokens < 2 {
-        log.Fatalf("Missing usage token")
-    }
 }
 ```
 

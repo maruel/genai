@@ -495,53 +495,55 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
-	r := bufio.NewReader(resp.Body)
-	for {
+	for r := bufio.NewReader(resp.Body); ; {
 		line, err := r.ReadBytes('\n')
-		line = bytes.TrimSpace(line)
-		if err == io.EOF {
-			err = nil
+		if line = bytes.TrimSpace(line); err == io.EOF {
 			if len(line) == 0 {
 				return nil
 			}
-		}
-		if err != nil {
+		} else if err != nil {
 			return fmt.Errorf("failed to get server response: %w", err)
 		}
-		if len(line) == 0 {
-			continue
-		}
-		// https://docs.anthropic.com/en/api/messages-streaming
-		// and
-		// https://developer.mozilla.org/en-US/docs/Web/API/Server-sent%5Fevents/Using%5Fserver-sent%5Fevents
-		const dataPrefix = "data: "
-		switch {
-		case bytes.HasPrefix(line, []byte(dataPrefix)):
-			suffix := string(line[len(dataPrefix):])
-			if suffix == "[DONE]" {
-				return nil
+		if len(line) != 0 {
+			if err := parseStreamLine(line, out); err != nil {
+				return err
 			}
-			d := json.NewDecoder(strings.NewReader(suffix))
-			d.DisallowUnknownFields()
-			d.UseNumber()
-			msg := CompletionStreamChunkResponse{}
-			if err = d.Decode(&msg); err != nil {
-				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
-			}
-			out <- msg
-		case bytes.HasPrefix(line, []byte("event:")):
-			// Ignore for now.
-		default:
-			d := json.NewDecoder(bytes.NewReader(line))
-			d.DisallowUnknownFields()
-			d.UseNumber()
-			er := errorResponse{}
-			if err = d.Decode(&er); err == nil {
-				return fmt.Errorf("error %s: %s", er.Error.Type, er.Error.Message)
-			}
-			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
 		}
 	}
+}
+
+func parseStreamLine(line []byte, out chan<- CompletionStreamChunkResponse) error {
+	// https://docs.anthropic.com/en/api/messages-streaming
+	// and
+	// https://developer.mozilla.org/en-US/docs/Web/API/Server-sent%5Fevents/Using%5Fserver-sent%5Fevents
+	const dataPrefix = "data: "
+	switch {
+	case bytes.HasPrefix(line, []byte(dataPrefix)):
+		suffix := string(line[len(dataPrefix):])
+		if suffix == "[DONE]" {
+			return nil
+		}
+		d := json.NewDecoder(strings.NewReader(suffix))
+		d.DisallowUnknownFields()
+		d.UseNumber()
+		msg := CompletionStreamChunkResponse{}
+		if err := d.Decode(&msg); err != nil {
+			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+		}
+		out <- msg
+	case bytes.HasPrefix(line, []byte("event:")):
+		// Ignore for now.
+	default:
+		d := json.NewDecoder(bytes.NewReader(line))
+		d.DisallowUnknownFields()
+		d.UseNumber()
+		er := errorResponse{}
+		if err := d.Decode(&er); err == nil {
+			return fmt.Errorf("error %s: %s", er.Error.Type, er.Error.Message)
+		}
+		return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
+	}
+	return nil
 }
 
 type Model struct {

@@ -730,36 +730,38 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		return err
 	}
 	defer resp.Body.Close()
-	r := bufio.NewReader(resp.Body)
-	for {
+	for r := bufio.NewReader(resp.Body); ; {
 		line, err := r.ReadBytes('\n')
-		line = bytes.TrimSpace(line)
-		if err == io.EOF {
-			err = nil
+		if line = bytes.TrimSpace(line); err == io.EOF {
 			if len(line) == 0 {
 				return nil
 			}
-		}
-		if err != nil {
+		} else if err != nil {
 			return fmt.Errorf("failed to get server response: %w", err)
 		}
-		if len(line) == 0 {
-			continue
+		if len(line) != 0 {
+			if err := parseStreamLine(line, out); err != nil {
+				return err
+			}
 		}
-		const prefix = "data: "
-		if !bytes.HasPrefix(line, []byte(prefix)) {
-			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
-		}
-		suffix := string(line[len(prefix):])
-		d := json.NewDecoder(strings.NewReader(suffix))
-		d.DisallowUnknownFields()
-		d.UseNumber()
-		msg := CompletionStreamChunkResponse{}
-		if err = d.Decode(&msg); err != nil {
-			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
-		}
-		out <- msg
 	}
+}
+
+func parseStreamLine(line []byte, out chan<- CompletionStreamChunkResponse) error {
+	const prefix = "data: "
+	if !bytes.HasPrefix(line, []byte(prefix)) {
+		return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
+	}
+	suffix := string(line[len(prefix):])
+	d := json.NewDecoder(strings.NewReader(suffix))
+	d.DisallowUnknownFields()
+	d.UseNumber()
+	msg := CompletionStreamChunkResponse{}
+	if err := d.Decode(&msg); err != nil {
+		return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+	}
+	out <- msg
+	return nil
 }
 
 // https://ai.google.dev/api/models#Model

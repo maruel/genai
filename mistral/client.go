@@ -418,54 +418,56 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
-	r := bufio.NewReader(resp.Body)
-	for {
+	for r := bufio.NewReader(resp.Body); ; {
 		line, err := r.ReadBytes('\n')
-		line = bytes.TrimSpace(line)
-		if err == io.EOF {
-			err = nil
+		if line = bytes.TrimSpace(line); err == io.EOF {
 			if len(line) == 0 {
 				return nil
 			}
-		}
-		if err != nil {
+		} else if err != nil {
 			return fmt.Errorf("failed to get server response: %w", err)
 		}
-		if len(line) == 0 {
-			continue
-		}
-		const prefix = "data: "
-		if !bytes.HasPrefix(line, []byte(prefix)) {
-			d := json.NewDecoder(bytes.NewReader(line))
-			d.DisallowUnknownFields()
-			d.UseNumber()
-			erAuth := errorResponseAuth{}
-			if err = d.Decode(&erAuth); err != nil {
-				return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
+		if len(line) != 0 {
+			if err := parseStreamLine(line, out); err != nil {
+				return err
 			}
-			// This is clunky but the best we can do.
-			if erAuth.Message == "Requests rate limit exceeded" {
-				return &httpjson.Error{
-					ResponseBody: []byte(erAuth.Message),
-					StatusCode:   http.StatusTooManyRequests,
-					Status:       erAuth.Message,
-				}
-			}
-			return errors.New(erAuth.Message)
 		}
-		suffix := string(line[len(prefix):])
-		if suffix == "[DONE]" {
-			return nil
-		}
-		d := json.NewDecoder(strings.NewReader(suffix))
+	}
+}
+
+func parseStreamLine(line []byte, out chan<- CompletionStreamChunkResponse) error {
+	const prefix = "data: "
+	if !bytes.HasPrefix(line, []byte(prefix)) {
+		d := json.NewDecoder(bytes.NewReader(line))
 		d.DisallowUnknownFields()
 		d.UseNumber()
-		msg := CompletionStreamChunkResponse{}
-		if err = d.Decode(&msg); err != nil {
-			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+		erAuth := errorResponseAuth{}
+		if err := d.Decode(&erAuth); err != nil {
+			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
 		}
-		out <- msg
+		// This is clunky but the best we can do.
+		if erAuth.Message == "Requests rate limit exceeded" {
+			return &httpjson.Error{
+				ResponseBody: []byte(erAuth.Message),
+				StatusCode:   http.StatusTooManyRequests,
+				Status:       erAuth.Message,
+			}
+		}
+		return errors.New(erAuth.Message)
 	}
+	suffix := string(line[len(prefix):])
+	if suffix == "[DONE]" {
+		return nil
+	}
+	d := json.NewDecoder(strings.NewReader(suffix))
+	d.DisallowUnknownFields()
+	d.UseNumber()
+	msg := CompletionStreamChunkResponse{}
+	if err := d.Decode(&msg); err != nil {
+		return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+	}
+	out <- msg
+	return nil
 }
 
 // Time is a JSON encoded unix timestamp.

@@ -378,38 +378,40 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		return fmt.Errorf("failed to get llama server response: %w", err)
 	}
 	defer resp.Body.Close()
-	r := bufio.NewReader(resp.Body)
-	for {
+	for r := bufio.NewReader(resp.Body); ; {
 		line, err := r.ReadBytes('\n')
-		line = bytes.TrimSpace(line)
-		if err == io.EOF {
-			err = nil
+		if line = bytes.TrimSpace(line); err == io.EOF {
 			if len(line) == 0 {
 				return nil
 			}
+		} else if err != nil {
+			return fmt.Errorf("failed to get server response: %w", err)
 		}
-		if err != nil {
-			return fmt.Errorf("failed to get llama server response: %w", err)
-		}
-		if len(line) == 0 {
-			continue
-		}
-		const prefix = "data: "
-		if !bytes.HasPrefix(line, []byte(prefix)) {
-			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
-		}
-		d := json.NewDecoder(bytes.NewReader(line[len(prefix):]))
-		d.DisallowUnknownFields()
-		d.UseNumber()
-		msg := CompletionStreamChunkResponse{}
-		if err = d.Decode(&msg); err != nil {
-			return fmt.Errorf("failed to decode llama server response %q: %w", string(line), err)
-		}
-		out <- msg
-		if msg.Stop {
-			return nil
+		if len(line) != 0 {
+			if err := parseStreamLine(line, out); err != nil {
+				return err
+			}
 		}
 	}
+}
+
+func parseStreamLine(line []byte, out chan<- CompletionStreamChunkResponse) error {
+	const prefix = "data: "
+	if !bytes.HasPrefix(line, []byte(prefix)) {
+		return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
+	}
+	d := json.NewDecoder(bytes.NewReader(line[len(prefix):]))
+	d.DisallowUnknownFields()
+	d.UseNumber()
+	msg := CompletionStreamChunkResponse{}
+	if err := d.Decode(&msg); err != nil {
+		return fmt.Errorf("failed to decode llama server response %q: %w", string(line), err)
+	}
+	out <- msg
+	if msg.Stop {
+		return nil
+	}
+	return nil
 }
 
 func (c *Client) GetHealth(ctx context.Context) (string, error) {

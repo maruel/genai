@@ -411,48 +411,50 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
-	r := bufio.NewReader(resp.Body)
-	for {
+	for r := bufio.NewReader(resp.Body); ; {
 		line, err := r.ReadBytes('\n')
-		line = bytes.TrimSpace(line)
-		if err == io.EOF {
-			err = nil
+		if line = bytes.TrimSpace(line); err == io.EOF {
 			if len(line) == 0 {
 				return nil
 			}
-		}
-		if err != nil {
+		} else if err != nil {
 			return fmt.Errorf("failed to get server response: %w", err)
 		}
-		if len(line) == 0 {
-			continue
-		}
-		const dataPrefix = "data: "
-		switch {
-		case bytes.HasPrefix(line, []byte(dataPrefix)):
-			suffix := string(line[len(dataPrefix):])
-			if suffix == "[DONE]" {
-				return nil
+		if len(line) != 0 {
+			if err := parseStreamLine(line, out); err != nil {
+				return err
 			}
-			d := json.NewDecoder(strings.NewReader(suffix))
-			d.DisallowUnknownFields()
-			d.UseNumber()
-			msg := CompletionStreamChunkResponse{}
-			if err = d.Decode(&msg); err != nil {
-				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
-			}
-			out <- msg
-		default:
-			er := errorResponse{}
-			d := json.NewDecoder(bytes.NewReader(line))
-			d.DisallowUnknownFields()
-			d.UseNumber()
-			if err = d.Decode(&er); err != nil || len(er.Errors) == 0 {
-				return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
-			}
-			return fmt.Errorf("got server error: %s", er.Errors[0].Message)
 		}
 	}
+}
+
+func parseStreamLine(line []byte, out chan<- CompletionStreamChunkResponse) error {
+	const dataPrefix = "data: "
+	switch {
+	case bytes.HasPrefix(line, []byte(dataPrefix)):
+		suffix := string(line[len(dataPrefix):])
+		if suffix == "[DONE]" {
+			return nil
+		}
+		d := json.NewDecoder(strings.NewReader(suffix))
+		d.DisallowUnknownFields()
+		d.UseNumber()
+		msg := CompletionStreamChunkResponse{}
+		if err := d.Decode(&msg); err != nil {
+			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+		}
+		out <- msg
+	default:
+		er := errorResponse{}
+		d := json.NewDecoder(bytes.NewReader(line))
+		d.DisallowUnknownFields()
+		d.UseNumber()
+		if err := d.Decode(&er); err != nil || len(er.Errors) == 0 {
+			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
+		}
+		return fmt.Errorf("got server error: %s", er.Errors[0].Message)
+	}
+	return nil
 }
 
 type Model struct {

@@ -1,6 +1,6 @@
 # genai
 
-The _high performance_ native Go client for LLMs.
+The _high performance_ low level native Go client for LLMs.
 
 | Provider                                                    | Chat | Streaming | Vision | JSON output | JSON schema | Seed | Tools |
 | ----------------------------------------------------------- | ---- | --------- | ------ | ----------- | ----------- | ---- | ----- |
@@ -29,13 +29,15 @@ The _high performance_ native Go client for LLMs.
 
 ## Features
 
-- Safe and **strict** API implementation. All you love from a statically typed
-  language. No wiggling around, immediately fail on unknown RPC fields. Error
-  code paths are properly implemented.
-- Optimized for speed: minimize memory allocations, compress data at the transport layer when possible.
-- Very few dependencies.
-- Densified API surface while exposing 100% of each backend-specific functionality.
-- No unnecessary internal abstractions. Use the raw API without weird wrappers.
+- **Safe and strict API implementation**. All you love from a statically typed
+  language. Immediately fail on unknown RPC fields. Error code paths are
+  properly implemented.
+- **Stateless*: no global state, clients are safe to use concurrently lock-less.
+- **Professional grade**: unit tested on live services.
+- **Optimized for speed**: minimize memory allocations, compress data at the transport layer when possible.
+- **Lean**: Very few dependencies. No unnecessary abstraction layer.
+- **Full functionality**: Full access to each backend-specific functionality.
+- Easy to add new providers.
 - Implementation is in flux. :) For example, tool call may not work in stream mode yet.
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/maruel/genai/.svg)](https://pkg.go.dev/github.com/maruel/genai/)
@@ -84,6 +86,63 @@ supports brotli and zstd as POST data but replies uncompressed (!). Google
 supports gzip.
 
 
+## Look and feel
+
+```go
+package main
+
+func main() {
+    c, err := cerebras.New("", "llama3.1-8b")
+    if err != nil {
+        log.Fatal(err)
+    }
+    msgs := []genaiapi.Message{
+        {
+            Role: genaiapi.User,
+            Type: genaiapi.Text,
+            Text: "Is a circle round? Reply as JSON.",
+        },
+    }
+    opts := genaiapi.CompletionOptions{
+        Seed:        1,
+        Temperature: 0.01,
+        MaxTokens:   50,
+        ReplyAsJSON: true,
+        JSONSchema: genaiapi.JSONSchema{
+            Type: "object",
+            Properties: map[string]genaiapi.JSONSchema{
+                "round": {
+                    Type: "boolean",
+                },
+            },
+            Required: []string{"round"},
+        },
+    }
+    resp, err := c.Completion(context.Background(), msgs, &opts)
+    if err != nil {
+        log.Fatal(err)
+    }
+    if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.Text {
+        log.Fatalf("Unexpected response: %#v", resp)
+    }
+    // Print to stderr so the test doesn't capture it.
+    fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
+    var expected struct {
+        Round bool `json:"round"`
+    }
+    d := json.NewDecoder(strings.NewReader(resp.Text))
+    d.DisallowUnknownFields()
+    if err := d.Decode(&expected); err != nil {
+        log.Fatalf("Failed to decode JSON: %v", err)
+    }
+    fmt.Printf("Round: %v\n", expected.Round)
+    if resp.InputTokens < 100 || resp.OutputTokens < 2 {
+        log.Fatalf("Missing usage token")
+    }
+}
+```
+
+
 ## TODO
 
 - Tools
@@ -97,3 +156,5 @@ supports gzip.
 - Moderation
 - Thinking
 - Content Blocks
+- Pass JSON in the message so no need to create the JSONSchema
+- Pass tool in the message so no need to create the tool definition's JSONSchema

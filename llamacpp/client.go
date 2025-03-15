@@ -179,6 +179,17 @@ type CompletionResponse struct {
 	} `json:"timings"`
 }
 
+func (c *CompletionResponse) ToResult() (genaiapi.CompletionResult, error) {
+	out := genaiapi.CompletionResult{}
+	out.InputTokens = c.TokensPredicted
+	out.OutputTokens = c.TokensEvaluated
+	out.Role = genaiapi.Assistant
+	out.Type = genaiapi.Text
+	// Mistral Nemo really likes "▁".
+	out.Text = strings.ReplaceAll(c.Content, "\u2581", " ")
+	return out, nil
+}
+
 type CompletionStreamChunkResponse struct {
 	// Always
 	Index           int64   `json:"index"`
@@ -305,26 +316,19 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 	// https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
-	out := genaiapi.CompletionResult{}
 	rpcin := CompletionRequest{CachePrompt: true}
 	if err := rpcin.Init(opts); err != nil {
-		return out, err
+		return genaiapi.CompletionResult{}, err
 	}
 	if err := c.initPrompt(ctx, &rpcin, msgs); err != nil {
-		return out, err
+		return genaiapi.CompletionResult{}, err
 	}
 	rpcout := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
-		return out, fmt.Errorf("failed to get llama server response: %w", err)
+		return genaiapi.CompletionResult{}, fmt.Errorf("failed to get llama server response: %w", err)
 	}
 	slog.DebugContext(ctx, "llm", "prompt tok", rpcout.Timings.PromptN, "gen tok", rpcout.Timings.PredictedN, "prompt tok/ms", rpcout.Timings.PromptPerTokenMS, "gen tok/ms", rpcout.Timings.PredictedPerTokenMS)
-	out.InputTokens = rpcout.TokensPredicted
-	out.OutputTokens = rpcout.TokensEvaluated
-	out.Role = genaiapi.Assistant
-	out.Type = genaiapi.Text
-	// Mistral Nemo really likes "▁".
-	out.Text = strings.ReplaceAll(rpcout.Content, "\u2581", " ")
-	return out, nil
+	return rpcout.ToResult()
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {

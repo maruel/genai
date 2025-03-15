@@ -164,6 +164,36 @@ type CompletionResponse struct {
 	} `json:"usage"`
 }
 
+func (c *CompletionResponse) ToResult() (genaiapi.CompletionResult, error) {
+	out := genaiapi.CompletionResult{}
+	out.InputTokens = c.Usage.PromptTokens
+	out.OutputTokens = c.Usage.CompletionTokens
+	if len(c.Choices) != 1 {
+		return out, fmt.Errorf("expected 1 choice, got %#v", c.Choices)
+	}
+	if len(c.Choices[0].Message.ToolCall) != 0 {
+		out.Type = genaiapi.ToolCalls
+		out.ToolCalls = make([]genaiapi.ToolCall, len(c.Choices[0].Message.ToolCall))
+		for i, t := range c.Choices[0].Message.ToolCall {
+			out.ToolCalls[i].ID = t.ID
+			out.ToolCalls[i].Name = t.Function.Name
+			out.ToolCalls[i].Arguments = t.Function.Arguments
+		}
+	} else {
+		out.Type = genaiapi.Text
+		out.Text = c.Choices[0].Message.Content
+	}
+	switch role := c.Choices[0].Message.Role; role {
+	case "system", "user":
+		out.Role = genaiapi.Role(role)
+	case "assistant", "model":
+		out.Role = genaiapi.Assistant
+	default:
+		return out, fmt.Errorf("unsupported role %q", role)
+	}
+	return out, nil
+}
+
 type Logprobs struct {
 	Content []struct {
 		Token       string  `json:"token"`
@@ -238,41 +268,15 @@ func New(apiKey, model string) (*Client, error) {
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.CompletionResult, error) {
 	// https://api-docs.deepseek.com/api/create-chat-completion
-	out := genaiapi.CompletionResult{}
 	rpcin := CompletionRequest{Model: c.model}
 	if err := rpcin.Init(msgs, opts); err != nil {
-		return out, err
+		return genaiapi.CompletionResult{}, err
 	}
 	rpcout := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
-		return out, err
+		return genaiapi.CompletionResult{}, err
 	}
-	out.InputTokens = rpcout.Usage.PromptTokens
-	out.OutputTokens = rpcout.Usage.CompletionTokens
-	if len(rpcout.Choices) != 1 {
-		return out, fmt.Errorf("expected 1 choice, got %#v", rpcout.Choices)
-	}
-	if len(rpcout.Choices[0].Message.ToolCall) != 0 {
-		out.Type = genaiapi.ToolCalls
-		out.ToolCalls = make([]genaiapi.ToolCall, len(rpcout.Choices[0].Message.ToolCall))
-		for i, t := range rpcout.Choices[0].Message.ToolCall {
-			out.ToolCalls[i].ID = t.ID
-			out.ToolCalls[i].Name = t.Function.Name
-			out.ToolCalls[i].Arguments = t.Function.Arguments
-		}
-	} else {
-		out.Type = genaiapi.Text
-		out.Text = rpcout.Choices[0].Message.Content
-	}
-	switch role := rpcout.Choices[0].Message.Role; role {
-	case "system", "user":
-		out.Role = genaiapi.Role(role)
-	case "assistant", "model":
-		out.Role = genaiapi.Assistant
-	default:
-		return out, fmt.Errorf("unsupported role %q", role)
-	}
-	return out, nil
+	return rpcout.ToResult()
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {

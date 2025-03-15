@@ -403,6 +403,62 @@ type CompletionResponse struct {
 	ModelVersion string `json:"modelVersion"`
 }
 
+func (c *CompletionResponse) ToResult() (genaiapi.CompletionResult, error) {
+	out := genaiapi.CompletionResult{}
+	out.InputTokens = c.UsageMetadata.PromptTokenCount
+	out.OutputTokens = c.UsageMetadata.CandidatesTokenCount + c.UsageMetadata.ToolUsePromptTokenCount + c.UsageMetadata.ThoughtsTokenCount
+	if len(c.Candidates) != 1 {
+		return out, fmt.Errorf("unexpected number of candidates; expected 1, got %v", c.Candidates)
+	}
+	parts := c.Candidates[0].Content.Parts
+	// TODO: Handle mixed content.
+	if len(parts) != 1 {
+		return out, fmt.Errorf("unexpected number of parts; expected 1, got %v", parts)
+	}
+	// There's no signal as to what it is, we have to test its content.
+	part := parts[0]
+	if part.Text != "" {
+		out.Type = genaiapi.Text
+		out.Text = part.Text
+	} else if part.InlineData.MimeType != "" {
+		out.Type = genaiapi.Document
+		exts, err := mime.ExtensionsByType(part.InlineData.MimeType)
+		if err != nil {
+			return out, fmt.Errorf("failed to get extension for mime type %q: %w", part.InlineData.MimeType, err)
+		}
+		if len(exts) == 0 {
+			return out, fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
+		}
+		out.Filename = "content" + exts[0]
+		out.Document = bytes.NewReader(part.InlineData.Data)
+	} else if part.FileData.MimeType != "" {
+		out.Type = genaiapi.Document
+		out.URL = part.FileData.FileURI
+	} else if part.FunctionCall.Name != "" {
+		out.Type = genaiapi.ToolCalls
+		raw, err := json.Marshal(part.FunctionCall.Args)
+		if err != nil {
+			return out, fmt.Errorf("failed to marshal arguments: %w", err)
+		}
+		out.ToolCalls = []genaiapi.ToolCall{{
+			ID:        part.FunctionCall.ID,
+			Name:      part.FunctionCall.Name,
+			Arguments: string(raw),
+		}}
+	} else {
+		return out, fmt.Errorf("unsupported part %v", part)
+	}
+	switch role := c.Candidates[0].Content.Role; role {
+	case "system", "user":
+		out.Role = genaiapi.Role(role)
+	case "model":
+		out.Role = genaiapi.Assistant
+	default:
+		return out, fmt.Errorf("unsupported role %q", role)
+	}
+	return out, nil
+}
+
 // https://ai.google.dev/api/generate-content?hl=en#v1beta.ModalityTokenCount
 type ModalityTokenCount struct {
 	// https://ai.google.dev/api/generate-content?hl=en#v1beta.ModalityTokenCount
@@ -594,67 +650,15 @@ func (c *Client) cacheContent(ctx context.Context, data []byte, mime, systemInst
 */
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.CompletionResult, error) {
-	out := genaiapi.CompletionResult{}
 	rpcin := CompletionRequest{}
 	if err := rpcin.Init(msgs, opts); err != nil {
-		return out, err
+		return genaiapi.CompletionResult{}, err
 	}
 	rpcout := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
-		return out, err
+		return genaiapi.CompletionResult{}, err
 	}
-	out.InputTokens = rpcout.UsageMetadata.PromptTokenCount
-	out.OutputTokens = rpcout.UsageMetadata.CandidatesTokenCount + rpcout.UsageMetadata.ToolUsePromptTokenCount + rpcout.UsageMetadata.ThoughtsTokenCount
-	if len(rpcout.Candidates) != 1 {
-		return out, fmt.Errorf("unexpected number of candidates; expected 1, got %v", rpcout.Candidates)
-	}
-	parts := rpcout.Candidates[0].Content.Parts
-	// TODO: Handle mixed content.
-	if len(parts) != 1 {
-		return out, fmt.Errorf("unexpected number of parts; expected 1, got %v", parts)
-	}
-	// There's no signal as to what it is, we have to test its content.
-	part := parts[0]
-	if part.Text != "" {
-		out.Type = genaiapi.Text
-		out.Text = part.Text
-	} else if part.InlineData.MimeType != "" {
-		out.Type = genaiapi.Document
-		exts, err := mime.ExtensionsByType(part.InlineData.MimeType)
-		if err != nil {
-			return out, fmt.Errorf("failed to get extension for mime type %q: %w", part.InlineData.MimeType, err)
-		}
-		if len(exts) == 0 {
-			return out, fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
-		}
-		out.Filename = "content" + exts[0]
-		out.Document = bytes.NewReader(part.InlineData.Data)
-	} else if part.FileData.MimeType != "" {
-		out.Type = genaiapi.Document
-		out.URL = part.FileData.FileURI
-	} else if part.FunctionCall.Name != "" {
-		out.Type = genaiapi.ToolCalls
-		raw, err := json.Marshal(part.FunctionCall.Args)
-		if err != nil {
-			return out, fmt.Errorf("failed to marshal arguments: %w", err)
-		}
-		out.ToolCalls = []genaiapi.ToolCall{{
-			ID:        part.FunctionCall.ID,
-			Name:      part.FunctionCall.Name,
-			Arguments: string(raw),
-		}}
-	} else {
-		return out, fmt.Errorf("unsupported part %v", part)
-	}
-	switch role := rpcout.Candidates[0].Content.Role; role {
-	case "system", "user":
-		out.Role = genaiapi.Role(role)
-	case "model":
-		out.Role = genaiapi.Assistant
-	default:
-		return out, fmt.Errorf("unsupported role %q", role)
-	}
-	return out, nil
+	return rpcout.ToResult()
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {

@@ -229,6 +229,61 @@ type CompletionResponse struct {
 	Messages []struct{} `json:"messages"` // Annoyingly, it's included all the time
 }
 
+func (c *CompletionResponse) ToResult(rpcin *CompletionRequest) (genaiapi.CompletionResult, error) {
+	out := genaiapi.CompletionResult{}
+	out.InputTokens = c.Result.Usage.PromptTokens
+	out.OutputTokens = c.Result.Usage.CompletionTokens
+	switch v := c.Result.Response.(type) {
+	case string:
+		// This is just sad.
+		if strings.HasPrefix(v, "<tool_call>") {
+			out.Type = genaiapi.ToolCalls
+			// Example with "@hf/nousresearch/hermes-2-pro-mistral-7b" that is
+			// supposed to support tool calling (and yes it supply the tool call XML
+			// tags):
+			// "<tool_call>\n{'arguments': {'country': 'Canada'}, 'name': 'best_country'}\n</tool_call>\n<tool_call>\n{'arguments': {'country': 'US'}, 'name': 'best_country'}\n</tool_call>"
+
+			var toolCalls ToolCalls
+			if err := xml.Unmarshal([]byte("<root>"+v+"</root>"), &toolCalls); err != nil {
+				return out, fmt.Errorf("failed to unmarshal tool calls XML: %w; content: %q", err, v)
+			}
+			for i, tc := range toolCalls.Content {
+				var toolCall ToolCall
+				tc = strings.TrimSpace(tc)
+				if err := json.Unmarshal([]byte(tc), &toolCall); err != nil {
+					// This is ugly.
+					tc2 := strings.ReplaceAll(tc, "'", "\"")
+					if err := json.Unmarshal([]byte(tc2), &toolCall); err != nil {
+						return out, fmt.Errorf("failed to unmarshal tool call as JSON: %w; content: %q", err, tc)
+					}
+				}
+				raw, err := json.Marshal(toolCall.Arguments)
+				if err != nil {
+					return out, fmt.Errorf("failed to marshal tool call arguments: %w", err)
+				}
+				out.ToolCalls = append(out.ToolCalls, genaiapi.ToolCall{ID: fmt.Sprintf("tool_call%d", i), Name: toolCall.Name, Arguments: string(raw)})
+			}
+		} else {
+			out.Type = genaiapi.Text
+			out.Text = v
+		}
+	default:
+		if rpcin.ResponseFormat.Type == "json_schema" {
+			// Marshal back into JSON for now.
+			b, err := json.Marshal(v)
+			if err != nil {
+				return out, fmt.Errorf("failed to JSON marshal type %T: %v: %w", v, v, err)
+			}
+			out.Type = genaiapi.Text
+			out.Text = string(b)
+		} else {
+			return out, fmt.Errorf("unexpected type %T: %v", v, v)
+		}
+	}
+	out.Role = genaiapi.Assistant
+	return out, nil
+}
+
 // If you find the documentation for this please tell me!
 type CompletionStreamChunkResponse struct {
 	Response string `json:"response"`
@@ -294,66 +349,15 @@ func New(accountID, apiKey, model string) (*Client, error) {
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.CompletionResult, error) {
 	// https://developers.cloudflare.com/api/resources/ai/methods/run/
-	out := genaiapi.CompletionResult{}
 	rpcin := CompletionRequest{}
 	if err := rpcin.Init(msgs, opts); err != nil {
-		return out, err
+		return genaiapi.CompletionResult{}, err
 	}
 	rpcout := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
-		return out, fmt.Errorf("failed to get chat response: %w", err)
+		return genaiapi.CompletionResult{}, fmt.Errorf("failed to get chat response: %w", err)
 	}
-	out.InputTokens = rpcout.Result.Usage.PromptTokens
-	out.OutputTokens = rpcout.Result.Usage.CompletionTokens
-	switch v := rpcout.Result.Response.(type) {
-	case string:
-		// This is just sad.
-		if strings.HasPrefix(v, "<tool_call>") {
-			out.Type = genaiapi.ToolCalls
-			// Example with "@hf/nousresearch/hermes-2-pro-mistral-7b" that is
-			// supposed to support tool calling (and yes it supply the tool call XML
-			// tags):
-			// "<tool_call>\n{'arguments': {'country': 'Canada'}, 'name': 'best_country'}\n</tool_call>\n<tool_call>\n{'arguments': {'country': 'US'}, 'name': 'best_country'}\n</tool_call>"
-
-			var toolCalls ToolCalls
-			if err := xml.Unmarshal([]byte("<root>"+v+"</root>"), &toolCalls); err != nil {
-				return out, fmt.Errorf("failed to unmarshal tool calls XML: %w; content: %q", err, v)
-			}
-			for i, tc := range toolCalls.Content {
-				var toolCall ToolCall
-				tc = strings.TrimSpace(tc)
-				if err := json.Unmarshal([]byte(tc), &toolCall); err != nil {
-					// This is ugly.
-					tc2 := strings.ReplaceAll(tc, "'", "\"")
-					if err := json.Unmarshal([]byte(tc2), &toolCall); err != nil {
-						return out, fmt.Errorf("failed to unmarshal tool call as JSON: %w; content: %q", err, tc)
-					}
-				}
-				raw, err := json.Marshal(toolCall.Arguments)
-				if err != nil {
-					return out, fmt.Errorf("failed to marshal tool call arguments: %w", err)
-				}
-				out.ToolCalls = append(out.ToolCalls, genaiapi.ToolCall{ID: fmt.Sprintf("tool_call%d", i), Name: toolCall.Name, Arguments: string(raw)})
-			}
-		} else {
-			out.Type = genaiapi.Text
-			out.Text = v
-		}
-	default:
-		if rpcin.ResponseFormat.Type == "json_schema" {
-			// Marshal back into JSON for now.
-			b, err := json.Marshal(v)
-			if err != nil {
-				return out, fmt.Errorf("failed to JSON marshal type %T: %v: %w", v, v, err)
-			}
-			out.Type = genaiapi.Text
-			out.Text = string(b)
-		} else {
-			return out, fmt.Errorf("unexpected type %T: %v", v, v)
-		}
-	}
-	out.Role = genaiapi.Assistant
-	return out, nil
+	return rpcout.ToResult(&rpcin)
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {

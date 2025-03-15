@@ -277,6 +277,40 @@ type CompletionResponse struct {
 	} `json:"usage"`
 }
 
+func (c *CompletionResponse) ToResult() (genaiapi.CompletionResult, error) {
+	out := genaiapi.CompletionResult{}
+	out.InputTokens = c.Usage.InputTokens
+	out.OutputTokens = c.Usage.OutputTokens
+	if len(c.Content) != 1 {
+		return out, fmt.Errorf("expected 1 choice, got %#v", c.Content)
+	}
+	switch c.Content[0].Type {
+	case "text":
+		out.Type = genaiapi.Text
+		out.Text = c.Content[0].Text
+	case "tool_use":
+		out.Type = genaiapi.ToolCalls
+		raw, err := json.Marshal(c.Content[0].Input)
+		if err != nil {
+			return out, fmt.Errorf("failed to marshal input: %w; for tool call: %#v", err, c.Content[0])
+		}
+		out.ToolCalls = []genaiapi.ToolCall{{
+			ID:        c.Content[0].ID,
+			Name:      c.Content[0].Name,
+			Arguments: string(raw),
+		}}
+	default:
+		return out, fmt.Errorf("unsupported content type %q", c.Content[0].Type)
+	}
+	switch role := c.Role; role {
+	case "system", "assistant", "user":
+		out.Role = genaiapi.Role(role)
+	default:
+		return out, fmt.Errorf("unsupported role %q", role)
+	}
+	return out, nil
+}
+
 // https://docs.anthropic.com/en/api/messages-streaming
 // Each stream uses the following event flow:
 //   - message_start: contains a Message object with empty content.
@@ -382,45 +416,15 @@ func New(apiKey, model string) (*Client, error) {
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.CompletionResult, error) {
 	// https://docs.anthropic.com/en/api/messages
-	out := genaiapi.CompletionResult{}
 	rpcin := CompletionRequest{Model: c.model}
 	if err := rpcin.Init(msgs, opts); err != nil {
-		return out, err
+		return genaiapi.CompletionResult{}, err
 	}
 	rpcout := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
-		return out, err
+		return genaiapi.CompletionResult{}, err
 	}
-	out.InputTokens = rpcout.Usage.InputTokens
-	out.OutputTokens = rpcout.Usage.OutputTokens
-	if len(rpcout.Content) != 1 {
-		return out, fmt.Errorf("expected 1 choice, got %#v", rpcout.Content)
-	}
-	switch rpcout.Content[0].Type {
-	case "text":
-		out.Type = genaiapi.Text
-		out.Text = rpcout.Content[0].Text
-	case "tool_use":
-		out.Type = genaiapi.ToolCalls
-		raw, err := json.Marshal(rpcout.Content[0].Input)
-		if err != nil {
-			return out, fmt.Errorf("failed to marshal input: %w; for tool call: %#v", err, rpcout.Content[0])
-		}
-		out.ToolCalls = []genaiapi.ToolCall{{
-			ID:        rpcout.Content[0].ID,
-			Name:      rpcout.Content[0].Name,
-			Arguments: string(raw),
-		}}
-	default:
-		return out, fmt.Errorf("unsupported content type %q", rpcout.Content[0].Type)
-	}
-	switch role := rpcout.Role; role {
-	case "system", "assistant", "user":
-		out.Role = genaiapi.Role(role)
-	default:
-		return out, fmt.Errorf("unsupported role %q", role)
-	}
-	return out, nil
+	return rpcout.ToResult()
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {

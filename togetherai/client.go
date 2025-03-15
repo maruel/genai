@@ -198,6 +198,32 @@ type CompletionResponse struct {
 	Object  string `json:"object"` // "chat.completion"
 }
 
+func (c *CompletionResponse) ToResult() (genaiapi.CompletionResult, error) {
+	out := genaiapi.CompletionResult{}
+	out.InputTokens = c.Usage.PromptTokens
+	out.OutputTokens = c.Usage.CompletionTokens
+	if len(c.Choices) != 1 {
+		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
+	}
+	// Warning: using a model small may fail.
+	if len(c.Choices[0].Message.ToolCalls) != 0 {
+		out.Type = genaiapi.ToolCalls
+		for _, t := range c.Choices[0].Message.ToolCalls {
+			out.ToolCalls = append(out.ToolCalls, genaiapi.ToolCall{ID: t.ID, Name: t.Function.Name, Arguments: t.Function.Arguments})
+		}
+	} else {
+		out.Type = genaiapi.Text
+		out.Text = c.Choices[0].Message.Content
+	}
+	switch role := c.Choices[0].Message.Role; role {
+	case "system", "assistant", "user":
+		out.Role = genaiapi.Role(role)
+	default:
+		return out, fmt.Errorf("unsupported role %q", role)
+	}
+	return out, nil
+}
+
 type ToolCall struct {
 	Index    int64  `json:"index"`
 	ID       string `json:"id"`
@@ -271,37 +297,15 @@ func New(apiKey, model string) (*Client, error) {
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.CompletionResult, error) {
 	// https://docs.together.ai/docs/chat-overview
-	out := genaiapi.CompletionResult{}
 	rpcin := CompletionRequest{Model: c.model}
 	if err := rpcin.Init(msgs, opts); err != nil {
-		return out, err
+		return genaiapi.CompletionResult{}, err
 	}
 	rpcout := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
-		return out, fmt.Errorf("failed to get chat response: %w", err)
+		return genaiapi.CompletionResult{}, fmt.Errorf("failed to get chat response: %w", err)
 	}
-	out.InputTokens = rpcout.Usage.PromptTokens
-	out.OutputTokens = rpcout.Usage.CompletionTokens
-	if len(rpcout.Choices) != 1 {
-		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(rpcout.Choices))
-	}
-	// Warning: using a model small may fail.
-	if len(rpcout.Choices[0].Message.ToolCalls) != 0 {
-		out.Type = genaiapi.ToolCalls
-		for _, t := range rpcout.Choices[0].Message.ToolCalls {
-			out.ToolCalls = append(out.ToolCalls, genaiapi.ToolCall{ID: t.ID, Name: t.Function.Name, Arguments: t.Function.Arguments})
-		}
-	} else {
-		out.Type = genaiapi.Text
-		out.Text = rpcout.Choices[0].Message.Content
-	}
-	switch role := rpcout.Choices[0].Message.Role; role {
-	case "system", "assistant", "user":
-		out.Role = genaiapi.Role(role)
-	default:
-		return out, fmt.Errorf("unsupported role %q", role)
-	}
-	return out, nil
+	return rpcout.ToResult()
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {

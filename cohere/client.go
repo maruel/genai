@@ -219,6 +219,36 @@ type CompletionResponse struct {
 	} `json:"logprobs"`
 }
 
+func (c *CompletionResponse) ToResult() (genaiapi.CompletionResult, error) {
+	out := genaiapi.CompletionResult{}
+	// What about BilledUnits, especially for SearchUnits and Classifications?
+	out.InputTokens = c.Usage.Tokens.InputTokens
+	out.OutputTokens = c.Usage.Tokens.OutputTokens
+	if len(c.Message.ToolCalls) != 0 {
+		out.Role = genaiapi.Assistant
+		out.Type = genaiapi.ToolCalls
+		out.ToolCalls = make([]genaiapi.ToolCall, len(c.Message.ToolCalls))
+		for i, t := range c.Message.ToolCalls {
+			out.ToolCalls[i].ID = t.ID
+			out.ToolCalls[i].Name = t.Function.Name
+			out.ToolCalls[i].Arguments = t.Function.Arguments
+		}
+	} else {
+		if len(c.Message.Content) != 1 {
+			return out, fmt.Errorf("unexpected number of messages %d", len(c.Message.Content))
+		}
+		out.Type = genaiapi.Text
+		out.Text = c.Message.Content[0].Text
+	}
+	switch role := c.Message.Role; role {
+	case "system", "assistant", "user":
+		out.Role = genaiapi.Role(role)
+	default:
+		return out, fmt.Errorf("unsupported role %q", role)
+	}
+	return out, nil
+}
+
 type CompletionStreamChunkResponse struct {
 	ID    string `json:"id"`
 	Type  string `json:"type"` // "message_start", "content-start", "message-end"
@@ -303,41 +333,15 @@ func New(apiKey, model string) (*Client, error) {
 
 func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.CompletionResult, error) {
 	// https://docs.cohere.com/reference/chat
-	out := genaiapi.CompletionResult{}
 	rpcin := CompletionRequest{Model: c.model}
 	if err := rpcin.Init(msgs, opts); err != nil {
-		return out, err
+		return genaiapi.CompletionResult{}, err
 	}
 	rpcout := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
-		return out, fmt.Errorf("failed to get chat response: %w", err)
+		return genaiapi.CompletionResult{}, fmt.Errorf("failed to get chat response: %w", err)
 	}
-	// What about BilledUnits, especially for SearchUnits and Classifications?
-	out.InputTokens = rpcout.Usage.Tokens.InputTokens
-	out.OutputTokens = rpcout.Usage.Tokens.OutputTokens
-	if len(rpcout.Message.ToolCalls) != 0 {
-		out.Role = genaiapi.Assistant
-		out.Type = genaiapi.ToolCalls
-		out.ToolCalls = make([]genaiapi.ToolCall, len(rpcout.Message.ToolCalls))
-		for i, t := range rpcout.Message.ToolCalls {
-			out.ToolCalls[i].ID = t.ID
-			out.ToolCalls[i].Name = t.Function.Name
-			out.ToolCalls[i].Arguments = t.Function.Arguments
-		}
-	} else {
-		if len(rpcout.Message.Content) != 1 {
-			return out, fmt.Errorf("unexpected number of messages %d", len(rpcout.Message.Content))
-		}
-		out.Type = genaiapi.Text
-		out.Text = rpcout.Message.Content[0].Text
-	}
-	switch role := rpcout.Message.Role; role {
-	case "system", "assistant", "user":
-		out.Role = genaiapi.Role(role)
-	default:
-		return out, fmt.Errorf("unsupported role %q", role)
-	}
-	return out, nil
+	return rpcout.ToResult()
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {

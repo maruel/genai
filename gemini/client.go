@@ -44,7 +44,7 @@ type FileData struct {
 }
 
 // https://protobuf.dev/reference/protobuf/google.protobuf/#struct
-type StructValue map[string]Value
+type StructValue map[string]any
 
 // https://protobuf.dev/reference/protobuf/google.protobuf/#value
 // TODO: Confirm.
@@ -93,8 +93,7 @@ type Part struct {
 // https://ai.google.dev/api/caching?hl=en#Content
 type Content struct {
 	Parts []Part `json:"parts"`
-	// Must be either 'user' or 'model'.
-	Role string `json:"role,omitzero"`
+	Role  string `json:"role,omitzero"` // "user", "model"
 }
 
 // https://ai.google.dev/api/generate-content?hl=en#v1beta.SafetySetting
@@ -105,7 +104,7 @@ type SafetySetting struct {
 
 // https://ai.google.dev/api/caching?hl=en#Tool
 type Tool struct {
-	FunctionDeclarations []FunctionDeclaration `json:"nunctionDeclaration,omitzero"`
+	FunctionDeclarations []FunctionDeclaration `json:"functionDeclarations,omitzero"`
 	// https://ai.google.dev/api/caching?hl=en#GoogleSearchRetrieval
 	GoogleSearchRetrieval struct {
 		// https://ai.google.dev/api/caching?hl=en#DynamicRetrievalConfig
@@ -130,17 +129,53 @@ type FunctionDeclaration struct {
 // https://ai.google.dev/api/caching?hl=en#Schema
 type Schema struct {
 	// https://ai.google.dev/api/caching?hl=en#Type
-	Type             string            `json:"type,omitzero"`   // TYPE_UNSPECIFIED, STRING, NUMBER, INTEGER, BOOLEAN, ARRAY, OBJECT
-	Format           string            `json:"format,omitzero"` // "json-schema"
-	Description      string            `json:"description,omitzero"`
-	Nullable         bool              `json:"nullable,omitzero"`
-	Enum             []string          `json:"enum,omitzero"`
-	MaxItems         int64             `json:"maxItems,omitzero"`
-	MinItems         int64             `json:"minItems,omitzero"`
-	Properties       map[string]Schema `json:"properties,omitzero"`
-	Required         []string          `json:"required,omitzero"`
-	PropertyOrdering []string          `json:"propertyOrdering,omitzero"`
-	Items            *Schema           `json:"items,omitzero"` // When type is "array"
+	// https://spec.openapis.org/oas/v3.0.3#data-types
+	Type             string            `json:"type,omitzero"`             // TYPE_UNSPECIFIED, STRING, NUMBER, INTEGER, BOOLEAN, ARRAY, OBJECT
+	Format           string            `json:"format,omitzero"`           // NUMBER type: float, double for INTEGER type: int32, int64 for STRING type: enum, date-time
+	Description      string            `json:"description,omitzero"`      //
+	Nullable         bool              `json:"nullable,omitzero"`         //
+	Enum             []string          `json:"enum,omitzero"`             // STRING
+	MaxItems         int64             `json:"maxItems,omitzero"`         // ARRAY
+	MinItems         int64             `json:"minItems,omitzero"`         // ARRAY
+	Properties       map[string]Schema `json:"properties,omitzero"`       // OBJECT
+	Required         []string          `json:"required,omitzero"`         // OBJECT
+	PropertyOrdering []string          `json:"propertyOrdering,omitzero"` // OBJECT
+	Items            *Schema           `json:"items,omitzero"`            // ARRAY
+}
+
+func (s *Schema) FromJSONSchema(j genaiapi.JSONSchema) {
+	s.Type = j.Type
+	// s.Format = j.Format
+	s.Description = j.Description
+	s.Nullable = false
+	if len(j.Enum) != 0 {
+		s.Enum = make([]string, len(j.Enum))
+		for i, e := range j.Enum {
+			switch v := e.(type) {
+			case string:
+				s.Enum[i] = v
+			default:
+				// TODO: Propagate the error.
+				panic(fmt.Sprintf("invalid enum type: got %T, want string", e))
+			}
+		}
+	}
+	// s.MaxItems = j.MaxItems
+	// s.MinItems = j.MinItems
+	if len(j.Properties) != 0 {
+		s.Properties = make(map[string]Schema, len(j.Properties))
+		for k := range j.Properties {
+			i := Schema{}
+			i.FromJSONSchema(j.Properties[k])
+			s.Properties[k] = i
+		}
+	}
+	s.Required = j.Required
+	// s.PropertyOrdering = j.PropertyOrdering
+	if j.Items != nil {
+		s.Items = &Schema{}
+		s.Items.FromJSONSchema(*j.Items)
+	}
 }
 
 // https://ai.google.dev/api/caching?hl=en#ToolConfig
@@ -201,11 +236,27 @@ func (c *CompletionRequest) fromOpts(opts any) error {
 			c.GenerationConfig.MaxOutputTokens = v.MaxTokens
 			c.GenerationConfig.Temperature = v.Temperature
 			c.GenerationConfig.Seed = v.Seed
-			if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
-				return errors.New("to be implemented")
+			if v.ReplyAsJSON {
+				c.GenerationConfig.ResponseMimeType = "application/json"
+			}
+			if !v.JSONSchema.IsZero() {
+				c.GenerationConfig.ResponseSchema.FromJSONSchema(v.JSONSchema)
 			}
 			if len(v.Tools) != 0 {
-				return errors.New("tools support is not implemented yet")
+				// "any" actually means required.
+				c.ToolConfig.FunctionCallingConfig.Mode = "any"
+				c.Tools = make([]Tool, len(v.Tools))
+				for i, t := range v.Tools {
+					params := Schema{}
+					params.FromJSONSchema(t.Parameters)
+					c.Tools[i].FunctionDeclarations = []FunctionDeclaration{{
+						Name:        t.Name,
+						Description: t.Description,
+						Parameters:  params,
+						// Expose this eventually? We have to test if Google supports non-string answers.
+						Response: Schema{Type: "string"},
+					}}
+				}
 			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
@@ -277,7 +328,7 @@ type CompletionResponse struct {
 	Candidates []struct {
 		Content Content `json:"content"`
 		// https://ai.google.dev/api/generate-content?hl=en#FinishReason
-		FinishReason string `json:"finishReason"`
+		FinishReason string `json:"finishReason"` // "STOP" (uppercase)
 		// https://ai.google.dev/api/generate-content?hl=en#v1beta.SafetyRating
 		SafetyRatings []struct {
 			// https://ai.google.dev/api/generate-content?hl=en#v1beta.HarmCategory
@@ -569,8 +620,43 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts a
 		return out, fmt.Errorf("unexpected number of candidates; expected 1, got %v", rpcout.Candidates)
 	}
 	parts := rpcout.Candidates[0].Content.Parts
-	out.Type = genaiapi.Text
-	out.Text = parts[len(parts)-1].Text
+	// TODO: Handle mixed content.
+	if len(parts) != 1 {
+		return out, fmt.Errorf("unexpected number of parts; expected 1, got %v", parts)
+	}
+	// There's no signal as to what it is, we have to test its content.
+	part := parts[0]
+	if part.Text != "" {
+		out.Type = genaiapi.Text
+		out.Text = part.Text
+	} else if part.InlineData.MimeType != "" {
+		out.Type = genaiapi.Document
+		exts, err := mime.ExtensionsByType(part.InlineData.MimeType)
+		if err != nil {
+			return out, fmt.Errorf("failed to get extension for mime type %q: %w", part.InlineData.MimeType, err)
+		}
+		if len(exts) == 0 {
+			return out, fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
+		}
+		out.Filename = "content" + exts[0]
+		out.Document = bytes.NewReader(part.InlineData.Data)
+	} else if part.FileData.MimeType != "" {
+		out.Type = genaiapi.Document
+		out.URL = part.FileData.FileURI
+	} else if part.FunctionCall.Name != "" {
+		out.Type = genaiapi.ToolCalls
+		raw, err := json.Marshal(part.FunctionCall.Args)
+		if err != nil {
+			return out, fmt.Errorf("failed to marshal arguments: %w", err)
+		}
+		out.ToolCalls = []genaiapi.ToolCall{{
+			ID:        part.FunctionCall.ID,
+			Name:      part.FunctionCall.Name,
+			Arguments: string(raw),
+		}}
+	} else {
+		return out, fmt.Errorf("unsupported part %v", part)
+	}
 	switch role := rpcout.Candidates[0].Content.Role; role {
 	case "system", "user":
 		out.Role = genaiapi.Role(role)

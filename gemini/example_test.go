@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"context"
 	_ "embed"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -27,7 +28,7 @@ var bananaJpg []byte
 // See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 var model = "gemini-2.0-flash-lite"
 
-func ExampleClient_Completion_vison() {
+func ExampleClient_Completion_vision_and_JSONSchema() {
 	// This code will run when GEMINI_API_KEY is set.
 	// As of March 2025, you can try it out for free.
 	if c, err := gemini.New("", model); err == nil {
@@ -42,13 +43,23 @@ func ExampleClient_Completion_vison() {
 			{
 				Role: genaiapi.User,
 				Type: genaiapi.Text,
-				Text: "Is it a banana? Reply with only one word.",
+				Text: "Is it a banana? Reply as JSON.",
 			},
 		}
 		opts := genaiapi.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
+			ReplyAsJSON: true,
+			JSONSchema: genaiapi.JSONSchema{
+				Type: "object",
+				Properties: map[string]genaiapi.JSONSchema{
+					"banana": {
+						Type: "boolean",
+					},
+				},
+				Required: []string{"banana"},
+			},
 		}
 		resp, err := c.Completion(context.Background(), msgs, &opts)
 		if err != nil {
@@ -59,17 +70,83 @@ func ExampleClient_Completion_vison() {
 		}
 		// Print to stderr so the test doesn't capture it.
 		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
-		// Normalize some of the variance. Obviously many models will still fail this test.
-		txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Text)), ".!")
-		fmt.Printf("Response: %s\n", txt)
+		var expected struct {
+			Banana bool `json:"banana"`
+		}
+		d := json.NewDecoder(strings.NewReader(resp.Text))
+		d.DisallowUnknownFields()
+		if err := d.Decode(&expected); err != nil {
+			log.Fatalf("Failed to decode JSON: %v", err)
+		}
+		fmt.Printf("Banana: %v\n", expected.Banana)
 		if resp.InputTokens < 100 || resp.OutputTokens < 2 {
 			log.Fatalf("Missing usage token")
 		}
 	} else {
 		// Print something so the example runs.
-		fmt.Println("Response: yes")
+		fmt.Println("Banana: true")
 	}
-	// Output: Response: yes
+	// Output: Banana: true
+}
+
+func ExampleClient_Completion_tool_use() {
+	// This code will run when GEMINI_API_KEY is set.
+	// As of March 2025, you can try it out for free.
+	if c, err := gemini.New("", model); err == nil {
+		msgs := []genaiapi.Message{
+			{
+				Role: genaiapi.User,
+				Type: genaiapi.Text,
+				Text: "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one.",
+			},
+		}
+		opts := genaiapi.CompletionOptions{
+			Seed:        1,
+			Temperature: 0.01,
+			MaxTokens:   50,
+			Tools: []genaiapi.ToolDef{
+				{
+					Name:        "best_country",
+					Description: "A tool to determine the best country",
+					Parameters: genaiapi.JSONSchema{
+						Type: "object",
+						Properties: map[string]genaiapi.JSONSchema{
+							"country": {
+								Type: "string",
+								Enum: []any{"Canada", "US"},
+							},
+						},
+						Required: []string{"country"},
+					},
+				},
+			},
+		}
+		resp, err := c.Completion(context.Background(), msgs, &opts)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.ToolCalls {
+			log.Fatalf("Unexpected response: %#v", resp)
+		}
+		log.Printf("Response: %#v", resp)
+		// Warning: there's a bug where it returns two identical tool calls. To verify.
+		if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "best_country" {
+			log.Fatal("Expected 1 best_country tool call")
+		}
+		var expected struct {
+			Country string `json:"country"`
+		}
+		d := json.NewDecoder(strings.NewReader(resp.ToolCalls[0].Arguments))
+		d.DisallowUnknownFields()
+		if err := d.Decode(&expected); err != nil {
+			log.Fatalf("Failed to decode %q as JSON: %v", resp.ToolCalls[0].Arguments, err)
+		}
+		fmt.Printf("Best: %v\n", expected.Country)
+	} else {
+		// Print something so the example runs.
+		fmt.Println("Best: Canada")
+	}
+	// Output: Best: Canada
 }
 
 func ExampleClient_CompletionStream() {

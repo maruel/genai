@@ -66,14 +66,19 @@ type CompletionRequest struct {
 }
 
 func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
+	var errs []error
 	if opts != nil {
 		switch v := opts.(type) {
 		case *genaiapi.CompletionOptions:
 			c.MaxTokens = v.MaxTokens
 			c.Seed = v.Seed
 			c.Temperature = v.Temperature
+			c.TopP = v.TopP
+			if v.TopK != 0 {
+				errs = append(errs, errors.New("huggingface does not support TopK"))
+			}
 			if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
-				return errors.New("to be implemented")
+				errs = append(errs, errors.New("hugginface client doesn't support JSON yet; to be implemented"))
 			}
 			if len(v.Tools) != 0 {
 				// Let's assume if the user provides tools, they want to use them.
@@ -87,50 +92,21 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 				}
 			}
 		default:
-			return fmt.Errorf("unsupported options type %T", opts)
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 		}
 	}
 
-	c.Messages = make([]Message, len(msgs))
-	for i, m := range msgs {
-		if err := m.Validate(); err != nil {
-			return fmt.Errorf("message %d: %w", i, err)
-		}
-		switch m.Role {
-		case genaiapi.System:
-			if i != 0 {
-				return fmt.Errorf("message %d: system message must be first message", i)
+	if err := genaiapi.ValidateMessages(msgs); err != nil {
+		errs = append(errs, err)
+	} else {
+		c.Messages = make([]Message, len(msgs))
+		for i, m := range msgs {
+			if err := c.Messages[i].From(m); err != nil {
+				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 			}
-		default:
-			// We don't filter the role here.
-		}
-		c.Messages[i].Role = string(m.Role)
-		c.Messages[i].Content = []Content{{}}
-		switch m.Type {
-		case genaiapi.Text:
-			c.Messages[i].Content[0].Type = "text"
-			c.Messages[i].Content[0].Text = m.Text
-		case genaiapi.Document:
-			mimeType, data, err := internal.ParseDocument(&m, 10*1024*1024)
-			if err != nil {
-				return fmt.Errorf("message %d: %w", i, err)
-			}
-			switch {
-			case (m.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
-				c.Messages[i].Content[0].Type = "image_url"
-				if m.URL == "" {
-					c.Messages[i].Content[0].ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-				} else {
-					c.Messages[i].Content[0].ImageURL.URL = m.URL
-				}
-			default:
-				return fmt.Errorf("message %d: unsupported mime type %s", i, mimeType)
-			}
-		default:
-			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
 		}
 	}
-	return nil
+	return errors.Join(errs...)
 }
 
 type Message struct {
@@ -144,6 +120,36 @@ type Message struct {
 			Arguments string `json:"arguments,omitzero"`
 		} `json:"function,omitzero"`
 	} `json:"tool_calls,omitzero"`
+}
+
+func (msg *Message) From(m genaiapi.Message) error {
+	// We don't filter the role here.
+	msg.Role = string(m.Role)
+	msg.Content = []Content{{}}
+	switch m.Type {
+	case genaiapi.Text:
+		msg.Content[0].Type = "text"
+		msg.Content[0].Text = m.Text
+	case genaiapi.Document:
+		mimeType, data, err := internal.ParseDocument(&m, 10*1024*1024)
+		if err != nil {
+			return err
+		}
+		switch {
+		case (m.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
+			msg.Content[0].Type = "image_url"
+			if m.URL == "" {
+				msg.Content[0].ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+			} else {
+				msg.Content[0].ImageURL.URL = m.URL
+			}
+		default:
+			return fmt.Errorf("unsupported mime type %s", mimeType)
+		}
+	default:
+		return fmt.Errorf("unsupported content type %s", m.Type)
+	}
+	return nil
 }
 
 type Content struct {

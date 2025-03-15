@@ -90,12 +90,6 @@ type Part struct {
 	} `json:"codeExecutionResult,omitzero"` // TODO
 }
 
-// https://ai.google.dev/api/caching?hl=en#Content
-type Content struct {
-	Parts []Part `json:"parts"`
-	Role  string `json:"role,omitzero"` // "user", "model"
-}
-
 // https://ai.google.dev/api/generate-content?hl=en#v1beta.SafetySetting
 type SafetySetting struct {
 	Category  string `json:"category"`  // https://ai.google.dev/api/generate-content?hl=en#v1beta.HarmCategory
@@ -228,6 +222,7 @@ type CompletionRequest struct {
 }
 
 func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
+	var errs []error
 	if opts != nil {
 		// This doesn't seem to be well supported yet:
 		//    in.GenerationConfig.ResponseLogprobs = true
@@ -236,6 +231,8 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 			c.GenerationConfig.MaxOutputTokens = v.MaxTokens
 			c.GenerationConfig.Temperature = v.Temperature
 			c.GenerationConfig.Seed = v.Seed
+			c.GenerationConfig.TopP = v.TopP
+			c.GenerationConfig.TopK = v.TopK
 			if v.ReplyAsJSON {
 				c.GenerationConfig.ResponseMimeType = "application/json"
 			}
@@ -259,61 +256,73 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 				}
 			}
 		default:
-			return fmt.Errorf("unsupported options type %T", opts)
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 		}
 	}
 
-	c.Contents = make([]Content, 0, len(msgs))
-	for i, m := range msgs {
-		if err := m.Validate(); err != nil {
-			return fmt.Errorf("message %d: %w", i, err)
-		}
-		role := ""
-		switch m.Role {
-		case genaiapi.System:
-			if i != 0 {
-				return fmt.Errorf("message %d: system message must be first message", i)
-			}
-			// System prompt is passed differently.
-			c.SystemInstruction.Parts = []Part{{Text: m.Text}}
-			continue
-		case genaiapi.User:
-			role = "user"
-		case genaiapi.Assistant:
-			role = "model"
-		default:
-			return fmt.Errorf("message %d: unsupported role %q", i, m.Role)
-		}
-		cont := Content{Parts: []Part{{}}, Role: role}
-		switch m.Type {
-		case genaiapi.Text:
-			cont.Parts[0].Text = m.Text
-		case genaiapi.Document:
-			mimeType := ""
-			var data []byte
-			if m.URL == "" {
-				// If more than 20MB, we need to use
-				// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#large-pdfs-urls
-				// cacheName, err := c.cacheContent(ctx, context, mime, sp)
-				// When using cached content, system instruction, tools or tool_config cannot be used. Weird.
-				// in.CachedContent = cacheName
-				var err error
-				if mimeType, data, err = internal.ParseDocument(&m, 10*1024*1024); err != nil {
-					return fmt.Errorf("message %d: %w", i, err)
+	if err := genaiapi.ValidateMessages(msgs); err != nil {
+		errs = append(errs, err)
+	} else {
+		c.Contents = make([]Content, 0, len(msgs))
+		for i, m := range msgs {
+			switch m.Role {
+			case genaiapi.System:
+				// System prompt is passed differently.
+				c.SystemInstruction.Parts = []Part{{Text: m.Text}}
+			default:
+				c.Contents = append(c.Contents, Content{})
+				if err := c.Contents[len(c.Contents)-1].From(m); err != nil {
+					errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 				}
-				cont.Parts[0].InlineData.MimeType = mimeType
-				cont.Parts[0].InlineData.Data = data
-			} else {
-				if mimeType = mime.TypeByExtension(path.Base(m.URL)); mimeType == "" {
-					return fmt.Errorf("message %d: unsupported mime type for URL %q", i, m.URL)
-				}
-				cont.Parts[0].FileData.MimeType = mimeType
-				cont.Parts[0].FileData.FileURI = m.URL
 			}
-		default:
-			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
 		}
-		c.Contents = append(c.Contents, cont)
+	}
+	return errors.Join(errs...)
+}
+
+// https://ai.google.dev/api/caching?hl=en#Content
+type Content struct {
+	Parts []Part `json:"parts"`
+	Role  string `json:"role,omitzero"` // "user", "model"
+}
+
+func (c *Content) From(m genaiapi.Message) error {
+	switch m.Role {
+	case genaiapi.User:
+		c.Role = "user"
+	case genaiapi.Assistant:
+		c.Role = "model"
+	default:
+		return fmt.Errorf("unsupported role %q", m.Role)
+	}
+	c.Parts = []Part{{}}
+	switch m.Type {
+	case genaiapi.Text:
+		c.Parts[0].Text = m.Text
+	case genaiapi.Document:
+		mimeType := ""
+		var data []byte
+		if m.URL == "" {
+			// If more than 20MB, we need to use
+			// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#large-pdfs-urls
+			// cacheName, err := c.cacheContent(ctx, context, mime, sp)
+			// When using cached content, system instruction, tools or tool_config cannot be used. Weird.
+			// in.CachedContent = cacheName
+			var err error
+			if mimeType, data, err = internal.ParseDocument(&m, 10*1024*1024); err != nil {
+				return err
+			}
+			c.Parts[0].InlineData.MimeType = mimeType
+			c.Parts[0].InlineData.Data = data
+		} else {
+			if mimeType = mime.TypeByExtension(path.Base(m.URL)); mimeType == "" {
+				return fmt.Errorf(" unsupported mime type for URL %q", m.URL)
+			}
+			c.Parts[0].FileData.MimeType = mimeType
+			c.Parts[0].FileData.FileURI = m.URL
+		}
+	default:
+		return fmt.Errorf("unsupported content type %s", m.Type)
 	}
 	return nil
 }

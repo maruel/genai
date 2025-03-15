@@ -52,12 +52,17 @@ type CompletionRequest struct {
 }
 
 func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
+	var errs []error
 	if opts != nil {
 		switch v := opts.(type) {
 		case *genaiapi.CompletionOptions:
 			c.MaxCompletionTokens = v.MaxTokens
 			c.Temperature = v.Temperature
 			c.Seed = v.Seed
+			c.TopP = v.TopP
+			if v.TopK != 0 {
+				errs = append(errs, errors.New("cerebras does not support TopK"))
+			}
 			if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}
@@ -79,33 +84,21 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 				}
 			}
 		default:
-			return fmt.Errorf("unsupported options type %T", opts)
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 		}
 	}
 
-	c.Messages = make([]Message, len(msgs))
-	for i, m := range msgs {
-		if err := m.Validate(); err != nil {
-			return fmt.Errorf("message %d: %w", i, err)
-		}
-		switch m.Role {
-		case genaiapi.System:
-			if i != 0 {
-				return fmt.Errorf("message %d: system message must be first message", i)
+	if err := genaiapi.ValidateMessages(msgs); err != nil {
+		errs = append(errs, err)
+	} else {
+		c.Messages = make([]Message, len(msgs))
+		for i, m := range msgs {
+			if err := c.Messages[i].From(m); err != nil {
+				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 			}
-		case genaiapi.User, genaiapi.Assistant:
-		default:
-			return fmt.Errorf("message %d: unsupported role %q", i, m.Role)
 		}
-		switch m.Type {
-		case genaiapi.Text:
-		default:
-			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
-		}
-		c.Messages[i].Role = string(m.Role)
-		c.Messages[i].Content = m.Text
 	}
-	return nil
+	return errors.Join(errs...)
 }
 
 type Message struct {
@@ -119,6 +112,22 @@ type Message struct {
 			Arguments string `json:"arguments,omitzero"`
 		} `json:"function,omitzero"`
 	} `json:"tool_calls,omitzero"`
+}
+
+func (msg *Message) From(m genaiapi.Message) error {
+	switch m.Role {
+	case genaiapi.System, genaiapi.User, genaiapi.Assistant:
+		msg.Role = string(m.Role)
+	default:
+		return fmt.Errorf("unsupported role %q", m.Role)
+	}
+	switch m.Type {
+	case genaiapi.Text:
+		msg.Content = m.Text
+	default:
+		return fmt.Errorf("unsupported content type %s", m.Type)
+	}
+	return nil
 }
 
 type Tool struct {

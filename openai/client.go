@@ -91,12 +91,17 @@ type CompletionRequest struct {
 }
 
 func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
+	var errs []error
 	if opts != nil {
 		switch v := opts.(type) {
 		case *genaiapi.CompletionOptions:
 			c.MaxTokens = v.MaxTokens
 			c.Seed = v.Seed
 			c.Temperature = v.Temperature
+			c.TopP = v.TopP
+			if v.TopK != 0 {
+				errs = append(errs, errors.New("openai does not support TopK"))
+			}
 			if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}
@@ -107,7 +112,7 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 				c.ResponseFormat.JSONSchema.Strict = true
 				// OpenAI strictly enforce valid schema.
 				if err := mangleSchema(v.JSONSchema, &c.ResponseFormat.JSONSchema.Schema); err != nil {
-					return err
+					errs = append(errs, err)
 				}
 			}
 			if len(v.Tools) != 0 {
@@ -125,88 +130,21 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 				}
 			}
 		default:
-			return fmt.Errorf("unsupported options type %T", opts)
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 		}
 	}
 
-	c.Messages = make([]Message, len(msgs))
-	for i, m := range msgs {
-		if err := m.Validate(); err != nil {
-			return fmt.Errorf("message %d: %w", i, err)
-		}
-		switch m.Role {
-		case genaiapi.System:
-			if i != 0 {
-				return fmt.Errorf("message %d: system message must be first message", i)
-			}
-			// Starting with 01.
-			c.Messages[i].Role = "developer"
-		case genaiapi.User, genaiapi.Assistant:
-			c.Messages[i].Role = string(m.Role)
-		default:
-			return fmt.Errorf("message %d: unsupported role %q", i, m.Role)
-		}
-		c.Messages[i].Content = []Content{{}}
-		switch m.Type {
-		case genaiapi.Text:
-			c.Messages[i].Content[0].Type = "text"
-			c.Messages[i].Content[0].Text = m.Text
-		case genaiapi.Document:
-			// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
-			mimeType, data, err := internal.ParseDocument(&m, 10*1024*1024)
-			if err != nil {
+	if err := genaiapi.ValidateMessages(msgs); err != nil {
+		errs = append(errs, err)
+	} else {
+		c.Messages = make([]Message, len(msgs))
+		for i, m := range msgs {
+			if err := c.Messages[i].From(m); err != nil {
 				return fmt.Errorf("message %d: %w", i, err)
 			}
-			// OpenAI require a mime-type to determine if image, sound or PDF.
-			if mimeType == "" {
-				return fmt.Errorf("message %d: unspecified mime type for URL %q", i, m.URL)
-			}
-			switch {
-			case strings.HasPrefix(mimeType, "image/"):
-				c.Messages[i].Content[0].Type = "image_url"
-				if m.URL == "" {
-					c.Messages[i].Content[0].ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-				} else {
-					c.Messages[i].Content[0].ImageURL.URL = m.URL
-				}
-			case mimeType == "audio/mpeg":
-				if m.URL != "" {
-					return fmt.Errorf("message %d: URL to audio file not supported", i)
-				}
-				c.Messages[i].Content[0].Type = "input_audio"
-				c.Messages[i].Content[0].InputAudio.Data = data
-				c.Messages[i].Content[0].InputAudio.Format = "mp3"
-			case mimeType == "audio/wav":
-				if m.URL != "" {
-					return fmt.Errorf("message %d: URL to audio file not supported", i)
-				}
-				c.Messages[i].Content[0].Type = "input_audio"
-				c.Messages[i].Content[0].InputAudio.Data = data
-				c.Messages[i].Content[0].InputAudio.Format = "wav"
-			default:
-				if m.URL != "" {
-					return fmt.Errorf("message %d: URL to %s file not supported", i, mimeType)
-				}
-				filename := m.Filename
-				if filename == "" {
-					exts, err := mime.ExtensionsByType(mimeType)
-					if err != nil {
-						return fmt.Errorf("message %d: %w", i, err)
-					}
-					if len(exts) == 0 {
-						return fmt.Errorf("message %d: unknown extension for mime type %s", i, mimeType)
-					}
-					filename = "content" + exts[0]
-				}
-				c.Messages[i].Content[0].Type = "input_file"
-				c.Messages[i].Content[0].Filename = filename
-				c.Messages[i].Content[0].FileData = data
-			}
-		default:
-			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
 		}
 	}
-	return nil
+	return errors.Join(errs...)
 }
 
 // OpenAI requires "additionalProperties": false. Hack this for now in the most horrible way.
@@ -233,6 +171,78 @@ type Message struct {
 	ToolCalls   []ToolCall `json:"tool_calls,omitzero"`
 	ToolCallID  string     `json:"tool_call_id,omitzero"`
 	Annotations []struct{} `json:"annotations,omitzero"`
+}
+
+func (msg *Message) From(m genaiapi.Message) error {
+	switch m.Role {
+	case genaiapi.System:
+		// Starting with 01.
+		msg.Role = "developer"
+	case genaiapi.User, genaiapi.Assistant:
+		msg.Role = string(m.Role)
+	default:
+		return fmt.Errorf("unsupported role %q", m.Role)
+	}
+	msg.Content = []Content{{}}
+	switch m.Type {
+	case genaiapi.Text:
+		msg.Content[0].Type = "text"
+		msg.Content[0].Text = m.Text
+	case genaiapi.Document:
+		// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
+		mimeType, data, err := internal.ParseDocument(&m, 10*1024*1024)
+		if err != nil {
+			return err
+		}
+		// OpenAI require a mime-type to determine if image, sound or PDF.
+		if mimeType == "" {
+			return fmt.Errorf("unspecified mime type for URL %q", m.URL)
+		}
+		switch {
+		case strings.HasPrefix(mimeType, "image/"):
+			msg.Content[0].Type = "image_url"
+			if m.URL == "" {
+				msg.Content[0].ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+			} else {
+				msg.Content[0].ImageURL.URL = m.URL
+			}
+		case mimeType == "audio/mpeg":
+			if m.URL != "" {
+				return errors.New("URL to audio file not supported")
+			}
+			msg.Content[0].Type = "input_audio"
+			msg.Content[0].InputAudio.Data = data
+			msg.Content[0].InputAudio.Format = "mp3"
+		case mimeType == "audio/wav":
+			if m.URL != "" {
+				return errors.New("URL to audio file not supported")
+			}
+			msg.Content[0].Type = "input_audio"
+			msg.Content[0].InputAudio.Data = data
+			msg.Content[0].InputAudio.Format = "wav"
+		default:
+			if m.URL != "" {
+				return fmt.Errorf("URL to %s file not supported", mimeType)
+			}
+			filename := m.Filename
+			if filename == "" {
+				exts, err := mime.ExtensionsByType(mimeType)
+				if err != nil {
+					return err
+				}
+				if len(exts) == 0 {
+					return fmt.Errorf("unknown extension for mime type %s", mimeType)
+				}
+				filename = "content" + exts[0]
+			}
+			msg.Content[0].Type = "input_file"
+			msg.Content[0].Filename = filename
+			msg.Content[0].FileData = data
+		}
+	default:
+		return fmt.Errorf("unsupported content type %s", m.Type)
+	}
+	return nil
 }
 
 type Contents []Content

@@ -49,13 +49,74 @@ type CompletionRequest struct {
 	// Functions         []function     `json:"functions,omitzero"`
 }
 
+func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
+	var errs []error
+	if opts != nil {
+		switch v := opts.(type) {
+		case *genaiapi.CompletionOptions:
+			c.MaxTokens = v.MaxTokens
+			c.Seed = v.Seed
+			c.Temperature = v.Temperature
+			c.TopP = v.TopP
+			c.TopK = v.TopK
+			if v.ReplyAsJSON {
+				c.ResponseFormat.Type = "json_object"
+			}
+			if !v.JSONSchema.IsZero() {
+				c.ResponseFormat.Type = "json_schema"
+				c.ResponseFormat.JSONSchema = v.JSONSchema
+			}
+			if len(v.Tools) != 0 {
+				// Cloudflare doesn't provide a way to force tool use.
+				c.Tools = make([]Tool, len(v.Tools))
+				for i, t := range v.Tools {
+					c.Tools[i].Type = "function"
+					c.Tools[i].Function.Name = t.Name
+					c.Tools[i].Function.Description = t.Description
+					c.Tools[i].Function.Parameters = t.Parameters
+				}
+			}
+		default:
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+		}
+	}
+
+	if err := genaiapi.ValidateMessages(msgs); err != nil {
+		errs = append(errs, err)
+	} else {
+		c.Messages = make([]Message, len(msgs))
+		for i, m := range msgs {
+			if err := c.Messages[i].From(m); err != nil {
+				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+			}
+		}
+	}
+	return errors.Join(errs...)
+}
+
 type Message struct {
 	Content string `json:"content"`
 	Role    string `json:"role"`
 }
 
+func (msg *Message) From(m genaiapi.Message) error {
+	switch m.Role {
+	case genaiapi.System, genaiapi.User, genaiapi.Assistant:
+		msg.Role = string(m.Role)
+	default:
+		return fmt.Errorf("unsupported role %q", m.Role)
+	}
+	switch m.Type {
+	case genaiapi.Text:
+		msg.Content = m.Text
+	default:
+		return fmt.Errorf("unsupported content type %s", m.Type)
+	}
+	return nil
+}
+
 type Tool struct {
-	Type     string `json:"type"` // function
+	Type     string `json:"type"` // "function"
 	Function struct {
 		Description string              `json:"description"`
 		Name        string              `json:"name"`
@@ -156,60 +217,6 @@ type imageToText struct {
 	TopP              float64 `json:"top_p,omitzero"`
 }
 */
-
-func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
-	if opts != nil {
-		switch v := opts.(type) {
-		case *genaiapi.CompletionOptions:
-			c.MaxTokens = v.MaxTokens
-			c.Seed = v.Seed
-			c.Temperature = v.Temperature
-			if v.ReplyAsJSON {
-				c.ResponseFormat.Type = "json_object"
-			}
-			if !v.JSONSchema.IsZero() {
-				c.ResponseFormat.Type = "json_schema"
-				c.ResponseFormat.JSONSchema = v.JSONSchema
-			}
-			if len(v.Tools) != 0 {
-				// Cloudflare doesn't provide a way to force tool use.
-				c.Tools = make([]Tool, len(v.Tools))
-				for i, t := range v.Tools {
-					c.Tools[i].Type = "function"
-					c.Tools[i].Function.Name = t.Name
-					c.Tools[i].Function.Description = t.Description
-					c.Tools[i].Function.Parameters = t.Parameters
-				}
-			}
-		default:
-			return fmt.Errorf("unsupported options type %T", opts)
-		}
-	}
-
-	c.Messages = make([]Message, len(msgs))
-	for i, m := range msgs {
-		if err := m.Validate(); err != nil {
-			return fmt.Errorf("message %d: %w", i, err)
-		}
-		switch m.Role {
-		case genaiapi.System:
-			if i != 0 {
-				return fmt.Errorf("message %d: system message must be first message", i)
-			}
-		case genaiapi.User, genaiapi.Assistant:
-		default:
-			return fmt.Errorf("message %d: unsupported role %q", i, m.Role)
-		}
-		switch m.Type {
-		case genaiapi.Text:
-		default:
-			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
-		}
-		c.Messages[i].Role = string(m.Role)
-		c.Messages[i].Content = m.Text
-	}
-	return nil
-}
 
 // https://developers.cloudflare.com/api/resources/ai/methods/run/
 // See UnionMember7

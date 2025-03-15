@@ -86,24 +86,27 @@ type CompletionRequest struct {
 }
 
 func (c *CompletionRequest) Init(opts any) error {
+	var errs []error
 	if opts != nil {
 		switch v := opts.(type) {
 		case *genaiapi.CompletionOptions:
 			c.NPredict = v.MaxTokens
 			c.Seed = v.Seed
 			c.Temperature = v.Temperature
+			c.TopP = v.TopP
+			c.TopK = v.TopK
 			if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
-				return errors.New("to be implemented")
+				errs = append(errs, errors.New("llama-server client doesn't support JSON yet; to be implemented"))
 			}
 			if len(v.Tools) != 0 {
 				// It's unclear how I'll implement this.
-				return errors.New("tools support is not implemented yet")
+				errs = append(errs, errors.New("llama-server client doesn't support tools yet; to be implemented"))
 			}
 		default:
-			return fmt.Errorf("unsupported options type %T", opts)
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 		}
 	}
-	return nil
+	return errors.Join(errs...)
 }
 
 type CompletionResponse struct {
@@ -226,25 +229,27 @@ type applyTemplateRequest struct {
 }
 
 func (a *applyTemplateRequest) fromMsgs(msgs []genaiapi.Message) error {
+	if err := genaiapi.ValidateMessages(msgs); err != nil {
+		return err
+	}
+	var errs []error
 	a.Messages = make([]Message, len(msgs))
 	for i, m := range msgs {
-		if err := m.Validate(); err != nil {
-			return fmt.Errorf("message %d: %w", i, err)
+		if err := a.Messages[i].From(m); err != nil {
+			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 		}
-		switch m.Role {
-		case genaiapi.System:
-			if i != 0 {
-				return fmt.Errorf("message %d: system message must be first message", i)
-			}
-		default:
-			// We don't filter the role here.
-		}
-		switch m.Type {
-		case genaiapi.Text:
-		default:
-			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
-		}
-		a.Messages[i] = Message{Role: string(m.Role), Content: m.Text}
+	}
+	return errors.Join(errs...)
+}
+
+func (msg *Message) From(m genaiapi.Message) error {
+	// We don't filter the role here.
+	msg.Role = string(m.Role)
+	switch m.Type {
+	case genaiapi.Text:
+		msg.Content = m.Text
+	default:
+		return fmt.Errorf("unsupported content type %s", m.Type)
 	}
 	return nil
 }

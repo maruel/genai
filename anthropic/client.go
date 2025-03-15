@@ -30,9 +30,136 @@ import (
 )
 
 // https://docs.anthropic.com/en/api/messages
+type CompletionRequest struct {
+	Model    string    `json:"model,omitzero"`
+	MaxToks  int64     `json:"max_tokens"`
+	Messages []Message `json:"messages"`
+	Metadata struct {
+		UserID string `json:"user_id,omitzero"`
+	} `json:"metadata,omitzero"`
+	StopSequences []string   `json:"stop_sequences,omitzero"`
+	Stream        bool       `json:"stream,omitzero"`
+	System        string     `json:"system,omitzero"`
+	Temperature   float64    `json:"temperature,omitzero"` // [0, 1]
+	Thinking      Thinking   `json:"thinking,omitzero"`
+	ToolChoice    ToolChoice `json:"tool_choice,omitzero"`
+	Tools         []Tool     `json:"tools,omitzero"`
+	TopK          int64      `json:"top_k,omitzero"` // [1, ]
+	TopP          float64    `json:"top_p,omitzero"` // [0, 1]
+}
+
+func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
+	var errs []error
+	if opts != nil {
+		switch v := opts.(type) {
+		case *genaiapi.CompletionOptions:
+			c.MaxToks = v.MaxTokens
+			c.Temperature = v.Temperature
+			if v.Seed != 0 {
+				errs = append(errs, errors.New("anthropic doesn't support seed"))
+			}
+			c.TopP = v.TopP
+			c.TopK = v.TopK
+			if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
+				errs = append(errs, errors.New("anthropic doesn't support JSON schema"))
+			}
+			if len(v.Tools) != 0 {
+				c.ToolChoice.Type = "any"
+				c.Tools = make([]Tool, len(v.Tools))
+				for i, t := range v.Tools {
+					// Weirdly enough, we must not set it. See example at https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview
+					// c.Tools[i].Type = "custom"
+					c.Tools[i].Name = t.Name
+					c.Tools[i].Description = t.Description
+					c.Tools[i].InputSchema = t.Parameters
+					// Unclear if this has any impact: c.Tools[i].CacheControl.Type = "ephemeral"
+				}
+			}
+		default:
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+		}
+	}
+	if c.MaxToks == 0 {
+		// TODO: Query the model. Anthropic requires a value! Use the lowest common denominator for 3.5+.
+		c.MaxToks = 8192
+	}
+
+	if err := genaiapi.ValidateMessages(msgs); err != nil {
+		errs = append(errs, err)
+	} else {
+		c.Messages = make([]Message, 0, len(msgs))
+		for i, m := range msgs {
+			switch m.Role {
+			case genaiapi.System:
+				// System prompt is passed differently.
+				c.System = m.Text
+				continue
+			case genaiapi.User, genaiapi.Assistant:
+				c.Messages = append(c.Messages, Message{})
+				if err := c.Messages[len(c.Messages)-1].From(m); err != nil {
+					errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+				}
+			default:
+				errs = append(errs, fmt.Errorf("message %d: unsupported role %q", i, m.Role))
+				continue
+			}
+		}
+	}
+	return errors.Join(errs...)
+}
+
+// https://docs.anthropic.com/en/api/messages
 type Message struct {
 	Role    string    `json:"role"`
 	Content []Content `json:"content"`
+}
+
+func (msg *Message) From(m genaiapi.Message) error {
+	msg.Role = string(m.Role)
+	// TODO: An Anthropic message can contain multiple content blocks.
+	msg.Content = []Content{{}}
+	switch m.Type {
+	case genaiapi.Text:
+		msg.Content[0].Type = "text"
+		msg.Content[0].Text = m.Text
+	case genaiapi.Document:
+		mimeType, data, err := internal.ParseDocument(&m, 10*1024*1024)
+		if err != nil {
+			return err
+		}
+		// Anthropic require a mime-type to determine if image or PDF.
+		if mimeType == "" {
+			return fmt.Errorf("unspecified mime type for URL %q", m.URL)
+		}
+		msg.Content[0].CacheControl.Type = "ephemeral"
+		switch {
+		case strings.HasPrefix(mimeType, "image/"):
+			msg.Content[0].Type = "image"
+			if m.URL != "" {
+				msg.Content[0].Source.Type = "url"
+				msg.Content[0].Source.URL = m.URL
+			} else {
+				msg.Content[0].Source.MediaType = mimeType
+				msg.Content[0].Source.Type = "base64"
+				msg.Content[0].Source.Data = data
+			}
+		case mimeType == "application/pdf":
+			msg.Content[0].Type = "document"
+			if m.URL != "" {
+				msg.Content[0].Source.Type = "url"
+				msg.Content[0].Source.URL = m.URL
+			} else {
+				msg.Content[0].Source.MediaType = mimeType
+				msg.Content[0].Source.Type = "base64"
+				msg.Content[0].Source.Data = data
+			}
+		default:
+			return fmt.Errorf("unsupported content mime-type %s", mimeType)
+		}
+	default:
+		return fmt.Errorf("unsupported content type %s", m.Type)
+	}
+	return nil
 }
 
 type Content struct {
@@ -84,122 +211,6 @@ type Content struct {
 	// "document"
 	Context string `json:"context,omitzero"`
 	Title   string `json:"title,omitzero"`
-}
-
-// https://docs.anthropic.com/en/api/messages
-type CompletionRequest struct {
-	Model    string    `json:"model,omitzero"`
-	MaxToks  int64     `json:"max_tokens"`
-	Messages []Message `json:"messages"`
-	Metadata struct {
-		UserID string `json:"user_id,omitzero"`
-	} `json:"metadata,omitzero"`
-	StopSequences []string   `json:"stop_sequences,omitzero"`
-	Stream        bool       `json:"stream,omitzero"`
-	System        string     `json:"system,omitzero"`
-	Temperature   float64    `json:"temperature,omitzero"` // [0, 1]
-	Thinking      Thinking   `json:"thinking,omitzero"`
-	ToolChoice    ToolChoice `json:"tool_choice,omitzero"`
-	Tools         []Tool     `json:"tools,omitzero"`
-	TopK          int64      `json:"top_k,omitzero"` // [1, ]
-	TopP          float64    `json:"top_p,omitzero"` // [0, 1]
-}
-
-func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
-	if opts != nil {
-		switch v := opts.(type) {
-		case *genaiapi.CompletionOptions:
-			c.MaxToks = v.MaxTokens
-			c.Temperature = v.Temperature
-			if v.Seed != 0 {
-				return errors.New("seed is not supported")
-			}
-			if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
-				return errors.New("anthropic doesn't support JSON schema")
-			}
-			if len(v.Tools) != 0 {
-				c.ToolChoice.Type = "any"
-				c.Tools = make([]Tool, len(v.Tools))
-				for i, t := range v.Tools {
-					// Weirdly enough, we must not set it. See example at https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview
-					// c.Tools[i].Type = "custom"
-					c.Tools[i].Name = t.Name
-					c.Tools[i].Description = t.Description
-					c.Tools[i].InputSchema = t.Parameters
-					// Unclear if this has any impact: c.Tools[i].CacheControl.Type = "ephemeral"
-				}
-			}
-		default:
-			return fmt.Errorf("unsupported options type %T", opts)
-		}
-	}
-	if c.MaxToks == 0 {
-		// TODO: Query the model. Anthropic requires a value! Use the lowest common denominator for 3.5+.
-		c.MaxToks = 8192
-	}
-
-	c.Messages = make([]Message, 0, len(msgs))
-	for i, m := range msgs {
-		if err := m.Validate(); err != nil {
-			return fmt.Errorf("message %d: %w", i, err)
-		}
-		switch m.Role {
-		case genaiapi.System:
-			if i != 0 {
-				return fmt.Errorf("message %d: system message must be first message", i)
-			}
-			// System prompt is passed differently.
-			c.System = m.Text
-			continue
-		case genaiapi.User, genaiapi.Assistant:
-		default:
-			return fmt.Errorf("message %d: unsupported role %q", i, m.Role)
-		}
-		msg := Message{Role: string(m.Role), Content: []Content{{}}}
-		switch m.Type {
-		case genaiapi.Text:
-			msg.Content[0].Type = "text"
-			msg.Content[0].Text = m.Text
-		case genaiapi.Document:
-			mimeType, data, err := internal.ParseDocument(&m, 10*1024*1024)
-			if err != nil {
-				return fmt.Errorf("message %d: %w", i, err)
-			}
-			// Anthropic require a mime-type to determine if image or PDF.
-			if mimeType == "" {
-				return fmt.Errorf("message %d: unspecified mime type for URL %q", i, m.URL)
-			}
-			msg.Content[0].CacheControl.Type = "ephemeral"
-			switch {
-			case strings.HasPrefix(mimeType, "image/"):
-				msg.Content[0].Type = "image"
-				if m.URL != "" {
-					msg.Content[0].Source.Type = "url"
-					msg.Content[0].Source.URL = m.URL
-				} else {
-					msg.Content[0].Source.MediaType = mimeType
-					msg.Content[0].Source.Type = "base64"
-					msg.Content[0].Source.Data = data
-				}
-			case mimeType == "application/pdf":
-				msg.Content[0].Type = "document"
-				if m.URL != "" {
-					msg.Content[0].Source.Type = "url"
-					msg.Content[0].Source.URL = m.URL
-				} else {
-					msg.Content[0].Source.MediaType = mimeType
-					msg.Content[0].Source.Type = "base64"
-					msg.Content[0].Source.Data = data
-				}
-			default:
-				return fmt.Errorf("message %d: unsupported content mime-type %s", i, mimeType)
-			}
-		default:
-			return fmt.Errorf("message %d: unsupported content type %s", i, m.Type)
-		}
-		c.Messages = append(c.Messages, msg)
-	}
-	return nil
 }
 
 type Citation struct {

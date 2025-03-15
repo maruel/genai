@@ -19,6 +19,8 @@ type CompletionOptions struct {
 	Seed        int64      // Seed for the random number generator. Default is 0 which means non-deterministic.
 	Temperature float64    // Temperature of the sampling.
 	MaxTokens   int64      // Maximum number of tokens to generate.
+	TopP        float64    // Top-p sampling.
+	TopK        int64      // Top-k sampling.
 	ReplyAsJSON bool       // If true, the output is JSON. If false, the output is text. It is important to tell the model to reply in JSON.
 	JSONSchema  JSONSchema // Enforces a reply JSON format. Not all providers support this.
 	Tools       []ToolDef  // List of tools that the LLM can request to call. Not all providers support this.
@@ -196,6 +198,20 @@ func (m Message) Validate() error {
 		return errors.New("todo")
 	}
 	return nil
+}
+
+// Validate ensures the message chunk is valid.
+func ValidateMessages(msgs []Message) error {
+	var errs []error
+	for i, m := range msgs {
+		if err := m.Validate(); err != nil {
+			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+		}
+		if m.Role == System && i != 0 {
+			errs = append(errs, fmt.Errorf("message %d: system role is only allowed for the first message", i))
+		}
+	}
+	return errors.Join(errs...)
 }
 
 // JSONSchema is a minimalist representation of a normalized JSON schema to be

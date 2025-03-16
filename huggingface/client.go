@@ -66,14 +66,14 @@ type CompletionRequest struct {
 	TopP        float64 `json:"top_p,omitzero"` // [0, 1]
 }
 
-func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
+func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validatable) error {
 	var errs []error
 	if opts != nil {
-		switch v := opts.(type) {
-		case *genaiapi.CompletionOptions:
-			if err := v.Validate(); err != nil {
-				errs = append(errs, err)
-			} else {
+		if err := opts.Validate(); err != nil {
+			errs = append(errs, err)
+		} else {
+			switch v := opts.(type) {
+			case *genaiapi.CompletionOptions:
 				c.MaxTokens = v.MaxTokens
 				c.Seed = v.Seed
 				c.Temperature = v.Temperature
@@ -96,9 +96,9 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 						c.Tools[i].Function.Arguments = t.Parameters
 					}
 				}
+			default:
+				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}
-		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 		}
 	}
 
@@ -328,7 +328,7 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{apiKey: apiKey, model: model}, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.CompletionResult, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts genaiapi.Validatable) (genaiapi.CompletionResult, error) {
 	// https://huggingface.co/docs/api-inference/tasks/chat-completion#api-specification
 	rpcin := CompletionRequest{}
 	if err := rpcin.Init(msgs, opts); err != nil {
@@ -350,7 +350,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, url, in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, chunks chan<- genaiapi.MessageChunk) error {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts genaiapi.Validatable, chunks chan<- genaiapi.MessageChunk) error {
 	in := CompletionRequest{}
 	if err := in.Init(msgs, opts); err != nil {
 		return err

@@ -55,14 +55,14 @@ type CompletionRequest struct {
 	} `json:"response_format,omitzero"`
 }
 
-func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
+func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validatable) error {
 	var errs []error
 	if opts != nil {
-		switch v := opts.(type) {
-		case *genaiapi.CompletionOptions:
-			if err := v.Validate(); err != nil {
-				errs = append(errs, err)
-			} else {
+		if err := opts.Validate(); err != nil {
+			errs = append(errs, err)
+		} else {
+			switch v := opts.(type) {
+			case *genaiapi.CompletionOptions:
 				c.MaxTokens = v.MaxTokens
 				c.Temperature = v.Temperature
 				if v.Seed != 0 {
@@ -83,9 +83,9 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 				if len(v.Tools) != 0 {
 					errs = append(errs, errors.New("perplexity doesn't support tools"))
 				}
+			default:
+				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}
-		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 		}
 	}
 
@@ -208,7 +208,7 @@ func New(apiKey string) (*Client, error) {
 	return &Client{apiKey: apiKey, model: "sonar"}, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.CompletionResult, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts genaiapi.Validatable) (genaiapi.CompletionResult, error) {
 	// https://docs.perplexity.ai/api-reference/chat-completions
 	rpcin := CompletionRequest{Model: c.model}
 	if err := rpcin.Init(msgs, opts); err != nil {
@@ -226,7 +226,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, "https://api.perplexity.ai/chat/completions", in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, chunks chan<- genaiapi.MessageChunk) error {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts genaiapi.Validatable, chunks chan<- genaiapi.MessageChunk) error {
 	in := CompletionRequest{Model: c.model}
 	if err := in.Init(msgs, opts); err != nil {
 		return err

@@ -222,16 +222,16 @@ type CompletionRequest struct {
 	CachedContent string `json:"cachedContent,omitzero"`
 }
 
-func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
+func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validatable) error {
 	var errs []error
 	if opts != nil {
-		// This doesn't seem to be well supported yet:
-		//    in.GenerationConfig.ResponseLogprobs = true
-		switch v := opts.(type) {
-		case *genaiapi.CompletionOptions:
-			if err := v.Validate(); err != nil {
-				errs = append(errs, err)
-			} else {
+		if err := opts.Validate(); err != nil {
+			errs = append(errs, err)
+		} else {
+			// This doesn't seem to be well supported yet:
+			//    in.GenerationConfig.ResponseLogprobs = true
+			switch v := opts.(type) {
+			case *genaiapi.CompletionOptions:
 				c.GenerationConfig.MaxOutputTokens = v.MaxTokens
 				c.GenerationConfig.Temperature = v.Temperature
 				c.GenerationConfig.Seed = v.Seed
@@ -261,9 +261,9 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 						}}
 					}
 				}
+			default:
+				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}
-		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 		}
 	}
 
@@ -665,7 +665,7 @@ func (c *Client) cacheContent(ctx context.Context, data []byte, mime, systemInst
 }
 */
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.CompletionResult, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts genaiapi.Validatable) (genaiapi.CompletionResult, error) {
 	rpcin := CompletionRequest{}
 	if err := rpcin.Init(msgs, opts); err != nil {
 		return genaiapi.CompletionResult{}, err
@@ -686,7 +686,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, url, in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, chunks chan<- genaiapi.MessageChunk) error {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts genaiapi.Validatable, chunks chan<- genaiapi.MessageChunk) error {
 	in := CompletionRequest{}
 	if err := in.Init(msgs, opts); err != nil {
 		return err

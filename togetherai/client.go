@@ -59,40 +59,42 @@ type CompletionRequest struct {
 	SafetyModel string `json:"safety_model,omitzero"` // https://docs.together.ai/docs/inference-models#moderation-models
 }
 
-func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
+func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validatable) error {
 	var errs []error
-	switch v := opts.(type) {
-	case *genaiapi.CompletionOptions:
-		if err := v.Validate(); err != nil {
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
 			errs = append(errs, err)
 		} else {
-			c.MaxTokens = v.MaxTokens
-			c.Seed = v.Seed
-			c.Temperature = v.Temperature
-			c.TopP = v.TopP
-			c.TopK = v.TopK
-			if v.ReplyAsJSON {
-				c.ResponseFormat.Type = "json_object"
-			}
-			c.Stop = v.Stop
-			if v.JSONSchema != nil {
-				// Warning: using a model small may fail.
-				c.ResponseFormat.Type = "json_schema"
-				c.ResponseFormat.Schema = v.JSONSchema
-			}
-			if len(v.Tools) != 0 {
-				c.ToolChoice = "required"
-				c.Tools = make([]Tool, len(v.Tools))
-				for i, t := range v.Tools {
-					c.Tools[i].Type = "function"
-					c.Tools[i].Function.Name = t.Name
-					c.Tools[i].Function.Description = t.Description
-					c.Tools[i].Function.Parameters = t.Parameters
+			switch v := opts.(type) {
+			case *genaiapi.CompletionOptions:
+				c.MaxTokens = v.MaxTokens
+				c.Seed = v.Seed
+				c.Temperature = v.Temperature
+				c.TopP = v.TopP
+				c.TopK = v.TopK
+				if v.ReplyAsJSON {
+					c.ResponseFormat.Type = "json_object"
 				}
+				c.Stop = v.Stop
+				if v.JSONSchema != nil {
+					// Warning: using a model small may fail.
+					c.ResponseFormat.Type = "json_schema"
+					c.ResponseFormat.Schema = v.JSONSchema
+				}
+				if len(v.Tools) != 0 {
+					c.ToolChoice = "required"
+					c.Tools = make([]Tool, len(v.Tools))
+					for i, t := range v.Tools {
+						c.Tools[i].Type = "function"
+						c.Tools[i].Function.Name = t.Name
+						c.Tools[i].Function.Description = t.Description
+						c.Tools[i].Function.Parameters = t.Parameters
+					}
+				}
+			default:
+				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}
 		}
-	default:
-		errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 	}
 
 	if err := genaiapi.ValidateMessages(msgs); err != nil {
@@ -308,7 +310,7 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{apiKey: apiKey, model: model}, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.CompletionResult, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts genaiapi.Validatable) (genaiapi.CompletionResult, error) {
 	// https://docs.together.ai/docs/chat-overview
 	rpcin := CompletionRequest{Model: c.model}
 	if err := rpcin.Init(msgs, opts); err != nil {
@@ -329,7 +331,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, "https://api.together.xyz/v1/chat/completions", in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, chunks chan<- genaiapi.MessageChunk) error {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts genaiapi.Validatable, chunks chan<- genaiapi.MessageChunk) error {
 	in := CompletionRequest{Model: c.model}
 	if err := in.Init(msgs, opts); err != nil {
 		return err

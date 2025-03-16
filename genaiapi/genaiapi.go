@@ -16,6 +16,10 @@ import (
 	"github.com/invopop/jsonschema"
 )
 
+type Validatable interface {
+	Validate() error
+}
+
 // CompletionOptions is a list of frequent options supported by most
 // CompletionProvider. Each provider is free to support more options through a
 // specialized struct.
@@ -58,12 +62,12 @@ type CompletionProvider interface {
 	//
 	// opts must be either nil, *CompletionOptions or a provider-specialized
 	// option struct.
-	Completion(ctx context.Context, msgs []Message, opts any) (CompletionResult, error)
+	Completion(ctx context.Context, msgs []Message, opts Validatable) (CompletionResult, error)
 	// CompletionStream runs completion synchronously, streaming the results to channel replies.
 	//
 	// opts must be either nil, *CompletionOptions or a provider-specialized
 	// option struct.
-	CompletionStream(ctx context.Context, msgs []Message, opts any, replies chan<- MessageChunk) error
+	CompletionStream(ctx context.Context, msgs []Message, opts Validatable, replies chan<- MessageChunk) error
 }
 
 // Model represents a served model by the provider.

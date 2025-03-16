@@ -52,14 +52,14 @@ type CompletionRequest struct {
 	TopLogprobs int64    `json:"top_logprobs,omitzero"` // [0, 20]
 }
 
-func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
+func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validatable) error {
 	var errs []error
 	if opts != nil {
-		switch v := opts.(type) {
-		case *genaiapi.CompletionOptions:
-			if err := v.Validate(); err != nil {
-				errs = append(errs, err)
-			} else {
+		if err := opts.Validate(); err != nil {
+			errs = append(errs, err)
+		} else {
+			switch v := opts.(type) {
+			case *genaiapi.CompletionOptions:
 				c.MaxCompletionTokens = v.MaxTokens
 				c.Temperature = v.Temperature
 				c.Seed = v.Seed
@@ -88,9 +88,9 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 						c.Tools[i].Function.Parameters = t.Parameters
 					}
 				}
+			default:
+				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}
-		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 		}
 	}
 
@@ -269,7 +269,7 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{apiKey: apiKey, model: model}, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.CompletionResult, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts genaiapi.Validatable) (genaiapi.CompletionResult, error) {
 	// https://inference-docs.cerebras.ai/api-reference/chat-completions
 	rpcin := CompletionRequest{Model: c.model}
 	if err := rpcin.Init(msgs, opts); err != nil {
@@ -290,7 +290,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, "https://api.cerebras.ai/v1/chat/completions", in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, chunks chan<- genaiapi.MessageChunk) error {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts genaiapi.Validatable, chunks chan<- genaiapi.MessageChunk) error {
 	in := CompletionRequest{Model: c.model}
 	if err := in.Init(msgs, opts); err != nil {
 		return err

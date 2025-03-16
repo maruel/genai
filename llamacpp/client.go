@@ -86,14 +86,14 @@ type CompletionRequest struct {
 	Lora                []any              `json:"lora,omitzero"`
 }
 
-func (c *CompletionRequest) Init(opts any) error {
+func (c *CompletionRequest) Init(opts genaiapi.Validatable) error {
 	var errs []error
 	if opts != nil {
-		switch v := opts.(type) {
-		case *genaiapi.CompletionOptions:
-			if err := v.Validate(); err != nil {
-				errs = append(errs, err)
-			} else {
+		if err := opts.Validate(); err != nil {
+			errs = append(errs, err)
+		} else {
+			switch v := opts.(type) {
+			case *genaiapi.CompletionOptions:
 				c.NPredict = v.MaxTokens
 				c.Seed = v.Seed
 				c.Temperature = v.Temperature
@@ -107,9 +107,9 @@ func (c *CompletionRequest) Init(opts any) error {
 					// It's unclear how I'll implement this.
 					errs = append(errs, errors.New("llama-server client doesn't support tools yet; to be implemented"))
 				}
+			default:
+				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}
-		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 		}
 	}
 	return errors.Join(errs...)
@@ -323,7 +323,7 @@ func New(baseURL string, encoding *PromptEncoding) (*Client, error) {
 	return &Client{baseURL: baseURL, encoding: encoding}, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts any) (genaiapi.CompletionResult, error) {
+func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts genaiapi.Validatable) (genaiapi.CompletionResult, error) {
 	// https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
@@ -347,7 +347,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, c.baseURL+"/completion", in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts any, chunks chan<- genaiapi.MessageChunk) error {
+func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts genaiapi.Validatable, chunks chan<- genaiapi.MessageChunk) error {
 	// start := time.Now()
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.

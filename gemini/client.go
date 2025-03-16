@@ -238,6 +238,9 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 				c.GenerationConfig.TopP = v.TopP
 				c.GenerationConfig.TopK = v.TopK
 				c.GenerationConfig.StopSequences = v.Stop
+				// https://ai.google.dev/gemini-api/docs/image-generation
+				// SOON: "Image"
+				c.GenerationConfig.ResponseModalities = []string{"Text"}
 				if v.ReplyAsJSON {
 					c.GenerationConfig.ResponseMimeType = "application/json"
 				}

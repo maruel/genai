@@ -17,6 +17,20 @@ import (
 	"github.com/invopop/jsonschema"
 )
 
+// CompletionProvider is the generic interface to interact with a LLM backend.
+type CompletionProvider interface {
+	// Completion runs completion synchronously.
+	//
+	// opts must be either nil, *CompletionOptions or a provider-specialized
+	// option struct.
+	Completion(ctx context.Context, msgs []Message, opts Validatable) (CompletionResult, error)
+	// CompletionStream runs completion synchronously, streaming the results to channel replies.
+	//
+	// opts must be either nil, *CompletionOptions or a provider-specialized
+	// option struct.
+	CompletionStream(ctx context.Context, msgs []Message, opts Validatable, replies chan<- MessageChunk) error
+}
+
 // ReflectedToJSON must be a pointer to a struct that can be decoded by
 // encoding/json and can have jsonschema tags.
 //
@@ -109,32 +123,6 @@ func (c *CompletionOptions) Validate() error {
 	return nil
 }
 
-// CompletionProvider is the generic interface to interact with a LLM backend.
-type CompletionProvider interface {
-	// Completion runs completion synchronously.
-	//
-	// opts must be either nil, *CompletionOptions or a provider-specialized
-	// option struct.
-	Completion(ctx context.Context, msgs []Message, opts Validatable) (CompletionResult, error)
-	// CompletionStream runs completion synchronously, streaming the results to channel replies.
-	//
-	// opts must be either nil, *CompletionOptions or a provider-specialized
-	// option struct.
-	CompletionStream(ctx context.Context, msgs []Message, opts Validatable, replies chan<- MessageChunk) error
-}
-
-// Model represents a served model by the provider.
-type Model interface {
-	GetID() string
-	String() string
-	Context() int64
-}
-
-// ModelProvider represents a provider that can list models.
-type ModelProvider interface {
-	ListModels(ctx context.Context) ([]Model, error)
-}
-
 // Role is one of the LLM known roles.
 type Role string
 
@@ -157,6 +145,7 @@ func (r Role) Validate() error {
 	}
 }
 
+// ContentType is the type of content in the message.
 type ContentType string
 
 const (
@@ -359,4 +348,18 @@ func (t *ToolCall) Decode(x any) error {
 		return fmt.Errorf("failed to decode tool call arguments: %w; arguments: %q", err, t.Arguments)
 	}
 	return nil
+}
+
+//
+
+// ModelProvider represents a provider that can list models.
+type ModelProvider interface {
+	ListModels(ctx context.Context) ([]Model, error)
+}
+
+// Model represents a served model by the provider.
+type Model interface {
+	GetID() string
+	String() string
+	Context() int64
 }

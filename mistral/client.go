@@ -90,12 +90,12 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 				if v.ReplyAsJSON {
 					c.ResponseFormat.Type = "json_object"
 				}
-				if v.JSONSchema != nil {
+				if v.DecodeAs != nil {
 					c.ResponseFormat.Type = "json_schema"
 					// Mistral requires a name.
 					c.ResponseFormat.JSONSchema.Name = "response"
 					c.ResponseFormat.JSONSchema.Strict = true
-					c.ResponseFormat.JSONSchema.Schema = v.JSONSchema
+					c.ResponseFormat.JSONSchema.Schema = jsonschema.Reflect(v.DecodeAs)
 				}
 				if len(v.Tools) != 0 {
 					// Let's assume if the user provides tools, they want to use them.

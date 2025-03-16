@@ -28,7 +28,7 @@ var bananaJpg []byte
 // See https://platform.openai.com/docs/models
 var model = "gpt-4o-mini"
 
-func ExampleClient_Completion_vision_and_JSONSchema() {
+func ExampleClient_Completion_vision_and_JSON() {
 	// This code will run when OPENAI_API_KEY is set.
 	if c, err := openai.New("", model); err == nil {
 		msgs := []genaiapi.Message{
@@ -53,7 +53,7 @@ func ExampleClient_Completion_vision_and_JSONSchema() {
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
-			JSONSchema:  jsonschema.Reflect(expected),
+			DecodeAs:    &expected,
 		}
 		resp, err := c.Completion(context.Background(), msgs, &opts)
 		if err != nil {

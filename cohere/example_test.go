@@ -16,7 +16,7 @@ import (
 	"github.com/maruel/genai/genaiapi"
 )
 
-func ExampleClient_Completion_jSONSchema() {
+func ExampleClient_Completion_jSON() {
 	// This code will run when COHERE_API_KEY is set.
 	// As of March 2025, you can try it out for free with limitations on which
 	// functionalities are available.
@@ -37,7 +37,7 @@ func ExampleClient_Completion_jSONSchema() {
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
-			JSONSchema:  jsonschema.Reflect(expected),
+			DecodeAs:    expected,
 		}
 		resp, err := c.Completion(context.Background(), msgs, &opts)
 		if err != nil {

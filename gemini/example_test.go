@@ -28,7 +28,7 @@ var bananaJpg []byte
 // See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 var model = "gemini-2.0-flash-lite"
 
-func ExampleClient_Completion_vision_and_JSONSchema() {
+func ExampleClient_Completion_vision_and_JSON() {
 	// This code will run when GEMINI_API_KEY is set.
 	// As of March 2025, you can try it out for free.
 	if c, err := gemini.New("", model); err == nil {
@@ -53,7 +53,7 @@ func ExampleClient_Completion_vision_and_JSONSchema() {
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
-			JSONSchema:  jsonschema.Reflect(expected),
+			DecodeAs:    &expected,
 		}
 		resp, err := c.Completion(context.Background(), msgs, &opts)
 		if err != nil {

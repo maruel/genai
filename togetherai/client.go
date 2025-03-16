@@ -76,10 +76,10 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 					c.ResponseFormat.Type = "json_object"
 				}
 				c.Stop = v.Stop
-				if v.JSONSchema != nil {
+				if v.DecodeAs != nil {
 					// Warning: using a model small may fail.
 					c.ResponseFormat.Type = "json_schema"
-					c.ResponseFormat.Schema = v.JSONSchema
+					c.ResponseFormat.Schema = jsonschema.Reflect(v.DecodeAs)
 				}
 				if len(v.Tools) != 0 {
 					c.ToolChoice = "required"

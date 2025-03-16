@@ -11,6 +11,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"reflect"
 	"strings"
 
 	"github.com/invopop/jsonschema"
@@ -24,17 +25,35 @@ type Validatable interface {
 // CompletionProvider. Each provider is free to support more options through a
 // specialized struct.
 type CompletionOptions struct {
-	Seed        int64              // Seed for the random number generator. Default is 0 which means non-deterministic. Some providers do not support this.
-	Temperature float64            // Temperature of the sampling.
-	MaxTokens   int64              // Maximum number of tokens to generate.
-	TopP        float64            // Top-p sampling.
-	TopK        int64              // Top-k sampling. Some providers do not support this.
-	Stop        []string           // List of tokens to stop generation. Some providers do not support this.
-	ReplyAsJSON bool               // If true, the output is enforced to be valid JSON, any JSON. Not all providers support this. Increases latency and cost. It is important to tell the model to reply in JSON in the prompt itself.
-	JSONSchema  *jsonschema.Schema // Enforces a reply with a specific JSON structure. Not all providers support this. Increases latency and cost. It is important to tell the model to reply in JSON in the prompt itself.
-	Tools       []ToolDef          // List of tools that the LLM can request to call. Not all providers support this.
-
-	_ struct{}
+	// Seed for the random number generator. Default is 0 which means
+	// non-deterministic. Some providers do not support this.
+	Seed int64
+	// Temperature adjust the creativity of the sampling. Generally between 0 and 2.
+	Temperature float64
+	// TopP adjusts correctness sampling between 0 and 1. The higher the more diverse the output.
+	TopP float64
+	// TopK adjusts sampling where only the N first candidates are considered. Some providers do not support this.
+	TopK int64
+	// MaxTokens is the maximum number of tokens to generate. Used to limit it
+	// lower than the default maximum, for budget reasons.
+	MaxTokens int64
+	// Stop is the list of tokens to stop generation. Some providers do not support this.
+	Stop []string
+	// ReplyAsJSON enforces the output to be valid JSON, any JSON. Not all
+	// providers support this, and even, only a limited number of models.
+	// Increases latency and token use (cost). It is important to tell the model
+	// to reply in JSON in the prompt itself.
+	ReplyAsJSON bool
+	// DecodeAs enforces a reply with a specific JSON structure. Not all
+	// providers support this, and even, only a limited number of models.
+	// Increases latency and token use (cost). It is important to tell the model
+	// to reply in JSON in the prompt itself. The struct must be a pointer to a
+	// struct that can be decoded by encoding/json and can have jsonschema tags.
+	DecodeAs any
+	// Tools is the list of tools that the LLM can request to call. Not all
+	// providers support this, and even, only a limited number of models.
+	// Increases latency and token use (cost).
+	Tools []ToolDef
 }
 
 func (c *CompletionOptions) Validate() error {
@@ -52,6 +71,18 @@ func (c *CompletionOptions) Validate() error {
 	}
 	if c.TopK < 0 || c.TopK > 1024 {
 		return errors.New("invalid TopK: must be [0, 1024]")
+	}
+	if c.DecodeAs != nil {
+		t := reflect.TypeOf(c.DecodeAs)
+		if t.Kind() == reflect.Ptr {
+			t = t.Elem()
+			if _, ok := c.DecodeAs.(*jsonschema.Schema); ok {
+				return errors.New("invalid DecodeAs: must be an actual struct serializable as JSON, not a *jsonschema.Schema")
+			}
+		}
+		if t.Kind() != reflect.Struct {
+			return errors.New("invalid DecodeAs: must be a struct")
+		}
 	}
 	return nil
 }

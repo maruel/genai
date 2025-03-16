@@ -69,9 +69,9 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 				if v.ReplyAsJSON {
 					c.ResponseFormat.Type = "json_object"
 				}
-				if v.JSONSchema != nil {
+				if v.DecodeAs != nil {
 					c.ResponseFormat.Type = "json_schema"
-					c.ResponseFormat.JSONSchema = v.JSONSchema
+					c.ResponseFormat.JSONSchema = jsonschema.Reflect(v.DecodeAs)
 				}
 				if len(v.Tools) != 0 {
 					// Cloudflare doesn't provide a way to force tool use.

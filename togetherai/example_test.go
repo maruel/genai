@@ -54,7 +54,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
-			JSONSchema:  jsonschema.Reflect(expected),
+			DecodeAs:    &expected,
 		}
 		resp, err := c.Completion(context.Background(), msgs, &opts)
 		if err != nil {

@@ -77,8 +77,8 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 				if v.ReplyAsJSON {
 					c.ResponseFormat.Type = "json_object"
 				}
-				if v.JSONSchema != nil {
-					errs = append(errs, errors.New("deepseek doesn't support JSON schema"))
+				if v.DecodeAs != nil {
+					errs = append(errs, errors.New("deepseek doesn't support JSON schema; use unstructured JSON instead via ReplyAsJSON"))
 				}
 				if len(v.Tools) != 0 {
 					// Let's assume if the user provides tools, they want to use them.

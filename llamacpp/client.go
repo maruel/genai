@@ -100,7 +100,7 @@ func (c *CompletionRequest) Init(opts genaiapi.Validatable) error {
 				c.TopP = v.TopP
 				c.TopK = v.TopK
 				c.Stop = v.Stop
-				if v.ReplyAsJSON || v.JSONSchema != nil {
+				if v.ReplyAsJSON || v.DecodeAs != nil {
 					errs = append(errs, errors.New("llama-server client doesn't support JSON yet; to be implemented"))
 				}
 				if len(v.Tools) != 0 {

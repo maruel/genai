@@ -241,9 +241,9 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 				if v.ReplyAsJSON {
 					c.GenerationConfig.ResponseMimeType = "application/json"
 				}
-				if v.JSONSchema != nil {
+				if v.DecodeAs != nil {
 					c.GenerationConfig.ResponseMimeType = "application/json"
-					c.GenerationConfig.ResponseSchema.FromJSONSchema(v.JSONSchema)
+					c.GenerationConfig.ResponseSchema.FromJSONSchema(jsonschema.Reflect(v.DecodeAs))
 				}
 				if len(v.Tools) != 0 {
 					// "any" actually means required.

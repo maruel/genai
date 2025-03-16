@@ -28,7 +28,7 @@ import (
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
 
-func ExampleClient_Completion_vision_and_JSONSchema() {
+func ExampleClient_Completion_vision_and_JSON() {
 	// This code will run when MISTRAL_API_KEY is set.
 	// As of March 2025, you can try it out for free.
 	// Require a model which has the "vision" capability.
@@ -54,7 +54,7 @@ func ExampleClient_Completion_vision_and_JSONSchema() {
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
-			JSONSchema:  jsonschema.Reflect(expected),
+			DecodeAs:    &expected,
 		}
 		resp, err := c.Completion(context.Background(), msgs, &opts)
 		if err != nil {

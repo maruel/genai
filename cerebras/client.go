@@ -71,10 +71,9 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 				if v.ReplyAsJSON {
 					c.ResponseFormat.Type = "json_object"
 				}
-				if v.JSONSchema != nil {
+				if v.DecodeAs != nil {
 					c.ResponseFormat.Type = "json_schema"
-					// Cerebras will fail if additonalProperties is present, even if false.
-					c.ResponseFormat.JSONSchema.Schema = v.JSONSchema
+					c.ResponseFormat.JSONSchema.Schema = jsonschema.Reflect(v.DecodeAs)
 					c.ResponseFormat.JSONSchema.Strict = true
 				}
 				if len(v.Tools) != 0 {

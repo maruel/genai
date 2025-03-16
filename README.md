@@ -98,7 +98,6 @@ import (
 	"log"
 	"strings"
 
-	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/cerebras"
 	"github.com/maruel/genai/genaiapi"
 )
@@ -122,7 +121,7 @@ func main() {
         Seed:        1,
         Temperature: 0.01,
         MaxTokens:   50,
-        JSONSchema: jsonschema.Reflect(expected),
+        DecodeAs:    &expected,
     }
     resp, err := c.Completion(context.Background(), msgs, &opts)
     if err != nil {

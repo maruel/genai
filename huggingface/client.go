@@ -81,15 +81,15 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 					errs = append(errs, errors.New("huggingface does not support TopK"))
 				}
 				c.Stop = v.Stop
-				if v.ReplyAsJSON || v.JSONSchema != nil {
+				if v.ReplyAsJSON || v.DecodeAs != nil {
 					errs = append(errs, errors.New("hugginface client doesn't support JSON yet; to be implemented"))
 				}
 				if v.ReplyAsJSON {
 					c.ResponseFormat.Type = "json"
 				}
-				if v.JSONSchema != nil {
+				if v.DecodeAs != nil {
 					c.ResponseFormat.Type = "json"
-					c.ResponseFormat.Value = v.JSONSchema
+					c.ResponseFormat.Value = jsonschema.Reflect(v.DecodeAs)
 				}
 				if len(v.Tools) != 0 {
 					// Let's assume if the user provides tools, they want to use them.

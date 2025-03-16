@@ -67,9 +67,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 		var expected struct {
 			Banana bool `json:"banana"`
 		}
-		d := json.NewDecoder(strings.NewReader(resp.Text))
-		d.DisallowUnknownFields()
-		if err := d.Decode(&expected); err != nil {
+		if err := resp.Decode(&expected); err != nil {
 			log.Fatalf("Failed to decode %q as JSON: %v", resp.Text, err)
 		}
 		fmt.Printf("Banana: %v\n", expected.Banana)

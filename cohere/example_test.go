@@ -49,9 +49,7 @@ func ExampleClient_Completion_jSONSchema() {
 		}
 		// Print to stderr so the test doesn't capture it.
 		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
-		d := json.NewDecoder(strings.NewReader(resp.Text))
-		d.DisallowUnknownFields()
-		if err := d.Decode(&expected); err != nil {
+		if err := resp.Decode(&expected); err != nil {
 			log.Fatalf("Failed to decode JSON: %v", err)
 		}
 		fmt.Printf("Round: %v\n", expected.Round)

@@ -93,7 +93,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"strings"
@@ -122,17 +121,14 @@ func main() {
         Seed:        1,
         Temperature: 0.01,
         MaxTokens:   50,
-        ReplyAsJSON: true,
         JSONSchema: jsonschema.Reflect(expected),
     }
     resp, err := c.Completion(context.Background(), msgs, &opts)
     if err != nil {
         log.Fatal(err)
     }
-    d := json.NewDecoder(strings.NewReader(resp.Text))
-    d.DisallowUnknownFields()
-    if err := d.Decode(&expected); err != nil {
-        log.Fatalf("Failed to decode JSON: %v", err)
+    if err := resp.Decode(&expected); err != nil {
+        log.Fatal(err)
     }
     fmt.Printf("Round: %v\n", expected.Round)
 }

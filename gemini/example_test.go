@@ -65,9 +65,7 @@ func ExampleClient_Completion_vision_and_JSONSchema() {
 		}
 		// Print to stderr so the test doesn't capture it.
 		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
-		d := json.NewDecoder(strings.NewReader(resp.Text))
-		d.DisallowUnknownFields()
-		if err := d.Decode(&expected); err != nil {
+		if err := resp.Decode(&expected); err != nil {
 			log.Fatalf("Failed to decode JSON: %v", err)
 		}
 		fmt.Printf("Banana: %v\n", expected.Banana)

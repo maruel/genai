@@ -66,9 +66,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.Text {
 			log.Fatalf("Unexpected response: %#v", resp)
 		}
-		d := json.NewDecoder(strings.NewReader(resp.Text))
-		d.DisallowUnknownFields()
-		if err := d.Decode(&expected); err != nil {
+		if err := resp.Decode(&expected); err != nil {
 			log.Fatalf("Failed to decode %q as JSON: %v", resp.Text, err)
 		}
 		fmt.Printf("Banana: %v\n", expected.Banana)

@@ -7,9 +7,11 @@ package genaiapi
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
+	"strings"
 
 	"github.com/invopop/jsonschema"
 )
@@ -126,6 +128,19 @@ type Message struct {
 	ToolCalls []ToolCall
 
 	_ struct{}
+}
+
+// Decode decodes the JSON message into the struct.
+//
+// Requires using either ReplyAsJSON or JSONSchema in the CompletionOptions.
+func (m *Message) Decode(x any) error {
+	if m.Type != Text {
+		return errors.New("only text messages can be decoded as JSON")
+	}
+	d := json.NewDecoder(strings.NewReader(m.Text))
+	d.DisallowUnknownFields()
+	d.UseNumber()
+	return d.Decode(x)
 }
 
 // CompletionResult is the result of a completion.

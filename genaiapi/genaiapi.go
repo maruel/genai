@@ -140,7 +140,10 @@ func (m *Message) Decode(x any) error {
 	d := json.NewDecoder(strings.NewReader(m.Text))
 	d.DisallowUnknownFields()
 	d.UseNumber()
-	return d.Decode(x)
+	if err := d.Decode(x); err != nil {
+		return fmt.Errorf("failed to decode message text as JSON: %w; content: %q", err, m.Text)
+	}
+	return nil
 }
 
 // CompletionResult is the result of a completion.
@@ -244,4 +247,17 @@ type ToolCall struct {
 	ID        string // Unique identifier for the tool call. Necessary for parallel tool calling.
 	Name      string // Tool being called.
 	Arguments string // encoded as JSON
+}
+
+// Decode decodes the JSON message into the struct.
+//
+// Requires using either ReplyAsJSON or JSONSchema in the CompletionOptions.
+func (t *ToolCall) Decode(x any) error {
+	d := json.NewDecoder(strings.NewReader(t.Arguments))
+	d.DisallowUnknownFields()
+	d.UseNumber()
+	if err := d.Decode(x); err != nil {
+		return fmt.Errorf("failed to decode tool call arguments: %w; arguments: %q", err, t.Arguments)
+	}
+	return nil
 }

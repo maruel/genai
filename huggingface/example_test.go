@@ -6,7 +6,6 @@ package huggingface_test
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -96,10 +95,8 @@ func ExampleClient_Completion_tool_use() {
 		if len(resp.ToolCalls) != 1 || resp.ToolCalls[0].Name != "best_country" {
 			log.Fatal("Expected at least one best_country tool call")
 		}
-		d := json.NewDecoder(strings.NewReader(resp.ToolCalls[0].Arguments))
-		d.DisallowUnknownFields()
-		if err := d.Decode(&expected); err != nil {
-			log.Fatalf("Failed to decode %q as JSON: %v", resp.ToolCalls[0].Arguments, err)
+		if err := resp.ToolCalls[0].Decode(&expected); err != nil {
+			log.Fatal(err)
 		}
 		fmt.Printf("Best: %v\n", expected.Country)
 	} else {

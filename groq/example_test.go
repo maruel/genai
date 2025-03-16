@@ -8,7 +8,6 @@ import (
 	"bytes"
 	"context"
 	_ "embed"
-	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -68,7 +67,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 			Banana bool `json:"banana"`
 		}
 		if err := resp.Decode(&expected); err != nil {
-			log.Fatalf("Failed to decode %q as JSON: %v", resp.Text, err)
+			log.Fatal(err)
 		}
 		fmt.Printf("Banana: %v\n", expected.Banana)
 		if resp.InputTokens < 10 || resp.OutputTokens < 2 {
@@ -122,10 +121,8 @@ func ExampleClient_Completion_tool_use() {
 		if len(resp.ToolCalls) != 1 || resp.ToolCalls[0].Name != "best_country" {
 			log.Fatal("Expected 1 best_country tool call")
 		}
-		d := json.NewDecoder(strings.NewReader(resp.ToolCalls[0].Arguments))
-		d.DisallowUnknownFields()
-		if err := d.Decode(&expected); err != nil {
-			log.Fatalf("Failed to decode %q as JSON: %v", resp.ToolCalls[0].Arguments, err)
+		if err := resp.ToolCalls[0].Decode(&expected); err != nil {
+			log.Fatal(err)
 		}
 		fmt.Printf("Best: %v\n", expected.Country)
 	} else {

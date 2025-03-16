@@ -37,6 +37,7 @@ The _high performance_ low level native Go client for LLMs.
 - **Optimized for speed**: minimize memory allocations, compress data at the transport layer when possible.
 - **Lean**: Very few dependencies. No unnecessary abstraction layer.
 - **Full functionality**: Full access to each backend-specific functionality.
+- **JSON schema**: Validate the JSON output against a Go struct you provided.
 - Easy to add new providers.
 - Implementation is in flux. :) For example, tool call may not work in stream mode yet.
 

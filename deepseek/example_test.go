@@ -52,7 +52,7 @@ func ExampleClient_Completion_jSON() {
 		d := json.NewDecoder(strings.NewReader(resp.Text))
 		d.DisallowUnknownFields()
 		if err := d.Decode(&expected); err != nil {
-			log.Fatalf("Failed to decode JSON: %v", err)
+			log.Fatal(err)
 		}
 		fmt.Printf("Round: %v\n", expected.Round)
 		if resp.InputTokens < 10 || resp.OutputTokens < 2 {
@@ -101,10 +101,8 @@ func ExampleClient_Completion_tool_use() {
 		if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "best_country" {
 			log.Fatal("Expected at least one best_country tool call")
 		}
-		d := json.NewDecoder(strings.NewReader(resp.ToolCalls[0].Arguments))
-		d.DisallowUnknownFields()
-		if err := d.Decode(&expected); err != nil {
-			log.Fatalf("Failed to decode %q as JSON: %v", resp.ToolCalls[0].Arguments, err)
+		if err := resp.ToolCalls[0].Decode(&expected); err != nil {
+			log.Fatal(err)
 		}
 		fmt.Printf("Best: %v\n", expected.Country)
 	} else {

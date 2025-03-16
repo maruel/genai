@@ -60,25 +60,29 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 	if opts != nil {
 		switch v := opts.(type) {
 		case *genaiapi.CompletionOptions:
-			c.MaxTokens = v.MaxTokens
-			c.Temperature = v.Temperature
-			if v.Seed != 0 {
-				errs = append(errs, errors.New("perplexity doesn't support seed"))
-			}
-			c.TopP = v.TopP
-			c.TopK = v.TopK
-			if len(v.Stop) != 0 {
-				errs = append(errs, errors.New("perplexity doesn't support stop tokens"))
-			}
-			if v.ReplyAsJSON && v.JSONSchema != nil {
-				// Doesn't seem to work in practice.
-				c.ResponseFormat.Type = "json_schema"
-				c.ResponseFormat.JSONSchema.Schema = v.JSONSchema
-			} else if v.ReplyAsJSON || v.JSONSchema != nil {
-				errs = append(errs, errors.New("perplexity client doesn't support unstructured JSON yet; use structured JSON"))
-			}
-			if len(v.Tools) != 0 {
-				errs = append(errs, errors.New("perplexity doesn't support tools"))
+			if err := v.Validate(); err != nil {
+				errs = append(errs, err)
+			} else {
+				c.MaxTokens = v.MaxTokens
+				c.Temperature = v.Temperature
+				if v.Seed != 0 {
+					errs = append(errs, errors.New("perplexity doesn't support seed"))
+				}
+				c.TopP = v.TopP
+				c.TopK = v.TopK
+				if len(v.Stop) != 0 {
+					errs = append(errs, errors.New("perplexity doesn't support stop tokens"))
+				}
+				if v.ReplyAsJSON && v.JSONSchema != nil {
+					// Doesn't seem to work in practice.
+					c.ResponseFormat.Type = "json_schema"
+					c.ResponseFormat.JSONSchema.Schema = v.JSONSchema
+				} else if v.ReplyAsJSON || v.JSONSchema != nil {
+					errs = append(errs, errors.New("perplexity client doesn't support unstructured JSON yet; use structured JSON"))
+				}
+				if len(v.Tools) != 0 {
+					errs = append(errs, errors.New("perplexity doesn't support tools"))
+				}
 			}
 		default:
 			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))

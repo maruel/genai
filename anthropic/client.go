@@ -54,27 +54,31 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 	if opts != nil {
 		switch v := opts.(type) {
 		case *genaiapi.CompletionOptions:
-			c.MaxToks = v.MaxTokens
-			c.Temperature = v.Temperature
-			if v.Seed != 0 {
-				errs = append(errs, errors.New("anthropic doesn't support seed"))
-			}
-			c.TopP = v.TopP
-			c.TopK = v.TopK
-			c.StopSequences = v.Stop
-			if v.ReplyAsJSON || v.JSONSchema != nil {
-				errs = append(errs, errors.New("anthropic doesn't support JSON schema"))
-			}
-			if len(v.Tools) != 0 {
-				c.ToolChoice.Type = "any"
-				c.Tools = make([]Tool, len(v.Tools))
-				for i, t := range v.Tools {
-					// Weirdly enough, we must not set it. See example at https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview
-					// c.Tools[i].Type = "custom"
-					c.Tools[i].Name = t.Name
-					c.Tools[i].Description = t.Description
-					c.Tools[i].InputSchema = t.Parameters
-					// Unclear if this has any impact: c.Tools[i].CacheControl.Type = "ephemeral"
+			if err := v.Validate(); err != nil {
+				errs = append(errs, err)
+			} else {
+				c.MaxToks = v.MaxTokens
+				c.Temperature = v.Temperature
+				if v.Seed != 0 {
+					errs = append(errs, errors.New("anthropic doesn't support seed"))
+				}
+				c.TopP = v.TopP
+				c.TopK = v.TopK
+				c.StopSequences = v.Stop
+				if v.ReplyAsJSON || v.JSONSchema != nil {
+					errs = append(errs, errors.New("anthropic doesn't support JSON schema"))
+				}
+				if len(v.Tools) != 0 {
+					c.ToolChoice.Type = "any"
+					c.Tools = make([]Tool, len(v.Tools))
+					for i, t := range v.Tools {
+						// Weirdly enough, we must not set it. See example at https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview
+						// c.Tools[i].Type = "custom"
+						c.Tools[i].Name = t.Name
+						c.Tools[i].Description = t.Description
+						c.Tools[i].InputSchema = t.Parameters
+						// Unclear if this has any impact: c.Tools[i].CacheControl.Type = "ephemeral"
+					}
 				}
 			}
 		default:

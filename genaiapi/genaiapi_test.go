@@ -9,6 +9,70 @@ import (
 	"testing"
 )
 
+func TestCompletionOptions_Validate(t *testing.T) {
+	o := CompletionOptions{
+		Seed:        0,
+		Temperature: 0.5,
+		MaxTokens:   100,
+		TopP:        0.5,
+		TopK:        10,
+	}
+	if err := o.Validate(); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCompletionOptions_Validate_error(t *testing.T) {
+	tests := []struct {
+		name    string
+		options CompletionOptions
+		errMsg  string
+	}{
+		{
+			name: "Invalid Seed",
+			options: CompletionOptions{
+				Seed: -1,
+			},
+			errMsg: "invalid Seed: must be non-negative",
+		},
+		{
+			name: "Invalid Temperature",
+			options: CompletionOptions{
+				Temperature: -1,
+			},
+			errMsg: "invalid Temperature: must be [0, 100]",
+		},
+		{
+			name: "Invalid MaxTokens",
+			options: CompletionOptions{
+				MaxTokens: 1024*1024*1024 + 1,
+			},
+			errMsg: "invalid MaxTokens: must be [0, 1 GiB]",
+		},
+		{
+			name: "Invalid TopP",
+			options: CompletionOptions{
+				TopP: -1,
+			},
+			errMsg: "invalid TopP: must be [0, 1]",
+		},
+		{
+			name: "Invalid TopK",
+			options: CompletionOptions{
+				TopK: 1025,
+			},
+			errMsg: "invalid TopK: must be [0, 1024]",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := tt.options.Validate(); err == nil || err.Error() != tt.errMsg {
+				t.Fatalf("expected error %q, got %v", tt.errMsg, err)
+			}
+		})
+	}
+}
+
 func TestRole_Validate(t *testing.T) {
 	for _, role := range []Role{System, User, Assistant} {
 		if err := role.Validate(); err != nil {
@@ -83,7 +147,7 @@ func TestMessage_Validate(t *testing.T) {
 	}
 }
 
-func TestMessage_Validate_Error(t *testing.T) {
+func TestMessage_Validate_error(t *testing.T) {
 	tests := []struct {
 		name    string
 		message Message
@@ -225,6 +289,74 @@ func TestMessage_Validate_Error(t *testing.T) {
 			err := tt.message.Validate()
 			if err == nil || err.Error() != tt.errMsg {
 				t.Fatalf("expected error %q, got %q", tt.errMsg, err.Error())
+			}
+		})
+	}
+}
+
+func TestValidateMessages(t *testing.T) {
+	messages := []Message{
+		{
+			Role: System,
+			Type: Text,
+			Text: "System instruction",
+		},
+		{
+			Role: User,
+			Type: Text,
+			Text: "Hello",
+		},
+		{
+			Role: Assistant,
+			Type: Text,
+			Text: "I can help with that",
+		},
+	}
+	if err := ValidateMessages(messages); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestValidateMessages_error(t *testing.T) {
+	tests := []struct {
+		name     string
+		messages []Message
+		errMsg   string
+	}{
+		{
+			name: "Invalid system message with wrong type",
+			messages: []Message{
+				{
+					Role:     System,
+					Type:     Document,
+					Filename: "document.txt",
+					Document: strings.NewReader("document content"),
+				},
+			},
+			errMsg: "message 0: field Role is system but Type is not text",
+		},
+		{
+			name: "Invalid system message with wrong type",
+			messages: []Message{
+				{
+					Role: System,
+					Type: Text,
+					Text: "System instruction",
+				},
+				{
+					Role:     System,
+					Type:     Document,
+					Filename: "document.txt",
+					Document: strings.NewReader("document content"),
+				},
+			},
+			errMsg: "message 1: field Role is system but Type is not text\nmessage 1: system role is only allowed for the first message",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := ValidateMessages(tt.messages); err == nil || err.Error() != tt.errMsg {
+				t.Fatalf("expected error %q, got %v", tt.errMsg, err)
 			}
 		})
 	}

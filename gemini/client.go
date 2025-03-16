@@ -229,33 +229,37 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 		//    in.GenerationConfig.ResponseLogprobs = true
 		switch v := opts.(type) {
 		case *genaiapi.CompletionOptions:
-			c.GenerationConfig.MaxOutputTokens = v.MaxTokens
-			c.GenerationConfig.Temperature = v.Temperature
-			c.GenerationConfig.Seed = v.Seed
-			c.GenerationConfig.TopP = v.TopP
-			c.GenerationConfig.TopK = v.TopK
-			c.GenerationConfig.StopSequences = v.Stop
-			if v.ReplyAsJSON {
-				c.GenerationConfig.ResponseMimeType = "application/json"
-			}
-			if v.JSONSchema != nil {
-				c.GenerationConfig.ResponseMimeType = "application/json"
-				c.GenerationConfig.ResponseSchema.FromJSONSchema(v.JSONSchema)
-			}
-			if len(v.Tools) != 0 {
-				// "any" actually means required.
-				c.ToolConfig.FunctionCallingConfig.Mode = "any"
-				c.Tools = make([]Tool, len(v.Tools))
-				for i, t := range v.Tools {
-					params := Schema{}
-					params.FromJSONSchema(t.Parameters)
-					c.Tools[i].FunctionDeclarations = []FunctionDeclaration{{
-						Name:        t.Name,
-						Description: t.Description,
-						Parameters:  params,
-						// Expose this eventually? We have to test if Google supports non-string answers.
-						Response: Schema{Type: "string"},
-					}}
+			if err := v.Validate(); err != nil {
+				errs = append(errs, err)
+			} else {
+				c.GenerationConfig.MaxOutputTokens = v.MaxTokens
+				c.GenerationConfig.Temperature = v.Temperature
+				c.GenerationConfig.Seed = v.Seed
+				c.GenerationConfig.TopP = v.TopP
+				c.GenerationConfig.TopK = v.TopK
+				c.GenerationConfig.StopSequences = v.Stop
+				if v.ReplyAsJSON {
+					c.GenerationConfig.ResponseMimeType = "application/json"
+				}
+				if v.JSONSchema != nil {
+					c.GenerationConfig.ResponseMimeType = "application/json"
+					c.GenerationConfig.ResponseSchema.FromJSONSchema(v.JSONSchema)
+				}
+				if len(v.Tools) != 0 {
+					// "any" actually means required.
+					c.ToolConfig.FunctionCallingConfig.Mode = "any"
+					c.Tools = make([]Tool, len(v.Tools))
+					for i, t := range v.Tools {
+						params := Schema{}
+						params.FromJSONSchema(t.Parameters)
+						c.Tools[i].FunctionDeclarations = []FunctionDeclaration{{
+							Name:        t.Name,
+							Description: t.Description,
+							Parameters:  params,
+							// Expose this eventually? We have to test if Google supports non-string answers.
+							Response: Schema{Type: "string"},
+						}}
+					}
 				}
 			}
 		default:

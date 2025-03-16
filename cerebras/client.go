@@ -57,32 +57,36 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 	if opts != nil {
 		switch v := opts.(type) {
 		case *genaiapi.CompletionOptions:
-			c.MaxCompletionTokens = v.MaxTokens
-			c.Temperature = v.Temperature
-			c.Seed = v.Seed
-			c.TopP = v.TopP
-			if v.TopK != 0 {
-				errs = append(errs, errors.New("cerebras does not support TopK"))
-			}
-			c.Stop = v.Stop
-			if v.ReplyAsJSON {
-				c.ResponseFormat.Type = "json_object"
-			}
-			if v.JSONSchema != nil {
-				c.ResponseFormat.Type = "json_schema"
-				// Cerebras will fail if additonalProperties is present, even if false.
-				c.ResponseFormat.JSONSchema.Schema = v.JSONSchema
-				c.ResponseFormat.JSONSchema.Strict = true
-			}
-			if len(v.Tools) != 0 {
-				// Let's assume if the user provides tools, they want to use them.
-				c.ToolChoice = "required"
-				c.Tools = make([]Tool, len(v.Tools))
-				for i, t := range v.Tools {
-					c.Tools[i].Type = "function"
-					c.Tools[i].Function.Name = t.Name
-					c.Tools[i].Function.Description = t.Description
-					c.Tools[i].Function.Parameters = t.Parameters
+			if err := v.Validate(); err != nil {
+				errs = append(errs, err)
+			} else {
+				c.MaxCompletionTokens = v.MaxTokens
+				c.Temperature = v.Temperature
+				c.Seed = v.Seed
+				c.TopP = v.TopP
+				if v.TopK != 0 {
+					errs = append(errs, errors.New("cerebras does not support TopK"))
+				}
+				c.Stop = v.Stop
+				if v.ReplyAsJSON {
+					c.ResponseFormat.Type = "json_object"
+				}
+				if v.JSONSchema != nil {
+					c.ResponseFormat.Type = "json_schema"
+					// Cerebras will fail if additonalProperties is present, even if false.
+					c.ResponseFormat.JSONSchema.Schema = v.JSONSchema
+					c.ResponseFormat.JSONSchema.Strict = true
+				}
+				if len(v.Tools) != 0 {
+					// Let's assume if the user provides tools, they want to use them.
+					c.ToolChoice = "required"
+					c.Tools = make([]Tool, len(v.Tools))
+					for i, t := range v.Tools {
+						c.Tools[i].Type = "function"
+						c.Tools[i].Function.Name = t.Name
+						c.Tools[i].Function.Description = t.Description
+						c.Tools[i].Function.Parameters = t.Parameters
+					}
 				}
 			}
 		default:

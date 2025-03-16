@@ -63,28 +63,32 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 	var errs []error
 	switch v := opts.(type) {
 	case *genaiapi.CompletionOptions:
-		c.MaxTokens = v.MaxTokens
-		c.Seed = v.Seed
-		c.Temperature = v.Temperature
-		c.TopP = v.TopP
-		c.TopK = v.TopK
-		if v.ReplyAsJSON {
-			c.ResponseFormat.Type = "json_object"
-		}
-		c.Stop = v.Stop
-		if v.JSONSchema != nil {
-			// Warning: using a model small may fail.
-			c.ResponseFormat.Type = "json_schema"
-			c.ResponseFormat.Schema = v.JSONSchema
-		}
-		if len(v.Tools) != 0 {
-			c.ToolChoice = "required"
-			c.Tools = make([]Tool, len(v.Tools))
-			for i, t := range v.Tools {
-				c.Tools[i].Type = "function"
-				c.Tools[i].Function.Name = t.Name
-				c.Tools[i].Function.Description = t.Description
-				c.Tools[i].Function.Parameters = t.Parameters
+		if err := v.Validate(); err != nil {
+			errs = append(errs, err)
+		} else {
+			c.MaxTokens = v.MaxTokens
+			c.Seed = v.Seed
+			c.Temperature = v.Temperature
+			c.TopP = v.TopP
+			c.TopK = v.TopK
+			if v.ReplyAsJSON {
+				c.ResponseFormat.Type = "json_object"
+			}
+			c.Stop = v.Stop
+			if v.JSONSchema != nil {
+				// Warning: using a model small may fail.
+				c.ResponseFormat.Type = "json_schema"
+				c.ResponseFormat.Schema = v.JSONSchema
+			}
+			if len(v.Tools) != 0 {
+				c.ToolChoice = "required"
+				c.Tools = make([]Tool, len(v.Tools))
+				for i, t := range v.Tools {
+					c.Tools[i].Type = "function"
+					c.Tools[i].Function.Name = t.Name
+					c.Tools[i].Function.Description = t.Description
+					c.Tools[i].Function.Parameters = t.Parameters
+				}
 			}
 		}
 	default:

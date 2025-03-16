@@ -33,6 +33,25 @@ type CompletionOptions struct {
 	_ struct{}
 }
 
+func (c *CompletionOptions) Validate() error {
+	if c.Seed < 0 {
+		return errors.New("invalid Seed: must be non-negative")
+	}
+	if c.Temperature < 0 || c.Temperature > 100 {
+		return errors.New("invalid Temperature: must be [0, 100]")
+	}
+	if c.MaxTokens < 0 || c.MaxTokens > 1024*1024*1024 {
+		return errors.New("invalid MaxTokens: must be [0, 1 GiB]")
+	}
+	if c.TopP < 0 || c.TopP > 1 {
+		return errors.New("invalid TopP: must be [0, 1]")
+	}
+	if c.TopK < 0 || c.TopK > 1024 {
+		return errors.New("invalid TopK: must be [0, 1024]")
+	}
+	return nil
+}
+
 // CompletionProvider is the generic interface to interact with a LLM backend.
 type CompletionProvider interface {
 	// Completion runs completion synchronously.

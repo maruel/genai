@@ -61,31 +61,35 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 	if opts != nil {
 		switch v := opts.(type) {
 		case *genaiapi.CompletionOptions:
-			c.MaxToks = v.MaxTokens
-			c.Temperature = v.Temperature
-			if v.Seed != 0 {
-				errs = append(errs, errors.New("deepseek does not support seed"))
-			}
-			c.TopP = v.TopP
-			if v.TopK != 0 {
-				errs = append(errs, errors.New("deepseek does not support TopK"))
-			}
-			c.Stop = v.Stop
-			if v.ReplyAsJSON {
-				c.ResponseFormat.Type = "json_object"
-			}
-			if v.JSONSchema != nil {
-				errs = append(errs, errors.New("deepseek doesn't support JSON schema"))
-			}
-			if len(v.Tools) != 0 {
-				// Let's assume if the user provides tools, they want to use them.
-				c.ToolChoice = "required"
-				c.Tools = make([]Tool, len(v.Tools))
-				for i, t := range v.Tools {
-					c.Tools[i].Type = "function"
-					c.Tools[i].Function.Name = t.Name
-					c.Tools[i].Function.Description = t.Description
-					c.Tools[i].Function.Parameters = t.Parameters
+			if err := v.Validate(); err != nil {
+				errs = append(errs, err)
+			} else {
+				c.MaxToks = v.MaxTokens
+				c.Temperature = v.Temperature
+				if v.Seed != 0 {
+					errs = append(errs, errors.New("deepseek does not support seed"))
+				}
+				c.TopP = v.TopP
+				if v.TopK != 0 {
+					errs = append(errs, errors.New("deepseek does not support TopK"))
+				}
+				c.Stop = v.Stop
+				if v.ReplyAsJSON {
+					c.ResponseFormat.Type = "json_object"
+				}
+				if v.JSONSchema != nil {
+					errs = append(errs, errors.New("deepseek doesn't support JSON schema"))
+				}
+				if len(v.Tools) != 0 {
+					// Let's assume if the user provides tools, they want to use them.
+					c.ToolChoice = "required"
+					c.Tools = make([]Tool, len(v.Tools))
+					for i, t := range v.Tools {
+						c.Tools[i].Type = "function"
+						c.Tools[i].Function.Name = t.Name
+						c.Tools[i].Function.Description = t.Description
+						c.Tools[i].Function.Parameters = t.Parameters
+					}
 				}
 			}
 		default:

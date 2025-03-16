@@ -73,30 +73,34 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 	if opts != nil {
 		switch v := opts.(type) {
 		case *genaiapi.CompletionOptions:
-			c.MaxCompletionTokens = v.MaxTokens
-			c.Seed = v.Seed
-			c.Temperature = v.Temperature
-			c.TopP = v.TopP
-			if v.TopK != 0 {
-				errs = append(errs, errors.New("groq doesn't support TopK"))
-			}
-			c.Stop = v.Stop
-			if v.ReplyAsJSON {
-				c.ResponseFormat.Type = "json_object"
-			}
-			if v.JSONSchema != nil {
-				errs = append(errs, errors.New("groq doesn't support JSONSchema"))
-			}
-			if len(v.Tools) != 0 {
-				// Documentation states max is 128 tools.
-				// Let's assume if the user provides tools, they want to use them.
-				c.ToolChoice = "required"
-				c.Tools = make([]Tool, len(v.Tools))
-				for i, t := range v.Tools {
-					c.Tools[i].Type = "function"
-					c.Tools[i].Function.Name = t.Name
-					c.Tools[i].Function.Description = t.Description
-					c.Tools[i].Function.Parameters = t.Parameters
+			if err := v.Validate(); err != nil {
+				errs = append(errs, err)
+			} else {
+				c.MaxCompletionTokens = v.MaxTokens
+				c.Seed = v.Seed
+				c.Temperature = v.Temperature
+				c.TopP = v.TopP
+				if v.TopK != 0 {
+					errs = append(errs, errors.New("groq doesn't support TopK"))
+				}
+				c.Stop = v.Stop
+				if v.ReplyAsJSON {
+					c.ResponseFormat.Type = "json_object"
+				}
+				if v.JSONSchema != nil {
+					errs = append(errs, errors.New("groq doesn't support JSONSchema"))
+				}
+				if len(v.Tools) != 0 {
+					// Documentation states max is 128 tools.
+					// Let's assume if the user provides tools, they want to use them.
+					c.ToolChoice = "required"
+					c.Tools = make([]Tool, len(v.Tools))
+					for i, t := range v.Tools {
+						c.Tools[i].Type = "function"
+						c.Tools[i].Function.Name = t.Name
+						c.Tools[i].Function.Description = t.Description
+						c.Tools[i].Function.Parameters = t.Parameters
+					}
 				}
 			}
 		default:

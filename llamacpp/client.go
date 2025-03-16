@@ -91,18 +91,22 @@ func (c *CompletionRequest) Init(opts any) error {
 	if opts != nil {
 		switch v := opts.(type) {
 		case *genaiapi.CompletionOptions:
-			c.NPredict = v.MaxTokens
-			c.Seed = v.Seed
-			c.Temperature = v.Temperature
-			c.TopP = v.TopP
-			c.TopK = v.TopK
-			c.Stop = v.Stop
-			if v.ReplyAsJSON || v.JSONSchema != nil {
-				errs = append(errs, errors.New("llama-server client doesn't support JSON yet; to be implemented"))
-			}
-			if len(v.Tools) != 0 {
-				// It's unclear how I'll implement this.
-				errs = append(errs, errors.New("llama-server client doesn't support tools yet; to be implemented"))
+			if err := v.Validate(); err != nil {
+				errs = append(errs, err)
+			} else {
+				c.NPredict = v.MaxTokens
+				c.Seed = v.Seed
+				c.Temperature = v.Temperature
+				c.TopP = v.TopP
+				c.TopK = v.TopK
+				c.Stop = v.Stop
+				if v.ReplyAsJSON || v.JSONSchema != nil {
+					errs = append(errs, errors.New("llama-server client doesn't support JSON yet; to be implemented"))
+				}
+				if len(v.Tools) != 0 {
+					// It's unclear how I'll implement this.
+					errs = append(errs, errors.New("llama-server client doesn't support tools yet; to be implemented"))
+				}
 			}
 		default:
 			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))

@@ -100,7 +100,7 @@ func ExampleClient_Completion_tool_use() {
 			},
 		}
 		var expected struct {
-			Country string `json:"country"`
+			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 		}
 		opts := genaiapi.CompletionOptions{
 			Temperature: 0.01,

@@ -90,10 +90,8 @@ func ExampleClient_Completion_tool_use() {
 			},
 		}
 		var expected struct {
-			Country string `json:"country"`
+			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 		}
-		param := jsonschema.Reflect(expected)
-		param.Properties.Value("country").Enum = []any{"Canada", "US"}
 		opts := genaiapi.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
@@ -102,7 +100,7 @@ func ExampleClient_Completion_tool_use() {
 				{
 					Name:        "best_country",
 					Description: "A tool to determine the best country",
-					Parameters:  param,
+					Parameters:  jsonschema.Reflect(expected),
 				},
 			},
 		}

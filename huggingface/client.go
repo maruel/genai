@@ -24,6 +24,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
@@ -42,7 +43,7 @@ type CompletionRequest struct {
 		Type string `json:"type"` // "json", "regex"
 		// Type == "regexp": a regex string.
 		// Type == "json": a JSONSchema.
-		Value genaiapi.JSONSchema `json:"value"`
+		Value *jsonschema.Schema `json:"value"`
 	} `json:"response_format,omitzero"`
 	Seed          int64    `json:"seed,omitzero"`
 	Stop          []string `json:"stop,omitzero"`
@@ -78,7 +79,7 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 				errs = append(errs, errors.New("huggingface does not support TopK"))
 			}
 			c.Stop = v.Stop
-			if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
+			if v.ReplyAsJSON || v.JSONSchema != nil {
 				errs = append(errs, errors.New("hugginface client doesn't support JSON yet; to be implemented"))
 			}
 			if len(v.Tools) != 0 {
@@ -164,9 +165,9 @@ type Content struct {
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
-		Name        string              `json:"name,omitzero"`
-		Description string              `json:"description,omitzero"`
-		Arguments   genaiapi.JSONSchema `json:"arguments,omitzero"`
+		Name        string             `json:"name,omitzero"`
+		Description string             `json:"description,omitzero"`
+		Arguments   *jsonschema.Schema `json:"arguments,omitzero"`
 	} `json:"function,omitzero"`
 }
 

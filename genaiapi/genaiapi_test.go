@@ -229,31 +229,3 @@ func TestMessage_Validate_Error(t *testing.T) {
 		})
 	}
 }
-
-func TestJSONSchema_IsZero(t *testing.T) {
-	tests := []struct {
-		name string
-		s    JSONSchema
-		want bool
-	}{
-		{
-			name: "Zero value",
-			s:    JSONSchema{},
-			want: true,
-		},
-		{
-			name: "Non-zero value",
-			s: JSONSchema{
-				Type: "object",
-			},
-			want: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.s.IsZero(); got != tt.want {
-				t.Fatalf("expected %t, got %t", tt.want, got)
-			}
-		})
-	}
-}

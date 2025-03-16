@@ -24,6 +24,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/httpjson"
 )
@@ -39,50 +40,50 @@ type healthResponse struct {
 // https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 type CompletionRequest struct {
 	// TODO: Prompt can be a string, a list of tokens or a mix.
-	Prompt              string              `json:"prompt"`
-	Temperature         float64             `json:"temperature,omitzero"`
-	DynaTempRange       float64             `json:"dynatemp_range,omitzero"`
-	DynaTempExponent    float64             `json:"dynatemp_exponent,omitzero"`
-	TopK                int64               `json:"top_k,omitzero"`
-	TopP                float64             `json:"top_p,omitzero"`
-	MinP                float64             `json:"min_p,omitzero"`
-	NPredict            int64               `json:"n_predict,omitzero"` // Maximum number of tokens to predict
-	NIndent             int64               `json:"n_indent,omitzero"`
-	NKeep               int64               `json:"n_keep,omitzero"`
-	Stream              bool                `json:"stream"`
-	Stop                []string            `json:"stop,omitzero"`
-	TypicalP            float64             `json:"typical_p,omitzero"`
-	RepeatPenalty       float64             `json:"repeat_penalty,omitzero"`
-	RepeatLastN         int64               `json:"repeat_last_n,omitzero"`
-	PresencePenalty     float64             `json:"presence_penalty,omitzero"`
-	FrequencyPenalty    float64             `json:"frequency_penalty,omitzero"`
-	DryMultiplier       float64             `json:"dry_multiplier,omitzero"`
-	DryBase             float64             `json:"dry_base,omitzero"`
-	DryAllowedLength    int64               `json:"dry_allowed_length,omitzero"`
-	DryPenaltyLastN     int64               `json:"dry_penalty_last_n,omitzero"`
-	DrySequenceBreakers []string            `json:"dry_sequence_breakers,omitzero"`
-	XTCProbability      float64             `json:"xtc_probability,omitzero"`
-	XTCThreshold        float64             `json:"xtc_threshold,omitzero"`
-	Mirostat            int32               `json:"mirostat,omitzero"`
-	MirostatTau         float64             `json:"mirostat_tau,omitzero"`
-	MirostatEta         float64             `json:"mirostat_eta,omitzero"`
-	Grammar             string              `json:"grammar,omitzero"`
-	JSONSchema          genaiapi.JSONSchema `json:"json_schema,omitzero"`
-	Seed                int64               `json:"seed,omitzero"`
-	IgnoreEos           bool                `json:"ignore_eos,omitzero"`
-	LogitBias           []any               `json:"logit_bias,omitzero"`
-	Nprobs              int64               `json:"n_probs,omitzero"`
-	MinKeep             int64               `json:"min_keep,omitzero"`
-	TMaxPredictMS       int64               `json:"t_max_predict_ms,omitzero"`
-	ImageData           []any               `json:"image_data,omitzero"`
-	IDSlot              int64               `json:"id_slot,omitzero"`
-	CachePrompt         bool                `json:"cache_prompt,omitzero"`
-	ReturnTokens        bool                `json:"return_tokens,omitzero"`
-	Samplers            []string            `json:"samplers,omitzero"`
-	TimingsPerToken     bool                `json:"timings_per_token,omitzero"`
-	PostSamplingProbs   bool                `json:"post_sampling_probs,omitzero"`
-	ResponseFields      []string            `json:"response_fields,omitzero"`
-	Lora                []any               `json:"lora,omitzero"`
+	Prompt              string             `json:"prompt"`
+	Temperature         float64            `json:"temperature,omitzero"`
+	DynaTempRange       float64            `json:"dynatemp_range,omitzero"`
+	DynaTempExponent    float64            `json:"dynatemp_exponent,omitzero"`
+	TopK                int64              `json:"top_k,omitzero"`
+	TopP                float64            `json:"top_p,omitzero"`
+	MinP                float64            `json:"min_p,omitzero"`
+	NPredict            int64              `json:"n_predict,omitzero"` // Maximum number of tokens to predict
+	NIndent             int64              `json:"n_indent,omitzero"`
+	NKeep               int64              `json:"n_keep,omitzero"`
+	Stream              bool               `json:"stream"`
+	Stop                []string           `json:"stop,omitzero"`
+	TypicalP            float64            `json:"typical_p,omitzero"`
+	RepeatPenalty       float64            `json:"repeat_penalty,omitzero"`
+	RepeatLastN         int64              `json:"repeat_last_n,omitzero"`
+	PresencePenalty     float64            `json:"presence_penalty,omitzero"`
+	FrequencyPenalty    float64            `json:"frequency_penalty,omitzero"`
+	DryMultiplier       float64            `json:"dry_multiplier,omitzero"`
+	DryBase             float64            `json:"dry_base,omitzero"`
+	DryAllowedLength    int64              `json:"dry_allowed_length,omitzero"`
+	DryPenaltyLastN     int64              `json:"dry_penalty_last_n,omitzero"`
+	DrySequenceBreakers []string           `json:"dry_sequence_breakers,omitzero"`
+	XTCProbability      float64            `json:"xtc_probability,omitzero"`
+	XTCThreshold        float64            `json:"xtc_threshold,omitzero"`
+	Mirostat            int32              `json:"mirostat,omitzero"`
+	MirostatTau         float64            `json:"mirostat_tau,omitzero"`
+	MirostatEta         float64            `json:"mirostat_eta,omitzero"`
+	Grammar             string             `json:"grammar,omitzero"`
+	JSONSchema          *jsonschema.Schema `json:"json_schema,omitzero"`
+	Seed                int64              `json:"seed,omitzero"`
+	IgnoreEos           bool               `json:"ignore_eos,omitzero"`
+	LogitBias           []any              `json:"logit_bias,omitzero"`
+	Nprobs              int64              `json:"n_probs,omitzero"`
+	MinKeep             int64              `json:"min_keep,omitzero"`
+	TMaxPredictMS       int64              `json:"t_max_predict_ms,omitzero"`
+	ImageData           []any              `json:"image_data,omitzero"`
+	IDSlot              int64              `json:"id_slot,omitzero"`
+	CachePrompt         bool               `json:"cache_prompt,omitzero"`
+	ReturnTokens        bool               `json:"return_tokens,omitzero"`
+	Samplers            []string           `json:"samplers,omitzero"`
+	TimingsPerToken     bool               `json:"timings_per_token,omitzero"`
+	PostSamplingProbs   bool               `json:"post_sampling_probs,omitzero"`
+	ResponseFields      []string           `json:"response_fields,omitzero"`
+	Lora                []any              `json:"lora,omitzero"`
 }
 
 func (c *CompletionRequest) Init(opts any) error {
@@ -96,7 +97,7 @@ func (c *CompletionRequest) Init(opts any) error {
 			c.TopP = v.TopP
 			c.TopK = v.TopK
 			c.Stop = v.Stop
-			if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
+			if v.ReplyAsJSON || v.JSONSchema != nil {
 				errs = append(errs, errors.New("llama-server client doesn't support JSON yet; to be implemented"))
 			}
 			if len(v.Tools) != 0 {

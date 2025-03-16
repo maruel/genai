@@ -21,6 +21,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/httpjson"
 )
@@ -34,9 +35,9 @@ type CompletionRequest struct {
 		// https://inference-docs.cerebras.ai/capabilities/structured-outputs
 		Type       string `json:"type"` // "json_object", "json_schema"
 		JSONSchema struct {
-			Name   string              `json:"name"`
-			Schema genaiapi.JSONSchema `json:"schema"`
-			Strict bool                `json:"strict"`
+			Name   string             `json:"name"`
+			Schema *jsonschema.Schema `json:"schema"`
+			Strict bool               `json:"strict"`
 		} `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	Seed        int64    `json:"seed,omitzero"`
@@ -67,7 +68,7 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 			if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}
-			if !v.JSONSchema.IsZero() {
+			if v.JSONSchema != nil {
 				c.ResponseFormat.Type = "json_schema"
 				// Cerebras will fail if additonalProperties is present, even if false.
 				c.ResponseFormat.JSONSchema.Schema = v.JSONSchema
@@ -134,9 +135,9 @@ func (msg *Message) From(m genaiapi.Message) error {
 type Tool struct {
 	Type     string `json:"type"` // function
 	Function struct {
-		Name        string              `json:"name"`
-		Description string              `json:"description"`
-		Parameters  genaiapi.JSONSchema `json:"parameters"`
+		Name        string             `json:"name"`
+		Description string             `json:"description"`
+		Parameters  *jsonschema.Schema `json:"parameters"`
 	} `json:"function"`
 }
 

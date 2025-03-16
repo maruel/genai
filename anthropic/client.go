@@ -24,6 +24,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
@@ -61,7 +62,7 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 			c.TopP = v.TopP
 			c.TopK = v.TopK
 			c.StopSequences = v.Stop
-			if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
+			if v.ReplyAsJSON || v.JSONSchema != nil {
 				errs = append(errs, errors.New("anthropic doesn't support JSON schema"))
 			}
 			if len(v.Tools) != 0 {
@@ -253,8 +254,8 @@ type ToolChoice struct {
 type Tool struct {
 	Type string `json:"type,omitzero"` // "custom", "computer_20241022", "computer_20250124", "bash_20241022", "bash_20250124", "text_editor_20241022", "text_editor_20250124"
 	// Type == "custom"
-	Description string              `json:"description,omitzero"`
-	InputSchema genaiapi.JSONSchema `json:"input_schema,omitzero"`
+	Description string             `json:"description,omitzero"`
+	InputSchema *jsonschema.Schema `json:"input_schema,omitzero"`
 
 	// Type == "custom": tool name
 	// Type == "computer_20241022", "computer_20250124": "computer"

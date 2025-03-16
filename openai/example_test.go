@@ -14,6 +14,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/genai/openai"
 )
@@ -46,20 +47,14 @@ func ExampleClient_Completion_vision_and_JSONSchema() {
 				Text: "Is it a banana? Reply as JSON.",
 			},
 		}
+		var expected struct {
+			Banana bool `json:"banana"`
+		}
 		opts := genaiapi.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
-			ReplyAsJSON: true,
-			JSONSchema: genaiapi.JSONSchema{
-				Type: "object",
-				Properties: map[string]genaiapi.JSONSchema{
-					"banana": {
-						Type: "boolean",
-					},
-				},
-				Required: []string{"banana"},
-			},
+			JSONSchema:  jsonschema.Reflect(expected),
 		}
 		resp, err := c.Completion(context.Background(), msgs, &opts)
 		if err != nil {
@@ -70,9 +65,6 @@ func ExampleClient_Completion_vision_and_JSONSchema() {
 		}
 		// Print to stderr so the test doesn't capture it.
 		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
-		var expected struct {
-			Banana bool `json:"banana"`
-		}
 		d := json.NewDecoder(strings.NewReader(resp.Text))
 		d.DisallowUnknownFields()
 		if err := d.Decode(&expected); err != nil {
@@ -99,6 +91,11 @@ func ExampleClient_Completion_tool_use() {
 				Text: "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one.",
 			},
 		}
+		var expected struct {
+			Country string `json:"country"`
+		}
+		param := jsonschema.Reflect(expected)
+		param.Properties.Value("country").Enum = []any{"Canada", "US"}
 		opts := genaiapi.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
@@ -107,16 +104,7 @@ func ExampleClient_Completion_tool_use() {
 				{
 					Name:        "best_country",
 					Description: "A tool to determine the best country",
-					Parameters: genaiapi.JSONSchema{
-						Type: "object",
-						Properties: map[string]genaiapi.JSONSchema{
-							"country": {
-								Type: "string",
-								Enum: []any{"Canada", "US"},
-							},
-						},
-						Required: []string{"country"},
-					},
+					Parameters:  param,
 				},
 			},
 		}
@@ -131,9 +119,6 @@ func ExampleClient_Completion_tool_use() {
 		// Warning: when the model is undecided, it call both.
 		if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "best_country" {
 			log.Fatal("Expected at least one best_country tool call")
-		}
-		var expected struct {
-			Country string `json:"country"`
 		}
 		d := json.NewDecoder(strings.NewReader(resp.ToolCalls[0].Arguments))
 		d.DisallowUnknownFields()

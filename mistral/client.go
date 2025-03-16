@@ -22,6 +22,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
@@ -40,10 +41,10 @@ type CompletionRequest struct {
 	ResponseFormat struct {
 		Type       string `json:"type,omitzero"` // "text", "json_object", "json_schema"
 		JSONSchema struct {
-			Name        string         `json:"name,omitzero"`
-			Description string         `json:"description,omitzero"`
-			Strict      bool           `json:"strict,omitzero"`
-			Schema      map[string]any `json:"schema,omitzero"`
+			Name        string             `json:"name,omitzero"`
+			Description string             `json:"description,omitzero"`
+			Strict      bool               `json:"strict,omitzero"`
+			Schema      *jsonschema.Schema `json:"schema,omitzero"`
 		} `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	Tools []Tool `json:"tools,omitzero"`
@@ -86,16 +87,12 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 			if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}
-			if !v.JSONSchema.IsZero() {
+			if v.JSONSchema != nil {
 				c.ResponseFormat.Type = "json_schema"
 				// Mistral requires a name.
 				c.ResponseFormat.JSONSchema.Name = "response"
 				c.ResponseFormat.JSONSchema.Strict = true
-				// Mistral doesn't enforce strictness in the schema, e.g. a required
-				// field not existing.
-				if err := mangleSchema(v.JSONSchema, &c.ResponseFormat.JSONSchema.Schema); err != nil {
-					errs = append(errs, err)
-				}
+				c.ResponseFormat.JSONSchema.Schema = v.JSONSchema
 			}
 			if len(v.Tools) != 0 {
 				// Let's assume if the user provides tools, they want to use them.
@@ -105,9 +102,8 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 					c.Tools[i].Type = "function"
 					c.Tools[i].Function.Name = t.Name
 					c.Tools[i].Function.Description = t.Description
-					if err := mangleSchema(t.Parameters, &c.Tools[i].Function.Parameters); err != nil {
-						return err
-					}
+					c.Tools[i].Function.Parameters = t.Parameters
+					// This costs a lot more.
 					c.Tools[i].Function.Strict = true
 				}
 			}
@@ -127,19 +123,6 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 		}
 	}
 	return errors.Join(errs...)
-}
-
-// Mistral requires "additionalProperties": false. Hack this for now in the most horrible way.
-func mangleSchema(in genaiapi.JSONSchema, out *map[string]any) error {
-	b, err := json.Marshal(in)
-	if err != nil {
-		return fmt.Errorf("failed to encode JSONSchema: %w", err)
-	}
-	if err := json.Unmarshal(b, out); err != nil {
-		return fmt.Errorf("failed to decode JSONSchema: %w", err)
-	}
-	(*out)["additionalProperties"] = false
-	return nil
 }
 
 type Message struct {
@@ -204,10 +187,10 @@ type Content struct {
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
-		Name        string         `json:"name,omitzero"`
-		Description string         `json:"description,omitzero"`
-		Strict      bool           `json:"strict,omitzero"`
-		Parameters  map[string]any `json:"parameters,omitzero"`
+		Name        string             `json:"name,omitzero"`
+		Description string             `json:"description,omitzero"`
+		Strict      bool               `json:"strict,omitzero"`
+		Parameters  *jsonschema.Schema `json:"parameters,omitzero"`
 	} `json:"function,omitzero"`
 }
 

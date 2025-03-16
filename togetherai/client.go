@@ -23,6 +23,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
@@ -50,8 +51,8 @@ type CompletionRequest struct {
 	LogitBias                     map[string]float64 `json:"logit_bias,omitzero"`
 	Seed                          int64              `json:"seed,omitzero"`
 	ResponseFormat                struct {
-		Type   string              `json:"type,omitzero"` // "json_object", "json_schema" according to python library.
-		Schema genaiapi.JSONSchema `json:"schema,omitzero"`
+		Type   string             `json:"type,omitzero"` // "json_object", "json_schema" according to python library.
+		Schema *jsonschema.Schema `json:"schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	Tools       []Tool `json:"tools,omitzero"`
 	ToolChoice  string `json:"tool_choice,omitzero"`  // "auto" or a []Tool
@@ -71,7 +72,7 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 			c.ResponseFormat.Type = "json_object"
 		}
 		c.Stop = v.Stop
-		if !v.JSONSchema.IsZero() {
+		if v.JSONSchema != nil {
 			// Warning: using a model small may fail.
 			c.ResponseFormat.Type = "json_schema"
 			c.ResponseFormat.Schema = v.JSONSchema
@@ -169,9 +170,9 @@ type Content struct {
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
-		Name        string              `json:"name,omitzero"`
-		Description string              `json:"description,omitzero"`
-		Parameters  genaiapi.JSONSchema `json:"parameters,omitzero"`
+		Name        string             `json:"name,omitzero"`
+		Description string             `json:"description,omitzero"`
+		Parameters  *jsonschema.Schema `json:"parameters,omitzero"`
 	} `json:"function,omitzero"`
 }
 

@@ -26,6 +26,7 @@ import (
 	"path"
 	"strings"
 
+	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
@@ -137,7 +138,7 @@ type Schema struct {
 	Items            *Schema           `json:"items,omitzero"`            // ARRAY
 }
 
-func (s *Schema) FromJSONSchema(j genaiapi.JSONSchema) {
+func (s *Schema) FromJSONSchema(j *jsonschema.Schema) {
 	s.Type = j.Type
 	// s.Format = j.Format
 	s.Description = j.Description
@@ -156,19 +157,19 @@ func (s *Schema) FromJSONSchema(j genaiapi.JSONSchema) {
 	}
 	// s.MaxItems = j.MaxItems
 	// s.MinItems = j.MinItems
-	if len(j.Properties) != 0 {
-		s.Properties = make(map[string]Schema, len(j.Properties))
-		for k := range j.Properties {
+	if l := j.Properties.Len(); l != 0 {
+		s.Properties = make(map[string]Schema, l)
+		for pair := j.Properties.Oldest(); pair != nil; pair = pair.Next() {
 			i := Schema{}
-			i.FromJSONSchema(j.Properties[k])
-			s.Properties[k] = i
+			i.FromJSONSchema(pair.Value)
+			s.Properties[pair.Key] = i
 		}
 	}
 	s.Required = j.Required
 	// s.PropertyOrdering = j.PropertyOrdering
 	if j.Items != nil {
 		s.Items = &Schema{}
-		s.Items.FromJSONSchema(*j.Items)
+		s.Items.FromJSONSchema(j.Items)
 	}
 }
 
@@ -237,7 +238,8 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 			if v.ReplyAsJSON {
 				c.GenerationConfig.ResponseMimeType = "application/json"
 			}
-			if !v.JSONSchema.IsZero() {
+			if v.JSONSchema != nil {
+				c.GenerationConfig.ResponseMimeType = "application/json"
 				c.GenerationConfig.ResponseSchema.FromJSONSchema(v.JSONSchema)
 			}
 			if len(v.Tools) != 0 {

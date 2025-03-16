@@ -10,21 +10,23 @@ import (
 	"errors"
 	"fmt"
 	"io"
+
+	"github.com/invopop/jsonschema"
 )
 
 // CompletionOptions is a list of frequent options supported by most
 // CompletionProvider. Each provider is free to support more options through a
 // specialized struct.
 type CompletionOptions struct {
-	Seed        int64      // Seed for the random number generator. Default is 0 which means non-deterministic.
-	Temperature float64    // Temperature of the sampling.
-	MaxTokens   int64      // Maximum number of tokens to generate.
-	TopP        float64    // Top-p sampling.
-	TopK        int64      // Top-k sampling.
-	Stop        []string   // List of tokens to stop generation.
-	ReplyAsJSON bool       // If true, the output is JSON. If false, the output is text. It is important to tell the model to reply in JSON.
-	JSONSchema  JSONSchema // Enforces a reply JSON format. Not all providers support this.
-	Tools       []ToolDef  // List of tools that the LLM can request to call. Not all providers support this.
+	Seed        int64              // Seed for the random number generator. Default is 0 which means non-deterministic. Some providers do not support this.
+	Temperature float64            // Temperature of the sampling.
+	MaxTokens   int64              // Maximum number of tokens to generate.
+	TopP        float64            // Top-p sampling.
+	TopK        int64              // Top-k sampling. Some providers do not support this.
+	Stop        []string           // List of tokens to stop generation. Some providers do not support this.
+	ReplyAsJSON bool               // If true, the output is enforced to be valid JSON, any JSON. Not all providers support this. Increases latency and cost. It is important to tell the model to reply in JSON in the prompt itself.
+	JSONSchema  *jsonschema.Schema // Enforces a reply with a specific JSON structure. Not all providers support this. Increases latency and cost. It is important to tell the model to reply in JSON in the prompt itself.
+	Tools       []ToolDef          // List of tools that the LLM can request to call. Not all providers support this.
 
 	_ struct{}
 }
@@ -215,55 +217,11 @@ func ValidateMessages(msgs []Message) error {
 	return errors.Join(errs...)
 }
 
-// JSONSchema is a minimalist representation of a normalized JSON schema to be
-// used to force the LLM to return a specific JSON schema.
-//
-// It doesn't implement dependentSchemas, patternProperties,
-// additionalProperties, unevaluatedProperties, allOf, nor if/then/else.
-type JSONSchema struct {
-	Type string `json:"type,omitzero"` // "object", "array", "string", "integer", "number", "boolean", "null" or empty for enum.
-
-	// Type == "object"
-	Properties    map[string]JSONSchema `json:"properties,omitzero"`
-	Required      []string              `json:"required,omitzero"`
-	MinProperties int64                 `json:"minProperties,omitzero"`
-	MaxProperties int64                 `json:"maxProperties,omitzero"`
-
-	// Type == "array"
-	Items *JSONSchema `json:"items,omitzero"`
-
-	// Type == "string", "integer", "boolean"
-	Description string `json:"description,omitzero"`
-
-	// Type == "string"
-	Pattern   string `json:"pattern,omitzero"` // regexp
-	MinLength int64  `json:"minLength,omitzero"`
-	MaxLength int64  `json:"maxLength,omitzero"`
-
-	// Type == "integer", "number"
-	// TODO: This is strictly incorrect. It should be a union of int64 and
-	// float64 and they should be pointers.
-	Minimum          int64 `json:"minimum,omitzero"`
-	ExclusiveMinimum int64 `json:"exclusiveMinimum,omitzero"`
-	Maximum          int64 `json:"maximum,omitzero"`
-	ExclusiveMaximum int64 `json:"exclusiveMaximum,omitzero"`
-	MultipleOf       int64 `json:"multipleOf,omitzero"`
-
-	// Type == "boolean", "string", "integer", "number"; I'm guessing.
-	Enum []any `json:"enum,omitzero"`
-
-	_ struct{}
-}
-
-func (j *JSONSchema) IsZero() bool {
-	return j.Type == "" && len(j.Enum) == 0
-}
-
 // ToolDef describes a tool that the LLM can request to use.
 type ToolDef struct {
 	Name        string
 	Description string
-	Parameters  JSONSchema
+	Parameters  *jsonschema.Schema
 }
 
 // ToolCall is a tool call that the LLM requested to make.

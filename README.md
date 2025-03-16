@@ -91,6 +91,18 @@ supports gzip.
 ```go
 package main
 
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"log"
+	"strings"
+
+	"github.com/invopop/jsonschema"
+	"github.com/maruel/genai/cerebras"
+	"github.com/maruel/genai/genaiapi"
+)
+
 func main() {
     c, err := cerebras.New("", "llama3.1-8b")
     if err != nil {
@@ -103,27 +115,19 @@ func main() {
             Text: "Is a circle round? Reply as JSON.",
         },
     }
+    var expected struct {
+        Round bool `json:"round"`
+    }
     opts := genaiapi.CompletionOptions{
         Seed:        1,
         Temperature: 0.01,
         MaxTokens:   50,
         ReplyAsJSON: true,
-        JSONSchema: genaiapi.JSONSchema{
-            Type: "object",
-            Properties: map[string]genaiapi.JSONSchema{
-                "round": {
-                    Type: "boolean",
-                },
-            },
-            Required: []string{"round"},
-        },
+        JSONSchema: jsonschema.Reflect(expected),
     }
     resp, err := c.Completion(context.Background(), msgs, &opts)
     if err != nil {
         log.Fatal(err)
-    }
-    var expected struct {
-        Round bool `json:"round"`
     }
     d := json.NewDecoder(strings.NewReader(resp.Text))
     d.DisallowUnknownFields()
@@ -148,5 +152,5 @@ func main() {
 - Moderation
 - Thinking
 - Content Blocks
-- Pass JSON in the message so no need to create the JSONSchema
+- Have the message decode the json.
 - Pass tool in the message so no need to create the tool definition's JSONSchema

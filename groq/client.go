@@ -22,6 +22,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
@@ -83,7 +84,7 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 			if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}
-			if !v.JSONSchema.IsZero() {
+			if v.JSONSchema != nil {
 				errs = append(errs, errors.New("groq doesn't support JSONSchema"))
 			}
 			if len(v.Tools) != 0 {
@@ -174,9 +175,9 @@ type Content struct {
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
-		Name        string              `json:"name,omitzero"`
-		Description string              `json:"description,omitzero"`
-		Parameters  genaiapi.JSONSchema `json:"parameters,omitzero"`
+		Name        string             `json:"name,omitzero"`
+		Description string             `json:"description,omitzero"`
+		Parameters  *jsonschema.Schema `json:"parameters,omitzero"`
 	} `json:"function,omitzero"`
 }
 

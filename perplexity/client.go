@@ -21,6 +21,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/httpjson"
 )
@@ -46,7 +47,7 @@ type CompletionRequest struct {
 	ResponseFormat struct {
 		Type       string `json:"type,omitzero"` // "json_schema", "regex"
 		JSONSchema struct {
-			Schema genaiapi.JSONSchema `json:"schema,omitzero"`
+			Schema *jsonschema.Schema `json:"schema,omitzero"`
 		} `json:"json_schema,omitzero"`
 		Regex struct {
 			Regex string `json:"regex,omitzero"`
@@ -69,12 +70,12 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 			if len(v.Stop) != 0 {
 				errs = append(errs, errors.New("perplexity doesn't support stop tokens"))
 			}
-			if v.ReplyAsJSON && !v.JSONSchema.IsZero() {
+			if v.ReplyAsJSON && v.JSONSchema != nil {
 				// Doesn't seem to work in practice.
 				c.ResponseFormat.Type = "json_schema"
 				c.ResponseFormat.JSONSchema.Schema = v.JSONSchema
-			} else if v.ReplyAsJSON || !v.JSONSchema.IsZero() {
-				errs = append(errs, errors.New("perplexity client doesn't support JSON yet; to be implemented"))
+			} else if v.ReplyAsJSON || v.JSONSchema != nil {
+				errs = append(errs, errors.New("perplexity client doesn't support unstructured JSON yet; use structured JSON"))
 			}
 			if len(v.Tools) != 0 {
 				errs = append(errs, errors.New("perplexity doesn't support tools"))

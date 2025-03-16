@@ -24,6 +24,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/httpjson"
 )
@@ -36,8 +37,8 @@ type CompletionRequest struct {
 	PresencePenalty   float64   `json:"presence_penalty,omitzero"`   // [0, 2.0]
 	RepetitionPenalty float64   `json:"repetition_penalty,omitzero"` // [0, 2.0]
 	ResponseFormat    struct {
-		Type       string              `json:"type,omitzero"` // json_object, json_schema
-		JSONSchema genaiapi.JSONSchema `json:"json_schema,omitzero"`
+		Type       string             `json:"type,omitzero"` // json_object, json_schema
+		JSONSchema *jsonschema.Schema `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	Seed        int64   `json:"seed,omitzero"`
 	Stream      bool    `json:"stream,omitzero"`
@@ -65,7 +66,7 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 			if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}
-			if !v.JSONSchema.IsZero() {
+			if v.JSONSchema != nil {
 				c.ResponseFormat.Type = "json_schema"
 				c.ResponseFormat.JSONSchema = v.JSONSchema
 			}
@@ -121,9 +122,9 @@ func (msg *Message) From(m genaiapi.Message) error {
 type Tool struct {
 	Type     string `json:"type"` // "function"
 	Function struct {
-		Description string              `json:"description"`
-		Name        string              `json:"name"`
-		Parameters  genaiapi.JSONSchema `json:"parameters"`
+		Description string             `json:"description"`
+		Name        string             `json:"name"`
+		Parameters  *jsonschema.Schema `json:"parameters"`
 	} `json:"function"`
 }
 
@@ -145,7 +146,7 @@ type prompt struct {
 	RepetitionPenalty float64 `json:"repetition_penalty,omitzero"` // [0, 2.0]
 	ResponseFormat    struct {
 		Type       string              `json:"type,omitzero"` // json_object, json_schema
-		JSONSchema genaiapi.JSONSchema `json:"json_schema,omitzero"`
+		JSONSchema *jsonschema.Schema `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	Seed        int64   `json:"seed,omitzero"`
 	Stream      bool    `json:"stream,omitzero"`

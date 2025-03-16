@@ -24,6 +24,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
@@ -39,8 +40,8 @@ type CompletionRequest struct {
 		Mode string `json:"mode,omitzero"` // "fast", "accurate", "off"; default "fast"
 	} `json:"citation_options,omitzero"`
 	ResponseFormat struct {
-		Type       string              `json:"type,omitzero"` // "text", "json_object"
-		JSONSchema genaiapi.JSONSchema `json:"json_schema,omitzero"`
+		Type       string             `json:"type,omitzero"` // "text", "json_object"
+		JSONSchema *jsonschema.Schema `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	SafetyMode       string   `json:"safety_mode,omitzero"` // "CONTEXTUAL", "STRICT", "OFF"
 	MaxTokens        int64    `json:"max_tokens,omitzero"`
@@ -71,7 +72,7 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts any) error {
 			if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}
-			if !v.JSONSchema.IsZero() {
+			if v.JSONSchema != nil {
 				c.ResponseFormat.Type = "json_schema"
 				c.ResponseFormat.JSONSchema = v.JSONSchema
 			}
@@ -168,9 +169,9 @@ type Content struct {
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
-		Name        string              `json:"name,omitzero"`
-		Parameters  genaiapi.JSONSchema `json:"parameters,omitzero"`
-		Description string              `json:"description,omitzero"`
+		Name        string             `json:"name,omitzero"`
+		Parameters  *jsonschema.Schema `json:"parameters,omitzero"`
+		Description string             `json:"description,omitzero"`
 	} `json:"function,omitzero"`
 }
 

@@ -7,15 +7,27 @@ package genaiapi
 import (
 	"strings"
 	"testing"
+
+	"github.com/invopop/jsonschema"
 )
 
 func TestCompletionOptions_Validate(t *testing.T) {
 	o := CompletionOptions{
-		Seed:        0,
+		Seed:        1,
 		Temperature: 0.5,
-		MaxTokens:   100,
 		TopP:        0.5,
 		TopK:        10,
+		MaxTokens:   100,
+		Stop:        []string{"stop"},
+		ReplyAsJSON: true,
+		DecodeAs:    struct{}{},
+		Tools:       []ToolDef{{Name: "tool"}},
+	}
+	if err := o.Validate(); err != nil {
+		t.Fatal(err)
+	}
+	o = CompletionOptions{
+		DecodeAs: &struct{}{},
 	}
 	if err := o.Validate(); err != nil {
 		t.Fatal(err)
@@ -62,6 +74,20 @@ func TestCompletionOptions_Validate_error(t *testing.T) {
 				TopK: 1025,
 			},
 			errMsg: "invalid TopK: must be [0, 1024]",
+		},
+		{
+			name: "Invalid DecodeAs jsonschema.Schema",
+			options: CompletionOptions{
+				DecodeAs: &jsonschema.Schema{},
+			},
+			errMsg: "invalid DecodeAs: must be an actual struct serializable as JSON, not a *jsonschema.Schema",
+		},
+		{
+			name: "Invalid DecodeAs string",
+			options: CompletionOptions{
+				DecodeAs: "string",
+			},
+			errMsg: "invalid DecodeAs: must be a struct, not string",
 		},
 	}
 	for _, tt := range tests {
@@ -289,6 +315,50 @@ func TestMessage_Validate_error(t *testing.T) {
 			err := tt.message.Validate()
 			if err == nil || err.Error() != tt.errMsg {
 				t.Fatalf("expected error %q, got %q", tt.errMsg, err.Error())
+			}
+		})
+	}
+}
+
+func TestMessage_Decode(t *testing.T) {
+	m := Message{
+		Role: Assistant,
+		Type: Text,
+		Text: "{\"key\": \"value\"}",
+	}
+	if err := m.Decode(&struct{ Key string }{}); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestMessage_Decode_error(t *testing.T) {
+	tests := []struct {
+		name    string
+		message Message
+		errMsg  string
+	}{
+		{
+			name: "Invalid JSON message",
+			message: Message{
+				Role: Assistant,
+				Type: Text,
+				Text: "invalid",
+			},
+			errMsg: "failed to decode message text as JSON: invalid character 'i' looking for beginning of value; content: \"invalid\"",
+		},
+		{
+			name: "Invalid DecodeAs",
+			message: Message{
+				Role: Assistant,
+				Type: Document,
+			},
+			errMsg: "only text messages can be decoded as JSON",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := tt.message.Decode("invalid"); err == nil || err.Error() != tt.errMsg {
+				t.Fatalf("expected error %q, got %q", tt.errMsg, err)
 			}
 		})
 	}

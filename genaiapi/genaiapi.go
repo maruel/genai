@@ -81,7 +81,7 @@ func (c *CompletionOptions) Validate() error {
 			}
 		}
 		if t.Kind() != reflect.Struct {
-			return errors.New("invalid DecodeAs: must be a struct")
+			return fmt.Errorf("invalid DecodeAs: must be a struct, not %T", c.DecodeAs)
 		}
 	}
 	return nil
@@ -186,7 +186,10 @@ type Message struct {
 
 // Decode decodes the JSON message into the struct.
 //
-// Requires using either ReplyAsJSON or JSONSchema in the CompletionOptions.
+// Requires using either ReplyAsJSON or DecodeAs in the CompletionOptions.
+//
+// Note: this doesn't verify the type is the same as specified in
+// CompletionOptions.DecodeAs.
 func (m *Message) Decode(x any) error {
 	if m.Type != Text {
 		return errors.New("only text messages can be decoded as JSON")

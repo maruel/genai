@@ -34,10 +34,14 @@ The _high performance_ low level native Go client for LLMs.
   properly implemented.
 - **Stateless*: no global state, clients are safe to use concurrently lock-less.
 - **Professional grade**: unit tested on live services.
-- **Optimized for speed**: minimize memory allocations, compress data at the transport layer when possible.
+- **Optimized for speed**: minimize memory allocations, compress data at the
+  transport layer when possible.
 - **Lean**: Very few dependencies. No unnecessary abstraction layer.
 - **Full functionality**: Full access to each backend-specific functionality.
-- **JSON schema**: Validate the JSON output against a Go struct you provided.
+- **Native JSON struct serialization**: Pass a struct to tell the LLM what to
+  generate, then decode the JSON response. Supports enums.
+- **Tool calling**: Tell the LLM to call a tool directly, also passing a Go
+  struct to define the arguments.
 - Easy to add new providers.
 - Implementation is in flux. :) For example, tool call may not work in stream mode yet.
 
@@ -141,7 +145,6 @@ func main() {
 
 ## TODO
 
-- Tools
 - Audio out
 - Video out
 - Batch
@@ -152,5 +155,5 @@ func main() {
 - Moderation
 - Thinking
 - Content Blocks
-- Have the message decode the json.
+- Citations
 - Pass tool in the message so no need to create the tool definition's JSONSchema

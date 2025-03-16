@@ -99,7 +99,9 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 						c.Tools[i].Type = "function"
 						c.Tools[i].Function.Name = t.Name
 						c.Tools[i].Function.Description = t.Description
-						c.Tools[i].Function.Parameters = t.Parameters
+						if t.InputsAs != nil {
+							c.Tools[i].Function.Parameters = jsonschema.Reflect(t.InputsAs)
+						}
 					}
 				}
 			default:

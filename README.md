@@ -89,6 +89,10 @@ supports gzip.
 
 ## Look and feel
 
+### Decoding answer as a typed struct
+
+Tell the LLM to use a specific JSON schema to generate the response.
+
 ```go
 package main
 

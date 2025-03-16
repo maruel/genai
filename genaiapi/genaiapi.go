@@ -17,6 +17,30 @@ import (
 	"github.com/invopop/jsonschema"
 )
 
+// ReflectedToJSON must be a pointer to a struct that can be decoded by
+// encoding/json and can have jsonschema tags.
+//
+// It is recommended to use jsonscheme_description tags to describe each
+// field or argument.
+//
+// Use jsonschema:"enum=..." to enforce a specific value within a set.
+type ReflectedToJSON any
+
+func validateReflectedToJSON(r ReflectedToJSON) error {
+	tp := reflect.TypeOf(r)
+	if tp.Kind() == reflect.Ptr {
+		tp = tp.Elem()
+		if _, ok := r.(*jsonschema.Schema); ok {
+			return errors.New("must be an actual struct serializable as JSON, not a *jsonschema.Schema")
+		}
+	}
+	if tp.Kind() != reflect.Struct {
+		return fmt.Errorf("must be a struct, not %T", r)
+	}
+	return nil
+}
+
+// Validatable is an interface to an object that can be validated.
 type Validatable interface {
 	Validate() error
 }
@@ -47,41 +71,39 @@ type CompletionOptions struct {
 	// DecodeAs enforces a reply with a specific JSON structure. Not all
 	// providers support this, and even, only a limited number of models.
 	// Increases latency and token use (cost). It is important to tell the model
-	// to reply in JSON in the prompt itself. The struct must be a pointer to a
-	// struct that can be decoded by encoding/json and can have jsonschema tags.
-	DecodeAs any
+	// to reply in JSON in the prompt itself.
+	DecodeAs ReflectedToJSON
 	// Tools is the list of tools that the LLM can request to call. Not all
 	// providers support this, and even, only a limited number of models.
 	// Increases latency and token use (cost).
 	Tools []ToolDef
 }
 
+// Validate ensures the completion options are valid.
 func (c *CompletionOptions) Validate() error {
 	if c.Seed < 0 {
-		return errors.New("invalid Seed: must be non-negative")
+		return errors.New("field Seed: must be non-negative")
 	}
 	if c.Temperature < 0 || c.Temperature > 100 {
-		return errors.New("invalid Temperature: must be [0, 100]")
+		return errors.New("field Temperature: must be [0, 100]")
 	}
 	if c.MaxTokens < 0 || c.MaxTokens > 1024*1024*1024 {
-		return errors.New("invalid MaxTokens: must be [0, 1 GiB]")
+		return errors.New("field MaxTokens: must be [0, 1 GiB]")
 	}
 	if c.TopP < 0 || c.TopP > 1 {
-		return errors.New("invalid TopP: must be [0, 1]")
+		return errors.New("field TopP: must be [0, 1]")
 	}
 	if c.TopK < 0 || c.TopK > 1024 {
-		return errors.New("invalid TopK: must be [0, 1024]")
+		return errors.New("field TopK: must be [0, 1024]")
 	}
 	if c.DecodeAs != nil {
-		t := reflect.TypeOf(c.DecodeAs)
-		if t.Kind() == reflect.Ptr {
-			t = t.Elem()
-			if _, ok := c.DecodeAs.(*jsonschema.Schema); ok {
-				return errors.New("invalid DecodeAs: must be an actual struct serializable as JSON, not a *jsonschema.Schema")
-			}
+		if err := validateReflectedToJSON(c.DecodeAs); err != nil {
+			return fmt.Errorf("field DecodeAs: %w", err)
 		}
-		if t.Kind() != reflect.Struct {
-			return fmt.Errorf("invalid DecodeAs: must be a struct, not %T", c.DecodeAs)
+	}
+	for i, t := range c.Tools {
+		if err := t.Validate(); err != nil {
+			return fmt.Errorf("tool %d: %w", i, err)
 		}
 	}
 	return nil
@@ -294,9 +316,29 @@ func ValidateMessages(msgs []Message) error {
 
 // ToolDef describes a tool that the LLM can request to use.
 type ToolDef struct {
-	Name        string
+	// Name must be unique among all tools.
+	Name string
+	// Description must be a LLM-friendly short description of the tool.
 	Description string
-	Parameters  *jsonschema.Schema
+	// InputsAs enforces a tool call with a specific JSON structure for
+	// arguments.
+	InputsAs ReflectedToJSON
+}
+
+// Validate ensures the tool definition is valid.
+func (t *ToolDef) Validate() error {
+	if t.Name == "" {
+		return errors.New("field Name: required")
+	}
+	if t.Description == "" {
+		return errors.New("field Description: required")
+	}
+	if t.InputsAs != nil {
+		if err := validateReflectedToJSON(t.InputsAs); err != nil {
+			return fmt.Errorf("field InputsAs: %w", err)
+		}
+	}
+	return nil
 }
 
 // ToolCall is a tool call that the LLM requested to make.
@@ -306,9 +348,9 @@ type ToolCall struct {
 	Arguments string // encoded as JSON
 }
 
-// Decode decodes the JSON message into the struct.
+// Decode decodes the JSON tool call.
 //
-// Requires using either ReplyAsJSON or JSONSchema in the CompletionOptions.
+// This function doesn't validate x is the same as InputsAs in the ToolDef.
 func (t *ToolCall) Decode(x any) error {
 	d := json.NewDecoder(strings.NewReader(t.Arguments))
 	d.DisallowUnknownFields()

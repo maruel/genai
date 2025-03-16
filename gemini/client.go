@@ -251,7 +251,9 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 					c.Tools = make([]Tool, len(v.Tools))
 					for i, t := range v.Tools {
 						params := Schema{}
-						params.FromJSONSchema(t.Parameters)
+						if t.InputsAs != nil {
+							params.FromJSONSchema(jsonschema.Reflect(t.InputsAs))
+						}
 						c.Tools[i].FunctionDeclarations = []FunctionDeclaration{{
 							Name:        t.Name,
 							Description: t.Description,

@@ -21,7 +21,12 @@ func TestCompletionOptions_Validate(t *testing.T) {
 		Stop:        []string{"stop"},
 		ReplyAsJSON: true,
 		DecodeAs:    struct{}{},
-		Tools:       []ToolDef{{Name: "tool"}},
+		Tools: []ToolDef{
+			{
+				Name:        "tool",
+				Description: "do stuff",
+			},
+		},
 	}
 	if err := o.Validate(); err != nil {
 		t.Fatal(err)
@@ -45,49 +50,49 @@ func TestCompletionOptions_Validate_error(t *testing.T) {
 			options: CompletionOptions{
 				Seed: -1,
 			},
-			errMsg: "invalid Seed: must be non-negative",
+			errMsg: "field Seed: must be non-negative",
 		},
 		{
 			name: "Invalid Temperature",
 			options: CompletionOptions{
 				Temperature: -1,
 			},
-			errMsg: "invalid Temperature: must be [0, 100]",
+			errMsg: "field Temperature: must be [0, 100]",
 		},
 		{
 			name: "Invalid MaxTokens",
 			options: CompletionOptions{
 				MaxTokens: 1024*1024*1024 + 1,
 			},
-			errMsg: "invalid MaxTokens: must be [0, 1 GiB]",
+			errMsg: "field MaxTokens: must be [0, 1 GiB]",
 		},
 		{
 			name: "Invalid TopP",
 			options: CompletionOptions{
 				TopP: -1,
 			},
-			errMsg: "invalid TopP: must be [0, 1]",
+			errMsg: "field TopP: must be [0, 1]",
 		},
 		{
 			name: "Invalid TopK",
 			options: CompletionOptions{
 				TopK: 1025,
 			},
-			errMsg: "invalid TopK: must be [0, 1024]",
+			errMsg: "field TopK: must be [0, 1024]",
 		},
 		{
 			name: "Invalid DecodeAs jsonschema.Schema",
 			options: CompletionOptions{
 				DecodeAs: &jsonschema.Schema{},
 			},
-			errMsg: "invalid DecodeAs: must be an actual struct serializable as JSON, not a *jsonschema.Schema",
+			errMsg: "field DecodeAs: must be an actual struct serializable as JSON, not a *jsonschema.Schema",
 		},
 		{
 			name: "Invalid DecodeAs string",
 			options: CompletionOptions{
 				DecodeAs: "string",
 			},
-			errMsg: "invalid DecodeAs: must be a struct, not string",
+			errMsg: "field DecodeAs: must be a struct, not string",
 		},
 	}
 	for _, tt := range tests {
@@ -429,5 +434,49 @@ func TestValidateMessages_error(t *testing.T) {
 				t.Fatalf("expected error %q, got %v", tt.errMsg, err)
 			}
 		})
+	}
+}
+
+func TestToolDef_Validate_error(t *testing.T) {
+	tests := []struct {
+		name    string
+		toolDef ToolDef
+		errMsg  string
+	}{
+		{
+			name: "Missing Name",
+			toolDef: ToolDef{
+				Description: "do stuff",
+			},
+			errMsg: "field Name: required",
+		},
+		{
+			name: "Missing Description",
+			toolDef: ToolDef{
+				Name: "tool",
+			},
+			errMsg: "field Description: required",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := tt.toolDef.Validate(); err == nil || err.Error() != tt.errMsg {
+				t.Fatalf("expected error %q, got %q", tt.errMsg, err)
+			}
+		})
+	}
+}
+
+func TestToolCall_Decode(t *testing.T) {
+	tc := ToolCall{
+		ID:        "call1",
+		Name:      "tool",
+		Arguments: "{\"round\":true}",
+	}
+	var expected struct {
+		Round bool `json:"round"`
+	}
+	if err := tc.Decode(&expected); err != nil {
+		t.Fatal(err)
 	}
 }

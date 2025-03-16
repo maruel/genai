@@ -13,7 +13,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/gemini"
 	"github.com/maruel/genai/genaiapi"
 )
@@ -100,7 +99,7 @@ func ExampleClient_Completion_tool_use() {
 				{
 					Name:        "best_country",
 					Description: "A tool to determine the best country",
-					Parameters:  jsonschema.Reflect(expected),
+					InputsAs:    &expected,
 				},
 			},
 		}

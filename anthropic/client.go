@@ -76,7 +76,9 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 						// c.Tools[i].Type = "custom"
 						c.Tools[i].Name = t.Name
 						c.Tools[i].Description = t.Description
-						c.Tools[i].InputSchema = t.Parameters
+						if t.InputsAs != nil {
+							c.Tools[i].InputSchema = jsonschema.Reflect(t.InputsAs)
+						}
 						// Unclear if this has any impact: c.Tools[i].CacheControl.Type = "ephemeral"
 					}
 				}

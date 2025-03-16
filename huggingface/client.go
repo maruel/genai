@@ -17,7 +17,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -84,6 +83,13 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 				c.Stop = v.Stop
 				if v.ReplyAsJSON || v.JSONSchema != nil {
 					errs = append(errs, errors.New("hugginface client doesn't support JSON yet; to be implemented"))
+				}
+				if v.ReplyAsJSON {
+					c.ResponseFormat.Type = "json"
+				}
+				if v.JSONSchema != nil {
+					c.ResponseFormat.Type = "json"
+					c.ResponseFormat.Value = v.JSONSchema
 				}
 				if len(v.Tools) != 0 {
 					// Let's assume if the user provides tools, they want to use them.
@@ -288,6 +294,10 @@ type CompletionStreamChunkResponse struct {
 		CompletionTokens int64 `json:"completion_tokens"`
 		TotalTokens      int64 `json:"total_tokens"`
 	} `json:"usage"`
+}
+
+type errorResponse struct {
+	Error string `json:"error"`
 }
 
 // Client implements the REST JSON based API.
@@ -529,19 +539,36 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	if err != nil {
 		return err
 	}
-	switch i, err := httpjson.DecodeResponse(resp, out); i {
+	er := errorResponse{}
+	switch i, err := httpjson.DecodeResponse(resp, out, &er); i {
 	case 0:
 		return nil
-	default:
-		// HuggingFace never return a structured error?
+	case 1:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
-			slog.WarnContext(ctx, "huggingface", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
+			if herr.StatusCode >= 400 {
+				return fmt.Errorf("huggingface: %s; %s", http.StatusText(herr.StatusCode), er.Error)
+			}
+		}
+		return fmt.Errorf("huggingface: %s", er.Error)
+	default:
+		// HuggingFace rarely return a structured error.
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			// Only include the body if it's not a whole HTML page.
+			suffix := ""
+			if bytes.HasPrefix(herr.ResponseBody, []byte("{")) {
+				suffix = "; " + string(herr.ResponseBody)
+			}
+			if herr.StatusCode >= 400 {
+				return fmt.Errorf("huggingface: %s%s", http.StatusText(herr.StatusCode), suffix)
+			}
+			// slog.WarnContext(ctx, "huggingface", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
 			// Hugginface returns raw unstructured text if it fails decoding. Just
 			// return the content. Sometimes it's a web page because why not?
-			return errors.New(string(herr.ResponseBody))
+			// return fmt.Errorf("%s: %w", string(herr.ResponseBody), err)
+			return fmt.Errorf("%w%s", err, suffix)
 		}
-		slog.WarnContext(ctx, "huggingface", "url", url, "err", err)
 		return err
 	}
 }

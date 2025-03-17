@@ -35,7 +35,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 	// Require a model which has the "vision" capability.
 	// https://docs.mistral.ai/capabilities/vision/
 	if c, err := mistral.New("", "mistral-small-latest"); err == nil {
-		msgs := []genaiapi.Message{
+		msgs := genaiapi.Messages{
 			{
 				Role:     genaiapi.User,
 				Type:     genaiapi.Document,
@@ -43,11 +43,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 				// Mistral supports highly compressed jpg.
 				Document: bytes.NewReader(bananaJpg),
 			},
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Is it a banana? Reply as JSON.",
-			},
+			genaiapi.NewTextMessage(genaiapi.User, "Is it a banana? Reply as JSON."),
 		}
 		var got struct {
 			Banana bool `json:"banana"`
@@ -93,17 +89,13 @@ func ExampleClient_Completion_pDF() {
 	// https://docs.mistral.ai/capabilities/document/
 	// https://docs.mistral.ai/capabilities/vision/
 	if c, err := mistral.New("", "mistral-small-latest"); err == nil {
-		msgs := []genaiapi.Message{
+		msgs := genaiapi.Messages{
 			{
 				Role: genaiapi.User,
 				Type: genaiapi.Document,
 				URL:  "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/mistral/testdata/hidden_word.pdf",
 			},
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "What is the word? Reply with only the word.",
-			},
+			genaiapi.NewTextMessage(genaiapi.User, "What is the word? Reply with only the word."),
 		}
 		opts := genaiapi.CompletionOptions{
 			Temperature: 0.01,
@@ -138,12 +130,8 @@ func ExampleClient_Completion_tool_use() {
 	// Require a model which has the tool capability. See
 	// https://docs.mistral.ai/capabilities/function_calling/
 	if c, err := mistral.New("", "ministral-3b-latest"); err == nil {
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
 		}
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
@@ -201,12 +189,8 @@ func ExampleClient_CompletionStream() {
 	// See https://docs.mistral.ai/getting-started/models/models_overview/
 	if c, err := mistral.New("", "ministral-3b-latest"); err == nil {
 		ctx := context.Background()
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Say hello. Use only one word.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
 		}
 		for i := range 3 {
 			chunks := make(chan genaiapi.MessageFragment)

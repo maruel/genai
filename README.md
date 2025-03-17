@@ -128,12 +128,8 @@ func main() {
     if err != nil {
         log.Fatal(err)
     }
-    msgs := []genaiapi.Message{
-        {
-            Role: genaiapi.User,
-            Type: genaiapi.Text,
-            Text: "Is a circle round? Reply as JSON.",
-        },
+    msgs := genaiapi.Messages{
+        genaiapi.NewTextMessage(genaiapi.User, "Is a circle round? Reply as JSON."),
     }
     opts := genaiapi.CompletionOptions{
         Seed:        1,

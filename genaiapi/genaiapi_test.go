@@ -132,16 +132,8 @@ func TestContentType_Validate(t *testing.T) {
 
 func TestMessages_Validate(t *testing.T) {
 	m := Messages{
-		{
-			Role: User,
-			Type: Text,
-			Text: "Hello",
-		},
-		{
-			Role: Assistant,
-			Type: Text,
-			Text: "I can help with that",
-		},
+		NewTextMessage(User, "Hello"),
+		NewTextMessage(Assistant, "I can help with that"),
 	}
 	if err := m.Validate(); err != nil {
 		t.Fatal(err)
@@ -154,12 +146,8 @@ func TestMessage_Validate(t *testing.T) {
 		message Message
 	}{
 		{
-			name: "Valid user text message",
-			message: Message{
-				Role: User,
-				Type: Text,
-				Text: "Hello",
-			},
+			name:    "Valid user text message",
+			message: NewTextMessage(User, "Hello"),
 		},
 		{
 			name: "Valid user document message",
@@ -171,12 +159,8 @@ func TestMessage_Validate(t *testing.T) {
 			},
 		},
 		{
-			name: "Valid assistant message",
-			message: Message{
-				Role: Assistant,
-				Type: Text,
-				Text: "I can help with that",
-			},
+			name:    "Valid assistant message",
+			message: NewTextMessage(Assistant, "I can help with that"),
 		},
 	}
 	for _, tt := range tests {
@@ -326,11 +310,7 @@ func TestMessage_Validate_error(t *testing.T) {
 }
 
 func TestMessage_Decode(t *testing.T) {
-	m := Message{
-		Role: Assistant,
-		Type: Text,
-		Text: "{\"key\": \"value\"}",
-	}
+	m := NewTextMessage(Assistant, "{\"key\": \"value\"}")
 	if err := m.Decode(&struct{ Key string }{}); err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -343,13 +323,9 @@ func TestMessage_Decode_error(t *testing.T) {
 		errMsg  string
 	}{
 		{
-			name: "Invalid JSON message",
-			message: Message{
-				Role: Assistant,
-				Type: Text,
-				Text: "invalid",
-			},
-			errMsg: "failed to decode message text as JSON: invalid character 'i' looking for beginning of value; content: \"invalid\"",
+			name:    "Invalid JSON message",
+			message: NewTextMessage(Assistant, "invalid"),
+			errMsg:  "failed to decode message text as JSON: invalid character 'i' looking for beginning of value; content: \"invalid\"",
 		},
 		{
 			name: "Invalid DecodeAs",
@@ -369,33 +345,15 @@ func TestMessage_Decode_error(t *testing.T) {
 	}
 }
 
-func TestValidateMessages(t *testing.T) {
-	messages := []Message{
-		{
-			Role: User,
-			Type: Text,
-			Text: "Hello",
-		},
-		{
-			Role: Assistant,
-			Type: Text,
-			Text: "I can help with that",
-		},
-	}
-	if err := ValidateMessages(messages); err != nil {
-		t.Fatal(err)
-	}
-}
-
 func TestValidateMessages_error(t *testing.T) {
 	tests := []struct {
 		name     string
-		messages []Message
+		messages Messages
 		errMsg   string
 	}{
 		{
 			name: "Invalid messages",
-			messages: []Message{
+			messages: Messages{
 				{
 					Role: User,
 					Type: Text,

@@ -551,7 +551,7 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 	return nil
 }
 
-func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts genaiapi.Validatable, msgs []genaiapi.Message) error {
+func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts genaiapi.Validatable, msgs genaiapi.Messages) error {
 	if c.encoding == nil {
 		// Use the server to convert the OpenAI style format into a templated form.
 		in2 := applyTemplateRequest{}

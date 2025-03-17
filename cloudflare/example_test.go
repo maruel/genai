@@ -21,12 +21,8 @@ func ExampleClient_Completion_jSON() {
 	// As of March 2025, you can try it out for free.
 	// We need to use a model that supports structured output.
 	if c, err := cloudflare.New("", "", "@hf/nousresearch/hermes-2-pro-mistral-7b"); err == nil {
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Is a circle round? Reply as JSON.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "Is a circle round? Reply as JSON."),
 		}
 		var got struct {
 			Round bool `json:"round"`
@@ -67,12 +63,8 @@ func ExampleClient_Completion_tool_use() {
 	// As of March 2025, you can try it out for free.
 	// We need to use a model that supports function calling.
 	if c, err := cloudflare.New("", "", "@hf/nousresearch/hermes-2-pro-mistral-7b"); err == nil {
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
 		}
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
@@ -119,12 +111,8 @@ func ExampleClient_CompletionStream() {
 	// See https://developers.cloudflare.com/workers-ai/models/
 	if c, err := cloudflare.New("", "", "@cf/meta/llama-3.2-3b-instruct"); err == nil {
 		ctx := context.Background()
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Say hello. Use only one word.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
 		}
 		chunks := make(chan genaiapi.MessageFragment)
 		end := make(chan string)

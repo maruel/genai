@@ -36,20 +36,14 @@ var model = "claude-3-haiku-20240307"
 func ExampleClient_Completion_vision() {
 	// This code will run when ANTHROPIC_API_KEY is set.
 	if c, err := anthropic.New("", model); err == nil {
-		msgs := []genaiapi.Message{
+		msgs := genaiapi.Messages{
 			{
 				Role:     genaiapi.User,
 				Type:     genaiapi.Document,
 				Filename: "banana.jpg",
-				// Anthropic requires higher quality image than Gemini or Mistral. See
-				// ../gemini/testdata/banana.jpg to compare.
 				Document: bytes.NewReader(bananaJpg),
 			},
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Is it a banana? Reply with only one word.",
-			},
+			genaiapi.NewTextMessage(genaiapi.User, "Is it a banana? Reply with only one word."),
 		}
 		opts := genaiapi.CompletionOptions{
 			Temperature: 0.01,
@@ -95,18 +89,14 @@ func ExampleClient_Completion_pDF() {
 			log.Fatal(err)
 		}
 		defer f.Close()
-		msgs := []genaiapi.Message{
+		msgs := genaiapi.Messages{
 			{
 				Role:     genaiapi.User,
 				Type:     genaiapi.Document,
 				Filename: filepath.Base(f.Name()),
 				Document: f,
 			},
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "What is the hidden word? Reply with only the word.",
-			},
+			genaiapi.NewTextMessage(genaiapi.User, "What is the hidden word? Reply with only the word."),
 		}
 		opts := genaiapi.CompletionOptions{
 			Temperature: 0.01,
@@ -136,12 +126,8 @@ func ExampleClient_Completion_tool_use() {
 	// This code will run when ANTHROPIC_API_KEY is set.
 	// Claude 3.5 is required for tool use. ? "claude-3-5-haiku-20241022"
 	if c, err := anthropic.New("", model); err == nil {
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
 		}
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
@@ -183,12 +169,8 @@ func ExampleClient_CompletionStream() {
 	// This code will run when ANTHROPIC_API_KEY is set.
 	if c, err := anthropic.New("", model); err == nil {
 		ctx := context.Background()
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Say hello. Use only one word.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
 		}
 		chunks := make(chan genaiapi.MessageFragment)
 		end := make(chan string)

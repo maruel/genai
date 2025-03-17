@@ -24,12 +24,8 @@ var model = "deepseek-chat"
 func ExampleClient_Completion_jSON() {
 	// This code will run when DEEPSEEK_API_KEY is set.
 	if c, err := deepseek.New("", model); err == nil {
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Is a circle round? Reply as JSON with the form {\"round\": false} or {\"round\": true}.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "Is a circle round? Reply as JSON with the form {\"round\": false} or {\"round\": true}."),
 		}
 		opts := genaiapi.CompletionOptions{
 			Temperature: 0.01,
@@ -67,12 +63,8 @@ func ExampleClient_Completion_jSON() {
 func ExampleClient_Completion_tool_use() {
 	// This code will run when DEEPSEEK_API_KEY is set.
 	if c, err := deepseek.New("", model); err == nil {
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
 		}
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
@@ -115,12 +107,8 @@ func ExampleClient_CompletionStream() {
 	// This code will run when DEEPSEEK_API_KEY is set.
 	if c, err := deepseek.New("", model); err == nil {
 		ctx := context.Background()
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Say hello. Use only one word.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
 		}
 		chunks := make(chan genaiapi.MessageFragment)
 		end := make(chan string)

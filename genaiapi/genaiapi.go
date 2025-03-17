@@ -232,6 +232,11 @@ type Message struct {
 	_ struct{}
 }
 
+// NewTextMessage is a shortcut function to create a Message with a single text block.
+func NewTextMessage(role Role, text string) Message {
+	return Message{Role: role, Type: Text, Text: text}
+}
+
 // Decode decodes the JSON message into the struct.
 //
 // Requires using either ReplyAsJSON or DecodeAs in the CompletionOptions.

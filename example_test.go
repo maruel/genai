@@ -136,7 +136,7 @@ func Example_completionProvider() {
 	}
 
 	for name, provider := range completionProviders {
-		msgs := []genaiapi.Message{
+		msgs := genaiapi.Messages{
 			{
 				Role: genaiapi.User,
 				Type: genaiapi.Text,

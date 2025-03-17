@@ -31,7 +31,7 @@ var model = "gpt-4o-mini"
 func ExampleClient_Completion_vision_and_JSON() {
 	// This code will run when OPENAI_API_KEY is set.
 	if c, err := openai.New("", model); err == nil {
-		msgs := []genaiapi.Message{
+		msgs := genaiapi.Messages{
 			{
 				Role:     genaiapi.User,
 				Type:     genaiapi.Document,
@@ -40,11 +40,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 				// ../gemini/testdata/banana.jpg to compare.
 				Document: bytes.NewReader(bananaJpg),
 			},
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Is it a banana? Reply as JSON.",
-			},
+			genaiapi.NewTextMessage(genaiapi.User, "Is it a banana? Reply as JSON."),
 		}
 		var got struct {
 			Banana bool `json:"banana"`
@@ -86,18 +82,14 @@ func ExampleClient_Completion_audio() {
 			log.Fatal(err)
 		}
 		defer f.Close()
-		msgs := []genaiapi.Message{
+		msgs := genaiapi.Messages{
 			{
 				Role:     genaiapi.User,
 				Type:     genaiapi.Document,
 				Filename: filepath.Base(f.Name()),
 				Document: f,
 			},
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "What is the word said? Reply with only the word.",
-			},
+			genaiapi.NewTextMessage(genaiapi.User, "What is the word said? Reply with only the word."),
 		}
 		opts := genaiapi.CompletionOptions{
 			Seed:        1,
@@ -132,18 +124,14 @@ func ExampleClient_Completion_pDF() {
 			log.Fatal(err)
 		}
 		defer f.Close()
-		msgs := []genaiapi.Message{
+		msgs := genaiapi.Messages{
 			{
 				Role:     genaiapi.User,
 				Type:     genaiapi.Document,
 				Filename: filepath.Base(f.Name()),
 				Document: f,
 			},
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "What is the hidden word? Reply with only the word.",
-			},
+			genaiapi.NewTextMessage(genaiapi.User, "What is the hidden word? Reply with only the word."),
 		}
 		opts := genaiapi.CompletionOptions{
 			Temperature: 0.01,
@@ -172,12 +160,8 @@ func ExampleClient_Completion_pDF() {
 func ExampleClient_Completion_tool_use() {
 	// This code will run when OPENAI_API_KEY is set.
 	if c, err := openai.New("", model); err == nil {
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
 		}
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
@@ -221,12 +205,8 @@ func ExampleClient_CompletionStream() {
 	// This code will run when OPENAI_API_KEY is set.
 	if c, err := openai.New("", model); err == nil {
 		ctx := context.Background()
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Say hello. Use only one word.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
 		}
 		chunks := make(chan genaiapi.MessageFragment)
 		end := make(chan string)

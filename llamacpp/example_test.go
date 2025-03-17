@@ -63,12 +63,8 @@ func ExampleClient_Completion() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	msgs := []genaiapi.Message{
-		{
-			Role: genaiapi.User,
-			Type: genaiapi.Text,
-			Text: "Say hello. Reply with only one word.",
-		},
+	msgs := genaiapi.Messages{
+		genaiapi.NewTextMessage(genaiapi.User, "Say hello. Reply with only one word."),
 	}
 	opts := genaiapi.CompletionOptions{
 		Seed:        1,
@@ -104,12 +100,8 @@ func ExampleClient_CompletionStream() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	msgs := []genaiapi.Message{
-		{
-			Role: genaiapi.User,
-			Type: genaiapi.Text,
-			Text: "Say hello. Reply with only one word.",
-		},
+	msgs := genaiapi.Messages{
+		genaiapi.NewTextMessage(genaiapi.User, "Say hello. Reply with only one word."),
 	}
 	opts := genaiapi.CompletionOptions{
 		Seed:        1,

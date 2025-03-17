@@ -72,7 +72,7 @@ func Example() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	msgs := []genaiapi.Message{
+	msgs := genaiapi.Messages{
 		{
 			Role: genaiapi.User,
 			Type: genaiapi.Text,

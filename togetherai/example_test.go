@@ -34,7 +34,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 	// Warning: looks like this model doesn't support JSON schema.
 	// https://docs.together.ai/docs/serverless-models#vision-models
 	if c, err := togetherai.New("", "meta-llama/Llama-Vision-Free"); err == nil {
-		msgs := []genaiapi.Message{
+		msgs := genaiapi.Messages{
 			{
 				Role:     genaiapi.User,
 				Type:     genaiapi.Document,
@@ -42,11 +42,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 				// Together.AI supports highly compressed jpg.
 				Document: bytes.NewReader(bananaJpg),
 			},
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Is it a banana? Reply as JSON with the form {\"banana\": false} or {\"banana\": true}.",
-			},
+			genaiapi.NewTextMessage(genaiapi.User, "Is it a banana? Reply as JSON with the form {\"banana\": false} or {\"banana\": true}."),
 		}
 		var got struct {
 			Banana bool `json:"banana"`
@@ -93,18 +89,14 @@ func ExampleClient_Completion_video() {
 			log.Fatal(err)
 		}
 		defer f.Close()
-		msgs := []genaiapi.Message{
+		msgs := genaiapi.Messages{
 			{
 				Role:     genaiapi.User,
 				Type:     genaiapi.Document,
 				Filename: filepath.Base(f.Name()),
 				Document: f,
 			},
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "What is the hidden word? Reply with exactly and only one word.",
-			},
+			genaiapi.NewTextMessage(genaiapi.User, "What is the word? Reply with exactly and only one word."),
 		}
 		opts := genaiapi.CompletionOptions{
 			Seed:        1,
@@ -138,12 +130,8 @@ func ExampleClient_Completion_tool_use() {
 	//
 	// You must select a model that supports tool use.
 	if c, err := togetherai.New("", "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"); err == nil {
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
 		}
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
@@ -187,12 +175,8 @@ func ExampleClient_CompletionStream() {
 	// See https://api.together.ai/models
 	if c, err := togetherai.New("", "meta-llama/Llama-3.2-3B-Instruct-Turbo"); err == nil {
 		ctx := context.Background()
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Say hello. Use only one word.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
 		}
 		chunks := make(chan genaiapi.MessageFragment)
 		end := make(chan string)

@@ -32,7 +32,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 	// This code will run when GEMINI_API_KEY is set.
 	// As of March 2025, you can try it out for free.
 	if c, err := gemini.New("", model); err == nil {
-		msgs := []genaiapi.Message{
+		msgs := genaiapi.Messages{
 			{
 				Role: genaiapi.User,
 				Type: genaiapi.Document,
@@ -40,11 +40,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 				Filename: "banana.jpg",
 				Document: bytes.NewReader(bananaJpg),
 			},
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Is it a banana? Reply as JSON.",
-			},
+			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
 		}
 		var got struct {
 			Banana bool `json:"banana"`
@@ -87,18 +83,14 @@ func ExampleClient_Completion_pDF() {
 			log.Fatal(err)
 		}
 		defer f.Close()
-		msgs := []genaiapi.Message{
+		msgs := genaiapi.Messages{
 			{
 				Role:     genaiapi.User,
 				Type:     genaiapi.Document,
 				Filename: filepath.Base(f.Name()),
 				Document: f,
 			},
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "What is the hidden word? Reply with only the word.",
-			},
+			genaiapi.NewTextMessage(genaiapi.User, "What is the word? Reply with only the word."),
 		}
 		opts := genaiapi.CompletionOptions{
 			Seed:        1,
@@ -134,18 +126,14 @@ func ExampleClient_Completion_audio() {
 			log.Fatal(err)
 		}
 		defer f.Close()
-		msgs := []genaiapi.Message{
+		msgs := genaiapi.Messages{
 			{
 				Role:     genaiapi.User,
 				Type:     genaiapi.Document,
 				Filename: filepath.Base(f.Name()),
 				Document: f,
 			},
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "What is the word said? Reply with only the word.",
-			},
+			genaiapi.NewTextMessage(genaiapi.User, "What is the word said? Reply with only the word."),
 		}
 		opts := genaiapi.CompletionOptions{
 			Seed:        1,
@@ -181,18 +169,14 @@ func ExampleClient_Completion_tool_use() {
 			log.Fatal(err)
 		}
 		defer f.Close()
-		msgs := []genaiapi.Message{
+		msgs := genaiapi.Messages{
 			{
 				Role:     genaiapi.User,
 				Type:     genaiapi.Document,
 				Filename: filepath.Base(f.Name()),
 				Document: f,
 			},
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "What is the hidden word? Call the tool hidden_word to tell me what word you saw.",
-			},
+			genaiapi.NewTextMessage(genaiapi.User, "What is the word? Call the tool hidden_word to tell me what word you saw."),
 		}
 		var got struct {
 			Word string `json:"word" jsonschema:"enum=Orange,enum=Banana,enum=Apple"`
@@ -237,12 +221,8 @@ func ExampleClient_CompletionStream() {
 	// As of March 2025, you can try it out for free.
 	if c, err := gemini.New("", model); err == nil {
 		ctx := context.Background()
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Say hello. Use only one word.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
 		}
 		chunks := make(chan genaiapi.MessageFragment)
 		end := make(chan string)

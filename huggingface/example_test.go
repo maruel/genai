@@ -21,12 +21,8 @@ func ExampleClient_Completion() {
 	// See https://huggingface.co/models?inference=warm&sort=trending
 	// Eventually use one that supports structured output.
 	if c, err := huggingface.New("", "meta-llama/Llama-3.2-1B-Instruct"); err == nil {
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Say hello. Use only one word.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
 		}
 		opts := genaiapi.CompletionOptions{
 			Seed:        1,
@@ -61,12 +57,8 @@ func ExampleClient_Completion_tool_use() {
 	// See https://huggingface.co/models?inference=warm&sort=trending
 	// Eventually use one that supports structured output.
 	if c, err := huggingface.New("", "meta-llama/Llama-3.2-3B-Instruct"); err == nil {
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
 		}
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
@@ -112,12 +104,8 @@ func ExampleClient_CompletionStream() {
 	// Eventually use one that supports structured output.
 	if c, err := huggingface.New("", "meta-llama/Llama-3.2-1B-Instruct"); err == nil {
 		ctx := context.Background()
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Say hello. Use only one word.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
 		}
 		chunks := make(chan genaiapi.MessageFragment)
 		end := make(chan string)

@@ -32,7 +32,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 	// necessarily tool use).
 	// See "JSON Mode with Images" at https://console.groq.com/docs/vision
 	if c, err := groq.New("", "llama-3.2-11b-vision-preview"); err == nil {
-		msgs := []genaiapi.Message{
+		msgs := genaiapi.Messages{
 			{
 				Role:     genaiapi.User,
 				Type:     genaiapi.Document,
@@ -41,11 +41,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 				// ../gemini/testdata/banana.jpg to compare.
 				Document: bytes.NewReader(bananaJpg),
 			},
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Is it a banana? Reply as JSON with the form {\"banana\": false} or {\"banana\": true}.",
-			},
+			genaiapi.NewTextMessage(genaiapi.User, "Is it a banana? Reply as JSON with the form {\"banana\": false} or {\"banana\": true}."),
 		}
 		opts := genaiapi.CompletionOptions{
 			Seed:        1,
@@ -87,12 +83,8 @@ func ExampleClient_Completion_tool_use() {
 	// We must select a model that supports tool use. Use the smallest one.
 	// See https://console.groq.com/docs/tool-use
 	if c, err := groq.New("", "llama-3.1-8b-instant"); err == nil {
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
 		}
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
@@ -138,12 +130,8 @@ func ExampleClient_CompletionStream() {
 	// See https://console.groq.com/docs/models
 	if c, err := groq.New("", "llama-3.2-1b-preview"); err == nil {
 		ctx := context.Background()
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Say hello. Use only one word.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
 		}
 		chunks := make(chan genaiapi.MessageFragment)
 		end := make(chan string)

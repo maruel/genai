@@ -22,12 +22,8 @@ func ExampleClient_Completion_jSON() {
 	// We need to use a model that supports structured output.
 	// https://docs.cohere.com/v2/docs/structured-outputs
 	if c, err := cohere.New("", "command-r-08-2024"); err == nil {
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Is a circle round? Reply as JSON.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "Is a circle round? Reply as JSON."),
 		}
 		var got struct {
 			Round bool `json:"round"`
@@ -68,12 +64,8 @@ func ExampleClient_Completion_tool_use() {
 	// We need to use a model that supports structured output.
 	// https://docs.cohere.com/v2/docs/structured-outputs
 	if c, err := cohere.New("", "command-r-08-2024"); err == nil {
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
 		}
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
@@ -121,12 +113,8 @@ func ExampleClient_CompletionStream() {
 	// See https://docs.cohere.com/v2/docs/models
 	if c, err := cohere.New("", "command-r7b-12-2024"); err == nil {
 		ctx := context.Background()
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Say hello. Use only one word.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
 		}
 		chunks := make(chan genaiapi.MessageFragment)
 		end := make(chan string)

@@ -18,12 +18,8 @@ import (
 func ExampleClient_Completion() {
 	// This code will run when PERPLEXITY_API_KEY is set.
 	if c, err := perplexity.New(""); err == nil {
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Say hello. Use only one word.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
 		}
 		opts := genaiapi.CompletionOptions{
 			Temperature: 0.01,
@@ -55,12 +51,8 @@ func ExampleClient_CompletionStream() {
 	// This code will run when PERPLEXITY_API_KEY is set.
 	if c, err := perplexity.New(""); err == nil {
 		ctx := context.Background()
-		msgs := []genaiapi.Message{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Say hello. Use only one word.",
-			},
+		msgs := genaiapi.Messages{
+			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
 		}
 		chunks := make(chan genaiapi.MessageFragment)
 		end := make(chan string)

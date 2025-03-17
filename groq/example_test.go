@@ -62,13 +62,13 @@ func ExampleClient_Completion_vision_and_JSON() {
 		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.Text {
 			log.Fatalf("Unexpected response: %#v", resp)
 		}
-		var expected struct {
+		var got struct {
 			Banana bool `json:"banana"`
 		}
-		if err := resp.Decode(&expected); err != nil {
+		if err := resp.Decode(&got); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("Banana: %v\n", expected.Banana)
+		fmt.Printf("Banana: %v\n", got.Banana)
 		if resp.InputTokens < 10 || resp.OutputTokens < 2 {
 			log.Fatalf("Missing usage token")
 		}
@@ -94,7 +94,7 @@ func ExampleClient_Completion_tool_use() {
 				Text: "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one.",
 			},
 		}
-		var expected struct {
+		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 		}
 		opts := genaiapi.CompletionOptions{
@@ -105,7 +105,7 @@ func ExampleClient_Completion_tool_use() {
 				{
 					Name:        "best_country",
 					Description: "A tool to determine the best country",
-					InputsAs:    &expected,
+					InputsAs:    &got,
 				},
 			},
 		}
@@ -120,10 +120,10 @@ func ExampleClient_Completion_tool_use() {
 		if len(resp.ToolCalls) != 1 || resp.ToolCalls[0].Name != "best_country" {
 			log.Fatal("Expected 1 best_country tool call")
 		}
-		if err := resp.ToolCalls[0].Decode(&expected); err != nil {
+		if err := resp.ToolCalls[0].Decode(&got); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("Best: %v\n", expected.Country)
+		fmt.Printf("Best: %v\n", got.Country)
 	} else {
 		// Print something so the example runs.
 		fmt.Println("Best: Canada")

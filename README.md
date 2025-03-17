@@ -2,33 +2,49 @@
 
 The _high performance_ low level native Go client for LLMs.
 
-| Provider                                                    | Country | Chat | Streaming | Vision | PDF | JSON output | JSON schema | Seed | Tools |
-| ----------------------------------------------------------- | ------- | ---- | --------- | ------ | --- | ----------- | ----------- | ---- | ----- |
-| [Anthropic](https://console.anthropic.com/settings/billing) | 🇺🇸    | ✅   | ✅        | ✅     | ✅  | ❌          | ❌          | ❌   | ✅    |
-| [Cerebras](https://cloud.cerebras.ai)                       | 🇺🇸    | ✅   | ✅        | ❌     | ❌  | ✅          | ✅          | ✅   | ✅    |
-| [Cloudflare Workers AI](https://dash.cloudflare.com)        | 🇺🇸    | ✅   | ✅        | ⏳     | ❌  | ✅          | ✅          | ✅   | ✅    |
-| [Cohere](https://dashboard.cohere.com/billing)              | 🇨🇦    | ✅   | ✅        | ⏳     | ❌  | ✅          | ✅          | ✅   | ✅    |
-| [DeepSeek](https://platform.deepseek.com)                   | 🇨🇳    | ✅   | ✅        | ❌     | ❌  | ✅          | ❌          | ❌   | ✅    |
-| [Google's Gemini](http://aistudio.google.com)               | 🇺🇸    | ✅   | ✅        | ✅     | ✅  | ✅          | ✅          | ✅   | ✅    |
-| [Groq](https://console.groq.com/dashboard/usage)            | 🇺🇸    | ✅   | ✅        | ✅     | ❌  | ✅          | ❌          | ✅   | ✅    |
-| [HuggingFace](https://huggingface.co/settings/billing)      | 🇺🇸    | ✅   | ✅        | ⏳     | ⏳  | ⏳          | ⏳          | ✅   | ✅    |
-| [Mistral](https://console.mistral.ai/usage)                 | 🇫🇷    | ✅   | ✅        | ✅     | ✅  | ✅          | ✅          | ✅   | ✅    |
-| [OpenAI](https://platform.openai.com/usage)                 | 🇺🇸    | ✅   | ✅        | ✅     | ✅  | ✅          | ✅          | ✅   | ✅    |
-| [Perplexity](https://www.perplexity.ai/settings/api)        | 🇺🇸    | ✅   | ✅        | ❌     | ❌  | ❌          | ⏳          | ❌   | ❌    |
-| [TogetherAI](https://api.together.ai/settings/billing)      | 🇺🇸    | ✅   | ✅        | ✅     | ❌  | ✅          | ✅          | ✅   | ✅    |
-| [llama.cpp](https://github.com/ggml-org/llama.cpp)          | N/A     | ✅   | ✅        | ⏳     | ⏳  | ⏳          | ⏳          | ✅   | ⏳    |
+| Provider                                                    | Country | Chat | Streaming | Vision | PDF | Video |JSON output | JSON schema | Seed | Tools |
+| ----------------------------------------------------------- | ------- | ---- | --------- | ------ | --- | ----- | ----------- | ----------- | ---- | ----- |
+| [Anthropic](https://console.anthropic.com/settings/billing) | 🇺🇸    | ✅   | ✅        | ✅     | ✅  | ❌    | ❌          | ❌          | ❌   | ✅    |
+| [Cerebras](https://cloud.cerebras.ai)                       | 🇺🇸    | ✅   | ✅        | ❌     | ❌  | ❌    | ✅          | ✅          | ✅   | ✅    |
+| [Cloudflare Workers AI](https://dash.cloudflare.com)        | 🇺🇸    | ✅   | ✅        | ⏳     | ❌  | ❌    | ✅          | ✅          | ✅   | ✅    |
+| [Cohere](https://dashboard.cohere.com/billing)              | 🇨🇦    | ✅   | ✅        | ⏳     | ❌  | ❌    | ✅          | ✅          | ✅   | ✅    |
+| [DeepSeek](https://platform.deepseek.com)                   | 🇨🇳    | ✅   | ✅        | ❌     | ❌  | ❌    | ✅          | ❌          | ❌   | ✅    |
+| [Google's Gemini](http://aistudio.google.com)               | 🇺🇸    | ✅   | ✅        | ✅     | ✅  | ✅    | ✅          | ✅          | ✅   | ✅    |
+| [Groq](https://console.groq.com/dashboard/usage)            | 🇺🇸    | ✅   | ✅        | ✅     | ❌  | ❌    | ✅          | ❌          | ✅   | ✅    |
+| [HuggingFace](https://huggingface.co/settings/billing)      | 🇺🇸    | ✅   | ✅        | ⏳     | ⏳  | ❌    | ⏳          | ⏳          | ✅   | ✅    |
+| [Mistral](https://console.mistral.ai/usage)                 | 🇫🇷    | ✅   | ✅        | ✅     | ✅  | ❌    | ✅          | ✅          | ✅   | ✅    |
+| [OpenAI](https://platform.openai.com/usage)                 | 🇺🇸    | ✅   | ✅        | ✅     | ✅  | ❌    | ✅          | ✅          | ✅   | ✅    |
+| [Perplexity](https://www.perplexity.ai/settings/api)        | 🇺🇸    | ✅   | ✅        | ❌     | ❌  | ❌    | ❌          | ⏳          | ❌   | ❌    |
+| [TogetherAI](https://api.together.ai/settings/billing)      | 🇺🇸    | ✅   | ✅        | ✅     | ❌  | ✅    | ✅          | ✅          | ✅   | ✅    |
+| [llama.cpp](https://github.com/ggml-org/llama.cpp)          | N/A     | ✅   | ✅        | ⏳     | ⏳  | ⏳    | ⏳          | ⏳          | ✅   | ⏳    |
 
 - ✅ Implemented
 - ⏳ To be implemented
 - ❌ Not supported
 - Streaming: chat streaming
-- Vision: ability to process an image as input
+- Vision: ability to process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF
+- Video: ability to process a video (e.g. MP4) as input.
 - PDF: ability to process a PDF as input, possibly with OCR
 - JSON output/schema: ability to output JSON in free form or with a schema
 - Seed: deterministic seed for reproducibility
 - Tools: tool calling
 
 ## Features
+
+- **Full functionality**: Full access to each backend-specific functionality.
+- **Native JSON struct serialization**: Pass a struct to tell the LLM what to
+  generate, then decode the JSON response. Supports enums.
+- **Native tool calling**: Tell the LLM to call a tool directly, also passing a Go
+  struct to define the arguments.
+- **Streaming**: Chat streaming is supported.
+- **Vision**: Process images, PDFs and videos (!) as supported by each provider.
+
+Implementation is in flux. :) For example, tool call may not work in stream mode yet.
+
+[![Go Reference](https://pkg.go.dev/badge/github.com/maruel/genai/.svg)](https://pkg.go.dev/github.com/maruel/genai/)
+[![codecov](https://codecov.io/gh/maruel/genai/graph/badge.svg?token=VLBH363B6N)](https://codecov.io/gh/maruel/genai)
+
+## Design
 
 - **Safe and strict API implementation**. All you love from a statically typed
   language. Immediately fail on unknown RPC fields. Error code paths are
@@ -38,16 +54,7 @@ The _high performance_ low level native Go client for LLMs.
 - **Optimized for speed**: minimize memory allocations, compress data at the
   transport layer when possible.
 - **Lean**: Very few dependencies. No unnecessary abstraction layer.
-- **Full functionality**: Full access to each backend-specific functionality.
-- **Native JSON struct serialization**: Pass a struct to tell the LLM what to
-  generate, then decode the JSON response. Supports enums.
-- **Tool calling**: Tell the LLM to call a tool directly, also passing a Go
-  struct to define the arguments.
 - Easy to add new providers.
-- Implementation is in flux. :) For example, tool call may not work in stream mode yet.
-
-[![Go Reference](https://pkg.go.dev/badge/github.com/maruel/genai/.svg)](https://pkg.go.dev/github.com/maruel/genai/)
-[![codecov](https://codecov.io/gh/maruel/genai/graph/badge.svg?token=VLBH363B6N)](https://codecov.io/gh/maruel/genai)
 
 
 ## I'm poor 💸
@@ -65,7 +72,6 @@ apply):
 - [Together.AI](https://api.together.ai/settings/plans) provides many models for free at 1qps
 - Running [llama.cpp](https://github.com/ggml-org/llama.cpp) locally is free. :)
 
-TODO: Investigate providers at https://github.com/cheahjs/free-llm-api-resources
 
 ## HTTP transport compression
 
@@ -111,6 +117,10 @@ import (
 	"github.com/maruel/genai/genaiapi"
 )
 
+type Circle struct {
+    Round bool `json:"round"`
+}
+
 func main() {
     c, err := cerebras.New("", "llama3.1-8b")
     if err != nil {
@@ -123,23 +133,21 @@ func main() {
             Text: "Is a circle round? Reply as JSON.",
         },
     }
-    var expected struct {
-        Round bool `json:"round"`
-    }
     opts := genaiapi.CompletionOptions{
         Seed:        1,
         Temperature: 0.01,
         MaxTokens:   50,
-        DecodeAs:    &expected,
+        DecodeAs:    &Circle{},
     }
     resp, err := c.Completion(context.Background(), msgs, &opts)
     if err != nil {
         log.Fatal(err)
     }
-    if err := resp.Decode(&expected); err != nil {
+    got := Circle{}
+    if err := resp.Decode(&got); err != nil {
         log.Fatal(err)
     }
-    fmt.Printf("Round: %v\n", expected.Round)
+    fmt.Printf("Round: %v\n", got.Round)
 }
 ```
 

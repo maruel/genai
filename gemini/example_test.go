@@ -46,14 +46,14 @@ func ExampleClient_Completion_vision_and_JSON() {
 				Text: "Is it a banana? Reply as JSON.",
 			},
 		}
-		var expected struct {
+		var got struct {
 			Banana bool `json:"banana"`
 		}
 		opts := genaiapi.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
-			DecodeAs:    &expected,
+			DecodeAs:    &got,
 		}
 		resp, err := c.Completion(context.Background(), msgs, &opts)
 		if err != nil {
@@ -64,10 +64,10 @@ func ExampleClient_Completion_vision_and_JSON() {
 		}
 		// Print to stderr so the test doesn't capture it.
 		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
-		if err := resp.Decode(&expected); err != nil {
+		if err := resp.Decode(&got); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("Banana: %v\n", expected.Banana)
+		fmt.Printf("Banana: %v\n", got.Banana)
 		if resp.InputTokens < 100 || resp.OutputTokens < 2 {
 			log.Fatalf("Missing usage token")
 		}
@@ -129,15 +129,26 @@ func ExampleClient_Completion_tool_use() {
 	// This code will run when GEMINI_API_KEY is set.
 	// As of March 2025, you can try it out for free.
 	if c, err := gemini.New("", model); err == nil {
+		f, err := os.Open("testdata/animation.mp4")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
 		msgs := []genaiapi.Message{
+			{
+				Role:     genaiapi.User,
+				Type:     genaiapi.Document,
+				Filename: filepath.Base(f.Name()),
+				Document: f,
+			},
 			{
 				Role: genaiapi.User,
 				Type: genaiapi.Text,
-				Text: "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one.",
+				Text: "What is the hidden word? Call the tool hidden_word to tell me what word you saw.",
 			},
 		}
-		var expected struct {
-			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
+		var got struct {
+			Word string `json:"word" jsonschema:"enum=Orange,enum=Banana,enum=Apple"`
 		}
 		opts := genaiapi.CompletionOptions{
 			Seed:        1,
@@ -145,9 +156,9 @@ func ExampleClient_Completion_tool_use() {
 			MaxTokens:   50,
 			Tools: []genaiapi.ToolDef{
 				{
-					Name:        "best_country",
-					Description: "A tool to determine the best country",
-					InputsAs:    &expected,
+					Name:        "hidden_word",
+					Description: "A tool to state what word was seen in the video.",
+					InputsAs:    &got,
 				},
 			},
 		}
@@ -160,18 +171,18 @@ func ExampleClient_Completion_tool_use() {
 		}
 		log.Printf("Response: %#v", resp)
 		// Warning: there's a bug where it returns two identical tool calls. To verify.
-		if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "best_country" {
+		if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "hidden_word" {
 			log.Fatal("Expected 1 best_country tool call")
 		}
-		if err := resp.ToolCalls[0].Decode(&expected); err != nil {
+		if err := resp.ToolCalls[0].Decode(&got); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("Best: %v\n", expected.Country)
+		fmt.Printf("Saw: %v\n", strings.ToLower(got.Word))
 	} else {
 		// Print something so the example runs.
-		fmt.Println("Best: Canada")
+		fmt.Println("Saw: banana")
 	}
-	// Output: Best: Canada
+	// Output: Saw: banana
 }
 
 func ExampleClient_CompletionStream() {

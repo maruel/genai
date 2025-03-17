@@ -28,14 +28,14 @@ func ExampleClient_Completion_jSON() {
 				Text: "Is a circle round? Reply as JSON.",
 			},
 		}
-		var expected struct {
+		var got struct {
 			Round bool `json:"round"`
 		}
 		opts := genaiapi.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
-			DecodeAs:    &expected,
+			DecodeAs:    &got,
 		}
 		resp, err := c.Completion(context.Background(), msgs, &opts)
 		if err != nil {
@@ -48,10 +48,10 @@ func ExampleClient_Completion_jSON() {
 		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
 		d := json.NewDecoder(strings.NewReader(resp.Text))
 		d.DisallowUnknownFields()
-		if err := d.Decode(&expected); err != nil {
+		if err := d.Decode(&got); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("Round: %v\n", expected.Round)
+		fmt.Printf("Round: %v\n", got.Round)
 		if resp.InputTokens != 0 || resp.OutputTokens != 0 {
 			log.Fatalf("Did cloudflare finally start filling the usage fields?")
 		}
@@ -74,7 +74,7 @@ func ExampleClient_Completion_tool_use() {
 				Text: "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one.",
 			},
 		}
-		var expected struct {
+		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 		}
 		opts := genaiapi.CompletionOptions{
@@ -85,7 +85,7 @@ func ExampleClient_Completion_tool_use() {
 				{
 					Name:        "best_country",
 					Description: "A tool to determine the best country",
-					InputsAs:    &expected,
+					InputsAs:    &got,
 				},
 			},
 		}
@@ -101,10 +101,10 @@ func ExampleClient_Completion_tool_use() {
 		if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "best_country" {
 			log.Fatal("Expected at least one best_country tool call")
 		}
-		if err := resp.ToolCalls[0].Decode(&expected); err != nil {
+		if err := resp.ToolCalls[0].Decode(&got); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("Best: %v\n", expected.Country)
+		fmt.Printf("Best: %v\n", got.Country)
 	} else {
 		// Print something so the example runs.
 		fmt.Println("Best: Canada")

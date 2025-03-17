@@ -34,7 +34,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 	//
 	// Require a model which has the "vision" capability.
 	// https://docs.mistral.ai/capabilities/vision/
-	if c, err := mistral.New("", "pixtral-12b-2409"); err == nil {
+	if c, err := mistral.New("", "mistral-small-latest"); err == nil {
 		msgs := []genaiapi.Message{
 			{
 				Role:     genaiapi.User,
@@ -71,7 +71,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 			log.Fatal(err)
 		}
 		fmt.Printf("Banana: %v\n", got.Banana)
-		if resp.InputTokens < 100 || resp.OutputTokens < 2 {
+		if resp.InputTokens < 50 || resp.OutputTokens < 2 {
 			log.Fatalf("Missing usage token")
 		}
 	} else {

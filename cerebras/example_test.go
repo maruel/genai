@@ -22,7 +22,7 @@ func ExampleClient_Completion_jSON() {
 	//
 	// Cerebras supports a limited set of models which you can see on the drop
 	// down of https://inference.cerebras.ai/
-	if c, err := cerebras.New("", "llam-a3.1-8b"); err == nil {
+	if c, err := cerebras.New("", "llama-3.1-8b"); err == nil {
 		msgs := []genaiapi.Message{
 			{
 				Role: genaiapi.User,

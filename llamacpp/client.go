@@ -234,21 +234,33 @@ type applyTemplateRequest struct {
 	Messages []Message `json:"messages"`
 }
 
-func (a *applyTemplateRequest) fromMsgs(msgs []genaiapi.Message) error {
+func (a *applyTemplateRequest) Init(opts genaiapi.Validatable, msgs []genaiapi.Message) error {
+	sp := ""
+	if v, ok := opts.(*genaiapi.CompletionOptions); ok {
+		sp = v.SystemPrompt
+	}
 	if err := genaiapi.ValidateMessages(msgs); err != nil {
 		return err
 	}
 	var errs []error
-	a.Messages = make([]Message, len(msgs))
-	for i, m := range msgs {
-		if err := a.Messages[i].From(m); err != nil {
+	offset := 0
+	if sp != "" {
+		offset = 1
+	}
+	a.Messages = make([]Message, len(msgs)+offset)
+	if sp != "" {
+		a.Messages[0].Role = "system"
+		a.Messages[0].Content = sp
+	}
+	for i := range msgs {
+		if err := a.Messages[i+offset].From(&msgs[i]); err != nil {
 			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 		}
 	}
 	return errors.Join(errs...)
 }
 
-func (msg *Message) From(m genaiapi.Message) error {
+func (msg *Message) From(m *genaiapi.Message) error {
 	// We don't filter the role here.
 	msg.Role = string(m.Role)
 	switch m.Type {
@@ -331,7 +343,7 @@ func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts g
 	if err := rpcin.Init(opts); err != nil {
 		return genaiapi.CompletionResult{}, err
 	}
-	if err := c.initPrompt(ctx, &rpcin, msgs); err != nil {
+	if err := c.initPrompt(ctx, &rpcin, opts, msgs); err != nil {
 		return genaiapi.CompletionResult{}, err
 	}
 	rpcout := CompletionResponse{}
@@ -355,7 +367,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 	if err := in.Init(opts); err != nil {
 		return err
 	}
-	if err := c.initPrompt(ctx, &in, msgs); err != nil {
+	if err := c.initPrompt(ctx, &in, opts, msgs); err != nil {
 		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
@@ -539,11 +551,11 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 	return nil
 }
 
-func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs []genaiapi.Message) error {
+func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts genaiapi.Validatable, msgs []genaiapi.Message) error {
 	if c.encoding == nil {
 		// Use the server to convert the OpenAI style format into a templated form.
 		in2 := applyTemplateRequest{}
-		if err := in2.fromMsgs(msgs); err != nil {
+		if err := in2.Init(opts, msgs); err != nil {
 			return err
 		}
 		out := applyTemplateResponse{}
@@ -554,37 +566,23 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs []g
 		return nil
 	}
 
-	// Do a quick validation. 1 == available_tools, 2 = system, 3 = rest
-	state := 0
 	in.Prompt = c.encoding.BeginOfText
-	for i, m := range msgs {
+	for _, m := range msgs {
 		switch m.Role {
 		/* TODO
 		case genaiapi.AvailableTools:
-			if state != 0 || i != 0 {
-				return fmt.Errorf("unexpected available_tools message at index %d; state %d", i, state)
-			}
-			state = 1
 			in.Prompt += c.encoding.ToolsAvailableTokenStart + m.Text + c.encoding.ToolsAvailableTokenEnd
 		*/
-		case genaiapi.System:
-			if state > 1 {
-				return fmt.Errorf("unexpected system message at index %d; state %d", i, state)
-			}
-			state = 2
+		case "system":
 			in.Prompt += c.encoding.SystemTokenStart + m.Text + c.encoding.SystemTokenEnd
 		case genaiapi.User:
-			state = 3
 			in.Prompt += c.encoding.UserTokenStart + m.Text + c.encoding.UserTokenEnd
 		case genaiapi.Assistant:
-			state = 3
 			in.Prompt += c.encoding.AssistantTokenStart + m.Text + c.encoding.AssistantTokenEnd
 			/* TODO
 			case genaiapi.ToolCall:
-				state = 3
 				in.Prompt += c.encoding.ToolCallTokenStart + m.Text + c.encoding.ToolCallTokenEnd
 			case genaiapi.ToolCallResult:
-				state = 3
 				in.Prompt += c.encoding.ToolCallResultTokenStart + m.Text + c.encoding.ToolCallResultTokenEnd
 			*/
 		default:

@@ -60,6 +60,7 @@ type CompletionRequest struct {
 
 func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validatable) error {
 	var errs []error
+	sp := ""
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
 			errs = append(errs, err)
@@ -67,9 +68,10 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 			switch v := opts.(type) {
 			case *genaiapi.CompletionOptions:
 				c.MaxTokens = v.MaxTokens
-				c.Seed = v.Seed
 				c.Temperature = v.Temperature
 				c.P = v.TopP
+				sp = v.SystemPrompt
+				c.Seed = v.Seed
 				c.K = v.TopK
 				c.StopSequences = v.Stop
 				if v.ReplyAsJSON {
@@ -102,9 +104,17 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 	if err := genaiapi.ValidateMessages(msgs); err != nil {
 		errs = append(errs, err)
 	} else {
-		c.Messages = make([]Message, len(msgs))
-		for i, m := range msgs {
-			if err := c.Messages[i].From(m); err != nil {
+		offset := 0
+		if sp != "" {
+			offset = 1
+		}
+		c.Messages = make([]Message, len(msgs)+offset)
+		if sp != "" {
+			c.Messages[0].Role = "system"
+			c.Messages[0].Content = []Content{{Type: "text", Text: sp}}
+		}
+		for i := range msgs {
+			if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
 				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 			}
 		}
@@ -124,9 +134,9 @@ type Message struct {
 	ToolCallID string `json:"tool_call_id,omitzero"`
 }
 
-func (msg *Message) From(m genaiapi.Message) error {
+func (msg *Message) From(m *genaiapi.Message) error {
 	switch m.Role {
-	case genaiapi.System, genaiapi.User, genaiapi.Assistant:
+	case genaiapi.User, genaiapi.Assistant:
 		msg.Role = string(m.Role)
 	default:
 		return fmt.Errorf("unsupported role %q", m.Role)
@@ -139,7 +149,7 @@ func (msg *Message) From(m genaiapi.Message) error {
 	case genaiapi.Document:
 		// Currently fails with: http 400: error: invalid request: all elements in history must have a message
 		// TODO: Investigate one day. Maybe because trial key.
-		mimeType, data, err := internal.ParseDocument(&m, 10*1024*1024)
+		mimeType, data, err := internal.ParseDocument(m, 10*1024*1024)
 		if err != nil {
 			return err
 		}
@@ -377,7 +387,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 	go func() {
-		lastRole := genaiapi.System
+		var lastRole genaiapi.Role
 		for pkt := range ch {
 			switch role := pkt.Delta.Message.Role; role {
 			case "system", "assistant", "user":

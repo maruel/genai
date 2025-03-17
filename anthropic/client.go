@@ -59,10 +59,11 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 			case *genaiapi.CompletionOptions:
 				c.MaxToks = v.MaxTokens
 				c.Temperature = v.Temperature
+				c.System = v.SystemPrompt
+				c.TopP = v.TopP
 				if v.Seed != 0 {
 					errs = append(errs, errors.New("anthropic doesn't support seed"))
 				}
-				c.TopP = v.TopP
 				c.TopK = v.TopK
 				c.StopSequences = v.Stop
 				if v.ReplyAsJSON || v.DecodeAs != nil {
@@ -98,10 +99,6 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 		c.Messages = make([]Message, 0, len(msgs))
 		for i, m := range msgs {
 			switch m.Role {
-			case genaiapi.System:
-				// System prompt is passed differently.
-				c.System = m.Text
-				continue
 			case genaiapi.User, genaiapi.Assistant:
 				c.Messages = append(c.Messages, Message{})
 				if err := c.Messages[len(c.Messages)-1].From(m); err != nil {
@@ -465,13 +462,13 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 	defer cancel()
 	start := time.Now()
 	go func() {
-		lastRole := genaiapi.System
+		var lastRole genaiapi.Role
 		for pkg := range ch {
 			word := ""
 			switch pkg.Type {
 			case "message_start":
 				switch pkg.Message.Role {
-				case "system", "assistant", "user":
+				case "assistant", "user":
 					lastRole = genaiapi.Role(pkg.Message.Role)
 				case "":
 				default:

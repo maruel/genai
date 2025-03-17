@@ -234,8 +234,12 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 			case *genaiapi.CompletionOptions:
 				c.GenerationConfig.MaxOutputTokens = v.MaxTokens
 				c.GenerationConfig.Temperature = v.Temperature
-				c.GenerationConfig.Seed = v.Seed
 				c.GenerationConfig.TopP = v.TopP
+				// For large ones, we could use cached storage.
+				if v.SystemPrompt != "" {
+					c.SystemInstruction.Parts = []Part{{Text: v.SystemPrompt}}
+				}
+				c.GenerationConfig.Seed = v.Seed
 				c.GenerationConfig.TopK = v.TopK
 				c.GenerationConfig.StopSequences = v.Stop
 				// https://ai.google.dev/gemini-api/docs/image-generation
@@ -275,17 +279,10 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 	if err := genaiapi.ValidateMessages(msgs); err != nil {
 		errs = append(errs, err)
 	} else {
-		c.Contents = make([]Content, 0, len(msgs))
-		for i, m := range msgs {
-			switch m.Role {
-			case genaiapi.System:
-				// System prompt is passed differently.
-				c.SystemInstruction.Parts = []Part{{Text: m.Text}}
-			default:
-				c.Contents = append(c.Contents, Content{})
-				if err := c.Contents[len(c.Contents)-1].From(m); err != nil {
-					errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-				}
+		c.Contents = make([]Content, len(msgs))
+		for i := range msgs {
+			if err := c.Contents[i].From(&msgs[i]); err != nil {
+				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 			}
 		}
 	}
@@ -298,7 +295,7 @@ type Content struct {
 	Role  string `json:"role,omitzero"` // "user", "model"
 }
 
-func (c *Content) From(m genaiapi.Message) error {
+func (c *Content) From(m *genaiapi.Message) error {
 	switch m.Role {
 	case genaiapi.User:
 		c.Role = "user"
@@ -321,7 +318,7 @@ func (c *Content) From(m genaiapi.Message) error {
 			// When using cached content, system instruction, tools or tool_config cannot be used. Weird.
 			// in.CachedContent = cacheName
 			var err error
-			if mimeType, data, err = internal.ParseDocument(&m, 10*1024*1024); err != nil {
+			if mimeType, data, err = internal.ParseDocument(m, 10*1024*1024); err != nil {
 				return err
 			}
 			c.Parts[0].InlineData.MimeType = mimeType
@@ -701,7 +698,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 	go func() {
-		lastRole := genaiapi.System
+		var lastRole genaiapi.Role
 		for pkt := range ch {
 			if len(pkt.Candidates) != 1 {
 				continue

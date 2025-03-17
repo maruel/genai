@@ -53,33 +53,40 @@ type CompletionProvider interface {
 // CompletionProvider. Each provider is free to support more options through a
 // specialized struct.
 type CompletionOptions struct {
-	// Seed for the random number generator. Default is 0 which means
-	// non-deterministic. Some providers do not support this.
-	Seed int64
+	// Options supported by all providers.
+
 	// Temperature adjust the creativity of the sampling. Generally between 0 and 2.
 	Temperature float64
 	// TopP adjusts correctness sampling between 0 and 1. The higher the more diverse the output.
 	TopP float64
-	// TopK adjusts sampling where only the N first candidates are considered. Some providers do not support this.
-	TopK int64
 	// MaxTokens is the maximum number of tokens to generate. Used to limit it
 	// lower than the default maximum, for budget reasons.
 	MaxTokens int64
-	// Stop is the list of tokens to stop generation. Some providers do not support this.
+	// SystemPrompt is the prompt to use for the system role.
+	SystemPrompt string
+
+	// Options supported only by some providers. Using them may cause the
+	// completion to fail.
+
+	// Seed for the random number generator. Default is 0 which means
+	// non-deterministic.
+	Seed int64
+	// TopK adjusts sampling where only the N first candidates are considered.
+	TopK int64
+	// Stop is the list of tokens to stop generation.
 	Stop []string
-	// ReplyAsJSON enforces the output to be valid JSON, any JSON. Not all
-	// providers support this, and even, only a limited number of models.
-	// Increases latency and token use (cost). It is important to tell the model
-	// to reply in JSON in the prompt itself.
+
+	// Options supported by a few providers and a few models on each, that will
+	// slow down generation (increase latency) and will increase token use
+	// (cost).
+
+	// ReplyAsJSON enforces the output to be valid JSON, any JSON. It is
+	// important to tell the model to reply in JSON in the prompt itself.
 	ReplyAsJSON bool
-	// DecodeAs enforces a reply with a specific JSON structure. Not all
-	// providers support this, and even, only a limited number of models.
-	// Increases latency and token use (cost). It is important to tell the model
-	// to reply in JSON in the prompt itself.
+	// DecodeAs enforces a reply with a specific JSON structure. It is important
+	// to tell the model to reply in JSON in the prompt itself.
 	DecodeAs ReflectedToJSON
-	// Tools is the list of tools that the LLM can request to call. Not all
-	// providers support this, and even, only a limited number of models.
-	// Increases latency and token use (cost).
+	// Tools is the list of tools that the LLM can request to call.
 	Tools []ToolDef
 }
 
@@ -132,7 +139,6 @@ type Role string
 
 // LLM known roles. Not all systems support all roles.
 const (
-	System    Role = "system"
 	User      Role = "user"
 	Assistant Role = "assistant"
 )
@@ -140,7 +146,7 @@ const (
 // Validate ensures the role is valid.
 func (r Role) Validate() error {
 	switch r {
-	case System, User, Assistant:
+	case User, Assistant:
 		return nil
 	case "":
 		return errors.New("a valid role is required")
@@ -226,12 +232,6 @@ func (m *Message) Validate() error {
 	if err := m.Type.Validate(); err != nil {
 		return fmt.Errorf("field ContentType: %w", err)
 	}
-	switch m.Role {
-	case System:
-		if m.Type != Text {
-			return errors.New("field Role is system but Type is not text")
-		}
-	}
 	switch m.Type {
 	case Text:
 		if m.Text == "" {
@@ -287,9 +287,6 @@ func ValidateMessages(msgs []Message) error {
 	for i, m := range msgs {
 		if err := m.Validate(); err != nil {
 			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-		}
-		if m.Role == System && i != 0 {
-			errs = append(errs, fmt.Errorf("message %d: system role is only allowed for the first message", i))
 		}
 	}
 	return errors.Join(errs...)

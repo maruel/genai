@@ -52,6 +52,7 @@ type CompletionRequest struct {
 
 func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validatable) error {
 	var errs []error
+	sp := ""
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
 			errs = append(errs, err)
@@ -59,9 +60,10 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 			switch v := opts.(type) {
 			case *genaiapi.CompletionOptions:
 				c.MaxTokens = v.MaxTokens
-				c.Seed = v.Seed
 				c.Temperature = v.Temperature
 				c.TopP = v.TopP
+				sp = v.SystemPrompt
+				c.Seed = v.Seed
 				c.TopK = v.TopK
 				if len(v.Stop) != 0 {
 					errs = append(errs, errors.New("cloudflare doesn't support stop tokens"))
@@ -94,9 +96,17 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 	if err := genaiapi.ValidateMessages(msgs); err != nil {
 		errs = append(errs, err)
 	} else {
-		c.Messages = make([]Message, len(msgs))
-		for i, m := range msgs {
-			if err := c.Messages[i].From(m); err != nil {
+		offset := 0
+		if sp != "" {
+			offset = 1
+		}
+		c.Messages = make([]Message, len(msgs)+offset)
+		if sp != "" {
+			c.Messages[0].Role = "system"
+			c.Messages[0].Content = sp
+		}
+		for i := range msgs {
+			if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
 				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 			}
 		}
@@ -109,9 +119,9 @@ type Message struct {
 	Role    string `json:"role"`
 }
 
-func (msg *Message) From(m genaiapi.Message) error {
+func (msg *Message) From(m *genaiapi.Message) error {
 	switch m.Role {
-	case genaiapi.System, genaiapi.User, genaiapi.Assistant:
+	case genaiapi.User, genaiapi.Assistant:
 		msg.Role = string(m.Role)
 	default:
 		return fmt.Errorf("unsupported role %q", m.Role)
@@ -234,7 +244,7 @@ type CompletionResponse struct {
 	Result struct {
 		// Normally a string, or an object if response_format.type == "json_schema".
 		Response  any        `json:"response"`
-		ToolCalls []struct{} `json:"tool_calls"` // Doesn't seem to be used at all.
+		ToolCalls []ToolCall `json:"tool_calls"`
 		Usage     struct {
 			CompletionTokens int64 `json:"completion_tokens"`
 			PromptTokens     int64 `json:"prompt_tokens"`
@@ -250,51 +260,68 @@ func (c *CompletionResponse) ToResult(rpcin *CompletionRequest) (genaiapi.Comple
 	out := genaiapi.CompletionResult{}
 	out.InputTokens = c.Result.Usage.PromptTokens
 	out.OutputTokens = c.Result.Usage.CompletionTokens
-	switch v := c.Result.Response.(type) {
-	case string:
-		// This is just sad.
-		if strings.HasPrefix(v, "<tool_call>") {
-			out.Type = genaiapi.ToolCalls
-			// Example with "@hf/nousresearch/hermes-2-pro-mistral-7b" that is
-			// supposed to support tool calling (and yes it supply the tool call XML
-			// tags):
-			// "<tool_call>\n{'arguments': {'country': 'Canada'}, 'name': 'best_country'}\n</tool_call>\n<tool_call>\n{'arguments': {'country': 'US'}, 'name': 'best_country'}\n</tool_call>"
-
-			var toolCalls ToolCalls
-			if err := xml.Unmarshal([]byte("<root>"+v+"</root>"), &toolCalls); err != nil {
-				return out, fmt.Errorf("failed to unmarshal tool calls XML: %w; content: %q", err, v)
-			}
-			for i, tc := range toolCalls.Content {
-				var toolCall ToolCall
-				tc = strings.TrimSpace(tc)
-				if err := json.Unmarshal([]byte(tc), &toolCall); err != nil {
-					// This is ugly.
-					tc2 := strings.ReplaceAll(tc, "'", "\"")
-					if err := json.Unmarshal([]byte(tc2), &toolCall); err != nil {
-						return out, fmt.Errorf("failed to unmarshal tool call as JSON: %w; content: %q", err, tc)
-					}
-				}
-				raw, err := json.Marshal(toolCall.Arguments)
-				if err != nil {
-					return out, fmt.Errorf("failed to marshal tool call arguments: %w", err)
-				}
-				out.ToolCalls = append(out.ToolCalls, genaiapi.ToolCall{ID: fmt.Sprintf("tool_call%d", i), Name: toolCall.Name, Arguments: string(raw)})
-			}
-		} else {
-			out.Type = genaiapi.Text
-			out.Text = v
-		}
-	default:
-		if rpcin.ResponseFormat.Type == "json_schema" {
-			// Marshal back into JSON for now.
-			b, err := json.Marshal(v)
+	if len(c.Result.ToolCalls) != 0 {
+		// Starting 2025-03-17, "@hf/nousresearch/hermes-2-pro-mistral-7b" is finally returning structured tool call.
+		out.Type = genaiapi.ToolCalls
+		for i, toolCall := range c.Result.ToolCalls {
+			raw, err := json.Marshal(toolCall.Arguments)
 			if err != nil {
-				return out, fmt.Errorf("failed to JSON marshal type %T: %v: %w", v, v, err)
+				return out, fmt.Errorf("failed to marshal tool call arguments: %w", err)
 			}
-			out.Type = genaiapi.Text
-			out.Text = string(b)
-		} else {
-			return out, fmt.Errorf("unexpected type %T: %v", v, v)
+			// Cloudflare doesn't support tool call IDs yet.
+			out.ToolCalls = append(out.ToolCalls, genaiapi.ToolCall{ID: fmt.Sprintf("tool_call%d", i), Name: toolCall.Name, Arguments: string(raw)})
+		}
+		if c.Result.Response != nil {
+			return out, fmt.Errorf("unexpected tool call and response %T: %v", c.Result.Response, c.Result.Response)
+		}
+	} else {
+		switch v := c.Result.Response.(type) {
+		case string:
+			// This is just sad.
+			if strings.HasPrefix(v, "<tool_call>") {
+				out.Type = genaiapi.ToolCalls
+				// Example with "@hf/nousresearch/hermes-2-pro-mistral-7b" that is
+				// supposed to support tool calling (and yes it supply the tool call XML
+				// tags):
+				// "<tool_call>\n{'arguments': {'country': 'Canada'}, 'name': 'best_country'}\n</tool_call>\n<tool_call>\n{'arguments': {'country': 'US'}, 'name': 'best_country'}\n</tool_call>"
+
+				var toolCalls ToolCalls
+				if err := xml.Unmarshal([]byte("<root>"+v+"</root>"), &toolCalls); err != nil {
+					return out, fmt.Errorf("failed to unmarshal tool calls XML: %w; content: %q", err, v)
+				}
+				for i, tc := range toolCalls.Content {
+					var toolCall ToolCall
+					tc = strings.TrimSpace(tc)
+					if err := json.Unmarshal([]byte(tc), &toolCall); err != nil {
+						// This is ugly.
+						tc2 := strings.ReplaceAll(tc, "'", "\"")
+						if err := json.Unmarshal([]byte(tc2), &toolCall); err != nil {
+							return out, fmt.Errorf("failed to unmarshal tool call as JSON: %w; content: %q", err, tc)
+						}
+					}
+					raw, err := json.Marshal(toolCall.Arguments)
+					if err != nil {
+						return out, fmt.Errorf("failed to marshal tool call arguments: %w", err)
+					}
+					// Cloudflare doesn't support tool call IDs yet.
+					out.ToolCalls = append(out.ToolCalls, genaiapi.ToolCall{ID: fmt.Sprintf("tool_call%d", i), Name: toolCall.Name, Arguments: string(raw)})
+				}
+			} else {
+				out.Type = genaiapi.Text
+				out.Text = v
+			}
+		default:
+			if rpcin.ResponseFormat.Type == "json_schema" {
+				// Marshal back into JSON for now.
+				b, err := json.Marshal(v)
+				if err != nil {
+					return out, fmt.Errorf("failed to JSON marshal type %T: %v: %w", v, v, err)
+				}
+				out.Type = genaiapi.Text
+				out.Text = string(b)
+			} else {
+				return out, fmt.Errorf("unexpected type %T: %v", v, v)
+			}
 		}
 	}
 	out.Role = genaiapi.Assistant

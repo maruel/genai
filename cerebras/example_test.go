@@ -17,9 +17,12 @@ import (
 
 func ExampleClient_Completion_jSON() {
 	// This code will run when CEREBRAS_API_KEY is set.
+	//
 	// As of March 2025, you can try it out for free.
-	// Cerebras supports a limited set of models.
-	if c, err := cerebras.New("", "llama3.1-8b"); err == nil {
+	//
+	// Cerebras supports a limited set of models which you can see on the drop
+	// down of https://inference.cerebras.ai/
+	if c, err := cerebras.New("", "llam-a3.1-8b"); err == nil {
 		msgs := []genaiapi.Message{
 			{
 				Role: genaiapi.User,
@@ -61,8 +64,11 @@ func ExampleClient_Completion_jSON() {
 
 func ExampleClient_Completion_tool_use() {
 	// This code will run when CEREBRAS_API_KEY is set.
+	//
 	// As of March 2025, you can try it out for free.
-	// Cerebras supports a limited set of models.
+	//
+	// Cerebras supports a limited set of models which you can see on the drop
+	// down of https://inference.cerebras.ai/
 	if c, err := cerebras.New("", "llama-3.1-8b"); err == nil {
 		msgs := []genaiapi.Message{
 			{
@@ -111,9 +117,12 @@ func ExampleClient_Completion_tool_use() {
 
 func ExampleClient_CompletionStream() {
 	// This code will run when CEREBRAS_API_KEY is set.
+	//
 	// As of March 2025, you can try it out for free.
-	// Cerebras supports a limited set of models.
-	if c, err := cerebras.New("", "llama3.1-8b"); err == nil {
+	//
+	// Cerebras supports a limited set of models which you can see on the drop
+	// down of https://inference.cerebras.ai/
+	if c, err := cerebras.New("", "llama-3.1-8b"); err == nil {
 		ctx := context.Background()
 		msgs := []genaiapi.Message{
 			{

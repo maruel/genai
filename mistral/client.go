@@ -69,6 +69,11 @@ type CompletionRequest struct {
 		Content string `json:"content,omitzero"`
 	} `json:"prediction,omitzero"`
 	SafePrompt bool `json:"safe_prompt,omitzero"`
+
+	// See https://docs.mistral.ai/capabilities/document/
+	DocumentImageLimit int64 `json:"document_image_limit,omitzero"`
+	DocumentPageLimit  int64 `json:"document_page_limit,omitzero"`
+	IncludeImageBase64 bool  `json:"include_image_base64,omitzero"`
 }
 
 func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validatable) error {
@@ -171,6 +176,12 @@ func (msg *Message) From(m *genaiapi.Message) error {
 			} else {
 				msg.Content[0].ImageURL.URL = m.URL
 			}
+		case mimeType == "application/pdf":
+			msg.Content[0].Type = "document_url"
+			if m.URL == "" {
+				return errors.New("unsupported inline document")
+			}
+			msg.Content[0].DocumentURL = m.URL
 		default:
 			return fmt.Errorf("unsupported mime type %s", mimeType)
 		}

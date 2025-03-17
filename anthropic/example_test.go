@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -28,7 +29,7 @@ var bananaJpg []byte
 
 // Using very small model for testing. As of March 2025,
 // claude-3-haiku-20240307 is 0.20$/1.25$ while claude-3-5-haiku-20241022 is
-// 0.80$/4.00$.
+// 0.80$/4.00$. 3.0 supports images, 3.5 supports PDFs.
 // https://docs.anthropic.com/en/docs/about-claude/models/all-models
 var model = "claude-3-haiku-20240307"
 
@@ -84,6 +85,51 @@ func ExampleClient_Completion_vision() {
 		fmt.Println("Response: yes")
 	}
 	// Output: Response: yes
+}
+
+func ExampleClient_Completion_pDF() {
+	// This code will run when ANTHROPIC_API_KEY is set.
+	if c, err := anthropic.New("", "claude-3-5-haiku-20241022"); err == nil {
+		f, err := os.Open("testdata/hidden_word.pdf")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
+		msgs := []genaiapi.Message{
+			{
+				Role:     genaiapi.User,
+				Type:     genaiapi.Document,
+				Filename: filepath.Base(f.Name()),
+				Document: f,
+			},
+			{
+				Role: genaiapi.User,
+				Type: genaiapi.Text,
+				Text: "What is the hidden word? Reply with only the word.",
+			},
+		}
+		opts := genaiapi.CompletionOptions{
+			Temperature: 0.01,
+			MaxTokens:   50,
+		}
+		resp, err := c.Completion(context.Background(), msgs, &opts)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.Text {
+			log.Fatalf("Unexpected response: %#v", resp)
+		}
+		// Print to stderr so the test doesn't capture it.
+		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
+		fmt.Printf("Hidden word in PDF: %v\n", resp.Text)
+		if resp.InputTokens < 100 || resp.OutputTokens < 2 {
+			log.Fatalf("Missing usage token")
+		}
+	} else {
+		// Print something so the example runs.
+		fmt.Println("Hidden word in PDF: orange")
+	}
+	// Output: Hidden word in PDF: orange
 }
 
 func ExampleClient_Completion_tool_use() {

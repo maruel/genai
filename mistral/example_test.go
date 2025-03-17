@@ -13,6 +13,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -29,8 +30,11 @@ var bananaJpg []byte
 
 func ExampleClient_Completion_vision_and_JSON() {
 	// This code will run when MISTRAL_API_KEY is set.
+	//
 	// As of March 2025, you can try it out for free.
+	//
 	// Require a model which has the "vision" capability.
+	// https://docs.mistral.ai/capabilities/vision/
 	if c, err := mistral.New("", "pixtral-12b-2409"); err == nil {
 		msgs := []genaiapi.Message{
 			{
@@ -80,8 +84,11 @@ func ExampleClient_Completion_vision_and_JSON() {
 
 func ExampleClient_Completion_tool_use() {
 	// This code will run when MISTRAL_API_KEY is set.
+	//
 	// As of March 2025, you can try it out for free.
-	// Require a model which has the tool capability. See https://docs.mistral.ai/capabilities/function_calling/
+	//
+	// Require a model which has the tool capability. See
+	// https://docs.mistral.ai/capabilities/function_calling/
 	if c, err := mistral.New("", "ministral-3b-latest"); err == nil {
 		msgs := []genaiapi.Message{
 			{

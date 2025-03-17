@@ -233,9 +233,9 @@ func (msg *Message) From(m *genaiapi.Message) error {
 				}
 				filename = "content" + exts[0]
 			}
-			msg.Content[0].Type = "input_file"
-			msg.Content[0].Filename = filename
-			msg.Content[0].FileData = data
+			msg.Content[0].Type = "file"
+			msg.Content[0].File.Filename = filename
+			msg.Content[0].File.FileData = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 		}
 	default:
 		return fmt.Errorf("unsupported content type %s", m.Type)
@@ -261,7 +261,7 @@ func (c *Contents) UnmarshalJSON(data []byte) error {
 }
 
 type Content struct {
-	Type string `json:"type,omitzero"` // "text", "image_url", "input_file", "input_audio"
+	Type string `json:"type,omitzero"` // "text", "image_url", "input_audio", "refusal", "audio", "file"
 
 	// Type == "text"
 	Text string `json:"text,omitzero"`
@@ -278,11 +278,13 @@ type Content struct {
 		Format string `json:"format,omitzero"` // "mp3", "wav"
 	} `json:"input_audio,omitzero"`
 
-	// Type == "input_file"
-	// Either FileID or both Filename and FileData.
-	FileID   string `json:"file_id,omitzero"`
-	Filename string `json:"filename,omitzero"`
-	FileData []byte `json:"file_data,omitzero"`
+	// Type == "file"
+	File struct {
+		// Either FileID or both Filename and FileData.
+		FileID   string `json:"file_id,omitzero"` // Use https://platform.openai.com/docs/api-reference/files
+		Filename string `json:"filename,omitzero"`
+		FileData string `json:"file_data,omitzero"`
+	} `json:"file,omitzero"`
 }
 
 type ToolCall struct {

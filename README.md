@@ -2,21 +2,21 @@
 
 The _high performance_ low level native Go client for LLMs.
 
-| Provider                                                    | Country | Chat | Streaming | Vision | JSON output | JSON schema | Seed | Tools |
-| ----------------------------------------------------------- | ------- | ---- | --------- | ------ | ----------- | ----------- | ---- | ----- |
-| [Anthropic](https://console.anthropic.com/settings/billing) | 🇺🇸    | ✅   | ✅        | ✅     | ❌          | ❌          | ❌   | ✅    |
-| [Cerebras](https://cloud.cerebras.ai)                       | 🇺🇸    | ✅   | ✅        | ❌     | ✅          | ✅          | ✅   | ✅    |
-| [Cloudflare Workers AI](https://dash.cloudflare.com)        | 🇺🇸    | ✅   | ✅        | ⏳     | ✅          | ✅          | ✅   | ✅    |
-| [Cohere](https://dashboard.cohere.com/billing)              | 🇨🇦    | ✅   | ✅        | ⏳     | ✅          | ✅          | ✅   | ✅    |
-| [DeepSeek](https://platform.deepseek.com)                   | 🇨🇳    | ✅   | ✅        | ❌     | ✅          | ❌          | ❌   | ✅    |
-| [Google's Gemini](http://aistudio.google.com)               | 🇺🇸    | ✅   | ✅        | ✅     | ✅          | ✅          | ✅   | ✅    |
-| [Groq](https://console.groq.com/dashboard/usage)            | 🇺🇸    | ✅   | ✅        | ✅     | ✅          | ❌          | ✅   | ✅    |
-| [HuggingFace](https://huggingface.co/settings/billing)      | 🇺🇸    | ✅   | ✅        | ⏳     | ⏳          | ⏳          | ✅   | ✅    |
-| [Mistral](https://console.mistral.ai/usage)                 | 🇫🇷    | ✅   | ✅        | ✅     | ✅          | ✅          | ✅   | ✅    |
-| [OpenAI](https://platform.openai.com/usage)                 | 🇺🇸    | ✅   | ✅        | ✅     | ✅          | ✅          | ✅   | ✅    |
-| [Perplexity](https://www.perplexity.ai/settings/api)        | 🇺🇸    | ✅   | ✅        | ❌     | ❌          | ⏳          | ❌   | ❌    |
-| [TogetherAI](https://api.together.ai/settings/billing)      | 🇺🇸    | ✅   | ✅        | ✅     | ✅          | ✅          | ✅   | ✅    |
-| [llama.cpp](https://github.com/ggml-org/llama.cpp)          | N/A     | ✅   | ✅        | ⏳     | ⏳          | ⏳          | ✅   | ⏳    |
+| Provider                                                    | Country | Chat | Streaming | Vision | PDF | JSON output | JSON schema | Seed | Tools |
+| ----------------------------------------------------------- | ------- | ---- | --------- | ------ | --- | ----------- | ----------- | ---- | ----- |
+| [Anthropic](https://console.anthropic.com/settings/billing) | 🇺🇸    | ✅   | ✅        | ✅     | ✅  | ❌          | ❌          | ❌   | ✅    |
+| [Cerebras](https://cloud.cerebras.ai)                       | 🇺🇸    | ✅   | ✅        | ❌     | ❌  | ✅          | ✅          | ✅   | ✅    |
+| [Cloudflare Workers AI](https://dash.cloudflare.com)        | 🇺🇸    | ✅   | ✅        | ⏳     | ❌  | ✅          | ✅          | ✅   | ✅    |
+| [Cohere](https://dashboard.cohere.com/billing)              | 🇨🇦    | ✅   | ✅        | ⏳     | ❌  | ✅          | ✅          | ✅   | ✅    |
+| [DeepSeek](https://platform.deepseek.com)                   | 🇨🇳    | ✅   | ✅        | ❌     | ❌  | ✅          | ❌          | ❌   | ✅    |
+| [Google's Gemini](http://aistudio.google.com)               | 🇺🇸    | ✅   | ✅        | ✅     | ✅  | ✅          | ✅          | ✅   | ✅    |
+| [Groq](https://console.groq.com/dashboard/usage)            | 🇺🇸    | ✅   | ✅        | ✅     | ❌  | ✅          | ❌          | ✅   | ✅    |
+| [HuggingFace](https://huggingface.co/settings/billing)      | 🇺🇸    | ✅   | ✅        | ⏳     | ⏳  | ⏳          | ⏳          | ✅   | ✅    |
+| [Mistral](https://console.mistral.ai/usage)                 | 🇫🇷    | ✅   | ✅        | ✅     | ⏳  | ✅          | ✅          | ✅   | ✅    |
+| [OpenAI](https://platform.openai.com/usage)                 | 🇺🇸    | ✅   | ✅        | ✅     | ✅  | ✅          | ✅          | ✅   | ✅    |
+| [Perplexity](https://www.perplexity.ai/settings/api)        | 🇺🇸    | ✅   | ✅        | ❌     | ❌  | ❌          | ⏳          | ❌   | ❌    |
+| [TogetherAI](https://api.together.ai/settings/billing)      | 🇺🇸    | ✅   | ✅        | ✅     | ❌  | ✅          | ✅          | ✅   | ✅    |
+| [llama.cpp](https://github.com/ggml-org/llama.cpp)          | N/A     | ✅   | ✅        | ⏳     | ⏳  | ⏳          | ⏳          | ✅   | ⏳    |
 
 - ✅ Implemented
 - ⏳ To be implemented

@@ -32,12 +32,14 @@ The _high performance_ low level native Go client for LLMs.
 ## Features
 
 - **Full functionality**: Full access to each backend-specific functionality.
+  Access the raw API if needed with full message schema as Go structs.
 - **Native JSON struct serialization**: Pass a struct to tell the LLM what to
-  generate, then decode the JSON response. Supports enums.
-- **Native tool calling**: Tell the LLM to call a tool directly, also passing a Go
-  struct to define the arguments.
-- **Streaming**: Chat streaming is supported.
-- **Vision**: Process images, PDFs and videos (!) as supported by each provider.
+  generate, decode the reply into your struct. No need to manually fiddle with
+  JSON. Supports required fields, enums, descriptions, etc.
+- **Native tool calling**: Tell the LLM to call a tool directly, described a Go
+  struct. No need to manually fiddle with JSON.
+- **Streaming**: Streams completion reply as the output is being generated.
+- **Vision**: Process images, PDFs and videos (!) as input.
 
 Implementation is in flux. :) For example, tool call may not work in stream mode yet.
 
@@ -47,13 +49,13 @@ Implementation is in flux. :) For example, tool call may not work in stream mode
 ## Design
 
 - **Safe and strict API implementation**. All you love from a statically typed
-  language. Immediately fail on unknown RPC fields. Error code paths are
+  language. Immediately fails on unknown RPC fields. Error code paths are
   properly implemented.
 - **Stateless*: no global state, clients are safe to use concurrently lock-less.
 - **Professional grade**: unit tested on live services.
 - **Optimized for speed**: minimize memory allocations, compress data at the
   transport layer when possible.
-- **Lean**: Very few dependencies. No unnecessary abstraction layer.
+- **Lean**: Few dependencies. No unnecessary abstraction layer.
 - Easy to add new providers.
 
 

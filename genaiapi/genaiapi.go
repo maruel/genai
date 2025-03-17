@@ -17,6 +17,24 @@ import (
 	"github.com/invopop/jsonschema"
 )
 
+// Generic
+
+// ReflectedToJSON must be a pointer to a struct that can be decoded by
+// encoding/json and can have jsonschema tags.
+//
+// It is recommended to use jsonscheme_description tags to describe each
+// field or argument.
+//
+// Use jsonschema:"enum=..." to enforce a specific value within a set.
+type ReflectedToJSON any
+
+// Validatable is an interface to an object that can be validated.
+type Validatable interface {
+	Validate() error
+}
+
+// Completion
+
 // CompletionProvider is the generic interface to interact with a LLM backend.
 type CompletionProvider interface {
 	// Completion runs completion synchronously.
@@ -29,34 +47,6 @@ type CompletionProvider interface {
 	// opts must be either nil, *CompletionOptions or a provider-specialized
 	// option struct.
 	CompletionStream(ctx context.Context, msgs []Message, opts Validatable, replies chan<- MessageChunk) error
-}
-
-// ReflectedToJSON must be a pointer to a struct that can be decoded by
-// encoding/json and can have jsonschema tags.
-//
-// It is recommended to use jsonscheme_description tags to describe each
-// field or argument.
-//
-// Use jsonschema:"enum=..." to enforce a specific value within a set.
-type ReflectedToJSON any
-
-func validateReflectedToJSON(r ReflectedToJSON) error {
-	tp := reflect.TypeOf(r)
-	if tp.Kind() == reflect.Ptr {
-		tp = tp.Elem()
-		if _, ok := r.(*jsonschema.Schema); ok {
-			return errors.New("must be an actual struct serializable as JSON, not a *jsonschema.Schema")
-		}
-	}
-	if tp.Kind() != reflect.Struct {
-		return fmt.Errorf("must be a struct, not %T", r)
-	}
-	return nil
-}
-
-// Validatable is an interface to an object that can be validated.
-type Validatable interface {
-	Validate() error
 }
 
 // CompletionOptions is a list of frequent options supported by most
@@ -122,6 +112,20 @@ func (c *CompletionOptions) Validate() error {
 	}
 	return nil
 }
+
+// CompletionResult is the result of a completion.
+type CompletionResult struct {
+	Message
+	Usage
+}
+
+// Usage from the LLM provider.
+type Usage struct {
+	InputTokens  int64
+	OutputTokens int64
+}
+
+// Messages
 
 // Role is one of the LLM known roles.
 type Role string
@@ -214,33 +218,8 @@ func (m *Message) Decode(x any) error {
 	return nil
 }
 
-// CompletionResult is the result of a completion.
-type CompletionResult struct {
-	Message
-	Usage
-}
-
-// Usage from the LLM provider.
-type Usage struct {
-	InputTokens  int64
-	OutputTokens int64
-}
-
-// MessageChunk is a fragment of a message the LLM is sending back as part of the CompletionStream().
-type MessageChunk struct {
-	Role Role // Almost (?) always (?) Assistant.
-	Type ContentType
-
-	// Type == "text"
-	Text string
-
-	// Type == "tool_calls"
-	// ToolCalls is a list of tool calls that the LLM requested to make.
-	ToolCalls []ToolCall
-}
-
 // Validate ensures the message is valid.
-func (m Message) Validate() error {
+func (m *Message) Validate() error {
 	if err := m.Role.Validate(); err != nil {
 		return fmt.Errorf("field Role: %w", err)
 	}
@@ -289,6 +268,19 @@ func (m Message) Validate() error {
 	return nil
 }
 
+// MessageChunk is a fragment of a message the LLM is sending back as part of the CompletionStream().
+type MessageChunk struct {
+	Role Role // Almost (?) always (?) Assistant.
+	Type ContentType
+
+	// Type == "text"
+	Text string
+
+	// Type == "tool_calls"
+	// ToolCalls is a list of tool calls that the LLM requested to make.
+	ToolCalls []ToolCall
+}
+
 // Validate ensures the message chunk is valid.
 func ValidateMessages(msgs []Message) error {
 	var errs []error
@@ -302,6 +294,8 @@ func ValidateMessages(msgs []Message) error {
 	}
 	return errors.Join(errs...)
 }
+
+// Tools
 
 // ToolDef describes a tool that the LLM can request to use.
 type ToolDef struct {
@@ -350,7 +344,7 @@ func (t *ToolCall) Decode(x any) error {
 	return nil
 }
 
-//
+// Models
 
 // ModelProvider represents a provider that can list models.
 type ModelProvider interface {
@@ -362,4 +356,20 @@ type Model interface {
 	GetID() string
 	String() string
 	Context() int64
+}
+
+// Private
+
+func validateReflectedToJSON(r ReflectedToJSON) error {
+	tp := reflect.TypeOf(r)
+	if tp.Kind() == reflect.Ptr {
+		tp = tp.Elem()
+		if _, ok := r.(*jsonschema.Schema); ok {
+			return errors.New("must be an actual struct serializable as JSON, not a *jsonschema.Schema")
+		}
+	}
+	if tp.Kind() != reflect.Struct {
+		return fmt.Errorf("must be a struct, not %T", r)
+	}
+	return nil
 }

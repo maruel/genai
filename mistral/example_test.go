@@ -102,7 +102,7 @@ func ExampleClient_Completion_pDF() {
 			{
 				Role: genaiapi.User,
 				Type: genaiapi.Text,
-				Text: "What is the hidden word? Reply with only the word.",
+				Text: "What is the word? Reply with only the word.",
 			},
 		}
 		opts := genaiapi.CompletionOptions{

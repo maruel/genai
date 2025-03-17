@@ -244,6 +244,7 @@ type CompletionResponse struct {
 				Index int64 `json:"index"`
 			} `json:"tool_calls"`
 		} `json:"message"`
+		Logprobs struct{} `json:"logprobs"`
 	} `json:"choices"`
 	Usage struct {
 		PromptTokens     int64 `json:"prompt_tokens"`

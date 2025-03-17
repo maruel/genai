@@ -116,7 +116,7 @@ func ExampleClient_CompletionStream() {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	chunks := make(chan genaiapi.MessageChunk)
+	chunks := make(chan genaiapi.MessageFragment)
 	end := make(chan string)
 	go func() {
 		resp := ""
@@ -137,7 +137,7 @@ func ExampleClient_CompletionStream() {
 					end <- fmt.Sprintf("Got %q; Unexpected type: %v", resp, w.Type)
 					return
 				}
-				resp += w.Text
+				resp += w.TextFragment
 			}
 		}
 	}()

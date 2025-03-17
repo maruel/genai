@@ -234,12 +234,12 @@ type applyTemplateRequest struct {
 	Messages []Message `json:"messages"`
 }
 
-func (a *applyTemplateRequest) Init(opts genaiapi.Validatable, msgs []genaiapi.Message) error {
+func (a *applyTemplateRequest) Init(opts genaiapi.Validatable, msgs genaiapi.Messages) error {
 	sp := ""
 	if v, ok := opts.(*genaiapi.CompletionOptions); ok {
 		sp = v.SystemPrompt
 	}
-	if err := genaiapi.ValidateMessages(msgs); err != nil {
+	if err := msgs.Validate(); err != nil {
 		return err
 	}
 	var errs []error
@@ -335,7 +335,7 @@ func New(baseURL string, encoding *PromptEncoding) (*Client, error) {
 	return &Client{baseURL: baseURL, encoding: encoding}, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts genaiapi.Validatable) (genaiapi.CompletionResult, error) {
+func (c *Client) Completion(ctx context.Context, msgs genaiapi.Messages, opts genaiapi.Validatable) (genaiapi.CompletionResult, error) {
 	// https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
@@ -359,7 +359,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, c.baseURL+"/completion", in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts genaiapi.Validatable, chunks chan<- genaiapi.MessageChunk) error {
+func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, opts genaiapi.Validatable, chunks chan<- genaiapi.MessageFragment) error {
 	// start := time.Now()
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
@@ -380,7 +380,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 			if word := msg.Content; word != "" {
 				// Mistral Nemo really likes "▁".
 				// word = strings.ReplaceAll(msg.Content, "\u2581", " ")
-				chunks <- genaiapi.MessageChunk{Role: genaiapi.Assistant, Type: genaiapi.Text, Text: word}
+				chunks <- genaiapi.MessageFragment{Role: genaiapi.Assistant, Type: genaiapi.Text, TextFragment: word}
 			}
 		}
 		end <- nil

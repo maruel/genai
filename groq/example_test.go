@@ -145,7 +145,7 @@ func ExampleClient_CompletionStream() {
 				Text: "Say hello. Use only one word.",
 			},
 		}
-		chunks := make(chan genaiapi.MessageChunk)
+		chunks := make(chan genaiapi.MessageFragment)
 		end := make(chan string)
 		go func() {
 			resp := ""
@@ -163,7 +163,7 @@ func ExampleClient_CompletionStream() {
 						end <- fmt.Sprintf("Got %q; Unexpected type: %v", resp, w.Type)
 						return
 					}
-					resp += w.Text
+					resp += w.TextFragment
 				}
 			}
 		}()

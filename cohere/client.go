@@ -58,7 +58,7 @@ type CompletionRequest struct {
 	StrictTools      bool     `json:"strict_tools,omitzero"`
 }
 
-func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validatable) error {
+func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatable) error {
 	var errs []error
 	sp := ""
 	if opts != nil {
@@ -101,7 +101,7 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 		}
 	}
 
-	if err := genaiapi.ValidateMessages(msgs); err != nil {
+	if err := msgs.Validate(); err != nil {
 		errs = append(errs, err)
 	} else {
 		offset := 0
@@ -356,7 +356,7 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{apiKey: apiKey, model: model}, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts genaiapi.Validatable) (genaiapi.CompletionResult, error) {
+func (c *Client) Completion(ctx context.Context, msgs genaiapi.Messages, opts genaiapi.Validatable) (genaiapi.CompletionResult, error) {
 	// https://docs.cohere.com/reference/chat
 	rpcin := CompletionRequest{Model: c.model}
 	if err := rpcin.Init(msgs, opts); err != nil {
@@ -377,7 +377,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, "https://api.cohere.com/v2/chat", in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts genaiapi.Validatable, chunks chan<- genaiapi.MessageChunk) error {
+func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, opts genaiapi.Validatable, chunks chan<- genaiapi.MessageFragment) error {
 	in := CompletionRequest{Model: c.model}
 	if err := in.Init(msgs, opts); err != nil {
 		return err
@@ -402,7 +402,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 				return
 			}
 			if word := pkt.Delta.Message.Content.Text; word != "" {
-				chunks <- genaiapi.MessageChunk{Role: lastRole, Type: genaiapi.Text, Text: word}
+				chunks <- genaiapi.MessageFragment{Role: lastRole, Type: genaiapi.Text, TextFragment: word}
 			}
 		}
 		end <- nil

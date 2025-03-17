@@ -41,12 +41,12 @@ type CompletionProvider interface {
 	//
 	// opts must be either nil, *CompletionOptions or a provider-specialized
 	// option struct.
-	Completion(ctx context.Context, msgs []Message, opts Validatable) (CompletionResult, error)
+	Completion(ctx context.Context, msgs Messages, opts Validatable) (CompletionResult, error)
 	// CompletionStream runs completion synchronously, streaming the results to channel replies.
 	//
 	// opts must be either nil, *CompletionOptions or a provider-specialized
 	// option struct.
-	CompletionStream(ctx context.Context, msgs []Message, opts Validatable, replies chan<- MessageChunk) error
+	CompletionStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) error
 }
 
 // CompletionOptions is a list of frequent options supported by most
@@ -88,6 +88,8 @@ type CompletionOptions struct {
 	DecodeAs ReflectedToJSON
 	// Tools is the list of tools that the LLM can request to call.
 	Tools []ToolDef
+
+	_ struct{}
 }
 
 // Validate ensures the completion options are valid.
@@ -124,12 +126,16 @@ func (c *CompletionOptions) Validate() error {
 type CompletionResult struct {
 	Message
 	Usage
+
+	_ struct{}
 }
 
 // Usage from the LLM provider.
 type Usage struct {
 	InputTokens  int64
 	OutputTokens int64
+
+	_ struct{}
 }
 
 // Messages
@@ -174,6 +180,27 @@ func (c ContentType) Validate() error {
 	default:
 		return fmt.Errorf("content type %q is not supported", c)
 	}
+}
+
+// Messages is a list of valid messages in an exchange with a LLM.
+//
+// The messages must be alternating between User and Assistant roles, or in the
+// case of multi-user discussion, with different Users.
+type Messages []Message
+
+// Validate ensures the messages are valid.
+func (msgs Messages) Validate() error {
+	var errs []error
+	for i, m := range msgs {
+		if err := m.Validate(); err != nil {
+			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+		}
+		// Later once content block is added:
+		// if i > 0 && msgs[i-1].Role == m.Role {
+		// 	errs = append(errs, fmt.Errorf("message %d: role must alternate; got %s twice in a row", i, m.Role))
+		// }
+	}
+	return errors.Join(errs...)
 }
 
 // Message is a message to send to the LLM as part of the exchange.
@@ -268,17 +295,20 @@ func (m *Message) Validate() error {
 	return nil
 }
 
-// MessageChunk is a fragment of a message the LLM is sending back as part of the CompletionStream().
-type MessageChunk struct {
+// MessageFragment is a fragment of a message the LLM is sending back as part
+// of the CompletionStream().
+type MessageFragment struct {
 	Role Role // Almost (?) always (?) Assistant.
 	Type ContentType
 
 	// Type == "text"
-	Text string
+	TextFragment string
 
 	// Type == "tool_calls"
 	// ToolCalls is a list of tool calls that the LLM requested to make.
 	ToolCalls []ToolCall
+
+	_ struct{}
 }
 
 // Validate ensures the message chunk is valid.
@@ -303,6 +333,8 @@ type ToolDef struct {
 	// InputsAs enforces a tool call with a specific JSON structure for
 	// arguments.
 	InputsAs ReflectedToJSON
+
+	_ struct{}
 }
 
 // Validate ensures the tool definition is valid.
@@ -326,6 +358,8 @@ type ToolCall struct {
 	ID        string // Unique identifier for the tool call. Necessary for parallel tool calling.
 	Name      string // Tool being called.
 	Arguments string // encoded as JSON
+
+	_ struct{}
 }
 
 // Decode decodes the JSON tool call.
@@ -370,3 +404,12 @@ func validateReflectedToJSON(r ReflectedToJSON) error {
 	}
 	return nil
 }
+
+var (
+	_ Validatable = (*CompletionOptions)(nil)
+	_ Validatable = (*Role)(nil)
+	_ Validatable = (*ContentType)(nil)
+	_ Validatable = (*Messages)(nil)
+	_ Validatable = (*Message)(nil)
+	_ Validatable = (*ToolDef)(nil)
+)

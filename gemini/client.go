@@ -222,7 +222,7 @@ type CompletionRequest struct {
 	CachedContent string `json:"cachedContent,omitzero"`
 }
 
-func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validatable) error {
+func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatable) error {
 	var errs []error
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
@@ -276,7 +276,7 @@ func (c *CompletionRequest) Init(msgs []genaiapi.Message, opts genaiapi.Validata
 		}
 	}
 
-	if err := genaiapi.ValidateMessages(msgs); err != nil {
+	if err := msgs.Validate(); err != nil {
 		errs = append(errs, err)
 	} else {
 		c.Contents = make([]Content, len(msgs))
@@ -667,7 +667,7 @@ func (c *Client) cacheContent(ctx context.Context, data []byte, mime, systemInst
 }
 */
 
-func (c *Client) Completion(ctx context.Context, msgs []genaiapi.Message, opts genaiapi.Validatable) (genaiapi.CompletionResult, error) {
+func (c *Client) Completion(ctx context.Context, msgs genaiapi.Messages, opts genaiapi.Validatable) (genaiapi.CompletionResult, error) {
 	rpcin := CompletionRequest{}
 	if err := rpcin.Init(msgs, opts); err != nil {
 		return genaiapi.CompletionResult{}, err
@@ -688,7 +688,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, url, in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, opts genaiapi.Validatable, chunks chan<- genaiapi.MessageChunk) error {
+func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, opts genaiapi.Validatable, chunks chan<- genaiapi.MessageFragment) error {
 	in := CompletionRequest{}
 	if err := in.Init(msgs, opts); err != nil {
 		return err
@@ -719,7 +719,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs []genaiapi.Message, 
 			}
 			for _, part := range pkt.Candidates[0].Content.Parts {
 				if part.Text != "" {
-					chunks <- genaiapi.MessageChunk{Role: lastRole, Type: genaiapi.Text, Text: part.Text}
+					chunks <- genaiapi.MessageFragment{Role: lastRole, Type: genaiapi.Text, TextFragment: part.Text}
 				}
 			}
 		}

@@ -130,6 +130,24 @@ func TestContentType_Validate(t *testing.T) {
 	}
 }
 
+func TestMessages_Validate(t *testing.T) {
+	m := Messages{
+		{
+			Role: User,
+			Type: Text,
+			Text: "Hello",
+		},
+		{
+			Role: Assistant,
+			Type: Text,
+			Text: "I can help with that",
+		},
+	}
+	if err := m.Validate(); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestMessage_Validate(t *testing.T) {
 	tests := []struct {
 		name    string

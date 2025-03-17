@@ -13,7 +13,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -80,6 +79,55 @@ func ExampleClient_Completion_vision_and_JSON() {
 		fmt.Println("Banana: true")
 	}
 	// Output: Banana: true
+}
+
+func ExampleClient_Completion_pDF() {
+	// This code will run when MISTRAL_API_KEY is set.
+	//
+	// As of March 2025, you can try it out for free.
+	//
+	// Require a model which has the "OCR" or the "Document understanding"
+	// capability. There's a subtle difference between the two; from what I
+	// understand, the document understanding will only parse the text, while the
+	// OCR will try to understand the pictures.
+	// https://docs.mistral.ai/capabilities/document/
+	// https://docs.mistral.ai/capabilities/vision/
+	if c, err := mistral.New("", "mistral-small-latest"); err == nil {
+		msgs := []genaiapi.Message{
+			{
+				Role: genaiapi.User,
+				Type: genaiapi.Document,
+				URL:  "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/mistral/testdata/hidden_word.pdf",
+			},
+			{
+				Role: genaiapi.User,
+				Type: genaiapi.Text,
+				Text: "What is the hidden word? Reply with only the word.",
+			},
+		}
+		opts := genaiapi.CompletionOptions{
+			Temperature: 0.01,
+			MaxTokens:   50,
+		}
+		resp, err := c.Completion(context.Background(), msgs, &opts)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.Text {
+			log.Fatalf("Unexpected response: %#v", resp)
+		}
+		// Print to stderr so the test doesn't capture it.
+		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
+		fmt.Printf("Hidden word in PDF: %v\n", resp.Text)
+		// Mistral is super efficient with tokens for PDFs.
+		if resp.InputTokens < 20 || resp.OutputTokens < 1 {
+			log.Fatalf("Missing usage token")
+		}
+	} else {
+		// Print something so the example runs.
+		fmt.Println("Hidden word in PDF: orange")
+	}
+	// Output: Hidden word in PDF: orange
 }
 
 func ExampleClient_Completion_tool_use() {

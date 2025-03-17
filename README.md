@@ -12,7 +12,7 @@ The _high performance_ low level native Go client for LLMs.
 | [Google's Gemini](http://aistudio.google.com)               | 🇺🇸    | ✅   | ✅        | ✅     | ✅  | ✅          | ✅          | ✅   | ✅    |
 | [Groq](https://console.groq.com/dashboard/usage)            | 🇺🇸    | ✅   | ✅        | ✅     | ❌  | ✅          | ❌          | ✅   | ✅    |
 | [HuggingFace](https://huggingface.co/settings/billing)      | 🇺🇸    | ✅   | ✅        | ⏳     | ⏳  | ⏳          | ⏳          | ✅   | ✅    |
-| [Mistral](https://console.mistral.ai/usage)                 | 🇫🇷    | ✅   | ✅        | ✅     | ⏳  | ✅          | ✅          | ✅   | ✅    |
+| [Mistral](https://console.mistral.ai/usage)                 | 🇫🇷    | ✅   | ✅        | ✅     | ✅  | ✅          | ✅          | ✅   | ✅    |
 | [OpenAI](https://platform.openai.com/usage)                 | 🇺🇸    | ✅   | ✅        | ✅     | ✅  | ✅          | ✅          | ✅   | ✅    |
 | [Perplexity](https://www.perplexity.ai/settings/api)        | 🇺🇸    | ✅   | ✅        | ❌     | ❌  | ❌          | ⏳          | ❌   | ❌    |
 | [TogetherAI](https://api.together.ai/settings/billing)      | 🇺🇸    | ✅   | ✅        | ✅     | ❌  | ✅          | ✅          | ✅   | ✅    |
@@ -23,6 +23,7 @@ The _high performance_ low level native Go client for LLMs.
 - ❌ Not supported
 - Streaming: chat streaming
 - Vision: ability to process an image as input
+- PDF: ability to process a PDF as input, possibly with OCR
 - JSON output/schema: ability to output JSON in free form or with a schema
 - Seed: deterministic seed for reproducibility
 - Tools: tool calling

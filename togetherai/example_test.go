@@ -32,6 +32,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 	// We must select a model that supports vision *and* JSON mode (not
 	// necessarily tool use).
 	// Warning: looks like this model doesn't support JSON schema.
+	// https://docs.together.ai/docs/serverless-models#vision-models
 	if c, err := togetherai.New("", "meta-llama/Llama-Vision-Free"); err == nil {
 		msgs := []genaiapi.Message{
 			{
@@ -85,6 +86,7 @@ func ExampleClient_Completion_video() {
 	// As of March 2025, you can try it out for free.
 	//
 	// We must select a model that supports video.
+	// https://docs.together.ai/docs/serverless-models#vision-models
 	if c, err := togetherai.New("", "Qwen/Qwen2.5-VL-72B-Instruct"); err == nil {
 		f, err := os.Open("testdata/animation.mp4")
 		if err != nil {

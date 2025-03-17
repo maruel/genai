@@ -78,6 +78,52 @@ func ExampleClient_Completion_vision_and_JSON() {
 	// Output: Banana: true
 }
 
+func ExampleClient_Completion_audio() {
+	// This code will run when OPENAI_API_KEY is set.
+	if c, err := openai.New("", "gpt-4o-audio-preview"); err == nil {
+		f, err := os.Open("testdata/mystery_word.mp3")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
+		msgs := []genaiapi.Message{
+			{
+				Role:     genaiapi.User,
+				Type:     genaiapi.Document,
+				Filename: filepath.Base(f.Name()),
+				Document: f,
+			},
+			{
+				Role: genaiapi.User,
+				Type: genaiapi.Text,
+				Text: "What is the word said? Reply with only the word.",
+			},
+		}
+		opts := genaiapi.CompletionOptions{
+			Seed:        1,
+			Temperature: 0.01,
+			MaxTokens:   50,
+		}
+		resp, err := c.Completion(context.Background(), msgs, &opts)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.Text {
+			log.Fatalf("Unexpected response: %#v", resp)
+		}
+		// Print to stderr so the test doesn't capture it.
+		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
+		fmt.Printf("Said: %v\n", strings.ToLower(resp.Text))
+		if resp.InputTokens < 30 || resp.OutputTokens < 1 {
+			log.Fatalf("Missing usage token")
+		}
+	} else {
+		// Print something so the example runs.
+		fmt.Println("Said: orange")
+	}
+	// Output: Said: orange
+}
+
 func ExampleClient_Completion_pDF() {
 	// This code will run when OPENAI_API_KEY is set.
 	if c, err := openai.New("", model); err == nil {

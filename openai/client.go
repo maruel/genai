@@ -327,12 +327,15 @@ type CompletionResponse struct {
 		PromptTokensDetails struct {
 			CachedTokens int64 `json:"cached_tokens"`
 			AudioTokens  int64 `json:"audio_tokens"`
+			TextTokens   int64 `json:"text_tokens"`
+			ImageTokens  int64 `json:"image_tokens"`
 		} `json:"prompt_tokens_details"`
 		CompletionTokensDetails struct {
 			ReasoningTokens          int64 `json:"reasoning_tokens"`
 			AudioTokens              int64 `json:"audio_tokens"`
 			AcceptedPredictionTokens int64 `json:"accepted_prediction_tokens"`
 			RejectedPredictionTokens int64 `json:"rejected_prediction_tokens"`
+			TextTokens               int64 `json:"text_tokens"`
 		} `json:"completion_tokens_details"`
 	} `json:"usage"`
 	ServiceTier       string `json:"service_tier"`

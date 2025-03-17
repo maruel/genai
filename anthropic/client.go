@@ -93,7 +93,7 @@ func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatab
 		c.MaxToks = 8192
 	}
 
-	if err := genaiapi.ValidateMessages(msgs); err != nil {
+	if err := msgs.Validate(); err != nil {
 		errs = append(errs, err)
 	} else {
 		c.Messages = make([]Message, 0, len(msgs))

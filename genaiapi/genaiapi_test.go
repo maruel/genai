@@ -140,6 +140,37 @@ func TestMessages_Validate(t *testing.T) {
 	}
 }
 
+func TestMessages_Validate_error(t *testing.T) {
+	tests := []struct {
+		name     string
+		messages Messages
+		errMsg   string
+	}{
+		{
+			name: "Invalid messages",
+			messages: Messages{
+				{
+					Role: User,
+					Type: Text,
+				},
+				{
+					Role: User,
+					Type: Document,
+				},
+			},
+
+			errMsg: "message 0: field Type is text but no text is provided\nmessage 1: field Document or URL is required",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := tt.messages.Validate(); err == nil || err.Error() != tt.errMsg {
+				t.Fatalf("expected error %q, got %q", tt.errMsg, err)
+			}
+		})
+	}
+}
+
 func TestMessage_Validate(t *testing.T) {
 	tests := []struct {
 		name    string
@@ -339,37 +370,6 @@ func TestMessage_Decode_error(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if err := tt.message.Decode("invalid"); err == nil || err.Error() != tt.errMsg {
-				t.Fatalf("expected error %q, got %q", tt.errMsg, err)
-			}
-		})
-	}
-}
-
-func TestValidateMessages_error(t *testing.T) {
-	tests := []struct {
-		name     string
-		messages Messages
-		errMsg   string
-	}{
-		{
-			name: "Invalid messages",
-			messages: Messages{
-				{
-					Role: User,
-					Type: Text,
-				},
-				{
-					Role: User,
-					Type: Document,
-				},
-			},
-
-			errMsg: "message 0: field Type is text but no text is provided\nmessage 1: field Document or URL is required",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if err := ValidateMessages(tt.messages); err == nil || err.Error() != tt.errMsg {
 				t.Fatalf("expected error %q, got %q", tt.errMsg, err)
 			}
 		})

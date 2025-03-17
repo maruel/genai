@@ -316,17 +316,6 @@ type MessageFragment struct {
 	_ struct{}
 }
 
-// Validate ensures the message chunk is valid.
-func ValidateMessages(msgs []Message) error {
-	var errs []error
-	for i, m := range msgs {
-		if err := m.Validate(); err != nil {
-			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-		}
-	}
-	return errors.Join(errs...)
-}
-
 // Tools
 
 // ToolDef describes a tool that the LLM can request to use.

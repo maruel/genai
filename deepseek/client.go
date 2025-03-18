@@ -307,6 +307,7 @@ type errorResponse struct {
 type Client struct {
 	apiKey string
 	model  string
+	c      httpjson.Client
 }
 
 // New creates a new client to talk to the DeepSeek platform API in China.
@@ -323,7 +324,7 @@ func New(apiKey, model string) (*Client, error) {
 			return nil, errors.New("deepseek API key is required; get one at " + apiKeyURL)
 		}
 	}
-	return &Client{apiKey: apiKey, model: model}, nil
+	return &Client{apiKey: apiKey, model: model, c: httpjson.DefaultClient}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
@@ -394,8 +395,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	in.Stream = true
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.apiKey)
-	// DeepSeek doesn't HTTP POST support compression.
-	resp, err := httpjson.DefaultClient.PostRequest(ctx, "https://api.deepseek.com/chat/completions", h, in)
+	resp, err := c.c.PostRequest(ctx, "https://api.deepseek.com/chat/completions", h, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
@@ -466,7 +466,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		Object string  `json:"object"` // list
 		Data   []Model `json:"data"`
 	}
-	err := httpjson.DefaultClient.Get(ctx, "https://api.deepseek.com/models", h, &out)
+	err := c.c.Get(ctx, "https://api.deepseek.com/models", h, &out)
 	if err != nil {
 		return nil, err
 	}
@@ -487,8 +487,7 @@ func (c *Client) validate() error {
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	h := make(http.Header)
 	h.Set("Authorization", "Bearer "+c.apiKey)
-	// DeepSeek doesn't HTTP POST support compression.
-	resp, err := httpjson.DefaultClient.PostRequest(ctx, url, h, in)
+	resp, err := c.c.PostRequest(ctx, url, h, in)
 	if err != nil {
 		return err
 	}

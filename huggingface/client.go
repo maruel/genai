@@ -364,6 +364,7 @@ type errorResponse2 struct {
 type Client struct {
 	apiKey string
 	model  string
+	c      httpjson.Client
 }
 
 // TODO: Investigate https://huggingface.co/blog/inference-providers and https://huggingface.co/docs/inference-endpoints/
@@ -395,7 +396,10 @@ func New(apiKey, model string) (*Client, error) {
 			}
 		}
 	}
-	return &Client{apiKey: apiKey, model: model}, nil
+	// HuggingFace support all three of gzip, br and zstd!
+	p := httpjson.DefaultClient
+	p.PostCompress = "zstd"
+	return &Client{apiKey: apiKey, model: model, c: p}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
@@ -467,11 +471,8 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	in.Stream = true
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.apiKey)
-	// HuggingFace support all three of gzip, br and zstd!
-	p := httpjson.DefaultClient
-	// p.PostCompress = "zstd"
 	url := "https://router.huggingface.co/hf-inference/models/" + c.model + "/v1/chat/completions"
-	resp, err := p.PostRequest(ctx, url, h, in)
+	resp, err := c.c.PostRequest(ctx, url, h, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
@@ -577,7 +578,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	var out []Model
 	// There's 20k models warm as of March 2025. There's no way to sort by
 	// trending. Sorting by download is not useful.
-	err := httpjson.DefaultClient.Get(ctx, "https://huggingface.co/api/models?inference=warm", h, &out)
+	err := c.c.Get(ctx, "https://huggingface.co/api/models?inference=warm", h, &out)
 	if err != nil {
 		return nil, err
 	}
@@ -598,10 +599,7 @@ func (c *Client) validate() error {
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.apiKey)
-	// HuggingFace support all three of gzip, br and zstd!
-	p := httpjson.DefaultClient
-	p.PostCompress = "zstd"
-	resp, err := p.PostRequest(ctx, url, h, in)
+	resp, err := c.c.PostRequest(ctx, url, h, in)
 	if err != nil {
 		return err
 	}

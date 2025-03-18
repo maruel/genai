@@ -400,6 +400,7 @@ type Client struct {
 	accountID string
 	apiKey    string
 	model     string
+	c         httpjson.Client
 }
 
 // New creates a new client to talk to the Cloudflare Workers AI platform API.
@@ -422,7 +423,7 @@ func New(accountID, apiKey, model string) (*Client, error) {
 			return nil, errors.New("cloudflare API key is required; get one at " + apiKeyURL)
 		}
 	}
-	return &Client{accountID: accountID, apiKey: apiKey, model: model}, nil
+	return &Client{accountID: accountID, apiKey: apiKey, model: model, c: httpjson.DefaultClient}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
@@ -490,8 +491,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.apiKey)
 	url := "https://api.cloudflare.com/client/v4/accounts/" + c.accountID + "/ai/run/" + c.model
-	// Cloudflare doesn't HTTP POST support compression.
-	resp, err := httpjson.DefaultClient.PostRequest(ctx, url, h, in)
+	resp, err := c.c.PostRequest(ctx, url, h, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
@@ -610,7 +610,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		}
 		// Cloudflare's pagination is surprisingly brittle.
 		url := fmt.Sprintf("https://api.cloudflare.com/client/v4/accounts/%s/ai/models/search?page=%d&per_page=100&hide_experimental=false", c.accountID, page)
-		err := httpjson.DefaultClient.Get(ctx, url, h, &out)
+		err := c.c.Get(ctx, url, h, &out)
 		if err != nil {
 			return nil, err
 		}
@@ -634,7 +634,7 @@ func (c *Client) validate() error {
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.apiKey)
-	resp, err := httpjson.DefaultClient.PostRequest(ctx, url, h, in)
+	resp, err := c.c.PostRequest(ctx, url, h, in)
 	if err != nil {
 		return err
 	}

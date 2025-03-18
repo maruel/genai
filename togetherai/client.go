@@ -370,6 +370,7 @@ type errorResponse struct {
 type Client struct {
 	apiKey string
 	model  string
+	c      httpjson.Client
 }
 
 // New creates a new client to talk to the Together.AI platform API.
@@ -386,7 +387,7 @@ func New(apiKey, model string) (*Client, error) {
 			return nil, errors.New("together.ai API key is required; get one at " + apiKeyURL)
 		}
 	}
-	return &Client{apiKey: apiKey, model: model}, nil
+	return &Client{apiKey: apiKey, model: model, c: httpjson.DefaultClient}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
@@ -457,10 +458,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	in.StreamTokens = true
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.apiKey)
-	// Together.ai doesn't HTTP POST support compression.
-	// TODO Test
-	// httpjson.DefaultClient.PostCompress = "gzip"
-	resp, err := httpjson.DefaultClient.PostRequest(ctx, "https://api.together.xyz/v1/chat/completions", h, in)
+	resp, err := c.c.PostRequest(ctx, "https://api.together.xyz/v1/chat/completions", h, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
@@ -551,7 +549,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.apiKey)
 	var out []Model
-	err := httpjson.DefaultClient.Get(ctx, "https://api.together.xyz/v1/models", h, &out)
+	err := c.c.Get(ctx, "https://api.together.xyz/v1/models", h, &out)
 	if err != nil {
 		return nil, err
 	}
@@ -572,8 +570,7 @@ func (c *Client) validate() error {
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.apiKey)
-	// Together.AI doesn't HTTP POST support compression.
-	resp, err := httpjson.DefaultClient.PostRequest(ctx, url, h, in)
+	resp, err := c.c.PostRequest(ctx, url, h, in)
 	if err != nil {
 		return err
 	}

@@ -214,6 +214,7 @@ type errorResponse2 struct {
 type Client struct {
 	apiKey string
 	model  string
+	c      httpjson.Client
 }
 
 // New creates a new client to talk to the Perplexity platform API.
@@ -229,7 +230,7 @@ func New(apiKey, model string) (*Client, error) {
 			return nil, errors.New("perplexity API key is required; get one at " + apiKeyURL)
 		}
 	}
-	return &Client{apiKey: apiKey, model: model}, nil
+	return &Client{apiKey: apiKey, model: model, c: httpjson.DefaultClient}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
@@ -294,7 +295,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	in.Stream = true
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.apiKey)
-	resp, err := httpjson.DefaultClient.PostRequest(ctx, "https://api.perplexity.ai/chat/completions", h, in)
+	resp, err := c.c.PostRequest(ctx, "https://api.perplexity.ai/chat/completions", h, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
@@ -350,7 +351,7 @@ func parseStreamLine(line []byte, out chan<- CompletionStreamChunkResponse) erro
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.apiKey)
-	resp, err := httpjson.DefaultClient.PostRequest(ctx, url, h, in)
+	resp, err := c.c.PostRequest(ctx, url, h, in)
 	if err != nil {
 		return err
 	}

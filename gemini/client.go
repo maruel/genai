@@ -620,6 +620,7 @@ type errorResponseError struct {
 type Client struct {
 	apiKey string
 	model  string
+	c      httpjson.Client
 }
 
 // New creates a new client to talk to Google's Gemini platform API.
@@ -685,7 +686,11 @@ func New(apiKey, model string) (*Client, error) {
 			return nil, errors.New("gemini API key is required; get one at " + apiKeyURL)
 		}
 	}
-	return &Client{apiKey: apiKey, model: model}, nil
+	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
+	p := httpjson.DefaultClient
+	// Google supports HTTP POST gzip compression!
+	p.PostCompress = "gzip"
+	return &Client{apiKey: apiKey, model: model, c: p}, nil
 }
 
 /*
@@ -786,11 +791,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		return err
 	}
 	url := "https://generativelanguage.googleapis.com/v1beta/models/" + c.model + ":streamGenerateContent?alt=sse&key=" + c.apiKey
-	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
-	p := httpjson.DefaultClient
-	// Google supports HTTP POST gzip compression!
-	p.PostCompress = "gzip"
-	resp, err := p.PostRequest(ctx, url, nil, in)
+	resp, err := c.c.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return err
 	}
@@ -863,7 +864,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		Models        []Model `json:"models"`
 		NextPageToken string  `json:"nextPageToken"`
 	}
-	err := httpjson.DefaultClient.Get(ctx, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.apiKey, nil, &out)
+	err := c.c.Get(ctx, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.apiKey, nil, &out)
 	if err != nil {
 		return nil, err
 	}
@@ -882,11 +883,7 @@ func (c *Client) validate() error {
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
-	p := httpjson.DefaultClient
-	// Google supports HTTP POST gzip compression!
-	p.PostCompress = "gzip"
-	resp, err := p.PostRequest(ctx, url, nil, in)
+	resp, err := c.c.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return err
 	}

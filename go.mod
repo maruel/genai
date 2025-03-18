@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/invopop/jsonschema v0.13.0
-	github.com/maruel/httpjson v0.0.0-20250313200659-4479c805d017
+	github.com/maruel/httpjson v0.0.0-20250318152950-8a95277f6840
 	github.com/maruel/huggingface v0.0.0-20250313181651-d85dcc86b10e
 	golang.org/x/sys v0.31.0
 )

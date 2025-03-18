@@ -33,10 +33,12 @@ func ExampleClient_Completion_vision_and_JSON() {
 	if c, err := openai.New("", model); err == nil {
 		msgs := genaiapi.Messages{
 			{
-				Role:     genaiapi.User,
-				Contents: []genaiapi.Content{{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)}},
+				Role: genaiapi.User,
+				Contents: []genaiapi.Content{
+					{Text: "Is it a banana? Reply as JSON."},
+					{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
+				},
 			},
-			genaiapi.NewTextMessage(genaiapi.User, "Is it a banana? Reply as JSON."),
 		}
 		var got struct {
 			Banana bool `json:"banana"`
@@ -79,10 +81,12 @@ func ExampleClient_Completion_audio() {
 		defer f.Close()
 		msgs := genaiapi.Messages{
 			{
-				Role:     genaiapi.User,
-				Contents: []genaiapi.Content{{Filename: filepath.Base(f.Name()), Document: f}},
+				Role: genaiapi.User,
+				Contents: []genaiapi.Content{
+					{Text: "What is the word said? Reply with only the word."},
+					{Filename: filepath.Base(f.Name()), Document: f},
+				},
 			},
-			genaiapi.NewTextMessage(genaiapi.User, "What is the word said? Reply with only the word."),
 		}
 		opts := genaiapi.CompletionOptions{
 			Seed:        1,
@@ -118,10 +122,12 @@ func ExampleClient_Completion_pDF() {
 		defer f.Close()
 		msgs := genaiapi.Messages{
 			{
-				Role:     genaiapi.User,
-				Contents: []genaiapi.Content{{Filename: filepath.Base(f.Name()), Document: f}},
+				Role: genaiapi.User,
+				Contents: []genaiapi.Content{
+					{Text: "What is the hidden word? Reply with only the word."},
+					{Filename: filepath.Base(f.Name()), Document: f},
+				},
 			},
-			genaiapi.NewTextMessage(genaiapi.User, "What is the hidden word? Reply with only the word."),
 		}
 		opts := genaiapi.CompletionOptions{
 			Temperature: 0.01,
@@ -138,7 +144,7 @@ func ExampleClient_Completion_pDF() {
 		if len(resp.Contents) != 1 {
 			log.Fatal("Unexpected response")
 		}
-		fmt.Printf("Hidden word in PDF: %v\n", resp.Contents[0].Text)
+		fmt.Printf("Hidden word in PDF: %v\n", strings.ToLower(resp.Contents[0].Text))
 	} else {
 		// Print something so the example runs.
 		fmt.Println("Hidden word in PDF: orange")
@@ -205,9 +211,9 @@ func ExampleClient_CompletionStream() {
 		chunks := make(chan genaiapi.MessageFragment)
 		end := make(chan genaiapi.Message, 10)
 		go func() {
-			var msgs genaiapi.Messages
+			var pendingMsgs genaiapi.Messages
 			defer func() {
-				for _, m := range msgs {
+				for _, m := range pendingMsgs {
 					end <- m
 				}
 				close(end)
@@ -220,7 +226,7 @@ func ExampleClient_CompletionStream() {
 					if !ok {
 						return
 					}
-					if msgs, err = pkt.Accumulate(msgs); err != nil {
+					if pendingMsgs, err = pkt.Accumulate(pendingMsgs); err != nil {
 						end <- genaiapi.NewTextMessage(genaiapi.Assistant, fmt.Sprintf("Error: %v", err))
 						return
 					}

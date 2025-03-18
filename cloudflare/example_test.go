@@ -115,9 +115,9 @@ func ExampleClient_CompletionStream() {
 		chunks := make(chan genaiapi.MessageFragment)
 		end := make(chan genaiapi.Message, 10)
 		go func() {
-			var msgs genaiapi.Messages
+			var pendingMsgs genaiapi.Messages
 			defer func() {
-				for _, m := range msgs {
+				for _, m := range pendingMsgs {
 					end <- m
 				}
 				close(end)
@@ -130,7 +130,7 @@ func ExampleClient_CompletionStream() {
 					if !ok {
 						return
 					}
-					if msgs, err = pkt.Accumulate(msgs); err != nil {
+					if pendingMsgs, err = pkt.Accumulate(pendingMsgs); err != nil {
 						end <- genaiapi.NewTextMessage(genaiapi.Assistant, fmt.Sprintf("Error: %v", err))
 						return
 					}

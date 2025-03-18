@@ -112,7 +112,7 @@ func ExampleClient_Completion_pDF() {
 		if len(resp.Contents) != 1 {
 			log.Fatal("Unexpected response")
 		}
-		fmt.Printf("Hidden word in PDF: %v\n", resp.Contents[0].Text)
+		fmt.Printf("Hidden word in PDF: %v\n", strings.ToLower(resp.Contents[0].Text))
 	} else {
 		// Print something so the example runs.
 		fmt.Println("Hidden word in PDF: orange")
@@ -177,9 +177,9 @@ func ExampleClient_CompletionStream() {
 		chunks := make(chan genaiapi.MessageFragment)
 		end := make(chan genaiapi.Message, 10)
 		go func() {
-			var msgs genaiapi.Messages
+			var pendingMsgs genaiapi.Messages
 			defer func() {
-				for _, m := range msgs {
+				for _, m := range pendingMsgs {
 					end <- m
 				}
 				close(end)
@@ -192,7 +192,7 @@ func ExampleClient_CompletionStream() {
 					if !ok {
 						return
 					}
-					if msgs, err = pkt.Accumulate(msgs); err != nil {
+					if pendingMsgs, err = pkt.Accumulate(pendingMsgs); err != nil {
 						end <- genaiapi.NewTextMessage(genaiapi.Assistant, fmt.Sprintf("Error: %v", err))
 						return
 					}

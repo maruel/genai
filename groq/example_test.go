@@ -36,10 +36,10 @@ func ExampleClient_Completion_vision_and_JSON() {
 			{
 				Role: genaiapi.User,
 				Contents: []genaiapi.Content{
+					{Text: "Is it a banana? Reply as JSON with the form {\"banana\": false} or {\"banana\": true}."},
 					{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
 				},
 			},
-			genaiapi.NewTextMessage(genaiapi.User, "Is it a banana? Reply as JSON with the form {\"banana\": false} or {\"banana\": true}."),
 		}
 		opts := genaiapi.CompletionOptions{
 			Seed:        1,
@@ -138,9 +138,9 @@ func ExampleClient_CompletionStream() {
 		chunks := make(chan genaiapi.MessageFragment)
 		end := make(chan genaiapi.Message, 10)
 		go func() {
-			var msgs genaiapi.Messages
+			var pendingMsgs genaiapi.Messages
 			defer func() {
-				for _, m := range msgs {
+				for _, m := range pendingMsgs {
 					end <- m
 				}
 				close(end)
@@ -153,7 +153,7 @@ func ExampleClient_CompletionStream() {
 					if !ok {
 						return
 					}
-					if msgs, err = pkt.Accumulate(msgs); err != nil {
+					if pendingMsgs, err = pkt.Accumulate(pendingMsgs); err != nil {
 						end <- genaiapi.NewTextMessage(genaiapi.Assistant, fmt.Sprintf("Error: %v", err))
 						return
 					}

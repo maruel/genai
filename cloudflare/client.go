@@ -14,7 +14,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"encoding/xml"
 	"errors"
 	"fmt"
 	"io"
@@ -360,10 +359,12 @@ type CompletionStreamChunkResponse struct {
 	} `json:"usage"`
 }
 
+/*
 type toolCalls struct {
 	XMLName xml.Name `xml:"root"`
 	Content []string `xml:"tool_call"`
 }
+*/
 
 type ToolCall struct {
 	Arguments any    `json:"arguments"`

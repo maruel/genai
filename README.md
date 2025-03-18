@@ -150,6 +150,18 @@ func main() {
 ```
 
 
+## Models
+
+Snapshot of all the supported models: [MODELS.md](MODELS.md).
+
+Try it:
+
+```bash
+go install github.com/maruel/genai/cmd/...@latest
+list-models -provider hugginface
+```
+
+
 ## TODO
 
 - Audio out
@@ -164,3 +176,4 @@ func main() {
 - Content Blocks
 - Citations
 - Pass tool in the message so no need to create the tool definition's JSONSchema
+

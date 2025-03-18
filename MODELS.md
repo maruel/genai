@@ -1,0 +1,1300 @@
+Snapshot of the models available on each provider as of 2025-03-18
+
+Provider anthropic:
+- claude-2.0: Claude 2.0 (2023-07-11)
+- claude-2.1: Claude 2.1 (2023-11-21)
+- claude-3-5-haiku-20241022: Claude 3.5 Haiku (2024-10-22)
+- claude-3-5-sonnet-20240620: Claude 3.5 Sonnet (Old) (2024-06-20)
+- claude-3-5-sonnet-20241022: Claude 3.5 Sonnet (New) (2024-10-22)
+- claude-3-7-sonnet-20250219: Claude 3.7 Sonnet (2025-02-24)
+- claude-3-haiku-20240307: Claude 3 Haiku (2024-03-07)
+- claude-3-opus-20240229: Claude 3 Opus (2024-02-29)
+- claude-3-sonnet-20240229: Claude 3 Sonnet (2024-02-29)
+
+Provider cerebras:
+- llama-3.3-70b (2024-12-05)
+- llama3.1-8b (2024-07-22)
+
+Provider cloudflare:
+- @cf/baai/bge-base-en-v1.5 (beta=false, info=https://huggingface.co/BAAI/bge-base-en-v1.5, max_input_tokens=512, output_dimensions=768)
+- @cf/baai/bge-large-en-v1.5 (beta=false, info=https://huggingface.co/BAAI/bge-base-en-v1.5, max_input_tokens=512, output_dimensions=1024)
+- @cf/baai/bge-m3
+- @cf/baai/bge-reranker-base
+- @cf/baai/bge-small-en-v1.5 (beta=false, info=https://huggingface.co/BAAI/bge-base-en-v1.5, max_input_tokens=512, output_dimensions=384)
+- @cf/black-forest-labs/flux-1-schnell
+- @cf/bytedance/stable-diffusion-xl-lightning (beta=true, info=https://huggingface.co/ByteDance/SDXL-Lightning)
+- @cf/deepseek-ai/deepseek-math-7b-instruct (beta=true, context_window=4096, info=https://huggingface.co/deepseek-ai/deepseek-math-7b-instruct, terms=https://github.com/deepseek-ai/DeepSeek-Math/blob/main/LICENSE-MODEL)
+- @cf/deepseek-ai/deepseek-r1-distill-qwen-32b (context_window=80000, terms=https://github.com/deepseek-ai/DeepSeek-R1/blob/main/LICENSE)
+- @cf/defog/sqlcoder-7b-2 (beta=true, context_window=10000, info=https://huggingface.co/defog/sqlcoder-7b-2, terms=https://creativecommons.org/licenses/by-sa/4.0/deed.en)
+- @cf/facebook/bart-large-cnn (beta=true)
+- @cf/facebook/detr-resnet-50 (beta=true)
+- @cf/fblgit/una-cybertron-7b-v2-bf16 (beta=true, context_window=15000)
+- @cf/google/gemma-2b-it-lora (beta=true, context_window=8192, lora=true)
+- @cf/google/gemma-7b-it-lora (beta=true, context_window=3500, lora=true)
+- @cf/huggingface/distilbert-sst-2-int8 (beta=false, info=https://huggingface.co/Intel/distilbert-base-uncased-finetuned-sst-2-english-int8-static)
+- @cf/llava-hf/llava-1.5-7b-hf (beta=true)
+- @cf/lykon/dreamshaper-8-lcm (beta=true, info=https://huggingface.co/Lykon/DreamShaper)
+- @cf/meta-llama/llama-2-7b-chat-hf-lora (beta=true, context_window=8192, lora=true)
+- @cf/meta/llama-2-7b-chat-fp16 (beta=false, context_window=4096, info=https://ai.meta.com/llama/, terms=https://ai.meta.com/resources/models-and-libraries/llama-downloads/)
+- @cf/meta/llama-2-7b-chat-int8 (context_window=8192)
+- @cf/meta/llama-3-8b-instruct (context_window=7968, info=https://llama.meta.com, terms=https://llama.meta.com/llama3/license/#)
+- @cf/meta/llama-3-8b-instruct-awq (context_window=8192, info=https://llama.meta.com, terms=https://llama.meta.com/llama3/license/#)
+- @cf/meta/llama-3.1-8b-instruct (context_window=7968, terms=https://github.com/meta-llama/llama-models/blob/main/models/llama3_1/LICENSE)
+- @cf/meta/llama-3.1-8b-instruct-awq (context_window=8192, terms=https://github.com/meta-llama/llama-models/blob/main/models/llama3_1/LICENSE)
+- @cf/meta/llama-3.1-8b-instruct-fp8 (context_window=32000, terms=https://github.com/meta-llama/llama-models/blob/main/models/llama3_1/LICENSE)
+- @cf/meta/llama-3.2-11b-vision-instruct (terms=https://github.com/meta-llama/llama-models/blob/main/models/llama3_2/LICENSE)
+- @cf/meta/llama-3.2-1b-instruct (context_window=60000, terms=https://github.com/meta-llama/llama-models/blob/main/models/llama3_2/LICENSE)
+- @cf/meta/llama-3.2-3b-instruct (context_window=128000, terms=https://github.com/meta-llama/llama-models/blob/main/models/llama3_2/LICENSE)
+- @cf/meta/llama-3.3-70b-instruct-fp8-fast (context_window=24000, terms=https://github.com/meta-llama/llama-models/blob/main/models/llama3_3/LICENSE)
+- @cf/meta/llama-guard-3-8b
+- @cf/meta/m2m100-1.2b (beta=false, info=https://github.com/facebookresearch/fairseq/tree/main/examples/m2m_100, languages=english, chinese, french, spanish, arabic, russian, german, japanese, portuguese, hindi, terms=https://github.com/facebookresearch/fairseq/blob/main/LICENSE)
+- @cf/microsoft/phi-2 (beta=true, context_window=2048, info=https://huggingface.co/microsoft/phi-2)
+- @cf/microsoft/resnet-50 (beta=false, info=https://www.microsoft.com/en-us/research/blog/microsoft-vision-model-resnet-50-combines-web-scale-data-and-multi-task-learning-to-achieve-state-of-the-art/)
+- @cf/mistral/mistral-7b-instruct-v0.1 (beta=false, context_window=2824, info=https://mistral.ai/news/announcing-mistral-7b/, lora=true)
+- @cf/mistral/mistral-7b-instruct-v0.2-lora (beta=true, context_window=15000, lora=true)
+- @cf/myshell-ai/melotts
+- @cf/openai/whisper (beta=false, info=https://openai.com/research/whisper)
+- @cf/openai/whisper-large-v3-turbo
+- @cf/openai/whisper-tiny-en (beta=true)
+- @cf/openchat/openchat-3.5-0106 (beta=true, context_window=8192, info=https://huggingface.co/openchat/openchat-3.5-0106)
+- @cf/qwen/qwen1.5-0.5b-chat (beta=true, context_window=32000, info=https://huggingface.co/qwen/qwen1.5-0.5b-chat)
+- @cf/qwen/qwen1.5-1.8b-chat (beta=true, context_window=32000, info=https://huggingface.co/qwen/qwen1.5-1.8b-chat)
+- @cf/qwen/qwen1.5-14b-chat-awq (beta=true, context_window=7500, info=https://huggingface.co/qwen/qwen1.5-14b-chat-awq)
+- @cf/qwen/qwen1.5-7b-chat-awq (beta=true, context_window=20000, info=https://huggingface.co/qwen/qwen1.5-7b-chat-awq)
+- @cf/runwayml/stable-diffusion-v1-5-img2img (beta=true, info=https://huggingface.co/runwayml/stable-diffusion-v1-5, terms=https://github.com/runwayml/stable-diffusion/blob/main/LICENSE)
+- @cf/runwayml/stable-diffusion-v1-5-inpainting (beta=true, info=https://huggingface.co/runwayml/stable-diffusion-inpainting, terms=https://github.com/runwayml/stable-diffusion/blob/main/LICENSE)
+- @cf/stabilityai/stable-diffusion-xl-base-1.0 (beta=true, info=https://stability.ai/stable-diffusion, terms=https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/main/LICENSE.md)
+- @cf/thebloke/discolm-german-7b-v1-awq (beta=true, context_window=4096, info=https://huggingface.co/TheBloke/DiscoLM_German_7b_v1-AWQ)
+- @cf/tiiuae/falcon-7b-instruct (beta=true, context_window=4096, info=https://huggingface.co/tiiuae/falcon-7b-instruct)
+- @cf/tinyllama/tinyllama-1.1b-chat-v1.0 (beta=true, context_window=2048, info=https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0)
+- @cf/unum/uform-gen2-qwen-500m (beta=true, info=https://www.unum.cloud/)
+- @hf/google/gemma-7b-it (beta=true, context_window=8192, info=https://ai.google.dev/gemma/docs, lora=true, terms=https://ai.google.dev/gemma/terms)
+- @hf/meta-llama/meta-llama-3-8b-instruct (context_window=8192)
+- @hf/mistral/mistral-7b-instruct-v0.2 (beta=true, context_window=3072, info=https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2, lora=true, max_batch_prefill_tokens=8192, max_input_length=3072, max_total_tokens=4096)
+- @hf/nexusflow/starling-lm-7b-beta (beta=true, context_window=4096, info=https://huggingface.co/Nexusflow/Starling-LM-7B-beta, max_batch_prefill_tokens=8192, max_input_length=3072, max_total_tokens=4096)
+- @hf/nousresearch/hermes-2-pro-mistral-7b (beta=true, context_window=24000, function_calling=true, info=https://huggingface.co/NousResearch/Hermes-2-Pro-Mistral-7B)
+- @hf/thebloke/deepseek-coder-6.7b-base-awq (beta=true, context_window=4096, terms=https://huggingface.co/TheBloke/deepseek-coder-6.7B-base-AWQ)
+- @hf/thebloke/deepseek-coder-6.7b-instruct-awq (beta=true, context_window=4096, terms=https://huggingface.co/TheBloke/deepseek-coder-6.7B-instruct-AWQ)
+- @hf/thebloke/llama-2-13b-chat-awq (beta=true, context_window=4096, info=https://huggingface.co/TheBloke/Llama-2-13B-chat-AWQ)
+- @hf/thebloke/llamaguard-7b-awq (beta=true, context_window=4096)
+- @hf/thebloke/mistral-7b-instruct-v0.1-awq (beta=true, context_window=4096, info=https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-AWQ)
+- @hf/thebloke/neural-chat-7b-v3-1-awq (beta=true, context_window=4096)
+- @hf/thebloke/openhermes-2.5-mistral-7b-awq (beta=true, context_window=4096)
+- @hf/thebloke/zephyr-7b-beta-awq (beta=true, context_window=4096, info=https://huggingface.co/TheBloke/zephyr-7B-beta-AWQ)
+
+Provider cohere:
+- c4ai-aya-expanse-32b: chat/generate. Context: 128000
+- c4ai-aya-expanse-8b: chat/generate. Context: 8192
+- c4ai-aya-vision-32b: chat with vision. Context: 16384 (vision)
+- c4ai-aya-vision-8b: chat with vision. Context: 16384 (vision)
+- command-a-03-2025: chat with json_mode/json_schema/safety_modes/tools. Context: 288000
+- command-light-nightly: chat/generate/summarize. Context: 4096
+- command-light: chat/generate/summarize. Context: 4096
+- command-nightly: chat with json_mode/json_schema/safety_modes/tools. Context: 288000
+- command-r-08-2024: chat/generate/summarize with json_mode/json_schema/safety_modes/strict_tools/tools. Context: 128000
+- command-r-plus-08-2024: chat/generate/summarize with json_mode/json_schema/safety_modes/strict_tools/tools. Context: 128000
+- command-r-plus: chat/generate/summarize with json_mode/json_schema/safety_modes/strict_tools/tools. Context: 128000
+- command-r7b-12-2024: chat/generate with json_mode/json_schema/safety_modes/strict_tools/tools. Context: 128000
+- command-r7b-arabic-02-2025: chat/generate with json_mode/json_schema/safety_modes/strict_tools/tools. Context: 128000
+- command-r: chat/generate/summarize with json_mode/json_schema/strict_tools/tools. Context: 128000
+- command: chat/generate/summarize. Context: 4096
+- embed-english-light-v2.0: classify/embed. Context: 512
+- embed-english-light-v3.0-image: embed_image. Context: 0
+- embed-english-light-v3.0: classify/embed. Context: 512
+- embed-english-v2.0: classify/embed. Context: 512
+- embed-english-v3.0-image: embed_image. Context: 0
+- embed-english-v3.0: classify/embed. Context: 512
+- embed-multilingual-light-v3.0-image: embed_image. Context: 0
+- embed-multilingual-light-v3.0: classify/embed. Context: 512
+- embed-multilingual-v2.0: classify/embed. Context: 256
+- embed-multilingual-v3.0-image: embed_image. Context: 0
+- embed-multilingual-v3.0: classify/embed. Context: 512
+- rerank-english-v2.0: rerank. Context: 512
+- rerank-english-v3.0: rerank. Context: 4096
+- rerank-multilingual-v2.0: rerank. Context: 512
+- rerank-multilingual-v3.0: rerank. Context: 4096
+- rerank-v3.5: rerank. Context: 4096
+
+Provider deepseek:
+- deepseek-chat
+- deepseek-reasoner
+
+Provider gemini:
+- aqa: Model that performs Attributed Question Answering. (Model trained to return answers to questions that are grounded in provided sources, along with estimating answerable probability.) Context: 7168
+- chat-bison-001: PaLM 2 Chat (Legacy) (A legacy text-only model optimized for chat conversations) Context: 4096
+- embedding-001: Embedding 001 (Obtain a distributed representation of a text.) Context: 2048
+- embedding-gecko-001: Embedding Gecko (Obtain a distributed representation of a text.) Context: 1024
+- gemini-1.0-pro-vision-latest: Gemini 1.0 Pro Vision (The original Gemini 1.0 Pro Vision model version which was optimized for image understanding. Gemini 1.0 Pro Vision was deprecated on July 12, 2024. Move to a newer Gemini version.) Context: 12288
+- gemini-1.5-flash-001-tuning: Gemini 1.5 Flash 001 Tuning (Version of Gemini 1.5 Flash that supports tuning, our fast and versatile multimodal model for scaling across diverse tasks, released in May of 2024.) Context: 16384
+- gemini-1.5-flash-001: Gemini 1.5 Flash 001 (Stable version of Gemini 1.5 Flash, our fast and versatile multimodal model for scaling across diverse tasks, released in May of 2024.) Context: 1000000
+- gemini-1.5-flash-002: Gemini 1.5 Flash 002 (Stable version of Gemini 1.5 Flash, our fast and versatile multimodal model for scaling across diverse tasks, released in September of 2024.) Context: 1000000
+- gemini-1.5-flash-8b-001: Gemini 1.5 Flash-8B 001 (Stable version of Gemini 1.5 Flash-8B, our smallest and most cost effective Flash model, released in October of 2024.) Context: 1000000
+- gemini-1.5-flash-8b-exp-0827: Gemini 1.5 Flash 8B Experimental 0827 (Experimental release (August 27th, 2024) of Gemini 1.5 Flash-8B, our smallest and most cost effective Flash model. Replaced by Gemini-1.5-flash-8b-001 (stable).) Context: 1000000
+- gemini-1.5-flash-8b-exp-0924: Gemini 1.5 Flash 8B Experimental 0924 (Experimental release (September 24th, 2024) of Gemini 1.5 Flash-8B, our smallest and most cost effective Flash model. Replaced by Gemini-1.5-flash-8b-001 (stable).) Context: 1000000
+- gemini-1.5-flash-8b-latest: Gemini 1.5 Flash-8B Latest (Alias that points to the most recent production (non-experimental) release of Gemini 1.5 Flash-8B, our smallest and most cost effective Flash model, released in October of 2024.) Context: 1000000
+- gemini-1.5-flash-8b: Gemini 1.5 Flash-8B (Stable version of Gemini 1.5 Flash-8B, our smallest and most cost effective Flash model, released in October of 2024.) Context: 1000000
+- gemini-1.5-flash-latest: Gemini 1.5 Flash Latest (Alias that points to the most recent production (non-experimental) release of Gemini 1.5 Flash, our fast and versatile multimodal model for scaling across diverse tasks.) Context: 1000000
+- gemini-1.5-flash: Gemini 1.5 Flash (Alias that points to the most recent stable version of Gemini 1.5 Flash, our fast and versatile multimodal model for scaling across diverse tasks.) Context: 1000000
+- gemini-1.5-pro-001: Gemini 1.5 Pro 001 (Stable version of Gemini 1.5 Pro, our mid-size multimodal model that supports up to 2 million tokens, released in May of 2024.) Context: 2000000
+- gemini-1.5-pro-002: Gemini 1.5 Pro 002 (Stable version of Gemini 1.5 Pro, our mid-size multimodal model that supports up to 2 million tokens, released in September of 2024.) Context: 2000000
+- gemini-1.5-pro-latest: Gemini 1.5 Pro Latest (Alias that points to the most recent production (non-experimental) release of Gemini 1.5 Pro, our mid-size multimodal model that supports up to 2 million tokens.) Context: 2000000
+- gemini-1.5-pro: Gemini 1.5 Pro (Stable version of Gemini 1.5 Pro, our mid-size multimodal model that supports up to 2 million tokens, released in May of 2024.) Context: 2000000
+- gemini-2.0-flash-001: Gemini 2.0 Flash 001 (Stable version of Gemini 2.0 Flash, our fast and versatile multimodal model for scaling across diverse tasks, released in January of 2025.) Context: 1048576
+- gemini-2.0-flash-exp-image-generation: Gemini 2.0 Flash (Image Generation) Experimental (Gemini 2.0 Flash (Image Generation) Experimental) Context: 1048576
+- gemini-2.0-flash-exp: Gemini 2.0 Flash Experimental (Gemini 2.0 Flash Experimental) Context: 1048576
+- gemini-2.0-flash-lite-001: Gemini 2.0 Flash-Lite 001 (Stable version of Gemini 2.0 Flash Lite) Context: 1048576
+- gemini-2.0-flash-lite-preview-02-05: Gemini 2.0 Flash-Lite Preview 02-05 (Preview release (February 5th, 2025) of Gemini 2.0 Flash Lite) Context: 1048576
+- gemini-2.0-flash-lite-preview: Gemini 2.0 Flash-Lite Preview (Preview release (February 5th, 2025) of Gemini 2.0 Flash Lite) Context: 1048576
+- gemini-2.0-flash-lite: Gemini 2.0 Flash-Lite (Gemini 2.0 Flash-Lite) Context: 1048576
+- gemini-2.0-flash-thinking-exp-01-21: Gemini 2.0 Flash Thinking Experimental 01-21 (Experimental release (January 21st, 2025) of Gemini 2.0 Flash Thinking) Context: 1048576
+- gemini-2.0-flash-thinking-exp-1219: Gemini 2.0 Flash Thinking Experimental (Gemini 2.0 Flash Thinking Experimental) Context: 1048576
+- gemini-2.0-flash-thinking-exp: Gemini 2.0 Flash Thinking Experimental 01-21 (Experimental release (January 21st, 2025) of Gemini 2.0 Flash Thinking) Context: 1048576
+- gemini-2.0-flash: Gemini 2.0 Flash (Gemini 2.0 Flash) Context: 1048576
+- gemini-2.0-pro-exp-02-05: Gemini 2.0 Pro Experimental 02-05 (Experimental release (February 5th, 2025) of Gemini 2.0 Pro) Context: 2097152
+- gemini-2.0-pro-exp: Gemini 2.0 Pro Experimental (Experimental release (February 5th, 2025) of Gemini 2.0 Pro) Context: 2097152
+- gemini-embedding-exp-03-07: Gemini Embedding Experimental 03-07 (Obtain a distributed representation of a text.) Context: 8192
+- gemini-embedding-exp: Gemini Embedding Experimental (Obtain a distributed representation of a text.) Context: 8192
+- gemini-exp-1206: Gemini Experimental 1206 (Experimental release (February 5th, 2025) of Gemini 2.0 Pro) Context: 2097152
+- gemini-pro-vision: Gemini 1.0 Pro Vision (The original Gemini 1.0 Pro Vision model version which was optimized for image understanding. Gemini 1.0 Pro Vision was deprecated on July 12, 2024. Move to a newer Gemini version.) Context: 12288
+- gemma-3-27b-it: Gemma 3 27B () Context: 131072
+- imagen-3.0-generate-002: Imagen 3.0 002 model (Vertex served Imagen 3.0 002 model) Context: 480
+- learnlm-1.5-pro-experimental: LearnLM 1.5 Pro Experimental (Alias that points to the most recent stable version of Gemini 1.5 Pro, our mid-size multimodal model that supports up to 2 million tokens.) Context: 32767
+- text-bison-001: PaLM 2 (Legacy) (A legacy model that understands text and generates text as an output) Context: 8196
+- text-embedding-004: Text Embedding 004 (Obtain a distributed representation of a text.) Context: 2048
+
+Provider groq:
+- allam-2-7b (2025-01-23) Context: 4096
+- deepseek-r1-distill-llama-70b (2025-01-26) Context: 131072
+- deepseek-r1-distill-qwen-32b (2025-02-06) Context: 131072
+- distil-whisper-large-v3-en (2023-09-03) Context: 448
+- gemma2-9b-it (2023-09-03) Context: 8192
+- llama-3.1-8b-instant (2023-09-03) Context: 131072
+- llama-3.2-11b-vision-preview (2024-09-24) Context: 8192
+- llama-3.2-1b-preview (2024-09-24) Context: 8192
+- llama-3.2-3b-preview (2024-09-24) Context: 8192
+- llama-3.2-90b-vision-preview (2024-09-24) Context: 8192
+- llama-3.3-70b-specdec (2024-12-06) Context: 8192
+- llama-3.3-70b-versatile (2024-12-05) Context: 32768
+- llama-guard-3-8b (2023-09-03) Context: 8192
+- llama3-70b-8192 (2023-09-03) Context: 8192
+- llama3-8b-8192 (2023-09-03) Context: 8192
+- mistral-saba-24b (2025-02-19) Context: 32768
+- mixtral-8x7b-32768 (2023-09-03) Context: 32768
+- qwen-2.5-32b (2025-02-05) Context: 131072
+- qwen-2.5-coder-32b (2025-02-13) Context: 131072
+- qwen-qwq-32b (2025-03-05) Context: 131072
+- whisper-large-v3 (2023-09-03) Context: 448
+- whisper-large-v3-turbo (2024-10-08) Context: 448
+
+Provider huggingface:
+- 01-ai/Yi-1.5-34B-Chat (2024-05-10) text-generation Trending: 1.0
+- 2ch/penflux (2024-10-28) text-to-image Trending: 1.0
+- aaditya/Llama3-OpenBioLLM-70B (2024-04-24) text-generation Trending: 10.0
+- ABDALLALSWAITI/DAN-MUMFORD-style (2024-12-10) text-to-image Trending: 1.0
+- adirik/flux-cinestill (2024-08-24) text-to-image Trending: 1.0
+- ahmedrayyan/AvaAddamsLoRA (2024-11-25) text-to-image Trending: 1.0
+- aifeifei798/AWPortraitCN (2024-12-12) text-to-image Trending: 1.0
+- aifeifei798/feifei-flux-lora-v1-Single (2024-12-10) text-to-image Trending: 1.0
+- aifeifei798/flux-lora-uncensored (2024-10-29) text-to-image Trending: 4.0
+- aifeifei798/In-Context-LoRA (2024-11-15) text-to-image Trending: 1.0
+- aifeifei798/sldr_flux_nsfw_v2-studio (2024-12-12) text-to-image Trending: 1.0
+- AIGCDuckBoss/fluxlora_cute-cartoon (2024-11-05) text-to-image Trending: 1.0
+- AIGCDuckBoss/fluxLora_cute3DModel (2024-12-13) text-to-image Trending: 1.0
+- AIGCDuckBoss/fluxLora_gamecartoon (2024-12-13) text-to-image Trending: 1.0
+- AIGCDuckBoss/fluxLora_pixarStyle (2024-12-13) text-to-image Trending: 1.0
+- AIGCDuckBoss/fluxLora_watercolor (2024-12-13) text-to-image Trending: 1.0
+- aihpi/flux-fashion-lora (2024-12-13) text-to-image Trending: 2.0
+- AIWarper/RubberCore1920sCartoonStyle (2024-08-26) text-to-image Trending: 1.0
+- AiWise/Juggernaut-XL-V9-GE-RDPhoto2-Lightning_4S (2024-12-26) text-to-image Trending: 2.0
+- aleksa-codes/flux-ghibsky-illustration (2024-08-20) text-to-image Trending: 2.0
+- AlekseyCalvin/historic_color_schnell (2024-09-07) text-to-image Trending: 1.0
+- AlekseyCalvin/Mayakovsky_Posters_SD3.5-L_3Ksteps_rank64_adafactor (2024-11-03) text-to-image Trending: 1.0
+- ali-vilab/In-Context-LoRA (2024-11-07) text-to-image Trending: 7.0
+- Alpha-VLLM/Lumina-Image-2.0 (2025-01-22) text-to-image Trending: 4.0
+- alpindale/WizardLM-2-8x22B (2024-04-16) text-generation Trending: 1.0
+- alvarobartt/ghibli-characters-flux-lora (2024-08-30) text-to-image Trending: 1.0
+- alvdansen/BandW-Manga (2024-06-10) text-to-image Trending: 1.0
+- alvdansen/colorfulshadowsketch (2024-06-12) text-to-image Trending: 1.0
+- alvdansen/colorized-blockprints (2024-06-16) text-to-image Trending: 1.0
+- alvdansen/enna-sketch-style (2024-08-28) text-to-image Trending: 1.0
+- alvdansen/flux-koda (2024-08-16) text-to-image Trending: 1.0
+- alvdansen/flux_film_foto (2024-08-14) text-to-image Trending: 1.0
+- alvdansen/frosting_lane_flux (2024-08-10) text-to-image Trending: 1.0
+- alvdansen/haunted-linework (2024-06-16) text-to-image Trending: 1.0
+- alvdansen/haunted_linework_flux (2024-08-17) text-to-image Trending: 1.0
+- alvdansen/japanese-poster-prints (2024-06-08) text-to-image Trending: 1.0
+- alvdansen/linnea_beta (2024-08-26) text-to-image Trending: 1.0
+- alvdansen/littletinies (2024-06-11) text-to-image Trending: 1.0
+- alvdansen/lofi-cuties (2024-06-16) text-to-image Trending: 1.0
+- alvdansen/m3lt (2024-06-29) text-to-image Trending: 1.0
+- alvdansen/manga-soup (2024-06-16) text-to-image Trending: 1.0
+- alvdansen/midsommarcartoon (2024-06-23) text-to-image Trending: 1.0
+- alvdansen/mooniverse (2024-09-04) text-to-image Trending: 1.0
+- alvdansen/Painted-illustration (2024-06-16) text-to-image Trending: 1.0
+- alvdansen/phantasma-anime (2024-08-02) text-to-image Trending: 1.0
+- alvdansen/plushy-world-flux (2024-08-17) text-to-image Trending: 1.0
+- alvdansen/pola-photo-flux (2024-09-22) text-to-image Trending: 1.0
+- alvdansen/popartanime (2024-06-07) text-to-image Trending: 1.0
+- alvdansen/sketchedoutmanga (2024-06-06) text-to-image Trending: 1.0
+- alvdansen/softpastelanime (2024-06-06) text-to-image Trending: 1.0
+- alvdansen/softpasty-flux-dev (2024-08-25) text-to-image Trending: 1.0
+- alvdansen/softserve_anime (2024-08-12) text-to-image Trending: 2.0
+- alvdansen/sonny-anime-fixed (2024-08-21) text-to-image Trending: 1.0
+- alvdansen/sonny-anime-flex (2024-08-21) text-to-image Trending: 1.0
+- alvdansen/the-point-flux (2024-08-17) text-to-image Trending: 1.0
+- alvdansen/vincentsketchmanga (2024-06-06) text-to-image Trending: 1.0
+- alvdansen/wood-block-xl (2024-06-23) text-to-image Trending: 1.0
+- ampp/rough-kids-illustrations (2024-08-31) text-to-image Trending: 1.0
+- animte/pixar-sdxl-lora (2024-07-22) text-to-image Trending: 1.0
+- anthienlong/flux_image_enhancer (2024-10-30) text-to-image Trending: 1.0
+- anthienlong/prashanth970-uncensored (2024-11-08) text-to-image Trending: 1.0
+- anthienlong/thocamxanh (2024-10-22) text-to-image Trending: 1.0
+- artificialguybr/amigurami-redmond-amigurami-crochet-sd-xl-lora (2024-03-15) text-to-image Trending: 1.0
+- artificialguybr/ColoringBookRedmond-V2 (2023-10-07) text-to-image Trending: 1.0
+- artificialguybr/doodle-redmond-doodle-hand-drawing-style-lora-for-sd-xl (2024-02-12) text-to-image Trending: 1.0
+- artificialguybr/LineAniRedmond-LinearMangaSDXL-V2 (2023-10-07) text-to-image Trending: 1.0
+- artificialguybr/LogoRedmond-LogoLoraForSDXL (2023-08-07) text-to-image Trending: 1.0
+- artificialguybr/LogoRedmond-LogoLoraForSDXL-V2 (2023-10-07) text-to-image Trending: 1.0
+- artificialguybr/PixelArtRedmond (2023-09-13) text-to-image Trending: 1.0
+- artificialguybr/pomological-watercolor-redmond-lora-for-sd-xl (2024-01-04) text-to-image Trending: 1.0
+- artificialguybr/ps1redmond-ps1-game-graphics-lora-for-sdxl (2024-01-05) text-to-image Trending: 1.0
+- artificialguybr/StickersRedmond (2023-09-12) text-to-image Trending: 1.0
+- artificialguybr/StudioGhibli.Redmond-V2 (2023-11-11) text-to-image Trending: 1.0
+- artificialguybr/TshirtDesignRedmond (2023-08-22) text-to-image Trending: 1.0
+- artificialguybr/TshirtDesignRedmond-V2 (2023-10-07) text-to-image Trending: 1.0
+- Artples/LAI-ImageGeneration-vSDXL-2 (2024-04-01) text-to-image Trending: 1.0
+- BAAI/bge-base-en-v1.5 (2023-09-11) feature-extraction Trending: 1.0
+- BAAI/bge-large-en-v1.5 (2023-09-12) feature-extraction Trending: 2.0
+- berindenham/replicate-ostris-flux-dev-lora-trainer (2024-08-21) text-to-image Trending: 1.0
+- bhadresh-savani/distilbert-base-uncased-emotion (2022-03-02) text-classification Trending: 1.0
+- bigcode/santacoder (2022-12-02) text-generation Trending: 1.0
+- bigcode/starcoder (2023-04-24) text-generation Trending: 2.0
+- bigcode/starcoder2-15b (2024-02-20) text-generation Trending: 3.0
+- bingbangboom/flux-miniature-worlds (2024-10-16) text-to-image Trending: 1.0
+- bingbangboom/flux-waterscape (2024-10-09) text-to-image Trending: 1.0
+- bingbangboom/flux_colorscape (2024-09-06) text-to-image Trending: 1.0
+- bingbangboom/flux_dreamscape (2024-09-02) text-to-image Trending: 1.0
+- bingbangboom/flux_geopop (2024-09-22) text-to-image Trending: 1.0
+- bingbangboom/flux_oilscape (2024-09-01) text-to-image Trending: 1.0
+- bingbangboom/flux_whimscape (2024-09-12) text-to-image Trending: 1.0
+- bingbangboom/oneImageLoraTest (2024-09-03) text-to-image Trending: 1.0
+- black-forest-labs/FLUX.1-Canny-dev (2024-11-20) text-to-image Trending: 4.0
+- black-forest-labs/FLUX.1-Depth-dev (2024-11-20) text-to-image Trending: 5.0
+- black-forest-labs/FLUX.1-dev (2024-07-31) text-to-image Trending: 131.0
+- black-forest-labs/FLUX.1-Redux-dev (2024-11-20)  Trending: 12.0
+- black-forest-labs/FLUX.1-schnell (2024-07-31) text-to-image Trending: 29.0
+- BlaireSilver13/Frutiger_Aero (2024-04-06) text-to-image Trending: 1.0
+- blink7630/caricature-xl (2023-11-14) text-to-image Trending: 1.0
+- blink7630/graphic-novel-illustration (2023-11-14) text-to-image Trending: 1.0
+- blink7630/storyboard-sketch (2023-11-14) text-to-image Trending: 1.0
+- Bootoshi/retroanime (2024-10-28) text-to-image Trending: 1.0
+- bowedspore5/flux-headshot (2024-08-21) text-to-image Trending: 1.0
+- brushpenbob/flux-midjourney-anime (2024-08-26) text-to-image Trending: 1.0
+- brushpenbob/flux-pencil-v2 (2024-08-26) text-to-image Trending: 1.0
+- brushpenbob/tattoo-maker-xl (2024-08-26) text-to-image Trending: 1.0
+- ByteDance/Hyper-SD (2024-04-20) text-to-image Trending: 12.0
+- ByteDance/SDXL-Lightning (2024-02-20) text-to-image Trending: 4.0
+- cagliostrolab/animagine-xl-3.1 (2024-03-13) text-to-image Trending: 3.0
+- cardiffnlp/twitter-roberta-base-sentiment (2022-03-02) text-classification Trending: 2.0
+- cardiffnlp/twitter-xlm-roberta-base-sentiment (2022-03-02) text-classification Trending: 2.0
+- cfahlgren1/flux-qwen-capybara (2024-10-11) text-to-image Trending: 1.0
+- Chunte/flux-lora-Huggieverse (2024-09-16) text-to-image Trending: 1.0
+- CiroN2022/ascii-art (2023-08-23) text-to-image Trending: 1.0
+- CiroN2022/toy-face (2023-08-23) text-to-image Trending: 1.0
+- ckpt/In-Context-LoRA (2024-11-16) text-to-image Trending: 1.0
+- codellama/CodeLlama-7b-hf (2023-08-24) text-generation Trending: 1.0
+- codermert/anahaaaan_fluxx (2025-01-27) text-to-image Trending: 2.0
+- codermert/bahar2_fluxxxx (2025-03-12) text-to-image Trending: 2.0
+- codermert/bellydancer_fluxx (2025-02-21) text-to-image Trending: 2.0
+- codermert/burcu2_fluxxx (2025-03-09) text-to-image Trending: 8.0
+- codermert/busra_fluxx (2024-11-01) text-to-image Trending: 2.0
+- codermert/damlaaa_fluxxx (2025-02-02) text-to-image Trending: 2.0
+- codermert/deryaa_fluxxxxx (2025-03-08) text-to-image Trending: 5.0
+- codermert/ezel2_fluxx (2025-03-12) text-to-image Trending: 5.0
+- codermert/ezelll_flux (2024-10-24) text-to-image Trending: 7.0
+- codermert/gamzekocc_fluxx (2025-02-21) text-to-image Trending: 9.0
+- codermert/malikaaaaa_fluxx (2025-03-04) text-to-image Trending: 2.0
+- codermert/mert_flux (2024-09-02) text-to-image Trending: 1.0
+- codermert/model_malika (2024-09-15) text-to-image Trending: 2.0
+- codermert/ozge4_flux (2025-03-15) text-to-image Trending: 3.0
+- codermert/ser_flux (2024-10-13) text-to-image Trending: 1.0
+- codermert/tugce2-lora (2024-09-14) text-to-image Trending: 1.0
+- cognitivecomputations/dolphin-2.9.2-mixtral-8x22b (2024-05-28) text-generation Trending: 1.0
+- CompVis/stable-diffusion-v1-2 (2022-08-19) text-to-image Trending: 1.0
+- crystalwizard/Rustic-Whimsy-SD3.5-Large-Lora (2024-12-12) text-to-image Trending: 1.0
+- crystantine/cybrpnkz (2024-10-02) text-to-image Trending: 1.0
+- curtis234/lora-curtis (2024-08-14) text-to-image Trending: 1.0
+- dantheoprod/iphone-lora-v2 (2024-10-13) text-to-image Trending: 1.0
+- dantheoprod/iphonelorastyle (2024-10-13) text-to-image Trending: 1.0
+- DarkMoonDragon/TurboRender-flux-dev (2024-09-11) text-to-image Trending: 1.0
+- data-is-better-together/open-image-preferences-v1-flux-dev-lora (2024-12-04) text-to-image Trending: 1.0
+- dataautogpt3/FLUX-AestheticAnime (2024-08-16) text-to-image Trending: 1.0
+- dataautogpt3/FLUX-SyntheticAnime (2024-08-14) text-to-image Trending: 1.0
+- databricks/dbrx-instruct (2024-03-26) text-generation Trending: 1.0
+- Datou1111/flux-sincity-movie (2024-09-07) text-to-image Trending: 1.0
+- davisbro/half_illustration (2024-08-14) text-to-image Trending: 1.0
+- deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct (2024-06-14) text-generation Trending: 3.0
+- deepseek-ai/deepseek-llm-67b-chat (2023-11-29) text-generation Trending: 1.0
+- deepseek-ai/DeepSeek-R1 (2025-01-20) text-generation Trending: 301.0
+- deepseek-ai/DeepSeek-R1-Distill-Llama-70B (2025-01-20) text-generation Trending: 11.0
+- deepseek-ai/DeepSeek-R1-Distill-Llama-8B (2025-01-20) text-generation Trending: 17.0
+- deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B (2025-01-20) text-generation Trending: 28.0
+- deepseek-ai/DeepSeek-R1-Distill-Qwen-14B (2025-01-20) text-generation Trending: 7.0
+- deepseek-ai/DeepSeek-R1-Distill-Qwen-32B (2025-01-20) text-generation Trending: 27.0
+- deepseek-ai/DeepSeek-V3 (2024-12-25) text-generation Trending: 27.0
+- deepset/roberta-base-squad2 (2022-03-02) question-answering Trending: 3.0
+- DeZoomer/AlexandraDaddario-FluxLora (2024-11-01) text-to-image Trending: 1.0
+- DeZoomer/AnyaTaylorJoy-FluxLora (2024-11-01) text-to-image Trending: 1.0
+- DeZoomer/ArianaGrande-FluxLora (2024-10-27) text-to-image Trending: 1.0
+- DeZoomer/ElizabethOlsen-FluxLora (2024-11-10) text-to-image Trending: 1.0
+- DeZoomer/Rihanna-FluxLora (2024-10-27) text-to-image Trending: 1.0
+- DeZoomer/TaylorSwift-FluxLora (2024-10-27) text-to-image Trending: 1.0
+- diabolic6045/Flux_Sticker_Lora (2024-10-05) text-to-image Trending: 1.0
+- DiegoJR1973/PaoFlux-Lokr (2024-11-09) text-to-image Trending: 1.0
+- DiegoJR1973/PaoGas-FL-LK (2024-11-21) text-to-image Trending: 1.0
+- DiegoJR1973/PaolaFluxV2 (2024-10-15) text-to-image Trending: 1.0
+- DiegoJR1973/ParejaFlux-LoKr (2024-11-15) text-to-image Trending: 1.0
+- DiegoJR1973/ParejaFlux9 (2024-10-16) text-to-image Trending: 1.0
+- digiplay/AbsoluteReality_v1.8.1 (2023-08-03) text-to-image Trending: 1.0
+- digiplay/AnalogMadness-realistic-model-v7 (2024-03-10) text-to-image Trending: 1.0
+- digiplay/majicMIX_realistic_v7 (2023-10-09) text-to-image Trending: 2.0
+- digiplay/RealismEngine_v1 (2023-07-19) text-to-image Trending: 1.0
+- DIOcheng/flux-lora-Cartoonillustration (2024-08-15) text-to-image Trending: 1.0
+- Disra/lora-anime-test-02 (2024-08-19) text-to-image Trending: 1.0
+- distil-whisper/distil-large-v3 (2024-03-21) automatic-speech-recognition Trending: 2.0
+- distilbert/distilbert-base-uncased-finetuned-sst-2-english (2022-03-02) text-classification Trending: 5.0
+- dog-god/texture-synthesis-sdxl-lora (2024-02-01) text-to-image Trending: 1.0
+- dolphy88/dolphy (2024-12-11) text-to-image Trending: 1.0
+- dtthanh/flux_oil_painting_lora (2024-09-08) text-to-image Trending: 1.0
+- dvyio/flux-lora-close-portrait (2024-09-07) text-to-image Trending: 1.0
+- dvyio/flux-lora-doom (2024-09-09) text-to-image Trending: 1.0
+- dvyio/flux-lora-medieval-illustration (2024-09-11) text-to-image Trending: 1.0
+- dvyio/flux-lora-seventies-photograph (2024-09-05) text-to-image Trending: 1.0
+- dvyio/flux-lora-simple-illustration (2024-09-05) text-to-image Trending: 1.0
+- dvyio/flux-lora-victorian-drawing (2024-09-05) text-to-image Trending: 1.0
+- e-n-v-y/envy-anime-oil-xl-01 (2023-11-14) text-to-image Trending: 1.0
+- e-n-v-y/envy-anime-watercolor-xl-01 (2023-12-11) text-to-image Trending: 1.0
+- e-n-v-y/envy-arcane-xl-01 (2023-11-14) text-to-image Trending: 1.0
+- e-n-v-y/envy-scifi-streamline-xl-01 (2023-12-16) text-to-image Trending: 1.0
+- e-n-v-y/envy-shadow-minimalism-xl-01 (2023-12-16) text-to-image Trending: 1.0
+- e-n-v-y/envy-speedpaint-xl-01 (2023-11-14) text-to-image Trending: 1.0
+- EarthnDusk/Loras-SDXL-2023-24 (2023-08-08)  Trending: 1.0
+- EarthnDusk/Loras_2023 (2023-09-28) text-to-image Trending: 1.0
+- EarthnDusk/PoltergeistMixXL_Lora (2024-02-23) text-to-image Trending: 1.0
+- ECNU-CILab/ArtAug-lora-FLUX.1dev-v1 (2024-12-03) text-to-image Trending: 1.0
+- eienmojiki/Anything-XL (2024-03-11) text-to-image Trending: 1.0
+- EleutherAI/gpt-neo-125m (2022-03-02) text-generation Trending: 2.0
+- elifergunes/background_only_game_2 (2024-10-17) text-to-image Trending: 1.0
+- elikoy/storyboard (2025-03-13) text-to-image Trending: 2.0
+- evstrahy/luna-NSFW (2024-10-28) text-to-image Trending: 1.0
+- facebook/bart-large-cnn (2022-03-02) summarization Trending: 5.0
+- facebook/bart-large-mnli (2022-03-02) zero-shot-classification Trending: 10.0
+- facebook/detr-resnet-50 (2022-03-02) object-detection Trending: 5.0
+- facebook/mbart-large-50-many-to-many-mmt (2022-03-02) translation Trending: 2.0
+- facebook/mms-tts-eng (2023-08-24) text-to-speech Trending: 2.0
+- fal/AuraFlow-v0.2 (2024-07-24) text-to-image Trending: 1.0
+- fal/AuraFlow-v0.3 (2024-08-14) text-to-image Trending: 1.0
+- falanaja/Amateur-Photography (2024-11-18) text-to-image Trending: 1.0
+- falanaja/disneypixfal (2024-10-07) text-to-image Trending: 1.0
+- falanaja/mjmodel (2024-11-12) text-to-image Trending: 1.0
+- falanaja/ralintrid (2024-12-16) text-to-image Trending: 1.0
+- falanaja/ralintrid1 (2024-12-16) text-to-image Trending: 1.0
+- Falconsai/nsfw_image_detection (2023-10-13) image-classification Trending: 9.0
+- fffiloni/cozy-book-800 (2025-02-20) text-to-image Trending: 4.0
+- fffiloni/deep-blue-v2 (2025-02-21) text-to-image Trending: 2.0
+- Fictiverse/Voxel_XL_Lora (2023-07-29) text-to-image Trending: 1.0
+- Fihade/Exquisite-illustration-xl (2024-08-25) text-to-image Trending: 1.0
+- Fihade/Retro-Collage-Art-Flux-Dev (2024-09-14) text-to-image Trending: 1.0
+- fofr/flux-80s-cyberpunk (2024-08-15) text-to-image Trending: 1.0
+- fofr/flux-color (2024-08-18) text-to-image Trending: 1.0
+- fofr/flux-condensation (2024-12-14) text-to-image Trending: 1.0
+- fofr/flux-goya-black-painting (2024-12-18) text-to-image Trending: 1.0
+- fofr/flux-handwriting (2024-12-14) text-to-image Trending: 1.0
+- fofr/flux-mona-lisa (2024-08-26) text-to-image Trending: 1.0
+- fofr/flux-victorian-xmas-cards (2024-12-04) text-to-image Trending: 1.0
+- FounderFeed/gta-style-lora (2024-11-10) text-to-image Trending: 1.0
+- FunkingGod/AOC (2024-10-05) text-to-image Trending: 1.0
+- FunkingGod/wlop-lora (2024-10-05) text-to-image Trending: 1.0
+- fyp1/pattern_generation (2024-10-07) text-to-image Trending: 1.0
+- gayfortay13/SpeakNowTS (2024-11-04) text-to-image Trending: 1.0
+- gayfortay13/TaylorSwift20172024 (2024-10-31) text-to-image Trending: 1.0
+- gayfortay13/test (2024-12-03) text-to-image Trending: 1.0
+- genmo/mochi-1-preview (2024-10-22) text-to-video Trending: 3.0
+- getad72493/FluxPussySelfie (2024-11-26) text-to-image Trending: 1.0
+- getad72493/onoff (2024-12-10) text-to-image Trending: 1.0
+- ginipick/flux-lora-eric-cat (2024-09-05) text-to-image Trending: 8.0
+- glif-loradex-trainer/001_horror-concept-art_nocaption (2024-10-23) text-to-image Trending: 1.0
+- glif-loradex-trainer/001_old_horror_paintings-nocaption (2024-11-16) text-to-image Trending: 1.0
+- glif-loradex-trainer/ampp_Mixed_Partial_Arts (2024-09-25) text-to-image Trending: 1.0
+- glif-loradex-trainer/an303042_Barcoded_v1_NoCap (2024-10-04) text-to-image Trending: 1.0
+- glif-loradex-trainer/an303042_FotoChromaEilers (2024-11-14) text-to-image Trending: 1.0
+- glif-loradex-trainer/an303042_Glamour_Shots_1990_v101 (2024-11-19) text-to-image Trending: 1.0
+- glif-loradex-trainer/an303042_Mall_Portrait_v1 (2024-11-08) text-to-image Trending: 1.0
+- glif-loradex-trainer/an303042_PsyPop70s (2024-09-29) text-to-image Trending: 1.0
+- glif-loradex-trainer/an303042_RisographPrint_v1 (2024-11-17) text-to-image Trending: 1.0
+- glif-loradex-trainer/andre_68386_81501_flux_dev_terragen2 (2024-09-24) text-to-image Trending: 1.0
+- glif-loradex-trainer/angrypenguin_claude (2025-03-13) text-to-image Trending: 8.0
+- glif-loradex-trainer/AP123_flux_dev_2DHD_pixel_art (2024-10-16) text-to-image Trending: 1.0
+- glif-loradex-trainer/AP123_flux_dev_christmas_animation (2024-12-16) text-to-image Trending: 1.0
+- glif-loradex-trainer/AP123_flux_dev_gremplin_style_v2 (2024-10-24) text-to-image Trending: 1.0
+- glif-loradex-trainer/AP123_flux_dev_hubble_telescope (2024-10-24) text-to-image Trending: 1.0
+- glif-loradex-trainer/AP123_flux_dev_hubble_telescope_v2 (2024-10-24) text-to-image Trending: 1.0
+- glif-loradex-trainer/AP123_flux_dev_hubble_telescope_v3 (2024-10-24) text-to-image Trending: 1.0
+- glif-loradex-trainer/AP123_movie_shots_ic_lora_experiment_v1 (2024-11-07) text-to-image Trending: 1.0
+- glif-loradex-trainer/araminta_k_flux_dev_illustration_art (2024-10-20) text-to-image Trending: 1.0
+- glif-loradex-trainer/araminta_k_flux_dev_tarot_test_1 (2024-11-04) text-to-image Trending: 1.0
+- glif-loradex-trainer/bingbangboom_flux_dev_SMPGCLRPHTO (2024-10-13) text-to-image Trending: 1.0
+- glif-loradex-trainer/bingbangboom_flux_MNTRWRLDS (2024-10-16) text-to-image Trending: 1.0
+- glif-loradex-trainer/bingbangboom_flux_surf (2024-10-15) text-to-image Trending: 1.0
+- glif-loradex-trainer/bulbul_GTA_San_Andreas (2024-11-08) text-to-image Trending: 1.0
+- glif-loradex-trainer/bulbul_METAL_TECHNICAL_POSTER (2024-11-03) text-to-image Trending: 1.0
+- glif-loradex-trainer/bulbul_POV (2024-11-08) text-to-image Trending: 1.0
+- glif-loradex-trainer/bulbul_TECH_METAL_POSTERS_V2 (2024-11-06) text-to-image Trending: 1.0
+- glif-loradex-trainer/bulbul_VST_Plugin (2024-11-05) text-to-image Trending: 1.0
+- glif-loradex-trainer/chrysolite_Neoclassiclite (2024-11-02) text-to-image Trending: 1.0
+- glif-loradex-trainer/chrysolite_Opticallite (2024-11-02) text-to-image Trending: 1.0
+- glif-loradex-trainer/chrysoliteop_Chrysolite_Light_Leaks (2024-11-23) text-to-image Trending: 1.0
+- glif-loradex-trainer/chrysoliteop_Pixellite (2024-11-18) text-to-image Trending: 1.0
+- glif-loradex-trainer/csai9203_skateboarding_flux (2024-09-25) text-to-image Trending: 1.0
+- glif-loradex-trainer/dham_dham_fpacks (2024-11-24) text-to-image Trending: 1.0
+- glif-loradex-trainer/dham_dham_metamorphosis2 (2024-11-12) text-to-image Trending: 1.0
+- glif-loradex-trainer/dham_dham_osteology2 (2024-11-12) text-to-image Trending: 1.0
+- glif-loradex-trainer/fabian3000_chillguy (2024-11-25) text-to-image Trending: 1.0
+- glif-loradex-trainer/fabian3000_fontsheet (2024-09-20) text-to-image Trending: 1.0
+- glif-loradex-trainer/fabian3000_fontsheet2 (2024-09-20) text-to-image Trending: 1.0
+- glif-loradex-trainer/fabian3000_fontsheet3 (2024-09-20) text-to-image Trending: 1.0
+- glif-loradex-trainer/fabian3000_fontsheet_prodigy (2024-09-23) text-to-image Trending: 1.0
+- glif-loradex-trainer/fabian3000_haircats (2024-09-21) text-to-image Trending: 1.0
+- glif-loradex-trainer/fabian3000_mspaint1 (2024-11-14) text-to-image Trending: 1.0
+- glif-loradex-trainer/fabian3000_pixelfighters (2024-09-27) text-to-image Trending: 1.0
+- glif-loradex-trainer/fabian3000_retrobuildingtiles (2024-09-27) text-to-image Trending: 1.0
+- glif-loradex-trainer/goldenark__Ancient_Greece_Watercolor_Sketch_Style (2024-09-24) text-to-image Trending: 1.0
+- glif-loradex-trainer/goldenark__WaterColorSketchStyle (2024-09-25) text-to-image Trending: 1.0
+- glif-loradex-trainer/heather_huet_textiles (2024-09-19) text-to-image Trending: 1.0
+- glif-loradex-trainer/heather_victorian_christmas (2024-12-17) text-to-image Trending: 1.0
+- glif-loradex-trainer/i12bp8_appelsiensam_charcoal_v1 (2024-10-29) text-to-image Trending: 1.0
+- glif-loradex-trainer/i12bp8_appelsiensam_cursed_food_v1 (2024-10-30) text-to-image Trending: 1.0
+- glif-loradex-trainer/i12bp8_appelsiensam_flashtattoo (2024-10-28) text-to-image Trending: 1.0
+- glif-loradex-trainer/i12bp8_appelsiensam_instructionsmeme_v1 (2024-11-08) text-to-image Trending: 1.0
+- glif-loradex-trainer/i12bp8_appelsiensam_isometric_room_v1 (2024-10-31) text-to-image Trending: 1.0
+- glif-loradex-trainer/i12bp8_appelsiensam_light_art_v1 (2024-11-05) text-to-image Trending: 1.0
+- glif-loradex-trainer/i12bp8_appelsiensam_linocut_v1 (2024-10-28) text-to-image Trending: 1.0
+- glif-loradex-trainer/i12bp8_appelsiensam_meme_kermit_v1 (2024-10-31) text-to-image Trending: 1.0
+- glif-loradex-trainer/i12bp8_appelsiensam_vintagesign_v1 (2024-11-10) text-to-image Trending: 1.0
+- glif-loradex-trainer/i12bp8_flux_dev_flashtattoo_8_kv_prodigy (2024-10-28) text-to-image Trending: 1.0
+- glif-loradex-trainer/insectagon_1920s_cartoon (2024-11-25) text-to-image Trending: 1.0
+- glif-loradex-trainer/insectagon_Eightball_comics (2024-10-11) text-to-image Trending: 1.0
+- glif-loradex-trainer/insectagon_memecoins_default1 (2024-11-10) text-to-image Trending: 1.0
+- glif-loradex-trainer/insectagon_mugshot_prodigy (2024-11-06) text-to-image Trending: 1.0
+- glif-loradex-trainer/insectagon_mugshots1 (2024-11-06) text-to-image Trending: 1.0
+- glif-loradex-trainer/insectagon_nudibranch1 (2024-11-03) text-to-image Trending: 1.0
+- glif-loradex-trainer/insectagon_nudibranch_prodigy2 (2024-11-03) text-to-image Trending: 1.0
+- glif-loradex-trainer/insectagon_SMFIGHTER_PRODIGY (2024-11-17) text-to-image Trending: 1.0
+- glif-loradex-trainer/insectagon_Turbo_prodigy (2024-11-17) text-to-image Trending: 1.0
+- glif-loradex-trainer/ivxx_eth_gfc_gentle (2024-11-26) text-to-image Trending: 1.0
+- glif-loradex-trainer/kklors_flux_dev_cellular_automata (2024-11-08) text-to-image Trending: 1.0
+- glif-loradex-trainer/kklors_flux_dev_cellular_automataV2 (2024-11-08) text-to-image Trending: 1.0
+- glif-loradex-trainer/kklors_flux_dev_hardcore_henry (2024-10-01) text-to-image Trending: 1.0
+- glif-loradex-trainer/kklors_flux_dev_long_exposure (2024-10-15) text-to-image Trending: 1.0
+- glif-loradex-trainer/kklors_flux_dev_translucency (2024-11-22) text-to-image Trending: 1.0
+- glif-loradex-trainer/kklors_flux_dev_translucencyV2 (2024-11-26) text-to-image Trending: 1.0
+- glif-loradex-trainer/lemnop_Acid_Grafix (2024-10-18) text-to-image Trending: 1.0
+- glif-loradex-trainer/lemnop_Acid_Graphics_Adv (2024-10-28) text-to-image Trending: 1.0
+- glif-loradex-trainer/lemnop_hologram (2024-10-12) text-to-image Trending: 1.0
+- glif-loradex-trainer/lemnop_hologram_plus (2024-10-28) text-to-image Trending: 1.0
+- glif-loradex-trainer/lemnop_Lemn_Art_X (2024-10-09) text-to-image Trending: 1.0
+- glif-loradex-trainer/lemnop_Old_Book_Illustrations (2024-10-08) text-to-image Trending: 1.0
+- glif-loradex-trainer/maxxd4240_4AbstractTiles (2024-11-15) text-to-image Trending: 1.0
+- glif-loradex-trainer/maxxd4240_AbstractPastels (2024-11-08) text-to-image Trending: 1.0
+- glif-loradex-trainer/maxxd4240_bluejeans (2024-12-07) text-to-image Trending: 1.0
+- glif-loradex-trainer/maxxd4240_minimalistPastel (2024-09-25) text-to-image Trending: 1.0
+- glif-loradex-trainer/maxxd4240_PaperDoodles (2024-10-27) text-to-image Trending: 1.0
+- glif-loradex-trainer/maxxd4240_PencilScribbles (2024-11-07) text-to-image Trending: 1.0
+- glif-loradex-trainer/maxxd4240_SketchOnWater (2024-11-07) text-to-image Trending: 1.0
+- glif-loradex-trainer/maxxd4240_VictorianMemes (2024-11-06) text-to-image Trending: 1.0
+- glif-loradex-trainer/maxxd4240_WaterPortraits (2024-11-04) text-to-image Trending: 1.0
+- glif-loradex-trainer/maxxd4240_WaterStories (2024-09-28) text-to-image Trending: 1.0
+- glif-loradex-trainer/maxxd4240_WeirdFantasy (2024-11-04) text-to-image Trending: 1.0
+- glif-loradex-trainer/maxxd4240_WokeJaguar (2024-11-23) text-to-image Trending: 1.0
+- glif-loradex-trainer/mesonwarrior_flux_dev_close_up_animals (2024-11-01) text-to-image Trending: 1.0
+- glif-loradex-trainer/mesonwarrior_flux_dev_soyjak (2024-10-31) text-to-image Trending: 1.0
+- glif-loradex-trainer/openryuka_retro_video_game_box_t (2024-10-30) text-to-image Trending: 1.0
+- glif-loradex-trainer/quitters_flux_dev_courtroomsketch (2024-09-20) text-to-image Trending: 1.0
+- glif-loradex-trainer/quitters_flux_dev_gc_boxart (2024-11-06) text-to-image Trending: 1.0
+- glif-loradex-trainer/saq1b_collage_art_portrait (2024-12-06) text-to-image Trending: 1.0
+- glif-loradex-trainer/saq1b_halftone (2024-12-03) text-to-image Trending: 1.0
+- glif-loradex-trainer/steam6332_flux_dev_pink_glitter_dust (2024-11-08) text-to-image Trending: 1.0
+- glif-loradex-trainer/swap_flux_dev_underwater_world (2024-11-07) text-to-image Trending: 1.0
+- glif-loradex-trainer/swap_flux_dev_water_brushpens_v1 (2024-11-06) text-to-image Trending: 1.0
+- glif-loradex-trainer/swapagrawal14_anamika_unknown_reincarnation (2024-11-18) text-to-image Trending: 1.0
+- glif-loradex-trainer/swapagrawal14_flux_dev_masterpiece_sandart_v1 (2024-10-29) text-to-image Trending: 1.0
+- glif-loradex-trainer/swapagrawal14_flux_dev_swap_draws_it (2024-10-29) text-to-image Trending: 1.0
+- glif-loradex-trainer/swapagrawal14_swap_draws_v2 (2024-11-27) text-to-image Trending: 1.0
+- glif-loradex-trainer/swapagrawal14_tattoo_artist_v1 (2024-12-08) text-to-image Trending: 1.0
+- glif-loradex-trainer/weresloth_flux_dev_p4tt3rn (2024-10-31) text-to-image Trending: 1.0
+- glif-loradex-trainer/x_bulbul_x_90s_anime (2024-10-31) text-to-image Trending: 1.0
+- glif-loradex-trainer/x_bulbul_x_backrooms (2024-10-30) text-to-image Trending: 1.0
+- glif-loradex-trainer/x_bulbul_x_Family_Guy_LoRa (2024-11-16) text-to-image Trending: 1.0
+- glif-loradex-trainer/x_bulbul_x_HOR_berlin (2024-11-02) text-to-image Trending: 1.0
+- glif-loradex-trainer/x_bulbul_x_Playstation_2_Game_Covers (2024-11-01) text-to-image Trending: 1.0
+- glif-loradex-trainer/x_bulbul_x_Red_Carpet_LoRa (2024-11-15) text-to-image Trending: 1.0
+- glif-loradex-trainer/x_bulbul_x_windows_95_UI (2024-11-01) text-to-image Trending: 1.0
+- glif/90s-anime-art (2024-09-24) text-to-image Trending: 1.0
+- glif/anime-blockprint-style (2024-09-17) text-to-image Trending: 1.0
+- glif/Brain-Melt-Acid-Art (2024-09-23) text-to-image Trending: 1.0
+- glif/dithering (2024-09-23) text-to-image Trending: 1.0
+- glif/Gesture-Draw (2024-09-24) text-to-image Trending: 1.0
+- glif/how2draw (2024-09-23) text-to-image Trending: 1.0
+- glif/LiDAR-Vision (2024-09-23) text-to-image Trending: 1.0
+- godfathercollections/dishapatani-flux-6000 (2024-09-28) text-to-image Trending: 1.0
+- gokaygokay/Flux-2D-Game-Assets-LoRA (2024-11-04) text-to-image Trending: 1.0
+- gokaygokay/Flux-Brush-Strokes-LoRA (2024-12-17) text-to-image Trending: 1.0
+- gokaygokay/Flux-Digital-Backgrounds-LoRA (2024-11-21) text-to-image Trending: 1.0
+- gokaygokay/Flux-Double-Exposure-LoRA (2024-10-29) text-to-image Trending: 1.0
+- gokaygokay/Flux-Engrave-LoRA (2024-12-18) text-to-image Trending: 1.0
+- gokaygokay/Flux-Game-Assets-LoRA-v2 (2024-10-18) text-to-image Trending: 2.0
+- gokaygokay/Flux-Mosaic-LoRA (2024-12-18) text-to-image Trending: 1.0
+- gokaygokay/Flux-Pastel-LoRA (2024-12-19) text-to-image Trending: 1.0
+- gokaygokay/Flux-Realistic-Backgrounds-LoRA (2024-11-21) text-to-image Trending: 1.0
+- gokaygokay/Flux-Seamless-Texture-LoRA (2024-10-29) text-to-image Trending: 1.0
+- gokaygokay/Flux-Watercolor-Strokes-LoRA (2024-12-17) text-to-image Trending: 1.0
+- gokaygokay/Flux-White-Background-LoRA (2024-09-25) text-to-image Trending: 1.0
+- goofyai/3D_Render_for_Flux (2024-09-11) text-to-image Trending: 1.0
+- google-t5/t5-large (2022-03-02) translation Trending: 1.0
+- google-t5/t5-small (2022-03-02) translation Trending: 6.0
+- google/flan-t5-large (2022-10-21) text2text-generation Trending: 5.0
+- google/gemma-2-27b-it (2024-06-24) text-generation Trending: 4.0
+- google/gemma-2-2b-it (2024-07-16) text-generation Trending: 11.0
+- google/gemma-2-9b-it (2024-06-24) text-generation Trending: 6.0
+- google/gemma-2b (2024-02-08) text-generation Trending: 3.0
+- google/gemma-2b-it (2024-02-08) text-generation Trending: 4.0
+- google/gemma-3-27b-it (2025-03-01) image-text-to-text Trending: 778.0
+- google/gemma-7b (2024-02-08) text-generation Trending: 7.0
+- google/vit-base-patch16-224 (2022-03-02) image-classification Trending: 8.0
+- h0x91b/clay-vorona (2024-08-19) text-to-image Trending: 1.0
+- hakurei/waifu-diffusion (2022-08-30) text-to-image Trending: 3.0
+- Helsinki-NLP/opus-mt-en-es (2022-03-02) translation Trending: 1.0
+- Helsinki-NLP/opus-mt-fr-en (2022-03-02) translation Trending: 1.0
+- Helsinki-NLP/opus-mt-nl-en (2022-03-02) translation Trending: 1.0
+- HomeroVerena2024/HomeroVerena-LoRa (2024-10-31) text-to-image Trending: 1.0
+- HuggingFaceH4/zephyr-7b-alpha (2023-10-09) text-generation Trending: 1.0
+- HuggingFaceH4/zephyr-7b-beta (2023-10-26) text-generation Trending: 4.0
+- hugovntr/flux-schnell-realism (2024-09-07) text-to-image Trending: 1.0
+- huwhitememes/kashpatel-dev2pro-lora (2024-12-01) text-to-image Trending: 1.0
+- igorriti/flux-360 (2024-08-28) text-to-image Trending: 1.0
+- ij5/pixel (2023-12-04) text-to-image Trending: 1.0
+- iliketoasters/miniature-people (2024-09-18) text-to-image Trending: 1.0
+- ilsilfverskiold/tech-keywords-extractor (2023-11-23) text2text-generation Trending: 1.0
+- imagepipeline/flux-Anime (2024-11-29) text-to-image Trending: 1.0
+- inuptia/panties (2024-11-04) text-to-image Trending: 1.0
+- its-magick/merlin-flux-ultra-realism-v2 (2024-10-18) text-to-image Trending: 1.0
+- its-magick/merlin-sprites (2024-10-01) text-to-image Trending: 1.0
+- jackhhao/jailbreak-classifier (2023-09-30) text-classification Trending: 1.0
+- jainr3/sd-diffusiondb-pixelart-model-lora (2023-05-12) text-to-image Trending: 1.0
+- jainr3/sd-pixelart-model-lora (2023-05-12) text-to-image Trending: 1.0
+- jakedahn/flux-autumn-green (2024-10-07) text-to-image Trending: 1.0
+- jakedahn/flux-latentpop (2024-08-25) text-to-image Trending: 1.0
+- jbilcke-hf/flux-dev-panorama-lora-2 (2024-08-14) text-to-image Trending: 1.0
+- Jemmo/ProtonX50 (2024-09-09) text-to-image Trending: 1.0
+- jeremyp2/flux-jcvd-lora (2024-08-27) text-to-image Trending: 1.0
+- jeremytai/enso-zen (2024-09-20) text-to-image Trending: 1.0
+- jeremytai/techlinedrawing (2024-09-26) text-to-image Trending: 1.0
+- Jiachang/pokemon-lora (2023-05-03) text-to-image Trending: 1.0
+- Jigen/Star_Trek_SDXL (2023-12-05) text-to-image Trending: 1.0
+- jimmycarter/flux-training-losercity-next (2024-08-11) text-to-image Trending: 1.0
+- joachimsallstrom/aether-cloud-lora-for-sdxl (2023-09-06) text-to-image Trending: 1.0
+- johnowhitaker/lora-sdxl-plushie (2023-11-24) text-to-image Trending: 1.0
+- johnriches1/ai-rolx (2024-11-22) text-to-image Trending: 1.0
+- Jonjew/NSFWMaster (2025-01-08) text-to-image Trending: 2.0
+- Jonny001/CTAI-Tribe (2024-12-13) text-to-image Trending: 1.0
+- Jovie/Anime (2024-12-21) text-to-image Trending: 2.0
+- Jovie/Midjourney (2024-09-22) text-to-image Trending: 1.0
+- Jovie/Midjourney_Schnell (2024-09-25) text-to-image Trending: 1.0
+- justanotherNicole/Flux_Nicole (2024-09-25) text-to-image Trending: 1.0
+- justmalhar/flux-thumbnails-v3 (2024-11-24) text-to-image Trending: 1.0
+- jwywoo/storyboard-scene-generation-model-flux-v3-F (2024-12-04) text-to-image Trending: 1.0
+- jwywoo/storyboard-scene-generation-model-flux-v3-FLH (2024-12-05) text-to-image Trending: 1.0
+- jwywoo/storyboard-scene-generation-model-flux-v3-HLH (2024-12-05) text-to-image Trending: 1.0
+- KappaNeuro/century-botanical-illustration (2023-09-14) text-to-image Trending: 1.0
+- KappaNeuro/character-design (2023-09-14) text-to-image Trending: 1.0
+- KappaNeuro/color-palette (2023-09-14) text-to-image Trending: 1.0
+- KappaNeuro/ivan-bilibin-style (2023-09-14) text-to-image Trending: 1.0
+- KappaNeuro/konstantin-korovin-style (2023-09-14) text-to-image Trending: 1.0
+- KappaNeuro/leonid-afremov-style (2023-09-14) text-to-image Trending: 1.0
+- KappaNeuro/makoto-shinkai-style (2023-09-14) text-to-image Trending: 1.0
+- KappaNeuro/mikhail-vrubel-style (2023-09-14) text-to-image Trending: 1.0
+- KappaNeuro/stained-glass-portrait (2023-09-14) text-to-image Trending: 1.0
+- KappaNeuro/thomas-moran-style (2023-09-14) text-to-image Trending: 1.0
+- KappaNeuro/tove-jansson-style (2023-09-14) text-to-image Trending: 1.0
+- KappaNeuro/zanele-muholi-style (2023-09-14) text-to-image Trending: 1.0
+- karagianis/flux_arianagrande_v1 (2024-11-14) text-to-image Trending: 1.0
+- KBlueLeaf/Kohaku-XL-Zeta (2024-08-25) text-to-image Trending: 1.0
+- Keltezaa/alexandra-daddario-flux (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/all-disney-princess-xl-lora-model-from-ralph-breaks-the-internet (2024-12-04) text-to-image Trending: 1.0
+- Keltezaa/amanda-seyfried-flux (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/bai-leng-lei-yuan-su-te-xiao-xl-flux-thunder-element-special-effects (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/brooke-shields (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/cameron-diaz-1994-flux (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/crazy-hair (2024-11-15) text-to-image Trending: 1.0
+- Keltezaa/crystals-flux-sdxl-pony-1-5 (2024-10-26) text-to-image Trending: 1.0
+- Keltezaa/drew-barrymore-flux (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/elizabeth-olsen-sdxl-flux (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/ella-purnell-flux (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/elle-fanning (2024-10-26) text-to-image Trending: 1.0
+- Keltezaa/emily-blunt-flux (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/emma-watson-face-flux-sdxl (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/eva-green-flux (2024-11-10) text-to-image Trending: 1.0
+- Keltezaa/fantasy-wizard-witches (2024-10-26) text-to-image Trending: 1.0
+- Keltezaa/Fire_Spirit (2024-11-16) text-to-image Trending: 1.0
+- Keltezaa/flux-alexandra-daddario (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/flux-chloe-grace-moretz (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/flux-emma-myers (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/flux-faetastic-details (2024-10-26) text-to-image Trending: 1.0
+- Keltezaa/flux-fantasy-knights-by-hailoknight (2024-11-10) text-to-image Trending: 1.0
+- Keltezaa/flux-livvy-dunne-influencer (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/flux-realistic-asian-girls-face-flux (2024-11-13) text-to-image Trending: 1.0
+- Keltezaa/gal-gadot-flux (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/hanni-makina-flux (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/jenna-ortega-flux (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/jennifer-carpenter-2012-flux-and-sdxl (2024-12-16) text-to-image Trending: 1.0
+- Keltezaa/jennifer-lawrence-flux (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/keira-knightley-flux (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/leather-style-by-dever-flux-sdxl-pony-exp (2024-11-10) text-to-image Trending: 1.0
+- Keltezaa/lindsay-lohan-actress-2006-flux (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/little-caprice-flux-adult-film-actress (2024-10-25) text-to-image Trending: 2.0
+- Keltezaa/magic-of-art-2-flux (2024-11-10) text-to-image Trending: 1.0
+- Keltezaa/magic-of-art-flux (2024-11-10) text-to-image Trending: 1.0
+- Keltezaa/makenzie-raine-flux-sdxl-sd-1-5 (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/mckenna-grace-768-portrait (2024-11-13) text-to-image Trending: 1.0
+- Keltezaa/midjourney-v6-1-meets-flux-sdxl (2024-12-08) text-to-image Trending: 1.0
+- Keltezaa/movie-poster-ce-sdxl-flux (2024-11-10) text-to-image Trending: 1.0
+- Keltezaa/natalie-portman-sdxl-flux (2024-10-26) text-to-image Trending: 1.0
+- Keltezaa/neon-environments (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/real-asian-women-zhen-shi-ya-zhou-nu-xing (2024-11-13) text-to-image Trending: 1.0
+- Keltezaa/sandra-bullock (2024-10-26) text-to-image Trending: 1.0
+- Keltezaa/SD1_V2_1 (2024-11-27) text-to-image Trending: 1.0
+- Keltezaa/Show_Your_Sexy_Area (2024-12-17) text-to-image Trending: 1.0
+- Keltezaa/ShowerGirls (2024-12-17) text-to-image Trending: 1.0
+- Keltezaa/snegh (2025-01-25) text-to-image Trending: 4.0
+- Keltezaa/sophie-turner-flux (2024-10-25) text-to-image Trending: 1.0
+- Keltezaa/stillsuit-flux-sdxl (2024-11-10) text-to-image Trending: 1.0
+- Keltezaa/victorian-gothic-horror (2024-11-10) text-to-image Trending: 1.0
+- Keltezaa/witch-style-flux-sdxl-sd1-5 (2024-11-10) text-to-image Trending: 1.0
+- Keltezaa/WomanBodyTattoo_Flux (2024-11-16) text-to-image Trending: 1.0
+- Kernel/sd-nsfw (2023-07-15) text-to-image Trending: 1.0
+- kudzueye/Boreal (2024-08-12) text-to-image Trending: 1.0
+- kudzueye/boreal-flux-dev-v2 (2024-09-05) text-to-image Trending: 1.0
+- Kwai-Kolors/Kolors (2024-06-05) text-to-image Trending: 5.0
+- lamm-mit/bioinspired-L-FLUX.1-dev (2024-09-23) text-to-image Trending: 1.0
+- leguigou/lisa-lolita-flux (2024-11-23) text-to-image Trending: 1.0
+- leonel4rd/Anti-blur (2024-09-16) text-to-image Trending: 1.0
+- leonel4rd/NaokiUrasawamangastyleFlux (2024-12-07) text-to-image Trending: 1.0
+- lexa862/JuliaFluxLora (2024-11-09) text-to-image Trending: 1.0
+- lexa862/NSFWmodel (2024-11-22) text-to-image Trending: 1.0
+- lexa862/SexAnatomyJul (2024-11-09) text-to-image Trending: 1.0
+- lexa862/SexyAnatom (2024-11-09) text-to-image Trending: 1.0
+- lichorosario/flux-lora-simple-vector (2024-09-24) text-to-image Trending: 1.0
+- lichorosario/flux-lora-tosti-vector-full-captions (2024-09-20) text-to-image Trending: 1.0
+- lichorosario/flux-lora-tstvctr (2024-09-16) text-to-image Trending: 1.0
+- lichorosario/flux-RealismLora (2024-09-12) text-to-image Trending: 1.0
+- Lightricks/LTX-Video (2024-10-31) text-to-video Trending: 15.0
+- linoyts/2000_ads (2024-01-06) text-to-image Trending: 1.0
+- linoyts/3d_icon_SDXL_LoRA (2023-11-26) text-to-image Trending: 1.0
+- linoyts/3diconz (2023-12-08) text-to-image Trending: 1.0
+- linoyts/huggy_flux_fal_lora (2024-10-18) text-to-image Trending: 1.0
+- linoyts/huggy_v29 (2023-11-10) text-to-image Trending: 1.0
+- linoyts/tarot_card_flux_v12_1000_layers_no_captions_5 (2024-10-20) text-to-image Trending: 1.0
+- linoyts/yarn_art_Flux_LoRA (2024-08-13) text-to-image Trending: 1.0
+- llava-hf/llava-1.5-13b-hf (2023-12-05) image-text-to-text Trending: 1.0
+- llava-hf/llava-1.5-7b-hf (2023-12-05) image-text-to-text Trending: 5.0
+- longnthgmedia/flux_lora_meme_v2 (2024-10-14) text-to-image Trending: 1.0
+- lora-library/B-LoRA-drawing4 (2024-05-18) text-to-image Trending: 1.0
+- lora-library/B-LoRA-village_oil (2024-05-18) text-to-image Trending: 1.0
+- lordjia/drone-photography (2023-11-19) text-to-image Trending: 1.0
+- lucianosb/cathedral-of-brasilia-brazil-xl (2024-07-24) text-to-image Trending: 1.0
+- ludocomito/flux-lora-kuji (2024-08-26) text-to-image Trending: 1.0
+- maria26/Floor_Plan_LoRA (2024-07-16) text-to-image Trending: 1.0
+- martintomov/ascii-flux-v1 (2024-08-24) text-to-image Trending: 1.0
+- martintomov/mrr-synthetic-data-v1 (2024-09-29) text-to-image Trending: 1.0
+- martintomov/mrr-synthetic-data-v1.5 (2024-10-14) text-to-image Trending: 1.0
+- martintomov/mrr-synthetic-data-v2 (2024-11-20) text-to-image Trending: 1.0
+- martintomov/naturalkata-flux (2024-08-19) text-to-image Trending: 1.0
+- martintomov/rayban-meta-glasses-v2 (2024-08-20) text-to-image Trending: 1.0
+- martintomov/retrofuturism-flux (2024-08-12) text-to-image Trending: 1.0
+- martintomov/retrofuturism-flux-v2 (2024-08-21) text-to-image Trending: 1.0
+- meta-llama/Llama-2-13b-chat-hf (2023-07-13) text-generation Trending: 4.0
+- meta-llama/Llama-2-7b-chat-hf (2023-07-13) text-generation Trending: 24.0
+- meta-llama/Llama-3.1-405B-Instruct (2024-07-16) text-generation Trending: 1.0
+- meta-llama/Llama-3.1-70B-Instruct (2024-07-16) text-generation Trending: 5.0
+- meta-llama/Llama-3.1-8B-Instruct (2024-07-18) text-generation Trending: 18.0
+- meta-llama/Llama-3.2-11B-Vision-Instruct (2024-09-18) image-text-to-text Trending: 7.0
+- meta-llama/Llama-3.2-1B-Instruct (2024-09-18) text-generation Trending: 14.0
+- meta-llama/Llama-3.2-3B-Instruct (2024-09-18) text-generation Trending: 49.0
+- meta-llama/Llama-3.2-90B-Vision-Instruct (2024-09-19) image-text-to-text Trending: 2.0
+- meta-llama/Llama-3.3-70B-Instruct (2024-11-26) text-generation Trending: 37.0
+- meta-llama/Llama-Guard-3-8B (2024-07-22) text-generation Trending: 2.0
+- meta-llama/Meta-Llama-3-70B-Instruct (2024-04-17) text-generation Trending: 1.0
+- meta-llama/Meta-Llama-3-8B-Instruct (2024-04-17) text-generation Trending: 11.0
+- mgwr/Cine-Aesthetic (2024-08-25) text-to-image Trending: 1.0
+- microsoft/DialoGPT-medium (2022-03-02) text-generation Trending: 2.0
+- microsoft/Phi-3-medium-128k-instruct (2024-05-07) text-generation Trending: 1.0
+- microsoft/Phi-3-mini-4k-instruct (2024-04-22) text-generation Trending: 7.0
+- microsoft/Phi-3.5-mini-instruct (2024-08-16) text-generation Trending: 7.0
+- microsoft/Phi-3.5-MoE-instruct (2024-08-17) text-generation Trending: 1.0
+- microsoft/Phi-3.5-vision-instruct (2024-08-16) image-text-to-text Trending: 2.0
+- microsoft/phi-4 (2024-12-11) text-generation Trending: 21.0
+- microsoft/trocr-base-handwritten (2022-03-02) image-to-text Trending: 4.0
+- mistralai/Mistral-7B-Instruct-v0.1 (2023-09-27) text-generation Trending: 3.0
+- mistralai/Mistral-7B-Instruct-v0.2 (2023-12-11) text-generation Trending: 10.0
+- mistralai/Mistral-7B-Instruct-v0.3 (2024-05-22) text-generation Trending: 42.0
+- mistralai/Mistral-Nemo-Instruct-2407 (2024-07-17) text-generation Trending: 11.0
+- mistralai/Mistral-Small-24B-Instruct-2501 (2025-01-28) text-generation Trending: 29.0
+- mistralai/Mixtral-8x22B-Instruct-v0.1 (2024-04-16) text-generation Trending: 1.0
+- mistralai/Mixtral-8x7B-Instruct-v0.1 (2023-12-10) text-generation Trending: 5.0
+- mistralai/Mixtral-8x7B-v0.1 (2023-12-01) text-generation Trending: 5.0
+- mistralai/Pixtral-12B-2409 (2024-09-11) image-text-to-text Trending: 4.0
+- mixedbread-ai/mxbai-embed-large-v1 (2024-03-07) feature-extraction Trending: 11.0
+- ml6team/keyphrase-extraction-kbir-inspec (2022-03-29) token-classification Trending: 1.0
+- mmaluchnick/sabrina-carpenter-flux-model (2024-11-20) text-to-image Trending: 1.0
+- Motas/Flux_Fashion_Photography_Style (2024-09-08) text-to-image Trending: 1.0
+- Motas/GTA6 (2024-09-08) text-to-image Trending: 1.0
+- mrcuddle/live2d-model-maker (2024-12-11) text-to-image Trending: 1.0
+- mujibanget/vector-illustration (2024-09-16) text-to-image Trending: 1.0
+- multimodalart/eery-liminal-space (2024-09-12) text-to-image Trending: 1.0
+- multimodalart/flux-tarot-v1 (2024-08-14) text-to-image Trending: 3.0
+- multimodalart/product-design (2024-08-30) text-to-image Trending: 1.0
+- multimodalart/vintage-ads-flux (2024-08-26) text-to-image Trending: 1.0
+- naumnaum/02-09-luba-fal-fast (2024-09-02) text-to-image Trending: 1.0
+- nerijs/animation2k-flux (2024-08-18) text-to-image Trending: 1.0
+- nerijs/dark-fantasy-illustration-flux (2024-08-22) text-to-image Trending: 1.0
+- nerijs/dark-fantasy-movie-flux (2024-08-24) text-to-image Trending: 1.0
+- nerijs/dripped-out-xl (2023-10-19) text-to-image Trending: 1.0
+- nerijs/flux-waldo1024-v1 (2024-08-15) text-to-image Trending: 1.0
+- nerijs/flux_prettyshot_v1 (2024-09-18) text-to-image Trending: 1.0
+- nerijs/lego-minifig-xl (2023-08-13) text-to-image Trending: 1.0
+- nerijs/pastelcomic-flux (2024-08-20) text-to-image Trending: 1.0
+- nerijs/pixel-art-3.5L (2024-10-29) text-to-image Trending: 1.0
+- nerijs/pixel-art-xl (2023-08-03) text-to-image Trending: 4.0
+- Nishitbaria/Anime-style-flux-lora-Large (2024-11-23) text-to-image Trending: 1.0
+- Nishitbaria/AnimeStyle-flux-Dev-Lora (2024-11-12) text-to-image Trending: 1.0
+- Nishitbaria/Drawing-Art-Lora (2024-11-28) text-to-image Trending: 1.0
+- Nishitbaria/LoRa-Flux-Anime-Style (2024-11-23) text-to-image Trending: 1.0
+- none-yet/flux-anime (2024-09-20) text-to-image Trending: 1.0
+- Norm/nougat-latex-base (2023-10-08) image-to-text Trending: 1.0
+- Norod78/CartoonStyle-flux-lora (2024-09-03) text-to-image Trending: 1.0
+- Norod78/chalk-board-drawing-flux (2024-08-21) text-to-image Trending: 1.0
+- Norod78/Flux_1_Dev_LoRA_Paper-Cutout-Style (2024-08-14) text-to-image Trending: 1.0
+- Norod78/huggingface-emoji-flux (2024-12-18) text-to-image Trending: 1.0
+- Norod78/SDXL-HuWoof-LoRA (2024-01-14) text-to-image Trending: 1.0
+- Norod78/SDXL-LaundryArt-LoRA-r32 (2024-01-17) text-to-image Trending: 1.0
+- Norod78/sdxl-muppetshow-lora (2023-11-14) text-to-image Trending: 1.0
+- Norod78/sdxl-PaperCutouts-Dreambooth (2023-11-17) text-to-image Trending: 1.0
+- Norod78/SDXL-Psychemelt-style-LoRA (2024-02-18) text-to-image Trending: 1.0
+- Norod78/SDXL-simpstyle-Lora (2023-08-20) text-to-image Trending: 1.0
+- Norod78/SDXL-StickerSheet-Lora (2023-08-31) text-to-image Trending: 1.0
+- Norod78/world-of-warcraft-cinematic-style-sdxl (2024-04-11) text-to-image Trending: 1.0
+- NousResearch/Hermes-2-Pro-Llama-3-8B (2024-04-30) text-generation Trending: 1.0
+- NousResearch/Hermes-3-Llama-3.1-70B (2024-07-29) text-generation Trending: 1.0
+- NousResearch/Hermes-3-Llama-3.1-8B (2024-07-28) text-generation Trending: 1.0
+- NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO (2024-01-11) text-generation Trending: 3.0
+- NSFWAIgirl/Expressive_H-000001 (2024-12-17) text-to-image Trending: 1.0
+- nvidia/Llama-3.1-Nemotron-70B-Instruct-HF (2024-10-12) text-generation Trending: 2.0
+- nyuuzyou/AircraftFLUX-LoRA (2024-12-09) text-to-image Trending: 1.0
+- Omarito2412/Dark-Fantasy-Flux (2024-08-31) text-to-image Trending: 1.0
+- op74185/watercolor-illustration (2024-07-03) text-to-image Trending: 1.0
+- openai-community/gpt2 (2022-03-02) text-generation Trending: 14.0
+- openai-community/roberta-base-openai-detector (2022-03-02) text-classification Trending: 1.0
+- openai/whisper-base (2022-09-26) automatic-speech-recognition Trending: 1.0
+- openai/whisper-base.en (2022-09-26) automatic-speech-recognition Trending: 1.0
+- openai/whisper-large-v3 (2023-11-07) automatic-speech-recognition Trending: 31.0
+- openai/whisper-large-v3-turbo (2024-10-01) automatic-speech-recognition Trending: 36.0
+- openfree/claude-monet (2024-11-21) text-to-image Trending: 8.0
+- openfree/flux-lora-korea-palace (2024-12-07) text-to-image Trending: 8.0
+- openfree/jungkook (2024-11-28) text-to-image Trending: 1.0
+- openfree/korea-president-yoon (2025-01-19) text-to-image Trending: 7.0
+- openfree/pepe (2025-01-23) text-to-image Trending: 7.0
+- openfree/president-k-dj (2025-01-20) text-to-image Trending: 7.0
+- openfree/president-pjh (2025-01-21) text-to-image Trending: 6.0
+- openfree/z-tao (2024-11-28) text-to-image Trending: 1.0
+- ordlibrary/web3gpt (2024-10-08) text-to-image Trending: 1.0
+- oshtz/flux-pointcrayonstyle (2024-09-04) text-to-image Trending: 1.0
+- oshtz/flux-vintagemono (2024-09-27) text-to-image Trending: 1.0
+- ostris/ikea-instructions-lora-sdxl (2023-09-29) text-to-image Trending: 1.0
+- ostris/sdxl-sd1-vae-lora (2024-05-21) text-to-image Trending: 1.0
+- ostris/super-cereal-sdxl-lora (2023-10-10) text-to-image Trending: 1.0
+- ozocalan/raybanmeta (2024-09-12) text-to-image Trending: 1.0
+- parabolicx/peapods (2024-09-30) text-to-image Trending: 1.0
+- paulonteri/notion-like-doodle-illustrations (2023-10-04) text-to-image Trending: 1.0
+- Pclanglais/Mickey-1928 (2023-12-31) text-to-image Trending: 1.0
+- Pclanglais/TintinIA (2023-09-05) text-to-image Trending: 1.0
+- pcoundia/coundia (2024-12-18) text-to-image Trending: 1.0
+- perplexity-ai/r1-1776 (2025-02-18) text-generation Trending: 69.0
+- peter198477/anime-release2 (2024-11-22) text-to-image Trending: 1.0
+- peter198477/sexy (2024-11-25) text-to-image Trending: 1.0
+- piebro/factorio-blueprint-visualizations-sdxl-lora (2023-12-08) text-to-image Trending: 1.0
+- pimpilikipilapi1/bj (2024-08-23) text-to-image Trending: 1.0
+- pipezamudio/pipe2024-08 (2024-08-31) text-to-image Trending: 1.0
+- PixArt-alpha/PixArt-Sigma-XL-2-1024-MS (2024-04-11) text-to-image Trending: 1.0
+- playboy40k/flux-EmmaStoneLora (2024-10-28) text-to-image Trending: 1.0
+- playboy40k/flux-EmmaWatsonLora (2024-10-02) text-to-image Trending: 1.0
+- playboy40k/flux-JennaOrtegaLora (2024-08-27) text-to-image Trending: 1.0
+- playboy40k/flux-JoeyKingLora (2024-10-11) text-to-image Trending: 1.0
+- playboy40k/flux-TaylorSwiftLora (2024-08-26) text-to-image Trending: 1.0
+- playboy40k/flux-ZendayaLora (2024-10-02) text-to-image Trending: 1.0
+- playboy40k/pony-GwenTennysonLora (2024-10-02) text-to-image Trending: 1.0
+- playgroundai/playground-v2.5-1024px-aesthetic (2024-02-16) text-to-image Trending: 1.0
+- prithivMLmods/3D-Render-Flux-LoRA (2024-11-07) text-to-image Trending: 1.0
+- prithivMLmods/Abstract-Cartoon-Flux-LoRA (2024-11-08) text-to-image Trending: 1.0
+- prithivMLmods/Aura-9999 (2024-11-10) text-to-image Trending: 1.0
+- prithivMLmods/Berenices-Alpha-DW-LoRA (2024-06-21) text-to-image Trending: 1.0
+- prithivMLmods/Berenices-Mini-Emoji-LoRA (2024-06-30) text-to-image Trending: 1.0
+- prithivMLmods/Bold-Shadows-Flux-LoRA (2024-11-09) text-to-image Trending: 1.0
+- prithivMLmods/Canes-Cars-Model-LoRA (2024-06-21) text-to-image Trending: 1.0
+- prithivMLmods/CAnime-LoRA (2024-11-12) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Animaliea-Artism (2024-07-13) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Art-Medium-LoRA (2024-06-21) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Car-Flux-Dev-LoRA (2024-09-08) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Clothing-Adp-LoRA (2024-07-29) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Clothing-Flux-LoRA (2024-09-07) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Cute-Kawaii-Flux-LoRA (2024-09-08) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Fashion-Product-Dilation (2024-08-04) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Flux-LoRA-Hoodies (2024-10-20) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Interior-Architecture-0.1 (2024-08-04) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Isometric-InteriorDesign-3D (2024-08-03) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Liquid-Wallpaper-Art (2024-07-01) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-LoRA-Flux-Anime (2024-09-08) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-LoRA-Flux-FaceRealism (2024-08-29) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-LoRA-Flux-Typography-ASCII (2024-10-17) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-LoRA-Flux-UltraRealism-2.0 (2024-10-17) text-to-image Trending: 5.0
+- prithivMLmods/Canopus-Modern-Clothing-Design (2024-08-04) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Pencil-Art-LoRA (2024-07-13) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Photo-Shoot-Mini-LoRA (2024-06-25) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Pixar-3D-Flux-LoRA (2024-09-08) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Pixar-Art (2024-07-13) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Realism-0.1 (2024-08-04) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Realism-LoRA (2024-06-19) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Red-Dead-Minimalize-LoRA (2024-06-25) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Snoopy-Charlie-Brown-Flux-LoRA (2024-09-08) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Textile-Pattern-adp-LoRA (2024-07-04) text-to-image Trending: 1.0
+- prithivMLmods/Canopus-Walking-Dead-adp-LoRA (2024-06-25) text-to-image Trending: 1.0
+- prithivMLmods/Castor-3D-Portrait-Flux-LoRA (2024-10-29) text-to-image Trending: 1.0
+- prithivMLmods/Castor-3D-Sketchfab-Flux-LoRA (2024-10-25) text-to-image Trending: 1.0
+- prithivMLmods/Castor-Character-Polygon-Flux-LoRA (2024-10-23) text-to-image Trending: 1.0
+- prithivMLmods/Castor-Collage-Dim-Flux-LoRA (2024-10-25) text-to-image Trending: 1.0
+- prithivMLmods/Castor-Dramatic-Neon-Flux-LoRA (2024-10-30) text-to-image Trending: 1.0
+- prithivMLmods/Castor-Flux-Concept-Gta6-Character-Design (2024-10-24) text-to-image Trending: 1.0
+- prithivMLmods/Castor-Gta6-Theme-Flux-LoRA (2024-10-24) text-to-image Trending: 1.0
+- prithivMLmods/Castor-Happy-Halloween-Flux-LoRA (2024-10-28) text-to-image Trending: 1.0
+- prithivMLmods/Castor-Red-Dead-Redemption-2-Flux-LoRA (2024-10-28) text-to-image Trending: 1.0
+- prithivMLmods/Clouds-Illusion-Flux-LoRA (2024-11-04) text-to-image Trending: 1.0
+- prithivMLmods/Coloring-Book-Flux-LoRA (2024-11-03) text-to-image Trending: 1.0
+- prithivMLmods/Dark-Thing-Flux-LoRA (2024-11-08) text-to-image Trending: 1.0
+- prithivMLmods/Digital-Chaos-Flux-LoRA (2024-11-09) text-to-image Trending: 1.0
+- prithivMLmods/Digital-Yellow-Flux-LoRA (2024-11-04) text-to-image Trending: 1.0
+- prithivMLmods/EBook-Creative-Cover-Flux-LoRA (2024-11-03) text-to-image Trending: 1.0
+- prithivMLmods/Electric-Blue-Flux-LoRA (2024-11-04) text-to-image Trending: 1.0
+- prithivMLmods/Fashion-Hut-Modeling-LoRA (2024-11-10) text-to-image Trending: 1.0
+- prithivMLmods/Flux-Art-Nightmare-99 (2024-11-21) text-to-image Trending: 1.0
+- prithivMLmods/Flux-C33-Design-LoRA (2024-11-29) text-to-image Trending: 1.0
+- prithivMLmods/Flux-Chill-Guy-Zone (2024-11-27) text-to-image Trending: 1.0
+- prithivMLmods/Flux-Dalle-Mix-LoRA (2024-11-14) text-to-image Trending: 2.0
+- prithivMLmods/Flux-Dev-Real-Anime-LoRA (2024-10-20) text-to-image Trending: 1.0
+- prithivMLmods/Flux-Fine-Detail-LoRA (2024-11-24) text-to-image Trending: 1.0
+- prithivMLmods/Flux-GArt-LoRA (2024-11-23) text-to-image Trending: 1.0
+- prithivMLmods/Flux-Golden-Coin-Design (2024-11-29) text-to-image Trending: 1.0
+- prithivMLmods/Flux-Lego-Ref-LoRA (2024-11-29) text-to-image Trending: 1.0
+- prithivMLmods/Flux-Long-Toon-LoRA (2024-11-24) text-to-image Trending: 1.0
+- prithivMLmods/Flux-Meme-Xd-LoRA (2024-11-26) text-to-image Trending: 1.0
+- prithivMLmods/Flux-Polaroid-Plus (2024-11-21) text-to-image Trending: 1.0
+- prithivMLmods/Flux-Product-Ad-Backdrop (2024-11-21) text-to-image Trending: 1.0
+- prithivMLmods/Flux-Realism-FineDetailed (2024-11-09) text-to-image Trending: 1.0
+- prithivMLmods/Flux-Toonic-2.5D-LoRA (2024-11-25) text-to-image Trending: 1.0
+- prithivMLmods/Flux.1-Dev-Ctoon-LoRA (2024-11-17) text-to-image Trending: 1.0
+- prithivMLmods/Flux.1-Dev-Frosted-Container-LoRA (2024-11-21) text-to-image Trending: 1.0
+- prithivMLmods/Flux.1-Dev-Hand-Sticky-LoRA (2024-11-17) text-to-image Trending: 1.0
+- prithivMLmods/Flux.1-Dev-Indo-Realism-LoRA (2024-11-18) text-to-image Trending: 1.0
+- prithivMLmods/Flux.1-Dev-LoRA-HDR-Realism (2024-11-11) text-to-image Trending: 1.0
+- prithivMLmods/Flux.1-Dev-Movie-Boards-LoRA (2024-11-18) text-to-image Trending: 1.0
+- prithivMLmods/Flux.1-Dev-Poster-HQ-LoRA (2024-11-17) text-to-image Trending: 1.0
+- prithivMLmods/Flux.1-Dev-Pov-DoorEye-LoRA (2024-11-18) text-to-image Trending: 1.0
+- prithivMLmods/Flux.1-Dev-Quote-LoRA (2024-11-17) text-to-image Trending: 1.0
+- prithivMLmods/Flux.1-Dev-Realtime-Toon-Mix (2024-11-20) text-to-image Trending: 1.0
+- prithivMLmods/Flux.1-Dev-Sketch-Card-LoRA (2024-11-18) text-to-image Trending: 1.0
+- prithivMLmods/Flux.1-Dev-Stamp-Art-LoRA (2024-11-17) text-to-image Trending: 1.0
+- prithivMLmods/Fractured-Line-Flare (2024-11-06) text-to-image Trending: 1.0
+- prithivMLmods/Glowing-Body-Flux-LoRA (2024-11-04) text-to-image Trending: 1.0
+- prithivMLmods/Golden-Dust-Flux-LoRA (2024-11-06) text-to-image Trending: 1.0
+- prithivMLmods/Green-Cartoon-Flux-LoRA (2024-11-10) text-to-image Trending: 1.0
+- prithivMLmods/Intense-Red-Flux-LoRA (2024-11-04) text-to-image Trending: 1.0
+- prithivMLmods/Kepler-452b-LoRA-Flux-Dev-3D-Bubbly (2024-10-19) text-to-image Trending: 1.0
+- prithivMLmods/Knitted-Character-Flux-LoRA (2024-11-09) text-to-image Trending: 1.0
+- prithivMLmods/Lime-Green-Flux-LoRA (2024-11-06) text-to-image Trending: 1.0
+- prithivMLmods/Logo-Design-Flux-LoRA (2024-11-03) text-to-image Trending: 1.0
+- prithivMLmods/Minimal-Futuristic-Flux-LoRA (2024-11-03) text-to-image Trending: 1.0
+- prithivMLmods/Mockup-Texture-Flux-LoRA (2024-10-30) text-to-image Trending: 1.0
+- prithivMLmods/Orange-Chroma-Flux-LoRA (2024-11-06) text-to-image Trending: 1.0
+- prithivMLmods/Past-Present-Deep-Mix-Flux-LoRA (2024-10-30) text-to-image Trending: 1.0
+- prithivMLmods/Pastel-BG-Flux-LoRA (2024-11-10) text-to-image Trending: 1.0
+- prithivMLmods/Pegasi-Beta-GTA-LoRA (2024-06-20) text-to-image Trending: 1.0
+- prithivMLmods/Pegasi-Minimalist-Image-Style (2024-07-19) text-to-image Trending: 1.0
+- prithivMLmods/Purple-Dreamy-Flux-LoRA (2024-11-06) text-to-image Trending: 1.0
+- prithivMLmods/Purple-Grid-Flux-LoRA (2024-11-07) text-to-image Trending: 1.0
+- prithivMLmods/Red-Undersea-Flux-LoRA (2024-11-07) text-to-image Trending: 1.0
+- prithivMLmods/Retro-Pixel-Flux-LoRA (2024-11-10) text-to-image Trending: 1.0
+- prithivMLmods/SD3.5-Large-Anime-LoRA (2024-10-29) text-to-image Trending: 1.0
+- prithivMLmods/SD3.5-Large-Handpainted-Sketchfab-3D-LoRA (2024-10-25) text-to-image Trending: 1.0
+- prithivMLmods/SD3.5-Large-Minimal-Blacked-LoRA (2024-10-25) text-to-image Trending: 1.0
+- prithivMLmods/SD3.5-Large-Photorealistic-LoRA (2024-10-25) text-to-image Trending: 1.0
+- prithivMLmods/SD3.5-Large-Turbo-HyperRealistic-LoRA (2024-10-26) text-to-image Trending: 1.0
+- prithivMLmods/SD3.5-Turbo-Realism-2.0-LoRA (2024-11-07) text-to-image Trending: 1.0
+- prithivMLmods/Seamless-Pattern-Design-Flux-LoRA (2024-11-03) text-to-image Trending: 1.0
+- prithivMLmods/Shadow-Projection-Flux-LoRA (2024-11-08) text-to-image Trending: 1.0
+- prithivMLmods/Simple-Doodle-SD3.5-Turbo (2024-11-08) text-to-image Trending: 1.0
+- prithivMLmods/Street-Bokeh-Flux-LoRA (2024-11-08) text-to-image Trending: 1.0
+- prithivMLmods/Super-Pencil-Flux-LoRA (2024-11-12) text-to-image Trending: 1.0
+- prithivMLmods/Teen-Outfit (2024-11-11) text-to-image Trending: 1.0
+- prithivMLmods/Ton618-Amxtoon-Flux-LoRA (2024-10-30) text-to-image Trending: 1.0
+- prithivMLmods/Ton618-Epic-Realism-Flux-LoRA (2024-10-30) text-to-image Trending: 1.0
+- prithivMLmods/Ton618-Only-Stickers-Flux-LoRA (2024-11-02) text-to-image Trending: 1.0
+- prithivMLmods/Ton618-Space-Wallpaper-LoRA (2024-11-02) text-to-image Trending: 1.0
+- prithivMLmods/Ton618-Tarot-Cards-Flux-LoRA (2024-10-30) text-to-image Trending: 1.0
+- prithivMLmods/Uncoloured-Polygon-Flux-LoRA (2024-10-24) text-to-image Trending: 1.0
+- prithivMLmods/Yellow-Laser-Flux-LoRA (2024-11-09) text-to-image Trending: 1.0
+- prithivMLmods/Yellow-Pop-Flux-Dev-LoRA (2024-11-07) text-to-image Trending: 1.0
+- ProomptEngineer/pe-courtroomsketch-style (2023-09-11) text-to-image Trending: 1.0
+- ProomptEngineer/pe-pencil-drawing-style (2023-09-11) text-to-image Trending: 1.0
+- punzel/flux_elle_fanning (2024-09-11) text-to-image Trending: 1.0
+- punzel/flux_emma_watson (2024-08-28) text-to-image Trending: 1.0
+- punzel/flux_hailee_steinfeld (2024-09-15) text-to-image Trending: 1.0
+- punzel/flux_jenna_ortega (2024-08-28) text-to-image Trending: 1.0
+- punzel/flux_kiernan_shipka (2024-09-08) text-to-image Trending: 1.0
+- punzel/flux_livvy_dunne (2024-09-12) text-to-image Trending: 1.0
+- Purz/vhs-box (2024-10-10) text-to-image Trending: 1.0
+- Qwen/QVQ-72B-Preview (2024-12-24) image-text-to-text Trending: 3.0
+- Qwen/Qwen2-72B-Instruct (2024-05-28) text-generation Trending: 1.0
+- Qwen/Qwen2-7B-Instruct (2024-06-04) text-generation Trending: 4.0
+- Qwen/Qwen2-Audio-7B-Instruct (2024-07-31) audio-text-to-text Trending: 14.0
+- Qwen/Qwen2-VL-72B-Instruct (2024-09-17) image-text-to-text Trending: 1.0
+- Qwen/Qwen2-VL-7B-Instruct (2024-08-28) image-text-to-text Trending: 9.0
+- Qwen/Qwen2.5-0.5B-Instruct (2024-09-16) text-generation Trending: 9.0
+- Qwen/Qwen2.5-1.5B-Instruct (2024-09-17) text-generation Trending: 11.0
+- Qwen/Qwen2.5-32B-Instruct (2024-09-17) text-generation Trending: 7.0
+- Qwen/Qwen2.5-72B-Instruct (2024-09-16) text-generation Trending: 10.0
+- Qwen/Qwen2.5-7B-Instruct (2024-09-16) text-generation Trending: 22.0
+- Qwen/Qwen2.5-Coder-32B-Instruct (2024-11-06) text-generation Trending: 17.0
+- Qwen/Qwen2.5-Coder-7B (2024-09-16) text-generation Trending: 1.0
+- Qwen/Qwen2.5-Coder-7B-Instruct (2024-09-17) text-generation Trending: 7.0
+- Qwen/Qwen2.5-VL-72B-Instruct (2025-01-27) image-text-to-text Trending: 16.0
+- Qwen/Qwen2.5-VL-7B-Instruct (2025-01-26) image-text-to-text Trending: 41.0
+- Qwen/QwQ-32B (2025-03-05) text-generation Trending: 401.0
+- Qwen/QwQ-32B-Preview (2024-11-27) text-generation Trending: 8.0
+- Raelina/Flux-Pastel-Anime (2024-09-01)  Trending: 1.0
+- Raelina/Rae-Diffusion-XL-V2 (2024-06-24) text-to-image Trending: 1.0
+- rajkumaralma/midjourney_manga_art (2024-06-26) text-to-image Trending: 1.0
+- RareConcepts/Flux.1-dev-LoKr-Moonman (2024-08-23) text-to-image Trending: 1.0
+- realwiz/noggles (2024-08-18) text-to-image Trending: 1.0
+- remybemy5/FLUX_Futa-Woman (2025-01-26) text-to-image Trending: 2.0
+- renderartist/coloringbookflux (2024-09-25) text-to-image Trending: 1.0
+- renderartist/ROYGBIVFlux (2024-10-24) text-to-image Trending: 1.0
+- renderartist/simplevectorflux (2024-09-23) text-to-image Trending: 1.0
+- renderartist/toyboxflux (2024-10-10) text-to-image Trending: 1.0
+- renderartist/weirdthingsflux (2024-10-18) text-to-image Trending: 1.0
+- Reza2kn/XRAY (2024-10-10) text-to-image Trending: 1.0
+- rikhoffbauer2/naomi-makkelie-seaweed-painting-style-3 (2024-01-08) text-to-image Trending: 1.0
+- robert123231/coloringbookgenerator (2023-11-10) text-to-image Trending: 1.0
+- roelfrenkema/flux1.lora.elonmusk (2024-09-07) text-to-image Trending: 1.0
+- rootonchair/2x2_sticker_sheet (2024-12-16) text-to-image Trending: 1.0
+- Salesforce/blip-image-captioning-base (2022-12-12) image-to-text Trending: 11.0
+- Salesforce/blip-image-captioning-large (2022-12-13) image-to-text Trending: 6.0
+- SamLowe/roberta-base-go_emotions (2022-09-15) text-classification Trending: 1.0
+- Sao10K/L3-70B-Euryale-v2.1 (2024-06-11) text-generation Trending: 1.0
+- Sao10K/L3-8B-Lunaris-v1 (2024-06-26) text-generation Trending: 3.0
+- Sao10K/L3-8B-Stheno-v3.2 (2024-06-05) text-generation Trending: 1.0
+- saq1b/midjourney-mimic (2024-05-31) text-to-image Trending: 1.0
+- saurabhswami/HumaneArt (2024-10-20) text-to-image Trending: 1.0
+- saurabhswami/Vibrant-tech-3D (2024-09-17) text-to-image Trending: 1.0
+- scb10x/llama-3-typhoon-v1.5-8b-instruct (2024-05-06) text-generation Trending: 1.0
+- seawolf2357/flux-lora-car-rolls-royce (2024-09-11) text-to-image Trending: 7.0
+- seawolf2357/flux-lora-military-artillery-k9 (2024-09-17) text-to-image Trending: 7.0
+- seawolf2357/hanbok (2024-10-16) text-to-image Trending: 7.0
+- seawolf2357/ntower (2024-10-16) text-to-image Trending: 7.0
+- seawolf2357/shinyoonbok (2024-10-21) text-to-image Trending: 1.0
+- seawolf2357/test-glasses (2024-10-07) text-to-image Trending: 1.0
+- SebastianBodza/flux_cute3D (2024-08-25) text-to-image Trending: 1.0
+- SebastianBodza/flux_lora_aquarel_watercolor (2024-08-16) text-to-image Trending: 1.0
+- SebastianBodza/flux_lora_retro_linedrawing_style_v1 (2024-08-24) text-to-image Trending: 1.0
+- SedatAl/flux-portrait-lora (2024-12-09) text-to-image Trending: 1.0
+- SedatAl/Interior-Flux-Lora (2024-12-17) text-to-image Trending: 1.0
+- SedatAl/Rusty-Metal-Flux-Lora (2024-12-14) text-to-image Trending: 1.0
+- semo720/lora-sdxl-painting (2024-10-08) text-to-image Trending: 1.0
+- sentence-transformers/all-MiniLM-L6-v2 (2022-03-02) sentence-similarity Trending: 32.0
+- sentence-transformers/all-mpnet-base-v2 (2022-03-02) sentence-similarity Trending: 9.0
+- Shakker-Labs/FLUX.1-dev-LoRA-add-details (2024-08-30) text-to-image Trending: 2.0
+- Shakker-Labs/FLUX.1-dev-LoRA-AntiBlur (2024-09-13) text-to-image Trending: 1.0
+- Shakker-Labs/FLUX.1-dev-LoRA-Children-Simple-Sketch (2024-09-11) text-to-image Trending: 1.0
+- Shakker-Labs/FLUX.1-dev-LoRA-Dark-Fantasy (2024-09-13) text-to-image Trending: 1.0
+- Shakker-Labs/FLUX.1-dev-LoRA-Garbage-Bag-Art (2024-09-06) text-to-image Trending: 1.0
+- Shakker-Labs/FLUX.1-dev-LoRA-live-3D (2024-09-05) text-to-image Trending: 1.0
+- Shakker-Labs/FLUX.1-dev-LoRA-Logo-Design (2024-09-09) text-to-image Trending: 4.0
+- Shakker-Labs/FLUX.1-dev-LoRA-One-Click-Creative-Template (2024-10-10) text-to-image Trending: 1.0
+- Shakker-Labs/FLUX.1-dev-LoRA-playful-metropolis (2024-09-05) text-to-image Trending: 1.0
+- Shakker-Labs/FLUX.1-dev-LoRA-Text-Poster (2024-10-21) text-to-image Trending: 1.0
+- Shakker-Labs/FLUX.1-dev-LoRA-Vector-Journey (2024-08-30) text-to-image Trending: 1.0
+- Shakker-Labs/SD3.5-LoRA-Chinese-Line-Art (2024-10-22) text-to-image Trending: 1.0
+- Shakker-Labs/SD3.5-LoRA-Futuristic-Bzonze-Colored (2024-10-22) text-to-image Trending: 1.0
+- Shakker-Labs/SD3.5-LoRA-Linear-Red-Light (2024-10-22) text-to-image Trending: 1.0
+- shinealom/notion-style-lora (2024-11-04) text-to-image Trending: 1.0
+- shopitalic/hinoki-cutting-board (2024-09-20) text-to-image Trending: 1.0
+- Sigma/financial-sentiment-analysis (2022-05-14) text-classification Trending: 1.0
+- skyslayer/sdl (2024-10-12) text-to-image Trending: 1.0
+- SouthbayJay/pop-art-style-roy-lichtenstein-flux (2024-11-15) text-to-image Trending: 1.0
+- SouthbayJay/t-shirt-vector-style-flux (2024-11-15) text-to-image Trending: 1.0
+- SouthbayJay/underground-comix-style-flux-robert-crumb (2024-11-15) text-to-image Trending: 1.0
+- sronds/seltzer (2024-09-05) text-to-image Trending: 1.0
+- stabilityai/stable-diffusion-2-1 (2022-12-06) text-to-image Trending: 5.0
+- stabilityai/stable-diffusion-3-medium (2024-05-30) text-to-image Trending: 5.0
+- stabilityai/stable-diffusion-3.5-large (2024-10-22) text-to-image Trending: 48.0
+- stabilityai/stable-diffusion-3.5-large-turbo (2024-10-22) text-to-image Trending: 8.0
+- stabilityai/stable-diffusion-3.5-medium (2024-10-29) text-to-image Trending: 7.0
+- stabilityai/stable-diffusion-xl-base-1.0 (2023-07-25) text-to-image Trending: 24.0
+- stabilityai/stable-diffusion-xl-refiner-1.0 (2023-07-26) image-to-image Trending: 7.0
+- stable-diffusion-v1-5/stable-diffusion-v1-5 (2024-08-30) text-to-image Trending: 14.0
+- stablediffusionapi/disney-pixar-cartoon (2023-07-12) text-to-image Trending: 1.0
+- stablediffusionapi/mklan-xxx-nsfw-pony (2024-05-28) text-to-image Trending: 1.0
+- stablediffusionapi/newrealityxl-global-nsfw (2023-11-15) text-to-image Trending: 1.0
+- stablediffusionapi/omnigen-xl (2023-12-11) text-to-image Trending: 1.0
+- stablediffusionapi/Realism_Stable_Yogi_xl (2024-12-13) text-to-image Trending: 1.0
+- stets/nintendo64_cartridge (2023-10-18) text-to-image Trending: 1.0
+- strangerzonehf/3d-Station-Toon (2025-03-17) text-to-image Trending: 2.0
+- strangerzonehf/Belle (2025-03-17) text-to-image Trending: 3.0
+- strangerzonehf/Casual-Pencil-Pro (2025-03-13) text-to-image Trending: 2.0
+- strangerzonehf/Flux-3D-Emojies-LoRA (2024-12-16) text-to-image Trending: 1.0
+- strangerzonehf/Flux-3D-Realism-LoRA (2024-12-08) text-to-image Trending: 1.0
+- strangerzonehf/Flux-3DXL-Garment-Mannequin (2024-12-01) text-to-image Trending: 1.0
+- strangerzonehf/Flux-3DXL-Partfile-0001 (2024-11-28) text-to-image Trending: 1.0
+- strangerzonehf/Flux-3DXL-Partfile-0002 (2024-11-28) text-to-image Trending: 1.0
+- strangerzonehf/Flux-3DXL-Partfile-0003 (2024-11-28) text-to-image Trending: 1.0
+- strangerzonehf/Flux-3DXL-Partfile-0004 (2024-11-28) text-to-image Trending: 1.0
+- strangerzonehf/Flux-3DXL-Partfile-0005 (2024-12-02) text-to-image Trending: 1.0
+- strangerzonehf/Flux-3DXL-Partfile-0006 (2024-12-03) text-to-image Trending: 1.0
+- strangerzonehf/Flux-3DXL-Partfile-C0001 (2024-11-28) text-to-image Trending: 1.0
+- strangerzonehf/Flux-3DXL-TacGun-LoRA (2024-12-11) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Anime-Xmas-LoRA (2024-12-12) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Animeo-v1-LoRA (2024-11-15) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Animex-v2-LoRA (2024-11-15) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Automotive-X1-LoRA (2024-12-13) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Automotive-X2-LoRA (2024-12-14) text-to-image Trending: 1.0
+- strangerzonehf/Flux-C4C-Design-LoRA (2024-11-29) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Claymation-XC-LoRA (2024-12-06) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Creative-Stocks-LoRA (2024-12-06) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Cute-3D-Kawaii-LoRA (2024-11-24) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Ghibli-Art-LoRA (2024-12-06) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Icon-Kit-LoRA (2024-12-06) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Isometric-3D-Cinematography (2024-11-24) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Isometric-3D-LoRA (2024-11-24) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Isometric-Site-LoRA (2024-12-07) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Mexican-CPunk-LoRA (2024-12-10) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Microworld-NFT-LoRA (2024-12-08) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Midjourney-Mix-LoRA (2024-11-14) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Midjourney-Mix2-LoRA (2024-11-26) text-to-image Trending: 13.0
+- strangerzonehf/Flux-NFT-Art99-LoRA (2024-12-08) text-to-image Trending: 1.0
+- strangerzonehf/Flux-NFTv4-Designs-LoRA (2024-11-29) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Pixel-Background-LoRA (2024-12-08) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Sketch-Flat-LoRA (2024-12-14) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Sketch-Glow-LoRA (2024-12-13) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Sketch-Light-LoRA (2024-12-13) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Sketch-Scribble-LoRA (2024-12-14) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Super-Blend-LoRA (2024-11-18) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Super-Capybara-HF (2024-11-23) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Super-Portrait-LoRA (2024-12-06) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Super-Realism-LoRA (2024-11-12) text-to-image Trending: 4.0
+- strangerzonehf/Flux-SuperPortrait-v2-LoRA (2024-12-14) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Ultimate-LoRA-Collection (2024-11-18) text-to-image Trending: 2.0
+- strangerzonehf/Flux-Xmas-3D-LoRA (2024-12-11) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Xmas-Chocolate-LoRA (2024-12-11) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Xmas-Illustration-LoRA (2024-12-18) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Xmas-Isometric-Kit-LoRA (2024-12-11) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Xmas-Realpix-LoRA (2024-12-11) text-to-image Trending: 1.0
+- strangerzonehf/Flux-YWL-Realism-LoRA (2024-11-25) text-to-image Trending: 1.0
+- strangerzonehf/NFT-Plus-InsideOut-Perspective (2024-12-08) text-to-image Trending: 1.0
+- strangerzonehf/Qx-Art (2025-01-20) text-to-image Trending: 2.0
+- strangerzonehf/SD3.5-Turbo-Portrait-LoRA (2024-12-09) text-to-image Trending: 1.0
+- strickvl/flux-schnell-dreambooth-blupus (2024-08-31) text-to-image Trending: 1.0
+- sujalron/tom-loru (2024-08-17) text-to-image Trending: 1.0
+- suno/bark (2023-04-25) text-to-speech Trending: 9.0
+- SvenN/sdxl-emoji (2023-10-16) text-to-image Trending: 1.0
+- Svngoku/African-Mask-Flux (2024-10-17) text-to-image Trending: 1.0
+- sWizad/all-disney-princess-xl-lora-model-from-ralph-breaks-the-internet (2024-04-15) text-to-image Trending: 1.0
+- sWizad/pokemon-trainer-sprite-pixelart (2024-04-15) text-to-image Trending: 1.0
+- sWizad/pokemon-trainer-sprites-pixelart-flux (2024-09-04) text-to-image Trending: 1.0
+- taki0112/lora-trained-xl_line-art_split (2024-01-19) text-to-image Trending: 1.0
+- taki0112/lora-trained-xl_line-drawings_split (2024-01-21) text-to-image Trending: 1.0
+- taki0112/lora-trained-xl_watercolor-paintings_split (2024-01-21) text-to-image Trending: 1.0
+- tanzim1/Inkwatercolor (2024-09-17) text-to-image Trending: 1.0
+- tanzim1/WSJ-Hedcut (2024-09-18) text-to-image Trending: 1.0
+- TDN-M/East-asian-beauty (2024-10-23) text-to-image Trending: 1.0
+- TDN-M/RetouchFLux (2024-09-21) text-to-image Trending: 1.0
+- teknium/OpenHermes-2.5-Mistral-7B (2023-10-29) text-generation Trending: 1.0
+- tencent/HunyuanVideo (2024-12-01) text-to-video Trending: 12.0
+- terworld/Jenna_Ortega_as_Wednesday (2023-12-30) text-to-image Trending: 1.0
+- TheAwakenOne/graffiti-style (2024-09-26) text-to-image Trending: 1.0
+- TheLastBen/Filmic (2024-02-06) text-to-image Trending: 1.0
+- TheLastBen/Josef_Koudelka_Style_SDXL (2023-08-01) text-to-image Trending: 1.0
+- TheLastBen/Papercut_SDXL (2023-08-04) text-to-image Trending: 1.0
+- TheLastBen/The_Hound (2024-08-30) text-to-image Trending: 1.0
+- TheLastBen/William_Eggleston_Style_SDXL (2023-07-30) text-to-image Trending: 1.0
+- theshad0w/Eliza-Lora-v1 (2024-12-09) text-to-image Trending: 1.0
+- ThorstenCarl/kimi (2024-09-03) text-to-image Trending: 1.0
+- THUDM/CogVideoX-5b (2024-08-17) text-to-video Trending: 1.0
+- THUDM/CogView3-Plus-3B (2024-10-04) text-to-image Trending: 1.0
+- THUDM/CogView4-6B (2025-03-03) text-to-image Trending: 13.0
+- thwri/dark-gothic-fantasy-xl (2024-02-04) text-to-image Trending: 1.0
+- thwri/david-bowie-flux (2024-09-04) text-to-image Trending: 1.0
+- tiiuae/falcon-7b-instruct (2023-04-25) text-generation Trending: 3.0
+- tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.3 (2024-12-18) text-generation Trending: 1.0
+- transformer3/H2-keywordextractor (2023-04-21) summarization Trending: 1.0
+- tryonlabs/FLUX.1-dev-LoRA-Lehenga-Generator (2024-11-25) text-to-image Trending: 1.0
+- tryonlabs/FLUX.1-dev-LoRA-Outfit-Generator (2024-11-04) text-to-image Trending: 1.0
+- Ttio2/sketch_shouxin (2024-12-18) text-to-image Trending: 1.0
+- UmeAiRT/FLUX.1-dev-LoRA-Modern_Pixel_art (2024-09-26) text-to-image Trending: 2.0
+- v1su4/flux-lora-fast-training-lut-0200 (2024-09-20) text-to-image Trending: 1.0
+- veryVANYA/opus-ascii-flux (2024-09-27) text-to-image Trending: 1.0
+- veryVANYA/ps1-graphics-sdxl (2023-08-23) text-to-image Trending: 1.0
+- victor/contemporarink (2024-08-30) text-to-image Trending: 1.0
+- VideoAditor/Flux-Lora-Realism (2024-08-10) text-to-image Trending: 1.0
+- Wakkamaruh/balatro-poker-cards (2024-09-05) text-to-image Trending: 1.0
+- Wan-AI/Wan2.1-T2V-1.3B (2025-02-25) text-to-video Trending: 11.0
+- Wan-AI/Wan2.1-T2V-14B (2025-02-25) text-to-video Trending: 71.0
+- wavymulder/ASCII-flux-LoRA (2024-08-15)  Trending: 1.0
+- wavymulder/OverlordStyleFLUX (2024-08-30)  Trending: 1.0
+- wayned/fruitlabels (2024-09-06) text-to-image Trending: 1.0
+- WizWhite/wizard-s-arcana-spectral-glow (2024-12-06) text-to-image Trending: 1.0
+- WizWhite/wizard-s-arcana-the-dark-arts (2024-10-14) text-to-image Trending: 1.0
+- WizWhite/wizard-s-experimental-photography-lab (2024-12-06) text-to-image Trending: 1.0
+- WizWhite/Wizards_vintage_romance_novel-FLUX (2024-10-14) text-to-image Trending: 1.0
+- xey/sldr_flux_nsfw_v2-studio (2024-10-28) text-to-image Trending: 8.0
+- XLabs-AI/flux-RealismLora (2024-08-06) text-to-image Trending: 10.0
+- yifei28/sdxl-base-1.0-Conan-lora (2025-02-17) text-to-image Trending: 2.0
+- Yntec/AnythingV7 (2024-05-21) text-to-image Trending: 1.0
+- Yntec/Hyperlink (2024-07-28) text-to-image Trending: 1.0
+- Yntec/HyperRealism (2024-04-13) text-to-image Trending: 1.0
+- Yntec/insaneRealistic_v2 (2024-05-01) text-to-image Trending: 1.0
+- Yntec/MGM (2023-10-17) text-to-image Trending: 1.0
+- yodayo-ai/clandestine-xl-1.0 (2024-07-31) text-to-image Trending: 1.0
+- yodayo-ai/kivotos-xl-2.0 (2024-06-01) text-to-image Trending: 1.0
+- ysmao/multiview-incontext (2024-11-21) text-to-image Trending: 1.0
+- zaddyzaddy/flux-training-losercity-next (2024-08-25) text-to-image Trending: 1.0
+- ZB-Tech/Text-to-Image (2024-03-10) text-to-image Trending: 1.0
+- zhanjun/lora-trained-xl-notion-2 (2024-05-11) text-to-image Trending: 1.0
+- zhreyu/ComicStrips-Lora-Fluxdev (2024-09-30) text-to-image Trending: 1.0
+
+Provider mistral:
+- codestral-2405: chat/fim/function/fine-tuning Context: 32768
+- codestral-2411-rc5 (codestral-2501): chat/fim/function Context: 262144
+- codestral-2412 (codestral-2501): chat/fim/function Context: 262144
+- codestral-2501: chat/fim/function Context: 262144
+- codestral-latest (codestral-2501): chat/fim/function Context: 262144
+- codestral-mamba-2407: chat/function Context: 262144
+- codestral-mamba-latest (codestral-mamba-2407): chat/function Context: 262144
+- ministral-3b-2410: chat/function/fine-tuning Context: 131072
+- ministral-3b-latest (ministral-3b-2410): chat/function/fine-tuning Context: 131072
+- ministral-8b-2410: chat/function Context: 131072
+- ministral-8b-latest (ministral-8b-2410): chat/function Context: 131072
+- mistral-embed:  Context: 32768
+- mistral-large-2402: chat/function Context: 32768
+- mistral-large-2407: chat/function/fine-tuning Context: 131072
+- mistral-large-2411: chat/function/fine-tuning Context: 131072
+- mistral-large-latest (mistral-large-2411): chat/function/fine-tuning Context: 131072
+- mistral-large-pixtral-2411 (pixtral-large-2411): chat/function/vision Context: 131072
+- mistral-medium (mistral-medium-2312): chat/function Context: 32768
+- mistral-medium-2312: chat/function Context: 32768
+- mistral-medium-latest (mistral-medium-2312): chat/function Context: 32768
+- mistral-moderation-2411:  Context: 32768
+- mistral-moderation-latest (mistral-moderation-2411):  Context: 32768
+- mistral-ocr-2503:  Context: 32768
+- mistral-ocr-latest (mistral-ocr-2503):  Context: 32768
+- mistral-saba-2502: chat/function Context: 32768
+- mistral-saba-latest (mistral-saba-2502): chat/function Context: 32768
+- mistral-small (open-mixtral-8x7b): chat/function Context: 32768
+- mistral-small-2312 (open-mixtral-8x7b): chat/function Context: 32768
+- mistral-small-2402: chat/function/fine-tuning Context: 32768
+- mistral-small-2409: chat/function/fine-tuning Context: 32768
+- mistral-small-2501: chat/function Context: 32768
+- mistral-small-2503: chat/function/vision Context: 32768
+- mistral-small-latest (mistral-small-2503): chat/function/vision Context: 32768
+- mistral-tiny (open-mistral-7b): chat/function Context: 32768
+- mistral-tiny-2312 (open-mistral-7b): chat/function Context: 32768
+- mistral-tiny-2407 (open-mistral-nemo): chat/function/fine-tuning Context: 131072
+- mistral-tiny-latest (open-mistral-nemo): chat/function/fine-tuning Context: 131072
+- open-codestral-mamba (codestral-mamba-2407): chat/function Context: 262144
+- open-mistral-7b: chat/function Context: 32768
+- open-mistral-nemo-2407 (open-mistral-nemo): chat/function/fine-tuning Context: 131072
+- open-mistral-nemo: chat/function/fine-tuning Context: 131072
+- open-mixtral-8x22b-2404 (open-mixtral-8x22b): chat/function Context: 65536
+- open-mixtral-8x22b: chat/function Context: 65536
+- open-mixtral-8x7b: chat/function Context: 32768
+- pixtral-12b (pixtral-12b-2409): chat/function/vision Context: 131072
+- pixtral-12b-2409: chat/function/vision Context: 131072
+- pixtral-12b-latest (pixtral-12b-2409): chat/function/vision Context: 131072
+- pixtral-large-2411: chat/function/vision Context: 131072
+- pixtral-large-latest (pixtral-large-2411): chat/function/vision Context: 131072
+
+Provider openai:
+- babbage-002 (2023-08-21)
+- chatgpt-4o-latest (2024-08-12)
+- dall-e-2 (2023-10-31)
+- dall-e-3 (2023-10-31)
+- davinci-002 (2023-08-21)
+- gpt-3.5-turbo (2023-02-28)
+- gpt-3.5-turbo-0125 (2024-01-23)
+- gpt-3.5-turbo-1106 (2023-11-02)
+- gpt-3.5-turbo-16k (2023-05-10)
+- gpt-3.5-turbo-instruct (2023-08-24)
+- gpt-3.5-turbo-instruct-0914 (2023-09-07)
+- gpt-4 (2023-06-27)
+- gpt-4-0125-preview (2024-01-23)
+- gpt-4-0613 (2023-06-12)
+- gpt-4-1106-preview (2023-11-02)
+- gpt-4-turbo (2024-04-05)
+- gpt-4-turbo-2024-04-09 (2024-04-08)
+- gpt-4-turbo-preview (2024-01-23)
+- gpt-4.5-preview (2025-02-26)
+- gpt-4.5-preview-2025-02-27 (2025-02-26)
+- gpt-4o (2024-05-10)
+- gpt-4o-2024-05-13 (2024-05-10)
+- gpt-4o-2024-08-06 (2024-08-04)
+- gpt-4o-2024-11-20 (2025-02-11)
+- gpt-4o-audio-preview (2024-09-27)
+- gpt-4o-audio-preview-2024-10-01 (2024-09-26)
+- gpt-4o-audio-preview-2024-12-17 (2024-12-12)
+- gpt-4o-mini (2024-07-16)
+- gpt-4o-mini-2024-07-18 (2024-07-16)
+- gpt-4o-mini-audio-preview (2024-12-16)
+- gpt-4o-mini-audio-preview-2024-12-17 (2024-12-13)
+- gpt-4o-mini-realtime-preview (2024-12-16)
+- gpt-4o-mini-realtime-preview-2024-12-17 (2024-12-13)
+- gpt-4o-mini-search-preview (2025-03-07)
+- gpt-4o-mini-search-preview-2025-03-11 (2025-03-07)
+- gpt-4o-realtime-preview (2024-09-29)
+- gpt-4o-realtime-preview-2024-10-01 (2024-09-23)
+- gpt-4o-realtime-preview-2024-12-17 (2024-12-11)
+- gpt-4o-search-preview (2025-03-07)
+- gpt-4o-search-preview-2025-03-11 (2025-03-07)
+- o1 (2024-12-16)
+- o1-2024-12-17 (2024-12-16)
+- o1-mini (2024-09-06)
+- o1-mini-2024-09-12 (2024-09-06)
+- o1-preview (2024-09-06)
+- o1-preview-2024-09-12 (2024-09-06)
+- o3-mini (2025-01-17)
+- o3-mini-2025-01-31 (2025-01-27)
+- omni-moderation-2024-09-26 (2024-11-27)
+- omni-moderation-latest (2024-11-15)
+- text-embedding-3-large (2024-01-22)
+- text-embedding-3-small (2024-01-22)
+- text-embedding-ada-002 (2022-12-16)
+- tts-1 (2023-04-19)
+- tts-1-1106 (2023-11-03)
+- tts-1-hd (2023-11-03)
+- tts-1-hd-1106 (2023-11-03)
+- whisper-1 (2023-02-27)

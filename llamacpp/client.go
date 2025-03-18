@@ -25,7 +25,7 @@ import (
 	"time"
 
 	"github.com/invopop/jsonschema"
-	"github.com/maruel/genai/genaiapi"
+	"github.com/maruel/genai"
 	"github.com/maruel/httpjson"
 )
 
@@ -87,14 +87,14 @@ type CompletionRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *CompletionRequest) Init(opts genaiapi.Validatable) error {
+func (c *CompletionRequest) Init(opts genai.Validatable) error {
 	var errs []error
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *genaiapi.CompletionOptions:
+			case *genai.CompletionOptions:
 				c.NPredict = v.MaxTokens
 				c.Seed = v.Seed
 				c.Temperature = v.Temperature
@@ -189,14 +189,14 @@ type CompletionResponse struct {
 	} `json:"timings"`
 }
 
-func (c *CompletionResponse) ToResult() (genaiapi.CompletionResult, error) {
-	out := genaiapi.CompletionResult{
-		Message: genaiapi.Message{
-			Role: genaiapi.Assistant,
+func (c *CompletionResponse) ToResult() (genai.CompletionResult, error) {
+	out := genai.CompletionResult{
+		Message: genai.Message{
+			Role: genai.Assistant,
 			// Mistral Nemo really likes "▁".
-			Contents: []genaiapi.Content{{Text: strings.ReplaceAll(c.Content, "\u2581", " ")}},
+			Contents: []genai.Content{{Text: strings.ReplaceAll(c.Content, "\u2581", " ")}},
 		},
-		Usage: genaiapi.Usage{
+		Usage: genai.Usage{
 			InputTokens:  c.TokensPredicted,
 			OutputTokens: c.TokensEvaluated,
 		},
@@ -239,9 +239,9 @@ type applyTemplateRequest struct {
 	Messages []Message `json:"messages"`
 }
 
-func (a *applyTemplateRequest) Init(opts genaiapi.Validatable, msgs genaiapi.Messages) error {
+func (a *applyTemplateRequest) Init(opts genai.Validatable, msgs genai.Messages) error {
 	sp := ""
-	if v, ok := opts.(*genaiapi.CompletionOptions); ok {
+	if v, ok := opts.(*genai.CompletionOptions); ok {
 		sp = v.SystemPrompt
 	}
 	if err := msgs.Validate(); err != nil {
@@ -265,7 +265,7 @@ func (a *applyTemplateRequest) Init(opts genaiapi.Validatable, msgs genaiapi.Mes
 	return errors.Join(errs...)
 }
 
-func (msg *Message) From(m *genaiapi.Message) error {
+func (msg *Message) From(m *genai.Message) error {
 	// We don't filter the role here.
 	msg.Role = string(m.Role)
 	if len(m.Contents) != 1 {
@@ -342,20 +342,20 @@ func New(baseURL string, encoding *PromptEncoding) (*Client, error) {
 	return &Client{baseURL: baseURL, encoding: encoding}, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs genaiapi.Messages, opts genaiapi.Validatable) (genaiapi.CompletionResult, error) {
+func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
 	// https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
 	rpcin := CompletionRequest{CachePrompt: true}
 	if err := rpcin.Init(opts); err != nil {
-		return genaiapi.CompletionResult{}, err
+		return genai.CompletionResult{}, err
 	}
 	if err := c.initPrompt(ctx, &rpcin, opts, msgs); err != nil {
-		return genaiapi.CompletionResult{}, err
+		return genai.CompletionResult{}, err
 	}
 	rpcout := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genaiapi.CompletionResult{}, fmt.Errorf("failed to get llama server response: %w", err)
+		return genai.CompletionResult{}, fmt.Errorf("failed to get llama server response: %w", err)
 	}
 	slog.DebugContext(ctx, "llm", "prompt tok", rpcout.Timings.PromptN, "gen tok", rpcout.Timings.PredictedN, "prompt tok/ms", rpcout.Timings.PromptPerTokenMS, "gen tok/ms", rpcout.Timings.PredictedPerTokenMS)
 	return rpcout.ToResult()
@@ -366,7 +366,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, c.baseURL+"/completion", in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, opts genaiapi.Validatable, chunks chan<- genaiapi.MessageFragment) error {
+func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
 	// start := time.Now()
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
@@ -387,7 +387,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, o
 			if word := msg.Content; word != "" {
 				// Mistral Nemo really likes "▁".
 				// word = strings.ReplaceAll(msg.Content, "\u2581", " ")
-				chunks <- genaiapi.MessageFragment{TextFragment: word}
+				chunks <- genai.MessageFragment{TextFragment: word}
 			}
 		}
 		end <- nil
@@ -558,7 +558,7 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 	return nil
 }
 
-func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts genaiapi.Validatable, msgs genaiapi.Messages) error {
+func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts genai.Validatable, msgs genai.Messages) error {
 	if c.encoding == nil {
 		// Use the server to convert the OpenAI style format into a templated form.
 		in2 := applyTemplateRequest{}
@@ -577,19 +577,19 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 	for _, m := range msgs {
 		switch m.Role {
 		/* TODO
-		case genaiapi.AvailableTools:
+		case genai.AvailableTools:
 			in.Prompt += c.encoding.ToolsAvailableTokenStart + m.Text + c.encoding.ToolsAvailableTokenEnd
 		*/
 		case "system":
 			for _, b := range m.Contents {
 				in.Prompt += c.encoding.SystemTokenStart + b.Text + c.encoding.SystemTokenEnd
 			}
-		case genaiapi.User:
+		case genai.User:
 			for _, b := range m.Contents {
 				in.Prompt += c.encoding.UserTokenStart + b.Text + c.encoding.UserTokenEnd
 			}
 			// in.Prompt += c.encoding.ToolCallResultTokenStart + m.Text + c.encoding.ToolCallResultTokenEnd
-		case genaiapi.Assistant:
+		case genai.Assistant:
 			for _, b := range m.Contents {
 				in.Prompt += c.encoding.AssistantTokenStart + b.Text + c.encoding.AssistantTokenEnd
 			}
@@ -628,4 +628,4 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	}
 }
 
-var _ genaiapi.CompletionProvider = &Client{}
+var _ genai.CompletionProvider = &Client{}

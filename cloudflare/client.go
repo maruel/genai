@@ -24,7 +24,7 @@ import (
 	"strings"
 
 	"github.com/invopop/jsonschema"
-	"github.com/maruel/genai/genaiapi"
+	"github.com/maruel/genai"
 	"github.com/maruel/httpjson"
 	"golang.org/x/sync/errgroup"
 )
@@ -51,7 +51,7 @@ type CompletionRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatable) error {
+func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 	var errs []error
 	sp := ""
 	if opts != nil {
@@ -59,7 +59,7 @@ func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatab
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *genaiapi.CompletionOptions:
+			case *genai.CompletionOptions:
 				c.MaxTokens = v.MaxTokens
 				c.Temperature = v.Temperature
 				c.TopP = v.TopP
@@ -122,9 +122,9 @@ type Message struct {
 	Role    string `json:"role"`
 }
 
-func (m *Message) From(in *genaiapi.Message) error {
+func (m *Message) From(in *genai.Message) error {
 	switch in.Role {
-	case genaiapi.User, genaiapi.Assistant:
+	case genai.User, genai.Assistant:
 		m.Role = string(in.Role)
 	default:
 		return fmt.Errorf("unsupported role %q", in.Role)
@@ -268,11 +268,11 @@ type MessageResponse struct {
 	ToolCalls []ToolCall `json:"tool_calls"`
 }
 
-func (msg *MessageResponse) To(schema string, out *genaiapi.Message) error {
-	out.Role = genaiapi.Assistant
+func (msg *MessageResponse) To(schema string, out *genai.Message) error {
+	out.Role = genai.Assistant
 	if len(msg.ToolCalls) != 0 {
 		// Starting 2025-03-17, "@hf/nousresearch/hermes-2-pro-mistral-7b" is finally returning structured tool call.
-		out.ToolCalls = make([]genaiapi.ToolCall, len(msg.ToolCalls))
+		out.ToolCalls = make([]genai.ToolCall, len(msg.ToolCalls))
 		for i, tc := range msg.ToolCalls {
 			// Cloudflare doesn't support tool call IDs yet.
 			id := fmt.Sprintf("tool_call%d", i)
@@ -290,7 +290,7 @@ func (msg *MessageResponse) To(schema string, out *genaiapi.Message) error {
 		// This is just sad.
 		if strings.HasPrefix(v, "<tool_call>") {
 			/*
-				out.Contents[0].Type = genaiapi.ToolCalls
+				out.Contents[0].Type = genai.ToolCalls
 				// Example with "@hf/nousresearch/hermes-2-pro-mistral-7b" that is
 				// supposed to support tool calling (and yes it supply the tool call XML
 				// tags):
@@ -315,12 +315,12 @@ func (msg *MessageResponse) To(schema string, out *genaiapi.Message) error {
 						return out, fmt.Errorf("failed to marshal tool call arguments: %w", err)
 					}
 					// Cloudflare doesn't support tool call IDs yet.
-					out.Contents[0].ToolCalls = append(out.Contents[0].ToolCalls, genaiapi.ToolCall{ID: fmt.Sprintf("tool_call%d", i), Name: toolCall.Name, Arguments: string(raw)})
+					out.Contents[0].ToolCalls = append(out.Contents[0].ToolCalls, genai.ToolCall{ID: fmt.Sprintf("tool_call%d", i), Name: toolCall.Name, Arguments: string(raw)})
 				}
 			*/
 			return fmt.Errorf("hacked up XML tool calls are not supported")
 		} else {
-			out.Contents = []genaiapi.Content{{Text: v}}
+			out.Contents = []genai.Content{{Text: v}}
 		}
 	default:
 		if schema == "json_schema" {
@@ -329,7 +329,7 @@ func (msg *MessageResponse) To(schema string, out *genaiapi.Message) error {
 			if err != nil {
 				return fmt.Errorf("failed to JSON marshal type %T: %v: %w", v, v, err)
 			}
-			out.Contents = []genaiapi.Content{{Text: string(b)}}
+			out.Contents = []genai.Content{{Text: string(b)}}
 		} else {
 			return fmt.Errorf("unexpected type %T: %v", v, v)
 		}
@@ -337,9 +337,9 @@ func (msg *MessageResponse) To(schema string, out *genaiapi.Message) error {
 	return nil
 }
 
-func (c *CompletionResponse) ToResult(rpcin *CompletionRequest) (genaiapi.CompletionResult, error) {
-	out := genaiapi.CompletionResult{
-		Usage: genaiapi.Usage{
+func (c *CompletionResponse) ToResult(rpcin *CompletionRequest) (genai.CompletionResult, error) {
+	out := genai.CompletionResult{
+		Usage: genai.Usage{
 			InputTokens:  c.Result.Usage.PromptTokens,
 			OutputTokens: c.Result.Usage.CompletionTokens,
 		},
@@ -371,7 +371,7 @@ type ToolCall struct {
 	Name      string `json:"name"`
 }
 
-func (c *ToolCall) To(id string, out *genaiapi.ToolCall) error {
+func (c *ToolCall) To(id string, out *genai.ToolCall) error {
 	raw, err := json.Marshal(c.Arguments)
 	if err != nil {
 		return fmt.Errorf("failed to marshal tool call arguments: %w", err)
@@ -425,15 +425,15 @@ func New(accountID, apiKey, model string) (*Client, error) {
 	return &Client{accountID: accountID, apiKey: apiKey, model: model}, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs genaiapi.Messages, opts genaiapi.Validatable) (genaiapi.CompletionResult, error) {
+func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
 	// https://developers.cloudflare.com/api/resources/ai/methods/run/
 	rpcin := CompletionRequest{}
 	if err := rpcin.Init(msgs, opts); err != nil {
-		return genaiapi.CompletionResult{}, err
+		return genai.CompletionResult{}, err
 	}
 	rpcout := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genaiapi.CompletionResult{}, fmt.Errorf("failed to get chat response: %w", err)
+		return genai.CompletionResult{}, fmt.Errorf("failed to get chat response: %w", err)
 	}
 	return rpcout.ToResult(&rpcin)
 }
@@ -447,7 +447,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, url, in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, opts genaiapi.Validatable, chunks chan<- genaiapi.MessageFragment) error {
+func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
 	in := CompletionRequest{}
 	if err := in.Init(msgs, opts); err != nil {
 		return err
@@ -465,7 +465,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, o
 	return err
 }
 
-func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genaiapi.MessageFragment) error {
+func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.MessageFragment) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -473,7 +473,7 @@ func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<-
 	}()
 	for pkt := range ch {
 		if word := pkt.Response; word != "" {
-			chunks <- genaiapi.MessageFragment{TextFragment: word}
+			chunks <- genai.MessageFragment{TextFragment: word}
 		}
 	}
 	return nil
@@ -587,14 +587,14 @@ func (m *Model) Context() int64 {
 	return 0
 }
 
-func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
+func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://developers.cloudflare.com/api/resources/ai/subresources/models/methods/list/
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.apiKey)
 	// See https://github.com/cloudflare/cloudflare-go/blob/main/internal/requestconfig/requestconfig.go
 	h.Set("X-Stainless-Retry-Count", "0")
 	h.Set("X-Stainless-Timeout", "0")
-	var models []genaiapi.Model
+	var models []genai.Model
 	for page := 1; ; page++ {
 		var out struct {
 			Result     []Model `json:"result"`
@@ -669,6 +669,6 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 const apiKeyURL = "https://dash.cloudflare.com/profile/api-tokens"
 
 var (
-	_ genaiapi.CompletionProvider = &Client{}
-	_ genaiapi.ModelProvider      = &Client{}
+	_ genai.CompletionProvider = &Client{}
+	_ genai.ModelProvider      = &Client{}
 )

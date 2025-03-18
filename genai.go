@@ -2,8 +2,12 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Package genaiapi provides a generic interface to interact with a LLM backend.
-package genaiapi
+// Package genai is the high performance native Go client for LLMs.
+//
+// It provides a generic interface to interact with various LLM providers.
+//
+// Check out the examples for a quick start.
+package genai
 
 import (
 	"context"

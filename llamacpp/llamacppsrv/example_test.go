@@ -13,7 +13,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/maruel/genai/genaiapi"
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/llamacpp"
 	"github.com/maruel/genai/llamacpp/llamacppsrv"
 	"github.com/maruel/huggingface"
@@ -72,10 +72,10 @@ func Example() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	msgs := genaiapi.Messages{
-		genaiapi.NewTextMessage(genaiapi.User, "Say hello. Reply with only one word."),
+	msgs := genai.Messages{
+		genai.NewTextMessage(genai.User, "Say hello. Reply with only one word."),
 	}
-	opts := genaiapi.CompletionOptions{
+	opts := genai.CompletionOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
@@ -88,7 +88,7 @@ func Example() {
 	if resp.InputTokens != 0 || resp.OutputTokens != 0 {
 		log.Printf("Did I finally start filling the usage fields?")
 	}
-	if resp.Role != genaiapi.Assistant || len(resp.Contents) != 1 {
+	if resp.Role != genai.Assistant || len(resp.Contents) != 1 {
 		log.Fatal("Unexpected response")
 	}
 	// Normalize some of the variance. Obviously many models will still fail this test.

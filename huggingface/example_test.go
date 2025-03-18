@@ -10,7 +10,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/maruel/genai/genaiapi"
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/huggingface"
 )
 
@@ -20,10 +20,10 @@ func ExampleClient_Completion() {
 	// See https://huggingface.co/models?inference=warm&sort=trending
 	// Eventually use one that supports structured output.
 	if c, err := huggingface.New("", "meta-llama/Llama-3.2-1B-Instruct"); err == nil {
-		msgs := genaiapi.Messages{
-			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
+		msgs := genai.Messages{
+			genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 		}
-		opts := genaiapi.CompletionOptions{
+		opts := genai.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
@@ -54,17 +54,17 @@ func ExampleClient_Completion_tool_use() {
 	// See https://huggingface.co/models?inference=warm&sort=trending
 	// Eventually use one that supports structured output.
 	if c, err := huggingface.New("", "meta-llama/Llama-3.2-3B-Instruct"); err == nil {
-		msgs := genaiapi.Messages{
-			genaiapi.NewTextMessage(genaiapi.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
+		msgs := genai.Messages{
+			genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
 		}
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 		}
-		opts := genaiapi.CompletionOptions{
+		opts := genai.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   200,
-			Tools: []genaiapi.ToolDef{
+			Tools: []genai.ToolDef{
 				{
 					Name:        "best_country",
 					Description: "A tool to determine the best country",
@@ -101,18 +101,18 @@ func ExampleClient_CompletionStream() {
 	// Eventually use one that supports structured output.
 	if c, err := huggingface.New("", "meta-llama/Llama-3.2-1B-Instruct"); err == nil {
 		ctx := context.Background()
-		msgs := genaiapi.Messages{
-			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
+		msgs := genai.Messages{
+			genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 		}
-		opts := genaiapi.CompletionOptions{
+		opts := genai.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
 		}
-		chunks := make(chan genaiapi.MessageFragment)
-		end := make(chan genaiapi.Message, 10)
+		chunks := make(chan genai.MessageFragment)
+		end := make(chan genai.Message, 10)
 		go func() {
-			var pendingMsgs genaiapi.Messages
+			var pendingMsgs genai.Messages
 			defer func() {
 				for _, m := range pendingMsgs {
 					end <- m
@@ -128,7 +128,7 @@ func ExampleClient_CompletionStream() {
 						return
 					}
 					if pendingMsgs, err = pkt.Accumulate(pendingMsgs); err != nil {
-						end <- genaiapi.NewTextMessage(genaiapi.Assistant, fmt.Sprintf("Error: %v", err))
+						end <- genai.NewTextMessage(genai.Assistant, fmt.Sprintf("Error: %v", err))
 						return
 					}
 				}
@@ -136,7 +136,7 @@ func ExampleClient_CompletionStream() {
 		}()
 		err := c.CompletionStream(ctx, msgs, &opts, chunks)
 		close(chunks)
-		var responses genaiapi.Messages
+		var responses genai.Messages
 		for m := range end {
 			responses = append(responses, m)
 		}

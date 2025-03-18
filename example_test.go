@@ -9,13 +9,13 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/anthropic"
 	"github.com/maruel/genai/cerebras"
 	"github.com/maruel/genai/cloudflare"
 	"github.com/maruel/genai/cohere"
 	"github.com/maruel/genai/deepseek"
 	"github.com/maruel/genai/gemini"
-	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/genai/groq"
 	"github.com/maruel/genai/huggingface"
 	"github.com/maruel/genai/llamacpp"
@@ -25,12 +25,12 @@ import (
 	"github.com/maruel/genai/togetherai"
 )
 
-func Example_modelProvider() {
+func ExampleModelProvider() {
 	// Pro-tip: Using os.Stderr so if you modify this file and append a "// Output: foo"
 	// at the end of this function, "go test" will run the code and stream the
 	// output to you.
 
-	modelProviders := map[string]genaiapi.ModelProvider{}
+	modelProviders := map[string]genai.ModelProvider{}
 	if c, err := anthropic.New("", ""); err == nil {
 		modelProviders["anthropic"] = c
 	}
@@ -79,11 +79,11 @@ func Example_modelProvider() {
 	}
 }
 
-func Example_completionProvider() {
+func ExampleCompletionProvider() {
 	// Pro-tip: Using os.Stderr so if you modify this file and append a "// Output: foo"
 	// at the end of this function, "go test" will run the code and stream the
 	// output to you.
-	completionProviders := map[string]genaiapi.CompletionProvider{}
+	completionProviders := map[string]genai.CompletionProvider{}
 	// https://docs.anthropic.com/en/docs/about-claude/models/all-models
 	if c, err := anthropic.New("", "claude-3-7-sonnet-latest"); err == nil {
 		completionProviders["anthropic"] = c
@@ -136,8 +136,8 @@ func Example_completionProvider() {
 	}
 
 	for name, provider := range completionProviders {
-		msgs := genaiapi.Messages{
-			genaiapi.NewTextMessage(genaiapi.User, "Tell a story in 10 words."),
+		msgs := genai.Messages{
+			genai.NewTextMessage(genai.User, "Tell a story in 10 words."),
 		}
 		response, err := provider.Completion(context.Background(), msgs, nil)
 		if err != nil {

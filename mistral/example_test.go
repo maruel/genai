@@ -16,7 +16,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/maruel/genai/genaiapi"
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/mistral"
 	"github.com/maruel/httpjson"
 )
@@ -35,10 +35,10 @@ func ExampleClient_Completion_vision_and_JSON() {
 	// Require a model which has the "vision" capability.
 	// https://docs.mistral.ai/capabilities/vision/
 	if c, err := mistral.New("", "mistral-small-latest"); err == nil {
-		msgs := genaiapi.Messages{
+		msgs := genai.Messages{
 			{
-				Role: genaiapi.User,
-				Contents: []genaiapi.Content{
+				Role: genai.User,
+				Contents: []genai.Content{
 					{Text: "Is it a banana? Reply as JSON."},
 					{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
 				},
@@ -47,13 +47,13 @@ func ExampleClient_Completion_vision_and_JSON() {
 		var got struct {
 			Banana bool `json:"banana"`
 		}
-		opts := genaiapi.CompletionOptions{
+		opts := genai.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
 			DecodeAs:    &got,
 		}
-		var resp genaiapi.CompletionResult
+		var resp genai.CompletionResult
 		for i := range 3 {
 			// Mistral has a very good rate limiting implementation.
 			if resp, err = c.Completion(context.Background(), msgs, &opts); err != nil && i != 2 {
@@ -102,20 +102,20 @@ func ExampleClient_Completion_pDF() {
 	// https://docs.mistral.ai/capabilities/document/
 	// https://docs.mistral.ai/capabilities/vision/
 	if c, err := mistral.New("", "mistral-small-latest"); err == nil {
-		msgs := genaiapi.Messages{
+		msgs := genai.Messages{
 			{
-				Role: genaiapi.User,
-				Contents: []genaiapi.Content{
+				Role: genai.User,
+				Contents: []genai.Content{
 					{Text: "What is the word? Reply with only the word."},
 					{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/mistral/testdata/hidden_word.pdf"},
 				},
 			},
 		}
-		opts := genaiapi.CompletionOptions{
+		opts := genai.CompletionOptions{
 			Temperature: 0.01,
 			MaxTokens:   50,
 		}
-		var resp genaiapi.CompletionResult
+		var resp genai.CompletionResult
 		for i := range 3 {
 			// Mistral has a very good rate limiting implementation.
 			if resp, err = c.Completion(context.Background(), msgs, &opts); err != nil && i != 2 {
@@ -158,17 +158,17 @@ func ExampleClient_Completion_tool_use() {
 	// Require a model which has the tool capability. See
 	// https://docs.mistral.ai/capabilities/function_calling/
 	if c, err := mistral.New("", "ministral-3b-latest"); err == nil {
-		msgs := genaiapi.Messages{
-			genaiapi.NewTextMessage(genaiapi.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
+		msgs := genai.Messages{
+			genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
 		}
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 		}
-		opts := genaiapi.CompletionOptions{
+		opts := genai.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   200,
-			Tools: []genaiapi.ToolDef{
+			Tools: []genai.ToolDef{
 				{
 					Name:        "best_country",
 					Description: "A tool to determine the best country",
@@ -176,7 +176,7 @@ func ExampleClient_Completion_tool_use() {
 				},
 			},
 		}
-		var resp genaiapi.CompletionResult
+		var resp genai.CompletionResult
 		for i := range 3 {
 			// Mistral has a very good rate limiting implementation.
 			if resp, err = c.Completion(context.Background(), msgs, &opts); err != nil && i != 2 {
@@ -217,19 +217,19 @@ func ExampleClient_CompletionStream() {
 	// See https://docs.mistral.ai/getting-started/models/models_overview/
 	if c, err := mistral.New("", "ministral-3b-latest"); err == nil {
 		ctx := context.Background()
-		msgs := genaiapi.Messages{
-			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
+		msgs := genai.Messages{
+			genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 		}
-		opts := genaiapi.CompletionOptions{
+		opts := genai.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
 		}
 		for i := range 3 {
-			chunks := make(chan genaiapi.MessageFragment)
-			end := make(chan genaiapi.Message, 10)
+			chunks := make(chan genai.MessageFragment)
+			end := make(chan genai.Message, 10)
 			go func() {
-				var pendingMsgs genaiapi.Messages
+				var pendingMsgs genai.Messages
 				defer func() {
 					for _, m := range pendingMsgs {
 						end <- m
@@ -245,7 +245,7 @@ func ExampleClient_CompletionStream() {
 							return
 						}
 						if pendingMsgs, err = pkt.Accumulate(pendingMsgs); err != nil {
-							end <- genaiapi.NewTextMessage(genaiapi.Assistant, fmt.Sprintf("Error: %v", err))
+							end <- genai.NewTextMessage(genai.Assistant, fmt.Sprintf("Error: %v", err))
 							return
 						}
 					}
@@ -253,7 +253,7 @@ func ExampleClient_CompletionStream() {
 			}()
 			err := c.CompletionStream(ctx, msgs, &opts, chunks)
 			close(chunks)
-			var responses genaiapi.Messages
+			var responses genai.Messages
 			for m := range end {
 				responses = append(responses, m)
 			}

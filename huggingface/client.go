@@ -24,7 +24,7 @@ import (
 	"time"
 
 	"github.com/invopop/jsonschema"
-	"github.com/maruel/genai/genaiapi"
+	"github.com/maruel/genai"
 	"github.com/maruel/httpjson"
 	"golang.org/x/sync/errgroup"
 )
@@ -66,7 +66,7 @@ type CompletionRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatable) error {
+func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 	var errs []error
 	sp := ""
 	if opts != nil {
@@ -74,7 +74,7 @@ func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatab
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *genaiapi.CompletionOptions:
+			case *genai.CompletionOptions:
 				c.MaxTokens = v.MaxTokens
 				c.Temperature = v.Temperature
 				c.TopP = v.TopP
@@ -141,9 +141,9 @@ type Message struct {
 	ToolCalls []ToolCall `json:"tool_calls,omitzero"`
 }
 
-func (m *Message) From(in *genaiapi.Message) error {
+func (m *Message) From(in *genai.Message) error {
 	switch in.Role {
-	case genaiapi.User, genaiapi.Assistant:
+	case genai.User, genai.Assistant:
 		m.Role = string(in.Role)
 	default:
 		return fmt.Errorf("unsupported role %q", in.Role)
@@ -174,7 +174,7 @@ type Content struct {
 	} `json:"image_url,omitzero"`
 }
 
-func (c *Content) From(in *genaiapi.Content) error {
+func (c *Content) From(in *genai.Content) error {
 	if in.Text != "" {
 		c.Type = "text"
 		c.Text = in.Text
@@ -208,14 +208,14 @@ type ToolCall struct {
 	} `json:"function,omitzero"`
 }
 
-func (t *ToolCall) From(in *genaiapi.ToolCall) error {
+func (t *ToolCall) From(in *genai.ToolCall) error {
 	t.ID = in.ID
 	t.Type = "function"
 	t.Function.Name = in.Name
 	return json.Unmarshal([]byte(in.Arguments), &t.Function.Arguments)
 }
 
-func (t *ToolCall) To(out *genaiapi.ToolCall) error {
+func (t *ToolCall) To(out *genai.ToolCall) error {
 	out.ID = t.ID
 	out.Name = t.Function.Name
 	b, err := json.Marshal(t.Function.Arguments)
@@ -272,15 +272,15 @@ type MessageResponse struct {
 	ToolCalls  []ToolCall `json:"tool_calls"`
 }
 
-func (m *MessageResponse) To(out *genaiapi.Message) error {
+func (m *MessageResponse) To(out *genai.Message) error {
 	switch role := m.Role; role {
 	case "assistant", "user":
-		out.Role = genaiapi.Role(role)
+		out.Role = genai.Role(role)
 	default:
 		return fmt.Errorf("unsupported role %q", role)
 	}
 	if len(m.ToolCalls) != 0 {
-		out.ToolCalls = make([]genaiapi.ToolCall, len(m.ToolCalls))
+		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))
 		for i := range m.ToolCalls {
 			if err := m.ToolCalls[i].To(&out.ToolCalls[i]); err != nil {
 				return fmt.Errorf("tool call %d: %w", i, err)
@@ -289,14 +289,14 @@ func (m *MessageResponse) To(out *genaiapi.Message) error {
 	}
 
 	if m.Content != "" {
-		out.Contents = []genaiapi.Content{{Text: m.Content}}
+		out.Contents = []genai.Content{{Text: m.Content}}
 	}
 	return nil
 }
 
-func (c *CompletionResponse) ToResult() (genaiapi.CompletionResult, error) {
-	out := genaiapi.CompletionResult{
-		Usage: genaiapi.Usage{
+func (c *CompletionResponse) ToResult() (genai.CompletionResult, error) {
+	out := genai.CompletionResult{
+		Usage: genai.Usage{
 			InputTokens:  c.Usage.PromptTokens,
 			OutputTokens: c.Usage.CompletionTokens,
 		},
@@ -318,9 +318,9 @@ type CompletionStreamChunkResponse struct {
 		Index        int64  `json:"index"`
 		FinishReason string `json:"finish_reason"` // stop
 		Delta        struct {
-			Role       genaiapi.Role `json:"role"`
-			Content    string        `json:"content"`
-			ToolCallID string        `json:"tool_call_id"`
+			Role       genai.Role `json:"role"`
+			Content    string     `json:"content"`
+			ToolCallID string     `json:"tool_call_id"`
 			ToolCalls  []struct {
 				ID       string `json:"id"`
 				Type     string `json:"type"` // function
@@ -398,15 +398,15 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{apiKey: apiKey, model: model}, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs genaiapi.Messages, opts genaiapi.Validatable) (genaiapi.CompletionResult, error) {
+func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
 	// https://huggingface.co/docs/api-inference/tasks/chat-completion#api-specification
 	rpcin := CompletionRequest{}
 	if err := rpcin.Init(msgs, opts); err != nil {
-		return genaiapi.CompletionResult{}, err
+		return genai.CompletionResult{}, err
 	}
 	rpcout := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genaiapi.CompletionResult{}, fmt.Errorf("failed to get chat response: %w", err)
+		return genai.CompletionResult{}, fmt.Errorf("failed to get chat response: %w", err)
 	}
 	return rpcout.ToResult()
 }
@@ -420,7 +420,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, url, in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, opts genaiapi.Validatable, chunks chan<- genaiapi.MessageFragment) error {
+func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
 	in := CompletionRequest{}
 	if err := in.Init(msgs, opts); err != nil {
 		return err
@@ -438,7 +438,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, o
 	return err
 }
 
-func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genaiapi.MessageFragment) error {
+func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.MessageFragment) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -454,7 +454,7 @@ func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<-
 			return fmt.Errorf("unexpected role %q", role)
 		}
 		if word := pkt.Choices[0].Delta.Content; word != "" {
-			chunks <- genaiapi.MessageFragment{TextFragment: word}
+			chunks <- genai.MessageFragment{TextFragment: word}
 		}
 	}
 	return nil
@@ -568,7 +568,7 @@ func (m *Model) Context() int64 {
 	return 0
 }
 
-func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
+func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://huggingface.co/docs/hub/api
 
 	// return nil, errors.New("not implemented; there's just too many, tens of thousands to chose from at https://huggingface.co/models?inference=warm&sort=trending")
@@ -581,7 +581,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	if err != nil {
 		return nil, err
 	}
-	models := make([]genaiapi.Model, len(out))
+	models := make([]genai.Model, len(out))
 	for i := range out {
 		models[i] = &out[i]
 	}
@@ -642,6 +642,6 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 const apiKeyURL = "https://huggingface.co/settings/tokens"
 
 var (
-	_ genaiapi.CompletionProvider = &Client{}
-	_ genaiapi.ModelProvider      = &Client{}
+	_ genai.CompletionProvider = &Client{}
+	_ genai.ModelProvider      = &Client{}
 )

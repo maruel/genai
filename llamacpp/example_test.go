@@ -13,7 +13,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/maruel/genai/genaiapi"
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/llamacpp"
 	"github.com/maruel/genai/llamacpp/llamacppsrv"
 	"github.com/maruel/huggingface"
@@ -63,10 +63,10 @@ func ExampleClient_Completion() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	msgs := genaiapi.Messages{
-		genaiapi.NewTextMessage(genaiapi.User, "Say hello. Reply with only one word."),
+	msgs := genai.Messages{
+		genai.NewTextMessage(genai.User, "Say hello. Reply with only one word."),
 	}
-	opts := genaiapi.CompletionOptions{
+	opts := genai.CompletionOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
@@ -98,18 +98,18 @@ func ExampleClient_CompletionStream() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	msgs := genaiapi.Messages{
-		genaiapi.NewTextMessage(genaiapi.User, "Say hello. Reply with only one word."),
+	msgs := genai.Messages{
+		genai.NewTextMessage(genai.User, "Say hello. Reply with only one word."),
 	}
-	opts := genaiapi.CompletionOptions{
+	opts := genai.CompletionOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	chunks := make(chan genaiapi.MessageFragment)
-	end := make(chan genaiapi.Message, 10)
+	chunks := make(chan genai.MessageFragment)
+	end := make(chan genai.Message, 10)
 	go func() {
-		var pendingMsgs genaiapi.Messages
+		var pendingMsgs genai.Messages
 		defer func() {
 			for _, m := range pendingMsgs {
 				end <- m
@@ -125,7 +125,7 @@ func ExampleClient_CompletionStream() {
 					return
 				}
 				if pendingMsgs, err = pkt.Accumulate(pendingMsgs); err != nil {
-					end <- genaiapi.NewTextMessage(genaiapi.Assistant, fmt.Sprintf("Error: %v", err))
+					end <- genai.NewTextMessage(genai.Assistant, fmt.Sprintf("Error: %v", err))
 					return
 				}
 			}
@@ -133,7 +133,7 @@ func ExampleClient_CompletionStream() {
 	}()
 	err = c.CompletionStream(ctx, msgs, &opts, chunks)
 	close(chunks)
-	var responses genaiapi.Messages
+	var responses genai.Messages
 	for m := range end {
 		responses = append(responses, m)
 	}

@@ -25,7 +25,7 @@ import (
 	"time"
 
 	"github.com/invopop/jsonschema"
-	"github.com/maruel/genai/genaiapi"
+	"github.com/maruel/genai"
 	"github.com/maruel/httpjson"
 	"golang.org/x/sync/errgroup"
 )
@@ -50,14 +50,14 @@ type CompletionRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatable) error {
+func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 	var errs []error
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *genaiapi.CompletionOptions:
+			case *genai.CompletionOptions:
 				c.MaxToks = v.MaxTokens
 				c.Temperature = v.Temperature
 				c.System = v.SystemPrompt
@@ -100,7 +100,7 @@ func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatab
 		c.Messages = make([]Message, 0, len(msgs))
 		for i := range msgs {
 			switch msgs[i].Role {
-			case genaiapi.User, genaiapi.Assistant:
+			case genai.User, genai.Assistant:
 				c.Messages = append(c.Messages, Message{})
 				if err := c.Messages[len(c.Messages)-1].From(&msgs[i]); err != nil {
 					errs = append(errs, fmt.Errorf("message %d: %w", i, err))
@@ -122,9 +122,9 @@ type Message struct {
 	Content []Content `json:"content"`
 }
 
-func (m *Message) From(in *genaiapi.Message) error {
+func (m *Message) From(in *genai.Message) error {
 	switch role := in.Role; role {
-	case genaiapi.Assistant, genaiapi.User:
+	case genai.Assistant, genai.User:
 		m.Role = string(in.Role)
 	default:
 		return fmt.Errorf("unsupported role %q", role)
@@ -144,10 +144,10 @@ func (m *Message) From(in *genaiapi.Message) error {
 	return nil
 }
 
-func (m *Message) To(out *genaiapi.Message) error {
+func (m *Message) To(out *genai.Message) error {
 	switch role := m.Role; role {
 	case "assistant", "user":
-		out.Role = genaiapi.Role(role)
+		out.Role = genai.Role(role)
 	default:
 		return fmt.Errorf("unsupported role %q", role)
 	}
@@ -155,12 +155,12 @@ func (m *Message) To(out *genaiapi.Message) error {
 	for i := range m.Content {
 		switch m.Content[i].Type {
 		case "text":
-			out.Contents = append(out.Contents, genaiapi.Content{})
+			out.Contents = append(out.Contents, genai.Content{})
 			if err := m.Content[i].ToContent(&out.Contents[len(out.Contents)-1]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		case "tool_use":
-			out.ToolCalls = append(out.ToolCalls, genaiapi.ToolCall{})
+			out.ToolCalls = append(out.ToolCalls, genai.ToolCall{})
 			if err := m.Content[i].ToToolCall(&out.ToolCalls[len(out.ToolCalls)-1]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
@@ -222,7 +222,7 @@ type Content struct {
 	Title   string `json:"title,omitzero"`
 }
 
-func (c *Content) FromContent(in *genaiapi.Content) error {
+func (c *Content) FromContent(in *genai.Content) error {
 	if in.Text != "" {
 		c.Type = "text"
 		c.Text = in.Text
@@ -265,7 +265,7 @@ func (c *Content) FromContent(in *genaiapi.Content) error {
 	return nil
 }
 
-func (c *Content) FromToolCall(in *genaiapi.ToolCall) error {
+func (c *Content) FromToolCall(in *genai.ToolCall) error {
 	c.Type = "tool_use"
 	c.ID = in.ID
 	c.Name = in.Name
@@ -275,7 +275,7 @@ func (c *Content) FromToolCall(in *genaiapi.ToolCall) error {
 	return nil
 }
 
-func (c *Content) ToContent(out *genaiapi.Content) error {
+func (c *Content) ToContent(out *genai.Content) error {
 	switch c.Type {
 	case "text":
 		out.Text = c.Text
@@ -285,7 +285,7 @@ func (c *Content) ToContent(out *genaiapi.Content) error {
 	return nil
 }
 
-func (c *Content) ToToolCall(out *genaiapi.ToolCall) error {
+func (c *Content) ToToolCall(out *genai.ToolCall) error {
 	switch c.Type {
 	case "tool_use":
 		out.ID = c.ID
@@ -375,9 +375,9 @@ type CompletionResponse struct {
 	} `json:"usage"`
 }
 
-func (c *CompletionResponse) ToResult() (genaiapi.CompletionResult, error) {
-	out := genaiapi.CompletionResult{
-		Usage: genaiapi.Usage{
+func (c *CompletionResponse) ToResult() (genai.CompletionResult, error) {
+	out := genai.CompletionResult{
+		Usage: genai.Usage{
 			InputTokens:  c.Usage.InputTokens,
 			OutputTokens: c.Usage.OutputTokens,
 		},
@@ -489,15 +489,15 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{apiKey: apiKey, model: model}, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs genaiapi.Messages, opts genaiapi.Validatable) (genaiapi.CompletionResult, error) {
+func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
 	// https://docs.anthropic.com/en/api/messages
 	rpcin := CompletionRequest{Model: c.model}
 	if err := rpcin.Init(msgs, opts); err != nil {
-		return genaiapi.CompletionResult{}, err
+		return genai.CompletionResult{}, err
 	}
 	rpcout := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genaiapi.CompletionResult{}, err
+		return genai.CompletionResult{}, err
 	}
 	return rpcout.ToResult()
 }
@@ -510,7 +510,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, "https://api.anthropic.com/v1/messages", in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, opts genaiapi.Validatable, chunks chan<- genaiapi.MessageFragment) error {
+func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
 	in := CompletionRequest{Model: c.model}
 	if err := in.Init(msgs, opts); err != nil {
 		return err
@@ -528,7 +528,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, o
 	return err
 }
 
-func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genaiapi.MessageFragment) error {
+func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.MessageFragment) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -550,7 +550,7 @@ func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<-
 		}
 		// slog.DebugContext(ctx, "anthropic", "word", word, "duration", time.Since(start).Round(time.Millisecond))
 		if word != "" {
-			chunks <- genaiapi.MessageFragment{TextFragment: word}
+			chunks <- genai.MessageFragment{TextFragment: word}
 		}
 	}
 	return nil
@@ -640,7 +640,7 @@ func (m *Model) Context() int64 {
 	return 0
 }
 
-func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
+func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.anthropic.com/en/api/models-list
 	h := make(http.Header)
 	h.Set("x-api-key", c.apiKey)
@@ -655,7 +655,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	if err != nil {
 		return nil, err
 	}
-	models := make([]genaiapi.Model, len(out.Data))
+	models := make([]genai.Model, len(out.Data))
 	for i := range out.Data {
 		models[i] = &out.Data[i]
 	}
@@ -705,6 +705,6 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 const apiKeyURL = "https://console.anthropic.com/settings/keys"
 
 var (
-	_ genaiapi.CompletionProvider = &Client{}
-	_ genaiapi.ModelProvider      = &Client{}
+	_ genai.CompletionProvider = &Client{}
+	_ genai.ModelProvider      = &Client{}
 )

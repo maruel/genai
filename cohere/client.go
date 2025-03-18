@@ -25,7 +25,7 @@ import (
 	"strings"
 
 	"github.com/invopop/jsonschema"
-	"github.com/maruel/genai/genaiapi"
+	"github.com/maruel/genai"
 	"github.com/maruel/httpjson"
 	"golang.org/x/sync/errgroup"
 )
@@ -59,7 +59,7 @@ type CompletionRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatable) error {
+func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 	var errs []error
 	sp := ""
 	if opts != nil {
@@ -67,7 +67,7 @@ func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatab
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *genaiapi.CompletionOptions:
+			case *genai.CompletionOptions:
 				c.MaxTokens = v.MaxTokens
 				c.Temperature = v.Temperature
 				c.P = v.TopP
@@ -135,9 +135,9 @@ type Message struct {
 	ToolCallID string     `json:"tool_call_id,omitzero"` // TODO
 }
 
-func (m *Message) From(in *genaiapi.Message) error {
+func (m *Message) From(in *genai.Message) error {
 	switch in.Role {
-	case genaiapi.User, genaiapi.Assistant:
+	case genai.User, genai.Assistant:
 		m.Role = string(in.Role)
 	default:
 		return fmt.Errorf("unsupported role %q", in.Role)
@@ -171,7 +171,7 @@ type Content struct {
 	} `json:"document,omitzero"`
 }
 
-func (c *Content) From(in *genaiapi.Content) error {
+func (c *Content) From(in *genai.Content) error {
 	if in.Text != "" {
 		c.Type = "text"
 		c.Text = in.Text
@@ -237,9 +237,9 @@ type CompletionResponse struct {
 	} `json:"logprobs"`
 }
 
-func (c *CompletionResponse) ToResult() (genaiapi.CompletionResult, error) {
-	out := genaiapi.CompletionResult{
-		Usage: genaiapi.Usage{
+func (c *CompletionResponse) ToResult() (genai.CompletionResult, error) {
+	out := genai.CompletionResult{
+		Usage: genai.Usage{
 			// What about BilledUnits, especially for SearchUnits and Classifications?
 			InputTokens:  c.Usage.Tokens.InputTokens,
 			OutputTokens: c.Usage.Tokens.OutputTokens,
@@ -250,9 +250,9 @@ func (c *CompletionResponse) ToResult() (genaiapi.CompletionResult, error) {
 }
 
 type MessageResponse struct {
-	Role      genaiapi.Role `json:"role"`
-	ToolCalls []ToolCall    `json:"tool_calls"`
-	ToolPlan  string        `json:"tool_plan"`
+	Role      genai.Role `json:"role"`
+	ToolCalls []ToolCall `json:"tool_calls"`
+	ToolPlan  string     `json:"tool_plan"`
 	Content   []struct {
 		Type string `json:"type"` // text
 		Text string `json:"text"`
@@ -266,21 +266,21 @@ type MessageResponse struct {
 	} `json:"citations"`
 }
 
-func (m *MessageResponse) To(out *genaiapi.Message) error {
+func (m *MessageResponse) To(out *genai.Message) error {
 	switch role := m.Role; role {
 	case "system", "assistant", "user":
-		out.Role = genaiapi.Role(role)
+		out.Role = genai.Role(role)
 	default:
 		return fmt.Errorf("unsupported role %q", role)
 	}
 	if len(m.ToolCalls) != 0 {
-		out.ToolCalls = make([]genaiapi.ToolCall, len(m.ToolCalls))
+		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))
 		for i := range m.ToolCalls {
 			m.ToolCalls[i].To(&out.ToolCalls[i])
 		}
 	}
 	if len(m.Content) != 0 {
-		out.Contents = make([]genaiapi.Content, len(m.Content))
+		out.Contents = make([]genai.Content, len(m.Content))
 		for i := range m.Content {
 			out.Contents[i].Text = m.Content[i].Text
 		}
@@ -297,14 +297,14 @@ type ToolCall struct {
 	} `json:"function"`
 }
 
-func (t *ToolCall) From(in *genaiapi.ToolCall) {
+func (t *ToolCall) From(in *genai.ToolCall) {
 	t.Type = "function"
 	t.ID = in.ID
 	t.Function.Name = in.Name
 	t.Function.Arguments = in.Arguments
 }
 
-func (t *ToolCall) To(out *genaiapi.ToolCall) {
+func (t *ToolCall) To(out *genai.ToolCall) {
 	out.ID = t.ID
 	out.Name = t.Function.Name
 	out.Arguments = t.Function.Arguments
@@ -316,7 +316,7 @@ type CompletionStreamChunkResponse struct {
 	Index int64  `json:"index"`
 	Delta struct {
 		Message struct {
-			Role    genaiapi.Role `json:"role"`
+			Role    genai.Role `json:"role"`
 			Content struct {
 				Type string `json:"type"` // text
 				Text string `json:"text"`
@@ -345,7 +345,7 @@ type completionStreamChunkMsgStartResponse struct {
 	Type  string `json:"type"` // "message_start"
 	Delta struct {
 		Message struct {
-			Role genaiapi.Role `json:"role"`
+			Role genai.Role `json:"role"`
 			// WTF are they doing?
 			Content   []struct{} `json:"content"`
 			ToolPlan  string     `json:"tool_plan"`
@@ -392,15 +392,15 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{apiKey: apiKey, model: model}, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs genaiapi.Messages, opts genaiapi.Validatable) (genaiapi.CompletionResult, error) {
+func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
 	// https://docs.cohere.com/reference/chat
 	rpcin := CompletionRequest{Model: c.model}
 	if err := rpcin.Init(msgs, opts); err != nil {
-		return genaiapi.CompletionResult{}, err
+		return genai.CompletionResult{}, err
 	}
 	rpcout := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genaiapi.CompletionResult{}, fmt.Errorf("failed to get chat response: %w", err)
+		return genai.CompletionResult{}, fmt.Errorf("failed to get chat response: %w", err)
 	}
 	return rpcout.ToResult()
 }
@@ -413,7 +413,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, "https://api.cohere.com/v2/chat", in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, opts genaiapi.Validatable, chunks chan<- genaiapi.MessageFragment) error {
+func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
 	in := CompletionRequest{Model: c.model}
 	if err := in.Init(msgs, opts); err != nil {
 		return err
@@ -431,7 +431,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, o
 	return err
 }
 
-func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genaiapi.MessageFragment) error {
+func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.MessageFragment) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -444,7 +444,7 @@ func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<-
 			return fmt.Errorf("unexpected role %q", role)
 		}
 		if word := pkt.Delta.Message.Content.Text; word != "" {
-			chunks <- genaiapi.MessageFragment{TextFragment: word}
+			chunks <- genai.MessageFragment{TextFragment: word}
 		}
 	}
 	return nil
@@ -552,7 +552,7 @@ func (m *Model) Context() int64 {
 	return m.ContextLength
 }
 
-func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
+func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.cohere.com/reference/list-models
 	h := make(http.Header)
 	h.Add("Authorization", "Bearer "+c.apiKey)
@@ -564,7 +564,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	if err != nil {
 		return nil, err
 	}
-	models := make([]genaiapi.Model, len(out.Models))
+	models := make([]genai.Model, len(out.Models))
 	for i := range out.Models {
 		models[i] = &out.Models[i]
 	}
@@ -613,6 +613,6 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 const apiKeyURL = "https://dashboard.cohere.com/api-keys"
 
 var (
-	_ genaiapi.CompletionProvider = &Client{}
-	_ genaiapi.ModelProvider      = &Client{}
+	_ genai.CompletionProvider = &Client{}
+	_ genai.ModelProvider      = &Client{}
 )

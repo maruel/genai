@@ -11,8 +11,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/cloudflare"
-	"github.com/maruel/genai/genaiapi"
 )
 
 func ExampleClient_Completion_jSON() {
@@ -20,13 +20,13 @@ func ExampleClient_Completion_jSON() {
 	// As of March 2025, you can try it out for free.
 	// We need to use a model that supports structured output.
 	if c, err := cloudflare.New("", "", "@hf/nousresearch/hermes-2-pro-mistral-7b"); err == nil {
-		msgs := genaiapi.Messages{
-			genaiapi.NewTextMessage(genaiapi.User, "Is a circle round? Reply as JSON."),
+		msgs := genai.Messages{
+			genai.NewTextMessage(genai.User, "Is a circle round? Reply as JSON."),
 		}
 		var got struct {
 			Round bool `json:"round"`
 		}
-		opts := genaiapi.CompletionOptions{
+		opts := genai.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
@@ -59,17 +59,17 @@ func ExampleClient_Completion_tool_use() {
 	// As of March 2025, you can try it out for free.
 	// We need to use a model that supports function calling.
 	if c, err := cloudflare.New("", "", "@hf/nousresearch/hermes-2-pro-mistral-7b"); err == nil {
-		msgs := genaiapi.Messages{
-			genaiapi.NewTextMessage(genaiapi.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
+		msgs := genai.Messages{
+			genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
 		}
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 		}
-		opts := genaiapi.CompletionOptions{
+		opts := genai.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   200,
-			Tools: []genaiapi.ToolDef{
+			Tools: []genai.ToolDef{
 				{
 					Name:        "best_country",
 					Description: "A tool to determine the best country",
@@ -104,18 +104,18 @@ func ExampleClient_CompletionStream() {
 	// See https://developers.cloudflare.com/workers-ai/models/
 	if c, err := cloudflare.New("", "", "@cf/meta/llama-3.2-3b-instruct"); err == nil {
 		ctx := context.Background()
-		msgs := genaiapi.Messages{
-			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
+		msgs := genai.Messages{
+			genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 		}
-		opts := genaiapi.CompletionOptions{
+		opts := genai.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
 		}
-		chunks := make(chan genaiapi.MessageFragment)
-		end := make(chan genaiapi.Message, 10)
+		chunks := make(chan genai.MessageFragment)
+		end := make(chan genai.Message, 10)
 		go func() {
-			var pendingMsgs genaiapi.Messages
+			var pendingMsgs genai.Messages
 			defer func() {
 				for _, m := range pendingMsgs {
 					end <- m
@@ -131,7 +131,7 @@ func ExampleClient_CompletionStream() {
 						return
 					}
 					if pendingMsgs, err = pkt.Accumulate(pendingMsgs); err != nil {
-						end <- genaiapi.NewTextMessage(genaiapi.Assistant, fmt.Sprintf("Error: %v", err))
+						end <- genai.NewTextMessage(genai.Assistant, fmt.Sprintf("Error: %v", err))
 						return
 					}
 				}
@@ -139,7 +139,7 @@ func ExampleClient_CompletionStream() {
 		}()
 		err := c.CompletionStream(ctx, msgs, &opts, chunks)
 		close(chunks)
-		var responses genaiapi.Messages
+		var responses genai.Messages
 		for m := range end {
 			responses = append(responses, m)
 		}

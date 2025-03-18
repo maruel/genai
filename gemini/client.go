@@ -27,7 +27,7 @@ import (
 	"strings"
 
 	"github.com/invopop/jsonschema"
-	"github.com/maruel/genai/genaiapi"
+	"github.com/maruel/genai"
 	"github.com/maruel/httpjson"
 	"golang.org/x/sync/errgroup"
 )
@@ -189,7 +189,7 @@ type CompletionRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatable) error {
+func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 	var errs []error
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
@@ -198,7 +198,7 @@ func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatab
 			// This doesn't seem to be well supported yet:
 			//    in.GenerationConfig.ResponseLogprobs = true
 			switch v := opts.(type) {
-			case *genaiapi.CompletionOptions:
+			case *genai.CompletionOptions:
 				c.GenerationConfig.MaxOutputTokens = v.MaxTokens
 				c.GenerationConfig.Temperature = v.Temperature
 				c.GenerationConfig.TopP = v.TopP
@@ -264,11 +264,11 @@ type Content struct {
 	Parts []Part `json:"parts"`
 }
 
-func (c *Content) From(in *genaiapi.Message) error {
+func (c *Content) From(in *genai.Message) error {
 	switch in.Role {
-	case genaiapi.User:
+	case genai.User:
 		c.Role = "user"
-	case genaiapi.Assistant:
+	case genai.Assistant:
 		c.Role = "model"
 	default:
 		return fmt.Errorf("unsupported role %q", in.Role)
@@ -288,12 +288,12 @@ func (c *Content) From(in *genaiapi.Message) error {
 	return nil
 }
 
-func (c *Content) To(out *genaiapi.Message) error {
+func (c *Content) To(out *genai.Message) error {
 	switch role := c.Role; role {
 	case "system", "user":
-		out.Role = genaiapi.Role(role)
+		out.Role = genai.Role(role)
 	case "model":
-		out.Role = genaiapi.Assistant
+		out.Role = genai.Assistant
 	default:
 		return fmt.Errorf("unsupported role %q", role)
 	}
@@ -302,7 +302,7 @@ func (c *Content) To(out *genaiapi.Message) error {
 		// There's no signal as to what it is, we have to test its content.
 		// We need to split out content from tools.
 		if part.Text != "" {
-			out.Contents = append(out.Contents, genaiapi.Content{Text: part.Text})
+			out.Contents = append(out.Contents, genai.Content{Text: part.Text})
 			continue
 		}
 		if part.InlineData.MimeType != "" {
@@ -313,7 +313,7 @@ func (c *Content) To(out *genaiapi.Message) error {
 			if len(exts) == 0 {
 				return fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
 			}
-			out.Contents = append(out.Contents, genaiapi.Content{Filename: "content" + exts[0], Document: bytes.NewReader(part.InlineData.Data)})
+			out.Contents = append(out.Contents, genai.Content{Filename: "content" + exts[0], Document: bytes.NewReader(part.InlineData.Data)})
 			continue
 		}
 		if part.FileData.MimeType != "" {
@@ -324,7 +324,7 @@ func (c *Content) To(out *genaiapi.Message) error {
 			if len(exts) == 0 {
 				return fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
 			}
-			out.Contents = append(out.Contents, genaiapi.Content{Filename: "content" + exts[0], URL: part.FileData.FileURI})
+			out.Contents = append(out.Contents, genai.Content{Filename: "content" + exts[0], URL: part.FileData.FileURI})
 			continue
 		}
 		if part.FunctionCall.Name != "" {
@@ -333,7 +333,7 @@ func (c *Content) To(out *genaiapi.Message) error {
 				return fmt.Errorf("failed to marshal arguments: %w", err)
 			}
 			out.ToolCalls = append(out.ToolCalls,
-				genaiapi.ToolCall{
+				genai.ToolCall{
 					ID:        part.FunctionCall.ID,
 					Name:      part.FunctionCall.Name,
 					Arguments: string(raw),
@@ -379,7 +379,7 @@ type Part struct {
 	} `json:"codeExecutionResult,omitzero"` // TODO
 }
 
-func (p *Part) FromContent(in *genaiapi.Content) error {
+func (p *Part) FromContent(in *genai.Content) error {
 	if in.Text != "" {
 		p.Text = in.Text
 		return nil
@@ -408,7 +408,7 @@ func (p *Part) FromContent(in *genaiapi.Content) error {
 	return nil
 }
 
-func (p *Part) FromToolCall(in *genaiapi.ToolCall) error {
+func (p *Part) FromToolCall(in *genai.ToolCall) error {
 	p.FunctionCall.ID = in.ID
 	p.FunctionCall.Name = in.Name
 	if err := json.Unmarshal([]byte(in.Arguments), &p.FunctionCall.Args); err != nil {
@@ -417,7 +417,7 @@ func (p *Part) FromToolCall(in *genaiapi.ToolCall) error {
 	return nil
 }
 
-func (p *Part) ToToolCall(out *genaiapi.ToolCall) error {
+func (p *Part) ToToolCall(out *genai.ToolCall) error {
 	out.ID = p.FunctionCall.ID
 	out.Name = p.FunctionCall.Name
 	raw, err := json.Marshal(p.FunctionCall.Args)
@@ -513,9 +513,9 @@ type CompletionResponse struct {
 	ModelVersion string `json:"modelVersion"`
 }
 
-func (c *CompletionResponse) ToResult() (genaiapi.CompletionResult, error) {
-	out := genaiapi.CompletionResult{
-		Usage: genaiapi.Usage{
+func (c *CompletionResponse) ToResult() (genai.CompletionResult, error) {
+	out := genai.CompletionResult{
+		Usage: genai.Usage{
 			InputTokens:  c.UsageMetadata.PromptTokenCount,
 			OutputTokens: c.UsageMetadata.CandidatesTokenCount + c.UsageMetadata.ToolUsePromptTokenCount + c.UsageMetadata.ThoughtsTokenCount,
 		},
@@ -717,14 +717,14 @@ func (c *Client) cacheContent(ctx context.Context, data []byte, mime, systemInst
 }
 */
 
-func (c *Client) Completion(ctx context.Context, msgs genaiapi.Messages, opts genaiapi.Validatable) (genaiapi.CompletionResult, error) {
+func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
 	rpcin := CompletionRequest{}
 	if err := rpcin.Init(msgs, opts); err != nil {
-		return genaiapi.CompletionResult{}, err
+		return genai.CompletionResult{}, err
 	}
 	rpcout := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genaiapi.CompletionResult{}, err
+		return genai.CompletionResult{}, err
 	}
 	return rpcout.ToResult()
 }
@@ -738,7 +738,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, url, in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, opts genaiapi.Validatable, chunks chan<- genaiapi.MessageFragment) error {
+func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
 	in := CompletionRequest{}
 	if err := in.Init(msgs, opts); err != nil {
 		return err
@@ -756,7 +756,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, o
 	return err
 }
 
-func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genaiapi.MessageFragment) error {
+func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.MessageFragment) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -773,7 +773,7 @@ func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<-
 		}
 		for _, part := range pkt.Candidates[0].Content.Parts {
 			if part.Text != "" {
-				chunks <- genaiapi.MessageFragment{TextFragment: part.Text}
+				chunks <- genai.MessageFragment{TextFragment: part.Text}
 			}
 		}
 	}
@@ -857,7 +857,7 @@ func (m *Model) Context() int64 {
 	return m.InputTokenLimit
 }
 
-func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
+func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://ai.google.dev/api/models?hl=en#method:-models.list
 	var out struct {
 		Models        []Model `json:"models"`
@@ -867,7 +867,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genaiapi.Model, error) {
 	if err != nil {
 		return nil, err
 	}
-	models := make([]genaiapi.Model, len(out.Models))
+	models := make([]genai.Model, len(out.Models))
 	for i := range out.Models {
 		models[i] = &out.Models[i]
 	}
@@ -922,6 +922,6 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 const apiKeyURL = "https://ai.google.dev/gemini-api/docs/getting-started"
 
 var (
-	_ genaiapi.CompletionProvider = &Client{}
-	_ genaiapi.ModelProvider      = &Client{}
+	_ genai.CompletionProvider = &Client{}
+	_ genai.ModelProvider      = &Client{}
 )

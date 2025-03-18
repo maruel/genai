@@ -116,7 +116,7 @@ import (
 	"strings"
 
 	"github.com/maruel/genai/cerebras"
-	"github.com/maruel/genai/genaiapi"
+	"github.com/maruel/genai/genai"
 )
 
 type Circle struct {
@@ -128,10 +128,10 @@ func main() {
     if err != nil {
         log.Fatal(err)
     }
-    msgs := genaiapi.Messages{
-        genaiapi.NewTextMessage(genaiapi.User, "Is a circle round? Reply as JSON."),
+    msgs := genai.Messages{
+        genai.NewTextMessage(genai.User, "Is a circle round? Reply as JSON."),
     }
-    opts := genaiapi.CompletionOptions{
+    opts := genai.CompletionOptions{
         Seed:        1,
         Temperature: 0.01,
         MaxTokens:   50,
@@ -142,7 +142,7 @@ func main() {
         log.Fatal(err)
     }
     got := Circle{}
-    if err := resp.Decode(&got); err != nil {
+    if err := resp.Contents[0].Decode(&got); err != nil {
         log.Fatal(err)
     }
     fmt.Printf("Round: %v\n", got.Round)

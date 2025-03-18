@@ -14,8 +14,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/gemini"
-	"github.com/maruel/genai/genaiapi"
 )
 
 // See the 1kib banana jpg online at
@@ -32,10 +32,10 @@ func ExampleClient_Completion_vision_and_JSON() {
 	// This code will run when GEMINI_API_KEY is set.
 	// As of March 2025, you can try it out for free.
 	if c, err := gemini.New("", model); err == nil {
-		msgs := genaiapi.Messages{
+		msgs := genai.Messages{
 			{
-				Role: genaiapi.User,
-				Contents: []genaiapi.Content{
+				Role: genai.User,
+				Contents: []genai.Content{
 					{Text: "Is it a banana? Reply as JSON."},
 					{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
 				},
@@ -44,7 +44,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 		var got struct {
 			Banana bool `json:"banana"`
 		}
-		opts := genaiapi.CompletionOptions{
+		opts := genai.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
@@ -81,16 +81,16 @@ func ExampleClient_Completion_pDF() {
 			log.Fatal(err)
 		}
 		defer f.Close()
-		msgs := genaiapi.Messages{
+		msgs := genai.Messages{
 			{
-				Role: genaiapi.User,
-				Contents: []genaiapi.Content{
+				Role: genai.User,
+				Contents: []genai.Content{
 					{Text: "What is the word? Reply with only the word."},
 					{Filename: filepath.Base(f.Name()), Document: f},
 				},
 			},
 		}
-		opts := genaiapi.CompletionOptions{
+		opts := genai.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
@@ -123,16 +123,16 @@ func ExampleClient_Completion_audio() {
 			log.Fatal(err)
 		}
 		defer f.Close()
-		msgs := genaiapi.Messages{
+		msgs := genai.Messages{
 			{
-				Role: genaiapi.User,
-				Contents: []genaiapi.Content{
+				Role: genai.User,
+				Contents: []genai.Content{
 					{Text: "What is the word said? Reply with only the word."},
 					{Filename: filepath.Base(f.Name()), Document: f},
 				},
 			},
 		}
-		opts := genaiapi.CompletionOptions{
+		opts := genai.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
@@ -165,10 +165,10 @@ func ExampleClient_Completion_tool_use() {
 			log.Fatal(err)
 		}
 		defer f.Close()
-		msgs := genaiapi.Messages{
+		msgs := genai.Messages{
 			{
-				Role: genaiapi.User,
-				Contents: []genaiapi.Content{
+				Role: genai.User,
+				Contents: []genai.Content{
 					{Text: "What is the word? Call the tool hidden_word to tell me what word you saw."},
 					{Filename: filepath.Base(f.Name()), Document: f},
 				},
@@ -177,11 +177,11 @@ func ExampleClient_Completion_tool_use() {
 		var got struct {
 			Word string `json:"word" jsonschema:"enum=Orange,enum=Banana,enum=Apple"`
 		}
-		opts := genaiapi.CompletionOptions{
+		opts := genai.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
-			Tools: []genaiapi.ToolDef{
+			Tools: []genai.ToolDef{
 				{
 					Name:        "hidden_word",
 					Description: "A tool to state what word was seen in the video.",
@@ -217,18 +217,18 @@ func ExampleClient_CompletionStream() {
 	// As of March 2025, you can try it out for free.
 	if c, err := gemini.New("", model); err == nil {
 		ctx := context.Background()
-		msgs := genaiapi.Messages{
-			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
+		msgs := genai.Messages{
+			genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 		}
-		opts := genaiapi.CompletionOptions{
+		opts := genai.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
 		}
-		chunks := make(chan genaiapi.MessageFragment)
-		end := make(chan genaiapi.Message, 10)
+		chunks := make(chan genai.MessageFragment)
+		end := make(chan genai.Message, 10)
 		go func() {
-			var pendingMsgs genaiapi.Messages
+			var pendingMsgs genai.Messages
 			defer func() {
 				for _, m := range pendingMsgs {
 					end <- m
@@ -244,7 +244,7 @@ func ExampleClient_CompletionStream() {
 						return
 					}
 					if pendingMsgs, err = pkt.Accumulate(pendingMsgs); err != nil {
-						end <- genaiapi.NewTextMessage(genaiapi.Assistant, fmt.Sprintf("Error: %v", err))
+						end <- genai.NewTextMessage(genai.Assistant, fmt.Sprintf("Error: %v", err))
 						return
 					}
 				}
@@ -252,7 +252,7 @@ func ExampleClient_CompletionStream() {
 		}()
 		err := c.CompletionStream(ctx, msgs, &opts, chunks)
 		close(chunks)
-		var responses genaiapi.Messages
+		var responses genai.Messages
 		for m := range end {
 			responses = append(responses, m)
 		}

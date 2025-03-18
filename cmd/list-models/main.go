@@ -15,13 +15,13 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/anthropic"
 	"github.com/maruel/genai/cerebras"
 	"github.com/maruel/genai/cloudflare"
 	"github.com/maruel/genai/cohere"
 	"github.com/maruel/genai/deepseek"
 	"github.com/maruel/genai/gemini"
-	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/genai/groq"
 	"github.com/maruel/genai/huggingface"
 	"github.com/maruel/genai/mistral"
@@ -29,38 +29,38 @@ import (
 	"github.com/maruel/genai/togetherai"
 )
 
-var providers = map[string]func() (genaiapi.ModelProvider, error){
-	"anthropic": func() (genaiapi.ModelProvider, error) {
+var providers = map[string]func() (genai.ModelProvider, error){
+	"anthropic": func() (genai.ModelProvider, error) {
 		return anthropic.New("", "")
 	},
-	"cerebras": func() (genaiapi.ModelProvider, error) {
+	"cerebras": func() (genai.ModelProvider, error) {
 		return cerebras.New("", "")
 	},
-	"cloudflare": func() (genaiapi.ModelProvider, error) {
+	"cloudflare": func() (genai.ModelProvider, error) {
 		return cloudflare.New("", "", "")
 	},
-	"cohere": func() (genaiapi.ModelProvider, error) {
+	"cohere": func() (genai.ModelProvider, error) {
 		return cohere.New("", "")
 	},
-	"deepseek": func() (genaiapi.ModelProvider, error) {
+	"deepseek": func() (genai.ModelProvider, error) {
 		return deepseek.New("", "")
 	},
-	"gemini": func() (genaiapi.ModelProvider, error) {
+	"gemini": func() (genai.ModelProvider, error) {
 		return gemini.New("", "")
 	},
-	"groq": func() (genaiapi.ModelProvider, error) {
+	"groq": func() (genai.ModelProvider, error) {
 		return groq.New("", "")
 	},
-	"huggingface": func() (genaiapi.ModelProvider, error) {
+	"huggingface": func() (genai.ModelProvider, error) {
 		return huggingface.New("", "")
 	},
-	"mistral": func() (genaiapi.ModelProvider, error) {
+	"mistral": func() (genai.ModelProvider, error) {
 		return mistral.New("", "")
 	},
-	"openai": func() (genaiapi.ModelProvider, error) {
+	"openai": func() (genai.ModelProvider, error) {
 		return openai.New("", "")
 	},
-	"togetherai": func() (genaiapi.ModelProvider, error) {
+	"togetherai": func() (genai.ModelProvider, error) {
 		return togetherai.New("", "")
 	},
 }

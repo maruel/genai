@@ -6,12 +6,15 @@
 set -eu
 
 go install ./cmd/list-models
-PROVIDERS=(anthropic cerebras cloudflare cohere deepseek gemini groq huggingface mistral openai)
+PROVIDERS=(anthropic cerebras cloudflare cohere deepseek gemini groq huggingface mistral openai togetherai)
 
+echo "# List of models available on each provider"
+echo ""
 echo "Snapshot of the models available on each provider as of $(date +%Y-%m-%d)"
 
 for i in "${PROVIDERS[@]}"; do
 	echo ""
-    echo "Provider $i:"
+    echo "## $i"
+	echo ""
     list-models -provider $i | sed 's/^/- /'
 done

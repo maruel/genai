@@ -16,7 +16,7 @@ import (
 
 func ExampleClient_Completion() {
 	// This code will run when PERPLEXITY_API_KEY is set.
-	if c, err := perplexity.New(""); err == nil {
+	if c, err := perplexity.New("", "sonar"); err == nil {
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 		}
@@ -46,7 +46,7 @@ func ExampleClient_Completion() {
 
 func ExampleClient_CompletionStream() {
 	// This code will run when PERPLEXITY_API_KEY is set.
-	if c, err := perplexity.New(""); err == nil {
+	if c, err := perplexity.New("", "sonar"); err == nil {
 		ctx := context.Background()
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "Say hello. Use only one word."),

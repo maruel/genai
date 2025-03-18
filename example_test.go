@@ -128,7 +128,7 @@ func ExampleCompletionProvider() {
 	if c, err := openai.New("", "o3-mini"); err == nil {
 		completionProviders["openai"] = c
 	}
-	if c, err := perplexity.New(""); err == nil {
+	if c, err := perplexity.New("", "sonar"); err == nil {
 		completionProviders["perplexity"] = c
 	}
 	if c, err := togetherai.New("", "deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free"); err == nil {

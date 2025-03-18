@@ -221,13 +221,15 @@ type Client struct {
 // If apiKey is not provided, it tries to load it from the PERPLEXITY_API_KEY environment variable.
 // If none is found, it returns an error.
 // Get your API key at https://www.perplexity.ai/settings/api
-func New(apiKey string) (*Client, error) {
+//
+// Models are listed at https://docs.perplexity.ai/guides/model-cards
+func New(apiKey, model string) (*Client, error) {
 	if apiKey == "" {
 		if apiKey = os.Getenv("PERPLEXITY_API_KEY"); apiKey == "" {
 			return nil, errors.New("perplexity API key is required; get one at " + apiKeyURL)
 		}
 	}
-	return &Client{apiKey: apiKey, model: "sonar"}, nil
+	return &Client{apiKey: apiKey, model: model}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {

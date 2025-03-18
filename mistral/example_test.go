@@ -37,11 +37,13 @@ func ExampleClient_Completion_vision_and_JSON() {
 	if c, err := mistral.New("", "mistral-small-latest"); err == nil {
 		msgs := genaiapi.Messages{
 			{
-				Role:     genaiapi.User,
-				Type:     genaiapi.Document,
-				Filename: "banana.jpg",
-				// Mistral supports highly compressed jpg.
-				Document: bytes.NewReader(bananaJpg),
+				Role: genaiapi.User,
+				Contents: []genaiapi.Content{
+					{
+						Filename: "banana.jpg",
+						Document: bytes.NewReader(bananaJpg),
+					},
+				},
 			},
 			genaiapi.NewTextMessage(genaiapi.User, "Is it a banana? Reply as JSON."),
 		}
@@ -54,22 +56,36 @@ func ExampleClient_Completion_vision_and_JSON() {
 			MaxTokens:   50,
 			DecodeAs:    &got,
 		}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
+		var resp genaiapi.CompletionResult
+		for i := range 3 {
+			// Mistral has a very good rate limiting implementation.
+			if resp, err = c.Completion(context.Background(), msgs, &opts); err != nil && i != 2 {
+				var herr *httpjson.Error
+				if errors.As(err, &herr) {
+					if herr.StatusCode == http.StatusTooManyRequests {
+						fmt.Fprintf(os.Stderr, "Rate limited, waiting 2s\n")
+						time.Sleep(2 * time.Second)
+						continue
+					}
+				}
+				log.Fatal(err)
+			}
+			break
+		}
 		if err != nil {
 			log.Fatal(err)
 		}
-		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.Text {
-			log.Fatalf("Unexpected response: %#v", resp)
+		log.Printf("Raw response: %#v", resp)
+		if resp.InputTokens != 67 || resp.OutputTokens != 9 {
+			log.Printf("Unexpected tokens usage: %v", resp.Usage)
 		}
-		// Print to stderr so the test doesn't capture it.
-		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
-		if err := resp.Decode(&got); err != nil {
+		if len(resp.Contents) != 1 {
+			log.Fatal("Unexpected response")
+		}
+		if err := resp.Contents[0].Decode(&got); err != nil {
 			log.Fatal(err)
 		}
 		fmt.Printf("Banana: %v\n", got.Banana)
-		if resp.InputTokens < 50 || resp.OutputTokens < 2 {
-			log.Fatalf("Missing usage token")
-		}
 	} else {
 		// Print something so the example runs.
 		fmt.Println("Banana: true")
@@ -92,8 +108,9 @@ func ExampleClient_Completion_pDF() {
 		msgs := genaiapi.Messages{
 			{
 				Role: genaiapi.User,
-				Type: genaiapi.Document,
-				URL:  "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/mistral/testdata/hidden_word.pdf",
+				Contents: []genaiapi.Content{
+					{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/mistral/testdata/hidden_word.pdf"},
+				},
 			},
 			genaiapi.NewTextMessage(genaiapi.User, "What is the word? Reply with only the word."),
 		}
@@ -101,20 +118,34 @@ func ExampleClient_Completion_pDF() {
 			Temperature: 0.01,
 			MaxTokens:   50,
 		}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
+		var resp genaiapi.CompletionResult
+		for i := range 3 {
+			// Mistral has a very good rate limiting implementation.
+			if resp, err = c.Completion(context.Background(), msgs, &opts); err != nil && i != 2 {
+				var herr *httpjson.Error
+				if errors.As(err, &herr) {
+					if herr.StatusCode == http.StatusTooManyRequests {
+						fmt.Fprintf(os.Stderr, "Rate limited, waiting 2s\n")
+						time.Sleep(2 * time.Second)
+						continue
+					}
+				}
+				log.Fatal(err)
+			}
+			break
+		}
 		if err != nil {
 			log.Fatal(err)
 		}
-		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.Text {
-			log.Fatalf("Unexpected response: %#v", resp)
-		}
-		// Print to stderr so the test doesn't capture it.
-		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
-		fmt.Printf("Hidden word in PDF: %v\n", resp.Text)
+		log.Printf("Raw response: %#v", resp)
 		// Mistral is super efficient with tokens for PDFs.
-		if resp.InputTokens < 20 || resp.OutputTokens < 1 {
-			log.Fatalf("Missing usage token")
+		if resp.InputTokens != 28 || resp.OutputTokens != 1 {
+			log.Printf("Unexpected tokens usage: %v", resp.Usage)
 		}
+		if len(resp.Contents) != 1 {
+			log.Fatal("Unexpected response")
+		}
+		fmt.Printf("Hidden word in PDF: %v\n", resp.Contents[0].Text)
 	} else {
 		// Print something so the example runs.
 		fmt.Println("Hidden word in PDF: orange")
@@ -164,12 +195,12 @@ func ExampleClient_Completion_tool_use() {
 			}
 			break
 		}
-		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.ToolCalls {
-			log.Fatalf("Unexpected response: %#v", resp)
+		log.Printf("Raw response: %#v", resp)
+		if resp.InputTokens != 129 || resp.OutputTokens != 19 {
+			log.Printf("Unexpected tokens usage: %v", resp.Usage)
 		}
-		log.Printf("Response: %#v", resp)
 		if len(resp.ToolCalls) != 1 || resp.ToolCalls[0].Name != "best_country" {
-			log.Fatal("Expected at least one best_country tool call")
+			log.Fatal("Unexpected response")
 		}
 		if err := resp.ToolCalls[0].Decode(&got); err != nil {
 			log.Fatal(err)
@@ -192,37 +223,43 @@ func ExampleClient_CompletionStream() {
 		msgs := genaiapi.Messages{
 			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
 		}
+		opts := genaiapi.CompletionOptions{
+			Seed:        1,
+			Temperature: 0.01,
+			MaxTokens:   50,
+		}
 		for i := range 3 {
 			chunks := make(chan genaiapi.MessageFragment)
-			end := make(chan string)
+			end := make(chan genaiapi.Message, 10)
 			go func() {
-				resp := ""
+				var msgs genaiapi.Messages
+				defer func() {
+					for _, m := range msgs {
+						end <- m
+					}
+					close(end)
+				}()
 				for {
 					select {
 					case <-ctx.Done():
-						end <- resp
 						return
-					case w, ok := <-chunks:
+					case pkt, ok := <-chunks:
 						if !ok {
-							end <- resp
 							return
 						}
-						if w.Type != genaiapi.Text {
-							end <- fmt.Sprintf("Got %q; Unexpected type: %v", resp, w.Type)
+						if msgs, err = pkt.Accumulate(msgs); err != nil {
+							end <- genaiapi.NewTextMessage(genaiapi.Assistant, fmt.Sprintf("Error: %v", err))
 							return
 						}
-						resp += w.TextFragment
 					}
 				}
 			}()
-			opts := genaiapi.CompletionOptions{
-				Seed:        1,
-				Temperature: 0.01,
-				MaxTokens:   50,
-			}
 			err := c.CompletionStream(ctx, msgs, &opts, chunks)
 			close(chunks)
-			response := <-end
+			var responses genaiapi.Messages
+			for m := range end {
+				responses = append(responses, m)
+			}
 			if err != nil && i != 2 {
 				// Mistral has a very good rate limiting implementation.
 				var herr *httpjson.Error
@@ -235,9 +272,19 @@ func ExampleClient_CompletionStream() {
 				}
 				log.Fatal(err)
 			}
+			log.Printf("Raw responses: %#v", responses)
+			if err != nil {
+				log.Fatal(err)
+			}
+			if len(responses) != 1 {
+				log.Fatal("Unexpected response")
+			}
+			resp := responses[0]
+			if len(resp.Contents) != 1 {
+				log.Fatal("Unexpected response")
+			}
 			// Normalize some of the variance. Obviously many models will still fail this test.
-			response = strings.TrimRight(strings.TrimSpace(strings.ToLower(response)), ".!")
-			fmt.Printf("Response: %s\n", response)
+			fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"))
 			break
 		}
 	} else {

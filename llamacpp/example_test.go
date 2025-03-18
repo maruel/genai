@@ -75,17 +75,15 @@ func ExampleClient_Completion() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.Text {
-		log.Fatalf("Unexpected response: %#v", resp)
+	log.Printf("Raw response: %#v", resp)
+	if resp.InputTokens != 3 || resp.OutputTokens != 17 {
+		log.Printf("Unexpected tokens usage: %v", resp.Usage)
 	}
-	// Print to stderr so the test doesn't capture it.
-	fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
+	if len(resp.Contents) != 1 {
+		log.Fatal("Unexpected response")
+	}
 	// Normalize some of the variance. Obviously many models will still fail this test.
-	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Text)), ".!")
-	fmt.Printf("Response: %s\n", txt)
-	if resp.InputTokens < 2 || resp.OutputTokens < 2 {
-		log.Fatalf("Missing usage token")
-	}
+	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"))
 	// Output: Response: hello
 }
 
@@ -109,39 +107,49 @@ func ExampleClient_CompletionStream() {
 		MaxTokens:   50,
 	}
 	chunks := make(chan genaiapi.MessageFragment)
-	end := make(chan string)
+	end := make(chan genaiapi.Message, 10)
 	go func() {
-		resp := ""
+		var msgs genaiapi.Messages
+		defer func() {
+			for _, m := range msgs {
+				end <- m
+			}
+			close(end)
+		}()
 		for {
 			select {
 			case <-ctx.Done():
-				end <- resp
 				return
-			case <-srv.Done():
-				end <- resp
-				return
-			case w, ok := <-chunks:
+			case pkt, ok := <-chunks:
 				if !ok {
-					end <- resp
 					return
 				}
-				if w.Type != genaiapi.Text {
-					end <- fmt.Sprintf("Got %q; Unexpected type: %v", resp, w.Type)
+				if msgs, err = pkt.Accumulate(msgs); err != nil {
+					end <- genaiapi.NewTextMessage(genaiapi.Assistant, fmt.Sprintf("Error: %v", err))
 					return
 				}
-				resp += w.TextFragment
 			}
 		}
 	}()
 	err = c.CompletionStream(ctx, msgs, &opts, chunks)
 	close(chunks)
-	response := <-end
+	var responses genaiapi.Messages
+	for m := range end {
+		responses = append(responses, m)
+	}
+	log.Printf("Raw responses: %#v", responses)
 	if err != nil {
 		log.Fatal(err)
 	}
+	if len(responses) != 1 {
+		log.Fatal("Unexpected response")
+	}
+	resp := responses[0]
+	if len(resp.Contents) != 1 {
+		log.Fatal("Unexpected response")
+	}
 	// Normalize some of the variance. Obviously many models will still fail this test.
-	response = strings.TrimRight(strings.TrimSpace(strings.ToLower(response)), ".!")
-	fmt.Printf("Response: %s\n", response)
+	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"))
 	// Output: Response: hello
 }
 

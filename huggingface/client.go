@@ -25,8 +25,8 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/genaiapi"
-	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
+	"golang.org/x/sync/errgroup"
 )
 
 // https://huggingface.co/docs/api-inference/tasks/chat-completion#api-specification
@@ -65,6 +65,7 @@ type CompletionRequest struct {
 	TopP        float64 `json:"top_p,omitzero"` // [0, 1]
 }
 
+// Init initializes the provider specific completion request with the generic completion request.
 func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatable) error {
 	var errs []error
 	sp := ""
@@ -133,55 +134,96 @@ func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatab
 	return errors.Join(errs...)
 }
 
+// https://huggingface.co/docs/api-inference/tasks/chat-completion#api-specification
 type Message struct {
-	Role      string    `json:"role"`
-	Content   []Content `json:"content,omitzero"`
-	ToolCalls []struct {
-		ID       string `json:"id,omitzero"`
-		Type     string `json:"type,omitzero"` // "function"
-		Function struct {
-			Name      string `json:"name,omitzero"`
-			Arguments string `json:"arguments,omitzero"`
-		} `json:"function,omitzero"`
-	} `json:"tool_calls,omitzero"`
+	Role      string     `json:"role"` // "system", "assistant", "user"
+	Content   []Content  `json:"content,omitzero"`
+	ToolCalls []ToolCall `json:"tool_calls,omitzero"`
 }
 
-func (msg *Message) From(m *genaiapi.Message) error {
-	// We don't filter the role here.
-	msg.Role = string(m.Role)
-	msg.Content = []Content{{}}
-	switch m.Type {
-	case genaiapi.Text:
-		msg.Content[0].Type = "text"
-		msg.Content[0].Text = m.Text
-	case genaiapi.Document:
-		mimeType, data, err := internal.ParseDocument(m, 10*1024*1024)
-		if err != nil {
-			return err
-		}
-		switch {
-		case (m.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
-			msg.Content[0].Type = "image_url"
-			if m.URL == "" {
-				msg.Content[0].ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-			} else {
-				msg.Content[0].ImageURL.URL = m.URL
-			}
-		default:
-			return fmt.Errorf("unsupported mime type %s", mimeType)
-		}
+func (m *Message) From(in *genaiapi.Message) error {
+	switch in.Role {
+	case genaiapi.User, genaiapi.Assistant:
+		m.Role = string(in.Role)
 	default:
-		return fmt.Errorf("unsupported content type %s", m.Type)
+		return fmt.Errorf("unsupported role %q", in.Role)
+	}
+	if len(in.Contents) != 0 {
+		m.Content = make([]Content, len(in.Contents))
+		for i := range in.Contents {
+			if err := m.Content[i].From(&in.Contents[i]); err != nil {
+				return fmt.Errorf("block %d: %w", i, err)
+			}
+		}
+	}
+	if len(in.ToolCalls) != 0 {
+		for j := range in.ToolCalls {
+			if err := m.ToolCalls[j].From(&in.ToolCalls[j]); err != nil {
+				return fmt.Errorf("tool call %d: %w", j, err)
+			}
+		}
 	}
 	return nil
 }
 
 type Content struct {
-	Type     string `json:"type"` // text,image_url
+	Type     string `json:"type"` // "text", "image_url"
 	Text     string `json:"text,omitzero"`
 	ImageURL struct {
 		URL string `json:"url,omitzero"`
 	} `json:"image_url,omitzero"`
+}
+
+func (c *Content) From(in *genaiapi.Content) error {
+	if in.Text != "" {
+		c.Type = "text"
+		c.Text = in.Text
+		return nil
+	}
+	mimeType, data, err := in.ReadDocument(10 * 1024 * 1024)
+	if err != nil {
+		return err
+	}
+	switch {
+	case (in.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
+		c.Type = "image_url"
+		if in.URL == "" {
+			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+		} else {
+			c.ImageURL.URL = in.URL
+		}
+	default:
+		return fmt.Errorf("unsupported mime type %s", mimeType)
+	}
+	return nil
+}
+
+type ToolCall struct {
+	ID       string `json:"id,omitzero"`
+	Type     string `json:"type,omitzero"` // "function"
+	Function struct {
+		Name        string   `json:"name,omitzero"`
+		Description struct{} `json:"description,omitzero"` // Passed in as null in response
+		Arguments   any      `json:"arguments,omitzero"`
+	} `json:"function,omitzero"`
+}
+
+func (t *ToolCall) From(in *genaiapi.ToolCall) error {
+	t.ID = in.ID
+	t.Type = "function"
+	t.Function.Name = in.Name
+	return json.Unmarshal([]byte(in.Arguments), &t.Function.Arguments)
+}
+
+func (t *ToolCall) To(out *genaiapi.ToolCall) error {
+	out.ID = t.ID
+	out.Name = t.Function.Name
+	b, err := json.Marshal(t.Function.Arguments)
+	if err != nil {
+		return fmt.Errorf("failed to marshal arguments: %w", err)
+	}
+	out.Arguments = string(b)
+	return nil
 }
 
 type Tool struct {
@@ -201,23 +243,10 @@ type CompletionResponse struct {
 	SystemFingerprint string `json:"system_fingerprint"`
 
 	Choices []struct {
-		FinishReason string `json:"finish_reason"`
-		Index        int64  `json:"index"`
-		Message      struct {
-			Role       string `json:"role"`
-			Content    string `json:"content"`
-			ToolCallID string `json:"tool_call_id"`
-			ToolCalls  []struct {
-				ID       string `json:"id"`
-				Type     string `json:"type"` // function
-				Function struct {
-					Name        string   `json:"name"`
-					Description struct{} `json:"description"` // Passed in as null
-					Arguments   any      `json:"arguments"`
-				} `json:"function"`
-			} `json:"tool_calls"`
-		} `json:"message"`
-		Logprobs struct {
+		FinishReason string          `json:"finish_reason"`
+		Index        int64           `json:"index"`
+		Message      MessageResponse `json:"message"`
+		Logprobs     struct {
 			Content []struct {
 				Logprob     float64 `json:"logprob"`
 				Token       string  `json:"token"`
@@ -235,36 +264,48 @@ type CompletionResponse struct {
 	} `json:"usage"`
 }
 
+// The structure is different than the request. :(
+type MessageResponse struct {
+	Role       string     `json:"role"`
+	Content    string     `json:"content"`
+	ToolCallID string     `json:"tool_call_id"`
+	ToolCalls  []ToolCall `json:"tool_calls"`
+}
+
+func (m *MessageResponse) To(out *genaiapi.Message) error {
+	switch role := m.Role; role {
+	case "assistant", "user":
+		out.Role = genaiapi.Role(role)
+	default:
+		return fmt.Errorf("unsupported role %q", role)
+	}
+	if len(m.ToolCalls) != 0 {
+		out.ToolCalls = make([]genaiapi.ToolCall, len(m.ToolCalls))
+		for i := range m.ToolCalls {
+			if err := m.ToolCalls[i].To(&out.ToolCalls[i]); err != nil {
+				return fmt.Errorf("tool call %d: %w", i, err)
+			}
+		}
+	}
+
+	if m.Content != "" {
+		out.Contents = []genaiapi.Content{{Text: m.Content}}
+	}
+	return nil
+}
+
 func (c *CompletionResponse) ToResult() (genaiapi.CompletionResult, error) {
-	out := genaiapi.CompletionResult{}
-	out.InputTokens = c.Usage.PromptTokens
-	out.OutputTokens = c.Usage.CompletionTokens
+	out := genaiapi.CompletionResult{
+		Usage: genaiapi.Usage{
+			InputTokens:  c.Usage.PromptTokens,
+			OutputTokens: c.Usage.CompletionTokens,
+		},
+	}
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
 	}
-	if len(c.Choices[0].Message.ToolCalls) != 0 {
-		out.Type = genaiapi.ToolCalls
-		out.ToolCalls = make([]genaiapi.ToolCall, len(c.Choices[0].Message.ToolCalls))
-		for i, t := range c.Choices[0].Message.ToolCalls {
-			out.ToolCalls[i].ID = t.ID
-			out.ToolCalls[i].Name = t.Function.Name
-			b, err := json.Marshal(t.Function.Arguments)
-			if err != nil {
-				return out, fmt.Errorf("failed to marshal arguments: %w", err)
-			}
-			out.ToolCalls[i].Arguments = string(b)
-		}
-	} else {
-		out.Type = genaiapi.Text
-		out.Text = c.Choices[0].Message.Content
-	}
-	switch role := c.Choices[0].Message.Role; role {
-	case "system", "assistant", "user":
-		out.Role = genaiapi.Role(role)
-	default:
-		return out, fmt.Errorf("unsupported role %q", role)
-	}
-	return out, nil
+	err := c.Choices[0].Message.To(&out.Message)
+	return out, err
 }
 
 type CompletionStreamChunkResponse struct {
@@ -308,8 +349,15 @@ type CompletionStreamChunkResponse struct {
 	} `json:"usage"`
 }
 
-type errorResponse struct {
+type errorResponse1 struct {
 	Error string `json:"error"`
+}
+
+type errorResponse2 struct {
+	Error struct {
+		Message        string `json:"message"`
+		HTTPStatusCode int64  `json:"http_status_code"`
+	} `json:"error"`
 }
 
 // Client implements the REST JSON based API.
@@ -378,39 +426,38 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, o
 		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
-	end := make(chan error)
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-	go func() {
-		var lastRole genaiapi.Role
-		for pkt := range ch {
-			if len(pkt.Choices) != 1 {
-				continue
-			}
-			switch role := pkt.Choices[0].Delta.Role; role {
-			case "system", "assistant", "user":
-				lastRole = genaiapi.Role(role)
-			case "":
-			default:
-				cancel()
-				// We need to empty the channel to avoid blocking the goroutine.
-				for range ch {
-				}
-				end <- fmt.Errorf("unexpected role %q", role)
-				return
-			}
-			if word := pkt.Choices[0].Delta.Content; word != "" {
-				chunks <- genaiapi.MessageFragment{Role: lastRole, Type: genaiapi.Text, TextFragment: word}
-			}
-		}
-		end <- nil
-	}()
+	eg, ctx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		return processStreamPackets(ch, chunks)
+	})
 	err := c.CompletionStreamRaw(ctx, &in, ch)
 	close(ch)
-	if err2 := <-end; err2 != nil {
+	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
 	return err
+}
+
+func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genaiapi.MessageFragment) error {
+	defer func() {
+		// We need to empty the channel to avoid blocking the goroutine.
+		for range ch {
+		}
+	}()
+	for pkt := range ch {
+		if len(pkt.Choices) != 1 {
+			continue
+		}
+		switch role := pkt.Choices[0].Delta.Role; role {
+		case "assistant", "":
+		default:
+			return fmt.Errorf("unexpected role %q", role)
+		}
+		if word := pkt.Choices[0].Delta.Content; word != "" {
+			chunks <- genaiapi.MessageFragment{TextFragment: word}
+		}
+	}
+	return nil
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
@@ -467,7 +514,14 @@ func parseStreamLine(line []byte, out chan<- CompletionStreamChunkResponse) erro
 	d.UseNumber()
 	msg := CompletionStreamChunkResponse{}
 	if err := d.Decode(&msg); err != nil {
-		return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+		d = json.NewDecoder(strings.NewReader(suffix))
+		d.DisallowUnknownFields()
+		d.UseNumber()
+		er2 := errorResponse2{}
+		if err := d.Decode(&er2); err != nil {
+			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+		}
+		return fmt.Errorf("got error from server: http %d: %s", er2.Error.HTTPStatusCode, er2.Error.Message)
 	}
 	out <- msg
 	return nil
@@ -551,18 +605,18 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	if err != nil {
 		return err
 	}
-	er := errorResponse{}
-	switch i, err := httpjson.DecodeResponse(resp, out, &er); i {
+	er1 := errorResponse1{}
+	switch i, err := httpjson.DecodeResponse(resp, out, &er1); i {
 	case 0:
 		return nil
 	case 1:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
 			if herr.StatusCode >= 400 {
-				return fmt.Errorf("huggingface: %s; %s", http.StatusText(herr.StatusCode), er.Error)
+				return fmt.Errorf("huggingface: %s; %s", http.StatusText(herr.StatusCode), er1.Error)
 			}
 		}
-		return fmt.Errorf("huggingface: %s", er.Error)
+		return fmt.Errorf("huggingface: %s", er1.Error)
 	default:
 		// HuggingFace rarely return a structured error.
 		var herr *httpjson.Error

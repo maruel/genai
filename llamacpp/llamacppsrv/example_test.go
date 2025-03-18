@@ -73,11 +73,7 @@ func Example() {
 		log.Fatal(err)
 	}
 	msgs := genaiapi.Messages{
-		{
-			Role: genaiapi.User,
-			Type: genaiapi.Text,
-			Text: "Say hello. Reply with only one word.",
-		},
+		genaiapi.NewTextMessage(genaiapi.User, "Say hello. Reply with only one word."),
 	}
 	opts := genaiapi.CompletionOptions{
 		Seed:        1,
@@ -88,8 +84,15 @@ func Example() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Printf("Raw response: %#v", resp)
+	if resp.InputTokens != 0 || resp.OutputTokens != 0 {
+		log.Printf("Did I finally start filling the usage fields?")
+	}
+	if resp.Role != genaiapi.Assistant || len(resp.Contents) != 1 {
+		log.Fatal("Unexpected response")
+	}
 	// Normalize some of the variance. Obviously many models will still fail this test.
-	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Text)), ".!")
+	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!")
 	fmt.Printf("Response: %s\n", txt)
 	// Output: Response: hello
 }

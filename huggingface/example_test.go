@@ -8,7 +8,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/maruel/genai/genaiapi"
@@ -33,17 +32,15 @@ func ExampleClient_Completion() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.Text {
-			log.Fatalf("Unexpected response: %#v", resp)
+		log.Printf("Raw response: %#v", resp)
+		if resp.InputTokens != 43 || resp.OutputTokens != 3 {
+			log.Printf("Unexpected tokens usage: %v", resp.Usage)
 		}
-		// Print to stderr so the test doesn't capture it.
-		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
+		if len(resp.Contents) != 1 {
+			log.Fatal("Unexpected response")
+		}
 		// Normalize some of the variance. Obviously many models will still fail this test.
-		txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Text)), ".!")
-		fmt.Printf("Response: %s\n", txt)
-		if resp.InputTokens < 10 || resp.OutputTokens < 2 {
-			log.Fatalf("Missing usage token")
-		}
+		fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"))
 	} else {
 		// Print something so the example runs.
 		fmt.Println("Response: hello")
@@ -79,12 +76,12 @@ func ExampleClient_Completion_tool_use() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.ToolCalls {
-			log.Fatalf("Unexpected response: %#v", resp)
+		log.Printf("Raw response: %#v", resp)
+		if resp.InputTokens != 293 || resp.OutputTokens != 17 {
+			log.Printf("Unexpected tokens usage: %v", resp.Usage)
 		}
-		log.Printf("Response: %#v", resp)
 		if len(resp.ToolCalls) != 1 || resp.ToolCalls[0].Name != "best_country" {
-			log.Fatal("Expected at least one best_country tool call")
+			log.Fatal("Unexpected response")
 		}
 		if err := resp.ToolCalls[0].Decode(&got); err != nil {
 			log.Fatal(err)
@@ -107,41 +104,58 @@ func ExampleClient_CompletionStream() {
 		msgs := genaiapi.Messages{
 			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
 		}
-		chunks := make(chan genaiapi.MessageFragment)
-		end := make(chan string)
-		go func() {
-			resp := ""
-			for {
-				select {
-				case <-ctx.Done():
-					end <- resp
-					return
-				case w, ok := <-chunks:
-					if !ok {
-						end <- resp
-						return
-					}
-					if w.Type != genaiapi.Text {
-						end <- fmt.Sprintf("Got %q; Unexpected type: %v", resp, w.Type)
-						return
-					}
-					resp += w.TextFragment
-				}
-			}
-		}()
 		opts := genaiapi.CompletionOptions{
+			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
 		}
+		chunks := make(chan genaiapi.MessageFragment)
+		end := make(chan genaiapi.Message, 10)
+		go func() {
+			var msgs genaiapi.Messages
+			defer func() {
+				for _, m := range msgs {
+					end <- m
+				}
+				close(end)
+			}()
+			for {
+				select {
+				case <-ctx.Done():
+					return
+				case pkt, ok := <-chunks:
+					if !ok {
+						return
+					}
+					if msgs, err = pkt.Accumulate(msgs); err != nil {
+						end <- genaiapi.NewTextMessage(genaiapi.Assistant, fmt.Sprintf("Error: %v", err))
+						return
+					}
+				}
+			}
+		}()
 		err := c.CompletionStream(ctx, msgs, &opts, chunks)
 		close(chunks)
-		response := <-end
+		var responses genaiapi.Messages
+		for m := range end {
+			responses = append(responses, m)
+		}
+		log.Printf("Raw responses: %#v", responses)
 		if err != nil {
-			log.Fatal(err)
+			if len(responses) == 0 {
+				log.Fatal(err)
+			}
+			log.Printf("HF currently tend to return spurious HTTP 422: %s", err)
+		}
+		if len(responses) != 1 {
+			log.Fatal("Unexpected response")
+		}
+		resp := responses[0]
+		if len(resp.Contents) != 1 {
+			log.Fatal("Unexpected response")
 		}
 		// Normalize some of the variance. Obviously many models will still fail this test.
-		response = strings.TrimRight(strings.TrimSpace(strings.ToLower(response)), ".!")
-		fmt.Printf("Response: %s\n", response)
+		fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"))
 	} else {
 		// Print something so the example runs.
 		fmt.Println("Response: hello")

@@ -23,6 +23,7 @@ import (
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/httpjson"
+	"golang.org/x/sync/errgroup"
 )
 
 // https://api-docs.deepseek.com/api/create-chat-completion
@@ -56,6 +57,7 @@ type CompletionRequest struct {
 	TopLogprob int64  `json:"top_logprobs,omitzero"`
 }
 
+// Init initializes the provider specific completion request with the generic completion request.
 func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatable) error {
 	var errs []error
 	sp := ""
@@ -122,37 +124,84 @@ func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatab
 	return errors.Join(errs...)
 }
 
+// https://api-docs.deepseek.com/api/create-chat-completion
 type Message struct {
-	Role             string `json:"role,omitzero"`
-	Content          string `json:"content,omitzero"`
-	Name             string `json:"name,omitzero"`
-	Prefix           bool   `json:"prefix,omitzero"`
-	ReasoningContent string `json:"reasoning_content,omitzero"`
-	ToolCall         []struct {
-		Index    int64  `json:"index,omitzero"`
-		ID       string `json:"id,omitzero"`
-		Type     string `json:"type,omitzero"` // "function"
-		Function struct {
-			Name      string `json:"name,omitzero"`
-			Arguments string `json:"arguments,omitzero"`
-		} `json:"function,omitzero"`
-	} `json:"tool_calls,omitzero"`
+	Role             string     `json:"role,omitzero"` // "system", "assistant", "user"
+	Name             string     `json:"name,omitzero"` // An optional name for the participant. Provides the model information to differentiate between participants of the same role.
+	Content          string     `json:"content,omitzero"`
+	Prefix           bool       `json:"prefix,omitzero"` // Force the model to start its answer by the content of the supplied prefix in this assistant message.
+	ReasoningContent string     `json:"reasoning_content,omitzero"`
+	ToolCalls        []ToolCall `json:"tool_calls,omitzero"`
+	ToolCallID       string     `json:"tool_call_id,omitzero"` // Tool call that this message is responding to, with response in Content field.
 }
 
-func (msg *Message) From(m *genaiapi.Message) error {
-	switch m.Role {
+func (m *Message) From(in *genaiapi.Message) error {
+	switch in.Role {
 	case genaiapi.User, genaiapi.Assistant:
-		msg.Role = string(m.Role)
+		m.Role = string(in.Role)
 	default:
-		return fmt.Errorf("unsupported role %q", m.Role)
+		return fmt.Errorf("unsupported role %q", in.Role)
 	}
-	switch m.Type {
-	case genaiapi.Text:
-		msg.Content = m.Text
-	default:
-		return fmt.Errorf("unsupported content type %s", m.Type)
+	m.Name = in.User
+	if len(in.Contents) > 1 {
+		return errors.New("deepseek doesn't support multiple content blocks; TODO split transparently")
+	}
+	if len(in.Contents) == 1 {
+		m.Content = in.Contents[0].Text
+	}
+	if len(in.ToolCalls) != 0 {
+		m.ToolCalls = make([]ToolCall, len(in.ToolCalls))
+		for i := range in.ToolCalls {
+			m.ToolCalls[i].From(&in.ToolCalls[i])
+		}
 	}
 	return nil
+}
+
+func (m *Message) To(out *genaiapi.Message) error {
+	// TODO: "tool"
+	switch role := m.Role; role {
+	case "user":
+		out.Role = genaiapi.Role(role)
+	case "assistant", "model":
+		out.Role = genaiapi.Assistant
+	default:
+		return fmt.Errorf("unsupported role %q", role)
+	}
+	if len(m.ToolCalls) != 0 {
+		out.ToolCalls = make([]genaiapi.ToolCall, len(m.ToolCalls))
+		for i := range m.ToolCalls {
+			m.ToolCalls[i].To(&out.ToolCalls[i])
+		}
+	}
+	if m.Content != "" {
+		out.Contents = []genaiapi.Content{{Text: m.Content}}
+	}
+	return nil
+}
+
+type ToolCall struct {
+	Index    int64  `json:"index,omitzero"`
+	ID       string `json:"id,omitzero"`
+	Type     string `json:"type,omitzero"` // "function"
+	Function struct {
+		Name      string `json:"name,omitzero"`
+		Arguments string `json:"arguments,omitzero"`
+	} `json:"function,omitzero"`
+}
+
+func (t *ToolCall) From(in *genaiapi.ToolCall) {
+	t.Type = "function"
+	t.Index = 0 // Unsure
+	t.ID = in.ID
+	t.Function.Name = in.Name
+	t.Function.Arguments = in.Arguments
+}
+
+func (t *ToolCall) To(out *genaiapi.ToolCall) {
+	out.ID = t.ID
+	out.Name = t.Function.Name
+	out.Arguments = t.Function.Arguments
 }
 
 type Tool struct {
@@ -192,33 +241,17 @@ type CompletionResponse struct {
 }
 
 func (c *CompletionResponse) ToResult() (genaiapi.CompletionResult, error) {
-	out := genaiapi.CompletionResult{}
-	out.InputTokens = c.Usage.PromptTokens
-	out.OutputTokens = c.Usage.CompletionTokens
+	out := genaiapi.CompletionResult{
+		Usage: genaiapi.Usage{
+			InputTokens:  c.Usage.PromptTokens,
+			OutputTokens: c.Usage.CompletionTokens,
+		},
+	}
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("expected 1 choice, got %#v", c.Choices)
 	}
-	if len(c.Choices[0].Message.ToolCall) != 0 {
-		out.Type = genaiapi.ToolCalls
-		out.ToolCalls = make([]genaiapi.ToolCall, len(c.Choices[0].Message.ToolCall))
-		for i, t := range c.Choices[0].Message.ToolCall {
-			out.ToolCalls[i].ID = t.ID
-			out.ToolCalls[i].Name = t.Function.Name
-			out.ToolCalls[i].Arguments = t.Function.Arguments
-		}
-	} else {
-		out.Type = genaiapi.Text
-		out.Text = c.Choices[0].Message.Content
-	}
-	switch role := c.Choices[0].Message.Role; role {
-	case "system", "user":
-		out.Role = genaiapi.Role(role)
-	case "assistant", "model":
-		out.Role = genaiapi.Assistant
-	default:
-		return out, fmt.Errorf("unsupported role %q", role)
-	}
-	return out, nil
+	err := c.Choices[0].Message.To(&out.Message)
+	return out, err
 }
 
 type Logprobs struct {
@@ -320,39 +353,38 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, o
 		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
-	end := make(chan error)
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-	go func() {
-		var lastRole genaiapi.Role
-		for pkt := range ch {
-			if len(pkt.Choices) != 1 {
-				continue
-			}
-			switch role := pkt.Choices[0].Delta.Role; role {
-			case "system", "assistant", "user":
-				lastRole = genaiapi.Role(role)
-			case "":
-			default:
-				cancel()
-				// We need to empty the channel to avoid blocking the goroutine.
-				for range ch {
-				}
-				end <- fmt.Errorf("unexpected role %q", role)
-				return
-			}
-			if word := pkt.Choices[0].Delta.Content; word != "" {
-				chunks <- genaiapi.MessageFragment{Role: lastRole, Type: genaiapi.Text, TextFragment: word}
-			}
-		}
-		end <- nil
-	}()
+	eg, ctx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		return processStreamPackets(ch, chunks)
+	})
 	err := c.CompletionStreamRaw(ctx, &in, ch)
 	close(ch)
-	if err2 := <-end; err2 != nil {
+	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
 	return err
+}
+
+func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genaiapi.MessageFragment) error {
+	defer func() {
+		// We need to empty the channel to avoid blocking the goroutine.
+		for range ch {
+		}
+	}()
+	for pkt := range ch {
+		if len(pkt.Choices) != 1 {
+			continue
+		}
+		switch role := pkt.Choices[0].Delta.Role; role {
+		case "assistant", "":
+		default:
+			return fmt.Errorf("unexpected role %q", role)
+		}
+		if word := pkt.Choices[0].Delta.Content; word != "" {
+			chunks <- genaiapi.MessageFragment{TextFragment: word}
+		}
+	}
+	return nil
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {

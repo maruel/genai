@@ -86,6 +86,7 @@ type CompletionRequest struct {
 	Lora                []any              `json:"lora,omitzero"`
 }
 
+// Init initializes the provider specific completion request with the generic completion request.
 func (c *CompletionRequest) Init(opts genaiapi.Validatable) error {
 	var errs []error
 	if opts != nil {
@@ -189,13 +190,17 @@ type CompletionResponse struct {
 }
 
 func (c *CompletionResponse) ToResult() (genaiapi.CompletionResult, error) {
-	out := genaiapi.CompletionResult{}
-	out.InputTokens = c.TokensPredicted
-	out.OutputTokens = c.TokensEvaluated
-	out.Role = genaiapi.Assistant
-	out.Type = genaiapi.Text
-	// Mistral Nemo really likes "▁".
-	out.Text = strings.ReplaceAll(c.Content, "\u2581", " ")
+	out := genaiapi.CompletionResult{
+		Message: genaiapi.Message{
+			Role: genaiapi.Assistant,
+			// Mistral Nemo really likes "▁".
+			Contents: []genaiapi.Content{{Text: strings.ReplaceAll(c.Content, "\u2581", " ")}},
+		},
+		Usage: genaiapi.Usage{
+			InputTokens:  c.TokensPredicted,
+			OutputTokens: c.TokensEvaluated,
+		},
+	}
 	return out, nil
 }
 
@@ -263,11 +268,13 @@ func (a *applyTemplateRequest) Init(opts genaiapi.Validatable, msgs genaiapi.Mes
 func (msg *Message) From(m *genaiapi.Message) error {
 	// We don't filter the role here.
 	msg.Role = string(m.Role)
-	switch m.Type {
-	case genaiapi.Text:
-		msg.Content = m.Text
-	default:
-		return fmt.Errorf("unsupported content type %s", m.Type)
+	if len(m.Contents) != 1 {
+		return fmt.Errorf("expected exactly one block, got %d", len(m.Contents))
+	}
+	if m.Contents[0].Text != "" {
+		msg.Content = m.Contents[0].Text
+	} else {
+		return fmt.Errorf("unsupported content type %v", m.Contents[0])
 	}
 	return nil
 }
@@ -380,7 +387,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, o
 			if word := msg.Content; word != "" {
 				// Mistral Nemo really likes "▁".
 				// word = strings.ReplaceAll(msg.Content, "\u2581", " ")
-				chunks <- genaiapi.MessageFragment{Role: genaiapi.Assistant, Type: genaiapi.Text, TextFragment: word}
+				chunks <- genaiapi.MessageFragment{TextFragment: word}
 			}
 		}
 		end <- nil
@@ -574,17 +581,19 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 			in.Prompt += c.encoding.ToolsAvailableTokenStart + m.Text + c.encoding.ToolsAvailableTokenEnd
 		*/
 		case "system":
-			in.Prompt += c.encoding.SystemTokenStart + m.Text + c.encoding.SystemTokenEnd
+			for _, b := range m.Contents {
+				in.Prompt += c.encoding.SystemTokenStart + b.Text + c.encoding.SystemTokenEnd
+			}
 		case genaiapi.User:
-			in.Prompt += c.encoding.UserTokenStart + m.Text + c.encoding.UserTokenEnd
+			for _, b := range m.Contents {
+				in.Prompt += c.encoding.UserTokenStart + b.Text + c.encoding.UserTokenEnd
+			}
+			// in.Prompt += c.encoding.ToolCallResultTokenStart + m.Text + c.encoding.ToolCallResultTokenEnd
 		case genaiapi.Assistant:
-			in.Prompt += c.encoding.AssistantTokenStart + m.Text + c.encoding.AssistantTokenEnd
-			/* TODO
-			case genaiapi.ToolCall:
-				in.Prompt += c.encoding.ToolCallTokenStart + m.Text + c.encoding.ToolCallTokenEnd
-			case genaiapi.ToolCallResult:
-				in.Prompt += c.encoding.ToolCallResultTokenStart + m.Text + c.encoding.ToolCallResultTokenEnd
-			*/
+			for _, b := range m.Contents {
+				in.Prompt += c.encoding.AssistantTokenStart + b.Text + c.encoding.AssistantTokenEnd
+			}
+			// in.Prompt += c.encoding.ToolCallTokenStart + m.Text + c.encoding.ToolCallTokenEnd
 		default:
 			return fmt.Errorf("unexpected role %q", m.Role)
 		}

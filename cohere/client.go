@@ -26,8 +26,8 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/genaiapi"
-	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
+	"golang.org/x/sync/errgroup"
 )
 
 // https://docs.cohere.com/reference/chat
@@ -58,6 +58,7 @@ type CompletionRequest struct {
 	StrictTools      bool     `json:"strict_tools,omitzero"`
 }
 
+// Init initializes the provider specific completion request with the generic completion request.
 func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatable) error {
 	var errs []error
 	sp := ""
@@ -122,50 +123,38 @@ func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatab
 	return errors.Join(errs...)
 }
 
+// https://docs.cohere.com/reference/chat
 type Message struct {
-	Role string `json:"role"`
-	// Assistant, System or User.
+	Role string `json:"role"` // "system", "assistant", "user"
+	// Type == "system", "assistant", or "user".
 	Content []Content `json:"content"`
-	// Assistant
+	// Type == "assistant"
 	Citations any `json:"citations,omitzero"` // TODO
-	// Assistant
-	ToolCalls []any `json:"tool_calls,omitzero"` // TODO
-	// Tool
-	ToolCallID string `json:"tool_call_id,omitzero"`
+	// Type == "assistant"
+	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
+	ToolCallID string     `json:"tool_call_id,omitzero"` // TODO
 }
 
-func (msg *Message) From(m *genaiapi.Message) error {
-	switch m.Role {
+func (m *Message) From(in *genaiapi.Message) error {
+	switch in.Role {
 	case genaiapi.User, genaiapi.Assistant:
-		msg.Role = string(m.Role)
+		m.Role = string(in.Role)
 	default:
-		return fmt.Errorf("unsupported role %q", m.Role)
+		return fmt.Errorf("unsupported role %q", in.Role)
 	}
-	msg.Content = []Content{{}}
-	switch m.Type {
-	case genaiapi.Text:
-		msg.Content[0].Type = "text"
-		msg.Content[0].Text = m.Text
-	case genaiapi.Document:
-		// Currently fails with: http 400: error: invalid request: all elements in history must have a message
-		// TODO: Investigate one day. Maybe because trial key.
-		mimeType, data, err := internal.ParseDocument(m, 10*1024*1024)
-		if err != nil {
-			return err
-		}
-		switch {
-		case (m.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
-			msg.Content[0].Type = "image_url"
-			if m.URL != "" {
-				msg.Content[0].ImageURL.URL = m.URL
-			} else {
-				msg.Content[0].ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+	if len(in.Contents) != 0 {
+		m.Content = make([]Content, len(in.Contents))
+		for i := range in.Contents {
+			if err := m.Content[i].From(&in.Contents[i]); err != nil {
+				return fmt.Errorf("block %d: %w", i, err)
 			}
-		default:
-			return fmt.Errorf("unsupported mime type %s", mimeType)
 		}
-	default:
-		return fmt.Errorf("unsupported content type %s", m.Type)
+	}
+	if len(in.ToolCalls) != 0 {
+		m.ToolCalls = make([]ToolCall, len(in.ToolCalls))
+		for i := range in.ToolCalls {
+			m.ToolCalls[i].From(&in.ToolCalls[i])
+		}
 	}
 	return nil
 }
@@ -180,6 +169,32 @@ type Content struct {
 		Data map[string]any `json:"data,omitzero"` // TODO
 		ID   string         `json:"id,omitzero"`   // TODO
 	} `json:"document,omitzero"`
+}
+
+func (c *Content) From(in *genaiapi.Content) error {
+	if in.Text != "" {
+		c.Type = "text"
+		c.Text = in.Text
+		return nil
+	}
+	// Currently fails with: http 400: error: invalid request: all elements in history must have a message
+	// TODO: Investigate one day. Maybe because trial key.
+	mimeType, data, err := in.ReadDocument(10 * 1024 * 1024)
+	if err != nil {
+		return err
+	}
+	switch {
+	case (in.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
+		c.Type = "image_url"
+		if in.URL != "" {
+			c.ImageURL.URL = in.URL
+		} else {
+			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+		}
+	default:
+		return fmt.Errorf("unsupported mime type %s", mimeType)
+	}
+	return nil
 }
 
 type Tool struct {
@@ -200,32 +215,10 @@ type Document struct {
 }
 
 type CompletionResponse struct {
-	ID           string `json:"id"`
-	FinishReason string `json:"finish_reason"` // COMPLETE, STOP_SEQUENCe, MAX_TOKENS, TOOL_CALL, ERROR
-	Message      struct {
-		Role      genaiapi.Role `json:"role"`
-		ToolCalls []struct {
-			ID       string `json:"id"`
-			Type     string `json:"type"` // function
-			Function struct {
-				Name      string `json:"name"`
-				Arguments string `json:"arguments"`
-			} `json:"function"`
-		} `json:"tool_calls"`
-		ToolPlan string `json:"tool_plan"`
-		Content  []struct {
-			Type string `json:"type"` // text
-			Text string `json:"text"`
-		} `json:"content"`
-		Citations []struct {
-			Start   int64  `json:"start"`
-			End     int64  `json:"end"`
-			Text    string `json:"text"`
-			Sources []any  `json:"sources"`
-			Type    string `json:"type"` // TEXT_CONTENT, PLAN
-		} `json:"citations"`
-	} `json:"message"`
-	Usage struct {
+	ID           string          `json:"id"`
+	FinishReason string          `json:"finish_reason"` // COMPLETE, STOP_SEQUENCe, MAX_TOKENS, TOOL_CALL, ERROR
+	Message      MessageResponse `json:"message"`
+	Usage        struct {
 		BilledUnits struct {
 			InputTokens     int64 `json:"input_tokens"`
 			OutputTokens    int64 `json:"output_tokens"`
@@ -245,33 +238,76 @@ type CompletionResponse struct {
 }
 
 func (c *CompletionResponse) ToResult() (genaiapi.CompletionResult, error) {
-	out := genaiapi.CompletionResult{}
-	// What about BilledUnits, especially for SearchUnits and Classifications?
-	out.InputTokens = c.Usage.Tokens.InputTokens
-	out.OutputTokens = c.Usage.Tokens.OutputTokens
-	if len(c.Message.ToolCalls) != 0 {
-		out.Role = genaiapi.Assistant
-		out.Type = genaiapi.ToolCalls
-		out.ToolCalls = make([]genaiapi.ToolCall, len(c.Message.ToolCalls))
-		for i, t := range c.Message.ToolCalls {
-			out.ToolCalls[i].ID = t.ID
-			out.ToolCalls[i].Name = t.Function.Name
-			out.ToolCalls[i].Arguments = t.Function.Arguments
-		}
-	} else {
-		if len(c.Message.Content) != 1 {
-			return out, fmt.Errorf("unexpected number of messages %d", len(c.Message.Content))
-		}
-		out.Type = genaiapi.Text
-		out.Text = c.Message.Content[0].Text
+	out := genaiapi.CompletionResult{
+		Usage: genaiapi.Usage{
+			// What about BilledUnits, especially for SearchUnits and Classifications?
+			InputTokens:  c.Usage.Tokens.InputTokens,
+			OutputTokens: c.Usage.Tokens.OutputTokens,
+		},
 	}
-	switch role := c.Message.Role; role {
+	err := c.Message.To(&out.Message)
+	return out, err
+}
+
+type MessageResponse struct {
+	Role      genaiapi.Role `json:"role"`
+	ToolCalls []ToolCall    `json:"tool_calls"`
+	ToolPlan  string        `json:"tool_plan"`
+	Content   []struct {
+		Type string `json:"type"` // text
+		Text string `json:"text"`
+	} `json:"content"`
+	Citations []struct {
+		Start   int64  `json:"start"`
+		End     int64  `json:"end"`
+		Text    string `json:"text"`
+		Sources []any  `json:"sources"`
+		Type    string `json:"type"` // TEXT_CONTENT, PLAN
+	} `json:"citations"`
+}
+
+func (m *MessageResponse) To(out *genaiapi.Message) error {
+	switch role := m.Role; role {
 	case "system", "assistant", "user":
 		out.Role = genaiapi.Role(role)
 	default:
-		return out, fmt.Errorf("unsupported role %q", role)
+		return fmt.Errorf("unsupported role %q", role)
 	}
-	return out, nil
+	if len(m.ToolCalls) != 0 {
+		out.ToolCalls = make([]genaiapi.ToolCall, len(m.ToolCalls))
+		for i := range m.ToolCalls {
+			m.ToolCalls[i].To(&out.ToolCalls[i])
+		}
+	}
+	if len(m.Content) != 0 {
+		out.Contents = make([]genaiapi.Content, len(m.Content))
+		for i := range m.Content {
+			out.Contents[i].Text = m.Content[i].Text
+		}
+	}
+	return nil
+}
+
+type ToolCall struct {
+	ID       string `json:"id"`
+	Type     string `json:"type"` // function
+	Function struct {
+		Name      string `json:"name"`
+		Arguments string `json:"arguments"`
+	} `json:"function"`
+}
+
+func (t *ToolCall) From(in *genaiapi.ToolCall) {
+	t.Type = "function"
+	t.ID = in.ID
+	t.Function.Name = in.Name
+	t.Function.Arguments = in.Arguments
+}
+
+func (t *ToolCall) To(out *genaiapi.ToolCall) {
+	out.ID = t.ID
+	out.Name = t.Function.Name
+	out.Arguments = t.Function.Arguments
 }
 
 type CompletionStreamChunkResponse struct {
@@ -286,7 +322,7 @@ type CompletionStreamChunkResponse struct {
 				Text string `json:"text"`
 			} `json:"content"`
 			ToolPlan  string     `json:"tool_plan"`
-			ToolCalls []struct{} `json:"tool_calls"`
+			ToolCalls []ToolCall `json:"tool_calls"`
 			Citations []struct{} `json:"citations"`
 		} `json:"message"`
 		FinishReason string `json:"finish_reason"` // COMPLETE
@@ -313,7 +349,7 @@ type completionStreamChunkMsgStartResponse struct {
 			// WTF are they doing?
 			Content   []struct{} `json:"content"`
 			ToolPlan  string     `json:"tool_plan"`
-			ToolCalls []struct{} `json:"tool_calls"`
+			ToolCalls []ToolCall `json:"tool_calls"`
 			Citations []struct{} `json:"citations"`
 		} `json:"message"`
 	} `json:"delta"`
@@ -383,36 +419,35 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, o
 		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
-	end := make(chan error)
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-	go func() {
-		var lastRole genaiapi.Role
-		for pkt := range ch {
-			switch role := pkt.Delta.Message.Role; role {
-			case "system", "assistant", "user":
-				lastRole = genaiapi.Role(role)
-			case "":
-			default:
-				cancel()
-				// We need to empty the channel to avoid blocking the goroutine.
-				for range ch {
-				}
-				end <- fmt.Errorf("unexpected role %q", role)
-				return
-			}
-			if word := pkt.Delta.Message.Content.Text; word != "" {
-				chunks <- genaiapi.MessageFragment{Role: lastRole, Type: genaiapi.Text, TextFragment: word}
-			}
-		}
-		end <- nil
-	}()
+	eg, ctx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		return processStreamPackets(ch, chunks)
+	})
 	err := c.CompletionStreamRaw(ctx, &in, ch)
 	close(ch)
-	if err2 := <-end; err2 != nil {
+	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
 	return err
+}
+
+func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genaiapi.MessageFragment) error {
+	defer func() {
+		// We need to empty the channel to avoid blocking the goroutine.
+		for range ch {
+		}
+	}()
+	for pkt := range ch {
+		switch role := pkt.Delta.Message.Role; role {
+		case "assistant", "":
+		default:
+			return fmt.Errorf("unexpected role %q", role)
+		}
+		if word := pkt.Delta.Message.Content.Text; word != "" {
+			chunks <- genaiapi.MessageFragment{TextFragment: word}
+		}
+	}
+	return nil
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {

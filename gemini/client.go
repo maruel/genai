@@ -28,8 +28,8 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/genaiapi"
-	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
+	"golang.org/x/sync/errgroup"
 )
 
 // https://ai.google.dev/api/caching?hl=en#Blob
@@ -48,7 +48,6 @@ type FileData struct {
 type StructValue map[string]any
 
 // https://protobuf.dev/reference/protobuf/google.protobuf/#value
-// TODO: Confirm.
 type Value struct {
 	NullValue   int64       `json:"null_value,omitzero"`
 	NumberValue float64     `json:"number_value,omitzero"`
@@ -56,39 +55,6 @@ type Value struct {
 	BoolValue   bool        `json:"bool_value,omitzero"`
 	StructValue StructValue `json:"struct_value,omitzero"`
 	ListValue   []Value     `json:"list_value,omitzero"`
-}
-
-// https://ai.google.dev/api/caching?hl=en#Part
-//
-// Part is a union that only has one of the field set.
-type Part struct {
-	Text string `json:"text,omitzero"`
-	// Uploaded with /v1beta/cachedContents. Content is deleted after 1 hour.
-	InlineData Blob `json:"inlineData,omitzero"`
-	// https://ai.google.dev/api/caching?hl=en#FunctionCall
-	FunctionCall struct {
-		ID   string      `json:"id,omitzero"`
-		Name string      `json:"name,omitzero"`
-		Args StructValue `json:"args,omitzero"`
-	} `json:"functionCall,omitzero"`
-	// https://ai.google.dev/api/caching?hl=en#FunctionResponse
-	FunctionResponse struct {
-		ID       string      `json:"id,omitzero"`
-		Name     string      `json:"name,omitzero"`
-		Response StructValue `json:"response,omitzero"`
-	} `json:"functionResponse,omitzero"`
-	// Uploaded with /upload/v1beta/files. Files are deleted after 2 days.
-	FileData FileData `json:"fileData,omitzero"`
-	// https://ai.google.dev/api/caching?hl=en#ExecutableCode
-	ExecutableCode struct {
-		Language string `json:"language,omitzero"` // Only PYTHON is supported as of March 2025.
-		Code     string `json:"code,omitzero"`
-	} `json:"executableCode,omitzero"` // TODO
-	// https://ai.google.dev/api/caching?hl=en#CodeExecutionResult
-	CodeExecutionResult struct {
-		Outcome string `json:"outcome,omitzero"` // One of OUTCOME_UNSPECIFIED, OUTCOME_OK, OUTCOME_FAILED, OUTCOME_DEADLINE_EXCEEDED
-		Output  string `json:"output,omitzero"`
-	} `json:"codeExecutionResult,omitzero"` // TODO
 }
 
 // https://ai.google.dev/api/generate-content?hl=en#v1beta.SafetySetting
@@ -222,6 +188,7 @@ type CompletionRequest struct {
 	CachedContent string `json:"cachedContent,omitzero"`
 }
 
+// Init initializes the provider specific completion request with the generic completion request.
 func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatable) error {
 	var errs []error
 	if opts != nil {
@@ -289,50 +256,175 @@ func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatab
 	return errors.Join(errs...)
 }
 
+// Content is the equivalent of Message for other providers.
 // https://ai.google.dev/api/caching?hl=en#Content
 type Content struct {
+	Role string `json:"role,omitzero"` // "user", "model"
+	// Parts can be both content and tool calls.
 	Parts []Part `json:"parts"`
-	Role  string `json:"role,omitzero"` // "user", "model"
 }
 
-func (c *Content) From(m *genaiapi.Message) error {
-	switch m.Role {
+func (c *Content) From(in *genaiapi.Message) error {
+	switch in.Role {
 	case genaiapi.User:
 		c.Role = "user"
 	case genaiapi.Assistant:
 		c.Role = "model"
 	default:
-		return fmt.Errorf("unsupported role %q", m.Role)
+		return fmt.Errorf("unsupported role %q", in.Role)
 	}
-	c.Parts = []Part{{}}
-	switch m.Type {
-	case genaiapi.Text:
-		c.Parts[0].Text = m.Text
-	case genaiapi.Document:
-		mimeType := ""
-		var data []byte
-		if m.URL == "" {
-			// If more than 20MB, we need to use
-			// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#large-pdfs-urls
-			// cacheName, err := c.cacheContent(ctx, context, mime, sp)
-			// When using cached content, system instruction, tools or tool_config cannot be used. Weird.
-			// in.CachedContent = cacheName
-			var err error
-			if mimeType, data, err = internal.ParseDocument(m, 10*1024*1024); err != nil {
-				return err
-			}
-			c.Parts[0].InlineData.MimeType = mimeType
-			c.Parts[0].InlineData.Data = data
-		} else {
-			if mimeType = mime.TypeByExtension(path.Base(m.URL)); mimeType == "" {
-				return fmt.Errorf(" unsupported mime type for URL %q", m.URL)
-			}
-			c.Parts[0].FileData.MimeType = mimeType
-			c.Parts[0].FileData.FileURI = m.URL
+	c.Parts = make([]Part, len(in.Contents)+len(in.ToolCalls))
+	for i := range in.Contents {
+		if err := c.Parts[i].FromContent(&in.Contents[i]); err != nil {
+			return fmt.Errorf("part %d: %w", i, err)
 		}
-	default:
-		return fmt.Errorf("unsupported content type %s", m.Type)
 	}
+	offset := len(in.Contents)
+	for i := range in.ToolCalls {
+		if err := c.Parts[offset+i].FromToolCall(&in.ToolCalls[i]); err != nil {
+			return fmt.Errorf("part %d: %w", offset+i, err)
+		}
+	}
+	return nil
+}
+
+func (c *Content) To(out *genaiapi.Message) error {
+	switch role := c.Role; role {
+	case "system", "user":
+		out.Role = genaiapi.Role(role)
+	case "model":
+		out.Role = genaiapi.Assistant
+	default:
+		return fmt.Errorf("unsupported role %q", role)
+	}
+
+	for _, part := range c.Parts {
+		// There's no signal as to what it is, we have to test its content.
+		// We need to split out content from tools.
+		if part.Text != "" {
+			out.Contents = append(out.Contents, genaiapi.Content{Text: part.Text})
+			continue
+		}
+		if part.InlineData.MimeType != "" {
+			exts, err := mime.ExtensionsByType(part.InlineData.MimeType)
+			if err != nil {
+				return fmt.Errorf("failed to get extension for mime type %q: %w", part.InlineData.MimeType, err)
+			}
+			if len(exts) == 0 {
+				return fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
+			}
+			out.Contents = append(out.Contents, genaiapi.Content{Filename: "content" + exts[0], Document: bytes.NewReader(part.InlineData.Data)})
+			continue
+		}
+		if part.FileData.MimeType != "" {
+			exts, err := mime.ExtensionsByType(part.InlineData.MimeType)
+			if err != nil {
+				return fmt.Errorf("failed to get extension for mime type %q: %w", part.InlineData.MimeType, err)
+			}
+			if len(exts) == 0 {
+				return fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
+			}
+			out.Contents = append(out.Contents, genaiapi.Content{Filename: "content" + exts[0], URL: part.FileData.FileURI})
+			continue
+		}
+		if part.FunctionCall.Name != "" {
+			raw, err := json.Marshal(part.FunctionCall.Args)
+			if err != nil {
+				return fmt.Errorf("failed to marshal arguments: %w", err)
+			}
+			out.ToolCalls = append(out.ToolCalls,
+				genaiapi.ToolCall{
+					ID:        part.FunctionCall.ID,
+					Name:      part.FunctionCall.Name,
+					Arguments: string(raw),
+				})
+			continue
+		}
+		return fmt.Errorf("unsupported part %v", part)
+	}
+	return nil
+}
+
+// Part is a union that only has one of the field set.
+// Part is the equivalent of Content for other providers.
+//
+// https://ai.google.dev/api/caching?hl=en#Part
+type Part struct {
+	Text string `json:"text,omitzero"`
+	// Uploaded with /v1beta/cachedContents. Content is deleted after 1 hour.
+	InlineData Blob `json:"inlineData,omitzero"`
+	// https://ai.google.dev/api/caching?hl=en#FunctionCall
+	FunctionCall struct {
+		ID   string      `json:"id,omitzero"`
+		Name string      `json:"name,omitzero"`
+		Args StructValue `json:"args,omitzero"`
+	} `json:"functionCall,omitzero"`
+	// https://ai.google.dev/api/caching?hl=en#FunctionResponse
+	FunctionResponse struct {
+		ID       string      `json:"id,omitzero"`
+		Name     string      `json:"name,omitzero"`
+		Response StructValue `json:"response,omitzero"`
+	} `json:"functionResponse,omitzero"`
+	// Uploaded with /upload/v1beta/files. Files are deleted after 2 days.
+	FileData FileData `json:"fileData,omitzero"`
+	// https://ai.google.dev/api/caching?hl=en#ExecutableCode
+	ExecutableCode struct {
+		Language string `json:"language,omitzero"` // Only PYTHON is supported as of March 2025.
+		Code     string `json:"code,omitzero"`
+	} `json:"executableCode,omitzero"` // TODO
+	// https://ai.google.dev/api/caching?hl=en#CodeExecutionResult
+	CodeExecutionResult struct {
+		Outcome string `json:"outcome,omitzero"` // One of OUTCOME_UNSPECIFIED, OUTCOME_OK, OUTCOME_FAILED, OUTCOME_DEADLINE_EXCEEDED
+		Output  string `json:"output,omitzero"`
+	} `json:"codeExecutionResult,omitzero"` // TODO
+}
+
+func (p *Part) FromContent(in *genaiapi.Content) error {
+	if in.Text != "" {
+		p.Text = in.Text
+		return nil
+	}
+	mimeType := ""
+	var data []byte
+	if in.URL == "" {
+		// If more than 20MB, we need to use
+		// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#large-pdfs-urls
+		// cacheName, err := c.cacheContent(ctx, context, mime, sp)
+		// When using cached content, system instruction, tools or tool_config cannot be used. Weird.
+		// in.CachedContent = cacheName
+		var err error
+		if mimeType, data, err = in.ReadDocument(10 * 1024 * 1024); err != nil {
+			return err
+		}
+		p.InlineData.MimeType = mimeType
+		p.InlineData.Data = data
+	} else {
+		if mimeType = mime.TypeByExtension(path.Base(in.URL)); mimeType == "" {
+			return fmt.Errorf(" unsupported mime type for URL %q", in.URL)
+		}
+		p.FileData.MimeType = mimeType
+		p.FileData.FileURI = in.URL
+	}
+	return nil
+}
+
+func (p *Part) FromToolCall(in *genaiapi.ToolCall) error {
+	p.FunctionCall.ID = in.ID
+	p.FunctionCall.Name = in.Name
+	if err := json.Unmarshal([]byte(in.Arguments), &p.FunctionCall.Args); err != nil {
+		return fmt.Errorf("failed to unmarshal arguments: %w", err)
+	}
+	return nil
+}
+
+func (p *Part) ToToolCall(out *genaiapi.ToolCall) error {
+	out.ID = p.FunctionCall.ID
+	out.Name = p.FunctionCall.Name
+	raw, err := json.Marshal(p.FunctionCall.Args)
+	if err != nil {
+		return fmt.Errorf("failed to marshal arguments: %w", err)
+	}
+	out.Arguments = string(raw)
 	return nil
 }
 
@@ -422,59 +514,17 @@ type CompletionResponse struct {
 }
 
 func (c *CompletionResponse) ToResult() (genaiapi.CompletionResult, error) {
-	out := genaiapi.CompletionResult{}
-	out.InputTokens = c.UsageMetadata.PromptTokenCount
-	out.OutputTokens = c.UsageMetadata.CandidatesTokenCount + c.UsageMetadata.ToolUsePromptTokenCount + c.UsageMetadata.ThoughtsTokenCount
+	out := genaiapi.CompletionResult{
+		Usage: genaiapi.Usage{
+			InputTokens:  c.UsageMetadata.PromptTokenCount,
+			OutputTokens: c.UsageMetadata.CandidatesTokenCount + c.UsageMetadata.ToolUsePromptTokenCount + c.UsageMetadata.ThoughtsTokenCount,
+		},
+	}
 	if len(c.Candidates) != 1 {
 		return out, fmt.Errorf("unexpected number of candidates; expected 1, got %v", c.Candidates)
 	}
-	parts := c.Candidates[0].Content.Parts
-	// TODO: Handle mixed content.
-	if len(parts) != 1 {
-		return out, fmt.Errorf("unexpected number of parts; expected 1, got %v", parts)
-	}
-	// There's no signal as to what it is, we have to test its content.
-	part := parts[0]
-	if part.Text != "" {
-		out.Type = genaiapi.Text
-		out.Text = part.Text
-	} else if part.InlineData.MimeType != "" {
-		out.Type = genaiapi.Document
-		exts, err := mime.ExtensionsByType(part.InlineData.MimeType)
-		if err != nil {
-			return out, fmt.Errorf("failed to get extension for mime type %q: %w", part.InlineData.MimeType, err)
-		}
-		if len(exts) == 0 {
-			return out, fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
-		}
-		out.Filename = "content" + exts[0]
-		out.Document = bytes.NewReader(part.InlineData.Data)
-	} else if part.FileData.MimeType != "" {
-		out.Type = genaiapi.Document
-		out.URL = part.FileData.FileURI
-	} else if part.FunctionCall.Name != "" {
-		out.Type = genaiapi.ToolCalls
-		raw, err := json.Marshal(part.FunctionCall.Args)
-		if err != nil {
-			return out, fmt.Errorf("failed to marshal arguments: %w", err)
-		}
-		out.ToolCalls = []genaiapi.ToolCall{{
-			ID:        part.FunctionCall.ID,
-			Name:      part.FunctionCall.Name,
-			Arguments: string(raw),
-		}}
-	} else {
-		return out, fmt.Errorf("unsupported part %v", part)
-	}
-	switch role := c.Candidates[0].Content.Role; role {
-	case "system", "user":
-		out.Role = genaiapi.Role(role)
-	case "model":
-		out.Role = genaiapi.Assistant
-	default:
-		return out, fmt.Errorf("unsupported role %q", role)
-	}
-	return out, nil
+	err := c.Candidates[0].Content.To(&out.Message)
+	return out, err
 }
 
 // https://ai.google.dev/api/generate-content?hl=en#v1beta.ModalityTokenCount
@@ -694,43 +744,40 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, o
 		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
-	end := make(chan error)
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-	go func() {
-		var lastRole genaiapi.Role
-		for pkt := range ch {
-			if len(pkt.Candidates) != 1 {
-				continue
-			}
-			switch role := pkt.Candidates[0].Content.Role; role {
-			case "system", "assistant", "user":
-				lastRole = genaiapi.Role(role)
-			case "model":
-				lastRole = genaiapi.Assistant
-			case "":
-			default:
-				cancel()
-				// We need to empty the channel to avoid blocking the goroutine.
-				for range ch {
-				}
-				end <- fmt.Errorf("unexpected role %q", role)
-				return
-			}
-			for _, part := range pkt.Candidates[0].Content.Parts {
-				if part.Text != "" {
-					chunks <- genaiapi.MessageFragment{Role: lastRole, Type: genaiapi.Text, TextFragment: part.Text}
-				}
-			}
-		}
-		end <- nil
-	}()
+	eg, ctx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		return processStreamPackets(ch, chunks)
+	})
 	err := c.CompletionStreamRaw(ctx, &in, ch)
 	close(ch)
-	if err2 := <-end; err2 != nil {
+	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
 	return err
+}
+
+func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genaiapi.MessageFragment) error {
+	defer func() {
+		// We need to empty the channel to avoid blocking the goroutine.
+		for range ch {
+		}
+	}()
+	for pkt := range ch {
+		if len(pkt.Candidates) != 1 {
+			continue
+		}
+		switch role := pkt.Candidates[0].Content.Role; role {
+		case "model", "":
+		default:
+			return fmt.Errorf("unexpected role %q", role)
+		}
+		for _, part := range pkt.Candidates[0].Content.Parts {
+			if part.Text != "" {
+				chunks <- genaiapi.MessageFragment{TextFragment: part.Text}
+			}
+		}
+	}
+	return nil
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {

@@ -3,9 +3,11 @@ module github.com/maruel/genai
 go 1.24.1
 
 require (
+	github.com/google/go-cmp v0.7.0
 	github.com/invopop/jsonschema v0.13.0
 	github.com/maruel/httpjson v0.0.0-20250318154525-267b7f5e43d2
 	github.com/maruel/huggingface v0.0.0-20250313181651-d85dcc86b10e
+	golang.org/x/sync v0.12.0
 	golang.org/x/sys v0.31.0
 )
 
@@ -21,7 +23,6 @@ require (
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/schollz/progressbar/v3 v3.18.0 // indirect
 	github.com/wk8/go-ordered-map/v2 v2.1.8 // indirect
-	golang.org/x/sync v0.12.0 // indirect
 	golang.org/x/term v0.30.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

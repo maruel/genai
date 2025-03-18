@@ -27,8 +27,8 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/genaiapi"
-	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
+	"golang.org/x/sync/errgroup"
 )
 
 // https://platform.openai.com/docs/api-reference/chat/create
@@ -91,6 +91,7 @@ type CompletionRequest struct {
 	User              string `json:"user,omitzero"`
 }
 
+// Init initializes the provider specific completion request with the generic completion request.
 func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatable) error {
 	var errs []error
 	sp := ""
@@ -161,84 +162,66 @@ func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatab
 	return errors.Join(errs...)
 }
 
+// https://platform.openai.com/docs/api-reference/chat/create
 type Message struct {
-	Role    string   `json:"role,omitzero"`
+	Role    string   `json:"role,omitzero"` // "developer", "assistant", "user"
+	Name    string   `json:"name,omitzero"` // An optional name for the participant. Provides the model information to differentiate between participants of the same role.
 	Content Contents `json:"content,omitzero"`
-	Name    string   `json:"name,omitzero"`
-	Refusal string   `json:"refusal,omitzero"`
+	Refusal string   `json:"refusal,omitzero"` // The refusal message by the assistant.
 	Audio   struct {
 		ID string `json:"id,omitzero"`
 	} `json:"audio,omitzero"`
 	ToolCalls   []ToolCall `json:"tool_calls,omitzero"`
-	ToolCallID  string     `json:"tool_call_id,omitzero"`
+	ToolCallID  string     `json:"tool_call_id,omitzero"` // TODO
 	Annotations []struct{} `json:"annotations,omitzero"`
 }
 
-func (msg *Message) From(m *genaiapi.Message) error {
-	switch m.Role {
+func (m *Message) From(in *genaiapi.Message) error {
+	switch in.Role {
 	case genaiapi.User, genaiapi.Assistant:
-		msg.Role = string(m.Role)
+		m.Role = string(in.Role)
 	default:
+		return fmt.Errorf("unsupported role %q", in.Role)
+	}
+	m.Name = in.User
+	if len(in.Contents) != 0 {
+		m.Content = make([]Content, len(in.Contents))
+		for i := range in.Contents {
+			if err := m.Content[i].From(&in.Contents[i]); err != nil {
+				return fmt.Errorf("block %d: %w", i, err)
+			}
+		}
+	}
+	if len(in.ToolCalls) != 0 {
+		m.ToolCalls = make([]ToolCall, len(in.ToolCalls))
+		for i := range in.ToolCalls {
+			m.ToolCalls[i].From(&in.ToolCalls[i])
+		}
+	}
+	return nil
+}
+
+func (m *Message) To(out *genaiapi.Message) error {
+	switch m.Role {
+	case "assistant", "user":
+		out.Role = genaiapi.Role(m.Role)
+	default:
+		// case "developer":
 		return fmt.Errorf("unsupported role %q", m.Role)
 	}
-	msg.Content = []Content{{}}
-	switch m.Type {
-	case genaiapi.Text:
-		msg.Content[0].Type = "text"
-		msg.Content[0].Text = m.Text
-	case genaiapi.Document:
-		// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
-		mimeType, data, err := internal.ParseDocument(m, 10*1024*1024)
-		if err != nil {
-			return err
+	if len(m.Content) != 0 {
+		out.Contents = make([]genaiapi.Content, len(m.Content))
+		for i := range m.Content {
+			if err := m.Content[i].To(&out.Contents[i]); err != nil {
+				return fmt.Errorf("block %d: %w", i, err)
+			}
 		}
-		// OpenAI require a mime-type to determine if image, sound or PDF.
-		if mimeType == "" {
-			return fmt.Errorf("unspecified mime type for URL %q", m.URL)
+	}
+	if len(m.ToolCalls) != 0 {
+		out.ToolCalls = make([]genaiapi.ToolCall, len(m.ToolCalls))
+		for i := range m.ToolCalls {
+			m.ToolCalls[i].To(&out.ToolCalls[i])
 		}
-		switch {
-		case strings.HasPrefix(mimeType, "image/"):
-			msg.Content[0].Type = "image_url"
-			if m.URL == "" {
-				msg.Content[0].ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-			} else {
-				msg.Content[0].ImageURL.URL = m.URL
-			}
-		case mimeType == "audio/mpeg":
-			if m.URL != "" {
-				return errors.New("URL to audio file not supported")
-			}
-			msg.Content[0].Type = "input_audio"
-			msg.Content[0].InputAudio.Data = data
-			msg.Content[0].InputAudio.Format = "mp3"
-		case mimeType == "audio/wav":
-			if m.URL != "" {
-				return errors.New("URL to audio file not supported")
-			}
-			msg.Content[0].Type = "input_audio"
-			msg.Content[0].InputAudio.Data = data
-			msg.Content[0].InputAudio.Format = "wav"
-		default:
-			if m.URL != "" {
-				return fmt.Errorf("URL to %s file not supported", mimeType)
-			}
-			filename := m.Filename
-			if filename == "" {
-				exts, err := mime.ExtensionsByType(mimeType)
-				if err != nil {
-					return err
-				}
-				if len(exts) == 0 {
-					return fmt.Errorf("unknown extension for mime type %s", mimeType)
-				}
-				filename = "content" + exts[0]
-			}
-			msg.Content[0].Type = "file"
-			msg.Content[0].File.Filename = filename
-			msg.Content[0].File.FileData = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-		}
-	default:
-		return fmt.Errorf("unsupported content type %s", m.Type)
 	}
 	return nil
 }
@@ -287,6 +270,75 @@ type Content struct {
 	} `json:"file,omitzero"`
 }
 
+func (c *Content) From(in *genaiapi.Content) error {
+	if in.Text != "" {
+		c.Type = "text"
+		c.Text = in.Text
+		return nil
+	}
+	// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
+	mimeType, data, err := in.ReadDocument(10 * 1024 * 1024)
+	if err != nil {
+		return err
+	}
+	// OpenAI require a mime-type to determine if image, sound or PDF.
+	if mimeType == "" {
+		return fmt.Errorf("unspecified mime type for URL %q", in.URL)
+	}
+	switch {
+	case strings.HasPrefix(mimeType, "image/"):
+		c.Type = "image_url"
+		if in.URL == "" {
+			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+		} else {
+			c.ImageURL.URL = in.URL
+		}
+	case mimeType == "audio/mpeg":
+		if in.URL != "" {
+			return errors.New("URL to audio file not supported")
+		}
+		c.Type = "input_audio"
+		c.InputAudio.Data = data
+		c.InputAudio.Format = "mp3"
+	case mimeType == "audio/wav":
+		if in.URL != "" {
+			return errors.New("URL to audio file not supported")
+		}
+		c.Type = "input_audio"
+		c.InputAudio.Data = data
+		c.InputAudio.Format = "wav"
+	default:
+		if in.URL != "" {
+			return fmt.Errorf("URL to %s file not supported", mimeType)
+		}
+		filename := in.Filename
+		if filename == "" {
+			exts, err := mime.ExtensionsByType(mimeType)
+			if err != nil {
+				return err
+			}
+			if len(exts) == 0 {
+				return fmt.Errorf("unknown extension for mime type %s", mimeType)
+			}
+			filename = "content" + exts[0]
+		}
+		c.Type = "file"
+		c.File.Filename = filename
+		c.File.FileData = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+	}
+	return nil
+}
+
+func (c *Content) To(out *genaiapi.Content) error {
+	switch c.Type {
+	case "text":
+		out.Text = c.Text
+	default:
+		return fmt.Errorf("unsupported content type %q", c.Type)
+	}
+	return nil
+}
+
 type ToolCall struct {
 	ID       string `json:"id"`
 	Type     string `json:"type"` // function
@@ -294,6 +346,19 @@ type ToolCall struct {
 		Name      string `json:"name"`
 		Arguments string `json:"arguments"` // Generally JSON
 	} `json:"function"`
+}
+
+func (t *ToolCall) From(in *genaiapi.ToolCall) {
+	t.Type = "function"
+	t.ID = in.ID
+	t.Function.Name = in.Name
+	t.Function.Arguments = in.Arguments
+}
+
+func (t *ToolCall) To(out *genaiapi.ToolCall) {
+	out.ID = t.ID
+	out.Name = t.Function.Name
+	out.Arguments = t.Function.Arguments
 }
 
 type Tool struct {
@@ -343,34 +408,17 @@ type CompletionResponse struct {
 }
 
 func (c *CompletionResponse) ToResult() (genaiapi.CompletionResult, error) {
-	out := genaiapi.CompletionResult{}
-	out.InputTokens = c.Usage.PromptTokens
-	out.OutputTokens = c.Usage.CompletionTokens
+	out := genaiapi.CompletionResult{
+		Usage: genaiapi.Usage{
+			InputTokens:  c.Usage.PromptTokens,
+			OutputTokens: c.Usage.CompletionTokens,
+		},
+	}
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
 	}
-	if len(c.Choices[0].Message.ToolCalls) != 0 {
-		out.Type = genaiapi.ToolCalls
-		out.ToolCalls = make([]genaiapi.ToolCall, len(c.Choices[0].Message.ToolCalls))
-		for i, t := range c.Choices[0].Message.ToolCalls {
-			out.ToolCalls[i].ID = t.ID
-			out.ToolCalls[i].Name = t.Function.Name
-			out.ToolCalls[i].Arguments = t.Function.Arguments
-		}
-	} else {
-		out.Type = genaiapi.Text
-		out.Text = c.Choices[0].Message.Content[0].Text
-	}
-	switch role := c.Choices[0].Message.Role; role {
-	case "assistant", "model":
-		out.Role = genaiapi.Assistant
-	case "user":
-		out.Role = genaiapi.User
-	default:
-		// case "developer":
-		return out, fmt.Errorf("unsupported role %q", role)
-	}
-	return out, nil
+	err := c.Choices[0].Message.To(&out.Message)
+	return out, err
 }
 
 type Logprobs struct {
@@ -481,39 +529,38 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, o
 		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
-	end := make(chan error)
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-	go func() {
-		var lastRole genaiapi.Role
-		for pkt := range ch {
-			if len(pkt.Choices) != 1 {
-				continue
-			}
-			switch role := pkt.Choices[0].Delta.Role; role {
-			case "system", "assistant", "user":
-				lastRole = genaiapi.Role(role)
-			case "":
-			default:
-				cancel()
-				// We need to empty the channel to avoid blocking the goroutine.
-				for range ch {
-				}
-				end <- fmt.Errorf("unexpected role %q", role)
-				return
-			}
-			if word := pkt.Choices[0].Delta.Content; word != "" {
-				chunks <- genaiapi.MessageFragment{Role: lastRole, Type: genaiapi.Text, TextFragment: word}
-			}
-		}
-		end <- nil
-	}()
+	eg, ctx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		return processStreamPackets(ch, chunks)
+	})
 	err := c.CompletionStreamRaw(ctx, &in, ch)
 	close(ch)
-	if err2 := <-end; err2 != nil {
+	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
 	return err
+}
+
+func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genaiapi.MessageFragment) error {
+	defer func() {
+		// We need to empty the channel to avoid blocking the goroutine.
+		for range ch {
+		}
+	}()
+	for pkt := range ch {
+		if len(pkt.Choices) != 1 {
+			continue
+		}
+		switch role := pkt.Choices[0].Delta.Role; role {
+		case "", "assistant":
+		default:
+			return fmt.Errorf("unexpected role %q", role)
+		}
+		if word := pkt.Choices[0].Delta.Content; word != "" {
+			chunks <- genaiapi.MessageFragment{TextFragment: word}
+		}
+	}
+	return nil
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {

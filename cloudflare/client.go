@@ -27,6 +27,7 @@ import (
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/genaiapi"
 	"github.com/maruel/httpjson"
+	"golang.org/x/sync/errgroup"
 )
 
 // https://developers.cloudflare.com/api/resources/ai/methods/run/
@@ -50,6 +51,7 @@ type CompletionRequest struct {
 	// Functions         []function     `json:"functions,omitzero"`
 }
 
+// Init initializes the provider specific completion request with the generic completion request.
 func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatable) error {
 	var errs []error
 	sp := ""
@@ -114,23 +116,30 @@ func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatab
 	return errors.Join(errs...)
 }
 
+// Message is not well specified in the API documentation.
+// https://developers.cloudflare.com/api/resources/ai/methods/run/
 type Message struct {
-	Content string `json:"content"`
+	Content string `json:"content"` // "system", "assistant", "user"
 	Role    string `json:"role"`
 }
 
-func (msg *Message) From(m *genaiapi.Message) error {
-	switch m.Role {
+func (m *Message) From(in *genaiapi.Message) error {
+	switch in.Role {
 	case genaiapi.User, genaiapi.Assistant:
-		msg.Role = string(m.Role)
+		m.Role = string(in.Role)
 	default:
-		return fmt.Errorf("unsupported role %q", m.Role)
+		return fmt.Errorf("unsupported role %q", in.Role)
 	}
-	switch m.Type {
-	case genaiapi.Text:
-		msg.Content = m.Text
-	default:
-		return fmt.Errorf("unsupported content type %s", m.Type)
+	if len(in.Contents) != 1 {
+		return errors.New("cloudflare doesn't support multiple content blocks; TODO split transparently")
+	}
+	if len(in.ToolCalls) != 0 {
+		return errors.New("cloudflare tool calls are not supported yet")
+	}
+	if in.Contents[0].Text != "" {
+		m.Content = in.Contents[0].Text
+	} else {
+		return fmt.Errorf("unsupported content type %#v", in.Contents[0])
 	}
 	return nil
 }
@@ -242,10 +251,8 @@ type imageToText struct {
 // See UnionMember7
 type CompletionResponse struct {
 	Result struct {
-		// Normally a string, or an object if response_format.type == "json_schema".
-		Response  any        `json:"response"`
-		ToolCalls []ToolCall `json:"tool_calls"`
-		Usage     struct {
+		MessageResponse
+		Usage struct {
 			CompletionTokens int64 `json:"completion_tokens"`
 			PromptTokens     int64 `json:"prompt_tokens"`
 			TotalTokens      int64 `json:"total_tokens"`
@@ -256,30 +263,35 @@ type CompletionResponse struct {
 	Messages []struct{} `json:"messages"` // Annoyingly, it's included all the time
 }
 
-func (c *CompletionResponse) ToResult(rpcin *CompletionRequest) (genaiapi.CompletionResult, error) {
-	out := genaiapi.CompletionResult{}
-	out.InputTokens = c.Result.Usage.PromptTokens
-	out.OutputTokens = c.Result.Usage.CompletionTokens
-	if len(c.Result.ToolCalls) != 0 {
+type MessageResponse struct {
+	// Normally a string, or an object if response_format.type == "json_schema".
+	Response  any        `json:"response"`
+	ToolCalls []ToolCall `json:"tool_calls"`
+}
+
+func (msg *MessageResponse) To(schema string, out *genaiapi.Message) error {
+	out.Role = genaiapi.Assistant
+	if len(msg.ToolCalls) != 0 {
 		// Starting 2025-03-17, "@hf/nousresearch/hermes-2-pro-mistral-7b" is finally returning structured tool call.
-		out.Type = genaiapi.ToolCalls
-		for i, toolCall := range c.Result.ToolCalls {
-			raw, err := json.Marshal(toolCall.Arguments)
-			if err != nil {
-				return out, fmt.Errorf("failed to marshal tool call arguments: %w", err)
-			}
+		out.ToolCalls = make([]genaiapi.ToolCall, len(msg.ToolCalls))
+		for i, tc := range msg.ToolCalls {
 			// Cloudflare doesn't support tool call IDs yet.
-			out.ToolCalls = append(out.ToolCalls, genaiapi.ToolCall{ID: fmt.Sprintf("tool_call%d", i), Name: toolCall.Name, Arguments: string(raw)})
+			id := fmt.Sprintf("tool_call%d", i)
+			if err := tc.To(id, &out.ToolCalls[i]); err != nil {
+				return err
+			}
 		}
-		if c.Result.Response != nil {
-			return out, fmt.Errorf("unexpected tool call and response %T: %v", c.Result.Response, c.Result.Response)
+		if msg.Response != nil {
+			return fmt.Errorf("unexpected tool call and response %T: %v", msg.Response, msg.Response)
 		}
-	} else {
-		switch v := c.Result.Response.(type) {
-		case string:
-			// This is just sad.
-			if strings.HasPrefix(v, "<tool_call>") {
-				out.Type = genaiapi.ToolCalls
+		return nil
+	}
+	switch v := msg.Response.(type) {
+	case string:
+		// This is just sad.
+		if strings.HasPrefix(v, "<tool_call>") {
+			/*
+				out.Contents[0].Type = genaiapi.ToolCalls
 				// Example with "@hf/nousresearch/hermes-2-pro-mistral-7b" that is
 				// supposed to support tool calling (and yes it supply the tool call XML
 				// tags):
@@ -304,28 +316,37 @@ func (c *CompletionResponse) ToResult(rpcin *CompletionRequest) (genaiapi.Comple
 						return out, fmt.Errorf("failed to marshal tool call arguments: %w", err)
 					}
 					// Cloudflare doesn't support tool call IDs yet.
-					out.ToolCalls = append(out.ToolCalls, genaiapi.ToolCall{ID: fmt.Sprintf("tool_call%d", i), Name: toolCall.Name, Arguments: string(raw)})
+					out.Contents[0].ToolCalls = append(out.Contents[0].ToolCalls, genaiapi.ToolCall{ID: fmt.Sprintf("tool_call%d", i), Name: toolCall.Name, Arguments: string(raw)})
 				}
-			} else {
-				out.Type = genaiapi.Text
-				out.Text = v
+			*/
+			return fmt.Errorf("hacked up XML tool calls are not supported")
+		} else {
+			out.Contents = []genaiapi.Content{{Text: v}}
+		}
+	default:
+		if schema == "json_schema" {
+			// Marshal back into JSON for now.
+			b, err := json.Marshal(v)
+			if err != nil {
+				return fmt.Errorf("failed to JSON marshal type %T: %v: %w", v, v, err)
 			}
-		default:
-			if rpcin.ResponseFormat.Type == "json_schema" {
-				// Marshal back into JSON for now.
-				b, err := json.Marshal(v)
-				if err != nil {
-					return out, fmt.Errorf("failed to JSON marshal type %T: %v: %w", v, v, err)
-				}
-				out.Type = genaiapi.Text
-				out.Text = string(b)
-			} else {
-				return out, fmt.Errorf("unexpected type %T: %v", v, v)
-			}
+			out.Contents = []genaiapi.Content{{Text: string(b)}}
+		} else {
+			return fmt.Errorf("unexpected type %T: %v", v, v)
 		}
 	}
-	out.Role = genaiapi.Assistant
-	return out, nil
+	return nil
+}
+
+func (c *CompletionResponse) ToResult(rpcin *CompletionRequest) (genaiapi.CompletionResult, error) {
+	out := genaiapi.CompletionResult{
+		Usage: genaiapi.Usage{
+			InputTokens:  c.Result.Usage.PromptTokens,
+			OutputTokens: c.Result.Usage.CompletionTokens,
+		},
+	}
+	err := c.Result.To(rpcin.ResponseFormat.Type, &out.Message)
+	return out, err
 }
 
 // If you find the documentation for this please tell me!
@@ -339,7 +360,7 @@ type CompletionStreamChunkResponse struct {
 	} `json:"usage"`
 }
 
-type ToolCalls struct {
+type toolCalls struct {
 	XMLName xml.Name `xml:"root"`
 	Content []string `xml:"tool_call"`
 }
@@ -347,6 +368,18 @@ type ToolCalls struct {
 type ToolCall struct {
 	Arguments any    `json:"arguments"`
 	Name      string `json:"name"`
+}
+
+func (c *ToolCall) To(id string, out *genaiapi.ToolCall) error {
+	raw, err := json.Marshal(c.Arguments)
+	if err != nil {
+		return fmt.Errorf("failed to marshal tool call arguments: %w", err)
+	}
+	// Cloudflare doesn't support tool call IDs yet.
+	out.ID = id
+	out.Name = c.Name
+	out.Arguments = string(raw)
+	return nil
 }
 
 //
@@ -419,23 +452,30 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, o
 		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
-	end := make(chan error)
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-	go func() {
-		for pkt := range ch {
-			if word := pkt.Response; word != "" {
-				chunks <- genaiapi.MessageFragment{Role: genaiapi.Assistant, Type: genaiapi.Text, TextFragment: word}
-			}
-		}
-		end <- nil
-	}()
+	eg, ctx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		return processStreamPackets(ch, chunks)
+	})
 	err := c.CompletionStreamRaw(ctx, &in, ch)
 	close(ch)
-	if err2 := <-end; err2 != nil {
+	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
 	return err
+}
+
+func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genaiapi.MessageFragment) error {
+	defer func() {
+		// We need to empty the channel to avoid blocking the goroutine.
+		for range ch {
+		}
+	}()
+	for pkt := range ch {
+		if word := pkt.Response; word != "" {
+			chunks <- genaiapi.MessageFragment{TextFragment: word}
+		}
+	}
+	return nil
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {

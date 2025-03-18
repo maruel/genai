@@ -26,8 +26,8 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/genaiapi"
-	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
+	"golang.org/x/sync/errgroup"
 )
 
 // https://docs.anthropic.com/en/api/messages
@@ -49,6 +49,7 @@ type CompletionRequest struct {
 	TopP          float64    `json:"top_p,omitzero"` // [0, 1]
 }
 
+// Init initializes the provider specific completion request with the generic completion request.
 func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatable) error {
 	var errs []error
 	if opts != nil {
@@ -97,15 +98,15 @@ func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatab
 		errs = append(errs, err)
 	} else {
 		c.Messages = make([]Message, 0, len(msgs))
-		for i, m := range msgs {
-			switch m.Role {
+		for i := range msgs {
+			switch msgs[i].Role {
 			case genaiapi.User, genaiapi.Assistant:
 				c.Messages = append(c.Messages, Message{})
-				if err := c.Messages[len(c.Messages)-1].From(m); err != nil {
+				if err := c.Messages[len(c.Messages)-1].From(&msgs[i]); err != nil {
 					errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 				}
 			default:
-				errs = append(errs, fmt.Errorf("message %d: unsupported role %q", i, m.Role))
+				errs = append(errs, fmt.Errorf("message %d: unsupported role %q", i, msgs[i].Role))
 				continue
 			}
 		}
@@ -115,54 +116,57 @@ func (c *CompletionRequest) Init(msgs genaiapi.Messages, opts genaiapi.Validatab
 
 // https://docs.anthropic.com/en/api/messages
 type Message struct {
-	Role    string    `json:"role"`
+	Role string `json:"role"` // "assistant", "user"
+	// Anthropic's Content doesn't distinguish between actual content (text,
+	// documents) and tool use.
 	Content []Content `json:"content"`
 }
 
-func (msg *Message) From(m genaiapi.Message) error {
-	msg.Role = string(m.Role)
-	// TODO: An Anthropic message can contain multiple content blocks.
-	msg.Content = []Content{{}}
-	switch m.Type {
-	case genaiapi.Text:
-		msg.Content[0].Type = "text"
-		msg.Content[0].Text = m.Text
-	case genaiapi.Document:
-		mimeType, data, err := internal.ParseDocument(&m, 10*1024*1024)
-		if err != nil {
-			return err
+func (m *Message) From(in *genaiapi.Message) error {
+	switch role := in.Role; role {
+	case genaiapi.Assistant, genaiapi.User:
+		m.Role = string(in.Role)
+	default:
+		return fmt.Errorf("unsupported role %q", role)
+	}
+	m.Content = make([]Content, len(in.Contents)+len(in.ToolCalls))
+	for i := range in.Contents {
+		if err := m.Content[i].FromContent(&in.Contents[i]); err != nil {
+			return fmt.Errorf("block %d: %w", i, err)
 		}
-		// Anthropic require a mime-type to determine if image or PDF.
-		if mimeType == "" {
-			return fmt.Errorf("unspecified mime type for URL %q", m.URL)
+	}
+	offset := len(in.Contents)
+	for i := range in.ToolCalls {
+		if err := m.Content[offset+i].FromToolCall(&in.ToolCalls[i]); err != nil {
+			return fmt.Errorf("block %d: %w", offset+i, err)
 		}
-		msg.Content[0].CacheControl.Type = "ephemeral"
-		switch {
-		case strings.HasPrefix(mimeType, "image/"):
-			msg.Content[0].Type = "image"
-			if m.URL != "" {
-				msg.Content[0].Source.Type = "url"
-				msg.Content[0].Source.URL = m.URL
-			} else {
-				msg.Content[0].Source.MediaType = mimeType
-				msg.Content[0].Source.Type = "base64"
-				msg.Content[0].Source.Data = data
+	}
+	return nil
+}
+
+func (m *Message) To(out *genaiapi.Message) error {
+	switch role := m.Role; role {
+	case "assistant", "user":
+		out.Role = genaiapi.Role(role)
+	default:
+		return fmt.Errorf("unsupported role %q", role)
+	}
+	// We need to split actual content and tool calls.
+	for i := range m.Content {
+		switch m.Content[i].Type {
+		case "text":
+			out.Contents = append(out.Contents, genaiapi.Content{})
+			if err := m.Content[i].ToContent(&out.Contents[len(out.Contents)-1]); err != nil {
+				return fmt.Errorf("block %d: %w", i, err)
 			}
-		case mimeType == "application/pdf":
-			msg.Content[0].Type = "document"
-			if m.URL != "" {
-				msg.Content[0].Source.Type = "url"
-				msg.Content[0].Source.URL = m.URL
-			} else {
-				msg.Content[0].Source.MediaType = mimeType
-				msg.Content[0].Source.Type = "base64"
-				msg.Content[0].Source.Data = data
+		case "tool_use":
+			out.ToolCalls = append(out.ToolCalls, genaiapi.ToolCall{})
+			if err := m.Content[i].ToToolCall(&out.ToolCalls[len(out.ToolCalls)-1]); err != nil {
+				return fmt.Errorf("block %d: %w", i, err)
 			}
 		default:
-			return fmt.Errorf("unsupported content mime-type %s", mimeType)
+			return fmt.Errorf("unsupported content type %q", m.Content[i].Type)
 		}
-	default:
-		return fmt.Errorf("unsupported content type %s", m.Type)
 	}
 	return nil
 }
@@ -216,6 +220,85 @@ type Content struct {
 	// "document"
 	Context string `json:"context,omitzero"`
 	Title   string `json:"title,omitzero"`
+}
+
+func (c *Content) FromContent(in *genaiapi.Content) error {
+	if in.Text != "" {
+		c.Type = "text"
+		c.Text = in.Text
+		return nil
+	}
+
+	mimeType, data, err := in.ReadDocument(10 * 1024 * 1024)
+	if err != nil {
+		return err
+	}
+	// Anthropic require a mime-type to determine if image or PDF.
+	if mimeType == "" {
+		return fmt.Errorf("unspecified mime type for URL %q", in.URL)
+	}
+	c.CacheControl.Type = "ephemeral"
+	switch {
+	case strings.HasPrefix(mimeType, "image/"):
+		c.Type = "image"
+		if in.URL != "" {
+			c.Source.Type = "url"
+			c.Source.URL = in.URL
+		} else {
+			c.Source.MediaType = mimeType
+			c.Source.Type = "base64"
+			c.Source.Data = data
+		}
+	case mimeType == "application/pdf":
+		c.Type = "document"
+		if in.URL != "" {
+			c.Source.Type = "url"
+			c.Source.URL = in.URL
+		} else {
+			c.Source.MediaType = mimeType
+			c.Source.Type = "base64"
+			c.Source.Data = data
+		}
+	default:
+		return fmt.Errorf("unsupported content mime-type %s", mimeType)
+	}
+	return nil
+}
+
+func (c *Content) FromToolCall(in *genaiapi.ToolCall) error {
+	c.Type = "tool_use"
+	c.ID = in.ID
+	c.Name = in.Name
+	if err := json.Unmarshal([]byte(in.Arguments), &c.Input); err != nil {
+		return fmt.Errorf("failed to marshal input: %w; for tool call: %#v", err, in)
+	}
+	return nil
+}
+
+func (c *Content) ToContent(out *genaiapi.Content) error {
+	switch c.Type {
+	case "text":
+		out.Text = c.Text
+	default:
+		return fmt.Errorf("unsupported content type %q", c.Type)
+	}
+	return nil
+}
+
+func (c *Content) ToToolCall(out *genaiapi.ToolCall) error {
+	switch c.Type {
+	case "tool_use":
+		out.ID = c.ID
+		out.Name = c.Name
+		raw, err := json.Marshal(c.Input)
+		if err != nil {
+			return fmt.Errorf("failed to marshal input: %w; for tool call: %#v", err, c)
+		}
+		out.Arguments = string(raw)
+	default:
+		return fmt.Errorf("unsupported content type %q", c.Type)
+	}
+	return nil
 }
 
 type Citation struct {
@@ -278,13 +361,12 @@ type Tool struct {
 }
 
 type CompletionResponse struct {
-	Content      []Content `json:"content"`
-	ID           string    `json:"id"`
-	Model        string    `json:"model"`
-	Role         string    `json:"role"`        // Always "assistant"
-	StopReason   string    `json:"stop_reason"` // "end_turn", "tool_use", "stop_sequence", "max_tokens"
-	StopSequence string    `json:"stop_sequence"`
-	Type         string    `json:"type"` // "message"
+	Message             // Role is always "assistant"
+	ID           string `json:"id"`
+	Model        string `json:"model"`
+	StopReason   string `json:"stop_reason"` // "end_turn", "tool_use", "stop_sequence", "max_tokens"
+	StopSequence string `json:"stop_sequence"`
+	Type         string `json:"type"` // "message"
 	Usage        struct {
 		InputTokens              int64 `json:"input_tokens"`
 		OutputTokens             int64 `json:"output_tokens"`
@@ -294,37 +376,14 @@ type CompletionResponse struct {
 }
 
 func (c *CompletionResponse) ToResult() (genaiapi.CompletionResult, error) {
-	out := genaiapi.CompletionResult{}
-	out.InputTokens = c.Usage.InputTokens
-	out.OutputTokens = c.Usage.OutputTokens
-	if len(c.Content) != 1 {
-		return out, fmt.Errorf("expected 1 choice, got %#v", c.Content)
+	out := genaiapi.CompletionResult{
+		Usage: genaiapi.Usage{
+			InputTokens:  c.Usage.InputTokens,
+			OutputTokens: c.Usage.OutputTokens,
+		},
 	}
-	switch c.Content[0].Type {
-	case "text":
-		out.Type = genaiapi.Text
-		out.Text = c.Content[0].Text
-	case "tool_use":
-		out.Type = genaiapi.ToolCalls
-		raw, err := json.Marshal(c.Content[0].Input)
-		if err != nil {
-			return out, fmt.Errorf("failed to marshal input: %w; for tool call: %#v", err, c.Content[0])
-		}
-		out.ToolCalls = []genaiapi.ToolCall{{
-			ID:        c.Content[0].ID,
-			Name:      c.Content[0].Name,
-			Arguments: string(raw),
-		}}
-	default:
-		return out, fmt.Errorf("unsupported content type %q", c.Content[0].Type)
-	}
-	switch role := c.Role; role {
-	case "system", "assistant", "user":
-		out.Role = genaiapi.Role(role)
-	default:
-		return out, fmt.Errorf("unsupported role %q", role)
-	}
-	return out, nil
+	err := c.To(&out.Message)
+	return out, err
 }
 
 // https://docs.anthropic.com/en/api/messages-streaming
@@ -457,44 +516,44 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genaiapi.Messages, o
 		return err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
-	end := make(chan error)
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-	start := time.Now()
-	go func() {
-		var lastRole genaiapi.Role
-		for pkg := range ch {
-			word := ""
-			switch pkg.Type {
-			case "message_start":
-				switch pkg.Message.Role {
-				case "assistant", "user":
-					lastRole = genaiapi.Role(pkg.Message.Role)
-				case "":
-				default:
-					cancel()
-					// We need to empty the channel to avoid blocking the goroutine.
-					for range ch {
-					}
-					end <- fmt.Errorf("unexpected role %q", pkg.Message.Role)
-					return
-				}
-			case "content_block_start":
-				word = pkg.ContentBlock.Text
-			case "content_block_delta":
-				word = pkg.Delta.Text
-			}
-			slog.DebugContext(ctx, "anthropic", "word", word, "duration", time.Since(start).Round(time.Millisecond))
-			if word != "" {
-				chunks <- genaiapi.MessageFragment{Role: lastRole, Type: genaiapi.Text, TextFragment: word}
-			}
-		}
-		end <- nil
-	}()
+	eg, ctx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		return processStreamPackets(ch, chunks)
+	})
 	err := c.CompletionStreamRaw(ctx, &in, ch)
 	close(ch)
-	<-end
+	if err2 := eg.Wait(); err2 != nil {
+		err = err2
+	}
 	return err
+}
+
+func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genaiapi.MessageFragment) error {
+	defer func() {
+		// We need to empty the channel to avoid blocking the goroutine.
+		for range ch {
+		}
+	}()
+	for pkt := range ch {
+		word := ""
+		switch pkt.Type {
+		case "message_start":
+			switch pkt.Message.Role {
+			case "assistant":
+			default:
+				return fmt.Errorf("unexpected role %q", pkt.Message.Role)
+			}
+		case "content_block_start":
+			word = pkt.ContentBlock.Text
+		case "content_block_delta":
+			word = pkt.Delta.Text
+		}
+		// slog.DebugContext(ctx, "anthropic", "word", word, "duration", time.Since(start).Round(time.Millisecond))
+		if word != "" {
+			chunks <- genaiapi.MessageFragment{TextFragment: word}
+		}
+	}
+	return nil
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {

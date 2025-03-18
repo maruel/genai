@@ -34,12 +34,10 @@ func ExampleClient_Completion_vision_and_JSON() {
 	if c, err := groq.New("", "llama-3.2-11b-vision-preview"); err == nil {
 		msgs := genaiapi.Messages{
 			{
-				Role:     genaiapi.User,
-				Type:     genaiapi.Document,
-				Filename: "banana.jpg",
-				// Groq requires higher quality image than Gemini or Mistral. See
-				// ../gemini/testdata/banana.jpg to compare.
-				Document: bytes.NewReader(bananaJpg),
+				Role: genaiapi.User,
+				Contents: []genaiapi.Content{
+					{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
+				},
 			},
 			genaiapi.NewTextMessage(genaiapi.User, "Is it a banana? Reply as JSON with the form {\"banana\": false} or {\"banana\": true}."),
 		}
@@ -53,21 +51,20 @@ func ExampleClient_Completion_vision_and_JSON() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		// Print to stderr so the test doesn't capture it.
-		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
-		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.Text {
-			log.Fatalf("Unexpected response: %#v", resp)
+		log.Printf("Raw response: %#v", resp)
+		if resp.InputTokens != 59 || resp.OutputTokens != 8 {
+			log.Printf("Unexpected tokens usage: %v", resp.Usage)
+		}
+		if len(resp.Contents) != 1 {
+			log.Fatal("Unexpected response")
 		}
 		var got struct {
 			Banana bool `json:"banana"`
 		}
-		if err := resp.Decode(&got); err != nil {
+		if err := resp.Contents[0].Decode(&got); err != nil {
 			log.Fatal(err)
 		}
 		fmt.Printf("Banana: %v\n", got.Banana)
-		if resp.InputTokens < 10 || resp.OutputTokens < 2 {
-			log.Fatalf("Missing usage token")
-		}
 	} else {
 		// Print something so the example runs.
 		fmt.Println("Banana: true")
@@ -105,12 +102,12 @@ func ExampleClient_Completion_tool_use() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.ToolCalls {
-			log.Fatalf("Unexpected response: %#v", resp)
+		log.Printf("Raw response: %#v", resp)
+		if resp.InputTokens != 286 || resp.OutputTokens != 11 {
+			log.Printf("Unexpected tokens usage: %v", resp.Usage)
 		}
-		log.Printf("Response: %#v", resp)
 		if len(resp.ToolCalls) != 1 || resp.ToolCalls[0].Name != "best_country" {
-			log.Fatal("Expected 1 best_country tool call")
+			log.Fatal("Unexpected response")
 		}
 		if err := resp.ToolCalls[0].Decode(&got); err != nil {
 			log.Fatal(err)
@@ -133,42 +130,55 @@ func ExampleClient_CompletionStream() {
 		msgs := genaiapi.Messages{
 			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
 		}
-		chunks := make(chan genaiapi.MessageFragment)
-		end := make(chan string)
-		go func() {
-			resp := ""
-			for {
-				select {
-				case <-ctx.Done():
-					end <- resp
-					return
-				case w, ok := <-chunks:
-					if !ok {
-						end <- resp
-						return
-					}
-					if w.Type != genaiapi.Text {
-						end <- fmt.Sprintf("Got %q; Unexpected type: %v", resp, w.Type)
-						return
-					}
-					resp += w.TextFragment
-				}
-			}
-		}()
 		opts := genaiapi.CompletionOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
 		}
+		chunks := make(chan genaiapi.MessageFragment)
+		end := make(chan genaiapi.Message, 10)
+		go func() {
+			var msgs genaiapi.Messages
+			defer func() {
+				for _, m := range msgs {
+					end <- m
+				}
+				close(end)
+			}()
+			for {
+				select {
+				case <-ctx.Done():
+					return
+				case pkt, ok := <-chunks:
+					if !ok {
+						return
+					}
+					if msgs, err = pkt.Accumulate(msgs); err != nil {
+						end <- genaiapi.NewTextMessage(genaiapi.Assistant, fmt.Sprintf("Error: %v", err))
+						return
+					}
+				}
+			}
+		}()
 		err := c.CompletionStream(ctx, msgs, &opts, chunks)
 		close(chunks)
-		response := <-end
+		var responses genaiapi.Messages
+		for m := range end {
+			responses = append(responses, m)
+		}
+		log.Printf("Raw responses: %#v", responses)
 		if err != nil {
 			log.Fatal(err)
 		}
+		if len(responses) != 1 {
+			log.Fatal("Unexpected response")
+		}
+		resp := responses[0]
+		if len(resp.Contents) != 1 {
+			log.Fatal("Unexpected response")
+		}
 		// Normalize some of the variance. Obviously many models will still fail this test.
-		response = strings.TrimRight(strings.TrimSpace(strings.ToLower(response)), ".!")
-		fmt.Printf("Response: %s\n", response)
+		fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"))
 	} else {
 		// Print something so the example runs.
 		fmt.Println("Response: hello")

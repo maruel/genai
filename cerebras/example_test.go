@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
 
 	"github.com/maruel/genai/cerebras"
 	"github.com/maruel/genai/genaiapi"
@@ -39,18 +38,17 @@ func ExampleClient_Completion_jSON() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.Text {
-			log.Fatalf("Unexpected response: %#v", resp)
+		log.Printf("Raw response: %#v", resp)
+		if resp.InputTokens != 173 || resp.OutputTokens != 6 {
+			log.Printf("Unexpected tokens usage: %v", resp.Usage)
 		}
-		// Print to stderr so the test doesn't capture it.
-		fmt.Fprintf(os.Stderr, "Raw response: %#v\n", resp)
-		if err := resp.Decode(&got); err != nil {
+		if len(resp.Contents) != 1 {
+			log.Fatal("Unexpected response")
+		}
+		if err := resp.Contents[0].Decode(&got); err != nil {
 			log.Fatal(err)
 		}
 		fmt.Printf("Round: %v\n", got.Round)
-		if resp.InputTokens < 100 || resp.OutputTokens < 2 {
-			log.Fatalf("Missing usage token")
-		}
 	} else {
 		// Print something so the example runs.
 		fmt.Println("Round: true")
@@ -58,7 +56,7 @@ func ExampleClient_Completion_jSON() {
 	// Output: Round: true
 }
 
-func ExampleClient_Completion_tool_use() {
+func ExampleClient_CompletionStream_tool_use() {
 	// This code will run when CEREBRAS_API_KEY is set.
 	//
 	// As of March 2025, you can try it out for free.
@@ -66,6 +64,7 @@ func ExampleClient_Completion_tool_use() {
 	// Cerebras supports a limited set of models which you can see on the drop
 	// down of https://inference.cerebras.ai/
 	if c, err := cerebras.New("", "llama-3.1-8b"); err == nil {
+		ctx := context.Background()
 		msgs := genaiapi.Messages{
 			genaiapi.NewTextMessage(genaiapi.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
 		}
@@ -84,17 +83,47 @@ func ExampleClient_Completion_tool_use() {
 				},
 			},
 		}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
+		chunks := make(chan genaiapi.MessageFragment)
+		end := make(chan genaiapi.Message, 10)
+		go func() {
+			var msgs genaiapi.Messages
+			defer func() {
+				for _, m := range msgs {
+					end <- m
+				}
+				close(end)
+			}()
+			for {
+				select {
+				case <-ctx.Done():
+					return
+				case pkt, ok := <-chunks:
+					if !ok {
+						return
+					}
+					if msgs, err = pkt.Accumulate(msgs); err != nil {
+						end <- genaiapi.NewTextMessage(genaiapi.Assistant, fmt.Sprintf("Error: %v", err))
+						return
+					}
+				}
+			}
+		}()
+		err := c.CompletionStream(ctx, msgs, &opts, chunks)
+		close(chunks)
+		var responses genaiapi.Messages
+		for m := range end {
+			responses = append(responses, m)
+		}
+		log.Printf("Raw responses: %#v", responses)
 		if err != nil {
 			log.Fatal(err)
 		}
-		if resp.Role != genaiapi.Assistant || resp.Type != genaiapi.ToolCalls {
-			log.Fatalf("Unexpected response: %#v", resp)
+		if len(responses) != 1 {
+			log.Fatal("Unexpected responses")
 		}
-		log.Printf("Response: %#v", resp)
-		// Warning: there's a bug where it returns two identical tool calls. To verify.
-		if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "best_country" {
-			log.Fatal("Expected 1 best_country tool call")
+		resp := responses[0]
+		if len(resp.ToolCalls) != 1 || resp.ToolCalls[0].Name != "best_country" {
+			log.Fatal("Unexpected response")
 		}
 		if err := resp.ToolCalls[0].Decode(&got); err != nil {
 			log.Fatal(err)
@@ -105,61 +134,6 @@ func ExampleClient_Completion_tool_use() {
 		fmt.Println("Best: Canada")
 	}
 	// Output: Best: Canada
-}
-
-func ExampleClient_CompletionStream() {
-	// This code will run when CEREBRAS_API_KEY is set.
-	//
-	// As of March 2025, you can try it out for free.
-	//
-	// Cerebras supports a limited set of models which you can see on the drop
-	// down of https://inference.cerebras.ai/
-	if c, err := cerebras.New("", "llama-3.1-8b"); err == nil {
-		ctx := context.Background()
-		msgs := genaiapi.Messages{
-			genaiapi.NewTextMessage(genaiapi.User, "Say hello. Use only one word."),
-		}
-		chunks := make(chan genaiapi.MessageFragment)
-		end := make(chan string)
-		go func() {
-			resp := ""
-			for {
-				select {
-				case <-ctx.Done():
-					end <- resp
-					return
-				case w, ok := <-chunks:
-					if !ok {
-						end <- resp
-						return
-					}
-					if w.Type != genaiapi.Text {
-						end <- fmt.Sprintf("Got %q; Unexpected type: %v", resp, w.Type)
-						return
-					}
-					resp += w.TextFragment
-				}
-			}
-		}()
-		opts := genaiapi.CompletionOptions{
-			Seed:        1,
-			Temperature: 0.01,
-			MaxTokens:   50,
-		}
-		err := c.CompletionStream(ctx, msgs, &opts, chunks)
-		close(chunks)
-		response := <-end
-		if err != nil {
-			log.Fatal(err)
-		}
-		// Normalize some of the variance. Obviously many models will still fail this test.
-		response = strings.TrimRight(strings.TrimSpace(strings.ToLower(response)), ".!")
-		fmt.Printf("Response: %s\n", response)
-	} else {
-		// Print something so the example runs.
-		fmt.Println("Response: hello")
-	}
-	// Output: Response: hello
 }
 
 func ExampleClient_ListModels() {

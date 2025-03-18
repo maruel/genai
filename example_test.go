@@ -137,11 +137,7 @@ func Example_completionProvider() {
 
 	for name, provider := range completionProviders {
 		msgs := genaiapi.Messages{
-			{
-				Role: genaiapi.User,
-				Type: genaiapi.Text,
-				Text: "Tell a story in 10 words.",
-			},
+			genaiapi.NewTextMessage(genaiapi.User, "Tell a story in 10 words."),
 		}
 		response, err := provider.Completion(context.Background(), msgs, nil)
 		if err != nil {

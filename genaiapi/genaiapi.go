@@ -11,6 +11,9 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"mime"
+	"path"
+	"path/filepath"
 	"reflect"
 	"strings"
 
@@ -145,46 +148,28 @@ type Role string
 
 // LLM known roles. Not all systems support all roles.
 const (
-	User      Role = "user"
+	// User is the user's inputs. There can be multiple users in a conversation.
+	// They are differentiated by the Message.User field.
+	User Role = "user"
+	// Assistant is the LLM.
 	Assistant Role = "assistant"
+	// Computer is the user's computer, it replies to tool calls.
+	Computer Role = "computer"
 )
 
 // Validate ensures the role is valid.
 func (r Role) Validate() error {
 	switch r {
-	case User, Assistant:
+	case User, Assistant, Computer:
 		return nil
-	case "":
-		return errors.New("a valid role is required")
 	default:
 		return fmt.Errorf("role %q is not supported", r)
 	}
 }
 
-// ContentType is the type of content in the message.
-type ContentType string
-
-const (
-	Text      ContentType = "text"
-	Document  ContentType = "document"
-	ToolCalls ContentType = "tool_calls"
-)
-
-// Validate ensures the content type is valid.
-func (c ContentType) Validate() error {
-	switch c {
-	case Text, Document, ToolCalls:
-		return nil
-	case "":
-		return errors.New("a valid content type is required")
-	default:
-		return fmt.Errorf("content type %q is not supported", c)
-	}
-}
-
 // Messages is a list of valid messages in an exchange with a LLM.
 //
-// The messages must be alternating between User and Assistant roles, or in the
+// The messages should be alternating between User and Assistant roles, or in the
 // case of multi-user discussion, with different Users.
 type Messages []Message
 
@@ -195,26 +180,74 @@ func (msgs Messages) Validate() error {
 		if err := m.Validate(); err != nil {
 			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 		}
-		// Later once content block is added:
 		// if i > 0 && msgs[i-1].Role == m.Role {
-		// 	errs = append(errs, fmt.Errorf("message %d: role must alternate; got %s twice in a row", i, m.Role))
+		// 	errs = append(errs, fmt.Errorf("message %d: role must alternate", i))
 		// }
 	}
 	return errors.Join(errs...)
 }
 
 // Message is a message to send to the LLM as part of the exchange.
+//
+// The message may contain content, information to communicate between the user
+// and the LLM. This is the Contents section. The content can be text or a
+// document. The document may be audio, video, image, PDF or any other format.
+//
+// The message may also contain tool calls. The tool call is a request from
+// the LLM to answer a specific question, so the LLM can continue its process.
 type Message struct {
 	Role Role
-	Type ContentType
+	User string // Only used when Role == User. Only some provider (e.g. OpenAI, Groq, DeepSeek) support it.
 
-	// Type == "text"
+	Contents []Content // For example when the LLM replies with multiple content blocks, an explanation and a code block.
+
+	// ToolCall is a tool call that the LLM requested to make.
+	ToolCalls []ToolCall
+
+	// TODO: Tool replies
+
+	_ struct{}
+}
+
+// NewTextMessage is a shorthand function to create a Message with a single
+// text block.
+func NewTextMessage(role Role, text string) Message {
+	return Message{Role: role, Contents: []Content{{Text: text}}}
+}
+
+// Validate ensures the messages are valid.
+func (m *Message) Validate() error {
+	var errs []error
+	if err := m.Role.Validate(); err != nil {
+		errs = append(errs, fmt.Errorf("field Role: %w", err))
+	}
+	if m.User != "" {
+		errs = append(errs, errors.New("field User: not supported yet"))
+	}
+	if len(m.Contents) == 0 {
+		errs = append(errs, errors.New("field Contents: required"))
+	}
+	for i, b := range m.Contents {
+		if err := b.Validate(); err != nil {
+			errs = append(errs, fmt.Errorf("block %d: %w", i, err))
+		}
+	}
+	return errors.Join(errs...)
+}
+
+// Content is a block of content in the message meant to be visible in a
+// chat setting.
+//
+// The content can be text or a document. The document may be audio, video,
+// image, PDF or any other format.
+type Content struct {
+	// Only Text or the rest can be set.
+
 	// Text is the content of the text message.
 	Text string
 
-	// Type == "document"
-	// In this case, one of Document or URL must be set.
-	//
+	// If Text is not set, then, one of Document or URL must be set.
+
 	// Filename is the name of the file. For many providers, only the extension
 	// is relevant. They only use mime-type, which is derived from the filename's
 	// extension. When an URL is provided, Filename is optional.
@@ -225,16 +258,75 @@ type Message struct {
 	// URL is the reference to the raw data. When set, the mime-type is derived from the URL.
 	URL string
 
-	// Type == "tool_calls"
-	// ToolCalls is a list of tool calls that the LLM requested to make.
-	ToolCalls []ToolCall
-
 	_ struct{}
 }
 
-// NewTextMessage is a shortcut function to create a Message with a single text block.
-func NewTextMessage(role Role, text string) Message {
-	return Message{Role: role, Type: Text, Text: text}
+// Validate ensures the block is valid.
+func (c *Content) Validate() error {
+	if c.Text != "" {
+		if c.Filename != "" {
+			return errors.New("field Filename can't be used along Text")
+		}
+		if c.Document != nil {
+			return errors.New("field Document can't be used along Text")
+		}
+		if c.URL != "" {
+			return errors.New("field URL can't be used along Text")
+		}
+	} else {
+		if c.Document == nil {
+			if c.URL == "" {
+				if c.Filename == "" {
+					return errors.New("no content")
+				}
+				return errors.New("field Document or URL is required when using Filename")
+			}
+		} else {
+			if c.URL != "" {
+				return errors.New("field Document and URL are mutually exclusive")
+			}
+			if c.Filename == "" {
+				return errors.New("field Filename is required with Document")
+			}
+		}
+	}
+	return nil
+}
+
+// ReadDocument reads the document content into memory.
+func (c Content) ReadDocument(maxSize int64) (string, []byte, error) {
+	if c.Text != "" {
+		return "", nil, errors.New("only document messages can be read as documents")
+	}
+	mimeType := mime.TypeByExtension(filepath.Ext(c.Filename))
+	if c.URL != "" {
+		// Not all provider require a mime-type so do not error out.
+		if mimeType == "" {
+			mimeType = mime.TypeByExtension(filepath.Ext(path.Base(c.URL)))
+		}
+		return mimeType, nil, nil
+	}
+	if mimeType == "" {
+		return "", nil, errors.New("failed to determine mime-type, pass a filename with an extension")
+	}
+	size, err := c.Document.Seek(0, io.SeekEnd)
+	if err != nil {
+		return "", nil, fmt.Errorf("failed to seek data: %w", err)
+	}
+	if size > maxSize {
+		return "", nil, fmt.Errorf("large files are not yet supported, max %dMiB", maxSize/1024/1024)
+	}
+	if _, err = c.Document.Seek(0, io.SeekStart); err != nil {
+		return "", nil, fmt.Errorf("failed to seek data: %w", err)
+	}
+	var data []byte
+	if data, err = io.ReadAll(c.Document); err != nil {
+		return "", nil, fmt.Errorf("failed to read data: %w", err)
+	}
+	if len(data) == 0 {
+		return "", nil, errors.New("empty data")
+	}
+	return mimeType, data, nil
 }
 
 // Decode decodes the JSON message into the struct.
@@ -243,77 +335,82 @@ func NewTextMessage(role Role, text string) Message {
 //
 // Note: this doesn't verify the type is the same as specified in
 // CompletionOptions.DecodeAs.
-func (m *Message) Decode(x any) error {
-	if m.Type != Text {
+func (c *Content) Decode(x any) error {
+	if c.Text == "" {
 		return errors.New("only text messages can be decoded as JSON")
 	}
-	d := json.NewDecoder(strings.NewReader(m.Text))
+	d := json.NewDecoder(strings.NewReader(c.Text))
 	d.DisallowUnknownFields()
 	d.UseNumber()
 	if err := d.Decode(x); err != nil {
-		return fmt.Errorf("failed to decode message text as JSON: %w; content: %q", err, m.Text)
-	}
-	return nil
-}
-
-// Validate ensures the message is valid.
-func (m *Message) Validate() error {
-	if err := m.Role.Validate(); err != nil {
-		return fmt.Errorf("field Role: %w", err)
-	}
-	if err := m.Type.Validate(); err != nil {
-		return fmt.Errorf("field ContentType: %w", err)
-	}
-	switch m.Type {
-	case Text:
-		if m.Text == "" {
-			return errors.New("field Type is text but no text is provided")
-		}
-		if m.Filename != "" {
-			return errors.New("field Filename is not supported for text")
-		}
-		if m.Document != nil {
-			return errors.New("field Document is not supported for text")
-		}
-		if m.URL != "" {
-			return errors.New("field URL is not supported for text")
-		}
-	case Document:
-		if m.Text != "" {
-			return errors.New("field Type is document but text is provided")
-		}
-		if m.Document == nil {
-			if m.URL == "" {
-				return errors.New("field Document or URL is required")
-			}
-		} else {
-			if m.URL != "" {
-				return errors.New("field Document and URL are mutually exclusive")
-			}
-			if m.Filename == "" {
-				return errors.New("field Filename is required with Document")
-			}
-		}
-	case ToolCalls:
-		return errors.New("todo")
+		return fmt.Errorf("failed to decode message text as JSON: %w; content: %q", err, c.Text)
 	}
 	return nil
 }
 
 // MessageFragment is a fragment of a message the LLM is sending back as part
 // of the CompletionStream().
+//
+// Only one of the item can be set.
 type MessageFragment struct {
-	Role Role // Almost (?) always (?) Assistant.
-	Type ContentType
-
-	// Type == "text"
 	TextFragment string
 
-	// Type == "tool_calls"
-	// ToolCalls is a list of tool calls that the LLM requested to make.
-	ToolCalls []ToolCall
+	Filename         string
+	DocumentFragment []byte
+
+	// ToolCall is a tool call that the LLM requested to make.
+	ToolCall ToolCall
 
 	_ struct{}
+}
+
+// Accumulate accumulates the message fragment into the list of messages.
+//
+// The assumption is that the fragment is always a message from the Assistant.
+func (m *MessageFragment) Accumulate(msgs Messages) (Messages, error) {
+	if len(msgs) > 0 {
+		if lastMsg := &msgs[len(msgs)-1]; lastMsg.Role == Assistant {
+			if m.TextFragment != "" {
+				if len(lastMsg.Contents) == 0 {
+					lastMsg.Contents = append(lastMsg.Contents, Content{Text: m.TextFragment})
+					return msgs, nil
+				}
+				if lastBlock := &lastMsg.Contents[len(lastMsg.Contents)-1]; lastBlock.Text != "" {
+					lastBlock.Text += m.TextFragment
+					return msgs, nil
+				}
+			}
+			if m.DocumentFragment != nil {
+				return nil, fmt.Errorf("cannot accumulate documents yet")
+			}
+			if m.ToolCall.Name != "" {
+				lastMsg.ToolCalls = append(lastMsg.ToolCalls, m.ToolCall)
+				return msgs, nil
+			}
+		}
+	}
+	return append(msgs, m.toMessage()), nil
+}
+
+// toMessage converts the fragment to a standalone message.
+func (m *MessageFragment) toMessage() Message {
+	if m.TextFragment != "" {
+		return NewTextMessage(Assistant, m.TextFragment)
+	}
+	if m.DocumentFragment != nil {
+		// TODO: We need a seekable memory buffer, bytes.Buffer{} is not seekable.
+		return Message{
+			Role:     Assistant,
+			Contents: []Content{{Document: strings.NewReader(m.TextFragment)}},
+		}
+	}
+	if m.ToolCall.Name != "" {
+		return Message{
+			Role:      Assistant,
+			ToolCalls: []ToolCall{m.ToolCall},
+		}
+	}
+	return Message{}
 }
 
 // Tools
@@ -402,8 +499,8 @@ func validateReflectedToJSON(r ReflectedToJSON) error {
 var (
 	_ Validatable = (*CompletionOptions)(nil)
 	_ Validatable = (*Role)(nil)
-	_ Validatable = (*ContentType)(nil)
 	_ Validatable = (*Messages)(nil)
 	_ Validatable = (*Message)(nil)
+	_ Validatable = (*Content)(nil)
 	_ Validatable = (*ToolDef)(nil)
 )

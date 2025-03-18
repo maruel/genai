@@ -5,109 +5,112 @@
 package genaiapi
 
 import (
+	"errors"
 	"strings"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/invopop/jsonschema"
 )
 
 func TestCompletionOptions_Validate(t *testing.T) {
-	o := CompletionOptions{
-		Seed:        1,
-		Temperature: 0.5,
-		TopP:        0.5,
-		TopK:        10,
-		MaxTokens:   100,
-		Stop:        []string{"stop"},
-		ReplyAsJSON: true,
-		DecodeAs:    struct{}{},
-		Tools: []ToolDef{
+	t.Run("valid", func(t *testing.T) {
+		o := CompletionOptions{
+			Seed:        1,
+			Temperature: 0.5,
+			TopP:        0.5,
+			TopK:        10,
+			MaxTokens:   100,
+			Stop:        []string{"stop"},
+			ReplyAsJSON: true,
+			DecodeAs:    struct{}{},
+			Tools: []ToolDef{
+				{
+					Name:        "tool",
+					Description: "do stuff",
+				},
+			},
+		}
+		if err := o.Validate(); err != nil {
+			t.Fatalf("unexpected error: %q", err)
+		}
+		o = CompletionOptions{
+			DecodeAs: &struct{}{},
+		}
+		if err := o.Validate(); err != nil {
+			t.Fatalf("unexpected error: %q", err)
+		}
+	})
+	t.Run("error", func(t *testing.T) {
+		tests := []struct {
+			name    string
+			options CompletionOptions
+			errMsg  string
+		}{
 			{
-				Name:        "tool",
-				Description: "do stuff",
+				name: "Invalid Seed",
+				options: CompletionOptions{
+					Seed: -1,
+				},
+				errMsg: "field Seed: must be non-negative",
 			},
-		},
-	}
-	if err := o.Validate(); err != nil {
-		t.Fatal(err)
-	}
-	o = CompletionOptions{
-		DecodeAs: &struct{}{},
-	}
-	if err := o.Validate(); err != nil {
-		t.Fatal(err)
-	}
-}
-
-func TestCompletionOptions_Validate_error(t *testing.T) {
-	tests := []struct {
-		name    string
-		options CompletionOptions
-		errMsg  string
-	}{
-		{
-			name: "Invalid Seed",
-			options: CompletionOptions{
-				Seed: -1,
+			{
+				name: "Invalid Temperature",
+				options: CompletionOptions{
+					Temperature: -1,
+				},
+				errMsg: "field Temperature: must be [0, 100]",
 			},
-			errMsg: "field Seed: must be non-negative",
-		},
-		{
-			name: "Invalid Temperature",
-			options: CompletionOptions{
-				Temperature: -1,
+			{
+				name: "Invalid MaxTokens",
+				options: CompletionOptions{
+					MaxTokens: 1024*1024*1024 + 1,
+				},
+				errMsg: "field MaxTokens: must be [0, 1 GiB]",
 			},
-			errMsg: "field Temperature: must be [0, 100]",
-		},
-		{
-			name: "Invalid MaxTokens",
-			options: CompletionOptions{
-				MaxTokens: 1024*1024*1024 + 1,
+			{
+				name: "Invalid TopP",
+				options: CompletionOptions{
+					TopP: -1,
+				},
+				errMsg: "field TopP: must be [0, 1]",
 			},
-			errMsg: "field MaxTokens: must be [0, 1 GiB]",
-		},
-		{
-			name: "Invalid TopP",
-			options: CompletionOptions{
-				TopP: -1,
+			{
+				name: "Invalid TopK",
+				options: CompletionOptions{
+					TopK: 1025,
+				},
+				errMsg: "field TopK: must be [0, 1024]",
 			},
-			errMsg: "field TopP: must be [0, 1]",
-		},
-		{
-			name: "Invalid TopK",
-			options: CompletionOptions{
-				TopK: 1025,
+			{
+				name: "Invalid DecodeAs jsonschema.Schema",
+				options: CompletionOptions{
+					DecodeAs: &jsonschema.Schema{},
+				},
+				errMsg: "field DecodeAs: must be an actual struct serializable as JSON, not a *jsonschema.Schema",
 			},
-			errMsg: "field TopK: must be [0, 1024]",
-		},
-		{
-			name: "Invalid DecodeAs jsonschema.Schema",
-			options: CompletionOptions{
-				DecodeAs: &jsonschema.Schema{},
+			{
+				name: "Invalid DecodeAs string",
+				options: CompletionOptions{
+					DecodeAs: "string",
+				},
+				errMsg: "field DecodeAs: must be a struct, not string",
 			},
-			errMsg: "field DecodeAs: must be an actual struct serializable as JSON, not a *jsonschema.Schema",
-		},
-		{
-			name: "Invalid DecodeAs string",
-			options: CompletionOptions{
-				DecodeAs: "string",
-			},
-			errMsg: "field DecodeAs: must be a struct, not string",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if err := tt.options.Validate(); err == nil || err.Error() != tt.errMsg {
-				t.Fatalf("expected error %q, got %v", tt.errMsg, err)
-			}
-		})
-	}
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				if err := tt.options.Validate(); err == nil || err.Error() != tt.errMsg {
+					t.Fatalf("\nwant %q\ngot  %q", tt.errMsg, err)
+				}
+			})
+		}
+	})
 }
 
 func TestRole_Validate(t *testing.T) {
-	for _, role := range []Role{User, Assistant} {
+	for _, role := range []Role{User, Assistant, Computer} {
 		if err := role.Validate(); err != nil {
-			t.Fatalf("unexpected error: %v", err)
+			t.Fatalf("unexpected error: %q", err)
 		}
 	}
 	for _, role := range []Role{"invalid", ""} {
@@ -117,260 +120,323 @@ func TestRole_Validate(t *testing.T) {
 	}
 }
 
-func TestContentType_Validate(t *testing.T) {
-	for _, contentType := range []ContentType{Text, Document, ToolCalls} {
-		if err := contentType.Validate(); err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
-	}
-	for _, contentType := range []ContentType{"invalid", ""} {
-		if err := contentType.Validate(); err == nil {
-			t.Fatalf("expected error, got nil")
-		}
-	}
-}
-
 func TestMessages_Validate(t *testing.T) {
-	m := Messages{
-		NewTextMessage(User, "Hello"),
-		NewTextMessage(Assistant, "I can help with that"),
-	}
-	if err := m.Validate(); err != nil {
-		t.Fatal(err)
-	}
-}
-
-func TestMessages_Validate_error(t *testing.T) {
-	tests := []struct {
-		name     string
-		messages Messages
-		errMsg   string
-	}{
-		{
-			name: "Invalid messages",
-			messages: Messages{
-				{
-					Role: User,
-					Type: Text,
+	t.Run("valid", func(t *testing.T) {
+		m := Messages{
+			NewTextMessage(User, "Hello"),
+			NewTextMessage(Assistant, "I can help with that"),
+		}
+		if err := m.Validate(); err != nil {
+			t.Fatalf("unexpected error: %q", err)
+		}
+	})
+	t.Run("error", func(t *testing.T) {
+		tests := []struct {
+			name     string
+			messages Messages
+			errMsg   string
+		}{
+			{
+				name: "Invalid messages",
+				messages: Messages{
+					{
+						Role:     User,
+						Contents: []Content{{Text: "Hi", Filename: "hi.txt"}},
+					},
+					{
+						Role:     User,
+						Contents: []Content{{}},
+					},
 				},
-				{
-					Role: User,
-					Type: Document,
-				},
+				errMsg: "message 0: block 0: field Filename can't be used along Text\nmessage 1: block 0: no content",
 			},
-
-			errMsg: "message 0: field Type is text but no text is provided\nmessage 1: field Document or URL is required",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if err := tt.messages.Validate(); err == nil || err.Error() != tt.errMsg {
-				t.Fatalf("expected error %q, got %q", tt.errMsg, err)
-			}
-		})
-	}
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				if err := tt.messages.Validate(); err == nil || err.Error() != tt.errMsg {
+					t.Fatalf("\nwant %q\ngot  %q", tt.errMsg, err)
+				}
+			})
+		}
+	})
 }
 
 func TestMessage_Validate(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		tests := []struct {
+			name    string
+			message Message
+		}{
+			{
+				name:    "Valid user text message",
+				message: NewTextMessage(User, "Hello"),
+			},
+			{
+				name: "Valid user document message",
+				message: Message{
+					Role: User,
+					Contents: []Content{
+						{
+							Filename: "document.txt",
+							Document: strings.NewReader("document content"),
+						},
+					},
+				},
+			},
+			{
+				name:    "Valid assistant message",
+				message: NewTextMessage(Assistant, "I can help with that"),
+			},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				if err := tt.message.Validate(); err != nil {
+					t.Fatalf("unexpected error: %q", err)
+				}
+			})
+		}
+	})
+	t.Run("error", func(t *testing.T) {
+		tests := []struct {
+			name    string
+			message Message
+			errMsg  string
+		}{
+			{
+				name:    "empty",
+				message: Message{},
+				errMsg:  "field Role: role \"\" is not supported\nfield Contents: required",
+			},
+			{
+				name:    "user",
+				message: Message{Role: User, User: "Joe", Contents: []Content{{Text: "Hi"}}},
+				errMsg:  "field User: not supported yet",
+			},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				err := tt.message.Validate()
+				if err == nil || err.Error() != tt.errMsg {
+					t.Fatalf("\nwant %q\ngot  %q", tt.errMsg, err)
+				}
+			})
+		}
+	})
+}
+
+func TestContent_Validate(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		tests := []struct {
+			name string
+			in   Content
+		}{
+			{
+				name: "Valid text block",
+				in:   Content{Text: "Hello"},
+			},
+			{
+				name: "Valid document block",
+				in: Content{
+					Filename: "document.txt",
+					Document: strings.NewReader("document content"),
+				},
+			},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				if err := tt.in.Validate(); err != nil {
+					t.Fatalf("unexpected error: %q", err)
+				}
+			})
+		}
+	})
+	// TODO: error
+}
+
+func TestContent_ReadDocument(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		c := Content{
+			Filename: "document.txt",
+			Document: strings.NewReader("document content"),
+		}
+		mime, got, err := c.ReadDocument(1000)
+		if err != nil {
+			t.Fatalf("unexpected error: %q", err)
+		}
+		if mime != "text/plain; charset=utf-8" {
+			t.Fatalf("unexpected mime type: %q", mime)
+		}
+		if string(got) != "document content" {
+			t.Fatalf("unexpected content: %q", got)
+		}
+	})
+	// TODO: error
+}
+
+func TestContent_Decode(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		m := NewTextMessage(Assistant, "{\"key\": \"value\"}")
+		if err := m.Contents[0].Decode(&struct{ Key string }{}); err != nil {
+			t.Fatalf("unexpected error: %q", err)
+		}
+	})
+	t.Run("error", func(t *testing.T) {
+		tests := []struct {
+			name    string
+			message Message
+			errMsg  string
+		}{
+			{
+				name:    "Invalid JSON message",
+				message: NewTextMessage(Assistant, "invalid"),
+				errMsg:  "failed to decode message text as JSON: invalid character 'i' looking for beginning of value; content: \"invalid\"",
+			},
+			{
+				name: "Invalid DecodeAs",
+				message: Message{
+					Role: Assistant,
+					Contents: []Content{
+						{
+							Document: strings.NewReader("document content"),
+						},
+					},
+				},
+				errMsg: "only text messages can be decoded as JSON",
+			},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				if err := tt.message.Contents[0].Decode("invalid"); err == nil || err.Error() != tt.errMsg {
+					t.Fatalf("\nwant %q\ngot  %q", tt.errMsg, err)
+				}
+			})
+		}
+	})
+}
+
+func TestMessageFragment_Accumulate(t *testing.T) {
 	tests := []struct {
-		name    string
-		message Message
+		name string
+		msgs Messages
+		f    MessageFragment
+		want Messages
 	}{
 		{
-			name:    "Valid user text message",
-			message: NewTextMessage(User, "Hello"),
+			name: "Join assistant text",
+			msgs: Messages{NewTextMessage(Assistant, "Hello")},
+			f:    MessageFragment{TextFragment: " world"},
+			want: Messages{NewTextMessage(Assistant, "Hello world")},
 		},
 		{
-			name: "Valid user document message",
-			message: Message{
-				Role:     User,
-				Type:     Document,
-				Filename: "document.txt",
-				Document: strings.NewReader("document content"),
+			name: "User then assistant",
+			msgs: Messages{NewTextMessage(User, "Make me a sandwich")},
+			f:    MessageFragment{TextFragment: "No"},
+			want: Messages{
+				NewTextMessage(User, "Make me a sandwich"),
+				NewTextMessage(Assistant, "No"),
 			},
 		},
 		{
-			name:    "Valid assistant message",
-			message: NewTextMessage(Assistant, "I can help with that"),
+			name: "Document then text",
+			msgs: Messages{
+				{
+					Role:     Assistant,
+					Contents: []Content{{Filename: "document.txt", Document: &buffer{"document content"}}},
+				},
+			},
+			f: MessageFragment{TextFragment: "No"},
+			want: Messages{
+				{
+					Role: Assistant,
+					Contents: []Content{
+						{
+							Filename: "document.txt",
+							Document: &buffer{"document content"},
+						},
+					},
+				},
+				NewTextMessage(Assistant, "No"),
+			},
+		},
+		{
+			name: "Tool then text",
+			msgs: Messages{{Role: Assistant, ToolCalls: []ToolCall{{Name: "tool"}}}},
+			f:    MessageFragment{TextFragment: "No"},
+			want: Messages{
+				{
+					Role: Assistant,
+					// Merge together.
+					Contents:  []Content{{Text: "No"}},
+					ToolCalls: []ToolCall{{Name: "tool"}},
+				},
+			},
+		},
+		{
+			name: "Tool then tool",
+			msgs: Messages{{Role: Assistant, ToolCalls: []ToolCall{{Name: "tool"}}}},
+			f:    MessageFragment{ToolCall: ToolCall{Name: "tool2"}},
+			want: Messages{
+				{
+					Role: Assistant,
+					// Merge together.
+					ToolCalls: []ToolCall{{Name: "tool"}, {Name: "tool2"}},
+				},
+			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := tt.message.Validate(); err != nil {
-				t.Fatalf("unexpected error: %v", err)
+			got, err := tt.f.Accumulate(tt.msgs)
+			if err != nil {
+				t.Fatalf("unexpected error: %q", err)
+			}
+			if diff := cmp.Diff(tt.want, got); diff != "" {
+				t.Fatalf("unexpected result: %s", diff)
 			}
 		})
 	}
 }
 
-func TestMessage_Validate_error(t *testing.T) {
+func TestMessageFragment_toMessage(t *testing.T) {
 	tests := []struct {
-		name    string
-		message Message
-		errMsg  string
+		name string
+		f    MessageFragment
+		want Message
 	}{
 		{
-			name: "Missing role",
-			message: Message{
-				Type: Text,
-				Text: "Content",
-			},
-			errMsg: "field Role: a valid role is required",
+			name: "Text",
+			f:    MessageFragment{TextFragment: "Hello"},
+			want: NewTextMessage(Assistant, "Hello"),
 		},
+		/* TODO: Implement document while streaming.
 		{
-			name: "Unsupported role",
-			message: Message{
-				Role: "UnsupportedRole",
-				Type: Text,
-				Text: "Content",
+			name: "Document",
+			f: MessageFragment{
+				Filename:         "document.txt",
+				DocumentFragment: []byte("document content"),
 			},
-			errMsg: "field Role: role \"UnsupportedRole\" is not supported",
+			want: Message{
+				Role:   Assistant,
+				Contents: []Content{{Document: &buffer{"document content"}}},
+			},
 		},
+		*/
 		{
-			name: "Missing type",
-			message: Message{
-				Role: User,
-				Text: "Content",
+			name: "Tool",
+			f: MessageFragment{
+				ToolCall: ToolCall{Name: "tool"},
 			},
-			errMsg: "field ContentType: a valid content type is required",
-		},
-		{
-			name: "Unsupported type",
-			message: Message{
-				Role: User,
-				Type: "UnsupportedType",
-				Text: "Content",
+			want: Message{
+				Role:      Assistant,
+				ToolCalls: []ToolCall{{Name: "tool"}},
 			},
-			errMsg: "field ContentType: content type \"UnsupportedType\" is not supported",
-		},
-		{
-			name: "Text type without text",
-			message: Message{
-				Role: User,
-				Type: Text,
-			},
-			errMsg: "field Type is text but no text is provided",
-		},
-		{
-			name: "Text type with invalid Filename flag",
-			message: Message{
-				Role:     User,
-				Type:     Text,
-				Text:     "Content",
-				Filename: "document.txt",
-			},
-			errMsg: "field Filename is not supported for text",
-		},
-		{
-			name: "Text type with invalid Document",
-			message: Message{
-				Role:     User,
-				Type:     Text,
-				Text:     "Content",
-				Document: strings.NewReader("document content"),
-			},
-			errMsg: "field Document is not supported for text",
-		},
-		{
-			name: "Text type with invalid MimeType",
-			message: Message{
-				Role: User,
-				Type: Text,
-				Text: "Content",
-				URL:  "http://localhost",
-			},
-			errMsg: "field URL is not supported for text",
-		},
-		{
-			name: "Document type with invalid Text",
-			message: Message{
-				Role:     User,
-				Type:     Document,
-				Text:     "Content",
-				Filename: "document.txt",
-				Document: strings.NewReader("document content"),
-			},
-			errMsg: "field Type is document but text is provided",
-		},
-		{
-			name: "Document type without Document",
-			message: Message{
-				Role:     User,
-				Type:     Document,
-				Filename: "document.txt",
-			},
-			errMsg: "field Document or URL is required",
-		},
-		{
-			name: "Document type without Filename",
-			message: Message{
-				Role:     User,
-				Type:     Document,
-				Document: strings.NewReader("document content"),
-			},
-			errMsg: "field Filename is required with Document",
-		},
-		{
-			name: "Document type with URL",
-			message: Message{
-				Role:     User,
-				Type:     Document,
-				Filename: "document.txt",
-				Document: strings.NewReader("document content"),
-				URL:      "http://localhost",
-			},
-			errMsg: "field Document and URL are mutually exclusive",
-		},
-		{
-			name: "ToolCalls not implemented",
-			message: Message{
-				Role: Assistant,
-				Type: ToolCalls,
-			},
-			errMsg: "todo",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := tt.message.Validate()
-			if err == nil || err.Error() != tt.errMsg {
-				t.Fatalf("expected error %q, got %q", tt.errMsg, err.Error())
-			}
-		})
-	}
-}
-
-func TestMessage_Decode(t *testing.T) {
-	m := NewTextMessage(Assistant, "{\"key\": \"value\"}")
-	if err := m.Decode(&struct{ Key string }{}); err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
-func TestMessage_Decode_error(t *testing.T) {
-	tests := []struct {
-		name    string
-		message Message
-		errMsg  string
-	}{
-		{
-			name:    "Invalid JSON message",
-			message: NewTextMessage(Assistant, "invalid"),
-			errMsg:  "failed to decode message text as JSON: invalid character 'i' looking for beginning of value; content: \"invalid\"",
-		},
-		{
-			name: "Invalid DecodeAs",
-			message: Message{
-				Role: Assistant,
-				Type: Document,
-			},
-			errMsg: "only text messages can be decoded as JSON",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if err := tt.message.Decode("invalid"); err == nil || err.Error() != tt.errMsg {
-				t.Fatalf("expected error %q, got %q", tt.errMsg, err)
+			got := tt.f.toMessage()
+			if diff := cmp.Diff(tt.want, got); diff != "" {
+				t.Fatalf("unexpected result: %s", diff)
 			}
 		})
 	}
@@ -400,10 +466,14 @@ func TestToolDef_Validate_error(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if err := tt.toolDef.Validate(); err == nil || err.Error() != tt.errMsg {
-				t.Fatalf("expected error %q, got %q", tt.errMsg, err)
+				t.Fatalf("\nwant %q\ngot  %q", tt.errMsg, err)
 			}
 		})
 	}
+}
+
+func TestToolCall_Validate(t *testing.T) {
+	// TODO.
 }
 
 func TestToolCall_Decode(t *testing.T) {
@@ -416,6 +486,28 @@ func TestToolCall_Decode(t *testing.T) {
 		Round bool `json:"round"`
 	}
 	if err := tc.Decode(&expected); err != nil {
-		t.Fatal(err)
+		t.Fatalf("unexpected error: %q", err)
 	}
+}
+
+type buffer struct {
+	Data string
+}
+
+func (b *buffer) Read(p []byte) (int, error) {
+	return copy(p, b.Data), nil
+}
+
+func (b *buffer) Close() error {
+	return nil
+}
+
+func (b *buffer) Seek(offset int64, whence int) (int64, error) {
+	if whence == 0 {
+		return 0, nil
+	}
+	if whence == 2 {
+		return int64(len(b.Data)), nil
+	}
+	return 0, errors.New("unsupported whence")
 }

@@ -303,20 +303,25 @@ func downloadFile(ctx context.Context, url, dst string) error {
 }
 
 func getLatestRelease() (string, error) {
-	req, err := http.NewRequest("GET", "https://api.github.com/repos/ollama/ollama/releases/latest", nil)
+	resp, err := http.DefaultClient.Get("https://api.github.com/repos/ollama/ollama/releases/latest")
 	if err != nil {
 		return "", err
 	}
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return "", err
+	b, err := io.ReadAll(resp.Body)
+	if err2 := resp.Body.Close(); err == nil {
+		err = err2
 	}
-	defer resp.Body.Close()
+	if err != nil {
+		return "", fmt.Errorf("failed to get latest ollama release number: %w", err)
+	}
 	var release struct {
 		TagName string `json:"tag_name"`
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&release); err != nil {
-		return "", err
+	if err := json.Unmarshal(b, &release); err != nil {
+		return "", fmt.Errorf("failed to get latest ollama release number: %w", err)
+	}
+	if release.TagName == "" {
+		return "", fmt.Errorf("failed to get latest ollama release number: got %s", string(b))
 	}
 	return release.TagName, nil
 }

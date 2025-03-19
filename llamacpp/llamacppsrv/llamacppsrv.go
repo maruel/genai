@@ -2,7 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Package llamacppsrv downloads and start llama-server from
+// Package llamacppsrv downloads and starts llama-server from
 // llama.cpp, directly from GitHub releases.
 package llamacppsrv
 

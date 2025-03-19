@@ -65,12 +65,14 @@ func Example() {
 	ctx := context.Background()
 	srv, err := startServer(ctx)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	defer srv.Close()
 	c, err := llamacpp.New(srv.URL(), nil)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Reply with only one word."),
@@ -82,14 +84,16 @@ func Example() {
 	}
 	resp, err := c.Completion(ctx, msgs, &opts)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	log.Printf("Raw response: %#v", resp)
 	if resp.InputTokens != 0 || resp.OutputTokens != 0 {
 		log.Printf("Did I finally start filling the usage fields?")
 	}
 	if resp.Role != genai.Assistant || len(resp.Contents) != 1 {
-		log.Fatal("Unexpected response")
+		log.Print("Unexpected response")
+		return
 	}
 	// Normalize some of the variance. Obviously many models will still fail this test.
 	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!")

@@ -56,12 +56,14 @@ func ExampleClient_Completion() {
 	ctx := context.Background()
 	srv, err := startServer(ctx)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	defer srv.Close()
 	c, err := llamacpp.New(srv.URL(), nil)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Reply with only one word."),
@@ -73,14 +75,16 @@ func ExampleClient_Completion() {
 	}
 	resp, err := c.Completion(ctx, msgs, &opts)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	log.Printf("Raw response: %#v", resp)
 	if resp.InputTokens != 3 || resp.OutputTokens != 17 {
 		log.Printf("Unexpected tokens usage: %v", resp.Usage)
 	}
 	if len(resp.Contents) != 1 {
-		log.Fatal("Unexpected response")
+		log.Print("Unexpected response")
+		return
 	}
 	// Normalize some of the variance. Obviously many models will still fail this test.
 	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"))
@@ -91,12 +95,14 @@ func ExampleClient_CompletionStream() {
 	ctx := context.Background()
 	srv, err := startServer(ctx)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	defer srv.Close()
 	c, err := llamacpp.New(srv.URL(), nil)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Reply with only one word."),
@@ -139,14 +145,17 @@ func ExampleClient_CompletionStream() {
 	}
 	log.Printf("Raw responses: %#v", responses)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	if len(responses) != 1 {
-		log.Fatal("Unexpected response")
+		log.Print("Unexpected responses")
+		return
 	}
 	resp := responses[0]
 	if len(resp.Contents) != 1 {
-		log.Fatal("Unexpected response")
+		log.Print("Unexpected response")
+		return
 	}
 	// Normalize some of the variance. Obviously many models will still fail this test.
 	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"))
@@ -156,7 +165,8 @@ func ExampleClient_CompletionStream() {
 func findFreePort() int {
 	l, err := net.Listen("tcp", "localhost:0")
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	defer l.Close()
 	return l.Addr().(*net.TCPAddr).Port

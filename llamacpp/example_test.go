@@ -165,8 +165,7 @@ func ExampleClient_CompletionStream() {
 func findFreePort() int {
 	l, err := net.Listen("tcp", "localhost:0")
 	if err != nil {
-		log.Print(err)
-		return
+		log.Fatal(err)
 	}
 	defer l.Close()
 	return l.Addr().(*net.TCPAddr).Port

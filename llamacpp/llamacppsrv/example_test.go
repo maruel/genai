@@ -19,48 +19,6 @@ import (
 	"github.com/maruel/huggingface"
 )
 
-func findFreePort() int {
-	l, err := net.Listen("tcp", "localhost:0")
-	if err != nil {
-		panic(err)
-	}
-	defer l.Close()
-	return l.Addr().(*net.TCPAddr).Port
-}
-
-// startServer starts a server with Qwen2 0.5B in Q2_K quantization.
-func startServer(ctx context.Context) (*llamacppsrv.Server, error) {
-	const buildNumber = 4882
-	cache, err := filepath.Abs("tmp")
-	if err != nil {
-		return nil, err
-	}
-	if err = os.MkdirAll(cache, 0o755); err != nil {
-		return nil, err
-	}
-	// It's a bit inefficient to download from github every single time.
-	exe, err := llamacppsrv.DownloadRelease(ctx, cache, buildNumber)
-	if err != nil {
-		return nil, err
-	}
-	port := findFreePort()
-	hf, err := huggingface.New("")
-	if err != nil {
-		return nil, err
-	}
-	// A really small model.
-	modelPath, err := hf.EnsureFile(ctx, huggingface.ModelRef{Author: "Qwen", Repo: "Qwen2-0.5B-Instruct-GGUF"}, "HEAD", "qwen2-0_5b-instruct-q2_k.gguf")
-	if err != nil {
-		return nil, err
-	}
-	l, err := os.Create(filepath.Join(cache, "lllama-server.log"))
-	if err != nil {
-		return nil, err
-	}
-	defer l.Close()
-	return llamacppsrv.NewServer(ctx, exe, modelPath, l, port, 0, nil)
-}
-
 func Example() {
 	ctx := context.Background()
 	srv, err := startServer(ctx)
@@ -99,4 +57,48 @@ func Example() {
 	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!")
 	fmt.Printf("Response: %s\n", txt)
 	// Output: Response: hello
+}
+
+//
+
+func findFreePort() int {
+	l, err := net.Listen("tcp", "localhost:0")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer l.Close()
+	return l.Addr().(*net.TCPAddr).Port
+}
+
+// startServer starts a server with Qwen2 0.5B in Q2_K quantization.
+func startServer(ctx context.Context) (*llamacppsrv.Server, error) {
+	const buildNumber = 4882
+	cache, err := filepath.Abs("tmp")
+	if err != nil {
+		return nil, err
+	}
+	if err = os.MkdirAll(cache, 0o755); err != nil {
+		return nil, err
+	}
+	// It's a bit inefficient to download from github every single time.
+	exe, err := llamacppsrv.DownloadRelease(ctx, cache, buildNumber)
+	if err != nil {
+		return nil, err
+	}
+	port := findFreePort()
+	hf, err := huggingface.New("")
+	if err != nil {
+		return nil, err
+	}
+	// A really small model.
+	modelPath, err := hf.EnsureFile(ctx, huggingface.ModelRef{Author: "Qwen", Repo: "Qwen2-0.5B-Instruct-GGUF"}, "HEAD", "qwen2-0_5b-instruct-q2_k.gguf")
+	if err != nil {
+		return nil, err
+	}
+	l, err := os.Create(filepath.Join(cache, "lllama-server.log"))
+	if err != nil {
+		return nil, err
+	}
+	defer l.Close()
+	return llamacppsrv.NewServer(ctx, exe, modelPath, l, port, 0, nil)
 }

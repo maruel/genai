@@ -285,6 +285,9 @@ func downloadFile(ctx context.Context, url, dst string) error {
 	if err != nil {
 		return err
 	}
+	if token := os.Getenv("GITHUB_TOKEN"); token != "" {
+		req.Header.Set("Authorization", "Bearer "+token)
+	}
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err
@@ -303,7 +306,15 @@ func downloadFile(ctx context.Context, url, dst string) error {
 }
 
 func getLatestRelease() (string, error) {
-	resp, err := http.DefaultClient.Get("https://api.github.com/repos/ollama/ollama/releases/latest")
+	req, err := http.NewRequestWithContext(context.Background(), "GET", "https://api.github.com/repos/ollama/ollama/releases/latest", nil)
+	if err != nil {
+		return "", err
+	}
+	if token := os.Getenv("GITHUB_TOKEN"); token != "" {
+		req.Header.Set("Authorization", "Bearer "+token)
+	}
+	req.Header.Set("Accept", "application/json")
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return "", err
 	}

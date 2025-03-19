@@ -78,6 +78,6 @@ func (l *loggingBody) Close() error {
 
 func genID() string {
 	var bytes [12]byte
-	rand.Read(bytes[:])
+	_, _ = rand.Read(bytes[:])
 	return base64.RawURLEncoding.EncodeToString(bytes[:])
 }

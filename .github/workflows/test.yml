@@ -35,7 +35,7 @@ jobs:
       if: always()
       run: |
         go install github.com/maruel/pat/cmd/ba@latest
-    - name: 'Check: go test -cover'
+    - name: 'Check: go test -cover (full)'
       # Only run costly tests on linux.
       if: matrix.os == 'ubuntu-latest'
       env:
@@ -53,9 +53,14 @@ jobs:
         # cost is too damn high
         # PERPLEXITY_API_KEY    : ${{ secrets.PERPLEXITY_API_KEY    }}
         TOGETHER_API_KEY      : ${{ secrets.TOGETHER_API_KEY      }}
+        # Make sure we don't get throttled calling github apis.
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: go test -timeout=600s -v -covermode=count -coverprofile coverage.txt -bench=. -benchtime=1x ./...
-    - name: 'Check: go test -cover'
+    - name: 'Check: go test -cover (light)'
       if: matrix.os == 'windows-latest' || matrix.os == 'macos-latest'
+      env:
+        # Make sure we don't get throttled calling github apis.
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: go test -timeout=600s -v -covermode=count -coverprofile coverage.txt -bench=. -benchtime=1x ./...
       # Don't send code coverage if anything failed to reduce spam.
     - uses: codecov/codecov-action@v4

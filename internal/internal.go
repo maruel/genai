@@ -13,25 +13,6 @@ import (
 	"time"
 )
 
-// DefaultTransport is used by all clients.
-//
-// It is meant to be mocked during http session recordings and replay tests.
-var DefaultTransport = http.DefaultTransport
-
-// TransportHeaders add headers to the requests.
-type TransportHeaders struct {
-	R http.RoundTripper
-	H map[string]string
-}
-
-func (t *TransportHeaders) RoundTrip(req *http.Request) (*http.Response, error) {
-	req = req.Clone(req.Context())
-	for k, v := range t.H {
-		req.Header.Set(k, v)
-	}
-	return t.R.RoundTrip(req)
-}
-
 // TransportLog logs the requests and responses.
 type TransportLog struct {
 	R http.RoundTripper
@@ -87,5 +68,5 @@ func (b *capturingBody) Read(p []byte) (int, error) {
 		_, _ = b.B.Write(p[:n])
 	}
 	return n, err
-}
+s
 */

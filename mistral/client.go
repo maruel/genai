@@ -24,7 +24,6 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
 	"golang.org/x/sync/errgroup"
 )
@@ -398,19 +397,9 @@ func New(apiKey, model string) (*Client, error) {
 			return nil, errors.New("mistral API key is required; get one at " + apiKeyURL)
 		}
 	}
-	return &Client{
-		model: model,
-		c: httpjson.Client{
-			Client: &http.Client{
-				Transport: &internal.TransportHeaders{
-					R: internal.DefaultTransport,
-					H: map[string]string{"Authorization": "Bearer " + apiKey},
-				},
-			},
-			// Mistral doesn't support HTTP POST compression.
-			PostCompress: "",
-		},
-	}, nil
+	// Mistral doesn't support HTTP POST compression.
+	h := http.Header{"Authorization": {"Bearer " + apiKey}}
+	return &Client{model: model, c: httpjson.Client{DefaultHeader: h}}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {

@@ -34,14 +34,15 @@ func ExampleClient_Completion_vision_and_JSON() {
 	// Warning: looks like this model doesn't support JSON schema.
 	// https://docs.together.ai/docs/serverless-models#vision-models
 	if c, err := togetherai.New("", "meta-llama/Llama-Vision-Free"); err == nil {
+		// TogetherAI seems to require separate messages for text and images.
 		msgs := genai.Messages{
 			{
 				Role: genai.User,
 				Contents: []genai.Content{
-					{Text: "Is it a banana? Reply as JSON with the form {\"banana\": false} or {\"banana\": true}."},
 					{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
 				},
 			},
+			genai.NewTextMessage(genai.User, "Is it a banana? Reply as JSON with the form {\"banana\": false} or {\"banana\": true}."),
 		}
 		var got struct {
 			Banana bool `json:"banana"`
@@ -81,17 +82,21 @@ func ExampleClient_Completion_video() {
 	//
 	// We must select a model that supports video.
 	// https://docs.together.ai/docs/serverless-models#vision-models
-	if c, err := togetherai.New("", "Qwen/Qwen2.5-VL-72B-Instruct"); err == nil {
+	//
+	// 2025-03-19: TogetherAI removed Qwen/Qwen2.5-VL-72B-Instruct and
+	// Qwen/Qwen2-VL-72B-Instruct cannot process videos.
+	if c, err := togetherai.New("", "Qwen/Qwen2.5-VL-72B-Instruct"); err == nil && false {
 		f, err := os.Open("testdata/animation.mp4")
 		if err != nil {
 			log.Fatal(err)
 		}
 		defer f.Close()
+		// TogetherAI seems to require separate messages for text and images.
 		msgs := genai.Messages{
+			genai.NewTextMessage(genai.User, "What is the word? Reply with exactly and only one word."),
 			{
 				Role: genai.User,
 				Contents: []genai.Content{
-					{Text: "What is the word? Reply with exactly and only one word."},
 					{Filename: filepath.Base(f.Name()), Document: f},
 				},
 			},

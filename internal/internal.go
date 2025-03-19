@@ -6,13 +6,17 @@
 package internal
 
 import (
-	"bytes"
 	"context"
 	"io"
 	"log/slog"
 	"net/http"
 	"time"
 )
+
+// DefaultTransport is used by all clients.
+//
+// It is meant to be mocked during http session recordings and replay tests.
+var DefaultTransport = http.DefaultTransport
 
 // TransportHeaders add headers to the requests.
 type TransportHeaders struct {
@@ -71,6 +75,7 @@ func (l *loggingBody) Close() error {
 	return err
 }
 
+/*
 type capturingBody struct {
 	io.ReadCloser
 	B bytes.Buffer
@@ -83,3 +88,4 @@ func (b *capturingBody) Read(p []byte) (int, error) {
 	}
 	return n, err
 }
+*/

@@ -28,6 +28,7 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
 	"golang.org/x/sync/errgroup"
 )
@@ -687,10 +688,15 @@ func New(apiKey, model string) (*Client, error) {
 		}
 	}
 	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
-	p := httpjson.DefaultClient
-	// Google supports HTTP POST gzip compression!
-	p.PostCompress = "gzip"
-	return &Client{apiKey: apiKey, model: model, c: p}, nil
+	return &Client{
+		apiKey: apiKey,
+		model:  model,
+		c: httpjson.Client{
+			Client: &http.Client{Transport: internal.DefaultTransport},
+			// Google supports HTTP POST gzip compression!
+			PostCompress: "gzip",
+		},
+	}, nil
 }
 
 /*

@@ -403,7 +403,7 @@ func New(apiKey, model string) (*Client, error) {
 		c: httpjson.Client{
 			Client: &http.Client{
 				Transport: &internal.TransportHeaders{
-					R: http.DefaultTransport,
+					R: internal.DefaultTransport,
 					H: map[string]string{"Authorization": "Bearer " + apiKey},
 				},
 			},

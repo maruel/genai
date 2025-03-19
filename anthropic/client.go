@@ -492,7 +492,7 @@ func New(apiKey, model string) (*Client, error) {
 		c: httpjson.Client{
 			Client: &http.Client{
 				Transport: &internal.TransportHeaders{
-					R: http.DefaultTransport,
+					R: internal.DefaultTransport,
 					H: map[string]string{"x-api-key": apiKey, "anthropic-version": "2023-06-01"},
 				},
 			},

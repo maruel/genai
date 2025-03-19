@@ -26,6 +26,7 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
 	"golang.org/x/sync/errgroup"
 )
@@ -468,9 +469,8 @@ type errorResponse struct {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	apiKey string
-	model  string
-	c      httpjson.Client
+	model string
+	c     httpjson.Client
 }
 
 // New creates a new client to talk to the Anthropic platform API.
@@ -487,7 +487,19 @@ func New(apiKey, model string) (*Client, error) {
 			return nil, errors.New("anthropic API key is required; get one at " + apiKeyURL)
 		}
 	}
-	return &Client{apiKey: apiKey, model: model, c: httpjson.DefaultClient}, nil
+	return &Client{
+		model: model,
+		c: httpjson.Client{
+			Client: &http.Client{
+				Transport: &internal.TransportHeaders{
+					R: http.DefaultTransport,
+					H: map[string]string{"x-api-key": apiKey, "anthropic-version": "2023-06-01"},
+				},
+			},
+			// Anthropic doesn't support HTTP POST compression.
+			PostCompress: "",
+		},
+	}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
@@ -562,11 +574,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		return err
 	}
 	in.Stream = true
-	h := make(http.Header)
-	h.Set("x-api-key", c.apiKey)
-	h.Set("anthropic-version", "2023-06-01")
-	// Anthropic doesn't HTTP POST support compression.
-	resp, err := c.c.PostRequest(ctx, "https://api.anthropic.com/v1/messages", h, in)
+	resp, err := c.c.PostRequest(ctx, "https://api.anthropic.com/v1/messages", nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
@@ -643,16 +651,13 @@ func (m *Model) Context() int64 {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.anthropic.com/en/api/models-list
-	h := make(http.Header)
-	h.Set("x-api-key", c.apiKey)
-	h.Set("anthropic-version", "2023-06-01")
 	var out struct {
 		Data    []Model `json:"data"`
 		FirstID string  `json:"first_id"`
 		HasMore bool    `json:"has_more"`
 		LastID  string  `json:"last_id"`
 	}
-	err := c.c.Get(ctx, "https://api.anthropic.com/v1/models?limit=1000", h, &out)
+	err := c.c.Get(ctx, "https://api.anthropic.com/v1/models?limit=1000", nil, &out)
 	if err != nil {
 		return nil, err
 	}
@@ -671,11 +676,8 @@ func (c *Client) validate() error {
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	h := make(http.Header)
-	h.Set("x-api-key", c.apiKey)
-	h.Set("anthropic-version", "2023-06-01")
 	// Anthropic doesn't HTTP POST support compression.
-	resp, err := c.c.PostRequest(ctx, url, h, in)
+	resp, err := c.c.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return err
 	}

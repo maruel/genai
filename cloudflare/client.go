@@ -25,6 +25,7 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
 	"golang.org/x/sync/errgroup"
 )
@@ -398,7 +399,6 @@ type errorResponse struct {
 // Client implements the REST JSON based API.
 type Client struct {
 	accountID string
-	apiKey    string
 	model     string
 	c         httpjson.Client
 }
@@ -423,7 +423,25 @@ func New(accountID, apiKey, model string) (*Client, error) {
 			return nil, errors.New("cloudflare API key is required; get one at " + apiKeyURL)
 		}
 	}
-	return &Client{accountID: accountID, apiKey: apiKey, model: model, c: httpjson.DefaultClient}, nil
+	return &Client{
+		accountID: accountID,
+		model:     model,
+		c: httpjson.Client{
+			Client: &http.Client{
+				Transport: &internal.TransportHeaders{
+					R: http.DefaultTransport,
+					H: map[string]string{
+						"Authorization": "Bearer " + apiKey,
+						// See https://github.com/cloudflare/cloudflare-go/blob/main/internal/requestconfig/requestconfig.go
+						"X-Stainless-Retry-Count": "0",
+						"X-Stainless-Timeout":     "0",
+					},
+				},
+			},
+			// Cloudflare doesn't support HTTP POST compression.
+			PostCompress: "",
+		},
+	}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
@@ -488,10 +506,8 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		return err
 	}
 	in.Stream = true
-	h := make(http.Header)
-	h.Add("Authorization", "Bearer "+c.apiKey)
 	url := "https://api.cloudflare.com/client/v4/accounts/" + c.accountID + "/ai/run/" + c.model
-	resp, err := c.c.PostRequest(ctx, url, h, in)
+	resp, err := c.c.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
@@ -589,11 +605,6 @@ func (m *Model) Context() int64 {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://developers.cloudflare.com/api/resources/ai/subresources/models/methods/list/
-	h := make(http.Header)
-	h.Add("Authorization", "Bearer "+c.apiKey)
-	// See https://github.com/cloudflare/cloudflare-go/blob/main/internal/requestconfig/requestconfig.go
-	h.Set("X-Stainless-Retry-Count", "0")
-	h.Set("X-Stainless-Timeout", "0")
 	var models []genai.Model
 	for page := 1; ; page++ {
 		var out struct {
@@ -610,7 +621,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		}
 		// Cloudflare's pagination is surprisingly brittle.
 		url := fmt.Sprintf("https://api.cloudflare.com/client/v4/accounts/%s/ai/models/search?page=%d&per_page=100&hide_experimental=false", c.accountID, page)
-		err := c.c.Get(ctx, url, h, &out)
+		err := c.c.Get(ctx, url, nil, &out)
 		if err != nil {
 			return nil, err
 		}
@@ -632,9 +643,7 @@ func (c *Client) validate() error {
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	h := make(http.Header)
-	h.Add("Authorization", "Bearer "+c.apiKey)
-	resp, err := c.c.PostRequest(ctx, url, h, in)
+	resp, err := c.c.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return err
 	}

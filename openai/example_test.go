@@ -54,7 +54,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 			log.Fatal(err)
 		}
 		log.Printf("Raw response: %#v", resp)
-		if resp.InputTokens != 299 || resp.OutputTokens != 6 {
+		if resp.InputTokens != 295 || resp.OutputTokens != 6 {
 			log.Printf("Unexpected tokens usage: %v", resp.Usage)
 		}
 		if len(resp.Contents) != 1 {
@@ -83,10 +83,10 @@ func ExampleClient_Completion_audio() {
 			{
 				Role: genai.User,
 				Contents: []genai.Content{
-					{Text: "What is the word said? Reply with only the word."},
 					{Filename: filepath.Base(f.Name()), Document: f},
 				},
 			},
+			genai.NewTextMessage(genai.User, "What is the word said? Reply with only the word."),
 		}
 		opts := genai.CompletionOptions{
 			Seed:        1,
@@ -98,7 +98,7 @@ func ExampleClient_Completion_audio() {
 			log.Fatal(err)
 		}
 		log.Printf("Raw response: %#v", resp)
-		if resp.InputTokens != 35 || resp.OutputTokens != 1 {
+		if resp.InputTokens != 31 || resp.OutputTokens != 1 {
 			log.Printf("Unexpected tokens usage: %v", resp.Usage)
 		}
 		if len(resp.Contents) != 1 {
@@ -178,7 +178,7 @@ func ExampleClient_Completion_tool_use() {
 			log.Fatal(err)
 		}
 		log.Printf("Raw response: %#v", resp)
-		if resp.InputTokens != 78 || resp.OutputTokens != 45 {
+		if resp.InputTokens != 78 || resp.OutputTokens != 15 {
 			log.Printf("Unexpected tokens usage: %v", resp.Usage)
 		}
 		// Warning: when the model is undecided, it call both.

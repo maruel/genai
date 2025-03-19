@@ -22,6 +22,7 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
 	"golang.org/x/sync/errgroup"
 )
@@ -305,9 +306,8 @@ type errorResponse struct {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	apiKey string
-	model  string
-	c      httpjson.Client
+	model string
+	c     httpjson.Client
 }
 
 // New creates a new client to talk to the DeepSeek platform API in China.
@@ -324,7 +324,19 @@ func New(apiKey, model string) (*Client, error) {
 			return nil, errors.New("deepseek API key is required; get one at " + apiKeyURL)
 		}
 	}
-	return &Client{apiKey: apiKey, model: model, c: httpjson.DefaultClient}, nil
+	return &Client{
+		model: model,
+		c: httpjson.Client{
+			Client: &http.Client{
+				Transport: &internal.TransportHeaders{
+					R: http.DefaultTransport,
+					H: map[string]string{"Authorization": "Bearer " + apiKey},
+				},
+			},
+			// DeepSeek doesn't support HTTP POST compression.
+			PostCompress: "",
+		},
+	}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
@@ -393,9 +405,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		return err
 	}
 	in.Stream = true
-	h := make(http.Header)
-	h.Add("Authorization", "Bearer "+c.apiKey)
-	resp, err := c.c.PostRequest(ctx, "https://api.deepseek.com/chat/completions", h, in)
+	resp, err := c.c.PostRequest(ctx, "https://api.deepseek.com/chat/completions", nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
@@ -460,21 +470,18 @@ func (m *Model) Context() int64 {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://api-docs.deepseek.com/api/list-models
-	h := make(http.Header)
-	h.Add("Authorization", "Bearer "+c.apiKey)
 	var out struct {
 		Object string  `json:"object"` // list
 		Data   []Model `json:"data"`
 	}
-	err := c.c.Get(ctx, "https://api.deepseek.com/models", h, &out)
-	if err != nil {
+	if err := c.c.Get(ctx, "https://api.deepseek.com/models", nil, &out); err != nil {
 		return nil, err
 	}
 	models := make([]genai.Model, len(out.Data))
 	for i := range out.Data {
 		models[i] = &out.Data[i]
 	}
-	return models, err
+	return models, nil
 }
 
 func (c *Client) validate() error {
@@ -485,9 +492,7 @@ func (c *Client) validate() error {
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	h := make(http.Header)
-	h.Set("Authorization", "Bearer "+c.apiKey)
-	resp, err := c.c.PostRequest(ctx, url, h, in)
+	resp, err := c.c.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return err
 	}

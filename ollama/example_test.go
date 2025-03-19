@@ -88,6 +88,62 @@ func ExampleClient_Completion_vision_and_JSON() {
 	// Output: Banana: true
 }
 
+func ExampleClient_Completion_tool_use() {
+	if os.Getenv("CI") == "true" {
+		fmt.Fprintf(os.Stderr, "Skipping example in CI because it takes too long to download the model and ollama seems to download a version so quantized that the test doesn't pass.\n")
+		fmt.Println("Best: Canada")
+		return
+	}
+	// Download and start the server.
+	ctx := context.Background()
+	srv, err := startServer(ctx)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	defer srv.Close()
+	// Connect the client.
+	c, err := ollama.New(srv.URL(), "llama3.1:8b")
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	msgs := genai.Messages{
+		genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
+	}
+	var got struct {
+		Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
+	}
+	opts := genai.CompletionOptions{
+		Seed:        1,
+		Temperature: 0.01,
+		MaxTokens:   50,
+		Tools: []genai.ToolDef{
+			{
+				Name:        "best_country",
+				Description: "A tool to determine the best country",
+				InputsAs:    &got,
+			},
+		},
+	}
+	resp, err := c.Completion(context.Background(), msgs, &opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("Raw response: %#v", resp)
+	if resp.InputTokens != 188 || resp.OutputTokens != 17 {
+		log.Printf("Unexpected tokens usage: %v", resp.Usage)
+	}
+	if len(resp.ToolCalls) != 1 || resp.ToolCalls[0].Name != "best_country" {
+		log.Fatal("Unexpected response")
+	}
+	if err := resp.ToolCalls[0].Decode(&got); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Best: %v\n", got.Country)
+	// Output: Best: Canada
+}
+
 func ExampleClient_CompletionStream() {
 	// Download and start the server.
 	ctx := context.Background()

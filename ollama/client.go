@@ -248,9 +248,9 @@ func (c *CompletionResponse) ToResult() (genai.CompletionResult, error) {
 			InputTokens:  c.PromptEvalCount,
 			OutputTokens: c.EvalCount,
 		},
-		Message: genai.Message{Role: genai.Assistant, Contents: []genai.Content{{Text: c.Message.Content}}},
 	}
-	return out, nil
+	err := c.Message.To(&out.Message)
+	return out, err
 }
 
 type CompletionStreamChunkResponse CompletionResponse
@@ -276,7 +276,13 @@ type Client struct {
 // Use one of the model from https://ollama.com/library
 func New(baseURL, model string) (*Client, error) {
 	// Ollama doesn't support HTTP POST compression. (???)
-	return &Client{baseURL: baseURL, model: model, c: httpjson.Client{}}, nil
+	return &Client{
+		baseURL: baseURL,
+		model:   model,
+		c:       httpjson.Client{
+			// Client: &http.Client{Transport: &internal.TransportLog{R: http.DefaultTransport}},
+		},
+	}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {

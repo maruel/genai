@@ -204,7 +204,7 @@ type ToolCall struct {
 	Function struct {
 		Name        string   `json:"name,omitzero"`
 		Description struct{} `json:"description,omitzero"` // Passed in as null in response
-		Arguments   any      `json:"arguments,omitzero"`
+		Arguments   string   `json:"arguments,omitzero"`
 	} `json:"function,omitzero"`
 }
 
@@ -212,17 +212,21 @@ func (t *ToolCall) From(in *genai.ToolCall) error {
 	t.ID = in.ID
 	t.Type = "function"
 	t.Function.Name = in.Name
-	return json.Unmarshal([]byte(in.Arguments), &t.Function.Arguments)
+	// The API seems to flip-flop between JSON and string.
+	// return json.Unmarshal([]byte(in.Arguments), &t.Function.Arguments)
+	t.Function.Arguments = in.Arguments
+	return nil
 }
 
 func (t *ToolCall) To(out *genai.ToolCall) error {
 	out.ID = t.ID
 	out.Name = t.Function.Name
-	b, err := json.Marshal(t.Function.Arguments)
-	if err != nil {
-		return fmt.Errorf("failed to marshal arguments: %w", err)
-	}
-	out.Arguments = string(b)
+	// b, err := json.Marshal(t.Function.Arguments)
+	// if err != nil {
+	//	return fmt.Errorf("failed to marshal arguments: %w", err)
+	// }
+	// out.Arguments = string(b)
+	out.Arguments = t.Function.Arguments
 	return nil
 }
 

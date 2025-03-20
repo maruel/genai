@@ -265,9 +265,11 @@ type errorResponse struct {
 
 // Client implements the REST JSON based API.
 type Client struct {
+	// Client is exported for testing replay purposes.
+	Client httpjson.Client
+
 	model   string
 	baseURL string
-	c       httpjson.Client
 }
 
 // New creates a new client to talk to the Ollama API.
@@ -275,14 +277,7 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the model from https://ollama.com/library
 func New(baseURL, model string) (*Client, error) {
-	// Ollama doesn't support HTTP POST compression. (???)
-	return &Client{
-		baseURL: baseURL,
-		model:   model,
-		c:       httpjson.Client{
-			// Client: &http.Client{Transport: &internal.TransportLog{R: http.DefaultTransport}},
-		},
-	}, nil
+	return &Client{baseURL: baseURL, model: model}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
@@ -362,7 +357,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	var err error
 	for range 2 {
 		var resp *http.Response
-		if resp, err = c.c.PostRequest(ctx, c.baseURL+"/api/chat", nil, in); err != nil {
+		if resp, err = c.Client.PostRequest(ctx, c.baseURL+"/api/chat", nil, in); err != nil {
 			return fmt.Errorf("failed to get server response: %w", err)
 		}
 		sent := false
@@ -455,7 +450,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	var out struct {
 		Models []Model `json:"models"`
 	}
-	if err := c.c.Get(ctx, c.baseURL+"/api/tags", nil, &out); err != nil {
+	if err := c.Client.Get(ctx, c.baseURL+"/api/tags", nil, &out); err != nil {
 		return nil, err
 	}
 	models := make([]genai.Model, len(out.Models))
@@ -499,7 +494,7 @@ func (c *Client) validate() error {
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	resp, err := c.c.PostRequest(ctx, url, nil, in)
+	resp, err := c.Client.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return err
 	}

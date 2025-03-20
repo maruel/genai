@@ -366,8 +366,10 @@ type errorResponse2 struct {
 
 // Client implements the REST JSON based API.
 type Client struct {
+	// Client is exported for testing replay purposes.
+	Client httpjson.Client
+
 	model string
-	c     httpjson.Client
 }
 
 // TODO: Investigate https://huggingface.co/blog/inference-providers and https://huggingface.co/docs/inference-endpoints/
@@ -401,7 +403,7 @@ func New(apiKey, model string) (*Client, error) {
 	}
 	// HuggingFace support all three of gzip, br and zstd!
 	h := http.Header{"Authorization": {"Bearer " + apiKey}}
-	return &Client{model: model, c: httpjson.Client{DefaultHeader: h, PostCompress: "zstd"}}, nil
+	return &Client{model: model, Client: httpjson.Client{DefaultHeader: h, PostCompress: "zstd"}}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
@@ -472,7 +474,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	}
 	in.Stream = true
 	url := "https://router.huggingface.co/hf-inference/models/" + c.model + "/v1/chat/completions"
-	resp, err := c.c.PostRequest(ctx, url, nil, in)
+	resp, err := c.Client.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
@@ -576,7 +578,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	var out []Model
 	// There's 20k models warm as of March 2025. There's no way to sort by
 	// trending. Sorting by download is not useful.
-	if err := c.c.Get(ctx, "https://huggingface.co/api/models?inference=warm", nil, &out); err != nil {
+	if err := c.Client.Get(ctx, "https://huggingface.co/api/models?inference=warm", nil, &out); err != nil {
 		return nil, err
 	}
 	models := make([]genai.Model, len(out))
@@ -594,7 +596,7 @@ func (c *Client) validate() error {
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	resp, err := c.c.PostRequest(ctx, url, nil, in)
+	resp, err := c.Client.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return err
 	}

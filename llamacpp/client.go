@@ -328,9 +328,11 @@ func (p *PromptEncoding) Validate() error {
 
 // Client implements the REST JSON based API.
 type Client struct {
+	// Client is exported for testing replay purposes.
+	Client httpjson.Client
+
 	baseURL  string
 	encoding *PromptEncoding
-	c        httpjson.Client
 }
 
 // New creates a new client to talk to a llama-server instance.
@@ -340,7 +342,7 @@ func New(baseURL string, encoding *PromptEncoding) (*Client, error) {
 	if baseURL == "" {
 		return nil, errors.New("baseURL is required")
 	}
-	return &Client{baseURL: baseURL, encoding: encoding, c: httpjson.DefaultClient}, nil
+	return &Client{baseURL: baseURL, encoding: encoding}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
@@ -403,7 +405,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
 	in.Stream = true
-	resp, err := c.c.PostRequest(ctx, c.baseURL+"/completion", nil, in)
+	resp, err := c.Client.PostRequest(ctx, c.baseURL+"/completion", nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get llama server response: %w", err)
 	}
@@ -446,7 +448,7 @@ func parseStreamLine(line []byte, out chan<- CompletionStreamChunkResponse) erro
 
 func (c *Client) GetHealth(ctx context.Context) (string, error) {
 	msg := healthResponse{}
-	if err := c.c.Get(ctx, c.baseURL+"/health", nil, &msg); err != nil {
+	if err := c.Client.Get(ctx, c.baseURL+"/health", nil, &msg); err != nil {
 		return "", fmt.Errorf("failed to get health response: %w", err)
 	}
 	return msg.Status, nil
@@ -484,7 +486,7 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 		return fmt.Errorf("failed to create HTTP request: %w", err)
 	}
 	// This is not a JSON response.
-	resp, err := c.c.Client.Do(req)
+	resp, err := c.Client.Client.Do(req)
 	if err != nil {
 		return fmt.Errorf("failed to get metrics response: %w", err)
 	}
@@ -588,7 +590,7 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	resp, err := c.c.PostRequest(ctx, url, nil, in)
+	resp, err := c.Client.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return err
 	}

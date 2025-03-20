@@ -618,9 +618,11 @@ type errorResponseError struct {
 
 // Client implements the REST JSON based API.
 type Client struct {
+	// Client is exported for testing replay purposes.
+	Client httpjson.Client
+
 	apiKey string
 	model  string
-	c      httpjson.Client
 }
 
 // New creates a new client to talk to Google's Gemini platform API.
@@ -688,7 +690,7 @@ func New(apiKey, model string) (*Client, error) {
 	}
 	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
 	// Google supports HTTP POST gzip compression!
-	return &Client{apiKey: apiKey, model: model, c: httpjson.Client{PostCompress: "gzip"}}, nil
+	return &Client{apiKey: apiKey, model: model, Client: httpjson.Client{PostCompress: "gzip"}}, nil
 }
 
 /*
@@ -789,7 +791,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		return err
 	}
 	url := "https://generativelanguage.googleapis.com/v1beta/models/" + c.model + ":streamGenerateContent?alt=sse&key=" + c.apiKey
-	resp, err := c.c.PostRequest(ctx, url, nil, in)
+	resp, err := c.Client.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return err
 	}
@@ -862,7 +864,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		Models        []Model `json:"models"`
 		NextPageToken string  `json:"nextPageToken"`
 	}
-	err := c.c.Get(ctx, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.apiKey, nil, &out)
+	err := c.Client.Get(ctx, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.apiKey, nil, &out)
 	if err != nil {
 		return nil, err
 	}
@@ -881,7 +883,7 @@ func (c *Client) validate() error {
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	resp, err := c.c.PostRequest(ctx, url, nil, in)
+	resp, err := c.Client.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return err
 	}

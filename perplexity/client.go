@@ -212,8 +212,10 @@ type errorResponse2 struct {
 
 // Client implements the REST JSON based API.
 type Client struct {
+	// Client is exported for testing replay purposes.
+	Client httpjson.Client
+
 	model string
-	c     httpjson.Client
 }
 
 // New creates a new client to talk to the Perplexity platform API.
@@ -231,7 +233,7 @@ func New(apiKey, model string) (*Client, error) {
 	}
 	// Perplexity doesn't support HTTP POST compression.
 	h := http.Header{"Authorization": {"Bearer " + apiKey}}
-	return &Client{model: model, c: httpjson.Client{DefaultHeader: h}}, nil
+	return &Client{model: model, Client: httpjson.Client{DefaultHeader: h}}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
@@ -294,7 +296,7 @@ func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<-
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
 	in.Stream = true
-	resp, err := c.c.PostRequest(ctx, "https://api.perplexity.ai/chat/completions", nil, in)
+	resp, err := c.Client.PostRequest(ctx, "https://api.perplexity.ai/chat/completions", nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
@@ -348,7 +350,7 @@ func parseStreamLine(line []byte, out chan<- CompletionStreamChunkResponse) erro
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	resp, err := c.c.PostRequest(ctx, url, nil, in)
+	resp, err := c.Client.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return err
 	}

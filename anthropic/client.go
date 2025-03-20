@@ -468,8 +468,10 @@ type errorResponse struct {
 
 // Client implements the REST JSON based API.
 type Client struct {
+	// Client is exported for testing replay purposes.
+	Client httpjson.Client
+
 	model string
-	c     httpjson.Client
 }
 
 // New creates a new client to talk to the Anthropic platform API.
@@ -488,7 +490,7 @@ func New(apiKey, model string) (*Client, error) {
 	}
 	// Anthropic doesn't support HTTP POST compression.
 	h := http.Header{"x-api-key": {apiKey}, "anthropic-version": {"2023-06-01"}}
-	return &Client{model: model, c: httpjson.Client{DefaultHeader: h}}, nil
+	return &Client{model: model, Client: httpjson.Client{DefaultHeader: h}}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
@@ -563,7 +565,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		return err
 	}
 	in.Stream = true
-	resp, err := c.c.PostRequest(ctx, "https://api.anthropic.com/v1/messages", nil, in)
+	resp, err := c.Client.PostRequest(ctx, "https://api.anthropic.com/v1/messages", nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
@@ -646,7 +648,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		HasMore bool    `json:"has_more"`
 		LastID  string  `json:"last_id"`
 	}
-	err := c.c.Get(ctx, "https://api.anthropic.com/v1/models?limit=1000", nil, &out)
+	err := c.Client.Get(ctx, "https://api.anthropic.com/v1/models?limit=1000", nil, &out)
 	if err != nil {
 		return nil, err
 	}
@@ -666,7 +668,7 @@ func (c *Client) validate() error {
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	// Anthropic doesn't HTTP POST support compression.
-	resp, err := c.c.PostRequest(ctx, url, nil, in)
+	resp, err := c.Client.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return err
 	}

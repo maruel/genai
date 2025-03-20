@@ -371,8 +371,10 @@ type errorResponse struct {
 
 // Client implements the REST JSON based API.
 type Client struct {
+	// Client is exported for testing replay purposes.
+	Client httpjson.Client
+
 	model string
-	c     httpjson.Client
 }
 
 // New creates a new client to talk to the Cohere platform API.
@@ -391,7 +393,7 @@ func New(apiKey, model string) (*Client, error) {
 	}
 	// Cohere doesn't support HTTP POST compression.
 	h := http.Header{"Authorization": {"Bearer " + apiKey}}
-	return &Client{model: model, c: httpjson.Client{DefaultHeader: h}}, nil
+	return &Client{model: model, Client: httpjson.Client{DefaultHeader: h}}, nil
 }
 
 func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
@@ -457,7 +459,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		return err
 	}
 	in.Stream = true
-	resp, err := c.c.PostRequest(ctx, "https://api.cohere.com/v2/chat", nil, in)
+	resp, err := c.Client.PostRequest(ctx, "https://api.cohere.com/v2/chat", nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
@@ -557,7 +559,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		Models        []Model `json:"models"`
 		NextPageToken string  `json:"next_page_token"`
 	}
-	if err := c.c.Get(ctx, "https://api.cohere.com/v1/models?page_size=1000", nil, &out); err != nil {
+	if err := c.Client.Get(ctx, "https://api.cohere.com/v1/models?page_size=1000", nil, &out); err != nil {
 		return nil, err
 	}
 	models := make([]genai.Model, len(out.Models))
@@ -575,7 +577,7 @@ func (c *Client) validate() error {
 }
 
 func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	resp, err := c.c.PostRequest(ctx, url, nil, in)
+	resp, err := c.Client.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return err
 	}

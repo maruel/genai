@@ -52,7 +52,7 @@ func startServer(ctx context.Context) (*llamacppsrv.Server, error) {
 	return llamacppsrv.NewServer(ctx, exe, modelPath, l, port, 0, nil)
 }
 
-func ExampleClient_Completion() {
+func ExampleClient_Chat() {
 	ctx := context.Background()
 	srv, err := startServer(ctx)
 	if err != nil {
@@ -91,7 +91,7 @@ func ExampleClient_Completion() {
 	// Output: Response: hello
 }
 
-func ExampleClient_CompletionStream() {
+func ExampleClient_ChatStream() {
 	ctx := context.Background()
 	srv, err := startServer(ctx)
 	if err != nil {

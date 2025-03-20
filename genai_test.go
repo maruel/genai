@@ -13,7 +13,7 @@ import (
 	"github.com/invopop/jsonschema"
 )
 
-func TestCompletionOptions_Validate(t *testing.T) {
+func TestChatOptions_Validate(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		o := ChatOptions{
 			Seed:        1,

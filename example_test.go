@@ -79,7 +79,7 @@ func ExampleModelProvider() {
 	}
 }
 
-func ExampleCompletionProvider() {
+func ExampleChatProvider() {
 	// Pro-tip: Using os.Stderr so if you modify this file and append a "// Output: foo"
 	// at the end of this function, "go test" will run the code and stream the
 	// output to you.

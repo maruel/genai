@@ -40,25 +40,24 @@ type Validatable interface {
 	Validate() error
 }
 
-// Completion
+// Chat
 
 // ChatProvider is the generic interface to interact with a LLM backend.
 type ChatProvider interface {
 	// Chat runs completion synchronously.
 	//
-	// opts must be either nil, *CompletionOptions or a provider-specialized
+	// opts must be either nil, *ChatOptions or a provider-specialized
 	// option struct.
 	Chat(ctx context.Context, msgs Messages, opts Validatable) (ChatResult, error)
 	// ChatStream runs completion synchronously, streaming the results to channel replies.
 	//
-	// opts must be either nil, *CompletionOptions or a provider-specialized
+	// opts must be either nil, *ChatOptions or a provider-specialized
 	// option struct.
 	ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) error
 }
 
-// ChatOptions is a list of frequent options supported by most
-// CompletionProvider. Each provider is free to support more options through a
-// specialized struct.
+// ChatOptions is a list of frequent options supported by most ChatProvider.
+// Each provider is free to support more options through a specialized struct.
 type ChatOptions struct {
 	// Options supported by all providers.
 
@@ -335,10 +334,10 @@ func (c Content) ReadDocument(maxSize int64) (string, []byte, error) {
 
 // Decode decodes the JSON message into the struct.
 //
-// Requires using either ReplyAsJSON or DecodeAs in the CompletionOptions.
+// Requires using either ReplyAsJSON or DecodeAs in the ChatOptions.
 //
 // Note: this doesn't verify the type is the same as specified in
-// CompletionOptions.DecodeAs.
+// ChatOptions.DecodeAs.
 func (c *Content) Decode(x any) error {
 	if c.Text == "" {
 		return errors.New("only text messages can be decoded as JSON")
@@ -353,7 +352,7 @@ func (c *Content) Decode(x any) error {
 }
 
 // MessageFragment is a fragment of a message the LLM is sending back as part
-// of the CompletionStream().
+// of the ChatStream().
 //
 // Only one of the item can be set.
 type MessageFragment struct {

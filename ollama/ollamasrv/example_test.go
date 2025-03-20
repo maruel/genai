@@ -42,12 +42,12 @@ func Example() {
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Reply with only one word."),
 	}
-	opts := genai.CompletionOptions{
+	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	resp, err := c.Completion(ctx, msgs, &opts)
+	resp, err := c.Chat(ctx, msgs, &opts)
 	if err != nil {
 		log.Print(err)
 		return

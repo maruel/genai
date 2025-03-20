@@ -28,11 +28,11 @@ import (
 )
 
 // https://inference-docs.cerebras.ai/api-reference/chat-completions
-type CompletionRequest struct {
-	Model               string    `json:"model"`
-	Messages            []Message `json:"messages"`
-	MaxCompletionTokens int64     `json:"max_completion_tokens,omitzero"`
-	ResponseFormat      struct {
+type ChatRequest struct {
+	Model          string    `json:"model"`
+	Messages       []Message `json:"messages"`
+	MaxChatTokens  int64     `json:"max_completion_tokens,omitzero"`
+	ResponseFormat struct {
 		// https://inference-docs.cerebras.ai/capabilities/structured-outputs
 		Type       string `json:"type"` // "json_object", "json_schema"
 		JSONSchema struct {
@@ -54,7 +54,7 @@ type CompletionRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
+func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 	var errs []error
 	sp := ""
 	if opts != nil {
@@ -62,8 +62,8 @@ func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Validatable) er
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *genai.CompletionOptions:
-				c.MaxCompletionTokens = v.MaxTokens
+			case *genai.ChatOptions:
+				c.MaxChatTokens = v.MaxTokens
 				c.Temperature = v.Temperature
 				c.TopP = v.TopP
 				sp = v.SystemPrompt
@@ -207,7 +207,7 @@ func (t *ToolCall) To(out *genai.ToolCall) {
 	out.Arguments = t.Function.Arguments
 }
 
-type CompletionResponse struct {
+type ChatResponse struct {
 	ID                string `json:"id"`
 	Model             string `json:"model"`
 	Object            string `json:"object"` // "chat.completion"
@@ -219,24 +219,24 @@ type CompletionResponse struct {
 		Message      Message `json:"message"`
 	} `json:"choices"`
 	Usage struct {
-		PromptTokens     int64 `json:"prompt_tokens"`
-		CompletionTokens int64 `json:"completion_tokens"`
-		TotalTokens      int64 `json:"total_tokens"`
+		PromptTokens int64 `json:"prompt_tokens"`
+		ChatTokens   int64 `json:"completion_tokens"`
+		TotalTokens  int64 `json:"total_tokens"`
 	} `json:"usage"`
 	TimeInfo struct {
-		QueueTime      float64 `json:"queue_time"`
-		PromptTime     float64 `json:"prompt_time"`
-		CompletionTime float64 `json:"completion_time"`
-		TotalTime      float64 `json:"total_time"`
-		Created        Time    `json:"created"`
+		QueueTime  float64 `json:"queue_time"`
+		PromptTime float64 `json:"prompt_time"`
+		ChatTime   float64 `json:"completion_time"`
+		TotalTime  float64 `json:"total_time"`
+		Created    Time    `json:"created"`
 	} `json:"time_info"`
 }
 
-func (c *CompletionResponse) ToResult() (genai.CompletionResult, error) {
-	out := genai.CompletionResult{
+func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
+	out := genai.ChatResult{
 		Usage: genai.Usage{
 			InputTokens:  c.Usage.PromptTokens,
-			OutputTokens: c.Usage.CompletionTokens,
+			OutputTokens: c.Usage.ChatTokens,
 		},
 	}
 	if len(c.Choices) != 1 {
@@ -246,7 +246,7 @@ func (c *CompletionResponse) ToResult() (genai.CompletionResult, error) {
 	return out, err
 }
 
-type CompletionStreamChunkResponse struct {
+type ChatStreamChunkResponse struct {
 	ID                string `json:"id"`
 	Model             string `json:"model"`
 	Object            string `json:"object"`
@@ -262,16 +262,16 @@ type CompletionStreamChunkResponse struct {
 		FinishReason string `json:"finish_reason"`
 	} `json:"choices"`
 	Usage struct {
-		PromptTokens     int64 `json:"prompt_tokens"`
-		CompletionTokens int64 `json:"completion_tokens"`
-		TotalTokens      int64 `json:"total_tokens"`
+		PromptTokens int64 `json:"prompt_tokens"`
+		ChatTokens   int64 `json:"completion_tokens"`
+		TotalTokens  int64 `json:"total_tokens"`
 	} `json:"usage"`
 	TimeInfo struct {
-		QueueTime      float64 `json:"queue_time"`
-		PromptTime     float64 `json:"prompt_time"`
-		CompletionTime float64 `json:"completion_time"`
-		TotalTime      float64 `json:"total_time"`
-		Created        Time    `json:"created"`
+		QueueTime  float64 `json:"queue_time"`
+		PromptTime float64 `json:"prompt_time"`
+		ChatTime   float64 `json:"completion_time"`
+		TotalTime  float64 `json:"total_time"`
+		Created    Time    `json:"created"`
 	} `json:"time_info"`
 }
 
@@ -321,20 +321,20 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{model: model, Client: httpjson.Client{DefaultHeader: h}}, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
+func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	// https://inference-docs.cerebras.ai/api-reference/chat-completions
-	rpcin := CompletionRequest{Model: c.model}
+	rpcin := ChatRequest{Model: c.model}
 	if err := rpcin.Init(msgs, opts); err != nil {
-		return genai.CompletionResult{}, err
+		return genai.ChatResult{}, err
 	}
-	rpcout := CompletionResponse{}
-	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genai.CompletionResult{}, fmt.Errorf("failed to get chat response: %w", err)
+	rpcout := ChatResponse{}
+	if err := c.ChatRaw(ctx, &rpcin, &rpcout); err != nil {
+		return genai.ChatResult{}, fmt.Errorf("failed to get chat response: %w", err)
 	}
 	return rpcout.ToResult()
 }
 
-func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
+func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
 	if err := c.validate(); err != nil {
 		return err
 	}
@@ -342,17 +342,17 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, "https://api.cerebras.ai/v1/chat/completions", in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
-	in := CompletionRequest{Model: c.model}
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
+	in := ChatRequest{Model: c.model}
 	if err := in.Init(msgs, opts); err != nil {
 		return err
 	}
-	ch := make(chan CompletionStreamChunkResponse)
+	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		return processStreamPackets(ch, chunks)
 	})
-	err := c.CompletionStreamRaw(ctx, &in, ch)
+	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
@@ -360,7 +360,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts
 	return err
 }
 
-func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.MessageFragment) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -390,7 +390,7 @@ func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<-
 	return nil
 }
 
-func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
+func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
 	if err := c.validate(); err != nil {
 		return err
 	}
@@ -417,7 +417,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	}
 }
 
-func parseStreamLine(line []byte, out chan<- CompletionStreamChunkResponse) error {
+func parseStreamLine(line []byte, out chan<- ChatStreamChunkResponse) error {
 	const dataPrefix = "data: "
 	if !bytes.HasPrefix(line, []byte(dataPrefix)) {
 		d := json.NewDecoder(bytes.NewReader(line))
@@ -433,7 +433,7 @@ func parseStreamLine(line []byte, out chan<- CompletionStreamChunkResponse) erro
 	d := json.NewDecoder(strings.NewReader(suffix))
 	d.DisallowUnknownFields()
 	d.UseNumber()
-	msg := CompletionStreamChunkResponse{}
+	msg := ChatStreamChunkResponse{}
 	if err := d.Decode(&msg); err != nil {
 		return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
 	}
@@ -525,6 +525,6 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 const apiKeyURL = "https://cloud.cerebras.ai/platform/"
 
 var (
-	_ genai.CompletionProvider = &Client{}
-	_ genai.ModelProvider      = &Client{}
+	_ genai.ChatProvider  = &Client{}
+	_ genai.ModelProvider = &Client{}
 )

@@ -31,7 +31,7 @@ import (
 )
 
 // https://docs.anthropic.com/en/api/messages
-type CompletionRequest struct {
+type ChatRequest struct {
 	Model    string    `json:"model,omitzero"`
 	MaxToks  int64     `json:"max_tokens"`
 	Messages []Message `json:"messages"`
@@ -50,14 +50,14 @@ type CompletionRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
+func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 	var errs []error
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *genai.CompletionOptions:
+			case *genai.ChatOptions:
 				c.MaxToks = v.MaxTokens
 				c.Temperature = v.Temperature
 				c.System = v.SystemPrompt
@@ -360,7 +360,7 @@ type Tool struct {
 	DisplayWidthPX  int64 `json:"display_width_px,omitzero"`
 }
 
-type CompletionResponse struct {
+type ChatResponse struct {
 	Message             // Role is always "assistant"
 	ID           string `json:"id"`
 	Model        string `json:"model"`
@@ -375,8 +375,8 @@ type CompletionResponse struct {
 	} `json:"usage"`
 }
 
-func (c *CompletionResponse) ToResult() (genai.CompletionResult, error) {
-	out := genai.CompletionResult{
+func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
+	out := genai.ChatResult{
 		Usage: genai.Usage{
 			InputTokens:  c.Usage.InputTokens,
 			OutputTokens: c.Usage.OutputTokens,
@@ -396,7 +396,7 @@ func (c *CompletionResponse) ToResult() (genai.CompletionResult, error) {
 //   - One or more message_delta events, indicating top-level changes to the
 //     final Message object.
 //   - A final message_stop event.
-type CompletionStreamChunkResponse struct {
+type ChatStreamChunkResponse struct {
 	Type string `json:"type"` // // "message_start", "content_block_start", "content_block_delta", "mesage_delta", "message_stop"
 
 	// Type == "message_start"
@@ -493,20 +493,20 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{model: model, Client: httpjson.Client{DefaultHeader: h}}, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
+func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	// https://docs.anthropic.com/en/api/messages
-	rpcin := CompletionRequest{Model: c.model}
+	rpcin := ChatRequest{Model: c.model}
 	if err := rpcin.Init(msgs, opts); err != nil {
-		return genai.CompletionResult{}, err
+		return genai.ChatResult{}, err
 	}
-	rpcout := CompletionResponse{}
-	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genai.CompletionResult{}, err
+	rpcout := ChatResponse{}
+	if err := c.ChatRaw(ctx, &rpcin, &rpcout); err != nil {
+		return genai.ChatResult{}, err
 	}
 	return rpcout.ToResult()
 }
 
-func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
+func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
 	if err := c.validate(); err != nil {
 		return err
 	}
@@ -514,17 +514,17 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, "https://api.anthropic.com/v1/messages", in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
-	in := CompletionRequest{Model: c.model}
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
+	in := ChatRequest{Model: c.model}
 	if err := in.Init(msgs, opts); err != nil {
 		return err
 	}
-	ch := make(chan CompletionStreamChunkResponse)
+	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		return processStreamPackets(ch, chunks)
 	})
-	err := c.CompletionStreamRaw(ctx, &in, ch)
+	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
@@ -532,7 +532,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts
 	return err
 }
 
-func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.MessageFragment) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -560,7 +560,7 @@ func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<-
 	return nil
 }
 
-func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
+func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
 	if err := c.validate(); err != nil {
 		return err
 	}
@@ -587,7 +587,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	}
 }
 
-func parseStreamLine(line []byte, out chan<- CompletionStreamChunkResponse) error {
+func parseStreamLine(line []byte, out chan<- ChatStreamChunkResponse) error {
 	// https://docs.anthropic.com/en/api/messages-streaming
 	// and
 	// https://developer.mozilla.org/en-US/docs/Web/API/Server-sent%5Fevents/Using%5Fserver-sent%5Fevents
@@ -601,7 +601,7 @@ func parseStreamLine(line []byte, out chan<- CompletionStreamChunkResponse) erro
 		d := json.NewDecoder(strings.NewReader(suffix))
 		d.DisallowUnknownFields()
 		d.UseNumber()
-		msg := CompletionStreamChunkResponse{}
+		msg := ChatStreamChunkResponse{}
 		if err := d.Decode(&msg); err != nil {
 			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
 		}
@@ -699,6 +699,6 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 const apiKeyURL = "https://console.anthropic.com/settings/keys"
 
 var (
-	_ genai.CompletionProvider = &Client{}
-	_ genai.ModelProvider      = &Client{}
+	_ genai.ChatProvider  = &Client{}
+	_ genai.ModelProvider = &Client{}
 )

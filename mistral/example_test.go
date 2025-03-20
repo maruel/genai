@@ -27,7 +27,7 @@ import (
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
 
-func ExampleClient_Completion_vision_and_JSON() {
+func ExampleClient_Chat_vision_and_JSON() {
 	// This code will run when MISTRAL_API_KEY is set.
 	//
 	// As of March 2025, you can try it out for free.
@@ -47,16 +47,16 @@ func ExampleClient_Completion_vision_and_JSON() {
 		var got struct {
 			Banana bool `json:"banana"`
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
 			DecodeAs:    &got,
 		}
-		var resp genai.CompletionResult
+		var resp genai.ChatResult
 		for i := range 3 {
 			// Mistral has a very good rate limiting implementation.
-			if resp, err = c.Completion(context.Background(), msgs, &opts); err != nil && i != 2 {
+			if resp, err = c.Chat(context.Background(), msgs, &opts); err != nil && i != 2 {
 				var herr *httpjson.Error
 				if errors.As(err, &herr) {
 					if herr.StatusCode == http.StatusTooManyRequests {
@@ -90,7 +90,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 	// Output: Banana: true
 }
 
-func ExampleClient_Completion_pDF() {
+func ExampleClient_Chat_pDF() {
 	// This code will run when MISTRAL_API_KEY is set.
 	//
 	// As of March 2025, you can try it out for free.
@@ -111,14 +111,14 @@ func ExampleClient_Completion_pDF() {
 				},
 			},
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Temperature: 0.01,
 			MaxTokens:   50,
 		}
-		var resp genai.CompletionResult
+		var resp genai.ChatResult
 		for i := range 3 {
 			// Mistral has a very good rate limiting implementation.
-			if resp, err = c.Completion(context.Background(), msgs, &opts); err != nil && i != 2 {
+			if resp, err = c.Chat(context.Background(), msgs, &opts); err != nil && i != 2 {
 				var herr *httpjson.Error
 				if errors.As(err, &herr) {
 					if herr.StatusCode == http.StatusTooManyRequests {
@@ -150,7 +150,7 @@ func ExampleClient_Completion_pDF() {
 	// Output: Hidden word in PDF: orange
 }
 
-func ExampleClient_Completion_tool_use() {
+func ExampleClient_Chat_tool_use() {
 	// This code will run when MISTRAL_API_KEY is set.
 	//
 	// As of March 2025, you can try it out for free.
@@ -164,7 +164,7 @@ func ExampleClient_Completion_tool_use() {
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   200,
@@ -176,10 +176,10 @@ func ExampleClient_Completion_tool_use() {
 				},
 			},
 		}
-		var resp genai.CompletionResult
+		var resp genai.ChatResult
 		for i := range 3 {
 			// Mistral has a very good rate limiting implementation.
-			if resp, err = c.Completion(context.Background(), msgs, &opts); err != nil && i != 2 {
+			if resp, err = c.Chat(context.Background(), msgs, &opts); err != nil && i != 2 {
 				var herr *httpjson.Error
 				if errors.As(err, &herr) {
 					if herr.StatusCode == http.StatusTooManyRequests {
@@ -210,7 +210,7 @@ func ExampleClient_Completion_tool_use() {
 	// Output: Best: Canada
 }
 
-func ExampleClient_CompletionStream() {
+func ExampleClient_ChatStream() {
 	// This code will run when MISTRAL_API_KEY is set.
 	// As of March 2025, you can try it out for free.
 	// Using very small model for testing.
@@ -220,7 +220,7 @@ func ExampleClient_CompletionStream() {
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
@@ -251,7 +251,7 @@ func ExampleClient_CompletionStream() {
 					}
 				}
 			}()
-			err := c.CompletionStream(ctx, msgs, &opts, chunks)
+			err := c.ChatStream(ctx, msgs, &opts, chunks)
 			close(chunks)
 			var responses genai.Messages
 			for m := range end {

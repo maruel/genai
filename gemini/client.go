@@ -150,7 +150,7 @@ type ToolConfig struct {
 }
 
 // https://ai.google.dev/api/generate-content?hl=en#text_gen_text_only_prompt-SHELL
-type CompletionRequest struct {
+type ChatRequest struct {
 	Contents          []Content       `json:"contents"`
 	Tools             []Tool          `json:"tools,omitzero"`
 	ToolConfig        ToolConfig      `json:"toolConfig,omitzero"`
@@ -189,7 +189,7 @@ type CompletionRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
+func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 	var errs []error
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
@@ -198,7 +198,7 @@ func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Validatable) er
 			// This doesn't seem to be well supported yet:
 			//    in.GenerationConfig.ResponseLogprobs = true
 			switch v := opts.(type) {
-			case *genai.CompletionOptions:
+			case *genai.ChatOptions:
 				c.GenerationConfig.MaxOutputTokens = v.MaxTokens
 				c.GenerationConfig.Temperature = v.Temperature
 				c.GenerationConfig.TopP = v.TopP
@@ -429,7 +429,7 @@ func (p *Part) ToToolCall(out *genai.ToolCall) error {
 }
 
 // https://ai.google.dev/api/generate-content?hl=en#v1beta.GenerateContentResponse
-type CompletionResponse struct {
+type ChatResponse struct {
 	// https://ai.google.dev/api/generate-content?hl=en#v1beta.Candidate
 	Candidates []struct {
 		Content Content `json:"content"`
@@ -513,8 +513,8 @@ type CompletionResponse struct {
 	ModelVersion string `json:"modelVersion"`
 }
 
-func (c *CompletionResponse) ToResult() (genai.CompletionResult, error) {
-	out := genai.CompletionResult{
+func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
+	out := genai.ChatResult{
 		Usage: genai.Usage{
 			InputTokens:  c.UsageMetadata.PromptTokenCount,
 			OutputTokens: c.UsageMetadata.CandidatesTokenCount + c.UsageMetadata.ToolUsePromptTokenCount + c.UsageMetadata.ThoughtsTokenCount,
@@ -534,7 +534,7 @@ type ModalityTokenCount struct {
 	TokenCount int64  `json:"tokenCount"`
 }
 
-type CompletionStreamChunkResponse struct {
+type ChatStreamChunkResponse struct {
 	Candidates []struct {
 		Content      Content `json:"content"`
 		FinishReason string  `json:"finishReason"` // STOP
@@ -722,19 +722,19 @@ func (c *Client) cacheContent(ctx context.Context, data []byte, mime, systemInst
 }
 */
 
-func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
-	rpcin := CompletionRequest{}
+func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+	rpcin := ChatRequest{}
 	if err := rpcin.Init(msgs, opts); err != nil {
-		return genai.CompletionResult{}, err
+		return genai.ChatResult{}, err
 	}
-	rpcout := CompletionResponse{}
-	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genai.CompletionResult{}, err
+	rpcout := ChatResponse{}
+	if err := c.ChatRaw(ctx, &rpcin, &rpcout); err != nil {
+		return genai.ChatResult{}, err
 	}
 	return rpcout.ToResult()
 }
 
-func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
+func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
 	// https://ai.google.dev/api/generate-content?hl=en#text_gen_text_only_prompt-SHELL
 	if err := c.validate(); err != nil {
 		return err
@@ -743,17 +743,17 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, url, in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
-	in := CompletionRequest{}
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
+	in := ChatRequest{}
 	if err := in.Init(msgs, opts); err != nil {
 		return err
 	}
-	ch := make(chan CompletionStreamChunkResponse)
+	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		return processStreamPackets(ch, chunks)
 	})
-	err := c.CompletionStreamRaw(ctx, &in, ch)
+	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
@@ -761,7 +761,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts
 	return err
 }
 
-func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.MessageFragment) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -785,7 +785,7 @@ func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<-
 	return nil
 }
 
-func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
+func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
 	// https://ai.google.dev/api/generate-content?hl=en#v1beta.GenerateContentResponse
 	if err := c.validate(); err != nil {
 		return err
@@ -813,7 +813,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	}
 }
 
-func parseStreamLine(line []byte, out chan<- CompletionStreamChunkResponse) error {
+func parseStreamLine(line []byte, out chan<- ChatStreamChunkResponse) error {
 	const prefix = "data: "
 	if !bytes.HasPrefix(line, []byte(prefix)) {
 		return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
@@ -822,7 +822,7 @@ func parseStreamLine(line []byte, out chan<- CompletionStreamChunkResponse) erro
 	d := json.NewDecoder(strings.NewReader(suffix))
 	d.DisallowUnknownFields()
 	d.UseNumber()
-	msg := CompletionStreamChunkResponse{}
+	msg := ChatStreamChunkResponse{}
 	if err := d.Decode(&msg); err != nil {
 		return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
 	}
@@ -919,6 +919,6 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 const apiKeyURL = "https://ai.google.dev/gemini-api/docs/getting-started"
 
 var (
-	_ genai.CompletionProvider = &Client{}
-	_ genai.ModelProvider      = &Client{}
+	_ genai.ChatProvider  = &Client{}
+	_ genai.ModelProvider = &Client{}
 )

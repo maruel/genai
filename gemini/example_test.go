@@ -28,7 +28,7 @@ var bananaJpg []byte
 // See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 var model = "gemini-2.0-flash-lite"
 
-func ExampleClient_Completion_vision_and_JSON() {
+func ExampleClient_Chat_vision_and_JSON() {
 	// This code will run when GEMINI_API_KEY is set.
 	// As of March 2025, you can try it out for free.
 	if c, err := gemini.New("", model); err == nil {
@@ -44,13 +44,13 @@ func ExampleClient_Completion_vision_and_JSON() {
 		var got struct {
 			Banana bool `json:"banana"`
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
 			DecodeAs:    &got,
 		}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
+		resp, err := c.Chat(context.Background(), msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -72,7 +72,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 	// Output: Banana: true
 }
 
-func ExampleClient_Completion_pDF() {
+func ExampleClient_Chat_pDF() {
 	// This code will run when GEMINI_API_KEY is set.
 	// As of March 2025, you can try it out for free.
 	if c, err := gemini.New("", model); err == nil {
@@ -90,12 +90,12 @@ func ExampleClient_Completion_pDF() {
 				},
 			},
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
 		}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
+		resp, err := c.Chat(context.Background(), msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -114,7 +114,7 @@ func ExampleClient_Completion_pDF() {
 	// Output: Hidden word in PDF: orange
 }
 
-func ExampleClient_Completion_audio() {
+func ExampleClient_Chat_audio() {
 	// This code will run when GEMINI_API_KEY is set.
 	// As of March 2025, you can try it out for free.
 	if c, err := gemini.New("", model); err == nil {
@@ -132,12 +132,12 @@ func ExampleClient_Completion_audio() {
 				},
 			},
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
 		}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
+		resp, err := c.Chat(context.Background(), msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -156,7 +156,7 @@ func ExampleClient_Completion_audio() {
 	// Output: Heard: orange
 }
 
-func ExampleClient_Completion_tool_use() {
+func ExampleClient_Chat_tool_use() {
 	// This code will run when GEMINI_API_KEY is set.
 	// As of March 2025, you can try it out for free.
 	if c, err := gemini.New("", model); err == nil {
@@ -177,7 +177,7 @@ func ExampleClient_Completion_tool_use() {
 		var got struct {
 			Word string `json:"word" jsonschema:"enum=Orange,enum=Banana,enum=Apple"`
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
@@ -189,7 +189,7 @@ func ExampleClient_Completion_tool_use() {
 				},
 			},
 		}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
+		resp, err := c.Chat(context.Background(), msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -212,7 +212,7 @@ func ExampleClient_Completion_tool_use() {
 	// Output: Saw: banana
 }
 
-func ExampleClient_CompletionStream() {
+func ExampleClient_ChatStream() {
 	// This code will run when GEMINI_API_KEY is set.
 	// As of March 2025, you can try it out for free.
 	if c, err := gemini.New("", model); err == nil {
@@ -220,7 +220,7 @@ func ExampleClient_CompletionStream() {
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
@@ -250,7 +250,7 @@ func ExampleClient_CompletionStream() {
 				}
 			}
 		}()
-		err := c.CompletionStream(ctx, msgs, &opts, chunks)
+		err := c.ChatStream(ctx, msgs, &opts, chunks)
 		close(chunks)
 		var responses genai.Messages
 		for m := range end {

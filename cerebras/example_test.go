@@ -14,7 +14,7 @@ import (
 	"github.com/maruel/genai/cerebras"
 )
 
-func ExampleClient_Completion_jSON() {
+func ExampleClient_Chat_jSON() {
 	// This code will run when CEREBRAS_API_KEY is set.
 	//
 	// As of March 2025, you can try it out for free.
@@ -28,13 +28,13 @@ func ExampleClient_Completion_jSON() {
 		var got struct {
 			Round bool `json:"round"`
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
 			DecodeAs:    got,
 		}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
+		resp, err := c.Chat(context.Background(), msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -56,7 +56,7 @@ func ExampleClient_Completion_jSON() {
 	// Output: Round: true
 }
 
-func ExampleClient_CompletionStream_tool_use() {
+func ExampleClient_ChatStream_tool_use() {
 	// This code will run when CEREBRAS_API_KEY is set.
 	//
 	// As of March 2025, you can try it out for free.
@@ -71,7 +71,7 @@ func ExampleClient_CompletionStream_tool_use() {
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
@@ -108,7 +108,7 @@ func ExampleClient_CompletionStream_tool_use() {
 				}
 			}
 		}()
-		err := c.CompletionStream(ctx, msgs, &opts, chunks)
+		err := c.ChatStream(ctx, msgs, &opts, chunks)
 		close(chunks)
 		var responses genai.Messages
 		for m := range end {

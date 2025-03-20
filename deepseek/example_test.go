@@ -20,18 +20,18 @@ import (
 // See https://api-docs.deepseek.com/quick_start/pricing
 var model = "deepseek-chat"
 
-func ExampleClient_Completion_jSON() {
+func ExampleClient_Chat_jSON() {
 	// This code will run when DEEPSEEK_API_KEY is set.
 	if c, err := deepseek.New("", model); err == nil {
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "Is a circle round? Reply as JSON with the form {\"round\": false} or {\"round\": true}."),
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Temperature: 0.01,
 			MaxTokens:   50,
 			ReplyAsJSON: true,
 		}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
+		resp, err := c.Chat(context.Background(), msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -56,7 +56,7 @@ func ExampleClient_Completion_jSON() {
 	// Output: Round: true
 }
 
-func ExampleClient_Completion_tool_use() {
+func ExampleClient_Chat_tool_use() {
 	// This code will run when DEEPSEEK_API_KEY is set.
 	if c, err := deepseek.New("", model); err == nil {
 		msgs := genai.Messages{
@@ -65,7 +65,7 @@ func ExampleClient_Completion_tool_use() {
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Temperature: 0.01,
 			MaxTokens:   200,
 			Tools: []genai.ToolDef{
@@ -76,7 +76,7 @@ func ExampleClient_Completion_tool_use() {
 				},
 			},
 		}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
+		resp, err := c.Chat(context.Background(), msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -99,14 +99,14 @@ func ExampleClient_Completion_tool_use() {
 	// Output: Best: Canada
 }
 
-func ExampleClient_CompletionStream() {
+func ExampleClient_ChatStream() {
 	// This code will run when DEEPSEEK_API_KEY is set.
 	if c, err := deepseek.New("", model); err == nil {
 		ctx := context.Background()
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Temperature: 0.01,
 			MaxTokens:   50,
 		}
@@ -135,7 +135,7 @@ func ExampleClient_CompletionStream() {
 				}
 			}
 		}()
-		err := c.CompletionStream(ctx, msgs, &opts, chunks)
+		err := c.ChatStream(ctx, msgs, &opts, chunks)
 		close(chunks)
 		var responses genai.Messages
 		for m := range end {

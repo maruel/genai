@@ -15,7 +15,7 @@ import (
 
 func TestCompletionOptions_Validate(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
-		o := CompletionOptions{
+		o := ChatOptions{
 			Seed:        1,
 			Temperature: 0.5,
 			TopP:        0.5,
@@ -34,7 +34,7 @@ func TestCompletionOptions_Validate(t *testing.T) {
 		if err := o.Validate(); err != nil {
 			t.Fatalf("unexpected error: %q", err)
 		}
-		o = CompletionOptions{
+		o = ChatOptions{
 			DecodeAs: &struct{}{},
 		}
 		if err := o.Validate(); err != nil {
@@ -44,54 +44,54 @@ func TestCompletionOptions_Validate(t *testing.T) {
 	t.Run("error", func(t *testing.T) {
 		tests := []struct {
 			name    string
-			options CompletionOptions
+			options ChatOptions
 			errMsg  string
 		}{
 			{
 				name: "Invalid Seed",
-				options: CompletionOptions{
+				options: ChatOptions{
 					Seed: -1,
 				},
 				errMsg: "field Seed: must be non-negative",
 			},
 			{
 				name: "Invalid Temperature",
-				options: CompletionOptions{
+				options: ChatOptions{
 					Temperature: -1,
 				},
 				errMsg: "field Temperature: must be [0, 100]",
 			},
 			{
 				name: "Invalid MaxTokens",
-				options: CompletionOptions{
+				options: ChatOptions{
 					MaxTokens: 1024*1024*1024 + 1,
 				},
 				errMsg: "field MaxTokens: must be [0, 1 GiB]",
 			},
 			{
 				name: "Invalid TopP",
-				options: CompletionOptions{
+				options: ChatOptions{
 					TopP: -1,
 				},
 				errMsg: "field TopP: must be [0, 1]",
 			},
 			{
 				name: "Invalid TopK",
-				options: CompletionOptions{
+				options: ChatOptions{
 					TopK: 1025,
 				},
 				errMsg: "field TopK: must be [0, 1024]",
 			},
 			{
 				name: "Invalid DecodeAs jsonschema.Schema",
-				options: CompletionOptions{
+				options: ChatOptions{
 					DecodeAs: &jsonschema.Schema{},
 				},
 				errMsg: "field DecodeAs: must be an actual struct serializable as JSON, not a *jsonschema.Schema",
 			},
 			{
 				name: "Invalid DecodeAs string",
-				options: CompletionOptions{
+				options: ChatOptions{
 					DecodeAs: "string",
 				},
 				errMsg: "field DecodeAs: must be a struct, not string",

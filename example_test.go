@@ -83,7 +83,7 @@ func ExampleCompletionProvider() {
 	// Pro-tip: Using os.Stderr so if you modify this file and append a "// Output: foo"
 	// at the end of this function, "go test" will run the code and stream the
 	// output to you.
-	completionProviders := map[string]genai.CompletionProvider{}
+	completionProviders := map[string]genai.ChatProvider{}
 	// https://docs.anthropic.com/en/docs/about-claude/models/all-models
 	if c, err := anthropic.New("", "claude-3-7-sonnet-latest"); err == nil {
 		completionProviders["anthropic"] = c
@@ -139,7 +139,7 @@ func ExampleCompletionProvider() {
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "Tell a story in 10 words."),
 		}
-		response, err := provider.Completion(context.Background(), msgs, nil)
+		response, err := provider.Chat(context.Background(), msgs, nil)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "- %s: %v\n", name, err)
 		} else {

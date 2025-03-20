@@ -132,13 +132,13 @@ func main() {
     msgs := genai.Messages{
         genai.NewTextMessage(genai.User, "Is a circle round? Reply as JSON."),
     }
-    opts := genai.CompletionOptions{
+    opts := genai.ChatOptions{
         Seed:        1,
         Temperature: 0.01,
         MaxTokens:   50,
         DecodeAs:    &Circle{},
     }
-    resp, err := c.Completion(context.Background(), msgs, &opts)
+    resp, err := c.Chat(context.Background(), msgs, &opts)
     if err != nil {
         log.Fatal(err)
     }

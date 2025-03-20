@@ -94,7 +94,7 @@ func (c *CompletionRequest) Init(opts genai.Validatable) error {
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *genai.CompletionOptions:
+			case *genai.ChatOptions:
 				c.NPredict = v.MaxTokens
 				c.Seed = v.Seed
 				c.Temperature = v.Temperature
@@ -189,8 +189,8 @@ type CompletionResponse struct {
 	} `json:"timings"`
 }
 
-func (c *CompletionResponse) ToResult() (genai.CompletionResult, error) {
-	out := genai.CompletionResult{
+func (c *CompletionResponse) ToResult() (genai.ChatResult, error) {
+	out := genai.ChatResult{
 		Message: genai.Message{
 			Role: genai.Assistant,
 			// Mistral Nemo really likes "▁".
@@ -241,7 +241,7 @@ type applyTemplateRequest struct {
 
 func (a *applyTemplateRequest) Init(opts genai.Validatable, msgs genai.Messages) error {
 	sp := ""
-	if v, ok := opts.(*genai.CompletionOptions); ok {
+	if v, ok := opts.(*genai.ChatOptions); ok {
 		sp = v.SystemPrompt
 	}
 	if err := msgs.Validate(); err != nil {
@@ -345,31 +345,32 @@ func New(baseURL string, encoding *PromptEncoding) (*Client, error) {
 	return &Client{baseURL: baseURL, encoding: encoding}, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
+func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	// https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
 	rpcin := CompletionRequest{CachePrompt: true}
 	if err := rpcin.Init(opts); err != nil {
-		return genai.CompletionResult{}, err
+		return genai.ChatResult{}, err
 	}
 	if err := c.initPrompt(ctx, &rpcin, opts, msgs); err != nil {
-		return genai.CompletionResult{}, err
+		return genai.ChatResult{}, err
 	}
 	rpcout := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genai.CompletionResult{}, fmt.Errorf("failed to get llama server response: %w", err)
+		return genai.ChatResult{}, fmt.Errorf("failed to get llama server response: %w", err)
 	}
 	slog.DebugContext(ctx, "llm", "prompt tok", rpcout.Timings.PromptN, "gen tok", rpcout.Timings.PredictedN, "prompt tok/ms", rpcout.Timings.PromptPerTokenMS, "gen tok/ms", rpcout.Timings.PredictedPerTokenMS)
 	return rpcout.ToResult()
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
+	// TODO: Distinguish between completion and chat. Chat is completion with the template applied.
 	in.Stream = false
 	return c.post(ctx, c.baseURL+"/completion", in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
 	// start := time.Now()
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
@@ -615,4 +616,4 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	}
 }
 
-var _ genai.CompletionProvider = &Client{}
+var _ genai.ChatProvider = &Client{}

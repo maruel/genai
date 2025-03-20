@@ -29,7 +29,7 @@ const version = "v0.6.2"
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
 
-func ExampleClient_Completion_vision_and_JSON() {
+func ExampleClient_Chat_vision_and_JSON() {
 	if os.Getenv("CI") == "true" {
 		fmt.Fprintf(os.Stderr, "Skipping example in CI because it takes too long to download the model and ollama seems to download a version so quantized that the test doesn't pass.\n")
 		fmt.Println("Banana: true")
@@ -61,13 +61,13 @@ func ExampleClient_Completion_vision_and_JSON() {
 	var got struct {
 		Banana bool `json:"banana"`
 	}
-	opts := genai.CompletionOptions{
+	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
 		DecodeAs:    &got,
 	}
-	resp, err := c.Completion(ctx, msgs, &opts)
+	resp, err := c.Chat(ctx, msgs, &opts)
 	if err != nil {
 		log.Print(err)
 		return
@@ -88,7 +88,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 	// Output: Banana: true
 }
 
-func ExampleClient_Completion_tool_use() {
+func ExampleClient_Chat_tool_use() {
 	if os.Getenv("CI") == "true" {
 		fmt.Fprintf(os.Stderr, "Skipping example in CI because it takes too long to download the model and ollama seems to download a version so quantized that the test doesn't pass.\n")
 		fmt.Println("Best: Canada")
@@ -114,7 +114,7 @@ func ExampleClient_Completion_tool_use() {
 	var got struct {
 		Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 	}
-	opts := genai.CompletionOptions{
+	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
@@ -126,7 +126,7 @@ func ExampleClient_Completion_tool_use() {
 			},
 		},
 	}
-	resp, err := c.Completion(context.Background(), msgs, &opts)
+	resp, err := c.Chat(context.Background(), msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -144,7 +144,7 @@ func ExampleClient_Completion_tool_use() {
 	// Output: Best: Canada
 }
 
-func ExampleClient_CompletionStream() {
+func ExampleClient_ChatStream() {
 	// Download and start the server.
 	ctx := context.Background()
 	srv, err := startServer(ctx)
@@ -162,7 +162,7 @@ func ExampleClient_CompletionStream() {
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 	}
-	opts := genai.CompletionOptions{
+	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
@@ -192,7 +192,7 @@ func ExampleClient_CompletionStream() {
 			}
 		}
 	}()
-	err = c.CompletionStream(ctx, msgs, &opts, chunks)
+	err = c.ChatStream(ctx, msgs, &opts, chunks)
 	close(chunks)
 	var responses genai.Messages
 	for m := range end {

@@ -30,7 +30,7 @@ import (
 )
 
 // https://developers.cloudflare.com/api/resources/ai/methods/run/
-type CompletionRequest struct {
+type ChatRequest struct {
 	Messages          []Message `json:"messages"`
 	FrequencyPenalty  float64   `json:"frequency_penalty,omitzero"` // [0, 2.0]
 	MaxTokens         int64     `json:"max_tokens,omitzero"`
@@ -51,7 +51,7 @@ type CompletionRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
+func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 	var errs []error
 	sp := ""
 	if opts != nil {
@@ -59,7 +59,7 @@ func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Validatable) er
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *genai.CompletionOptions:
+			case *genai.ChatOptions:
 				c.MaxTokens = v.MaxTokens
 				c.Temperature = v.Temperature
 				c.TopP = v.TopP
@@ -248,13 +248,13 @@ type imageToText struct {
 
 // https://developers.cloudflare.com/api/resources/ai/methods/run/
 // See UnionMember7
-type CompletionResponse struct {
+type ChatResponse struct {
 	Result struct {
 		MessageResponse
 		Usage struct {
-			CompletionTokens int64 `json:"completion_tokens"`
-			PromptTokens     int64 `json:"prompt_tokens"`
-			TotalTokens      int64 `json:"total_tokens"`
+			ChatTokens   int64 `json:"completion_tokens"`
+			PromptTokens int64 `json:"prompt_tokens"`
+			TotalTokens  int64 `json:"total_tokens"`
 		} `json:"usage"`
 	} `json:"result"`
 	Success  bool       `json:"success"`
@@ -337,11 +337,11 @@ func (msg *MessageResponse) To(schema string, out *genai.Message) error {
 	return nil
 }
 
-func (c *CompletionResponse) ToResult(rpcin *CompletionRequest) (genai.CompletionResult, error) {
-	out := genai.CompletionResult{
+func (c *ChatResponse) ToResult(rpcin *ChatRequest) (genai.ChatResult, error) {
+	out := genai.ChatResult{
 		Usage: genai.Usage{
 			InputTokens:  c.Result.Usage.PromptTokens,
-			OutputTokens: c.Result.Usage.CompletionTokens,
+			OutputTokens: c.Result.Usage.ChatTokens,
 		},
 	}
 	err := c.Result.To(rpcin.ResponseFormat.Type, &out.Message)
@@ -349,13 +349,13 @@ func (c *CompletionResponse) ToResult(rpcin *CompletionRequest) (genai.Completio
 }
 
 // If you find the documentation for this please tell me!
-type CompletionStreamChunkResponse struct {
+type ChatStreamChunkResponse struct {
 	Response string `json:"response"`
 	P        string `json:"p"`
 	Usage    struct {
-		CompletionTokens int64 `json:"completion_tokens"`
-		PromptTokens     int64 `json:"prompt_tokens"`
-		TotalTokens      int64 `json:"total_tokens"`
+		ChatTokens   int64 `json:"completion_tokens"`
+		PromptTokens int64 `json:"prompt_tokens"`
+		TotalTokens  int64 `json:"total_tokens"`
 	} `json:"usage"`
 }
 
@@ -429,20 +429,20 @@ func New(accountID, apiKey, model string) (*Client, error) {
 	return &Client{accountID: accountID, model: model, Client: httpjson.Client{DefaultHeader: h}}, nil
 }
 
-func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.CompletionResult, error) {
+func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	// https://developers.cloudflare.com/api/resources/ai/methods/run/
-	rpcin := CompletionRequest{}
+	rpcin := ChatRequest{}
 	if err := rpcin.Init(msgs, opts); err != nil {
-		return genai.CompletionResult{}, err
+		return genai.ChatResult{}, err
 	}
-	rpcout := CompletionResponse{}
-	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genai.CompletionResult{}, fmt.Errorf("failed to get chat response: %w", err)
+	rpcout := ChatResponse{}
+	if err := c.ChatRaw(ctx, &rpcin, &rpcout); err != nil {
+		return genai.ChatResult{}, fmt.Errorf("failed to get chat response: %w", err)
 	}
 	return rpcout.ToResult(&rpcin)
 }
 
-func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
+func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
 	if err := c.validate(); err != nil {
 		return err
 	}
@@ -451,17 +451,17 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, url, in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
-	in := CompletionRequest{}
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
+	in := ChatRequest{}
 	if err := in.Init(msgs, opts); err != nil {
 		return err
 	}
-	ch := make(chan CompletionStreamChunkResponse)
+	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		return processStreamPackets(ch, chunks)
 	})
-	err := c.CompletionStreamRaw(ctx, &in, ch)
+	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
@@ -469,7 +469,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts
 	return err
 }
 
-func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.MessageFragment) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -483,7 +483,7 @@ func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<-
 	return nil
 }
 
-func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
+func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
 	// Investigate websockets?
 	// https://blog.cloudflare.com/workers-ai-streaming/ and
 	// https://developers.cloudflare.com/workers/examples/websockets/
@@ -514,7 +514,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	}
 }
 
-func parseStreamLine(line []byte, out chan<- CompletionStreamChunkResponse) error {
+func parseStreamLine(line []byte, out chan<- ChatStreamChunkResponse) error {
 	const dataPrefix = "data: "
 	switch {
 	case bytes.HasPrefix(line, []byte(dataPrefix)):
@@ -525,7 +525,7 @@ func parseStreamLine(line []byte, out chan<- CompletionStreamChunkResponse) erro
 		d := json.NewDecoder(strings.NewReader(suffix))
 		d.DisallowUnknownFields()
 		d.UseNumber()
-		msg := CompletionStreamChunkResponse{}
+		msg := ChatStreamChunkResponse{}
 		if err := d.Decode(&msg); err != nil {
 			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
 		}
@@ -663,6 +663,6 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 const apiKeyURL = "https://dash.cloudflare.com/profile/api-tokens"
 
 var (
-	_ genai.CompletionProvider = &Client{}
-	_ genai.ModelProvider      = &Client{}
+	_ genai.ChatProvider  = &Client{}
+	_ genai.ModelProvider = &Client{}
 )

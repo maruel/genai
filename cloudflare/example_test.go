@@ -15,7 +15,7 @@ import (
 	"github.com/maruel/genai/cloudflare"
 )
 
-func ExampleClient_Completion_jSON() {
+func ExampleClient_Chat_jSON() {
 	// This code will run when both CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_KEY are set.
 	// As of March 2025, you can try it out for free.
 	// We need to use a model that supports structured output.
@@ -26,13 +26,13 @@ func ExampleClient_Completion_jSON() {
 		var got struct {
 			Round bool `json:"round"`
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
 			DecodeAs:    &got,
 		}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
+		resp, err := c.Chat(context.Background(), msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -54,7 +54,7 @@ func ExampleClient_Completion_jSON() {
 	// Output: Round: true
 }
 
-func ExampleClient_Completion_tool_use() {
+func ExampleClient_Chat_tool_use() {
 	// This code will run when both CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_KEY are set.
 	// As of March 2025, you can try it out for free.
 	// We need to use a model that supports function calling.
@@ -65,7 +65,7 @@ func ExampleClient_Completion_tool_use() {
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   200,
@@ -77,7 +77,7 @@ func ExampleClient_Completion_tool_use() {
 				},
 			},
 		}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
+		resp, err := c.Chat(context.Background(), msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -97,7 +97,7 @@ func ExampleClient_Completion_tool_use() {
 	// Output: Best: Canada
 }
 
-func ExampleClient_CompletionStream() {
+func ExampleClient_ChatStream() {
 	// This code will run when both CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_KEY are set.
 	// As of March 2025, you can try it out for free.
 	// Using very small model for testing.
@@ -107,7 +107,7 @@ func ExampleClient_CompletionStream() {
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
@@ -137,7 +137,7 @@ func ExampleClient_CompletionStream() {
 				}
 			}
 		}()
-		err := c.CompletionStream(ctx, msgs, &opts, chunks)
+		err := c.ChatStream(ctx, msgs, &opts, chunks)
 		close(chunks)
 		var responses genai.Messages
 		for m := range end {

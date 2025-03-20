@@ -14,17 +14,17 @@ import (
 	"github.com/maruel/genai/perplexity"
 )
 
-func ExampleClient_Completion() {
+func ExampleClient_Chat() {
 	// This code will run when PERPLEXITY_API_KEY is set.
 	if c, err := perplexity.New("", "sonar"); err == nil {
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Temperature: 0.01,
 			MaxTokens:   50,
 		}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
+		resp, err := c.Chat(context.Background(), msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -44,14 +44,14 @@ func ExampleClient_Completion() {
 	// Output: Response: hello
 }
 
-func ExampleClient_CompletionStream() {
+func ExampleClient_ChatStream() {
 	// This code will run when PERPLEXITY_API_KEY is set.
 	if c, err := perplexity.New("", "sonar"); err == nil {
 		ctx := context.Background()
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Temperature: 0.01,
 			MaxTokens:   50,
 		}
@@ -80,7 +80,7 @@ func ExampleClient_CompletionStream() {
 				}
 			}
 		}()
-		err := c.CompletionStream(ctx, msgs, &opts, chunks)
+		err := c.ChatStream(ctx, msgs, &opts, chunks)
 		close(chunks)
 		var responses genai.Messages
 		for m := range end {

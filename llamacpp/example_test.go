@@ -68,12 +68,12 @@ func ExampleClient_Completion() {
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Reply with only one word."),
 	}
-	opts := genai.CompletionOptions{
+	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	resp, err := c.Completion(ctx, msgs, &opts)
+	resp, err := c.Chat(ctx, msgs, &opts)
 	if err != nil {
 		log.Print(err)
 		return
@@ -107,7 +107,7 @@ func ExampleClient_CompletionStream() {
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Reply with only one word."),
 	}
-	opts := genai.CompletionOptions{
+	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
@@ -137,7 +137,7 @@ func ExampleClient_CompletionStream() {
 			}
 		}
 	}()
-	err = c.CompletionStream(ctx, msgs, &opts, chunks)
+	err = c.ChatStream(ctx, msgs, &opts, chunks)
 	close(chunks)
 	var responses genai.Messages
 	for m := range end {

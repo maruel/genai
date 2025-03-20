@@ -28,7 +28,7 @@ var bananaJpg []byte
 // See https://platform.openai.com/docs/models
 var model = "gpt-4o-mini"
 
-func ExampleClient_Completion_vision_and_JSON() {
+func ExampleClient_Chat_vision_and_JSON() {
 	// This code will run when OPENAI_API_KEY is set.
 	if c, err := openai.New("", model); err == nil {
 		msgs := genai.Messages{
@@ -43,13 +43,13 @@ func ExampleClient_Completion_vision_and_JSON() {
 		var got struct {
 			Banana bool `json:"banana"`
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
 			DecodeAs:    &got,
 		}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
+		resp, err := c.Chat(context.Background(), msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -71,7 +71,7 @@ func ExampleClient_Completion_vision_and_JSON() {
 	// Output: Banana: true
 }
 
-func ExampleClient_Completion_audio() {
+func ExampleClient_Chat_audio() {
 	// This code will run when OPENAI_API_KEY is set.
 	if c, err := openai.New("", "gpt-4o-audio-preview"); err == nil {
 		f, err := os.Open("testdata/mystery_word.mp3")
@@ -88,12 +88,12 @@ func ExampleClient_Completion_audio() {
 			},
 			genai.NewTextMessage(genai.User, "What is the word said? Reply with only the word."),
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
 		}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
+		resp, err := c.Chat(context.Background(), msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -112,7 +112,7 @@ func ExampleClient_Completion_audio() {
 	// Output: Heard: orange
 }
 
-func ExampleClient_Completion_pDF() {
+func ExampleClient_Chat_pDF() {
 	// This code will run when OPENAI_API_KEY is set.
 	if c, err := openai.New("", model); err == nil {
 		f, err := os.Open("testdata/hidden_word.pdf")
@@ -129,11 +129,11 @@ func ExampleClient_Completion_pDF() {
 				},
 			},
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Temperature: 0.01,
 			MaxTokens:   50,
 		}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
+		resp, err := c.Chat(context.Background(), msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -152,7 +152,7 @@ func ExampleClient_Completion_pDF() {
 	// Output: Hidden word in PDF: orange
 }
 
-func ExampleClient_Completion_tool_use() {
+func ExampleClient_Chat_tool_use() {
 	// This code will run when OPENAI_API_KEY is set.
 	if c, err := openai.New("", model); err == nil {
 		msgs := genai.Messages{
@@ -161,7 +161,7 @@ func ExampleClient_Completion_tool_use() {
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   200,
@@ -173,7 +173,7 @@ func ExampleClient_Completion_tool_use() {
 				},
 			},
 		}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
+		resp, err := c.Chat(context.Background(), msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -196,14 +196,14 @@ func ExampleClient_Completion_tool_use() {
 	// Output: Best: Canada
 }
 
-func ExampleClient_CompletionStream() {
+func ExampleClient_ChatStream() {
 	// This code will run when OPENAI_API_KEY is set.
 	if c, err := openai.New("", model); err == nil {
 		ctx := context.Background()
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Seed:        1,
 			Temperature: 0.01,
 			MaxTokens:   50,
@@ -233,7 +233,7 @@ func ExampleClient_CompletionStream() {
 				}
 			}
 		}()
-		err := c.CompletionStream(ctx, msgs, &opts, chunks)
+		err := c.ChatStream(ctx, msgs, &opts, chunks)
 		close(chunks)
 		var responses genai.Messages
 		for m := range end {

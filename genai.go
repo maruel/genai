@@ -42,24 +42,24 @@ type Validatable interface {
 
 // Completion
 
-// CompletionProvider is the generic interface to interact with a LLM backend.
-type CompletionProvider interface {
-	// Completion runs completion synchronously.
+// ChatProvider is the generic interface to interact with a LLM backend.
+type ChatProvider interface {
+	// Chat runs completion synchronously.
 	//
 	// opts must be either nil, *CompletionOptions or a provider-specialized
 	// option struct.
-	Completion(ctx context.Context, msgs Messages, opts Validatable) (CompletionResult, error)
-	// CompletionStream runs completion synchronously, streaming the results to channel replies.
+	Chat(ctx context.Context, msgs Messages, opts Validatable) (ChatResult, error)
+	// ChatStream runs completion synchronously, streaming the results to channel replies.
 	//
 	// opts must be either nil, *CompletionOptions or a provider-specialized
 	// option struct.
-	CompletionStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) error
+	ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) error
 }
 
-// CompletionOptions is a list of frequent options supported by most
+// ChatOptions is a list of frequent options supported by most
 // CompletionProvider. Each provider is free to support more options through a
 // specialized struct.
-type CompletionOptions struct {
+type ChatOptions struct {
 	// Options supported by all providers.
 
 	// Temperature adjust the creativity of the sampling. Generally between 0 and 2.
@@ -100,7 +100,7 @@ type CompletionOptions struct {
 }
 
 // Validate ensures the completion options are valid.
-func (c *CompletionOptions) Validate() error {
+func (c *ChatOptions) Validate() error {
 	if c.Seed < 0 {
 		return errors.New("field Seed: must be non-negative")
 	}
@@ -129,8 +129,8 @@ func (c *CompletionOptions) Validate() error {
 	return nil
 }
 
-// CompletionResult is the result of a completion.
-type CompletionResult struct {
+// ChatResult is the result of a completion.
+type ChatResult struct {
 	Message
 	Usage
 
@@ -501,7 +501,7 @@ func validateReflectedToJSON(r ReflectedToJSON) error {
 }
 
 var (
-	_ Validatable = (*CompletionOptions)(nil)
+	_ Validatable = (*ChatOptions)(nil)
 	_ Validatable = (*Role)(nil)
 	_ Validatable = (*Messages)(nil)
 	_ Validatable = (*Message)(nil)

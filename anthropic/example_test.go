@@ -33,7 +33,7 @@ var bananaJpg []byte
 // https://docs.anthropic.com/en/docs/about-claude/models/all-models
 var model = "claude-3-haiku-20240307"
 
-func ExampleClient_Completion_vision() {
+func ExampleClient_Chat_vision() {
 	// This code will run when ANTHROPIC_API_KEY is set.
 	if c, err := anthropic.New("", model); err == nil {
 		msgs := genai.Messages{
@@ -45,12 +45,12 @@ func ExampleClient_Completion_vision() {
 				},
 			},
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Temperature: 0.01,
 			MaxTokens:   50,
 		}
 		for i := range 3 {
-			resp, err := c.Completion(context.Background(), msgs, &opts)
+			resp, err := c.Chat(context.Background(), msgs, &opts)
 			if err != nil {
 				var herr *httpjson.Error
 				// See https://docs.anthropic.com/en/api/errors#http-errors
@@ -80,7 +80,7 @@ func ExampleClient_Completion_vision() {
 	// Output: Response: yes
 }
 
-func ExampleClient_Completion_pDF() {
+func ExampleClient_Chat_pDF() {
 	// This code will run when ANTHROPIC_API_KEY is set.
 	if c, err := anthropic.New("", "claude-3-5-haiku-20241022"); err == nil {
 		f, err := os.Open("testdata/hidden_word.pdf")
@@ -97,11 +97,11 @@ func ExampleClient_Completion_pDF() {
 				},
 			},
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Temperature: 0.01,
 			MaxTokens:   50,
 		}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
+		resp, err := c.Chat(context.Background(), msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -120,7 +120,7 @@ func ExampleClient_Completion_pDF() {
 	// Output: Hidden word in PDF: orange
 }
 
-func ExampleClient_Completion_tool_use() {
+func ExampleClient_Chat_tool_use() {
 	// This code will run when ANTHROPIC_API_KEY is set.
 	// Claude 3.5 is required for tool use. ? "claude-3-5-haiku-20241022"
 	if c, err := anthropic.New("", model); err == nil {
@@ -130,7 +130,7 @@ func ExampleClient_Completion_tool_use() {
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Temperature: 0.01,
 			MaxTokens:   50,
 			Tools: []genai.ToolDef{
@@ -141,7 +141,7 @@ func ExampleClient_Completion_tool_use() {
 				},
 			},
 		}
-		resp, err := c.Completion(context.Background(), msgs, &opts)
+		resp, err := c.Chat(context.Background(), msgs, &opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -163,14 +163,14 @@ func ExampleClient_Completion_tool_use() {
 	// Output: Best: Canada
 }
 
-func ExampleClient_CompletionStream() {
+func ExampleClient_ChatStream() {
 	// This code will run when ANTHROPIC_API_KEY is set.
 	if c, err := anthropic.New("", model); err == nil {
 		ctx := context.Background()
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 		}
-		opts := genai.CompletionOptions{
+		opts := genai.ChatOptions{
 			Temperature: 0.01,
 			MaxTokens:   50,
 		}
@@ -199,7 +199,7 @@ func ExampleClient_CompletionStream() {
 				}
 			}
 		}()
-		err := c.CompletionStream(ctx, msgs, &opts, chunks)
+		err := c.ChatStream(ctx, msgs, &opts, chunks)
 		close(chunks)
 		var responses genai.Messages
 		for m := range end {

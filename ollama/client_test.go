@@ -6,21 +6,19 @@ package ollama_test
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
-	"os"
+	"net/url"
 	"strings"
-	"sync"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/ollama"
-	"github.com/maruel/httpjson/roundtrippers"
+	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
+	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
 func TestNew(t *testing.T) {
-	record := os.Getenv("RECORD") == "1"
-
 	ctx := context.Background()
 	srv, err := startServer(ctx)
 	if err != nil {
@@ -31,19 +29,7 @@ func TestNew(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	var records []roundtrippers.Record
-	ch := make(chan roundtrippers.Record, 10)
-	wg := sync.WaitGroup{}
-	if record {
-		c.Client.Client = &http.Client{Transport: &roundtrippers.Capture{Transport: http.DefaultTransport, C: ch}}
-		wg.Add(1)
-		defer func() {
-			for r := range ch {
-				records = append(records, r)
-			}
-			wg.Done()
-		}()
-	}
+	c.Client.Client = &http.Client{Transport: ignorePort(t)}
 
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
@@ -53,32 +39,46 @@ func TestNew(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	resp, err := c.Chat(ctx, msgs, &opts)
+	got, err := c.Chat(ctx, msgs, &opts)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(resp.ToolCalls) != 0 {
-		t.Fatalf("got %d, want 0", len(resp.ToolCalls))
-	}
-	if len(resp.Contents) != 1 {
-		t.Fatalf("got %d, want 1", len(resp.Contents))
-	}
-	if resp.Contents[0].Text != "Hello." {
-		t.Fatalf("got %q, want %q", resp.Contents[0].Text, "Hello.")
-	}
-
-	if record && !t.Failed() {
-		close(ch)
-		wg.Wait()
-		name := strings.ReplaceAll(t.Name(), "/", "_")
-		b, err := json.Marshal(records)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if err := os.WriteFile("testdata/"+name+".json", b, 0o666); err != nil {
-			t.Fatal(err)
-		}
+	want := genai.NewTextMessage(genai.Assistant, "Hello.")
+	if diff := cmp.Diff(want, got.Message); diff != "" {
+		t.Fatalf("unexpected response (-want +got):\n%s", diff)
 	}
 }
 
+// ignorePort ignores the port number in the URL both for recording and playback.
 //
+// This is important because we start the ollama server on a random port.
+func ignorePort(t *testing.T) *recorder.Recorder {
+	m := cassette.NewDefaultMatcher()
+	fnMatch := func(r *http.Request, i cassette.Request) bool {
+		r = r.Clone(r.Context())
+		r.URL.Host = strings.Split(r.URL.Host, ":")[0]
+		r.Host = strings.Split(r.Host, ":")[0]
+		return m(r, i)
+	}
+	fnSave := func(i *cassette.Interaction) error {
+		i.Request.Host = strings.Split(i.Request.Host, ":")[0]
+		u, err := url.Parse(i.Request.URL)
+		if err != nil {
+			t.Fatal(err)
+		}
+		u.Host = strings.Split(u.Host, ":")[0]
+		i.Request.URL = u.String()
+		return nil
+	}
+	r, err := recorder.New("testdata/"+strings.ReplaceAll(t.Name(), "/", "_"), recorder.WithMatcher(fnMatch), recorder.WithHook(fnSave, recorder.AfterCaptureHook))
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		if err := r.Stop(); err != nil {
+			t.Error(err)
+		}
+	})
+
+	return r
+}

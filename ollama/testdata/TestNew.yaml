@@ -1,0 +1,43 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 165
+        transfer_encoding: []
+        trailer: {}
+        host: localhost
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"gemma3:1b","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"options":{"temperature":0.01,"seed":1,"num_predict":50}}
+        form: {}
+        headers:
+            Accept-Encoding:
+                - zstd, br, gzip
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 299
+        uncompressed: false
+        body: '{"model":"gemma3:1b","created_at":"2025-03-21T15:02:33.604990927Z","message":{"role":"assistant","content":"Hello."},"done_reason":"stop","done":true,"total_duration":888791167,"load_duration":697378251,"prompt_eval_count":17,"prompt_eval_duration":146123462,"eval_count":3,"eval_duration":43543976}'
+        headers:
+            Content-Length:
+                - "299"
+            Content-Type:
+                - application/json; charset=utf-8
+            Date:
+                - Fri, 21 Mar 2025 15:02:33 GMT
+        status: 200 OK
+        code: 200
+        duration: 889.163808ms

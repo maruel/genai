@@ -290,8 +290,8 @@ func (c *Content) Validate() error {
 			if c.URL != "" {
 				return errors.New("field Document and URL are mutually exclusive")
 			}
-			if c.Filename == "" {
-				return errors.New("field Filename is required with Document")
+			if c.GetFilename() == "" {
+				return errors.New("field Filename is required with Document when not implementing Name()")
 			}
 		}
 	}
@@ -300,7 +300,7 @@ func (c *Content) Validate() error {
 
 // GetFilename returns the filename to use for the document, querying the
 // Document's name if available.
-func (c Content) GetFilename() string {
+func (c *Content) GetFilename() string {
 	if c.Filename == "" {
 		if namer, ok := c.Document.(interface{ Name() string }); ok {
 			return namer.Name()
@@ -310,7 +310,7 @@ func (c Content) GetFilename() string {
 }
 
 // ReadDocument reads the document content into memory.
-func (c Content) ReadDocument(maxSize int64) (string, []byte, error) {
+func (c *Content) ReadDocument(maxSize int64) (string, []byte, error) {
 	if c.Text != "" {
 		return "", nil, errors.New("only document messages can be read as documents")
 	}

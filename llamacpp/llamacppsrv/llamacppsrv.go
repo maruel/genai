@@ -59,8 +59,11 @@ func NewServer(ctx context.Context, exe, modelPath string, logOutput io.Writer, 
 	}
 	args = append(args, extraArgs...)
 	cmd := exec.CommandContext(ctx, args[0], args[1:]...)
-	// Necessary to find the dynamic libraries.
+	// Make sure dynamic libraries will be found.
 	cmd.Dir = filepath.Dir(exe)
+	if runtime.GOOS != "windows" {
+		cmd.Env = append(os.Environ(), "LD_LIBRARY_PATH="+cmd.Dir+":"+os.Getenv("LD_LIBRARY_PATH"))
+	}
 	if logOutput != nil {
 		cmd.Stdout = logOutput
 		cmd.Stderr = logOutput

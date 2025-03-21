@@ -52,7 +52,12 @@ func NewServer(ctx context.Context, exe string, logOutput io.Writer, port int) (
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 	}
+	// Make sure dynamic libraries will be found.
+	cmd.Dir = filepath.Dir(exe)
 	cmd.Env = append(os.Environ(), "GIN_MODE=release", "OLLAMA_HOST="+url)
+	if runtime.GOOS != "windows" {
+		cmd.Env = append(cmd.Env, "LD_LIBRARY_PATH="+cmd.Dir+":"+os.Getenv("LD_LIBRARY_PATH"))
+	}
 	cmd.Cancel = func() error {
 		return cmd.Process.Signal(os.Interrupt)
 	}

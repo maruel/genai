@@ -5,6 +5,7 @@
 package ollama_test
 
 import (
+	"bytes"
 	"context"
 	"net/http"
 	"os"
@@ -23,7 +24,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("Chat", func(t *testing.T) {
 		serverURL, transport := s.shouldStart(t)
-		c, err := ollama.New(serverURL, "gemma3:1b")
+		c, err := ollama.New(serverURL, "gemma3:4b")
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -50,20 +51,63 @@ func TestClient(t *testing.T) {
 
 		// Second message.
 		msgs = append(msgs, got.Message)
-		msgs = append(msgs, genai.NewTextMessage(genai.User, "What is your name?"))
+		msgs = append(msgs, genai.NewTextMessage(genai.User, "Who created you? Use only one word."))
 		got, err = c.Chat(t.Context(), msgs, &opts)
 		if err != nil {
 			t.Fatal(err)
 		}
-		want = genai.NewTextMessage(genai.Assistant, "I am a large language model created by Google.")
+		want = genai.NewTextMessage(genai.Assistant, "Google.")
 		if diff := cmp.Diff(want, got.Message); diff != "" {
 			t.Fatalf("unexpected response (-want +got):\n%s", diff)
 		}
-		if got.InputTokens != 34 || got.OutputTokens != 11 {
+		if got.InputTokens != 38 || got.OutputTokens != 3 {
 			t.Logf("Unexpected tokens usage: %v", got.Usage)
 		}
 	})
 
+	t.Run("vision_and_tool", func(t *testing.T) {
+		serverURL, transport := s.shouldStart(t)
+		c, err := ollama.New(serverURL, "gemma3:4b")
+		if err != nil {
+			t.Fatal(err)
+		}
+		c.Client.Client = &http.Client{Transport: transport}
+		msgs := genai.Messages{
+			{
+				Role: genai.User,
+				Contents: []genai.Content{
+					{Text: "Is it a banana? Reply as JSON."},
+					{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
+				},
+			},
+		}
+		var got struct {
+			Banana bool `json:"banana"`
+		}
+		opts := genai.ChatOptions{
+			Seed:        1,
+			Temperature: 0.01,
+			MaxTokens:   50,
+			DecodeAs:    &got,
+		}
+		resp, err := c.Chat(t.Context(), msgs, &opts)
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Logf("Raw response: %#v", resp)
+		if resp.InputTokens != 278 || resp.OutputTokens != 11 {
+			t.Logf("Unexpected tokens usage: %v", resp.Usage)
+		}
+		if len(resp.Contents) != 1 {
+			t.Fatal("Unexpected response")
+		}
+		if err := resp.Contents[0].Decode(&got); err != nil {
+			t.Fatal(err)
+		}
+		if !got.Banana {
+			t.Fatal("expected a banana")
+		}
+	})
 	t.Run("Tool", func(t *testing.T) {
 		serverURL, transport := s.shouldStart(t)
 		c, err := ollama.New(serverURL, "llama3.1:8b")

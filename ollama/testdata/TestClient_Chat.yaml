@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"gemma3:1b","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"options":{"temperature":0.01,"seed":1,"num_predict":50}}
+            {"model":"gemma3:4b","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"options":{"temperature":0.01,"seed":1,"num_predict":50}}
         form: {}
         headers:
             Accept-Encoding:
@@ -28,30 +28,30 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 299
+        content_length: 301
         uncompressed: false
-        body: '{"model":"gemma3:1b","created_at":"2025-03-21T17:11:25.863289669Z","message":{"role":"assistant","content":"Hello."},"done_reason":"stop","done":true,"total_duration":898064673,"load_duration":706125713,"prompt_eval_count":17,"prompt_eval_duration":147399046,"eval_count":3,"eval_duration":42076148}'
+        body: '{"model":"gemma3:4b","created_at":"2025-03-21T21:15:57.100036036Z","message":{"role":"assistant","content":"Hello."},"done_reason":"stop","done":true,"total_duration":1559763833,"load_duration":972493015,"prompt_eval_count":17,"prompt_eval_duration":483451565,"eval_count":3,"eval_duration":103157668}'
         headers:
             Content-Length:
-                - "299"
+                - "301"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 899ms
+        duration: 1.56s
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 252
+        content_length: 269
         transfer_encoding: []
         trailer: {}
         host: localhost
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"gemma3:1b","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."},{"role":"assistant","content":"Hello."},{"role":"user","content":"What is your name?"}],"options":{"temperature":0.01,"seed":1,"num_predict":50}}
+            {"model":"gemma3:4b","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."},{"role":"assistant","content":"Hello."},{"role":"user","content":"Who created you? Use only one word."}],"options":{"temperature":0.01,"seed":1,"num_predict":50}}
         form: {}
         headers:
             Accept-Encoding:
@@ -66,14 +66,14 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 339
+        content_length: 300
         uncompressed: false
-        body: '{"model":"gemma3:1b","created_at":"2025-03-21T17:11:26.187790419Z","message":{"role":"assistant","content":"I am a large language model created by Google."},"done_reason":"stop","done":true,"total_duration":323821702,"load_duration":28392392,"prompt_eval_count":34,"prompt_eval_duration":96806484,"eval_count":11,"eval_duration":185730468}'
+        body: '{"model":"gemma3:4b","created_at":"2025-03-21T21:15:57.453199073Z","message":{"role":"assistant","content":"Google."},"done_reason":"stop","done":true,"total_duration":352573219,"load_duration":23201769,"prompt_eval_count":38,"prompt_eval_duration":216985698,"eval_count":3,"eval_duration":100757663}'
         headers:
             Content-Length:
-                - "339"
+                - "300"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 324ms
+        duration: 353ms

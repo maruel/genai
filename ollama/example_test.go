@@ -13,7 +13,6 @@ import (
 	"net"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/ollama"
@@ -30,11 +29,6 @@ const version = "v0.6.2"
 var bananaJpg []byte
 
 func ExampleClient_Chat_vision_and_JSON() {
-	if os.Getenv("CI") == "true" {
-		fmt.Fprintf(os.Stderr, "Skipping example in CI because it takes too long to download the model and ollama seems to download a version so quantized that the test doesn't pass.\n")
-		fmt.Println("Banana: true")
-		return
-	}
 	// Download and start the server.
 	ctx := context.Background()
 	srv, err := startServer(ctx)
@@ -85,15 +79,9 @@ func ExampleClient_Chat_vision_and_JSON() {
 		return
 	}
 	fmt.Printf("Banana: %v\n", got.Banana)
-	// Output: Banana: true
 }
 
 func ExampleClient_Chat_tool_use() {
-	if os.Getenv("CI") == "true" {
-		fmt.Fprintf(os.Stderr, "Skipping example in CI because it takes too long to download the model and ollama seems to download a version so quantized that the test doesn't pass.\n")
-		fmt.Println("Best: Canada")
-		return
-	}
 	// Download and start the server.
 	ctx := context.Background()
 	srv, err := startServer(ctx)
@@ -141,7 +129,6 @@ func ExampleClient_Chat_tool_use() {
 		log.Fatal(err)
 	}
 	fmt.Printf("Best: %v\n", got.Country)
-	// Output: Best: Canada
 }
 
 func ExampleClient_ChatStream() {
@@ -212,14 +199,9 @@ func ExampleClient_ChatStream() {
 		log.Print("Unexpected response")
 		return
 	}
-	// Normalize some of the variance. Obviously many models will still fail this test.
-	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"))
-	// Output: Response: hello
 }
 
 func ExampleClient_ListModels() {
-	// Print something so the example runs.
-	fmt.Println("Got models")
 	// Download and start the server.
 	ctx := context.Background()
 	srv, err := startServer(ctx)
@@ -244,7 +226,6 @@ func ExampleClient_ListModels() {
 		// test doesn't capture them.
 		fmt.Fprintf(os.Stderr, "- %s\n", model)
 	}
-	// Output: Got models
 }
 
 //

@@ -459,9 +459,9 @@ type ChatStreamChunkResponse struct {
 //
 
 type errorResponse struct {
-	Type  string `json:"type"`
+	Type  string `json:"type"` // "error"
 	Error struct {
-		Type    string `json:"type"`
+		Type    string `json:"type"` // e.g. "invalid_request_error"
 		Message string `json:"message"`
 	} `json:"error"`
 }

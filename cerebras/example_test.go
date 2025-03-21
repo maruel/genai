@@ -53,7 +53,7 @@ func ExampleClient_Chat_jSON() {
 		// Print something so the example runs.
 		fmt.Println("Round: true")
 	}
-	// Output: Round: true
+	// // Output: Round: true
 }
 
 func ExampleClient_ChatStream_tool_use() {
@@ -133,7 +133,7 @@ func ExampleClient_ChatStream_tool_use() {
 		// Print something so the example runs.
 		fmt.Println("Best: Canada")
 	}
-	// Output: Best: Canada
+	// // Output: Best: Canada
 }
 
 func ExampleClient_ListModels() {

@@ -30,6 +30,8 @@ func Record(t *testing.T) *recorder.Recorder {
 		r = r.Clone(r.Context())
 		r.URL.Host = strings.Split(r.URL.Host, ":")[0]
 		r.Host = strings.Split(r.Host, ":")[0]
+		i.Headers.Del("Authorization")
+		i.Headers.Del("X-Api-Key")
 		return m(r, i)
 	}
 	fnSave := func(i *cassette.Interaction) error {
@@ -40,6 +42,8 @@ func Record(t *testing.T) *recorder.Recorder {
 		}
 		u.Host = strings.Split(u.Host, ":")[0]
 		i.Request.URL = u.String()
+		i.Request.Headers.Del("Authorization")
+		i.Request.Headers.Del("X-Api-Key")
 		i.Response.Headers.Del("Date")
 		i.Response.Duration = i.Response.Duration.Round(time.Millisecond)
 		return nil

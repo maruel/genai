@@ -18,7 +18,7 @@ import (
 // DeepSeek doesn't have a small model. It's also quite slow (often 10s)
 // compared to other service providers.
 // See https://api-docs.deepseek.com/quick_start/pricing
-var model = "deepseek-chat"
+const model = "deepseek-chat"
 
 func ExampleClient_Chat_jSON() {
 	// This code will run when DEEPSEEK_API_KEY is set.

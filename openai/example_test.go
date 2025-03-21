@@ -25,7 +25,7 @@ var bananaJpg []byte
 
 // Using small model for testing.
 // See https://platform.openai.com/docs/models
-var model = "gpt-4o-mini"
+const model = "gpt-4o-mini"
 
 func ExampleClient_Chat_vision_and_JSON() {
 	// This code will run when OPENAI_API_KEY is set.

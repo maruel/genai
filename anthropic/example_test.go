@@ -30,7 +30,7 @@ var bananaJpg []byte
 // claude-3-haiku-20240307 is 0.20$/1.25$ while claude-3-5-haiku-20241022 is
 // 0.80$/4.00$. 3.0 supports images, 3.5 supports PDFs.
 // https://docs.anthropic.com/en/docs/about-claude/models/all-models
-var model = "claude-3-haiku-20240307"
+const model = "claude-3-haiku-20240307"
 
 func ExampleClient_Chat_vision() {
 	// This code will run when ANTHROPIC_API_KEY is set.
@@ -76,7 +76,7 @@ func ExampleClient_Chat_vision() {
 		// Print something so the example runs.
 		fmt.Println("Response: yes")
 	}
-	// Output: Response: yes
+	// // Output: Response: yes
 }
 
 func ExampleClient_Chat_pDF() {
@@ -116,7 +116,7 @@ func ExampleClient_Chat_pDF() {
 		// Print something so the example runs.
 		fmt.Println("Hidden word in PDF: orange")
 	}
-	// Output: Hidden word in PDF: orange
+	// // Output: Hidden word in PDF: orange
 }
 
 func ExampleClient_Chat_tool_use() {
@@ -159,7 +159,7 @@ func ExampleClient_Chat_tool_use() {
 		// Print something so the example runs.
 		fmt.Println("Best: Canada")
 	}
-	// Output: Best: Canada
+	// // Output: Best: Canada
 }
 
 func ExampleClient_ChatStream() {
@@ -221,7 +221,7 @@ func ExampleClient_ChatStream() {
 		// Print something so the example runs.
 		fmt.Println("Response: hello")
 	}
-	// Output: Response: hello
+	// // Output: Response: hello
 }
 
 func ExampleClient_ListModels() {

@@ -25,7 +25,7 @@ var bananaJpg []byte
 
 // Using small model for testing.
 // See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-var model = "gemini-2.0-flash-lite"
+const model = "gemini-2.0-flash-lite"
 
 func ExampleClient_Chat_vision_and_JSON() {
 	// This code will run when GEMINI_API_KEY is set.

@@ -54,7 +54,7 @@ func NewServer(ctx context.Context, exe string, logOutput io.Writer, port int) (
 	}
 	cmd.Env = append(os.Environ(), "GIN_MODE=release", "OLLAMA_HOST="+url)
 	cmd.Cancel = func() error {
-		return cmd.Process.Kill()
+		return cmd.Process.Signal(os.Interrupt)
 	}
 	if err := cmd.Start(); err != nil {
 		return nil, err

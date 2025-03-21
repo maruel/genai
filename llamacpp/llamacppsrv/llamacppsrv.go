@@ -69,7 +69,7 @@ func NewServer(ctx context.Context, exe, modelPath string, logOutput io.Writer, 
 		cmd.Stderr = os.Stderr
 	}
 	cmd.Cancel = func() error {
-		return cmd.Process.Kill()
+		return cmd.Process.Signal(os.Interrupt)
 	}
 	if err := cmd.Start(); err != nil {
 		return nil, err

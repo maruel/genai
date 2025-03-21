@@ -30,7 +30,7 @@ interactions:
         trailer: {}
         content_length: 387
         uncompressed: false
-        body: '{"model":"llama3.1:8b","created_at":"2025-03-21T17:11:33.569381413Z","message":{"role":"assistant","content":"","tool_calls":[{"function":{"name":"best_country","arguments":{"country":"Canada"}}}]},"done_reason":"stop","done":true,"total_duration":7380618731,"load_duration":2183185435,"prompt_eval_count":188,"prompt_eval_duration":3825982982,"eval_count":17,"eval_duration":1369592997}'
+        body: '{"model":"llama3.1:8b","created_at":"2025-03-21T21:43:58.015659639Z","message":{"role":"assistant","content":"","tool_calls":[{"function":{"name":"best_country","arguments":{"country":"Canada"}}}]},"done_reason":"stop","done":true,"total_duration":8087807700,"load_duration":2182325945,"prompt_eval_count":188,"prompt_eval_duration":4552148702,"eval_count":17,"eval_duration":1351802397}'
         headers:
             Content-Length:
                 - "387"
@@ -38,4 +38,4 @@ interactions:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 7.381s
+        duration: 8.088s

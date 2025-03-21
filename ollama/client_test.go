@@ -155,34 +155,37 @@ type lazyServer struct {
 
 func (l *lazyServer) shouldStart(t *testing.T) (string, http.RoundTripper) {
 	transport := internaltest.Record(t)
-	if transport.IsNewCassette() {
-		l.mu.Lock()
-		defer l.mu.Unlock()
-		t.Cleanup(func() {
-			if t.Failed() {
-				t.Log("Removing record")
-				// TODO: Not clean.
-				name := "testdata/" + strings.ReplaceAll(t.Name(), "/", "_") + ".yaml"
-				_ = os.Remove(name)
+	if !transport.IsNewCassette() {
+		return "http://localhost:0", transport
+	}
+	name := "testdata/" + strings.ReplaceAll(t.Name(), "/", "_") + ".yaml"
+	suffix := " (forced)"
+	if os.Getenv("RECORD") != "1" {
+		suffix = " (missing " + name + ")"
+	}
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	t.Cleanup(func() {
+		if t.Failed() {
+			t.Log("Removing record")
+			_ = os.Remove(name)
+		}
+	})
+	if l.url == "" {
+		t.Log("Starting server" + suffix)
+		// Use the context of the parent for server lifecycle management.
+		srv, err := startServer(l.t.Context())
+		if err != nil {
+			t.Fatal(err)
+		}
+		l.url = srv.URL()
+		l.t.Cleanup(func() {
+			if err := srv.Close(); err != nil && err != context.Canceled {
+				l.t.Error(err)
 			}
 		})
-		if l.url == "" {
-			t.Log("Starting server")
-			// Use the context of the parent for server lifecycle management.
-			srv, err := startServer(l.t.Context())
-			if err != nil {
-				t.Fatal(err)
-			}
-			l.url = srv.URL()
-			l.t.Cleanup(func() {
-				if err := srv.Close(); err != nil && err != context.Canceled {
-					l.t.Error(err)
-				}
-			})
-		} else {
-			t.Log("Recording")
-		}
-		return l.url, transport
+	} else {
+		t.Log("Recording " + suffix)
 	}
-	return "http://localhost:0", transport
+	return l.url, transport
 }

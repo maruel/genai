@@ -30,7 +30,7 @@ interactions:
         trailer: {}
         content_length: 325
         uncompressed: false
-        body: '{"model":"gemma3:4b","created_at":"2025-03-21T21:43:49.912655175Z","message":{"role":"assistant","content":"{\n  \"banana\": true\n}\n"},"done_reason":"stop","done":true,"total_duration":21770165793,"load_duration":26461849,"prompt_eval_count":278,"prompt_eval_duration":20948735575,"eval_count":11,"eval_duration":560019798}'
+        body: '{"model":"gemma3:4b","created_at":"2025-03-21T21:49:23.769573717Z","message":{"role":"assistant","content":"{\n  \"banana\": true\n}\n"},"done_reason":"stop","done":true,"total_duration":20619913192,"load_duration":22336999,"prompt_eval_count":278,"prompt_eval_duration":19811966950,"eval_count":11,"eval_duration":551658813}'
         headers:
             Content-Length:
                 - "325"
@@ -38,4 +38,4 @@ interactions:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 21.771s
+        duration: 20.62s

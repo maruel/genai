@@ -19,6 +19,10 @@ import (
 	"github.com/maruel/huggingface"
 )
 
+// buildNumber is the build number to use from
+// https://github.com/ggml-org/llama.cpp/releases
+const buildNumber = 4882
+
 func Example() {
 	ctx := context.Background()
 	srv, err := startServer(ctx)
@@ -72,8 +76,7 @@ func findFreePort() int {
 
 // startServer starts a server with Qwen2 0.5B in Q2_K quantization.
 func startServer(ctx context.Context) (*llamacppsrv.Server, error) {
-	const buildNumber = 4882
-	cache, err := filepath.Abs("tmp")
+	cache, err := filepath.Abs("testdata")
 	if err != nil {
 		return nil, err
 	}

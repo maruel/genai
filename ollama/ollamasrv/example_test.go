@@ -78,7 +78,7 @@ func findFreePort() int {
 }
 
 func startServer(ctx context.Context) (*ollamasrv.Server, error) {
-	cache, err := filepath.Abs("tmp")
+	cache, err := filepath.Abs("testdata")
 	if err != nil {
 		return nil, err
 	}

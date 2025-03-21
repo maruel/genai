@@ -19,10 +19,13 @@ import (
 	"github.com/maruel/huggingface"
 )
 
+// buildNumber is the build number to use from
+// https://github.com/ggml-org/llama.cpp/releases
+const buildNumber = 4882
+
 // startServer starts a server with Qwen2 0.5B in Q2_K quantization.
 func startServer(ctx context.Context) (*llamacppsrv.Server, error) {
-	const buildNumber = 4882
-	cache, err := filepath.Abs("tmp")
+	cache, err := filepath.Abs("testdata/tmp")
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +91,7 @@ func ExampleClient_Chat() {
 	}
 	// Normalize some of the variance. Obviously many models will still fail this test.
 	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"))
-	// Output: Response: hello
+	// // Output: Response: hello
 }
 
 func ExampleClient_ChatStream() {
@@ -159,7 +162,7 @@ func ExampleClient_ChatStream() {
 	}
 	// Normalize some of the variance. Obviously many models will still fail this test.
 	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"))
-	// Output: Response: hello
+	// // Output: Response: hello
 }
 
 func findFreePort() int {

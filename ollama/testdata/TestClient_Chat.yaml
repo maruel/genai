@@ -28,17 +28,17 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 302
+        content_length: 300
         uncompressed: false
-        body: '{"model":"gemma3:4b","created_at":"2025-03-21T21:43:27.787483038Z","message":{"role":"assistant","content":"Hello."},"done_reason":"stop","done":true,"total_duration":1749356943,"load_duration":1165961312,"prompt_eval_count":17,"prompt_eval_duration":477643623,"eval_count":3,"eval_duration":103800889}'
+        body: '{"model":"gemma3:4b","created_at":"2025-03-21T21:49:02.792287347Z","message":{"role":"assistant","content":"Hello."},"done_reason":"stop","done":true,"total_duration":1470987249,"load_duration":901531467,"prompt_eval_count":17,"prompt_eval_duration":470260358,"eval_count":3,"eval_duration":98464159}'
         headers:
             Content-Length:
-                - "302"
+                - "300"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 1.75s
+        duration: 1.471s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -66,14 +66,14 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 300
+        content_length: 299
         uncompressed: false
-        body: '{"model":"gemma3:4b","created_at":"2025-03-21T21:43:28.140807268Z","message":{"role":"assistant","content":"Google."},"done_reason":"stop","done":true,"total_duration":352811698,"load_duration":23274164,"prompt_eval_count":38,"prompt_eval_duration":214706115,"eval_count":3,"eval_duration":103372496}'
+        body: '{"model":"gemma3:4b","created_at":"2025-03-21T21:49:03.14791607Z","message":{"role":"assistant","content":"Google."},"done_reason":"stop","done":true,"total_duration":355021605,"load_duration":23310518,"prompt_eval_count":38,"prompt_eval_duration":215830661,"eval_count":3,"eval_duration":101970640}'
         headers:
             Content-Length:
-                - "300"
+                - "299"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 353ms
+        duration: 355ms

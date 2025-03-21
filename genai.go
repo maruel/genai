@@ -253,7 +253,9 @@ type Content struct {
 
 	// Filename is the name of the file. For many providers, only the extension
 	// is relevant. They only use mime-type, which is derived from the filename's
-	// extension. When an URL is provided, Filename is optional.
+	// extension. When an URL is provided or when the object provided to Document
+	// implements a method with the signature `Name() string`, like an
+	// `*os.File`, Filename is optional.
 	Filename string
 	// Document is raw document data. It is perfectly fine to use a
 	// bytes.Buffer{}, bytes.NewReader() or *os.File.
@@ -296,12 +298,23 @@ func (c *Content) Validate() error {
 	return nil
 }
 
+// GetFilename returns the filename to use for the document, querying the
+// Document's name if available.
+func (c Content) GetFilename() string {
+	if c.Filename == "" {
+		if namer, ok := c.Document.(interface{ Name() string }); ok {
+			return namer.Name()
+		}
+	}
+	return c.Filename
+}
+
 // ReadDocument reads the document content into memory.
 func (c Content) ReadDocument(maxSize int64) (string, []byte, error) {
 	if c.Text != "" {
 		return "", nil, errors.New("only document messages can be read as documents")
 	}
-	mimeType := mime.TypeByExtension(filepath.Ext(c.Filename))
+	mimeType := mime.TypeByExtension(filepath.Ext(c.GetFilename()))
 	if c.URL != "" {
 		// Not all provider require a mime-type so do not error out.
 		if mimeType == "" {

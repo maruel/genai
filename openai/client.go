@@ -311,7 +311,7 @@ func (c *Content) From(in *genai.Content) error {
 		if in.URL != "" {
 			return fmt.Errorf("URL to %s file not supported", mimeType)
 		}
-		filename := in.Filename
+		filename := in.GetFilename()
 		if filename == "" {
 			exts, err := mime.ExtensionsByType(mimeType)
 			if err != nil {

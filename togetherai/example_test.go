@@ -11,7 +11,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/maruel/genai"
@@ -94,12 +93,7 @@ func ExampleClient_Chat_video() {
 		// TogetherAI seems to require separate messages for text and images.
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "What is the word? Reply with exactly and only one word."),
-			{
-				Role: genai.User,
-				Contents: []genai.Content{
-					{Filename: filepath.Base(f.Name()), Document: f},
-				},
-			},
+			{Role: genai.User, Contents: []genai.Content{{Document: f}}},
 		}
 		opts := genai.ChatOptions{
 			Seed:        1,

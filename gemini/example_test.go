@@ -11,7 +11,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/maruel/genai"
@@ -86,7 +85,7 @@ func ExampleClient_Chat_pDF() {
 				Role: genai.User,
 				Contents: []genai.Content{
 					{Text: "What is the word? Reply with only the word."},
-					{Filename: filepath.Base(f.Name()), Document: f},
+					{Document: f},
 				},
 			},
 		}
@@ -128,7 +127,7 @@ func ExampleClient_Chat_audio() {
 				Role: genai.User,
 				Contents: []genai.Content{
 					{Text: "What is the word said? Reply with only the word."},
-					{Filename: filepath.Base(f.Name()), Document: f},
+					{Document: f},
 				},
 			},
 		}
@@ -170,7 +169,7 @@ func ExampleClient_Chat_tool_use() {
 				Role: genai.User,
 				Contents: []genai.Content{
 					{Text: "What is the word? Call the tool hidden_word to tell me what word you saw."},
-					{Filename: filepath.Base(f.Name()), Document: f},
+					{Document: f},
 				},
 			},
 		}

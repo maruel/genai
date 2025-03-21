@@ -12,7 +12,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -93,7 +92,7 @@ func ExampleClient_Chat_pDF() {
 				Role: genai.User,
 				Contents: []genai.Content{
 					{Text: "What is the word? Reply with only the word."},
-					{Filename: filepath.Base(f.Name()), Document: f},
+					{Document: f},
 				},
 			},
 		}

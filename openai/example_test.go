@@ -11,7 +11,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/maruel/genai"
@@ -80,12 +79,7 @@ func ExampleClient_Chat_audio() {
 		}
 		defer f.Close()
 		msgs := genai.Messages{
-			{
-				Role: genai.User,
-				Contents: []genai.Content{
-					{Filename: filepath.Base(f.Name()), Document: f},
-				},
-			},
+			{Role: genai.User, Contents: []genai.Content{{Document: f}}},
 			genai.NewTextMessage(genai.User, "What is the word said? Reply with only the word."),
 		}
 		opts := genai.ChatOptions{
@@ -125,7 +119,7 @@ func ExampleClient_Chat_pDF() {
 				Role: genai.User,
 				Contents: []genai.Content{
 					{Text: "What is the hidden word? Reply with only the word."},
-					{Filename: filepath.Base(f.Name()), Document: f},
+					{Document: f},
 				},
 			},
 		}

@@ -29,3 +29,5 @@ require (
 )
 
 // replace github.com/maruel/httpjson => ../httpjson
+
+// replace gopkg.in/dnaeon/go-vcr.v4 => ../../src-oth/go-vcr

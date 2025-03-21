@@ -7,6 +7,9 @@ package ollama_test
 import (
 	"context"
 	"net/http"
+	"os"
+	"strings"
+	"sync"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -15,51 +18,127 @@ import (
 	"github.com/maruel/genai/ollama"
 )
 
-func TestNew(t *testing.T) {
-	transport := internaltest.Record(t)
-	serverURL := "http://localhost:0"
-	ctx := context.Background()
-	if transport.IsNewCassette() {
-		t.Log("Recording")
-		srv, err := startServer(ctx)
+func TestClient(t *testing.T) {
+	s := lazyServer{t: t}
+
+	t.Run("Chat", func(t *testing.T) {
+		serverURL, transport := s.shouldStart(t)
+		c, err := ollama.New(serverURL, "gemma3:1b")
 		if err != nil {
 			t.Fatal(err)
 		}
-		defer srv.Close()
-		serverURL = srv.URL()
-	}
-	c, err := ollama.New(serverURL, "gemma3:1b")
-	if err != nil {
-		t.Fatal(err)
-	}
-	c.Client.Client = &http.Client{Transport: transport}
+		c.Client.Client = &http.Client{Transport: transport}
+		opts := genai.ChatOptions{
+			Seed:        1,
+			Temperature: 0.01,
+			MaxTokens:   50,
+		}
+		msgs := genai.Messages{
+			genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
+		}
+		got, err := c.Chat(t.Context(), msgs, &opts)
+		if err != nil {
+			t.Fatal(err)
+		}
+		want := genai.NewTextMessage(genai.Assistant, "Hello.")
+		if diff := cmp.Diff(want, got.Message); diff != "" {
+			t.Fatalf("unexpected response (-want +got):\n%s", diff)
+		}
+		if got.InputTokens != 17 || got.OutputTokens != 3 {
+			t.Logf("Unexpected tokens usage: %v", got.Usage)
+		}
 
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
-	}
-	got, err := c.Chat(ctx, msgs, &opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	want := genai.NewTextMessage(genai.Assistant, "Hello.")
-	if diff := cmp.Diff(want, got.Message); diff != "" {
-		t.Fatalf("unexpected response (-want +got):\n%s", diff)
-	}
+		// Second message.
+		msgs = append(msgs, got.Message)
+		msgs = append(msgs, genai.NewTextMessage(genai.User, "What is your name?"))
+		got, err = c.Chat(t.Context(), msgs, &opts)
+		if err != nil {
+			t.Fatal(err)
+		}
+		want = genai.NewTextMessage(genai.Assistant, "I am a large language model created by Google.")
+		if diff := cmp.Diff(want, got.Message); diff != "" {
+			t.Fatalf("unexpected response (-want +got):\n%s", diff)
+		}
+		if got.InputTokens != 34 || got.OutputTokens != 11 {
+			t.Logf("Unexpected tokens usage: %v", got.Usage)
+		}
+	})
 
-	msgs = append(msgs, got.Message)
-	msgs = append(msgs, genai.NewTextMessage(genai.User, "What is your name?"))
-	got, err = c.Chat(ctx, msgs, &opts)
-	if err != nil {
-		t.Fatal(err)
-	}
+	t.Run("Tool", func(t *testing.T) {
+		serverURL, transport := s.shouldStart(t)
+		c, err := ollama.New(serverURL, "llama3.1:8b")
+		if err != nil {
+			t.Fatal(err)
+		}
+		c.Client.Client = &http.Client{Transport: transport}
+		msgs := genai.Messages{
+			genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
+		}
+		var out struct {
+			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
+		}
+		opts := genai.ChatOptions{
+			Seed:        1,
+			Temperature: 0.01,
+			MaxTokens:   50,
+			Tools: []genai.ToolDef{
+				{
+					Name:        "best_country",
+					Description: "A tool to determine the best country",
+					InputsAs:    &out,
+				},
+			},
+		}
+		got, err := c.Chat(t.Context(), msgs, &opts)
+		if err != nil {
+			t.Fatal(err)
+		}
+		want := genai.Message{Role: genai.Assistant, ToolCalls: []genai.ToolCall{{Name: "best_country", Arguments: `{"country":"Canada"}`}}}
+		if diff := cmp.Diff(want, got.Message); diff != "" {
+			t.Fatalf("unexpected response (-want +got):\n%s", diff)
+		}
+		if got.InputTokens != 188 || got.OutputTokens != 17 {
+			t.Logf("Unexpected tokens usage: %v", got.Usage)
+		}
+	})
+}
 
-	want = genai.NewTextMessage(genai.Assistant, "I am a large language model created by Google.")
-	if diff := cmp.Diff(want, got.Message); diff != "" {
-		t.Fatalf("unexpected response (-want +got):\n%s", diff)
+type lazyServer struct {
+	t   *testing.T
+	mu  sync.Mutex
+	url string
+}
+
+func (l *lazyServer) shouldStart(t *testing.T) (string, http.RoundTripper) {
+	transport := internaltest.Record(t)
+	if transport.IsNewCassette() {
+		l.mu.Lock()
+		defer l.mu.Unlock()
+		t.Cleanup(func() {
+			if t.Failed() {
+				t.Log("Removing record")
+				// TODO: Not clean.
+				name := "testdata/" + strings.ReplaceAll(t.Name(), "/", "_") + ".yaml"
+				_ = os.Remove(name)
+			}
+		})
+		if l.url == "" {
+			t.Log("Starting server")
+			// Use the context of the parent for server lifecycle management.
+			srv, err := startServer(l.t.Context())
+			if err != nil {
+				t.Fatal(err)
+			}
+			l.url = srv.URL()
+			l.t.Cleanup(func() {
+				if err := srv.Close(); err != nil && err != context.Canceled {
+					l.t.Error(err)
+				}
+			})
+		} else {
+			t.Log("Recording")
+		}
+		return l.url, transport
 	}
+	return "http://localhost:0", transport
 }

@@ -22,7 +22,7 @@ import (
 const version = ""
 
 // Using small model for testing.
-const model = "gemma3:1b"
+const model = "qwen2.5:0.5b"
 
 func Example() {
 	// Download and start the server.

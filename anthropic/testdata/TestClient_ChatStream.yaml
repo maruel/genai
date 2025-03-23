@@ -16,10 +16,6 @@ interactions:
             {"model":"claude-3-haiku-20240307","max_tokens":50,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"stream":true,"temperature":0.01}
         form: {}
         headers:
-            Accept-Encoding:
-                - zstd, br, gzip
-            Anthropic-Version:
-                - "2023-06-01"
             Content-Type:
                 - application/json; charset=utf-8
         url: https://api.anthropic.com/v1/messages
@@ -34,25 +30,25 @@ interactions:
         uncompressed: false
         body: |+
             event: message_start
-            data: {"type":"message_start","message":{"id":"msg_011WGAQV7NL7E5JDwSRm7uQb","type":"message","role":"assistant","model":"claude-3-haiku-20240307","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":15,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":4}}     }
+            data: {"type":"message_start","message":{"id":"msg_01C7TftZ6wAPdHYjbQfJXX2A","type":"message","role":"assistant","model":"claude-3-haiku-20240307","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":15,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":4}}    }
 
             event: content_block_start
-            data: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}        }
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}  }
 
             event: ping
             data: {"type": "ping"}
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hello."}              }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hello."}           }
 
             event: content_block_stop
-            data: {"type":"content_block_stop","index":0       }
+            data: {"type":"content_block_stop","index":0          }
 
             event: message_delta
-            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null},"usage":{"output_tokens":5}              }
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null},"usage":{"output_tokens":5}       }
 
             event: message_stop
-            data: {"type":"message_stop"     }
+            data: {"type":"message_stop"      }
 
         headers:
             Anthropic-Organization-Id:
@@ -62,35 +58,35 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "50000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-03-21T22:33:55Z"
+                - "2025-03-23T14:03:14Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-03-21T22:33:55Z"
+                - "2025-03-23T14:03:14Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "50"
             Anthropic-Ratelimit-Requests-Remaining:
                 - "48"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-03-21T22:33:56Z"
+                - "2025-03-23T14:03:15Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-03-21T22:33:55Z"
+                - "2025-03-23T14:03:14Z"
             Cache-Control:
                 - no-cache
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9240e9e7685b7151-YUL
+                - 924e7894bc9ea2f8-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Request-Id:
-                - req_01QHx6YnDTpygZAKUhbh41tW
+                - req_01NJr8Se3xn7UBKZgNVMpCMa
             Server:
                 - cloudflare
             Via:
@@ -99,4 +95,4 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 179ms
+        duration: 850ms

@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 139
+        transfer_encoding: []
+        trailer: {}
+        host: api.perplexity.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"sonar","messages":[{"role":"user","content":"Say hello. Use only one word."}],"max_tokens":50,"temperature":0.01,"stream":false}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id": "4d2c884e-6c53-43c1-92d2-8013dc58a405", "model": "sonar", "created": 1742768923, "usage": {"prompt_tokens": 8, "completion_tokens": 2, "total_tokens": 10}, "citations": ["https://preply.com/en/blog/22-useful-english-greetings-for-every-day/", "https://blog.duolingo.com/hello-in-english/", "https://www.youtube.com/watch?v=Z4p2mL7m8Lc", "https://languagetool.org/insights/post/word-choice-other-ways-to-say-hello/", "https://www.berlitz.com/blog/hello-in-english"], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "Hello."}, "delta": {"role": "assistant", "content": ""}}]}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 92515d05af01a29e-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 1.226s

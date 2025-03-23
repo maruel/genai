@@ -5,8 +5,9 @@ go 1.24.1
 require (
 	github.com/google/go-cmp v0.7.0
 	github.com/invopop/jsonschema v0.13.0
-	github.com/maruel/httpjson v0.1.1-0.20250321210311-53a20ff15215
+	github.com/maruel/httpjson v0.1.1-0.20250323134140-79789851e76f
 	github.com/maruel/huggingface v0.0.0-20250313181651-d85dcc86b10e
+	github.com/maruel/roundtrippers v0.0.0-20250324235102-03464b12f642
 	golang.org/x/sync v0.12.0
 	golang.org/x/sys v0.31.0
 	gopkg.in/dnaeon/go-vcr.v4 v4.0.2

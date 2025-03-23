@@ -1,0 +1,47 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 534
+        transfer_encoding: []
+        trailer: {}
+        host: api.cloudflare.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"content":"I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one.","role":"user"}],"max_tokens":200,"seed":1,"temperature":0.01,"tools":[{"type":"function","function":{"description":"A tool to determine the best country","name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@hf/nousresearch/hermes-2-pro-mistral-7b
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"result":{"response":null,"tool_calls":[{"arguments":{"country":"Canada"},"name":"best_country"},{"arguments":{"country":"USA"},"name":"best_country"}],"usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0}},"success":true,"errors":[],"messages":[]}'
+        headers:
+            Cf-Ai-Req-Id:
+                - 45013e25-19f9-42dc-ae95-f1a1b41b34d8
+            Cf-Auditlog-Id:
+                - 0195caab-a302-7289-8ea4-b1b9e983470c
+            Cf-Ray:
+                - 925a3d717c38a27e-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 4.18s

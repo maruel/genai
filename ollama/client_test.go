@@ -17,6 +17,8 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/ollama"
+	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
+	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
 func TestClient(t *testing.T) {
@@ -154,7 +156,10 @@ type lazyServer struct {
 }
 
 func (l *lazyServer) shouldStart(t *testing.T) (string, http.RoundTripper) {
-	transport := internaltest.Record(t)
+	transport := internaltest.Record(t, http.DefaultTransport,
+		recorder.WithHook(func(i *cassette.Interaction) error { return internaltest.SaveIgnorePort(t, i) }, recorder.AfterCaptureHook),
+		recorder.WithMatcher(internaltest.MatchIgnorePort),
+	)
 	if !transport.IsNewCassette() {
 		return "http://localhost:0", transport
 	}

@@ -28,6 +28,7 @@ import (
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/httpjson"
+	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -501,9 +502,15 @@ func New(apiKey, model string) (*Client, error) {
 			return nil, errors.New("openai API key is required; get one at " + apiKeyURL)
 		}
 	}
-	// OpenAI doesn't support HTTP POST compression.
-	h := http.Header{"Authorization": {"Bearer " + apiKey}}
-	return &Client{model: model, Client: httpjson.Client{DefaultHeader: h}}, nil
+	return &Client{
+		model: model,
+		Client: httpjson.Client{
+			Client: &http.Client{Transport: &roundtrippers.Header{
+				Transport: http.DefaultTransport,
+				Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+			}},
+		},
+	}, nil
 }
 
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {

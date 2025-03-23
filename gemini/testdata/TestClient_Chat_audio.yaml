@@ -1,0 +1,90 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 3295
+        transfer_encoding: []
+        trailer: {}
+        host: generativelanguage.googleapis.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"inlineData":{"mimeType":"audio/ogg","data":"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"}}]}],"generationConfig":{"responseModalities":["Text"],"maxOutputTokens":50,"temperature":0.01,"seed":1}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "Orange."
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "avgLogprobs": -0.14018137753009796
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 12,
+                "candidatesTokenCount": 2,
+                "totalTokenCount": 14,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 12
+                  },
+                  {
+                    "modality": "AUDIO"
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 2
+                  }
+                ]
+              },
+              "modelVersion": "gemini-2.0-flash-lite"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=502
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 514ms

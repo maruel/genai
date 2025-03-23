@@ -16,8 +16,6 @@ interactions:
             {"model":"llama-3.1-8b","messages":[{"role":"user","content":"Is a circle round? Reply as JSON."}],"max_completion_tokens":50,"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"round":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["round"]},"strict":true}},"seed":1,"temperature":0.01}
         form: {}
         headers:
-            Accept-Encoding:
-                - zstd, br, gzip
             Content-Type:
                 - application/json; charset=utf-8
         url: https://api.cerebras.ai/v1/chat/completions
@@ -29,33 +27,25 @@ interactions:
         transfer_encoding: []
         trailer: {}
         content_length: -1
-        uncompressed: false
-        body: !!binary |
-            IaAHACBGczqtuZ8xlCrTmmoB7VgnT5UduH12OMHx1+MBw4ADDTjQjoHmSXqyoOlsR3c4da
-            Gr4VG1xVFNy5gVMRqtC5bFEEWmXBmzvNYmc7K21haxKkoBAgp7s8O/LswzS7/dUS/gsR9p
-            AcHB+grPCNomOvgLA+S2elxvbOmc6zf849jOcINgS2OAR7Hv3X4U84H7/hDQoBeFGp5bJX
-            RuJHMEU6rDCI9xLKZCPnnmShDwzE9+sZubsC1bh7YYl1/gVnInypKBIJV9qI7E+dkdYbs0
-            g+CM9cuypWk5fkcawrzDcysJvGFrDMFDAqKW5TfB0U3h180xwV9Yz3CG39FNAZ49GeOWMa
-            0IDIwjzjrFlACDhxdWa84EKMl7YZW0udBSOqs057Zoct8D
+        uncompressed: true
+        body: '{"id":"chatcmpl-af955461-b39a-4465-b2d9-826d80619499","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"round\": true}","role":"assistant"}}],"created":1742754385,"model":"llama3.1-8b","system_fingerprint":"fp_e173182bb0","object":"chat.completion","usage":{"prompt_tokens":173,"completion_tokens":6,"total_tokens":179},"time_info":{"queue_time":0.052702137,"prompt_time":0.008743425,"completion_time":0.002759925,"total_time":0.06589961051940918,"created":1742754385}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9240e6cec99b7142-YUL
-            Content-Encoding:
-                - br
+                - 924ffa1f7a83a25b-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-aff655a0-fef2-48bf-9d56-83d777afcab2
+                - chatcmpl-af955461-b39a-4465-b2d9-826d80619499
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
                 - cloudflare
             Set-Cookie:
-                - __cf_bm=O1RYwiIKCwODQvAzVPrEiJDWo3JfvefSfFJEInHakPw-1742596308-1.0.1.1-G8wYes.B8v9D6iEaPakuB9H1L0GBJq8UGuyvnAZxv5rMpyn9lZ8zDRg_9ZFl8.ovK8cez_MDB1fBCE.pvniEsugyUp2ut066A8zLuMfCUOo; path=/; expires=Fri, 21-Mar-25 23:01:48 GMT; domain=.api.cerebras.ai; HttpOnly; Secure; SameSite=None
+                - __cf_bm=.BN7nmTxyEpnXMTLq_7_AwJNKUBjvif.oEX2VpBgfAk-1742754386-1.0.1.1-_DuBfP0Og3eFMIifjAenWwDKlrdFmie11HagxsFrZtb8actZPTxYreBF67yeLuy9xrRcKB2qF6NTC2cIdlrf2uPT4WSd8lnR.ybBr28chl0; path=/; expires=Sun, 23-Mar-25 18:56:26 GMT; domain=.api.cerebras.ai; HttpOnly; Secure; SameSite=None
             Strict-Transport-Security:
                 - max-age=3600; includeSubDomains
             X-Content-Type-Options:
@@ -65,15 +55,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14374"
+                - "14400"
             X-Ratelimit-Remaining-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Reset-Requests-Day:
-                - "5291.549218654633"
+                - "20013.97493505478"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "11.549218654632568"
+                - "33.97493505477905"
             X-Request-Id:
-                - 9240e6cec99b7142-YUL
+                - 924ffa1f7a83a25b-SJC
         status: 200 OK
         code: 200
-        duration: 266ms
+        duration: 278ms

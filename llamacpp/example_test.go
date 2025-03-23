@@ -82,9 +82,6 @@ func ExampleClient_Chat() {
 		return
 	}
 	log.Printf("Raw response: %#v", resp)
-	if resp.InputTokens != 3 || resp.OutputTokens != 17 {
-		log.Printf("Unexpected tokens usage: %v", resp.Usage)
-	}
 	if len(resp.Contents) != 1 {
 		log.Print("Unexpected response")
 		return
@@ -133,8 +130,9 @@ func ExampleClient_ChatStream() {
 				if !ok {
 					return
 				}
-				if pendingMsgs, err = pkt.Accumulate(pendingMsgs); err != nil {
-					end <- genai.NewTextMessage(genai.Assistant, fmt.Sprintf("Error: %v", err))
+				var err2 error
+				if pendingMsgs, err2 = pkt.Accumulate(pendingMsgs); err2 != nil {
+					end <- genai.NewTextMessage(genai.Assistant, fmt.Sprintf("Error: %v", err2))
 					return
 				}
 			}

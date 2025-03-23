@@ -1,0 +1,103 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1862
+        transfer_encoding: []
+        trailer: {}
+        host: api.together.xyz
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"meta-llama/Llama-Vision-Free","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"image_url","image_url":{"url":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/2wBDAD0qLjYuJj02MjZFQT1JXJpkXFRUXLyGjm+a38Tq5tvE19P2////9v///9PX////////////7v//////////////2wBDAUFFRVxRXLRkZLT//df9////////////////////////////////////////////////////////////////////yQARCACKARADASIAAhEBAxEB/8wACgAQEAUBEBEF/9oADAMBAAIRAxEAPwDRehZY14GJEQBUA5LCk6BbYzrDgk7vSYHA1rZRQfgcWrrxUZs3wjWiUSVQF+S0g+uKVp+k5RARgRUmh2wABVqtP0mahYfXrO5lGOKzlaj+ocRBhrmLac0VojYN/wC5A8cNegOGKsrh5CBYPrfIKoJyXr8rLwAAWSdliXlz0vmfuiQELOulHKZ1oRYbHEKZuiF9ky7mQ5Nfitj2PlP3xOJVFfyj0wbiBcI/D1GMpKd/kk05o8FGkXkAFeRXaYX0AjOy3nuyFVMS0Pg53BpSVk91uuLEAZTmAhBY1XTjP82bOQp2nnvsfwzah3rdJ34hEiOWGBc+5jx4cMOTF4+1Qss7J4ivrGLKQmzA5S00+b4Ll19CwGqmjiPjrNC2/YBwihl86K5quR4l9y0YhShvgIUu+JEwvxhAHrPUSwcu9Fc0EH4zMWDn4cH2nizjrKJpe1YVcL0e8JH5jpH4YGHjYFtev9r1nrtXK0Bg3NnXY57268nmfGNNx+U3PD37JKFsbsce+Yd4ixz5WMiUR1NM0mobNCA8bK1UuaG+ZBsn27bj1TogZRLhvPOtXH3GszXRH588G0dGgh6zd0CGADC83OjLN9686WeRFn3uUzWZ5OJmk6QvZIq+Z9acEqPLtm0dvgia0wdz/wDfvP3NETTw4dhnd/LH7F35ICwVhZ3jqCyMZ4vvDhh6InTvNUtDsfw/iMoyXmCvRV0tyDw80VrBDNiMHJnO6Nap/wCXx93q8t1hlR0qkC+eq7H2IZ5WjpB7ALZeKQd0equJcxA5rU+roY+fuKMxlikmphYdGhS2ynQu9IIPX0u+w/RzmjC6byhFpXPUgn1lGTvTS3a3wBfceNAlgD1SNwkSbwBacw2cRce/2yJ+fwP+d/1a3KvqR5S1I9QJbBNEBcGlp/p7hAs/5pxTSJcLcZsdSVYi4drH9Sfm1myZ195yrDNgPhWDmfc10XfhL20q3h57OMF6a6EqN1EZIofVEWk6LOwv9M60cJ1g+5uMcyGEKB/3YP/Z"}}]},{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply as JSON with the form {\"banana\": false} or {\"banana\": true}."}]}],"max_tokens":50,"temperature":0.01,"seed":1,"response_format":{"type":"json_schema","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"banana":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["banana"]}}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "nnDZDKD-4pPsy7-92516646b876a2e4",
+              "object": "chat.completion",
+              "created": 1742769302,
+              "model": "meta-llama/Llama-Vision-Free",
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "{\"banana\": true}",
+                    "tool_calls": []
+                  },
+                  "logprobs": null,
+                  "finish_reason": "stop"
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 38,
+                "total_tokens": 44,
+                "completion_tokens": 6
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 92516646b876a2e4-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"1e1-YMU1ax+m+DU6pcRHiRUsCqrMyeY"
+            Retry-After:
+                - "6"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - 0cf3dabc-aca5-4f8d-b511-e816637980d9-noamzn
+            X-Api-Call-End:
+                - "2025-03-23T22:35:02.321Z"
+            X-Api-Call-Start:
+                - "2025-03-23T22:35:02.036Z"
+            X-Api-Received:
+                - "2025-03-23T22:35:02.000Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "0.1666666667"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "6"
+            X-Request-Id:
+                - nnDZDKD-4pPsy7-92516646b876a2e4
+        status: 200 OK
+        code: 200
+        duration: 876ms

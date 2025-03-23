@@ -16,175 +16,164 @@ import (
 )
 
 func ExampleClient_Chat_jSON() {
-	// This code will run when COHERE_API_KEY is set.
-	// As of March 2025, you can try it out for free with limitations on which
-	// functionalities are available.
 	// We need to use a model that supports structured output.
 	// https://docs.cohere.com/v2/docs/structured-outputs
-	if c, err := cohere.New("", "command-r-08-2024"); err == nil {
-		msgs := genai.Messages{
-			genai.NewTextMessage(genai.User, "Is a circle round? Reply as JSON."),
-		}
-		var got struct {
-			Round bool `json:"round"`
-		}
-		opts := genai.ChatOptions{
-			Seed:        1,
-			Temperature: 0.01,
-			MaxTokens:   50,
-			DecodeAs:    got,
-		}
-		resp, err := c.Chat(context.Background(), msgs, &opts)
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Printf("Raw response: %#v", resp)
-		if resp.InputTokens != 220 || resp.OutputTokens != 9 {
-			log.Printf("Unexpected tokens usage: %v", resp.Usage)
-		}
-		if len(resp.Contents) != 1 {
-			log.Fatalf("Unexpected response")
-		}
-		if err := resp.Contents[0].Decode(&got); err != nil {
-			log.Fatal(err)
-		}
-		fmt.Printf("Round: %v\n", got.Round)
-	} else {
-		// Print something so the example runs.
-		fmt.Println("Round: true")
+	c, err := cohere.New("", "command-r-08-2024")
+	if err != nil {
+		log.Fatal(err)
 	}
-	// Output: Round: true
+	msgs := genai.Messages{
+		genai.NewTextMessage(genai.User, "Is a circle round? Reply as JSON."),
+	}
+	var got struct {
+		Round bool `json:"round"`
+	}
+	opts := genai.ChatOptions{
+		Seed:        1,
+		Temperature: 0.01,
+		MaxTokens:   50,
+		DecodeAs:    got,
+	}
+	resp, err := c.Chat(context.Background(), msgs, &opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("Raw response: %#v", resp)
+	if len(resp.Contents) != 1 {
+		log.Fatalf("Unexpected response")
+	}
+	if err := resp.Contents[0].Decode(&got); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Round: %v\n", got.Round)
+	// This would Output: Round: true
 }
 
 func ExampleClient_Chat_tool_use() {
-	// This code will run when COHERE_API_KEY is set.
-	// As of March 2025, you can try it out for free with limitations on which
-	// functionalities are available.
 	// We need to use a model that supports structured output.
 	// https://docs.cohere.com/v2/docs/structured-outputs
-	if c, err := cohere.New("", "command-r-08-2024"); err == nil {
-		msgs := genai.Messages{
-			genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
-		}
-		var got struct {
-			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
-		}
-		opts := genai.ChatOptions{
-			Seed:        1,
-			Temperature: 0.01,
-			MaxTokens:   200,
-			Tools: []genai.ToolDef{
-				{
-					Name:        "best_country",
-					Description: "A tool to determine the best country",
-					InputsAs:    &got,
-				},
-			},
-		}
-		resp, err := c.Chat(context.Background(), msgs, &opts)
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Printf("Raw response: %#v", resp)
-		if resp.InputTokens != 925 || resp.OutputTokens != 96 {
-			log.Printf("Unexpected tokens usage: %v", resp.Usage)
-		}
-		// Warning: when the model is undecided, it call both.
-		if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "best_country" {
-			log.Fatal("Unexpected response")
-		}
-		if err := resp.ToolCalls[0].Decode(&got); err != nil {
-			log.Fatal(err)
-		}
-		fmt.Printf("Best: %v\n", got.Country)
-	} else {
-		// Print something so the example runs.
-		fmt.Println("Best: Canada")
+	c, err := cohere.New("", "command-r-08-2024")
+	if err != nil {
+		log.Fatal(err)
 	}
-	// Output: Best: Canada
+	msgs := genai.Messages{
+		genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
+	}
+	var got struct {
+		Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
+	}
+	opts := genai.ChatOptions{
+		Seed:        1,
+		Temperature: 0.01,
+		MaxTokens:   200,
+		Tools: []genai.ToolDef{
+			{
+				Name:        "best_country",
+				Description: "A tool to determine the best country",
+				InputsAs:    &got,
+			},
+		},
+	}
+	resp, err := c.Chat(context.Background(), msgs, &opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("Raw response: %#v", resp)
+	if resp.InputTokens != 925 || resp.OutputTokens != 96 {
+		log.Printf("Unexpected tokens usage: %v", resp.Usage)
+	}
+	// Warning: when the model is undecided, it call both.
+	if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "best_country" {
+		log.Fatal("Unexpected response")
+	}
+	if err := resp.ToolCalls[0].Decode(&got); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Best: %v\n", got.Country)
+	// This would Output: Best: Canada
 }
 
 func ExampleClient_ChatStream() {
-	// This code will run when COHERE_API_KEY is set.
-	// As of March 2025, you can try it out for free with limitations on which
-	// functionalities are available.
 	// Using very small model for testing.
 	// See https://docs.cohere.com/v2/docs/models
-	if c, err := cohere.New("", "command-r7b-12-2024"); err == nil {
-		ctx := context.Background()
-		msgs := genai.Messages{
-			genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
-		}
-		opts := genai.ChatOptions{
-			Seed:        1,
-			Temperature: 0.01,
-			MaxTokens:   50,
-		}
-		chunks := make(chan genai.MessageFragment)
-		end := make(chan genai.Message, 10)
-		go func() {
-			var pendingMsgs genai.Messages
-			defer func() {
-				for _, m := range pendingMsgs {
-					end <- m
-				}
-				close(end)
-			}()
-			for {
-				select {
-				case <-ctx.Done():
+	c, err := cohere.New("", "command-r7b-12-2024")
+	if err != nil {
+		log.Fatal(err)
+	}
+	ctx := context.Background()
+	msgs := genai.Messages{
+		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
+	}
+	opts := genai.ChatOptions{
+		Seed:        1,
+		Temperature: 0.01,
+		MaxTokens:   50,
+	}
+	chunks := make(chan genai.MessageFragment)
+	end := make(chan genai.Message, 10)
+	go func() {
+		var pendingMsgs genai.Messages
+		defer func() {
+			for _, m := range pendingMsgs {
+				end <- m
+			}
+			close(end)
+		}()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case pkt, ok := <-chunks:
+				if !ok {
 					return
-				case pkt, ok := <-chunks:
-					if !ok {
-						return
-					}
-					if pendingMsgs, err = pkt.Accumulate(pendingMsgs); err != nil {
-						end <- genai.NewTextMessage(genai.Assistant, fmt.Sprintf("Error: %v", err))
-						return
-					}
+				}
+				var err2 error
+				if pendingMsgs, err2 = pkt.Accumulate(pendingMsgs); err2 != nil {
+					end <- genai.NewTextMessage(genai.Assistant, fmt.Sprintf("Error: %v", err2))
+					return
 				}
 			}
-		}()
-		err := c.ChatStream(ctx, msgs, &opts, chunks)
-		close(chunks)
-		var responses genai.Messages
-		for m := range end {
-			responses = append(responses, m)
 		}
-		log.Printf("Raw responses: %#v", responses)
-		if err != nil {
-			log.Fatal(err)
-		}
-		if len(responses) != 1 {
-			log.Fatal("Unexpected response")
-		}
-		resp := responses[0]
-		if len(resp.Contents) != 1 {
-			log.Fatal("Unexpected response")
-		}
-		// Normalize some of the variance. Obviously many models will still fail this test.
-		fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"))
-	} else {
-		// Print something so the example runs.
-		fmt.Println("Response: hello")
+	}()
+	err = c.ChatStream(ctx, msgs, &opts, chunks)
+	close(chunks)
+	var responses genai.Messages
+	for m := range end {
+		responses = append(responses, m)
 	}
-	// Output: Response: hello
+	log.Printf("Raw responses: %#v", responses)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if len(responses) != 1 {
+		log.Fatal("Unexpected response")
+	}
+	resp := responses[0]
+	if len(resp.Contents) != 1 {
+		log.Fatal("Unexpected response")
+	}
+	// Normalize some of the variance. Obviously many models will still fail this test.
+	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"))
+	// This would Output: Response: hello
 }
 
 func ExampleClient_ListModels() {
 	// Print something so the example runs.
 	fmt.Println("Got models")
-	if c, err := cohere.New("", ""); err == nil {
-		models, err := c.ListModels(context.Background())
-		if err != nil {
-			fmt.Printf("Failed to get models: %v\n", err)
-			return
-		}
-		for _, model := range models {
-			// The list of models will change over time. Print them to stderr so the
-			// test doesn't capture them.
-			fmt.Fprintf(os.Stderr, "- %s\n", model)
-		}
+	c, err := cohere.New("", "")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Couldn't connect: %v\n", err)
+		return
+	}
+	models, err := c.ListModels(context.Background())
+	if err != nil {
+		fmt.Printf("Failed to get models: %v\n", err)
+		return
+	}
+	for _, model := range models {
+		// The list of models will change over time. Print them to stderr so the
+		// test doesn't capture them.
+		fmt.Fprintf(os.Stderr, "- %s\n", model)
 	}
 	// Output: Got models
 }

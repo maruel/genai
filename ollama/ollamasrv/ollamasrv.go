@@ -59,6 +59,9 @@ func NewServer(ctx context.Context, exe string, logOutput io.Writer, port int) (
 		cmd.Env = append(cmd.Env, "LD_LIBRARY_PATH="+cmd.Dir+":"+os.Getenv("LD_LIBRARY_PATH"))
 	}
 	cmd.Cancel = func() error {
+		if runtime.GOOS == "windows" {
+			return cmd.Process.Kill()
+		}
 		return cmd.Process.Signal(os.Interrupt)
 	}
 	if err := cmd.Start(); err != nil {

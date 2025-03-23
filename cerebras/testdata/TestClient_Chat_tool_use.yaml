@@ -16,8 +16,6 @@ interactions:
             {"model":"llama-3.1-8b","messages":[{"role":"user","content":"I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."}],"max_completion_tokens":50,"seed":1,"stream":true,"temperature":0.01,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
         form: {}
         headers:
-            Accept-Encoding:
-                - zstd, br, gzip
             Content-Type:
                 - application/json; charset=utf-8
         url: https://api.cerebras.ai/v1/chat/completions
@@ -31,11 +29,11 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"chatcmpl-2c657432-796e-4c76-ae5e-901ff0446fcd","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1742596308,"model":"llama3.1-8b","system_fingerprint":"fp_e173182bb0","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-e2ad221e-2472-4515-882b-8390819a6dcc","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1742754386,"model":"llama3.1-8b","system_fingerprint":"fp_e173182bb0","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-2c657432-796e-4c76-ae5e-901ff0446fcd","choices":[{"delta":{"tool_calls":[{"id":"20d46fae7","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0}]},"index":0}],"created":1742596308,"model":"llama3.1-8b","system_fingerprint":"fp_e173182bb0","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-e2ad221e-2472-4515-882b-8390819a6dcc","choices":[{"delta":{"tool_calls":[{"id":"41a11d049","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0},{"id":"640992c08","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":1}]},"index":0}],"created":1742754386,"model":"llama3.1-8b","system_fingerprint":"fp_e173182bb0","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-2c657432-796e-4c76-ae5e-901ff0446fcd","choices":[{"delta":{},"finish_reason":"tool_calls","index":0}],"created":1742596308,"model":"llama3.1-8b","system_fingerprint":"fp_e173182bb0","object":"chat.completion.chunk","usage":{"prompt_tokens":250,"completion_tokens":11,"total_tokens":261},"time_info":{"queue_time":0.00010372,"prompt_time":0.017481113,"completion_time":0.005408184,"total_time":0.025000333786010742,"created":1742596308}}
+            data: {"id":"chatcmpl-e2ad221e-2472-4515-882b-8390819a6dcc","choices":[{"delta":{},"finish_reason":"tool_calls","index":0}],"created":1742754386,"model":"llama3.1-8b","system_fingerprint":"fp_e173182bb0","object":"chat.completion.chunk","usage":{"prompt_tokens":250,"completion_tokens":17,"total_tokens":267},"time_info":{"queue_time":0.000242959,"prompt_time":0.012668293,"completion_time":0.007773387,"total_time":0.02243494987487793,"created":1742754386}}
 
         headers:
             Alt-Svc:
@@ -43,17 +41,17 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9240e6d03afc7142-YUL
+                - 924ffa20fc57a25b-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Inference-Id:
-                - chatcmpl-2c657432-796e-4c76-ae5e-901ff0446fcd
+                - chatcmpl-e2ad221e-2472-4515-882b-8390819a6dcc
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
                 - cloudflare
             Set-Cookie:
-                - __cf_bm=WEU_PqPSHuLsXVcke8W7UnmFsOkG426Hr2rBE2otPWw-1742596308-1.0.1.1-gWD7dFz5r1XqDa8xPQrI0QnIWGI.YWUTc0fI7LCn_cLV6Q0dKi3JEwpcrWvPne5GcNpK0ZbNrxCHjZ0SS9_7OAdBvQcEQB3yyW712JcgUak; path=/; expires=Fri, 21-Mar-25 23:01:48 GMT; domain=.api.cerebras.ai; HttpOnly; Secure; SameSite=None
+                - __cf_bm=JVDoSkzFxOwOOJ2twem3qkNzDUZBAtcIFXrJRJxxPV4-1742754386-1.0.1.1-Yoom1.nHzzsMqOGLdiF2mO72RU1Cl9zvlD.ECxKaSq2OkQ4e4YTZz9tUH1jV08b6Dd5G9gXayyBdafXzMFkVkjUfFx1eZWa.RT_9JEHXowk; path=/; expires=Sun, 23-Mar-25 18:56:26 GMT; domain=.api.cerebras.ai; HttpOnly; Secure; SameSite=None
             Strict-Transport-Security:
                 - max-age=3600; includeSubDomains
             X-Content-Type-Options:
@@ -63,15 +61,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14373"
+                - "14399"
             X-Ratelimit-Remaining-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Reset-Requests-Day:
-                - "5291.365736484528"
+                - "20013.724545955658"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "11.365736484527588"
+                - "33.72454595565796"
             X-Request-Id:
-                - 9240e6d03afc7142-SJC
+                - 924ffa20fc57a25b-SJC
         status: 200 OK
         code: 200
-        duration: 208ms
+        duration: 260ms

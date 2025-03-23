@@ -26,6 +26,7 @@ import (
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/httpjson"
+	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -388,9 +389,15 @@ func New(apiKey, model string) (*Client, error) {
 			return nil, errors.New("together.ai API key is required; get one at " + apiKeyURL)
 		}
 	}
-	// Together.AI doesn't support HTTP POST compression.
-	h := http.Header{"Authorization": {"Bearer " + apiKey}}
-	return &Client{model: model, Client: httpjson.Client{DefaultHeader: h}}, nil
+	return &Client{
+		model: model,
+		Client: httpjson.Client{
+			Client: &http.Client{Transport: &roundtrippers.Header{
+				Transport: http.DefaultTransport,
+				Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+			}},
+		},
+	}, nil
 }
 
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
@@ -519,10 +526,11 @@ type Model struct {
 	License       string `json:"license"`
 	ContextLength int64  `json:"context_length"`
 	Config        struct {
-		ChatTemplate string   `json:"chat_template"`
-		Stop         []string `json:"stop"`
-		BosToken     string   `json:"bos_token"`
-		EosToken     string   `json:"eos_token"`
+		ChatTemplate    string   `json:"chat_template"`
+		Stop            []string `json:"stop"`
+		BosToken        string   `json:"bos_token"`
+		EosToken        string   `json:"eos_token"`
+		MaxOutputLength int64    `json:"max_output_length"`
 	} `json:"config"`
 	Pricing struct {
 		Hourly   float64 `json:"hourly"`

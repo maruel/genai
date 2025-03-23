@@ -9,7 +9,6 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
-	"net/http"
 	"os"
 	"strings"
 	"testing"
@@ -22,7 +21,11 @@ import (
 )
 
 func TestClient_Chat_vision(t *testing.T) {
-	c := getClient(t, model)
+	// Using very small model for testing. As of March 2025,
+	// claude-3-haiku-20240307 is 0.20$/1.25$ while claude-3-5-haiku-20241022 is
+	// 0.80$/4.00$. 3.0 supports images, 3.5 supports PDFs.
+	// https://docs.anthropic.com/en/docs/about-claude/models/all-models
+	c := getClient(t, "claude-3-haiku-20240307")
 	msgs := genai.Messages{
 		{
 			Role: genai.User,
@@ -107,7 +110,7 @@ func TestClient_Chat_pdf(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	c := getClient(t, model)
+	c := getClient(t, "claude-3-haiku-20240307")
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
 	}
@@ -145,7 +148,7 @@ func TestClient_Chat_tool_use(t *testing.T) {
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	c := getClient(t, model)
+	c := getClient(t, "claude-3-haiku-20240307")
 	ctx := t.Context()
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
@@ -212,6 +215,6 @@ func getClient(t *testing.T, m string) *anthropic.Client {
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.Client.Client = &http.Client{Transport: internaltest.Record(t)}
+	c.Client.Client.Transport = internaltest.Record(t, c.Client.Client.Transport)
 	return c
 }

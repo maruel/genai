@@ -1,0 +1,81 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 156
+        transfer_encoding: []
+        trailer: {}
+        host: router.huggingface.co
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"max_tokens":50,"seed":1,"temperature":0.01}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/hf-inference/models/meta-llama/Llama-3.2-1B-Instruct/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"object":"chat.completion.chunk","id":"","created":1742759523,"model":"meta-llama/Llama-3.2-1B-Instruct","system_fingerprint":"3.2.1-native","choices":[{"index":0,"delta":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1742759523,"model":"meta-llama/Llama-3.2-1B-Instruct","system_fingerprint":"3.2.1-native","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1742759523,"model":"meta-llama/Llama-3.2-1B-Instruct","system_fingerprint":"3.2.1-native","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":"stop"}],"usage":null}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Xet-Access-Token,X-Xet-Token-Expiration,X-Xet-Refresh-Route,X-Xet-Cas-Url,X-Xet-Hash
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+            Via:
+                - 1.1 a44cf9ed8a499212c53e0b8f57aa31f4.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - jfiYTV9rYlirjxgIcB6Yt-MmKppLE_1V35HQXgVN3lb5PpyD93L7-Q==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Compute-Characters:
+                - "262"
+            X-Compute-Type:
+                - cpu
+            X-Inference-Id:
+                - 4TT9IE1g9fna8w9bKF6Mj
+            X-Powered-By:
+                - huggingface-moon
+            X-Request-Id:
+                - Root=1-67e06663-021169db7c22fe7355081803
+            X-Robots-Tag:
+                - none
+            X-Sha:
+                - 9213176726f574b556790deb65791e0c5aa438b6
+        status: 200 OK
+        code: 200
+        duration: 467ms

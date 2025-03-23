@@ -26,6 +26,7 @@ import (
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/httpjson"
+	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -401,9 +402,21 @@ func New(apiKey, model string) (*Client, error) {
 			}
 		}
 	}
-	// HuggingFace support all three of gzip, br and zstd!
-	h := http.Header{"Authorization": {"Bearer " + apiKey}}
-	return &Client{model: model, Client: httpjson.Client{DefaultHeader: h, PostCompress: "zstd"}}, nil
+	return &Client{
+		model: model,
+		Client: httpjson.Client{
+			Client: &http.Client{
+				Transport: &roundtrippers.Header{
+					Header: http.Header{"Authorization": {"Bearer " + apiKey}},
+					Transport: &roundtrippers.PostCompressed{
+						// HuggingFace support all three of gzip, br and zstd!
+						Encoding:  "zstd",
+						Transport: http.DefaultTransport,
+					},
+				},
+			},
+		},
+	}, nil
 }
 
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {

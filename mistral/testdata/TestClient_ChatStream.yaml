@@ -1,0 +1,81 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 193
+        transfer_encoding: []
+        trailer: {}
+        host: api.mistral.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"ministral-3b-latest","temperature":0.01,"max_tokens":50,"stream":true,"random_seed":1,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"id":"37406de241d34786bb79f88ea0c5e58d","object":"chat.completion.chunk","created":1742768219,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"37406de241d34786bb79f88ea0c5e58d","object":"chat.completion.chunk","created":1742768219,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
+
+            data: {"id":"37406de241d34786bb79f88ea0c5e58d","object":"chat.completion.chunk","created":1742768219,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"!"},"finish_reason":null}]}
+
+            data: {"id":"37406de241d34786bb79f88ea0c5e58d","object":"chat.completion.chunk","created":1742768219,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"total_tokens":13,"completion_tokens":2}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 92514bd9fbd2a2c3-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Ratelimitbysize-Limit:
+                - "500000"
+            Ratelimitbysize-Query-Cost:
+                - "50"
+            Ratelimitbysize-Remaining:
+                - "499850"
+            Ratelimitbysize-Reset:
+                - "1"
+            Server:
+                - cloudflare
+            X-Envoy-Upstream-Service-Time:
+                - "153"
+            X-Kong-Proxy-Latency:
+                - "1"
+            X-Kong-Request-Id:
+                - 10866b6489089373b9bea27a37225544
+            X-Kong-Upstream-Latency:
+                - "154"
+            X-Ratelimitbysize-Limit-Minute:
+                - "500000"
+            X-Ratelimitbysize-Limit-Month:
+                - "1000000000"
+            X-Ratelimitbysize-Remaining-Minute:
+                - "499850"
+            X-Ratelimitbysize-Remaining-Month:
+                - "998067060"
+        status: 200 OK
+        code: 200
+        duration: 294ms

@@ -6,10 +6,10 @@ package cerebras_test
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/cerebras"
 	"github.com/maruel/genai/internal/internaltest"
@@ -37,8 +37,9 @@ func TestClient_Chat_json(t *testing.T) {
 	if resp.InputTokens != 173 || resp.OutputTokens != 6 {
 		t.Logf("Unexpected tokens usage: %v", resp.Usage)
 	}
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
+	want := genai.Message{Role: genai.Assistant, Contents: []genai.Content{{Text: `{"round": true}`}}}
+	if diff := cmp.Diff(&want, &resp.Message); diff != "" {
+		t.Fatalf("(+want), (-got):\n%s", diff)
 	}
 	if err := resp.Contents[0].Decode(&got); err != nil {
 		t.Fatal(err)
@@ -109,7 +110,7 @@ func TestClient_Chat_tool_use(t *testing.T) {
 		t.Fatal("Unexpected responses")
 	}
 	resp := responses[0]
-	if len(resp.ToolCalls) != 1 || resp.ToolCalls[0].Name != "best_country" {
+	if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "best_country" || resp.ToolCalls[0].ID == "" {
 		t.Fatal("Unexpected response")
 	}
 	if err := resp.ToolCalls[0].Decode(&got); err != nil {
@@ -128,6 +129,6 @@ func getClient(t *testing.T, m string) *cerebras.Client {
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.Client.Client = &http.Client{Transport: internaltest.Record(t)}
+	c.Client.Client.Transport = internaltest.Record(t, c.Client.Client.Transport)
 	return c
 }

@@ -1,0 +1,47 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 343
+        transfer_encoding: []
+        trailer: {}
+        host: api.cloudflare.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"content":"Is a circle round? Reply as JSON.","role":"user"}],"max_tokens":50,"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"round":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["round"]}},"seed":1,"temperature":0.01}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@hf/nousresearch/hermes-2-pro-mistral-7b
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"result":{"response":{"round":true}},"success":true,"errors":[],"messages":[]}'
+        headers:
+            Cf-Ai-Req-Id:
+                - b22203ed-6b8a-4cc0-90b6-c915fad6bbd2
+            Cf-Auditlog-Id:
+                - 0195caab-9f1e-7f59-8dc7-d5b7483330f1
+            Cf-Ray:
+                - 925a3d6b493ba27e-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 1.026s

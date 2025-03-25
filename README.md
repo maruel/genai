@@ -41,8 +41,9 @@ The _high performance_ low level native Go client for LLMs.
   struct. No need to manually fiddle with JSON.
 - **Streaming**: Streams completion reply as the output is being generated.
 - **Vision**: Process images, PDFs and videos (!) as input.
+- **Unit testing friendly**: record and play back API calls at HTTP level.
 
-Implementation is in flux. :) For example, tool call may not work in stream mode yet.
+Implementation is in flux. :)
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/maruel/genai/.svg)](https://pkg.go.dev/github.com/maruel/genai/)
 [![codecov](https://codecov.io/gh/maruel/genai/graph/badge.svg?token=VLBH363B6N)](https://codecov.io/gh/maruel/genai)
@@ -170,11 +171,8 @@ list-models -provider hugginface
 - Batch
 - Tuning
 - Embeddings
-- RAG
 - Handle rate limiting
 - Moderation
 - Thinking
 - Content Blocks
 - Citations
-- Pass tool in the message so no need to create the tool definition's JSONSchema
-

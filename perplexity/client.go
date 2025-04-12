@@ -23,6 +23,7 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
@@ -239,6 +240,7 @@ func New(apiKey, model string) (*Client, error) {
 				Transport: http.DefaultTransport,
 				Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
 			}},
+			Lenient: internal.BeLenient,
 		},
 	}, nil
 }

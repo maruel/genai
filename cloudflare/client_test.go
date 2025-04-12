@@ -15,6 +15,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/cloudflare"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
@@ -174,3 +175,7 @@ func getClient(t *testing.T, m string) *cloudflare.Client {
 }
 
 var defaultMatcher = cassette.NewDefaultMatcher()
+
+func init() {
+	internal.BeLenient = false
+}

@@ -12,6 +12,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/cohere"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 )
 
@@ -158,4 +159,8 @@ func getClient(t *testing.T, m string) *cohere.Client {
 	}
 	c.Client.Client.Transport = internaltest.Record(t, c.Client.Client.Transport)
 	return c
+}
+
+func init() {
+	internal.BeLenient = false
 }

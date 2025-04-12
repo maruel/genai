@@ -28,6 +28,7 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
@@ -699,6 +700,7 @@ func New(apiKey, model string) (*Client, error) {
 				// Google supports HTTP POST gzip compression!
 				Encoding: "gzip",
 			}},
+			Lenient: internal.BeLenient,
 		},
 	}, nil
 }

@@ -26,6 +26,7 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
 )
 
@@ -342,7 +343,13 @@ func New(baseURL string, encoding *PromptEncoding) (*Client, error) {
 	if baseURL == "" {
 		return nil, errors.New("baseURL is required")
 	}
-	return &Client{baseURL: baseURL, encoding: encoding}, nil
+	return &Client{
+		Client: httpjson.Client{
+			Lenient: internal.BeLenient,
+		},
+		baseURL:  baseURL,
+		encoding: encoding,
+	}, nil
 }
 
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {

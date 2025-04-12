@@ -13,6 +13,7 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/togetherai"
 )
@@ -199,4 +200,8 @@ func getClient(t *testing.T, m string) *togetherai.Client {
 	}
 	c.Client.Client.Transport = internaltest.Record(t, c.Client.Client.Transport)
 	return c
+}
+
+func init() {
+	internal.BeLenient = false
 }

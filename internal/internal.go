@@ -4,3 +4,8 @@
 
 // Package internal is awesome sauce.
 package internal
+
+// BeLenient is used by all clients to enable or disable httpjson.Client.Lenient.
+//
+// It is true by default. Tests must manually set it to false.
+var BeLenient = true

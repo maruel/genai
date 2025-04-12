@@ -26,6 +26,7 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
@@ -496,6 +497,7 @@ func New(apiKey, model string) (*Client, error) {
 				Transport: http.DefaultTransport,
 				Header:    http.Header{"x-api-key": {apiKey}, "anthropic-version": {"2023-06-01"}},
 			}},
+			Lenient: internal.BeLenient,
 		},
 	}, nil
 }

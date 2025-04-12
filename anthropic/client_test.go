@@ -16,6 +16,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/anthropic"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/httpjson"
 )
@@ -217,4 +218,8 @@ func getClient(t *testing.T, m string) *anthropic.Client {
 	}
 	c.Client.Client.Transport = internaltest.Record(t, c.Client.Client.Transport)
 	return c
+}
+
+func init() {
+	internal.BeLenient = false
 }

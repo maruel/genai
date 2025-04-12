@@ -12,6 +12,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/deepseek"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 )
 
@@ -155,4 +156,8 @@ func getClient(t *testing.T, m string) *deepseek.Client {
 	}
 	c.Client.Client.Transport = internaltest.Record(t, c.Client.Client.Transport)
 	return c
+}
+
+func init() {
+	internal.BeLenient = false
 }

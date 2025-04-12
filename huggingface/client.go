@@ -25,6 +25,7 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
@@ -405,16 +406,15 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{
 		model: model,
 		Client: httpjson.Client{
-			Client: &http.Client{
-				Transport: &roundtrippers.Header{
-					Header: http.Header{"Authorization": {"Bearer " + apiKey}},
-					Transport: &roundtrippers.PostCompressed{
-						// HuggingFace support all three of gzip, br and zstd!
-						Encoding:  "zstd",
-						Transport: http.DefaultTransport,
-					},
+			Client: &http.Client{Transport: &roundtrippers.Header{
+				Header: http.Header{"Authorization": {"Bearer " + apiKey}},
+				Transport: &roundtrippers.PostCompressed{
+					// HuggingFace support all three of gzip, br and zstd!
+					Encoding:  "zstd",
+					Transport: http.DefaultTransport,
 				},
-			},
+			}},
+			Lenient: internal.BeLenient,
 		},
 	}, nil
 }

@@ -23,6 +23,7 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
 	"golang.org/x/sync/errgroup"
 )
@@ -277,7 +278,13 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the model from https://ollama.com/library
 func New(baseURL, model string) (*Client, error) {
-	return &Client{baseURL: baseURL, model: model}, nil
+	return &Client{
+		Client: httpjson.Client{
+			Lenient: internal.BeLenient,
+		},
+		baseURL: baseURL,
+		model:   model,
+	}, nil
 }
 
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {

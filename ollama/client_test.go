@@ -15,6 +15,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/ollama"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
@@ -193,4 +194,8 @@ func (l *lazyServer) shouldStart(t *testing.T) (string, http.RoundTripper) {
 		t.Log("Recording " + suffix)
 	}
 	return l.url, transport
+}
+
+func init() {
+	internal.BeLenient = false
 }

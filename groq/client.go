@@ -503,13 +503,14 @@ func (t *Time) AsTime() time.Time {
 }
 
 type Model struct {
-	ID            string   `json:"id"`
-	Object        string   `json:"object"`
-	Created       Time     `json:"created"`
-	OwnedBy       string   `json:"owned_by"`
-	Active        bool     `json:"active"`
-	ContextWindow int64    `json:"context_window"`
-	PublicApps    []string `json:"public_apps"`
+	ID                  string   `json:"id"`
+	Object              string   `json:"object"`
+	Created             Time     `json:"created"`
+	OwnedBy             string   `json:"owned_by"`
+	Active              bool     `json:"active"`
+	ContextWindow       int64    `json:"context_window"`
+	PublicApps          []string `json:"public_apps"`
+	MaxCompletionTokens int64    `json:"max_completion_tokens"`
 }
 
 func (m *Model) GetID() string {

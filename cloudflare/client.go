@@ -22,6 +22,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
@@ -551,11 +552,28 @@ func parseStreamLine(line []byte, out chan<- ChatStreamChunkResponse) error {
 	return nil
 }
 
+// Time is a wrapper around time.Time to support unmarshalling for cloudflare non-standard encoding.
+type Time time.Time
+
+func (t *Time) UnmarshalJSON(b []byte) error {
+	s := ""
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	t2, err := time.Parse("2006-01-02 15:04:05.999999999", s)
+	if err != nil {
+		return err
+	}
+	*t = Time(t2)
+	return nil
+}
+
 type Model struct {
 	ID          string `json:"id"`
 	Source      int64  `json:"source"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
+	CreatedAt   Time   `json:"created_at"`
 	Task        struct {
 		ID          string `json:"id"`
 		Name        string `json:"name"`
@@ -564,7 +582,7 @@ type Model struct {
 	Tags       []string `json:"tags"`
 	Properties []struct {
 		PropertyID string `json:"property_id"`
-		Value      string `json:"value"`
+		Value      any    `json:"value"` // sometimes a string, sometimes an array
 	} `json:"properties"`
 }
 
@@ -575,7 +593,7 @@ func (m *Model) GetID() string {
 func (m *Model) String() string {
 	var suffixes []string
 	for _, p := range m.Properties {
-		suffixes = append(suffixes, p.PropertyID+"="+p.Value)
+		suffixes = append(suffixes, fmt.Sprintf("%s=%v", p.PropertyID, p.Value))
 	}
 	suffix := ""
 	if len(suffixes) != 0 {
@@ -588,8 +606,10 @@ func (m *Model) String() string {
 func (m *Model) Context() int64 {
 	for _, p := range m.Properties {
 		if p.PropertyID == "context_window" || p.PropertyID == "max_input_tokens" {
-			if v, err := strconv.ParseInt(p.Value, 10, 64); err == nil {
-				return v
+			if s, ok := p.Value.(string); ok {
+				if v, err := strconv.ParseInt(s, 10, 64); err == nil {
+					return v
+				}
 			}
 		}
 	}

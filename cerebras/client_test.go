@@ -5,8 +5,8 @@
 package cerebras_test
 
 import (
-	"fmt"
 	"os"
+	"strconv"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -52,7 +52,6 @@ func TestClient_Chat_json(t *testing.T) {
 
 func TestClient_Chat_tool_use(t *testing.T) {
 	c := getClient(t, "llama-3.1-8b")
-	ctx := t.Context()
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
 	}
@@ -71,50 +70,18 @@ func TestClient_Chat_tool_use(t *testing.T) {
 			},
 		},
 	}
-	chunks := make(chan genai.MessageFragment)
-	end := make(chan genai.Message, 10)
-	go func() {
-		var pendingMsgs genai.Messages
-		defer func() {
-			for _, m := range pendingMsgs {
-				end <- m
-			}
-			close(end)
-		}()
-		for {
-			select {
-			case <-ctx.Done():
-				return
-			case pkt, ok := <-chunks:
-				if !ok {
-					return
-				}
-				var err error
-				if pendingMsgs, err = pkt.Accumulate(pendingMsgs); err != nil {
-					end <- genai.NewTextMessage(genai.Assistant, fmt.Sprintf("Error: %v", err))
-					return
-				}
-			}
-		}
-	}()
-	err := c.ChatStream(ctx, msgs, &opts, chunks)
-	close(chunks)
-	var responses genai.Messages
-	for m := range end {
-		responses = append(responses, m)
+	responses := chatStream(t, c, msgs, &opts)
+	want := genai.Messages{
+		genai.Message{
+			Role: genai.Assistant,
+			ToolCalls: []genai.ToolCall{
+				{ID: "1", Name: "best_country", Arguments: `{"country": "Canada"}`},
+				{ID: "2", Name: "best_country", Arguments: `{"country": "USA"}`},
+			},
+		},
 	}
-	t.Logf("Raw responses: %#v", responses)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(responses) != 1 {
-		t.Fatal("Unexpected responses")
-	}
-	resp := responses[0]
-	if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "best_country" || resp.ToolCalls[0].ID == "" {
-		t.Fatal("Unexpected response")
-	}
-	if err := resp.ToolCalls[0].Decode(&got); err != nil {
+	assertResponses(t, want, responses)
+	if err := responses[0].ToolCalls[0].Decode(&got); err != nil {
 		t.Fatal(err)
 	}
 	if got.Country != "Canada" {
@@ -132,6 +99,63 @@ func getClient(t *testing.T, m string) *cerebras.Client {
 	}
 	c.Client.Client.Transport = internaltest.Record(t, c.Client.Client.Transport)
 	return c
+}
+
+func chatStream(t *testing.T, c *cerebras.Client, msgs genai.Messages, opts *genai.ChatOptions) genai.Messages {
+	ctx := t.Context()
+	chunks := make(chan genai.MessageFragment)
+	end := make(chan genai.Messages, 1)
+	go func() {
+		var pendingMsgs genai.Messages
+		defer func() {
+			end <- pendingMsgs
+			close(end)
+		}()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case pkt, ok := <-chunks:
+				if !ok {
+					return
+				}
+				var err2 error
+				if pendingMsgs, err2 = pkt.Accumulate(pendingMsgs); err2 != nil {
+					t.Error(err2)
+					return
+				}
+			}
+		}
+	}()
+	err := c.ChatStream(ctx, msgs, opts, chunks)
+	close(chunks)
+	responses := <-end
+	t.Logf("Raw responses: %#v", responses)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return responses
+}
+
+func assertResponses(t *testing.T, want, got genai.Messages) {
+	if len(got) != len(want) {
+		t.Errorf("Expected %d responses, got %d", len(want), len(got))
+	}
+	for i := range got {
+		for j := range got[i].ToolCalls {
+			if got[i].ToolCalls[j].ID != "" {
+				got[i].ToolCalls[j].ID = strconv.Itoa(i + j + 1)
+			}
+		}
+	}
+	for i := range want {
+		if diff := cmp.Diff(&want[i], &got[i]); diff != "" {
+			t.Errorf("(+want), (-got):\n%s", diff)
+		}
+	}
+	if t.Failed() {
+		t.FailNow()
+	}
 }
 
 func init() {

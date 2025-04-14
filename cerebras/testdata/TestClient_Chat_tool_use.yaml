@@ -29,11 +29,11 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"chatcmpl-e2ad221e-2472-4515-882b-8390819a6dcc","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1742754386,"model":"llama3.1-8b","system_fingerprint":"fp_e173182bb0","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-e4f4ab78-721d-4696-a5c0-951a6ce891cb","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1744590340,"model":"llama3.1-8b","system_fingerprint":"fp_6ca4989590d512bb18d1","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-e2ad221e-2472-4515-882b-8390819a6dcc","choices":[{"delta":{"tool_calls":[{"id":"41a11d049","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0},{"id":"640992c08","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":1}]},"index":0}],"created":1742754386,"model":"llama3.1-8b","system_fingerprint":"fp_e173182bb0","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-e4f4ab78-721d-4696-a5c0-951a6ce891cb","choices":[{"delta":{"tool_calls":[{"id":"d4efd33b6","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0},{"id":"62ee6e276","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":1}]},"index":0}],"created":1744590340,"model":"llama3.1-8b","system_fingerprint":"fp_6ca4989590d512bb18d1","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-e2ad221e-2472-4515-882b-8390819a6dcc","choices":[{"delta":{},"finish_reason":"tool_calls","index":0}],"created":1742754386,"model":"llama3.1-8b","system_fingerprint":"fp_e173182bb0","object":"chat.completion.chunk","usage":{"prompt_tokens":250,"completion_tokens":17,"total_tokens":267},"time_info":{"queue_time":0.000242959,"prompt_time":0.012668293,"completion_time":0.007773387,"total_time":0.02243494987487793,"created":1742754386}}
+            data: {"id":"chatcmpl-e4f4ab78-721d-4696-a5c0-951a6ce891cb","choices":[{"delta":{},"finish_reason":"tool_calls","index":0}],"created":1744590340,"model":"llama3.1-8b","system_fingerprint":"fp_6ca4989590d512bb18d1","object":"chat.completion.chunk","usage":{"prompt_tokens":250,"completion_tokens":17,"total_tokens":267},"time_info":{"queue_time":0.00043996,"prompt_time":0.012685859,"completion_time":0.007939597,"total_time":0.02259683609008789,"created":1744590340}}
 
         headers:
             Alt-Svc:
@@ -41,17 +41,15 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 924ffa20fc57a25b-YUL
+                - 92ff11480875a2b7-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Inference-Id:
-                - chatcmpl-e2ad221e-2472-4515-882b-8390819a6dcc
+                - chatcmpl-e4f4ab78-721d-4696-a5c0-951a6ce891cb
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
                 - cloudflare
-            Set-Cookie:
-                - __cf_bm=JVDoSkzFxOwOOJ2twem3qkNzDUZBAtcIFXrJRJxxPV4-1742754386-1.0.1.1-Yoom1.nHzzsMqOGLdiF2mO72RU1Cl9zvlD.ECxKaSq2OkQ4e4YTZz9tUH1jV08b6Dd5G9gXayyBdafXzMFkVkjUfFx1eZWa.RT_9JEHXowk; path=/; expires=Sun, 23-Mar-25 18:56:26 GMT; domain=.api.cerebras.ai; HttpOnly; Secure; SameSite=None
             Strict-Transport-Security:
                 - max-age=3600; includeSubDomains
             X-Content-Type-Options:
@@ -65,11 +63,11 @@ interactions:
             X-Ratelimit-Remaining-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Reset-Requests-Day:
-                - "20013.724545955658"
+                - "84857.49102187157"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "33.72454595565796"
+                - "17.491021871566772"
             X-Request-Id:
-                - 924ffa20fc57a25b-SJC
+                - 92ff11480875a2b7-YUL
         status: 200 OK
         code: 200
-        duration: 260ms
+        duration: 161ms

@@ -28,24 +28,22 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-af955461-b39a-4465-b2d9-826d80619499","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"round\": true}","role":"assistant"}}],"created":1742754385,"model":"llama3.1-8b","system_fingerprint":"fp_e173182bb0","object":"chat.completion","usage":{"prompt_tokens":173,"completion_tokens":6,"total_tokens":179},"time_info":{"queue_time":0.052702137,"prompt_time":0.008743425,"completion_time":0.002759925,"total_time":0.06589961051940918,"created":1742754385}}'
+        body: '{"id":"chatcmpl-940f8b13-ad8a-4387-9136-a869c2266b36","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"round\": true}","role":"assistant"}}],"created":1744590340,"model":"llama3.1-8b","system_fingerprint":"fp_6ca4989590d512bb18d1","object":"chat.completion","usage":{"prompt_tokens":173,"completion_tokens":6,"total_tokens":179},"time_info":{"queue_time":0.051673803,"prompt_time":0.008758039,"completion_time":0.002824974,"total_time":0.06449246406555176,"created":1744590340}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 924ffa1f7a83a25b-YUL
+                - 92ff11469eb0a2b7-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-af955461-b39a-4465-b2d9-826d80619499
+                - chatcmpl-940f8b13-ad8a-4387-9136-a869c2266b36
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
                 - cloudflare
-            Set-Cookie:
-                - __cf_bm=.BN7nmTxyEpnXMTLq_7_AwJNKUBjvif.oEX2VpBgfAk-1742754386-1.0.1.1-_DuBfP0Og3eFMIifjAenWwDKlrdFmie11HagxsFrZtb8actZPTxYreBF67yeLuy9xrRcKB2qF6NTC2cIdlrf2uPT4WSd8lnR.ybBr28chl0; path=/; expires=Sun, 23-Mar-25 18:56:26 GMT; domain=.api.cerebras.ai; HttpOnly; Secure; SameSite=None
             Strict-Transport-Security:
                 - max-age=3600; includeSubDomains
             X-Content-Type-Options:
@@ -59,11 +57,11 @@ interactions:
             X-Ratelimit-Remaining-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Reset-Requests-Day:
-                - "20013.97493505478"
+                - "84857.65199899673"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "33.97493505477905"
+                - "17.65199899673462"
             X-Request-Id:
-                - 924ffa1f7a83a25b-SJC
+                - 92ff11469eb0a2b7-YUL
         status: 200 OK
         code: 200
-        duration: 278ms
+        duration: 249ms

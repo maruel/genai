@@ -5,7 +5,6 @@
 package cloudflare_test
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -94,7 +93,6 @@ func TestClient_Chat_tool_use(t *testing.T) {
 
 func TestClient_ChatStream(t *testing.T) {
 	c := getClient(t, "@cf/meta/llama-3.2-3b-instruct")
-	ctx := t.Context()
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 	}
@@ -103,42 +101,7 @@ func TestClient_ChatStream(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	chunks := make(chan genai.MessageFragment)
-	end := make(chan genai.Message, 10)
-	go func() {
-		var pendingMsgs genai.Messages
-		defer func() {
-			for _, m := range pendingMsgs {
-				end <- m
-			}
-			close(end)
-		}()
-		for {
-			select {
-			case <-ctx.Done():
-				return
-			case pkt, ok := <-chunks:
-				if !ok {
-					return
-				}
-				var err error
-				if pendingMsgs, err = pkt.Accumulate(pendingMsgs); err != nil {
-					end <- genai.NewTextMessage(genai.Assistant, fmt.Sprintf("Error: %v", err))
-					return
-				}
-			}
-		}
-	}()
-	err := c.ChatStream(ctx, msgs, &opts, chunks)
-	close(chunks)
-	var responses genai.Messages
-	for m := range end {
-		responses = append(responses, m)
-	}
-	log.Printf("Raw responses: %#v", responses)
-	if err != nil {
-		log.Fatal(err)
-	}
+	responses := internaltest.ChatStream(t, c, msgs, &opts)
 	if len(responses) != 1 {
 		log.Fatal("Unexpected response")
 	}

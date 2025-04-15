@@ -5,7 +5,6 @@
 package huggingface_test
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -85,7 +84,6 @@ func TestClient_Chat_tool_use(t *testing.T) {
 
 func TestClient_ChatStream(t *testing.T) {
 	c := getClient(t, "meta-llama/Llama-3.2-1B-Instruct")
-	ctx := t.Context()
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 	}
@@ -94,45 +92,8 @@ func TestClient_ChatStream(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	chunks := make(chan genai.MessageFragment)
-	end := make(chan genai.Message, 10)
-	go func() {
-		var pendingMsgs genai.Messages
-		defer func() {
-			for _, m := range pendingMsgs {
-				end <- m
-			}
-			close(end)
-		}()
-		for {
-			select {
-			case <-ctx.Done():
-				return
-			case pkt, ok := <-chunks:
-				if !ok {
-					return
-				}
-				var err error
-				if pendingMsgs, err = pkt.Accumulate(pendingMsgs); err != nil {
-					end <- genai.NewTextMessage(genai.Assistant, fmt.Sprintf("Error: %v", err))
-					return
-				}
-			}
-		}
-	}()
-	err := c.ChatStream(ctx, msgs, &opts, chunks)
-	close(chunks)
-	var responses genai.Messages
-	for m := range end {
-		responses = append(responses, m)
-	}
-	t.Logf("Raw responses: %#v", responses)
-	if err != nil {
-		if len(responses) == 0 {
-			t.Fatal(err)
-		}
-		t.Logf("HF currently tend to return spurious HTTP 422: %s", err)
-	}
+	responses := internaltest.ChatStream(t, c, msgs, &opts)
+	// TODO: handle t.Logf("HF currently tend to return spurious HTTP 422: %s", err)
 	if len(responses) != 1 {
 		t.Fatal("Unexpected response")
 	}

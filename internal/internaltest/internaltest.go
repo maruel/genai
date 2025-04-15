@@ -9,10 +9,13 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
 
+	"github.com/google/go-cmp/cmp"
+	"github.com/maruel/genai"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
@@ -65,6 +68,67 @@ func MatchIgnorePort(r *http.Request, i cassette.Request) bool {
 	r.URL.Host = strings.Split(r.URL.Host, ":")[0]
 	r.Host = strings.Split(r.Host, ":")[0]
 	return defaultMatcher(r, i)
+}
+
+//
+
+// ChatStream runs a  ChatStream and returns the concatenated response.
+func ChatStream(t *testing.T, c genai.ChatProvider, msgs genai.Messages, opts *genai.ChatOptions) genai.Messages {
+	ctx := t.Context()
+	chunks := make(chan genai.MessageFragment)
+	end := make(chan genai.Messages, 1)
+	go func() {
+		var pendingMsgs genai.Messages
+		defer func() {
+			end <- pendingMsgs
+			close(end)
+		}()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case pkt, ok := <-chunks:
+				if !ok {
+					return
+				}
+				var err2 error
+				if pendingMsgs, err2 = pkt.Accumulate(pendingMsgs); err2 != nil {
+					t.Error(err2)
+					return
+				}
+			}
+		}
+	}()
+	err := c.ChatStream(ctx, msgs, opts, chunks)
+	close(chunks)
+	responses := <-end
+	t.Logf("Raw responses: %#v", responses)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return responses
+}
+
+// AssertResponses ensures the responses we got match what we want.
+func AssertResponses(t *testing.T, want, got genai.Messages) {
+	if len(got) != len(want) {
+		t.Errorf("Expected %d responses, got %d", len(want), len(got))
+	}
+	for i := range got {
+		for j := range got[i].ToolCalls {
+			if got[i].ToolCalls[j].ID != "" {
+				got[i].ToolCalls[j].ID = strconv.Itoa(i + j + 1)
+			}
+		}
+	}
+	for i := range want {
+		if diff := cmp.Diff(&want[i], &got[i]); diff != "" {
+			t.Errorf("(+want), (-got):\n%s", diff)
+		}
+	}
+	if t.Failed() {
+		t.FailNow()
+	}
 }
 
 //

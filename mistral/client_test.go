@@ -7,19 +7,14 @@ package mistral_test
 import (
 	"bytes"
 	_ "embed"
-	"errors"
-	"fmt"
-	"net/http"
 	"os"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/mistral"
-	"github.com/maruel/httpjson"
 )
 
 func TestClient_Chat_vision_and_JSON(t *testing.T) {
@@ -42,23 +37,7 @@ func TestClient_Chat_vision_and_JSON(t *testing.T) {
 		MaxTokens:   50,
 		DecodeAs:    &got,
 	}
-	var err error
-	var resp genai.ChatResult
-	for i := range 3 {
-		// Mistral has a very good rate limiting implementation.
-		if resp, err = c.Chat(t.Context(), msgs, &opts); err != nil && i != 2 {
-			var herr *httpjson.Error
-			if errors.As(err, &herr) {
-				if herr.StatusCode == http.StatusTooManyRequests {
-					fmt.Fprintf(os.Stderr, "Rate limited, waiting 2s\n")
-					time.Sleep(2 * time.Second)
-					continue
-				}
-			}
-			t.Fatal(err)
-		}
-		break
-	}
+	resp, err := c.Chat(t.Context(), msgs, &opts)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -92,23 +71,7 @@ func TestClient_Chat_pDF(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	var err error
-	var resp genai.ChatResult
-	for i := range 3 {
-		// Mistral has a very good rate limiting implementation.
-		if resp, err = c.Chat(t.Context(), msgs, &opts); err != nil && i != 2 {
-			var herr *httpjson.Error
-			if errors.As(err, &herr) {
-				if herr.StatusCode == http.StatusTooManyRequests {
-					fmt.Fprintf(os.Stderr, "Rate limited, waiting 2s\n")
-					time.Sleep(2 * time.Second)
-					continue
-				}
-			}
-			t.Fatal(err)
-		}
-		break
-	}
+	resp, err := c.Chat(t.Context(), msgs, &opts)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -145,22 +108,9 @@ func TestClient_Chat_tool_use(t *testing.T) {
 			},
 		},
 	}
-	var err error
-	var resp genai.ChatResult
-	for i := range 3 {
-		// Mistral has a very good rate limiting implementation.
-		if resp, err = c.Chat(t.Context(), msgs, &opts); err != nil && i != 2 {
-			var herr *httpjson.Error
-			if errors.As(err, &herr) {
-				if herr.StatusCode == http.StatusTooManyRequests {
-					fmt.Fprintf(os.Stderr, "Rate limited, waiting 2s\n")
-					time.Sleep(2 * time.Second)
-					continue
-				}
-			}
-			t.Fatal(err)
-		}
-		break
+	resp, err := c.Chat(t.Context(), msgs, &opts)
+	if err != nil {
+		t.Fatal(err)
 	}
 	t.Logf("Raw response: %#v", resp)
 	if resp.InputTokens != 129 || resp.OutputTokens != 19 {
@@ -179,7 +129,6 @@ func TestClient_Chat_tool_use(t *testing.T) {
 
 func TestClient_ChatStream(t *testing.T) {
 	c := getClient(t, "ministral-3b-latest")
-	ctx := t.Context()
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 	}
@@ -188,67 +137,17 @@ func TestClient_ChatStream(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	for i := range 3 {
-		chunks := make(chan genai.MessageFragment)
-		end := make(chan genai.Message, 10)
-		go func() {
-			var pendingMsgs genai.Messages
-			defer func() {
-				for _, m := range pendingMsgs {
-					end <- m
-				}
-				close(end)
-			}()
-			for {
-				select {
-				case <-ctx.Done():
-					return
-				case pkt, ok := <-chunks:
-					if !ok {
-						return
-					}
-					var err error
-					if pendingMsgs, err = pkt.Accumulate(pendingMsgs); err != nil {
-						end <- genai.NewTextMessage(genai.Assistant, fmt.Sprintf("Error: %v", err))
-						return
-					}
-				}
-			}
-		}()
-		err := c.ChatStream(ctx, msgs, &opts, chunks)
-		close(chunks)
-		var responses genai.Messages
-		for m := range end {
-			responses = append(responses, m)
-		}
-		if err != nil && i != 2 {
-			// Mistral has a very good rate limiting implementation.
-			var herr *httpjson.Error
-			if errors.As(err, &herr) {
-				if herr.StatusCode == http.StatusTooManyRequests {
-					fmt.Fprintf(os.Stderr, "Rate limited, waiting 2s\n")
-					time.Sleep(2 * time.Second)
-					continue
-				}
-			}
-			t.Fatal(err)
-		}
-		t.Logf("Raw responses: %#v", responses)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if len(responses) != 1 {
-			t.Fatal("Unexpected response")
-		}
-		resp := responses[0]
-		if len(resp.Contents) != 1 {
-			t.Fatal("Unexpected response")
-		}
-		// Normalize some of the variance. Obviously many models will still fail this test.
-		if got := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"); got != "hello" {
-			t.Fatal(got)
-		}
-		return
+	responses := internaltest.ChatStream(t, c, msgs, &opts)
+	if len(responses) != 1 {
+		t.Fatal("Unexpected response")
+	}
+	resp := responses[0]
+	if len(resp.Contents) != 1 {
+		t.Fatal("Unexpected response")
+	}
+	// Normalize some of the variance. Obviously many models will still fail this test.
+	if got := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"); got != "hello" {
+		t.Fatal(got)
 	}
 }
 

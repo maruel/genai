@@ -6,7 +6,6 @@ package cerebras_test
 
 import (
 	"os"
-	"strconv"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -70,7 +69,7 @@ func TestClient_Chat_tool_use(t *testing.T) {
 			},
 		},
 	}
-	responses := chatStream(t, c, msgs, &opts)
+	responses := internaltest.ChatStream(t, c, msgs, &opts)
 	want := genai.Messages{
 		genai.Message{
 			Role: genai.Assistant,
@@ -80,7 +79,7 @@ func TestClient_Chat_tool_use(t *testing.T) {
 			},
 		},
 	}
-	assertResponses(t, want, responses)
+	internaltest.AssertResponses(t, want, responses)
 	if err := responses[0].ToolCalls[0].Decode(&got); err != nil {
 		t.Fatal(err)
 	}
@@ -99,63 +98,6 @@ func getClient(t *testing.T, m string) *cerebras.Client {
 	}
 	c.Client.Client.Transport = internaltest.Record(t, c.Client.Client.Transport)
 	return c
-}
-
-func chatStream(t *testing.T, c *cerebras.Client, msgs genai.Messages, opts *genai.ChatOptions) genai.Messages {
-	ctx := t.Context()
-	chunks := make(chan genai.MessageFragment)
-	end := make(chan genai.Messages, 1)
-	go func() {
-		var pendingMsgs genai.Messages
-		defer func() {
-			end <- pendingMsgs
-			close(end)
-		}()
-		for {
-			select {
-			case <-ctx.Done():
-				return
-			case pkt, ok := <-chunks:
-				if !ok {
-					return
-				}
-				var err2 error
-				if pendingMsgs, err2 = pkt.Accumulate(pendingMsgs); err2 != nil {
-					t.Error(err2)
-					return
-				}
-			}
-		}
-	}()
-	err := c.ChatStream(ctx, msgs, opts, chunks)
-	close(chunks)
-	responses := <-end
-	t.Logf("Raw responses: %#v", responses)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return responses
-}
-
-func assertResponses(t *testing.T, want, got genai.Messages) {
-	if len(got) != len(want) {
-		t.Errorf("Expected %d responses, got %d", len(want), len(got))
-	}
-	for i := range got {
-		for j := range got[i].ToolCalls {
-			if got[i].ToolCalls[j].ID != "" {
-				got[i].ToolCalls[j].ID = strconv.Itoa(i + j + 1)
-			}
-		}
-	}
-	for i := range want {
-		if diff := cmp.Diff(&want[i], &got[i]); diff != "" {
-			t.Errorf("(+want), (-got):\n%s", diff)
-		}
-	}
-	if t.Failed() {
-		t.FailNow()
-	}
 }
 
 func init() {

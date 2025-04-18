@@ -5,6 +5,7 @@
 package internal
 
 import (
+	"bytes"
 	"context"
 	"crypto/tls"
 	"io"
@@ -22,27 +23,27 @@ type Retryable struct {
 }
 
 func (t *Retryable) RoundTrip(req *http.Request) (*http.Response, error) {
-	/*
-		var in []byte
-		if req.Body != nil {
-			// TODO: Use capturing instead.
-			var err error
-			if in, err = io.ReadAll(req.Body); err != nil {
-				return nil, err
-			}
-			req.Body = io.NopCloser(bytes.NewBuffer(in))
+	var in []byte
+	if req.Body != nil && req.GetBody == nil {
+		var err error
+		if in, err = io.ReadAll(req.Body); err != nil {
+			return nil, err
 		}
-	*/
+		req.Body = io.NopCloser(bytes.NewBuffer(in))
+	}
 	resp, err := t.Transport.RoundTrip(req)
 	ctx := req.Context()
 	for retry := 0; retry < t.RetryCount && shouldRetry(ctx, err, resp); retry++ {
 		_, _ = io.Copy(io.Discard, resp.Body)
 		_ = resp.Body.Close()
 		if req.Body != nil {
-			// req.Body = io.NopCloser(bytes.NewBuffer(in))
-			var err2 error
-			if req.Body, err2 = req.GetBody(); err2 != nil {
-				break
+			if req.GetBody != nil {
+				var err2 error
+				if req.Body, err2 = req.GetBody(); err2 != nil {
+					break
+				}
+			} else {
+				req.Body = io.NopCloser(bytes.NewBuffer(in))
 			}
 		}
 		timer := time.NewTimer(backoff(retry, resp))
@@ -56,6 +57,13 @@ func (t *Retryable) RoundTrip(req *http.Request) (*http.Response, error) {
 	}
 	return resp, err
 }
+
+// Unwrap implements roundtrippers.Unwrapper.
+func (t *Retryable) Unwrap() http.RoundTripper {
+	return t.Transport
+}
+
+//
 
 var (
 	// redirectsErrorRe matches the error returned by net/http when the configured number of redirects is

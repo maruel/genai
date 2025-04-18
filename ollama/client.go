@@ -25,6 +25,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
+	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -280,6 +281,9 @@ type Client struct {
 func New(baseURL, model string) (*Client, error) {
 	return &Client{
 		Client: httpjson.Client{
+			Client: &http.Client{
+				Transport: &roundtrippers.Retry{Transport: http.DefaultTransport},
+			},
 			Lenient: internal.BeLenient,
 		},
 		baseURL: baseURL,

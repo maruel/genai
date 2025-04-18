@@ -28,6 +28,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
+	"github.com/maruel/roundtrippers"
 )
 
 // healthResponse is documented at
@@ -345,6 +346,9 @@ func New(baseURL string, encoding *PromptEncoding) (*Client, error) {
 	}
 	return &Client{
 		Client: httpjson.Client{
+			Client: &http.Client{
+				Transport: &roundtrippers.Retry{Transport: http.DefaultTransport},
+			},
 			Lenient: internal.BeLenient,
 		},
 		baseURL:  baseURL,

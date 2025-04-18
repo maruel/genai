@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"2f9696a44c9d4b2a892e7c0fc776cb37","object":"chat.completion","created":1742768218,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"orange"},"finish_reason":"stop"}],"usage":{"prompt_tokens":28,"total_tokens":29,"completion_tokens":1}}'
+        body: '{"id":"abb94b7f781341a68de449820c7b0479","object":"chat.completion","created":1744754046,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"orange"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":28,"total_tokens":30,"completion_tokens":2}}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -37,7 +37,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 92514bd17f4ba2c3-YUL
+                - 930eadf5dac0a298-YUL
             Content-Type:
                 - application/json
             Ratelimitbysize-Limit:
@@ -47,17 +47,17 @@ interactions:
             Ratelimitbysize-Remaining:
                 - "499950"
             Ratelimitbysize-Reset:
-                - "2"
+                - "54"
             Server:
                 - cloudflare
             X-Envoy-Upstream-Service-Time:
-                - "626"
+                - "884"
             X-Kong-Proxy-Latency:
-                - "1"
+                - "8"
             X-Kong-Request-Id:
-                - 8a58ca20e5f44a605fd17c5342076b30
+                - b018610c70f7782d4742e46a1113dc79
             X-Kong-Upstream-Latency:
-                - "626"
+                - "884"
             X-Ratelimitbysize-Limit-Minute:
                 - "500000"
             X-Ratelimitbysize-Limit-Month:
@@ -65,7 +65,7 @@ interactions:
             X-Ratelimitbysize-Remaining-Minute:
                 - "499950"
             X-Ratelimitbysize-Remaining-Month:
-                - "998595859"
+                - "999999950"
         status: 200 OK
         code: 200
-        duration: 997ms
+        duration: 1.026s

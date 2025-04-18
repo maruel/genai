@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nnDZDUu-4Yz4kd-9251664bf82fa2e4",
+              "id": "nqG1iVu-4Yz4kd-930fd619bb36a303",
               "object": "chat.completion",
-              "created": 1742769302,
+              "created": 1744766176,
               "model": "Qwen/Qwen2.5-VL-72B-Instruct",
               "prompt": [],
               "choices": [
@@ -44,7 +44,8 @@ interactions:
                     "tool_calls": []
                   },
                   "logprobs": null,
-                  "finish_reason": "stop"
+                  "finish_reason": "stop",
+                  "seed": null
                 }
               ],
               "usage": {
@@ -61,11 +62,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9251664bf82fa2e4-YUL
+                - 930fd619bb36a303-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"1d9-T8WmmFggVKy4GFxIJZMXbcxnsRE"
+                - W/"1ed-hBQhcTPXLOqbUGEpw49lMoT2o6k"
             Retry-After:
                 - "2"
             Server:
@@ -75,13 +76,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 0c234932-46b4-482c-9f29-17d022877edd-noamzn
+                - cc461f10-c014-46a8-9946-cff7c721efb4-noamzn
             X-Api-Call-End:
-                - "2025-03-23T22:35:03.661Z"
+                - "2025-04-16T01:16:17.401Z"
             X-Api-Call-Start:
-                - "2025-03-23T22:35:02.684Z"
+                - "2025-04-16T01:16:16.396Z"
             X-Api-Received:
-                - "2025-03-23T22:35:02.562Z"
+                - "2025-04-16T01:16:16.384Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -93,11 +94,11 @@ interactions:
             X-Ratelimit-Remaining:
                 - "1"
             X-Ratelimit-Remaining-Tokens:
-                - "1000"
+                - "735"
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - nnDZDUu-4Yz4kd-9251664bf82fa2e4
+                - nqG1iVu-4Yz4kd-930fd619bb36a303
         status: 200 OK
         code: 200
-        duration: 1.333s
+        duration: 1.171s

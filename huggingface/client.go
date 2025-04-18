@@ -411,7 +411,7 @@ func New(apiKey, model string) (*Client, error) {
 				Transport: &roundtrippers.PostCompressed{
 					// HuggingFace support all three of gzip, br and zstd!
 					Encoding:  "zstd",
-					Transport: http.DefaultTransport,
+					Transport: &internal.Retryable{Transport: http.DefaultTransport, RetryCount: 2},
 				},
 			}},
 			Lenient: internal.BeLenient,
@@ -492,6 +492,11 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode > 400 {
+		// HuggingFace has the bad habit of returning errors as HTML pages.
+		_, _ = io.Copy(io.Discard, resp.Body)
+		return fmt.Errorf("http %d: %s", resp.StatusCode, resp.Status)
+	}
 	r := bufio.NewReader(resp.Body)
 	for first := true; ; first = false {
 		line, err := r.ReadBytes('\n')

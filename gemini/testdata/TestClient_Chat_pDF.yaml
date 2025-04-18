@@ -50,12 +50,12 @@ interactions:
                 "totalTokenCount": 1303,
                 "promptTokensDetails": [
                   {
-                    "modality": "TEXT",
-                    "tokenCount": 11
-                  },
-                  {
                     "modality": "DOCUMENT",
                     "tokenCount": 1290
+                  },
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 11
                   }
                 ],
                 "candidatesTokensDetails": [
@@ -75,7 +75,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=1271
+                - gfet4t7; dur=1518
             Vary:
                 - Origin
                 - X-Origin
@@ -88,4 +88,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.283s
+        duration: 1.529s

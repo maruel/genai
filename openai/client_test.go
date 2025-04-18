@@ -17,6 +17,8 @@ import (
 	"github.com/maruel/genai/openai"
 )
 
+const model = "gpt-4.1-nano"
+
 func TestClient_Chat_vision_and_JSON(t *testing.T) {
 	c := getClient(t, model)
 	msgs := genai.Messages{

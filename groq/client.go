@@ -259,6 +259,9 @@ type ChatResponse struct {
 		TotalTokens  int64   `json:"total_tokens"`
 		TotalTime    float64 `json:"total_time"`
 	} `json:"usage"`
+	UsageBreakdown struct {
+		Models string `json:"models"`
+	} `json:"usage_breakdown"`
 	SystemFingerprint string `json:"system_fingerprint"`
 	Xgroq             struct {
 		ID string `json:"id"`

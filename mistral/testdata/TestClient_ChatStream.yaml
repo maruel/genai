@@ -29,13 +29,13 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"37406de241d34786bb79f88ea0c5e58d","object":"chat.completion.chunk","created":1742768219,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+            data: {"id":"aab01ff9be1e4e33a7a862ae50f0d4fc","object":"chat.completion.chunk","created":1744754048,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
 
-            data: {"id":"37406de241d34786bb79f88ea0c5e58d","object":"chat.completion.chunk","created":1742768219,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
+            data: {"id":"aab01ff9be1e4e33a7a862ae50f0d4fc","object":"chat.completion.chunk","created":1744754048,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
 
-            data: {"id":"37406de241d34786bb79f88ea0c5e58d","object":"chat.completion.chunk","created":1742768219,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"!"},"finish_reason":null}]}
+            data: {"id":"aab01ff9be1e4e33a7a862ae50f0d4fc","object":"chat.completion.chunk","created":1744754048,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"!"},"finish_reason":null}]}
 
-            data: {"id":"37406de241d34786bb79f88ea0c5e58d","object":"chat.completion.chunk","created":1742768219,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"total_tokens":13,"completion_tokens":2}}
+            data: {"id":"aab01ff9be1e4e33a7a862ae50f0d4fc","object":"chat.completion.chunk","created":1744754048,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"total_tokens":14,"completion_tokens":3}}
 
             data: [DONE]
 
@@ -47,7 +47,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 92514bd9fbd2a2c3-YUL
+                - 930eadff5a60a298-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Ratelimitbysize-Limit:
@@ -55,27 +55,27 @@ interactions:
             Ratelimitbysize-Query-Cost:
                 - "50"
             Ratelimitbysize-Remaining:
-                - "499850"
+                - "499950"
             Ratelimitbysize-Reset:
-                - "1"
+                - "53"
             Server:
                 - cloudflare
             X-Envoy-Upstream-Service-Time:
-                - "153"
+                - "161"
             X-Kong-Proxy-Latency:
-                - "1"
+                - "6"
             X-Kong-Request-Id:
-                - 10866b6489089373b9bea27a37225544
+                - 9576a73a51f98139fbe6470895cdc304
             X-Kong-Upstream-Latency:
-                - "154"
+                - "162"
             X-Ratelimitbysize-Limit-Minute:
                 - "500000"
             X-Ratelimitbysize-Limit-Month:
                 - "1000000000"
             X-Ratelimitbysize-Remaining-Minute:
-                - "499850"
+                - "499950"
             X-Ratelimitbysize-Remaining-Month:
-                - "998067060"
+                - "999999850"
         status: 200 OK
         code: 200
-        duration: 294ms
+        duration: 299ms

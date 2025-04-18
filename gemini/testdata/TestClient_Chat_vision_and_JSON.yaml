@@ -45,17 +45,17 @@ interactions:
                 }
               ],
               "usageMetadata": {
-                "promptTokenCount": 269,
+                "promptTokenCount": 271,
                 "candidatesTokenCount": 9,
-                "totalTokenCount": 278,
+                "totalTokenCount": 280,
                 "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  },
                   {
                     "modality": "IMAGE",
                     "tokenCount": 258
-                  },
-                  {
-                    "modality": "TEXT",
-                    "tokenCount": 11
                   }
                 ],
                 "candidatesTokensDetails": [
@@ -75,7 +75,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=941
+                - gfet4t7; dur=680
             Vary:
                 - Origin
                 - X-Origin
@@ -88,4 +88,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.015s
+        duration: 751ms

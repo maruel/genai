@@ -29,23 +29,25 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"response":"Hello","p":"abcdefghijklmnopqrstuv"}
+            data: {"response":"Hello","p":"abcdefghi"}
 
-            data: {"response":".","p":"abcdefghijklmnopqrstuvwxyz0"}
+            data: {"response":".","p":"abcdefghijklmnopqrstuvw"}
 
-            data: {"response":"","p":"abcdefghijklmnopqrstuvw"}
+            data: {"response":"","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdefghijkl"}
 
             data: {"response":"","usage":{"prompt_tokens":19,"completion_tokens":4,"total_tokens":23}}
 
             data: [DONE]
 
         headers:
+            Api-Version:
+                - "2025-04-15"
             Cf-Ai-Req-Id:
-                - b224544e-02bb-434f-898e-27efc08880e4
+                - da804cdf-64a7-4b81-a1a7-1de51bbee48d
             Cf-Auditlog-Id:
-                - 0195caab-b34d-7d85-95c8-47bae10492c4
+                - 01963b72-0761-7e1e-a738-49d77f1a1b4c
             Cf-Ray:
-                - 925a3d8b9da3a27e-YUL
+                - 930eae11f9fb715a-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -54,4 +56,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 286ms
+        duration: 276ms

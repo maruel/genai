@@ -30,7 +30,7 @@ interactions:
         uncompressed: false
         body: |+
             event: message-start
-            data: {"id":"98c90f8c-0596-4b9a-8d38-42b9c3be2428","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
+            data: {"id":"afc3f606-e079-4f6c-a309-c303a2adb357","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
 
             event: content-start
             data: {"type":"content-start","index":0,"delta":{"message":{"content":{"type":"text","text":""}}}}
@@ -71,15 +71,15 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - 6853602431746663f91f278129790db7
+                - f9a472ed498321dded5c6a674f9c883a
             X-Endpoint-Monthly-Call-Limit:
                 - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "72"
+                - "73"
             X-Trial-Endpoint-Call-Limit:
                 - "10"
             X-Trial-Endpoint-Call-Remaining:
-                - "8"
+                - "7"
         status: 200 OK
         code: 200
-        duration: 115ms
+        duration: 119ms

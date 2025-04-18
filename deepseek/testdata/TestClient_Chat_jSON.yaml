@@ -28,14 +28,14 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"85f15eec-41df-4ce1-a1a3-a63c7f364167","object":"chat.completion","created":1742757685,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"{\"round\": true}"},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":41,"completion_tokens":9,"total_tokens":50,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":41},"system_fingerprint":"fp_3a5770e1b4_prod0225"}'
+        body: '{"id":"bf87eea1-b15b-44ef-8f38-55454eaad494","object":"chat.completion","created":1744754045,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"{\"round\": true}"},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":41,"completion_tokens":9,"total_tokens":50,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":41},"system_fingerprint":"fp_3d5141a69a_prod0225"}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 92504aabd930a2d8-YUL
+                - 930eadf10c8fa2d8-YUL
             Content-Type:
                 - application/json
             Server:
@@ -44,11 +44,10 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload
             Vary:
                 - origin, access-control-request-method, access-control-request-headers
-                - accept-encoding
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - c259f444e554c2ead1f17c223f4b12d4
+                - 147f0846a1c264dc3a775a2c26ade07e
         status: 200 OK
         code: 200
-        duration: 852ms
+        duration: 366ms

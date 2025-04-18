@@ -27,7 +27,7 @@ func ExampleClient_Chat_vision_and_JSON() {
 	// We must select a model that supports vision *and* JSON mode (not
 	// necessarily tool use).
 	// See "JSON Mode with Images" at https://console.groq.com/docs/vision
-	c, err := groq.New("", "llama-3.2-11b-vision-preview")
+	c, err := groq.New("", "meta-llama/llama-4-scout-17b-16e-instruct")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -107,7 +107,7 @@ func ExampleClient_Chat_tool_use() {
 func ExampleClient_ChatStream() {
 	// Using very small model for testing.
 	// See https://console.groq.com/docs/models
-	c, err := groq.New("", "llama-3.2-1b-preview")
+	c, err := groq.New("", "llama-3.1-8b-instant")
 	if err != nil {
 		log.Fatal(err)
 	}

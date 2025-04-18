@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"46d2e880157d4430b33ce2e15f017be4","object":"chat.completion","created":1742768217,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"{\n  \"banana\": true\n}"},"finish_reason":"stop"}],"usage":{"prompt_tokens":67,"total_tokens":76,"completion_tokens":9}}'
+        body: '{"id":"06f5aaa510e04256b33138e18fe94522","object":"chat.completion","created":1744754045,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"{\n  \"banana\": true\n}"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":67,"total_tokens":77,"completion_tokens":10}}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -37,7 +37,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 92514bce2ac8a2c3-YUL
+                - 930eadf11b14a298-YUL
             Content-Type:
                 - application/json
             Ratelimitbysize-Limit:
@@ -47,17 +47,17 @@ interactions:
             Ratelimitbysize-Remaining:
                 - "499950"
             Ratelimitbysize-Reset:
-                - "3"
+                - "55"
             Server:
                 - cloudflare
             X-Envoy-Upstream-Service-Time:
-                - "375"
+                - "627"
             X-Kong-Proxy-Latency:
-                - "7"
+                - "6"
             X-Kong-Request-Id:
-                - 94189142476aa45dae500658c9851578
+                - f1c17444a7a90746dc8cb725f02c4a73
             X-Kong-Upstream-Latency:
-                - "376"
+                - "628"
             X-Ratelimitbysize-Limit-Minute:
                 - "500000"
             X-Ratelimitbysize-Limit-Month:
@@ -68,4 +68,4 @@ interactions:
                 - "999999950"
         status: 200 OK
         code: 200
-        duration: 583ms
+        duration: 805ms

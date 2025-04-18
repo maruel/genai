@@ -307,9 +307,10 @@ type ChatResponse struct {
 		} `json:"logprobs"`
 	} `json:"choices"`
 	Usage struct {
-		PromptTokens int64 `json:"prompt_tokens"`
-		ChatTokens   int64 `json:"completion_tokens"`
-		TotalTokens  int64 `json:"total_tokens"`
+		PromptTokens     int64 `json:"prompt_tokens"`
+		CompletionTokens int64 `json:"completion_tokens"`
+		TotalTokens      int64 `json:"total_tokens"`
+		CachedTokens     int64 `json:"cached_tokens"`
 	} `json:"usage"`
 	Created Time   `json:"created"`
 	Model   string `json:"model"`
@@ -320,7 +321,7 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	out := genai.ChatResult{
 		Usage: genai.Usage{
 			InputTokens:  c.Usage.PromptTokens,
-			OutputTokens: c.Usage.ChatTokens,
+			OutputTokens: c.Usage.CompletionTokens,
 		},
 	}
 	if len(c.Choices) != 1 {
@@ -350,9 +351,10 @@ type ChatStreamChunkResponse struct {
 	} `json:"choices"`
 	// SystemFingerprint string `json:"system_fingerprint"`
 	Usage struct {
-		PromptTokens int64 `json:"prompt_tokens"`
-		ChatTokens   int64 `json:"completion_tokens"`
-		TotalTokens  int64 `json:"total_tokens"`
+		PromptTokens     int64 `json:"prompt_tokens"`
+		CompletionTokens int64 `json:"completion_tokens"`
+		TotalTokens      int64 `json:"total_tokens"`
+		CachedTokens     int64 `json:"cached_tokens"`
 	} `json:"usage"`
 }
 

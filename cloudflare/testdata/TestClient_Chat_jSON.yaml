@@ -30,12 +30,14 @@ interactions:
         uncompressed: true
         body: '{"result":{"response":{"round":true}},"success":true,"errors":[],"messages":[]}'
         headers:
+            Api-Version:
+                - "2025-04-15"
             Cf-Ai-Req-Id:
-                - b22203ed-6b8a-4cc0-90b6-c915fad6bbd2
+                - 6e129da4-b1cd-46a2-9552-f3905e0739d6
             Cf-Auditlog-Id:
-                - 0195caab-9f1e-7f59-8dc7-d5b7483330f1
+                - 01963b71-f2b3-7b55-8a97-9d6c0c5ad242
             Cf-Ray:
-                - 925a3d6b493ba27e-YUL
+                - 930eadf10d0c715a-YUL
             Content-Type:
                 - application/json
             Server:
@@ -44,4 +46,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 1.026s
+        duration: 1.078s

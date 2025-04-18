@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nnDZDv5-3NKUce-925166544c17a2e4",
+              "id": "nqG1j2r-3NKUce-930fd6211f99a303",
               "object": "chat.completion",
-              "created": 1742769304,
+              "created": 1744766178,
               "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
               "prompt": [],
               "choices": [
@@ -47,7 +47,7 @@ interactions:
                     "tool_calls": [
                       {
                         "index": 0,
-                        "id": "call_uhp0ppgnqnkt76t2dd2nbnae",
+                        "id": "call_jbrsgof564lbzr3yfppqvau7",
                         "type": "function",
                         "function": {
                           "arguments": "{\"country\":\"Canada\"}",
@@ -59,9 +59,10 @@ interactions:
                 }
               ],
               "usage": {
-                "prompt_tokens": 340,
-                "completion_tokens": 15,
-                "total_tokens": 355
+                "prompt_tokens": 242,
+                "completion_tokens": 23,
+                "total_tokens": 265,
+                "cached_tokens": 0
               }
             }
         headers:
@@ -72,11 +73,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 925166544c17a2e4-YUL
+                - 930fd6211f99a303-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"30b-WPka8ayQjGe5U2WW4i0U3fVlWmE"
+                - W/"323-VrfZmOQahGQaUGWdFGbcx+4TW+4"
             Retry-After:
                 - "6"
             Server:
@@ -86,13 +87,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 92f3ac79-a404-4c02-be69-4b2af8c61d9e-noamzn
+                - 4a2685b0-0636-427b-9fc7-0eb78e5d4b8e-noamzn
             X-Api-Call-End:
-                - "2025-03-23T22:35:06.627Z"
+                - "2025-04-16T01:16:25.035Z"
             X-Api-Call-Start:
-                - "2025-03-23T22:35:04.138Z"
+                - "2025-04-16T01:16:18.346Z"
             X-Api-Received:
-                - "2025-03-23T22:35:04.022Z"
+                - "2025-04-16T01:16:18.179Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -108,7 +109,7 @@ interactions:
             X-Ratelimit-Reset:
                 - "6"
             X-Request-Id:
-                - nnDZDv5-3NKUce-925166544c17a2e4
+                - nqG1j2r-3NKUce-930fd6211f99a303
         status: 200 OK
         code: 200
-        duration: 2.684s
+        duration: 6.547s

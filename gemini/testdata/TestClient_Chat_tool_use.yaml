@@ -46,7 +46,7 @@ interactions:
                     "role": "model"
                   },
                   "finishReason": "STOP",
-                  "avgLogprobs": -0.0072108559310436245
+                  "avgLogprobs": -0.0089406922459602349
                 }
               ],
               "usageMetadata": {
@@ -80,7 +80,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=1174
+                - gfet4t7; dur=912
             Vary:
                 - Origin
                 - X-Origin
@@ -93,4 +93,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.185s
+        duration: 923ms

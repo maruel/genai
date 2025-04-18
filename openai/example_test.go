@@ -23,12 +23,9 @@ import (
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
 
-// Using small model for testing.
-// See https://platform.openai.com/docs/models
-const model = "gpt-4o-mini"
-
 func ExampleClient_Chat_vision_and_JSON() {
-	c, err := openai.New("", "gpt-4o-mini")
+	// See https://platform.openai.com/docs/models
+	c, err := openai.New("", "gpt-4.1-nano")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -97,7 +94,7 @@ func ExampleClient_Chat_audio() {
 }
 
 func ExampleClient_Chat_pDF() {
-	c, err := openai.New("", "gpt-4o-mini")
+	c, err := openai.New("", "gpt-4.1-nano")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -132,7 +129,7 @@ func ExampleClient_Chat_pDF() {
 }
 
 func ExampleClient_Chat_tool_use() {
-	c, err := openai.New("", "gpt-4o-mini")
+	c, err := openai.New("", "gpt-4.1-nano")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -171,7 +168,7 @@ func ExampleClient_Chat_tool_use() {
 }
 
 func ExampleClient_ChatStream() {
-	c, err := openai.New("", "gpt-4o-mini")
+	c, err := openai.New("", "gpt-4.1-nano")
 	if err != nil {
 		log.Fatal(err)
 	}

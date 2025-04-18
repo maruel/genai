@@ -18,7 +18,7 @@ import (
 )
 
 func TestClient_Chat_vision_and_JSON(t *testing.T) {
-	c := getClient(t, "llama-3.2-11b-vision-preview")
+	c := getClient(t, "meta-llama/llama-4-scout-17b-16e-instruct")
 	msgs := genai.Messages{
 		{
 			Role: genai.User,
@@ -96,7 +96,7 @@ func TestClient_Chat_tool_use(t *testing.T) {
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	c := getClient(t, "llama-3.2-1b-preview")
+	c := getClient(t, "llama-3.1-8b-instant")
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 	}

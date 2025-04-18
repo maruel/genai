@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"msg_01GuZXre7PcG8vfFc1fmb5j6","type":"message","role":"assistant","model":"claude-3-haiku-20240307","content":[{"type":"text","text":"Yes."}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":237,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":5}}'
+        body: '{"id":"msg_014rroyR82HZBP1SXL8bBoeX","type":"message","role":"assistant","model":"claude-3-haiku-20240307","content":[{"type":"text","text":"Yes"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":237,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":4}}'
         headers:
             Anthropic-Organization-Id:
                 - b0607a1c-e615-400e-9924-e7a556d22e9f
@@ -37,33 +37,33 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "50000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-03-23T14:03:09Z"
+                - "2025-04-15T21:54:06Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-03-23T14:03:09Z"
+                - "2025-04-15T21:54:06Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "50"
             Anthropic-Ratelimit-Requests-Remaining:
                 - "49"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-03-23T14:03:10Z"
+                - "2025-04-15T21:54:06Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-03-23T14:03:09Z"
+                - "2025-04-15T21:54:06Z"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 924e7877da53a2f8-YUL
+                - 930eadf0fbd1a2f7-YUL
             Content-Type:
                 - application/json
             Request-Id:
-                - req_01RV8UMgznvaHAPKXmkRz3C2
+                - req_01JkDZscxHBvmcDK9z5RbVC5
             Server:
                 - cloudflare
             Via:
@@ -72,4 +72,4 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 585ms
+        duration: 584ms

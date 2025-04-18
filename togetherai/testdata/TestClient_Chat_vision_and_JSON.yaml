@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nnDZDKD-4pPsy7-92516646b876a2e4",
+              "id": "nqG1sbZ-57nCBj-930fd6d8dc217138",
               "object": "chat.completion",
-              "created": 1742769302,
+              "created": 1744766220,
               "model": "meta-llama/Llama-Vision-Free",
               "prompt": [],
               "choices": [
@@ -44,7 +44,8 @@ interactions:
                     "tool_calls": []
                   },
                   "logprobs": null,
-                  "finish_reason": "stop"
+                  "finish_reason": "stop",
+                  "seed": null
                 }
               ],
               "usage": {
@@ -61,11 +62,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 92516646b876a2e4-YUL
+                - 930fd6d8dc217138-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"1e1-YMU1ax+m+DU6pcRHiRUsCqrMyeY"
+                - W/"1f5-6feER14m0QLXjDuypSJzQQBQfVg"
             Retry-After:
                 - "6"
             Server:
@@ -75,13 +76,15 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 0cf3dabc-aca5-4f8d-b511-e816637980d9-noamzn
+                - 42cb6850-c158-4cf6-a0ac-93508deffe50-noamzn
             X-Api-Call-End:
-                - "2025-03-23T22:35:02.321Z"
+                - "2025-04-16T01:17:03.408Z"
             X-Api-Call-Start:
-                - "2025-03-23T22:35:02.036Z"
+                - "2025-04-16T01:16:52.313Z"
             X-Api-Received:
-                - "2025-03-23T22:35:02.000Z"
+                - "2025-04-16T01:16:46.988Z"
+            X-Api-Retries:
+                - "5"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -97,7 +100,7 @@ interactions:
             X-Ratelimit-Reset:
                 - "6"
             X-Request-Id:
-                - nnDZDKD-4pPsy7-92516646b876a2e4
+                - nqG1sbZ-57nCBj-930fd6d8dc217138
         status: 200 OK
         code: 200
-        duration: 876ms
+        duration: 16.615s

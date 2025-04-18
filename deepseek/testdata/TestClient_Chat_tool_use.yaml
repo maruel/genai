@@ -28,14 +28,14 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"0aa75a8b-c9bf-4694-a095-891264fd1f5c","object":"chat.completion","created":1742757691,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"index":0,"id":"call_0_b353679a-8e99-4176-a6fa-5b47b5906a0e","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}},{"index":1,"id":"call_1_78c30c6d-5610-41d4-994a-82ae1f9e0ebb","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":175,"completion_tokens":36,"total_tokens":211,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":175},"system_fingerprint":"fp_3a5770e1b4_prod0225"}'
+        body: '{"id":"08b0da43-e870-4539-acd1-14bbac5622ea","object":"chat.completion","created":1744754050,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"index":0,"id":"call_0_e69e9d83-8b95-496d-94c4-cfae8e78fbdf","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}},{"index":1,"id":"call_1_187d4b0c-9392-4ee1-9110-615cfd8401ed","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":175,"completion_tokens":38,"total_tokens":213,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":175},"system_fingerprint":"fp_3d5141a69a_prod0225"}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 92504ad5ef86a2d8-YUL
+                - 930eae0e8c9aa2d8-YUL
             Content-Type:
                 - application/json
             Server:
@@ -44,11 +44,10 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload
             Vary:
                 - origin, access-control-request-method, access-control-request-headers
-                - accept-encoding
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - 6eaa33fe83592f5fc99e75c13cb1405e
+                - 3dec45925360f7f0e8622dbe23f5491b
         status: 200 OK
         code: 200
-        duration: 278ms
+        duration: 313ms

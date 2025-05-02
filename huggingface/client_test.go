@@ -55,6 +55,17 @@ func TestClient_Chat_tool_use(t *testing.T) {
 	internaltest.ChatToolUseCountry(t, c, &opts)
 }
 
+func TestClient_Chat_vision_and_JSON(t *testing.T) {
+	t.Skip("llama 3.3 70B returns false instead of true as structured JSON (!?!)")
+	c := getClient(t, "meta-llama/Llama-3.3-70B-Instruct")
+	opts := genai.ChatOptions{
+		Seed:        1,
+		Temperature: 0.01,
+		MaxTokens:   50,
+	}
+	internaltest.ChatVisionJSON(t, c, &opts)
+}
+
 func TestClient_ChatStream(t *testing.T) {
 	// TODO: Figure out why smaller models fail.
 	c := getClient(t, "meta-llama/Llama-3.3-70B-Instruct")

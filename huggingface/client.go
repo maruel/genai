@@ -86,9 +86,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 					errs = append(errs, errors.New("huggingface does not support TopK"))
 				}
 				c.Stop = v.Stop
-				if v.ReplyAsJSON || v.DecodeAs != nil {
-					errs = append(errs, errors.New("hugginface client doesn't support JSON yet; to be implemented"))
-				}
 				if v.ReplyAsJSON {
 					c.ResponseFormat.Type = "json"
 				}

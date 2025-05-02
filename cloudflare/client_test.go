@@ -56,38 +56,14 @@ func TestClient_Chat_jSON(t *testing.T) {
 
 func TestClient_Chat_tool_use(t *testing.T) {
 	c := getClient(t, "@hf/nousresearch/hermes-2-pro-mistral-7b")
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
-	}
-	var got struct {
-		Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
-	}
 	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   200,
-		Tools: []genai.ToolDef{
-			{
-				Name:        "best_country",
-				Description: "A tool to determine the best country",
-				InputsAs:    &got,
-			},
-		},
 	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("Raw response: %#v", resp)
-	// Warning: when the model is undecided, it call both.
-	if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "best_country" {
-		log.Fatal("Unexpected response")
-	}
-	if err := resp.ToolCalls[0].Decode(&got); err != nil {
-		log.Fatal(err)
-	}
-	if got.Country != "Canada" {
-		t.Fatal(got.Country)
+	resp := internaltest.ChatToolUseCountry(t, c, &opts)
+	if resp.InputTokens != 925 || resp.OutputTokens != 96 {
+		t.Logf("Unexpected tokens usage: %v", resp.Usage)
 	}
 }
 

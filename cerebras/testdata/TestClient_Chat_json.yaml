@@ -28,18 +28,18 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-8cad3330-a31f-4c73-8ff0-824758cbd014","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"round\": true}","role":"assistant"}}],"created":1744754043,"model":"llama3.1-8b","system_fingerprint":"fp_6ca4989590d512bb18d1","object":"chat.completion","usage":{"prompt_tokens":173,"completion_tokens":6,"total_tokens":179},"time_info":{"queue_time":0.051583556,"prompt_time":0.008754096,"completion_time":0.002835438,"total_time":0.06449437141418457,"created":1744754043}}'
+        body: '{"id":"chatcmpl-b01233b3-af5d-485e-a125-470b4070604f","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"round\": true}","role":"assistant"}}],"created":1746192468,"model":"llama3.1-8b","system_fingerprint":"fp_d4032cc64cc617db1426","object":"chat.completion","usage":{"prompt_tokens":173,"completion_tokens":6,"total_tokens":179},"time_info":{"queue_time":0.22008377,"prompt_time":0.008846485,"completion_time":0.002807726,"total_time":0.2450852394104004,"created":1746192468}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 930eadf10b7ea27e-YUL
+                - 9397dbaed9e5a2e8-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-8cad3330-a31f-4c73-8ff0-824758cbd014
+                - chatcmpl-b01233b3-af5d-485e-a125-470b4070604f
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -57,11 +57,11 @@ interactions:
             X-Ratelimit-Remaining-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Reset-Requests-Day:
-                - "7554.209904670715"
+                - "37931.32794547081"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "54.20990467071533"
+                - "11.327945470809937"
             X-Request-Id:
-                - 930eadf10b7ea27e-YUL
+                - 9397dbaed9e5a2e8-YUL
         status: 200 OK
         code: 200
-        duration: 285ms
+        duration: 463ms

@@ -72,7 +72,7 @@ func MatchIgnorePort(r *http.Request, i cassette.Request) bool {
 
 //
 
-// ChatStream runs a  ChatStream and returns the concatenated response.
+// ChatStream runs a ChatStream and returns the concatenated response.
 func ChatStream(t *testing.T, c genai.ChatProvider, msgs genai.Messages, opts *genai.ChatOptions) genai.Messages {
 	ctx := t.Context()
 	chunks := make(chan genai.MessageFragment)
@@ -107,6 +107,46 @@ func ChatStream(t *testing.T, c genai.ChatProvider, msgs genai.Messages, opts *g
 		t.Fatal(err)
 	}
 	return responses
+}
+
+// ChatToolUse runs a Chat with tool use and verifies that the tools are called correctly.
+// It returns the response for further validation.
+func ChatToolUseCountry(t *testing.T, c genai.ChatProvider, opts *genai.ChatOptions) genai.ChatResult {
+	ctx := t.Context()
+	msgs := genai.Messages{
+		genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
+	}
+	optsCopy := *opts
+	opts = &optsCopy
+	var got struct {
+		Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
+	}
+	opts.Tools = []genai.ToolDef{
+		{
+			Name:        "best_country",
+			Description: "A tool to determine the best country",
+			InputsAs:    &got,
+		},
+	}
+	resp, err := c.Chat(ctx, msgs, opts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("Raw response: %#v", resp)
+
+	// Warning: when the model is undecided, it call both.
+	// Check for tool calls
+	want := "best_country"
+	if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
+		t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
+	}
+	if err := resp.ToolCalls[0].Decode(&got); err != nil {
+		t.Fatal(err)
+	}
+	if got.Country != "Canada" {
+		t.Fatal(got.Country)
+	}
+	return resp
 }
 
 // AssertResponses ensures the responses we got match what we want.

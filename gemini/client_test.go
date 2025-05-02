@@ -135,6 +135,19 @@ func TestClient_Chat_audio(t *testing.T) {
 
 func TestClient_Chat_tool_use(t *testing.T) {
 	c := getClient(t, model)
+	opts := genai.ChatOptions{
+		Seed:        1,
+		Temperature: 0.01,
+		MaxTokens:   200,
+	}
+	resp := internaltest.ChatToolUseCountry(t, c, &opts)
+	if resp.InputTokens != 78 || resp.OutputTokens != 15 {
+		t.Logf("Unexpected tokens usage: %v", resp.Usage)
+	}
+}
+
+func TestClient_Chat_tool_use_video(t *testing.T) {
+	c := getClient(t, model)
 	f, err := os.Open("testdata/animation.mp4")
 	if err != nil {
 		t.Fatal(err)
@@ -176,6 +189,7 @@ func TestClient_Chat_tool_use(t *testing.T) {
 	if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "hidden_word" {
 		t.Fatal("Unexpected response")
 	}
+
 	if err := resp.ToolCalls[0].Decode(&got); err != nil {
 		t.Fatal(err)
 	}

@@ -41,7 +41,7 @@ interactions:
                     "role": "model"
                   },
                   "finishReason": "STOP",
-                  "avgLogprobs": -0.00012165586101926035
+                  "avgLogprobs": -0.00020383070740434859
                 }
               ],
               "usageMetadata": {
@@ -50,12 +50,12 @@ interactions:
                 "totalTokenCount": 280,
                 "promptTokensDetails": [
                   {
-                    "modality": "TEXT",
-                    "tokenCount": 13
-                  },
-                  {
                     "modality": "IMAGE",
                     "tokenCount": 258
+                  },
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
                   }
                 ],
                 "candidatesTokensDetails": [
@@ -75,7 +75,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=680
+                - gfet4t7; dur=491
             Vary:
                 - Origin
                 - X-Origin
@@ -88,4 +88,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 751ms
+        duration: 586ms

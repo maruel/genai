@@ -92,40 +92,14 @@ func TestClient_Chat_video(t *testing.T) {
 
 func TestClient_Chat_tool_use(t *testing.T) {
 	c := getClient(t, "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free")
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
-	}
-	var got struct {
-		Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
-	}
 	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
-		Tools: []genai.ToolDef{
-			{
-				Name:        "best_country",
-				Description: "A tool to determine the best country",
-				InputsAs:    &got,
-			},
-		},
 	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
+	resp := internaltest.ChatToolUseCountry(t, c, &opts)
 	if resp.InputTokens != 340 || resp.OutputTokens != 15 {
 		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
-	if len(resp.ToolCalls) != 1 || resp.ToolCalls[0].Name != "best_country" {
-		t.Fatal("Unexpected response")
-	}
-	if err := resp.ToolCalls[0].Decode(&got); err != nil {
-		t.Fatal(err)
-	}
-	if got.Country != "Canada" {
-		t.Fatal(got.Country)
 	}
 }
 

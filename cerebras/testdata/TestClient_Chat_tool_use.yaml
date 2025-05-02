@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 606
+        content_length: 592
         transfer_encoding: []
         trailer: {}
         host: api.cerebras.ai
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"llama-3.1-8b","messages":[{"role":"user","content":"I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."}],"max_completion_tokens":50,"seed":1,"stream":true,"temperature":0.01,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+            {"model":"llama-3.1-8b","messages":[{"role":"user","content":"I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."}],"max_completion_tokens":50,"seed":1,"temperature":0.01,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
         form: {}
         headers:
             Content-Type:
@@ -27,25 +27,19 @@ interactions:
         transfer_encoding: []
         trailer: {}
         content_length: -1
-        uncompressed: false
-        body: |+
-            data: {"id":"chatcmpl-e19f31a3-c842-4ec4-af7d-d4faf4ca442e","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1744754044,"model":"llama3.1-8b","system_fingerprint":"fp_6ca4989590d512bb18d1","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-e19f31a3-c842-4ec4-af7d-d4faf4ca442e","choices":[{"delta":{"tool_calls":[{"id":"444dd97fd","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0},{"id":"e636d928e","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":1}]},"index":0}],"created":1744754044,"model":"llama3.1-8b","system_fingerprint":"fp_6ca4989590d512bb18d1","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-e19f31a3-c842-4ec4-af7d-d4faf4ca442e","choices":[{"delta":{},"finish_reason":"tool_calls","index":0}],"created":1744754044,"model":"llama3.1-8b","system_fingerprint":"fp_6ca4989590d512bb18d1","object":"chat.completion.chunk","usage":{"prompt_tokens":250,"completion_tokens":17,"total_tokens":267},"time_info":{"queue_time":0.00044881,"prompt_time":0.01268379,"completion_time":0.007938758,"total_time":0.022736549377441406,"created":1744754044}}
-
+        uncompressed: true
+        body: '{"id":"chatcmpl-c6bd9c83-6ad2-4837-8df0-c29883d42645","choices":[{"finish_reason":"stop","index":0,"message":{"tool_calls":[{"id":"c423255d9","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}],"role":"assistant"}}],"created":1746192468,"model":"llama3.1-8b","system_fingerprint":"fp_d4032cc64cc617db1426","object":"chat.completion","usage":{"prompt_tokens":433,"completion_tokens":17,"total_tokens":450},"time_info":{"queue_time":0.30430429,"prompt_time":0.022130504,"completion_time":0.007892634,"total_time":0.33597254753112793,"created":1746192468}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 930eadf28e08a27e-YUL
+                - 9397dbb18dfda2e8-YUL
             Content-Type:
-                - text/event-stream; charset=utf-8
+                - application/json
             Inference-Id:
-                - chatcmpl-e19f31a3-c842-4ec4-af7d-d4faf4ca442e
+                - chatcmpl-c6bd9c83-6ad2-4837-8df0-c29883d42645
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -59,15 +53,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14399"
+                - "14400"
             X-Ratelimit-Remaining-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Reset-Requests-Day:
-                - "7554.00528383255"
+                - "37930.85958862305"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "54.00528383255005"
+                - "10.859588623046875"
             X-Request-Id:
-                - 930eadf28e08a27e-YUL
+                - 9397dbb18dfda2e8-YUL
         status: 200 OK
         code: 200
-        duration: 201ms
+        duration: 466ms

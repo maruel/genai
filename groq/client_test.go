@@ -5,7 +5,6 @@
 package groq_test
 
 import (
-	"bytes"
 	_ "embed"
 	"os"
 	"strings"
@@ -17,43 +16,14 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 )
 
-func TestClient_Chat_vision_and_JSON(t *testing.T) {
+func TestClient_Chat_vision(t *testing.T) {
 	c := getClient(t, "meta-llama/llama-4-scout-17b-16e-instruct")
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "Is it a banana? Reply as JSON with the form {\"banana\": false} or {\"banana\": true}."},
-				{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
-			},
-		},
-	}
 	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
-		ReplyAsJSON: true,
 	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
-	if resp.InputTokens != 59 || resp.OutputTokens != 8 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	var got struct {
-		Banana bool `json:"banana"`
-	}
-	if err := resp.Contents[0].Decode(&got); err != nil {
-		t.Fatal(err)
-	}
-	if !got.Banana {
-		t.Fatal("unexpected")
-	}
+	internaltest.ChatVisionText(t, c, &opts)
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {

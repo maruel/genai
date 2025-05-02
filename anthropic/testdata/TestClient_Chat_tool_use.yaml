@@ -28,51 +28,53 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"msg_01MHE1yf7iFSa9RPUNy7ZcN1","type":"message","role":"assistant","model":"claude-3-haiku-20240307","content":[{"type":"tool_use","id":"toolu_01GznzXr85nzME4Ugu96e4Z7","name":"best_country","input":{"country":"Canada"}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":483,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":38}}'
+        body: '{"id":"msg_01XuWzV4XH6gdtxh2oyA9ySD","type":"message","role":"assistant","model":"claude-3-haiku-20240307","content":[{"type":"tool_use","id":"toolu_01KZmysg8rH6Z2hzmNDjhYE8","name":"best_country","input":{"country":"Canada"}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":483,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":38}}'
         headers:
             Anthropic-Organization-Id:
                 - b0607a1c-e615-400e-9924-e7a556d22e9f
             Anthropic-Ratelimit-Input-Tokens-Limit:
                 - "50000"
             Anthropic-Ratelimit-Input-Tokens-Remaining:
-                - "48000"
+                - "49000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-05-02T14:53:08Z"
+                - "2025-05-02T21:19:34Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-05-02T14:53:06Z"
+                - "2025-05-02T21:19:32Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "50"
             Anthropic-Ratelimit-Requests-Remaining:
-                - "47"
+                - "49"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-05-02T14:53:09Z"
+                - "2025-05-02T21:19:32Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Remaining:
-                - "58000"
+                - "59000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-05-02T14:53:06Z"
+                - "2025-05-02T21:19:32Z"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9398589dde5da2cf-YUL
+                - 939a8eacd800a2ed-YUL
             Content-Type:
                 - application/json
             Request-Id:
-                - req_011CNitnkJiive8t4nhkev8S
+                - req_011CNjQFsREDHPaLT3dastV9
             Server:
                 - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
             Via:
                 - 1.1 google
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 884ms
+        duration: 1.014s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -100,7 +102,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"msg_01AwN7xrkWK3Myt5y7K67V9B","type":"message","role":"assistant","model":"claude-3-haiku-20240307","content":[{"type":"tool_use","id":"toolu_016r4noq79ca1G2MQKWcrLn1","name":"best_country","input":{"country":"USA"}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":483,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":38}}'
+        body: '{"id":"msg_0149u3s9o2BgXJwp41UuENgM","type":"message","role":"assistant","model":"claude-3-haiku-20240307","content":[{"type":"tool_use","id":"toolu_011VCvcpbHHrNMeZ3WYZXGRo","name":"best_country","input":{"country":"USA"}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":483,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":38}}'
         headers:
             Anthropic-Organization-Id:
                 - b0607a1c-e615-400e-9924-e7a556d22e9f
@@ -109,39 +111,41 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "50000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-05-02T14:53:07Z"
+                - "2025-05-02T21:19:32Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-05-02T14:53:06Z"
+                - "2025-05-02T21:19:32Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "50"
             Anthropic-Ratelimit-Requests-Remaining:
-                - "49"
+                - "46"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-05-02T14:53:06Z"
+                - "2025-05-02T21:19:36Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-05-02T14:53:06Z"
+                - "2025-05-02T21:19:32Z"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9398589dde57a2cf-YUL
+                - 939a8eb2eff9a2ed-YUL
             Content-Type:
                 - application/json
             Request-Id:
-                - req_011CNitnkJDvsLfQAVfrnDt4
+                - req_011CNjQFwYXNXqEMVUFqFKtq
             Server:
                 - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
             Via:
                 - 1.1 google
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 997ms
+        duration: 498ms

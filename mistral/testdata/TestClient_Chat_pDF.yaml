@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"7634588be463442daff6699e2f0cbd56","object":"chat.completion","created":1746197589,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"orange"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":28,"total_tokens":30,"completion_tokens":2}}'
+        body: '{"id":"b51039d6499247e8816ea30e06d36ad8","object":"chat.completion","created":1746219567,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"orange"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":28,"total_tokens":30,"completion_tokens":2}}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -37,7 +37,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 939858b2ee71a2e0-YUL
+                - 939a7147a823a290-YUL
             Content-Type:
                 - application/json
             Ratelimitbysize-Limit:
@@ -47,17 +47,17 @@ interactions:
             Ratelimitbysize-Remaining:
                 - "499950"
             Ratelimitbysize-Reset:
-                - "51"
+                - "33"
             Server:
                 - cloudflare
             X-Envoy-Upstream-Service-Time:
-                - "1085"
+                - "487"
             X-Kong-Proxy-Latency:
-                - "5"
+                - "9"
             X-Kong-Request-Id:
-                - 67236e340e144619a550895b52ddf64c
+                - a5ed192e61d1af60c5c4023c7baf4363
             X-Kong-Upstream-Latency:
-                - "1093"
+                - "488"
             X-Ratelimitbysize-Limit-Minute:
                 - "500000"
             X-Ratelimitbysize-Limit-Month:
@@ -68,4 +68,4 @@ interactions:
                 - "999999950"
         status: 200 OK
         code: 200
-        duration: 4.57s
+        duration: 660ms

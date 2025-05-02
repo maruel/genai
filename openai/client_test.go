@@ -5,7 +5,6 @@
 package openai_test
 
 import (
-	"bytes"
 	_ "embed"
 	"os"
 	"strings"
@@ -21,41 +20,12 @@ const model = "gpt-4.1-nano"
 
 func TestClient_Chat_vision_and_JSON(t *testing.T) {
 	c := getClient(t, model)
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "Is it a banana? Reply as JSON."},
-				{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
-			},
-		},
-	}
-	var got struct {
-		Banana bool `json:"banana"`
-	}
 	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
-		DecodeAs:    &got,
 	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
-	if resp.InputTokens != 295 || resp.OutputTokens != 6 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	if err := resp.Contents[0].Decode(&got); err != nil {
-		t.Fatal(err)
-	}
-	if !got.Banana {
-		t.Fatal(got.Banana)
-	}
+	internaltest.ChatVisionJSON(t, c, &opts)
 }
 
 func TestClient_Chat_audio(t *testing.T) {

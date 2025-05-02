@@ -5,7 +5,6 @@
 package gemini_test
 
 import (
-	"bytes"
 	_ "embed"
 	"net/http"
 	"os"
@@ -22,41 +21,12 @@ import (
 
 func TestClient_Chat_vision_and_JSON(t *testing.T) {
 	c := getClient(t, model)
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "Is it a banana? Reply as JSON."},
-				{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
-			},
-		},
-	}
-	var got struct {
-		Banana bool `json:"banana"`
-	}
 	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
-		DecodeAs:    &got,
 	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
-	if resp.InputTokens != 268 || resp.OutputTokens != 9 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	if err := resp.Contents[0].Decode(&got); err != nil {
-		t.Fatal(err)
-	}
-	if !got.Banana {
-		t.Fatal("unexpected")
-	}
+	internaltest.ChatVisionJSON(t, c, &opts)
 }
 
 func TestClient_Chat_pDF(t *testing.T) {

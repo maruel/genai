@@ -6,6 +6,8 @@
 package internaltest
 
 import (
+	"bytes"
+	_ "embed"
 	"net/http"
 	"net/url"
 	"os"
@@ -223,3 +225,71 @@ func cleanup(t *testing.T, i *cassette.Interaction) error {
 }
 
 var defaultMatcher = cassette.NewDefaultMatcher()
+
+// See the 3kib banana jpg online at
+// https://github.com/maruel/genai/blob/main/openai/testdata/banana.jpg
+//
+//go:embed testdata/banana.jpg
+var bananaJpg []byte
+
+// ChatVisionText runs a Chat with vision capabilities and verifies that the model correctly identifies a
+// banana image.
+func ChatVisionText(t *testing.T, c genai.ChatProvider, opts *genai.ChatOptions) {
+	ctx := t.Context()
+	msgs := genai.Messages{
+		{
+			Role: genai.User,
+			Contents: []genai.Content{
+				{Text: "Is it a banana? Reply with only one word."},
+				{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
+			},
+		},
+	}
+	resp, err := c.Chat(ctx, msgs, opts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("Raw response: %#v", resp)
+	if len(resp.Contents) != 1 {
+		t.Fatal("Unexpected response")
+	}
+	// Normalize some of the variance. Obviously many models will still fail this test.
+	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!")
+	if txt != "yes" {
+		t.Fatal(txt)
+	}
+}
+
+// ChatVisionJSON runs a Chat with vision capabilities and verifies that the model correctly identifies a
+// banana image. It enforces JSON schema.
+func ChatVisionJSON(t *testing.T, c genai.ChatProvider, opts *genai.ChatOptions) {
+	ctx := t.Context()
+	msgs := genai.Messages{
+		{
+			Role: genai.User,
+			Contents: []genai.Content{
+				{Text: "Is it a banana? Reply as JSON."},
+				{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
+			},
+		},
+	}
+	optsCopy := *opts
+	var got struct {
+		Banana bool `json:"banana"`
+	}
+	optsCopy.DecodeAs = &got
+	resp, err := c.Chat(ctx, msgs, &optsCopy)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("Raw response: %#v", resp)
+	if len(resp.Contents) != 1 {
+		t.Fatal("Unexpected response")
+	}
+	if err := resp.Contents[0].Decode(&got); err != nil {
+		t.Fatal(err)
+	}
+	if !got.Banana {
+		t.Fatal(got.Banana)
+	}
+}

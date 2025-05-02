@@ -5,19 +5,15 @@
 package anthropic_test
 
 import (
-	"bytes"
 	_ "embed"
-	"errors"
 	"os"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/anthropic"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
-	"github.com/maruel/httpjson"
 )
 
 func TestClient_Chat_vision(t *testing.T) {
@@ -26,46 +22,11 @@ func TestClient_Chat_vision(t *testing.T) {
 	// 0.80$/4.00$. 3.0 supports images, 3.5 supports PDFs.
 	// https://docs.anthropic.com/en/docs/about-claude/models/all-models
 	c := getClient(t, "claude-3-haiku-20240307")
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "Is it a banana? Reply with only one word."},
-				{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
-			},
-		},
-	}
 	opts := genai.ChatOptions{
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	for i := range 3 {
-		resp, err := c.Chat(t.Context(), msgs, &opts)
-		if err != nil {
-			var herr *httpjson.Error
-			// See https://docs.anthropic.com/en/api/errors#http-errors
-			if errors.As(err, &herr) && herr.StatusCode == 529 && i != 2 {
-				t.Log("retrying after 2s")
-				time.Sleep(2 * time.Second)
-				continue
-			}
-			t.Fatal(err)
-		}
-		t.Logf("Raw response: %#v", resp)
-		if resp.InputTokens != 237 || resp.OutputTokens != 5 {
-			t.Logf("Unexpected tokens usage: %v", resp.Usage)
-		}
-		if len(resp.Contents) != 1 {
-			t.Fatal("Unexpected response")
-		}
-		// Normalize some of the variance. Obviously many models will still fail this test.
-		txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!")
-		if txt != "yes" {
-			t.Fatal(txt)
-		}
-		return
-	}
-	t.Fatal("too many retries")
+	internaltest.ChatVisionText(t, c, &opts)
 }
 
 func TestClient_Chat_pdf(t *testing.T) {

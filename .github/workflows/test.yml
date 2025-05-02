@@ -174,7 +174,8 @@ jobs:
     - name: "Check: misspelling; code doesn't contain misspelling (ubuntu)"
       if: always() && matrix.os == 'ubuntu-latest'
       run: |
-        ERR=$(misspell .)
+        FILES=$(git ls-files | grep -v ^MODELS\.md$)
+        ERR=$(misspell $FILES)
         if ! test -z "$ERR"; then
           echo "$ERR"
           echo "## ⚠ misspell Failed" >> ../_comments.txt

@@ -29,6 +29,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-// replace github.com/maruel/httpjson => ../httpjson
-
-// replace gopkg.in/dnaeon/go-vcr.v4 => ../../src-oth/go-vcr
+// replace github.com/maruel/roundtrippers => ../roundtrippers

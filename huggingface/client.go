@@ -33,7 +33,7 @@ import (
 
 // https://huggingface.co/docs/api-inference/tasks/chat-completion#api-specification
 type ChatRequest struct {
-	// Model            string    `json:"model"` It's already in the URL.
+	Model            string    `json:"model,omitempty"` // It's already in the URL.
 	Stream           bool      `json:"stream"`
 	Messages         []Message `json:"messages"`
 	FrequencyPenalty float64   `json:"frequency_penalty,omitzero"` // [-2.0, 2.0]
@@ -411,11 +411,7 @@ func New(apiKey, model string) (*Client, error) {
 				Transport: &roundtrippers.PostCompressed{
 					Transport: &roundtrippers.Retry{
 						Transport: &roundtrippers.RequestID{
-							// Transport: &roundtrippers.Log{
 							Transport: http.DefaultTransport,
-							//	L:         slog.New(slog.NewTextHandler(os.Stderr, nil)),
-							//	Level:     slog.LevelError,
-							//},
 						},
 					},
 					// HuggingFace support all three of gzip, br and zstd!

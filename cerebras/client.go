@@ -322,8 +322,12 @@ func New(apiKey, model string) (*Client, error) {
 		model: model,
 		Client: httpjson.Client{
 			Client: &http.Client{Transport: &roundtrippers.Header{
-				Transport: &roundtrippers.Retry{Transport: http.DefaultTransport},
-				Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+				Transport: &roundtrippers.Retry{
+					Transport: &roundtrippers.RequestID{
+						Transport: http.DefaultTransport,
+					},
+				},
+				Header: http.Header{"Authorization": {"Bearer " + apiKey}},
 			}},
 			Lenient: internal.BeLenient,
 		},

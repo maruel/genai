@@ -347,7 +347,11 @@ func New(baseURL string, encoding *PromptEncoding) (*Client, error) {
 	return &Client{
 		Client: httpjson.Client{
 			Client: &http.Client{
-				Transport: &roundtrippers.Retry{Transport: http.DefaultTransport},
+				Transport: &roundtrippers.Retry{
+					Transport: &roundtrippers.RequestID{
+						Transport: http.DefaultTransport,
+					},
+				},
 			},
 			Lenient: internal.BeLenient,
 		},

@@ -17,7 +17,8 @@ import (
 )
 
 func TestClient_Chat(t *testing.T) {
-	c := getClient(t, "Qwen/Qwen3-1.7B")
+	// TODO: Figure out why smaller models fail.
+	c := getClient(t, "meta-llama/Llama-3.3-70B-Instruct")
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 	}
@@ -44,7 +45,8 @@ func TestClient_Chat(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	c := getClient(t, "Qwen/Qwen3-1.7B")
+	// TODO: Figure out why smaller models fail.
+	c := getClient(t, "meta-llama/Llama-3.3-70B-Instruct")
 	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
@@ -54,7 +56,8 @@ func TestClient_Chat_tool_use(t *testing.T) {
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	c := getClient(t, "Qwen/Qwen3-1.7B")
+	// TODO: Figure out why smaller models fail.
+	c := getClient(t, "meta-llama/Llama-3.3-70B-Instruct")
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 	}

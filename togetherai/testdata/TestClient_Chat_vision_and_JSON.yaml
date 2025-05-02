@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nqG1sbZ-57nCBj-930fd6d8dc217138",
+              "id": "nsSW4ih-57nCBj-9398589e7a554bb8",
               "object": "chat.completion",
-              "created": 1744766220,
+              "created": 1746197600,
               "model": "meta-llama/Llama-Vision-Free",
               "prompt": [],
               "choices": [
@@ -62,11 +62,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 930fd6d8dc217138-YUL
+                - 9398589e7a554bb8-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"1f5-6feER14m0QLXjDuypSJzQQBQfVg"
+                - W/"1f5-3sUKM1mIGRQiAdah2NmI/hCkG2g"
             Retry-After:
                 - "6"
             Server:
@@ -76,15 +76,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 42cb6850-c158-4cf6-a0ac-93508deffe50-noamzn
+                - 9b1b1f01-131f-40fb-bd95-7b12d2ba7745-noamzn
             X-Api-Call-End:
-                - "2025-04-16T01:17:03.408Z"
+                - "2025-05-02T14:53:22.546Z"
             X-Api-Call-Start:
-                - "2025-04-16T01:16:52.313Z"
+                - "2025-05-02T14:53:06.154Z"
             X-Api-Received:
-                - "2025-04-16T01:16:46.988Z"
-            X-Api-Retries:
-                - "5"
+                - "2025-05-02T14:53:06.038Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -100,7 +98,7 @@ interactions:
             X-Ratelimit-Reset:
                 - "6"
             X-Request-Id:
-                - nqG1sbZ-57nCBj-930fd6d8dc217138
+                - nsSW4ih-57nCBj-9398589e7a554bb8
         status: 200 OK
         code: 200
-        duration: 16.615s
+        duration: 16.959s

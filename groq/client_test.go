@@ -63,10 +63,7 @@ func TestClient_Chat_tool_use(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	resp := internaltest.ChatToolUseCountry(t, c, &opts)
-	if resp.InputTokens != 286 || resp.OutputTokens != 11 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
+	internaltest.ChatToolUseCountry(t, c, &opts)
 }
 
 func TestClient_ChatStream(t *testing.T) {
@@ -97,6 +94,7 @@ func getClient(t *testing.T, m string) *groq.Client {
 	if os.Getenv("GROQ_API_KEY") == "" {
 		t.Skip("GROQ_API_KEY not set")
 	}
+	t.Parallel()
 	c, err := groq.New("", m)
 	if err != nil {
 		t.Fatal(err)

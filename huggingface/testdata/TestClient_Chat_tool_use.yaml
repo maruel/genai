@@ -6,19 +6,19 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 598
+        content_length: 599
         transfer_encoding: []
         trailer: {}
         host: router.huggingface.co
         remote_addr: ""
         request_uri: ""
         body: |
-            {"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":200,"seed":1,"temperature":0.01,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+            {"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":200,"seed":1,"temperature":0.01,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
         form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/meta-llama/Llama-3.2-1B-Instruct/v1/chat/completions
+        url: https://router.huggingface.co/hf-inference/models/Qwen/Qwen3-1.7B/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
@@ -27,61 +27,299 @@ interactions:
         transfer_encoding: []
         trailer: {}
         content_length: -1
-        uncompressed: false
-        body: '{"object":"chat.completion","id":"","created":1742759523,"model":"meta-llama/Llama-3.2-1B-Instruct","system_fingerprint":"3.2.1-native","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":262,"completion_tokens":18,"total_tokens":280}}'
+        uncompressed: true
+        body: |-
+            <!DOCTYPE html>
+            <html class="" lang="en">
+            <head>
+                <meta charset="utf-8" />
+                <meta
+                        name="viewport"
+                        content="width=device-width, initial-scale=1.0, user-scalable=no"
+                />
+                <meta
+                        name="description"
+                        content="We're on a journey to advance and democratize artificial intelligence through open source and open science."
+                />
+                <meta property="fb:app_id" content="1321688464574422" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:site" content="@huggingface" />
+                <meta
+                        property="og:title"
+                        content="Hugging Face - The AI community building the future."
+                />
+                <meta property="og:type" content="website" />
+
+                <title>Hugging Face - The AI community building the future.</title>
+                <style>
+                    body {
+                        margin: 0;
+                    }
+
+                    main {
+                        background-color: white;
+                        min-height: 100vh;
+                        padding: 7rem 1rem 8rem 1rem;
+                        text-align: center;
+                        font-family: Source Sans Pro, ui-sans-serif, system-ui, -apple-system,
+                        BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans,
+                        sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol,
+                        Noto Color Emoji;
+                    }
+
+                    img {
+                        width: 6rem;
+                        height: 6rem;
+                        margin: 0 auto 1rem;
+                    }
+
+                    h1 {
+                        font-size: 3.75rem;
+                        line-height: 1;
+                        color: rgba(31, 41, 55, 1);
+                        font-weight: 700;
+                        box-sizing: border-box;
+                        margin: 0 auto;
+                    }
+
+                    p, a {
+                        color: rgba(107, 114, 128, 1);
+                        font-size: 1.125rem;
+                        line-height: 1.75rem;
+                        max-width: 28rem;
+                        box-sizing: border-box;
+                        margin: 0 auto;
+                    }
+
+                    .dark main {
+                        background-color: rgb(11, 15, 25);
+                    }
+                    .dark h1 {
+                        color: rgb(209, 213, 219);
+                    }
+                    .dark p, .dark a {
+                        color: rgb(156, 163, 175);
+                    }
+                </style>
+                <script>
+                    // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+                    const key = "_tb_global_settings";
+                    let theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+                        ? "dark"
+                        : "light";
+                    try {
+                        const storageTheme = JSON.parse(window.localStorage.getItem(key)).theme;
+                        if (storageTheme) {
+                            theme = storageTheme === "dark" ? "dark" : "light";
+                        }
+                    } catch (e) {}
+                    if (theme === "dark") {
+                        document.documentElement.classList.add("dark");
+                    } else {
+                        document.documentElement.classList.remove("dark");
+                    }
+                </script>
+            </head>
+
+            <body>
+            <main>
+                <img
+                        src="https://cdn-media.huggingface.co/assets/huggingface_logo.svg"
+                        alt=""
+                />
+                <div>
+                    <h1>503</h1>
+                    <p>Service Unavailable</p>
+                </div>
+            </main>
+            </body>
+            </html>
         headers:
-            Access-Control-Allow-Credentials:
-                - "true"
-            Access-Control-Allow-Origin:
-                - '*'
-            Access-Control-Expose-Headers:
-                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Xet-Access-Token,X-Xet-Token-Expiration,X-Xet-Refresh-Route,X-Xet-Cas-Url,X-Xet-Hash
+            Age:
+                - "32189"
             Content-Type:
-                - application/json
-            Cross-Origin-Opener-Policy:
-                - same-origin
-            Referrer-Policy:
-                - strict-origin-when-cross-origin
+                - text/html
+            Etag:
+                - W/"b80cd6c64b33bebd8ec8b17e96b2ed52"
+            Last-Modified:
+                - Mon, 03 Jul 2023 19:25:16 GMT
+            Server:
+                - AmazonS3
             Vary:
-                - origin, access-control-request-method, access-control-request-headers, Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+                - accept-encoding
             Via:
-                - 1.1 a44cf9ed8a499212c53e0b8f57aa31f4.cloudfront.net (CloudFront)
+                - 1.1 e2bc53c67d7a4b6beae25c798d638b10.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - Zd1uB6nlQ1T6jmDdWlEg0KgGWmuFwfaMOMJp8u4aNaxD8B977VP92g==
+                - eYuI7Wtbn86kq6cXZVt4aR6RAhiQBExa0T-7F015cDYt6XZg1blRig==
             X-Amz-Cf-Pop:
-                - YTO50-P1
+                - YUL62-P2
+            X-Amz-Server-Side-Encryption:
+                - AES256
+            X-Amz-Version-Id:
+                - cECRvO7FI25puKWtzk1ZkYa6IdZfd2SY
             X-Cache:
-                - Miss from cloudfront
-            X-Compute-Characters:
-                - "1300"
-            X-Compute-Time:
-                - "4.144211784"
-            X-Compute-Type:
-                - cpu
-            X-Generated-Tokens:
-                - "18"
-            X-Inference-Id:
-                - KkSBWdNeEOktagJlnaXr7
-            X-Inference-Time:
-                - "4130"
-            X-Powered-By:
-                - huggingface-moon
-            X-Prompt-Tokens:
-                - "262"
-            X-Queue-Time:
-                - "0"
-            X-Request-Id:
-                - Root=1-67e0665e-39a004c87c378c2715f83559
-            X-Robots-Tag:
-                - none
-            X-Sha:
-                - 9213176726f574b556790deb65791e0c5aa438b6
-            X-Time-Per-Token:
-                - "229"
-            X-Total-Time:
-                - "4144"
-            X-Validation-Time:
-                - "13"
-        status: 200 OK
-        code: 200
-        duration: 4.239s
+                - Error from cloudfront
+        status: 503 Service Unavailable
+        code: 503
+        duration: 7.34s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 599
+        transfer_encoding: []
+        trailer: {}
+        host: router.huggingface.co
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":200,"seed":1,"temperature":0.01,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/hf-inference/models/Qwen/Qwen3-1.7B/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |-
+            <!DOCTYPE html>
+            <html class="" lang="en">
+            <head>
+                <meta charset="utf-8" />
+                <meta
+                        name="viewport"
+                        content="width=device-width, initial-scale=1.0, user-scalable=no"
+                />
+                <meta
+                        name="description"
+                        content="We're on a journey to advance and democratize artificial intelligence through open source and open science."
+                />
+                <meta property="fb:app_id" content="1321688464574422" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:site" content="@huggingface" />
+                <meta
+                        property="og:title"
+                        content="Hugging Face - The AI community building the future."
+                />
+                <meta property="og:type" content="website" />
+
+                <title>Hugging Face - The AI community building the future.</title>
+                <style>
+                    body {
+                        margin: 0;
+                    }
+
+                    main {
+                        background-color: white;
+                        min-height: 100vh;
+                        padding: 7rem 1rem 8rem 1rem;
+                        text-align: center;
+                        font-family: Source Sans Pro, ui-sans-serif, system-ui, -apple-system,
+                        BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans,
+                        sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol,
+                        Noto Color Emoji;
+                    }
+
+                    img {
+                        width: 6rem;
+                        height: 6rem;
+                        margin: 0 auto 1rem;
+                    }
+
+                    h1 {
+                        font-size: 3.75rem;
+                        line-height: 1;
+                        color: rgba(31, 41, 55, 1);
+                        font-weight: 700;
+                        box-sizing: border-box;
+                        margin: 0 auto;
+                    }
+
+                    p, a {
+                        color: rgba(107, 114, 128, 1);
+                        font-size: 1.125rem;
+                        line-height: 1.75rem;
+                        max-width: 28rem;
+                        box-sizing: border-box;
+                        margin: 0 auto;
+                    }
+
+                    .dark main {
+                        background-color: rgb(11, 15, 25);
+                    }
+                    .dark h1 {
+                        color: rgb(209, 213, 219);
+                    }
+                    .dark p, .dark a {
+                        color: rgb(156, 163, 175);
+                    }
+                </style>
+                <script>
+                    // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+                    const key = "_tb_global_settings";
+                    let theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+                        ? "dark"
+                        : "light";
+                    try {
+                        const storageTheme = JSON.parse(window.localStorage.getItem(key)).theme;
+                        if (storageTheme) {
+                            theme = storageTheme === "dark" ? "dark" : "light";
+                        }
+                    } catch (e) {}
+                    if (theme === "dark") {
+                        document.documentElement.classList.add("dark");
+                    } else {
+                        document.documentElement.classList.remove("dark");
+                    }
+                </script>
+            </head>
+
+            <body>
+            <main>
+                <img
+                        src="https://cdn-media.huggingface.co/assets/huggingface_logo.svg"
+                        alt=""
+                />
+                <div>
+                    <h1>503</h1>
+                    <p>Service Unavailable</p>
+                </div>
+            </main>
+            </body>
+            </html>
+        headers:
+            Age:
+                - "32196"
+            Content-Type:
+                - text/html
+            Etag:
+                - W/"b80cd6c64b33bebd8ec8b17e96b2ed52"
+            Last-Modified:
+                - Mon, 03 Jul 2023 19:25:16 GMT
+            Server:
+                - AmazonS3
+            Vary:
+                - accept-encoding
+            Via:
+                - 1.1 e2bc53c67d7a4b6beae25c798d638b10.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - v-wg9SAO53w8g98wGzYXTBPsJ7Nu5B5O1R-ojANmEYHE1i4EnTKE4w==
+            X-Amz-Cf-Pop:
+                - YUL62-P2
+            X-Amz-Server-Side-Encryption:
+                - AES256
+            X-Amz-Version-Id:
+                - cECRvO7FI25puKWtzk1ZkYa6IdZfd2SY
+            X-Cache:
+                - Error from cloudfront
+        status: 503 Service Unavailable
+        code: 503
+        duration: 7.286s

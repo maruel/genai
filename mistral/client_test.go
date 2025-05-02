@@ -95,10 +95,7 @@ func TestClient_Chat_tool_use(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   200,
 	}
-	resp := internaltest.ChatToolUseCountry(t, c, &opts)
-	if resp.InputTokens != 129 || resp.OutputTokens != 19 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
+	internaltest.ChatToolUseCountry(t, c, &opts)
 }
 
 func TestClient_ChatStream(t *testing.T) {
@@ -129,6 +126,7 @@ func getClient(t *testing.T, m string) *mistral.Client {
 	if os.Getenv("MISTRAL_API_KEY") == "" {
 		t.Skip("MISTRAL_API_KEY not set")
 	}
+	t.Parallel()
 	c, err := mistral.New("", m)
 	if err != nil {
 		t.Fatal(err)

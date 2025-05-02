@@ -17,7 +17,7 @@ import (
 )
 
 func TestClient_Chat(t *testing.T) {
-	c := getClient(t, "meta-llama/Llama-3.2-1B-Instruct")
+	c := getClient(t, "Qwen/Qwen3-1.7B")
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 	}
@@ -44,20 +44,17 @@ func TestClient_Chat(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	c := getClient(t, "meta-llama/Llama-3.2-1B-Instruct")
+	c := getClient(t, "Qwen/Qwen3-1.7B")
 	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   200,
 	}
-	resp := internaltest.ChatToolUseCountry(t, c, &opts)
-	if resp.InputTokens != 293 || resp.OutputTokens != 17 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
+	internaltest.ChatToolUseCountry(t, c, &opts)
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	c := getClient(t, "meta-llama/Llama-3.2-1B-Instruct")
+	c := getClient(t, "Qwen/Qwen3-1.7B")
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 	}
@@ -92,6 +89,7 @@ func getClient(t *testing.T, m string) *huggingface.Client {
 			t.Skip("HUGGINGFACE_API_KEY not set and can't find ~/.cache/huggingface/token")
 		}
 	}
+	t.Parallel()
 	c, err := huggingface.New("", m)
 	if err != nil {
 		t.Fatal(err)

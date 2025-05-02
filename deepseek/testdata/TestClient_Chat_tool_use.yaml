@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 589
+        content_length: 590
         transfer_encoding: []
         trailer: {}
         host: api.deepseek.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"deepseek-chat","messages":[{"role":"user","content":"I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."}],"stream":false,"temperature":0.01,"max_tokens":200,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+            {"model":"deepseek-chat","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"temperature":0.01,"max_tokens":200,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
         form: {}
         headers:
             Content-Type:
@@ -28,14 +28,14 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"08b0da43-e870-4539-acd1-14bbac5622ea","object":"chat.completion","created":1744754050,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"index":0,"id":"call_0_e69e9d83-8b95-496d-94c4-cfae8e78fbdf","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}},{"index":1,"id":"call_1_187d4b0c-9392-4ee1-9110-615cfd8401ed","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":175,"completion_tokens":38,"total_tokens":213,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":175},"system_fingerprint":"fp_3d5141a69a_prod0225"}'
+        body: '{"id":"b9aeeef8-76f4-4d78-bc2b-e4c4de94d598","object":"chat.completion","created":1746197585,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"index":0,"id":"call_0_48f9e275-e427-4fea-9b87-78d63c02128f","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}},{"index":1,"id":"call_1_80b8c76a-85c9-4ad8-9bbf-1f28a3e1ea18","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":175,"completion_tokens":36,"total_tokens":211,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":175},"system_fingerprint":"fp_8802369eaa_prod0425fp8"}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 930eae0e8c9aa2d8-YUL
+                - 9398589e3b7ea2a3-YUL
             Content-Type:
                 - application/json
             Server:
@@ -47,7 +47,57 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - 3dec45925360f7f0e8622dbe23f5491b
+                - 56df53820f289bf2fdcd8accf4d4d5ba
         status: 200 OK
         code: 200
-        duration: 313ms
+        duration: 342ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 590
+        transfer_encoding: []
+        trailer: {}
+        host: api.deepseek.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"deepseek-chat","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":false,"temperature":0.01,"max_tokens":200,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"35777041-852a-4ee4-a25d-17ac802cf2c9","object":"chat.completion","created":1746197586,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"index":0,"id":"call_0_7e494550-2889-46d6-bc1a-f6308695b1b7","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"}},{"index":1,"id":"call_1_7be3b978-36ec-4ea9-b5d2-c78b3088098d","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":175,"completion_tokens":38,"total_tokens":213,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":175},"system_fingerprint":"fp_8802369eaa_prod0425fp8"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9398589e3b86a2a3-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            X-Content-Type-Options:
+                - nosniff
+            X-Ds-Trace-Id:
+                - d31a9bd823b2775bc943328531e2226c
+        status: 200 OK
+        code: 200
+        duration: 900ms

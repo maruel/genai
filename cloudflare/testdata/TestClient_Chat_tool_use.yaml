@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 534
+        content_length: 535
         transfer_encoding: []
         trailer: {}
         host: api.cloudflare.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"messages":[{"content":"I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one.","role":"user"}],"max_tokens":200,"seed":1,"temperature":0.01,"tools":[{"type":"function","function":{"description":"A tool to determine the best country","name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+            {"messages":[{"content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.","role":"user"}],"max_tokens":200,"seed":1,"temperature":0.01,"tools":[{"type":"function","function":{"description":"A tool to determine the best country","name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
         form: {}
         headers:
             Content-Type:
@@ -31,13 +31,13 @@ interactions:
         body: '{"result":{"response":null,"tool_calls":[{"arguments":{"country":"Canada"},"name":"best_country"},{"arguments":{"country":"USA"},"name":"best_country"}],"usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
-                - "2025-04-15"
+                - "2025-05-02"
             Cf-Ai-Req-Id:
-                - 7e3c569d-c695-4ed9-8271-621222466633
+                - 189ca256-e6d5-45d1-bdb2-c158519949f8
             Cf-Auditlog-Id:
-                - 01963b71-f6cb-71e8-a6d8-1f31f00c1816
+                - 0196917c-9ecf-7f0c-9930-c74a76a770ce
             Cf-Ray:
-                - 930eadf78e94715a-YUL
+                - 9398589e0cfea25d-YUL
             Content-Type:
                 - application/json
             Server:
@@ -46,4 +46,50 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 4.23s
+        duration: 4.414s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 535
+        transfer_encoding: []
+        trailer: {}
+        host: api.cloudflare.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.","role":"user"}],"max_tokens":200,"seed":1,"temperature":0.01,"tools":[{"type":"function","function":{"description":"A tool to determine the best country","name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@hf/nousresearch/hermes-2-pro-mistral-7b
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"result":{"response":null,"tool_calls":[{"arguments":{"country":"USA"},"name":"best_country"},{"arguments":{"country":"Canada"},"name":"best_country"}],"usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0}},"success":true,"errors":[],"messages":[]}'
+        headers:
+            Api-Version:
+                - "2025-05-02"
+            Cf-Ai-Req-Id:
+                - ddfcfad8-0541-4cb2-901c-63978db85fdb
+            Cf-Auditlog-Id:
+                - 0196917c-9ed3-7b93-a583-e59b53c93f08
+            Cf-Ray:
+                - 9398589e0cf5a25d-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 4.578s

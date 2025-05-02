@@ -133,10 +133,7 @@ func TestClient_Chat_tool_use(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   200,
 	}
-	resp := internaltest.ChatToolUseCountry(t, c, &opts)
-	if resp.InputTokens != 78 || resp.OutputTokens != 15 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
+	internaltest.ChatToolUseCountry(t, c, &opts)
 }
 
 func TestClient_ChatStream(t *testing.T) {
@@ -167,6 +164,7 @@ func getClient(t *testing.T, m string) *openai.Client {
 	if os.Getenv("OPENAI_API_KEY") == "" {
 		t.Skip("OPENAI_API_KEY not set")
 	}
+	t.Parallel()
 	c, err := openai.New("", m)
 	if err != nil {
 		t.Fatal(err)

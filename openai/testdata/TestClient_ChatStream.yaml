@@ -29,11 +29,11 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"chatcmpl-BNhbwDFTAMh9jUSgvqw86jXbQCrni","object":"chat.completion.chunk","created":1744988884,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_c1fb89028d","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-BSm38hAopDqHLg8dFF6zCVxHa0B5o","object":"chat.completion.chunk","created":1746197586,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_8fd43718b3","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-BNhbwDFTAMh9jUSgvqw86jXbQCrni","object":"chat.completion.chunk","created":1744988884,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_c1fb89028d","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-BSm38hAopDqHLg8dFF6zCVxHa0B5o","object":"chat.completion.chunk","created":1746197586,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_8fd43718b3","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-BNhbwDFTAMh9jUSgvqw86jXbQCrni","object":"chat.completion.chunk","created":1744988884,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_c1fb89028d","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}]}
+            data: {"id":"chatcmpl-BSm38hAopDqHLg8dFF6zCVxHa0B5o","object":"chat.completion.chunk","created":1746197586,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_8fd43718b3","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}]}
 
             data: [DONE]
 
@@ -45,13 +45,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9325134f5be0a2bc-YUL
+                - 9398589e3dc6a2b7-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "177"
+                - "252"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -65,15 +65,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "200000"
             X-Ratelimit-Remaining-Requests:
-                - "499"
+                - "496"
             X-Ratelimit-Remaining-Tokens:
-                - "199990"
+                - "198496"
             X-Ratelimit-Reset-Requests:
-                - 120ms
+                - 441ms
             X-Ratelimit-Reset-Tokens:
-                - 3ms
+                - 451ms
             X-Request-Id:
-                - req_de34eb36b217445ec7aa49bd40ea5baf
+                - req_73aea0782d718925d4d062a8b99132a0
         status: 200 OK
         code: 200
-        duration: 249ms
+        duration: 1.025s

@@ -56,16 +56,14 @@ func TestClient_Chat_tool_use(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	resp := internaltest.ChatToolUseCountry(t, c, &opts)
-	if resp.InputTokens != 483 || resp.OutputTokens != 38 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
+	internaltest.ChatToolUseCountry(t, c, &opts)
 }
 
 func getClient(t *testing.T, m string) *cerebras.Client {
 	if os.Getenv("CEREBRAS_API_KEY") == "" {
 		t.Skip("CEREBRAS_API_KEY not set")
 	}
+	t.Parallel()
 	c, err := cerebras.New("", m)
 	if err != nil {
 		t.Fatal(err)

@@ -409,7 +409,15 @@ func New(apiKey, model string) (*Client, error) {
 			Client: &http.Client{Transport: &roundtrippers.Header{
 				Header: http.Header{"Authorization": {"Bearer " + apiKey}},
 				Transport: &roundtrippers.PostCompressed{
-					Transport: &roundtrippers.Retry{Transport: http.DefaultTransport},
+					Transport: &roundtrippers.Retry{
+						Transport: &roundtrippers.RequestID{
+							// Transport: &roundtrippers.Log{
+							Transport: http.DefaultTransport,
+							//	L:         slog.New(slog.NewTextHandler(os.Stderr, nil)),
+							//	Level:     slog.LevelError,
+							//},
+						},
+					},
 					// HuggingFace support all three of gzip, br and zstd!
 					Encoding: "zstd",
 				},

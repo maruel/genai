@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nqG1iVu-4Yz4kd-930fd619bb36a303",
+              "id": "nsSW4f5-4Yz4kd-9398589e6a4c4bb8",
               "object": "chat.completion",
-              "created": 1744766176,
+              "created": 1746197586,
               "model": "Qwen/Qwen2.5-VL-72B-Instruct",
               "prompt": [],
               "choices": [
@@ -62,11 +62,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 930fd619bb36a303-YUL
+                - 9398589e6a4c4bb8-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"1ed-hBQhcTPXLOqbUGEpw49lMoT2o6k"
+                - W/"1ed-fp77eyLiv++v5rxs9eKxIiopaq0"
             Retry-After:
                 - "2"
             Server:
@@ -76,13 +76,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - cc461f10-c014-46a8-9946-cff7c721efb4-noamzn
+                - a2b16d8b-1df6-4d3d-9f4f-824c1557e3cc-noamzn
             X-Api-Call-End:
-                - "2025-04-16T01:16:17.401Z"
+                - "2025-05-02T14:53:06.952Z"
             X-Api-Call-Start:
-                - "2025-04-16T01:16:16.396Z"
+                - "2025-05-02T14:53:06.041Z"
             X-Api-Received:
-                - "2025-04-16T01:16:16.384Z"
+                - "2025-05-02T14:53:05.828Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -92,13 +92,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "1"
+                - "0"
             X-Ratelimit-Remaining-Tokens:
-                - "735"
+                - "1000"
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - nqG1iVu-4Yz4kd-930fd619bb36a303
+                - nsSW4f5-4Yz4kd-9398589e6a4c4bb8
         status: 200 OK
         code: 200
-        duration: 1.171s
+        duration: 1.393s

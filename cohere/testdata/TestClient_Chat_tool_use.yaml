@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 647
+        content_length: 648
         transfer_encoding: []
         trailer: {}
         host: api.cohere.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"stream":false,"model":"command-r-08-2024","messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":200,"temperature":0.01,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"description":"A tool to determine the best country"}}],"tool_choice":"required","strict_tools":true}
+            {"stream":false,"model":"command-r-08-2024","messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":200,"temperature":0.01,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"description":"A tool to determine the best country"}}],"tool_choice":"required","strict_tools":true}
         form: {}
         headers:
             Content-Type:
@@ -26,9 +26,9 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 597
+        content_length: 586
         uncompressed: false
-        body: '{"id":"f3555689-a76a-4fe0-9d88-2063508cd235","message":{"role":"assistant","tool_plan":"I will use the ''best_country'' tool to find out which country is the best between Canada and the US.","tool_calls":[{"id":"best_country_3m9jq05ah16n","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}},{"id":"best_country_10pwq8metghk","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":49,"output_tokens":40},"tokens":{"input_tokens":925,"output_tokens":95}}}'
+        body: '{"id":"84e93619-701c-4141-a8c0-e70b0c0bafd7","message":{"role":"assistant","tool_plan":"I will use the best_country tool to find out which country is better, the USA or Canada.","tool_calls":[{"id":"best_country_hm4c79jpcef1","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}},{"id":"best_country_tzs4nmeb3bhh","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":49,"output_tokens":37},"tokens":{"input_tokens":925,"output_tokens":92}}}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -37,15 +37,15 @@ interactions:
             Cache-Control:
                 - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
             Content-Length:
-                - "597"
+                - "586"
             Content-Type:
                 - application/json
             Expires:
                 - Thu, 01 Jan 1970 00:00:00 UTC
             Num_chars:
-                - "4440"
+                - "4441"
             Num_tokens:
-                - "89"
+                - "86"
             Pragma:
                 - no-cache
             Server:
@@ -57,15 +57,83 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - be9beb7e12e97a2631f9493becab4abb
+                - edd9fcf17e7ce87a8f9913d547cf422e
             X-Endpoint-Monthly-Call-Limit:
                 - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "1702"
+                - "1805"
             X-Trial-Endpoint-Call-Limit:
                 - "10"
             X-Trial-Endpoint-Call-Remaining:
-                - "8"
+                - "9"
         status: 200 OK
         code: 200
-        duration: 1.749s
+        duration: 1.889s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 648
+        transfer_encoding: []
+        trailer: {}
+        host: api.cohere.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"stream":false,"model":"command-r-08-2024","messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":200,"temperature":0.01,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"description":"A tool to determine the best country"}}],"tool_choice":"required","strict_tools":true}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cohere.com/v2/chat
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 588
+        uncompressed: false
+        body: '{"id":"25711452-c96f-4aff-a4b1-6bd8c8f9db36","message":{"role":"assistant","tool_plan":"I will use the ''best_country'' tool to find out which country is better, Canada or the USA.","tool_calls":[{"id":"best_country_yfz4s907jxw0","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}},{"id":"best_country_0rfh8fd79cfm","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":49,"output_tokens":39},"tokens":{"input_tokens":925,"output_tokens":94}}}'
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Debug-Trace-ID
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+            Content-Length:
+                - "588"
+            Content-Type:
+                - application/json
+            Expires:
+                - Thu, 01 Jan 1970 00:00:00 UTC
+            Num_chars:
+                - "4441"
+            Num_tokens:
+                - "88"
+            Pragma:
+                - no-cache
+            Server:
+                - envoy
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Accel-Expires:
+                - "0"
+            X-Debug-Trace-Id:
+                - fd473b97ed2113801dcf097fca3a63c7
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
+            X-Envoy-Upstream-Service-Time:
+                - "1906"
+            X-Trial-Endpoint-Call-Limit:
+                - "10"
+            X-Trial-Endpoint-Call-Remaining:
+                - "7"
+        status: 200 OK
+        code: 200
+        duration: 1.992s

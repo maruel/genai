@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"abb94b7f781341a68de449820c7b0479","object":"chat.completion","created":1744754046,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"orange"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":28,"total_tokens":30,"completion_tokens":2}}'
+        body: '{"id":"7634588be463442daff6699e2f0cbd56","object":"chat.completion","created":1746197589,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"orange"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":28,"total_tokens":30,"completion_tokens":2}}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -37,7 +37,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 930eadf5dac0a298-YUL
+                - 939858b2ee71a2e0-YUL
             Content-Type:
                 - application/json
             Ratelimitbysize-Limit:
@@ -47,17 +47,17 @@ interactions:
             Ratelimitbysize-Remaining:
                 - "499950"
             Ratelimitbysize-Reset:
-                - "54"
+                - "51"
             Server:
                 - cloudflare
             X-Envoy-Upstream-Service-Time:
-                - "884"
+                - "1085"
             X-Kong-Proxy-Latency:
-                - "8"
+                - "5"
             X-Kong-Request-Id:
-                - b018610c70f7782d4742e46a1113dc79
+                - 67236e340e144619a550895b52ddf64c
             X-Kong-Upstream-Latency:
-                - "884"
+                - "1093"
             X-Ratelimitbysize-Limit-Minute:
                 - "500000"
             X-Ratelimitbysize-Limit-Month:
@@ -68,4 +68,4 @@ interactions:
                 - "999999950"
         status: 200 OK
         code: 200
-        duration: 1.026s
+        duration: 4.57s

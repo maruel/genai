@@ -97,10 +97,7 @@ func TestClient_Chat_tool_use(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	resp := internaltest.ChatToolUseCountry(t, c, &opts)
-	if resp.InputTokens != 340 || resp.OutputTokens != 15 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
+	internaltest.ChatToolUseCountry(t, c, &opts)
 }
 
 func TestClient_ChatStream(t *testing.T) {
@@ -131,6 +128,7 @@ func getClient(t *testing.T, m string) *togetherai.Client {
 	if os.Getenv("TOGETHER_API_KEY") == "" {
 		t.Skip("TOGETHER_API_KEY not set")
 	}
+	t.Parallel()
 	c, err := togetherai.New("", m)
 	if err != nil {
 		t.Fatal(err)

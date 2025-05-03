@@ -55,27 +55,15 @@ func ChatStream(t *testing.T, factory ChatProviderFactory, msgs genai.Messages, 
 	return responses
 }
 
-// ChatToolUse runs a Chat with tool use and verifies that the tools are called correctly.
+// ChatToolUseCountry runs a Chat with tool use and verifies that the tools are called correctly.
 // It runs subtests for both Chat and ChatStream methods.
 func ChatToolUseCountry(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
 	t.Run("Chat", func(t *testing.T) {
-		ChatToolUseCountryChat(t, factory, opts)
+		chatToolUseCountryCore(t, factory, opts, false)
 	})
 	t.Run("ChatStream", func(t *testing.T) {
-		ChatToolUseCountryStream(t, factory, opts)
+		chatToolUseCountryCore(t, factory, opts, true)
 	})
-}
-
-// ChatToolUseCountryChat runs a Chat with tool use and verifies that the tools are called correctly.
-// It returns the response for further validation.
-func ChatToolUseCountryChat(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
-	chatToolUseCountryCore(t, factory, opts, false)
-}
-
-// ChatToolUseCountryStream runs a ChatStream with tool use and verifies that the tools are called correctly.
-// It returns the response for further validation.
-func ChatToolUseCountryStream(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
-	chatToolUseCountryCore(t, factory, opts, true)
 }
 
 // processChat runs either Chat or ChatStream based on the useStream parameter

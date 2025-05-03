@@ -442,6 +442,15 @@ func TestMessageFragment_toMessage(t *testing.T) {
 	}
 }
 
+// Define test structs for validation
+type TestInputStruct struct {
+	Name string
+}
+
+type TestDifferentStruct struct {
+	Age int
+}
+
 func TestToolDef_Validate_error(t *testing.T) {
 	tests := []struct {
 		name    string
@@ -462,11 +471,117 @@ func TestToolDef_Validate_error(t *testing.T) {
 			},
 			errMsg: "field Description: required",
 		},
+		{
+			name: "Callback not a function",
+			toolDef: ToolDef{
+				Name:        "tool",
+				Description: "do stuff",
+				Callback:    "not a function",
+			},
+			errMsg: "field Callback: must be a function",
+		},
+		{
+			name: "Callback returns wrong type",
+			toolDef: ToolDef{
+				Name:        "tool",
+				Description: "do stuff",
+				Callback:    func() int { return 1 },
+			},
+			errMsg: "field Callback: must return a string",
+		},
+		{
+			name: "Callback returns multiple values",
+			toolDef: ToolDef{
+				Name:        "tool",
+				Description: "do stuff",
+				Callback:    func() (string, error) { return "", nil },
+			},
+			errMsg: "field Callback: must return exactly one value",
+		},
+		{
+			name: "Callback with wrong parameter count",
+			toolDef: ToolDef{
+				Name:        "tool",
+				Description: "do stuff",
+				InputsAs:    TestInputStruct{},
+				Callback:    func(a, b TestInputStruct) string { return "" },
+			},
+			errMsg: "field Callback: must accept exactly one parameter",
+		},
+		{
+			name: "Callback with mismatched parameter type",
+			toolDef: ToolDef{
+				Name:        "tool",
+				Description: "do stuff",
+				InputsAs:    TestInputStruct{},
+				Callback:    func(input TestDifferentStruct) string { return "" },
+			},
+			errMsg: "field Callback: parameter type genai.TestDifferentStruct does not match InputsAs type genai.TestInputStruct",
+		},
+		{
+			name: "InputsAs pointer but parameter not pointer",
+			toolDef: ToolDef{
+				Name:        "tool",
+				Description: "do stuff",
+				InputsAs:    &TestInputStruct{},
+				Callback:    func(input TestInputStruct) string { return "" },
+			},
+			errMsg: "field Callback: InputsAs is a pointer but parameter is not",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if err := tt.toolDef.Validate(); err == nil || err.Error() != tt.errMsg {
 				t.Fatalf("\nwant %q\ngot  %q", tt.errMsg, err)
+			}
+		})
+	}
+}
+
+func TestToolDef_Validate_success(t *testing.T) {
+	tests := []struct {
+		name    string
+		toolDef ToolDef
+	}{
+		{
+			name: "Valid minimal ToolDef",
+			toolDef: ToolDef{
+				Name:        "tool",
+				Description: "do stuff",
+			},
+		},
+		{
+			name: "Valid ToolDef with function no InputsAs",
+			toolDef: ToolDef{
+				Name:        "tool",
+				Description: "do stuff",
+				Callback:    func() string { return "" },
+			},
+		},
+		{
+			name: "Valid ToolDef with function and InputsAs",
+			toolDef: ToolDef{
+				Name:        "tool",
+				Description: "do stuff",
+				InputsAs:    TestInputStruct{},
+				Callback:    func(input TestInputStruct) string { return "" },
+			},
+		},
+		{
+			name: "Valid ToolDef with function and pointer InputsAs",
+			toolDef: ToolDef{
+				Name:        "tool",
+				Description: "do stuff",
+				InputsAs:    &TestInputStruct{},
+				Callback:    func(input *TestInputStruct) string { return "" },
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := tt.toolDef.Validate(); err != nil {
+				t.Fatalf("Expected no error, got: %v", err)
 			}
 		})
 	}

@@ -440,7 +440,7 @@ type ToolDef struct {
 	// InputsAs enforces a tool call with a specific JSON structure for
 	// arguments.
 	InputsAs ReflectedToJSON
-	// Callback is the function to call with the inputs. It must return a string.
+	// Callback is the function to call with the inputs in InputAs. It must return a string.
 	Callback any
 
 	_ struct{}
@@ -457,6 +457,39 @@ func (t *ToolDef) Validate() error {
 	if t.InputsAs != nil {
 		if err := validateReflectedToJSON(t.InputsAs); err != nil {
 			return fmt.Errorf("field InputsAs: %w", err)
+		}
+	}
+	if t.Callback != nil {
+		cbType := reflect.TypeOf(t.Callback)
+		if cbType.Kind() != reflect.Func {
+			return errors.New("field Callback: must be a function")
+		}
+		if cbType.NumOut() != 1 {
+			return errors.New("field Callback: must return exactly one value")
+		}
+		if cbType.Out(0).Kind() != reflect.String {
+			return errors.New("field Callback: must return a string")
+		}
+		if t.InputsAs != nil {
+			if cbType.NumIn() != 1 {
+				return errors.New("field Callback: must accept exactly one parameter")
+			}
+			inputType := reflect.TypeOf(t.InputsAs)
+			if inputType.Kind() == reflect.Ptr {
+				inputType = inputType.Elem()
+			}
+			paramType := cbType.In(0)
+			isParamPtr := false
+			if paramType.Kind() == reflect.Ptr {
+				isParamPtr = true
+				paramType = paramType.Elem()
+			}
+			if paramType != inputType {
+				return fmt.Errorf("field Callback: parameter type %v does not match InputsAs type %v", cbType.In(0), reflect.TypeOf(t.InputsAs))
+			}
+			if reflect.TypeOf(t.InputsAs).Kind() == reflect.Ptr && !isParamPtr {
+				return errors.New("field Callback: InputsAs is a pointer but parameter is not")
+			}
 		}
 	}
 	return nil

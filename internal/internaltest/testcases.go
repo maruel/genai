@@ -13,6 +13,9 @@ import (
 	"github.com/maruel/genai"
 )
 
+// ChatProviderFactory is what a Java developer would write.
+type ChatProviderFactory func(t *testing.T) genai.ChatProvider
+
 // ChatStream runs a ChatStream and returns the concatenated response.
 func ChatStream(t *testing.T, c genai.ChatProvider, msgs genai.Messages, opts *genai.ChatOptions) genai.Messages {
 	ctx := t.Context()

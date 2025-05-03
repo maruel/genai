@@ -517,53 +517,34 @@ func (t *ToolCall) Decode(x any) error {
 	return nil
 }
 
-// Callable invokes the ToolDef.Callback with arguments from the ToolCall, returning the result string.
+// Call invokes the ToolDef.Callback with arguments from the ToolCall, returning the result string.
+//
 // It decodes the ToolCall.Arguments into a new instance of ToolDef.InputsAs and passes it to the Callback.
-func (t *ToolCall) Callable(toolDef *ToolDef) (string, error) {
-	// Validation
+func (t *ToolCall) Call(toolDef *ToolDef) (string, error) {
 	if toolDef == nil {
 		return "", errors.New("toolDef is nil")
 	}
 	if toolDef.Callback == nil {
 		return "", errors.New("toolDef.Callback is nil")
 	}
-
-	// For no-argument callbacks
 	if toolDef.InputsAs == nil {
-		// Just call the function with no arguments
-		callbackValue := reflect.ValueOf(toolDef.Callback)
-		result := callbackValue.Call(nil)
-		return result[0].String(), nil
+		return reflect.ValueOf(toolDef.Callback).Call(nil)[0].String(), nil
 	}
 
-	// For callbacks with arguments
-	// Create a new instance of the InputsAs type
 	inputType := reflect.TypeOf(toolDef.InputsAs)
 	var input reflect.Value
 	if inputType.Kind() == reflect.Ptr {
-		// If InputsAs is a pointer, create a new instance of the pointed-to type
 		input = reflect.New(inputType.Elem())
 	} else {
-		// Otherwise create a pointer to a new instance
 		input = reflect.New(inputType)
 	}
-
-	// Decode the arguments into the new instance
 	if err := t.Decode(input.Interface()); err != nil {
 		return "", fmt.Errorf("failed to decode arguments: %w", err)
 	}
-
-	// If InputsAs is not a pointer but we created a pointer for decoding, we need to dereference it
 	if inputType.Kind() != reflect.Ptr {
 		input = input.Elem()
 	}
-
-	// Call the callback with the decoded argument
-	callbackValue := reflect.ValueOf(toolDef.Callback)
-	result := callbackValue.Call([]reflect.Value{input})
-
-	// Return the result
-	return result[0].String(), nil
+	return reflect.ValueOf(toolDef.Callback).Call([]reflect.Value{input})[0].String(), nil
 }
 
 // Models

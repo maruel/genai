@@ -592,7 +592,7 @@ func TestToolCall_Validate(t *testing.T) {
 	// TODO.
 }
 
-func TestToolCall_Callable(t *testing.T) {
+func TestToolCall_Call(t *testing.T) {
 	t.Run("with no arguments", func(t *testing.T) {
 		noArgTool := ToolDef{
 			Name:        "noArgTool",
@@ -606,7 +606,7 @@ func TestToolCall_Callable(t *testing.T) {
 			Arguments: "{}",
 		}
 
-		result, err := tc.Callable(&noArgTool)
+		result, err := tc.Call(&noArgTool)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -637,7 +637,7 @@ func TestToolCall_Callable(t *testing.T) {
 			Arguments: `{"a": 5, "b": 3}`,
 		}
 
-		result, err := tc.Callable(&structTool)
+		result, err := tc.Call(&structTool)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -662,7 +662,7 @@ func TestToolCall_Callable(t *testing.T) {
 			Arguments: `{"a": 5, "b": 3}`,
 		}
 
-		result, err := tc.Callable(&pointerTool)
+		result, err := tc.Call(&pointerTool)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -687,7 +687,7 @@ func TestToolCall_Callable(t *testing.T) {
 			Arguments: `{"a": "not an integer", "b": 3}`,
 		}
 
-		_, err := tc.Callable(&structTool)
+		_, err := tc.Call(&structTool)
 		if err == nil {
 			t.Fatalf("expected error, got nil")
 		}
@@ -700,7 +700,7 @@ func TestToolCall_Callable(t *testing.T) {
 			Arguments: "{}",
 		}
 
-		_, err := tc.Callable(nil)
+		_, err := tc.Call(nil)
 		if err == nil {
 			t.Fatalf("expected error, got nil")
 		}
@@ -721,7 +721,7 @@ func TestToolCall_Callable(t *testing.T) {
 			Description: "A tool with a nil callback",
 		}
 
-		_, err := tc.Callable(&nilCallbackTool)
+		_, err := tc.Call(&nilCallbackTool)
 		if err == nil {
 			t.Fatalf("expected error, got nil")
 		}

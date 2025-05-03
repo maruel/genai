@@ -79,6 +79,43 @@ func ExampleModelProvider() {
 	}
 }
 
+func ExampleToolCall_Call() {
+	// Define a tool that adds two numbers
+	tool := genai.ToolDef{
+		Name:        "add",
+		Description: "Add two numbers together",
+		InputsAs: &struct {
+			A int `json:"a"`
+			B int `json:"b"`
+		}{},
+		Callback: func(input *struct {
+			A int `json:"a"`
+			B int `json:"b"`
+		},
+		) string {
+			return fmt.Sprintf("%d + %d = %d", input.A, input.B, input.A+input.B)
+		},
+	}
+
+	// Create a tool call that would come from an LLM
+	toolCall := genai.ToolCall{
+		ID:        "call1",
+		Name:      "add",
+		Arguments: `{"a": 5, "b": 3}`,
+	}
+
+	// Invoke the tool with the arguments
+	result, err := toolCall.Call(&tool)
+	if err != nil {
+		fmt.Printf("Error calling tool: %v\n", err)
+		return
+	}
+
+	// Print the result
+	fmt.Println(result)
+	// Output: 5 + 3 = 8
+}
+
 func ExampleChatProvider() {
 	// Pro-tip: Using os.Stderr so if you modify this file and append a "// Output: foo"
 	// at the end of this function, "go test" will run the code and stream the

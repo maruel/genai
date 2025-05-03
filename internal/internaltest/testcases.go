@@ -16,8 +16,8 @@ import (
 // ChatProviderFactory is what a Java developer would write.
 type ChatProviderFactory func(t *testing.T) genai.ChatProvider
 
-// ChatStreamWithFactory runs a ChatStream and returns the concatenated response.
-func ChatStreamWithFactory(t *testing.T, factory ChatProviderFactory, msgs genai.Messages, opts *genai.ChatOptions) genai.Messages {
+// ChatStream runs a ChatStream and returns the concatenated response.
+func ChatStream(t *testing.T, factory ChatProviderFactory, msgs genai.Messages, opts *genai.ChatOptions) genai.Messages {
 	c := factory(t)
 	ctx := t.Context()
 	chunks := make(chan genai.MessageFragment)
@@ -54,9 +54,9 @@ func ChatStreamWithFactory(t *testing.T, factory ChatProviderFactory, msgs genai
 	return responses
 }
 
-// ChatToolUseCountryWithFactory runs a Chat with tool use and verifies that the tools are called correctly.
+// ChatToolUse runs a Chat with tool use and verifies that the tools are called correctly.
 // It returns the response for further validation.
-func ChatToolUseCountryWithFactory(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
+func ChatToolUseCountry(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
 	c := factory(t)
 	ctx := t.Context()
 	t.Run("Canada", func(t *testing.T) {
@@ -131,9 +131,9 @@ func ChatToolUseCountryWithFactory(t *testing.T, factory ChatProviderFactory, op
 	})
 }
 
-// ChatVisionTextWithFactory runs a Chat with vision capabilities and verifies that the model correctly identifies a
+// ChatVisionText runs a Chat with vision capabilities and verifies that the model correctly identifies a
 // banana image.
-func ChatVisionTextWithFactory(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
+func ChatVisionText(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
 	c := factory(t)
 	ctx := t.Context()
 	msgs := genai.Messages{
@@ -160,9 +160,9 @@ func ChatVisionTextWithFactory(t *testing.T, factory ChatProviderFactory, opts *
 	}
 }
 
-// ChatVisionJSONWithFactory runs a Chat with vision capabilities and verifies that the model correctly identifies a
+// ChatVisionJSON runs a Chat with vision capabilities and verifies that the model correctly identifies a
 // banana image. It enforces JSON schema.
-func ChatVisionJSONWithFactory(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
+func ChatVisionJSON(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
 	c := factory(t)
 	ctx := t.Context()
 	msgs := genai.Messages{
@@ -202,23 +202,3 @@ func ChatVisionJSONWithFactory(t *testing.T, factory ChatProviderFactory, opts *
 //
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
-
-// ChatStream is a backward-compatible adapter that runs a ChatStream and returns the concatenated response.
-func ChatStream(t *testing.T, c genai.ChatProvider, msgs genai.Messages, opts *genai.ChatOptions) genai.Messages {
-	return ChatStreamWithFactory(t, func(t *testing.T) genai.ChatProvider { return c }, msgs, opts)
-}
-
-// ChatToolUseCountry is a backward-compatible adapter that runs a Chat with tool use and verifies that the tools are called correctly.
-func ChatToolUseCountry(t *testing.T, c genai.ChatProvider, opts *genai.ChatOptions) {
-	ChatToolUseCountryWithFactory(t, func(t *testing.T) genai.ChatProvider { return c }, opts)
-}
-
-// ChatVisionText is a backward-compatible adapter that runs a Chat with vision capabilities and verifies that the model correctly identifies a banana image.
-func ChatVisionText(t *testing.T, c genai.ChatProvider, opts *genai.ChatOptions) {
-	ChatVisionTextWithFactory(t, func(t *testing.T) genai.ChatProvider { return c }, opts)
-}
-
-// ChatVisionJSON is a backward-compatible adapter that runs a Chat with vision capabilities and verifies that the model correctly identifies a banana image with JSON schema.
-func ChatVisionJSON(t *testing.T, c genai.ChatProvider, opts *genai.ChatOptions) {
-	ChatVisionJSONWithFactory(t, func(t *testing.T) genai.ChatProvider { return c }, opts)
-}

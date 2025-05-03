@@ -56,7 +56,7 @@ func TestClient_Chat_tool_use(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	internaltest.ChatToolUseCountry(t, c, &opts)
+	internaltest.ChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return c }, &opts)
 }
 
 func getClient(t *testing.T, m string) *cerebras.Client {

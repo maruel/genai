@@ -97,7 +97,7 @@ func TestClient_Chat_tool_use(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	internaltest.ChatToolUseCountry(t, c, &opts)
+	internaltest.ChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return c }, &opts)
 }
 
 func TestClient_ChatStream(t *testing.T) {
@@ -110,7 +110,7 @@ func TestClient_ChatStream(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	responses := internaltest.ChatStream(t, c, msgs, &opts)
+	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return c }, msgs, &opts)
 	if len(responses) != 1 {
 		t.Fatal("Unexpected response")
 	}

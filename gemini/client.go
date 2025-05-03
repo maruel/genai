@@ -453,7 +453,7 @@ type ChatResponse struct {
 				EndIndex   int64  `json:"endIndex"`
 				URI        string `json:"uri"`
 				License    string `json:"license"`
-			} `json:"citaionSources"`
+			} `json:"citationSources"`
 		} `json:"citationMetadata"`
 		TokenCount int64 `json:"tokenCount"`
 		// https://ai.google.dev/api/generate-content?hl=en#GroundingAttribution

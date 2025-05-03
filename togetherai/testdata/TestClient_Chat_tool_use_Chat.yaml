@@ -13,118 +13,6 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo-Free","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":50,"temperature":0.01,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.together.xyz/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |-
-            {
-              "id": "nsSW4hA-3NKUce-9398589e7a534bb8",
-              "object": "chat.completion",
-              "created": 1746197585,
-              "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
-              "prompt": [],
-              "choices": [
-                {
-                  "finish_reason": "tool_calls",
-                  "seed": 1,
-                  "logprobs": null,
-                  "index": 0,
-                  "message": {
-                    "role": "assistant",
-                    "content": null,
-                    "tool_calls": [
-                      {
-                        "index": 0,
-                        "id": "call_7dvy98nms3igx4wc18cy2i84",
-                        "type": "function",
-                        "function": {
-                          "arguments": "{\"country\":\"USA\"}",
-                          "name": "best_country"
-                        }
-                      }
-                    ]
-                  }
-                }
-              ],
-              "usage": {
-                "prompt_tokens": 242,
-                "completion_tokens": 23,
-                "total_tokens": 265,
-                "cached_tokens": 0
-              }
-            }
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 9398589e7a534bb8-YUL
-            Content-Type:
-                - application/json; charset=utf-8
-            Etag:
-                - W/"320-EeRd4zueIHpqP72A1/c2imYl5dE"
-            Retry-After:
-                - "6"
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            Vary:
-                - Accept-Encoding
-            X-Amzn-Trace-Id:
-                - ae288157-0289-4264-bb67-75fff2cd31cf-noamzn
-            X-Api-Call-End:
-                - "2025-05-02T14:53:07.724Z"
-            X-Api-Call-Start:
-                - "2025-05-02T14:53:06.061Z"
-            X-Api-Received:
-                - "2025-05-02T14:53:05.949Z"
-            X-Inference-Version:
-                - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "0.1666666667"
-            X-Ratelimit-Limit-Tokens:
-                - "1000"
-            X-Ratelimit-Remaining:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "1000"
-            X-Ratelimit-Reset:
-                - "6"
-            X-Request-Id:
-                - nsSW4hA-3NKUce-9398589e7a534bb8
-        status: 200 OK
-        code: 200
-        duration: 1.945s
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 661
-        transfer_encoding: []
-        trailer: {}
-        host: api.together.xyz
-        remote_addr: ""
-        request_uri: ""
-        body: |
             {"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo-Free","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":50,"temperature":0.01,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
         form: {}
         headers:
@@ -142,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nsSW4eR-4Yz4kd-9398589e7a524bb8",
+              "id": "nsa8kuL-3NKUce-93a095622cb5a25b",
               "object": "chat.completion",
-              "created": 1746197585,
+              "created": 1746283960,
               "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
               "prompt": [],
               "choices": [
@@ -159,7 +47,7 @@ interactions:
                     "tool_calls": [
                       {
                         "index": 0,
-                        "id": "call_o32uq6bbmnj6fu99btnlnnr4",
+                        "id": "call_lqhoo9mozy1wi9g966l0143h",
                         "type": "function",
                         "function": {
                           "arguments": "{\"country\":\"Canada\"}",
@@ -185,11 +73,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9398589e7a524bb8-YUL
+                - 93a095622cb5a25b-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"323-fiQJyVDN1tR4WzdYhEO12SYHmmg"
+                - W/"323-F7cMpyz5SdxhnNQH7BpfDk2W7R8"
             Retry-After:
                 - "6"
             Server:
@@ -199,13 +87,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 42a0b366-3051-4591-8f78-2ea64c2a4658-noamzn
+                - 98291b83-6f65-43f8-ba29-b3add7b17ddc-noamzn
             X-Api-Call-End:
-                - "2025-05-02T14:53:09.530Z"
+                - "2025-05-03T14:52:41.168Z"
             X-Api-Call-Start:
-                - "2025-05-02T14:53:05.929Z"
+                - "2025-05-03T14:52:40.724Z"
             X-Api-Received:
-                - "2025-05-02T14:53:05.790Z"
+                - "2025-05-03T14:52:40.719Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -221,7 +109,119 @@ interactions:
             X-Ratelimit-Reset:
                 - "6"
             X-Request-Id:
-                - nsSW4eR-4Yz4kd-9398589e7a524bb8
+                - nsa8kuL-3NKUce-93a095622cb5a25b
         status: 200 OK
         code: 200
-        duration: 3.966s
+        duration: 600ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 661
+        transfer_encoding: []
+        trailer: {}
+        host: api.together.xyz
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo-Free","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":50,"temperature":0.01,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "nsa8m5U-4Yz4kd-93a09565a8e6a25b",
+              "object": "chat.completion",
+              "created": 1746283961,
+              "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
+              "prompt": [],
+              "choices": [
+                {
+                  "finish_reason": "tool_calls",
+                  "seed": 1,
+                  "logprobs": null,
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": null,
+                    "tool_calls": [
+                      {
+                        "index": 0,
+                        "id": "call_2w2f996btylarzol7opvh750",
+                        "type": "function",
+                        "function": {
+                          "arguments": "{\"country\":\"USA\"}",
+                          "name": "best_country"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 242,
+                "completion_tokens": 23,
+                "total_tokens": 265,
+                "cached_tokens": 0
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93a09565a8e6a25b-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"320-NAEO9yl04hHzuC4tuf2yLDrJhOo"
+            Retry-After:
+                - "6"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - 97e1cd52-4ff8-4c8c-9880-56070d959549-noamzn
+            X-Api-Call-End:
+                - "2025-05-03T14:52:42.798Z"
+            X-Api-Call-Start:
+                - "2025-05-03T14:52:41.337Z"
+            X-Api-Received:
+                - "2025-05-03T14:52:41.307Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "0.1666666667"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "6"
+            X-Request-Id:
+                - nsa8m5U-4Yz4kd-93a09565a8e6a25b
+        status: 200 OK
+        code: 200
+        duration: 1.622s

@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: false
-        body: '{"object":"chat.completion","id":"","created":1746214475,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":262,"completion_tokens":17,"total_tokens":279}}'
+        body: '{"object":"chat.completion","id":"","created":1746283554,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":262,"completion_tokens":17,"total_tokens":279}}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
@@ -45,9 +45,9 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, Origin, Access-Control-Request-Method, Access-Control-Request-Headers
             Via:
-                - 1.1 c5670948bece41c6bb9df947cb650b7e.cloudfront.net (CloudFront)
+                - 1.1 1093497011694314ff008667ee2636c0.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - G5tsvd97J5edWdbSpQ1IF1yEHB3L5dtQEqdz_XBSkfwfWW4ionCy4A==
+                - C4NeGvog-jzi3_S6StE0Vyw7JIPB1epTCPtKyhSVrr5fB_642OKadA==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
@@ -55,15 +55,15 @@ interactions:
             X-Compute-Characters:
                 - "1301"
             X-Compute-Time:
-                - "2.237633872"
+                - "1.9134379830000001"
             X-Compute-Type:
                 - 4-nvida-a100-sxm4-80gb
             X-Generated-Tokens:
                 - "17"
             X-Inference-Id:
-                - wir0mM7DVCfRPiNuRYRip
+                - erSRKkuBiWg0nHeeC3381
             X-Inference-Time:
-                - "2219"
+                - "721"
             X-Powered-By:
                 - huggingface-moon
             X-Prompt-Tokens:
@@ -75,22 +75,22 @@ interactions:
             X-Proxied-Replica:
                 - 64tq71pt-34iua
             X-Queue-Time:
-                - "16"
+                - "1190"
             X-Request-Id:
-                - eavy1xu1qaDzb3iZ
+                - fYRFt0tFIWVVRqtU
             X-Robots-Tag:
                 - none
             X-Sha:
                 - 6f6073b423013f6a7d4d9f39144961bfbfbc386b
             X-Time-Per-Token:
-                - "130"
+                - "42"
             X-Total-Time:
-                - "2237"
+                - "1913"
             X-Validation-Time:
                 - "1"
         status: 200 OK
         code: 200
-        duration: 2.4s
+        duration: 2.041s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -118,7 +118,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: false
-        body: '{"object":"chat.completion","id":"","created":1746214477,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":262,"completion_tokens":17,"total_tokens":279}}'
+        body: '{"object":"chat.completion","id":"","created":1746283556,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":262,"completion_tokens":17,"total_tokens":279}}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
@@ -135,9 +135,9 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, Origin, Access-Control-Request-Method, Access-Control-Request-Headers
             Via:
-                - 1.1 c5670948bece41c6bb9df947cb650b7e.cloudfront.net (CloudFront)
+                - 1.1 1093497011694314ff008667ee2636c0.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - PkUEhyqH8h5DlfS98wwsfn6XIYjKGsntTka-8WSPQIJar8j5WIedmA==
+                - KenFiE84AmAd04xMrRUVpiMFkqrsFJuKsAxwIRo7vKwrhrBLcR65Sw==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
@@ -145,29 +145,29 @@ interactions:
             X-Compute-Characters:
                 - "1301"
             X-Compute-Time:
-                - "2.150531072"
+                - "2.118660881"
             X-Compute-Type:
                 - 4-nvida-a100-sxm4-80gb
             X-Generated-Tokens:
                 - "17"
             X-Inference-Id:
-                - FHZAKUmxOQcNAoa-ly7ZH
+                - pR3_lNi8aIAPJWneX2usp
             X-Inference-Time:
-                - "2124"
+                - "2117"
             X-Powered-By:
                 - huggingface-moon
             X-Prompt-Tokens:
                 - "262"
             X-Proxied-Host:
-                - http://10.102.95.232
+                - http://10.102.88.241
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - 64tq71pt-gbdk7
+                - 64tq71pt-veq55
             X-Queue-Time:
-                - "24"
+                - "0"
             X-Request-Id:
-                - bP2dtTv0TX_sXpcc
+                - 15GQi03hszZ_o_zx
             X-Robots-Tag:
                 - none
             X-Sha:
@@ -175,9 +175,9 @@ interactions:
             X-Time-Per-Token:
                 - "124"
             X-Total-Time:
-                - "2150"
+                - "2118"
             X-Validation-Time:
                 - "1"
         status: 200 OK
         code: 200
-        duration: 2.26s
+        duration: 2.179s

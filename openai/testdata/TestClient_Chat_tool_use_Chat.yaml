@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BSs3PuvDSCGIAMpYpkGc0pkVEt7yO",
+              "id": "chatcmpl-BT8Pg18YfqWluUoFQ7Rle7OFxDnUM",
               "object": "chat.completion",
-              "created": 1746220667,
+              "created": 1746283552,
               "model": "gpt-4.1-nano-2025-04-14",
               "choices": [
                 {
@@ -42,7 +42,7 @@ interactions:
                     "content": null,
                     "tool_calls": [
                       {
-                        "id": "call_sZay2iQYFaUANPa4vkVCw3fA",
+                        "id": "call_b61QWgbot3cxoNKKN2Qg69LV",
                         "type": "function",
                         "function": {
                           "name": "best_country",
@@ -50,133 +50,11 @@ interactions:
                         }
                       },
                       {
-                        "id": "call_VZPKVKewsT28PEktlcraQmj7",
+                        "id": "call_6b76qEcFIGbgGtocC5l4rufm",
                         "type": "function",
                         "function": {
                           "name": "best_country",
                           "arguments": "{\"country\": \"USA\"}"
-                        }
-                      }
-                    ],
-                    "refusal": null,
-                    "annotations": []
-                  },
-                  "logprobs": null,
-                  "finish_reason": "tool_calls"
-                }
-              ],
-              "usage": {
-                "prompt_tokens": 78,
-                "completion_tokens": 45,
-                "total_tokens": 123,
-                "prompt_tokens_details": {
-                  "cached_tokens": 0,
-                  "audio_tokens": 0
-                },
-                "completion_tokens_details": {
-                  "reasoning_tokens": 0,
-                  "audio_tokens": 0,
-                  "accepted_prediction_tokens": 0,
-                  "rejected_prediction_tokens": 0
-                }
-              },
-              "service_tier": "default",
-              "system_fingerprint": "fp_eede8f0d45"
-            }
-        headers:
-            Access-Control-Expose-Headers:
-                - X-Request-ID
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 939a8c23da267136-YUL
-            Content-Type:
-                - application/json
-            Openai-Organization:
-                - user-vtmtcvpbctksjfewktqdl2sw
-            Openai-Processing-Ms:
-                - "327"
-            Openai-Version:
-                - "2020-10-01"
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload
-            X-Content-Type-Options:
-                - nosniff
-            X-Ratelimit-Limit-Requests:
-                - "500"
-            X-Ratelimit-Limit-Tokens:
-                - "200000"
-            X-Ratelimit-Remaining-Requests:
-                - "497"
-            X-Ratelimit-Remaining-Tokens:
-                - "198484"
-            X-Ratelimit-Reset-Requests:
-                - 338ms
-            X-Ratelimit-Reset-Tokens:
-                - 454ms
-            X-Request-Id:
-                - req_6af2015f05c159706b180a984592b061
-        status: 200 OK
-        code: 200
-        duration: 666ms
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 650
-        transfer_encoding: []
-        trailer: {}
-        host: api.openai.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"model":"gpt-4.1-nano","max_tokens":200,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"seed":1,"temperature":0.01,"tools":[{"type":"function","function":{"description":"A tool to determine the best country","name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required","parallel_tool_calls":true}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.openai.com/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {
-              "id": "chatcmpl-BSs3QpaUQ1q8qwum03J56ZPC1Q42D",
-              "object": "chat.completion",
-              "created": 1746220668,
-              "model": "gpt-4.1-nano-2025-04-14",
-              "choices": [
-                {
-                  "index": 0,
-                  "message": {
-                    "role": "assistant",
-                    "content": null,
-                    "tool_calls": [
-                      {
-                        "id": "call_jz4BLZ6jEMqQELm2JPwHYr4W",
-                        "type": "function",
-                        "function": {
-                          "name": "best_country",
-                          "arguments": "{\"country\": \"USA\"}"
-                        }
-                      },
-                      {
-                        "id": "call_Ny1QygwDitNrktSSRepuDkqq",
-                        "type": "function",
-                        "function": {
-                          "name": "best_country",
-                          "arguments": "{\"country\": \"Canada\"}"
                         }
                       }
                     ],
@@ -213,13 +91,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 939a8c27be4a7136-YUL
+                - 93a08b6bc82d715a-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "396"
+                - "368"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -235,13 +113,135 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "498"
             X-Ratelimit-Remaining-Tokens:
-                - "199967"
+                - "199965"
             X-Ratelimit-Reset-Requests:
-                - 178ms
+                - 230ms
+            X-Ratelimit-Reset-Tokens:
+                - 10ms
+            X-Request-Id:
+                - req_f7aaadc347cd3a88fcf81f6872f51ac8
+        status: 200 OK
+        code: 200
+        duration: 740ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 650
+        transfer_encoding: []
+        trailer: {}
+        host: api.openai.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"gpt-4.1-nano","max_tokens":200,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"seed":1,"temperature":0.01,"tools":[{"type":"function","function":{"description":"A tool to determine the best country","name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required","parallel_tool_calls":true}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "id": "chatcmpl-BT8PhlLJBJgTISMpc50MDTLYMp5WR",
+              "object": "chat.completion",
+              "created": 1746283553,
+              "model": "gpt-4.1-nano-2025-04-14",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": null,
+                    "tool_calls": [
+                      {
+                        "id": "call_P1m945fpadELNEadePGhXBu6",
+                        "type": "function",
+                        "function": {
+                          "name": "best_country",
+                          "arguments": "{\"country\": \"USA\"}"
+                        }
+                      },
+                      {
+                        "id": "call_en1GNkKl9Jd59SSEQBJspVbw",
+                        "type": "function",
+                        "function": {
+                          "name": "best_country",
+                          "arguments": "{\"country\": \"Canada\"}"
+                        }
+                      }
+                    ],
+                    "refusal": null,
+                    "annotations": []
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 78,
+                "completion_tokens": 46,
+                "total_tokens": 124,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 0,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "service_tier": "default",
+              "system_fingerprint": "fp_8fd43718b3"
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93a08b702d4e715a-YUL
+            Content-Type:
+                - application/json
+            Openai-Organization:
+                - user-vtmtcvpbctksjfewktqdl2sw
+            Openai-Processing-Ms:
+                - "627"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "199966"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
             X-Ratelimit-Reset-Tokens:
                 - 9ms
             X-Request-Id:
-                - req_094f39027d772fa83993fa3e34275e1e
+                - req_63a45bab22ba35382864455dd5e9488b
         status: 200 OK
         code: 200
-        duration: 465ms
+        duration: 696ms

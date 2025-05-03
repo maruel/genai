@@ -28,14 +28,14 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"b9aeeef8-76f4-4d78-bc2b-e4c4de94d598","object":"chat.completion","created":1746197585,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"index":0,"id":"call_0_48f9e275-e427-4fea-9b87-78d63c02128f","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}},{"index":1,"id":"call_1_80b8c76a-85c9-4ad8-9bbf-1f28a3e1ea18","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":175,"completion_tokens":36,"total_tokens":211,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":175},"system_fingerprint":"fp_8802369eaa_prod0425fp8"}'
+        body: '{"id":"cd6a050e-0414-48be-bd00-32d6e343c8b3","object":"chat.completion","created":1746283552,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"index":0,"id":"call_0_138a122e-b4bd-44c5-9138-518fcfc6cd5a","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}},{"index":1,"id":"call_1_28723351-601f-4fb4-af8d-ccdbea51c476","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":175,"completion_tokens":38,"total_tokens":213,"prompt_tokens_details":{"cached_tokens":128},"prompt_cache_hit_tokens":128,"prompt_cache_miss_tokens":47},"system_fingerprint":"fp_8802369eaa_prod0425fp8"}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9398589e3b7ea2a3-YUL
+                - 93a08b6b6fd2a2a0-YUL
             Content-Type:
                 - application/json
             Server:
@@ -47,10 +47,10 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - 56df53820f289bf2fdcd8accf4d4d5ba
+                - 00faec800e38a43a43f7dd855ee551b7
         status: 200 OK
         code: 200
-        duration: 342ms
+        duration: 328ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -78,14 +78,14 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"35777041-852a-4ee4-a25d-17ac802cf2c9","object":"chat.completion","created":1746197586,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"index":0,"id":"call_0_7e494550-2889-46d6-bc1a-f6308695b1b7","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"}},{"index":1,"id":"call_1_7be3b978-36ec-4ea9-b5d2-c78b3088098d","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":175,"completion_tokens":38,"total_tokens":213,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":175},"system_fingerprint":"fp_8802369eaa_prod0425fp8"}'
+        body: '{"id":"92e11ff9-b467-48d3-b22f-d090125e0f30","object":"chat.completion","created":1746283558,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"index":0,"id":"call_0_4480f2f9-d71d-42e5-b274-3f65061357bb","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"}},{"index":1,"id":"call_1_f72072a9-7f7f-4968-98e5-fbb3add1db10","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":175,"completion_tokens":38,"total_tokens":213,"prompt_tokens_details":{"cached_tokens":128},"prompt_cache_hit_tokens":128,"prompt_cache_miss_tokens":47},"system_fingerprint":"fp_8802369eaa_prod0425fp8"}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9398589e3b86a2a3-YUL
+                - 93a08b8caf7fa2a0-YUL
             Content-Type:
                 - application/json
             Server:
@@ -97,7 +97,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - d31a9bd823b2775bc943328531e2226c
+                - bd8d882826a683a4866e170fef01625b
         status: 200 OK
         code: 200
-        duration: 900ms
+        duration: 284ms

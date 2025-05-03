@@ -76,7 +76,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=572
+                - gfet4t7; dur=492
             Vary:
                 - Origin
                 - X-Origin
@@ -89,7 +89,7 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 648ms
+        duration: 576ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -165,7 +165,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=464
+                - gfet4t7; dur=560
             Vary:
                 - Origin
                 - X-Origin
@@ -178,4 +178,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 474ms
+        duration: 569ms

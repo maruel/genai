@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"3bfd7d95c3b64454be9a6055411b895d","object":"chat.completion","created":1746219568,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"XkiAZ0MA1","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0}],"content":""},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}'
+        body: '{"id":"800bd1e73c81467494917f7a47dfbed7","object":"chat.completion","created":1746283552,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"PGt7tDNIl","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0}],"content":""},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -37,7 +37,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 939a714eca5ba290-YUL
+                - 93a08b6b8986a290-YUL
             Content-Type:
                 - application/json
             Ratelimitbysize-Limit:
@@ -47,17 +47,17 @@ interactions:
             Ratelimitbysize-Remaining:
                 - "499800"
             Ratelimitbysize-Reset:
-                - "32"
+                - "8"
             Server:
                 - cloudflare
             X-Envoy-Upstream-Service-Time:
-                - "163"
+                - "171"
             X-Kong-Proxy-Latency:
                 - "5"
             X-Kong-Request-Id:
-                - 09a01f7d1c775651eba2fe02c6f9bb44
+                - 1d2e6206cd52706cf189ef2364eee73b
             X-Kong-Upstream-Latency:
-                - "165"
+                - "172"
             X-Ratelimitbysize-Limit-Minute:
                 - "500000"
             X-Ratelimitbysize-Limit-Month:
@@ -65,10 +65,10 @@ interactions:
             X-Ratelimitbysize-Remaining-Minute:
                 - "499800"
             X-Ratelimitbysize-Remaining-Month:
-                - "999998800"
+                - "999999800"
         status: 200 OK
         code: 200
-        duration: 1.474s
+        duration: 349ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -96,7 +96,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"ff46f15ae428489c99a7f172e655da98","object":"chat.completion","created":1746219572,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"tEcsE8UU3","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":0}],"content":""},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}'
+        body: '{"id":"f87b9492448544c19cd8e0cc838d8121","object":"chat.completion","created":1746283552,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"zCA4TIwIH","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":0}],"content":""},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -105,7 +105,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 939a716508bda290-YUL
+                - 93a08b6d8bdaa290-YUL
             Content-Type:
                 - application/json
             Ratelimitbysize-Limit:
@@ -115,17 +115,17 @@ interactions:
             Ratelimitbysize-Remaining:
                 - "499800"
             Ratelimitbysize-Reset:
-                - "28"
+                - "8"
             Server:
                 - cloudflare
             X-Envoy-Upstream-Service-Time:
                 - "172"
             X-Kong-Proxy-Latency:
-                - "6"
+                - "8"
             X-Kong-Request-Id:
-                - 3ee9b752196d4817811dc53a6c6d903f
+                - 2f00406564c3801cee5ee15302b75b2f
             X-Kong-Upstream-Latency:
-                - "173"
+                - "172"
             X-Ratelimitbysize-Limit-Minute:
                 - "500000"
             X-Ratelimitbysize-Limit-Month:
@@ -133,7 +133,7 @@ interactions:
             X-Ratelimitbysize-Remaining-Minute:
                 - "499800"
             X-Ratelimitbysize-Remaining-Month:
-                - "999837068"
+                - "999851790"
         status: 200 OK
         code: 200
-        duration: 3.794s
+        duration: 303ms

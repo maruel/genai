@@ -29,7 +29,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-3a677647-22cb-4740-9f6d-d7684968332c","object":"chat.completion","created":1746220687,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"call_fzt4","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.1942772,"prompt_tokens":286,"prompt_time":0.009695595,"completion_tokens":12,"completion_time":0.016,"total_tokens":298,"total_time":0.025695595},"usage_breakdown":{"models":null},"system_fingerprint":"fp_8d1c73bd4c","x_groq":{"id":"req_01jt9dt86mex8akerpsg8n33ka"}}
+            {"id":"chatcmpl-cf28dbf0-f7c6-4823-8085-76647da93f49","object":"chat.completion","created":1746283552,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"call_y2e1","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.192320401,"prompt_tokens":286,"prompt_time":0.009657486,"completion_tokens":12,"completion_time":0.016,"total_tokens":298,"total_time":0.025657486},"usage_breakdown":{"models":null},"system_fingerprint":"fp_f7bd09b454","x_groq":{"id":"req_01jtb9rqwqet8rbnrd0k0t6a8b"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,7 +38,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 939a8ca0b9a2a313-YUL
+                - 93a08b6bece2713f-YUL
             Content-Type:
                 - application/json
             Server:
@@ -52,18 +52,18 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "6000"
             X-Ratelimit-Remaining-Requests:
-                - "14398"
+                - "14399"
             X-Ratelimit-Remaining-Tokens:
                 - "5965"
             X-Ratelimit-Reset-Requests:
-                - 11.957s
+                - 6s
             X-Ratelimit-Reset-Tokens:
                 - 350ms
             X-Request-Id:
-                - req_01jt9dt86mex8akerpsg8n33ka
+                - req_01jtb9rqwqet8rbnrd0k0t6a8b
         status: 200 OK
         code: 200
-        duration: 387ms
+        duration: 373ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -92,7 +92,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-a99d1aa0-5c12-4cf9-bc4c-8893c7c49d54","object":"chat.completion","created":1746220688,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"call_rfyg","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"}},{"id":"call_zg7z","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.19354928100000002,"prompt_tokens":286,"prompt_time":0.009564567,"completion_tokens":27,"completion_time":0.036,"total_tokens":313,"total_time":0.045564567},"usage_breakdown":{"models":null},"system_fingerprint":"fp_8d1c73bd4c","x_groq":{"id":"req_01jt9dt8fdftps36s0gfdgvp89"}}
+            {"id":"chatcmpl-d0ebf488-34d1-4398-953a-292ba57522cc","object":"chat.completion","created":1746283553,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"call_kw53","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"}},{"id":"call_hb5e","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.192703975,"prompt_tokens":286,"prompt_time":0.009520589,"completion_tokens":27,"completion_time":0.036,"total_tokens":313,"total_time":0.045520589},"usage_breakdown":{"models":null},"system_fingerprint":"fp_f7bd09b454","x_groq":{"id":"req_01jtb9rr6vf21s337mqt0xtsqk"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -101,7 +101,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 939a8ca2ec3fa313-YUL
+                - 93a08b6dae5d713f-YUL
             Content-Type:
                 - application/json
             Server:
@@ -115,15 +115,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "6000"
             X-Ratelimit-Remaining-Requests:
-                - "14397"
+                - "14396"
             X-Ratelimit-Remaining-Tokens:
-                - "5633"
+                - "5379"
             X-Ratelimit-Reset-Requests:
-                - 17.717999999s
+                - 23.951s
             X-Ratelimit-Reset-Tokens:
-                - 3.668s
+                - 6.205s
             X-Request-Id:
-                - req_01jt9dt8fdftps36s0gfdgvp89
+                - req_01jtb9rr6vf21s337mqt0xtsqk
         status: 200 OK
         code: 200
-        duration: 296ms
+        duration: 343ms

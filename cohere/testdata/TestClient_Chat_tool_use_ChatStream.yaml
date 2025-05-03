@@ -1,0 +1,377 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 647
+        transfer_encoding: []
+        trailer: {}
+        host: api.cohere.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"stream":true,"model":"command-r-08-2024","messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":200,"temperature":0.01,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"description":"A tool to determine the best country"}}],"tool_choice":"required","strict_tools":true}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cohere.com/v2/chat
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            event: message-start
+            data: {"id":"73a25277-858d-460b-b738-7a10e59c137c","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"I"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" will"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" use"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" the"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" '"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"best"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"_"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"country"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"'"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" tool"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" to"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" find"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" out"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" which"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" country"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" is"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" the"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" best"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" one"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"."}}}
+
+            event: tool-call-start
+            data: {"type":"tool-call-start","index":0,"delta":{"message":{"tool_calls":{"id":"best_country_dv4585wb9rtn","type":"function","function":{"name":"best_country","arguments":""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"{\n    \""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"country"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"\":"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":" \""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"Canada"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"\""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"\n"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"}"}}}}}
+
+            event: tool-call-end
+            data: {"type":"tool-call-end","index":0}
+
+            event: tool-call-start
+            data: {"type":"tool-call-start","index":1,"delta":{"message":{"tool_calls":{"id":"best_country_eb0w3r3hrrt5","type":"function","function":{"name":"best_country","arguments":""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"{\n    \""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"country"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"\":"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":" \""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"USA\""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"\n"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"}"}}}}}
+
+            event: tool-call-end
+            data: {"type":"tool-call-end","index":1}
+
+            event: message-end
+            data: {"type":"message-end","delta":{"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":49,"output_tokens":36},"tokens":{"input_tokens":925,"output_tokens":91}}}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Debug-Trace-ID
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+            Content-Type:
+                - text/event-stream
+            Expires:
+                - Thu, 01 Jan 1970 00:00:00 UTC
+            Pragma:
+                - no-cache
+            Server:
+                - envoy
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Accel-Expires:
+                - "0"
+            X-Debug-Trace-Id:
+                - 6f09d3da30ce7f080a04d0ade8cf7367
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
+            X-Envoy-Upstream-Service-Time:
+                - "244"
+            X-Trial-Endpoint-Call-Limit:
+                - "10"
+            X-Trial-Endpoint-Call-Remaining:
+                - "9"
+        status: 200 OK
+        code: 200
+        duration: 318ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 647
+        transfer_encoding: []
+        trailer: {}
+        host: api.cohere.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"stream":true,"model":"command-r-08-2024","messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":200,"temperature":0.01,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"description":"A tool to determine the best country"}}],"tool_choice":"required","strict_tools":true}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cohere.com/v2/chat
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            event: message-start
+            data: {"id":"9fd93d4e-f2ed-46a1-b26c-309451174a06","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"I"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" will"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" use"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" the"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" best"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"_"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"country"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" tool"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" to"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" find"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" out"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" which"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" country"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" is"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" better"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":","}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" the"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" USA or"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" Canada"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"."}}}
+
+            event: tool-call-start
+            data: {"type":"tool-call-start","index":0,"delta":{"message":{"tool_calls":{"id":"best_country_s16npx8zs9m5","type":"function","function":{"name":"best_country","arguments":""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"{\n    \""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"country"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"\":"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":" \""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"USA\""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"\n"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"}"}}}}}
+
+            event: tool-call-end
+            data: {"type":"tool-call-end","index":0}
+
+            event: tool-call-start
+            data: {"type":"tool-call-start","index":1,"delta":{"message":{"tool_calls":{"id":"best_country_8c2yxvywaxkf","type":"function","function":{"name":"best_country","arguments":""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"{\n    \""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"country"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"\":"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":" \""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"Canada"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"\""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"\n"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"}"}}}}}
+
+            event: tool-call-end
+            data: {"type":"tool-call-end","index":1}
+
+            event: message-end
+            data: {"type":"message-end","delta":{"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":49,"output_tokens":37},"tokens":{"input_tokens":925,"output_tokens":92}}}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Debug-Trace-ID
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+            Content-Type:
+                - text/event-stream
+            Expires:
+                - Thu, 01 Jan 1970 00:00:00 UTC
+            Pragma:
+                - no-cache
+            Server:
+                - envoy
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Accel-Expires:
+                - "0"
+            X-Debug-Trace-Id:
+                - 49e723ffacba509fce8d2e4b9fbf4dbd
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
+            X-Envoy-Upstream-Service-Time:
+                - "200"
+            X-Trial-Endpoint-Call-Limit:
+                - "10"
+            X-Trial-Endpoint-Call-Remaining:
+                - "7"
+        status: 200 OK
+        code: 200
+        duration: 241ms

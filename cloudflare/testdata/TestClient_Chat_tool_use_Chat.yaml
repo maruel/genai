@@ -31,13 +31,13 @@ interactions:
         body: '{"result":{"response":null,"tool_calls":[{"arguments":{"country":"Canada"},"name":"best_country"},{"arguments":{"country":"USA"},"name":"best_country"}],"usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
-                - "2025-05-02"
+                - "2025-05-03"
             Cf-Ai-Req-Id:
-                - 189ca256-e6d5-45d1-bdb2-c158519949f8
+                - 1c3441bb-a7c6-43e1-99d4-2abf828a9a7e
             Cf-Auditlog-Id:
-                - 0196917c-9ecf-7f0c-9930-c74a76a770ce
+                - 0196969c-5f2c-7d89-bed3-0b43c56bbdc1
             Cf-Ray:
-                - 9398589e0cfea25d-YUL
+                - 93a08b6b69eaa24b-YUL
             Content-Type:
                 - application/json
             Server:
@@ -46,7 +46,7 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 4.414s
+        duration: 4.354s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -77,13 +77,13 @@ interactions:
         body: '{"result":{"response":null,"tool_calls":[{"arguments":{"country":"USA"},"name":"best_country"},{"arguments":{"country":"Canada"},"name":"best_country"}],"usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
-                - "2025-05-02"
+                - "2025-05-03"
             Cf-Ai-Req-Id:
-                - ddfcfad8-0541-4cb2-901c-63978db85fdb
+                - 6e8869d8-5c1f-45f7-8e09-99e95b162e01
             Cf-Auditlog-Id:
-                - 0196917c-9ed3-7b93-a583-e59b53c93f08
+                - 0196969c-7013-78bc-b150-cf47d55a2cf3
             Cf-Ray:
-                - 9398589e0cf5a25d-YUL
+                - 93a08b867fdea24b-YUL
             Content-Type:
                 - application/json
             Server:
@@ -92,4 +92,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 4.578s
+        duration: 4.286s

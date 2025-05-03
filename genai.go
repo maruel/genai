@@ -440,6 +440,8 @@ type ToolDef struct {
 	// InputsAs enforces a tool call with a specific JSON structure for
 	// arguments.
 	InputsAs ReflectedToJSON
+	// Callback is the function to call with the inputs. It must return a string.
+	Callback any
 
 	_ struct{}
 }

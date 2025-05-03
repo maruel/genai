@@ -16,8 +16,9 @@ import (
 // ChatProviderFactory is what a Java developer would write.
 type ChatProviderFactory func(t *testing.T) genai.ChatProvider
 
-// ChatStream runs a ChatStream and returns the concatenated response.
-func ChatStream(t *testing.T, c genai.ChatProvider, msgs genai.Messages, opts *genai.ChatOptions) genai.Messages {
+// ChatStreamWithFactory runs a ChatStream and returns the concatenated response.
+func ChatStreamWithFactory(t *testing.T, factory ChatProviderFactory, msgs genai.Messages, opts *genai.ChatOptions) genai.Messages {
+	c := factory(t)
 	ctx := t.Context()
 	chunks := make(chan genai.MessageFragment)
 	end := make(chan genai.Messages, 1)
@@ -53,9 +54,10 @@ func ChatStream(t *testing.T, c genai.ChatProvider, msgs genai.Messages, opts *g
 	return responses
 }
 
-// ChatToolUse runs a Chat with tool use and verifies that the tools are called correctly.
+// ChatToolUseCountryWithFactory runs a Chat with tool use and verifies that the tools are called correctly.
 // It returns the response for further validation.
-func ChatToolUseCountry(t *testing.T, c genai.ChatProvider, opts *genai.ChatOptions) {
+func ChatToolUseCountryWithFactory(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
+	c := factory(t)
 	ctx := t.Context()
 	t.Run("Canada", func(t *testing.T) {
 		msgs := genai.Messages{
@@ -129,9 +131,10 @@ func ChatToolUseCountry(t *testing.T, c genai.ChatProvider, opts *genai.ChatOpti
 	})
 }
 
-// ChatVisionText runs a Chat with vision capabilities and verifies that the model correctly identifies a
+// ChatVisionTextWithFactory runs a Chat with vision capabilities and verifies that the model correctly identifies a
 // banana image.
-func ChatVisionText(t *testing.T, c genai.ChatProvider, opts *genai.ChatOptions) {
+func ChatVisionTextWithFactory(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
+	c := factory(t)
 	ctx := t.Context()
 	msgs := genai.Messages{
 		{
@@ -157,9 +160,10 @@ func ChatVisionText(t *testing.T, c genai.ChatProvider, opts *genai.ChatOptions)
 	}
 }
 
-// ChatVisionJSON runs a Chat with vision capabilities and verifies that the model correctly identifies a
+// ChatVisionJSONWithFactory runs a Chat with vision capabilities and verifies that the model correctly identifies a
 // banana image. It enforces JSON schema.
-func ChatVisionJSON(t *testing.T, c genai.ChatProvider, opts *genai.ChatOptions) {
+func ChatVisionJSONWithFactory(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
+	c := factory(t)
 	ctx := t.Context()
 	msgs := genai.Messages{
 		{
@@ -198,3 +202,23 @@ func ChatVisionJSON(t *testing.T, c genai.ChatProvider, opts *genai.ChatOptions)
 //
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
+
+// ChatStream is a backward-compatible adapter that runs a ChatStream and returns the concatenated response.
+func ChatStream(t *testing.T, c genai.ChatProvider, msgs genai.Messages, opts *genai.ChatOptions) genai.Messages {
+	return ChatStreamWithFactory(t, func(t *testing.T) genai.ChatProvider { return c }, msgs, opts)
+}
+
+// ChatToolUseCountry is a backward-compatible adapter that runs a Chat with tool use and verifies that the tools are called correctly.
+func ChatToolUseCountry(t *testing.T, c genai.ChatProvider, opts *genai.ChatOptions) {
+	ChatToolUseCountryWithFactory(t, func(t *testing.T) genai.ChatProvider { return c }, opts)
+}
+
+// ChatVisionText is a backward-compatible adapter that runs a Chat with vision capabilities and verifies that the model correctly identifies a banana image.
+func ChatVisionText(t *testing.T, c genai.ChatProvider, opts *genai.ChatOptions) {
+	ChatVisionTextWithFactory(t, func(t *testing.T) genai.ChatProvider { return c }, opts)
+}
+
+// ChatVisionJSON is a backward-compatible adapter that runs a Chat with vision capabilities and verifies that the model correctly identifies a banana image with JSON schema.
+func ChatVisionJSON(t *testing.T, c genai.ChatProvider, opts *genai.ChatOptions) {
+	ChatVisionJSONWithFactory(t, func(t *testing.T) genai.ChatProvider { return c }, opts)
+}

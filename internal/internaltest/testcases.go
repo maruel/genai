@@ -6,6 +6,7 @@ package internaltest
 
 import (
 	"bytes"
+	"context"
 	_ "embed"
 	"strings"
 	"testing"
@@ -55,8 +56,83 @@ func ChatStream(t *testing.T, factory ChatProviderFactory, msgs genai.Messages, 
 }
 
 // ChatToolUse runs a Chat with tool use and verifies that the tools are called correctly.
-// It returns the response for further validation.
+// It runs subtests for both Chat and ChatStream methods.
 func ChatToolUseCountry(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
+	t.Run("Chat", func(t *testing.T) {
+		ChatToolUseCountryChat(t, factory, opts)
+	})
+	t.Run("ChatStream", func(t *testing.T) {
+		ChatToolUseCountryStream(t, factory, opts)
+	})
+}
+
+// ChatToolUseCountryChat runs a Chat with tool use and verifies that the tools are called correctly.
+// It returns the response for further validation.
+func ChatToolUseCountryChat(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
+	chatToolUseCountryCore(t, factory, opts, false)
+}
+
+// ChatToolUseCountryStream runs a ChatStream with tool use and verifies that the tools are called correctly.
+// It returns the response for further validation.
+func ChatToolUseCountryStream(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
+	chatToolUseCountryCore(t, factory, opts, true)
+}
+
+// processChat runs either Chat or ChatStream based on the useStream parameter
+// and returns the result.
+func processChat(t *testing.T, ctx context.Context, c genai.ChatProvider, msgs genai.Messages, opts *genai.ChatOptions, useStream bool) genai.ChatResult {
+	var resp genai.ChatResult
+	var err error
+	if useStream {
+		chunks := make(chan genai.MessageFragment)
+		end := make(chan genai.Messages, 1)
+		go func() {
+			var pendingMsgs genai.Messages
+			defer func() {
+				end <- pendingMsgs
+				close(end)
+			}()
+			for {
+				select {
+				case <-ctx.Done():
+					return
+				case pkt, ok := <-chunks:
+					if !ok {
+						return
+					}
+					var err2 error
+					if pendingMsgs, err2 = pkt.Accumulate(pendingMsgs); err2 != nil {
+						t.Error(err2)
+						return
+					}
+				}
+			}
+		}()
+		err = c.ChatStream(ctx, msgs, opts, chunks)
+		close(chunks)
+		responses := <-end
+		t.Logf("Raw responses: %#v", responses)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(responses) == 0 {
+			t.Fatal("No response received")
+		}
+		resp = genai.ChatResult{Message: responses[len(responses)-1]}
+	} else {
+		resp, err = c.Chat(ctx, msgs, opts)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	t.Logf("Raw response: %#v", resp)
+	return resp
+}
+
+// chatToolUseCountryCore runs a Chat or ChatStream with tool use and verifies that the tools are called correctly.
+// The useStream parameter determines whether to use Chat or ChatStream.
+// It returns the response for further validation.
+func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions, useStream bool) {
 	c := factory(t)
 	ctx := t.Context()
 	t.Run("Canada", func(t *testing.T) {
@@ -75,11 +151,8 @@ func ChatToolUseCountry(t *testing.T, factory ChatProviderFactory, opts *genai.C
 				InputsAs:    &got,
 			},
 		}
-		resp, err := c.Chat(ctx, msgs, opts)
-		if err != nil {
-			t.Fatal(err)
-		}
-		t.Logf("Raw response: %#v", resp)
+
+		resp := processChat(t, ctx, c, msgs, opts, useStream)
 
 		// Warning: when the model is undecided, it call both.
 		// Check for tool calls
@@ -110,11 +183,8 @@ func ChatToolUseCountry(t *testing.T, factory ChatProviderFactory, opts *genai.C
 				InputsAs:    &got,
 			},
 		}
-		resp, err := c.Chat(ctx, msgs, opts)
-		if err != nil {
-			t.Fatal(err)
-		}
-		t.Logf("Raw response: %#v", resp)
+
+		resp := processChat(t, ctx, c, msgs, opts, useStream)
 
 		// Warning: when the model is undecided, it call both.
 		// Check for tool calls

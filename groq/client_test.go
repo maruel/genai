@@ -17,27 +17,26 @@ import (
 )
 
 func TestClient_Chat_vision(t *testing.T) {
-	c := getClient(t, "meta-llama/llama-4-scout-17b-16e-instruct")
 	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	internaltest.ChatVisionText(t, func(t *testing.T) genai.ChatProvider { return c }, &opts)
+	internaltest.ChatVisionText(t, func(t *testing.T) genai.ChatProvider {
+		return getClient(t, "meta-llama/llama-4-scout-17b-16e-instruct")
+	}, &opts)
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	c := getClient(t, "llama-3.1-8b-instant")
 	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	internaltest.ChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return c }, &opts)
+	internaltest.ChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama-3.1-8b-instant") }, &opts)
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	c := getClient(t, "llama-3.1-8b-instant")
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 	}
@@ -46,7 +45,7 @@ func TestClient_ChatStream(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return c }, msgs, &opts)
+	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama-3.1-8b-instant") }, msgs, &opts)
 	if len(responses) != 1 {
 		t.Fatal("Unexpected response")
 	}

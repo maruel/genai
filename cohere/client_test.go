@@ -49,17 +49,15 @@ func TestClient_Chat_jSON(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	c := getClient(t, "command-r-08-2024")
 	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   200,
 	}
-	internaltest.ChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return c }, &opts)
+	internaltest.ChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "command-r-08-2024") }, &opts)
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	c := getClient(t, "command-r7b-12-2024")
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 	}
@@ -68,7 +66,7 @@ func TestClient_ChatStream(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return c }, msgs, &opts)
+	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "command-r7b-12-2024") }, msgs, &opts)
 	if len(responses) != 1 {
 		t.Fatal("Unexpected response")
 	}

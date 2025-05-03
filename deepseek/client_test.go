@@ -48,16 +48,14 @@ func TestClient_Chat_jSON(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	c := getClient(t, "deepseek-chat")
 	opts := genai.ChatOptions{
 		Temperature: 0.01,
 		MaxTokens:   200,
 	}
-	internaltest.ChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return c }, &opts)
+	internaltest.ChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "deepseek-chat") }, &opts)
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	c := getClient(t, "deepseek-chat")
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 	}
@@ -65,7 +63,7 @@ func TestClient_ChatStream(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return c }, msgs, &opts)
+	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "deepseek-chat") }, msgs, &opts)
 	if len(responses) != 1 {
 		t.Fatal("Unexpected response")
 	}

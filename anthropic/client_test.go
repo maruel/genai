@@ -21,12 +21,11 @@ func TestClient_Chat_vision(t *testing.T) {
 	// claude-3-haiku-20240307 is 0.20$/1.25$ while claude-3-5-haiku-20241022 is
 	// 0.80$/4.00$. 3.0 supports images, 3.5 supports PDFs.
 	// https://docs.anthropic.com/en/docs/about-claude/models/all-models
-	c := getClient(t, "claude-3-haiku-20240307")
 	opts := genai.ChatOptions{
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	internaltest.ChatVisionText(t, func(t *testing.T) genai.ChatProvider { return c }, &opts)
+	internaltest.ChatVisionText(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") }, &opts)
 }
 
 func TestClient_Chat_pdf(t *testing.T) {
@@ -71,16 +70,14 @@ func TestClient_Chat_pdf(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	c := getClient(t, "claude-3-haiku-20240307")
 	opts := genai.ChatOptions{
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	internaltest.ChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return c }, &opts)
+	internaltest.ChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") }, &opts)
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	c := getClient(t, "claude-3-haiku-20240307")
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 	}
@@ -88,7 +85,7 @@ func TestClient_ChatStream(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return c }, msgs, &opts)
+	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") }, msgs, &opts)
 	if len(responses) != 1 {
 		t.Fatal("Unexpected response")
 	}

@@ -42,7 +42,6 @@ func TestClient_Chat(t *testing.T) {
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	c := getClient(t, "sonar")
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 	}
@@ -50,7 +49,7 @@ func TestClient_ChatStream(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return c }, msgs, &opts)
+	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "sonar") }, msgs, &opts)
 	if len(responses) != 1 {
 		t.Fatal("Unexpected response")
 	}

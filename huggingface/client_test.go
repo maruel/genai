@@ -46,29 +46,26 @@ func TestClient_Chat(t *testing.T) {
 
 func TestClient_Chat_tool_use(t *testing.T) {
 	// TODO: Figure out why smaller models fail.
-	c := getClient(t, "meta-llama/Llama-3.3-70B-Instruct")
 	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   200,
 	}
-	internaltest.ChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return c }, &opts)
+	internaltest.ChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") }, &opts)
 }
 
 func TestClient_Chat_vision_and_JSON(t *testing.T) {
 	t.Skip("llama 3.3 70B returns false instead of true as structured JSON (!?!)")
-	c := getClient(t, "meta-llama/Llama-3.3-70B-Instruct")
 	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	internaltest.ChatVisionJSON(t, func(t *testing.T) genai.ChatProvider { return c }, &opts)
+	internaltest.ChatVisionJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") }, &opts)
 }
 
 func TestClient_ChatStream(t *testing.T) {
 	// TODO: Figure out why smaller models fail.
-	c := getClient(t, "meta-llama/Llama-3.3-70B-Instruct")
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 	}
@@ -77,7 +74,7 @@ func TestClient_ChatStream(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return c }, msgs, &opts)
+	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") }, msgs, &opts)
 	// TODO: handle t.Logf("HF currently tend to return spurious HTTP 422: %s", err)
 	if len(responses) != 1 {
 		t.Fatal("Unexpected response")

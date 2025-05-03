@@ -55,17 +55,15 @@ func TestClient_Chat_jSON(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	c := getClient(t, "@hf/nousresearch/hermes-2-pro-mistral-7b")
 	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   200,
 	}
-	internaltest.ChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return c }, &opts)
+	internaltest.ChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "@hf/nousresearch/hermes-2-pro-mistral-7b") }, &opts)
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	c := getClient(t, "@cf/meta/llama-3.2-3b-instruct")
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 	}
@@ -74,7 +72,7 @@ func TestClient_ChatStream(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return c }, msgs, &opts)
+	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "@cf/meta/llama-3.2-3b-instruct") }, msgs, &opts)
 	if len(responses) != 1 {
 		log.Fatal("Unexpected response")
 	}

@@ -19,13 +19,12 @@ import (
 const model = "gpt-4.1-nano"
 
 func TestClient_Chat_vision_and_JSON(t *testing.T) {
-	c := getClient(t, model)
 	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	internaltest.ChatVisionJSON(t, func(t *testing.T) genai.ChatProvider { return c }, &opts)
+	internaltest.ChatVisionJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, &opts)
 }
 
 func TestClient_Chat_audio(t *testing.T) {
@@ -97,17 +96,15 @@ func TestClient_Chat_pDF(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	c := getClient(t, model)
 	opts := genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   200,
 	}
-	internaltest.ChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return c }, &opts)
+	internaltest.ChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, &opts)
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	c := getClient(t, model)
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 	}
@@ -116,7 +113,7 @@ func TestClient_ChatStream(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return c }, msgs, &opts)
+	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, msgs, &opts)
 	if len(responses) != 1 {
 		t.Fatal("Unexpected response")
 	}

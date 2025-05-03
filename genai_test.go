@@ -6,6 +6,7 @@ package genai
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 	"testing"
 
@@ -589,6 +590,145 @@ func TestToolDef_Validate_success(t *testing.T) {
 
 func TestToolCall_Validate(t *testing.T) {
 	// TODO.
+}
+
+func TestToolCall_Callable(t *testing.T) {
+	t.Run("with no arguments", func(t *testing.T) {
+		noArgTool := ToolDef{
+			Name:        "noArgTool",
+			Description: "A tool that takes no arguments",
+			Callback:    func() string { return "no args result" },
+		}
+
+		tc := ToolCall{
+			ID:        "call1",
+			Name:      "noArgTool",
+			Arguments: "{}",
+		}
+
+		result, err := tc.Callable(&noArgTool)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if result != "no args result" {
+			t.Fatalf("unexpected result: got %q, want %q", result, "no args result")
+		}
+	})
+
+	// Define test structures
+	type CalculateInput struct {
+		A int `json:"a"`
+		B int `json:"b"`
+	}
+
+	t.Run("with struct arguments", func(t *testing.T) {
+		structTool := ToolDef{
+			Name:        "calculateTool",
+			Description: "A tool that performs a calculation",
+			InputsAs:    CalculateInput{},
+			Callback: func(input CalculateInput) string {
+				return fmt.Sprintf("%d + %d = %d", input.A, input.B, input.A+input.B)
+			},
+		}
+
+		tc := ToolCall{
+			ID:        "call2",
+			Name:      "calculateTool",
+			Arguments: `{"a": 5, "b": 3}`,
+		}
+
+		result, err := tc.Callable(&structTool)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if result != "5 + 3 = 8" {
+			t.Fatalf("unexpected result: got %q, want %q", result, "5 + 3 = 8")
+		}
+	})
+
+	t.Run("with pointer arguments", func(t *testing.T) {
+		pointerTool := ToolDef{
+			Name:        "pointerTool",
+			Description: "A tool that takes a pointer argument",
+			InputsAs:    &CalculateInput{},
+			Callback: func(input *CalculateInput) string {
+				return fmt.Sprintf("%d * %d = %d", input.A, input.B, input.A*input.B)
+			},
+		}
+
+		tc := ToolCall{
+			ID:        "call3",
+			Name:      "pointerTool",
+			Arguments: `{"a": 5, "b": 3}`,
+		}
+
+		result, err := tc.Callable(&pointerTool)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if result != "5 * 3 = 15" {
+			t.Fatalf("unexpected result: got %q, want %q", result, "5 * 3 = 15")
+		}
+	})
+
+	t.Run("with invalid arguments", func(t *testing.T) {
+		structTool := ToolDef{
+			Name:        "calculateTool",
+			Description: "A tool that performs a calculation",
+			InputsAs:    CalculateInput{},
+			Callback: func(input CalculateInput) string {
+				return fmt.Sprintf("%d + %d = %d", input.A, input.B, input.A+input.B)
+			},
+		}
+
+		tc := ToolCall{
+			ID:        "call4",
+			Name:      "calculateTool",
+			Arguments: `{"a": "not an integer", "b": 3}`,
+		}
+
+		_, err := tc.Callable(&structTool)
+		if err == nil {
+			t.Fatalf("expected error, got nil")
+		}
+	})
+
+	t.Run("with nil toolDef", func(t *testing.T) {
+		tc := ToolCall{
+			ID:        "call5",
+			Name:      "tool",
+			Arguments: "{}",
+		}
+
+		_, err := tc.Callable(nil)
+		if err == nil {
+			t.Fatalf("expected error, got nil")
+		}
+		if err.Error() != "toolDef is nil" {
+			t.Fatalf("unexpected error message: got %q, want %q", err.Error(), "toolDef is nil")
+		}
+	})
+
+	t.Run("with nil callback", func(t *testing.T) {
+		tc := ToolCall{
+			ID:        "call6",
+			Name:      "tool",
+			Arguments: "{}",
+		}
+
+		nilCallbackTool := ToolDef{
+			Name:        "nilCallbackTool",
+			Description: "A tool with a nil callback",
+		}
+
+		_, err := tc.Callable(&nilCallbackTool)
+		if err == nil {
+			t.Fatalf("expected error, got nil")
+		}
+		if err.Error() != "toolDef.Callback is nil" {
+			t.Fatalf("unexpected error message: got %q, want %q", err.Error(), "toolDef.Callback is nil")
+		}
+	})
 }
 
 func TestToolCall_Decode(t *testing.T) {

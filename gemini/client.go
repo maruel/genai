@@ -793,9 +793,17 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
+
+		finishReason := pkt.Candidates[0].FinishReason
+
 		for _, part := range pkt.Candidates[0].Content.Parts {
 			if part.Text != "" {
-				chunks <- genai.MessageFragment{TextFragment: part.Text}
+				fragment := genai.MessageFragment{TextFragment: part.Text}
+				// Only set FinishReason on fragments that have it (typically last chunk)
+				if finishReason != "" {
+					fragment.FinishReason = finishReason
+				}
+				chunks <- fragment
 			}
 		}
 	}

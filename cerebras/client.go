@@ -389,16 +389,27 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
+
+		finishReason := pkt.Choices[0].FinishReason
+
 		for _, nt := range pkt.Choices[0].Delta.ToolCalls {
 			tc := genai.ToolCall{
 				ID:        nt.ID,
 				Name:      nt.Function.Name,
 				Arguments: nt.Function.Arguments,
 			}
-			chunks <- genai.MessageFragment{ToolCall: tc}
+			fragment := genai.MessageFragment{ToolCall: tc}
+			if finishReason != "" {
+				fragment.FinishReason = finishReason
+			}
+			chunks <- fragment
 		}
 		if word := pkt.Choices[0].Delta.Content; word != "" {
-			chunks <- genai.MessageFragment{TextFragment: word}
+			fragment := genai.MessageFragment{TextFragment: word}
+			if finishReason != "" {
+				fragment.FinishReason = finishReason
+			}
+			chunks <- fragment
 		}
 	}
 	return nil

@@ -382,6 +382,12 @@ type MessageFragment struct {
 	// ToolCall is a tool call that the LLM requested to make.
 	ToolCall ToolCall
 
+	// FinishReason indicates why the model stopped generating tokens.
+	// Common values include "stop", "length", "content_filter", "tool_calls", etc.
+	// The exact values depend on the specific provider.
+	// This is only populated in the final MessageFragment of a stream.
+	FinishReason string
+
 	_ struct{}
 }
 

@@ -554,6 +554,8 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	}()
 	for pkt := range ch {
 		word := ""
+		finishReason := ""
+
 		switch pkt.Type {
 		case "message_start":
 			switch pkt.Message.Role {
@@ -565,10 +567,17 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			word = pkt.ContentBlock.Text
 		case "content_block_delta":
 			word = pkt.Delta.Text
+		case "message_stop":
+			// When we get message_stop, we need to pass the stop reason
+			finishReason = pkt.Message.StopReason
 		}
 		// slog.DebugContext(ctx, "anthropic", "word", word, "duration", time.Since(start).Round(time.Millisecond))
-		if word != "" {
-			chunks <- genai.MessageFragment{TextFragment: word}
+		if word != "" || finishReason != "" {
+			fragment := genai.MessageFragment{TextFragment: word}
+			if finishReason != "" {
+				fragment.FinishReason = finishReason
+			}
+			chunks <- fragment
 		}
 	}
 	return nil

@@ -410,7 +410,12 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 			if word := msg.Content; word != "" {
 				// Mistral Nemo really likes "▁".
 				// word = strings.ReplaceAll(msg.Content, "\u2581", " ")
-				chunks <- genai.MessageFragment{TextFragment: word}
+				fragment := genai.MessageFragment{TextFragment: word}
+				// Include FinishReason if available (StopType is equivalent to FinishReason)
+				if msg.Stop && msg.StopType != "" {
+					fragment.FinishReason = msg.StopType
+				}
+				chunks <- fragment
 			}
 		}
 		end <- nil

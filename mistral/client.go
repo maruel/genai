@@ -473,7 +473,12 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			return fmt.Errorf("unexpected role %q", role)
 		}
 		if word := pkt.Choices[0].Delta.Content; word != "" {
-			chunks <- genai.MessageFragment{TextFragment: word}
+			fragment := genai.MessageFragment{TextFragment: word}
+			// Include FinishReason if available (typically on the last chunk)
+			if pkt.Choices[0].FinishReason != "" {
+				fragment.FinishReason = pkt.Choices[0].FinishReason
+			}
+			chunks <- fragment
 		}
 	}
 	return nil

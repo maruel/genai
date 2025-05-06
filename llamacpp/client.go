@@ -203,6 +203,10 @@ func (c *CompletionResponse) ToResult() (genai.ChatResult, error) {
 			OutputTokens: c.TokensEvaluated,
 		},
 	}
+	// Set FinishReason based on Stop field
+	if c.Stop {
+		out.FinishReason = "stop"
+	}
 	return out, nil
 }
 

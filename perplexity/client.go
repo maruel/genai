@@ -186,6 +186,7 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	if len(c.Choices) != 1 {
 		return out, errors.New("expected 1 choice")
 	}
+	out.FinishReason = c.Choices[0].FinishReason
 	err := c.Choices[0].Message.To(&out.Message)
 	return out, err
 }

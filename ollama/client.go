@@ -250,6 +250,7 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 			InputTokens:  c.PromptEvalCount,
 			OutputTokens: c.EvalCount,
 		},
+		FinishReason: c.DoneReason,
 	}
 	err := c.Message.To(&out.Message)
 	return out, err

@@ -246,6 +246,7 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 			InputTokens:  c.Usage.Tokens.InputTokens,
 			OutputTokens: c.Usage.Tokens.OutputTokens,
 		},
+		FinishReason: c.FinishReason,
 	}
 	err := c.Message.To(&out.Message)
 	return out, err

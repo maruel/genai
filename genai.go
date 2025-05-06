@@ -133,6 +133,11 @@ type ChatResult struct {
 	Message
 	Usage
 
+	// FinishReason indicates why the model stopped generating tokens.
+	// Common values include "stop", "length", "content_filter", "tool_calls", etc.
+	// The exact values depend on the specific provider.
+	FinishReason string
+
 	_ struct{}
 }
 

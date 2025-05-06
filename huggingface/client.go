@@ -303,6 +303,7 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 			InputTokens:  c.Usage.PromptTokens,
 			OutputTokens: c.Usage.ChatTokens,
 		},
+		FinishReason: c.Choices[0].FinishReason,
 	}
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))

@@ -383,6 +383,7 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 			InputTokens:  c.Usage.InputTokens,
 			OutputTokens: c.Usage.OutputTokens,
 		},
+		FinishReason: c.StopReason,
 	}
 	err := c.To(&out.Message)
 	return out, err

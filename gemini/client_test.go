@@ -360,11 +360,20 @@ func getClient(t *testing.T, m string) *gemini.Client {
 		i.Request.URL = i.Request.URL[:j]
 		return nil
 	}
-	c.Client.Client.Transport = internaltest.Record(t, c.Client.Client.Transport, recorder.WithHook(fnSave, recorder.AfterCaptureHook), recorder.WithMatcher(fnMatch))
+	c.Client.Client.Transport = testRecorder.Record(t, c.Client.Client.Transport, recorder.WithHook(fnSave, recorder.AfterCaptureHook), recorder.WithMatcher(fnMatch))
 	return c
 }
 
 var defaultMatcher = cassette.NewDefaultMatcher()
+
+var testRecorder *internaltest.Records
+
+func TestMain(m *testing.M) {
+	testRecorder = internaltest.NewRecords()
+	code := m.Run()
+	testRecorder.Close()
+	os.Exit(code)
+}
 
 func init() {
 	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: slog.LevelDebug})))

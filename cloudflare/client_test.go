@@ -105,11 +105,20 @@ func getClient(t *testing.T, m string) *cloudflare.Client {
 		i.Request.URL = strings.Replace(i.Request.URL, accountID, "ACCOUNT_ID", 1)
 		return nil
 	}
-	c.Client.Client.Transport = internaltest.Record(t, c.Client.Client.Transport, recorder.WithHook(fnSave, recorder.AfterCaptureHook), recorder.WithMatcher(fnMatch))
+	c.Client.Client.Transport = testRecorder.Record(t, c.Client.Client.Transport, recorder.WithHook(fnSave, recorder.AfterCaptureHook), recorder.WithMatcher(fnMatch))
 	return c
 }
 
 var defaultMatcher = cassette.NewDefaultMatcher()
+
+var testRecorder *internaltest.Records
+
+func TestMain(m *testing.M) {
+	testRecorder = internaltest.NewRecords()
+	code := m.Run()
+	testRecorder.Close()
+	os.Exit(code)
+}
 
 func init() {
 	internal.BeLenient = false

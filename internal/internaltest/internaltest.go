@@ -30,7 +30,9 @@ type Records struct {
 }
 
 func NewRecords() *Records {
-	r := &Records{}
+	r := &Records{
+		preexisting: make(map[string]struct{}),
+	}
 	const prefix = "testdata/"
 	m, err := filepath.Glob(prefix + "*.yaml")
 	if err != nil {

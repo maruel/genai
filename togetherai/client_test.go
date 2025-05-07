@@ -133,8 +133,17 @@ func getClient(t *testing.T, m string) *togetherai.Client {
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.Client.Client.Transport = internaltest.Record(t, c.Client.Client.Transport)
+	c.Client.Client.Transport = testRecorder.Record(t, c.Client.Client.Transport)
 	return c
+}
+
+var testRecorder *internaltest.Records
+
+func TestMain(m *testing.M) {
+	testRecorder = internaltest.NewRecords()
+	code := m.Run()
+	testRecorder.Close()
+	os.Exit(code)
 }
 
 func init() {

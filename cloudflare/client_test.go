@@ -116,8 +116,7 @@ var testRecorder *internaltest.Records
 func TestMain(m *testing.M) {
 	testRecorder = internaltest.NewRecords()
 	code := m.Run()
-	testRecorder.Close()
-	os.Exit(code)
+	os.Exit(max(code, testRecorder.Close()))
 }
 
 func init() {

@@ -44,16 +44,21 @@ func NewRecords() *Records {
 	return r
 }
 
-func (r *Records) Close() {
+func (r *Records) Close() int {
+	code := 0
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	for _, f := range r.recorded {
-		if _, ok := r.preexisting[f]; ok {
-			delete(r.preexisting, f)
-		} else {
-			println(fmt.Sprintf("- Found orphaned recording %q", f))
+		delete(r.preexisting, f)
+	}
+	if len(r.preexisting) != 0 {
+		code = 1
+		println("Found orphaned recordings:")
+		for f := range r.preexisting {
+			println(fmt.Sprintf("- %q", f))
 		}
 	}
+	return code
 }
 
 // Record records and replays HTTP requests for unit testing.
@@ -76,7 +81,7 @@ func (r *Records) Record(t *testing.T, h http.RoundTripper, opts ...recorder.Opt
 	}
 	name := strings.ReplaceAll(t.Name(), "/", "_")
 	r.mu.Lock()
-	r.recorded = append(r.recorded, name)
+	r.recorded = append(r.recorded, name+".yaml")
 	r.mu.Unlock()
 	rr, err := recorder.New("testdata/"+name, append(args, opts...)...)
 	if err != nil {

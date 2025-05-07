@@ -37,10 +37,17 @@ func ChatStream(t *testing.T, factory ChatProviderFactory, msgs genai.Messages, 
 				if !ok {
 					return
 				}
+				// Gemini API has both FinishReason and TextFragment in the final message.
+				if pkt.FinishReason == "" && pkt.TextFragment == "" {
+					t.Errorf("Must have at least one FinishReason or Text: %#v", pkt)
+				}
 				var err2 error
 				if pendingMsgs, err2 = pkt.Accumulate(pendingMsgs); err2 != nil {
 					t.Error(err2)
 					return
+				}
+				if pkt.FinishReason != "" && pkt.FinishReason != "stop" {
+					t.Errorf("Unexpected FinishReason: %q", pkt.FinishReason)
 				}
 			}
 		}

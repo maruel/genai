@@ -525,7 +525,8 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	if len(c.Candidates) != 1 {
 		return out, fmt.Errorf("unexpected number of candidates; expected 1, got %v", c.Candidates)
 	}
-	out.FinishReason = c.Candidates[0].FinishReason
+	// Gemini is the only one returning uppercase so convert down for compatibility.
+	out.FinishReason = strings.ToLower(c.Candidates[0].FinishReason)
 	err := c.Candidates[0].Content.To(&out.Message)
 	return out, err
 }
@@ -801,7 +802,8 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				fragment := genai.MessageFragment{TextFragment: part.Text}
 				// Only set FinishReason on fragments that have it (typically last chunk)
 				if finishReason != "" {
-					fragment.FinishReason = finishReason
+					// Gemini is the only one returning uppercase so convert down for compatibility.
+					fragment.FinishReason = strings.ToLower(finishReason)
 				}
 				chunks <- fragment
 			}

@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to determine the best country","parameters":{"type":"object","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"required":["country"]},"response":{"type":"string"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"any"}},"generationConfig":{"responseModalities":["Text"],"maxOutputTokens":200,"temperature":0.01,"seed":1}}
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to determine the best country","parameters":{"type":"object","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"required":["country"]},"response":{"type":"string"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":200,"temperature":0.01,"seed":1}}
         form: {}
         headers:
             Content-Type:
@@ -76,7 +76,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=492
+                - gfet4t7; dur=691
             Vary:
                 - Origin
                 - X-Origin
@@ -89,7 +89,7 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 576ms
+        duration: 759ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -102,7 +102,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to determine the best country","parameters":{"type":"object","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"required":["country"]},"response":{"type":"string"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"any"}},"generationConfig":{"responseModalities":["Text"],"maxOutputTokens":200,"temperature":0.01,"seed":1}}
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to determine the best country","parameters":{"type":"object","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"required":["country"]},"response":{"type":"string"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":200,"temperature":0.01,"seed":1}}
         form: {}
         headers:
             Content-Type:
@@ -165,7 +165,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=560
+                - gfet4t7; dur=527
             Vary:
                 - Origin
                 - X-Origin
@@ -178,4 +178,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 569ms
+        duration: 533ms

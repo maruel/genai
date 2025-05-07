@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["Text"],"maxOutputTokens":50,"temperature":0.01,"seed":1}}
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":50,"temperature":0.01,"seed":1}}
         form: {}
         headers:
             Content-Type:
@@ -39,7 +39,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=254
+                - gfet4t7; dur=336
             Vary:
                 - Origin
                 - X-Origin
@@ -52,4 +52,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 328ms
+        duration: 342ms

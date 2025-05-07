@@ -25,6 +25,7 @@ import (
 	"os"
 	"path"
 	"strings"
+	"time"
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
@@ -141,15 +142,54 @@ func (s *Schema) FromJSONSchema(j *jsonschema.Schema) {
 	}
 }
 
+// https://ai.google.dev/api/caching?hl=en#Mode_1
+type ToolMode string
+
+const (
+	// Unspecified function calling mode. This value should not be used.
+	ToolModeUnspecified ToolMode = "" // "MODE_UNSPECIFIED"
+	// Default model behavior, model decides to predict either a function call or a natural language response.
+	ToolModeAuto ToolMode = "AUTO"
+	// Model is constrained to always predicting a function call only. If "allowedFunctionNames" are set, the
+	// predicted function call will be limited to any one of "allowedFunctionNames", else the predicted function
+	// call will be any one of the provided "functionDeclarations".
+	ToolModeAny ToolMode = "ANY"
+	// Model will not predict any function call. Model behavior is same as when not passing any function
+	// declarations.
+	ToolModeNone ToolMode = "NONE"
+	// Model decides to predict either a function call or a natural language response, but will validate
+	// function calls with constrained decoding.
+	ToolModeValidated ToolMode = "VALIDATED"
+)
+
 // https://ai.google.dev/api/caching?hl=en#ToolConfig
 type ToolConfig struct {
 	// https://ai.google.dev/api/caching?hl=en#FunctionCallingConfig
 	FunctionCallingConfig struct {
-		// https://ai.google.dev/api/caching?hl=en#Mode_1
-		Mode                 string   `json:"mode,omitzero"` // MODE_UNSPECIFIED, AUTO, ANY, NONE
+		Mode                 ToolMode `json:"mode,omitzero"`
 		AllowedFunctionNames []string `json:"allowedFunctionNames,omitzero"`
 	} `json:"functionCallingConfig,omitzero"`
 }
+
+// https://ai.google.dev/api/generate-content#Modality
+type Modality string
+
+const (
+	ModalityUnspecified Modality = "" // "MODALITY_UNSPECIFIED"
+	ModalityText        Modality = "TEXT"
+	ModalityImage       Modality = "IMAGE"
+	ModalityAudio       Modality = "AUDIO"
+)
+
+// https://ai.google.dev/api/generate-content#MediaResolution
+type MediaResolution string
+
+const (
+	MediaResolutionUnspecified MediaResolution = ""       // "MEDIA_RESOLUTION_UNSPECIFIED"
+	MediaResolutionLow         MediaResolution = "LOW"    // 64 tokens
+	MediaResolutionMedium      MediaResolution = "MEDIUM" // 256 tokens
+	MediaResolutionHigh        MediaResolution = "HIGH"   // zoomed reframing with 256 tokens
+)
 
 // https://ai.google.dev/api/generate-content?hl=en#text_gen_text_only_prompt-SHELL
 type ChatRequest struct {
@@ -160,21 +200,21 @@ type ChatRequest struct {
 	SystemInstruction Content         `json:"systemInstruction,omitzero"`
 	// https://ai.google.dev/api/generate-content?hl=en#v1beta.GenerationConfig
 	GenerationConfig struct {
-		StopSequences              []string `json:"stopSequences,omitzero"`
-		ResponseMimeType           string   `json:"responseMimeType,omitzero"`
-		ResponseSchema             Schema   `json:"responseSchema,omitzero"`
-		ResponseModalities         []string `json:"responseModalities,omitzero"`
-		CandidateCount             int64    `json:"candidateCount,omitzero"`
-		MaxOutputTokens            int64    `json:"maxOutputTokens,omitzero"`
-		Temperature                float64  `json:"temperature,omitzero"` // [0, 2]
-		TopP                       float64  `json:"topP,omitzero"`
-		TopK                       int64    `json:"topK,omitzero"`
-		Seed                       int64    `json:"seed,omitzero"`
-		PresencePenalty            float64  `json:"presencePenalty,omitzero"`
-		FrequencyPenalty           float64  `json:"frequencyPenalty,omitzero"`
-		ResponseLogprobs           bool     `json:"responseLogprobs,omitzero"`
-		Logprobs                   int64    `json:"logProbs,omitzero"`
-		EnableEnhancedCivicAnswers bool     `json:"enableEnhancedCivicAnswers,omitzero"`
+		StopSequences              []string   `json:"stopSequences,omitzero"`
+		ResponseMimeType           string     `json:"responseMimeType,omitzero"` // "text/plain", "application/json", "text/x.enum"
+		ResponseSchema             Schema     `json:"responseSchema,omitzero"`   // Requires ResponseMimeType == "application/json"
+		ResponseModalities         []Modality `json:"responseModalities,omitzero"`
+		CandidateCount             int64      `json:"candidateCount,omitzero"` // >= 1
+		MaxOutputTokens            int64      `json:"maxOutputTokens,omitzero"`
+		Temperature                float64    `json:"temperature,omitzero"` // [0, 2]
+		TopP                       float64    `json:"topP,omitzero"`
+		TopK                       int64      `json:"topK,omitzero"`
+		Seed                       int64      `json:"seed,omitzero"`
+		PresencePenalty            float64    `json:"presencePenalty,omitzero"`
+		FrequencyPenalty           float64    `json:"frequencyPenalty,omitzero"`
+		ResponseLogprobs           bool       `json:"responseLogprobs,omitzero"`
+		Logprobs                   int64      `json:"logProbs,omitzero"` // Number of logprobs to return
+		EnableEnhancedCivicAnswers bool       `json:"enableEnhancedCivicAnswers,omitzero"`
 		// https://ai.google.dev/api/generate-content?hl=en#SpeechConfig
 		SpeechConfig struct {
 			// https://ai.google.dev/api/generate-content?hl=en#VoiceConfig
@@ -185,9 +225,15 @@ type ChatRequest struct {
 				} `json:"prebuiltVoiceConfig,omitzero"`
 			} `json:"voiceConfig,omitzero"`
 		} `json:"speechConfig,omitzero"`
-		MediaResolution string `json:"mediaResolution,omitzero"`
+		// https://ai.google.dev/api/generate-content?hl=en#ThinkingConfig
+		// See https://ai.google.dev/gemini-api/docs/thinking#rest
+		ThinkingConfig struct {
+			IncludeThoughts bool  `json:"includeThoughts,omitzero"`
+			ThinkingBudget  int64 `json:"thinkingBudget,omitzero"` // [0, 24576]
+		} `json:"thinkingConfig,omitzero"`
+		MediaResolution MediaResolution `json:"mediaResolution,omitzero"`
 	} `json:"generationConfig,omitzero"`
-	CachedContent string `json:"cachedContent,omitzero"`
+	CachedContent string `json:"cachedContent,omitzero"` // Name of the cached content with "cachedContents/" prefix.
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
@@ -213,7 +259,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 				c.GenerationConfig.StopSequences = v.Stop
 				// https://ai.google.dev/gemini-api/docs/image-generation
 				// SOON: "Image"
-				c.GenerationConfig.ResponseModalities = []string{"Text"}
+				c.GenerationConfig.ResponseModalities = []Modality{ModalityText}
 				if v.ReplyAsJSON {
 					c.GenerationConfig.ResponseMimeType = "application/json"
 				}
@@ -223,7 +269,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 				}
 				if len(v.Tools) != 0 {
 					// "any" actually means required.
-					c.ToolConfig.FunctionCallingConfig.Mode = "any"
+					c.ToolConfig.FunctionCallingConfig.Mode = ToolModeAny
 					c.Tools = make([]Tool, len(v.Tools))
 					for i, t := range v.Tools {
 						params := Schema{}
@@ -533,9 +579,8 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 
 // https://ai.google.dev/api/generate-content?hl=en#v1beta.ModalityTokenCount
 type ModalityTokenCount struct {
-	// https://ai.google.dev/api/generate-content?hl=en#v1beta.ModalityTokenCount
-	Modality   string `json:"modality"` // MODALITY_UNSPECIFIED, TEXT, IMAGE, AUDIO
-	TokenCount int64  `json:"tokenCount"`
+	Modality   Modality `json:"modality"`
+	TokenCount int64    `json:"tokenCount"`
 }
 
 type ChatStreamChunkResponse struct {
@@ -555,44 +600,33 @@ type ChatStreamChunkResponse struct {
 
 // Caching
 
-/*
 // https://ai.google.dev/api/caching?hl=en#request-body
-type cachedContentRequest struct {
-	Contents          []Content  `json:"contents"`
+// https://ai.google.dev/api/caching?hl=en#CachedContent
+type CachedContent struct {
+	Contents          []Content  `json:"contents,omitzero"`
 	Tools             []Tool     `json:"tools,omitzero"`
-	Expiration        expiration `json:"expiration,omitzero"`
+	Expiration        Expiration `json:"expiration,omitzero"`
 	Name              string     `json:"name,omitzero"`
 	DisplayName       string     `json:"displayName,omitzero"`
 	Model             string     `json:"model"`
-	SystemInstruction Content    `json:"systemInstruction"`
+	SystemInstruction Content    `json:"systemInstruction,omitzero"`
 	ToolConfig        ToolConfig `json:"toolConfig,omitzero"`
+
+	// Not to be set on upload.
+	CreateTime    string               `json:"createTime,omitzero"`
+	UpdateTime    string               `json:"updateTime,omitzero"`
+	UsageMetadata CachingUsageMetadata `json:"usageMetadata,omitzero"`
 }
 
-// https://ai.google.dev/api/caching?hl=en#CachedContent
-type cacheContentResponse struct {
-	Contents          []Content            `json:"contents"`
-	Tools             []Tool               `json:"tools,omitzero"`
-	CreateTime        string               `json:"createTime"`
-	UpdateTime        string               `json:"updateTime"`
-	UsageMetadata     cachingUsageMetadata `json:"usageMetadata"`
-	Expiration        expiration           `json:"expiration"`
-	Name              string               `json:"name"`
-	DisplayName       string               `json:"displayName"`
-	Model             string               `json:"model"`
-	SystemInstruction Content              `json:"systemInstruction"`
-	ToolConfig        ToolConfig           `json:"toolConfig,omitzero"`
-}
-
-type expiration struct {
-	ExpireTime string `json:"expireTime"` // ISO 8601
-	TTL        string `json:"ttl"`        // Duration
+type Expiration struct {
+	ExpireTime string `json:"expireTime,omitzero"` // ISO 8601
+	TTL        string `json:"ttl,omitzero"`        // Duration
 }
 
 // https://ai.google.dev/api/caching?hl=en#UsageMetadata
-type cachingUsageMetadata struct {
+type CachingUsageMetadata struct {
 	TotakTokenCount int64 `json:"totalTokenCount"`
 }
-*/
 
 //
 
@@ -711,35 +745,106 @@ func New(apiKey, model string) (*Client, error) {
 	}, nil
 }
 
-/*
-func (c *Client) cacheContent(ctx context.Context, data []byte, mime, systemInstruction string) (string, error) {
+// CacheAdd caches the content for later use.
+//
+// Includes tools and systemprompt.
+//
+// Default time to live (ttl) is 1 hour.
+//
+// At certain volumes, using cached tokens is lower cost than passing in the same corpus of tokens repeatedly.
+// The cost for caching depends on the input token size and how long you want the tokens to persist.
+func (c *Client) CacheAdd(ctx context.Context, msgs genai.Messages, opts *genai.ChatOptions, name, displayName string, ttl time.Duration) (string, error) {
 	// See https://ai.google.dev/gemini-api/docs/caching?hl=en&lang=rest#considerations
-	// It's only useful when reusing the same large data multiple times.
-	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents?key=" + c.apiKey
-	in := cachedContentRequest{
-		// This requires a pinned model, with trailing -001.
-		Model: "models/" + c.model,
-		Contents: []Content{
-			{
-				Parts: []Part{{InlineData: Blob{MimeType: mime, Data: data}}},
-				Role:  "user",
-			},
-		},
-		SystemInstruction: Content{Parts: []Part{{Text: systemInstruction}}},
-		Expiration: expiration{
-			TTL: "120s",
-		},
+	// Useful when reusing the same large data multiple times to reduce token usage.
+	// This requires a pinned model, with trailing -001.
+	in := CachedContent{
+		Model:       "models/" + c.model,
+		DisplayName: displayName,
 	}
-	out := cacheContentResponse{}
+	if name != "" {
+		in.Name = "cachedContents/" + name
+	}
+	if ttl > 0 {
+		in.Expiration.TTL = ttl.String()
+	}
+	if opts.SystemPrompt != "" {
+		in.SystemInstruction.Parts = []Part{{Text: opts.SystemPrompt}}
+	}
+	// For large files, use https://ai.google.dev/gemini-api/docs/caching?hl=en&lang=rest#pdfs_1
+	in.Contents = make([]Content, len(msgs))
+	for i := range msgs {
+		if err := in.Contents[i].From(&msgs[i]); err != nil {
+			return "", fmt.Errorf("message %d: %w", i, err)
+		}
+	}
+	// TODO: ToolConfig
+	out := CachedContent{}
+	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents?key=" + c.apiKey
 	if err := c.post(ctx, url, &in, &out); err != nil {
 		return "", err
 	}
-	// TODO: delete cache.
-	slog.InfoContext(ctx, "gemini", "cached", out.Name)
-	return out.Name, nil
+	name = strings.TrimPrefix(out.Name, "cachedContents/")
+	slog.InfoContext(ctx, "gemini", "cached", name)
+	return name, nil
 }
-*/
 
+func (c *Client) CacheExtend(ctx context.Context, name string, ttl time.Duration) error {
+	// https://ai.google.dev/api/caching#method:-cachedcontents.patch
+	// url := "https://generativelanguage.googleapis.com/v1beta/cachedContents?key=" + c.apiKey + "&pageSize=100"
+	// in := CachedContent{Name: "cachedContents/" + name, Expiration: Expiration{TTL: ttl.String()}}
+	// out := CacheContent{}
+	// c.Client.PostRequest(ctx, url, nil, in), out
+	return nil
+}
+
+// CacheList retrieves the list of cached items.
+func (c *Client) CacheList(ctx context.Context) ([]CachedContent, error) {
+	// https://ai.google.dev/api/caching#method:-cachedcontents.list
+	// pageSize, pageToken
+	var data struct {
+		CachedContents []CachedContent `json:"cachedContents"`
+		NextPageToken  string          `json:"nextPageToken"`
+	}
+	baseURL := "https://generativelanguage.googleapis.com/v1beta/cachedContents?key=" + c.apiKey + "&pageSize=100"
+	var out []CachedContent
+	for ctx.Err() == nil {
+		url := baseURL
+		if data.NextPageToken != "" {
+			url += "&pageToken=" + data.NextPageToken
+		}
+		if data.CachedContents != nil {
+			data.CachedContents = data.CachedContents[:0]
+		}
+		data.NextPageToken = ""
+		if err := c.Client.Get(ctx, url, nil, &data); err != nil {
+			return nil, err
+		}
+		for i := range data.CachedContents {
+			data.CachedContents[i].Name = strings.TrimPrefix(data.CachedContents[i].Name, "cachedContents/")
+		}
+		out = append(out, data.CachedContents...)
+		if len(data.CachedContents) == 0 || data.NextPageToken == "" {
+			break
+		}
+	}
+	return out, nil
+}
+
+// CacheDelete deletes a cached file.
+func (c *Client) CacheDelete(ctx context.Context, name string) error {
+	// https://ai.google.dev/api/caching#method:-cachedcontents.delete
+	// url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + name + "?key=" + c.apiKey
+	// out := map[string]any{}
+	// c.Client.PostRequest(ctx, url, nil, in), out
+	return nil
+}
+
+// Chat implements genai.ChatProvider.
+//
+// Visit https://ai.google.dev/gemini-api/docs/pricing for up to date information.
+//
+// As of May 2025, price on Pro model increases when more than 200k input tokens are used.
+// Cached input tokens are 25% of the price of new tokens.
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	rpcin := ChatRequest{}
 	if err := rpcin.Init(msgs, opts); err != nil {
@@ -761,6 +866,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 	return c.post(ctx, url, in, out)
 }
 
+// ChatStream implements genai.ChatProvider.
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
 	in := ChatRequest{}
 	if err := in.Init(msgs, opts); err != nil {

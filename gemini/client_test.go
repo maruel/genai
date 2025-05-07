@@ -318,9 +318,7 @@ Ultimately, the human endeavor is a quest for understanding, not just of the ext
 		t.Logf("%d: %#v", i, items[i])
 		if items[i].Name == name {
 			found = true
-			if time.Until(time.Time(items[i].ExpireTime)) < 15*time.Minute {
-				t.Errorf("Expected at least 15 minutes left, got %v", time.Until(time.Time(items[i].ExpireTime)))
-			}
+			// We can't check against time.Now() since we record and replay this test case.
 			if items[i].CreateTime >= items[i].UpdateTime {
 				t.Errorf("Expected UpdateTime %s to be different than CreateTime %s", items[i].UpdateTime, items[i].CreateTime)
 			}

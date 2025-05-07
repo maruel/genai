@@ -344,6 +344,8 @@ func New(apiKey, model string) (*Client, error) {
 	}, nil
 }
 
+// TODO: Caching: https://api-docs.deepseek.com/guides/kv_cache
+
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	// https://api-docs.deepseek.com/api/create-chat-completion
 	rpcin := ChatRequest{Model: c.model}

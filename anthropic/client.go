@@ -507,6 +507,8 @@ func New(apiKey, model string) (*Client, error) {
 	}, nil
 }
 
+// TODO: Caching: https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching
+
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	// https://docs.anthropic.com/en/api/messages
 	rpcin := ChatRequest{Model: c.model}

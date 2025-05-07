@@ -603,9 +603,9 @@ type ChatStreamChunkResponse struct {
 // https://ai.google.dev/api/caching?hl=en#request-body
 // https://ai.google.dev/api/caching?hl=en#CachedContent
 type CachedContent struct {
+	Expiration
 	Contents          []Content  `json:"contents,omitzero"`
 	Tools             []Tool     `json:"tools,omitzero"`
-	Expiration        Expiration `json:"expiration,omitzero"`
 	Name              string     `json:"name,omitzero"`
 	DisplayName       string     `json:"displayName,omitzero"`
 	Model             string     `json:"model"`
@@ -618,20 +618,49 @@ type CachedContent struct {
 	UsageMetadata CachingUsageMetadata `json:"usageMetadata,omitzero"`
 }
 
+// Expiration must be embedded. Only one of the fields can be set.
 type Expiration struct {
-	ExpireTime string `json:"expireTime,omitzero"` // ISO 8601
-	TTL        string `json:"ttl,omitzero"`        // Duration
+	ExpireTime time.Time `json:"expireTime,omitzero"` // ISO 8601
+	TTL        Duration  `json:"ttl,omitzero"`        // Duration
+}
+
+type Duration time.Duration
+
+func (d *Duration) IsZero() bool {
+	return *d == 0
+}
+
+func (d *Duration) MarshalJSON() ([]byte, error) {
+	v := time.Duration(*d)
+	return json.Marshal(fmt.Sprintf("%1.fs", v.Seconds()))
+}
+
+func (d *Duration) UnmarshalJSON(b []byte) error {
+	var s string
+	if err := json.Unmarshal(b, &s); err != nil {
+		return fmt.Errorf("invalid duration %q: %w", string(b), err)
+	}
+	v, err := time.ParseDuration(s)
+	if err != nil {
+		return fmt.Errorf("invalid duration %q: %w", s, err)
+	}
+	*d = Duration(v)
+	return nil
 }
 
 // https://ai.google.dev/api/caching?hl=en#UsageMetadata
 type CachingUsageMetadata struct {
-	TotakTokenCount int64 `json:"totalTokenCount"`
+	TotalTokenCount int64 `json:"totalTokenCount"`
 }
 
 //
 
 type errorResponse struct {
 	Error errorResponseError `json:"error"`
+}
+
+func (e *errorResponse) String() string {
+	return fmt.Sprintf("error %d (%s): %s", e.Error.Code, e.Error.Status, e.Error.Message)
 }
 
 type errorResponseError struct {
@@ -751,6 +780,12 @@ func New(apiKey, model string) (*Client, error) {
 //
 // Default time to live (ttl) is 1 hour.
 //
+// The minimum cacheable object is 4096 tokens.
+//
+// Visit https://ai.google.dev/gemini-api/docs/pricing for up to date information.
+//
+// As of May 2025, price on Pro model cache cost is 4.50$ per 1MTok/hour and Flash is 1$ per 1Mok/hour.
+//
 // At certain volumes, using cached tokens is lower cost than passing in the same corpus of tokens repeatedly.
 // The cost for caching depends on the input token size and how long you want the tokens to persist.
 func (c *Client) CacheAdd(ctx context.Context, msgs genai.Messages, opts *genai.ChatOptions, name, displayName string, ttl time.Duration) (string, error) {
@@ -765,7 +800,7 @@ func (c *Client) CacheAdd(ctx context.Context, msgs genai.Messages, opts *genai.
 		in.Name = "cachedContents/" + name
 	}
 	if ttl > 0 {
-		in.Expiration.TTL = ttl.String()
+		in.TTL = Duration(ttl)
 	}
 	if opts.SystemPrompt != "" {
 		in.SystemInstruction.Parts = []Part{{Text: opts.SystemPrompt}}
@@ -780,21 +815,21 @@ func (c *Client) CacheAdd(ctx context.Context, msgs genai.Messages, opts *genai.
 	// TODO: ToolConfig
 	out := CachedContent{}
 	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents?key=" + c.apiKey
-	if err := c.post(ctx, url, &in, &out); err != nil {
+	if err := c.doRequest(ctx, "POST", url, &in, &out); err != nil {
 		return "", err
 	}
 	name = strings.TrimPrefix(out.Name, "cachedContents/")
-	slog.InfoContext(ctx, "gemini", "cached", name)
+	slog.InfoContext(ctx, "gemini", "cached", name, "tokens", out.UsageMetadata.TotalTokenCount)
 	return name, nil
 }
 
 func (c *Client) CacheExtend(ctx context.Context, name string, ttl time.Duration) error {
 	// https://ai.google.dev/api/caching#method:-cachedcontents.patch
-	// url := "https://generativelanguage.googleapis.com/v1beta/cachedContents?key=" + c.apiKey + "&pageSize=100"
-	// in := CachedContent{Name: "cachedContents/" + name, Expiration: Expiration{TTL: ttl.String()}}
-	// out := CacheContent{}
-	// c.Client.PostRequest(ctx, url, nil, in), out
-	return nil
+	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + name + "?key=" + c.apiKey
+	// Model is required.
+	in := CachedContent{Model: "models/" + c.model, Expiration: Expiration{TTL: Duration(ttl)}}
+	out := CachedContent{}
+	return c.doRequest(ctx, "PATCH", url, &in, &out)
 }
 
 // CacheList retrieves the list of cached items.
@@ -816,7 +851,7 @@ func (c *Client) CacheList(ctx context.Context) ([]CachedContent, error) {
 			data.CachedContents = data.CachedContents[:0]
 		}
 		data.NextPageToken = ""
-		if err := c.Client.Get(ctx, url, nil, &data); err != nil {
+		if err := c.doRequest(ctx, "GET", url, nil, &data); err != nil {
 			return nil, err
 		}
 		for i := range data.CachedContents {
@@ -830,12 +865,26 @@ func (c *Client) CacheList(ctx context.Context) ([]CachedContent, error) {
 	return out, nil
 }
 
+func (c *Client) CacheGet(ctx context.Context, name string) (CachedContent, error) {
+	// https://ai.google.dev/api/caching#method:-cachedcontents.get
+	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + name + "?key=" + c.apiKey
+	out := CachedContent{}
+	err := c.doRequest(ctx, "GET", url, nil, &out)
+	return out, err
+}
+
 // CacheDelete deletes a cached file.
 func (c *Client) CacheDelete(ctx context.Context, name string) error {
 	// https://ai.google.dev/api/caching#method:-cachedcontents.delete
-	// url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + name + "?key=" + c.apiKey
-	// out := map[string]any{}
-	// c.Client.PostRequest(ctx, url, nil, in), out
+	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + name + "?key=" + c.apiKey
+	er := errorResponse{}
+	err := c.doRequest(ctx, "DELETE", url, nil, &er)
+	if err != nil {
+		return err
+	}
+	if er.Error.Code != 0 {
+		return errors.New(er.String())
+	}
 	return nil
 }
 
@@ -863,7 +912,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 		return err
 	}
 	url := "https://generativelanguage.googleapis.com/v1beta/models/" + c.model + ":generateContent?key=" + c.apiKey
-	return c.post(ctx, url, in, out)
+	return c.doRequest(ctx, "POST", url, in, out)
 }
 
 // ChatStream implements genai.ChatProvider.
@@ -1015,8 +1064,8 @@ func (c *Client) validate() error {
 	return nil
 }
 
-func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	resp, err := c.Client.PostRequest(ctx, url, nil, in)
+func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
+	resp, err := c.Client.Request(ctx, method, url, nil, in)
 	if err != nil {
 		return err
 	}
@@ -1029,11 +1078,11 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 		if errors.As(err, &herr) {
 			// It's annoying that Google returns 400 instead of 401 for invalid API key.
 			if herr.StatusCode == http.StatusBadRequest || herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: error %d (%s): %s You can get a new API key at %s", herr, er.Error.Code, er.Error.Status, er.Error.Message, apiKeyURL)
+				return fmt.Errorf("%w: %s You can get a new API key at %s", herr, er.String(), apiKeyURL)
 			}
-			return fmt.Errorf("%w: error %d (%s): %s", herr, er.Error.Code, er.Error.Status, er.Error.Message)
+			return fmt.Errorf("%w: %s", herr, er.String())
 		}
-		return fmt.Errorf("error %d (%s): %s", er.Error.Code, er.Error.Status, er.Error.Message)
+		return errors.New(er.String())
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {

@@ -6,11 +6,14 @@
 package internaltest
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -20,6 +23,37 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
+type Records struct {
+	mu          sync.Mutex
+	preexisting map[string]struct{}
+	recorded    []string
+}
+
+func NewRecords() *Records {
+	r := &Records{}
+	const prefix = "testdata/"
+	m, err := filepath.Glob(prefix + "*.yaml")
+	if err != nil {
+		panic(err)
+	}
+	for _, f := range m {
+		r.preexisting[f[len(prefix):]] = struct{}{}
+	}
+	return r
+}
+
+func (r *Records) Close() {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	for _, f := range r.recorded {
+		if _, ok := r.preexisting[f]; ok {
+			delete(r.preexisting, f)
+		} else {
+			println(fmt.Sprintf("- Found orphaned recording %q", f))
+		}
+	}
+}
+
 // Record records and replays HTTP requests for unit testing.
 //
 // When the environment variable RECORD=1 is set, it forcibly re-record the
@@ -27,7 +61,7 @@ import (
 //
 // It ignores the port number in the URL both for recording and playback so it
 // works with local services like ollama and llama-server.
-func Record(t *testing.T, h http.RoundTripper, opts ...recorder.Option) *recorder.Recorder {
+func (r *Records) Record(t *testing.T, h http.RoundTripper, opts ...recorder.Option) *recorder.Recorder {
 	mode := recorder.ModeRecordOnce
 	if os.Getenv("RECORD") == "1" {
 		mode = recorder.ModeRecordOnly
@@ -38,16 +72,20 @@ func Record(t *testing.T, h http.RoundTripper, opts ...recorder.Option) *recorde
 		recorder.WithSkipRequestLatency(true),
 		recorder.WithRealTransport(h),
 	}
-	r, err := recorder.New("testdata/"+strings.ReplaceAll(t.Name(), "/", "_"), append(args, opts...)...)
+	name := strings.ReplaceAll(t.Name(), "/", "_")
+	r.mu.Lock()
+	r.recorded = append(r.recorded, name)
+	r.mu.Unlock()
+	rr, err := recorder.New("testdata/"+name, append(args, opts...)...)
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() {
-		if err := r.Stop(); err != nil {
+		if err := rr.Stop(); err != nil {
 			t.Error(err)
 		}
 	})
-	return r
+	return rr
 }
 
 // SaveIgnorePort is a recorder.HookFunc (with a testing.T).

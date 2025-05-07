@@ -464,13 +464,13 @@ type ChatResponse struct {
 		// https://ai.google.dev/api/generate-content?hl=en#GroundingMetadata
 		GroundingMetadata struct {
 			// https://ai.google.dev/api/generate-content?hl=en#GroundingChunk
-			GroundingChuncks []struct {
+			GroundingChunks []struct {
 				// https://ai.google.dev/api/generate-content?hl=en#Web
 				Web struct {
 					URI   string `json:"uri"`
 					Title string `json:"title"`
 				} `json:"web"`
-			} `json:"groundingChuncks"`
+			} `json:"groundingChunks"`
 			// https://ai.google.dev/api/generate-content?hl=en#GroundingSupport
 			GroundingSupports []struct {
 				GroundingChunkIndices []int64   `json:"groundingChunkIndices"`

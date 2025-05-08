@@ -78,6 +78,7 @@ func TestClient_ChatStream(t *testing.T) {
 }
 
 func getClient(t *testing.T, m string) *deepseek.Client {
+	testRecorder.Signal(t)
 	if os.Getenv("DEEPSEEK_API_KEY") == "" {
 		t.Skip("DEEPSEEK_API_KEY not set")
 	}

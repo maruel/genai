@@ -61,6 +61,14 @@ func (r *Records) Close() int {
 	return code
 }
 
+func (r *Records) Signal(t *testing.T) string {
+	name := strings.ReplaceAll(t.Name(), "/", "_")
+	r.mu.Lock()
+	r.recorded = append(r.recorded, name+".yaml")
+	r.mu.Unlock()
+	return name
+}
+
 // Record records and replays HTTP requests for unit testing.
 //
 // When the environment variable RECORD=1 is set, it forcibly re-record the
@@ -79,11 +87,7 @@ func (r *Records) Record(t *testing.T, h http.RoundTripper, opts ...recorder.Opt
 		recorder.WithSkipRequestLatency(true),
 		recorder.WithRealTransport(h),
 	}
-	name := strings.ReplaceAll(t.Name(), "/", "_")
-	r.mu.Lock()
-	r.recorded = append(r.recorded, name+".yaml")
-	r.mu.Unlock()
-	rr, err := recorder.New("testdata/"+name, append(args, opts...)...)
+	rr, err := recorder.New("testdata/"+r.Signal(t), append(args, opts...)...)
 	if err != nil {
 		t.Fatal(err)
 	}

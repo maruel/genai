@@ -125,6 +125,7 @@ func TestClient_ChatStream(t *testing.T) {
 }
 
 func getClient(t *testing.T, m string) *togetherai.Client {
+	testRecorder.Signal(t)
 	if os.Getenv("TOGETHER_API_KEY") == "" {
 		t.Skip("TOGETHER_API_KEY not set")
 	}

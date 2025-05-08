@@ -90,6 +90,7 @@ func TestClient_ChatStream(t *testing.T) {
 }
 
 func getClient(t *testing.T, m string) *huggingface.Client {
+	testRecorder.Signal(t)
 	if os.Getenv("HUGGINGFACE_API_KEY") == "" {
 		// Fallback to loading from the python client's cache.
 		h, err := os.UserHomeDir()

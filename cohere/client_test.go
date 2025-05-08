@@ -81,6 +81,7 @@ func TestClient_ChatStream(t *testing.T) {
 }
 
 func getClient(t *testing.T, m string) *cohere.Client {
+	testRecorder.Signal(t)
 	if os.Getenv("COHERE_API_KEY") == "" {
 		t.Skip("COHERE_API_KEY not set")
 	}

@@ -342,6 +342,7 @@ Ultimately, the human endeavor is a quest for understanding, not just of the ext
 //
 
 func getClient(t *testing.T, m string) *gemini.Client {
+	testRecorder.Signal(t)
 	if os.Getenv("GEMINI_API_KEY") == "" {
 		t.Skip("GEMINI_API_KEY not set")
 	}

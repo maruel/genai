@@ -64,6 +64,7 @@ func TestClient_ChatStream(t *testing.T) {
 }
 
 func getClient(t *testing.T, m string) *perplexity.Client {
+	testRecorder.Signal(t)
 	if os.Getenv("PERPLEXITY_API_KEY") == "" {
 		t.Skip("PERPLEXITY_API_KEY not set")
 	}

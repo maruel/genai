@@ -90,6 +90,7 @@ func TestClient_ChatStream(t *testing.T) {
 }
 
 func getClient(t *testing.T, m string) *mistral.Client {
+	testRecorder.Signal(t)
 	if os.Getenv("MISTRAL_API_KEY") == "" {
 		t.Skip("MISTRAL_API_KEY not set")
 	}

@@ -33,7 +33,7 @@ func NewRecords() *Records {
 	r := &Records{
 		preexisting: make(map[string]struct{}),
 	}
-	const prefix = "testdata/"
+	const prefix = "testdata" + string(os.PathSeparator)
 	err := filepath.Walk(prefix, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -57,7 +57,7 @@ func (r *Records) Close() int {
 		delete(r.preexisting, f)
 		// Look for subdirectories. If a test case with subtest was skipped, we do not want to warn about it. This
 		// is crude but good enough as a starting point.
-		f = strings.TrimSuffix(f, ".yaml") + "/"
+		f = strings.TrimSuffix(f, ".yaml") + string(os.PathSeparator)
 		for k := range r.preexisting {
 			if strings.HasPrefix(k, f) {
 				delete(r.preexisting, k)
@@ -77,7 +77,7 @@ func (r *Records) Close() int {
 func (r *Records) Signal(t *testing.T) string {
 	name := t.Name()
 	if d := filepath.Dir(name); d != "." {
-		if err := os.MkdirAll("testdata/"+d, 0o755); err != nil {
+		if err := os.MkdirAll(filepath.Join("testdata", d), 0o755); err != nil {
 			t.Fatal(err)
 		}
 	}

@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/anthropic"
@@ -183,7 +184,11 @@ func ExampleChatProvider() {
 		}
 		response, err := provider.Chat(context.Background(), msgs, opts)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "- %s: %v\n", name, err)
+			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+				fmt.Fprintf(os.Stderr, "- %s (ignored args: %s): %v\n", name, strings.Join(uce.Unsupported, ","), response)
+			} else {
+				fmt.Fprintf(os.Stderr, "- %s: %v\n", name, err)
+			}
 		} else {
 			fmt.Fprintf(os.Stderr, "- %s: %v\n", name, response)
 		}

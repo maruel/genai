@@ -104,7 +104,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 		} else {
 			switch v := opts.(type) {
 			case *genai.ChatOptions:
-				c.MaxTokens = v.MaxTokens
+				c.MaxChatTokens = v.MaxTokens
 				c.Temperature = v.Temperature
 				c.TopP = v.TopP
 				sp = v.SystemPrompt

@@ -71,7 +71,8 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
+func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model string) error {
+	c.Model = model
 	var errs []error
 	var unsupported []string
 	sp := ""
@@ -416,9 +417,9 @@ func New(apiKey, model string) (*Client, error) {
 
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	// https://console.groq.com/docs/api-reference#chat-create
-	in := ChatRequest{Model: c.model}
+	in := ChatRequest{}
 	var continuableErr error
-	if err := in.Init(msgs, opts); err != nil {
+	if err := in.Init(msgs, opts, c.model); err != nil {
 		// If it's an UnsupportedContinuableError, we can continue
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			// Store the error to return later if no other error occurs
@@ -452,9 +453,9 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
-	in := ChatRequest{Model: c.model}
+	in := ChatRequest{}
 	var continuableErr error
-	if err := in.Init(msgs, opts); err != nil {
+	if err := in.Init(msgs, opts, c.model); err != nil {
 		// If it's an UnsupportedContinuableError, we can continue
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			// Store the error to return later if no other error occurs

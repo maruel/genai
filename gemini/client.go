@@ -235,7 +235,7 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
+func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model string) error {
 	var errs []error
 	var unsupported []string
 	if opts != nil {
@@ -918,7 +918,7 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	rpcin := ChatRequest{}
 	var continuableErr error
-	if err := rpcin.Init(msgs, opts); err != nil {
+	if err := rpcin.Init(msgs, opts, c.model); err != nil {
 		// If it's an UnsupportedContinuableError, we can continue
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			// Store the error to return later if no other error occurs
@@ -956,7 +956,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
 	in := ChatRequest{}
 	var continuableErr error
-	if err := in.Init(msgs, opts); err != nil {
+	if err := in.Init(msgs, opts, c.model); err != nil {
 		// If it's an UnsupportedContinuableError, we can continue
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			// Store the error to return later if no other error occurs

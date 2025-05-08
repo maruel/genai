@@ -154,7 +154,7 @@ func TestUnsupportedContinuableError(t *testing.T) {
 	}
 
 	// Initialize the request
-	err := req.Init(msgs, opts)
+	err := req.Init(msgs, opts, "gpt-4")
 
 	// Check that it returns an UnsupportedContinuableError
 	uce, ok := err.(*genai.UnsupportedContinuableError)

@@ -73,6 +73,7 @@ type ChatRequest struct {
 // Init initializes the provider specific completion request with the generic completion request.
 func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 	var errs []error
+	var unsupported []string
 	sp := ""
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
@@ -86,14 +87,14 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 				sp = v.SystemPrompt
 				c.Seed = v.Seed
 				if v.TopK != 0 {
-					errs = append(errs, errors.New("groq doesn't support TopK"))
+					unsupported = append(unsupported, "TopK")
 				}
 				c.Stop = v.Stop
 				if v.ReplyAsJSON {
 					c.ResponseFormat.Type = "json_object"
 				}
 				if v.DecodeAs != nil {
-					errs = append(errs, errors.New("groq doesn't support structured JSON, use unstructured JSON with ReplyAsJSON"))
+					unsupported = append(unsupported, "JSON schema (DecodeAs)")
 				}
 				if len(v.Tools) != 0 {
 					// Documentation states max is 128 tools.
@@ -111,7 +112,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 				}
 				if v.ThinkingBudget > 0 {
 					// https://console.groq.com/docs/reasoning/
-					errs = append(errs, errors.New("groq does not support ThinkingBudget"))
+					unsupported = append(unsupported, "ThinkingBudget")
 				}
 				// Groq refuses requests unless the model is a reasoning model. As of May 2025, these are qwen-qwq-32b
 				// and deepseek-r1-distill-llama-70b.
@@ -139,6 +140,14 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 			}
 		}
+	}
+	if len(unsupported) > 0 {
+		// If we have unsupported features but no other errors, return a continuable error
+		if len(errs) == 0 {
+			return &genai.UnsupportedContinuableError{Unsupported: unsupported}
+		}
+		// Otherwise, add the unsupported features to the error list
+		errs = append(errs, &genai.UnsupportedContinuableError{Unsupported: unsupported})
 	}
 	return errors.Join(errs...)
 }
@@ -409,7 +418,11 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 	// https://console.groq.com/docs/api-reference#chat-create
 	in := ChatRequest{Model: c.model}
 	if err := in.Init(msgs, opts); err != nil {
-		return genai.ChatResult{}, err
+		// If it's an UnsupportedContinuableError, we can continue
+		if _, ok := err.(*genai.UnsupportedContinuableError); !ok {
+			return genai.ChatResult{}, err
+		}
+		// Otherwise log the error but continue
 	}
 	rpcout := ChatResponse{}
 	if err := c.ChatRaw(ctx, &in, &rpcout); err != nil {
@@ -429,7 +442,11 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
 	in := ChatRequest{Model: c.model}
 	if err := in.Init(msgs, opts); err != nil {
-		return err
+		// If it's an UnsupportedContinuableError, we can continue
+		if _, ok := err.(*genai.UnsupportedContinuableError); !ok {
+			return err
+		}
+		// Otherwise log the error but continue
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)

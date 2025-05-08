@@ -91,6 +91,7 @@ type CompletionRequest struct {
 // Init initializes the provider specific completion request with the generic completion request.
 func (c *CompletionRequest) Init(opts genai.Validatable) error {
 	var errs []error
+	var unsupported []string
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
 			errs = append(errs, err)
@@ -104,19 +105,27 @@ func (c *CompletionRequest) Init(opts genai.Validatable) error {
 				c.TopK = v.TopK
 				c.Stop = v.Stop
 				if v.ReplyAsJSON || v.DecodeAs != nil {
-					errs = append(errs, errors.New("llama-server client doesn't support JSON yet; to be implemented"))
+					unsupported = append(unsupported, "ReplyAsJSON/DecodeAs")
 				}
 				if len(v.Tools) != 0 {
 					// It's unclear how I'll implement this.
-					errs = append(errs, errors.New("llama-server client doesn't support tools yet; to be implemented"))
+					unsupported = append(unsupported, "Tools")
 				}
 				if v.ThinkingBudget > 0 {
-					errs = append(errs, errors.New("llama-server does not support ThinkingBudget"))
+					unsupported = append(unsupported, "ThinkingBudget")
 				}
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}
 		}
+	}
+	if len(unsupported) > 0 {
+		// If we have unsupported features but no other errors, return a continuable error
+		if len(errs) == 0 {
+			return &genai.UnsupportedContinuableError{Unsupported: unsupported}
+		}
+		// Otherwise, add the unsupported features to the error list
+		errs = append(errs, &genai.UnsupportedContinuableError{Unsupported: unsupported})
 	}
 	return errors.Join(errs...)
 }
@@ -257,6 +266,7 @@ func (a *applyTemplateRequest) Init(opts genai.Validatable, msgs genai.Messages)
 		return err
 	}
 	var errs []error
+	unsupported := []string{}
 	offset := 0
 	if sp != "" {
 		offset = 1
@@ -270,6 +280,14 @@ func (a *applyTemplateRequest) Init(opts genai.Validatable, msgs genai.Messages)
 		if err := a.Messages[i+offset].From(&msgs[i]); err != nil {
 			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 		}
+	}
+	if len(unsupported) > 0 {
+		// If we have unsupported features but no other errors, return a continuable error
+		if len(errs) == 0 {
+			return &genai.UnsupportedContinuableError{Unsupported: unsupported}
+		}
+		// Otherwise, add the unsupported features to the error list
+		errs = append(errs, &genai.UnsupportedContinuableError{Unsupported: unsupported})
 	}
 	return errors.Join(errs...)
 }
@@ -398,7 +416,11 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	// specified. Disable if it becomes a problem.
 	in := CompletionRequest{CachePrompt: true}
 	if err := in.Init(opts); err != nil {
-		return err
+		// If it's an UnsupportedContinuableError, we can continue
+		if _, ok := err.(*genai.UnsupportedContinuableError); !ok {
+			return err
+		}
+		// Otherwise log the error but continue
 	}
 	if err := c.initPrompt(ctx, &in, opts, msgs); err != nil {
 		return err
@@ -579,7 +601,11 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 		// Use the server to convert the OpenAI style format into a templated form.
 		in2 := applyTemplateRequest{}
 		if err := in2.Init(opts, msgs); err != nil {
-			return err
+			// If it's an UnsupportedContinuableError, we can continue
+			if _, ok := err.(*genai.UnsupportedContinuableError); !ok {
+				return err
+			}
+			// Otherwise log the error but continue
 		}
 		out := applyTemplateResponse{}
 		if err := c.post(ctx, c.baseURL+"/apply-template", &in2, &out); err != nil {

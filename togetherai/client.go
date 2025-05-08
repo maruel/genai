@@ -64,6 +64,7 @@ type ChatRequest struct {
 // Init initializes the provider specific completion request with the generic completion request.
 func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 	var errs []error
+	var unsupported []string
 	sp := ""
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
@@ -99,7 +100,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 					}
 				}
 				if v.ThinkingBudget > 0 {
-					errs = append(errs, errors.New("togetherai does not support ThinkingBudget"))
+					unsupported = append(unsupported, "ThinkingBudget")
 				}
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
@@ -124,6 +125,14 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 			}
 		}
+	}
+	if len(unsupported) > 0 {
+		// If we have unsupported features but no other errors, return a continuable error
+		if len(errs) == 0 {
+			return &genai.UnsupportedContinuableError{Unsupported: unsupported}
+		}
+		// Otherwise, add the unsupported features to the error list
+		errs = append(errs, &genai.UnsupportedContinuableError{Unsupported: unsupported})
 	}
 	return errors.Join(errs...)
 }
@@ -416,7 +425,11 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 	// https://docs.together.ai/docs/chat-overview
 	rpcin := ChatRequest{Model: c.model}
 	if err := rpcin.Init(msgs, opts); err != nil {
-		return genai.ChatResult{}, err
+		// If it's an UnsupportedContinuableError, we can continue
+		if _, ok := err.(*genai.UnsupportedContinuableError); !ok {
+			return genai.ChatResult{}, err
+		}
+		// Otherwise log the error but continue
 	}
 	rpcout := ChatResponse{}
 	if err := c.ChatRaw(ctx, &rpcin, &rpcout); err != nil {
@@ -436,7 +449,11 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
 	in := ChatRequest{Model: c.model}
 	if err := in.Init(msgs, opts); err != nil {
-		return err
+		// If it's an UnsupportedContinuableError, we can continue
+		if _, ok := err.(*genai.UnsupportedContinuableError); !ok {
+			return err
+		}
+		// Otherwise log the error but continue
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)

@@ -176,7 +176,12 @@ func ExampleChatProvider() {
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "Tell a story in 10 words."),
 		}
-		response, err := provider.Chat(context.Background(), msgs, nil)
+		// Include options with some unsupported features to demonstrate UnsupportedContinuableError
+		opts := &genai.ChatOptions{
+			TopK:      50, // Not all providers support this
+			MaxTokens: 512,
+		}
+		response, err := provider.Chat(context.Background(), msgs, opts)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "- %s: %v\n", name, err)
 		} else {

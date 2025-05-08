@@ -54,6 +54,7 @@ type ChatRequest struct {
 // Init initializes the provider specific completion request with the generic completion request.
 func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 	var errs []error
+	var unsupported []string
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
 			errs = append(errs, err)
@@ -65,12 +66,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 				c.System = v.SystemPrompt
 				c.TopP = v.TopP
 				if v.Seed != 0 {
-					errs = append(errs, errors.New("anthropic doesn't support seed"))
+					unsupported = append(unsupported, "Seed")
 				}
 				c.TopK = v.TopK
 				c.StopSequences = v.Stop
 				if v.ReplyAsJSON || v.DecodeAs != nil {
-					errs = append(errs, errors.New("anthropic doesn't support JSON schema"))
+					unsupported = append(unsupported, "JSON schema (ReplyAsJSON/DecodeAs)")
 				}
 				if len(v.Tools) != 0 {
 					c.ToolChoice.Type = "any"
@@ -120,6 +121,14 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 				continue
 			}
 		}
+	}
+	if len(unsupported) > 0 {
+		// If we have unsupported features but no other errors, return a continuable error
+		if len(errs) == 0 {
+			return &genai.UnsupportedContinuableError{Unsupported: unsupported}
+		}
+		// Otherwise, add the unsupported features to the error list
+		errs = append(errs, &genai.UnsupportedContinuableError{Unsupported: unsupported})
 	}
 	return errors.Join(errs...)
 }
@@ -516,7 +525,11 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 	// https://docs.anthropic.com/en/api/messages
 	rpcin := ChatRequest{Model: c.model}
 	if err := rpcin.Init(msgs, opts); err != nil {
-		return genai.ChatResult{}, err
+		// If it's an UnsupportedContinuableError, we can continue
+		if _, ok := err.(*genai.UnsupportedContinuableError); !ok {
+			return genai.ChatResult{}, err
+		}
+		// Otherwise log the error but continue
 	}
 	rpcout := ChatResponse{}
 	if err := c.ChatRaw(ctx, &rpcin, &rpcout); err != nil {
@@ -536,7 +549,11 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
 	in := ChatRequest{Model: c.model}
 	if err := in.Init(msgs, opts); err != nil {
-		return err
+		// If it's an UnsupportedContinuableError, we can continue
+		if _, ok := err.(*genai.UnsupportedContinuableError); !ok {
+			return err
+		}
+		// Otherwise log the error but continue
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)

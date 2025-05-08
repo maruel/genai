@@ -766,3 +766,22 @@ func (b *buffer) Seek(offset int64, whence int) (int64, error) {
 	}
 	return 0, errors.New("unsupported whence")
 }
+
+func TestUnsupportedContinuableError(t *testing.T) {
+	// Create an UnsupportedContinuableError
+	unsupported := []string{"TopK", "ThinkingBudget"}
+	uce := &UnsupportedContinuableError{Unsupported: unsupported}
+
+	// Test the Error method
+	expectedMsg := "unsupported options: TopK, ThinkingBudget"
+	if uce.Error() != expectedMsg {
+		t.Errorf("Expected error message %q, got %q", expectedMsg, uce.Error())
+	}
+
+	// Test empty unsupported list
+	uce = &UnsupportedContinuableError{Unsupported: nil}
+	expectedMsg = "no unsupported options"
+	if uce.Error() != expectedMsg {
+		t.Errorf("Expected error message %q, got %q", expectedMsg, uce.Error())
+	}
+}

@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"reflect"
 	"sort"
 	"strings"
 	"syscall"
@@ -65,6 +66,58 @@ var providers = map[string]func() (genai.ModelProvider, error){
 	},
 }
 
+func printStructDense(v any, indent string) string {
+	val := reflect.ValueOf(v)
+	if val.Kind() == reflect.Ptr {
+		if val.IsNil() {
+			return indent + "nil"
+		}
+		val = val.Elem()
+	}
+	if val.Kind() != reflect.Struct {
+		return indent + fmt.Sprintf("%v", v)
+	}
+	typ := val.Type()
+	var fields []string
+	// Iterate through struct fields
+	for i := range val.NumField() {
+		f := val.Field(i)
+		fn := typ.Field(i).Name
+		switch f.Kind() {
+		case reflect.Struct:
+			// Recursively print nested structs
+			v := printStructDense(f.Interface(), indent+"  ")
+			fields = append(fields, fmt.Sprintf("%s%s: {\n%s\n}", indent, fn, v))
+		case reflect.Ptr:
+			if f.IsNil() {
+				fields = append(fields, fmt.Sprintf("%s%s: nil", indent, fn))
+			} else {
+				// Recursively handle pointers
+				v := printStructDense(f.Interface(), indent+"  ")
+				fields = append(fields, fmt.Sprintf("%s%s: &{\n%s\n}", indent, fn, v))
+			}
+		case reflect.Slice, reflect.Array:
+			if f.Len() == 0 {
+				fields = append(fields, fmt.Sprintf("%s%s: []", indent, fn))
+			} else {
+				var elements []string
+				for j := range f.Len() {
+					elem := f.Index(j)
+					if elem.Kind() == reflect.Struct || elem.Kind() == reflect.Ptr {
+						elements = append(elements, printStructDense(elem.Interface(), indent+"  "))
+					} else {
+						elements = append(elements, fmt.Sprintf("%v", elem.Interface()))
+					}
+				}
+				fields = append(fields, fmt.Sprintf("%s%s: [%s]", indent, fn, strings.Join(elements, ",")))
+			}
+		default:
+			fields = append(fields, fmt.Sprintf("%s%s: %v", indent, fn, f.Interface()))
+		}
+	}
+	return strings.Join(fields, "\n")
+}
+
 func mainImpl() error {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	defer stop()
@@ -75,6 +128,7 @@ func mainImpl() error {
 	}
 	sort.Strings(names)
 	provider := flag.String("provider", "", "backend to use: "+strings.Join(names, ", "))
+	all := flag.Bool("all", false, "include all details")
 	flag.Parse()
 	if flag.NArg() != 0 {
 		return errors.New("unexpected arguments")
@@ -91,20 +145,26 @@ func mainImpl() error {
 	if err != nil {
 		return err
 	}
+	m := make(map[string]genai.Model, len(models))
 	s := make([]string, 0, len(models))
-	for _, m := range models {
-		if t, ok := m.(*huggingface.Model); ok {
+	for _, model := range models {
+		if t, ok := model.(*huggingface.Model); ok {
 			if t.TrendingScore < 1 {
 				continue
 			}
 		}
-		s = append(s, m.String())
+		name := model.String()
+		s = append(s, name)
+		m[name] = model
 	}
 	sort.Slice(s, func(i, j int) bool {
 		return strings.ToLower(s[i]) < strings.ToLower(s[j])
 	})
-	for _, m := range s {
-		fmt.Printf("%s\n", m)
+	for _, name := range s {
+		fmt.Printf("%s\n", name)
+		if *all {
+			os.Stdout.WriteString(printStructDense(m[name], "  ") + "\n")
+		}
 	}
 	return nil
 }

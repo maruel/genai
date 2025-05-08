@@ -17,12 +17,7 @@ import (
 )
 
 func TestClient_Chat_vision_and_JSON(t *testing.T) {
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	internaltest.TestChatVisionJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "mistral-small-latest") }, &opts)
+	internaltest.TestChatVisionJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "mistral-small-latest") })
 }
 
 func TestClient_Chat_pDF(t *testing.T) {

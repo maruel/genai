@@ -206,7 +206,7 @@ func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, useStream
 
 // TestChatVisionText runs a Chat with vision capabilities and verifies that the model correctly identifies a
 // banana image.
-func TestChatVisionText(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
+func TestChatVisionText(t *testing.T, factory ChatProviderFactory) {
 	c := factory(t)
 	ctx := t.Context()
 	msgs := genai.Messages{
@@ -218,8 +218,15 @@ func TestChatVisionText(t *testing.T, factory ChatProviderFactory, opts *genai.C
 			},
 		},
 	}
-	resp, err := c.Chat(ctx, msgs, opts)
-	if err != nil {
+	opts := genai.ChatOptions{
+		Temperature: 0.01,
+		MaxTokens:   200,
+		Seed:        1,
+	}
+	resp, err := c.Chat(ctx, msgs, &opts)
+	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+		t.Log(uce)
+	} else if err != nil {
 		t.Fatal(err)
 	}
 	t.Logf("Raw response: %#v", resp)
@@ -235,7 +242,7 @@ func TestChatVisionText(t *testing.T, factory ChatProviderFactory, opts *genai.C
 
 // TestChatVisionJSON runs a Chat with vision capabilities and verifies that the model correctly identifies a
 // banana image. It enforces JSON schema.
-func TestChatVisionJSON(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
+func TestChatVisionJSON(t *testing.T, factory ChatProviderFactory) {
 	c := factory(t)
 	ctx := t.Context()
 	msgs := genai.Messages{
@@ -247,13 +254,19 @@ func TestChatVisionJSON(t *testing.T, factory ChatProviderFactory, opts *genai.C
 			},
 		},
 	}
-	optsCopy := *opts
 	var got struct {
 		Banana bool `json:"banana"`
 	}
-	optsCopy.DecodeAs = &got
-	resp, err := c.Chat(ctx, msgs, &optsCopy)
-	if err != nil {
+	opts := genai.ChatOptions{
+		Temperature: 0.01,
+		MaxTokens:   200,
+		Seed:        1,
+		DecodeAs:    &got,
+	}
+	resp, err := c.Chat(ctx, msgs, &opts)
+	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+		t.Log(uce)
+	} else if err != nil {
 		t.Fatal(err)
 	}
 	t.Logf("Raw response: %#v", resp)

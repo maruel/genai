@@ -17,14 +17,9 @@ import (
 )
 
 func TestClient_Chat_vision(t *testing.T) {
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
 	internaltest.TestChatVisionText(t, func(t *testing.T) genai.ChatProvider {
 		return getClient(t, "meta-llama/llama-4-scout-17b-16e-instruct")
-	}, &opts)
+	})
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {

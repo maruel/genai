@@ -19,12 +19,7 @@ import (
 const model = "gpt-4.1-nano"
 
 func TestClient_Chat_vision_and_JSON(t *testing.T) {
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	internaltest.TestChatVisionJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, &opts)
+	internaltest.TestChatVisionJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
 }
 
 func TestClient_Chat_audio(t *testing.T) {

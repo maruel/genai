@@ -9,6 +9,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -20,6 +21,61 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
+
+func TestClient_AllModels(t *testing.T) {
+	// Same as internaltest.TestAllModels with a filter on models.
+	ctx := t.Context()
+	l := getClient(t, "")
+	models, err := l.ListModels(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	msgs := genai.Messages{
+		genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello."),
+	}
+	opts := genai.ChatOptions{
+		Temperature: 0.01,
+		MaxTokens:   10,
+		Seed:        1,
+	}
+	for _, m := range models {
+		name := m.GetID()
+		parts := strings.Split(strings.Split(name, ".")[0], "-")
+		if len(parts) < 2 {
+			continue
+		}
+		if parts[0] == "gemini" {
+			// Minimum gemini-2
+			if i, err := strconv.Atoi(parts[1]); err != nil || i < 2 {
+				continue
+			}
+		} else if parts[0] == "gemma" {
+			// Minimum gemma-3
+			if i, err := strconv.Atoi(parts[1]); err != nil || i < 3 {
+				continue
+			}
+		} else {
+			continue
+		}
+		t.Run(name, func(t *testing.T) {
+			resp, err := getClient(t, name).Chat(ctx, msgs, &opts)
+			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+				t.Log(uce)
+			} else if err != nil {
+				t.Fatal(err)
+			}
+			t.Logf("Raw response: %#v", resp)
+			if len(resp.Contents) != 1 {
+				t.Fatal("Unexpected response")
+			}
+			// Normalize some of the variance. Obviously many models will still fail this test.
+			got := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!")
+			if got != "hello" {
+				t.Fatal(got)
+			}
+		})
+	}
+}
 
 func TestClient_Chat_vision_and_JSON(t *testing.T) {
 	internaltest.TestChatVisionJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })

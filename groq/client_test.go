@@ -60,6 +60,7 @@ func TestClient_ChatStream(t *testing.T) {
 }
 
 func getClient(t *testing.T, m string) *groq.Client {
+	testRecorder.Signal(t)
 	if os.Getenv("GROQ_API_KEY") == "" {
 		t.Skip("GROQ_API_KEY not set")
 	}

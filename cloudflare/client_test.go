@@ -84,6 +84,7 @@ func TestClient_ChatStream(t *testing.T) {
 }
 
 func getClient(t *testing.T, m string) *cloudflare.Client {
+	testRecorder.Signal(t)
 	accountID := os.Getenv("CLOUDFLARE_ACCOUNT_ID")
 	if accountID == "" {
 		t.Skip("CLOUDFLARE_ACCOUNT_ID not set")

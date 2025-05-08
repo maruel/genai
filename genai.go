@@ -24,6 +24,20 @@ import (
 	"github.com/invopop/jsonschema"
 )
 
+// UnsupportedContinuableError is an error when an unsupported option is used but the operation still
+// succeeded.
+type UnsupportedContinuableError struct {
+	// Unsupported is the list of arguments that were not supported and were silently ignored.
+	Unsupported []string
+}
+
+func (u *UnsupportedContinuableError) Error() string {
+	if len(u.Unsupported) == 0 {
+		return "no unsupported options"
+	}
+	return fmt.Sprintf("unsupported options: %s", strings.Join(u.Unsupported, ", "))
+}
+
 // Generic
 
 // ReflectedToJSON must be a pointer to a struct that can be decoded by
@@ -72,7 +86,7 @@ type ChatOptions struct {
 	SystemPrompt string
 
 	// Options supported only by some providers. Using them may cause the
-	// completion to fail.
+	// chat operation to succeed while returning a UnsupportedContinuableError.
 
 	// Seed for the random number generator. Default is 0 which means
 	// non-deterministic.

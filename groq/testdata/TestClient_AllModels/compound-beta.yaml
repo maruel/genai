@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 210
+        transfer_encoding: []
+        trailer: {}
+        host: api.groq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"max_completion_tokens":1000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"model":"compound-beta","seed":1,"stream":false,"temperature":0.01}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"stub","object":"chat.completion","created":1746736052,"model":"compound-beta","choices":[{"index":0,"message":{"role":"assistant","content":"Hello.","reasoning":"Hello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.344765,"prompt_tokens":860,"prompt_time":0.063817,"completion_tokens":8,"completion_time":0.025276,"total_tokens":868,"total_time":0.089091},"usage_breakdown":{"models":[{"model":"llama-3.3-70b-versatile","usage":{"queue_time":0.021830719000000002,"prompt_tokens":141,"prompt_time":0.01772959,"completion_tokens":2,"completion_time":0.007272727,"total_tokens":143,"total_time":0.025002317}},{"model":"meta-llama/llama-4-scout-17b-16e-instruct","usage":{"queue_time":0.303273989,"prompt_tokens":498,"prompt_time":0.019924727,"completion_tokens":3,"completion_time":0.007093509,"total_tokens":501,"total_time":0.027018236}},{"model":"llama-3.3-70b-versatile","usage":{"queue_time":0.019660052,"prompt_tokens":221,"prompt_time":0.026161897,"completion_tokens":3,"completion_time":0.010909091,"total_tokens":224,"total_time":0.037070988}}]},"system_fingerprint":null,"x_groq":{"id":"stub"}}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93cbb2c65a5ca273-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - us-west-1
+            X-Ratelimit-Limit-Requests:
+                - "2000"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "1999"
+            X-Ratelimit-Remaining-Tokens:
+                - "199984"
+            X-Ratelimit-Reset-Requests:
+                - 43.2s
+            X-Ratelimit-Reset-Tokens:
+                - 4.8ms
+            X-Request-Id:
+                - req_01jtrs9y11e4wtmw3ffq5nwvdp
+        status: 200 OK
+        code: 200
+        duration: 578ms

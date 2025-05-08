@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 211
+        transfer_encoding: []
+        trailer: {}
+        host: api.groq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"max_completion_tokens":10,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"model":"whisper-large-v3","seed":1,"stream":false,"temperature":0.01}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 118
+        uncompressed: false
+        body: |
+            {"error":{"message":"The model `whisper-large-v3` does not support chat completions","type":"invalid_request_error"}}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93cbaee5eeffa2b7-YUL
+            Content-Length:
+                - "118"
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - us-central-1
+            X-Request-Id:
+                - req_01jtrs52ytevprjq92kybpeq54
+        status: 400 Bad Request
+        code: 400
+        duration: 73ms

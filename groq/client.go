@@ -117,7 +117,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 				}
 				// Groq refuses requests unless the model is a reasoning model. As of May 2025, these are qwen-qwq-32b
 				// and deepseek-r1-distill-llama-70b.
-				// c.ReasoningFormat = ReasoningFormatParsed
+				switch model {
+				case "qwen-qwq-32b", "deepseek-r1-distill-llama-70b":
+					c.ReasoningFormat = ReasoningFormatParsed
+				default:
+				}
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}
@@ -279,16 +283,27 @@ type ChatResponse struct {
 	Model   string `json:"model"`
 	Object  string `json:"object"` // "chat.completion"
 	Usage   struct {
-		QueueTime    float64 `json:"queue_time"`
-		PromptTokens int64   `json:"prompt_tokens"`
-		PromptTime   float64 `json:"prompt_time"`
-		ChatTokens   int64   `json:"completion_tokens"`
-		ChatTime     float64 `json:"completion_time"`
-		TotalTokens  int64   `json:"total_tokens"`
-		TotalTime    float64 `json:"total_time"`
+		QueueTime        float64 `json:"queue_time"`
+		PromptTokens     int64   `json:"prompt_tokens"`
+		PromptTime       float64 `json:"prompt_time"`
+		CompletionTokens int64   `json:"completion_tokens"`
+		CompletionTime   float64 `json:"completion_time"`
+		TotalTokens      int64   `json:"total_tokens"`
+		TotalTime        float64 `json:"total_time"`
 	} `json:"usage"`
 	UsageBreakdown struct {
-		Models string `json:"models"`
+		Models []struct {
+			Model string `json:"model"`
+			Usage struct {
+				QueueTime        float64 `json:"queue_time"`
+				PromptTokens     int64   `json:"prompt_tokens"`
+				PromptTime       float64 `json:"prompt_time"`
+				CompletionTokens int64   `json:"completion_tokens"`
+				CompletionTime   float64 `json:"completion_time"`
+				TotalTokens      int64   `json:"total_tokens"`
+				TotalTime        float64 `json:"total_time"`
+			} `json:"usage"`
+		} `json:"models"`
 	} `json:"usage_breakdown"`
 	SystemFingerprint string `json:"system_fingerprint"`
 	Xgroq             struct {
@@ -300,7 +315,7 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	out := genai.ChatResult{
 		Usage: genai.Usage{
 			InputTokens:  c.Usage.PromptTokens,
-			OutputTokens: c.Usage.ChatTokens,
+			OutputTokens: c.Usage.CompletionTokens,
 		},
 	}
 	if len(c.Choices) != 1 {
@@ -313,6 +328,7 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 
 type MessageResponse struct {
 	Role      genai.Role `json:"role"`
+	Reasoning string     `json:"reasoning"`
 	Content   string     `json:"content"`
 	ToolCalls []ToolCall `json:"tool_calls"`
 }

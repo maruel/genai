@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 207
+        transfer_encoding: []
+        trailer: {}
+        host: api.groq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"max_completion_tokens":1000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"model":"allam-2-7b","seed":1,"stream":false,"temperature":0.01}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-7e6a551e-7f0d-4206-973c-b44a29a8d4cd","object":"chat.completion","created":1746736052,"model":"allam-2-7b","choices":[{"index":0,"message":{"role":"assistant","content":"Hello! "},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.233792029,"prompt_tokens":19,"prompt_time":0.0012641,"completion_tokens":4,"completion_time":0.003269034,"total_tokens":23,"total_time":0.004533134},"usage_breakdown":{"models":null},"system_fingerprint":"fp_94da58f8ea","x_groq":{"id":"req_01jtrs9y19f819zw1g2qdpsv0q"}}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93cbb2c65a65a273-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - us-west-1
+            X-Ratelimit-Limit-Requests:
+                - "60000"
+            X-Ratelimit-Limit-Tokens:
+                - "60000"
+            X-Ratelimit-Remaining-Requests:
+                - "59999"
+            X-Ratelimit-Remaining-Tokens:
+                - "59981"
+            X-Ratelimit-Reset-Requests:
+                - 1.44s
+            X-Ratelimit-Reset-Tokens:
+                - 19ms
+            X-Request-Id:
+                - req_01jtrs9y19f819zw1g2qdpsv0q
+        status: 200 OK
+        code: 200
+        duration: 348ms

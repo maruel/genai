@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 237
+        transfer_encoding: []
+        trailer: {}
+        host: api.groq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"max_completion_tokens":1000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"model":"qwen-qwq-32b","reasoning_format":"parsed","seed":1,"stream":false,"temperature":0.01}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-55ec9b55-7b2b-4b1d-9c79-b26f74d12562","object":"chat.completion","created":1746736052,"model":"qwen-qwq-32b","choices":[{"index":0,"message":{"role":"assistant","content":"hello","reasoning":"Okay, the user wants me to say hello with just one word. Let me make sure I understand the instructions correctly. They specified to use only one word and say only \"hello\". So I can't add anything else. I need to avoid any extra text or explanations. Just the word \"hello\". Let me check again: the query says \"Use only one word. Say only hello.\" So the response should be exactly \"hello\" and nothing more. I should not include any other words or punctuation. Alright, that's straightforward. I'll just respond with \"hello\".\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.019506416,"prompt_tokens":22,"prompt_time":0.003381604,"completion_tokens":120,"completion_time":0.294554982,"total_tokens":142,"total_time":0.297936586},"usage_breakdown":{"models":null},"system_fingerprint":"fp_3796682456","x_groq":{"id":"req_01jtrs9y12eh39svp0e572p6eb"}}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93cbb2c65a6aa273-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - us-west-1
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "249984"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 3.839999ms
+            X-Request-Id:
+                - req_01jtrs9y12eh39svp0e572p6eb
+        status: 200 OK
+        code: 200
+        duration: 421ms

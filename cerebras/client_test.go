@@ -15,6 +15,10 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 )
 
+func TestClient_AllModels(t *testing.T) {
+	internaltest.TestAllModels(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) })
+}
+
 func TestClient_Chat_json(t *testing.T) {
 	c := getClient(t, "llama-3.1-8b")
 	msgs := genai.Messages{

@@ -25,7 +25,7 @@ func TestClient_Chat_vision(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	internaltest.ChatVisionText(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") }, &opts)
+	internaltest.TestChatVisionText(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") }, &opts)
 }
 
 func TestClient_Chat_pdf(t *testing.T) {
@@ -74,7 +74,7 @@ func TestClient_Chat_tool_use(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	internaltest.ChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") }, &opts)
+	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") }, &opts)
 }
 
 func TestClient_ChatStream(t *testing.T) {

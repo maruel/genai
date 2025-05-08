@@ -22,7 +22,7 @@ func TestClient_Chat_vision_and_JSON(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	internaltest.ChatVisionJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "mistral-small-latest") }, &opts)
+	internaltest.TestChatVisionJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "mistral-small-latest") }, &opts)
 }
 
 func TestClient_Chat_pDF(t *testing.T) {
@@ -63,7 +63,7 @@ func TestClient_Chat_tool_use(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   200,
 	}
-	internaltest.ChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "ministral-3b-latest") }, &opts)
+	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "ministral-3b-latest") }, &opts)
 }
 
 func TestClient_ChatStream(t *testing.T) {

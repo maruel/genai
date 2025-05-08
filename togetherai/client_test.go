@@ -96,7 +96,7 @@ func TestClient_Chat_tool_use(t *testing.T) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	internaltest.ChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider {
+	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider {
 		return getClient(t, "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free")
 	}, &opts)
 }

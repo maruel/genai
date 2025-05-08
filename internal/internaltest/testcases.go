@@ -62,9 +62,9 @@ func ChatStream(t *testing.T, factory ChatProviderFactory, msgs genai.Messages, 
 	return responses
 }
 
-// ChatToolUseCountry runs a Chat with tool use and verifies that the tools are called correctly.
+// TestChatToolUseCountry runs a Chat with tool use and verifies that the tools are called correctly.
 // It runs subtests for both Chat and ChatStream methods.
-func ChatToolUseCountry(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
+func TestChatToolUseCountry(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
 	t.Run("Chat", func(t *testing.T) {
 		chatToolUseCountryCore(t, factory, opts, false)
 	})
@@ -197,9 +197,9 @@ func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, opts *gen
 	})
 }
 
-// ChatVisionText runs a Chat with vision capabilities and verifies that the model correctly identifies a
+// TestChatVisionText runs a Chat with vision capabilities and verifies that the model correctly identifies a
 // banana image.
-func ChatVisionText(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
+func TestChatVisionText(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
 	c := factory(t)
 	ctx := t.Context()
 	msgs := genai.Messages{
@@ -226,9 +226,9 @@ func ChatVisionText(t *testing.T, factory ChatProviderFactory, opts *genai.ChatO
 	}
 }
 
-// ChatVisionJSON runs a Chat with vision capabilities and verifies that the model correctly identifies a
+// TestChatVisionJSON runs a Chat with vision capabilities and verifies that the model correctly identifies a
 // banana image. It enforces JSON schema.
-func ChatVisionJSON(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
+func TestChatVisionJSON(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
 	c := factory(t)
 	ctx := t.Context()
 	msgs := genai.Messages{

@@ -64,13 +64,13 @@ func ChatStream(t *testing.T, factory ChatProviderFactory, msgs genai.Messages, 
 
 // TestChatToolUseCountry runs a Chat with tool use and verifies that the tools are called correctly.
 // It runs subtests for both Chat and ChatStream methods.
-func TestChatToolUseCountry(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions) {
+func TestChatToolUseCountry(t *testing.T, factory ChatProviderFactory) {
 	t.Run("Chat", func(t *testing.T) {
-		chatToolUseCountryCore(t, factory, opts, false)
+		chatToolUseCountryCore(t, factory, false)
 	})
 	t.Run("ChatStream", func(t *testing.T) {
 		t.Skip("TODO")
-		chatToolUseCountryCore(t, factory, opts, true)
+		chatToolUseCountryCore(t, factory, true)
 	})
 }
 
@@ -108,7 +108,9 @@ func processChat(t *testing.T, ctx context.Context, c genai.ChatProvider, msgs g
 		close(chunks)
 		responses := <-end
 		t.Logf("Raw responses: %#v", responses)
-		if err != nil {
+		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+			t.Log(uce)
+		} else if err != nil {
 			t.Fatal(err)
 		}
 		if len(responses) == 0 {
@@ -117,7 +119,9 @@ func processChat(t *testing.T, ctx context.Context, c genai.ChatProvider, msgs g
 		resp = genai.ChatResult{Message: responses[len(responses)-1]}
 	} else {
 		resp, err = c.Chat(ctx, msgs, opts)
-		if err != nil {
+		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+			t.Log(uce)
+		} else if err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -128,7 +132,7 @@ func processChat(t *testing.T, ctx context.Context, c genai.ChatProvider, msgs g
 // chatToolUseCountryCore runs a Chat or ChatStream with tool use and verifies that the tools are called correctly.
 // The useStream parameter determines whether to use Chat or ChatStream.
 // It returns the response for further validation.
-func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, opts *genai.ChatOptions, useStream bool) {
+func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, useStream bool) {
 	c := factory(t)
 	ctx := t.Context()
 	t.Run("Canada", func(t *testing.T) {
@@ -138,17 +142,18 @@ func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, opts *gen
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 		}
-		optsCopy := *opts
-		opts = &optsCopy
-		opts.Tools = []genai.ToolDef{
-			{
-				Name:        "best_country",
-				Description: "A tool to determine the best country",
-				InputsAs:    &got,
+		opts := genai.ChatOptions{
+			Temperature: 0.01,
+			MaxTokens:   200,
+			Tools: []genai.ToolDef{
+				{
+					Name:        "best_country",
+					Description: "A tool to determine the best country",
+					InputsAs:    &got,
+				},
 			},
 		}
-
-		resp := processChat(t, ctx, c, msgs, opts, useStream)
+		resp := processChat(t, ctx, c, msgs, &opts, useStream)
 
 		// Warning: when the model is undecided, it call both.
 		// Check for tool calls
@@ -170,17 +175,19 @@ func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, opts *gen
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=USA,enum=Canada"`
 		}
-		optsCopy := *opts
-		opts = &optsCopy
-		opts.Tools = []genai.ToolDef{
-			{
-				Name:        "best_country",
-				Description: "A tool to determine the best country",
-				InputsAs:    &got,
+		opts := genai.ChatOptions{
+			Temperature: 0.01,
+			MaxTokens:   200,
+			Seed:        1,
+			Tools: []genai.ToolDef{
+				{
+					Name:        "best_country",
+					Description: "A tool to determine the best country",
+					InputsAs:    &got,
+				},
 			},
 		}
-
-		resp := processChat(t, ctx, c, msgs, opts, useStream)
+		resp := processChat(t, ctx, c, msgs, &opts, useStream)
 
 		// Warning: when the model is undecided, it call both.
 		// Check for tool calls

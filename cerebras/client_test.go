@@ -50,12 +50,7 @@ func TestClient_Chat_json(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama-3.1-8b") }, &opts)
+	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama-3.1-8b") })
 }
 
 func getClient(t *testing.T, m string) *cerebras.Client {

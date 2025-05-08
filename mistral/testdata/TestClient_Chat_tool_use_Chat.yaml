@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 651
+        content_length: 635
         transfer_encoding: []
         trailer: {}
         host: api.mistral.ai
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"ministral-3b-latest","temperature":0.01,"max_tokens":200,"stream":false,"random_seed":1,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+            {"model":"ministral-3b-latest","temperature":0.01,"max_tokens":200,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
         form: {}
         headers:
             Content-Type:
@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"800bd1e73c81467494917f7a47dfbed7","object":"chat.completion","created":1746283552,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"PGt7tDNIl","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0}],"content":""},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}'
+        body: '{"id":"316bcdc8e06642b0b8f7174e4f0c6d3f","object":"chat.completion","created":1746728588,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"Xt4yl0Cmy","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0}],"content":""},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -37,7 +37,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93a08b6b8986a290-YUL
+                - 93cafc8cbcf2a310-YUL
             Content-Type:
                 - application/json
             Ratelimitbysize-Limit:
@@ -47,17 +47,17 @@ interactions:
             Ratelimitbysize-Remaining:
                 - "499800"
             Ratelimitbysize-Reset:
-                - "8"
+                - "52"
             Server:
                 - cloudflare
             X-Envoy-Upstream-Service-Time:
-                - "171"
+                - "637"
             X-Kong-Proxy-Latency:
                 - "5"
             X-Kong-Request-Id:
-                - 1d2e6206cd52706cf189ef2364eee73b
+                - 918f7f02ea3d105c8be5d865853a3766
             X-Kong-Upstream-Latency:
-                - "172"
+                - "638"
             X-Ratelimitbysize-Limit-Minute:
                 - "500000"
             X-Ratelimitbysize-Limit-Month:
@@ -68,7 +68,7 @@ interactions:
                 - "999999800"
         status: 200 OK
         code: 200
-        duration: 349ms
+        duration: 828ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -96,7 +96,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"f87b9492448544c19cd8e0cc838d8121","object":"chat.completion","created":1746283552,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"zCA4TIwIH","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":0}],"content":""},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}'
+        body: '{"id":"230b8cd1e7b34bd2bdb95adfccfaaa32","object":"chat.completion","created":1746728590,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"LifbdaqNV","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":0}],"content":""},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -105,7 +105,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93a08b6d8bdaa290-YUL
+                - 93cafc9a6c76a286-YUL
             Content-Type:
                 - application/json
             Ratelimitbysize-Limit:
@@ -115,17 +115,17 @@ interactions:
             Ratelimitbysize-Remaining:
                 - "499800"
             Ratelimitbysize-Reset:
-                - "8"
+                - "50"
             Server:
                 - cloudflare
             X-Envoy-Upstream-Service-Time:
-                - "172"
+                - "176"
             X-Kong-Proxy-Latency:
-                - "8"
+                - "7"
             X-Kong-Request-Id:
-                - 2f00406564c3801cee5ee15302b75b2f
+                - b1cda37bf5cfc71e075168035a9d3722
             X-Kong-Upstream-Latency:
-                - "172"
+                - "180"
             X-Ratelimitbysize-Limit-Minute:
                 - "500000"
             X-Ratelimitbysize-Limit-Month:
@@ -133,7 +133,7 @@ interactions:
             X-Ratelimitbysize-Remaining-Minute:
                 - "499800"
             X-Ratelimitbysize-Remaining-Month:
-                - "999851790"
+                - "999999800"
         status: 200 OK
         code: 200
-        duration: 303ms
+        duration: 1.719s

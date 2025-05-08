@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 648
+        content_length: 639
         transfer_encoding: []
         trailer: {}
         host: api.cohere.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"stream":false,"model":"command-r-08-2024","messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":200,"temperature":0.01,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"description":"A tool to determine the best country"}}],"tool_choice":"required","strict_tools":true}
+            {"stream":false,"model":"command-r-08-2024","messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":200,"temperature":0.01,"tools":[{"type":"function","function":{"name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"description":"A tool to determine the best country"}}],"tool_choice":"required","strict_tools":true}
         form: {}
         headers:
             Content-Type:
@@ -26,9 +26,9 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 588
+        content_length: 575
         uncompressed: false
-        body: '{"id":"8cf2a1ed-1e9f-4a81-b9e5-4c84da7a3cce","message":{"role":"assistant","tool_plan":"I will use the ''best_country'' tool to find out which country is better, Canada or the USA.","tool_calls":[{"id":"best_country_fxz2faf3ndh3","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}},{"id":"best_country_qceasq11sjkp","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":49,"output_tokens":39},"tokens":{"input_tokens":925,"output_tokens":94}}}'
+        body: '{"id":"dd4b17d2-1ac7-4e27-86b9-154a0ada7048","message":{"role":"assistant","tool_plan":"I will use the ''best_country'' tool to find out which country is the best one.","tool_calls":[{"id":"best_country_yqfygaafye60","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}},{"id":"best_country_4a1mk42xwmjq","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":49,"output_tokens":36},"tokens":{"input_tokens":925,"output_tokens":91}}}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -37,7 +37,7 @@ interactions:
             Cache-Control:
                 - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
             Content-Length:
-                - "588"
+                - "575"
             Content-Type:
                 - application/json
             Expires:
@@ -45,7 +45,7 @@ interactions:
             Num_chars:
                 - "4441"
             Num_tokens:
-                - "88"
+                - "85"
             Pragma:
                 - no-cache
             Server:
@@ -57,18 +57,18 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - b2bd01a7f9133e50e697e7784e49c7c2
+                - a296cfd96f21b752a65f91b87825f3e3
             X-Endpoint-Monthly-Call-Limit:
                 - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "1800"
+                - "1836"
             X-Trial-Endpoint-Call-Limit:
                 - "10"
             X-Trial-Endpoint-Call-Remaining:
-                - "8"
+                - "9"
         status: 200 OK
         code: 200
-        duration: 1.889s
+        duration: 1.903s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -96,7 +96,7 @@ interactions:
         trailer: {}
         content_length: 586
         uncompressed: false
-        body: '{"id":"6ea68b3a-1df2-435e-86e8-3fdac3867765","message":{"role":"assistant","tool_plan":"I will use the best_country tool to find out which country is better, the USA or Canada.","tool_calls":[{"id":"best_country_an7szhvhsxzb","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}},{"id":"best_country_37ph40h72re3","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":49,"output_tokens":37},"tokens":{"input_tokens":925,"output_tokens":92}}}'
+        body: '{"id":"b240f90f-932a-4315-be87-689d726c6be3","message":{"role":"assistant","tool_plan":"I will use the best_country tool to find out which country is better, the USA or Canada.","tool_calls":[{"id":"best_country_yazfs7yspnqs","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}},{"id":"best_country_tv1ccv7ey8ps","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":49,"output_tokens":37},"tokens":{"input_tokens":925,"output_tokens":92}}}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -125,15 +125,15 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - 7c4f57329a48ba060a17a29f56b2c815
+                - 4a47eaf76c000de9d0ff94a81a5e91ac
             X-Endpoint-Monthly-Call-Limit:
                 - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "1984"
+                - "1957"
             X-Trial-Endpoint-Call-Limit:
                 - "10"
             X-Trial-Endpoint-Call-Remaining:
-                - "6"
+                - "8"
         status: 200 OK
         code: 200
-        duration: 2.027s
+        duration: 2s

@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 535
+        content_length: 526
         transfer_encoding: []
         trailer: {}
         host: api.cloudflare.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"messages":[{"content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.","role":"user"}],"max_tokens":200,"seed":1,"temperature":0.01,"tools":[{"type":"function","function":{"description":"A tool to determine the best country","name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+            {"messages":[{"content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.","role":"user"}],"max_tokens":200,"temperature":0.01,"tools":[{"type":"function","function":{"description":"A tool to determine the best country","name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
         form: {}
         headers:
             Content-Type:
@@ -31,13 +31,13 @@ interactions:
         body: '{"result":{"response":null,"tool_calls":[{"arguments":{"country":"Canada"},"name":"best_country"},{"arguments":{"country":"USA"},"name":"best_country"}],"usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
-                - "2025-05-03"
+                - "2025-05-08"
             Cf-Ai-Req-Id:
-                - 1c3441bb-a7c6-43e1-99d4-2abf828a9a7e
+                - 97c626be-c22a-4a26-b53b-9d2028132b84
             Cf-Auditlog-Id:
-                - 0196969c-5f2c-7d89-bed3-0b43c56bbdc1
+                - 0196b123-13ff-702e-9ead-324e57f6cfb0
             Cf-Ray:
-                - 93a08b6b69eaa24b-YUL
+                - 93cafc8cac45a28d-YUL
             Content-Type:
                 - application/json
             Server:
@@ -46,7 +46,7 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 4.354s
+        duration: 4.318s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -77,13 +77,13 @@ interactions:
         body: '{"result":{"response":null,"tool_calls":[{"arguments":{"country":"USA"},"name":"best_country"},{"arguments":{"country":"Canada"},"name":"best_country"}],"usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
-                - "2025-05-03"
+                - "2025-05-08"
             Cf-Ai-Req-Id:
-                - 6e8869d8-5c1f-45f7-8e09-99e95b162e01
+                - ded6d9b1-0c63-46a5-811c-02be8e4a2e4d
             Cf-Auditlog-Id:
-                - 0196969c-7013-78bc-b150-cf47d55a2cf3
+                - 0196b123-24be-7362-a4e3-fc205c857e71
             Cf-Ray:
-                - 93a08b867fdea24b-YUL
+                - 93cafca77b03a28d-YUL
             Content-Type:
                 - application/json
             Server:
@@ -92,4 +92,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 4.286s
+        duration: 4.646s

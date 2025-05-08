@@ -48,11 +48,7 @@ func TestClient_Chat_jSON(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	opts := genai.ChatOptions{
-		Temperature: 0.01,
-		MaxTokens:   200,
-	}
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "deepseek-chat") }, &opts)
+	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "deepseek-chat") })
 }
 
 func TestClient_ChatStream(t *testing.T) {

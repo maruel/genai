@@ -28,12 +28,7 @@ func TestClient_Chat_vision(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama-3.1-8b-instant") }, &opts)
+	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama-3.1-8b-instant") })
 }
 
 func TestClient_ChatStream(t *testing.T) {

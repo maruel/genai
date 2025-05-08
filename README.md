@@ -93,7 +93,7 @@ As for March 2025, here's the HTTP POST compression supported by each provider:
 | DeepSeek    | none                               | gzip                |
 | Google's Gemini | gzip                           | gzip                |
 | Groq        | none                               | br                  |
-| HuggingFace | gzip, br or zstd                   | none                |
+| HuggingFace | none                               | none                |
 | Mistral     | none                               | br                  |
 | OpenAI      | none                               | br                  |
 | Perplexity  | none                               | none                |

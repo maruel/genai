@@ -418,14 +418,10 @@ func New(apiKey, model string) (*Client, error) {
 		Client: httpjson.Client{
 			Client: &http.Client{Transport: &roundtrippers.Header{
 				Header: http.Header{"Authorization": {"Bearer " + apiKey}},
-				Transport: &roundtrippers.PostCompressed{
-					Transport: &roundtrippers.Retry{
-						Transport: &roundtrippers.RequestID{
-							Transport: http.DefaultTransport,
-						},
+				Transport: &roundtrippers.Retry{
+					Transport: &roundtrippers.RequestID{
+						Transport: http.DefaultTransport,
 					},
-					// HuggingFace support all three of gzip, br and zstd!
-					Encoding: "zstd",
 				},
 			}},
 			Lenient: internal.BeLenient,

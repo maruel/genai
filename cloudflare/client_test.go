@@ -55,12 +55,7 @@ func TestClient_Chat_jSON(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   200,
-	}
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "@hf/nousresearch/hermes-2-pro-mistral-7b") }, &opts)
+	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "@hf/nousresearch/hermes-2-pro-mistral-7b") })
 }
 
 func TestClient_ChatStream(t *testing.T) {

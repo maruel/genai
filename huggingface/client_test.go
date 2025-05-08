@@ -46,12 +46,7 @@ func TestClient_Chat(t *testing.T) {
 
 func TestClient_Chat_tool_use(t *testing.T) {
 	// TODO: Figure out why smaller models fail.
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   200,
-	}
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") }, &opts)
+	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") })
 }
 
 func TestClient_Chat_vision_and_JSON(t *testing.T) {

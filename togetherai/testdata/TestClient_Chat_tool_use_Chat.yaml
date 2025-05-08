@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 661
+        content_length: 653
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo-Free","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":50,"temperature":0.01,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+            {"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo-Free","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":200,"temperature":0.01,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
         form: {}
         headers:
             Content-Type:
@@ -30,15 +30,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nsa8kuL-3NKUce-93a095622cb5a25b",
+              "id": "ntFRbCg-3NKUce-93cafc8ca818a2d8",
               "object": "chat.completion",
-              "created": 1746283960,
+              "created": 1746728588,
               "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
               "prompt": [],
               "choices": [
                 {
                   "finish_reason": "tool_calls",
-                  "seed": 1,
+                  "seed": 9651493418115099000,
                   "logprobs": null,
                   "index": 0,
                   "message": {
@@ -47,7 +47,7 @@ interactions:
                     "tool_calls": [
                       {
                         "index": 0,
-                        "id": "call_lqhoo9mozy1wi9g966l0143h",
+                        "id": "call_oq196or26fmgxpbeiqwfrqbp",
                         "type": "function",
                         "function": {
                           "arguments": "{\"country\":\"Canada\"}",
@@ -73,11 +73,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93a095622cb5a25b-YUL
+                - 93cafc8ca818a2d8-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"323-F7cMpyz5SdxhnNQH7BpfDk2W7R8"
+                - W/"335-FxnOh/NEZuuCB289/IWZUwhtvpU"
             Retry-After:
                 - "6"
             Server:
@@ -87,13 +87,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 98291b83-6f65-43f8-ba29-b3add7b17ddc-noamzn
+                - 22a1da2e-801e-46ce-a996-ef900adca52d-noamzn
             X-Api-Call-End:
-                - "2025-05-03T14:52:41.168Z"
+                - "2025-05-08T18:23:09.826Z"
             X-Api-Call-Start:
-                - "2025-05-03T14:52:40.724Z"
+                - "2025-05-08T18:23:08.337Z"
             X-Api-Received:
-                - "2025-05-03T14:52:40.719Z"
+                - "2025-05-08T18:23:08.333Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -109,23 +109,23 @@ interactions:
             X-Ratelimit-Reset:
                 - "6"
             X-Request-Id:
-                - nsa8kuL-3NKUce-93a095622cb5a25b
+                - ntFRbCg-3NKUce-93cafc8ca818a2d8
         status: 200 OK
         code: 200
-        duration: 600ms
+        duration: 1.622s
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 661
+        content_length: 662
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo-Free","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":50,"temperature":0.01,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+            {"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo-Free","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":200,"temperature":0.01,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
         form: {}
         headers:
             Content-Type:
@@ -142,9 +142,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nsa8m5U-4Yz4kd-93a09565a8e6a25b",
+              "id": "ntFRdYN-3NKUce-93cafcbd7d024bd6",
               "object": "chat.completion",
-              "created": 1746283961,
+              "created": 1746728596,
               "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
               "prompt": [],
               "choices": [
@@ -159,7 +159,7 @@ interactions:
                     "tool_calls": [
                       {
                         "index": 0,
-                        "id": "call_2w2f996btylarzol7opvh750",
+                        "id": "call_w6jeoup5i3yxp7jj9ds4g992",
                         "type": "function",
                         "function": {
                           "arguments": "{\"country\":\"USA\"}",
@@ -185,11 +185,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93a09565a8e6a25b-YUL
+                - 93cafcbd7d024bd6-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"320-NAEO9yl04hHzuC4tuf2yLDrJhOo"
+                - W/"320-0Rzyu9NjD407NYuN7wJjljpmxLU"
             Retry-After:
                 - "6"
             Server:
@@ -199,13 +199,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 97e1cd52-4ff8-4c8c-9880-56070d959549-noamzn
+                - 0c7d23f0-ee58-443a-b752-ec1b2ec18ed6-noamzn
             X-Api-Call-End:
-                - "2025-05-03T14:52:42.798Z"
+                - "2025-05-08T18:23:16.526Z"
             X-Api-Call-Start:
-                - "2025-05-03T14:52:41.337Z"
+                - "2025-05-08T18:23:16.207Z"
             X-Api-Received:
-                - "2025-05-03T14:52:41.307Z"
+                - "2025-05-08T18:23:16.203Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -221,7 +221,7 @@ interactions:
             X-Ratelimit-Reset:
                 - "6"
             X-Request-Id:
-                - nsa8m5U-4Yz4kd-93a09565a8e6a25b
+                - ntFRdYN-3NKUce-93cafcbd7d024bd6
         status: 200 OK
         code: 200
-        duration: 1.622s
+        duration: 6.683s

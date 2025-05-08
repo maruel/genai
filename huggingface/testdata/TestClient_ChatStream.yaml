@@ -29,11 +29,11 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"object":"chat.completion.chunk","id":"","created":1746214473,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1746728874,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1746214473,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1746728874,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1746214473,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":"stop"}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1746728874,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":"stop"}],"usage":null}
 
             data: [DONE]
 
@@ -43,7 +43,7 @@ interactions:
             Access-Control-Allow-Origin:
                 - '*'
             Access-Control-Expose-Headers:
-                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Xet-Hash
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
             Cache-Control:
                 - no-cache
             Content-Type:
@@ -53,13 +53,13 @@ interactions:
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Vary:
-                - origin, access-control-request-method, access-control-request-headers, Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 c5670948bece41c6bb9df947cb650b7e.cloudfront.net (CloudFront)
+                - 1.1 bf162a8b9bcf17e02f2843479d4278e2.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - 9GM5wMuq1qcWJpy6D8jp7RaUBtfCO9bvbu7d248if1xwZkERK__92g==
+                - ib55oKVOTsXXlVkMGnjtkayIUAaGN6RKicusy11aFYIDLoHJMvE2Tg==
             X-Amz-Cf-Pop:
-                - YTO50-P1
+                - YUL62-P2
             X-Cache:
                 - Miss from cloudfront
             X-Compute-Characters:
@@ -67,21 +67,19 @@ interactions:
             X-Compute-Type:
                 - 4-nvida-a100-sxm4-80gb
             X-Inference-Id:
-                - nwvNGDwz0bTVOb9wUJmAS
+                - 65a8d827-18b2-437c-8452-480e6a213116
             X-Powered-By:
                 - huggingface-moon
             X-Proxied-Host:
-                - http://10.102.90.43
+                - http://10.102.93.248
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - 64tq71pt-dqoo8
+                - fyj5qcci-9cb1t
             X-Request-Id:
-                - M_uYZ0f_VLkhM8Vg
+                - Cblj24W-LFXFHUA-
             X-Robots-Tag:
                 - none
-            X-Sha:
-                - 6f6073b423013f6a7d4d9f39144961bfbfbc386b
         status: 200 OK
         code: 200
-        duration: 249ms
+        duration: 1.566s

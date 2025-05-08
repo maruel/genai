@@ -70,11 +70,7 @@ func TestClient_Chat_pdf(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	opts := genai.ChatOptions{
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") }, &opts)
+	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") })
 }
 
 func TestClient_ChatStream(t *testing.T) {

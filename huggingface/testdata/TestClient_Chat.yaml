@@ -26,16 +26,18 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: -1
+        content_length: 302
         uncompressed: false
-        body: '{"object":"chat.completion","id":"","created":1746214473,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"Hello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46}}'
+        body: '{"object":"chat.completion","id":"","created":1746728872,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"Hello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46}}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Access-Control-Allow-Origin:
                 - '*'
             Access-Control-Expose-Headers:
-                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Xet-Hash
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "302"
             Content-Type:
                 - application/json
             Cross-Origin-Opener-Policy:
@@ -43,51 +45,49 @@ interactions:
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Vary:
-                - origin, access-control-request-method, access-control-request-headers, Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 c5670948bece41c6bb9df947cb650b7e.cloudfront.net (CloudFront)
+                - 1.1 bf162a8b9bcf17e02f2843479d4278e2.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - T5AGYTNFvEA4-IvN1CmBK7r57QHJDYs0_4rHAwaJm0U0FM4tw4pK1g==
+                - BzZE7FXJ-dYS58FqMpjNtXJRXLpAguDP6nZdcBomA7wKeWnLtIKdJw==
             X-Amz-Cf-Pop:
-                - YTO50-P1
+                - YUL62-P2
             X-Cache:
                 - Miss from cloudfront
             X-Compute-Characters:
                 - "262"
             X-Compute-Time:
-                - "0.1823325"
+                - "0.180165514"
             X-Compute-Type:
                 - 4-nvida-a100-sxm4-80gb
             X-Generated-Tokens:
                 - "3"
             X-Inference-Id:
-                - UssO8nb6idx59Bu32pJj_
+                - 1be32737-9a0c-4842-a94b-a3a44349a766
             X-Inference-Time:
-                - "159"
+                - "168"
             X-Powered-By:
                 - huggingface-moon
             X-Prompt-Tokens:
                 - "43"
             X-Proxied-Host:
-                - http://10.102.95.232
+                - http://10.102.83.124
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - 64tq71pt-gbdk7
+                - fyj5qcci-0f8hp
             X-Queue-Time:
-                - "22"
+                - "11"
             X-Request-Id:
-                - UMlUvkc95dH94XTL
+                - hay1GknQFi4EiPeN
             X-Robots-Tag:
                 - none
-            X-Sha:
-                - 6f6073b423013f6a7d4d9f39144961bfbfbc386b
             X-Time-Per-Token:
-                - "53"
+                - "56"
             X-Total-Time:
-                - "182"
+                - "180"
             X-Validation-Time:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 313ms
+        duration: 246ms

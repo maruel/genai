@@ -91,14 +91,9 @@ func TestClient_Chat_video(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
 	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider {
 		return getClient(t, "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free")
-	}, &opts)
+	})
 }
 
 func TestClient_ChatStream(t *testing.T) {

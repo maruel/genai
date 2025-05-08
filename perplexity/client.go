@@ -89,6 +89,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 				if len(v.Tools) != 0 {
 					errs = append(errs, errors.New("perplexity doesn't support tools"))
 				}
+				if v.ThinkingBudget > 0 {
+					errs = append(errs, errors.New("perplexity does not support ThinkingBudget"))
+				}
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}

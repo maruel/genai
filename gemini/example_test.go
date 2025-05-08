@@ -24,6 +24,7 @@ import (
 var bananaJpg []byte
 
 // Using small model for testing.
+// For tests that do not use function calling nor images, a good zero cost alternative is "gemma-3-27b-it".
 // See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 const model = "gemini-2.0-flash-lite"
 

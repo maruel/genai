@@ -86,6 +86,14 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 						// Unclear if this has any impact: c.Tools[i].CacheControl.Type = "ephemeral"
 					}
 				}
+				if v.ThinkingBudget > 0 {
+					// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
+					// Thinking isn’t compatible with temperature, top_p, or top_k modifications as well as forced tool use.
+					c.Thinking.BudgetTokens = v.ThinkingBudget
+					c.Thinking.Type = "enabled"
+				} else {
+					c.Thinking.Type = "disabled"
+				}
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}
@@ -369,12 +377,7 @@ type ChatResponse struct {
 	StopReason   string `json:"stop_reason"` // "end_turn", "tool_use", "stop_sequence", "max_tokens"
 	StopSequence string `json:"stop_sequence"`
 	Type         string `json:"type"` // "message"
-	Usage        struct {
-		InputTokens              int64 `json:"input_tokens"`
-		OutputTokens             int64 `json:"output_tokens"`
-		CacheCreationInputTokens int64 `json:"cache_creation_input_tokens"`
-		CacheReadInputTokens     int64 `json:"cache_read_input_tokens"`
-	} `json:"usage"`
+	Usage        Usage  `json:"usage"`
 }
 
 func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
@@ -411,12 +414,7 @@ type ChatStreamChunkResponse struct {
 		Content      []string `json:"content"`
 		StopReason   string   `json:"stop_reason"`
 		StopSequence string   `json:"stop_sequence"`
-		Usage        struct {
-			InputTokens              int64 `json:"input_tokens"`
-			OutputTokens             int64 `json:"output_tokens"`
-			CacheCreationInputTokens int64 `json:"cache_creation_input_tokens"`
-			CacheReadInputTokens     int64 `json:"cache_read_input_tokens"`
-		} `json:"usage"`
+		Usage        Usage    `json:"usage"`
 	} `json:"message"`
 
 	Index int64 `json:"index"`
@@ -454,9 +452,14 @@ type ChatStreamChunkResponse struct {
 		StopReason   string `json:"stop_reason"` // "end_turn", "tool_use", "stop_sequence", "max_tokens"
 		StopSequence string `json:"stop_sequence"`
 	} `json:"delta"`
-	Usage struct {
-		OutputTokens int64 `json:"output_tokens"`
-	} `json:"usage"`
+	Usage Usage `json:"usage"`
+}
+
+type Usage struct {
+	InputTokens              int64 `json:"input_tokens"`
+	OutputTokens             int64 `json:"output_tokens"`
+	CacheCreationInputTokens int64 `json:"cache_creation_input_tokens"`
+	CacheReadInputTokens     int64 `json:"cache_read_input_tokens"`
 }
 
 //

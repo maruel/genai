@@ -99,6 +99,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 						}
 					}
 				}
+				if v.ThinkingBudget > 0 {
+					errs = append(errs, errors.New("deepseek does not support ThinkingBudget; https://api-docs.deepseek.com/guides/reasoning_model says reasoning_effort is coming soon"))
+				}
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}

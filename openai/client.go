@@ -43,7 +43,7 @@ type ChatRequest struct {
 	Seed             int64              `json:"seed,omitzero"`
 	Temperature      float64            `json:"temperature,omitzero"` // [0, 2]
 	Store            bool               `json:"store,omitzero"`
-	ReasoningEffort  string             `json:"reasoning_effort,omitzero"` // "low", "medium", "high"
+	ReasoningEffort  ReasoningEffort    `json:"reasoning_effort,omitzero"`
 	Metadata         map[string]string  `json:"metadata,omitzero"`
 	FrequencyPenalty float64            `json:"frequency_penalty,omitzero"` // [-2.0, 2.0]
 	LogitBias        map[string]float64 `json:"logit_bias,omitzero"`
@@ -136,6 +136,15 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 						}
 					}
 				}
+				if v.ThinkingBudget > 0 {
+					if v.ThinkingBudget <= v.MaxTokens/3 {
+						c.ReasoningEffort = ReasoningEffortLow
+					} else if v.ThinkingBudget <= v.MaxTokens/2 {
+						c.ReasoningEffort = ReasoningEffortMedium
+					} else {
+						c.ReasoningEffort = ReasoningEffortHigh
+					}
+				}
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}
@@ -163,6 +172,18 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 	}
 	return errors.Join(errs...)
 }
+
+// ReasoningEffort is the effort the model should put into reasoning. Default is Medium.
+//
+// https://platform.openai.com/docs/api-reference/assistants/createAssistant#assistants-createassistant-reasoning_effort
+// https://platform.openai.com/docs/guides/reasoning
+type ReasoningEffort string
+
+const (
+	ReasoningEffortLow    ReasoningEffort = "low"
+	ReasoningEffortMedium ReasoningEffort = "medium"
+	ReasoningEffortHigh   ReasoningEffort = "high"
+)
 
 // https://platform.openai.com/docs/api-reference/chat/create
 type Message struct {

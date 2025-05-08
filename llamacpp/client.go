@@ -110,6 +110,9 @@ func (c *CompletionRequest) Init(opts genai.Validatable) error {
 					// It's unclear how I'll implement this.
 					errs = append(errs, errors.New("llama-server client doesn't support tools yet; to be implemented"))
 				}
+				if v.ThinkingBudget > 0 {
+					errs = append(errs, errors.New("llama-server does not support ThinkingBudget"))
+				}
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}

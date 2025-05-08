@@ -122,6 +122,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 						c.Tools[i].Function.Strict = true
 					}
 				}
+				if v.ThinkingBudget > 0 {
+					errs = append(errs, errors.New("mistral does not support ThinkingBudget"))
+				}
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}

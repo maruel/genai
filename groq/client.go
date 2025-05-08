@@ -32,13 +32,13 @@ import (
 
 // https://console.groq.com/docs/api-reference#chat-create
 type ChatRequest struct {
-	FrequencyPenalty  float64   `json:"frequency_penalty,omitzero"` // [-2.0, 2.0]
-	MaxChatTokens     int64     `json:"max_completion_tokens,omitzero"`
-	Messages          []Message `json:"messages"`
-	Model             string    `json:"model"`
-	ParallelToolCalls bool      `json:"parallel_tool_calls,omitzero"`
-	PresencePenalty   float64   `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
-	ReasoningFormat   string    `json:"reasoning_format,omitzero"`
+	FrequencyPenalty  float64         `json:"frequency_penalty,omitzero"` // [-2.0, 2.0]
+	MaxChatTokens     int64           `json:"max_completion_tokens,omitzero"`
+	Messages          []Message       `json:"messages"`
+	Model             string          `json:"model"`
+	ParallelToolCalls bool            `json:"parallel_tool_calls,omitzero"`
+	PresencePenalty   float64         `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
+	ReasoningFormat   ReasoningFormat `json:"reasoning_format,omitzero"`
 	ResponseFormat    struct {
 		Type string `json:"type,omitzero"` // "json_object"
 	} `json:"response_format,omitzero"`
@@ -109,6 +109,13 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 						}
 					}
 				}
+				if v.ThinkingBudget > 0 {
+					// https://console.groq.com/docs/reasoning/
+					errs = append(errs, errors.New("groq does not support ThinkingBudget"))
+				}
+				// Groq refuses requests unless the model is a reasoning model. As of May 2025, these are qwen-qwq-32b
+				// and deepseek-r1-distill-llama-70b.
+				// c.ReasoningFormat = ReasoningFormatParsed
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}
@@ -135,6 +142,17 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 	}
 	return errors.Join(errs...)
 }
+
+// ReasoningFormat defines the post processing format of the reasoning done by groq for select models.
+//
+// See https://console.groq.com/docs/reasoning
+type ReasoningFormat string
+
+const (
+	ReasoningFormatParsed ReasoningFormat = "parsed"
+	ReasoningFormatRaw    ReasoningFormat = "raw"
+	ReasoningFormatHidden ReasoningFormat = "hidden"
+)
 
 // https://console.groq.com/docs/api-reference#chat-create
 type Message struct {

@@ -31,7 +31,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-// Oficial python client library at https://github.com/togethercomputer/together-python/tree/main/src/together
+// Official python client library at https://github.com/togethercomputer/together-python/tree/main/src/together
 
 // https://docs.together.ai/reference/chat-completions-1
 type ChatRequest struct {
@@ -97,6 +97,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 							c.Tools[i].Function.Parameters = jsonschema.Reflect(t.InputsAs)
 						}
 					}
+				}
+				if v.ThinkingBudget > 0 {
+					errs = append(errs, errors.New("togetherai does not support ThinkingBudget"))
 				}
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))

@@ -30,11 +30,11 @@ interactions:
         uncompressed: true
         body: |
             {
-              "name": "cachedContents/d7i5okrweprs79qwhlt6o67rsixud6sehnlfm0pj",
+              "name": "cachedContents/ixsmvisd7k867w4dnl0eihomrtd1ffq1msrdpuku",
               "model": "models/gemini-2.0-flash-lite",
-              "createTime": "2025-05-07T20:46:47.938200Z",
-              "updateTime": "2025-05-07T20:46:47.938200Z",
-              "expireTime": "2025-05-07T20:56:47.499208984Z",
+              "createTime": "2025-05-08T14:28:28.914689Z",
+              "updateTime": "2025-05-08T14:28:28.914689Z",
+              "expireTime": "2025-05-08T14:38:28.484979743Z",
               "displayName": "Show time",
               "usageMetadata": {
                 "totalTokenCount": 4311
@@ -48,7 +48,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=1542
+                - gfet4t7; dur=1489
             Vary:
                 - Origin
                 - X-Origin
@@ -61,7 +61,7 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.622s
+        duration: 1.501s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -78,7 +78,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/cachedContents/d7i5okrweprs79qwhlt6o67rsixud6sehnlfm0pj
+        url: https://generativelanguage.googleapis.com/v1beta/cachedContents/ixsmvisd7k867w4dnl0eihomrtd1ffq1msrdpuku
         method: GET
       response:
         proto: HTTP/2.0
@@ -90,11 +90,11 @@ interactions:
         uncompressed: true
         body: |
             {
-              "name": "cachedContents/d7i5okrweprs79qwhlt6o67rsixud6sehnlfm0pj",
+              "name": "cachedContents/ixsmvisd7k867w4dnl0eihomrtd1ffq1msrdpuku",
               "model": "models/gemini-2.0-flash-lite",
-              "createTime": "2025-05-07T20:46:47.938200Z",
-              "updateTime": "2025-05-07T20:46:47.938200Z",
-              "expireTime": "2025-05-07T20:56:47.499208984Z",
+              "createTime": "2025-05-08T14:28:28.914689Z",
+              "updateTime": "2025-05-08T14:28:28.914689Z",
+              "expireTime": "2025-05-08T14:38:28.484979743Z",
               "displayName": "Show time",
               "usageMetadata": {
                 "totalTokenCount": 4311
@@ -108,7 +108,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=92
+                - gfet4t7; dur=73
             Vary:
                 - Origin
                 - X-Origin
@@ -121,7 +121,7 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 7.273s
+        duration: 83ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -139,7 +139,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/cachedContents/d7i5okrweprs79qwhlt6o67rsixud6sehnlfm0pj
+        url: https://generativelanguage.googleapis.com/v1beta/cachedContents/ixsmvisd7k867w4dnl0eihomrtd1ffq1msrdpuku
         method: PATCH
       response:
         proto: HTTP/2.0
@@ -151,11 +151,11 @@ interactions:
         uncompressed: true
         body: |
             {
-              "name": "cachedContents/d7i5okrweprs79qwhlt6o67rsixud6sehnlfm0pj",
+              "name": "cachedContents/ixsmvisd7k867w4dnl0eihomrtd1ffq1msrdpuku",
               "model": "models/gemini-2.0-flash-lite",
-              "createTime": "2025-05-07T20:46:47.938200Z",
-              "updateTime": "2025-05-07T20:47:05.480004Z",
-              "expireTime": "2025-05-07T21:07:05.441563625Z",
+              "createTime": "2025-05-08T14:28:28.914689Z",
+              "updateTime": "2025-05-08T14:28:39.284558Z",
+              "expireTime": "2025-05-08T14:48:39.236596396Z",
               "displayName": "Show time",
               "usageMetadata": {
                 "totalTokenCount": 4311
@@ -169,7 +169,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=130
+                - gfet4t7; dur=147
             Vary:
                 - Origin
                 - X-Origin
@@ -182,7 +182,7 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 140ms
+        duration: 157ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -213,11 +213,11 @@ interactions:
             {
               "cachedContents": [
                 {
-                  "name": "cachedContents/d7i5okrweprs79qwhlt6o67rsixud6sehnlfm0pj",
+                  "name": "cachedContents/ixsmvisd7k867w4dnl0eihomrtd1ffq1msrdpuku",
                   "model": "models/gemini-2.0-flash-lite",
-                  "createTime": "2025-05-07T20:46:47.938200Z",
-                  "updateTime": "2025-05-07T20:47:05.480004Z",
-                  "expireTime": "2025-05-07T21:07:05.441563625Z",
+                  "createTime": "2025-05-08T14:28:28.914689Z",
+                  "updateTime": "2025-05-08T14:28:39.284558Z",
+                  "expireTime": "2025-05-08T14:48:39.236596396Z",
                   "displayName": "Show time",
                   "usageMetadata": {
                     "totalTokenCount": 4311
@@ -233,7 +233,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=84
+                - gfet4t7; dur=125
             Vary:
                 - Origin
                 - X-Origin
@@ -246,7 +246,7 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 94ms
+        duration: 135ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -263,7 +263,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/cachedContents/d7i5okrweprs79qwhlt6o67rsixud6sehnlfm0pj
+        url: https://generativelanguage.googleapis.com/v1beta/cachedContents/ixsmvisd7k867w4dnl0eihomrtd1ffq1msrdpuku
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -283,7 +283,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=204
+                - gfet4t7; dur=199
             Vary:
                 - Origin
                 - X-Origin
@@ -296,7 +296,7 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 214ms
+        duration: 209ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -313,7 +313,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/cachedContents/d7i5okrweprs79qwhlt6o67rsixud6sehnlfm0pj
+        url: https://generativelanguage.googleapis.com/v1beta/cachedContents/ixsmvisd7k867w4dnl0eihomrtd1ffq1msrdpuku
         method: GET
       response:
         proto: HTTP/2.0
@@ -339,7 +339,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=66
+                - gfet4t7; dur=84
             Vary:
                 - Origin
                 - X-Origin
@@ -352,4 +352,4 @@ interactions:
                 - "0"
         status: 403 Forbidden
         code: 403
-        duration: 75ms
+        duration: 94ms

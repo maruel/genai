@@ -225,12 +225,10 @@ type ChatRequest struct {
 				} `json:"prebuiltVoiceConfig,omitzero"`
 			} `json:"voiceConfig,omitzero"`
 		} `json:"speechConfig,omitzero"`
-		// https://ai.google.dev/api/generate-content?hl=en#ThinkingConfig
 		// See https://ai.google.dev/gemini-api/docs/thinking#rest
-		ThinkingConfig struct {
-			IncludeThoughts bool  `json:"includeThoughts,omitzero"`
-			ThinkingBudget  int64 `json:"thinkingBudget,omitzero"` // [0, 24576]
-		} `json:"thinkingConfig,omitzero"`
+		// This is frustrating: it must be present for thinking models to make it possible to disable thinking. It
+		// must NOT be present for non-thinking models, like "gemini-2.0-flash-lite" which we use for smoke tests.
+		ThinkingConfig  *ThinkingConfig `json:"thinkingConfig,omitempty"`
 		MediaResolution MediaResolution `json:"mediaResolution,omitzero"`
 	} `json:"generationConfig,omitzero"`
 	CachedContent string `json:"cachedContent,omitzero"` // Name of the cached content with "cachedContents/" prefix.
@@ -283,6 +281,13 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable) error {
 							// Expose this eventually? We have to test if Google supports non-string answers.
 							Response: Schema{Type: "string"},
 						}}
+					}
+				}
+				if v.ThinkingBudget > 0 {
+					// https://ai.google.dev/gemini-api/docs/thinking
+					c.GenerationConfig.ThinkingConfig = &ThinkingConfig{
+						IncludeThoughts: true,
+						ThinkingBudget:  v.ThinkingBudget,
 					}
 				}
 			default:
@@ -474,6 +479,13 @@ func (p *Part) ToToolCall(out *genai.ToolCall) error {
 	}
 	out.Arguments = string(raw)
 	return nil
+}
+
+// https://ai.google.dev/api/generate-content?hl=en#ThinkingConfig
+// See https://ai.google.dev/gemini-api/docs/thinking#rest
+type ThinkingConfig struct {
+	IncludeThoughts bool  `json:"includeThoughts"` // Must not be omitted.
+	ThinkingBudget  int64 `json:"thinkingBudget"`  // Must not be omitted. [0, 24576]
 }
 
 // https://ai.google.dev/api/generate-content?hl=en#v1beta.GenerateContentResponse

@@ -412,7 +412,7 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 //     final Message object.
 //   - A final message_stop event.
 type ChatStreamChunkResponse struct {
-	Type string `json:"type"` // // "message_start", "content_block_start", "content_block_delta", "mesage_delta", "message_stop"
+	Type string `json:"type"` // // "message_start", "content_block_start", "content_block_delta", "message_delta", "message_stop"
 
 	// Type == "message_start"
 	Message struct {

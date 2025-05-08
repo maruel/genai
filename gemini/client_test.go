@@ -35,11 +35,15 @@ func TestClient_AllModels(t *testing.T) {
 	}
 	opts := genai.ChatOptions{
 		Temperature: 0.01,
-		MaxTokens:   10,
+		MaxTokens:   1000,
 		Seed:        1,
 	}
 	for _, m := range models {
 		name := m.GetID()
+		if name == "gemini-2.0-flash-live-001" {
+			// It's reported but not usable?
+			continue
+		}
 		parts := strings.Split(strings.Split(name, ".")[0], "-")
 		if len(parts) < 2 {
 			continue
@@ -47,6 +51,9 @@ func TestClient_AllModels(t *testing.T) {
 		if parts[0] == "gemini" {
 			// Minimum gemini-2
 			if i, err := strconv.Atoi(parts[1]); err != nil || i < 2 {
+				continue
+			}
+			if strings.HasSuffix(name, "image-generation") {
 				continue
 			}
 		} else if parts[0] == "gemma" {

@@ -24,6 +24,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"reflect"
 	"strings"
 	"time"
 
@@ -290,6 +291,19 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 						IncludeThoughts: true,
 						ThinkingBudget:  v.ThinkingBudget,
 					}
+				} else {
+					// Hard code which models accept it.
+					// - Gemini only.
+					// - Not lite
+					// - Not 1.x
+					// - Not 2.0-flash except if contains thinking.
+					if !strings.Contains(model, "lite") &&
+						strings.HasPrefix(model, "gemini-") &&
+						!strings.HasPrefix(model, "gemini-1") &&
+						(!strings.HasPrefix(model, "gemini-2.0-flash") || strings.Contains(model, "thinking")) {
+						// Disable thinking.
+						c.GenerationConfig.ThinkingConfig = &ThinkingConfig{}
+					}
 				}
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
@@ -402,7 +416,10 @@ func (c *Content) To(out *genai.Message) error {
 				})
 			continue
 		}
-		return fmt.Errorf("unsupported part %v", part)
+		if reflect.ValueOf(part).IsZero() {
+			continue
+		}
+		return fmt.Errorf("unsupported part %#v", part)
 	}
 	return nil
 }

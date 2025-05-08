@@ -75,7 +75,7 @@ func (r *Records) Close() int {
 }
 
 func (r *Records) Signal(t *testing.T) string {
-	name := t.Name()
+	name := strings.ReplaceAll(t.Name(), "/", string(os.PathSeparator))
 	if d := filepath.Dir(name); d != "." {
 		if err := os.MkdirAll(filepath.Join("testdata", d), 0o755); err != nil {
 			t.Fatal(err)

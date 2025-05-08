@@ -163,7 +163,7 @@ func mainImpl() error {
 	for _, name := range s {
 		fmt.Printf("%s\n", name)
 		if *all {
-			os.Stdout.WriteString(printStructDense(m[name], "  ") + "\n")
+			_, _ = os.Stdout.WriteString(printStructDense(m[name], "  ") + "\n")
 		}
 	}
 	return nil

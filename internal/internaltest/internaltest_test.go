@@ -5,6 +5,7 @@
 package internaltest
 
 import (
+	"path/filepath"
 	"testing"
 )
 
@@ -17,7 +18,7 @@ func TestNewRecords(t *testing.T) {
 	}
 
 	// Check that files in subdirectories are found
-	if _, exists := r.preexisting["subdir/nested.yaml"]; !exists {
+	if _, exists := r.preexisting[filepath.Join("subdir", "nested.yaml")]; !exists {
 		t.Errorf("Failed to find nested.yaml in testdata/subdir/")
 	}
 }

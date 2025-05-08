@@ -1,0 +1,75 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 165
+        transfer_encoding: []
+        trailer: {}
+        host: localhost
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"gemma3:4b","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"options":{"temperature":0.01,"seed":1,"num_predict":50}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 305
+        uncompressed: false
+        body: '{"model":"gemma3:4b","created_at":"2025-05-08T19:40:57.093096196Z","message":{"role":"assistant","content":"Hello."},"done_reason":"stop","done":true,"total_duration":18881360123,"load_duration":2940152592,"prompt_eval_count":17,"prompt_eval_duration":9170684377,"eval_count":3,"eval_duration":6769999950}'
+        headers:
+            Content-Length:
+                - "305"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 18.882s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 269
+        transfer_encoding: []
+        trailer: {}
+        host: localhost
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"gemma3:4b","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."},{"role":"assistant","content":"Hello."},{"role":"user","content":"Who created you? Use only one word."}],"options":{"temperature":0.01,"seed":1,"num_predict":50}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 300
+        uncompressed: false
+        body: '{"model":"gemma3:4b","created_at":"2025-05-08T19:40:57.657698213Z","message":{"role":"assistant","content":"Google."},"done_reason":"stop","done":true,"total_duration":564038670,"load_duration":29594237,"prompt_eval_count":38,"prompt_eval_duration":416389932,"eval_count":3,"eval_duration":104528870}'
+        headers:
+            Content-Length:
+                - "300"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 564ms

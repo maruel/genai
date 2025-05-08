@@ -102,6 +102,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 					}
 				}
 				if v.ThinkingBudget > 0 {
+					// https://api-docs.deepseek.com/guides/reasoning_model Soon "reasoning_effort"
 					unsupported = append(unsupported, "ThinkingBudget")
 				}
 			default:

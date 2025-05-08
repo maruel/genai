@@ -20,6 +20,8 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
+// Not implementing TestClient_AllModels since there's too many models.
+
 func TestClient_Chat_jSON(t *testing.T) {
 	c := getClient(t, "@hf/nousresearch/hermes-2-pro-mistral-7b")
 	msgs := genai.Messages{

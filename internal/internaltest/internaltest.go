@@ -34,12 +34,17 @@ func NewRecords() *Records {
 		preexisting: make(map[string]struct{}),
 	}
 	const prefix = "testdata/"
-	m, err := filepath.Glob(prefix + "*.yaml")
+	err := filepath.Walk(prefix, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() && strings.HasSuffix(info.Name(), ".yaml") {
+			r.preexisting[path[len(prefix):]] = struct{}{}
+		}
+		return nil
+	})
 	if err != nil {
 		panic(err)
-	}
-	for _, f := range m {
-		r.preexisting[f[len(prefix):]] = struct{}{}
 	}
 	return r
 }
@@ -50,6 +55,14 @@ func (r *Records) Close() int {
 	defer r.mu.Unlock()
 	for _, f := range r.recorded {
 		delete(r.preexisting, f)
+		// Look for subdirectories. If a test case with subtest was skipped, we do not want to warn about it. This
+		// is crude but good enough as a starting point.
+		f = strings.TrimSuffix(f, ".yaml") + "/"
+		for k := range r.preexisting {
+			if strings.HasPrefix(k, f) {
+				delete(r.preexisting, k)
+			}
+		}
 	}
 	if len(r.preexisting) != 0 {
 		code = 1
@@ -62,7 +75,12 @@ func (r *Records) Close() int {
 }
 
 func (r *Records) Signal(t *testing.T) string {
-	name := strings.ReplaceAll(t.Name(), "/", "_")
+	name := t.Name()
+	if d := filepath.Dir(name); d != "." {
+		if err := os.MkdirAll("testdata/"+d, 0o755); err != nil {
+			t.Fatal(err)
+		}
+	}
 	r.mu.Lock()
 	r.recorded = append(r.recorded, name+".yaml")
 	r.mu.Unlock()

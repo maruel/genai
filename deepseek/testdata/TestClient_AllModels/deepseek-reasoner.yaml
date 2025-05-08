@@ -1,0 +1,53 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 167
+        transfer_encoding: []
+        trailer: {}
+        host: api.deepseek.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"deepseek-reasoner","messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"stream":false,"temperature":0.01,"max_tokens":10}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"0f6fb99e-4c4c-4a76-8957-7ccf79df1a2a","object":"chat.completion","created":1746731742,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"Okay, the user wants me to say hello. But there''s some specific instructions here. Let me read it again.\n\n\"Say hello. Use only one word. Say only hello.\"\n\nSo the user is asking for a greeting, but with strict constraints. They want only one word and nothing else. The first part says \"Say hello\" which is straightforward, but then they emphasize using only one word and repeating to \"say only hello.\" Hmm, maybe they want to test if I follow directions precisely. Sometimes people do that to check if the AI can adhere to exact instructions without adding extra text.\n\nLet me think. If I respond with just \"Hello.\" with a period, is that considered one word? The user didn''t specify punctuation, but technically punctuation isn''t a word. So \"Hello\" by itself. But should I capitalize it? Well, \"Hello\" is the standard greeting. The user probably expects that. If I add anything else, like an exclamation mark or more words, I might be violating the instructions. So the safest bet is to respond with exactly \"Hello\" without any other words or characters. Wait, the user said \"Use only one word. Say only hello.\" So maybe even the period is not allowed. But in written language, a sentence usually ends with punctuation. However, the instruction is to use only one word. So perhaps just \"Hello\" without any punctuation. Let me check the examples. If the user wrote \"Say hello. Use only one word. Say only hello.\" They might not want any punctuation. So the correct response is \"Hello\" as a single word. Alright, I should make sure there''s no extra text. Let me confirm. The response should be only \"Hello\" as a single word. No period, no other words. That''s the strictest interpretation. Okay, I''ll go with that."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":17,"completion_tokens":383,"total_tokens":400,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":380},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":17},"system_fingerprint":"fp_5417b77867_prod0425fp8"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93cb498ede04a2b1-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            X-Content-Type-Options:
+                - nosniff
+            X-Ds-Trace-Id:
+                - 4cc17a1acef7d799a627dfceae99a2a0
+        status: 200 OK
+        code: 200
+        duration: 285ms

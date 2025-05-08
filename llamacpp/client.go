@@ -415,12 +415,16 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
 	in := CompletionRequest{CachePrompt: true}
+	var continuableErr error
 	if err := in.Init(opts); err != nil {
 		// If it's an UnsupportedContinuableError, we can continue
-		if _, ok := err.(*genai.UnsupportedContinuableError); !ok {
+		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+			// Store the error to return later if no other error occurs
+			continuableErr = uce
+			// Otherwise log the error but continue
+		} else {
 			return err
 		}
-		// Otherwise log the error but continue
 	}
 	if err := c.initPrompt(ctx, &in, opts, msgs); err != nil {
 		return err
@@ -449,6 +453,10 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	close(ch)
 	if err2 := <-end; err2 != nil {
 		err = err2
+	}
+	// Return the continuable error if no other error occurred
+	if err == nil && continuableErr != nil {
+		return continuableErr
 	}
 	return err
 }
@@ -600,18 +608,26 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 	if c.encoding == nil {
 		// Use the server to convert the OpenAI style format into a templated form.
 		in2 := applyTemplateRequest{}
+		var continuableErr error
 		if err := in2.Init(opts, msgs); err != nil {
 			// If it's an UnsupportedContinuableError, we can continue
-			if _, ok := err.(*genai.UnsupportedContinuableError); !ok {
+			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+				// Store the error to return later if no other error occurs
+				continuableErr = uce
+				// Otherwise log the error but continue
+			} else {
 				return err
 			}
-			// Otherwise log the error but continue
 		}
 		out := applyTemplateResponse{}
 		if err := c.post(ctx, c.baseURL+"/apply-template", &in2, &out); err != nil {
 			return err
 		}
 		in.Prompt = out.Prompt
+		// Return the continuable error if no other error occurred
+		if continuableErr != nil {
+			return continuableErr
+		}
 		return nil
 	}
 

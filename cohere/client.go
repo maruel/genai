@@ -425,18 +425,30 @@ func New(apiKey, model string) (*Client, error) {
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	// https://docs.cohere.com/reference/chat
 	rpcin := ChatRequest{Model: c.model}
+	var continuableErr error
 	if err := rpcin.Init(msgs, opts); err != nil {
 		// If it's an UnsupportedContinuableError, we can continue
-		if _, ok := err.(*genai.UnsupportedContinuableError); !ok {
+		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+			// Store the error to return later if no other error occurs
+			continuableErr = uce
+			// Otherwise log the error but continue
+		} else {
 			return genai.ChatResult{}, err
 		}
-		// Otherwise log the error but continue
 	}
 	rpcout := ChatResponse{}
 	if err := c.ChatRaw(ctx, &rpcin, &rpcout); err != nil {
 		return genai.ChatResult{}, fmt.Errorf("failed to get chat response: %w", err)
 	}
-	return rpcout.ToResult()
+	result, err := rpcout.ToResult()
+	if err != nil {
+		return result, err
+	}
+	// Return the continuable error if no other error occurred
+	if continuableErr != nil {
+		return result, continuableErr
+	}
+	return result, nil
 }
 
 func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
@@ -449,12 +461,16 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
 	in := ChatRequest{Model: c.model}
+	var continuableErr error
 	if err := in.Init(msgs, opts); err != nil {
 		// If it's an UnsupportedContinuableError, we can continue
-		if _, ok := err.(*genai.UnsupportedContinuableError); !ok {
+		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+			// Store the error to return later if no other error occurs
+			continuableErr = uce
+			// Otherwise log the error but continue
+		} else {
 			return err
 		}
-		// Otherwise log the error but continue
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
@@ -465,6 +481,10 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
+	}
+	// Return the continuable error if no other error occurred
+	if err == nil && continuableErr != nil {
+		return continuableErr
 	}
 	return err
 }

@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"msg_01S72QxdruKSC1jJ88chDxTJ","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"orange"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":1628,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":4}}'
+        body: '{"id":"msg_01W68TTC5bL5y8nasPy6ozUH","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"orange"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":1628,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":4}}'
         headers:
             Anthropic-Organization-Id:
                 - b0607a1c-e615-400e-9924-e7a556d22e9f
@@ -37,33 +37,33 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "49000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-05-08T18:22:39Z"
+                - "2025-05-08T19:00:23Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-05-08T18:22:38Z"
+                - "2025-05-08T19:00:22Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "50"
             Anthropic-Ratelimit-Requests-Remaining:
                 - "49"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-05-08T18:22:38Z"
+                - "2025-05-08T19:00:22Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "59000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-05-08T18:22:38Z"
+                - "2025-05-08T19:00:22Z"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cafbca6fcaa28d-YUL
+                - 93cb3310a8cb4bbf-YUL
             Content-Type:
                 - application/json
             Request-Id:
-                - req_011CNvXcwzkeARrZPS5yBN3q
+                - req_011CNvaVqob5trBWn3Cp7j5M
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,4 +74,4 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 1.386s
+        duration: 1.292s

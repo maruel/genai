@@ -16,6 +16,10 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 )
 
+func TestClient_AllModels(t *testing.T) {
+	internaltest.TestAllModels(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) })
+}
+
 func TestClient_Chat_vision(t *testing.T) {
 	// Using very small model for testing. As of March 2025,
 	// claude-3-haiku-20240307 is 0.20$/1.25$ while claude-3-5-haiku-20241022 is

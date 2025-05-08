@@ -17,6 +17,9 @@ import (
 // ChatProviderFactory is what a Java developer would write.
 type ChatProviderFactory func(t *testing.T) genai.ChatProvider
 
+// ModelChatProviderFactory is what a Java developer would write.
+type ModelChatProviderFactory func(t *testing.T, model string) genai.ChatProvider
+
 // ChatStream runs a ChatStream and returns the concatenated response.
 func ChatStream(t *testing.T, factory ChatProviderFactory, msgs genai.Messages, opts *genai.ChatOptions) genai.Messages {
 	c := factory(t)
@@ -60,6 +63,44 @@ func ChatStream(t *testing.T, factory ChatProviderFactory, msgs genai.Messages, 
 		t.Fatal(err)
 	}
 	return responses
+}
+
+// TestAllModels says hello with all models.
+func TestAllModels(t *testing.T, factory ModelChatProviderFactory) {
+	ctx := t.Context()
+	l := factory(t, "").(genai.ModelProvider)
+	models, err := l.ListModels(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	msgs := genai.Messages{
+		genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello."),
+	}
+	opts := genai.ChatOptions{
+		Temperature: 0.01,
+		MaxTokens:   10,
+		Seed:        1,
+	}
+	for _, m := range models {
+		name := m.GetID()
+		t.Run(name, func(t *testing.T) {
+			resp, err := factory(t, name).Chat(ctx, msgs, &opts)
+			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+				t.Log(uce)
+			} else if err != nil {
+				t.Fatal(err)
+			}
+			t.Logf("Raw response: %#v", resp)
+			if len(resp.Contents) != 1 {
+				t.Fatal("Unexpected response")
+			}
+			// Normalize some of the variance. Obviously many models will still fail this test.
+			got := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!")
+			if got != "hello" {
+				t.Fatal(got)
+			}
+		})
+	}
 }
 
 // TestChatToolUseCountry runs a Chat with tool use and verifies that the tools are called correctly.

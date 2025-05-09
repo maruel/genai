@@ -242,7 +242,7 @@ type ChatResponse struct {
 	SystemFingerPrint string `json:"system_fingerprint"`
 	Object            string `json:"object"` // chat.completion
 	Usage             struct {
-		ChatTokens            int64 `json:"completion_tokens"`
+		CompletionTokens      int64 `json:"completion_tokens"`
 		PromptTokens          int64 `json:"prompt_tokens"`
 		PromptCacheHitTokens  int64 `json:"prompt_cache_hit_tokens"`
 		PromptCacheMissTokens int64 `json:"prompt_cache_miss_tokens"`
@@ -259,8 +259,9 @@ type ChatResponse struct {
 func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	out := genai.ChatResult{
 		Usage: genai.Usage{
-			InputTokens:  c.Usage.PromptTokens,
-			OutputTokens: c.Usage.ChatTokens,
+			InputTokens:       c.Usage.PromptTokens,
+			InputCachedTokens: c.Usage.PromptCacheHitTokens,
+			OutputTokens:      c.Usage.CompletionTokens,
 		},
 		FinishReason: c.Choices[0].FinishReason,
 	}

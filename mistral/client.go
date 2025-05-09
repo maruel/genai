@@ -262,9 +262,9 @@ type ChatResponse struct {
 		Logprobs     struct{}        `json:"logprobs"`
 	} `json:"choices"`
 	Usage struct {
-		PromptTokens int64 `json:"prompt_tokens"`
-		ChatTokens   int64 `json:"completion_tokens"`
-		TotalTokens  int64 `json:"total_tokens"`
+		PromptTokens     int64 `json:"prompt_tokens"`
+		CompletionTokens int64 `json:"completion_tokens"`
+		TotalTokens      int64 `json:"total_tokens"`
 	} `json:"usage"`
 }
 
@@ -320,9 +320,10 @@ func (t *ToolCall) To(out *genai.ToolCall) {
 
 func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	out := genai.ChatResult{
+		// At the moment, Mistral doesn't support cached tokens.
 		Usage: genai.Usage{
 			InputTokens:  c.Usage.PromptTokens,
-			OutputTokens: c.Usage.ChatTokens,
+			OutputTokens: c.Usage.CompletionTokens,
 		},
 		FinishReason: c.Choices[0].FinishReason,
 	}

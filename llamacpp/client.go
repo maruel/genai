@@ -211,8 +211,9 @@ func (c *CompletionResponse) ToResult() (genai.ChatResult, error) {
 			Contents: []genai.Content{{Text: strings.ReplaceAll(c.Content, "\u2581", " ")}},
 		},
 		Usage: genai.Usage{
-			InputTokens:  c.TokensPredicted,
-			OutputTokens: c.TokensEvaluated,
+			InputTokens:       c.TokensPredicted,
+			InputCachedTokens: c.TokensCached,
+			OutputTokens:      c.TokensEvaluated,
 		},
 	}
 	// Set FinishReason based on Stop field

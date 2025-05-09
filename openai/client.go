@@ -437,7 +437,7 @@ type ChatResponse struct {
 	Object  string `json:"object"`
 	Usage   struct {
 		PromptTokens        int64 `json:"prompt_tokens"`
-		ChatTokens          int64 `json:"completion_tokens"`
+		CompletionTokens    int64 `json:"completion_tokens"`
 		TotalTokens         int64 `json:"total_tokens"`
 		PromptTokensDetails struct {
 			CachedTokens int64 `json:"cached_tokens"`
@@ -460,8 +460,9 @@ type ChatResponse struct {
 func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	out := genai.ChatResult{
 		Usage: genai.Usage{
-			InputTokens:  c.Usage.PromptTokens,
-			OutputTokens: c.Usage.ChatTokens,
+			InputTokens:       c.Usage.PromptTokens,
+			InputCachedTokens: c.Usage.PromptTokensDetails.CachedTokens,
+			OutputTokens:      c.Usage.CompletionTokens,
 		},
 	}
 	if len(c.Choices) != 1 {

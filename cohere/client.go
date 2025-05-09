@@ -254,6 +254,7 @@ type ChatResponse struct {
 
 func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	out := genai.ChatResult{
+		// At the moment, Cohere doesn't support cached tokens.
 		Usage: genai.Usage{
 			// What about BilledUnits, especially for SearchUnits and Classifications?
 			InputTokens:  c.Usage.Tokens.InputTokens,

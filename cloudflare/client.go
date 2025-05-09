@@ -267,9 +267,9 @@ type ChatResponse struct {
 	Result struct {
 		MessageResponse
 		Usage struct {
-			ChatTokens   int64 `json:"completion_tokens"`
-			PromptTokens int64 `json:"prompt_tokens"`
-			TotalTokens  int64 `json:"total_tokens"`
+			CompletionTokens int64 `json:"completion_tokens"`
+			PromptTokens     int64 `json:"prompt_tokens"`
+			TotalTokens      int64 `json:"total_tokens"`
 		} `json:"usage"`
 	} `json:"result"`
 	Success  bool       `json:"success"`
@@ -354,9 +354,10 @@ func (msg *MessageResponse) To(schema string, out *genai.Message) error {
 
 func (c *ChatResponse) ToResult(rpcin *ChatRequest) (genai.ChatResult, error) {
 	out := genai.ChatResult{
+		// At the moment, Cloudflare doesn't support cached tokens.
 		Usage: genai.Usage{
 			InputTokens:  c.Result.Usage.PromptTokens,
-			OutputTokens: c.Result.Usage.ChatTokens,
+			OutputTokens: c.Result.Usage.CompletionTokens,
 		},
 	}
 	err := c.Result.To(rpcin.ResponseFormat.Type, &out.Message)

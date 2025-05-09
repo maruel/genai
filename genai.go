@@ -160,10 +160,13 @@ type ChatResult struct {
 
 // Usage from the LLM provider.
 type Usage struct {
-	InputTokens  int64
-	OutputTokens int64
+	InputTokens       int64
+	InputCachedTokens int64
+	OutputTokens      int64
+}
 
-	_ struct{}
+func (u *Usage) String() string {
+	return fmt.Sprintf("in: %d (cached %d), out: %d", u.InputTokens, u.InputCachedTokens, u.OutputTokens)
 }
 
 // Messages

@@ -602,8 +602,9 @@ type ChatResponse struct {
 func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	out := genai.ChatResult{
 		Usage: genai.Usage{
-			InputTokens:  c.UsageMetadata.PromptTokenCount,
-			OutputTokens: c.UsageMetadata.CandidatesTokenCount + c.UsageMetadata.ToolUsePromptTokenCount + c.UsageMetadata.ThoughtsTokenCount,
+			InputTokens:       c.UsageMetadata.PromptTokenCount,
+			InputCachedTokens: c.UsageMetadata.CachedContentTokenCount,
+			OutputTokens:      c.UsageMetadata.TotalTokenCount,
 		},
 	}
 	if len(c.Candidates) != 1 {

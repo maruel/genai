@@ -234,9 +234,9 @@ type ChatResponse struct {
 		Message      Message `json:"message"`
 	} `json:"choices"`
 	Usage struct {
-		PromptTokens int64 `json:"prompt_tokens"`
-		ChatTokens   int64 `json:"completion_tokens"`
-		TotalTokens  int64 `json:"total_tokens"`
+		PromptTokens     int64 `json:"prompt_tokens"`
+		CompletionTokens int64 `json:"completion_tokens"`
+		TotalTokens      int64 `json:"total_tokens"`
 	} `json:"usage"`
 	TimeInfo struct {
 		QueueTime  float64 `json:"queue_time"`
@@ -249,9 +249,10 @@ type ChatResponse struct {
 
 func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	out := genai.ChatResult{
+		// At the moment, Cerebras doesn't support cached tokens.
 		Usage: genai.Usage{
 			InputTokens:  c.Usage.PromptTokens,
-			OutputTokens: c.Usage.ChatTokens,
+			OutputTokens: c.Usage.CompletionTokens,
 		},
 		FinishReason: c.Choices[0].FinishReason,
 	}

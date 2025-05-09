@@ -333,8 +333,9 @@ type ChatResponse struct {
 func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	out := genai.ChatResult{
 		Usage: genai.Usage{
-			InputTokens:  c.Usage.PromptTokens,
-			OutputTokens: c.Usage.CompletionTokens,
+			InputTokens:       c.Usage.PromptTokens,
+			InputCachedTokens: c.Usage.CachedTokens,
+			OutputTokens:      c.Usage.CompletionTokens,
 		},
 		FinishReason: c.Choices[0].FinishReason,
 	}

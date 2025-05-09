@@ -259,6 +259,7 @@ type ChatResponse struct {
 
 func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	out := genai.ChatResult{
+		// TODO: llama-server supports caching and we should report it.
 		Usage: genai.Usage{
 			InputTokens:  c.PromptEvalCount,
 			OutputTokens: c.EvalCount,

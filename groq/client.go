@@ -313,6 +313,7 @@ type ChatResponse struct {
 
 func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	out := genai.ChatResult{
+		// At the moment, Groq does not support cached tokens.
 		Usage: genai.Usage{
 			InputTokens:  c.Usage.PromptTokens,
 			OutputTokens: c.Usage.CompletionTokens,

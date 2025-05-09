@@ -273,9 +273,9 @@ type ChatResponse struct {
 		} `json:"logprobs"`
 	} `json:"choices"`
 	Usage struct {
-		PromptTokens int64 `json:"prompt_tokens"`
-		ChatTokens   int64 `json:"completion_tokens"`
-		TotalTokens  int64 `json:"total_tokens"`
+		PromptTokens     int64 `json:"prompt_tokens"`
+		CompletionTokens int64 `json:"completion_tokens"`
+		TotalTokens      int64 `json:"total_tokens"`
 	} `json:"usage"`
 }
 
@@ -311,9 +311,10 @@ func (m *MessageResponse) To(out *genai.Message) error {
 
 func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	out := genai.ChatResult{
+		// At the moment, Huggingface doesn't support caching.
 		Usage: genai.Usage{
 			InputTokens:  c.Usage.PromptTokens,
-			OutputTokens: c.Usage.ChatTokens,
+			OutputTokens: c.Usage.CompletionTokens,
 		},
 		FinishReason: c.Choices[0].FinishReason,
 	}

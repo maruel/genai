@@ -20,8 +20,8 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
-func TestClient_AllModels(t *testing.T) {
-	internaltest.TestAllModels(
+func TestClient_Chat_allModels(t *testing.T) {
+	internaltest.TestChatAllModels(
 		t,
 		func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 		func(m genai.Model) bool {

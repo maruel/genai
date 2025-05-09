@@ -16,8 +16,8 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 )
 
-func TestClient_AllModels(t *testing.T) {
-	internaltest.TestAllModels(
+func TestClient_Chat_allModels(t *testing.T) {
+	internaltest.TestChatAllModels(
 		t,
 		func(t *testing.T, id string) genai.ChatProvider { return getClient(t, id) },
 		func(m genai.Model) bool {
@@ -28,7 +28,7 @@ func TestClient_AllModels(t *testing.T) {
 }
 
 func TestClient_Chat_vision(t *testing.T) {
-	internaltest.TestChatVisionText(t, func(t *testing.T) genai.ChatProvider {
+	internaltest.TestChatVision(t, func(t *testing.T) genai.ChatProvider {
 		return getClient(t, "meta-llama/llama-4-scout-17b-16e-instruct")
 	})
 }

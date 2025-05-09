@@ -16,8 +16,8 @@ import (
 	"github.com/maruel/genai/openai"
 )
 
-func TestClient_AllModels(t *testing.T) {
-	internaltest.TestAllModels(
+func TestClient_Chat_allModels(t *testing.T) {
+	internaltest.TestChatAllModels(
 		t,
 		func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 		func(m genai.Model) bool {

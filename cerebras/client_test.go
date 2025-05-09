@@ -15,8 +15,8 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 )
 
-func TestClient_AllModels(t *testing.T) {
-	internaltest.TestAllModels(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
+func TestClient_Chat_allModels(t *testing.T) {
+	internaltest.TestChatAllModels(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
 }
 
 func TestClient_Chat_json(t *testing.T) {

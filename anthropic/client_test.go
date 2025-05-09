@@ -16,8 +16,8 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 )
 
-func TestClient_AllModels(t *testing.T) {
-	internaltest.TestAllModels(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
+func TestClient_Chat_allModels(t *testing.T) {
+	internaltest.TestChatAllModels(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
 }
 
 func TestClient_Chat_vision(t *testing.T) {
@@ -25,7 +25,7 @@ func TestClient_Chat_vision(t *testing.T) {
 	// claude-3-haiku-20240307 is 0.20$/1.25$ while claude-3-5-haiku-20241022 is
 	// 0.80$/4.00$. 3.0 supports images, 3.5 supports PDFs.
 	// https://docs.anthropic.com/en/docs/about-claude/models/all-models
-	internaltest.TestChatVisionText(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") })
+	internaltest.TestChatVision(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") })
 }
 
 func TestClient_Chat_pdf(t *testing.T) {

@@ -65,8 +65,8 @@ func ChatStream(t *testing.T, factory ChatProviderFactory, msgs genai.Messages, 
 	return responses
 }
 
-// TestAllModels says hello with all models.
-func TestAllModels(t *testing.T, factory ModelChatProviderFactory, filter func(model genai.Model) bool) {
+// TestChatAllModels says hello with all models.
+func TestChatAllModels(t *testing.T, factory ModelChatProviderFactory, filter func(model genai.Model) bool) {
 	ctx := t.Context()
 	l := factory(t, "").(genai.ModelProvider)
 	models, err := l.ListModels(ctx)
@@ -120,61 +120,6 @@ func TestChatToolUseCountry(t *testing.T, factory ChatProviderFactory) {
 	})
 }
 
-// processChat runs either Chat or ChatStream based on the useStream parameter
-// and returns the result.
-func processChat(t *testing.T, ctx context.Context, c genai.ChatProvider, msgs genai.Messages, opts *genai.ChatOptions, useStream bool) genai.ChatResult {
-	var resp genai.ChatResult
-	var err error
-	if useStream {
-		chunks := make(chan genai.MessageFragment)
-		end := make(chan genai.Messages, 1)
-		go func() {
-			var pendingMsgs genai.Messages
-			defer func() {
-				end <- pendingMsgs
-				close(end)
-			}()
-			for {
-				select {
-				case <-ctx.Done():
-					return
-				case pkt, ok := <-chunks:
-					if !ok {
-						return
-					}
-					var err2 error
-					if pendingMsgs, err2 = pkt.Accumulate(pendingMsgs); err2 != nil {
-						t.Error(err2)
-						return
-					}
-				}
-			}
-		}()
-		err = c.ChatStream(ctx, msgs, opts, chunks)
-		close(chunks)
-		responses := <-end
-		t.Logf("Raw responses: %#v", responses)
-		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-			t.Log(uce)
-		} else if err != nil {
-			t.Fatal(err)
-		}
-		if len(responses) == 0 {
-			t.Fatal("No response received")
-		}
-		resp = genai.ChatResult{Message: responses[len(responses)-1]}
-	} else {
-		resp, err = c.Chat(ctx, msgs, opts)
-		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-			t.Log(uce)
-		} else if err != nil {
-			t.Fatal(err)
-		}
-	}
-	t.Logf("Raw response: %#v", resp)
-	return resp
-}
-
 // chatToolUseCountryCore runs a Chat or ChatStream with tool use and verifies that the tools are called correctly.
 // The useStream parameter determines whether to use Chat or ChatStream.
 // It returns the response for further validation.
@@ -213,6 +158,7 @@ func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, useStream
 		if got.Country != "Canada" {
 			t.Fatal(got.Country)
 		}
+		// TODO: Follow up!
 	})
 	t.Run("USA", func(t *testing.T) {
 		msgs := genai.Messages{
@@ -247,12 +193,13 @@ func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, useStream
 		if got.Country != "USA" {
 			t.Fatal(got.Country)
 		}
+		// TODO: Follow up!
 	})
 }
 
-// TestChatVisionText runs a Chat with vision capabilities and verifies that the model correctly identifies a
+// TestChatVision runs a Chat with vision capabilities and verifies that the model correctly identifies a
 // banana image.
-func TestChatVisionText(t *testing.T, factory ChatProviderFactory) {
+func TestChatVision(t *testing.T, factory ChatProviderFactory) {
 	c := factory(t)
 	ctx := t.Context()
 	msgs := genai.Messages{
@@ -334,3 +281,61 @@ func TestChatVisionJSON(t *testing.T, factory ChatProviderFactory) {
 //
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
+
+// processChat runs either Chat or ChatStream based on the useStream parameter
+// and returns the result.
+func processChat(t *testing.T, ctx context.Context, c genai.ChatProvider, msgs genai.Messages, opts *genai.ChatOptions, useStream bool) genai.ChatResult {
+	var resp genai.ChatResult
+	var err error
+	if useStream {
+		chunks := make(chan genai.MessageFragment)
+		end := make(chan genai.Messages, 1)
+		go func() {
+			var pendingMsgs genai.Messages
+			defer func() {
+				end <- pendingMsgs
+				close(end)
+			}()
+			for {
+				select {
+				case <-ctx.Done():
+					return
+				case pkt, ok := <-chunks:
+					if !ok {
+						return
+					}
+					var err2 error
+					if pendingMsgs, err2 = pkt.Accumulate(pendingMsgs); err2 != nil {
+						t.Error(err2)
+						return
+					}
+				}
+			}
+		}()
+		err = c.ChatStream(ctx, msgs, opts, chunks)
+		close(chunks)
+		responses := <-end
+		t.Logf("Raw responses: %#v", responses)
+		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+			t.Log(uce)
+		} else if err != nil {
+			t.Fatal(err)
+		}
+		if len(responses) == 0 {
+			t.Fatal("No response received")
+		}
+		if len(responses) > 1 {
+			t.Fatalf("Multiple responses received: %#v", responses)
+		}
+		resp = genai.ChatResult{Message: responses[len(responses)-1]}
+	} else {
+		resp, err = c.Chat(ctx, msgs, opts)
+		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+			t.Log(uce)
+		} else if err != nil {
+			t.Fatal(err)
+		}
+	}
+	t.Logf("Raw response: %#v", resp)
+	return resp
+}

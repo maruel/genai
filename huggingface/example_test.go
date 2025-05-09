@@ -8,7 +8,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/maruel/genai"
@@ -149,9 +148,10 @@ func ExampleClient_ChatStream() {
 }
 
 func ExampleClient_ListModels() {
+	// Warning: Hugginface hosts a lot of models!
 	c, err := huggingface.New("", "")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Couldn't connect: %v\n", err)
+		fmt.Printf("Couldn't connect: %v\n", err)
 		return
 	}
 	models, err := c.ListModels(context.Background())
@@ -159,7 +159,6 @@ func ExampleClient_ListModels() {
 		fmt.Printf("Failed to get models: %v\n", err)
 		return
 	}
-	// Warning: Hugginface hosts a lot of models!
 	for _, model := range models {
 		fmt.Printf("- %s\n", model)
 	}

@@ -169,8 +169,6 @@ func ExampleClient_ChatStream() {
 }
 
 func ExampleClient_ListModels() {
-	// Print something so the example runs.
-	fmt.Println("Got models")
 	c, err := groq.New("", "")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Couldn't connect: %v\n", err)
@@ -186,5 +184,4 @@ func ExampleClient_ListModels() {
 		// test doesn't capture them.
 		fmt.Fprintf(os.Stderr, "- %s\n", model)
 	}
-	// Output: Got models
 }

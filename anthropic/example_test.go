@@ -8,16 +8,13 @@ import (
 	"bytes"
 	"context"
 	_ "embed"
-	"errors"
 	"fmt"
 	"log"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/anthropic"
-	"github.com/maruel/httpjson"
 )
 
 // See the 3kib banana jpg online at
@@ -48,27 +45,17 @@ func ExampleClient_Chat_vision() {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	for i := range 3 {
-		resp, err := c.Chat(context.Background(), msgs, &opts)
-		if err != nil {
-			var herr *httpjson.Error
-			// See https://docs.anthropic.com/en/api/errors#http-errors
-			if errors.As(err, &herr) && herr.StatusCode == 529 && i != 2 {
-				log.Printf("retrying after 2s")
-				time.Sleep(2 * time.Second)
-				continue
-			}
-			log.Fatal(err)
-		}
-		log.Printf("Raw response: %#v", resp)
-		if len(resp.Contents) != 1 {
-			log.Fatal("Unexpected response")
-		}
-		// Normalize some of the variance. Obviously many models will still fail this test.
-		txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!")
-		fmt.Printf("Response: %s\n", txt)
-		break
+	resp, err := c.Chat(context.Background(), msgs, &opts)
+	if err != nil {
+		log.Fatal(err)
 	}
+	log.Printf("Raw response: %#v", resp)
+	if len(resp.Contents) != 1 {
+		log.Fatal("Unexpected response")
+	}
+	// Normalize some of the variance. Obviously many models will still fail this test.
+	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!")
+	fmt.Printf("Response: %s\n", txt)
 	// This would Output: Response: yes
 }
 
@@ -208,11 +195,9 @@ func ExampleClient_ChatStream() {
 }
 
 func ExampleClient_ListModels() {
-	// Print something so the example runs.
-	fmt.Println("Got models")
 	c, err := anthropic.New("", "")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Couldn't connect: %v\n", err)
+		fmt.Printf("Couldn't connect: %v\n", err)
 		return
 	}
 	models, err := c.ListModels(context.Background())
@@ -221,9 +206,6 @@ func ExampleClient_ListModels() {
 		return
 	}
 	for _, model := range models {
-		// The list of models will change over time. Print them to stderr so the
-		// test doesn't capture them.
-		fmt.Fprintf(os.Stderr, "- %s\n", model)
+		fmt.Printf("- %s\n", model)
 	}
-	// Output: Got models
 }

@@ -230,11 +230,9 @@ func ExampleClient_ChatStream() {
 }
 
 func ExampleClient_ListModels() {
-	// Print something so the example runs.
-	fmt.Println("Got models")
 	c, err := openai.New("", "")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Couldn't connect: %v\n", err)
+		fmt.Printf("Couldn't connect: %v\n", err)
 		return
 	}
 	models, err := c.ListModels(context.Background())
@@ -243,9 +241,6 @@ func ExampleClient_ListModels() {
 		return
 	}
 	for _, model := range models {
-		// The list of models will change over time. Print them to stderr so the
-		// test doesn't capture them.
-		fmt.Fprintf(os.Stderr, "- %s\n", model)
+		fmt.Printf("- %s\n", model)
 	}
-	// Output: Got models
 }

@@ -208,18 +208,16 @@ func ExampleClient_ListModels() {
 	// Connect the client.
 	c, err := ollama.New(srv.URL(), "")
 	if err != nil {
-		log.Print(err)
+		fmt.Printf("Couldn't connect: %v\n", err)
 		return
 	}
-	models, err := c.ListModels(ctx)
+	models, err := c.ListModels(context.Background())
 	if err != nil {
 		fmt.Printf("Failed to get models: %v\n", err)
 		return
 	}
 	for _, model := range models {
-		// The list of models will change over time. Print them to stderr so the
-		// test doesn't capture them.
-		fmt.Fprintf(os.Stderr, "- %s\n", model)
+		fmt.Printf("- %s\n", model)
 	}
 }
 

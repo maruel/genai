@@ -15,6 +15,8 @@ import (
 	"github.com/maruel/genai/perplexity"
 )
 
+// Not implementing TestClient_AllModels since perplexity has no ListModels API.
+
 func TestClient_Chat(t *testing.T) {
 	c := getClient(t, "sonar")
 	msgs := genai.Messages{

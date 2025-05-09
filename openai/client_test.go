@@ -19,8 +19,9 @@ import (
 func TestClient_AllModels(t *testing.T) {
 	internaltest.TestAllModels(
 		t,
-		func(t *testing.T, id string) genai.ChatProvider { return getClient(t, id) },
-		func(id string) bool {
+		func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+		func(m genai.Model) bool {
+			id := m.GetID()
 			// There's no way to know what model has which capability.
 			if id == "babbage-002" ||
 				strings.HasPrefix(id, "dall-") ||

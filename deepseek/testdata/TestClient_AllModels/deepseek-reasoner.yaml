@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 167
+        content_length: 168
         transfer_encoding: []
         trailer: {}
         host: api.deepseek.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"deepseek-reasoner","messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"stream":false,"temperature":0.01,"max_tokens":10}
+            {"model":"deepseek-reasoner","messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"stream":false,"temperature":0.1,"max_tokens":1000}
         form: {}
         headers:
             Content-Type:
@@ -28,14 +28,14 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"0f6fb99e-4c4c-4a76-8957-7ccf79df1a2a","object":"chat.completion","created":1746731742,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"Okay, the user wants me to say hello. But there''s some specific instructions here. Let me read it again.\n\n\"Say hello. Use only one word. Say only hello.\"\n\nSo the user is asking for a greeting, but with strict constraints. They want only one word and nothing else. The first part says \"Say hello\" which is straightforward, but then they emphasize using only one word and repeating to \"say only hello.\" Hmm, maybe they want to test if I follow directions precisely. Sometimes people do that to check if the AI can adhere to exact instructions without adding extra text.\n\nLet me think. If I respond with just \"Hello.\" with a period, is that considered one word? The user didn''t specify punctuation, but technically punctuation isn''t a word. So \"Hello\" by itself. But should I capitalize it? Well, \"Hello\" is the standard greeting. The user probably expects that. If I add anything else, like an exclamation mark or more words, I might be violating the instructions. So the safest bet is to respond with exactly \"Hello\" without any other words or characters. Wait, the user said \"Use only one word. Say only hello.\" So maybe even the period is not allowed. But in written language, a sentence usually ends with punctuation. However, the instruction is to use only one word. So perhaps just \"Hello\" without any punctuation. Let me check the examples. If the user wrote \"Say hello. Use only one word. Say only hello.\" They might not want any punctuation. So the correct response is \"Hello\" as a single word. Alright, I should make sure there''s no extra text. Let me confirm. The response should be only \"Hello\" as a single word. No period, no other words. That''s the strictest interpretation. Okay, I''ll go with that."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":17,"completion_tokens":383,"total_tokens":400,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":380},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":17},"system_fingerprint":"fp_5417b77867_prod0425fp8"}'
+        body: '{"id":"c6a7c965-c8a6-481d-8d11-159ad7c74d44","object":"chat.completion","created":1746752023,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"hello","reasoning_content":"Okay, let me see. The user wants me to say hello, but there are some specific instructions here. They said, \"Use only one word. Say only hello.\" So I need to make sure I follow that exactly.\n\nFirst, I need to confirm what the request is. They want a greeting, but restricted to a single word, which is \"hello\". They emphasized using only one word and nothing else. So I have to make sure my response is just \"hello\" without any additional text or punctuation that might count as more than one word.\n\nWait, the user might be testing if I can follow concise instructions. Let me check again. The instruction says \"Use only one word. Say only hello.\" That means I shouldn''t add any other words or even a period if that''s considered part of the response. In some contexts, punctuation might be seen as part of the word, but here, since it''s text-based, just \"hello\" in lowercase or uppercase? The original request didn''t specify capitalization, so maybe just \"Hello\" with a capital H is standard. But maybe they want it lowercase. Hmm.\n\nWait, the example the user provided in their own message is \"hello\" in lowercase. They wrote, \"Say hello. Use only one word. Say only hello.\" So the example given is \"hello\" in lowercase. Maybe I should mirror that exactly. So the correct response is just \"hello\" without any punctuation or capitalization. But sometimes, in English, greetings are capitalized. However, since the user used lowercase in their example, perhaps they expect the same. Alternatively, maybe they don''t care as long as it''s one word. Either way, the safest bet is to respond with exactly \"hello\" as a single word. No period, no exclamation, nothing else. Just the word. That way, it''s strictly adhering to their instructions. Let me make sure there''s no other possible interpretation. For example, if I say \"Hello!\", that''s two elements: the word and the exclamation mark. But the user said \"use only one word\" and \"say only hello\". So the exclamation mark would be extra. Therefore, the correct response is simply the word \"hello\" without any punctuation. Got it. So the answer should be \"hello\"."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":17,"completion_tokens":470,"total_tokens":487,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":467},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":17},"system_fingerprint":"fp_5417b77867_prod0425fp8"}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cb498ede04a2b1-YUL
+                - 93cd38b35e7fa278-YUL
             Content-Type:
                 - application/json
             Server:
@@ -47,7 +47,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - 4cc17a1acef7d799a627dfceae99a2a0
+                - c38b133af023d2ae561f613c5ab90389
         status: 200 OK
         code: 200
-        duration: 285ms
+        duration: 276ms

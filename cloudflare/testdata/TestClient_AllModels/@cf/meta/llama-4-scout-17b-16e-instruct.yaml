@@ -1,0 +1,49 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 134
+        transfer_encoding: []
+        trailer: {}
+        host: api.cloudflare.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"content":"Say hello. Use only one word. Say only hello.","role":"user"}],"max_tokens":1000,"seed":1,"temperature":0.1}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"result":{"response":"Hello.","tool_calls":[],"usage":{"prompt_tokens":22,"completion_tokens":3,"total_tokens":25}},"success":true,"errors":[],"messages":[]}'
+        headers:
+            Api-Version:
+                - "2025-05-09"
+            Cf-Ai-Req-Id:
+                - 532890b5-6949-468e-ad0b-92b84b589190
+            Cf-Auditlog-Id:
+                - 0196b294-20d3-7469-8495-c6e9fadff99e
+            Cf-Ray:
+                - 93cd4b079d58a251-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 2.078s

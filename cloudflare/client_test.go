@@ -20,7 +20,16 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
-// Not implementing TestClient_AllModels since there's too many models.
+func TestClient_AllModels(t *testing.T) {
+	internaltest.TestAllModels(
+		t,
+		func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+		func(m genai.Model) bool {
+			id := m.GetID()
+			// Only test a few models because there are too many.
+			return id == "@cf/qwen/qwen2.5-coder-32b-instruct" || id == "@cf/meta/llama-4-scout-17b-16e-instruct"
+		})
+}
 
 func TestClient_Chat_jSON(t *testing.T) {
 	c := getClient(t, "@hf/nousresearch/hermes-2-pro-mistral-7b")

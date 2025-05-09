@@ -1,0 +1,88 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 220
+        transfer_encoding: []
+        trailer: {}
+        host: api.together.xyz
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V3-p-dp","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"max_tokens":1000,"temperature":0.1,"seed":1}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 172
+        uncompressed: false
+        body: |-
+            {
+              "id": "ntHPCvu-4Yz4kd-93cd19c10c08a2ff",
+              "error": {
+                "message": "Service unavailable",
+                "type": "service_unavailable",
+                "param": null,
+                "code": null
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93cd19c10c08a2ff-YUL
+            Content-Length:
+                - "172"
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"ac-IWEyffXRiqOwOU7GwIBumlUvR74"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - 5bf1ae4b-77d6-4066-951f-8ef47dbc53f7-noamzn
+            X-Api-Received:
+                - "2025-05-09T00:32:36.178Z"
+            X-Api-Retries:
+                - "5"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "6"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "11"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - ntHPCvu-4Yz4kd-93cd19c10c08a2ff
+        status: 503 Service Unavailable
+        code: 503
+        duration: 10.362s

@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 218
+        transfer_encoding: []
+        trailer: {}
+        host: api.mistral.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"mistral-large-pixtral-2411","temperature":0.1,"max_tokens":1000,"stream":false,"random_seed":1,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 42
+        uncompressed: false
+        body: '{"message":"Requests rate limit exceeded"}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93cd4b30db7a33f1-YUL
+            Content-Length:
+                - "42"
+            Content-Type:
+                - application/json; charset=utf-8
+            Ratelimitbysize-Limit:
+                - "500000"
+            Ratelimitbysize-Query-Cost:
+                - "1000"
+            Ratelimitbysize-Remaining:
+                - "497000"
+            Ratelimitbysize-Reset:
+                - "39"
+            Server:
+                - cloudflare
+            X-Kong-Request-Id:
+                - db0c735b22ee7d59391db217f46e4306
+            X-Kong-Response-Latency:
+                - "7"
+            X-Ratelimitbysize-Limit-Minute:
+                - "500000"
+            X-Ratelimitbysize-Limit-Month:
+                - "1000000000"
+            X-Ratelimitbysize-Remaining-Minute:
+                - "497000"
+            X-Ratelimitbysize-Remaining-Month:
+                - "999997000"
+        status: 429 Too Many Requests
+        code: 429
+        duration: 7.634s

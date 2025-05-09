@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 206
+        transfer_encoding: []
+        trailer: {}
+        host: api.mistral.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"mistral-medium","temperature":0.1,"max_tokens":1000,"stream":false,"random_seed":1,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"e47e76528b1f481eb839405689675107","object":"chat.completion","created":1746752773,"model":"mistral-medium","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"Hello.\n\n(Note: This response follows the instructions to use only one word and to say only \"hello\".)"},"finish_reason":"stop"}],"usage":{"prompt_tokens":20,"total_tokens":46,"completion_tokens":26}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93cd4b019983a28c-YUL
+            Content-Type:
+                - application/json
+            Ratelimitbysize-Limit:
+                - "500000"
+            Ratelimitbysize-Query-Cost:
+                - "1000"
+            Ratelimitbysize-Remaining:
+                - "499000"
+            Ratelimitbysize-Reset:
+                - "47"
+            Server:
+                - cloudflare
+            X-Envoy-Upstream-Service-Time:
+                - "619"
+            X-Kong-Proxy-Latency:
+                - "5"
+            X-Kong-Request-Id:
+                - 2498514165170755a7eed451405dc45c
+            X-Kong-Upstream-Latency:
+                - "620"
+            X-Ratelimitbysize-Limit-Minute:
+                - "500000"
+            X-Ratelimitbysize-Limit-Month:
+                - "1000000000"
+            X-Ratelimitbysize-Remaining-Minute:
+                - "499000"
+            X-Ratelimitbysize-Remaining-Month:
+                - "999983188"
+        status: 200 OK
+        code: 200
+        duration: 1.918s

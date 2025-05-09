@@ -1,0 +1,90 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 215
+        transfer_encoding: []
+        trailer: {}
+        host: api.together.xyz
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"arcee-ai/virtuoso-large","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"max_tokens":1000,"temperature":0.1,"seed":1}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "ntHPAha-66dFFu-93cd19929fdba281",
+              "object": "chat.completion",
+              "created": 1746750748,
+              "model": "arcee-ai/virtuoso-large",
+              "prompt": [],
+              "choices": [
+                {
+                  "finish_reason": "stop",
+                  "seed": 1,
+                  "logprobs": null,
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "Hello.",
+                    "tool_calls": []
+                  }
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 41,
+                "completion_tokens": 3,
+                "total_tokens": 44
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93cd19929fdba281-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"1e1-A9KzuvZUMB7Sf05lNU/sXNxlPq0"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - a356ac55-2cb6-461d-88fc-3067de9025d6-noamzn
+            X-Api-Call-End:
+                - "2025-05-09T00:32:28.770Z"
+            X-Api-Call-Start:
+                - "2025-05-09T00:32:28.680Z"
+            X-Api-Received:
+                - "2025-05-09T00:32:28.677Z"
+            X-Inference-Version:
+                - v2
+            X-Request-Id:
+                - ntHPAha-66dFFu-93cd19929fdba281
+        status: 200 OK
+        code: 200
+        duration: 222ms

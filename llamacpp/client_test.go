@@ -21,6 +21,8 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
+// Not implementing TestClient_AllModels since llama-server has no ListModels API.
+
 func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 

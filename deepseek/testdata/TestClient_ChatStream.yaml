@@ -29,11 +29,11 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"31d3ad55-3a54-4c4c-8895-c569c31766b2","object":"chat.completion.chunk","created":1746197585,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"5a16f488-7320-45cb-b8ef-ba74c230222d","object":"chat.completion.chunk","created":1746749740,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"31d3ad55-3a54-4c4c-8895-c569c31766b2","object":"chat.completion.chunk","created":1746197585,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"5a16f488-7320-45cb-b8ef-ba74c230222d","object":"chat.completion.chunk","created":1746749740,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"31d3ad55-3a54-4c4c-8895-c569c31766b2","object":"chat.completion.chunk","created":1746197585,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"content":""},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"completion_tokens":1,"total_tokens":12,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":11}}
+            data: {"id":"5a16f488-7320-45cb-b8ef-ba74c230222d","object":"chat.completion.chunk","created":1746749740,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"content":""},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"completion_tokens":1,"total_tokens":12,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":11}}
 
             data: [DONE]
 
@@ -45,7 +45,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9398589e3b84a2a3-YUL
+                - 93cd00f48bfca257-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Server:
@@ -57,7 +57,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - b949a7f96d6a0bef749e7da29e1fc459
+                - f14e6a2ccca625b1102499c65f4c14b6
         status: 200 OK
         code: 200
-        duration: 343ms
+        duration: 280ms

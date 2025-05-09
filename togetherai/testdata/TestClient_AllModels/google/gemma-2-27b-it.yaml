@@ -1,0 +1,104 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 213
+        transfer_encoding: []
+        trailer: {}
+        host: api.together.xyz
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"google/gemma-2-27b-it","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"max_tokens":1000,"temperature":0.1,"seed":1}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "ntHPBmf-4Yz4kd-93cd19a95c27a281",
+              "object": "chat.completion",
+              "created": 1746750752,
+              "model": "google/gemma-2-27b-it",
+              "prompt": [],
+              "choices": [
+                {
+                  "finish_reason": "stop",
+                  "seed": 1,
+                  "logprobs": null,
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "Hello",
+                    "tool_calls": []
+                  }
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 21,
+                "completion_tokens": 2,
+                "total_tokens": 23
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93cd19a95c27a281-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"1de-ZuJwR7yzxj/YwsbDnwF/FKMk3xU"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - 2940dcde-570a-4697-8e3f-ff371e671775-noamzn
+            X-Api-Call-End:
+                - "2025-05-09T00:32:32.561Z"
+            X-Api-Call-Start:
+                - "2025-05-09T00:32:32.298Z"
+            X-Api-Received:
+                - "2025-05-09T00:32:32.278Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - ntHPBmf-4Yz4kd-93cd19a95c27a281
+        status: 200 OK
+        code: 200
+        duration: 5.033s

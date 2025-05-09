@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 207
+        transfer_encoding: []
+        trailer: {}
+        host: api.cohere.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"stream":false,"model":"command-r-plus-08-2024","messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"max_tokens":1000,"temperature":0.1,"seed":1}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cohere.com/v2/chat
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 258
+        uncompressed: false
+        body: '{"id":"5573025a-1308-4ada-b2b2-9f4dd9786a0a","message":{"role":"assistant","content":[{"type":"text","text":"Hello."}]},"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":12,"output_tokens":2},"tokens":{"input_tokens":213,"output_tokens":2}}}'
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Debug-Trace-ID
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+            Content-Length:
+                - "258"
+            Content-Type:
+                - application/json
+            Expires:
+                - Thu, 01 Jan 1970 00:00:00 UTC
+            Num_chars:
+                - "1223"
+            Num_tokens:
+                - "14"
+            Pragma:
+                - no-cache
+            Server:
+                - envoy
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Accel-Expires:
+                - "0"
+            X-Debug-Trace-Id:
+                - 874689385f697920f148fcf9674e11f4
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
+            X-Envoy-Upstream-Service-Time:
+                - "160"
+            X-Trial-Endpoint-Call-Limit:
+                - "10"
+            X-Trial-Endpoint-Call-Remaining:
+                - "6"
+        status: 200 OK
+        code: 200
+        duration: 209ms

@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 237
+        content_length: 236
         transfer_encoding: []
         trailer: {}
         host: api.groq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"max_completion_tokens":1000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"model":"qwen-qwq-32b","reasoning_format":"parsed","seed":1,"stream":false,"temperature":0.01}
+            {"max_completion_tokens":1000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"model":"qwen-qwq-32b","reasoning_format":"parsed","seed":1,"stream":false,"temperature":0.1}
         form: {}
         headers:
             Content-Type:
@@ -29,7 +29,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-3a8deaee-28c4-4ac5-b849-e8e8ebb67133","object":"chat.completion","created":1746749379,"model":"qwen-qwq-32b","choices":[{"index":0,"message":{"role":"assistant","content":"hello","reasoning":"Okay, the user wants me to say hello with just one word. Let me make sure I understand the instructions correctly. They specified \"Use only one word. Say only hello.\" So I can't add anything else. Just the word \"hello\". I need to avoid any extra words or punctuation. Let me check if there's any hidden requirement here. Maybe they want it in a different language? But the instruction says \"Say hello,\" so it should be in English. Also, the response should be exactly \"hello\" without any emojis or formatting. Alright, I think that's it. Just respond with \"hello\".\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.113475591,"prompt_tokens":22,"prompt_time":0.005849707,"completion_tokens":129,"completion_time":0.320663168,"total_tokens":151,"total_time":0.326512875},"usage_breakdown":{"models":null},"system_fingerprint":"fp_1e88ca32eb","x_groq":{"id":"req_01jts60mx2f76bsdmzf7e9dn12"}}
+            {"id":"chatcmpl-265d8612-db75-44e8-9a1d-a7364a2dfff1","object":"chat.completion","created":1746752125,"model":"qwen-qwq-32b","choices":[{"index":0,"message":{"role":"assistant","content":"Hello","reasoning":"Okay, the user wants me to say hello with just one word. Let me read the query again: \"Say hello. Use only one word. Say only hello.\" So they're being very specific here. They don't want any extra words or explanations. Just the word \"hello\". \n\nHmm, sometimes people might get confused if they need to use punctuation or capitalization. But the instruction says \"only hello\", so maybe even the period isn't needed. The user probably wants a straightforward response without any additional text. \n\nWait, the user mentioned \"Use only one word\" and \"Say only hello\". So I should make sure that the response is exactly the word \"hello\" and nothing else. No greetings in other languages, no emojis, no tags. Just the single word.\n\nI need to avoid any common mistakes like adding a comma or exclamation mark. The key is to follow the instructions precisely. Let me check again: the user wants a single-word hello. The correct response here is simply \"Hello\". But since they specified \"only hello\", maybe lowercase? Wait, but usually \"Hello\" is a proper greeting starting with a capital letter. However, the user didn't specify case, so either might be okay. But to be safe, maybe just the exact word as given. \n\nAlternatively, maybe they want it in lowercase. The query says \"say hello\" which is lowercase, but when you say it as a sentence, it's capitalized. Hmm, but the response itself should just be the word. Let me think. The user's instruction is to \"say hello\" but the actual response should be the word itself. So perhaps \"Hello\" with a capital H. But maybe they don't care about the case. The main thing is the word alone. \n\nI should make sure there's no other characters. Just the word \"Hello\" or \"hello\". Since it's a standalone word, maybe the capitalization isn't an issue here. The main point is to comply with the one-word requirement. Alright, I'll go with \"Hello\".\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.0019554999999999998,"prompt_tokens":22,"prompt_time":0.003236137,"completion_tokens":423,"completion_time":0.965340235,"total_tokens":445,"total_time":0.968576372},"usage_breakdown":{"models":null},"system_fingerprint":"fp_a91d9c2cfb","x_groq":{"id":"req_01jts8me3eftmvq7sa5cc4x4xq"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,7 +38,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93ccf8253eeca251-YUL
+                - 93cd3b2d4c34a2b8-YUL
             Content-Type:
                 - application/json
             Server:
@@ -60,7 +60,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 3.839999ms
             X-Request-Id:
-                - req_01jts60mx2f76bsdmzf7e9dn12
+                - req_01jts8me3eftmvq7sa5cc4x4xq
         status: 200 OK
         code: 200
-        duration: 582ms
+        duration: 1.044s

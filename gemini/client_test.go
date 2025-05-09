@@ -25,8 +25,9 @@ import (
 func TestClient_AllModels(t *testing.T) {
 	internaltest.TestAllModels(
 		t,
-		func(t *testing.T, id string) genai.ChatProvider { return getClient(t, id) },
-		func(id string) bool {
+		func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+		func(m genai.Model) bool {
+			id := m.GetID()
 			if id == "gemini-2.0-flash-live-001" {
 				// It's reported but not usable?
 				return false

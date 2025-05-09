@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 238
+        content_length: 237
         transfer_encoding: []
         trailer: {}
         host: api.groq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"max_completion_tokens":1000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","seed":1,"stream":false,"temperature":0.01}
+            {"max_completion_tokens":1000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","seed":1,"stream":false,"temperature":0.1}
         form: {}
         headers:
             Content-Type:
@@ -29,7 +29,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-cb50725c-078a-4be4-acd8-a9c3a31b3c3a","object":"chat.completion","created":1746749379,"model":"meta-llama/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"Hello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.21389797600000002,"prompt_tokens":22,"prompt_time":0.002752917,"completion_tokens":3,"completion_time":0.006268576,"total_tokens":25,"total_time":0.009021493},"usage_breakdown":{"models":null},"system_fingerprint":"fp_37da608fc1","x_groq":{"id":"req_01jts60mtxfhps0hw7eg4njhe7"}}
+            {"id":"chatcmpl-c59e74c0-0c29-417f-8245-fd29c3be4d7e","object":"chat.completion","created":1746752127,"model":"meta-llama/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"Hello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":2.130889259,"prompt_tokens":22,"prompt_time":0.003331844,"completion_tokens":3,"completion_time":0.007056163,"total_tokens":25,"total_time":0.010388007},"usage_breakdown":{"models":null},"system_fingerprint":"fp_42ae451038","x_groq":{"id":"req_01jts8me3gfkasz0evnp0b5k1t"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,7 +38,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93ccf8253ef1a251-YUL
+                - 93cd3b2d4c31a2b8-YUL
             Content-Type:
                 - application/json
             Server:
@@ -52,15 +52,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "300000"
             X-Ratelimit-Remaining-Requests:
-                - "499998"
+                - "499999"
             X-Ratelimit-Remaining-Tokens:
                 - "299984"
             X-Ratelimit-Reset-Requests:
-                - 217.6ms
+                - 172.799999ms
             X-Ratelimit-Reset-Tokens:
                 - 3.2ms
             X-Request-Id:
-                - req_01jts60mtxfhps0hw7eg4njhe7
+                - req_01jts8me3gfkasz0evnp0b5k1t
         status: 200 OK
         code: 200
-        duration: 291ms
+        duration: 2.199s

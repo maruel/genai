@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 200
+        content_length: 199
         transfer_encoding: []
         trailer: {}
         host: generativelanguage.googleapis.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word. Say only hello."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":1000,"temperature":0.01,"seed":1}}
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word. Say only hello."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":1000,"temperature":0.1,"seed":1}}
         form: {}
         headers:
             Content-Type:
@@ -41,7 +41,7 @@ interactions:
                     "role": "model"
                   },
                   "finishReason": "STOP",
-                  "avgLogprobs": -0.091990629831949874
+                  "avgLogprobs": -0.094507485628128052
                 }
               ],
               "usageMetadata": {
@@ -71,7 +71,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=355
+                - gfet4t7; dur=317
             Vary:
                 - Origin
                 - X-Origin
@@ -84,4 +84,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 371ms
+        duration: 333ms

@@ -601,8 +601,8 @@ type Model struct {
 	Created      Time   `json:"created"`
 	OwnedBy      string `json:"owned_by"`
 	Capabilities struct {
-		ChatChat        bool `json:"completion_chat"`
-		ChatFim         bool `json:"completion_fim"`
+		CompletionChat  bool `json:"completion_chat"`
+		CompletionFim   bool `json:"completion_fim"`
 		FunctionCalling bool `json:"function_calling"`
 		FineTuning      bool `json:"fine_tuning"`
 		Vision          bool `json:"vision"`
@@ -623,10 +623,10 @@ func (m *Model) GetID() string {
 
 func (m *Model) String() string {
 	var caps []string
-	if m.Capabilities.ChatChat {
+	if m.Capabilities.CompletionChat {
 		caps = append(caps, "chat")
 	}
-	if m.Capabilities.ChatFim {
+	if m.Capabilities.CompletionFim {
 		caps = append(caps, "fim")
 	}
 	if m.Capabilities.FunctionCalling {

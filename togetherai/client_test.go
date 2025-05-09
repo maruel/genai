@@ -17,7 +17,26 @@ import (
 	"github.com/maruel/genai/togetherai"
 )
 
-// Not implementing TestClient_AllModels since there's too many models.
+func TestClient_AllModels(t *testing.T) {
+	internaltest.TestAllModels(
+		t,
+		func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+		func(m genai.Model) bool {
+			model := m.(*togetherai.Model)
+			if model.ID == "arcee-ai/maestro-reasoning" || // Requires CoT processing.
+				model.ID == "google/gemma-2b-it" || // Doesn't follow instruction.
+				model.ID == "deepseek-ai/DeepSeek-V3-p-dp" || // Causes HTTP 503.
+				model.ID == "meta-llama/Llama-3.3-70B-Instruct-Turbo" || // rate_limit even if been a while.
+				strings.HasPrefix(model.ID, "deepseek-ai/DeepSeek-R1") || // Requires CoT processing.
+				strings.HasPrefix(model.ID, "perplexity-ai/r1-") || // Requires CoT processing.
+				strings.HasPrefix(model.ID, "Qwen/QwQ-32B") || // Requires CoT processing.
+				strings.HasPrefix(model.ID, "Qwen/Qwen3-235B-A22B-") || // Requires CoT processing.
+				strings.HasPrefix(model.ID, "togethercomputer/MoA-1") { // Causes HTTP 500.
+				return false
+			}
+			return model.Type == "chat"
+		})
+}
 
 func TestClient_Chat_vision_and_JSON(t *testing.T) {
 	c := getClient(t, "meta-llama/Llama-Vision-Free")

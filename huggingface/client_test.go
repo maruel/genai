@@ -16,7 +16,19 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 )
 
-// Not implementing TestClient_AllModels since there's too many models.
+func TestClient_AllModels(t *testing.T) {
+	internaltest.TestAllModels(
+		t,
+		func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+		func(m genai.Model) bool {
+			model := m.(*huggingface.Model)
+			if model.PipelineTag != "text-generation" {
+				return false
+			}
+			id := model.ID
+			return id == "meta-llama/Llama-3.3-70B-Instruct"
+		})
+}
 
 func TestClient_Chat(t *testing.T) {
 	// TODO: Figure out why smaller models fail.

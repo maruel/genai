@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 215
+        content_length: 216
         transfer_encoding: []
         trailer: {}
         host: api.anthropic.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"claude-3-sonnet-20240229","max_tokens":10,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"temperature":0.01,"thinking":{"type":"disabled"}}
+            {"model":"claude-3-sonnet-20240229","max_tokens":1000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"temperature":0.1,"thinking":{"type":"disabled"}}
         form: {}
         headers:
             Content-Type:
@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"msg_01X651ZJzaKLe2dywwPiLnTE","type":"message","role":"assistant","model":"claude-3-sonnet-20240229","content":[{"type":"text","text":"Hello."}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":19,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":5}}'
+        body: '{"id":"msg_01N3jT161yQCpWfyxKdyQWdN","type":"message","role":"assistant","model":"claude-3-sonnet-20240229","content":[{"type":"text","text":"Hello."}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":19,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":5}}'
         headers:
             Anthropic-Organization-Id:
                 - b0607a1c-e615-400e-9924-e7a556d22e9f
@@ -37,33 +37,33 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "40000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-05-08T19:35:20Z"
+                - "2025-05-09T00:54:12Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "8000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "8000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-05-08T19:35:20Z"
+                - "2025-05-09T00:54:12Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "50"
             Anthropic-Ratelimit-Requests-Remaining:
                 - "49"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-05-08T19:35:18Z"
+                - "2025-05-09T00:54:13Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "48000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "48000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-05-08T19:35:20Z"
+                - "2025-05-09T00:54:12Z"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cb6639bd8a6e0a-YUL
+                - 93cd39647c8ba303-YUL
             Content-Type:
                 - application/json
             Request-Id:
-                - req_011CNvdAK4UNJ2WPSA1WVg1J
+                - req_011CNw3Ur5KhvxpSKVBV9xQ7
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,4 +74,4 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 3.49s
+        duration: 546ms

@@ -1,0 +1,104 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 233
+        transfer_encoding: []
+        trailer: {}
+        host: api.together.xyz
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"nvidia/Llama-3.1-Nemotron-70B-Instruct-HF","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"max_tokens":1000,"temperature":0.1,"seed":1}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "ntHPARH-3NKUce-93cd198b3affa281",
+              "object": "chat.completion",
+              "created": 1746750747,
+              "model": "nvidia/Llama-3.1-Nemotron-70B-Instruct-HF",
+              "prompt": [],
+              "choices": [
+                {
+                  "finish_reason": "stop",
+                  "seed": 1,
+                  "logprobs": null,
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "Hello.",
+                    "tool_calls": []
+                  }
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 28,
+                "completion_tokens": 3,
+                "total_tokens": 31
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93cd198b3affa281-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"1f3-qmIjytN8V5Sf2SLs+NgtOTJikVU"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - fc38eb4d-d42e-478b-9189-62343a530f4e-noamzn
+            X-Api-Call-End:
+                - "2025-05-09T00:32:27.864Z"
+            X-Api-Call-Start:
+                - "2025-05-09T00:32:27.737Z"
+            X-Api-Received:
+                - "2025-05-09T00:32:27.732Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "1"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - ntHPARH-3NKUce-93cd198b3affa281
+        status: 200 OK
+        code: 200
+        duration: 236ms

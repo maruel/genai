@@ -15,7 +15,15 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 )
 
-// Not implementing TestClient_AllModels since there's too many models.
+func TestClient_AllModels(t *testing.T) {
+	internaltest.TestAllModels(
+		t,
+		func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+		func(m genai.Model) bool {
+			id := m.GetID()
+			return strings.HasPrefix(id, "command-")
+		})
+}
 
 func TestClient_Chat_jSON(t *testing.T) {
 	c := getClient(t, "command-r-08-2024")

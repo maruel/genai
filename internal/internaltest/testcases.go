@@ -66,7 +66,7 @@ func ChatStream(t *testing.T, factory ChatProviderFactory, msgs genai.Messages, 
 }
 
 // TestAllModels says hello with all models.
-func TestAllModels(t *testing.T, factory ModelChatProviderFactory, filter func(id string) bool) {
+func TestAllModels(t *testing.T, factory ModelChatProviderFactory, filter func(model genai.Model) bool) {
 	ctx := t.Context()
 	l := factory(t, "").(genai.ModelProvider)
 	models, err := l.ListModels(ctx)
@@ -79,13 +79,13 @@ func TestAllModels(t *testing.T, factory ModelChatProviderFactory, filter func(i
 	// MaxTokens has to be long because of some thinking models (e.g. qwen-qwq-32b and
 	// deepseek-r1-distill-llama-70b) cannot have thinking disabled.
 	opts := genai.ChatOptions{
-		Temperature: 0.01,
+		Temperature: 0.1,
 		MaxTokens:   1000,
 		Seed:        1,
 	}
 	for _, m := range models {
 		id := m.GetID()
-		if filter != nil && !filter(id) {
+		if filter != nil && !filter(m) {
 			continue
 		}
 		t.Run(id, func(t *testing.T) {

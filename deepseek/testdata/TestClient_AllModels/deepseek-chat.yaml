@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 163
+        content_length: 164
         transfer_encoding: []
         trailer: {}
         host: api.deepseek.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"deepseek-chat","messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"stream":false,"temperature":0.01,"max_tokens":10}
+            {"model":"deepseek-chat","messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"stream":false,"temperature":0.1,"max_tokens":1000}
         form: {}
         headers:
             Content-Type:
@@ -28,14 +28,14 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"6da657f7-85da-42bc-a231-678456225ca6","object":"chat.completion","created":1746731742,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":15,"completion_tokens":1,"total_tokens":16,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":15},"system_fingerprint":"fp_8802369eaa_prod0425fp8"}'
+        body: '{"id":"ab99f3d5-5002-44e0-a6b6-b0c955735a71","object":"chat.completion","created":1746752023,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":15,"completion_tokens":1,"total_tokens":16,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":15},"system_fingerprint":"fp_8802369eaa_prod0425fp8"}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cb498ede00a2b1-YUL
+                - 93cd38b35e82a278-YUL
             Content-Type:
                 - application/json
             Server:
@@ -47,7 +47,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - e49c2b58d9c5ddc0f6322efb0892a824
+                - 310272930647afaccd80dd897f617ebb
         status: 200 OK
         code: 200
-        duration: 286ms
+        duration: 309ms

@@ -1,0 +1,84 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 231
+        transfer_encoding: []
+        trailer: {}
+        host: api.together.xyz
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"max_tokens":1000,"temperature":0.1,"seed":1}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 311
+        uncompressed: false
+        body: |-
+            {
+              "id": "ntHPCmN-2j9zxn-93cd19bdae2da2ff",
+              "error": {
+                "message": "Request was rejected due to request rate limiting. Your rate limits are 60 RPM (1 QPS) and 60000 TPM (1000 TPS). See details: https://docs.together.ai/docs/rate-limits",
+                "type": "rate_limit",
+                "param": null,
+                "code": null
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93cd19bdae2da2ff-YUL
+            Content-Length:
+                - "311"
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"137-OiawEzk+HEuPM7f75QcBaIiRd2Q"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - 9d1c8eb0-2646-412e-88db-21e548b372c1-noamzn
+            X-Api-Received:
+                - "2025-05-09T00:32:35.625Z"
+            X-Ratelimit:
+                - "true"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - ntHPCmN-2j9zxn-93cd19bdae2da2ff
+        status: 429 Too Many Requests
+        code: 429
+        duration: 7.491s

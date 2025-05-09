@@ -30,16 +30,16 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BV5bBHdtOulXvIWGd02D3RTJX7eBE",
+              "id": "chatcmpl-BV6KpVB4tHnXTOaW9azNfDjp8su9G",
               "object": "chat.completion",
-              "created": 1746749389,
+              "created": 1746752219,
               "model": "o1-2024-12-17",
               "choices": [
                 {
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "Hello",
+                    "content": "hello",
                     "refusal": null,
                     "annotations": []
                   },
@@ -49,14 +49,14 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 18,
-                "completion_tokens": 333,
-                "total_tokens": 351,
+                "completion_tokens": 205,
+                "total_tokens": 223,
                 "prompt_tokens_details": {
                   "cached_tokens": 0,
                   "audio_tokens": 0
                 },
                 "completion_tokens_details": {
-                  "reasoning_tokens": 320,
+                  "reasoning_tokens": 192,
                   "audio_tokens": 0,
                   "accepted_prediction_tokens": 0,
                   "rejected_prediction_tokens": 0
@@ -73,13 +73,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93ccf860fb17a2ff-YUL
+                - 93cd3d75ed32a2e0-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "6474"
+                - "3084"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -89,7 +89,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "6482"
+                - "3090"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -103,7 +103,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 28ms
             X-Request-Id:
-                - req_10882e75e58966acc83047cb388c5743
+                - req_d833449d086d23b3fe0386ef56e88de6
         status: 200 OK
         code: 200
-        duration: 6.558s
+        duration: 3.665s

@@ -1,0 +1,104 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 220
+        transfer_encoding: []
+        trailer: {}
+        host: api.together.xyz
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"Qwen/Qwen2.5-VL-72B-Instruct","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"max_tokens":1000,"temperature":0.1,"seed":1}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "ntHPB2k-2j9zxn-93cd19995b2ba281",
+              "object": "chat.completion",
+              "created": 1746750749,
+              "model": "Qwen/Qwen2.5-VL-72B-Instruct",
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "Hello",
+                    "tool_calls": []
+                  },
+                  "logprobs": null,
+                  "finish_reason": "stop",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 31,
+                "total_tokens": 33,
+                "completion_tokens": 2
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93cd19995b2ba281-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"1e8-UxozseJ+0xYW7BtF+qpXobCpy+k"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - 685d0e51-2b48-4dbe-bada-e09ecde18ee3-noamzn
+            X-Api-Call-End:
+                - "2025-05-09T00:32:29.894Z"
+            X-Api-Call-Start:
+                - "2025-05-09T00:32:29.797Z"
+            X-Api-Received:
+                - "2025-05-09T00:32:29.789Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - ntHPB2k-2j9zxn-93cd19995b2ba281
+        status: 200 OK
+        code: 200
+        duration: 2.568s

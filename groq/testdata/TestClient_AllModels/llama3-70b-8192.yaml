@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 212
+        content_length: 211
         transfer_encoding: []
         trailer: {}
         host: api.groq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"max_completion_tokens":1000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"model":"llama3-70b-8192","seed":1,"stream":false,"temperature":0.01}
+            {"max_completion_tokens":1000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"model":"llama3-70b-8192","seed":1,"stream":false,"temperature":0.1}
         form: {}
         headers:
             Content-Type:
@@ -29,7 +29,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-bb33df2c-8d19-4dab-9d60-aed5c6c91569","object":"chat.completion","created":1746749379,"model":"llama3-70b-8192","choices":[{"index":0,"message":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.10776369100000001,"prompt_tokens":22,"prompt_time":0.00415323,"completion_tokens":2,"completion_time":0.006363988,"total_tokens":24,"total_time":0.010517218},"usage_breakdown":{"models":null},"system_fingerprint":"fp_2f30b0b571","x_groq":{"id":"req_01jts60mttfhpt21b3gsaadfpv"}}
+            {"id":"chatcmpl-ac32615a-2646-47b9-99d6-0ba654607a1d","object":"chat.completion","created":1746752125,"model":"llama3-70b-8192","choices":[{"index":0,"message":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.090664783,"prompt_tokens":22,"prompt_time":0.004065891,"completion_tokens":2,"completion_time":0.006353589,"total_tokens":24,"total_time":0.01041948},"usage_breakdown":{"models":null},"system_fingerprint":"fp_2f30b0b571","x_groq":{"id":"req_01jts8me3hfkbb5htwyzessxsc"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,7 +38,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93ccf8253eeea251-YUL
+                - 93cd3b2d4c32a2b8-YUL
             Content-Type:
                 - application/json
             Server:
@@ -60,7 +60,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 32ms
             X-Request-Id:
-                - req_01jts60mttfhpt21b3gsaadfpv
+                - req_01jts8me3hfkbb5htwyzessxsc
         status: 200 OK
         code: 200
-        duration: 169ms
+        duration: 158ms

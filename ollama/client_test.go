@@ -22,6 +22,8 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
+// Not implementing TestClient_AllModels since we need to preload Ollama models. Can be done later.
+
 func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 

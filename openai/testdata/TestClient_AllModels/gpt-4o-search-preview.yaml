@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-a1de697f-4332-44f8-b59c-22b93aac73f1",
+              "id": "chatcmpl-8b6c1d9f-867f-449e-93ae-c3c32309abfa",
               "object": "chat.completion",
-              "created": 1746749388,
+              "created": 1746752218,
               "model": "gpt-4o-search-preview-2025-03-11",
               "choices": [
                 {
@@ -71,13 +71,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93ccf8600985a2ff-YUL
+                - 93cd3d75ed44a2e0-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "2593"
+                - "2150"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -87,7 +87,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "2597"
+                - "2153"
             X-Ratelimit-Limit-Requests:
                 - "100"
             X-Ratelimit-Limit-Tokens:
@@ -101,7 +101,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 140ms
             X-Request-Id:
-                - req_1de64d592477fa6b6dd488ebb3cc15d4
+                - req_601f65080877c093703f674fddd00458
         status: 200 OK
         code: 200
-        duration: 2.672s
+        duration: 2.453s

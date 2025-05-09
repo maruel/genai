@@ -20,12 +20,10 @@ func TestClient_AllModels(t *testing.T) {
 	internaltest.TestAllModels(
 		t,
 		func(t *testing.T, id string) genai.ChatProvider { return getClient(t, id) },
-		func(id string) bool {
+		func(m genai.Model) bool {
+			id := m.GetID()
 			// Groq doesn't provide model metadata, so guess based on the name.
-			if strings.Contains(id, "tts") || strings.Contains(id, "whisper") || strings.HasPrefix(id, "llama-guard") || id == "mistral-saba-24b" {
-				return false
-			}
-			return true
+			return !(strings.Contains(id, "tts") || strings.Contains(id, "whisper") || strings.HasPrefix(id, "llama-guard") || id == "mistral-saba-24b")
 		})
 }
 

@@ -106,10 +106,26 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 			switch v := opts.(type) {
 			case *genai.ChatOptions:
 				c.MaxChatTokens = v.MaxTokens
-				c.Temperature = v.Temperature
+				if (strings.HasPrefix(model, "gpt-4o-") && strings.Contains(model, "-search")) ||
+					model == "o1" ||
+					strings.HasPrefix(model, "o1-") ||
+					strings.HasPrefix(model, "o3-") ||
+					strings.HasPrefix(model, "o4-") {
+					if v.Temperature != 0 {
+						unsupported = append(unsupported, "Temperature")
+					}
+				} else {
+					c.Temperature = v.Temperature
+				}
 				c.TopP = v.TopP
 				sp = v.SystemPrompt
-				c.Seed = v.Seed
+				if strings.HasPrefix(model, "gpt-4o-") && strings.Contains(model, "-search") {
+					if v.Seed != 0 {
+						unsupported = append(unsupported, "Seed")
+					}
+				} else {
+					c.Seed = v.Seed
+				}
 				if v.TopK != 0 {
 					// Track this as an unsupported feature that can be ignored
 					unsupported = append(unsupported, "TopK")

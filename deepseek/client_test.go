@@ -16,7 +16,7 @@ import (
 )
 
 func TestClient_AllModels(t *testing.T) {
-	internaltest.TestAllModels(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) })
+	internaltest.TestAllModels(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
 }
 
 func TestClient_Chat_jSON(t *testing.T) {

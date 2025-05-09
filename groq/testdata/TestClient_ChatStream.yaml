@@ -29,13 +29,13 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"chatcmpl-5243c582-e3d1-453a-945b-06bd77929a7f","object":"chat.completion.chunk","created":1746736052,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_5ac2c9fbe7","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jtrs9xy7f81bpbtqgm37f0vw"}}
+            data: {"id":"chatcmpl-fc248ed3-96ab-4574-ac2d-f38b495b74fe","object":"chat.completion.chunk","created":1746749379,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_5ac2c9fbe7","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jts60mpkf759bc78h6j6t7m3"}}
 
-            data: {"id":"chatcmpl-5243c582-e3d1-453a-945b-06bd77929a7f","object":"chat.completion.chunk","created":1746736052,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_5ac2c9fbe7","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-fc248ed3-96ab-4574-ac2d-f38b495b74fe","object":"chat.completion.chunk","created":1746749379,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_5ac2c9fbe7","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-5243c582-e3d1-453a-945b-06bd77929a7f","object":"chat.completion.chunk","created":1746736052,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_5ac2c9fbe7","choices":[{"index":0,"delta":{"content":"."},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-fc248ed3-96ab-4574-ac2d-f38b495b74fe","object":"chat.completion.chunk","created":1746749379,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_5ac2c9fbe7","choices":[{"index":0,"delta":{"content":"."},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-5243c582-e3d1-453a-945b-06bd77929a7f","object":"chat.completion.chunk","created":1746736052,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_5ac2c9fbe7","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01jtrs9xy7f81bpbtqgm37f0vw","usage":{"queue_time":0.056961324,"prompt_tokens":43,"prompt_time":0.00492568,"completion_tokens":3,"completion_time":0.004,"total_tokens":46,"total_time":0.00892568}}}
+            data: {"id":"chatcmpl-fc248ed3-96ab-4574-ac2d-f38b495b74fe","object":"chat.completion.chunk","created":1746749379,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_5ac2c9fbe7","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01jts60mpkf759bc78h6j6t7m3","usage":{"queue_time":0.0026022130000000004,"prompt_tokens":43,"prompt_time":0.002519384,"completion_tokens":3,"completion_time":0.004,"total_tokens":46,"total_time":0.006519384}}}
 
             data: [DONE]
 
@@ -47,17 +47,15 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cbb2c5c9e3a273-YUL
+                - 93ccf8245db9a251-YUL
             Content-Type:
                 - text/event-stream
             Server:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
-                - us-west-1
+                - us-central-1
             X-Ratelimit-Limit-Requests:
                 - "500000"
             X-Ratelimit-Limit-Tokens:
@@ -65,13 +63,13 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499999"
             X-Ratelimit-Remaining-Tokens:
-                - "249988"
+                - "249941"
             X-Ratelimit-Reset-Requests:
                 - 172.799999ms
             X-Ratelimit-Reset-Tokens:
-                - 2.879999ms
+                - 14ms
             X-Request-Id:
-                - req_01jtrs9xy7f81bpbtqgm37f0vw
+                - req_01jts60mpkf759bc78h6j6t7m3
         status: 200 OK
         code: 200
-        duration: 144ms
+        duration: 61ms

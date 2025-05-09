@@ -29,7 +29,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-55ec9b55-7b2b-4b1d-9c79-b26f74d12562","object":"chat.completion","created":1746736052,"model":"qwen-qwq-32b","choices":[{"index":0,"message":{"role":"assistant","content":"hello","reasoning":"Okay, the user wants me to say hello with just one word. Let me make sure I understand the instructions correctly. They specified to use only one word and say only \"hello\". So I can't add anything else. I need to avoid any extra text or explanations. Just the word \"hello\". Let me check again: the query says \"Use only one word. Say only hello.\" So the response should be exactly \"hello\" and nothing more. I should not include any other words or punctuation. Alright, that's straightforward. I'll just respond with \"hello\".\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.019506416,"prompt_tokens":22,"prompt_time":0.003381604,"completion_tokens":120,"completion_time":0.294554982,"total_tokens":142,"total_time":0.297936586},"usage_breakdown":{"models":null},"system_fingerprint":"fp_3796682456","x_groq":{"id":"req_01jtrs9y12eh39svp0e572p6eb"}}
+            {"id":"chatcmpl-3a8deaee-28c4-4ac5-b849-e8e8ebb67133","object":"chat.completion","created":1746749379,"model":"qwen-qwq-32b","choices":[{"index":0,"message":{"role":"assistant","content":"hello","reasoning":"Okay, the user wants me to say hello with just one word. Let me make sure I understand the instructions correctly. They specified \"Use only one word. Say only hello.\" So I can't add anything else. Just the word \"hello\". I need to avoid any extra words or punctuation. Let me check if there's any hidden requirement here. Maybe they want it in a different language? But the instruction says \"Say hello,\" so it should be in English. Also, the response should be exactly \"hello\" without any emojis or formatting. Alright, I think that's it. Just respond with \"hello\".\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.113475591,"prompt_tokens":22,"prompt_time":0.005849707,"completion_tokens":129,"completion_time":0.320663168,"total_tokens":151,"total_time":0.326512875},"usage_breakdown":{"models":null},"system_fingerprint":"fp_1e88ca32eb","x_groq":{"id":"req_01jts60mx2f76bsdmzf7e9dn12"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,17 +38,15 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cbb2c65a6aa273-YUL
+                - 93ccf8253eeca251-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
-                - us-west-1
+                - us-central-1
             X-Ratelimit-Limit-Requests:
                 - "500000"
             X-Ratelimit-Limit-Tokens:
@@ -62,7 +60,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 3.839999ms
             X-Request-Id:
-                - req_01jtrs9y12eh39svp0e572p6eb
+                - req_01jts60mx2f76bsdmzf7e9dn12
         status: 200 OK
         code: 200
-        duration: 421ms
+        duration: 582ms

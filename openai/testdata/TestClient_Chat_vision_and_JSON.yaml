@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BV0MeAUe5OrxVrR2oiK76aL8jpc8Y",
+              "id": "chatcmpl-BV5bAGpqiI9sal89P28dloyTQghsN",
               "object": "chat.completion",
-              "created": 1746729268,
+              "created": 1746749388,
               "model": "gpt-4.1-nano-2025-04-14",
               "choices": [
                 {
@@ -73,13 +73,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cb0d27ca66a31d-YUL
+                - 93ccf85dbe3da2ff-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "245"
+                - "332"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -89,7 +89,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "187"
+                - "265"
             X-Ratelimit-Limit-Input-Images:
                 - "50000"
             X-Ratelimit-Limit-Requests:
@@ -99,17 +99,17 @@ interactions:
             X-Ratelimit-Remaining-Input-Images:
                 - "49999"
             X-Ratelimit-Remaining-Requests:
-                - "499"
+                - "497"
             X-Ratelimit-Remaining-Tokens:
-                - "199225"
+                - "199214"
             X-Ratelimit-Reset-Input-Images:
                 - 1ms
             X-Ratelimit-Reset-Requests:
-                - 120ms
+                - 240ms
             X-Ratelimit-Reset-Tokens:
-                - 232ms
+                - 235ms
             X-Request-Id:
-                - req_234cd301abd16c24b31e073d04af9407
+                - req_77ac34199089865c359691099decf49b
         status: 200 OK
         code: 200
-        duration: 384ms
+        duration: 423ms

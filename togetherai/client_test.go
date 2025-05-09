@@ -17,6 +17,8 @@ import (
 	"github.com/maruel/genai/togetherai"
 )
 
+// Not implementing TestClient_AllModels since there's too many models.
+
 func TestClient_Chat_vision_and_JSON(t *testing.T) {
 	c := getClient(t, "meta-llama/Llama-Vision-Free")
 	// TogetherAI seems to require separate messages for text and images.

@@ -16,6 +16,8 @@ import (
 	"github.com/maruel/genai/mistral"
 )
 
+// Not implementing TestClient_AllModels since there's too many models.
+
 func TestClient_Chat_vision_and_JSON(t *testing.T) {
 	internaltest.TestChatVisionJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "mistral-small-latest") })
 }

@@ -16,6 +16,8 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 )
 
+// Not implementing TestClient_AllModels since there's too many models.
+
 func TestClient_Chat(t *testing.T) {
 	// TODO: Figure out why smaller models fail.
 	c := getClient(t, "meta-llama/Llama-3.3-70B-Instruct")

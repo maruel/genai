@@ -29,7 +29,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-4dacab80-93a1-4200-943c-646e9e364971","object":"chat.completion","created":1746736051,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"call_gw2q","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.23484717100000002,"prompt_tokens":286,"prompt_time":0.011426377,"completion_tokens":12,"completion_time":0.016,"total_tokens":298,"total_time":0.027426377},"usage_breakdown":{"models":null},"system_fingerprint":"fp_f7bd09b454","x_groq":{"id":"req_01jtrs9x61e4w9cmby4rxdjm8e"}}
+            {"id":"chatcmpl-85bc6aa7-55c9-4210-9375-693fa7539311","object":"chat.completion","created":1746749378,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"call_5v1v","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.061741540000000004,"prompt_tokens":286,"prompt_time":0.053918456,"completion_tokens":12,"completion_time":0.016,"total_tokens":298,"total_time":0.069918456},"usage_breakdown":{"models":null},"system_fingerprint":"fp_6943fcd867","x_groq":{"id":"req_01jts60m3af72scxzpxzpvr94s"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,17 +38,15 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cbb2c0ed54a273-YUL
+                - 93ccf8206818a251-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
-                - us-west-1
+                - us-central-1
             X-Ratelimit-Limit-Requests:
                 - "500000"
             X-Ratelimit-Limit-Tokens:
@@ -62,10 +60,10 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 8.4ms
             X-Request-Id:
-                - req_01jtrs9x61e4w9cmby4rxdjm8e
+                - req_01jts60m3af72scxzpxzpvr94s
         status: 200 OK
         code: 200
-        duration: 397ms
+        duration: 227ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -94,7 +92,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-2a64c145-2f3b-41e2-a0c6-fd00f19b17dd","object":"chat.completion","created":1746736052,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"call_d5mp","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"}},{"id":"call_7gyg","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.25350602,"prompt_tokens":286,"prompt_time":0.034818404,"completion_tokens":27,"completion_time":0.036,"total_tokens":313,"total_time":0.070818404},"usage_breakdown":{"models":null},"system_fingerprint":"fp_6b54d780f2","x_groq":{"id":"req_01jtrs9xhae28trh81rzkrb5gd"}}
+            {"id":"chatcmpl-e321f32e-bf23-4aa9-91c1-2351298fa6be","object":"chat.completion","created":1746749379,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"call_6c0s","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"}},{"id":"call_j9nk","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.30644965399999996,"prompt_tokens":286,"prompt_time":0.027051957,"completion_tokens":27,"completion_time":0.036,"total_tokens":313,"total_time":0.063051957},"usage_breakdown":{"models":null},"system_fingerprint":"fp_6943fcd867","x_groq":{"id":"req_01jts60m92fhnbsrdb8xayt6h0"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -103,17 +101,15 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cbb2c33f1ca273-YUL
+                - 93ccf821a9d4a251-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
-                - us-west-1
+                - us-central-1
             X-Ratelimit-Limit-Requests:
                 - "500000"
             X-Ratelimit-Limit-Tokens:
@@ -121,13 +117,13 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499999"
             X-Ratelimit-Remaining-Tokens:
-                - "249965"
+                - "249887"
             X-Ratelimit-Reset-Requests:
                 - 172.799999ms
             X-Ratelimit-Reset-Tokens:
-                - 8.4ms
+                - 26.919999ms
             X-Request-Id:
-                - req_01jtrs9xhae28trh81rzkrb5gd
+                - req_01jts60m92fhnbsrdb8xayt6h0
         status: 200 OK
         code: 200
-        duration: 409ms
+        duration: 423ms

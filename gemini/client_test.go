@@ -23,65 +23,36 @@ import (
 )
 
 func TestClient_AllModels(t *testing.T) {
-	// Same as internaltest.TestAllModels with a filter on models.
-	ctx := t.Context()
-	l := getClient(t, "")
-	models, err := l.ListModels(ctx)
-	if err != nil {
-		t.Fatal(err)
-	}
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello."),
-	}
-	opts := genai.ChatOptions{
-		Temperature: 0.01,
-		MaxTokens:   1000,
-		Seed:        1,
-	}
-	for _, m := range models {
-		name := m.GetID()
-		if name == "gemini-2.0-flash-live-001" {
-			// It's reported but not usable?
-			continue
-		}
-		parts := strings.Split(strings.Split(name, ".")[0], "-")
-		if len(parts) < 2 {
-			continue
-		}
-		if parts[0] == "gemini" {
-			// Minimum gemini-2
-			if i, err := strconv.Atoi(parts[1]); err != nil || i < 2 {
-				continue
+	internaltest.TestAllModels(
+		t,
+		func(t *testing.T, id string) genai.ChatProvider { return getClient(t, id) },
+		func(id string) bool {
+			if id == "gemini-2.0-flash-live-001" {
+				// It's reported but not usable?
+				return false
 			}
-			if strings.HasSuffix(name, "image-generation") {
-				continue
+			parts := strings.Split(strings.Split(id, ".")[0], "-")
+			if len(parts) < 2 {
+				return false
 			}
-		} else if parts[0] == "gemma" {
-			// Minimum gemma-3
-			if i, err := strconv.Atoi(parts[1]); err != nil || i < 3 {
-				continue
+			if parts[0] == "gemini" {
+				// Minimum gemini-2
+				if i, err := strconv.Atoi(parts[1]); err != nil || i < 2 {
+					return false
+				}
+				if strings.HasSuffix(id, "image-generation") {
+					return false
+				}
+			} else if parts[0] == "gemma" {
+				// Minimum gemma-3
+				if i, err := strconv.Atoi(parts[1]); err != nil || i < 3 {
+					return false
+				}
+			} else {
+				return false
 			}
-		} else {
-			continue
-		}
-		t.Run(name, func(t *testing.T) {
-			resp, err := getClient(t, name).Chat(ctx, msgs, &opts)
-			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-				t.Log(uce)
-			} else if err != nil {
-				t.Fatal(err)
-			}
-			t.Logf("Raw response: %#v", resp)
-			if len(resp.Contents) != 1 {
-				t.Fatal("Unexpected response")
-			}
-			// Normalize some of the variance. Obviously many models will still fail this test.
-			got := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!")
-			if got != "hello" {
-				t.Fatal(got)
-			}
+			return true
 		})
-	}
 }
 
 func TestClient_Chat_vision_and_JSON(t *testing.T) {

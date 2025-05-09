@@ -66,7 +66,7 @@ func ChatStream(t *testing.T, factory ChatProviderFactory, msgs genai.Messages, 
 }
 
 // TestAllModels says hello with all models.
-func TestAllModels(t *testing.T, factory ModelChatProviderFactory) {
+func TestAllModels(t *testing.T, factory ModelChatProviderFactory, filter func(id string) bool) {
 	ctx := t.Context()
 	l := factory(t, "").(genai.ModelProvider)
 	models, err := l.ListModels(ctx)
@@ -76,15 +76,20 @@ func TestAllModels(t *testing.T, factory ModelChatProviderFactory) {
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello."),
 	}
+	// MaxTokens has to be long because of some thinking models (e.g. qwen-qwq-32b and
+	// deepseek-r1-distill-llama-70b) cannot have thinking disabled.
 	opts := genai.ChatOptions{
 		Temperature: 0.01,
-		MaxTokens:   10,
+		MaxTokens:   1000,
 		Seed:        1,
 	}
 	for _, m := range models {
-		name := m.GetID()
-		t.Run(name, func(t *testing.T) {
-			resp, err := factory(t, name).Chat(ctx, msgs, &opts)
+		id := m.GetID()
+		if filter != nil && !filter(id) {
+			continue
+		}
+		t.Run(id, func(t *testing.T) {
+			resp, err := factory(t, id).Chat(ctx, msgs, &opts)
 			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 				t.Log(uce)
 			} else if err != nil {

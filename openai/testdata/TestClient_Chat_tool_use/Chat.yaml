@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BV1OhGV6ch5QmcCBOcRALC7wRVSk2",
+              "id": "chatcmpl-BV5b92SelfiKxg2KDc4ceuoYjZK3m",
               "object": "chat.completion",
-              "created": 1746733239,
+              "created": 1746749387,
               "model": "gpt-4.1-nano-2025-04-14",
               "choices": [
                 {
@@ -42,7 +42,7 @@ interactions:
                     "content": null,
                     "tool_calls": [
                       {
-                        "id": "call_okMecu9B33z30SAakobwrXKj",
+                        "id": "call_hHkWvVbvXiOMk2lxuhmbfhdY",
                         "type": "function",
                         "function": {
                           "name": "best_country",
@@ -50,7 +50,7 @@ interactions:
                         }
                       },
                       {
-                        "id": "call_UmHQQQv570XtEA5M9Ogs2ycX",
+                        "id": "call_OwC9NyD2oKw8baZ230CP46tA",
                         "type": "function",
                         "function": {
                           "name": "best_country",
@@ -91,13 +91,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cb6e12bee8a266-YUL
+                - 93ccf8572b11a2ff-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "633"
+                - "373"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -107,7 +107,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "865"
+                - "377"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -121,10 +121,10 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 9ms
             X-Request-Id:
-                - req_bbad44197fbcc1c141c92ac0f7e0b53d
+                - req_a3df6cd7987ac853e9bb51c047e28e9c
         status: 200 OK
         code: 200
-        duration: 1.811s
+        duration: 499ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -154,9 +154,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BV1OiQ8rT8vGAnTU78ImU3aCTi4bV",
+              "id": "chatcmpl-BV5b9O8m1Shg4xmGawePV7J5YvwpV",
               "object": "chat.completion",
-              "created": 1746733240,
+              "created": 1746749387,
               "model": "gpt-4.1-nano-2025-04-14",
               "choices": [
                 {
@@ -166,7 +166,7 @@ interactions:
                     "content": null,
                     "tool_calls": [
                       {
-                        "id": "call_vm5GX7ZAFqlGGMTOAYzOHg2X",
+                        "id": "call_7akkogk5HjDYV6q9oh9sQHUW",
                         "type": "function",
                         "function": {
                           "name": "best_country",
@@ -174,7 +174,7 @@ interactions:
                         }
                       },
                       {
-                        "id": "call_S07AOBoD65RrRiKGdVCZeW34",
+                        "id": "call_DmTWDPM7wynHWl9asNArGICB",
                         "type": "function",
                         "function": {
                           "name": "best_country",
@@ -215,13 +215,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cb6e1de827a266-YUL
+                - 93ccf85a0f66a2ff-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "493"
+                - "508"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -231,7 +231,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "498"
+                - "511"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -239,13 +239,13 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "199967"
+                - "199966"
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
                 - 9ms
             X-Request-Id:
-                - req_2c16ea72c7f785f6bfbb93de021241ae
+                - req_ce677370934e15d0c3986d650da5ee8f
         status: 200 OK
         code: 200
-        duration: 578ms
+        duration: 577ms

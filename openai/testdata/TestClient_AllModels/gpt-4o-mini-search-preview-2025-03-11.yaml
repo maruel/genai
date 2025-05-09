@@ -1,0 +1,107 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 206
+        transfer_encoding: []
+        trailer: {}
+        host: api.openai.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"gpt-4o-mini-search-preview-2025-03-11","max_completion_tokens":1000,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "id": "chatcmpl-8c02dc45-e294-42d1-8078-319dea90b44d",
+              "object": "chat.completion",
+              "created": 1746749388,
+              "model": "gpt-4o-mini-search-preview-2025-03-11",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "Hello. ",
+                    "refusal": null,
+                    "annotations": []
+                  },
+                  "finish_reason": "stop"
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 12,
+                "completion_tokens": 3,
+                "total_tokens": 15,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 0,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "system_fingerprint": ""
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93ccf8600999a2ff-YUL
+            Content-Type:
+                - application/json
+            Openai-Organization:
+                - user-vtmtcvpbctksjfewktqdl2sw
+            Openai-Processing-Ms:
+                - "591"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "595"
+            X-Ratelimit-Limit-Requests:
+                - "100"
+            X-Ratelimit-Limit-Tokens:
+                - "6000"
+            X-Ratelimit-Remaining-Requests:
+                - "99"
+            X-Ratelimit-Remaining-Tokens:
+                - "5986"
+            X-Ratelimit-Reset-Requests:
+                - 600ms
+            X-Ratelimit-Reset-Tokens:
+                - 140ms
+            X-Request-Id:
+                - req_cf446b6c5413298e6fe6e0654684554b
+        status: 200 OK
+        code: 200
+        duration: 671ms

@@ -29,7 +29,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-06d8b79c-4955-4e3f-b8da-2bc20d061fd0","object":"chat.completion","created":1746736052,"model":"llama3-70b-8192","choices":[{"index":0,"message":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.018937417999999998,"prompt_tokens":22,"prompt_time":0.00396453,"completion_tokens":2,"completion_time":0.006330524,"total_tokens":24,"total_time":0.010295054},"usage_breakdown":{"models":null},"system_fingerprint":"fp_2f30b0b571","x_groq":{"id":"req_01jtrs9y20f819v04494e3emsg"}}
+            {"id":"chatcmpl-bb33df2c-8d19-4dab-9d60-aed5c6c91569","object":"chat.completion","created":1746749379,"model":"llama3-70b-8192","choices":[{"index":0,"message":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.10776369100000001,"prompt_tokens":22,"prompt_time":0.00415323,"completion_tokens":2,"completion_time":0.006363988,"total_tokens":24,"total_time":0.010517218},"usage_breakdown":{"models":null},"system_fingerprint":"fp_2f30b0b571","x_groq":{"id":"req_01jts60mttfhpt21b3gsaadfpv"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,17 +38,15 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cbb2c65a5ea273-YUL
+                - 93ccf8253eeea251-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
-                - us-west-1
+                - us-central-1
             X-Ratelimit-Limit-Requests:
                 - "50000"
             X-Ratelimit-Limit-Tokens:
@@ -62,7 +60,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 32ms
             X-Request-Id:
-                - req_01jtrs9y20f819v04494e3emsg
+                - req_01jts60mttfhpt21b3gsaadfpv
         status: 200 OK
         code: 200
-        duration: 148ms
+        duration: 169ms

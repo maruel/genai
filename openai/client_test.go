@@ -16,6 +16,32 @@ import (
 	"github.com/maruel/genai/openai"
 )
 
+func TestClient_AllModels(t *testing.T) {
+	internaltest.TestAllModels(
+		t,
+		func(t *testing.T, id string) genai.ChatProvider { return getClient(t, id) },
+		func(id string) bool {
+			// There's no way to know what model has which capability.
+			if id == "babbage-002" ||
+				strings.HasPrefix(id, "dall-") ||
+				strings.HasPrefix(id, "davinci-") ||
+				strings.HasPrefix(id, "gpt-3.5-") ||
+				strings.HasPrefix(id, "o1-pro") ||
+				strings.HasPrefix(id, "omni-moderation-") ||
+				strings.HasPrefix(id, "text-embedding-") ||
+				strings.HasPrefix(id, "tts-") ||
+				strings.HasPrefix(id, "whisper-") ||
+				strings.Contains(id, "-audio-") ||
+				strings.Contains(id, "-image-") ||
+				strings.Contains(id, "-realtime-") ||
+				strings.HasSuffix(id, "-transcribe") ||
+				strings.HasSuffix(id, "-tts") {
+				return false
+			}
+			return true
+		})
+}
+
 const model = "gpt-4.1-nano"
 
 func TestClient_Chat_vision_and_JSON(t *testing.T) {

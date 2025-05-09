@@ -29,7 +29,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-9c845370-833a-42b0-80e9-5fffbe686a15","object":"chat.completion","created":1746736052,"model":"meta-llama/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"Hello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.324039099,"prompt_tokens":22,"prompt_time":0.002848911,"completion_tokens":3,"completion_time":0.007091848,"total_tokens":25,"total_time":0.009940759},"usage_breakdown":{"models":null},"system_fingerprint":"fp_42ae451038","x_groq":{"id":"req_01jtrs9y12e4kbef6096vdaavr"}}
+            {"id":"chatcmpl-cb50725c-078a-4be4-acd8-a9c3a31b3c3a","object":"chat.completion","created":1746749379,"model":"meta-llama/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"Hello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.21389797600000002,"prompt_tokens":22,"prompt_time":0.002752917,"completion_tokens":3,"completion_time":0.006268576,"total_tokens":25,"total_time":0.009021493},"usage_breakdown":{"models":null},"system_fingerprint":"fp_37da608fc1","x_groq":{"id":"req_01jts60mtxfhps0hw7eg4njhe7"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,17 +38,15 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cbb2c65a67a273-YUL
+                - 93ccf8253ef1a251-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
-                - us-west-1
+                - us-central-1
             X-Ratelimit-Limit-Requests:
                 - "500000"
             X-Ratelimit-Limit-Tokens:
@@ -58,11 +56,11 @@ interactions:
             X-Ratelimit-Remaining-Tokens:
                 - "299984"
             X-Ratelimit-Reset-Requests:
-                - 264.6ms
+                - 217.6ms
             X-Ratelimit-Reset-Tokens:
                 - 3.2ms
             X-Request-Id:
-                - req_01jtrs9y12e4kbef6096vdaavr
+                - req_01jts60mtxfhps0hw7eg4njhe7
         status: 200 OK
         code: 200
-        duration: 429ms
+        duration: 291ms

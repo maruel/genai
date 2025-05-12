@@ -236,7 +236,8 @@ func TestChatVisionJPGInline(t *testing.T, factory ChatProviderFactory) {
 
 func TestChatVisionPDFInline(t *testing.T, factory ChatProviderFactory) {
 	c := factory(t)
-	f, err := os.Open("testdata/hidden_word.pdf")
+	// Path with the assumption it's run from "//<provider>/".
+	f, err := os.Open("../internal/internaltest/testdata/hidden_word.pdf")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -280,7 +281,7 @@ func TestChatVisionPDFURL(t *testing.T, factory ChatProviderFactory) {
 			Role: genai.User,
 			Contents: []genai.Content{
 				{Text: "What is the word? Reply with only the word."},
-				{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/mistral/testdata/hidden_word.pdf"},
+				{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/hidden_word.pdf"},
 			},
 		},
 	}

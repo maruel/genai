@@ -63,7 +63,7 @@ func ExampleClient_Chat_pDF() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	f, err := os.Open("testdata/hidden_word.pdf")
+	f, err := os.Open("hidden_word.pdf")
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 399
+        content_length: 413
         transfer_encoding: []
         trailer: {}
         host: api.anthropic.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"claude-3-5-haiku-20241022","max_tokens":50,"messages":[{"role":"user","content":[{"type":"text","text":"What is the word? Reply with only the word."},{"type":"document","cache_control":{"type":"ephemeral"},"source":{"type":"url","url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/mistral/testdata/hidden_word.pdf"}}]}],"temperature":0.01,"thinking":{"type":"disabled"}}
+            {"model":"claude-3-5-haiku-20241022","max_tokens":50,"messages":[{"role":"user","content":[{"type":"text","text":"What is the word? Reply with only the word."},{"type":"document","cache_control":{"type":"ephemeral"},"source":{"type":"url","url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/hidden_word.pdf"}}]}],"temperature":0.01,"thinking":{"type":"disabled"}}
         form: {}
         headers:
             Content-Type:
@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"msg_01Lbi2CDHrktpQoA823hnF16","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"orange"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":1628,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":4}}'
+        body: '{"id":"msg_01YbJDczKVutYjcD5Zzqy3Du","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"orange"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":1628,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":4}}'
         headers:
             Anthropic-Organization-Id:
                 - b0607a1c-e615-400e-9924-e7a556d22e9f
@@ -37,33 +37,33 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "50000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-05-12T00:48:40Z"
+                - "2025-05-12T20:25:19Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-05-12T00:48:40Z"
+                - "2025-05-12T20:25:19Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "50"
             Anthropic-Ratelimit-Requests-Remaining:
                 - "49"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-05-12T00:48:39Z"
+                - "2025-05-12T20:25:19Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-05-12T00:48:40Z"
+                - "2025-05-12T20:25:19Z"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93e5e95c3a856e05-YUL
+                - 93eca4fdbe7ba31e-YUL
             Content-Type:
                 - application/json
             Request-Id:
-                - req_011CP2iUxtf5u1BMFsAF7Lzu
+                - req_011CP4GDCtooXHTC58dsgGwQ
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,4 +74,4 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 2.336s
+        duration: 6.659s

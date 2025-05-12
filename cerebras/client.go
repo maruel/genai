@@ -246,7 +246,7 @@ type ChatResponse struct {
 	Created           Time   `json:"created"`
 	Choices           []struct {
 		Index        int64   `json:"index"`
-		FinishReason string  `json:"finish_reason"` // "tool_calls"
+		FinishReason string  `json:"finish_reason"` // "stop", "tool_calls"
 		Message      Message `json:"message"`
 	} `json:"choices"`
 	Usage struct {
@@ -255,10 +255,10 @@ type ChatResponse struct {
 		TotalTokens      int64 `json:"total_tokens"`
 	} `json:"usage"`
 	TimeInfo struct {
-		QueueTime  float64 `json:"queue_time"`
-		PromptTime float64 `json:"prompt_time"`
-		ChatTime   float64 `json:"completion_time"`
-		TotalTime  float64 `json:"total_time"`
+		QueueTime  float64 `json:"queue_time"`      // In seconds
+		PromptTime float64 `json:"prompt_time"`     // In seconds
+		ChatTime   float64 `json:"completion_time"` // In seconds
+		TotalTime  float64 `json:"total_time"`      // In seconds
 		Created    Time    `json:"created"`
 	} `json:"time_info"`
 }

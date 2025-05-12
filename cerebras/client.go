@@ -116,7 +116,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 		c.Messages = make([]Message, len(msgs)+offset)
 		if sp != "" {
 			c.Messages[0].Role = "system"
-			c.Messages[0].Content = sp
+			c.Messages[0].Content = []Content{{
+				Type: "text",
+				Text: sp,
+			}}
 		}
 		for i := range msgs {
 			if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
@@ -138,11 +141,16 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 // https://inference-docs.cerebras.ai/api-reference/chat-completions
 type Message struct {
 	Role      string     `json:"role,omitzero"` // "system", "assistant", "user"
-	Content   string     `json:"content,omitzero"`
+	Content   []Content  `json:"content,omitzero"`
 	ToolCalls []ToolCall `json:"tool_calls,omitzero"`
 }
 
-// From converts from a genai.Message to a Message. It only support one content block.
+type Content struct {
+	Type string `json:"type,omitzero"` // "text"
+	Text string `json:"text,omitzero"`
+}
+
+// From converts from a genai.Message to a Message.
 func (m *Message) From(in *genai.Message) error {
 	switch in.Role {
 	case genai.User, genai.Assistant:
@@ -150,15 +158,18 @@ func (m *Message) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", in.Role)
 	}
-	if len(in.Contents) > 1 {
-		return errors.New("cerebras doesn't support multiple content blocks; TODO split transparently")
-	}
-	if len(in.Contents) == 1 {
-		if in.Contents[0].Text != "" {
-			m.Content = in.Contents[0].Text
-		} else {
-			// Cerebras doesn't support documents yet.
-			return fmt.Errorf("unsupported content type %#v", in.Contents[0])
+	if len(in.Contents) > 0 {
+		m.Content = make([]Content, 0, len(in.Contents))
+		for i := range in.Contents {
+			if in.Contents[i].Text != "" {
+				m.Content = append(m.Content, Content{
+					Type: "text",
+					Text: in.Contents[i].Text,
+				})
+			} else {
+				// Cerebras doesn't support documents yet.
+				return fmt.Errorf("unsupported content type %#v", in.Contents[i])
+			}
 		}
 	}
 	if len(in.ToolCalls) != 0 {
@@ -184,7 +195,12 @@ func (m *Message) To(out *genai.Message) error {
 		}
 	}
 	if len(m.Content) != 0 {
-		out.Contents = append(out.Contents, genai.Content{Text: m.Content})
+		out.Contents = make([]genai.Content, len(m.Content))
+		for i, content := range m.Content {
+			if content.Type == "text" {
+				out.Contents[i] = genai.Content{Text: content.Text}
+			}
+		}
 	}
 	return nil
 }
@@ -272,7 +288,7 @@ type ChatStreamChunkResponse struct {
 	Choices           []struct {
 		Delta struct {
 			Role      string     `json:"role"`
-			Content   string     `json:"content"`
+			Content   []Content  `json:"content"`
 			ToolCalls []ToolCall `json:"tool_calls"`
 		} `json:"delta"`
 		Index        int64  `json:"index"`
@@ -446,12 +462,14 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			}
 			chunks <- fragment
 		}
-		if word := pkt.Choices[0].Delta.Content; word != "" {
-			fragment := genai.MessageFragment{TextFragment: word}
-			if finishReason != "" {
-				fragment.FinishReason = finishReason
+		for _, content := range pkt.Choices[0].Delta.Content {
+			if content.Type == "text" && content.Text != "" {
+				fragment := genai.MessageFragment{TextFragment: content.Text}
+				if finishReason != "" {
+					fragment.FinishReason = finishReason
+				}
+				chunks <- fragment
 			}
-			chunks <- fragment
 		}
 	}
 	return nil

@@ -77,7 +77,7 @@ func ExampleClient_Chat_pDF() {
 			Role: genai.User,
 			Contents: []genai.Content{
 				{Text: "What is the word? Reply with only the word."},
-				{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/mistral/testdata/hidden_word.pdf"},
+				{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/hidden_word.pdf"},
 			},
 		},
 	}

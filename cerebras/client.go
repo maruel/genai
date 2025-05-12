@@ -141,13 +141,40 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 // https://inference-docs.cerebras.ai/api-reference/chat-completions
 type Message struct {
 	Role      string     `json:"role,omitzero"` // "system", "assistant", "user"
-	Content   []Content  `json:"content,omitzero"`
+	Content   Contents   `json:"content,omitzero"`
 	ToolCalls []ToolCall `json:"tool_calls,omitzero"`
 }
 
 type Content struct {
 	Type string `json:"type,omitzero"` // "text"
 	Text string `json:"text,omitzero"`
+}
+
+// Contents represents a slice of Content with custom unmarshaling to handle
+// both string and Content struct types.
+type Contents []Content
+
+// UnmarshalJSON implements custom unmarshaling for Contents type
+// to handle cases where content could be a string or Content struct.
+func (c *Contents) UnmarshalJSON(data []byte) error {
+	// Try unmarshaling as a string first
+	var contentStr string
+	if err := json.Unmarshal(data, &contentStr); err == nil {
+		// If it worked, create a single content with the string
+		*c = Contents{{
+			Type: "text",
+			Text: contentStr,
+		}}
+		return nil
+	}
+
+	// If that failed, try as array of Content
+	var contents []Content
+	if err := json.Unmarshal(data, &contents); err != nil {
+		return err
+	}
+	*c = contents
+	return nil
 }
 
 // From converts from a genai.Message to a Message.
@@ -288,7 +315,7 @@ type ChatStreamChunkResponse struct {
 	Choices           []struct {
 		Delta struct {
 			Role      string     `json:"role"`
-			Content   []Content  `json:"content"`
+			Content   Contents   `json:"content"`
 			ToolCalls []ToolCall `json:"tool_calls"`
 		} `json:"delta"`
 		Index        int64  `json:"index"`

@@ -60,6 +60,10 @@ func TestClient_Chat_vision_and_JSON(t *testing.T) {
 	internaltest.TestChatVisionJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
 }
 
+func TestClient_Chat_vision_jPG_inline(t *testing.T) {
+	internaltest.TestChatVisionJPGInline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
+}
+
 func TestClient_Chat_vision_pDF_inline(t *testing.T) {
 	// TODO: Fix support for URL.
 	internaltest.TestChatVisionPDFInline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })

@@ -28,12 +28,7 @@ func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 
 	t.Run("Chat", func(t *testing.T) {
-		serverURL, transport := s.shouldStart(t)
-		c, err := ollama.New(serverURL, "gemma3:4b")
-		if err != nil {
-			t.Fatal(err)
-		}
-		c.Client.Client = &http.Client{Transport: transport}
+		c := s.getClient(t, "gemma3:4b")
 		opts := genai.ChatOptions{
 			Seed:        1,
 			Temperature: 0.01,
@@ -70,13 +65,14 @@ func TestClient(t *testing.T) {
 		}
 	})
 
+	t.Run("vision_jpg_inline", func(t *testing.T) {
+		internaltest.TestChatVisionJPGInline(t, func(t *testing.T) genai.ChatProvider {
+			return s.getClient(t, "gemma3:4b")
+		})
+	})
+
 	t.Run("vision_and_tool", func(t *testing.T) {
-		serverURL, transport := s.shouldStart(t)
-		c, err := ollama.New(serverURL, "gemma3:4b")
-		if err != nil {
-			t.Fatal(err)
-		}
-		c.Client.Client = &http.Client{Transport: transport}
+		c := s.getClient(t, "gemma3:4b")
 		msgs := genai.Messages{
 			{
 				Role: genai.User,
@@ -114,12 +110,7 @@ func TestClient(t *testing.T) {
 		}
 	})
 	t.Run("Tool", func(t *testing.T) {
-		serverURL, transport := s.shouldStart(t)
-		c, err := ollama.New(serverURL, "llama3.1:8b")
-		if err != nil {
-			t.Fatal(err)
-		}
-		c.Client.Client = &http.Client{Transport: transport}
+		c := s.getClient(t, "llama3.1:8b")
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
 		}
@@ -196,6 +187,16 @@ func (l *lazyServer) shouldStart(t *testing.T) (string, http.RoundTripper) {
 		t.Log("Recording " + suffix)
 	}
 	return l.url, transport
+}
+
+func (l *lazyServer) getClient(t *testing.T, model string) genai.ChatProvider {
+	serverURL, transport := l.shouldStart(t)
+	c, err := ollama.New(serverURL, model)
+	if err != nil {
+		t.Fatal(err)
+	}
+	c.Client.Client = &http.Client{Transport: transport}
+	return c
 }
 
 var testRecorder *internaltest.Records

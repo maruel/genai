@@ -38,6 +38,10 @@ func TestClient_Chat_allModels(t *testing.T) {
 		})
 }
 
+func TestClient_Chat_vision_jPG_inline(t *testing.T) {
+	internaltest.TestChatVisionJPGInline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "Qwen/Qwen2.5-VL-72B-Instruct") })
+}
+
 func TestClient_Chat_vision_and_JSON(t *testing.T) {
 	c := getClient(t, "meta-llama/Llama-Vision-Free")
 	// TogetherAI seems to require separate messages for text and images.

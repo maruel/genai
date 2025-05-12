@@ -19,6 +19,13 @@ func TestClient_Chat_allModels(t *testing.T) {
 	internaltest.TestChatAllModels(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
 }
 
+func TestClient_Chat_vision_jPG_inline(t *testing.T) {
+	t.Skip("Implement multi-content messages")
+	internaltest.TestChatVisionJPGInline(t, func(t *testing.T) genai.ChatProvider {
+		return getClient(t, "meta-llama/llama-4-scout-17b-16e-instruct")
+	})
+}
+
 func TestClient_Chat_json(t *testing.T) {
 	c := getClient(t, "llama-3.1-8b")
 	msgs := genai.Messages{

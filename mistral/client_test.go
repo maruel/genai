@@ -34,6 +34,10 @@ func TestClient_Chat_vision_and_JSON(t *testing.T) {
 	internaltest.TestChatVisionJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "mistral-small-latest") })
 }
 
+func TestClient_Chat_vision_jPG_inline(t *testing.T) {
+	internaltest.TestChatVisionJPGInline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "mistral-small-latest") })
+}
+
 func TestClient_Chat_vision_pDF_uRL(t *testing.T) {
 	// Mistral does not support inline PDF.
 	internaltest.TestChatVisionPDFURL(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "mistral-small-latest") })

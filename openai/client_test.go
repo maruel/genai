@@ -81,6 +81,10 @@ func TestClient_Chat_audio(t *testing.T) {
 	}
 }
 
+func TestClient_Chat_vision_jPG_inline(t *testing.T) {
+	internaltest.TestChatVisionJPGInline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
+}
+
 func TestClient_Chat_vision_pDF(t *testing.T) {
 	// TODO: Implement URL support.
 	internaltest.TestChatVisionPDFInline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })

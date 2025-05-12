@@ -198,9 +198,9 @@ func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, useStream
 	})
 }
 
-// TestChatVisionJPG runs a Chat with vision capabilities and verifies that the model correctly identifies a
+// TestChatVisionJPGInline runs a Chat with vision capabilities and verifies that the model correctly identifies a
 // banana image.
-func TestChatVisionJPG(t *testing.T, factory ChatProviderFactory) {
+func TestChatVisionJPGInline(t *testing.T, factory ChatProviderFactory) {
 	c := factory(t)
 	ctx := t.Context()
 	msgs := genai.Messages{

@@ -20,15 +20,15 @@ func TestClient_Chat_allModels(t *testing.T) {
 	internaltest.TestChatAllModels(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
 }
 
-func TestClient_Chat_vision_jPG(t *testing.T) {
+func TestClient_Chat_vision_jPG_inline(t *testing.T) {
 	// Using very small model for testing. As of March 2025,
 	// claude-3-haiku-20240307 is 0.20$/1.25$ while claude-3-5-haiku-20241022 is
 	// 0.80$/4.00$. 3.0 supports images, 3.5 supports PDFs.
 	// https://docs.anthropic.com/en/docs/about-claude/models/all-models
-	internaltest.TestChatVisionJPG(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") })
+	internaltest.TestChatVisionJPGInline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") })
 }
 
-func TestClient_Chat_vision_pdf(t *testing.T) {
+func TestClient_Chat_vision_pDF_inline(t *testing.T) {
 	// 3.0 doesn't support PDFs.
 	internaltest.TestChatVisionPDFInline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-5-haiku-20241022") })
 }

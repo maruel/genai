@@ -81,40 +81,9 @@ func TestClient_Chat_audio(t *testing.T) {
 	}
 }
 
-func TestClient_Chat_pDF(t *testing.T) {
-	c := getClient(t, model)
-	f, err := os.Open("testdata/hidden_word.pdf")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer f.Close()
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "What is the hidden word? Reply with only the word."},
-				{Document: f},
-			},
-		},
-	}
-	opts := genai.ChatOptions{
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
-	if resp.InputTokens != 238 || resp.OutputTokens != 2 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	if got := strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)); got != "orange" {
-		t.Fatal(got)
-	}
+func TestClient_Chat_vision_pDF(t *testing.T) {
+	// TODO: Implement URL support.
+	internaltest.TestChatVisionPDFInline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {

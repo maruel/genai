@@ -60,41 +60,9 @@ func TestClient_Chat_vision_and_JSON(t *testing.T) {
 	internaltest.TestChatVisionJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
 }
 
-func TestClient_Chat_pDF(t *testing.T) {
-	c := getClient(t, model)
-	f, err := os.Open("testdata/hidden_word.pdf")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer f.Close()
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "What is the word? Reply with only the word."},
-				{Document: f},
-			},
-		},
-	}
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
-	if resp.InputTokens != 1301 || resp.OutputTokens != 2 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	if got := strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)); got != "orange" {
-		t.Fatal(got)
-	}
+func TestClient_Chat_vision_pDF_inline(t *testing.T) {
+	// TODO: Fix support for URL.
+	internaltest.TestChatVisionPDFInline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
 }
 
 func TestClient_Chat_audio(t *testing.T) {

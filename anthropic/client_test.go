@@ -20,53 +20,21 @@ func TestClient_Chat_allModels(t *testing.T) {
 	internaltest.TestChatAllModels(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
 }
 
-func TestClient_Chat_vision(t *testing.T) {
+func TestClient_Chat_vision_jPG(t *testing.T) {
 	// Using very small model for testing. As of March 2025,
 	// claude-3-haiku-20240307 is 0.20$/1.25$ while claude-3-5-haiku-20241022 is
 	// 0.80$/4.00$. 3.0 supports images, 3.5 supports PDFs.
 	// https://docs.anthropic.com/en/docs/about-claude/models/all-models
-	internaltest.TestChatVision(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") })
+	internaltest.TestChatVisionJPG(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") })
 }
 
-func TestClient_Chat_pdf(t *testing.T) {
+func TestClient_Chat_vision_pdf(t *testing.T) {
 	// 3.0 doesn't support PDFs.
-	c := getClient(t, "claude-3-5-haiku-20241022")
-	f, err := os.Open("testdata/hidden_word.pdf")
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Cleanup(func() {
-		if err2 := f.Close(); err2 != nil {
-			t.Fatal(err2)
-		}
-	})
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "What is the word? Reply with only the word."},
-				{Document: f},
-			},
-		},
-	}
-	opts := genai.ChatOptions{
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
-	if resp.InputTokens != 1628 || resp.OutputTokens != 4 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	if strings.ToLower(resp.Contents[0].Text) != "orange" {
-		t.Fatal(resp.Contents[0].Text)
-	}
+	internaltest.TestChatVisionPDFInline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-5-haiku-20241022") })
+}
+
+func TestClient_Chat_vision_pDF_uRL(t *testing.T) {
+	internaltest.TestChatVisionPDFURL(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-5-haiku-20241022") })
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {

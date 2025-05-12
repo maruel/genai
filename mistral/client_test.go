@@ -34,36 +34,9 @@ func TestClient_Chat_vision_and_JSON(t *testing.T) {
 	internaltest.TestChatVisionJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "mistral-small-latest") })
 }
 
-func TestClient_Chat_pDF(t *testing.T) {
-	c := getClient(t, "mistral-small-latest")
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "What is the word? Reply with only the word."},
-				{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/mistral/testdata/hidden_word.pdf"},
-			},
-		},
-	}
-	opts := genai.ChatOptions{
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
-	// Mistral is super efficient with tokens for PDFs.
-	if resp.InputTokens != 28 || resp.OutputTokens != 1 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	if got := strings.ToLower(resp.Contents[0].Text); got != "orange" {
-		t.Fatal(got)
-	}
+func TestClient_Chat_vision_pDF_uRL(t *testing.T) {
+	// Mistral does not support inline PDF.
+	internaltest.TestChatVisionPDFURL(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "mistral-small-latest") })
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {

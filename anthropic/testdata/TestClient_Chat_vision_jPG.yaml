@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"msg_01F96MNvU3Sd3H1kVuMQjDfC","type":"message","role":"assistant","model":"claude-3-haiku-20240307","content":[{"type":"text","text":"Yes"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":237,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":4}}'
+        body: '{"id":"msg_01KgajuZkb2nFVfcbi4NbFuL","type":"message","role":"assistant","model":"claude-3-haiku-20240307","content":[{"type":"text","text":"Yes"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":237,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":4}}'
         headers:
             Anthropic-Organization-Id:
                 - b0607a1c-e615-400e-9924-e7a556d22e9f
@@ -37,33 +37,33 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "50000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-05-09T00:16:39Z"
+                - "2025-05-12T00:42:21Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
-                - "9000"
+                - "10000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-05-09T00:16:44Z"
+                - "2025-05-12T00:42:21Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "50"
             Anthropic-Ratelimit-Requests-Remaining:
-                - "47"
+                - "49"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-05-09T00:16:42Z"
+                - "2025-05-12T00:42:22Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Remaining:
-                - "59000"
+                - "60000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-05-09T00:16:39Z"
+                - "2025-05-12T00:42:21Z"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cd02626ea8a26c-YUL
+                - 93e5e02a2d98a2be-YUL
             Content-Type:
                 - application/json
             Request-Id:
-                - req_011CNvzckwdYppPossLRJsQj
+                - req_011CP2i1CYARK9XopkiqCRWY
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,4 +74,4 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 591ms
+        duration: 722ms

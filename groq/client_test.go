@@ -28,7 +28,7 @@ func TestClient_Chat_allModels(t *testing.T) {
 }
 
 func TestClient_Chat_vision(t *testing.T) {
-	internaltest.TestChatVision(t, func(t *testing.T) genai.ChatProvider {
+	internaltest.TestChatVisionJPG(t, func(t *testing.T) genai.ChatProvider {
 		return getClient(t, "meta-llama/llama-4-scout-17b-16e-instruct")
 	})
 }

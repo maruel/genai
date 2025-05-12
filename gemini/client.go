@@ -478,8 +478,8 @@ func (p *Part) FromContent(in *genai.Content) error {
 		p.InlineData.MimeType = mimeType
 		p.InlineData.Data = data
 	} else {
-		if mimeType = mime.TypeByExtension(path.Base(in.URL)); mimeType == "" {
-			return fmt.Errorf(" unsupported mime type for URL %q", in.URL)
+		if mimeType = mime.TypeByExtension(path.Ext(in.URL)); mimeType == "" {
+			return fmt.Errorf("could not determine mime type for URL %q", in.URL)
 		}
 		p.FileData.MimeType = mimeType
 		p.FileData.FileURI = in.URL

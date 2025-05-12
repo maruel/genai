@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 330
+        content_length: 346
         transfer_encoding: []
         trailer: {}
         host: api.mistral.ai
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"mistral-small-latest","temperature":0.01,"max_tokens":50,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"What is the word? Reply with only the word."},{"type":"document_url","document_url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/mistral/testdata/hidden_word.pdf"}]}]}
+            {"model":"mistral-small-latest","temperature":0.01,"max_tokens":50,"stream":false,"random_seed":1,"messages":[{"role":"user","content":[{"type":"text","text":"What is the word? Reply with only the word."},{"type":"document_url","document_url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/mistral/testdata/hidden_word.pdf"}]}]}
         form: {}
         headers:
             Content-Type:
@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"b51039d6499247e8816ea30e06d36ad8","object":"chat.completion","created":1746219567,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"orange"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":28,"total_tokens":30,"completion_tokens":2}}'
+        body: '{"id":"59d3ba78e4a246668ba545d7592b82be","object":"chat.completion","created":1747010918,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"orange"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":28,"total_tokens":30,"completion_tokens":2}}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -37,7 +37,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 939a7147a823a290-YUL
+                - 93e5e95cbf7433fa-YUL
             Content-Type:
                 - application/json
             Ratelimitbysize-Limit:
@@ -47,17 +47,17 @@ interactions:
             Ratelimitbysize-Remaining:
                 - "499950"
             Ratelimitbysize-Reset:
-                - "33"
+                - "23"
             Server:
                 - cloudflare
             X-Envoy-Upstream-Service-Time:
-                - "487"
+                - "986"
             X-Kong-Proxy-Latency:
-                - "9"
+                - "7"
             X-Kong-Request-Id:
-                - a5ed192e61d1af60c5c4023c7baf4363
+                - 174e4344b6ae0e78432f472f31161a09
             X-Kong-Upstream-Latency:
-                - "488"
+                - "987"
             X-Ratelimitbysize-Limit-Minute:
                 - "500000"
             X-Ratelimitbysize-Limit-Month:
@@ -65,7 +65,7 @@ interactions:
             X-Ratelimitbysize-Remaining-Minute:
                 - "499950"
             X-Ratelimitbysize-Remaining-Month:
-                - "999999950"
+                - "999895255"
         status: 200 OK
         code: 200
-        duration: 660ms
+        duration: 1.17s

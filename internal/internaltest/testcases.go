@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"context"
 	_ "embed"
+	"os"
 	"strings"
 	"testing"
 
@@ -197,9 +198,9 @@ func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, useStream
 	})
 }
 
-// TestChatVision runs a Chat with vision capabilities and verifies that the model correctly identifies a
+// TestChatVisionJPG runs a Chat with vision capabilities and verifies that the model correctly identifies a
 // banana image.
-func TestChatVision(t *testing.T, factory ChatProviderFactory) {
+func TestChatVisionJPG(t *testing.T, factory ChatProviderFactory) {
 	c := factory(t)
 	ctx := t.Context()
 	msgs := genai.Messages{
@@ -230,6 +231,79 @@ func TestChatVision(t *testing.T, factory ChatProviderFactory) {
 	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!")
 	if txt != "yes" {
 		t.Fatal(txt)
+	}
+}
+
+func TestChatVisionPDFInline(t *testing.T, factory ChatProviderFactory) {
+	c := factory(t)
+	f, err := os.Open("testdata/hidden_word.pdf")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer f.Close()
+	msgs := genai.Messages{
+		{
+			Role: genai.User,
+			Contents: []genai.Content{
+				{Text: "What is the word? Reply with only the word."},
+				{Document: f},
+			},
+		},
+	}
+	opts := genai.ChatOptions{
+		Seed:        1,
+		Temperature: 0.01,
+		MaxTokens:   50,
+	}
+	resp, err := c.Chat(t.Context(), msgs, &opts)
+	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+		t.Log(uce)
+	} else if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("Raw response: %#v", resp)
+	if resp.InputTokens != 1301 || resp.OutputTokens != 2 {
+		t.Logf("Unexpected tokens usage: %v", resp.Usage)
+	}
+	if len(resp.Contents) != 1 {
+		t.Fatal("Unexpected response")
+	}
+	if got := strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)); got != "orange" {
+		t.Fatal(got)
+	}
+}
+
+func TestChatVisionPDFURL(t *testing.T, factory ChatProviderFactory) {
+	c := factory(t)
+	msgs := genai.Messages{
+		{
+			Role: genai.User,
+			Contents: []genai.Content{
+				{Text: "What is the word? Reply with only the word."},
+				{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/mistral/testdata/hidden_word.pdf"},
+			},
+		},
+	}
+	opts := genai.ChatOptions{
+		Seed:        1,
+		Temperature: 0.01,
+		MaxTokens:   50,
+	}
+	resp, err := c.Chat(t.Context(), msgs, &opts)
+	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+		t.Log(uce)
+	} else if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("Raw response: %#v", resp)
+	if resp.InputTokens != 1301 || resp.OutputTokens != 2 {
+		t.Logf("Unexpected tokens usage: %v", resp.Usage)
+	}
+	if len(resp.Contents) != 1 {
+		t.Fatal("Unexpected response")
+	}
+	if got := strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)); got != "orange" {
+		t.Fatal(got)
 	}
 }
 

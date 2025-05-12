@@ -10,22 +10,21 @@ import (
 	_ "embed"
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/mistral"
 )
 
-// See the 1kib banana jpg online at
-// https://github.com/maruel/genai/blob/main/mistral/testdata/banana.jpg
-//
-//go:embed testdata/banana.jpg
-var bananaJpg []byte
-
 func ExampleClient_Chat_vision_and_JSON() {
 	// Require a model which has the "vision" capability.
 	// https://docs.mistral.ai/capabilities/vision/
 	c, err := mistral.New("", "mistral-small-latest")
+	if err != nil {
+		log.Fatal(err)
+	}
+	bananaJpg, err := os.ReadFile("banana.pdf")
 	if err != nil {
 		log.Fatal(err)
 	}

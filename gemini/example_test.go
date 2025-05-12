@@ -17,12 +17,6 @@ import (
 	"github.com/maruel/genai/gemini"
 )
 
-// See the 1kib banana jpg online at
-// https://github.com/maruel/genai/blob/main/gemini/testdata/banana.jpg
-//
-//go:embed testdata/banana.jpg
-var bananaJpg []byte
-
 // Using small model for testing.
 // For tests that do not use function calling nor images, a good zero cost alternative is "gemma-3-27b-it".
 // See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
@@ -32,6 +26,10 @@ func ExampleClient_Chat_vision_and_JSON() {
 	// Using small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	c, err := gemini.New("", "gemini-2.0-flash-lite")
+	if err != nil {
+		log.Fatal(err)
+	}
+	bananaJpg, err := os.ReadFile("banana.pdf")
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -5,7 +5,6 @@
 package ollama_test
 
 import (
-	"bytes"
 	"context"
 	"net/http"
 	"os"
@@ -71,43 +70,10 @@ func TestClient(t *testing.T) {
 		})
 	})
 
-	t.Run("vision_and_tool", func(t *testing.T) {
-		c := s.getClient(t, "gemma3:4b")
-		msgs := genai.Messages{
-			{
-				Role: genai.User,
-				Contents: []genai.Content{
-					{Text: "Is it a banana? Reply as JSON."},
-					{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
-				},
-			},
-		}
-		var got struct {
-			Banana bool `json:"banana"`
-		}
-		opts := genai.ChatOptions{
-			Seed:        1,
-			Temperature: 0.01,
-			MaxTokens:   50,
-			DecodeAs:    &got,
-		}
-		resp, err := c.Chat(t.Context(), msgs, &opts)
-		if err != nil {
-			t.Fatal(err)
-		}
-		t.Logf("Raw response: %#v", resp)
-		if resp.InputTokens != 278 || resp.OutputTokens != 11 {
-			t.Logf("Unexpected tokens usage: %v", resp.Usage)
-		}
-		if len(resp.Contents) != 1 {
-			t.Fatal("Unexpected response")
-		}
-		if err := resp.Contents[0].Decode(&got); err != nil {
-			t.Fatal(err)
-		}
-		if !got.Banana {
-			t.Fatal("expected a banana")
-		}
+	t.Run("vision_and_json", func(t *testing.T) {
+		internaltest.TestChatVisionJSON(t, func(t *testing.T) genai.ChatProvider {
+			return s.getClient(t, "gemma3:4b")
+		})
 	})
 	t.Run("Tool", func(t *testing.T) {
 		c := s.getClient(t, "llama3.1:8b")

@@ -22,12 +22,6 @@ import (
 // Ollama build to use.
 const version = "v0.6.2"
 
-// See the 3kib banana jpg online at
-// https://github.com/maruel/genai/blob/main/ollama/testdata/banana.jpg
-//
-//go:embed testdata/banana.jpg
-var bananaJpg []byte
-
 func ExampleClient_Chat_vision_and_JSON() {
 	// Download and start the server.
 	ctx := context.Background()
@@ -42,6 +36,10 @@ func ExampleClient_Chat_vision_and_JSON() {
 	if err != nil {
 		log.Print(err)
 		return
+	}
+	bananaJpg, err := os.ReadFile("banana.pdf")
+	if err != nil {
+		log.Fatal(err)
 	}
 	msgs := genai.Messages{
 		{

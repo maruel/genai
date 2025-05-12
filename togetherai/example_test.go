@@ -17,18 +17,16 @@ import (
 	"github.com/maruel/genai/togetherai"
 )
 
-// See the 1kib banana jpg online at
-// https://github.com/maruel/genai/blob/main/togetherai/testdata/banana.jpg
-//
-//go:embed testdata/banana.jpg
-var bananaJpg []byte
-
 func ExampleClient_Chat_vision_and_JSON() {
 	// We must select a model that supports vision *and* JSON mode (not
 	// necessarily tool use).
 	// Warning: looks like this model doesn't support JSON schema.
 	// https://docs.together.ai/docs/serverless-models#vision-models
 	c, err := togetherai.New("", "meta-llama/Llama-Vision-Free")
+	if err != nil {
+		log.Fatal(err)
+	}
+	bananaJpg, err := os.ReadFile("banana.pdf")
 	if err != nil {
 		log.Fatal(err)
 	}

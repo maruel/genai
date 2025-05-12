@@ -17,18 +17,16 @@ import (
 	"github.com/maruel/genai/anthropic"
 )
 
-// See the 3kib banana jpg online at
-// https://github.com/maruel/genai/blob/main/anthropic/testdata/banana.jpg
-//
-//go:embed testdata/banana.jpg
-var bananaJpg []byte
-
 func ExampleClient_Chat_vision() {
 	// Using very small model for testing. As of March 2025,
 	// claude-3-haiku-20240307 is 0.20$/1.25$ while claude-3-5-haiku-20241022 is
 	// 0.80$/4.00$. 3.0 supports images, 3.5 supports PDFs.
 	// https://docs.anthropic.com/en/docs/about-claude/models/all-models
 	c, err := anthropic.New("", "claude-3-haiku-20240307")
+	if err != nil {
+		log.Fatal(err)
+	}
+	bananaJpg, err := os.ReadFile("banana.pdf")
 	if err != nil {
 		log.Fatal(err)
 	}

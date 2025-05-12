@@ -17,17 +17,15 @@ import (
 	"github.com/maruel/genai/groq"
 )
 
-// See the 3kib banana jpg online at
-// https://github.com/maruel/genai/blob/main/groq/testdata/banana.jpg
-//
-//go:embed testdata/banana.jpg
-var bananaJpg []byte
-
 func ExampleClient_Chat_vision_and_JSON() {
 	// We must select a model that supports vision *and* JSON mode (not
 	// necessarily tool use).
 	// See "JSON Mode with Images" at https://console.groq.com/docs/vision
 	c, err := groq.New("", "meta-llama/llama-4-scout-17b-16e-instruct")
+	if err != nil {
+		log.Fatal(err)
+	}
+	bananaJpg, err := os.ReadFile("banana.pdf")
 	if err != nil {
 		log.Fatal(err)
 	}

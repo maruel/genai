@@ -17,15 +17,13 @@ import (
 	"github.com/maruel/genai/openai"
 )
 
-// See the 3kib banana jpg online at
-// https://github.com/maruel/genai/blob/main/openai/testdata/banana.jpg
-//
-//go:embed testdata/banana.jpg
-var bananaJpg []byte
-
 func ExampleClient_Chat_vision_and_JSON() {
 	// See https://platform.openai.com/docs/models
 	c, err := openai.New("", "gpt-4.1-nano")
+	if err != nil {
+		log.Fatal(err)
+	}
+	bananaJpg, err := os.ReadFile("banana.pdf")
 	if err != nil {
 		log.Fatal(err)
 	}

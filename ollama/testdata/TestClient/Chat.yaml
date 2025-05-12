@@ -26,17 +26,17 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 305
+        content_length: 302
         uncompressed: false
-        body: '{"model":"gemma3:4b","created_at":"2025-05-08T19:40:57.093096196Z","message":{"role":"assistant","content":"Hello."},"done_reason":"stop","done":true,"total_duration":18881360123,"load_duration":2940152592,"prompt_eval_count":17,"prompt_eval_duration":9170684377,"eval_count":3,"eval_duration":6769999950}'
+        body: '{"model":"gemma3:4b","created_at":"2025-05-12T20:14:20.159363485Z","message":{"role":"assistant","content":"Hello."},"done_reason":"stop","done":true,"total_duration":1781835171,"load_duration":1159723708,"prompt_eval_count":17,"prompt_eval_duration":508476813,"eval_count":3,"eval_duration":111157396}'
         headers:
             Content-Length:
-                - "305"
+                - "302"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 18.882s
+        duration: 1.782s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -64,7 +64,7 @@ interactions:
         trailer: {}
         content_length: 300
         uncompressed: false
-        body: '{"model":"gemma3:4b","created_at":"2025-05-08T19:40:57.657698213Z","message":{"role":"assistant","content":"Google."},"done_reason":"stop","done":true,"total_duration":564038670,"load_duration":29594237,"prompt_eval_count":38,"prompt_eval_duration":416389932,"eval_count":3,"eval_duration":104528870}'
+        body: '{"model":"gemma3:4b","created_at":"2025-05-12T20:14:20.521480077Z","message":{"role":"assistant","content":"Google."},"done_reason":"stop","done":true,"total_duration":361496813,"load_duration":23108556,"prompt_eval_count":38,"prompt_eval_duration":218016828,"eval_count":3,"eval_duration":107973706}'
         headers:
             Content-Length:
                 - "300"
@@ -72,4 +72,4 @@ interactions:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 564ms
+        duration: 362ms

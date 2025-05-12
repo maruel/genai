@@ -5,7 +5,6 @@
 package togetherai_test
 
 import (
-	"bytes"
 	_ "embed"
 	"os"
 	"strings"
@@ -43,43 +42,7 @@ func TestClient_Chat_vision_jPG_inline(t *testing.T) {
 }
 
 func TestClient_Chat_vision_and_JSON(t *testing.T) {
-	c := getClient(t, "meta-llama/Llama-Vision-Free")
-	// TogetherAI seems to require separate messages for text and images.
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
-			},
-		},
-		genai.NewTextMessage(genai.User, "Is it a banana? Reply as JSON with the form {\"banana\": false} or {\"banana\": true}."),
-	}
-	var got struct {
-		Banana bool `json:"banana"`
-	}
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-		DecodeAs:    &got,
-	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
-	if resp.InputTokens != 33 || resp.OutputTokens != 6 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	if err := resp.Contents[0].Decode(&got); err != nil {
-		t.Fatal(err)
-	}
-	if !got.Banana {
-		t.Fatal(got.Banana)
-	}
+	internaltest.TestChatVisionJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "Qwen/Qwen2.5-VL-72B-Instruct") })
 }
 
 func TestClient_Chat_video(t *testing.T) {

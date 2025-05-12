@@ -80,7 +80,7 @@ func TestClient_Chat_video(t *testing.T) {
 
 func TestClient_Chat_tool_use(t *testing.T) {
 	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider {
-		return getClient(t, "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free")
+		return getClient(t, "Qwen/Qwen2.5-7B-Instruct-Turbo")
 	})
 }
 

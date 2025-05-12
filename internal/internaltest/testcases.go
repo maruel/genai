@@ -125,9 +125,9 @@ func TestChatToolUseCountry(t *testing.T, factory ChatProviderFactory) {
 // The useStream parameter determines whether to use Chat or ChatStream.
 // It returns the response for further validation.
 func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, useStream bool) {
-	c := factory(t)
 	ctx := t.Context()
 	t.Run("Canada", func(t *testing.T) {
+		c := factory(t)
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."),
 		}
@@ -145,7 +145,12 @@ func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, useStream
 				},
 			},
 		}
-		resp := processChat(t, ctx, c, msgs, &opts, useStream)
+		var resp genai.ChatResult
+		if useStream {
+			resp = processChatStream(t, ctx, c, msgs, &opts)
+		} else {
+			resp = processChat(t, ctx, c, msgs, &opts)
+		}
 
 		// Warning: when the model is undecided, it call both.
 		// Check for tool calls
@@ -162,6 +167,7 @@ func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, useStream
 		// TODO: Follow up!
 	})
 	t.Run("USA", func(t *testing.T) {
+		c := factory(t)
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."),
 		}
@@ -180,7 +186,12 @@ func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, useStream
 				},
 			},
 		}
-		resp := processChat(t, ctx, c, msgs, &opts, useStream)
+		var resp genai.ChatResult
+		if useStream {
+			resp = processChatStream(t, ctx, c, msgs, &opts)
+		} else {
+			resp = processChat(t, ctx, c, msgs, &opts)
+		}
 
 		// Warning: when the model is undecided, it call both.
 		// Check for tool calls
@@ -357,60 +368,60 @@ func TestChatVisionJSON(t *testing.T, factory ChatProviderFactory) {
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
 
-// processChat runs either Chat or ChatStream based on the useStream parameter
-// and returns the result.
-func processChat(t *testing.T, ctx context.Context, c genai.ChatProvider, msgs genai.Messages, opts *genai.ChatOptions, useStream bool) genai.ChatResult {
-	var resp genai.ChatResult
-	var err error
-	if useStream {
-		chunks := make(chan genai.MessageFragment)
-		end := make(chan genai.Messages, 1)
-		go func() {
-			var pendingMsgs genai.Messages
-			defer func() {
-				end <- pendingMsgs
-				close(end)
-			}()
-			for {
-				select {
-				case <-ctx.Done():
+// processChat runs Chat and returns the result.
+func processChat(t *testing.T, ctx context.Context, c genai.ChatProvider, msgs genai.Messages, opts *genai.ChatOptions) genai.ChatResult {
+	resp, err := c.Chat(ctx, msgs, opts)
+	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+		t.Log(uce)
+	} else if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("Raw response: %#v", resp)
+	return resp
+}
+
+// processChatStream runs ChatStream and returns the result.
+func processChatStream(t *testing.T, ctx context.Context, c genai.ChatProvider, msgs genai.Messages, opts *genai.ChatOptions) genai.ChatResult {
+	chunks := make(chan genai.MessageFragment)
+	end := make(chan genai.Messages, 1)
+	go func() {
+		var pendingMsgs genai.Messages
+		defer func() {
+			end <- pendingMsgs
+			close(end)
+		}()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case pkt, ok := <-chunks:
+				if !ok {
 					return
-				case pkt, ok := <-chunks:
-					if !ok {
-						return
-					}
-					var err2 error
-					if pendingMsgs, err2 = pkt.Accumulate(pendingMsgs); err2 != nil {
-						t.Error(err2)
-						return
-					}
+				}
+				var err2 error
+				if pendingMsgs, err2 = pkt.Accumulate(pendingMsgs); err2 != nil {
+					t.Error(err2)
+					return
 				}
 			}
-		}()
-		err = c.ChatStream(ctx, msgs, opts, chunks)
-		close(chunks)
-		responses := <-end
-		t.Logf("Raw responses: %#v", responses)
-		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-			t.Log(uce)
-		} else if err != nil {
-			t.Fatal(err)
 		}
-		if len(responses) == 0 {
-			t.Fatal("No response received")
-		}
-		if len(responses) > 1 {
-			t.Fatalf("Multiple responses received: %#v", responses)
-		}
-		resp = genai.ChatResult{Message: responses[len(responses)-1]}
-	} else {
-		resp, err = c.Chat(ctx, msgs, opts)
-		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-			t.Log(uce)
-		} else if err != nil {
-			t.Fatal(err)
-		}
+	}()
+	err := c.ChatStream(ctx, msgs, opts, chunks)
+	close(chunks)
+	responses := <-end
+	t.Logf("Raw responses: %#v", responses)
+	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+		t.Log(uce)
+	} else if err != nil {
+		t.Fatal(err)
 	}
+	if len(responses) == 0 {
+		t.Fatal("No response received")
+	}
+	if len(responses) > 1 {
+		t.Fatalf("Multiple responses received: %#v", responses)
+	}
+	resp := genai.ChatResult{Message: responses[len(responses)-1]}
 	t.Logf("Raw response: %#v", resp)
 	return resp
 }

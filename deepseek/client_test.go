@@ -6,7 +6,6 @@ package deepseek_test
 
 import (
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -19,6 +18,10 @@ func TestClient_Chat_allModels(t *testing.T) {
 	internaltest.TestChatAllModels(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
 }
 
+func TestClient_ChatStream(t *testing.T) {
+	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "deepseek-chat") })
+}
+
 func TestClient_Chat_jSON(t *testing.T) {
 	t.Skip("Deep seek struggle to follow the requested JSON schema in the prompt. To be investigated.")
 	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "deepseek-chat") })
@@ -26,28 +29,6 @@ func TestClient_Chat_jSON(t *testing.T) {
 
 func TestClient_Chat_tool_use(t *testing.T) {
 	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "deepseek-chat") })
-}
-
-func TestClient_ChatStream(t *testing.T) {
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
-	}
-	opts := genai.ChatOptions{
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "deepseek-chat") }, msgs, &opts)
-	if len(responses) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	resp := responses[0]
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	// Normalize some of the variance. Obviously many models will still fail this test.
-	if got := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"); got != "hello" {
-		t.Fatal(got)
-	}
 }
 
 func getClient(t *testing.T, m string) *deepseek.Client {

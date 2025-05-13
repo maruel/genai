@@ -40,6 +40,10 @@ func TestClient_Chat_allModels(t *testing.T) {
 // google/gemma-3-4b-it and google/gemma-3-27b-it are not available without a dedicated endpoint. We must
 // select one of the Serverless at https://api.together.ai/models.
 
+func TestClient_ChatStream(t *testing.T) {
+	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.2-3B-Instruct-Turbo") })
+}
+
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {
 	internaltest.TestChatVisionJPGInline(t, func(t *testing.T) genai.ChatProvider {
 		return getClient(t, "meta-llama/Llama-4-Scout-17B-16E-Instruct")
@@ -95,29 +99,6 @@ func TestClient_Chat_tool_use(t *testing.T) {
 	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider {
 		return getClient(t, "Qwen/Qwen2.5-7B-Instruct-Turbo")
 	})
-}
-
-func TestClient_ChatStream(t *testing.T) {
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
-	}
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.2-3B-Instruct-Turbo") }, msgs, &opts)
-	if len(responses) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	resp := responses[0]
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	// Normalize some of the variance. Obviously many models will still fail this test.
-	if got := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"); got != "hello" {
-		t.Fatal(got)
-	}
 }
 
 func getClient(t *testing.T, m string) *togetherai.Client {

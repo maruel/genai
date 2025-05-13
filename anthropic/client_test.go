@@ -7,7 +7,6 @@ package anthropic_test
 import (
 	_ "embed"
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -18,6 +17,10 @@ import (
 
 func TestClient_Chat_allModels(t *testing.T) {
 	internaltest.TestChatAllModels(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
+}
+
+func TestClient_ChatStream(t *testing.T) {
+	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") })
 }
 
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {
@@ -39,29 +42,6 @@ func TestClient_Chat_vision_pDF_uRL(t *testing.T) {
 
 func TestClient_Chat_tool_use(t *testing.T) {
 	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") })
-}
-
-func TestClient_ChatStream(t *testing.T) {
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
-	}
-	opts := genai.ChatOptions{
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") }, msgs, &opts)
-	if len(responses) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	resp := responses[0]
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	// Normalize some of the variance. Obviously many models will still fail this test.
-	got := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!")
-	if got != "hello" {
-		t.Fatal(got)
-	}
 }
 
 func getClient(t *testing.T, m string) *anthropic.Client {

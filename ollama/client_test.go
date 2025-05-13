@@ -64,6 +64,10 @@ func TestClient(t *testing.T) {
 		}
 	})
 
+	t.Run("stream", func(t *testing.T) {
+		internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return s.getClient(t, "gemma3:4b") })
+	})
+
 	t.Run("vision_jpg_inline", func(t *testing.T) {
 		internaltest.TestChatVisionJPGInline(t, func(t *testing.T) genai.ChatProvider {
 			return s.getClient(t, "gemma3:4b")

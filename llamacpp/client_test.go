@@ -68,6 +68,16 @@ func TestClient(t *testing.T) {
 			t.Logf("Unexpected tokens usage: %v", got.Usage)
 		}
 	})
+
+	t.Run("stream", func(t *testing.T) {
+		serverURL, transport := s.shouldStart(t)
+		c, err := llamacpp.New(serverURL, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		c.Client.Client = &http.Client{Transport: transport}
+		internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return c })
+	})
 }
 
 type lazyServer struct {

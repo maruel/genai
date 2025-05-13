@@ -18,6 +18,10 @@ func TestClient_Chat_allModels(t *testing.T) {
 	internaltest.TestChatAllModels(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
 }
 
+func TestClient_ChatStream(t *testing.T) {
+	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama-3.1-8b") })
+}
+
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {
 	t.Skip("Implement multi-content messages")
 	internaltest.TestChatVisionJPGInline(t, func(t *testing.T) genai.ChatProvider {

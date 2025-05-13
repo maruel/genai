@@ -5,7 +5,6 @@
 package cloudflare_test
 
 import (
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -30,6 +29,10 @@ func TestClient_Chat_allModels(t *testing.T) {
 		})
 }
 
+func TestClient_ChatStream(t *testing.T) {
+	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "@cf/meta/llama-3.2-3b-instruct") })
+}
+
 func TestClient_Chat_jSON(t *testing.T) {
 	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "@hf/nousresearch/hermes-2-pro-mistral-7b") })
 }
@@ -40,26 +43,6 @@ func TestClient_Chat_jSON_schema(t *testing.T) {
 
 func TestClient_Chat_tool_use(t *testing.T) {
 	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "@hf/nousresearch/hermes-2-pro-mistral-7b") })
-}
-
-func TestClient_ChatStream(t *testing.T) {
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
-	}
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "@cf/meta/llama-3.2-3b-instruct") }, msgs, &opts)
-	if len(responses) != 1 {
-		log.Fatal("Unexpected response")
-	}
-	resp := responses[0]
-	// Normalize some of the variance. Obviously many models will still fail this test.
-	if got := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"); got != "hello" {
-		t.Fatal(got)
-	}
 }
 
 func getClient(t *testing.T, m string) *cloudflare.Client {

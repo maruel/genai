@@ -7,7 +7,6 @@ package huggingface_test
 import (
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -30,32 +29,9 @@ func TestClient_Chat_allModels(t *testing.T) {
 		})
 }
 
-func TestClient_Chat(t *testing.T) {
+func TestClient_ChatStream(t *testing.T) {
 	// TODO: Figure out why smaller models fail.
-	c := getClient(t, "meta-llama/Llama-3.3-70B-Instruct")
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
-	}
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
-	if resp.InputTokens != 43 || resp.OutputTokens != 3 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	// Normalize some of the variance. Obviously many models will still fail this test.
-	if got := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"); got != "hello" {
-		t.Fatal(got)
-	}
+	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") })
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
@@ -70,31 +46,6 @@ func TestClient_Chat_jSON_schema(t *testing.T) {
 func TestClient_Chat_tool_use(t *testing.T) {
 	// TODO: Figure out why smaller models fail.
 	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") })
-}
-
-func TestClient_ChatStream(t *testing.T) {
-	// TODO: Figure out why smaller models fail.
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
-	}
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	responses := internaltest.ChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") }, msgs, &opts)
-	// TODO: handle t.Logf("HF currently tend to return spurious HTTP 422: %s", err)
-	if len(responses) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	resp := responses[0]
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	// Normalize some of the variance. Obviously many models will still fail this test.
-	if got := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"); got != "hello" {
-		t.Fatal(got)
-	}
 }
 
 func getClient(t *testing.T, m string) *huggingface.Client {

@@ -56,6 +56,12 @@ func TestClient_Chat_allModels(t *testing.T) {
 		})
 }
 
+func TestClient_Chat_thinking(t *testing.T) {
+	// https://ai.google.dev/gemini-api/docs/thinking?hl=en
+	// "gemini-2.5-flash-preview-04-17-thinking"
+	internaltest.TestChatThinking(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "gemini-2.0-flash-thinking-exp") })
+}
+
 func TestClient_ChatStream(t *testing.T) {
 	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, true)
 }

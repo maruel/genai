@@ -19,6 +19,11 @@ func TestClient_Chat_allModels(t *testing.T) {
 	internaltest.TestChatAllModels(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
 }
 
+func TestClient_Chat_thinking(t *testing.T) {
+	// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
+	internaltest.TestChatThinking(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-7-sonnet-20250219") })
+}
+
 func TestClient_ChatStream(t *testing.T) {
 	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") }, true)
 }

@@ -510,6 +510,8 @@ func (p *Part) ToToolCall(out *genai.ToolCall) error {
 // https://ai.google.dev/api/generate-content?hl=en#ThinkingConfig
 // See https://ai.google.dev/gemini-api/docs/thinking#rest
 type ThinkingConfig struct {
+	// IncludeThoughts has no effect since January 2025 according to
+	// https://discuss.ai.google.dev/t/thoughts-are-missing-cot-not-included-anymore/63653/13
 	IncludeThoughts bool  `json:"includeThoughts"` // Must not be omitted.
 	ThinkingBudget  int64 `json:"thinkingBudget"`  // Must not be omitted. [0, 24576]
 }

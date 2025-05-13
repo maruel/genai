@@ -162,6 +162,7 @@ func (m *Message) From(in *genai.Message) error {
 	if len(in.Contents) > 1 {
 		return errors.New("deepseek doesn't support multiple content blocks; TODO split transparently")
 	}
+	// TODO: ReasoningContent
 	if len(in.Contents) == 1 {
 		m.Content = in.Contents[0].Text
 	}
@@ -176,6 +177,7 @@ func (m *Message) From(in *genai.Message) error {
 
 func (m *Message) To(out *genai.Message) error {
 	// TODO: "tool"
+	// TODO: ReasoningContent
 	switch role := m.Role; role {
 	case "user":
 		out.Role = genai.Role(role)

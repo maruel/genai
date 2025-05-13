@@ -37,6 +37,11 @@ func TestClient_Chat_allModels(t *testing.T) {
 		})
 }
 
+func TestClient_Chat_thinking(t *testing.T) {
+	t.Skip(`would need to split manually "\n</think>\n\n"`)
+	internaltest.TestChatThinking(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "Qwen/Qwen3-235B-A22B-fp8-tput") })
+}
+
 // google/gemma-3-4b-it and google/gemma-3-27b-it are not available without a dedicated endpoint. We must
 // select one of the Serverless at https://api.together.ai/models.
 

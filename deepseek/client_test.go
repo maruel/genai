@@ -18,6 +18,10 @@ func TestClient_Chat_allModels(t *testing.T) {
 	internaltest.TestChatAllModels(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
 }
 
+func TestClient_Chat_thinking(t *testing.T) {
+	internaltest.TestChatThinking(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "deepseek-reasoner") })
+}
+
 func TestClient_ChatStream(t *testing.T) {
 	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "deepseek-chat") }, true)
 }

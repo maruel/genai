@@ -229,6 +229,7 @@ type Content struct {
 }
 
 func (c *Content) From(in *genai.Content) error {
+	// TODO: Reasoning
 	if in.Text != "" {
 		c.Type = "text"
 		c.Text = in.Text
@@ -356,13 +357,13 @@ func (m *MessageResponse) To(out *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", role)
 	}
-
 	if len(m.ToolCalls) != 0 {
 		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))
 		for i := range m.ToolCalls {
 			m.ToolCalls[i].To(&out.ToolCalls[i])
 		}
 	}
+	// TODO: Reasoning
 	if m.Content != "" {
 		out.Contents = []genai.Content{{Text: m.Content}}
 	}

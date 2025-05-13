@@ -136,7 +136,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 
 // https://docs.anthropic.com/en/api/messages
 type Message struct {
-	Role string `json:"role"` // "assistant", "user"
+	Type string `json:"type,omitzero"` // "message"
+	Role string `json:"role"`          // "assistant", "user"
 	// Anthropic's Content doesn't distinguish between actual content (text,
 	// documents) and tool use.
 	Content []Content `json:"content"`
@@ -184,6 +185,8 @@ func (m *Message) To(out *genai.Message) error {
 			if err := m.Content[i].ToToolCall(&out.ToolCalls[len(out.ToolCalls)-1]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
+		case "thinking":
+			// TODO: Implement.
 		default:
 			return fmt.Errorf("unsupported content type %q", m.Content[i].Type)
 		}
@@ -192,9 +195,13 @@ func (m *Message) To(out *genai.Message) error {
 }
 
 type Content struct {
-	Type string `json:"type"` // "text", "image", "tool_use", "tool_result", "document"
+	Type string `json:"type"` // "text", "image", "tool_use", "tool_result", "document", "thinking"
 	// Type == "text"
 	Text string `json:"text,omitzero"`
+
+	// Type == "thinking"
+	Thinking  string `json:"thinking,omitzero"`
+	Signature []byte `json:"signature,omitzero"`
 
 	// Type == "text", "image", "tool_use", "tool_result", "document"
 	CacheControl struct {
@@ -243,6 +250,7 @@ type Content struct {
 }
 
 func (c *Content) FromContent(in *genai.Content) error {
+	// TODO: thinking
 	if in.Text != "" {
 		c.Type = "text"
 		c.Text = in.Text

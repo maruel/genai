@@ -29,6 +29,11 @@ func TestClient_Chat_allModels(t *testing.T) {
 		})
 }
 
+func TestClient_Chat_thinking(t *testing.T) {
+	t.Skip(`would need to split manually "\n</think>\n\n"`)
+	internaltest.TestChatThinking(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "Qwen/QwQ-32B") })
+}
+
 func TestClient_ChatStream(t *testing.T) {
 	// TODO: Figure out why smaller models fail.
 	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") }, false)

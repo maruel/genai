@@ -22,6 +22,36 @@ type ChatProviderFactory func(t *testing.T) genai.ChatProvider
 // ModelChatProviderFactory is what a Java developer would write.
 type ModelChatProviderFactory func(t *testing.T, model string) genai.ChatProvider
 
+func TestChatThinking(t *testing.T, factory ChatProviderFactory) {
+	ctx := t.Context()
+	c := factory(t)
+	msgs := genai.Messages{
+		genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello."),
+	}
+	// I believe most thinking models do not like Temperature to be set.
+	opts := genai.ChatOptions{
+		MaxTokens:      2000,
+		Seed:           1,
+		ThinkingBudget: 1900,
+	}
+	resp, err := c.Chat(ctx, msgs, &opts)
+	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+		t.Log(uce)
+	} else if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("Raw response: %#v", resp)
+	testUsage(t, &resp.Usage)
+	if len(resp.Contents) != 1 {
+		t.Fatal("Unexpected response")
+	}
+	// Normalize some of the variance. Obviously many models will still fail this test.
+	got := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!")
+	if got != "hello" {
+		t.Fatal(got)
+	}
+}
+
 // TestChatStream makes sure ChatStream() works.
 func TestChatStream(t *testing.T, factory ChatProviderFactory, hasUsage bool) {
 	c := factory(t)

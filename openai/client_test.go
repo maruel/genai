@@ -45,6 +45,11 @@ func TestClient_Chat_allModels(t *testing.T) {
 
 const model = "gpt-4.1-nano"
 
+func TestClient_Chat_thinking(t *testing.T) {
+	// https://platform.openai.com/docs/guides/reasoning
+	internaltest.TestChatThinking(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "o4-mini") })
+}
+
 func TestClient_ChatStream(t *testing.T) {
 	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, false)
 }

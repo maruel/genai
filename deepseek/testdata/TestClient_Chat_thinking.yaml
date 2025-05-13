@@ -1,0 +1,53 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 150
+        transfer_encoding: []
+        trailer: {}
+        host: api.deepseek.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"deepseek-reasoner","messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"stream":false,"max_tokens":2000}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"edfe41e8-0f59-49b5-8e02-0386337d0022","object":"chat.completion","created":1747176299,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"hello","reasoning_content":"Okay, the user wants me to say hello, but there are some specific instructions here. Let me read the query again to make sure I understand.\n\nThe user says: \"Say hello. Use only one word. Say only hello.\" So they want a single-word response, which should just be \"hello\". They''re probably testing if I can follow directions precisely. Let me check if there''s any hidden nuance. Maybe they want to see if I add any extra text or if I stick strictly to the one word. \n\nI need to make sure that my response doesn''t include anything else. No punctuation, right? Wait, the instruction says \"use only one word\" and \"say only hello\". So just \"hello\" without any period or exclamation mark. Got it. \n\nLet me think if there''s any alternative interpretation. Could \"hello\" be in another language? But the instruction says \"say hello\", which is English. So the response should definitely be the English word. \n\nIs there a possibility that the user expects a different variation, like \"hi\"? But no, they specifically wrote \"hello\". So sticking to \"hello\" is correct. \n\nI should also make sure that the response doesn''t have any markdown formatting. The user didn''t mention that, but since they want only one word, maybe formatting is allowed? Wait, no, the instruction says \"use only one word\" and \"say only hello\". So probably just plain text. \n\nAlright, I think the correct response is simply \"hello\" without any additional characters or formatting. Let me double-check the instructions again to be safe. Yep, that''s exactly what they asked for. No need to complicate it further. Responding with just \"hello\" meets all their requirements."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":17,"completion_tokens":360,"total_tokens":377,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":357},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":17},"system_fingerprint":"fp_5417b77867_prod0425fp8"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93f5aefd18aea2e6-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            X-Content-Type-Options:
+                - nosniff
+            X-Ds-Trace-Id:
+                - 46d6b1369cba7ca09e5e6d2ceb5d4410
+        status: 200 OK
+        code: 200
+        duration: 356ms

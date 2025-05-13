@@ -27,6 +27,10 @@ func TestClient_Chat_allModels(t *testing.T) {
 		})
 }
 
+func TestClient_Chat_thinking(t *testing.T) {
+	internaltest.TestChatThinking(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "qwen-qwq-32b") })
+}
+
 func TestClient_ChatStream(t *testing.T) {
 	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama-3.1-8b-instant") }, true)
 }

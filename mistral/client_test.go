@@ -30,15 +30,15 @@ func TestClient_Chat_allModels(t *testing.T) {
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "ministral-3b-latest") })
+	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "ministral-3b-latest") }, true)
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
-	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "mistral-small-latest") })
+	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "mistral-small-latest") }, true)
 }
 
 func TestClient_Chat_jSON_schema(t *testing.T) {
-	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "mistral-small-latest") })
+	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "mistral-small-latest") }, true)
 }
 
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {
@@ -51,7 +51,7 @@ func TestClient_Chat_vision_pDF_uRL(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "ministral-3b-latest") })
+	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "ministral-3b-latest") }, true)
 }
 
 func getClient(t *testing.T, m string) *mistral.Client {

@@ -582,21 +582,9 @@ type ChatResponse struct {
 		LogprobsResult any     `json:"logprobsResult"`
 		Index          int64   `json:"index"`
 	} `json:"candidates"`
-	PromptFeedback any `json:"promptFeedback,omitzero"`
-	// https://ai.google.dev/api/generate-content?hl=en#UsageMetadata
-	UsageMetadata struct {
-		PromptTokenCount           int64                `json:"promptTokenCount"`
-		CachedContentTokenCount    int64                `json:"cachedContentTokenCount"`
-		CandidatesTokenCount       int64                `json:"candidatesTokenCount"`
-		ToolUsePromptTokenCount    int64                `json:"toolUsePromptTokenCount"`
-		ThoughtsTokenCount         int64                `json:"thoughtsTokenCount"`
-		TotalTokenCount            int64                `json:"totalTokenCount"`
-		PromptTokensDetails        []ModalityTokenCount `json:"promptTokensDetails"`
-		CacheTokensDetails         []ModalityTokenCount `json:"cacheTokensDetails"`
-		CandidatesTokensDetails    []ModalityTokenCount `json:"candidatesTokensDetails"`
-		ToolUsePromptTokensDetails []ModalityTokenCount `json:"toolUsePromptTokensDetails"`
-	} `json:"usageMetadata"`
-	ModelVersion string `json:"modelVersion"`
+	PromptFeedback any           `json:"promptFeedback,omitzero"`
+	UsageMetadata  UsageMetadata `json:"usageMetadata"`
+	ModelVersion   string        `json:"modelVersion"`
 }
 
 func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
@@ -616,6 +604,20 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	return out, err
 }
 
+// https://ai.google.dev/api/generate-content?hl=en#UsageMetadata
+type UsageMetadata struct {
+	PromptTokenCount           int64                `json:"promptTokenCount"`
+	CachedContentTokenCount    int64                `json:"cachedContentTokenCount"`
+	CandidatesTokenCount       int64                `json:"candidatesTokenCount"`
+	ToolUsePromptTokenCount    int64                `json:"toolUsePromptTokenCount"`
+	ThoughtsTokenCount         int64                `json:"thoughtsTokenCount"`
+	TotalTokenCount            int64                `json:"totalTokenCount"`
+	PromptTokensDetails        []ModalityTokenCount `json:"promptTokensDetails"`
+	CacheTokensDetails         []ModalityTokenCount `json:"cacheTokensDetails"`
+	CandidatesTokensDetails    []ModalityTokenCount `json:"candidatesTokensDetails"`
+	ToolUsePromptTokensDetails []ModalityTokenCount `json:"toolUsePromptTokensDetails"`
+}
+
 // https://ai.google.dev/api/generate-content?hl=en#v1beta.ModalityTokenCount
 type ModalityTokenCount struct {
 	Modality   Modality `json:"modality"`
@@ -627,14 +629,8 @@ type ChatStreamChunkResponse struct {
 		Content      Content `json:"content"`
 		FinishReason string  `json:"finishReason"` // STOP
 	} `json:"candidates"`
-	UsageMetadata struct {
-		CandidatesTokenCount    int64                `json:"candidatesTokenCount"`
-		PromptTokenCount        int64                `json:"promptTokenCount"`
-		TotalTokenCount         int64                `json:"totalTokenCount"`
-		PromptTokensDetails     []ModalityTokenCount `json:"promptTokensDetails"`
-		CandidatesTokensDetails []ModalityTokenCount `json:"candidatesTokensDetails"`
-	} `json:"usageMetadata"`
-	ModelVersion string `json:"modelVersion"`
+	UsageMetadata UsageMetadata `json:"usageMetadata"`
+	ModelVersion  string        `json:"modelVersion"`
 }
 
 // Caching
@@ -971,8 +967,9 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 }
 
 // ChatStream implements genai.ChatProvider.
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
 	in := ChatRequest{}
+	usage := genai.Usage{}
 	var continuableErr error
 	if err := in.Init(msgs, opts, c.model); err != nil {
 		// If it's an UnsupportedContinuableError, we can continue
@@ -981,27 +978,30 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 			continuableErr = uce
 			// Otherwise log the error but continue
 		} else {
-			return err
+			return usage, err
 		}
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
+	finalUsage := UsageMetadata{}
 	eg.Go(func() error {
-		return processStreamPackets(ch, chunks)
+		return processStreamPackets(ch, chunks, &finalUsage)
 	})
 	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
+	usage.InputTokens = finalUsage.PromptTokenCount
+	usage.OutputTokens = finalUsage.TotalTokenCount
 	// Return the continuable error if no other error occurred
 	if err == nil && continuableErr != nil {
-		return continuableErr
+		return usage, continuableErr
 	}
-	return err
+	return usage, err
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, finalUsage *UsageMetadata) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -1010,6 +1010,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	for pkt := range ch {
 		if len(pkt.Candidates) != 1 {
 			continue
+		}
+		if pkt.UsageMetadata.TotalTokenCount != 0 {
+			*finalUsage = pkt.UsageMetadata
 		}
 		switch role := pkt.Candidates[0].Content.Role; role {
 		case "model", "":

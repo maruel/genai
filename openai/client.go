@@ -431,28 +431,11 @@ type ChatResponse struct {
 		Message      Message  `json:"message"`
 		Logprobs     Logprobs `json:"logprobs"`
 	} `json:"choices"`
-	Created Time   `json:"created"`
-	ID      string `json:"id"`
-	Model   string `json:"model"`
-	Object  string `json:"object"`
-	Usage   struct {
-		PromptTokens        int64 `json:"prompt_tokens"`
-		CompletionTokens    int64 `json:"completion_tokens"`
-		TotalTokens         int64 `json:"total_tokens"`
-		PromptTokensDetails struct {
-			CachedTokens int64 `json:"cached_tokens"`
-			AudioTokens  int64 `json:"audio_tokens"`
-			TextTokens   int64 `json:"text_tokens"`
-			ImageTokens  int64 `json:"image_tokens"`
-		} `json:"prompt_tokens_details"`
-		ChatTokensDetails struct {
-			ReasoningTokens          int64 `json:"reasoning_tokens"`
-			AudioTokens              int64 `json:"audio_tokens"`
-			AcceptedPredictionTokens int64 `json:"accepted_prediction_tokens"`
-			RejectedPredictionTokens int64 `json:"rejected_prediction_tokens"`
-			TextTokens               int64 `json:"text_tokens"`
-		} `json:"completion_tokens_details"`
-	} `json:"usage"`
+	Created           Time   `json:"created"`
+	ID                string `json:"id"`
+	Model             string `json:"model"`
+	Object            string `json:"object"`
+	Usage             Usage  `json:"usage"`
 	ServiceTier       string `json:"service_tier"`
 	SystemFingerprint string `json:"system_fingerprint"`
 }
@@ -471,6 +454,25 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	out.FinishReason = c.Choices[0].FinishReason
 	err := c.Choices[0].Message.To(&out.Message)
 	return out, err
+}
+
+type Usage struct {
+	PromptTokens        int64 `json:"prompt_tokens"`
+	CompletionTokens    int64 `json:"completion_tokens"`
+	TotalTokens         int64 `json:"total_tokens"`
+	PromptTokensDetails struct {
+		CachedTokens int64 `json:"cached_tokens"`
+		AudioTokens  int64 `json:"audio_tokens"`
+		TextTokens   int64 `json:"text_tokens"`
+		ImageTokens  int64 `json:"image_tokens"`
+	} `json:"prompt_tokens_details"`
+	CompletionTokensDetails struct {
+		ReasoningTokens          int64 `json:"reasoning_tokens"`
+		AudioTokens              int64 `json:"audio_tokens"`
+		AcceptedPredictionTokens int64 `json:"accepted_prediction_tokens"`
+		RejectedPredictionTokens int64 `json:"rejected_prediction_tokens"`
+		TextTokens               int64 `json:"text_tokens"`
+	} `json:"completion_tokens_details"`
 }
 
 type Logprobs struct {
@@ -504,11 +506,7 @@ type ChatStreamChunkResponse struct {
 	Object            string `json:"object"`
 	ServiceTier       string `json:"service_tier"`
 	SystemFingerprint string `json:"system_fingerprint"`
-	Usage             struct {
-		ChatTokens   int64 `json:"completion_tokens"`
-		PromptTokens int64 `json:"prompt_tokens"`
-		TotalTokens  int64 `json:"total_tokens"`
-	} `json:"usage"`
+	Usage             Usage  `json:"usage"`
 }
 
 //
@@ -606,8 +604,9 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 	return c.post(ctx, "https://api.openai.com/v1/chat/completions", in, out)
 }
 
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
 	in := ChatRequest{}
+	usage := genai.Usage{}
 	var continuableErr error
 	if err := in.Init(msgs, opts, c.model); err != nil {
 		// If it's an UnsupportedContinuableError, we can continue
@@ -616,27 +615,30 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 			continuableErr = uce
 			// Otherwise log the error but continue
 		} else {
-			return err
+			return usage, err
 		}
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
+	finalUsage := Usage{}
 	eg.Go(func() error {
-		return processStreamPackets(ch, chunks)
+		return processStreamPackets(ch, chunks, &finalUsage)
 	})
 	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
+	usage.InputTokens = finalUsage.PromptTokens
+	usage.OutputTokens = finalUsage.CompletionTokens
 	// Return the continuable error if no other error occurred
 	if err == nil && continuableErr != nil {
-		return continuableErr
+		return usage, continuableErr
 	}
-	return err
+	return usage, err
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, finalUsage *Usage) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -645,6 +647,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	for pkt := range ch {
 		if len(pkt.Choices) != 1 {
 			continue
+		}
+		if pkt.Usage.TotalTokens != 0 {
+			*finalUsage = pkt.Usage
 		}
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "", "assistant":

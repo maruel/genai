@@ -23,7 +23,7 @@ type ChatProviderFactory func(t *testing.T) genai.ChatProvider
 type ModelChatProviderFactory func(t *testing.T, model string) genai.ChatProvider
 
 // TestChatStream makes sure ChatStream() works.
-func TestChatStream(t *testing.T, factory ChatProviderFactory) {
+func TestChatStream(t *testing.T, factory ChatProviderFactory, hasUsage bool) {
 	c := factory(t)
 	ctx := t.Context()
 	chunks := make(chan genai.MessageFragment)
@@ -65,13 +65,17 @@ func TestChatStream(t *testing.T, factory ChatProviderFactory) {
 		MaxTokens:   50,
 		Seed:        1,
 	}
-	err := c.ChatStream(ctx, msgs, &opts, chunks)
+	usage, err := c.ChatStream(ctx, msgs, &opts, chunks)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
 	} else if err != nil {
 		t.Error(err)
 	}
 	close(chunks)
+	// Hugginface, OpenAI do not set tokens when streaming as shown in testdata/TestClient_ChatStream.yaml
+	if hasUsage {
+		testUsage(t, &usage)
+	}
 	responses := <-end
 	t.Logf("Raw responses: %#v", responses)
 	if len(responses) != 1 {
@@ -119,6 +123,7 @@ func TestChatAllModels(t *testing.T, factory ModelChatProviderFactory, filter fu
 				t.Fatal(err)
 			}
 			t.Logf("Raw response: %#v", resp)
+			testUsage(t, &resp.Usage)
 			if len(resp.Contents) != 1 {
 				t.Fatal("Unexpected response")
 			}
@@ -135,20 +140,20 @@ func TestChatAllModels(t *testing.T, factory ModelChatProviderFactory, filter fu
 
 // TestChatToolUseCountry runs a Chat with tool use and verifies that the tools are called correctly.
 // It runs subtests for both Chat and ChatStream methods.
-func TestChatToolUseCountry(t *testing.T, factory ChatProviderFactory) {
+func TestChatToolUseCountry(t *testing.T, factory ChatProviderFactory, hasUsage bool) {
 	t.Run("Chat", func(t *testing.T) {
-		chatToolUseCountryCore(t, factory, false)
+		chatToolUseCountryCore(t, factory, hasUsage, false)
 	})
 	t.Run("ChatStream", func(t *testing.T) {
 		t.Skip("TODO")
-		chatToolUseCountryCore(t, factory, true)
+		chatToolUseCountryCore(t, factory, hasUsage, true)
 	})
 }
 
 // chatToolUseCountryCore runs a Chat or ChatStream with tool use and verifies that the tools are called correctly.
 // The useStream parameter determines whether to use Chat or ChatStream.
 // It returns the response for further validation.
-func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, useStream bool) {
+func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, hasUsage bool, useStream bool) {
 	ctx := t.Context()
 	t.Run("Canada", func(t *testing.T) {
 		c := factory(t)
@@ -174,6 +179,10 @@ func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, useStream
 			resp = processChatStream(t, ctx, c, msgs, &opts)
 		} else {
 			resp = processChat(t, ctx, c, msgs, &opts)
+		}
+		// I'm disappointed by Cloudflare.
+		if hasUsage {
+			testUsage(t, &resp.Usage)
 		}
 
 		// Warning: when the model is undecided, it call both.
@@ -216,7 +225,9 @@ func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, useStream
 		} else {
 			resp = processChat(t, ctx, c, msgs, &opts)
 		}
-
+		if hasUsage {
+			testUsage(t, &resp.Usage)
+		}
 		// Warning: when the model is undecided, it call both.
 		// Check for tool calls
 		want := "best_country"
@@ -261,6 +272,7 @@ func TestChatVisionJPGInline(t *testing.T, factory ChatProviderFactory) {
 		t.Fatal(err)
 	}
 	t.Logf("Raw response: %#v", resp)
+	testUsage(t, &resp.Usage)
 	if len(resp.Contents) != 1 {
 		t.Fatal("Unexpected response")
 	}
@@ -300,6 +312,7 @@ func TestChatVisionPDFInline(t *testing.T, factory ChatProviderFactory) {
 		t.Fatal(err)
 	}
 	t.Logf("Raw response: %#v", resp)
+	testUsage(t, &resp.Usage)
 	if resp.InputTokens != 1301 || resp.OutputTokens != 2 {
 		t.Logf("Unexpected tokens usage: %v", resp.Usage)
 	}
@@ -334,6 +347,7 @@ func TestChatVisionPDFURL(t *testing.T, factory ChatProviderFactory) {
 		t.Fatal(err)
 	}
 	t.Logf("Raw response: %#v", resp)
+	testUsage(t, &resp.Usage)
 	if resp.InputTokens != 1301 || resp.OutputTokens != 2 {
 		t.Logf("Unexpected tokens usage: %v", resp.Usage)
 	}
@@ -375,6 +389,7 @@ func testChatAudioInline(t *testing.T, factory ChatProviderFactory, filename str
 		t.Fatal(err)
 	}
 	t.Logf("Raw response: %#v", resp)
+	testUsage(t, &resp.Usage)
 	if len(resp.Contents) != 1 {
 		t.Fatal("Unexpected response")
 	}
@@ -410,6 +425,7 @@ func TestChatVideoMP4Inline(t *testing.T, factory ChatProviderFactory) {
 		t.Fatal(err)
 	}
 	t.Logf("Raw response: %#v", resp)
+	testUsage(t, &resp.Usage)
 	if len(resp.Contents) != 1 {
 		t.Fatal("Unexpected response")
 	}
@@ -421,7 +437,7 @@ func TestChatVideoMP4Inline(t *testing.T, factory ChatProviderFactory) {
 // JSON
 
 // TestChatJSON runs a Chat verifying that the model correctly outputs JSON.
-func TestChatJSON(t *testing.T, factory ChatProviderFactory) {
+func TestChatJSON(t *testing.T, factory ChatProviderFactory, hasUsage bool) {
 	c := factory(t)
 	ctx := t.Context()
 	msgs := genai.Messages{
@@ -445,6 +461,10 @@ func TestChatJSON(t *testing.T, factory ChatProviderFactory) {
 		t.Fatal(err)
 	}
 	t.Logf("Raw response: %#v", resp)
+	// I'm disappointed by Cloudflare.
+	if hasUsage {
+		testUsage(t, &resp.Usage)
+	}
 	if len(resp.Contents) != 1 {
 		t.Fatal("Unexpected response")
 	}
@@ -480,7 +500,7 @@ func TestChatJSON(t *testing.T, factory ChatProviderFactory) {
 }
 
 // TestChatJSONSchema runs a Chat verifying that the model correctly outputs JSON according to a schema.
-func TestChatJSONSchema(t *testing.T, factory ChatProviderFactory) {
+func TestChatJSONSchema(t *testing.T, factory ChatProviderFactory, hasUsage bool) {
 	c := factory(t)
 	ctx := t.Context()
 	msgs := genai.Messages{
@@ -508,6 +528,10 @@ func TestChatJSONSchema(t *testing.T, factory ChatProviderFactory) {
 		t.Fatal(err)
 	}
 	t.Logf("Raw response: %#v", resp)
+	// I'm disappointed by Cloudflare.
+	if hasUsage {
+		testUsage(t, &resp.Usage)
+	}
 	if len(resp.Contents) != 1 {
 		t.Fatal("Unexpected response")
 	}
@@ -565,10 +589,11 @@ func processChatStream(t *testing.T, ctx context.Context, c genai.ChatProvider, 
 			}
 		}
 	}()
-	err := c.ChatStream(ctx, msgs, opts, chunks)
+	usage, err := c.ChatStream(ctx, msgs, opts, chunks)
 	close(chunks)
 	responses := <-end
 	t.Logf("Raw responses: %#v", responses)
+	testUsage(t, &usage)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
 	} else if err != nil {
@@ -583,4 +608,13 @@ func processChatStream(t *testing.T, ctx context.Context, c genai.ChatProvider, 
 	resp := genai.ChatResult{Message: responses[len(responses)-1]}
 	t.Logf("Raw response: %#v", resp)
 	return resp
+}
+
+func testUsage(t *testing.T, u *genai.Usage) {
+	if u.InputTokens == 0 {
+		t.Error("expected Usage.InputTokens to be set")
+	}
+	if u.OutputTokens == 0 {
+		t.Error("expected Usage.OutputTokens to be set")
+	}
 }

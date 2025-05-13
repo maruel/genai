@@ -28,7 +28,7 @@ func TestClient_Chat_allModels(t *testing.T) {
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama-3.1-8b-instant") })
+	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama-3.1-8b-instant") }, true)
 }
 
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {
@@ -38,16 +38,16 @@ func TestClient_Chat_vision_jPG_inline(t *testing.T) {
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
-	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama3-8b-8192") })
+	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama3-8b-8192") }, true)
 }
 
 func TestClient_Chat_jSON_schema(t *testing.T) {
 	t.Skip("Currently broken. To be investigated. See https://discord.com/channels/1207099205563457597/1207101178631159830/1371897729395064832")
-	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "gemma2-9b-it") })
+	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "gemma2-9b-it") }, true)
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama3-8b-8192") })
+	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama3-8b-8192") }, true)
 }
 
 func getClient(t *testing.T, m string) *groq.Client {

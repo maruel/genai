@@ -20,7 +20,7 @@ func TestClient_Chat_allModels(t *testing.T) {
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") })
+	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") }, true)
 }
 
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {
@@ -41,7 +41,7 @@ func TestClient_Chat_vision_pDF_uRL(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") })
+	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "claude-3-haiku-20240307") }, true)
 }
 
 func getClient(t *testing.T, m string) *anthropic.Client {

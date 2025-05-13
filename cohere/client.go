@@ -232,19 +232,8 @@ type ChatResponse struct {
 	ID           string          `json:"id"`
 	FinishReason string          `json:"finish_reason"` // COMPLETE, STOP_SEQUENCe, MAX_TOKENS, TOOL_CALL, ERROR
 	Message      MessageResponse `json:"message"`
-	Usage        struct {
-		BilledUnits struct {
-			InputTokens     int64 `json:"input_tokens"`
-			OutputTokens    int64 `json:"output_tokens"`
-			SearchUnits     int64 `json:"search_units"`
-			Classifications int64 `json:"classifications"`
-		} `json:"billed_units"`
-		Tokens struct {
-			InputTokens  int64 `json:"input_tokens"`
-			OutputTokens int64 `json:"output_tokens"`
-		} `json:"tokens"`
-	} `json:"usage"`
-	Logprobs []struct {
+	Usage        Usage           `json:"usage"`
+	Logprobs     []struct {
 		TokenIDs []int64   `json:"token_ids"`
 		Text     string    `json:"text"`
 		Logprobs []float64 `json:"logprobs"`
@@ -263,6 +252,19 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	}
 	err := c.Message.To(&out.Message)
 	return out, err
+}
+
+type Usage struct {
+	BilledUnits struct {
+		InputTokens     int64 `json:"input_tokens"`
+		OutputTokens    int64 `json:"output_tokens"`
+		SearchUnits     int64 `json:"search_units"`
+		Classifications int64 `json:"classifications"`
+	} `json:"billed_units"`
+	Tokens struct {
+		InputTokens  int64 `json:"input_tokens"`
+		OutputTokens int64 `json:"output_tokens"`
+	} `json:"tokens"`
 }
 
 type MessageResponse struct {
@@ -342,16 +344,7 @@ type ChatStreamChunkResponse struct {
 			Citations []struct{} `json:"citations"`
 		} `json:"message"`
 		FinishReason string `json:"finish_reason"` // COMPLETE
-		Usage        struct {
-			BilledUnits struct {
-				InputTokens  int64 `json:"input_tokens"`
-				OutputTokens int64 `json:"output_tokens"`
-			} `json:"billed_units"`
-			Tokens struct {
-				InputTokens  int64 `json:"input_tokens"`
-				OutputTokens int64 `json:"output_tokens"`
-			} `json:"tokens"`
-		} `json:"usage"`
+		Usage        Usage  `json:"usage"`
 	} `json:"delta"`
 }
 
@@ -460,8 +453,9 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 	return c.post(ctx, "https://api.cohere.com/v2/chat", in, out)
 }
 
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
 	in := ChatRequest{}
+	usage := genai.Usage{}
 	var continuableErr error
 	if err := in.Init(msgs, opts, c.model); err != nil {
 		// If it's an UnsupportedContinuableError, we can continue
@@ -470,33 +464,39 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 			continuableErr = uce
 			// Otherwise log the error but continue
 		} else {
-			return err
+			return usage, err
 		}
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
+	finalUsage := Usage{}
 	eg.Go(func() error {
-		return processStreamPackets(ch, chunks)
+		return processStreamPackets(ch, chunks, &finalUsage)
 	})
 	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
+	usage.InputTokens = finalUsage.Tokens.InputTokens
+	usage.OutputTokens = finalUsage.Tokens.OutputTokens
 	// Return the continuable error if no other error occurred
 	if err == nil && continuableErr != nil {
-		return continuableErr
+		return usage, continuableErr
 	}
-	return err
+	return usage, err
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, finalUsage *Usage) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
 		}
 	}()
 	for pkt := range ch {
+		if pkt.Delta.Usage.Tokens.OutputTokens != 0 {
+			*finalUsage = pkt.Delta.Usage
+		}
 		switch role := pkt.Delta.Message.Role; role {
 		case "assistant", "":
 		default:

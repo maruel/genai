@@ -144,7 +144,7 @@ func ExampleClient_ChatStream() {
 			}
 		}
 	}()
-	err = c.ChatStream(ctx, msgs, &opts, chunks)
+	_, err = c.ChatStream(ctx, msgs, &opts, chunks)
 	close(chunks)
 	var responses genai.Messages
 	for m := range end {

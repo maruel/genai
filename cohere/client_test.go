@@ -26,20 +26,20 @@ func TestClient_Chat_allModels(t *testing.T) {
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "command-r7b-12-2024") })
+	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "command-r7b-12-2024") }, true)
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
 	t.Skip("Cohere's model seem to struggle at unstructured JSON. To be investigated.")
-	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "command-r-08-2024") })
+	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "command-r-08-2024") }, true)
 }
 
 func TestClient_Chat_jSON_schema(t *testing.T) {
-	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "command-r-08-2024") })
+	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "command-r-08-2024") }, true)
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "command-r-08-2024") })
+	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "command-r-08-2024") }, true)
 }
 
 func getClient(t *testing.T, m string) *cohere.Client {

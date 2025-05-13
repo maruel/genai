@@ -46,15 +46,15 @@ func TestClient_Chat_allModels(t *testing.T) {
 const model = "gpt-4.1-nano"
 
 func TestClient_ChatStream(t *testing.T) {
-	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
+	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, false)
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
-	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
+	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, true)
 }
 
 func TestClient_Chat_jSON_schema(t *testing.T) {
-	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
+	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, true)
 }
 
 func TestClient_Chat_audio_mp3_inline(t *testing.T) {
@@ -71,7 +71,7 @@ func TestClient_Chat_vision_pDF_inline(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
+	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, true)
 }
 
 func getClient(t *testing.T, m string) *openai.Client {

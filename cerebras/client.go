@@ -283,11 +283,7 @@ type ChatResponse struct {
 		FinishReason string  `json:"finish_reason"` // "stop", "tool_calls"
 		Message      Message `json:"message"`
 	} `json:"choices"`
-	Usage struct {
-		PromptTokens     int64 `json:"prompt_tokens"`
-		CompletionTokens int64 `json:"completion_tokens"`
-		TotalTokens      int64 `json:"total_tokens"`
-	} `json:"usage"`
+	Usage    Usage `json:"usage"`
 	TimeInfo struct {
 		QueueTime  float64 `json:"queue_time"`      // In seconds
 		PromptTime float64 `json:"prompt_time"`     // In seconds
@@ -328,11 +324,7 @@ type ChatStreamChunkResponse struct {
 		Index        int64  `json:"index"`
 		FinishReason string `json:"finish_reason"`
 	} `json:"choices"`
-	Usage struct {
-		PromptTokens int64 `json:"prompt_tokens"`
-		ChatTokens   int64 `json:"completion_tokens"`
-		TotalTokens  int64 `json:"total_tokens"`
-	} `json:"usage"`
+	Usage    Usage `json:"usage"`
 	TimeInfo struct {
 		QueueTime  float64 `json:"queue_time"`
 		PromptTime float64 `json:"prompt_time"`
@@ -340,6 +332,12 @@ type ChatStreamChunkResponse struct {
 		TotalTime  float64 `json:"total_time"`
 		Created    Time    `json:"created"`
 	} `json:"time_info"`
+}
+
+type Usage struct {
+	PromptTokens     int64 `json:"prompt_tokens"`
+	CompletionTokens int64 `json:"completion_tokens"`
+	TotalTokens      int64 `json:"total_tokens"`
 }
 
 type Time int64
@@ -436,8 +434,9 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 	return c.post(ctx, "https://api.cerebras.ai/v1/chat/completions", in, out)
 }
 
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
 	in := ChatRequest{}
+	usage := genai.Usage{}
 	var continuableErr error
 	if err := in.Init(msgs, opts, c.model); err != nil {
 		// If it's an UnsupportedContinuableError, we can continue
@@ -446,27 +445,30 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 			continuableErr = uce
 			// Otherwise log the error but continue
 		} else {
-			return err
+			return usage, err
 		}
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
+	finalUsage := Usage{}
 	eg.Go(func() error {
-		return processStreamPackets(ch, chunks)
+		return processStreamPackets(ch, chunks, &finalUsage)
 	})
 	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
+	usage.InputTokens = finalUsage.PromptTokens
+	usage.OutputTokens = finalUsage.CompletionTokens
 	// Return the continuable error if no other error occurred
 	if err == nil && continuableErr != nil {
-		return continuableErr
+		return usage, continuableErr
 	}
-	return err
+	return usage, err
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, finalUsage *Usage) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -480,6 +482,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		case "", "assistant":
 		default:
 			return fmt.Errorf("unexpected role %q", role)
+		}
+		if pkt.Usage.TotalTokens != 0 {
+			*finalUsage = pkt.Usage
 		}
 
 		finishReason := pkt.Choices[0].FinishReason

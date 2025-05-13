@@ -31,21 +31,21 @@ func TestClient_Chat_allModels(t *testing.T) {
 
 func TestClient_ChatStream(t *testing.T) {
 	// TODO: Figure out why smaller models fail.
-	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") })
+	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") }, false)
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
 	t.Skip(`{"error":"Input validation error: grammar is not supported","error_type":"validation"}`)
-	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") })
+	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") }, true)
 }
 
 func TestClient_Chat_jSON_schema(t *testing.T) {
-	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") })
+	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") }, true)
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
 	// TODO: Figure out why smaller models fail.
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") })
+	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") }, true)
 }
 
 func getClient(t *testing.T, m string) *huggingface.Client {

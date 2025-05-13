@@ -185,22 +185,13 @@ type CompletionResponse struct {
 		PostSamplingProbs   bool     `json:"post_sampling_probs"`
 		Lora                []any    `json:"lora"`
 	} `json:"generation_settings"`
-	Prompt       string `json:"prompt"`
-	HasNewLine   bool   `json:"has_new_line"`
-	Truncated    bool   `json:"truncated"`
-	StopType     string `json:"stop_type"`
-	StoppingWord string `json:"stopping_word"`
-	TokensCached int64  `json:"tokens_cached"`
-	Timings      struct {
-		PromptN             int64   `json:"prompt_n"`
-		PromptMS            float64 `json:"prompt_ms"`
-		PromptPerTokenMS    float64 `json:"prompt_per_token_ms"`
-		PromptPerSecond     float64 `json:"prompt_per_second"`
-		PredictedN          int64   `json:"predicted_n"`
-		PredictedMS         float64 `json:"predicted_ms"`
-		PredictedPerTokenMS float64 `json:"predicted_per_token_ms"`
-		PredictedPerSecond  float64 `json:"predicted_per_second"`
-	} `json:"timings"`
+	Prompt       string  `json:"prompt"`
+	HasNewLine   bool    `json:"has_new_line"`
+	Truncated    bool    `json:"truncated"`
+	StopType     string  `json:"stop_type"`
+	StoppingWord string  `json:"stopping_word"`
+	TokensCached int64   `json:"tokens_cached"`
+	Timings      Timings `json:"timings"`
 }
 
 func (c *CompletionResponse) ToResult() (genai.ChatResult, error) {
@@ -223,6 +214,17 @@ func (c *CompletionResponse) ToResult() (genai.ChatResult, error) {
 	return out, nil
 }
 
+type Timings struct {
+	PromptN             int64   `json:"prompt_n"`
+	PromptMS            float64 `json:"prompt_ms"`
+	PromptPerTokenMS    float64 `json:"prompt_per_token_ms"`
+	PromptPerSecond     float64 `json:"prompt_per_second"`
+	PredictedN          int64   `json:"predicted_n"`
+	PredictedMS         float64 `json:"predicted_ms"`
+	PredictedPerTokenMS float64 `json:"predicted_per_token_ms"`
+	PredictedPerSecond  float64 `json:"predicted_per_second"`
+}
+
 type CompletionStreamChunkResponse struct {
 	// Always
 	Index           int64   `json:"index"`
@@ -234,24 +236,15 @@ type CompletionStreamChunkResponse struct {
 	TokensEvaluated int64   `json:"tokens_evaluated"`
 
 	// Last message
-	Model              string `json:"model"`
-	GenerationSettings any    `json:"generation_settings"`
-	Prompt             string `json:"prompt"`
-	HasNewLine         bool   `json:"has_new_line"`
-	Truncated          bool   `json:"truncated"`
-	StopType           string `json:"stop_type"`
-	StoppingWord       string `json:"stopping_word"`
-	TokensCached       int64  `json:"tokens_cached"`
-	Timings            struct {
-		PromptN             int64   `json:"prompt_n"`
-		PromptMS            float64 `json:"prompt_ms"`
-		PromptPerTokenMS    float64 `json:"prompt_per_token_ms"`
-		PromptPerSecond     float64 `json:"prompt_per_second"`
-		PredictedN          int64   `json:"predicted_n"`
-		PredictedMS         float64 `json:"predicted_ms"`
-		PredictedPerTokenMS float64 `json:"predicted_per_token_ms"`
-		PredictedPerSecond  float64 `json:"predicted_per_second"`
-	} `json:"timings"`
+	Model              string  `json:"model"`
+	GenerationSettings any     `json:"generation_settings"`
+	Prompt             string  `json:"prompt"`
+	HasNewLine         bool    `json:"has_new_line"`
+	Truncated          bool    `json:"truncated"`
+	StopType           string  `json:"stop_type"`
+	StoppingWord       string  `json:"stopping_word"`
+	TokensCached       int64   `json:"tokens_cached"`
+	Timings            Timings `json:"timings"`
 }
 
 type applyTemplateRequest struct {
@@ -411,11 +404,12 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, c.baseURL+"/completion", in, out)
 }
 
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
 	// start := time.Now()
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
 	in := CompletionRequest{CachePrompt: true}
+	usage := genai.Usage{}
 	var continuableErr error
 	if err := in.Init(opts); err != nil {
 		// If it's an UnsupportedContinuableError, we can continue
@@ -424,18 +418,22 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 			continuableErr = uce
 			// Otherwise log the error but continue
 		} else {
-			return err
+			return usage, err
 		}
 	}
 	if err := c.initPrompt(ctx, &in, opts, msgs); err != nil {
-		return err
+		return usage, err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
 	end := make(chan error)
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
+	finalUsage := Timings{}
 	go func() {
 		for msg := range ch {
+			if msg.Timings.PredictedN != 0 {
+				finalUsage = msg.Timings
+			}
 			// slog.DebugContext(ctx, "llm", "word", word, "stop", msg.Stop, "prompt tok", msg.Timings.PromptN, "gen tok", msg.Timings.PredictedN, "prompt tok/ms", msg.Timings.PromptPerTokenMS, "gen tok/ms", msg.Timings.PredictedPerTokenMS, "duration", time.Since(start).Round(time.Millisecond))
 			if word := msg.Content; word != "" {
 				// Mistral Nemo really likes "▁".
@@ -455,11 +453,14 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	if err2 := <-end; err2 != nil {
 		err = err2
 	}
+	usage.InputTokens = finalUsage.PromptN
+	usage.OutputTokens = finalUsage.PredictedN
+	// usage.InputCachedTokens = finalUsage.TokensCached
 	// Return the continuable error if no other error occurred
 	if err == nil && continuableErr != nil {
-		return continuableErr
+		return usage, continuableErr
 	}
-	return err
+	return usage, err
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {

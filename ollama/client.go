@@ -356,8 +356,9 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 	return err
 }
 
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) error {
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
 	in := ChatRequest{}
+	usage := genai.Usage{}
 	var continuableErr error
 	if err := in.Init(msgs, opts, c.model); err != nil {
 		// If it's an UnsupportedContinuableError, we can continue
@@ -366,33 +367,39 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 			continuableErr = uce
 			// Otherwise log the error but continue
 		} else {
-			return err
+			return usage, err
 		}
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
+	var lastChunk ChatStreamChunkResponse
 	eg.Go(func() error {
-		return processStreamPackets(ch, chunks)
+		return processStreamPackets(ch, chunks, &lastChunk)
 	})
 	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
+	usage.InputTokens = lastChunk.PromptEvalCount
+	usage.OutputTokens = lastChunk.EvalCount
 	// Return the continuable error if no other error occurred
 	if err == nil && continuableErr != nil {
-		return continuableErr
+		return usage, continuableErr
 	}
-	return err
+	return usage, err
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, lastChunk *ChatStreamChunkResponse) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
 		}
 	}()
 	for pkt := range ch {
+		if pkt.EvalCount != 0 {
+			*lastChunk = pkt
+		}
 		switch role := pkt.Message.Role; role {
 		case "", "assistant":
 		default:

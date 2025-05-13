@@ -65,7 +65,7 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("stream", func(t *testing.T) {
-		internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return s.getClient(t, "gemma3:4b") })
+		internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return s.getClient(t, "gemma3:4b") }, true)
 	})
 
 	t.Run("vision_jpg_inline", func(t *testing.T) {
@@ -75,11 +75,11 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("json", func(t *testing.T) {
-		internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return s.getClient(t, "gemma3:4b") })
+		internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return s.getClient(t, "gemma3:4b") }, true)
 	})
 
 	t.Run("json_schema", func(t *testing.T) {
-		internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return s.getClient(t, "gemma3:4b") })
+		internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return s.getClient(t, "gemma3:4b") }, true)
 	})
 
 	t.Run("Tool", func(t *testing.T) {

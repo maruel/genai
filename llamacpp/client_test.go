@@ -76,7 +76,7 @@ func TestClient(t *testing.T) {
 			t.Fatal(err)
 		}
 		c.Client.Client = &http.Client{Transport: transport}
-		internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return c })
+		internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return c }, true)
 	})
 }
 

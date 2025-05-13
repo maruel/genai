@@ -44,7 +44,7 @@ func TestClient_Chat(t *testing.T) {
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "sonar") })
+	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "sonar") }, true)
 }
 
 func getClient(t *testing.T, m string) *perplexity.Client {

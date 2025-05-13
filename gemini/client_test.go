@@ -57,15 +57,15 @@ func TestClient_Chat_allModels(t *testing.T) {
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
+	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, true)
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
-	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
+	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, true)
 }
 
 func TestClient_Chat_jSON_schema(t *testing.T) {
-	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
+	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, true)
 }
 
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {
@@ -82,7 +82,7 @@ func TestClient_Chat_audio_opus_inline(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
+	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, true)
 }
 
 func TestClient_Chat_video_mp4_inline(t *testing.T) {

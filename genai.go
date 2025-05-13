@@ -67,7 +67,7 @@ type ChatProvider interface {
 	//
 	// opts must be either nil, *ChatOptions or a provider-specialized
 	// option struct.
-	ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) error
+	ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Usage, error)
 }
 
 // ChatOptions is a list of frequent options supported by most ChatProvider.

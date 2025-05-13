@@ -1105,7 +1105,7 @@ func (m *Model) GetID() string {
 }
 
 func (m *Model) String() string {
-	return fmt.Sprintf("%s: %s (%s) Context: %d", m.GetID(), m.DisplayName, m.Description, m.InputTokenLimit)
+	return fmt.Sprintf("%s: %s (%s) Context: %d/%d", m.GetID(), m.DisplayName, m.Description, m.InputTokenLimit, m.OutputTokenLimit)
 }
 
 func (m *Model) Context() int64 {

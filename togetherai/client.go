@@ -607,7 +607,13 @@ func (m *Model) GetID() string {
 }
 
 func (m *Model) String() string {
-	return fmt.Sprintf("%s (%s): %s Context: %d; in: %.2f$/Mt out: %.2f$/Mt", m.ID, m.Created.AsTime().Format("2006-01-02"), m.Type, m.ContextLength, m.Pricing.Input, m.Pricing.Output)
+	c := ""
+	if m.Config.MaxOutputLength != 0 {
+		c = fmt.Sprintf("%d/%d", m.ContextLength, m.Config.MaxOutputLength)
+	} else {
+		c = fmt.Sprintf("%d", m.ContextLength)
+	}
+	return fmt.Sprintf("%s (%s): %s Context: %s; in: %.2f$/Mt out: %.2f$/Mt", m.ID, m.Created.AsTime().Format("2006-01-02"), m.Type, c, m.Pricing.Input, m.Pricing.Output)
 }
 
 func (m *Model) Context() int64 {

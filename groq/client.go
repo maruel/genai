@@ -625,7 +625,7 @@ func (m *Model) String() string {
 	if !m.Active {
 		suffix = " (inactive)"
 	}
-	return fmt.Sprintf("%s (%s) Context: %d%s", m.ID, m.Created.AsTime().Format("2006-01-02"), m.ContextWindow, suffix)
+	return fmt.Sprintf("%s (%s) Context: %d/%d%s", m.ID, m.Created.AsTime().Format("2006-01-02"), m.ContextWindow, m.MaxCompletionTokens, suffix)
 }
 
 func (m *Model) Context() int64 {

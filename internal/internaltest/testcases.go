@@ -391,7 +391,7 @@ func TestChatJSONSchema(t *testing.T, factory ChatProviderFactory) {
 		},
 	}
 	var got struct {
-		IsFruit bool `json:"is_fruit" jsonschema_description="True if the answer is that it is a fruit, false otherwise"`
+		IsFruit bool `json:"is_fruit" jsonschema_description:"True  if the answer is that it is a fruit, false otherwise"`
 	}
 	opts := genai.ChatOptions{
 		Temperature: 0.01,

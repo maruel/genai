@@ -40,7 +40,8 @@ type ChatRequest struct {
 	PresencePenalty   float64         `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
 	ReasoningFormat   ReasoningFormat `json:"reasoning_format,omitzero"`
 	ResponseFormat    struct {
-		Type string `json:"type,omitzero"` // "json_object"
+		Type       string         `json:"type,omitzero"` // "json_object", "json_schema"
+		JSONSchema map[string]any `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	Seed          int64    `json:"seed,omitzero"`
 	ServiceTier   string   `json:"service_tier,omitzero"` // "on_demand", "auto", "flex"
@@ -91,11 +92,23 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 					unsupported = append(unsupported, "TopK")
 				}
 				c.Stop = v.Stop
-				if v.ReplyAsJSON {
-					c.ResponseFormat.Type = "json_object"
-				}
 				if v.DecodeAs != nil {
-					unsupported = append(unsupported, "JSON schema (DecodeAs)")
+					// Groq seems to require a "name" property. Hack by encoding, decoding, changing.
+					b, err := json.Marshal(jsonschema.Reflect(v.DecodeAs))
+					if err != nil {
+						errs = append(errs, err)
+					} else {
+						m := map[string]any{}
+						if err = json.Unmarshal(b, &m); err != nil {
+							errs = append(errs, err)
+						} else {
+							c.ResponseFormat.Type = "json_schema"
+							m["name"] = "response"
+							c.ResponseFormat.JSONSchema = m
+						}
+					}
+				} else if v.ReplyAsJSON {
+					c.ResponseFormat.Type = "json_object"
 				}
 				if len(v.Tools) != 0 {
 					// Documentation states max is 128 tools.

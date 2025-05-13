@@ -32,11 +32,11 @@ import (
 // https://github.com/ollama/ollama/blob/main/docs/api.md#generate-a-chat-completion
 // https://pkg.go.dev/github.com/ollama/ollama/api#ChatRequest
 type ChatRequest struct {
-	Model    string             `json:"model"`
-	Stream   bool               `json:"stream"`
-	Messages []Message          `json:"messages"`
-	Tools    []Tool             `json:"tools,omitzero"`
-	Format   *jsonschema.Schema `json:"format,omitzero"`
+	Model    string    `json:"model"`
+	Stream   bool      `json:"stream"`
+	Messages []Message `json:"messages"`
+	Tools    []Tool    `json:"tools,omitzero"`
+	Format   any       `json:"format,omitzero"` // Either *jsonschema.Schema or string
 	// https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values
 	// https://pkg.go.dev/github.com/ollama/ollama/api#Options
 	// https://pkg.go.dev/github.com/ollama/ollama/api#Runner
@@ -77,11 +77,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 				c.Options.Seed = v.Seed
 				c.Options.TopK = v.TopK
 				c.Options.Stop = v.Stop
-				if v.ReplyAsJSON && v.DecodeAs == nil {
-					return errors.New("ollama only supports structured JSON response. Use DecodeAs")
-				}
 				if v.DecodeAs != nil {
 					c.Format = jsonschema.Reflect(v.DecodeAs)
+				} else if v.ReplyAsJSON {
+					c.Format = "json"
 				}
 				if len(v.Tools) != 0 {
 					c.Tools = make([]Tool, len(v.Tools))

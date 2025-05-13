@@ -1,0 +1,93 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 412
+        transfer_encoding: []
+        trailer: {}
+        host: router.huggingface.co
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Reply as JSON according to the provided schema."}]}],"max_tokens":200,"response_format":{"type":"json","value":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}},"seed":1,"temperature":0.01}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/hf-inference/models/meta-llama/Llama-3.3-70B-Instruct/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 316
+        uncompressed: false
+        body: '{"object":"chat.completion","id":"","created":1747153252,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}"},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":50,"completion_tokens":8,"total_tokens":58}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "316"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 4076c9a26c97a2e765053f508fa5d748.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - p8D3B3PWOpeFT9kMmnu4ElXsBuZG69ELFh5GAvFiiqHzCOXrM_Qgxg==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Compute-Characters:
+                - "301"
+            X-Compute-Time:
+                - "1.007918901"
+            X-Compute-Type:
+                - 4-nvida-a100-sxm4-80gb
+            X-Generated-Tokens:
+                - "8"
+            X-Inference-Id:
+                - f126d70a-c505-4f46-b786-dddda5ce4260
+            X-Inference-Time:
+                - "982"
+            X-Powered-By:
+                - huggingface-moon
+            X-Prompt-Tokens:
+                - "50"
+            X-Proxied-Host:
+                - http://10.102.44.60
+            X-Proxied-Path:
+                - /v1/chat/completions
+            X-Proxied-Replica:
+                - fyj5qcci-efzzt
+            X-Queue-Time:
+                - "22"
+            X-Request-Id:
+                - -yGjzpa2ZoOzAD5q
+            X-Robots-Tag:
+                - none
+            X-Time-Per-Token:
+                - "122"
+            X-Total-Time:
+                - "1007"
+            X-Validation-Time:
+                - "2"
+        status: 200 OK
+        code: 200
+        duration: 1.159s

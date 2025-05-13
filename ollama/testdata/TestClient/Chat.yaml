@@ -26,17 +26,17 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 302
+        content_length: 300
         uncompressed: false
-        body: '{"model":"gemma3:4b","created_at":"2025-05-12T20:14:20.159363485Z","message":{"role":"assistant","content":"Hello."},"done_reason":"stop","done":true,"total_duration":1781835171,"load_duration":1159723708,"prompt_eval_count":17,"prompt_eval_duration":508476813,"eval_count":3,"eval_duration":111157396}'
+        body: '{"model":"gemma3:4b","created_at":"2025-05-13T16:10:26.928869327Z","message":{"role":"assistant","content":"Hello."},"done_reason":"stop","done":true,"total_duration":1523188971,"load_duration":943451687,"prompt_eval_count":17,"prompt_eval_duration":480297437,"eval_count":3,"eval_duration":97640141}'
         headers:
             Content-Length:
-                - "302"
+                - "300"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 1.782s
+        duration: 1.524s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -64,7 +64,7 @@ interactions:
         trailer: {}
         content_length: 300
         uncompressed: false
-        body: '{"model":"gemma3:4b","created_at":"2025-05-12T20:14:20.521480077Z","message":{"role":"assistant","content":"Google."},"done_reason":"stop","done":true,"total_duration":361496813,"load_duration":23108556,"prompt_eval_count":38,"prompt_eval_duration":218016828,"eval_count":3,"eval_duration":107973706}'
+        body: '{"model":"gemma3:4b","created_at":"2025-05-13T16:10:27.281789886Z","message":{"role":"assistant","content":"Google."},"done_reason":"stop","done":true,"total_duration":352386715,"load_duration":23197216,"prompt_eval_count":38,"prompt_eval_duration":214341462,"eval_count":3,"eval_duration":102703711}'
         headers:
             Content-Length:
                 - "300"
@@ -72,4 +72,4 @@ interactions:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 362ms
+        duration: 353ms

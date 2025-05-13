@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"3ea06f3c7b3e49ccaa6f7eabddbcf3b4","object":"chat.completion","created":1747084283,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"glZDFzjyA","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0}],"content":""},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}'
+        body: '{"id":"8a80fb0592294e2198629d72c1bbd80b","object":"chat.completion","created":1747149254,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"CqY1RPgOd","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0}],"content":""},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -37,7 +37,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93ece881d8fe4bd1-YUL
+                - 93f31ab889c2a2be-YUL
             Content-Type:
                 - application/json
             Ratelimitbysize-Limit:
@@ -45,27 +45,27 @@ interactions:
             Ratelimitbysize-Query-Cost:
                 - "200"
             Ratelimitbysize-Remaining:
-                - "499800"
+                - "499400"
             Ratelimitbysize-Reset:
-                - "37"
+                - "46"
             Server:
                 - cloudflare
             X-Envoy-Upstream-Service-Time:
-                - "293"
+                - "164"
             X-Kong-Proxy-Latency:
-                - "6"
+                - "8"
             X-Kong-Request-Id:
-                - feccd05a5904dc436f543030404a1128
+                - 541f70336b81694011c8493aaea99c64
             X-Kong-Upstream-Latency:
-                - "293"
+                - "165"
             X-Ratelimitbysize-Limit-Minute:
                 - "500000"
             X-Ratelimitbysize-Limit-Month:
                 - "1000000000"
             X-Ratelimitbysize-Remaining-Minute:
-                - "499800"
+                - "499400"
             X-Ratelimitbysize-Remaining-Month:
-                - "999898072"
+                - "999895549"
         status: 200 OK
         code: 200
-        duration: 458ms
+        duration: 1.479s

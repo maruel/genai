@@ -319,22 +319,79 @@ func TestChatVisionPDFURL(t *testing.T, factory ChatProviderFactory) {
 	}
 }
 
-// TestChatVisionJSON runs a Chat with vision capabilities and verifies that the model correctly identifies a
-// banana image. It enforces JSON schema.
-func TestChatVisionJSON(t *testing.T, factory ChatProviderFactory) {
+// TestChatJSON runs a Chat verifying that the model correctly outputs JSON.
+func TestChatJSON(t *testing.T, factory ChatProviderFactory) {
 	c := factory(t)
 	ctx := t.Context()
 	msgs := genai.Messages{
 		{
 			Role: genai.User,
 			Contents: []genai.Content{
-				{Text: "Is it a banana? Reply as JSON."},
-				{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
+				{Text: `Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {"is_fruit": bool}.`},
+			},
+		},
+	}
+	opts := genai.ChatOptions{
+		Temperature: 0.01,
+		MaxTokens:   200,
+		Seed:        1,
+		ReplyAsJSON: true,
+	}
+	resp, err := c.Chat(ctx, msgs, &opts)
+	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+		t.Log(uce)
+	} else if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("Raw response: %#v", resp)
+	if len(resp.Contents) != 1 {
+		t.Fatal("Unexpected response")
+	}
+	got := map[string]any{}
+	if err := resp.Contents[0].Decode(&got); err != nil {
+		// Gemini returns a list of map. Tolerate that too.
+		got2 := []map[string]any{}
+		if err := resp.Contents[0].Decode(&got2); err != nil {
+			t.Fatal(err)
+		}
+		if len(got2) != 1 {
+			t.Fatal(got2)
+		}
+		got = got2[0]
+	}
+	val, ok := got["is_fruit"]
+	if !ok {
+		t.Fatal(got)
+	}
+	// Accept both strings and bool.
+	switch v := val.(type) {
+	case bool:
+		if !v {
+			t.Fatal(got)
+		}
+	case string:
+		if v != "true" {
+			t.Fatal(got)
+		}
+	default:
+		t.Fatal(got)
+	}
+}
+
+// TestChatJSONSchema runs a Chat verifying that the model correctly outputs JSON according to a schema.
+func TestChatJSONSchema(t *testing.T, factory ChatProviderFactory) {
+	c := factory(t)
+	ctx := t.Context()
+	msgs := genai.Messages{
+		{
+			Role: genai.User,
+			Contents: []genai.Content{
+				{Text: "Is a banana a fruit? Reply as JSON according to the provided schema."},
 			},
 		},
 	}
 	var got struct {
-		Banana bool `json:"banana"`
+		IsFruit bool `json:"is_fruit" jsonschema_description="True if the answer is that it is a fruit, false otherwise"`
 	}
 	opts := genai.ChatOptions{
 		Temperature: 0.01,
@@ -355,8 +412,8 @@ func TestChatVisionJSON(t *testing.T, factory ChatProviderFactory) {
 	if err := resp.Contents[0].Decode(&got); err != nil {
 		t.Fatal(err)
 	}
-	if !got.Banana {
-		t.Fatal(got.Banana)
+	if !got.IsFruit {
+		t.Fatal(got.IsFruit)
 	}
 }
 

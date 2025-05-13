@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"5335308b6d4d4dd89c30ff404cecfdac","object":"chat.completion","created":1747084283,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"vQ9cQOkhm","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":0}],"content":""},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}'
+        body: '{"id":"207e54afb8314004a140002ace56890a","object":"chat.completion","created":1747149253,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"wq1UGQ15J","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":0}],"content":""},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -37,7 +37,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93ece881d9014bd1-YUL
+                - 93f31ab16e36a2be-YUL
             Content-Type:
                 - application/json
             Ratelimitbysize-Limit:
@@ -47,17 +47,17 @@ interactions:
             Ratelimitbysize-Remaining:
                 - "499800"
             Ratelimitbysize-Reset:
-                - "37"
+                - "47"
             Server:
                 - cloudflare
             X-Envoy-Upstream-Service-Time:
-                - "291"
+                - "305"
             X-Kong-Proxy-Latency:
-                - "5"
+                - "7"
             X-Kong-Request-Id:
-                - 191e9c6c8551bd1210aa217e5a2d3269
+                - da10bd64684b9904e8dd977e3aaf0d32
             X-Kong-Upstream-Latency:
-                - "295"
+                - "305"
             X-Ratelimitbysize-Limit-Minute:
                 - "500000"
             X-Ratelimitbysize-Limit-Month:
@@ -65,7 +65,7 @@ interactions:
             X-Ratelimitbysize-Remaining-Minute:
                 - "499800"
             X-Ratelimitbysize-Remaining-Month:
-                - "999898072"
+                - "999900699"
         status: 200 OK
         code: 200
-        duration: 458ms
+        duration: 483ms

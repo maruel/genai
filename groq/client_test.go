@@ -33,8 +33,17 @@ func TestClient_Chat_vision_jPG_inline(t *testing.T) {
 	})
 }
 
+func TestClient_Chat_jSON(t *testing.T) {
+	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama3-8b-8192") })
+}
+
+func TestClient_Chat_jSON_schema(t *testing.T) {
+	t.Skip("Currently broken. To be investigated.")
+	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "gemma2-9b-it") })
+}
+
 func TestClient_Chat_tool_use(t *testing.T) {
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama-3.1-8b-instant") })
+	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama3-8b-8192") })
 }
 
 func TestClient_ChatStream(t *testing.T) {

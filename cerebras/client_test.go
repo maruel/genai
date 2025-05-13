@@ -8,7 +8,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/cerebras"
 	"github.com/maruel/genai/internal"
@@ -26,38 +25,12 @@ func TestClient_Chat_vision_jPG_inline(t *testing.T) {
 	})
 }
 
-func TestClient_Chat_json(t *testing.T) {
-	c := getClient(t, "llama-3.1-8b")
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Is a circle round? Reply as JSON."),
-	}
-	var got struct {
-		Round bool `json:"round"`
-	}
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-		DecodeAs:    got,
-	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
-	if resp.InputTokens != 173 || resp.OutputTokens != 6 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
-	want := genai.Message{Role: genai.Assistant, Contents: []genai.Content{{Text: `{"round": true}`}}}
-	if diff := cmp.Diff(&want, &resp.Message); diff != "" {
-		t.Fatalf("(+want), (-got):\n%s", diff)
-	}
-	if err := resp.Contents[0].Decode(&got); err != nil {
-		t.Fatal(err)
-	}
-	if !got.Round {
-		t.Fatal("expected round")
-	}
+func TestClient_Chat_jSON(t *testing.T) {
+	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama-3.1-8b") })
+}
+
+func TestClient_Chat_jSON_schema(t *testing.T) {
+	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama-3.1-8b") })
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {

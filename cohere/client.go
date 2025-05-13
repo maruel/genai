@@ -79,12 +79,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 				c.Seed = v.Seed
 				c.K = v.TopK
 				c.StopSequences = v.Stop
-				if v.ReplyAsJSON {
-					c.ResponseFormat.Type = "json_object"
-				}
 				if v.DecodeAs != nil {
 					c.ResponseFormat.Type = "json_schema"
 					c.ResponseFormat.JSONSchema = jsonschema.Reflect(v.DecodeAs)
+				} else if v.ReplyAsJSON {
+					c.ResponseFormat.Type = "json_object"
 				}
 				if len(v.Tools) != 0 {
 					// Let's assume if the user provides tools, they want to use them.

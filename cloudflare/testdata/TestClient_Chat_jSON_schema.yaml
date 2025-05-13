@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 256
+        content_length: 385
         transfer_encoding: []
         trailer: {}
         host: api.cloudflare.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"messages":[{"content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.","role":"user"}],"max_tokens":200,"response_format":{"type":"json_object"},"seed":1,"temperature":0.01}
+            {"messages":[{"content":"Is a banana a fruit? Reply as JSON according to the provided schema.","role":"user"}],"max_tokens":200,"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}},"seed":1,"temperature":0.01}
         form: {}
         headers:
             Content-Type:
@@ -28,16 +28,16 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"result":{"response":"{\"is_fruit\": true}","usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0}},"success":true,"errors":[],"messages":[]}'
+        body: '{"result":{"response":{"is_fruit":true}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
                 - "2025-05-13"
             Cf-Ai-Req-Id:
-                - a100435c-f5cf-484c-9911-3775a02fc5c5
+                - 7a59e239-de59-48e8-b1f1-4e9e5f986542
             Cf-Auditlog-Id:
-                - 0196ca67-bee9-7099-8b27-ef1882b3ea42
+                - 0196ca4c-422c-7590-9c26-d6b878b6716f
             Cf-Ray:
-                - 93f36a6ae89aa26d-YUL
+                - 93f33e702e506e08-YUL
             Content-Type:
                 - application/json
             Server:
@@ -46,4 +46,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 1.499s
+        duration: 1.24s

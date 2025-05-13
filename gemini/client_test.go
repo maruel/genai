@@ -56,8 +56,12 @@ func TestClient_Chat_allModels(t *testing.T) {
 		})
 }
 
-func TestClient_Chat_vision_and_JSON(t *testing.T) {
-	internaltest.TestChatVisionJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
+func TestClient_Chat_jSON(t *testing.T) {
+	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
+}
+
+func TestClient_Chat_jSON_schema(t *testing.T) {
+	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
 }
 
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {

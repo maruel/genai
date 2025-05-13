@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 194
+        content_length: 169
         transfer_encoding: []
         trailer: {}
         host: api.cerebras.ai
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"llama-3.3-70b","messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"max_completion_tokens":1000,"seed":1,"temperature":0.1}
+            {"model":"llama-3.3-70b","messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"max_completion_tokens":1000,"seed":1,"temperature":0.1}
         form: {}
         headers:
             Content-Type:
@@ -28,18 +28,18 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-4410a76a-cbf2-4176-9078-ae2d940334c6","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Hello.","role":"assistant"}}],"created":1747062482,"model":"llama-3.3-70b","system_fingerprint":"fp_c1b1963fdfa747d6bac1","object":"chat.completion","usage":{"prompt_tokens":59,"completion_tokens":3,"total_tokens":62},"time_info":{"queue_time":8.398e-05,"prompt_time":0.00365812,"completion_time":6.9765e-05,"total_time":0.005655765533447266,"created":1747062482}}'
+        body: '{"id":"chatcmpl-de1e5fbc-37c1-45d9-bb29-bf006005ab0a","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Hello","role":"assistant"}}],"created":1747150493,"model":"llama-3.3-70b","system_fingerprint":"fp_c1b1963fdfa747d6bac1","object":"chat.completion","usage":{"prompt_tokens":47,"completion_tokens":2,"total_tokens":49},"time_info":{"queue_time":0.000117749,"prompt_time":0.001919626,"completion_time":0.001416896,"total_time":0.004933357238769531,"created":1747150493}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93ead4402f01a314-YUL
+                - 93f338f83e11a2e8-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-4410a76a-cbf2-4176-9078-ae2d940334c6
+                - chatcmpl-de1e5fbc-37c1-45d9-bb29-bf006005ab0a
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -53,15 +53,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14399"
+                - "14400"
             X-Ratelimit-Remaining-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Reset-Requests-Day:
-                - "31917.755792617798"
+                - "30306.172898054123"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "57.75579261779785"
+                - "6.172898054122925"
             X-Request-Id:
-                - 93ead4402f01a314-YUL
+                - 93f338f83e11a2e8-YUL
         status: 200 OK
         code: 200
-        duration: 353ms
+        duration: 406ms

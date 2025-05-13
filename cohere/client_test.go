@@ -26,36 +26,12 @@ func TestClient_Chat_allModels(t *testing.T) {
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
-	c := getClient(t, "command-r-08-2024")
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Is a circle round? Reply as JSON."),
-	}
-	var got struct {
-		Round bool `json:"round"`
-	}
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-		DecodeAs:    got,
-	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
-	if resp.InputTokens != 220 || resp.OutputTokens != 9 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
-	if len(resp.Contents) != 1 {
-		t.Fatalf("Unexpected response")
-	}
-	if err := resp.Contents[0].Decode(&got); err != nil {
-		t.Fatal(err)
-	}
-	if !got.Round {
-		t.Fatal("unexpected")
-	}
+	t.Skip("Cohere's model seem to struggle at unstructured JSON. To be investigated.")
+	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "command-r-08-2024") })
+}
+
+func TestClient_Chat_jSON_schema(t *testing.T) {
+	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "command-r-08-2024") })
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {

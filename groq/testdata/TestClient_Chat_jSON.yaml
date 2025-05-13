@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 332
+        transfer_encoding: []
+        trailer: {}
+        host: api.groq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"max_completion_tokens":200,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"model":"llama3-8b-8192","response_format":{"type":"json_object"},"seed":1,"stream":false,"temperature":0.01}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-3c8c6e2d-5a71-42bb-9f7d-6d9e445b557c","object":"chat.completion","created":1747152130,"model":"llama3-8b-8192","choices":[{"index":0,"message":{"role":"assistant","content":"{\n   \"is_fruit\": true\n}"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.085286254,"prompt_tokens":60,"prompt_time":0.011448989,"completion_tokens":9,"completion_time":0.0075,"total_tokens":69,"total_time":0.018948989},"usage_breakdown":{"models":null},"system_fingerprint":"fp_dadc9d6142","x_groq":{"id":"req_01jv563mkceb5tccva15kv73bp"}}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93f360f04e14a2c2-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - us-central-1
+            X-Ratelimit-Limit-Requests:
+                - "50000"
+            X-Ratelimit-Limit-Tokens:
+                - "100000"
+            X-Ratelimit-Remaining-Requests:
+                - "49999"
+            X-Ratelimit-Remaining-Tokens:
+                - "99964"
+            X-Ratelimit-Reset-Requests:
+                - 1.728s
+            X-Ratelimit-Reset-Tokens:
+                - 21.599999ms
+            X-Request-Id:
+                - req_01jv563mkceb5tccva15kv73bp
+        status: 200 OK
+        code: 200
+        duration: 252ms

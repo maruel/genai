@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"346929f853d64c458d06b107b30ca663","object":"chat.completion","created":1746754188,"model":"mistral-medium-2505","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"Hello."},"finish_reason":"stop"}],"usage":{"prompt_tokens":15,"total_tokens":18,"completion_tokens":3}}'
+        body: '{"id":"b99224166fb74a55a7c9dafc7bd5dfbd","object":"chat.completion","created":1747149255,"model":"mistral-medium-2505","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"Hello."},"finish_reason":"stop"}],"usage":{"prompt_tokens":15,"total_tokens":18,"completion_tokens":3}}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -37,7 +37,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cd6d8b69f5a254-YUL
+                - 93f31abbfefea2be-YUL
             Content-Type:
                 - application/json
             Ratelimitbysize-Limit:
@@ -45,27 +45,27 @@ interactions:
             Ratelimitbysize-Query-Cost:
                 - "1000"
             Ratelimitbysize-Remaining:
-                - "499000"
+                - "498550"
             Ratelimitbysize-Reset:
-                - "12"
+                - "45"
             Server:
                 - cloudflare
             X-Envoy-Upstream-Service-Time:
-                - "122"
+                - "3061"
             X-Kong-Proxy-Latency:
-                - "6"
+                - "9"
             X-Kong-Request-Id:
-                - 78f6615b52f1b448de42142965f0bd67
+                - a8e96b4ab77c9378326b73724abe5f3c
             X-Kong-Upstream-Latency:
-                - "235"
+                - "3062"
             X-Ratelimitbysize-Limit-Minute:
                 - "500000"
             X-Ratelimitbysize-Limit-Month:
                 - "1000000000"
             X-Ratelimitbysize-Remaining-Minute:
-                - "499000"
+                - "498550"
             X-Ratelimitbysize-Remaining-Month:
-                - "999999000"
+                - "999894699"
         status: 200 OK
         code: 200
-        duration: 375ms
+        duration: 3.197s

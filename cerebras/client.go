@@ -150,14 +150,21 @@ type Content struct {
 	Text string `json:"text,omitzero"`
 }
 
-// Contents represents a slice of Content with custom unmarshaling to handle
+// Contents represents a slice of Content with custom unmarshalling to handle
 // both string and Content struct types.
 type Contents []Content
 
-// UnmarshalJSON implements custom unmarshaling for Contents type
+func (c *Contents) MarshalJSON() ([]byte, error) {
+	if len(*c) == 1 && (*c)[0].Type == "text" {
+		return json.Marshal((*c)[0].Text)
+	}
+	return json.Marshal(([]Content)(*c))
+}
+
+// UnmarshalJSON implements custom unmarshalling for Contents type
 // to handle cases where content could be a string or Content struct.
 func (c *Contents) UnmarshalJSON(data []byte) error {
-	// Try unmarshaling as a string first
+	// Try unmarshalling as a string first
 	var contentStr string
 	if err := json.Unmarshal(data, &contentStr); err == nil {
 		// If it worked, create a single content with the string

@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 411
+        content_length: 453
         transfer_encoding: []
         trailer: {}
         host: api.cohere.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"stream":false,"model":"command-r-08-2024","messages":[{"role":"user","content":[{"type":"text","text":"Is a circle round? Reply as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"round":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["round"]}},"max_tokens":50,"temperature":0.01,"seed":1}
+            {"stream":false,"model":"command-r-08-2024","messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Reply as JSON according to the provided schema."}]}],"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}},"max_tokens":200,"temperature":0.01,"seed":1}
         form: {}
         headers:
             Content-Type:
@@ -26,9 +26,9 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 274
+        content_length: 280
         uncompressed: false
-        body: '{"id":"edf7d45c-1a84-422b-84a2-b7d299a44152","message":{"role":"assistant","content":[{"type":"text","text":"{\n  \"round\": true\n}"}]},"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":9,"output_tokens":8},"tokens":{"input_tokens":220,"output_tokens":8}}}'
+        body: '{"id":"8d722a58-4857-422e-9b2d-caf2fbe511a8","message":{"role":"assistant","content":[{"type":"text","text":"{\n  \"is_fruit\": true\n}"}]},"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":15,"output_tokens":10},"tokens":{"input_tokens":226,"output_tokens":10}}}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -37,15 +37,15 @@ interactions:
             Cache-Control:
                 - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
             Content-Length:
-                - "274"
+                - "280"
             Content-Type:
                 - application/json
             Expires:
                 - Thu, 01 Jan 1970 00:00:00 UTC
             Num_chars:
-                - "1311"
+                - "1346"
             Num_tokens:
-                - "17"
+                - "25"
             Pragma:
                 - no-cache
             Server:
@@ -57,15 +57,15 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - 66ab2dec802688de5a1e0e6d9375c40f
+                - 78621031864348c5e6f9211188dfc3c0
             X-Endpoint-Monthly-Call-Limit:
                 - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "282"
+                - "283"
             X-Trial-Endpoint-Call-Limit:
                 - "10"
             X-Trial-Endpoint-Call-Remaining:
                 - "6"
         status: 200 OK
         code: 200
-        duration: 367ms
+        duration: 362ms

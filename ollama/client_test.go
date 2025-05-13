@@ -70,11 +70,14 @@ func TestClient(t *testing.T) {
 		})
 	})
 
-	t.Run("vision_and_json", func(t *testing.T) {
-		internaltest.TestChatVisionJSON(t, func(t *testing.T) genai.ChatProvider {
-			return s.getClient(t, "gemma3:4b")
-		})
+	t.Run("json", func(t *testing.T) {
+		internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return s.getClient(t, "gemma3:4b") })
 	})
+
+	t.Run("json_schema", func(t *testing.T) {
+		internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return s.getClient(t, "gemma3:4b") })
+	})
+
 	t.Run("Tool", func(t *testing.T) {
 		c := s.getClient(t, "llama3.1:8b")
 		msgs := genai.Messages{

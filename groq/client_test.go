@@ -38,7 +38,7 @@ func TestClient_Chat_jSON(t *testing.T) {
 }
 
 func TestClient_Chat_jSON_schema(t *testing.T) {
-	t.Skip("Currently broken. To be investigated.")
+	t.Skip("Currently broken. To be investigated. See https://discord.com/channels/1207099205563457597/1207101178631159830/1371897729395064832")
 	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "gemma2-9b-it") })
 }
 

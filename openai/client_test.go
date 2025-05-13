@@ -57,36 +57,8 @@ func TestClient_Chat_jSON_schema(t *testing.T) {
 	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
 }
 
-func TestClient_Chat_audio(t *testing.T) {
-	c := getClient(t, "gpt-4o-audio-preview")
-	f, err := os.Open("testdata/mystery_word.mp3")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer f.Close()
-	msgs := genai.Messages{
-		{Role: genai.User, Contents: []genai.Content{{Document: f}}},
-		genai.NewTextMessage(genai.User, "What is the word said? Reply with only the word."),
-	}
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
-	if resp.InputTokens != 31 || resp.OutputTokens != 1 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	if heard := strings.ToLower(resp.Contents[0].Text); heard != "orange" {
-		t.Fatal(heard)
-	}
+func TestClient_Chat_audio_mp3_inline(t *testing.T) {
+	internaltest.TestChatAudioMP3Inline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "gpt-4o-audio-preview") })
 }
 
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {

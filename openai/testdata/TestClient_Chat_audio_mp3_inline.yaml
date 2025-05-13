@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BV5bBp7WXniqOH1Hwc9kcl0ERqX8R",
+              "id": "chatcmpl-BWpTsMMSsjkknjjf6bhNphwkJX0ad",
               "object": "chat.completion",
-              "created": 1746749389,
+              "created": 1747164088,
               "model": "gpt-4o-audio-preview-2024-12-17",
               "choices": [
                 {
@@ -65,7 +65,7 @@ interactions:
                 }
               },
               "service_tier": "default",
-              "system_fingerprint": "fp_121c1aab2c"
+              "system_fingerprint": "fp_bf8dbd2ceb"
             }
         headers:
             Access-Control-Expose-Headers:
@@ -75,13 +75,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93ccf85dbe3aa2ff-YUL
+                - 93f484da0f58a2ed-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "1290"
+                - "1418"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -91,7 +91,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "1257"
+                - "1355"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -105,7 +105,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 30ms
             X-Request-Id:
-                - req_4df1c6cbf3c74a23ba4582ff36d26473
+                - req_f52d8be5de2a4c259a6b2f50dff4fe66
         status: 200 OK
         code: 200
-        duration: 1.364s
+        duration: 2.024s

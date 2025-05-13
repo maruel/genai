@@ -9,6 +9,7 @@ import (
 	"context"
 	_ "embed"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -130,6 +131,8 @@ func TestChatAllModels(t *testing.T, factory ModelChatProviderFactory, filter fu
 	}
 }
 
+// Tool
+
 // TestChatToolUseCountry runs a Chat with tool use and verifies that the tools are called correctly.
 // It runs subtests for both Chat and ChatStream methods.
 func TestChatToolUseCountry(t *testing.T, factory ChatProviderFactory) {
@@ -229,6 +232,8 @@ func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, useStream
 		// TODO: Follow up!
 	})
 }
+
+// Multi-modal (audio, image, video)
 
 // TestChatVisionJPGInline runs a Chat with vision capabilities and verifies that the model correctly identifies a
 // banana image.
@@ -340,6 +345,81 @@ func TestChatVisionPDFURL(t *testing.T, factory ChatProviderFactory) {
 	}
 }
 
+func TestChatAudioMP3Inline(t *testing.T, factory ChatProviderFactory) {
+	testChatAudioInline(t, factory, "mystery_word.mp3")
+}
+
+func TestChatAudioOpusInline(t *testing.T, factory ChatProviderFactory) {
+	testChatAudioInline(t, factory, "mystery_word.opus")
+}
+
+func testChatAudioInline(t *testing.T, factory ChatProviderFactory, filename string) {
+	c := factory(t)
+	// Path with the assumption it's run from "//<provider>/".
+	f, err := os.Open(filepath.Join("..", "internal", "internaltest", "testdata", filename))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer f.Close()
+	msgs := genai.Messages{
+		{Role: genai.User, Contents: []genai.Content{{Document: f}}},
+		genai.NewTextMessage(genai.User, "What is the word said? Reply with only the word."),
+	}
+	opts := genai.ChatOptions{
+		Seed:        1,
+		Temperature: 0.01,
+		MaxTokens:   50,
+	}
+	resp, err := c.Chat(t.Context(), msgs, &opts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("Raw response: %#v", resp)
+	if len(resp.Contents) != 1 {
+		t.Fatal("Unexpected response")
+	}
+	if heard := strings.TrimRight(strings.ToLower(resp.Contents[0].Text), "."); heard != "orange" {
+		t.Fatal(heard)
+	}
+}
+
+func TestChatVideoMP4Inline(t *testing.T, factory ChatProviderFactory) {
+	c := factory(t)
+	// Path with the assumption it's run from "//<provider>/".
+	f, err := os.Open(filepath.Join("..", "internal", "internaltest", "testdata", "animation.mp4"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer f.Close()
+	msgs := genai.Messages{
+		{
+			Role: genai.User,
+			Contents: []genai.Content{
+				{Text: "What is the word? Reply with only the word."},
+				{Document: f},
+			},
+		},
+	}
+	opts := genai.ChatOptions{
+		Seed:        1,
+		Temperature: 0.01,
+		MaxTokens:   50,
+	}
+	resp, err := c.Chat(t.Context(), msgs, &opts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("Raw response: %#v", resp)
+	if len(resp.Contents) != 1 {
+		t.Fatal("Unexpected response")
+	}
+	if saw := strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)); saw != "banana" {
+		t.Fatal(saw)
+	}
+}
+
+// JSON
+
 // TestChatJSON runs a Chat verifying that the model correctly outputs JSON.
 func TestChatJSON(t *testing.T, factory ChatProviderFactory) {
 	c := factory(t)
@@ -411,6 +491,7 @@ func TestChatJSONSchema(t *testing.T, factory ChatProviderFactory) {
 			},
 		},
 	}
+	// TODO: Test optional vs required, enum, bool, int, etc.
 	var got struct {
 		IsFruit bool `json:"is_fruit" jsonschema_description:"True  if the answer is that it is a fruit, false otherwise"`
 	}

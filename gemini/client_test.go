@@ -77,109 +77,28 @@ func TestClient_Chat_vision_pDF_inline(t *testing.T) {
 	internaltest.TestChatVisionPDFInline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
 }
 
-func TestClient_Chat_audio(t *testing.T) {
-	c := getClient(t, model)
-	f, err := os.Open("testdata/mystery_word.opus")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer f.Close()
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "What is the word said? Reply with only the word."},
-				{Document: f},
-			},
-		},
-	}
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
-	if resp.InputTokens != 12 || resp.OutputTokens != 2 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	if got := strings.TrimRight(strings.ToLower(resp.Contents[0].Text), "."); got != "orange" {
-		t.Fatal(got)
-	}
+func TestClient_Chat_audio_opus_inline(t *testing.T) {
+	internaltest.TestChatAudioOpusInline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
 	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
 }
 
-func TestClient_Chat_tool_use_video(t *testing.T) {
-	c := getClient(t, model)
-	f, err := os.Open("testdata/animation.mp4")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer f.Close()
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "What is the word? Call the tool hidden_word to tell me what word you saw."},
-				{Document: f},
-			},
-		},
-	}
-	var got struct {
-		Word string `json:"word" jsonschema:"enum=Orange,enum=Banana,enum=Apple"`
-	}
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-		Tools: []genai.ToolDef{
-			{
-				Name:        "hidden_word",
-				Description: "A tool to state what word was seen in the video.",
-				InputsAs:    &got,
-			},
-		},
-	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
-	if resp.InputTokens != 1079 || resp.OutputTokens != 5 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
-	// Warning: there's a bug where it returns two identical tool calls. To verify.
-	if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "hidden_word" {
-		t.Fatal("Unexpected response")
-	}
-
-	if err := resp.ToolCalls[0].Decode(&got); err != nil {
-		t.Fatal(err)
-	}
-	if saw := strings.ToLower(got.Word); saw != "banana" {
-		t.Fatal(saw)
-	}
+func TestClient_Chat_video_mp4_inline(t *testing.T) {
+	internaltest.TestChatVideoMP4Inline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
 }
 
 func TestClient_Cache(t *testing.T) {
 	slow := os.Getenv("GEMINI_SLOW") != ""
 	ctx := t.Context()
 	c := getClient(t, model)
-	f1, err := os.Open("testdata/animation.mp4")
+	f1, err := os.Open("../internal/internaltest/testdata/animation.mp4")
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer f1.Close()
-	f2, err := os.Open("testdata/mystery_word.opus")
+	f2, err := os.Open("../internal/internaltest/testdata/mystery_word.opus")
 	if err != nil {
 		t.Fatal(err)
 	}

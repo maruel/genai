@@ -22,26 +22,31 @@ type ChatProviderFactory func(t *testing.T) genai.ChatProvider
 // ModelChatProviderFactory is what a Java developer would write.
 type ModelChatProviderFactory func(t *testing.T, model string) genai.ChatProvider
 
+type Settings struct {
+	// Model is the model to use when none is specified.
+	Model string
+	// Options return a genai.ChatOptions or one of the model specific options.
+	Options func(opts *genai.ChatOptions) genai.Validatable
+}
+
 // TestCases contains shared test cases that can be reused across providers.
 type TestCases struct {
 	// GetClient is a factory function that returns a chat provider for a specific model.
 	GetClient ModelChatProviderFactory
-	// DefaultModel is the model to use when none is specified.
-	DefaultModel string
-	// DefaultOptions return a genai.ChatOptions or one of the model specific options.
-	DefaultOptions func(opts *genai.ChatOptions) genai.Validatable
+	// Default is the default settings to use.
+	Default Settings
 }
 
 func (tc *TestCases) getClient(t *testing.T, model string) genai.ChatProvider {
 	if model == "" {
-		model = tc.DefaultModel
+		model = tc.Default.Model
 	}
 	return tc.GetClient(t, model)
 }
 
 func (tc *TestCases) getOptions(opts *genai.ChatOptions) genai.Validatable {
-	if tc.DefaultOptions != nil {
-		return tc.DefaultOptions(opts)
+	if tc.Default.Options != nil {
+		return tc.Default.Options(opts)
 	}
 	return opts
 }

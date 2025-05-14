@@ -24,10 +24,12 @@ import (
 
 var testCases = &internaltest.TestCases{
 	GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
-	// Using small model for testing.
-	// For tests that do not use function calling nor images, a good zero cost alternative is "gemma-3-27b-it".
-	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	DefaultModel: "gemini-2.0-flash-lite",
+	Default: internaltest.Settings{
+		// Using small model for testing.
+		// For tests that do not use function calling nor images, a good zero cost alternative is "gemma-3-27b-it".
+		// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
+		Model: "gemini-2.0-flash-lite",
+	},
 }
 
 func TestClient_Chat_allModels(t *testing.T) {
@@ -105,7 +107,7 @@ func TestClient_Chat_video_mp4_inline(t *testing.T) {
 func TestClient_Cache(t *testing.T) {
 	slow := os.Getenv("GEMINI_SLOW") != ""
 	ctx := t.Context()
-	c := getClient(t, testCases.DefaultModel)
+	c := getClient(t, testCases.Default.Model)
 	f1, err := os.Open("../internal/internaltest/testdata/animation.mp4")
 	if err != nil {
 		t.Fatal(err)

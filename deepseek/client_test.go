@@ -15,8 +15,10 @@ import (
 )
 
 var testCases = &internaltest.TestCases{
-	GetClient:    func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
-	DefaultModel: "deepseek-chat",
+	GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+	Default: internaltest.Settings{
+		Model: "deepseek-chat",
+	},
 }
 
 func TestClient_Chat_allModels(t *testing.T) {

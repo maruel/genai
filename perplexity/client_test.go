@@ -16,8 +16,10 @@ import (
 )
 
 var testCases = &internaltest.TestCases{
-	GetClient:    func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
-	DefaultModel: "sonar",
+	GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+	Default: internaltest.Settings{
+		Model: "sonar",
+	},
 }
 
 // Not implementing TestClient_Chat_allModels since perplexity has no ListModels API.

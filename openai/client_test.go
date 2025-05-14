@@ -17,10 +17,13 @@ import (
 )
 
 var testCases = &internaltest.TestCases{
-	GetClient:    func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
-	DefaultModel: "gpt-4.1-nano",
-	DefaultOptions: func(opts *genai.ChatOptions) genai.Validatable {
-		return &openai.ChatOptions{ChatOptions: *opts, ServiceTier: openai.ServiceTierAuto}
+	GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+	Default: internaltest.Settings{
+		// https://platform.openai.com/docs/models/gpt-4.1-nano
+		Model: "gpt-4.1-nano",
+		Options: func(opts *genai.ChatOptions) genai.Validatable {
+			return &openai.ChatOptions{ChatOptions: *opts, ServiceTier: openai.ServiceTierAuto}
+		},
 	},
 }
 

@@ -32,6 +32,18 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// ChatOptions includes Anthropic specific options.
+type ChatOptions struct {
+	genai.ChatOptions
+
+	// MessagesToCache specify the number of messages to cache in the request.
+	//
+	// By default, the system prompt and tools will be cached.
+	//
+	// https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching
+	MessagesToCache int
+}
+
 // https://docs.anthropic.com/en/api/messages
 type ChatRequest struct {
 	Model    string    `json:"model,omitzero"`
@@ -40,15 +52,15 @@ type ChatRequest struct {
 	Metadata struct {
 		UserID string `json:"user_id,omitzero"`
 	} `json:"metadata,omitzero"`
-	StopSequences []string   `json:"stop_sequences,omitzero"`
-	Stream        bool       `json:"stream,omitzero"`
-	System        string     `json:"system,omitzero"`
-	Temperature   float64    `json:"temperature,omitzero"` // [0, 1]
-	Thinking      Thinking   `json:"thinking,omitzero"`
-	ToolChoice    ToolChoice `json:"tool_choice,omitzero"`
-	Tools         []Tool     `json:"tools,omitzero"`
-	TopK          int64      `json:"top_k,omitzero"` // [1, ]
-	TopP          float64    `json:"top_p,omitzero"` // [0, 1]
+	StopSequences []string        `json:"stop_sequences,omitzero"`
+	Stream        bool            `json:"stream,omitzero"`
+	System        []SystemMessage `json:"system,omitzero"`      // Must be type "text"
+	Temperature   float64         `json:"temperature,omitzero"` // [0, 1]
+	Thinking      Thinking        `json:"thinking,omitzero"`
+	ToolChoice    ToolChoice      `json:"tool_choice,omitzero"`
+	Tools         []Tool          `json:"tools,omitzero"`
+	TopK          int64           `json:"top_k,omitzero"` // [1, ]
+	TopP          float64         `json:"top_p,omitzero"` // [0, 1]
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
@@ -56,46 +68,17 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 	c.Model = model
 	var errs []error
 	var unsupported []string
+	msgToCache := 0
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
+			case *ChatOptions:
+				unsupported = c.initOptions(&v.ChatOptions)
+				msgToCache = v.MessagesToCache
 			case *genai.ChatOptions:
-				c.MaxToks = v.MaxTokens
-				c.Temperature = v.Temperature
-				c.System = v.SystemPrompt
-				c.TopP = v.TopP
-				if v.Seed != 0 {
-					unsupported = append(unsupported, "Seed")
-				}
-				c.TopK = v.TopK
-				c.StopSequences = v.Stop
-				if v.ReplyAsJSON || v.DecodeAs != nil {
-					unsupported = append(unsupported, "JSON schema (ReplyAsJSON/DecodeAs)")
-				}
-				if len(v.Tools) != 0 {
-					c.ToolChoice.Type = "any"
-					c.Tools = make([]Tool, len(v.Tools))
-					for i, t := range v.Tools {
-						// Weirdly enough, we must not set it. See example at https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview
-						// c.Tools[i].Type = "custom"
-						c.Tools[i].Name = t.Name
-						c.Tools[i].Description = t.Description
-						if t.InputsAs != nil {
-							c.Tools[i].InputSchema = jsonschema.Reflect(t.InputsAs)
-						}
-						// Unclear if this has any impact: c.Tools[i].CacheControl.Type = "ephemeral"
-					}
-				}
-				if v.ThinkingBudget > 0 {
-					// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
-					// Thinking isn’t compatible with temperature, top_p, or top_k modifications as well as forced tool use.
-					c.Thinking.BudgetTokens = v.ThinkingBudget
-					c.Thinking.Type = "enabled"
-				} else {
-					c.Thinking.Type = "disabled"
-				}
+				unsupported = c.initOptions(v)
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}
@@ -117,6 +100,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 				if err := c.Messages[len(c.Messages)-1].From(&msgs[i]); err != nil {
 					errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 				}
+				if i == msgToCache-1 {
+					c.Messages[i].CacheControl.Type = "ephemeral"
+				}
 			default:
 				errs = append(errs, fmt.Errorf("message %d: unsupported role %q", i, msgs[i].Role))
 				continue
@@ -134,13 +120,74 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 	return errors.Join(errs...)
 }
 
+func (c *ChatRequest) initOptions(v *genai.ChatOptions) []string {
+	var unsupported []string
+	c.MaxToks = v.MaxTokens
+	c.Temperature = v.Temperature
+	if v.SystemPrompt != "" {
+		c.System = []SystemMessage{
+			{
+				Type: "text",
+				Text: v.SystemPrompt,
+			},
+		}
+		// TODO: Add automatic caching.
+		// c.System[0].CacheControl.Type = "ephemeral"
+	}
+	c.TopP = v.TopP
+	if v.Seed != 0 {
+		unsupported = append(unsupported, "Seed")
+	}
+	c.TopK = v.TopK
+	c.StopSequences = v.Stop
+	if v.ReplyAsJSON || v.DecodeAs != nil {
+		unsupported = append(unsupported, "JSON schema (ReplyAsJSON/DecodeAs)")
+	}
+	if len(v.Tools) != 0 {
+		c.ToolChoice.Type = "any"
+		c.Tools = make([]Tool, len(v.Tools))
+		for i, t := range v.Tools {
+			// Weirdly enough, we must not set it. See example at https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview
+			// c.Tools[i].Type = "custom"
+			c.Tools[i].Name = t.Name
+			c.Tools[i].Description = t.Description
+			if t.InputsAs != nil {
+				c.Tools[i].InputSchema = jsonschema.Reflect(t.InputsAs)
+			}
+			// Unclear if this has any impact: c.Tools[i].CacheControl.Type = "ephemeral"
+		}
+	}
+	if v.ThinkingBudget > 0 {
+		// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
+		// Thinking isn’t compatible with temperature, top_p, or top_k modifications as well as forced tool use.
+		c.Thinking.BudgetTokens = v.ThinkingBudget
+		c.Thinking.Type = "enabled"
+	} else {
+		c.Thinking.Type = "disabled"
+	}
+	return unsupported
+}
+
+// SystemMessage is used in the system prompt.
+type SystemMessage struct {
+	Type         string `json:"type,omitzero"` // "text"
+	Text         string `json:"text,omitzero"`
+	CacheControl struct {
+		Type string `json:"type,omitzero"` // "ephemeral"
+	} `json:"cache_control,omitzero"`
+	Citations []Citation `json:"citations,omitzero"`
+}
+
 // https://docs.anthropic.com/en/api/messages
 type Message struct {
 	Type string `json:"type,omitzero"` // "message"
 	Role string `json:"role"`          // "assistant", "user"
 	// Anthropic's Content doesn't distinguish between actual content (text,
 	// documents) and tool use.
-	Content []Content `json:"content"`
+	Content      []Content `json:"content"`
+	CacheControl struct {
+		Type string `json:"type,omitzero"` // "ephemeral"
+	} `json:"cache_control,omitzero"`
 }
 
 func (m *Message) From(in *genai.Message) error {
@@ -209,7 +256,7 @@ type Content struct {
 	} `json:"cache_control,omitzero"`
 
 	// Type == "text", "document"
-	Citations Citation `json:"citations,omitzero"`
+	Citations []Citation `json:"citations,omitzero"`
 
 	// Type == "image", "document"
 	Source struct {
@@ -329,12 +376,17 @@ func (c *Content) ToToolCall(out *genai.ToolCall) error {
 	return nil
 }
 
+// Citation is used both for system message and user message.
+//
+// https://docs.anthropic.com/en/api/messages#body-messages-content-citations
+// https://docs.anthropic.com/en/api/messages#body-system-citations
 type Citation struct {
+	Type string `json:"type,omitzero"` // "char_location", "page_location", "content_block_location", "web_search_result_location"
+
 	// Content.Type == "text"
 	CitedText     string `json:"cited_text,omitzero"`
 	DocumentIndex int64  `json:"document_index,omitzero"`
 	DocumentTitle string `json:"document_title,omitzero"`
-	Type          string `json:"type,omitzero"` // "char_location", "page_location", "content_block_location"
 	// Type == "char_location"
 	EndCharIndex   int64 `json:"end_char_index,omitzero"`
 	StartCharIndex int64 `json:"start_char_index,omitzero"`
@@ -344,6 +396,10 @@ type Citation struct {
 	// Type == "content_block_location"
 	EndBlockIndex   int64 `json:"end_block_index,omitzero"`
 	StartBlockIndex int64 `json:"start_block_index,omitzero"`
+	// Type == "web_search_result_location"
+	EncryptedIndex string `json:"encrypted_index,omitzero"`
+	Title          string `json:"title,omitzero"`
+	URL            string `json:"url,omitzero"`
 
 	// Content.Type == "document"
 	Enabled bool `json:"enabled,omitzero"`

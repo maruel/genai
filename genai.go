@@ -234,10 +234,6 @@ type Message struct {
 	// ToolCall is a tool call that the LLM requested to make.
 	ToolCalls []ToolCall
 
-	// Opaque is added to keep continuity on the processing. A good example is Anthropic's extended thinking. It
-	// must be kept during an exchange.
-	Opaque map[string]any
-
 	// TODO: Tool replies
 
 	_ struct{}
@@ -293,6 +289,10 @@ type Content struct {
 	Document io.ReadSeeker
 	// URL is the reference to the raw data. When set, the mime-type is derived from the URL.
 	URL string
+
+	// Opaque is added to keep continuity on the processing. A good example is Anthropic's extended thinking. It
+	// must be kept during an exchange.
+	Opaque map[string]any
 
 	_ struct{}
 }

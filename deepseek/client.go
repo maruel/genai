@@ -359,8 +359,10 @@ func New(apiKey, model string) (*Client, error) {
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	// https://api-docs.deepseek.com/api/create-chat-completion
 	for i, msg := range msgs {
-		if len(msg.Opaque) != 0 {
-			return genai.ChatResult{}, fmt.Errorf("message #%d: field Opaque not supported", i)
+		for j, content := range msg.Contents {
+			if len(content.Opaque) != 0 {
+				return genai.ChatResult{}, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
+			}
 		}
 	}
 	rpcin := ChatRequest{}
@@ -401,8 +403,10 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
 	usage := genai.Usage{}
 	for i, msg := range msgs {
-		if len(msg.Opaque) != 0 {
-			return usage, fmt.Errorf("message #%d: field Opaque not supported", i)
+		for j, content := range msg.Contents {
+			if len(content.Opaque) != 0 {
+				return usage, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
+			}
 		}
 	}
 	in := ChatRequest{}

@@ -955,8 +955,10 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 // Cached input tokens are 25% of the price of new tokens.
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	for i, msg := range msgs {
-		if len(msg.Opaque) != 0 {
-			return genai.ChatResult{}, fmt.Errorf("message #%d: field Opaque not supported", i)
+		for j, content := range msg.Contents {
+			if len(content.Opaque) != 0 {
+				return genai.ChatResult{}, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
+			}
 		}
 	}
 	rpcin := ChatRequest{}
@@ -998,9 +1000,11 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 // ChatStream implements genai.ChatProvider.
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
 	// Check for non-empty Opaque field
-	for _, msg := range msgs {
-		if len(msg.Opaque) != 0 {
-			return genai.Usage{}, fmt.Errorf("Opaque field not supported")
+	for i, msg := range msgs {
+		for j, content := range msg.Contents {
+			if len(content.Opaque) != 0 {
+				return genai.Usage{}, fmt.Errorf("message #%d content #%d: Opaque field not supported", i, j)
+			}
 		}
 	}
 

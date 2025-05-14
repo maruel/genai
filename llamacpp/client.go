@@ -388,8 +388,10 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
 	for i, msg := range msgs {
-		if len(msg.Opaque) != 0 {
-			return genai.ChatResult{}, fmt.Errorf("message #%d: field Opaque not supported", i)
+		for j, content := range msg.Contents {
+			if len(content.Opaque) != 0 {
+				return genai.ChatResult{}, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
+			}
 		}
 	}
 	rpcin := CompletionRequest{CachePrompt: true}
@@ -419,9 +421,11 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	// specified. Disable if it becomes a problem.
 
 	// Check for non-empty Opaque field
-	for _, msg := range msgs {
-		if len(msg.Opaque) != 0 {
-			return genai.Usage{}, fmt.Errorf("Opaque field not supported")
+	for i, msg := range msgs {
+		for j, content := range msg.Contents {
+			if len(content.Opaque) != 0 {
+				return genai.Usage{}, fmt.Errorf("message #%d content #%d: Opaque field not supported", i, j)
+			}
 		}
 	}
 

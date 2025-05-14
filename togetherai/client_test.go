@@ -16,10 +16,14 @@ import (
 	"github.com/maruel/genai/togetherai"
 )
 
+var testCases = &internaltest.TestCases{
+	GetClient:    func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+	DefaultModel: "meta-llama/Llama-4-Scout-17B-16E-Instruct",
+}
+
 func TestClient_Chat_allModels(t *testing.T) {
-	internaltest.TestChatAllModels(
+	testCases.TestChatAllModels(
 		t,
-		func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 		func(m genai.Model) bool {
 			model := m.(*togetherai.Model)
 			if model.ID == "arcee-ai/maestro-reasoning" || // Requires CoT processing.
@@ -39,32 +43,26 @@ func TestClient_Chat_allModels(t *testing.T) {
 
 func TestClient_Chat_thinking(t *testing.T) {
 	t.Skip(`would need to split manually "\n</think>\n\n"`)
-	internaltest.TestChatThinking(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "Qwen/Qwen3-235B-A22B-fp8-tput") })
+	testCases.TestChatThinking(t, "Qwen/Qwen3-235B-A22B-fp8-tput")
 }
 
 // google/gemma-3-4b-it and google/gemma-3-27b-it are not available without a dedicated endpoint. We must
 // select one of the Serverless at https://api.together.ai/models.
 
 func TestClient_ChatStream(t *testing.T) {
-	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.2-3B-Instruct-Turbo") }, true)
+	testCases.TestChatStream(t, "meta-llama/Llama-3.2-3B-Instruct-Turbo", true)
 }
 
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {
-	internaltest.TestChatVisionJPGInline(t, func(t *testing.T) genai.ChatProvider {
-		return getClient(t, "meta-llama/Llama-4-Scout-17B-16E-Instruct")
-	})
+	testCases.TestChatVisionJPGInline(t, "")
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
-	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider {
-		return getClient(t, "meta-llama/Llama-4-Scout-17B-16E-Instruct")
-	}, true)
+	testCases.TestChatJSON(t, "", true)
 }
 
 func TestClient_Chat_jSON_schema(t *testing.T) {
-	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider {
-		return getClient(t, "meta-llama/Llama-4-Scout-17B-16E-Instruct")
-	}, true)
+	testCases.TestChatJSONSchema(t, "", true)
 }
 
 func TestClient_Chat_video(t *testing.T) {
@@ -101,9 +99,7 @@ func TestClient_Chat_video(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider {
-		return getClient(t, "Qwen/Qwen2.5-7B-Instruct-Turbo")
-	}, true)
+	testCases.TestChatToolUseCountry(t, "Qwen/Qwen2.5-7B-Instruct-Turbo", true)
 }
 
 func getClient(t *testing.T, m string) *togetherai.Client {

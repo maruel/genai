@@ -16,10 +16,14 @@ import (
 	"github.com/maruel/genai/openai"
 )
 
+var testCases = &internaltest.TestCases{
+	GetClient:    func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+	DefaultModel: "gpt-4.1-nano",
+}
+
 func TestClient_Chat_allModels(t *testing.T) {
-	internaltest.TestChatAllModels(
+	testCases.TestChatAllModels(
 		t,
-		func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 		func(m genai.Model) bool {
 			id := m.GetID()
 			// There's no way to know what model has which capability.
@@ -43,40 +47,38 @@ func TestClient_Chat_allModels(t *testing.T) {
 		})
 }
 
-const model = "gpt-4.1-nano"
-
 func TestClient_Chat_thinking(t *testing.T) {
 	// https://platform.openai.com/docs/guides/reasoning
-	internaltest.TestChatThinking(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "o4-mini") })
+	testCases.TestChatThinking(t, "o4-mini")
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, false)
+	testCases.TestChatStream(t, "", false)
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
-	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, true)
+	testCases.TestChatJSON(t, "", true)
 }
 
 func TestClient_Chat_jSON_schema(t *testing.T) {
-	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, true)
+	testCases.TestChatJSONSchema(t, "", true)
 }
 
 func TestClient_Chat_audio_mp3_inline(t *testing.T) {
-	internaltest.TestChatAudioMP3Inline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "gpt-4o-audio-preview") })
+	testCases.TestChatAudioMP3Inline(t, "gpt-4o-audio-preview")
 }
 
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {
-	internaltest.TestChatVisionJPGInline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
+	testCases.TestChatVisionJPGInline(t, "")
 }
 
 func TestClient_Chat_vision_pDF_inline(t *testing.T) {
 	// TODO: Implement URL support.
-	internaltest.TestChatVisionPDFInline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
+	testCases.TestChatVisionPDFInline(t, "")
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, true)
+	testCases.TestChatToolUseCountry(t, "", true)
 }
 
 func getClient(t *testing.T, m string) *openai.Client {

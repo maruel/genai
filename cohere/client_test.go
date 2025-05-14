@@ -15,10 +15,14 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 )
 
+var testCases = &internaltest.TestCases{
+	GetClient:    func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+	DefaultModel: "command-r-08-2024",
+}
+
 func TestClient_Chat_allModels(t *testing.T) {
-	internaltest.TestChatAllModels(
+	testCases.TestChatAllModels(
 		t,
-		func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 		func(m genai.Model) bool {
 			id := m.GetID()
 			return strings.HasPrefix(id, "command-")
@@ -26,20 +30,20 @@ func TestClient_Chat_allModels(t *testing.T) {
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "command-r7b-12-2024") }, true)
+	testCases.TestChatStream(t, "command-r7b-12-2024", true)
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
 	t.Skip("Cohere's model seem to struggle at unstructured JSON. To be investigated.")
-	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "command-r-08-2024") }, true)
+	testCases.TestChatJSON(t, "", true)
 }
 
 func TestClient_Chat_jSON_schema(t *testing.T) {
-	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "command-r-08-2024") }, true)
+	testCases.TestChatJSONSchema(t, "", true)
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "command-r-08-2024") }, true)
+	testCases.TestChatToolUseCountry(t, "", true)
 }
 
 func getClient(t *testing.T, m string) *cohere.Client {

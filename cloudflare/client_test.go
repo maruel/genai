@@ -18,10 +18,14 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
+var testCases = &internaltest.TestCases{
+	GetClient:    func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+	DefaultModel: "@hf/nousresearch/hermes-2-pro-mistral-7b",
+}
+
 func TestClient_Chat_allModels(t *testing.T) {
-	internaltest.TestChatAllModels(
+	testCases.TestChatAllModels(
 		t,
-		func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 		func(m genai.Model) bool {
 			id := m.GetID()
 			// Only test a few models because there are too many.
@@ -30,19 +34,19 @@ func TestClient_Chat_allModels(t *testing.T) {
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "@cf/meta/llama-3.2-3b-instruct") }, true)
+	testCases.TestChatStream(t, "@cf/meta/llama-3.2-3b-instruct", true)
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
-	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "@hf/nousresearch/hermes-2-pro-mistral-7b") }, false)
+	testCases.TestChatJSON(t, "", false)
 }
 
 func TestClient_Chat_jSON_schema(t *testing.T) {
-	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "@hf/nousresearch/hermes-2-pro-mistral-7b") }, false)
+	testCases.TestChatJSONSchema(t, "", false)
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "@hf/nousresearch/hermes-2-pro-mistral-7b") }, false)
+	testCases.TestChatToolUseCountry(t, "", false)
 }
 
 func getClient(t *testing.T, m string) *cloudflare.Client {

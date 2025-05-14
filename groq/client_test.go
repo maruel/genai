@@ -16,10 +16,14 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 )
 
+var testCases = &internaltest.TestCases{
+	GetClient:    func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+	DefaultModel: "llama3-8b-8192",
+}
+
 func TestClient_Chat_allModels(t *testing.T) {
-	internaltest.TestChatAllModels(
+	testCases.TestChatAllModels(
 		t,
-		func(t *testing.T, id string) genai.ChatProvider { return getClient(t, id) },
 		func(m genai.Model) bool {
 			id := m.GetID()
 			// Groq doesn't provide model metadata, so guess based on the name.
@@ -28,30 +32,28 @@ func TestClient_Chat_allModels(t *testing.T) {
 }
 
 func TestClient_Chat_thinking(t *testing.T) {
-	internaltest.TestChatThinking(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "qwen-qwq-32b") })
+	testCases.TestChatThinking(t, "qwen-qwq-32b")
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama-3.1-8b-instant") }, true)
+	testCases.TestChatStream(t, "llama-3.1-8b-instant", true)
 }
 
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {
-	internaltest.TestChatVisionJPGInline(t, func(t *testing.T) genai.ChatProvider {
-		return getClient(t, "meta-llama/llama-4-scout-17b-16e-instruct")
-	})
+	testCases.TestChatVisionJPGInline(t, "meta-llama/llama-4-scout-17b-16e-instruct")
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
-	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama3-8b-8192") }, true)
+	testCases.TestChatJSON(t, "", true)
 }
 
 func TestClient_Chat_jSON_schema(t *testing.T) {
 	t.Skip("Currently broken. To be investigated. See https://discord.com/channels/1207099205563457597/1207101178631159830/1371897729395064832")
-	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "gemma2-9b-it") }, true)
+	testCases.TestChatJSONSchema(t, "gemma2-9b-it", true)
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama3-8b-8192") }, true)
+	testCases.TestChatToolUseCountry(t, "", true)
 }
 
 func getClient(t *testing.T, m string) *groq.Client {

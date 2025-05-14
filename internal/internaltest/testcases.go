@@ -22,9 +22,25 @@ type ChatProviderFactory func(t *testing.T) genai.ChatProvider
 // ModelChatProviderFactory is what a Java developer would write.
 type ModelChatProviderFactory func(t *testing.T, model string) genai.ChatProvider
 
-func TestChatThinking(t *testing.T, factory ChatProviderFactory) {
+// TestCases contains shared test cases that can be reused across providers.
+type TestCases struct {
+	// GetClient is a factory function that returns a chat provider for a specific model.
+	GetClient ModelChatProviderFactory
+	// DefaultModel is the model to use when none is specified.
+	DefaultModel string
+}
+
+func (tc *TestCases) getClient(t *testing.T, model string) genai.ChatProvider {
+	if model == "" {
+		model = tc.DefaultModel
+	}
+	return tc.GetClient(t, model)
+}
+
+// TestChatThinking runs a test for the thinking feature of a chat model.
+func (tc *TestCases) TestChatThinking(t *testing.T, modelOverride string) {
 	ctx := t.Context()
-	c := factory(t)
+	c := tc.getClient(t, modelOverride)
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello."),
 	}
@@ -53,8 +69,8 @@ func TestChatThinking(t *testing.T, factory ChatProviderFactory) {
 }
 
 // TestChatStream makes sure ChatStream() works.
-func TestChatStream(t *testing.T, factory ChatProviderFactory, hasUsage bool) {
-	c := factory(t)
+func (tc *TestCases) TestChatStream(t *testing.T, modelOverride string, hasUsage bool) {
+	c := tc.getClient(t, modelOverride)
 	ctx := t.Context()
 	chunks := make(chan genai.MessageFragment)
 	end := make(chan genai.Messages, 1)
@@ -123,9 +139,9 @@ func TestChatStream(t *testing.T, factory ChatProviderFactory, hasUsage bool) {
 }
 
 // TestChatAllModels says hello with all models.
-func TestChatAllModels(t *testing.T, factory ModelChatProviderFactory, filter func(model genai.Model) bool) {
+func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Model) bool) {
 	ctx := t.Context()
-	l := factory(t, "").(genai.ModelProvider)
+	l := tc.GetClient(t, "").(genai.ModelProvider)
 	models, err := l.ListModels(ctx)
 	if err != nil {
 		t.Fatal(err)
@@ -146,7 +162,7 @@ func TestChatAllModels(t *testing.T, factory ModelChatProviderFactory, filter fu
 			continue
 		}
 		t.Run(id, func(t *testing.T) {
-			resp, err := factory(t, id).Chat(ctx, msgs, &opts)
+			resp, err := tc.GetClient(t, id).Chat(ctx, msgs, &opts)
 			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 				t.Log(uce)
 			} else if err != nil {
@@ -170,23 +186,23 @@ func TestChatAllModels(t *testing.T, factory ModelChatProviderFactory, filter fu
 
 // TestChatToolUseCountry runs a Chat with tool use and verifies that the tools are called correctly.
 // It runs subtests for both Chat and ChatStream methods.
-func TestChatToolUseCountry(t *testing.T, factory ChatProviderFactory, hasUsage bool) {
+func (tc *TestCases) TestChatToolUseCountry(t *testing.T, modelOverride string, hasUsage bool) {
 	t.Run("Chat", func(t *testing.T) {
-		chatToolUseCountryCore(t, factory, hasUsage, false)
+		tc.chatToolUseCountryCore(t, modelOverride, hasUsage, false)
 	})
 	t.Run("ChatStream", func(t *testing.T) {
 		t.Skip("TODO")
-		chatToolUseCountryCore(t, factory, hasUsage, true)
+		tc.chatToolUseCountryCore(t, modelOverride, hasUsage, true)
 	})
 }
 
 // chatToolUseCountryCore runs a Chat or ChatStream with tool use and verifies that the tools are called correctly.
 // The useStream parameter determines whether to use Chat or ChatStream.
 // It returns the response for further validation.
-func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, hasUsage bool, useStream bool) {
+func (tc *TestCases) chatToolUseCountryCore(t *testing.T, modelOverride string, hasUsage bool, useStream bool) {
 	ctx := t.Context()
 	t.Run("Canada", func(t *testing.T) {
-		c := factory(t)
+		c := tc.getClient(t, modelOverride)
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."),
 		}
@@ -230,7 +246,7 @@ func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, hasUsage 
 		// TODO: Follow up!
 	})
 	t.Run("USA", func(t *testing.T) {
-		c := factory(t)
+		c := tc.getClient(t, modelOverride)
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."),
 		}
@@ -278,8 +294,8 @@ func chatToolUseCountryCore(t *testing.T, factory ChatProviderFactory, hasUsage 
 
 // TestChatVisionJPGInline runs a Chat with vision capabilities and verifies that the model correctly identifies a
 // banana image.
-func TestChatVisionJPGInline(t *testing.T, factory ChatProviderFactory) {
-	c := factory(t)
+func (tc *TestCases) TestChatVisionJPGInline(t *testing.T, modelOverride string) {
+	c := tc.getClient(t, modelOverride)
 	ctx := t.Context()
 	msgs := genai.Messages{
 		{
@@ -313,8 +329,8 @@ func TestChatVisionJPGInline(t *testing.T, factory ChatProviderFactory) {
 	}
 }
 
-func TestChatVisionPDFInline(t *testing.T, factory ChatProviderFactory) {
-	c := factory(t)
+func (tc *TestCases) TestChatVisionPDFInline(t *testing.T, modelOverride string) {
+	c := tc.getClient(t, modelOverride)
 	// Path with the assumption it's run from "//<provider>/".
 	f, err := os.Open("../internal/internaltest/testdata/hidden_word.pdf")
 	if err != nil {
@@ -354,8 +370,8 @@ func TestChatVisionPDFInline(t *testing.T, factory ChatProviderFactory) {
 	}
 }
 
-func TestChatVisionPDFURL(t *testing.T, factory ChatProviderFactory) {
-	c := factory(t)
+func (tc *TestCases) TestChatVisionPDFURL(t *testing.T, modelOverride string) {
+	c := tc.getClient(t, modelOverride)
 	msgs := genai.Messages{
 		{
 			Role: genai.User,
@@ -389,16 +405,16 @@ func TestChatVisionPDFURL(t *testing.T, factory ChatProviderFactory) {
 	}
 }
 
-func TestChatAudioMP3Inline(t *testing.T, factory ChatProviderFactory) {
-	testChatAudioInline(t, factory, "mystery_word.mp3")
+func (tc *TestCases) TestChatAudioMP3Inline(t *testing.T, modelOverride string) {
+	tc.testChatAudioInline(t, modelOverride, "mystery_word.mp3")
 }
 
-func TestChatAudioOpusInline(t *testing.T, factory ChatProviderFactory) {
-	testChatAudioInline(t, factory, "mystery_word.opus")
+func (tc *TestCases) TestChatAudioOpusInline(t *testing.T, modelOverride string) {
+	tc.testChatAudioInline(t, modelOverride, "mystery_word.opus")
 }
 
-func testChatAudioInline(t *testing.T, factory ChatProviderFactory, filename string) {
-	c := factory(t)
+func (tc *TestCases) testChatAudioInline(t *testing.T, modelOverride, filename string) {
+	c := tc.getClient(t, modelOverride)
 	// Path with the assumption it's run from "//<provider>/".
 	f, err := os.Open(filepath.Join("..", "internal", "internaltest", "testdata", filename))
 	if err != nil {
@@ -428,8 +444,8 @@ func testChatAudioInline(t *testing.T, factory ChatProviderFactory, filename str
 	}
 }
 
-func TestChatVideoMP4Inline(t *testing.T, factory ChatProviderFactory) {
-	c := factory(t)
+func (tc *TestCases) TestChatVideoMP4Inline(t *testing.T, modelOverride string) {
+	c := tc.getClient(t, modelOverride)
 	// Path with the assumption it's run from "//<provider>/".
 	f, err := os.Open(filepath.Join("..", "internal", "internaltest", "testdata", "animation.mp4"))
 	if err != nil {
@@ -467,8 +483,8 @@ func TestChatVideoMP4Inline(t *testing.T, factory ChatProviderFactory) {
 // JSON
 
 // TestChatJSON runs a Chat verifying that the model correctly outputs JSON.
-func TestChatJSON(t *testing.T, factory ChatProviderFactory, hasUsage bool) {
-	c := factory(t)
+func (tc *TestCases) TestChatJSON(t *testing.T, modelOverride string, hasUsage bool) {
+	c := tc.getClient(t, modelOverride)
 	ctx := t.Context()
 	msgs := genai.Messages{
 		{
@@ -530,8 +546,8 @@ func TestChatJSON(t *testing.T, factory ChatProviderFactory, hasUsage bool) {
 }
 
 // TestChatJSONSchema runs a Chat verifying that the model correctly outputs JSON according to a schema.
-func TestChatJSONSchema(t *testing.T, factory ChatProviderFactory, hasUsage bool) {
-	c := factory(t)
+func (tc *TestCases) TestChatJSONSchema(t *testing.T, modelOverride string, hasUsage bool) {
+	c := tc.getClient(t, modelOverride)
 	ctx := t.Context()
 	msgs := genai.Messages{
 		{

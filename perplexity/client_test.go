@@ -15,6 +15,11 @@ import (
 	"github.com/maruel/genai/perplexity"
 )
 
+var testCases = &internaltest.TestCases{
+	GetClient:    func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+	DefaultModel: "sonar",
+}
+
 // Not implementing TestClient_Chat_allModels since perplexity has no ListModels API.
 
 func TestClient_Chat(t *testing.T) {
@@ -44,7 +49,7 @@ func TestClient_Chat(t *testing.T) {
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "sonar") }, true)
+	testCases.TestChatStream(t, "", true)
 }
 
 func getClient(t *testing.T, m string) *perplexity.Client {

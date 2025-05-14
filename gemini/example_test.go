@@ -17,11 +17,6 @@ import (
 	"github.com/maruel/genai/gemini"
 )
 
-// Using small model for testing.
-// For tests that do not use function calling nor images, a good zero cost alternative is "gemma-3-27b-it".
-// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-const model = "gemini-2.0-flash-lite"
-
 func ExampleClient_Chat_vision_and_JSON() {
 	// Using small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
@@ -29,7 +24,7 @@ func ExampleClient_Chat_vision_and_JSON() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	bananaJpg, err := os.ReadFile("banana.pdf")
+	bananaJpg, err := os.ReadFile("banana.jpg")
 	if err != nil {
 		log.Fatal(err)
 	}

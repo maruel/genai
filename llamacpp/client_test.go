@@ -25,6 +25,9 @@ import (
 
 func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
+	tc := &internaltest.TestCases{
+		GetClient: func(t *testing.T, m string) genai.ChatProvider { return s.getClient(t) },
+	}
 
 	t.Run("Chat", func(t *testing.T) {
 		serverURL, transport := s.shouldStart(t)
@@ -70,13 +73,7 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("stream", func(t *testing.T) {
-		serverURL, transport := s.shouldStart(t)
-		c, err := llamacpp.New(serverURL, nil)
-		if err != nil {
-			t.Fatal(err)
-		}
-		c.Client.Client = &http.Client{Transport: transport}
-		internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return c }, true)
+		tc.TestChatStream(t, "", true)
 	})
 }
 
@@ -124,6 +121,16 @@ func (l *lazyServer) shouldStart(t *testing.T) (string, http.RoundTripper) {
 		t.Log("Recording " + suffix)
 	}
 	return l.url, transport
+}
+
+func (l *lazyServer) getClient(t *testing.T) genai.ChatProvider {
+	serverURL, transport := l.shouldStart(t)
+	c, err := llamacpp.New(serverURL, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	c.Client.Client = &http.Client{Transport: transport}
+	return c
 }
 
 var testRecorder *internaltest.Records

@@ -25,6 +25,10 @@ import (
 
 func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
+	tc := &internaltest.TestCases{
+		GetClient:    func(t *testing.T, m string) genai.ChatProvider { return s.getClient(t, m) },
+		DefaultModel: "gemma3:4b",
+	}
 
 	t.Run("Chat", func(t *testing.T) {
 		c := s.getClient(t, "gemma3:4b")
@@ -65,21 +69,19 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("stream", func(t *testing.T) {
-		internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return s.getClient(t, "gemma3:4b") }, true)
+		tc.TestChatStream(t, "", true)
 	})
 
 	t.Run("vision_jpg_inline", func(t *testing.T) {
-		internaltest.TestChatVisionJPGInline(t, func(t *testing.T) genai.ChatProvider {
-			return s.getClient(t, "gemma3:4b")
-		})
+		tc.TestChatVisionJPGInline(t, "")
 	})
 
 	t.Run("json", func(t *testing.T) {
-		internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return s.getClient(t, "gemma3:4b") }, true)
+		tc.TestChatJSON(t, "", true)
 	})
 
 	t.Run("json_schema", func(t *testing.T) {
-		internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return s.getClient(t, "gemma3:4b") }, true)
+		tc.TestChatJSONSchema(t, "", true)
 	})
 
 	t.Run("Tool", func(t *testing.T) {

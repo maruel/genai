@@ -15,10 +15,14 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 )
 
+var testCases = &internaltest.TestCases{
+	GetClient:    func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+	DefaultModel: "meta-llama/Llama-3.3-70B-Instruct",
+}
+
 func TestClient_Chat_allModels(t *testing.T) {
-	internaltest.TestChatAllModels(
+	testCases.TestChatAllModels(
 		t,
-		func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 		func(m genai.Model) bool {
 			model := m.(*huggingface.Model)
 			if model.PipelineTag != "text-generation" {
@@ -31,26 +35,26 @@ func TestClient_Chat_allModels(t *testing.T) {
 
 func TestClient_Chat_thinking(t *testing.T) {
 	t.Skip(`would need to split manually "\n</think>\n\n"`)
-	internaltest.TestChatThinking(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "Qwen/QwQ-32B") })
+	testCases.TestChatThinking(t, "Qwen/QwQ-32B")
 }
 
 func TestClient_ChatStream(t *testing.T) {
 	// TODO: Figure out why smaller models fail.
-	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") }, false)
+	testCases.TestChatStream(t, "", false)
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
 	t.Skip(`{"error":"Input validation error: grammar is not supported","error_type":"validation"}`)
-	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") }, true)
+	testCases.TestChatJSON(t, "", true)
 }
 
 func TestClient_Chat_jSON_schema(t *testing.T) {
-	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") }, true)
+	testCases.TestChatJSONSchema(t, "", true)
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
 	// TODO: Figure out why smaller models fail.
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "meta-llama/Llama-3.3-70B-Instruct") }, true)
+	testCases.TestChatToolUseCountry(t, "", true)
 }
 
 func getClient(t *testing.T, m string) *huggingface.Client {

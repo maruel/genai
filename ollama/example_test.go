@@ -37,7 +37,7 @@ func ExampleClient_Chat_vision_and_JSON() {
 		log.Print(err)
 		return
 	}
-	bananaJpg, err := os.ReadFile("banana.pdf")
+	bananaJpg, err := os.ReadFile("banana.jpg")
 	if err != nil {
 		log.Fatal(err)
 	}

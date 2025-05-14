@@ -22,10 +22,17 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
+var testCases = &internaltest.TestCases{
+	GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+	// Using small model for testing.
+	// For tests that do not use function calling nor images, a good zero cost alternative is "gemma-3-27b-it".
+	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
+	DefaultModel: "gemini-2.0-flash-lite",
+}
+
 func TestClient_Chat_allModels(t *testing.T) {
-	internaltest.TestChatAllModels(
+	testCases.TestChatAllModels(
 		t,
-		func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 		func(m genai.Model) bool {
 			id := m.GetID()
 			if id == "gemini-2.0-flash-live-001" {
@@ -59,46 +66,46 @@ func TestClient_Chat_allModels(t *testing.T) {
 func TestClient_Chat_thinking(t *testing.T) {
 	// https://ai.google.dev/gemini-api/docs/thinking?hl=en
 	// "gemini-2.5-flash-preview-04-17-thinking"
-	internaltest.TestChatThinking(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "gemini-2.0-flash-thinking-exp") })
+	testCases.TestChatThinking(t, "gemini-2.0-flash-thinking-exp")
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, true)
+	testCases.TestChatStream(t, "", true)
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
-	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, true)
+	testCases.TestChatJSON(t, "", true)
 }
 
 func TestClient_Chat_jSON_schema(t *testing.T) {
-	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, true)
+	testCases.TestChatJSONSchema(t, "", true)
 }
 
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {
-	internaltest.TestChatVisionJPGInline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
+	testCases.TestChatVisionJPGInline(t, "")
 }
 
 func TestClient_Chat_vision_pDF_inline(t *testing.T) {
 	// TODO: Fix support for URL.
-	internaltest.TestChatVisionPDFInline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
+	testCases.TestChatVisionPDFInline(t, "")
 }
 
 func TestClient_Chat_audio_opus_inline(t *testing.T) {
-	internaltest.TestChatAudioOpusInline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
+	testCases.TestChatAudioOpusInline(t, "")
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) }, true)
+	testCases.TestChatToolUseCountry(t, "", true)
 }
 
 func TestClient_Chat_video_mp4_inline(t *testing.T) {
-	internaltest.TestChatVideoMP4Inline(t, func(t *testing.T) genai.ChatProvider { return getClient(t, model) })
+	testCases.TestChatVideoMP4Inline(t, "")
 }
 
 func TestClient_Cache(t *testing.T) {
 	slow := os.Getenv("GEMINI_SLOW") != ""
 	ctx := t.Context()
-	c := getClient(t, model)
+	c := getClient(t, testCases.DefaultModel)
 	f1, err := os.Open("../internal/internaltest/testdata/animation.mp4")
 	if err != nil {
 		t.Fatal(err)

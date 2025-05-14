@@ -14,31 +14,34 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 )
 
+var testCases = &internaltest.TestCases{
+	GetClient:    func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+	DefaultModel: "llama-3.1-8b",
+}
+
 func TestClient_Chat_allModels(t *testing.T) {
-	internaltest.TestChatAllModels(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
+	testCases.TestChatAllModels(t, nil)
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	internaltest.TestChatStream(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama-3.1-8b") }, true)
+	testCases.TestChatStream(t, "", true)
 }
 
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {
 	t.Skip("Implement multi-content messages")
-	internaltest.TestChatVisionJPGInline(t, func(t *testing.T) genai.ChatProvider {
-		return getClient(t, "meta-llama/llama-4-scout-17b-16e-instruct")
-	})
+	testCases.TestChatVisionJPGInline(t, "meta-llama/llama-4-scout-17b-16e-instruct")
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
-	internaltest.TestChatJSON(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama-3.1-8b") }, true)
+	testCases.TestChatJSON(t, "", true)
 }
 
 func TestClient_Chat_jSON_schema(t *testing.T) {
-	internaltest.TestChatJSONSchema(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama-3.1-8b") }, true)
+	testCases.TestChatJSONSchema(t, "", true)
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	internaltest.TestChatToolUseCountry(t, func(t *testing.T) genai.ChatProvider { return getClient(t, "llama-3.1-8b") }, true)
+	testCases.TestChatToolUseCountry(t, "", true)
 }
 
 func getClient(t *testing.T, m string) *cerebras.Client {

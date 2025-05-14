@@ -26,7 +26,7 @@ func ExampleClient_Chat_vision_and_JSON() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	bananaJpg, err := os.ReadFile("banana.pdf")
+	bananaJpg, err := os.ReadFile("banana.jpg")
 	if err != nil {
 		log.Fatal(err)
 	}

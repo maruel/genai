@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 599
+        content_length: 597
         transfer_encoding: []
         trailer: {}
         host: api.openai.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"gpt-4.1-nano","max_completion_tokens":200,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Reply as JSON according to the provided schema."}]}],"seed":1,"temperature":0.01,"response_format":{"type":"json_schema","json_schema":{"name":"response","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean","description":"True  if the answer is that it is a fruit, false otherwise"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"service_tier":"auto"}
+            {"model":"gpt-4.1-nano","max_completion_tokens":200,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Reply as JSON according to the provided schema."}]}],"seed":1,"temperature":0.1,"response_format":{"type":"json_schema","json_schema":{"name":"response","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean","description":"True if the answer is that it is a fruit, false otherwise"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"service_tier":"auto"}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BX7qnHSJRbmUBZOog2NIaW6qFQzTB",
+              "id": "chatcmpl-BXC9aKqGCJPmAHCqxG9Bkps3sFKcu",
               "object": "chat.completion",
-              "created": 1747234701,
+              "created": 1747251242,
               "model": "gpt-4.1-nano-2025-04-14",
               "choices": [
                 {
@@ -48,9 +48,9 @@ interactions:
                 }
               ],
               "usage": {
-                "prompt_tokens": 69,
-                "completion_tokens": 8,
-                "total_tokens": 77,
+                "prompt_tokens": 68,
+                "completion_tokens": 7,
+                "total_tokens": 75,
                 "prompt_tokens_details": {
                   "cached_tokens": 0,
                   "audio_tokens": 0
@@ -73,13 +73,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93fb40d4db84a31d-YUL
+                - 93fcd4a72875a2bd-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "257"
+                - "124"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -89,21 +89,21 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "263"
+                - "127"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
                 - "200000"
             X-Ratelimit-Remaining-Requests:
-                - "496"
+                - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "199175"
+                - "199981"
             X-Ratelimit-Reset-Requests:
-                - 475ms
+                - 120ms
             X-Ratelimit-Reset-Tokens:
-                - 247ms
+                - 5ms
             X-Request-Id:
-                - req_06e77213fa18b587a2c38a71141cac40
+                - req_5dc5b49304e1167b90d5fb5fd49c2f3f
         status: 200 OK
         code: 200
-        duration: 345ms
+        duration: 295ms

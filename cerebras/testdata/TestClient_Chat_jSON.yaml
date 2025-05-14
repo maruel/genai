@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 290
+        content_length: 289
         transfer_encoding: []
         trailer: {}
         host: api.cerebras.ai
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"llama-3.1-8b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"max_completion_tokens":200,"response_format":{"type":"json_object"},"seed":1,"temperature":0.01}
+            {"model":"llama-3.1-8b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"max_completion_tokens":200,"response_format":{"type":"json_object"},"seed":1,"temperature":0.1}
         form: {}
         headers:
             Content-Type:
@@ -28,18 +28,18 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-7cee1d7f-ef67-4384-a118-ae072dfa18eb","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"is_fruit\": true}","role":"assistant"}}],"created":1747152510,"model":"llama3.1-8b","system_fingerprint":"fp_d4032cc64cc617db1426","object":"chat.completion","usage":{"prompt_tokens":64,"completion_tokens":8,"total_tokens":72},"time_info":{"queue_time":0.001698002,"prompt_time":0.003299637,"completion_time":0.003715755,"total_time":0.009622573852539062,"created":1747152510}}'
+        body: '{"id":"chatcmpl-5c810413-3721-4512-b43a-bbe4ee43a6d2","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"is_fruit\": true}","role":"assistant"}}],"created":1747251242,"model":"llama3.1-8b","system_fingerprint":"fp_fd530e96020e4e77c6b2","object":"chat.completion","usage":{"prompt_tokens":64,"completion_tokens":8,"total_tokens":72},"time_info":{"queue_time":0.683285701,"prompt_time":0.00329702,"completion_time":0.003730579,"total_time":0.6920413970947266,"created":1747251242}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93f36a358b94a2ae-YUL
+                - 93fcd4a6cdffa30c-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-7cee1d7f-ef67-4384-a118-ae072dfa18eb
+                - chatcmpl-5c810413-3721-4512-b43a-bbe4ee43a6d2
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -53,15 +53,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14394"
+                - "14379"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "60000"
+                - "59791"
             X-Ratelimit-Reset-Requests-Day:
-                - "28289.582104682922"
+                - "15957.122047424316"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "29.582104682922363"
+                - "57.122047424316406"
             X-Request-Id:
-                - 93f36a358b94a2ae-YUL
+                - 93fcd4a6cdffa30c-YUL
         status: 200 OK
         code: 200
-        duration: 244ms
+        duration: 901ms

@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 617
+        content_length: 597
         transfer_encoding: []
         trailer: {}
         host: api.anthropic.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"claude-3-haiku-20240307","max_tokens":200,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"temperature":0.01,"thinking":{"type":"disabled"},"tool_choice":{"type":"auto"},"tools":[{"description":"A tool to determine the best country","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"name":"best_country"}]}
+            {"model":"claude-3-haiku-20240307","max_tokens":200,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"thinking":{"type":"disabled"},"tool_choice":{"type":"any"},"tools":[{"description":"A tool to determine the best country","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"name":"best_country"}]}
         form: {}
         headers:
             Content-Type:
@@ -28,42 +28,42 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"msg_013iJmga151VDRyzjbXTRX28","type":"message","role":"assistant","model":"claude-3-haiku-20240307","content":[{"type":"text","text":"Okay, let''s use the best_country tool to determine which country is better between the USA and Canada."},{"type":"tool_use","id":"toolu_01LAaX1TbbcbMMuRQ5D51goz","name":"best_country","input":{"country":"USA"}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":392,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":77}}'
+        body: '{"id":"msg_016eTHbkJeUyyZrhdu2mjemE","type":"message","role":"assistant","model":"claude-3-haiku-20240307","content":[{"type":"tool_use","id":"toolu_01QonHNKRtKAjWp3xfh6E99Z","name":"best_country","input":{"country":"USA"}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":483,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":38}}'
         headers:
             Anthropic-Organization-Id:
                 - b0607a1c-e615-400e-9924-e7a556d22e9f
             Anthropic-Ratelimit-Input-Tokens-Limit:
                 - "50000"
             Anthropic-Ratelimit-Input-Tokens-Remaining:
-                - "49000"
+                - "50000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-05-14T18:45:45Z"
+                - "2025-05-14T19:32:44Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-05-14T18:45:45Z"
+                - "2025-05-14T19:32:43Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "50"
             Anthropic-Ratelimit-Requests-Remaining:
                 - "48"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-05-14T18:45:46Z"
+                - "2025-05-14T19:32:45Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Remaining:
-                - "59000"
+                - "60000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-05-14T18:45:45Z"
+                - "2025-05-14T19:32:43Z"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93fc8de6fedba2d0-YUL
+                - 93fcd2b8295d4bcb-YUL
             Content-Type:
                 - application/json
             Request-Id:
-                - req_011CP7vEgaQo6956UrP72dWs
+                - req_011CP7ypTvTDYfdsHDtfW7AG
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,4 +74,4 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 1.176s
+        duration: 1.055s

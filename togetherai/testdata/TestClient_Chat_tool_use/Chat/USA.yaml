@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 644
+        content_length: 629
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"Qwen/Qwen2.5-7B-Instruct-Turbo","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":200,"temperature":0.01,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"auto"}
+            {"model":"Qwen/Qwen2.5-7B-Instruct-Turbo","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":200,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nu3MUUp-3NKUce-93fc8de75de4a306",
+              "id": "nu3bvVp-4Yz4kd-93fcd2b848c1a2be",
               "object": "chat.completion",
-              "created": 1747248344,
+              "created": 1747251163,
               "model": "Qwen/Qwen2.5-7B-Instruct-Turbo",
               "prompt": [],
               "choices": [
@@ -47,7 +47,7 @@ interactions:
                     "tool_calls": [
                       {
                         "index": 0,
-                        "id": "call_3bkazcay1lysbdq3npv9v8bq",
+                        "id": "call_13fz0hhoz7eesiw2u1w8enf1",
                         "type": "function",
                         "function": {
                           "arguments": "{\"country\":\"USA\"}",
@@ -72,11 +72,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93fc8de75de4a306-YUL
+                - 93fcd2b848c1a2be-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"2fa-/duwUAosrZtSYj+aNrogsfsuYg4"
+                - W/"2fa-5wj3sKbHYwzgrH0FR9qFvALIQrE"
             Retry-After:
                 - "2"
             Server:
@@ -86,13 +86,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 5777804b-4fc5-40df-8d92-fb5eaa0743c1-noamzn
+                - 1b45c927-1fa3-47ec-8ab3-2ddb65bf66bb-noamzn
             X-Api-Call-End:
-                - "2025-05-14T18:45:44.486Z"
+                - "2025-05-14T19:32:43.633Z"
             X-Api-Call-Start:
-                - "2025-05-14T18:45:44.270Z"
+                - "2025-05-14T19:32:43.324Z"
             X-Api-Received:
-                - "2025-05-14T18:45:44.089Z"
+                - "2025-05-14T19:32:43.179Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -108,7 +108,7 @@ interactions:
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - nu3MUUp-3NKUce-93fc8de75de4a306
+                - nu3bvVp-4Yz4kd-93fcd2b848c1a2be
         status: 200 OK
         code: 200
-        duration: 720ms
+        duration: 809ms

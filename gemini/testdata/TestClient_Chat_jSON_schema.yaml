@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 439
+        content_length: 437
         transfer_encoding: []
         trailer: {}
         host: generativelanguage.googleapis.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Reply as JSON according to the provided schema."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"type":"object","properties":{"is_fruit":{"type":"boolean","description":"True  if the answer is that it is a fruit, false otherwise"}},"required":["is_fruit"]},"responseModalities":["TEXT"],"maxOutputTokens":200,"temperature":0.01,"seed":1}}
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Reply as JSON according to the provided schema."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"type":"object","properties":{"is_fruit":{"type":"boolean","description":"True if the answer is that it is a fruit, false otherwise"}},"required":["is_fruit"]},"responseModalities":["TEXT"],"maxOutputTokens":200,"temperature":0.1,"seed":1}}
         form: {}
         headers:
             Content-Type:
@@ -41,17 +41,17 @@ interactions:
                     "role": "model"
                   },
                   "finishReason": "STOP",
-                  "avgLogprobs": -5.163877821442756e-05
+                  "avgLogprobs": -5.7441415265202522e-05
                 }
               ],
               "usageMetadata": {
-                "promptTokenCount": 37,
+                "promptTokenCount": 36,
                 "candidatesTokenCount": 11,
-                "totalTokenCount": 48,
+                "totalTokenCount": 47,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
-                    "tokenCount": 37
+                    "tokenCount": 36
                   }
                 ],
                 "candidatesTokensDetails": [
@@ -71,7 +71,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=457
+                - gfet4t7; dur=508
             Vary:
                 - Origin
                 - X-Origin
@@ -84,4 +84,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 523ms
+        duration: 570ms

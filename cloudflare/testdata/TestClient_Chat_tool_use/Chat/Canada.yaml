@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 526
+        content_length: 516
         transfer_encoding: []
         trailer: {}
         host: api.cloudflare.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"messages":[{"content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.","role":"user"}],"max_tokens":200,"temperature":0.01,"tools":[{"type":"function","function":{"description":"A tool to determine the best country","name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+            {"messages":[{"content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.","role":"user"}],"max_tokens":200,"seed":1,"tools":[{"type":"function","function":{"description":"A tool to determine the best country","name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
         form: {}
         headers:
             Content-Type:
@@ -33,11 +33,11 @@ interactions:
             Api-Version:
                 - "2025-05-14"
             Cf-Ai-Req-Id:
-                - a29b5dc2-da8f-49a6-8d1d-6dbf19cddb0a
+                - f04a1ad9-09d5-4c69-a10f-c345c60f0d01
             Cf-Auditlog-Id:
-                - 0196d01d-ec67-7597-ab85-443849b6d894
+                - 0196d048-ef29-7606-a7f3-3a1234f815e5
             Cf-Ray:
-                - 93fc8de6fb6ca2c6-YUL
+                - 93fcd2b82fe94bb9-YUL
             Content-Type:
                 - application/json
             Server:
@@ -46,4 +46,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 4.942s
+        duration: 5.024s

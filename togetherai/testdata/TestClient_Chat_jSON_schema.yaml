@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 554
+        content_length: 552
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Reply as JSON according to the provided schema."}]}],"max_tokens":200,"temperature":0.01,"seed":1,"response_format":{"type":"json_schema","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean","description":"True  if the answer is that it is a fruit, false otherwise"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}
+            {"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Reply as JSON according to the provided schema."}]}],"max_tokens":200,"temperature":0.1,"seed":1,"response_format":{"type":"json_schema","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean","description":"True if the answer is that it is a fruit, false otherwise"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ntuj5E5-6UHjtw-93f45286ebb8a2fc",
+              "id": "nu3cL5C-2j9zxn-93fcd4a72bbda30a",
               "object": "chat.completion",
-              "created": 1747162026,
+              "created": 1747251242,
               "model": "meta-llama/Llama-4-Scout-17B-16E-Instruct",
               "prompt": [],
               "choices": [
@@ -62,11 +62,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93f45286ebb8a2fc-YUL
+                - 93fcd4a72bbda30a-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"20d-v3Uf+NgTl2Ngz4M+Ok1gcpJmgZs"
+                - W/"20d-B0LnLynT1WUkC85F2fAsSWSdsVo"
             Retry-After:
                 - "2"
             Server:
@@ -76,13 +76,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - dfb896c4-df4f-44a6-8629-7f4febc61a32-noamzn
+                - 11ae071e-0c34-4748-b283-eee760e953f6-noamzn
             X-Api-Call-End:
-                - "2025-05-13T18:47:06.530Z"
+                - "2025-05-14T19:34:02.634Z"
             X-Api-Call-Start:
-                - "2025-05-13T18:47:06.375Z"
+                - "2025-05-14T19:34:02.495Z"
             X-Api-Received:
-                - "2025-05-13T18:47:06.358Z"
+                - "2025-05-14T19:34:02.487Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -98,7 +98,7 @@ interactions:
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - ntuj5E5-6UHjtw-93f45286ebb8a2fc
+                - nu3cL5C-2j9zxn-93fcd4a72bbda30a
         status: 200 OK
         code: 200
-        duration: 545ms
+        duration: 590ms

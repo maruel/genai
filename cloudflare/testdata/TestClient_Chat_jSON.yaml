@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 256
+        content_length: 255
         transfer_encoding: []
         trailer: {}
         host: api.cloudflare.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"messages":[{"content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.","role":"user"}],"max_tokens":200,"response_format":{"type":"json_object"},"seed":1,"temperature":0.01}
+            {"messages":[{"content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.","role":"user"}],"max_tokens":200,"response_format":{"type":"json_object"},"seed":1,"temperature":0.1}
         form: {}
         headers:
             Content-Type:
@@ -31,13 +31,13 @@ interactions:
         body: '{"result":{"response":"{\"is_fruit\": true}","usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
-                - "2025-05-13"
+                - "2025-05-14"
             Cf-Ai-Req-Id:
-                - a100435c-f5cf-484c-9911-3775a02fc5c5
+                - ffb5d910-90ac-4a0e-b399-3d6197112e41
             Cf-Auditlog-Id:
-                - 0196ca67-bee9-7099-8b27-ef1882b3ea42
+                - 0196d04a-2461-7458-aca9-5c63a7fdbd3a
             Cf-Ray:
-                - 93f36a6ae89aa26d-YUL
+                - 93fcd4a6c8cfa2d6-YUL
             Content-Type:
                 - application/json
             Server:
@@ -46,4 +46,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 1.499s
+        duration: 1.023s

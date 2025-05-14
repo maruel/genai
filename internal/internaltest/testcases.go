@@ -66,101 +66,19 @@ func (tc *TestCases) usageIsBroken(override *Settings) bool {
 
 // TestChatThinking runs a test for the thinking feature of a chat model.
 func (tc *TestCases) TestChatThinking(t *testing.T, override *Settings) {
-	ctx := t.Context()
-	c := tc.getClient(t, override)
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello."),
-	}
+	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello.")}
 	// I believe most thinking models do not like Temperature to be set.
-	opts := tc.getOptions(&genai.ChatOptions{
-		MaxTokens: 2000,
-		Seed:      1,
-	}, override)
-	resp, err := c.Chat(ctx, msgs, opts)
-	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-		t.Log(uce)
-	} else if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
-	testUsage(t, &resp.Usage, tc.usageIsBroken(override))
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	// Normalize some of the variance. Obviously many models will still fail this test.
-	got := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!")
-	if got != "hello" {
-		t.Fatal(got)
-	}
+	opts := genai.ChatOptions{MaxTokens: 2000, Seed: 1}
+	resp := tc.testChatHelper(t, msgs, override, opts)
+	validateSingleWordResponse(t, resp, "hello")
 }
 
 // TestChatStream makes sure ChatStream() works.
 func (tc *TestCases) TestChatStream(t *testing.T, override *Settings) {
-	c := tc.getClient(t, override)
-	ctx := t.Context()
-	chunks := make(chan genai.MessageFragment)
-	end := make(chan genai.Messages, 1)
-	go func() {
-		var pendingMsgs genai.Messages
-		defer func() {
-			end <- pendingMsgs
-			close(end)
-		}()
-		for {
-			select {
-			case <-ctx.Done():
-				return
-			case pkt, ok := <-chunks:
-				if !ok {
-					return
-				}
-				// Gemini API has both FinishReason and TextFragment in the final message.
-				if pkt.FinishReason == "" && pkt.TextFragment == "" {
-					t.Errorf("Must have at least one FinishReason or Text: %#v", pkt)
-				}
-				var err2 error
-				if pendingMsgs, err2 = pkt.Accumulate(pendingMsgs); err2 != nil {
-					t.Error(err2)
-					return
-				}
-				if pkt.FinishReason != "" && pkt.FinishReason != "stop" {
-					t.Errorf("Unexpected FinishReason: %q", pkt.FinishReason)
-				}
-			}
-		}
-	}()
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
-	}
-	opts := tc.getOptions(&genai.ChatOptions{
-		Temperature: 0.01,
-		MaxTokens:   50,
-		Seed:        1,
-	}, override)
-	usage, err := c.ChatStream(ctx, msgs, opts, chunks)
-	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-		t.Log(uce)
-	} else if err != nil {
-		t.Error(err)
-	}
-	close(chunks)
-	// Hugginface, OpenAI do not set tokens when streaming as shown in testdata/TestClient_ChatStream.yaml
-	testUsage(t, &usage, tc.usageIsBroken(override))
-
-	responses := <-end
-	t.Logf("Raw responses: %#v", responses)
-	if len(responses) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	resp := responses[0]
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	// Normalize some of the variance. Obviously many models will still fail this test.
-	got := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!")
-	if got != "hello" {
-		t.Fatal(got)
-	}
+	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
+	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 50, Seed: 1}
+	resp := tc.testChatStreamHelper(t, msgs, override, opts)
+	validateSingleWordResponse(t, resp, "hello")
 }
 
 // TestChatAllModels says hello with all models.
@@ -171,23 +89,24 @@ func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Mod
 	if err != nil {
 		t.Fatal(err)
 	}
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello."),
-	}
+
 	// MaxTokens has to be long because of some thinking models (e.g. qwen-qwq-32b and
 	// deepseek-r1-distill-llama-70b) cannot have thinking disabled.
-	opts := tc.getOptions(&genai.ChatOptions{
-		Temperature: 0.1,
-		MaxTokens:   1000,
-		Seed:        1,
-	}, nil)
+	baseOpts := &genai.ChatOptions{Temperature: 0.1, Seed: 1, MaxTokens: 1000}
+	opts := tc.getOptions(baseOpts, nil)
+
 	for _, m := range models {
 		id := m.GetID()
 		if filter != nil && !filter(m) {
 			continue
 		}
 		t.Run(id, func(t *testing.T) {
-			resp, err := tc.GetClient(t, id).Chat(ctx, msgs, opts)
+			t.Helper()
+			c := tc.GetClient(t, id)
+			msgs := genai.Messages{
+				genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello."),
+			}
+			resp, err := c.Chat(ctx, msgs, opts)
 			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 				t.Log(uce)
 			} else if err != nil {
@@ -195,14 +114,7 @@ func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Mod
 			}
 			t.Logf("Raw response: %#v", resp)
 			testUsage(t, &resp.Usage, false)
-			if len(resp.Contents) != 1 {
-				t.Fatal("Unexpected response")
-			}
-			// Normalize some of the variance. Obviously many models will still fail this test.
-			got := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!")
-			if got != "hello" {
-				t.Fatal(got)
-			}
+			validateSingleWordResponse(t, resp, "hello")
 		})
 	}
 }
@@ -235,8 +147,8 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, override *Settings, us
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 		}
 		opts := tc.getOptions(&genai.ChatOptions{
-			Temperature: 0.01,
-			MaxTokens:   200,
+			MaxTokens: 200,
+			Seed:      1,
 			Tools: []genai.ToolDef{
 				{
 					Name:        "best_country",
@@ -244,6 +156,7 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, override *Settings, us
 					InputsAs:    &got,
 				},
 			},
+			ToolCallRequired: true,
 		}, override)
 		var resp genai.ChatResult
 		if useStream {
@@ -251,11 +164,8 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, override *Settings, us
 		} else {
 			resp = processChat(t, ctx, c, msgs, opts)
 		}
-		// I'm disappointed by Cloudflare.
 		testUsage(t, &resp.Usage, tc.usageIsBroken(override))
 
-		// Warning: when the model is undecided, it call both.
-		// Check for tool calls
 		want := "best_country"
 		if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
 			t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
@@ -268,6 +178,7 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, override *Settings, us
 		}
 		// TODO: Follow up!
 	})
+
 	t.Run("USA", func(t *testing.T) {
 		c := tc.getClient(t, override)
 		msgs := genai.Messages{
@@ -277,9 +188,8 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, override *Settings, us
 			Country string `json:"country" jsonschema:"enum=USA,enum=Canada"`
 		}
 		opts := tc.getOptions(&genai.ChatOptions{
-			Temperature: 0.01,
-			MaxTokens:   200,
-			Seed:        1,
+			MaxTokens: 200,
+			Seed:      1,
 			Tools: []genai.ToolDef{
 				{
 					Name:        "best_country",
@@ -287,6 +197,7 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, override *Settings, us
 					InputsAs:    &got,
 				},
 			},
+			ToolCallRequired: true,
 		}, override)
 		var resp genai.ChatResult
 		if useStream {
@@ -295,8 +206,7 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, override *Settings, us
 			resp = processChat(t, ctx, c, msgs, opts)
 		}
 		testUsage(t, &resp.Usage, tc.usageIsBroken(override))
-		// Warning: when the model is undecided, it call both.
-		// Check for tool calls
+
 		want := "best_country"
 		if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
 			t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
@@ -316,8 +226,6 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, override *Settings, us
 // TestChatVisionJPGInline runs a Chat with vision capabilities and verifies that the model correctly identifies a
 // banana image.
 func (tc *TestCases) TestChatVisionJPGInline(t *testing.T, override *Settings) {
-	c := tc.getClient(t, override)
-	ctx := t.Context()
 	msgs := genai.Messages{
 		{
 			Role: genai.User,
@@ -327,19 +235,8 @@ func (tc *TestCases) TestChatVisionJPGInline(t *testing.T, override *Settings) {
 			},
 		},
 	}
-	opts := tc.getOptions(&genai.ChatOptions{
-		Temperature: 0.01,
-		MaxTokens:   200,
-		Seed:        1,
-	}, override)
-	resp, err := c.Chat(ctx, msgs, opts)
-	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-		t.Log(uce)
-	} else if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
-	testUsage(t, &resp.Usage, tc.usageIsBroken(override))
+	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 200, Seed: 1}
+	resp := tc.testChatVisionHelper(t, msgs, override, opts)
 	if len(resp.Contents) != 1 {
 		t.Fatal("Unexpected response")
 	}
@@ -367,11 +264,7 @@ func (tc *TestCases) TestChatVisionPDFInline(t *testing.T, override *Settings) {
 			},
 		},
 	}
-	opts := tc.getOptions(&genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}, override)
+	opts := tc.getOptions(&genai.ChatOptions{Temperature: 0.01, MaxTokens: 50, Seed: 1}, override)
 	resp, err := c.Chat(t.Context(), msgs, opts)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
@@ -402,11 +295,7 @@ func (tc *TestCases) TestChatVisionPDFURL(t *testing.T, override *Settings) {
 			},
 		},
 	}
-	opts := tc.getOptions(&genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}, override)
+	opts := tc.getOptions(&genai.ChatOptions{Temperature: 0.01, MaxTokens: 50, Seed: 1}, override)
 	resp, err := c.Chat(t.Context(), msgs, opts)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
@@ -446,11 +335,7 @@ func (tc *TestCases) testChatAudioInline(t *testing.T, override *Settings, filen
 		{Role: genai.User, Contents: []genai.Content{{Document: f}}},
 		genai.NewTextMessage(genai.User, "What is the word said? Reply with only the word."),
 	}
-	opts := tc.getOptions(&genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}, override)
+	opts := tc.getOptions(&genai.ChatOptions{Temperature: 0.01, MaxTokens: 50, Seed: 1}, override)
 	resp, err := c.Chat(t.Context(), msgs, opts)
 	if err != nil {
 		t.Fatal(err)
@@ -482,11 +367,7 @@ func (tc *TestCases) TestChatVideoMP4Inline(t *testing.T, override *Settings) {
 			},
 		},
 	}
-	opts := tc.getOptions(&genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}, override)
+	opts := tc.getOptions(&genai.ChatOptions{Temperature: 0.01, MaxTokens: 50, Seed: 1}, override)
 	resp, err := c.Chat(t.Context(), msgs, opts)
 	if err != nil {
 		t.Fatal(err)
@@ -505,34 +386,11 @@ func (tc *TestCases) TestChatVideoMP4Inline(t *testing.T, override *Settings) {
 
 // TestChatJSON runs a Chat verifying that the model correctly outputs JSON.
 func (tc *TestCases) TestChatJSON(t *testing.T, override *Settings) {
-	c := tc.getClient(t, override)
-	ctx := t.Context()
 	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: `Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {"is_fruit": bool}.`},
-			},
-		},
+		genai.NewTextMessage(genai.User, `Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {"is_fruit": bool}.`),
 	}
-	opts := tc.getOptions(&genai.ChatOptions{
-		Temperature: 0.01,
-		MaxTokens:   200,
-		Seed:        1,
-		ReplyAsJSON: true,
-	}, override)
-	resp, err := c.Chat(ctx, msgs, opts)
-	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-		t.Log(uce)
-	} else if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
-	// I'm disappointed by Cloudflare.
-	testUsage(t, &resp.Usage, tc.usageIsBroken(override))
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
+	opts := genai.ChatOptions{Temperature: 0.1, MaxTokens: 200, Seed: 1, ReplyAsJSON: true}
+	resp := tc.testChatHelper(t, msgs, override, opts)
 	got := map[string]any{}
 	if err := resp.Contents[0].Decode(&got); err != nil {
 		// Gemini returns a list of map. Tolerate that too.
@@ -566,38 +424,13 @@ func (tc *TestCases) TestChatJSON(t *testing.T, override *Settings) {
 
 // TestChatJSONSchema runs a Chat verifying that the model correctly outputs JSON according to a schema.
 func (tc *TestCases) TestChatJSONSchema(t *testing.T, override *Settings) {
-	c := tc.getClient(t, override)
-	ctx := t.Context()
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "Is a banana a fruit? Reply as JSON according to the provided schema."},
-			},
-		},
-	}
 	// TODO: Test optional vs required, enum, bool, int, etc.
 	var got struct {
-		IsFruit bool `json:"is_fruit" jsonschema_description:"True  if the answer is that it is a fruit, false otherwise"`
+		IsFruit bool `json:"is_fruit" jsonschema_description:"True if the answer is that it is a fruit, false otherwise"`
 	}
-	opts := tc.getOptions(&genai.ChatOptions{
-		Temperature: 0.01,
-		MaxTokens:   200,
-		Seed:        1,
-		DecodeAs:    &got,
-	}, override)
-	resp, err := c.Chat(ctx, msgs, opts)
-	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-		t.Log(uce)
-	} else if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
-	// I'm disappointed by Cloudflare.
-	testUsage(t, &resp.Usage, tc.usageIsBroken(override))
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
+	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Is a banana a fruit? Reply as JSON according to the provided schema.")}
+	opts := genai.ChatOptions{Temperature: 0.1, MaxTokens: 200, Seed: 1, DecodeAs: &got}
+	resp := tc.testChatHelper(t, msgs, override, opts)
 	if err := resp.Contents[0].Decode(&got); err != nil {
 		t.Fatal(err)
 	}
@@ -691,4 +524,58 @@ func testUsage(t *testing.T, u *genai.Usage, usageIsBroken bool) {
 			t.Error("expected Usage.OutputTokens to be set")
 		}
 	}
+}
+
+// testChatHelper is a general helper function to run Chat tests with consistent patterns.
+func (tc *TestCases) testChatHelper(t *testing.T, msgs genai.Messages, override *Settings, opts genai.ChatOptions) genai.ChatResult {
+	c := tc.getClient(t, override)
+	ctx := t.Context()
+	resp, err := c.Chat(ctx, msgs, tc.getOptions(&opts, override))
+	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+		t.Log(uce)
+	} else if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Logf("Raw response: %#v", resp)
+	testUsage(t, &resp.Usage, tc.usageIsBroken(override))
+
+	if len(resp.Contents) != 1 {
+		t.Fatal("Unexpected response")
+	}
+	return resp
+}
+
+// validateSingleWordResponse validates that the response contains exactly one of the expected words.
+func validateSingleWordResponse(t *testing.T, resp genai.ChatResult, want string) {
+	if len(resp.Contents) != 1 {
+		t.Fatal("Unexpected response")
+	}
+	if got := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"); want != got {
+		t.Fatalf("Expected %q, got %q", want, got)
+	}
+}
+
+// testChatStreamHelper is a general helper function to run ChatStream tests with consistent patterns.
+func (tc *TestCases) testChatStreamHelper(t *testing.T, msgs genai.Messages, override *Settings, opts genai.ChatOptions) genai.ChatResult {
+	c := tc.getClient(t, override)
+	ctx := t.Context()
+	resp := processChatStream(t, ctx, c, msgs, tc.getOptions(&opts, override))
+	testUsage(t, &resp.Usage, tc.usageIsBroken(override))
+	return resp
+}
+
+// testChatVisionHelper is a general helper function for vision tests.
+func (tc *TestCases) testChatVisionHelper(t *testing.T, msgs genai.Messages, override *Settings, opts genai.ChatOptions) genai.ChatResult {
+	c := tc.getClient(t, override)
+	ctx := t.Context()
+	resp, err := c.Chat(ctx, msgs, tc.getOptions(&opts, override))
+	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+		t.Log(uce)
+	} else if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("Raw response: %#v", resp)
+	testUsage(t, &resp.Usage, tc.usageIsBroken(override))
+	return resp
 }

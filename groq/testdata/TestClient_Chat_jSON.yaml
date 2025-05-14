@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 332
+        content_length: 331
         transfer_encoding: []
         trailer: {}
         host: api.groq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"max_completion_tokens":200,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"model":"llama3-8b-8192","response_format":{"type":"json_object"},"seed":1,"stream":false,"temperature":0.01}
+            {"max_completion_tokens":200,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"model":"llama3-8b-8192","response_format":{"type":"json_object"},"seed":1,"stream":false,"temperature":0.1}
         form: {}
         headers:
             Content-Type:
@@ -29,7 +29,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-3c8c6e2d-5a71-42bb-9f7d-6d9e445b557c","object":"chat.completion","created":1747152130,"model":"llama3-8b-8192","choices":[{"index":0,"message":{"role":"assistant","content":"{\n   \"is_fruit\": true\n}"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.085286254,"prompt_tokens":60,"prompt_time":0.011448989,"completion_tokens":9,"completion_time":0.0075,"total_tokens":69,"total_time":0.018948989},"usage_breakdown":{"models":null},"system_fingerprint":"fp_dadc9d6142","x_groq":{"id":"req_01jv563mkceb5tccva15kv73bp"}}
+            {"id":"chatcmpl-850e7383-2787-4eda-85c9-352e3a664123","object":"chat.completion","created":1747251242,"model":"llama3-8b-8192","choices":[{"index":0,"message":{"role":"assistant","content":"{\n   \"is_fruit\": true\n}"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.06784190699999999,"prompt_tokens":60,"prompt_time":0.007871818,"completion_tokens":9,"completion_time":0.0075,"total_tokens":69,"total_time":0.015371818},"usage_breakdown":{"models":null},"system_fingerprint":"fp_dadc9d6142","x_groq":{"id":"req_01jv84m949ewgrtf7ad7s4m2c0"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,7 +38,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93f360f04e14a2c2-YUL
+                - 93fcd4a6e90ca2bc-YUL
             Content-Type:
                 - application/json
             Server:
@@ -60,7 +60,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 21.599999ms
             X-Request-Id:
-                - req_01jv563mkceb5tccva15kv73bp
+                - req_01jv84m949ewgrtf7ad7s4m2c0
         status: 200 OK
         code: 200
-        duration: 252ms
+        duration: 191ms

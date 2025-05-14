@@ -141,7 +141,7 @@ func (c *ChatOptions) Validate() error {
 			return fmt.Errorf("tool %d: %w", i, err)
 		}
 	}
-	if len(c.Tools) != 0 && c.ToolCallRequired {
+	if len(c.Tools) == 0 && c.ToolCallRequired {
 		return fmt.Errorf("field ToolCallRequired: Tools are required")
 	}
 	return nil

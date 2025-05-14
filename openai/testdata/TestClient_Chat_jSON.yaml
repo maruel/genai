@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 352
+        content_length: 351
         transfer_encoding: []
         trailer: {}
         host: api.openai.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"gpt-4.1-nano","max_completion_tokens":200,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"seed":1,"temperature":0.01,"response_format":{"type":"json_object"},"service_tier":"auto"}
+            {"model":"gpt-4.1-nano","max_completion_tokens":200,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"seed":1,"temperature":0.1,"response_format":{"type":"json_object"},"service_tier":"auto"}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BX7qnUGbHqjQwcsytI0Onke0IkqUs",
+              "id": "chatcmpl-BXC9aG4PXTctZnjOemlzkYwG8VtEe",
               "object": "chat.completion",
-              "created": 1747234701,
+              "created": 1747251242,
               "model": "gpt-4.1-nano-2025-04-14",
               "choices": [
                 {
@@ -49,8 +49,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 36,
-                "completion_tokens": 8,
-                "total_tokens": 44,
+                "completion_tokens": 7,
+                "total_tokens": 43,
                 "prompt_tokens_details": {
                   "cached_tokens": 0,
                   "audio_tokens": 0
@@ -73,13 +73,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93fb40d4db83a31d-YUL
+                - 93fcd4a72873a2bd-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "198"
+                - "115"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -89,21 +89,21 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "202"
+                - "118"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
                 - "200000"
             X-Ratelimit-Remaining-Requests:
-                - "499"
+                - "498"
             X-Ratelimit-Remaining-Tokens:
-                - "199967"
+                - "199958"
             X-Ratelimit-Reset-Requests:
-                - 120ms
+                - 236ms
             X-Ratelimit-Reset-Tokens:
-                - 9ms
+                - 12ms
             X-Request-Id:
-                - req_030a089dece810aea113f93eaf32b690
+                - req_0f9d20cc8deccc794fbcae91000f55cf
         status: 200 OK
         code: 200
-        duration: 269ms
+        duration: 301ms

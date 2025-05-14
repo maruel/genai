@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 647
+        content_length: 632
         transfer_encoding: []
         trailer: {}
         host: api.mistral.ai
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"ministral-3b-latest","temperature":0.01,"max_tokens":200,"stream":false,"random_seed":1,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"auto"}
+            {"model":"ministral-3b-latest","max_tokens":200,"stream":false,"random_seed":1,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
         form: {}
         headers:
             Content-Type:
@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"82874ff581b44fc19fc3061ad5a479de","object":"chat.completion","created":1747248344,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"OhjrGdbgM","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":0}],"content":""},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}'
+        body: '{"id":"1b77ba30120b4bd7aeaacbccc7a58298","object":"chat.completion","created":1747251163,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"SAVU27Ix9","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":0}],"content":""},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -37,7 +37,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93fc8de719d5a30a-YUL
+                - 93fcd2b8483ca294-YUL
             Content-Type:
                 - application/json
             Ratelimitbysize-Limit:
@@ -47,17 +47,17 @@ interactions:
             Ratelimitbysize-Remaining:
                 - "1999800"
             Ratelimitbysize-Reset:
-                - "16"
+                - "17"
             Server:
                 - cloudflare
             X-Envoy-Upstream-Service-Time:
-                - "508"
+                - "157"
             X-Kong-Proxy-Latency:
-                - "5"
+                - "7"
             X-Kong-Request-Id:
-                - 520ea37dd397e31e97b0db370735206a
+                - bccd2b1e1f91fc37f232e93b1526f146
             X-Kong-Upstream-Latency:
-                - "509"
+                - "248"
             X-Ratelimitbysize-Limit-Minute:
                 - "2000000"
             X-Ratelimitbysize-Limit-Month:
@@ -65,7 +65,7 @@ interactions:
             X-Ratelimitbysize-Remaining-Minute:
                 - "1999800"
             X-Ratelimitbysize-Remaining-Month:
-                - "9999999150"
+                - "9999999400"
         status: 200 OK
         code: 200
-        duration: 679ms
+        duration: 445ms

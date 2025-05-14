@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 279
+        content_length: 278
         transfer_encoding: []
         trailer: {}
         host: localhost
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"gemma3:4b","stream":false,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"format":"json","options":{"temperature":0.01,"seed":1,"num_predict":200}}
+            {"model":"gemma3:4b","stream":false,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"format":"json","options":{"temperature":0.1,"seed":1,"num_predict":200}}
         form: {}
         headers:
             Content-Type:
@@ -26,14 +26,14 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 317
+        content_length: 318
         uncompressed: false
-        body: '{"model":"gemma3:4b","created_at":"2025-05-13T16:12:34.02079101Z","message":{"role":"assistant","content":"{\"is_fruit\": true}\n"},"done_reason":"stop","done":true,"total_duration":2554834589,"load_duration":1195165529,"prompt_eval_count":38,"prompt_eval_duration":685411544,"eval_count":9,"eval_duration":416062679}'
+        body: '{"model":"gemma3:4b","created_at":"2025-05-14T19:34:33.279304799Z","message":{"role":"assistant","content":"{\"is_fruit\": true}\n"},"done_reason":"stop","done":true,"total_duration":3949743874,"load_duration":2549637644,"prompt_eval_count":38,"prompt_eval_duration":702347301,"eval_count":9,"eval_duration":433917474}'
         headers:
             Content-Length:
-                - "317"
+                - "318"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 2.555s
+        duration: 3.95s

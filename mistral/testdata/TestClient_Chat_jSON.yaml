@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 334
+        content_length: 333
         transfer_encoding: []
         trailer: {}
         host: api.mistral.ai
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"mistral-small-latest","temperature":0.01,"max_tokens":200,"stream":false,"random_seed":1,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"response_format":{"type":"json_object"}}
+            {"model":"mistral-small-latest","temperature":0.1,"max_tokens":200,"stream":false,"random_seed":1,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"response_format":{"type":"json_object"}}
         form: {}
         headers:
             Content-Type:
@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"3c370bea3d7f47df86e03b4d8c6d3f86","object":"chat.completion","created":1747152542,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"{\n  \"is_fruit\": true\n}"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":32,"total_tokens":43,"completion_tokens":11}}'
+        body: '{"id":"9aa7da2937eb4563961d9d5b6cf5e060","object":"chat.completion","created":1747251242,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"{\n  \"is_fruit\": true\n}"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":32,"total_tokens":43,"completion_tokens":11}}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -37,7 +37,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93f36afceeeaa2ae-YUL
+                - 93fcd4a72d08a2ba-YUL
             Content-Type:
                 - application/json
             Ratelimitbysize-Limit:
@@ -45,27 +45,27 @@ interactions:
             Ratelimitbysize-Query-Cost:
                 - "200"
             Ratelimitbysize-Remaining:
-                - "1999800"
+                - "1999600"
             Ratelimitbysize-Reset:
                 - "58"
             Server:
                 - cloudflare
             X-Envoy-Upstream-Service-Time:
-                - "281"
+                - "155"
             X-Kong-Proxy-Latency:
                 - "6"
             X-Kong-Request-Id:
-                - 519dc1286aa00976b7b1fc10004b1f79
+                - e3c1ac56675bec19b28d367647f04b72
             X-Kong-Upstream-Latency:
-                - "282"
+                - "303"
             X-Ratelimitbysize-Limit-Minute:
                 - "2000000"
             X-Ratelimitbysize-Limit-Month:
                 - "10000000000"
             X-Ratelimitbysize-Remaining-Minute:
-                - "1999800"
+                - "1999600"
             X-Ratelimitbysize-Remaining-Month:
-                - "9999999800"
+                - "9999999000"
         status: 200 OK
         code: 200
-        duration: 568ms
+        duration: 483ms

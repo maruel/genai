@@ -26,7 +26,7 @@ func mainImpl() error {
 
 	modelFlag := flag.String("model", "", "HuggingFace model reference (e.g., 'Qwen/Qwen3-30B-A3B-GGUF/Qwen3-30B-A3B-Q6_K.gguf')")
 	cacheDir := flag.String("cache", "", "Cache directory for models and server (default: ~/.cache/llama-serve)")
-	port := flag.Int("port", 8080, "Port to serve on")
+	hostPort := flag.String("http", "127.0.0.1:8080", "IP and Port to serve on; use 0.0.0.0 to listen on all IPs")
 	threads := flag.Int("threads", 0, "Number of threads to use (default: CPU count - 2)")
 	flag.Parse()
 	if *modelFlag == "" {
@@ -69,8 +69,8 @@ func mainImpl() error {
 		return err
 	}
 
-	log.Printf("Starting llama-server on port %d...", *port)
-	server, err := llamacppsrv.NewServer(ctx, exe, modelPath, os.Stdout, *port, *threads, flag.Args())
+	log.Printf("Starting llama-server on %s...", *hostPort)
+	server, err := llamacppsrv.NewServer(ctx, exe, modelPath, os.Stdout, *hostPort, *threads, flag.Args())
 	if err != nil {
 		return err
 	}

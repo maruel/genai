@@ -13,6 +13,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"os"
 	"os/exec"
@@ -46,12 +47,20 @@ type Server struct {
 // Doesn't pass "-ngl", "9999" by default so the user can override it.
 //
 // Output is redirected to logOutput if non-nil.
-func NewServer(ctx context.Context, exe, modelPath string, logOutput io.Writer, port, threads int, extraArgs []string) (*Server, error) {
+func NewServer(ctx context.Context, exe, modelPath string, logOutput io.Writer, hostPort string, threads int, extraArgs []string) (*Server, error) {
 	if !filepath.IsAbs(exe) {
 		return nil, errors.New("exe must be an absolute path")
 	}
 	if !filepath.IsAbs(modelPath) {
 		return nil, errors.New("modelPath must be an absolute path")
+	}
+	host, portStr, err := net.SplitHostPort(hostPort)
+	if err != nil {
+		return nil, err
+	}
+	port, err := strconv.Atoi(portStr)
+	if err != nil {
+		return nil, err
 	}
 	if threads == 0 {
 		// Surprisingly llama-server seems to be hardcoded to 8 threads. Leave 2
@@ -61,7 +70,10 @@ func NewServer(ctx context.Context, exe, modelPath string, logOutput io.Writer, 
 		}
 	}
 	args := []string{
-		exe, "--model", modelPath, "--metrics", "--threads", strconv.Itoa(threads), "--port", strconv.Itoa(port),
+		exe, "--model", modelPath, "--metrics", "--threads", strconv.Itoa(threads), "--port", portStr,
+	}
+	if host != "" {
+		args = append(args, "--host", host)
 	}
 	args = append(args, extraArgs...)
 	cmd := exec.CommandContext(ctx, args[0], args[1:]...)

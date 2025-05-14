@@ -306,15 +306,18 @@ func (m *Message) Decode(x any) error {
 // The content can be text or a document. The document may be audio, video,
 // image, PDF or any other format.
 type Content struct {
-	// Only Text, Thinking or the rest can be set.
+	// Only Text, Thinking, Opaque or the rest can be set.
 
 	// Text is the content of the text message.
 	Text string
 
 	// Thinking is the reasoning done by the LLM.
 	Thinking string
+
 	// Opaque is added to keep continuity on the processing. A good example is Anthropic's extended thinking. It
 	// must be kept during an exchange.
+	//
+	// A message with only Opaque set is valid.
 	Opaque map[string]any
 
 	// If Text and Thinking are not set, then, one of Document or URL must be set.
@@ -352,7 +355,7 @@ func (c *Content) Validate() error {
 		if c.URL != "" {
 			return errors.New("field URL can't be used along Text")
 		}
-	} else if c.Thinking != "" {
+	} else if c.Thinking != "" || len(c.Opaque) != 0 {
 		if c.Filename != "" {
 			return errors.New("field Filename can't be used along Text")
 		}

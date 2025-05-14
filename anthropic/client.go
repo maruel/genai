@@ -231,7 +231,7 @@ func (m *Message) To(out *genai.Message) error {
 	// We need to split actual content and tool calls.
 	for i := range m.Content {
 		switch m.Content[i].Type {
-		case "text":
+		case "text", "thinking", "redacted_thinking":
 			out.Contents = append(out.Contents, genai.Content{})
 			if err := m.Content[i].ToContent(&out.Contents[len(out.Contents)-1]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
@@ -241,8 +241,6 @@ func (m *Message) To(out *genai.Message) error {
 			if err := m.Content[i].ToToolCall(&out.ToolCalls[len(out.ToolCalls)-1]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
-		case "thinking":
-			// TODO: Implement.
 		default:
 			return fmt.Errorf("unsupported content type %q", m.Content[i].Type)
 		}
@@ -251,13 +249,16 @@ func (m *Message) To(out *genai.Message) error {
 }
 
 type Content struct {
-	Type string `json:"type"` // "text", "image", "tool_use", "tool_result", "document", "thinking"
+	Type string `json:"type"` // "text", "image", "tool_use", "tool_result", "document", "thinking", "redacted_thinking"
 	// Type == "text"
 	Text string `json:"text,omitzero"`
 
 	// Type == "thinking"
 	Thinking  string `json:"thinking,omitzero"`
 	Signature []byte `json:"signature,omitzero"`
+
+	// Type == "redacted_thinking"
+	Data string `json:"data,omitzero"`
 
 	// Type == "text", "image", "tool_use", "tool_result", "document"
 	CacheControl struct {
@@ -306,11 +307,28 @@ type Content struct {
 }
 
 func (c *Content) FromContent(in *genai.Content) error {
-	// TODO: thinking
 	if in.Text != "" {
 		c.Type = "text"
 		c.Text = in.Text
 		return nil
+	}
+	if in.Thinking != "" {
+		c.Type = "thinking"
+		c.Thinking = in.Thinking
+		if in.Opaque != nil {
+			if b, ok := in.Opaque["signature"].([]byte); ok {
+				c.Signature = b
+			}
+		}
+		return nil
+	}
+	if in.Opaque != nil {
+		if s, ok := in.Opaque["redacted_thinking"].(string); ok {
+			c.Type = "redacted_thinking"
+			c.Data = s
+			return nil
+		}
+		return fmt.Errorf("unexpected Opaque %v", in.Opaque)
 	}
 
 	mimeType, data, err := in.ReadDocument(10 * 1024 * 1024)
@@ -363,6 +381,11 @@ func (c *Content) ToContent(out *genai.Content) error {
 	switch c.Type {
 	case "text":
 		out.Text = c.Text
+	case "thinking":
+		out.Thinking = c.Thinking
+		out.Opaque = map[string]any{"signature": c.Signature}
+	case "redacted_thinking":
+		out.Opaque = map[string]any{"redacted_thinking": c.Signature}
 	default:
 		return fmt.Errorf("unsupported content type %q", c.Type)
 	}
@@ -613,13 +636,6 @@ func New(apiKey, model string) (*Client, error) {
 
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	// https://docs.anthropic.com/en/api/messages
-	for i, msg := range msgs {
-		for j, content := range msg.Contents {
-			if len(content.Opaque) != 0 {
-				return genai.ChatResult{}, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
-			}
-		}
-	}
 	rpcin := ChatRequest{}
 	var continuableErr error
 	if err := rpcin.Init(msgs, opts, c.model); err != nil {
@@ -657,13 +673,6 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
 	usage := genai.Usage{}
-	for i, msg := range msgs {
-		for j, content := range msg.Contents {
-			if len(content.Opaque) != 0 {
-				return usage, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
-			}
-		}
-	}
 	in := ChatRequest{}
 	var continuableErr error
 	if err := in.Init(msgs, opts, c.model); err != nil {

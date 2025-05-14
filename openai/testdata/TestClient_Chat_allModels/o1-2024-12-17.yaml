@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 191
+        content_length: 216
         transfer_encoding: []
         trailer: {}
         host: api.openai.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"o1-2024-12-17","max_completion_tokens":1000,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"seed":1}
+            {"model":"o1-2024-12-17","max_completion_tokens":1000,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"seed":1,"service_tier":"default"}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BV6KpVB4tHnXTOaW9azNfDjp8su9G",
+              "id": "chatcmpl-BWuuwXSbwip6yttZ0MmmmsyVem11n",
               "object": "chat.completion",
-              "created": 1746752219,
+              "created": 1747184986,
               "model": "o1-2024-12-17",
               "choices": [
                 {
@@ -49,14 +49,14 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 18,
-                "completion_tokens": 205,
-                "total_tokens": 223,
+                "completion_tokens": 397,
+                "total_tokens": 415,
                 "prompt_tokens_details": {
                   "cached_tokens": 0,
                   "audio_tokens": 0
                 },
                 "completion_tokens_details": {
-                  "reasoning_tokens": 192,
+                  "reasoning_tokens": 384,
                   "audio_tokens": 0,
                   "accepted_prediction_tokens": 0,
                   "rejected_prediction_tokens": 0
@@ -73,13 +73,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cd3d75ed32a2e0-YUL
+                - 93f68314f8bda2af-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "3084"
+                - "5865"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -89,21 +89,21 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "3090"
+                - "5872"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
                 - "30000"
             X-Ratelimit-Remaining-Requests:
-                - "499"
+                - "498"
             X-Ratelimit-Remaining-Tokens:
                 - "29986"
             X-Ratelimit-Reset-Requests:
-                - 120ms
+                - 197ms
             X-Ratelimit-Reset-Tokens:
                 - 28ms
             X-Request-Id:
-                - req_d833449d086d23b3fe0386ef56e88de6
+                - req_716aae3b69b0cbdeecaaf22f5d2a2bbf
         status: 200 OK
         code: 200
-        duration: 3.665s
+        duration: 5.965s

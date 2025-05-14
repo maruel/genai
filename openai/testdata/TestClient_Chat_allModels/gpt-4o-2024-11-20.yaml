@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 213
+        content_length: 238
         transfer_encoding: []
         trailer: {}
         host: api.openai.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"gpt-4o-2024-11-20","max_completion_tokens":1000,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"seed":1,"temperature":0.1}
+            {"model":"gpt-4o-2024-11-20","max_completion_tokens":1000,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"seed":1,"temperature":0.1,"service_tier":"default"}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BV6KoCXRHuuyYqgTnEsImJbCt507M",
+              "id": "chatcmpl-BWuuwHrEvGIpgWsch1BmhXFHlWZFg",
               "object": "chat.completion",
-              "created": 1746752218,
+              "created": 1747184986,
               "model": "gpt-4o-2024-11-20",
               "choices": [
                 {
@@ -63,7 +63,7 @@ interactions:
                 }
               },
               "service_tier": "default",
-              "system_fingerprint": "fp_5b1b79b17e"
+              "system_fingerprint": "fp_3bdddbcbe8"
             }
         headers:
             Access-Control-Expose-Headers:
@@ -73,13 +73,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cd3d75ed3da2e0-YUL
+                - 93f68311ab49a2af-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "333"
+                - "229"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -89,7 +89,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "350"
+                - "233"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -103,7 +103,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 28ms
             X-Request-Id:
-                - req_3edf4031b3950fa4f283ee175f9b0d37
+                - req_ef4d1389d6f5a9ede7df96746f3b182d
         status: 200 OK
         code: 200
-        duration: 642ms
+        duration: 340ms

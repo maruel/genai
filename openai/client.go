@@ -9,6 +9,8 @@ package openai
 
 // See official client at https://github.com/openai/openai-go
 
+// TODO: Investigate https://platform.openai.com/docs/api-reference/responses/create
+
 import (
 	"bufio"
 	"bytes"
@@ -31,6 +33,31 @@ import (
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
+)
+
+// ChatOptions includes OpenAI specific options.
+type ChatOptions struct {
+	genai.ChatOptions
+
+	// ServiceTier specify the priority.
+	ServiceTier ServiceTier
+}
+
+// ServiceTier is the quality of service to determine the request's priority.
+//
+// https://platform.openai.com/docs/guides/flex-processing
+type ServiceTier string
+
+const (
+	// If the Project is Scale tier enabled, the system will utilize scale tier credits until they are
+	// exhausted, else the request will be processed using the default service tier with a lower uptime SLA and
+	// no latency guarantee.
+	ServiceTierAuto ServiceTier = "auto"
+	// The request will be processed using the default service tier with a lower uptime SLA and no latency
+	// guarantee.
+	ServiceTierDefault ServiceTier = "default"
+	// The request will be processed with the Flex Processing service tier.
+	ServiceTierFlex ServiceTier = "flex"
 )
 
 // https://platform.openai.com/docs/api-reference/chat/create
@@ -73,8 +100,8 @@ type ChatRequest struct {
 			Strict      bool               `json:"strict,omitzero"`
 		} `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
-	ServiceTier   string   `json:"service_tier,omitzero"` // "auto", "default"
-	Stop          []string `json:"stop,omitzero"`         // keywords to stop completion
+	ServiceTier   ServiceTier `json:"service_tier,omitzero"`
+	Stop          []string    `json:"stop,omitzero"` // keywords to stop completion
 	StreamOptions struct {
 		IncludeUsage bool `json:"include_usage,omitzero"`
 	} `json:"stream_options,omitzero"`
@@ -104,66 +131,14 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *genai.ChatOptions:
-				c.MaxChatTokens = v.MaxTokens
-				if (strings.HasPrefix(model, "gpt-4o-") && strings.Contains(model, "-search")) ||
-					model == "o1" ||
-					strings.HasPrefix(model, "o1-") ||
-					strings.HasPrefix(model, "o3-") ||
-					strings.HasPrefix(model, "o4-") {
-					if v.Temperature != 0 {
-						unsupported = append(unsupported, "Temperature")
-					}
-				} else {
-					c.Temperature = v.Temperature
-				}
-				c.TopP = v.TopP
+			case *ChatOptions:
+				c.ServiceTier = v.ServiceTier
+				unsupported = c.initOptions(&v.ChatOptions, model)
 				sp = v.SystemPrompt
-				if strings.HasPrefix(model, "gpt-4o-") && strings.Contains(model, "-search") {
-					if v.Seed != 0 {
-						unsupported = append(unsupported, "Seed")
-					}
-				} else {
-					c.Seed = v.Seed
-				}
-				if v.TopK != 0 {
-					// Track this as an unsupported feature that can be ignored
-					unsupported = append(unsupported, "TopK")
-				}
-				c.Stop = v.Stop
-				if v.ReplyAsJSON {
-					c.ResponseFormat.Type = "json_object"
-				}
-				if v.DecodeAs != nil {
-					c.ResponseFormat.Type = "json_schema"
-					// OpenAI requires a name.
-					c.ResponseFormat.JSONSchema.Name = "response"
-					c.ResponseFormat.JSONSchema.Strict = true
-					c.ResponseFormat.JSONSchema.Schema = jsonschema.Reflect(v.DecodeAs)
-				}
-				if len(v.Tools) != 0 {
-					c.ParallelToolCalls = true
-					// Let's assume if the user provides tools, they want to use them.
-					c.ToolChoice = "required"
-					c.Tools = make([]Tool, len(v.Tools))
-					for i, t := range v.Tools {
-						c.Tools[i].Type = "function"
-						c.Tools[i].Function.Name = t.Name
-						c.Tools[i].Function.Description = t.Description
-						if t.InputsAs != nil {
-							c.Tools[i].Function.Parameters = jsonschema.Reflect(t.InputsAs)
-						}
-					}
-				}
-				if v.ThinkingBudget > 0 {
-					if v.ThinkingBudget <= v.MaxTokens/3 {
-						c.ReasoningEffort = ReasoningEffortLow
-					} else if v.ThinkingBudget <= v.MaxTokens/2 {
-						c.ReasoningEffort = ReasoningEffortMedium
-					} else {
-						c.ReasoningEffort = ReasoningEffortHigh
-					}
-				}
+			case *genai.ChatOptions:
+				c.ServiceTier = ServiceTierDefault
+				unsupported = c.initOptions(v, model)
+				sp = v.SystemPrompt
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}
@@ -198,6 +173,70 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 		errs = append(errs, &genai.UnsupportedContinuableError{Unsupported: unsupported})
 	}
 	return errors.Join(errs...)
+}
+
+func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) []string {
+	var unsupported []string
+	c.MaxChatTokens = v.MaxTokens
+	// TODO: This is not great.
+	if (strings.HasPrefix(model, "gpt-4o-") && strings.Contains(model, "-search")) ||
+		model == "o1" ||
+		strings.HasPrefix(model, "o1-") ||
+		strings.HasPrefix(model, "o3-") ||
+		strings.HasPrefix(model, "o4-") {
+		if v.Temperature != 0 {
+			unsupported = append(unsupported, "Temperature")
+		}
+	} else {
+		c.Temperature = v.Temperature
+	}
+	c.TopP = v.TopP
+	if strings.HasPrefix(model, "gpt-4o-") && strings.Contains(model, "-search") {
+		if v.Seed != 0 {
+			unsupported = append(unsupported, "Seed")
+		}
+	} else {
+		c.Seed = v.Seed
+	}
+	if v.TopK != 0 {
+		// Track this as an unsupported feature that can be ignored
+		unsupported = append(unsupported, "TopK")
+	}
+	c.Stop = v.Stop
+	if v.ReplyAsJSON {
+		c.ResponseFormat.Type = "json_object"
+	}
+	if v.DecodeAs != nil {
+		c.ResponseFormat.Type = "json_schema"
+		// OpenAI requires a name.
+		c.ResponseFormat.JSONSchema.Name = "response"
+		c.ResponseFormat.JSONSchema.Strict = true
+		c.ResponseFormat.JSONSchema.Schema = jsonschema.Reflect(v.DecodeAs)
+	}
+	if len(v.Tools) != 0 {
+		c.ParallelToolCalls = true
+		// Let's assume if the user provides tools, they want to use them.
+		c.ToolChoice = "required"
+		c.Tools = make([]Tool, len(v.Tools))
+		for i, t := range v.Tools {
+			c.Tools[i].Type = "function"
+			c.Tools[i].Function.Name = t.Name
+			c.Tools[i].Function.Description = t.Description
+			if t.InputsAs != nil {
+				c.Tools[i].Function.Parameters = jsonschema.Reflect(t.InputsAs)
+			}
+		}
+	}
+	if v.ThinkingBudget > 0 {
+		if v.ThinkingBudget <= v.MaxTokens/3 {
+			c.ReasoningEffort = ReasoningEffortLow
+		} else if v.ThinkingBudget <= v.MaxTokens/2 {
+			c.ReasoningEffort = ReasoningEffortMedium
+		} else {
+			c.ReasoningEffort = ReasoningEffortHigh
+		}
+	}
+	return unsupported
 }
 
 // ReasoningEffort is the effort the model should put into reasoning. Default is Medium.

@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 330
+        content_length: 355
         transfer_encoding: []
         trailer: {}
         host: api.openai.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"gpt-4.1-nano","max_completion_tokens":200,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"seed":1,"temperature":0.01,"response_format":{"type":"json_object"}}
+            {"model":"gpt-4.1-nano","max_completion_tokens":200,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"seed":1,"temperature":0.01,"response_format":{"type":"json_object"},"service_tier":"default"}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BWmg1zhLH1HW66FuaBCyNaX4EGvh4",
+              "id": "chatcmpl-BWuuvmBxNhpM6rc54NGlpTcIfLs2q",
               "object": "chat.completion",
-              "created": 1747153309,
+              "created": 1747184985,
               "model": "gpt-4.1-nano-2025-04-14",
               "choices": [
                 {
@@ -73,13 +73,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93f37db6ede5a254-YUL
+                - 93f6830eeed0a2af-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "158"
+                - "121"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -89,21 +89,21 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "161"
+                - "128"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
                 - "200000"
             X-Ratelimit-Remaining-Requests:
-                - "498"
+                - "496"
             X-Ratelimit-Remaining-Tokens:
-                - "199967"
+                - "199197"
             X-Ratelimit-Reset-Requests:
-                - 233ms
+                - 468ms
             X-Ratelimit-Reset-Tokens:
-                - 9ms
+                - 240ms
             X-Request-Id:
-                - req_80a2379d8491f2e7198b17d671b4ad14
+                - req_3ec86ead719f29d4d19caa6941b8dbba
         status: 200 OK
         code: 200
-        duration: 826ms
+        duration: 206ms

@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 219
+        content_length: 244
         transfer_encoding: []
         trailer: {}
         host: api.openai.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"gpt-4.1-nano-2025-04-14","max_completion_tokens":1000,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"seed":1,"temperature":0.1}
+            {"model":"gpt-4.1-nano-2025-04-14","max_completion_tokens":1000,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"seed":1,"temperature":0.1,"service_tier":"default"}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BV6KoAHBAqPy5zXh4Tw2qv8CQoQan",
+              "id": "chatcmpl-BWuuwZam74rERi9N0G5O435R8Hu8J",
               "object": "chat.completion",
-              "created": 1746752218,
+              "created": 1747184986,
               "model": "gpt-4.1-nano-2025-04-14",
               "choices": [
                 {
@@ -73,13 +73,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cd3d75ed47a2e0-YUL
+                - 93f68314e8a8a2af-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "108"
+                - "89"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -89,21 +89,21 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "112"
+                - "92"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
                 - "200000"
             X-Ratelimit-Remaining-Requests:
-                - "498"
+                - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "199984"
+                - "199986"
             X-Ratelimit-Reset-Requests:
-                - 236ms
+                - 120ms
             X-Ratelimit-Reset-Tokens:
                 - 4ms
             X-Request-Id:
-                - req_ceab7b73bfb5554b0626692013e07d81
+                - req_65483320f6f365ee2ab3e4faad219344
         status: 200 OK
         code: 200
-        duration: 418ms
+        duration: 161ms

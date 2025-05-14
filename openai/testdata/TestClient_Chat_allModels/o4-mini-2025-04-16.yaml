@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 196
+        content_length: 221
         transfer_encoding: []
         trailer: {}
         host: api.openai.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"o4-mini-2025-04-16","max_completion_tokens":1000,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"seed":1}
+            {"model":"o4-mini-2025-04-16","max_completion_tokens":1000,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"seed":1,"service_tier":"default"}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BV6KogdmQKjUZX7xNbw4dYeIUWfP9",
+              "id": "chatcmpl-BWuuwVAWrbhs3RfI3D6qBTyzrD5Sp",
               "object": "chat.completion",
-              "created": 1746752218,
+              "created": 1747184986,
               "model": "o4-mini-2025-04-16",
               "choices": [
                 {
@@ -48,8 +48,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 18,
-                "completion_tokens": 148,
-                "total_tokens": 166,
+                "completion_tokens": 147,
+                "total_tokens": 165,
                 "prompt_tokens_details": {
                   "cached_tokens": 0,
                   "audio_tokens": 0
@@ -72,13 +72,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cd3d75ed4aa2e0-YUL
+                - 93f68313ceaea2af-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "1732"
+                - "2176"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -88,7 +88,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "1738"
+                - "2180"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -98,11 +98,11 @@ interactions:
             X-Ratelimit-Remaining-Tokens:
                 - "199986"
             X-Ratelimit-Reset-Requests:
-                - 232ms
+                - 226ms
             X-Ratelimit-Reset-Tokens:
                 - 4ms
             X-Request-Id:
-                - req_edea2db092c7bea4f843a4368950db57
+                - req_28e98eb914547c9aaace8f79ace4cb84
         status: 200 OK
         code: 200
-        duration: 2.046s
+        duration: 2.253s

@@ -386,6 +386,11 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 	// https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
+	for i, msg := range msgs {
+		if len(msg.Opaque) != 0 {
+			return genai.ChatResult{}, fmt.Errorf("message #%d: field Opaque not supported", i)
+		}
+	}
 	rpcin := CompletionRequest{CachePrompt: true}
 	if err := rpcin.Init(opts); err != nil {
 		return genai.ChatResult{}, err
@@ -411,6 +416,14 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	// start := time.Now()
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
+
+	// Check for non-empty Opaque field
+	for _, msg := range msgs {
+		if len(msg.Opaque) != 0 {
+			return genai.Usage{}, fmt.Errorf("Opaque field not supported")
+		}
+	}
+
 	in := CompletionRequest{CachePrompt: true}
 	usage := genai.Usage{}
 	var continuableErr error

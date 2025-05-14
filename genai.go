@@ -234,6 +234,10 @@ type Message struct {
 	// ToolCall is a tool call that the LLM requested to make.
 	ToolCalls []ToolCall
 
+	// Opaque is added to keep continuity on the processing. A good example is Anthropic's extended thinking. It
+	// must be kept during an exchange.
+	Opaque map[string]any
+
 	// TODO: Tool replies
 
 	_ struct{}

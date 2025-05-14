@@ -426,6 +426,11 @@ func New(apiKey, model string) (*Client, error) {
 
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	// https://docs.together.ai/docs/chat-overview
+	for i, msg := range msgs {
+		if len(msg.Opaque) != 0 {
+			return genai.ChatResult{}, fmt.Errorf("message #%d: field Opaque not supported", i)
+		}
+	}
 	rpcin := ChatRequest{}
 	var continuableErr error
 	if err := rpcin.Init(msgs, opts, c.model); err != nil {
@@ -462,8 +467,13 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
-	in := ChatRequest{}
 	usage := genai.Usage{}
+	for i, msg := range msgs {
+		if len(msg.Opaque) != 0 {
+			return usage, fmt.Errorf("message #%d: field Opaque not supported", i)
+		}
+	}
+	in := ChatRequest{}
 	var continuableErr error
 	if err := in.Init(msgs, opts, c.model); err != nil {
 		// If it's an UnsupportedContinuableError, we can continue

@@ -477,6 +477,11 @@ func New(apiKey, model string) (*Client, error) {
 
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	// https://console.groq.com/docs/api-reference#chat-create
+	for i, msg := range msgs {
+		if len(msg.Opaque) != 0 {
+			return genai.ChatResult{}, fmt.Errorf("message #%d: field Opaque not supported", i)
+		}
+	}
 	in := ChatRequest{}
 	var continuableErr error
 	if err := in.Init(msgs, opts, c.model); err != nil {
@@ -513,6 +518,13 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
+	// Check for non-empty Opaque field
+	for _, msg := range msgs {
+		if len(msg.Opaque) != 0 {
+			return genai.Usage{}, fmt.Errorf("Opaque field not supported")
+		}
+	}
+
 	in := ChatRequest{}
 	usage := genai.Usage{}
 	var continuableErr error

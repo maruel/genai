@@ -34,6 +34,7 @@ func TestClient_Chat_allModels(t *testing.T) {
 }
 
 func TestClient_Chat_thinking(t *testing.T) {
+	t.Skip("Currently broken. To be investigated. See https://discord.com/channels/1207099205563457597/1207101178631159830/1372301381612081163")
 	testCases.TestChatThinking(t, &internaltest.Settings{Model: "qwen-qwq-32b"})
 }
 

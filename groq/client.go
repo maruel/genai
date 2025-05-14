@@ -30,6 +30,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// TODO: https://console.groq.com/docs/flex-processing
+
 // https://console.groq.com/docs/api-reference#chat-create
 type ChatRequest struct {
 	FrequencyPenalty  float64         `json:"frequency_penalty,omitzero"` // [-2.0, 2.0]

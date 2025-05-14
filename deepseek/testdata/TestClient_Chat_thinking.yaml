@@ -28,14 +28,14 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"edfe41e8-0f59-49b5-8e02-0386337d0022","object":"chat.completion","created":1747176299,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"hello","reasoning_content":"Okay, the user wants me to say hello, but there are some specific instructions here. Let me read the query again to make sure I understand.\n\nThe user says: \"Say hello. Use only one word. Say only hello.\" So they want a single-word response, which should just be \"hello\". They''re probably testing if I can follow directions precisely. Let me check if there''s any hidden nuance. Maybe they want to see if I add any extra text or if I stick strictly to the one word. \n\nI need to make sure that my response doesn''t include anything else. No punctuation, right? Wait, the instruction says \"use only one word\" and \"say only hello\". So just \"hello\" without any period or exclamation mark. Got it. \n\nLet me think if there''s any alternative interpretation. Could \"hello\" be in another language? But the instruction says \"say hello\", which is English. So the response should definitely be the English word. \n\nIs there a possibility that the user expects a different variation, like \"hi\"? But no, they specifically wrote \"hello\". So sticking to \"hello\" is correct. \n\nI should also make sure that the response doesn''t have any markdown formatting. The user didn''t mention that, but since they want only one word, maybe formatting is allowed? Wait, no, the instruction says \"use only one word\" and \"say only hello\". So probably just plain text. \n\nAlright, I think the correct response is simply \"hello\" without any additional characters or formatting. Let me double-check the instructions again to be safe. Yep, that''s exactly what they asked for. No need to complicate it further. Responding with just \"hello\" meets all their requirements."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":17,"completion_tokens":360,"total_tokens":377,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":357},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":17},"system_fingerprint":"fp_5417b77867_prod0425fp8"}'
+        body: '{"id":"03643eef-e321-44ad-bc8a-3087d145e52c","object":"chat.completion","created":1747251970,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"hello","reasoning_content":"Okay, the user wants me to say hello, but there are some specific instructions here. Let me parse this carefully. The user wrote: \"Say hello. Use only one word. Say only hello.\" So first, the main task is to respond with \"hello\". But there are constraints. The response must be exactly one word and only \"hello\". \n\nI need to make sure I don''t add anything else. No punctuation? Well, usually \"hello\" would be followed by a period or exclamation, but the user said \"use only one word\". Since punctuation counts as a separate token or character, maybe I should avoid it. But in some contexts, \"hello\" as a single word could include punctuation. Wait, the instruction says \"use only one word\" and \"say only hello\". So probably, the safest bet is to respond strictly with \"hello\" without any additional characters.\n\nLet me check if there''s any ambiguity. The user first says \"Say hello.\" Then adds \"Use only one word.\" Then again, \"Say only hello.\" So they''re emphasizing brevity and exclusivity. They don''t want any other words or even a period if possible. So the response should be just the word \"hello\" by itself. No capitalization? But \"hello\" is typically capitalized as a greeting. However, the user didn''t specify capitalization. Since in English, starting a sentence with a capital letter is standard, but the user might not care. However, the example given by the user in their query uses lowercase in the middle of the sentence. Wait, the user wrote \"Say hello. Use only one word. Say only hello.\" So their own usage has \"hello\" in lowercase, but that''s in the middle of a sentence. If I''m outputting just the word, should it be capitalized? Probably, yes, because it''s a standalone greeting. But maybe the user is testing strict adherence. If I capitalize it, it''s still one word. So \"Hello\" with a capital H. But the user''s instruction says \"say hello\", lowercase. Hmm. Wait, the user might not care about case, but perhaps to follow exactly, should I use lowercase? But standard practice is to capitalize when it''s a standalone greeting. This is a bit of a nuance. The user didn''t specify case, just the word. So maybe either is acceptable. But to be safe, perhaps use lowercase since the user wrote \"hello\" in their instruction. Alternatively, follow standard English. But given the constraints, the safest is to just write \"hello\" in lowercase. Wait, but the first word in a response is typically capitalized. However, if the response is only one word, maybe it''s okay. Let me think. If the user says \"say hello\", using lowercase, maybe they expect \"hello\". Alternatively, they might expect \"Hello\" as a proper response. This is a possible ambiguity. But the key is to use only one word and say only hello. So regardless of case, the main thing is to use the exact word \"hello\". But in English, starting with a capital is correct. However, if the user is strict, maybe they want lowercase. Let me check the exact instructions again. The user wrote: \"Say hello. Use only one word. Say only hello.\" So they wrote \"hello\" in lowercase in their instruction. Maybe they expect the same. But in normal usage, a greeting as a single word would be \"Hello\". But perhaps the user is testing attention to detail. If I respond with \"Hello\", is that considered a different word than \"hello\"? Technically, in terms of string comparison, they are different. But in meaning, they are the same. However, the user''s instruction is to \"say hello\", so the exact word. Therefore, maybe the user wants \"hello\" exactly as written. But in English, the greeting is usually capitalized. Hmm. This is a bit of a dilemma. To comply strictly, maybe use \"hello\" in lowercase. Alternatively, use standard capitalization. Since the user didn''t specify case, but in their example used lowercase, perhaps \"hello\" is the expected response. I think the safest answer is to write \"hello\" in lowercase to match the user''s example. That way, there''s no additional punctuation or capitalization beyond what they specified. So the response should be \"hello\"."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":17,"completion_tokens":895,"total_tokens":912,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":892},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":17},"system_fingerprint":"fp_5417b77867_prod0425fp8"}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93f5aefd18aea2e6-YUL
+                - 93fce66d0dbfa30e-YUL
             Content-Type:
                 - application/json
             Server:
@@ -47,7 +47,57 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - 46d6b1369cba7ca09e5e6d2ceb5d4410
+                - 82932cc476cd3a2f7813935350142353
         status: 200 OK
         code: 200
-        duration: 356ms
+        duration: 348ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 261
+        transfer_encoding: []
+        trailer: {}
+        host: api.deepseek.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"deepseek-reasoner","messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."},{"role":"assistant","content":"hello"},{"role":"user","content":"Say the same word again. Use only one word."}],"stream":false,"max_tokens":2000}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"4bc24407-8155-4553-8ac7-fab16c3ab78c","object":"chat.completion","created":1747252002,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"hello","reasoning_content":"Okay, the user wants me to say the same word again, but only use one word. Let me check the history.\n\nIn the previous message, they told me to \"Say hello. Use only one word. Say only hello.\" And I responded with \"hello.\" Now they''re asking to \"Say the same word again. Use only one word.\" So the same word would be \"hello\" again.\n\nWait, the user specified \"use only one word\" and \"say only hello\" before, but now it''s just \"use only one word\" and \"say the same word again.\" So I should stick with \"hello\" again. There''s no ambiguity here. The user is testing if I can follow the instruction to repeat the same response. Since the previous answer was \"hello,\" repeating it makes sense. No other words needed. Just \"hello\" again. I need to make sure I don''t add anything else. Yep, that''s it."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":32,"completion_tokens":198,"total_tokens":230,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":195},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":32},"system_fingerprint":"fp_5417b77867_prod0425fp8"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93fce735fd31a30e-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            X-Content-Type-Options:
+                - nosniff
+            X-Ds-Trace-Id:
+                - e442b6d8d5cc6036b200ac2d0380d503
+        status: 200 OK
+        code: 200
+        duration: 312ms

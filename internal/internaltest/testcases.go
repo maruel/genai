@@ -68,8 +68,13 @@ func (tc *TestCases) usageIsBroken(override *Settings) bool {
 func (tc *TestCases) TestChatThinking(t *testing.T, override *Settings) {
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello.")}
 	// I believe most thinking models do not like Temperature to be set.
-	opts := genai.ChatOptions{MaxTokens: 2000, Seed: 1}
-	resp := tc.testChatHelper(t, msgs, override, opts)
+	opts := tc.getOptions(&genai.ChatOptions{MaxTokens: 2000, Seed: 1}, override)
+	c := tc.getClient(t, override)
+	usageIsBroken := tc.usageIsBroken(override)
+	resp := tc.testChat(t, msgs, c, opts, usageIsBroken)
+	validateSingleWordResponse(t, resp, "hello")
+	msgs = append(msgs, resp.Message, genai.NewTextMessage(genai.User, "Say the same word again. Use only one word."))
+	resp = tc.testChat(t, msgs, c, opts, usageIsBroken)
 	validateSingleWordResponse(t, resp, "hello")
 }
 
@@ -526,20 +531,20 @@ func testUsage(t *testing.T, u *genai.Usage, usageIsBroken bool) {
 	}
 }
 
-// testChatHelper is a general helper function to run Chat tests with consistent patterns.
 func (tc *TestCases) testChatHelper(t *testing.T, msgs genai.Messages, override *Settings, opts genai.ChatOptions) genai.ChatResult {
-	c := tc.getClient(t, override)
+	return tc.testChat(t, msgs, tc.getClient(t, override), tc.getOptions(&opts, override), tc.usageIsBroken(override))
+}
+
+func (tc *TestCases) testChat(t *testing.T, msgs genai.Messages, c genai.ChatProvider, opts genai.Validatable, usageIsBroken bool) genai.ChatResult {
 	ctx := t.Context()
-	resp, err := c.Chat(ctx, msgs, tc.getOptions(&opts, override))
+	resp, err := c.Chat(ctx, msgs, opts)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
 	} else if err != nil {
 		t.Fatal(err)
 	}
-
 	t.Logf("Raw response: %#v", resp)
-	testUsage(t, &resp.Usage, tc.usageIsBroken(override))
-
+	testUsage(t, &resp.Usage, usageIsBroken)
 	if len(resp.Contents) != 1 {
 		t.Fatal("Unexpected response")
 	}

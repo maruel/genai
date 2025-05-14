@@ -28,6 +28,7 @@ func TestClient_Chat_allModels(t *testing.T) {
 
 func TestClient_Chat_thinking(t *testing.T) {
 	// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
+	// TODO: https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking#preserving-thinking-blocks
 	testCases.TestChatThinking(t, &internaltest.Settings{
 		Model: "claude-3-7-sonnet-20250219",
 		Options: func(opts *genai.ChatOptions) genai.Validatable {

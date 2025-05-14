@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BX8v0Xv8i1KhP9T5pOpqg3knkNZQV",
+              "id": "chatcmpl-BXCLKpQPIrMpkNY4t8PwMAhp0d4fz",
               "object": "chat.completion",
-              "created": 1747238806,
+              "created": 1747251970,
               "model": "o4-mini-2025-04-16",
               "choices": [
                 {
@@ -72,13 +72,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93fba50d3cf633ef-YUL
+                - 93fce66d0c3da288-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "8511"
+                - "9946"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -88,7 +88,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "8517"
+                - "9954"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -102,7 +102,112 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 4ms
             X-Request-Id:
-                - req_0196d6d644c63cba772e8cda2c2e8647
+                - req_05b26c6ae464c05e372b7e9eec9af793
         status: 200 OK
         code: 200
-        duration: 8.854s
+        duration: 10.114s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 393
+        transfer_encoding: []
+        trailer: {}
+        host: api.openai.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"o4-mini","max_completion_tokens":2000,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]},{"role":"assistant","content":[{"type":"text","text":"Hello"}]},{"role":"user","content":[{"type":"text","text":"Say the same word again. Use only one word."}]}],"seed":1,"reasoning_effort":"low","service_tier":"flex"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "id": "chatcmpl-BXCLUs6KU0UHz9kia0XEwd3ZgQDIF",
+              "object": "chat.completion",
+              "created": 1747251980,
+              "model": "o4-mini-2025-04-16",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "Hello",
+                    "refusal": null,
+                    "annotations": []
+                  },
+                  "finish_reason": "stop"
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 40,
+                "completion_tokens": 19,
+                "total_tokens": 59,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 0,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "service_tier": "flex",
+              "system_fingerprint": null
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93fce6ac194ea288-YUL
+            Content-Type:
+                - application/json
+            Openai-Organization:
+                - user-vtmtcvpbctksjfewktqdl2sw
+            Openai-Processing-Ms:
+                - "9968"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "9975"
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "199972"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 8ms
+            X-Request-Id:
+                - req_937560244270112713aee952e5e0a7d8
+        status: 200 OK
+        code: 200
+        duration: 10.127s

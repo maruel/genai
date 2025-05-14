@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"msg_01XcUFfNZ9Ewm5guegRHjoYL","type":"message","role":"assistant","model":"claude-3-7-sonnet-20250219","content":[{"type":"thinking","thinking":"The instruction is asking me to say hello using only one word. The request explicitly asks me to say only \"hello\" and to use only one word.\n\nThe appropriate response is simply:\n\"Hello\"\n\nThis follows the instruction precisely - it''s a one-word greeting and that word is \"hello\".","signature":"ErUBCkYIAxgCIkC6hMcHsC8nS3vbJVc9U/IZ+RaYSJQFBf360xvPYOu3d393qWcpxJFUMQZJ5UnUHlFxOUfVckIHT64zWjZFEz4zEgyBV+kwztayjT0R9lgaDP1rnwP/4z0alnPDjSIwJFCdAXNWK4csLNNfYvtpIQ9/MRBhCmeC1DXNUoQbMABuTZ73iKZMCrUmc3LSBW2AKh1JF71/oDdcT0/wETkv2AmGEPazAGNR2Hq3DYPT/xgC"},{"type":"text","text":"Hello"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":47,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":76}}'
+        body: '{"id":"msg_01S4AqBL2NGMJPNQfwQ7qQHf","type":"message","role":"assistant","model":"claude-3-7-sonnet-20250219","content":[{"type":"thinking","thinking":"I need to respond with just one word, \"hello\". The instructions are clear:\n1. Say hello\n2. Use only one word\n3. Say only hello\n\nMy response should simply be \"Hello\" with no additional text or elaboration.","signature":"ErUBCkYIAxgCIkByyDL6Tw5UpDFjbHnUsN7qBBmihl8E4ivHCP/QdVtdhSCuzVVUHdGlydhBVh8wvpvooPT3+u1qKX9L+GjX+IFEEgyrlbAycjgeSlTs8MIaDGi83f3hqF9Ha8YVMiIwI0GuqSe4qmCgC/yByV7tbXIYmgqadut1wL+A+ze/fiq01XdPVPSmWASjLVv14yv2Kh1z37r2N8ffshBQ8N5ReIq1QAoH6yM1Bm7bzuVh+xgC"},{"type":"text","text":"Hello"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":47,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":65}}'
         headers:
             Anthropic-Organization-Id:
                 - b0607a1c-e615-400e-9924-e7a556d22e9f
@@ -37,33 +37,33 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "20000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-05-14T16:08:20Z"
+                - "2025-05-14T19:46:11Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "8000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "8000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-05-14T16:08:21Z"
+                - "2025-05-14T19:46:12Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "50"
             Anthropic-Ratelimit-Requests-Remaining:
                 - "49"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-05-14T16:08:21Z"
+                - "2025-05-14T19:46:11Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "28000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "28000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-05-14T16:08:20Z"
+                - "2025-05-14T19:46:11Z"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93fba7559e19a315-YUL
+                - 93fce66cdd29a2bd-YUL
             Content-Type:
                 - application/json
             Request-Id:
-                - req_011CP7iEX8z1EsGGazh9C1eM
+                - req_011CP7zqxq9hcF6usUX1HGfr
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,4 +74,78 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 1.866s
+        duration: 2.209s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 381
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"claude-3-7-sonnet-20250219","max_tokens":2000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]},{"role":"assistant","content":[{"type":"text","text":"Hello"}]},{"role":"user","content":[{"type":"text","text":"Say the same word again. Use only one word."}]}],"thinking":{"budget_tokens":1999,"type":"enabled"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"msg_01EAWLGtSH6xy2YhM8Yi2v5u","type":"message","role":"assistant","model":"claude-3-7-sonnet-20250219","content":[{"type":"thinking","thinking":"I need to say the same word I said before, which was \"Hello\". The instructions are to use only one word, so I should just respond with \"Hello\" again.","signature":"ErUBCkYIAxgCIkCBq2JiYs18U9vFGeCovxmCA2ENcYi8TC3KPjCec5g33xCLHxHx6Ig73KMgli/Ta5r2XwDOD82xgq/+DfJ1AzKDEgxpZ9LMuFuTK0TGSRUaDLS/yL7CF/ywb9BGHCIwDVWGpuFvFoecyKloFTAa6NFMLtc1dXeQzFZuX7CFFu0umgl45tQrtCuWRuA6+J8uKh1ohg9h6l4MVb2H4txZiOo/aQCrybLJ8RwJ4DQZChgC"},{"type":"text","text":"Hello"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":65,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":49}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "20000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2025-05-14T19:46:13Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "8000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "8000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2025-05-14T19:46:14Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "50"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "49"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2025-05-14T19:46:13Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "28000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "28000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2025-05-14T19:46:13Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93fce67a7d12a2bd-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CP7zr88FPhCM4q3bheeCZ
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 2.127s

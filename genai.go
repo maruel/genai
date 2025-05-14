@@ -108,6 +108,8 @@ type ChatOptions struct {
 	DecodeAs ReflectedToJSON
 	// Tools is the list of tools that the LLM can request to call.
 	Tools []ToolDef
+	// ToolCallRequired tells the LLM a tool call must be done.
+	ToolCallRequired bool
 
 	_ struct{}
 }

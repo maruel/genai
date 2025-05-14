@@ -158,7 +158,11 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions) []string {
 		unsupported = append(unsupported, "JSON schema (ReplyAsJSON/DecodeAs)")
 	}
 	if len(v.Tools) != 0 {
-		c.ToolChoice.Type = "any"
+		if v.ToolCallRequired {
+			c.ToolChoice.Type = ToolChoiceAny
+		} else {
+			c.ToolChoice.Type = ToolChoiceAuto
+		}
 		c.Tools = make([]Tool, len(v.Tools))
 		for i, t := range v.Tools {
 			// Weirdly enough, we must not set it. See example at https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview
@@ -168,7 +172,6 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions) []string {
 			if t.InputsAs != nil {
 				c.Tools[i].InputSchema = jsonschema.Reflect(t.InputsAs)
 			}
-			// Unclear if this has any impact: c.Tools[i].CacheControl.Type = "ephemeral"
 		}
 	}
 	return unsupported
@@ -416,11 +419,26 @@ type Thinking struct {
 	Type         string `json:"type,omitzero"`          // "enabled", "disabled"
 }
 
+// https://docs.anthropic.com/en/api/messages#body-tool-choice
+type ToolChoiceType string
+
+const (
+	// ToolChoiceAuto tells the LLM it is free to use a tool if desired.
+	ToolChoiceAuto ToolChoiceType = "auto"
+	// ToolChoiceAny tells the LLM must use a tool.
+	ToolChoiceAny ToolChoiceType = "any"
+	// ToolChoiceTool tells the LLM it must use the tool named in ToolChoice.Name.
+	ToolChoiceTool ToolChoiceType = "tool"
+	// ToolChoiceNone tells the LLM no tool must be used.
+	ToolChoiceNone ToolChoiceType = "none"
+)
+
 type ToolChoice struct {
-	Type string `json:"type,omitzero"` // "auto", "any", "tool", "none"
+	Type ToolChoiceType `json:"type,omitzero"`
 
 	// Type == "auto", "any", "tool"
-	DisableParallelToolUse bool `json:"disable_parallel_tool_use,omitzero"` // default false
+	// Defaults to allow multiple tool calls simultaneously.
+	DisableParallelToolUse bool `json:"disable_parallel_tool_use,omitzero"`
 
 	// Type == "tool"
 	Name string `json:"name,omitzero"`

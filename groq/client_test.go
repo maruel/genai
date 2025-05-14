@@ -34,28 +34,28 @@ func TestClient_Chat_allModels(t *testing.T) {
 }
 
 func TestClient_Chat_thinking(t *testing.T) {
-	testCases.TestChatThinking(t, "qwen-qwq-32b")
+	testCases.TestChatThinking(t, &internaltest.Settings{Model: "qwen-qwq-32b"})
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	testCases.TestChatStream(t, "llama-3.1-8b-instant", true)
+	testCases.TestChatStream(t, &internaltest.Settings{Model: "llama-3.1-8b-instant"})
 }
 
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {
-	testCases.TestChatVisionJPGInline(t, "meta-llama/llama-4-scout-17b-16e-instruct")
+	testCases.TestChatVisionJPGInline(t, &internaltest.Settings{Model: "meta-llama/llama-4-scout-17b-16e-instruct"})
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
-	testCases.TestChatJSON(t, "", true)
+	testCases.TestChatJSON(t, nil)
 }
 
 func TestClient_Chat_jSON_schema(t *testing.T) {
 	t.Skip("Currently broken. To be investigated. See https://discord.com/channels/1207099205563457597/1207101178631159830/1371897729395064832")
-	testCases.TestChatJSONSchema(t, "gemma2-9b-it", true)
+	testCases.TestChatJSONSchema(t, &internaltest.Settings{Model: "gemma2-9b-it"})
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	testCases.TestChatToolUseCountry(t, "", true)
+	testCases.TestChatToolUseCountry(t, nil)
 }
 
 func getClient(t *testing.T, m string) *groq.Client {

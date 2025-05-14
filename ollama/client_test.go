@@ -71,19 +71,19 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("stream", func(t *testing.T) {
-		tc.TestChatStream(t, "", true)
+		tc.TestChatStream(t, nil)
 	})
 
 	t.Run("vision_jpg_inline", func(t *testing.T) {
-		tc.TestChatVisionJPGInline(t, "")
+		tc.TestChatVisionJPGInline(t, nil)
 	})
 
 	t.Run("json", func(t *testing.T) {
-		tc.TestChatJSON(t, "", true)
+		tc.TestChatJSON(t, nil)
 	})
 
 	t.Run("json_schema", func(t *testing.T) {
-		tc.TestChatJSONSchema(t, "", true)
+		tc.TestChatJSONSchema(t, nil)
 	})
 
 	t.Run("Tool", func(t *testing.T) {

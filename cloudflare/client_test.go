@@ -36,19 +36,19 @@ func TestClient_Chat_allModels(t *testing.T) {
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	testCases.TestChatStream(t, "@cf/meta/llama-3.2-3b-instruct", true)
+	testCases.TestChatStream(t, &internaltest.Settings{Model: "@cf/meta/llama-3.2-3b-instruct"})
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
-	testCases.TestChatJSON(t, "", false)
+	testCases.TestChatJSON(t, &internaltest.Settings{UsageIsBroken: true})
 }
 
 func TestClient_Chat_jSON_schema(t *testing.T) {
-	testCases.TestChatJSONSchema(t, "", false)
+	testCases.TestChatJSONSchema(t, &internaltest.Settings{UsageIsBroken: true})
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	testCases.TestChatToolUseCountry(t, "", false)
+	testCases.TestChatToolUseCountry(t, &internaltest.Settings{UsageIsBroken: true})
 }
 
 func getClient(t *testing.T, m string) *cloudflare.Client {

@@ -32,20 +32,20 @@ func TestClient_Chat_allModels(t *testing.T) {
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	testCases.TestChatStream(t, "command-r7b-12-2024", true)
+	testCases.TestChatStream(t, &internaltest.Settings{Model: "command-r7b-12-2024"})
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
 	t.Skip("Cohere's model seem to struggle at unstructured JSON. To be investigated.")
-	testCases.TestChatJSON(t, "", true)
+	testCases.TestChatJSON(t, nil)
 }
 
 func TestClient_Chat_jSON_schema(t *testing.T) {
-	testCases.TestChatJSONSchema(t, "", true)
+	testCases.TestChatJSONSchema(t, nil)
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	testCases.TestChatToolUseCountry(t, "", true)
+	testCases.TestChatToolUseCountry(t, nil)
 }
 
 func getClient(t *testing.T, m string) *cohere.Client {

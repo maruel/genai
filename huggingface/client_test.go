@@ -37,26 +37,26 @@ func TestClient_Chat_allModels(t *testing.T) {
 
 func TestClient_Chat_thinking(t *testing.T) {
 	t.Skip(`would need to split manually "\n</think>\n\n"`)
-	testCases.TestChatThinking(t, "Qwen/QwQ-32B")
+	testCases.TestChatThinking(t, &internaltest.Settings{Model: "Qwen/QwQ-32B"})
 }
 
 func TestClient_ChatStream(t *testing.T) {
 	// TODO: Figure out why smaller models fail.
-	testCases.TestChatStream(t, "", false)
+	testCases.TestChatStream(t, &internaltest.Settings{UsageIsBroken: true})
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
 	t.Skip(`{"error":"Input validation error: grammar is not supported","error_type":"validation"}`)
-	testCases.TestChatJSON(t, "", true)
+	testCases.TestChatJSON(t, nil)
 }
 
 func TestClient_Chat_jSON_schema(t *testing.T) {
-	testCases.TestChatJSONSchema(t, "", true)
+	testCases.TestChatJSONSchema(t, nil)
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
 	// TODO: Figure out why smaller models fail.
-	testCases.TestChatToolUseCountry(t, "", true)
+	testCases.TestChatToolUseCountry(t, nil)
 }
 
 func getClient(t *testing.T, m string) *huggingface.Client {

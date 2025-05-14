@@ -68,40 +68,40 @@ func TestClient_Chat_allModels(t *testing.T) {
 func TestClient_Chat_thinking(t *testing.T) {
 	// https://ai.google.dev/gemini-api/docs/thinking?hl=en
 	// "gemini-2.5-flash-preview-04-17-thinking"
-	testCases.TestChatThinking(t, "gemini-2.0-flash-thinking-exp")
+	testCases.TestChatThinking(t, &internaltest.Settings{Model: "gemini-2.0-flash-thinking-exp"})
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	testCases.TestChatStream(t, "", true)
+	testCases.TestChatStream(t, nil)
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
-	testCases.TestChatJSON(t, "", true)
+	testCases.TestChatJSON(t, nil)
 }
 
 func TestClient_Chat_jSON_schema(t *testing.T) {
-	testCases.TestChatJSONSchema(t, "", true)
+	testCases.TestChatJSONSchema(t, nil)
 }
 
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {
-	testCases.TestChatVisionJPGInline(t, "")
+	testCases.TestChatVisionJPGInline(t, nil)
 }
 
 func TestClient_Chat_vision_pDF_inline(t *testing.T) {
 	// TODO: Fix support for URL.
-	testCases.TestChatVisionPDFInline(t, "")
+	testCases.TestChatVisionPDFInline(t, nil)
 }
 
 func TestClient_Chat_audio_opus_inline(t *testing.T) {
-	testCases.TestChatAudioOpusInline(t, "")
+	testCases.TestChatAudioOpusInline(t, nil)
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	testCases.TestChatToolUseCountry(t, "", true)
+	testCases.TestChatToolUseCountry(t, nil)
 }
 
 func TestClient_Chat_video_mp4_inline(t *testing.T) {
-	testCases.TestChatVideoMP4Inline(t, "")
+	testCases.TestChatVideoMP4Inline(t, nil)
 }
 
 func TestClient_Cache(t *testing.T) {

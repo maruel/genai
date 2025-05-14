@@ -51,7 +51,7 @@ func TestClient_Chat(t *testing.T) {
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	testCases.TestChatStream(t, "", true)
+	testCases.TestChatStream(t, nil)
 }
 
 func getClient(t *testing.T, m string) *perplexity.Client {

@@ -28,11 +28,11 @@ func TestClient_Chat_allModels(t *testing.T) {
 
 func TestClient_Chat_thinking(t *testing.T) {
 	// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
-	testCases.TestChatThinking(t, "claude-3-7-sonnet-20250219")
+	testCases.TestChatThinking(t, &internaltest.Settings{Model: "claude-3-7-sonnet-20250219"})
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	testCases.TestChatStream(t, "", true)
+	testCases.TestChatStream(t, nil)
 }
 
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {
@@ -40,20 +40,20 @@ func TestClient_Chat_vision_jPG_inline(t *testing.T) {
 	// claude-3-haiku-20240307 is 0.20$/1.25$ while claude-3-5-haiku-20241022 is
 	// 0.80$/4.00$. 3.0 supports images, 3.5 supports PDFs.
 	// https://docs.anthropic.com/en/docs/about-claude/models/all-models
-	testCases.TestChatVisionJPGInline(t, "")
+	testCases.TestChatVisionJPGInline(t, nil)
 }
 
 func TestClient_Chat_vision_pDF_inline(t *testing.T) {
 	// 3.0 doesn't support PDFs.
-	testCases.TestChatVisionPDFInline(t, "claude-3-5-haiku-20241022")
+	testCases.TestChatVisionPDFInline(t, &internaltest.Settings{Model: "claude-3-5-haiku-20241022"})
 }
 
 func TestClient_Chat_vision_pDF_uRL(t *testing.T) {
-	testCases.TestChatVisionPDFURL(t, "claude-3-5-haiku-20241022")
+	testCases.TestChatVisionPDFURL(t, &internaltest.Settings{Model: "claude-3-5-haiku-20241022"})
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	testCases.TestChatToolUseCountry(t, "", true)
+	testCases.TestChatToolUseCountry(t, nil)
 }
 
 func getClient(t *testing.T, m string) *anthropic.Client {

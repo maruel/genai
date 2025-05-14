@@ -27,6 +27,8 @@ type Settings struct {
 	Model string
 	// Options return a genai.ChatOptions or one of the model specific options.
 	Options func(opts *genai.ChatOptions) genai.Validatable
+	// UsageIsBroken is true if the provider doesn't report usage properly, i.e. it is buggy.
+	UsageIsBroken bool
 }
 
 // TestCases contains shared test cases that can be reused across providers.
@@ -37,9 +39,10 @@ type TestCases struct {
 	Default Settings
 }
 
-func (tc *TestCases) getClient(t *testing.T, model string) genai.ChatProvider {
-	if model == "" {
-		model = tc.Default.Model
+func (tc *TestCases) getClient(t *testing.T, override *Settings) genai.ChatProvider {
+	model := tc.Default.Model
+	if override != nil && override.Model != "" {
+		model = override.Model
 	}
 	return tc.GetClient(t, model)
 }
@@ -51,10 +54,17 @@ func (tc *TestCases) getOptions(opts *genai.ChatOptions) genai.Validatable {
 	return opts
 }
 
+func (tc *TestCases) usageIsBroken(override *Settings) bool {
+	if override != nil && override.UsageIsBroken {
+		return true
+	}
+	return tc.Default.UsageIsBroken
+}
+
 // TestChatThinking runs a test for the thinking feature of a chat model.
-func (tc *TestCases) TestChatThinking(t *testing.T, modelOverride string) {
+func (tc *TestCases) TestChatThinking(t *testing.T, override *Settings) {
 	ctx := t.Context()
-	c := tc.getClient(t, modelOverride)
+	c := tc.getClient(t, override)
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello."),
 	}
@@ -71,7 +81,7 @@ func (tc *TestCases) TestChatThinking(t *testing.T, modelOverride string) {
 		t.Fatal(err)
 	}
 	t.Logf("Raw response: %#v", resp)
-	testUsage(t, &resp.Usage)
+	testUsage(t, &resp.Usage, tc.usageIsBroken(override))
 	if len(resp.Contents) != 1 {
 		t.Fatal("Unexpected response")
 	}
@@ -83,8 +93,8 @@ func (tc *TestCases) TestChatThinking(t *testing.T, modelOverride string) {
 }
 
 // TestChatStream makes sure ChatStream() works.
-func (tc *TestCases) TestChatStream(t *testing.T, modelOverride string, hasUsage bool) {
-	c := tc.getClient(t, modelOverride)
+func (tc *TestCases) TestChatStream(t *testing.T, override *Settings) {
+	c := tc.getClient(t, override)
 	ctx := t.Context()
 	chunks := make(chan genai.MessageFragment)
 	end := make(chan genai.Messages, 1)
@@ -133,9 +143,8 @@ func (tc *TestCases) TestChatStream(t *testing.T, modelOverride string, hasUsage
 	}
 	close(chunks)
 	// Hugginface, OpenAI do not set tokens when streaming as shown in testdata/TestClient_ChatStream.yaml
-	if hasUsage {
-		testUsage(t, &usage)
-	}
+	testUsage(t, &usage, tc.usageIsBroken(override))
+
 	responses := <-end
 	t.Logf("Raw responses: %#v", responses)
 	if len(responses) != 1 {
@@ -183,7 +192,7 @@ func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Mod
 				t.Fatal(err)
 			}
 			t.Logf("Raw response: %#v", resp)
-			testUsage(t, &resp.Usage)
+			testUsage(t, &resp.Usage, false)
 			if len(resp.Contents) != 1 {
 				t.Fatal("Unexpected response")
 			}
@@ -200,23 +209,23 @@ func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Mod
 
 // TestChatToolUseCountry runs a Chat with tool use and verifies that the tools are called correctly.
 // It runs subtests for both Chat and ChatStream methods.
-func (tc *TestCases) TestChatToolUseCountry(t *testing.T, modelOverride string, hasUsage bool) {
+func (tc *TestCases) TestChatToolUseCountry(t *testing.T, override *Settings) {
 	t.Run("Chat", func(t *testing.T) {
-		tc.chatToolUseCountryCore(t, modelOverride, hasUsage, false)
+		tc.chatToolUseCountryCore(t, override, false)
 	})
 	t.Run("ChatStream", func(t *testing.T) {
 		t.Skip("TODO")
-		tc.chatToolUseCountryCore(t, modelOverride, hasUsage, true)
+		tc.chatToolUseCountryCore(t, override, true)
 	})
 }
 
 // chatToolUseCountryCore runs a Chat or ChatStream with tool use and verifies that the tools are called correctly.
 // The useStream parameter determines whether to use Chat or ChatStream.
 // It returns the response for further validation.
-func (tc *TestCases) chatToolUseCountryCore(t *testing.T, modelOverride string, hasUsage bool, useStream bool) {
+func (tc *TestCases) chatToolUseCountryCore(t *testing.T, override *Settings, useStream bool) {
 	ctx := t.Context()
 	t.Run("Canada", func(t *testing.T) {
-		c := tc.getClient(t, modelOverride)
+		c := tc.getClient(t, override)
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."),
 		}
@@ -241,9 +250,7 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, modelOverride string, 
 			resp = processChat(t, ctx, c, msgs, opts)
 		}
 		// I'm disappointed by Cloudflare.
-		if hasUsage {
-			testUsage(t, &resp.Usage)
-		}
+		testUsage(t, &resp.Usage, tc.usageIsBroken(override))
 
 		// Warning: when the model is undecided, it call both.
 		// Check for tool calls
@@ -260,7 +267,7 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, modelOverride string, 
 		// TODO: Follow up!
 	})
 	t.Run("USA", func(t *testing.T) {
-		c := tc.getClient(t, modelOverride)
+		c := tc.getClient(t, override)
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."),
 		}
@@ -285,9 +292,7 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, modelOverride string, 
 		} else {
 			resp = processChat(t, ctx, c, msgs, opts)
 		}
-		if hasUsage {
-			testUsage(t, &resp.Usage)
-		}
+		testUsage(t, &resp.Usage, tc.usageIsBroken(override))
 		// Warning: when the model is undecided, it call both.
 		// Check for tool calls
 		want := "best_country"
@@ -308,8 +313,8 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, modelOverride string, 
 
 // TestChatVisionJPGInline runs a Chat with vision capabilities and verifies that the model correctly identifies a
 // banana image.
-func (tc *TestCases) TestChatVisionJPGInline(t *testing.T, modelOverride string) {
-	c := tc.getClient(t, modelOverride)
+func (tc *TestCases) TestChatVisionJPGInline(t *testing.T, override *Settings) {
+	c := tc.getClient(t, override)
 	ctx := t.Context()
 	msgs := genai.Messages{
 		{
@@ -332,7 +337,7 @@ func (tc *TestCases) TestChatVisionJPGInline(t *testing.T, modelOverride string)
 		t.Fatal(err)
 	}
 	t.Logf("Raw response: %#v", resp)
-	testUsage(t, &resp.Usage)
+	testUsage(t, &resp.Usage, tc.usageIsBroken(override))
 	if len(resp.Contents) != 1 {
 		t.Fatal("Unexpected response")
 	}
@@ -343,8 +348,8 @@ func (tc *TestCases) TestChatVisionJPGInline(t *testing.T, modelOverride string)
 	}
 }
 
-func (tc *TestCases) TestChatVisionPDFInline(t *testing.T, modelOverride string) {
-	c := tc.getClient(t, modelOverride)
+func (tc *TestCases) TestChatVisionPDFInline(t *testing.T, override *Settings) {
+	c := tc.getClient(t, override)
 	// Path with the assumption it's run from "//<provider>/".
 	f, err := os.Open("../internal/internaltest/testdata/hidden_word.pdf")
 	if err != nil {
@@ -372,7 +377,7 @@ func (tc *TestCases) TestChatVisionPDFInline(t *testing.T, modelOverride string)
 		t.Fatal(err)
 	}
 	t.Logf("Raw response: %#v", resp)
-	testUsage(t, &resp.Usage)
+	testUsage(t, &resp.Usage, tc.usageIsBroken(override))
 	if resp.InputTokens != 1301 || resp.OutputTokens != 2 {
 		t.Logf("Unexpected tokens usage: %v", resp.Usage)
 	}
@@ -384,8 +389,8 @@ func (tc *TestCases) TestChatVisionPDFInline(t *testing.T, modelOverride string)
 	}
 }
 
-func (tc *TestCases) TestChatVisionPDFURL(t *testing.T, modelOverride string) {
-	c := tc.getClient(t, modelOverride)
+func (tc *TestCases) TestChatVisionPDFURL(t *testing.T, override *Settings) {
+	c := tc.getClient(t, override)
 	msgs := genai.Messages{
 		{
 			Role: genai.User,
@@ -407,7 +412,7 @@ func (tc *TestCases) TestChatVisionPDFURL(t *testing.T, modelOverride string) {
 		t.Fatal(err)
 	}
 	t.Logf("Raw response: %#v", resp)
-	testUsage(t, &resp.Usage)
+	testUsage(t, &resp.Usage, tc.usageIsBroken(override))
 	if resp.InputTokens != 1301 || resp.OutputTokens != 2 {
 		t.Logf("Unexpected tokens usage: %v", resp.Usage)
 	}
@@ -419,16 +424,16 @@ func (tc *TestCases) TestChatVisionPDFURL(t *testing.T, modelOverride string) {
 	}
 }
 
-func (tc *TestCases) TestChatAudioMP3Inline(t *testing.T, modelOverride string) {
-	tc.testChatAudioInline(t, modelOverride, "mystery_word.mp3")
+func (tc *TestCases) TestChatAudioMP3Inline(t *testing.T, override *Settings) {
+	tc.testChatAudioInline(t, override, "mystery_word.mp3")
 }
 
-func (tc *TestCases) TestChatAudioOpusInline(t *testing.T, modelOverride string) {
-	tc.testChatAudioInline(t, modelOverride, "mystery_word.opus")
+func (tc *TestCases) TestChatAudioOpusInline(t *testing.T, override *Settings) {
+	tc.testChatAudioInline(t, override, "mystery_word.opus")
 }
 
-func (tc *TestCases) testChatAudioInline(t *testing.T, modelOverride, filename string) {
-	c := tc.getClient(t, modelOverride)
+func (tc *TestCases) testChatAudioInline(t *testing.T, override *Settings, filename string) {
+	c := tc.getClient(t, override)
 	// Path with the assumption it's run from "//<provider>/".
 	f, err := os.Open(filepath.Join("..", "internal", "internaltest", "testdata", filename))
 	if err != nil {
@@ -449,7 +454,7 @@ func (tc *TestCases) testChatAudioInline(t *testing.T, modelOverride, filename s
 		t.Fatal(err)
 	}
 	t.Logf("Raw response: %#v", resp)
-	testUsage(t, &resp.Usage)
+	testUsage(t, &resp.Usage, tc.usageIsBroken(override))
 	if len(resp.Contents) != 1 {
 		t.Fatal("Unexpected response")
 	}
@@ -458,8 +463,8 @@ func (tc *TestCases) testChatAudioInline(t *testing.T, modelOverride, filename s
 	}
 }
 
-func (tc *TestCases) TestChatVideoMP4Inline(t *testing.T, modelOverride string) {
-	c := tc.getClient(t, modelOverride)
+func (tc *TestCases) TestChatVideoMP4Inline(t *testing.T, override *Settings) {
+	c := tc.getClient(t, override)
 	// Path with the assumption it's run from "//<provider>/".
 	f, err := os.Open(filepath.Join("..", "internal", "internaltest", "testdata", "animation.mp4"))
 	if err != nil {
@@ -485,7 +490,7 @@ func (tc *TestCases) TestChatVideoMP4Inline(t *testing.T, modelOverride string) 
 		t.Fatal(err)
 	}
 	t.Logf("Raw response: %#v", resp)
-	testUsage(t, &resp.Usage)
+	testUsage(t, &resp.Usage, tc.usageIsBroken(override))
 	if len(resp.Contents) != 1 {
 		t.Fatal("Unexpected response")
 	}
@@ -497,8 +502,8 @@ func (tc *TestCases) TestChatVideoMP4Inline(t *testing.T, modelOverride string) 
 // JSON
 
 // TestChatJSON runs a Chat verifying that the model correctly outputs JSON.
-func (tc *TestCases) TestChatJSON(t *testing.T, modelOverride string, hasUsage bool) {
-	c := tc.getClient(t, modelOverride)
+func (tc *TestCases) TestChatJSON(t *testing.T, override *Settings) {
+	c := tc.getClient(t, override)
 	ctx := t.Context()
 	msgs := genai.Messages{
 		{
@@ -522,9 +527,7 @@ func (tc *TestCases) TestChatJSON(t *testing.T, modelOverride string, hasUsage b
 	}
 	t.Logf("Raw response: %#v", resp)
 	// I'm disappointed by Cloudflare.
-	if hasUsage {
-		testUsage(t, &resp.Usage)
-	}
+	testUsage(t, &resp.Usage, tc.usageIsBroken(override))
 	if len(resp.Contents) != 1 {
 		t.Fatal("Unexpected response")
 	}
@@ -560,8 +563,8 @@ func (tc *TestCases) TestChatJSON(t *testing.T, modelOverride string, hasUsage b
 }
 
 // TestChatJSONSchema runs a Chat verifying that the model correctly outputs JSON according to a schema.
-func (tc *TestCases) TestChatJSONSchema(t *testing.T, modelOverride string, hasUsage bool) {
-	c := tc.getClient(t, modelOverride)
+func (tc *TestCases) TestChatJSONSchema(t *testing.T, override *Settings) {
+	c := tc.getClient(t, override)
 	ctx := t.Context()
 	msgs := genai.Messages{
 		{
@@ -589,9 +592,7 @@ func (tc *TestCases) TestChatJSONSchema(t *testing.T, modelOverride string, hasU
 	}
 	t.Logf("Raw response: %#v", resp)
 	// I'm disappointed by Cloudflare.
-	if hasUsage {
-		testUsage(t, &resp.Usage)
-	}
+	testUsage(t, &resp.Usage, tc.usageIsBroken(override))
 	if len(resp.Contents) != 1 {
 		t.Fatal("Unexpected response")
 	}
@@ -653,7 +654,6 @@ func processChatStream(t *testing.T, ctx context.Context, c genai.ChatProvider, 
 	close(chunks)
 	responses := <-end
 	t.Logf("Raw responses: %#v", responses)
-	testUsage(t, &usage)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
 	} else if err != nil {
@@ -665,16 +665,28 @@ func processChatStream(t *testing.T, ctx context.Context, c genai.ChatProvider, 
 	if len(responses) > 1 {
 		t.Fatalf("Multiple responses received: %#v", responses)
 	}
-	resp := genai.ChatResult{Message: responses[len(responses)-1]}
+	resp := genai.ChatResult{Message: responses[len(responses)-1], Usage: usage}
 	t.Logf("Raw response: %#v", resp)
 	return resp
 }
 
-func testUsage(t *testing.T, u *genai.Usage) {
-	if u.InputTokens == 0 {
-		t.Error("expected Usage.InputTokens to be set")
-	}
-	if u.OutputTokens == 0 {
-		t.Error("expected Usage.OutputTokens to be set")
+func testUsage(t *testing.T, u *genai.Usage, usageIsBroken bool) {
+	if usageIsBroken {
+		if u.InputTokens != 0 {
+			t.Error("expected Usage.InputTokens to be zero")
+		}
+		if u.InputCachedTokens != 0 {
+			t.Error("expected Usage.OutputTokens to be zero")
+		}
+		if u.OutputTokens != 0 {
+			t.Error("expected Usage.OutputTokens to be zero")
+		}
+	} else {
+		if u.InputTokens == 0 {
+			t.Error("expected Usage.InputTokens to be set")
+		}
+		if u.OutputTokens == 0 {
+			t.Error("expected Usage.OutputTokens to be set")
+		}
 	}
 }

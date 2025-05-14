@@ -26,20 +26,20 @@ func TestClient_Chat_allModels(t *testing.T) {
 }
 
 func TestClient_Chat_thinking(t *testing.T) {
-	testCases.TestChatThinking(t, "deepseek-reasoner")
+	testCases.TestChatThinking(t, &internaltest.Settings{Model: "deepseek-reasoner"})
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	testCases.TestChatStream(t, "", true)
+	testCases.TestChatStream(t, nil)
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
 	t.Skip("Deep seek struggle to follow the requested JSON schema in the prompt. To be investigated.")
-	testCases.TestChatJSON(t, "", true)
+	testCases.TestChatJSON(t, nil)
 }
 
 func TestClient_Chat_tool_use(t *testing.T) {
-	testCases.TestChatToolUseCountry(t, "", true)
+	testCases.TestChatToolUseCountry(t, nil)
 }
 
 func getClient(t *testing.T, m string) *deepseek.Client {

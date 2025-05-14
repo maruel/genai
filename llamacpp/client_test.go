@@ -73,7 +73,7 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("stream", func(t *testing.T) {
-		tc.TestChatStream(t, "", true)
+		tc.TestChatStream(t, nil)
 	})
 }
 

@@ -37,10 +37,7 @@ func ExampleClient_Chat_jSON() {
 		log.Fatal(err)
 	}
 	log.Printf("Raw response: %#v", resp)
-	if len(resp.Contents) != 1 {
-		log.Fatal("Unexpected response")
-	}
-	if err := resp.Contents[0].Decode(&got); err != nil {
+	if err := resp.Decode(&got); err != nil {
 		log.Fatal(err)
 	}
 	fmt.Printf("Round: %v\n", got.Round)

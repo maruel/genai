@@ -40,10 +40,7 @@ func ExampleClient_Chat_jSON() {
 	if resp.InputTokens != 0 || resp.OutputTokens != 0 {
 		log.Printf("Did cloudflare finally start filling the usage fields?")
 	}
-	if len(resp.Contents) != 1 {
-		log.Fatal("Unexpected response")
-	}
-	if err := resp.Contents[0].Decode(&got); err != nil {
+	if err := resp.Decode(&got); err != nil {
 		log.Fatal(err)
 	}
 	fmt.Printf("Round: %v\n", got.Round)
@@ -147,7 +144,7 @@ func ExampleClient_ChatStream() {
 	}
 	resp := responses[0]
 	// Normalize some of the variance. Obviously many models will still fail this test.
-	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"))
+	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.AsText())), ".!"))
 	// This would Output: Response: hello
 }
 

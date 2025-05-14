@@ -20,6 +20,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"strings"
+	"unicode"
 
 	"github.com/invopop/jsonschema"
 )
@@ -265,18 +266,58 @@ func (m *Message) Validate() error {
 	return errors.Join(errs...)
 }
 
+// AsText is a short hand to get the content as text.
+//
+// It ignores Thinking or multi-modal content.
+func (m *Message) AsText() string {
+	var data [16]string
+	out := data[:0]
+	for i := range m.Contents {
+		if s := m.Contents[i].Text; s != "" {
+			out = append(out, strings.TrimRightFunc(s, unicode.IsSpace))
+		}
+	}
+	return strings.Join(out, "\n")
+}
+
+// Decode decodes the JSON message into the struct.
+//
+// Requires using either ReplyAsJSON or DecodeAs in the ChatOptions.
+//
+// Note: this doesn't verify the type is the same as specified in
+// ChatOptions.DecodeAs.
+func (m *Message) Decode(x any) error {
+	s := m.AsText()
+	if s == "" {
+		return errors.New("only text messages can be decoded as JSON")
+	}
+	d := json.NewDecoder(strings.NewReader(s))
+	d.DisallowUnknownFields()
+	d.UseNumber()
+	if err := d.Decode(x); err != nil {
+		return fmt.Errorf("failed to decode message text as JSON: %w; content: %q", err, s)
+	}
+	return nil
+}
+
 // Content is a block of content in the message meant to be visible in a
 // chat setting.
 //
 // The content can be text or a document. The document may be audio, video,
 // image, PDF or any other format.
 type Content struct {
-	// Only Text or the rest can be set.
+	// Only Text, Thinking or the rest can be set.
 
 	// Text is the content of the text message.
 	Text string
 
-	// If Text is not set, then, one of Document or URL must be set.
+	// Thinking is the reasoning done by the LLM.
+	Thinking string
+	// Opaque is added to keep continuity on the processing. A good example is Anthropic's extended thinking. It
+	// must be kept during an exchange.
+	Opaque map[string]any
+
+	// If Text and Thinking are not set, then, one of Document or URL must be set.
 
 	// Filename is the name of the file. For many providers, only the extension
 	// is relevant. They only use mime-type, which is derived from the filename's
@@ -290,16 +331,28 @@ type Content struct {
 	// URL is the reference to the raw data. When set, the mime-type is derived from the URL.
 	URL string
 
-	// Opaque is added to keep continuity on the processing. A good example is Anthropic's extended thinking. It
-	// must be kept during an exchange.
-	Opaque map[string]any
-
 	_ struct{}
 }
 
 // Validate ensures the block is valid.
 func (c *Content) Validate() error {
 	if c.Text != "" {
+		if c.Thinking != "" {
+			return errors.New("field Thinking can't be used along Text")
+		}
+		if len(c.Opaque) != 0 {
+			return errors.New("field Opaque can't be used along Text")
+		}
+		if c.Filename != "" {
+			return errors.New("field Filename can't be used along Text")
+		}
+		if c.Document != nil {
+			return errors.New("field Document can't be used along Text")
+		}
+		if c.URL != "" {
+			return errors.New("field URL can't be used along Text")
+		}
+	} else if c.Thinking != "" {
 		if c.Filename != "" {
 			return errors.New("field Filename can't be used along Text")
 		}
@@ -310,6 +363,9 @@ func (c *Content) Validate() error {
 			return errors.New("field URL can't be used along Text")
 		}
 	} else {
+		if len(c.Opaque) != 0 {
+			return errors.New("field Opaque can't be used along a document")
+		}
 		if c.Document == nil {
 			if c.URL == "" {
 				if c.Filename == "" {
@@ -374,25 +430,6 @@ func (c *Content) ReadDocument(maxSize int64) (string, []byte, error) {
 		return "", nil, errors.New("empty data")
 	}
 	return mimeType, data, nil
-}
-
-// Decode decodes the JSON message into the struct.
-//
-// Requires using either ReplyAsJSON or DecodeAs in the ChatOptions.
-//
-// Note: this doesn't verify the type is the same as specified in
-// ChatOptions.DecodeAs.
-func (c *Content) Decode(x any) error {
-	if c.Text == "" {
-		return errors.New("only text messages can be decoded as JSON")
-	}
-	d := json.NewDecoder(strings.NewReader(c.Text))
-	d.DisallowUnknownFields()
-	d.UseNumber()
-	if err := d.Decode(x); err != nil {
-		return fmt.Errorf("failed to decode message text as JSON: %w; content: %q", err, c.Text)
-	}
-	return nil
 }
 
 // MessageFragment is a fragment of a message the LLM is sending back as part

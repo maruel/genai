@@ -48,11 +48,8 @@ func ExampleClient_Chat_vision() {
 		log.Fatal(err)
 	}
 	log.Printf("Raw response: %#v", resp)
-	if len(resp.Contents) != 1 {
-		log.Fatal("Unexpected response")
-	}
 	// Normalize some of the variance. Obviously many models will still fail this test.
-	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!")
+	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.AsText())), ".!")
 	fmt.Printf("Response: %s\n", txt)
 	// This would Output: Response: yes
 }
@@ -86,10 +83,7 @@ func ExampleClient_Chat_pDF() {
 		log.Fatal(err)
 	}
 	log.Printf("Raw response: %#v", resp)
-	if len(resp.Contents) != 1 {
-		log.Fatal("Unexpected response")
-	}
-	fmt.Printf("Hidden word in PDF: %v\n", strings.ToLower(resp.Contents[0].Text))
+	fmt.Printf("Hidden word in PDF: %v\n", strings.ToLower(resp.AsText()))
 	// This would Output: Hidden word in PDF: orange
 }
 
@@ -184,11 +178,8 @@ func ExampleClient_ChatStream() {
 		log.Fatal("Unexpected response")
 	}
 	resp := responses[0]
-	if len(resp.Contents) != 1 {
-		log.Fatal("Unexpected response")
-	}
 	// Normalize some of the variance. Obviously many models will still fail this test.
-	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"))
+	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.AsText())), ".!"))
 	// This would Output: Response: hello
 }
 

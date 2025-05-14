@@ -397,10 +397,10 @@ func (tc *TestCases) TestChatJSON(t *testing.T, override *Settings) {
 	opts := genai.ChatOptions{Temperature: 0.1, MaxTokens: 200, Seed: 1, ReplyAsJSON: true}
 	resp := tc.testChatHelper(t, msgs, override, opts)
 	got := map[string]any{}
-	if err := resp.Contents[0].Decode(&got); err != nil {
+	if err := resp.Decode(&got); err != nil {
 		// Gemini returns a list of map. Tolerate that too.
 		got2 := []map[string]any{}
-		if err := resp.Contents[0].Decode(&got2); err != nil {
+		if err := resp.Decode(&got2); err != nil {
 			t.Fatal(err)
 		}
 		if len(got2) != 1 {
@@ -436,7 +436,7 @@ func (tc *TestCases) TestChatJSONSchema(t *testing.T, override *Settings) {
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Is a banana a fruit? Reply as JSON according to the provided schema.")}
 	opts := genai.ChatOptions{Temperature: 0.1, MaxTokens: 200, Seed: 1, DecodeAs: &got}
 	resp := tc.testChatHelper(t, msgs, override, opts)
-	if err := resp.Contents[0].Decode(&got); err != nil {
+	if err := resp.Decode(&got); err != nil {
 		t.Fatal(err)
 	}
 	if !got.IsFruit {
@@ -545,7 +545,7 @@ func (tc *TestCases) testChat(t *testing.T, msgs genai.Messages, c genai.ChatPro
 	}
 	t.Logf("Raw response: %#v", resp)
 	testUsage(t, &resp.Usage, usageIsBroken)
-	if len(resp.Contents) != 1 {
+	if len(resp.Contents) == 0 {
 		t.Fatal("Unexpected response")
 	}
 	return resp
@@ -553,11 +553,9 @@ func (tc *TestCases) testChat(t *testing.T, msgs genai.Messages, c genai.ChatPro
 
 // validateSingleWordResponse validates that the response contains exactly one of the expected words.
 func validateSingleWordResponse(t *testing.T, resp genai.ChatResult, want string) {
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	if got := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"); want != got {
-		t.Fatalf("Expected %q, got %q", want, got)
+	s := resp.AsText()
+	if got := strings.TrimRight(strings.TrimSpace(strings.ToLower(s)), ".!"); want != got {
+		t.Fatalf("Expected %q, got %q", want, s)
 	}
 }
 

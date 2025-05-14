@@ -31,11 +31,8 @@ func ExampleClient_Chat() {
 		log.Fatal(err)
 	}
 	log.Printf("Raw response: %#v", resp)
-	if len(resp.Contents) != 1 {
-		log.Fatal("Unexpected response")
-	}
 	// Normalize some of the variance. Obviously many models will still fail this test.
-	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"))
+	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.AsText())), ".!"))
 	// This would Output: Response: hello
 }
 
@@ -92,10 +89,7 @@ func ExampleClient_ChatStream() {
 		log.Fatal("Unexpected response")
 	}
 	resp := responses[0]
-	if len(resp.Contents) != 1 {
-		log.Fatal("Unexpected response")
-	}
 	// Normalize some of the variance. Obviously many models will still fail this test.
-	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"))
+	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.AsText())), ".!"))
 	// This would Output: Response: hello
 }

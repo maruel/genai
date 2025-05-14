@@ -274,10 +274,10 @@ func TestContent_ReadDocument(t *testing.T) {
 	// TODO: error
 }
 
-func TestContent_Decode(t *testing.T) {
+func TestMessage_Decode(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		m := NewTextMessage(Assistant, "{\"key\": \"value\"}")
-		if err := m.Contents[0].Decode(&struct{ Key string }{}); err != nil {
+		if err := m.Decode(&struct{ Key string }{}); err != nil {
 			t.Fatalf("unexpected error: %q", err)
 		}
 	})
@@ -307,7 +307,7 @@ func TestContent_Decode(t *testing.T) {
 		}
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
-				if err := tt.message.Contents[0].Decode("invalid"); err == nil || err.Error() != tt.errMsg {
+				if err := tt.message.Decode("invalid"); err == nil || err.Error() != tt.errMsg {
 					t.Fatalf("\nwant %q\ngot  %q", tt.errMsg, err)
 				}
 			})

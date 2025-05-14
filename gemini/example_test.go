@@ -51,10 +51,7 @@ func ExampleClient_Chat_vision_and_JSON() {
 		log.Fatal(err)
 	}
 	log.Printf("Raw response: %#v", resp)
-	if len(resp.Contents) != 1 {
-		log.Fatal("Unexpected response")
-	}
-	if err := resp.Contents[0].Decode(&got); err != nil {
+	if err := resp.Decode(&got); err != nil {
 		log.Fatal(err)
 	}
 	fmt.Printf("Banana: %v\n", got.Banana)
@@ -92,10 +89,7 @@ func ExampleClient_Chat_pDF() {
 		log.Fatal(err)
 	}
 	log.Printf("Raw response: %#v", resp)
-	if len(resp.Contents) != 1 {
-		log.Fatal("Unexpected response")
-	}
-	fmt.Printf("Hidden word in PDF: %v\n", strings.ToLower(resp.Contents[0].Text))
+	fmt.Printf("Hidden word in PDF: %v\n", strings.ToLower(resp.AsText()))
 	// This would Output: Hidden word in PDF: orange
 }
 
@@ -128,10 +122,7 @@ func ExampleClient_Chat_audio() {
 		log.Fatal(err)
 	}
 	log.Printf("Raw response: %#v", resp)
-	if len(resp.Contents) != 1 {
-		log.Fatal("Unexpected response")
-	}
-	fmt.Printf("Heard: %v\n", strings.TrimRight(strings.ToLower(resp.Contents[0].Text), "."))
+	fmt.Printf("Heard: %v\n", strings.TrimRight(strings.ToLower(resp.AsText()), "."))
 	// This would Output: Heard: orange
 }
 
@@ -239,11 +230,8 @@ func ExampleClient_ChatStream() {
 		log.Fatal("Unexpected responses")
 	}
 	resp := responses[0]
-	if len(resp.Contents) != 1 {
-		log.Fatal("Unexpected response")
-	}
 	// Normalize some of the variance. Obviously many models will still fail this test.
-	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"))
+	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.AsText())), ".!"))
 	// This would Output: Response: hello
 }
 

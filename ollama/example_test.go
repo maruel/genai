@@ -65,11 +65,7 @@ func ExampleClient_Chat_vision_and_JSON() {
 		return
 	}
 	log.Printf("Raw response: %#v", resp)
-	if len(resp.Contents) != 1 {
-		log.Print("Unexpected response")
-		return
-	}
-	if err := resp.Contents[0].Decode(&got); err != nil {
+	if err := resp.Decode(&got); err != nil {
 		log.Print(err)
 		return
 	}
@@ -188,10 +184,7 @@ func ExampleClient_ChatStream() {
 		return
 	}
 	resp := responses[0]
-	if len(resp.Contents) != 1 {
-		log.Print("Unexpected response")
-		return
-	}
+	fmt.Println(resp.AsText())
 }
 
 func ExampleClient_ListModels() {

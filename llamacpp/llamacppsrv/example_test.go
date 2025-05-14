@@ -19,10 +19,6 @@ import (
 	"github.com/maruel/huggingface"
 )
 
-// buildNumber is the build number to use from
-// https://github.com/ggml-org/llama.cpp/releases
-const buildNumber = 4882
-
 func Example() {
 	ctx := context.Background()
 	srv, err := startServer(ctx)
@@ -84,7 +80,7 @@ func startServer(ctx context.Context) (*llamacppsrv.Server, error) {
 		return nil, err
 	}
 	// It's a bit inefficient to download from github every single time.
-	exe, err := llamacppsrv.DownloadRelease(ctx, cache, buildNumber)
+	exe, err := llamacppsrv.DownloadRelease(ctx, cache, llamacppsrv.BuildNumber)
 	if err != nil {
 		return nil, err
 	}

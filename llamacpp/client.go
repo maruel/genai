@@ -187,6 +187,7 @@ type CompletionResponse struct {
 		TimingsPerToken     bool     `json:"timings_per_token"`
 		PostSamplingProbs   bool     `json:"post_sampling_probs"`
 		Lora                []any    `json:"lora"`
+		TopNSigma           float64  `json:"top_n_sigma"`
 	} `json:"generation_settings"`
 	Prompt       string  `json:"prompt"`
 	HasNewLine   bool    `json:"has_new_line"`

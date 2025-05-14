@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 210
+        content_length: 207
         transfer_encoding: []
         trailer: {}
         host: api.openai.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"o3-mini","max_completion_tokens":1000,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"seed":1,"service_tier":"default"}
+            {"model":"o3-mini","max_completion_tokens":1000,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"seed":1,"service_tier":"auto"}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BWuuvICxhtNNAqT3K1hjQVNCKyGgH",
+              "id": "chatcmpl-BX7qoDL41jcTKyLwcjYtwkjk9dEFO",
               "object": "chat.completion",
-              "created": 1747184985,
+              "created": 1747234702,
               "model": "o3-mini-2025-01-31",
               "choices": [
                 {
@@ -48,21 +48,21 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 18,
-                "completion_tokens": 76,
-                "total_tokens": 94,
+                "completion_tokens": 204,
+                "total_tokens": 222,
                 "prompt_tokens_details": {
                   "cached_tokens": 0,
                   "audio_tokens": 0
                 },
                 "completion_tokens_details": {
-                  "reasoning_tokens": 64,
+                  "reasoning_tokens": 192,
                   "audio_tokens": 0,
                   "accepted_prediction_tokens": 0,
                   "rejected_prediction_tokens": 0
                 }
               },
               "service_tier": "default",
-              "system_fingerprint": "fp_8b28473bdb"
+              "system_fingerprint": "fp_8810992130"
             }
         headers:
             Access-Control-Expose-Headers:
@@ -72,13 +72,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93f68311ab3ba2af-YUL
+                - 93fb40d6cdbea31d-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "2387"
+                - "3551"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -88,7 +88,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "2406"
+                - "3563"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -102,7 +102,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 4ms
             X-Request-Id:
-                - req_6a66169c37800d67f1bab73e6e2e14f5
+                - req_3033c491ae4fb9305cbb4e3d27f7e05c
         status: 200 OK
         code: 200
-        duration: 2.487s
+        duration: 3.679s

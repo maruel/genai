@@ -44,19 +44,23 @@ type ChatOptions struct {
 }
 
 // ServiceTier is the quality of service to determine the request's priority.
-//
-// https://platform.openai.com/docs/guides/flex-processing
 type ServiceTier string
 
 const (
-	// If the Project is Scale tier enabled, the system will utilize scale tier credits until they are
-	// exhausted, else the request will be processed using the default service tier with a lower uptime SLA and
-	// no latency guarantee.
+	// ServiceTierAuto will utilize scale tier credits until they are exhausted if the Project is Scale tier
+	// enabled, else the request will be processed using the default service tier with a lower uptime SLA and no
+	// latency guarantee.
+	//
+	// https://openai.com/api-scale-tier/
 	ServiceTierAuto ServiceTier = "auto"
-	// The request will be processed using the default service tier with a lower uptime SLA and no latency
-	// guarantee.
+	// ServiceTierDefault has the request be processed using the default service tier with a lower uptime SLA
+	// and no latency guarantee.
 	ServiceTierDefault ServiceTier = "default"
-	// The request will be processed with the Flex Processing service tier.
+	// ServiceTierFlex has the request be processed with the Flex Processing service tier.
+	//
+	// Flex processing is in beta, and currently only available for o3 and o4-mini models.
+	//
+	// https://platform.openai.com/docs/guides/flex-processing
 	ServiceTierFlex ServiceTier = "flex"
 )
 
@@ -136,7 +140,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 				unsupported = c.initOptions(&v.ChatOptions, model)
 				sp = v.SystemPrompt
 			case *genai.ChatOptions:
-				c.ServiceTier = ServiceTierDefault
+				c.ServiceTier = ServiceTierAuto
 				unsupported = c.initOptions(v, model)
 				sp = v.SystemPrompt
 			default:

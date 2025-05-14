@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 215
+        content_length: 212
         transfer_encoding: []
         trailer: {}
         host: api.openai.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"gpt-4.1-nano","max_completion_tokens":50,"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"seed":1,"temperature":0.01,"service_tier":"default"}
+            {"model":"gpt-4.1-nano","max_completion_tokens":50,"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"seed":1,"temperature":0.01,"service_tier":"auto"}
         form: {}
         headers:
             Content-Type:
@@ -29,11 +29,11 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"chatcmpl-BWuuvKFfiHIXQYsrsBUycwdL0CiYf","object":"chat.completion.chunk","created":1747184985,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_8fd43718b3","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-BX7qnTiobQDOWDyORaAxrL9tqvPIC","object":"chat.completion.chunk","created":1747234701,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_8fd43718b3","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-BWuuvKFfiHIXQYsrsBUycwdL0CiYf","object":"chat.completion.chunk","created":1747184985,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_8fd43718b3","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-BX7qnTiobQDOWDyORaAxrL9tqvPIC","object":"chat.completion.chunk","created":1747234701,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_8fd43718b3","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-BWuuvKFfiHIXQYsrsBUycwdL0CiYf","object":"chat.completion.chunk","created":1747184985,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_8fd43718b3","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}]}
+            data: {"id":"chatcmpl-BX7qnTiobQDOWDyORaAxrL9tqvPIC","object":"chat.completion.chunk","created":1747234701,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_8fd43718b3","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}]}
 
             data: [DONE]
 
@@ -45,13 +45,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93f6830eeed4a2af-YUL
+                - 93fb40d4db7da31d-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "109"
+                - "216"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -61,7 +61,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "117"
+                - "221"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -69,13 +69,13 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "497"
             X-Ratelimit-Remaining-Tokens:
-                - "199962"
+                - "199955"
             X-Ratelimit-Reset-Requests:
-                - 242ms
+                - 240ms
             X-Ratelimit-Reset-Tokens:
-                - 11ms
+                - 13ms
             X-Request-Id:
-                - req_ab53cbbdd3f5e9cd4b15b1cefcad5994
+                - req_64ed8d71c90b4e1a320b64ebb5022b4d
         status: 200 OK
         code: 200
-        duration: 183ms
+        duration: 320ms

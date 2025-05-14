@@ -19,6 +19,9 @@ import (
 var testCases = &internaltest.TestCases{
 	GetClient:    func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 	DefaultModel: "gpt-4.1-nano",
+	DefaultOptions: func(opts *genai.ChatOptions) genai.Validatable {
+		return &openai.ChatOptions{ChatOptions: *opts, ServiceTier: openai.ServiceTierAuto}
+	},
 }
 
 func TestClient_Chat_allModels(t *testing.T) {

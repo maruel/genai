@@ -28,6 +28,8 @@ type TestCases struct {
 	GetClient ModelChatProviderFactory
 	// DefaultModel is the model to use when none is specified.
 	DefaultModel string
+	// DefaultOptions return a genai.ChatOptions or one of the model specific options.
+	DefaultOptions func(opts *genai.ChatOptions) genai.Validatable
 }
 
 func (tc *TestCases) getClient(t *testing.T, model string) genai.ChatProvider {
@@ -35,6 +37,13 @@ func (tc *TestCases) getClient(t *testing.T, model string) genai.ChatProvider {
 		model = tc.DefaultModel
 	}
 	return tc.GetClient(t, model)
+}
+
+func (tc *TestCases) getOptions(opts *genai.ChatOptions) genai.Validatable {
+	if tc.DefaultOptions != nil {
+		return tc.DefaultOptions(opts)
+	}
+	return opts
 }
 
 // TestChatThinking runs a test for the thinking feature of a chat model.
@@ -45,12 +54,12 @@ func (tc *TestCases) TestChatThinking(t *testing.T, modelOverride string) {
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello."),
 	}
 	// I believe most thinking models do not like Temperature to be set.
-	opts := genai.ChatOptions{
+	opts := tc.getOptions(&genai.ChatOptions{
 		MaxTokens:      2000,
 		Seed:           1,
 		ThinkingBudget: 1900,
-	}
-	resp, err := c.Chat(ctx, msgs, &opts)
+	})
+	resp, err := c.Chat(ctx, msgs, opts)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
 	} else if err != nil {
@@ -106,12 +115,12 @@ func (tc *TestCases) TestChatStream(t *testing.T, modelOverride string, hasUsage
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 	}
-	opts := genai.ChatOptions{
+	opts := tc.getOptions(&genai.ChatOptions{
 		Temperature: 0.01,
 		MaxTokens:   50,
 		Seed:        1,
-	}
-	usage, err := c.ChatStream(ctx, msgs, &opts, chunks)
+	})
+	usage, err := c.ChatStream(ctx, msgs, opts, chunks)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
 	} else if err != nil {
@@ -151,18 +160,18 @@ func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Mod
 	}
 	// MaxTokens has to be long because of some thinking models (e.g. qwen-qwq-32b and
 	// deepseek-r1-distill-llama-70b) cannot have thinking disabled.
-	opts := genai.ChatOptions{
+	opts := tc.getOptions(&genai.ChatOptions{
 		Temperature: 0.1,
 		MaxTokens:   1000,
 		Seed:        1,
-	}
+	})
 	for _, m := range models {
 		id := m.GetID()
 		if filter != nil && !filter(m) {
 			continue
 		}
 		t.Run(id, func(t *testing.T) {
-			resp, err := tc.GetClient(t, id).Chat(ctx, msgs, &opts)
+			resp, err := tc.GetClient(t, id).Chat(ctx, msgs, opts)
 			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 				t.Log(uce)
 			} else if err != nil {
@@ -209,7 +218,7 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, modelOverride string, 
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 		}
-		opts := genai.ChatOptions{
+		opts := tc.getOptions(&genai.ChatOptions{
 			Temperature: 0.01,
 			MaxTokens:   200,
 			Tools: []genai.ToolDef{
@@ -219,12 +228,12 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, modelOverride string, 
 					InputsAs:    &got,
 				},
 			},
-		}
+		})
 		var resp genai.ChatResult
 		if useStream {
-			resp = processChatStream(t, ctx, c, msgs, &opts)
+			resp = processChatStream(t, ctx, c, msgs, opts)
 		} else {
-			resp = processChat(t, ctx, c, msgs, &opts)
+			resp = processChat(t, ctx, c, msgs, opts)
 		}
 		// I'm disappointed by Cloudflare.
 		if hasUsage {
@@ -253,7 +262,7 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, modelOverride string, 
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=USA,enum=Canada"`
 		}
-		opts := genai.ChatOptions{
+		opts := tc.getOptions(&genai.ChatOptions{
 			Temperature: 0.01,
 			MaxTokens:   200,
 			Seed:        1,
@@ -264,12 +273,12 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, modelOverride string, 
 					InputsAs:    &got,
 				},
 			},
-		}
+		})
 		var resp genai.ChatResult
 		if useStream {
-			resp = processChatStream(t, ctx, c, msgs, &opts)
+			resp = processChatStream(t, ctx, c, msgs, opts)
 		} else {
-			resp = processChat(t, ctx, c, msgs, &opts)
+			resp = processChat(t, ctx, c, msgs, opts)
 		}
 		if hasUsage {
 			testUsage(t, &resp.Usage)
@@ -306,12 +315,12 @@ func (tc *TestCases) TestChatVisionJPGInline(t *testing.T, modelOverride string)
 			},
 		},
 	}
-	opts := genai.ChatOptions{
+	opts := tc.getOptions(&genai.ChatOptions{
 		Temperature: 0.01,
 		MaxTokens:   200,
 		Seed:        1,
-	}
-	resp, err := c.Chat(ctx, msgs, &opts)
+	})
+	resp, err := c.Chat(ctx, msgs, opts)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
 	} else if err != nil {
@@ -346,12 +355,12 @@ func (tc *TestCases) TestChatVisionPDFInline(t *testing.T, modelOverride string)
 			},
 		},
 	}
-	opts := genai.ChatOptions{
+	opts := tc.getOptions(&genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
-	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
+	})
+	resp, err := c.Chat(t.Context(), msgs, opts)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
 	} else if err != nil {
@@ -381,12 +390,12 @@ func (tc *TestCases) TestChatVisionPDFURL(t *testing.T, modelOverride string) {
 			},
 		},
 	}
-	opts := genai.ChatOptions{
+	opts := tc.getOptions(&genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
-	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
+	})
+	resp, err := c.Chat(t.Context(), msgs, opts)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
 	} else if err != nil {
@@ -425,12 +434,12 @@ func (tc *TestCases) testChatAudioInline(t *testing.T, modelOverride, filename s
 		{Role: genai.User, Contents: []genai.Content{{Document: f}}},
 		genai.NewTextMessage(genai.User, "What is the word said? Reply with only the word."),
 	}
-	opts := genai.ChatOptions{
+	opts := tc.getOptions(&genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
-	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
+	})
+	resp, err := c.Chat(t.Context(), msgs, opts)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -461,12 +470,12 @@ func (tc *TestCases) TestChatVideoMP4Inline(t *testing.T, modelOverride string) 
 			},
 		},
 	}
-	opts := genai.ChatOptions{
+	opts := tc.getOptions(&genai.ChatOptions{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
-	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
+	})
+	resp, err := c.Chat(t.Context(), msgs, opts)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -494,13 +503,13 @@ func (tc *TestCases) TestChatJSON(t *testing.T, modelOverride string, hasUsage b
 			},
 		},
 	}
-	opts := genai.ChatOptions{
+	opts := tc.getOptions(&genai.ChatOptions{
 		Temperature: 0.01,
 		MaxTokens:   200,
 		Seed:        1,
 		ReplyAsJSON: true,
-	}
-	resp, err := c.Chat(ctx, msgs, &opts)
+	})
+	resp, err := c.Chat(ctx, msgs, opts)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
 	} else if err != nil {
@@ -561,13 +570,13 @@ func (tc *TestCases) TestChatJSONSchema(t *testing.T, modelOverride string, hasU
 	var got struct {
 		IsFruit bool `json:"is_fruit" jsonschema_description:"True  if the answer is that it is a fruit, false otherwise"`
 	}
-	opts := genai.ChatOptions{
+	opts := tc.getOptions(&genai.ChatOptions{
 		Temperature: 0.01,
 		MaxTokens:   200,
 		Seed:        1,
 		DecodeAs:    &got,
-	}
-	resp, err := c.Chat(ctx, msgs, &opts)
+	})
+	resp, err := c.Chat(ctx, msgs, opts)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
 	} else if err != nil {
@@ -598,7 +607,7 @@ func (tc *TestCases) TestChatJSONSchema(t *testing.T, modelOverride string, hasU
 var bananaJpg []byte
 
 // processChat runs Chat and returns the result.
-func processChat(t *testing.T, ctx context.Context, c genai.ChatProvider, msgs genai.Messages, opts *genai.ChatOptions) genai.ChatResult {
+func processChat(t *testing.T, ctx context.Context, c genai.ChatProvider, msgs genai.Messages, opts genai.Validatable) genai.ChatResult {
 	resp, err := c.Chat(ctx, msgs, opts)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
@@ -610,7 +619,7 @@ func processChat(t *testing.T, ctx context.Context, c genai.ChatProvider, msgs g
 }
 
 // processChatStream runs ChatStream and returns the result.
-func processChatStream(t *testing.T, ctx context.Context, c genai.ChatProvider, msgs genai.Messages, opts *genai.ChatOptions) genai.ChatResult {
+func processChatStream(t *testing.T, ctx context.Context, c genai.ChatProvider, msgs genai.Messages, opts genai.Validatable) genai.ChatResult {
 	chunks := make(chan genai.MessageFragment)
 	end := make(chan genai.Messages, 1)
 	go func() {

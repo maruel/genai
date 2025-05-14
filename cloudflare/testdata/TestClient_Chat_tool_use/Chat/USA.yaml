@@ -31,13 +31,13 @@ interactions:
         body: '{"result":{"response":null,"tool_calls":[{"arguments":{"country":"USA"},"name":"best_country"},{"arguments":{"country":"Canada"},"name":"best_country"}],"usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
-                - "2025-05-12"
+                - "2025-05-14"
             Cf-Ai-Req-Id:
-                - 13e760f1-87b7-4a18-aebb-42961bf18d79
+                - fadd7fe7-f798-4cd1-b8b8-62d0f6a78c40
             Cf-Auditlog-Id:
-                - 0196c656-8d18-77b8-b921-d7736314f36c
+                - 0196d01d-ec70-7630-86d4-2d23bbe62ea8
             Cf-Ray:
-                - 93ece881ad214bbe-YUL
+                - 93fc8de6fb6ba2c6-YUL
             Content-Type:
                 - application/json
             Server:
@@ -46,4 +46,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 4.489s
+        duration: 4.893s

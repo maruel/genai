@@ -89,7 +89,14 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 					c.ResponseFormat.Schema = jsonschema.Reflect(v.DecodeAs)
 				}
 				if len(v.Tools) != 0 {
-					c.ToolChoice = "required"
+					if v.ToolCallRequired {
+						// Interestingly, https://docs.together.ai/reference/chat-completions-1 doesn't document anything
+						// beside "auto" but https://docs.livekit.io/agents/integrations/llm/together/ says that
+						// "required" works. I'll have to confirm.
+						c.ToolChoice = "required"
+					} else {
+						c.ToolChoice = "auto"
+					}
 					c.Tools = make([]Tool, len(v.Tools))
 					for i, t := range v.Tools {
 						c.Tools[i].Type = "function"

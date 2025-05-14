@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 584
+        content_length: 590
         transfer_encoding: []
         trailer: {}
         host: generativelanguage.googleapis.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to determine the best country","parameters":{"type":"object","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"required":["country"]},"response":{"type":"string"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":200,"temperature":0.01}}
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to determine the best country","parameters":{"type":"object","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"required":["country"]},"response":{"type":"string"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"VALIDATED"}},"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":200,"temperature":0.01}}
         form: {}
         headers:
             Content-Type:
@@ -46,7 +46,7 @@ interactions:
                     "role": "model"
                   },
                   "finishReason": "STOP",
-                  "avgLogprobs": -0.005229757726192474
+                  "avgLogprobs": -0.10957841873168946
                 }
               ],
               "usageMetadata": {
@@ -76,7 +76,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=557
+                - gfet4t7; dur=503
             Vary:
                 - Origin
                 - X-Origin
@@ -89,4 +89,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 627ms
+        duration: 563ms

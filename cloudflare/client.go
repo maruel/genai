@@ -71,7 +71,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 				c.Seed = v.Seed
 				c.TopK = v.TopK
 				if len(v.Stop) != 0 {
-					unsupported = append(unsupported, "Stop tokens")
+					unsupported = append(unsupported, "Stop")
 				}
 				if v.ReplyAsJSON {
 					c.ResponseFormat.Type = "json_object"
@@ -81,7 +81,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 					c.ResponseFormat.JSONSchema = jsonschema.Reflect(v.DecodeAs)
 				}
 				if len(v.Tools) != 0 {
-					// Cloudflare doesn't provide a way to force tool use.
+					if v.ToolCallRequired {
+						// Cloudflare doesn't provide a way to force tool use.
+						unsupported = append(unsupported, "ToolCallRequired")
+					}
 					c.Tools = make([]Tool, len(v.Tools))
 					for i, t := range v.Tools {
 						c.Tools[i].Type = "function"

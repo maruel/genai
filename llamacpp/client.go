@@ -104,10 +104,16 @@ func (c *CompletionRequest) Init(opts genai.Validatable) error {
 				c.TopP = v.TopP
 				c.TopK = v.TopK
 				c.Stop = v.Stop
-				if v.ReplyAsJSON || v.DecodeAs != nil {
-					unsupported = append(unsupported, "ReplyAsJSON/DecodeAs")
+				if v.ReplyAsJSON {
+					unsupported = append(unsupported, "ReplyAsJSON")
+				}
+				if v.DecodeAs != nil {
+					unsupported = append(unsupported, "DecodeAs")
 				}
 				if len(v.Tools) != 0 {
+					if v.ToolCallRequired {
+						unsupported = append(unsupported, "ToolCallRequired")
+					}
 					// It's unclear how I'll implement this.
 					unsupported = append(unsupported, "Tools")
 				}

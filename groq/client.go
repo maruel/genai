@@ -60,7 +60,7 @@ type ChatRequest struct {
 	// 		Name string `json:"name,omitzero"`
 	// 	} `json:"function,omitzero"`
 	// } `json:"tool_choice,omitzero"`
-	ToolChoice string  `json:"tool_choice,omitzero"` // "none", "auto", "required"
+	ToolChoice string  `json:"tool_choice,omitzero"` // "none", "auto", "required", or struct {"type": "function", "function": {"name": "my_function"}}
 	TopP       float64 `json:"top_p,omitzero"`       // [0, 1]
 	User       string  `json:"user,omitzero"`
 
@@ -111,9 +111,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 					c.ResponseFormat.Type = "json_object"
 				}
 				if len(v.Tools) != 0 {
+					if v.ToolCallRequired {
+						c.ToolChoice = "required"
+					} else {
+						c.ToolChoice = "auto"
+					}
 					// Documentation states max is 128 tools.
-					// Let's assume if the user provides tools, they want to use them.
-					c.ToolChoice = "required"
 					c.Tools = make([]Tool, len(v.Tools))
 					for i, t := range v.Tools {
 						c.Tools[i].Type = "function"

@@ -224,8 +224,11 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) []string {
 	}
 	if len(v.Tools) != 0 {
 		c.ParallelToolCalls = true
-		// Let's assume if the user provides tools, they want to use them.
-		c.ToolChoice = "required"
+		if v.ToolCallRequired {
+			c.ToolChoice = "required"
+		} else {
+			c.ToolChoice = "auto"
+		}
 		c.Tools = make([]Tool, len(v.Tools))
 		for i, t := range v.Tools {
 			c.Tools[i].Type = "function"

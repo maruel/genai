@@ -48,7 +48,7 @@ type ChatRequest struct {
 	Stream      bool     `json:"stream,omitzero"`
 	Temperature float64  `json:"temperature,omitzero"`
 	TopP        float64  `json:"top_p,omitzero"`       // [0, 1.0]
-	ToolChoice  string   `json:"tool_choice,omitzero"` // "none", "auto", "required" or a struct.
+	ToolChoice  string   `json:"tool_choice,omitzero"` // "none", "auto", "required" or a struct {"type": "function", "function": {"name": "my_function"}}
 	Tools       []Tool   `json:"tools,omitzero"`
 	User        string   `json:"user,omitzero"`
 	Logprobs    bool     `json:"logprobs,omitzero"`
@@ -85,8 +85,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 					c.ResponseFormat.JSONSchema.Strict = true
 				}
 				if len(v.Tools) != 0 {
-					// Let's assume if the user provides tools, they want to use them.
-					c.ToolChoice = "required"
+					if v.ToolCallRequired {
+						c.ToolChoice = "required"
+					} else {
+						c.ToolChoice = "auto"
+					}
 					c.Tools = make([]Tool, len(v.Tools))
 					for i, t := range v.Tools {
 						c.Tools[i].Type = "function"

@@ -83,6 +83,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 					c.Format = "json"
 				}
 				if len(v.Tools) != 0 {
+					if v.ToolCallRequired {
+						unsupported = append(unsupported, "ToolCallRequired")
+					}
 					c.Tools = make([]Tool, len(v.Tools))
 					for i, t := range v.Tools {
 						c.Tools[i].Type = "function"

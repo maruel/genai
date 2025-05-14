@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 594
+        content_length: 590
         transfer_encoding: []
         trailer: {}
         host: api.cerebras.ai
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"llama-3.1-8b","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"max_completion_tokens":200,"seed":1,"temperature":0.01,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+            {"model":"llama-3.1-8b","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"max_completion_tokens":200,"seed":1,"temperature":0.01,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
         form: {}
         headers:
             Content-Type:
@@ -28,18 +28,18 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-2c5ad9d3-e809-4fd0-924e-905fc767a1f3","choices":[{"finish_reason":"stop","index":0,"message":{"tool_calls":[{"id":"ed106eaa6","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"}}],"role":"assistant"}}],"created":1747150492,"model":"llama3.1-8b","system_fingerprint":"fp_d4032cc64cc617db1426","object":"chat.completion","usage":{"prompt_tokens":433,"completion_tokens":17,"total_tokens":450},"time_info":{"queue_time":0.304479467,"prompt_time":0.022172887,"completion_time":0.007950939,"total_time":0.33649182319641113,"created":1747150492}}'
+        body: '{"id":"chatcmpl-70ed4fde-4af8-4f46-ae2a-91782b19eca0","choices":[{"finish_reason":"tool_calls","index":0,"message":{"tool_calls":[{"id":"1949dc896","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"}}],"role":"assistant"}}],"created":1747248344,"model":"llama3.1-8b","system_fingerprint":"fp_fd530e96020e4e77c6b2","object":"chat.completion","usage":{"prompt_tokens":574,"completion_tokens":18,"total_tokens":592},"time_info":{"queue_time":0.305580194,"prompt_time":0.029333663,"completion_time":0.008434801,"total_time":0.34556102752685547,"created":1747248344}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93f338f36d7da2e8-YUL
+                - 93fc8de7de3633fa-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-2c5ad9d3-e809-4fd0-924e-905fc767a1f3
+                - chatcmpl-70ed4fde-4af8-4f46-ae2a-91782b19eca0
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -53,15 +53,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14399"
+                - "14400"
             X-Ratelimit-Remaining-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Reset-Requests-Day:
-                - "30306.782886505127"
+                - "18855.10444021225"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "6.782886505126953"
+                - "15.104440212249756"
             X-Request-Id:
-                - 93f338f36d7da2e8-YUL
+                - 93fc8de7de3633fa-YUL
         status: 200 OK
         code: 200
-        duration: 663ms
+        duration: 819ms

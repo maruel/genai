@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 635
+        content_length: 631
         transfer_encoding: []
         trailer: {}
         host: api.mistral.ai
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"ministral-3b-latest","temperature":0.01,"max_tokens":200,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+            {"model":"ministral-3b-latest","temperature":0.01,"max_tokens":200,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"auto"}
         form: {}
         headers:
             Content-Type:
@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"8a80fb0592294e2198629d72c1bbd80b","object":"chat.completion","created":1747149254,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"CqY1RPgOd","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0}],"content":""},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}'
+        body: '{"id":"ca66dc1612284992896b59b22636cb65","object":"chat.completion","created":1747248344,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"q5BUKKDwB","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0}],"content":""},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -37,35 +37,35 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93f31ab889c2a2be-YUL
+                - 93fc8de719d4a30a-YUL
             Content-Type:
                 - application/json
             Ratelimitbysize-Limit:
-                - "500000"
+                - "2000000"
             Ratelimitbysize-Query-Cost:
                 - "200"
             Ratelimitbysize-Remaining:
-                - "499400"
+                - "1999800"
             Ratelimitbysize-Reset:
-                - "46"
+                - "16"
             Server:
                 - cloudflare
             X-Envoy-Upstream-Service-Time:
-                - "164"
+                - "515"
             X-Kong-Proxy-Latency:
-                - "8"
+                - "7"
             X-Kong-Request-Id:
-                - 541f70336b81694011c8493aaea99c64
+                - 62efe62c5a383175e0cc25047b309a44
             X-Kong-Upstream-Latency:
-                - "165"
+                - "516"
             X-Ratelimitbysize-Limit-Minute:
-                - "500000"
+                - "2000000"
             X-Ratelimitbysize-Limit-Month:
-                - "1000000000"
+                - "10000000000"
             X-Ratelimitbysize-Remaining-Minute:
-                - "499400"
+                - "1999800"
             X-Ratelimitbysize-Remaining-Month:
-                - "999895549"
+                - "9999999800"
         status: 200 OK
         code: 200
-        duration: 1.479s
+        duration: 699ms

@@ -90,8 +90,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 					unsupported = append(unsupported, "JSON schema (DecodeAs)")
 				}
 				if len(v.Tools) != 0 {
-					// Let's assume if the user provides tools, they want to use them.
-					c.ToolChoice = "required"
+					if v.ToolCallRequired {
+						c.ToolChoice = "required"
+					} else {
+						c.ToolChoice = "auto"
+					}
 					c.Tools = make([]Tool, len(v.Tools))
 					for i, t := range v.Tools {
 						c.Tools[i].Type = "function"

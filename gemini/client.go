@@ -331,8 +331,11 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) []string {
 		c.GenerationConfig.ResponseSchema.FromJSONSchema(jsonschema.Reflect(v.DecodeAs))
 	}
 	if len(v.Tools) != 0 {
-		// "any" actually means required.
-		c.ToolConfig.FunctionCallingConfig.Mode = ToolModeAny
+		if v.ToolCallRequired {
+			c.ToolConfig.FunctionCallingConfig.Mode = ToolModeAny
+		} else {
+			c.ToolConfig.FunctionCallingConfig.Mode = ToolModeValidated
+		}
 		c.Tools = make([]Tool, len(v.Tools))
 		for i, t := range v.Tools {
 			params := Schema{}

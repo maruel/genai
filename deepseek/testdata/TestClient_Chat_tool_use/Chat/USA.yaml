@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 590
+        content_length: 586
         transfer_encoding: []
         trailer: {}
         host: api.deepseek.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"deepseek-chat","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":false,"temperature":0.01,"max_tokens":200,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+            {"model":"deepseek-chat","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":false,"temperature":0.01,"max_tokens":200,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
         form: {}
         headers:
             Content-Type:
@@ -28,14 +28,14 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"8913db95-b42c-45ef-bbb1-266de1b97688","object":"chat.completion","created":1747084283,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"index":0,"id":"call_0_ad5f0d87-279a-4de4-b5f8-0823358b4630","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}},{"index":1,"id":"call_1_17150fac-0b2c-44f0-b5a8-2efc28464878","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":175,"completion_tokens":36,"total_tokens":211,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":175},"system_fingerprint":"fp_8802369eaa_prod0425fp8"}'
+        body: '{"id":"59ce3a9c-d85d-4516-b107-abae5c2cde7a","object":"chat.completion","created":1747248344,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"index":0,"id":"call_0_c0413c46-f691-452e-b835-b2eeb5376996","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}},{"index":1,"id":"call_1_4bd08a54-e62a-4916-9164-884753f9f546","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":174,"completion_tokens":37,"total_tokens":211,"prompt_tokens_details":{"cached_tokens":128},"prompt_cache_hit_tokens":128,"prompt_cache_miss_tokens":46},"system_fingerprint":"fp_8802369eaa_prod0425fp8"}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93ece881b883a320-YUL
+                - 93fc8de6f9a8a2ce-YUL
             Content-Type:
                 - application/json
             Server:
@@ -47,7 +47,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - a482457907356b147cb22b6e0538d8a2
+                - 634a251135d8a242c922a5807621d8ae
         status: 200 OK
         code: 200
-        duration: 344ms
+        duration: 364ms

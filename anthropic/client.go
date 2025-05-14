@@ -72,6 +72,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 	var errs []error
 	var unsupported []string
 	msgToCache := 0
+	// Default to disabled thinking.
+	c.Thinking.Type = "disabled"
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
 			errs = append(errs, err)
@@ -81,16 +83,16 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 				unsupported = c.initOptions(&v.ChatOptions)
 				msgToCache = v.MessagesToCache
 				if v.ThinkingBudget > 0 {
+					if v.ThinkingBudget >= v.MaxTokens {
+						errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, v.MaxTokens))
+					}
 					// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
 					// Thinking isn’t compatible with temperature, top_p, or top_k modifications as well as forced tool use.
 					c.Thinking.BudgetTokens = v.ThinkingBudget
 					c.Thinking.Type = "enabled"
-				} else {
-					c.Thinking.Type = "disabled"
 				}
 			case *genai.ChatOptions:
 				unsupported = c.initOptions(v)
-				c.Thinking.Type = "disabled"
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}

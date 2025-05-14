@@ -21,9 +21,6 @@ var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
 		// https://platform.openai.com/docs/models/gpt-4.1-nano
 		Model: "gpt-4.1-nano",
-		Options: func(opts *genai.ChatOptions) genai.Validatable {
-			return &openai.ChatOptions{ChatOptions: *opts, ServiceTier: openai.ServiceTierAuto}
-		},
 	},
 }
 
@@ -59,7 +56,12 @@ func TestClient_Chat_thinking(t *testing.T) {
 		&internaltest.Settings{
 			Model: "o4-mini",
 			Options: func(opts *genai.ChatOptions) genai.Validatable {
-				return &openai.ChatOptions{ChatOptions: *opts, ReasoningEffort: openai.ReasoningEffortMedium}
+				return &openai.ChatOptions{
+					ChatOptions: *opts,
+					// This will lead to spurious HTTP 500 but it is 25% of the cost.
+					ServiceTier:     openai.ServiceTierFlex,
+					ReasoningEffort: openai.ReasoningEffortLow,
+				}
 			},
 		})
 }

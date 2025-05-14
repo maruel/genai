@@ -28,7 +28,12 @@ func TestClient_Chat_allModels(t *testing.T) {
 
 func TestClient_Chat_thinking(t *testing.T) {
 	// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
-	testCases.TestChatThinking(t, &internaltest.Settings{Model: "claude-3-7-sonnet-20250219"})
+	testCases.TestChatThinking(t, &internaltest.Settings{
+		Model: "claude-3-7-sonnet-20250219",
+		Options: func(opts *genai.ChatOptions) genai.Validatable {
+			return &anthropic.ChatOptions{ChatOptions: *opts, ThinkingBudget: opts.MaxTokens - 1}
+		},
+	})
 }
 
 func TestClient_ChatStream(t *testing.T) {

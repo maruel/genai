@@ -47,7 +47,10 @@ func (tc *TestCases) getClient(t *testing.T, override *Settings) genai.ChatProvi
 	return tc.GetClient(t, model)
 }
 
-func (tc *TestCases) getOptions(opts *genai.ChatOptions) genai.Validatable {
+func (tc *TestCases) getOptions(opts *genai.ChatOptions, override *Settings) genai.Validatable {
+	if override != nil && override.Options != nil {
+		return override.Options(opts)
+	}
 	if tc.Default.Options != nil {
 		return tc.Default.Options(opts)
 	}
@@ -72,7 +75,7 @@ func (tc *TestCases) TestChatThinking(t *testing.T, override *Settings) {
 	opts := tc.getOptions(&genai.ChatOptions{
 		MaxTokens: 2000,
 		Seed:      1,
-	})
+	}, override)
 	resp, err := c.Chat(ctx, msgs, opts)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
@@ -133,7 +136,7 @@ func (tc *TestCases) TestChatStream(t *testing.T, override *Settings) {
 		Temperature: 0.01,
 		MaxTokens:   50,
 		Seed:        1,
-	})
+	}, override)
 	usage, err := c.ChatStream(ctx, msgs, opts, chunks)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
@@ -177,7 +180,7 @@ func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Mod
 		Temperature: 0.1,
 		MaxTokens:   1000,
 		Seed:        1,
-	})
+	}, nil)
 	for _, m := range models {
 		id := m.GetID()
 		if filter != nil && !filter(m) {
@@ -241,7 +244,7 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, override *Settings, us
 					InputsAs:    &got,
 				},
 			},
-		})
+		}, override)
 		var resp genai.ChatResult
 		if useStream {
 			resp = processChatStream(t, ctx, c, msgs, opts)
@@ -284,7 +287,7 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, override *Settings, us
 					InputsAs:    &got,
 				},
 			},
-		})
+		}, override)
 		var resp genai.ChatResult
 		if useStream {
 			resp = processChatStream(t, ctx, c, msgs, opts)
@@ -328,7 +331,7 @@ func (tc *TestCases) TestChatVisionJPGInline(t *testing.T, override *Settings) {
 		Temperature: 0.01,
 		MaxTokens:   200,
 		Seed:        1,
-	})
+	}, override)
 	resp, err := c.Chat(ctx, msgs, opts)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
@@ -368,7 +371,7 @@ func (tc *TestCases) TestChatVisionPDFInline(t *testing.T, override *Settings) {
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
-	})
+	}, override)
 	resp, err := c.Chat(t.Context(), msgs, opts)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
@@ -403,7 +406,7 @@ func (tc *TestCases) TestChatVisionPDFURL(t *testing.T, override *Settings) {
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
-	})
+	}, override)
 	resp, err := c.Chat(t.Context(), msgs, opts)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
@@ -447,7 +450,7 @@ func (tc *TestCases) testChatAudioInline(t *testing.T, override *Settings, filen
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
-	})
+	}, override)
 	resp, err := c.Chat(t.Context(), msgs, opts)
 	if err != nil {
 		t.Fatal(err)
@@ -483,7 +486,7 @@ func (tc *TestCases) TestChatVideoMP4Inline(t *testing.T, override *Settings) {
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,
-	})
+	}, override)
 	resp, err := c.Chat(t.Context(), msgs, opts)
 	if err != nil {
 		t.Fatal(err)
@@ -517,7 +520,7 @@ func (tc *TestCases) TestChatJSON(t *testing.T, override *Settings) {
 		MaxTokens:   200,
 		Seed:        1,
 		ReplyAsJSON: true,
-	})
+	}, override)
 	resp, err := c.Chat(ctx, msgs, opts)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
@@ -582,7 +585,7 @@ func (tc *TestCases) TestChatJSONSchema(t *testing.T, override *Settings) {
 		MaxTokens:   200,
 		Seed:        1,
 		DecodeAs:    &got,
-	})
+	}, override)
 	resp, err := c.Chat(ctx, msgs, opts)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)

@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"msg_01Gr8cY3iLbmpZ457YHuvzZX","type":"message","role":"assistant","model":"claude-2.1","content":[{"type":"text","text":"Hello."}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":21,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":6}}'
+        body: '{"id":"msg_018UsHBBykjidqauJjmF4Ykz","type":"message","role":"assistant","model":"claude-2.1","content":[{"type":"text","text":"Hello."}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":21,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":6}}'
         headers:
             Anthropic-Organization-Id:
                 - b0607a1c-e615-400e-9924-e7a556d22e9f
@@ -37,33 +37,33 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "50000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-05-09T00:54:12Z"
+                - "2025-05-14T16:03:25Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-05-09T00:54:12Z"
+                - "2025-05-14T16:03:26Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "50"
             Anthropic-Ratelimit-Requests-Remaining:
                 - "49"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-05-09T00:54:13Z"
+                - "2025-05-14T16:03:26Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-05-09T00:54:12Z"
+                - "2025-05-14T16:03:25Z"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cd39647c9fa303-YUL
+                - 93fba02339faa2f3-YUL
             Content-Type:
                 - application/json
             Request-Id:
-                - req_011CNw3Ur4LMGAbt6LAvK4FH
+                - req_011CP7hrntAJjCgT9E7cmUx6
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,4 +74,4 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 675ms
+        duration: 1.286s

@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 200
+        content_length: 220
         transfer_encoding: []
         trailer: {}
         host: api.anthropic.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"claude-3-7-sonnet-20250219","max_tokens":2000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"thinking":{"type":"disabled"}}
+            {"model":"claude-3-7-sonnet-20250219","max_tokens":2000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"thinking":{"budget_tokens":1999,"type":"enabled"}}
         form: {}
         headers:
             Content-Type:
@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"msg_01CFqHWYqQ4ak6n9x6kHYM4K","type":"message","role":"assistant","model":"claude-3-7-sonnet-20250219","content":[{"type":"text","text":"Hello."}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":19,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":5}}'
+        body: '{"id":"msg_01XcUFfNZ9Ewm5guegRHjoYL","type":"message","role":"assistant","model":"claude-3-7-sonnet-20250219","content":[{"type":"thinking","thinking":"The instruction is asking me to say hello using only one word. The request explicitly asks me to say only \"hello\" and to use only one word.\n\nThe appropriate response is simply:\n\"Hello\"\n\nThis follows the instruction precisely - it''s a one-word greeting and that word is \"hello\".","signature":"ErUBCkYIAxgCIkC6hMcHsC8nS3vbJVc9U/IZ+RaYSJQFBf360xvPYOu3d393qWcpxJFUMQZJ5UnUHlFxOUfVckIHT64zWjZFEz4zEgyBV+kwztayjT0R9lgaDP1rnwP/4z0alnPDjSIwJFCdAXNWK4csLNNfYvtpIQ9/MRBhCmeC1DXNUoQbMABuTZ73iKZMCrUmc3LSBW2AKh1JF71/oDdcT0/wETkv2AmGEPazAGNR2Hq3DYPT/xgC"},{"type":"text","text":"Hello"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":47,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":76}}'
         headers:
             Anthropic-Organization-Id:
                 - b0607a1c-e615-400e-9924-e7a556d22e9f
@@ -37,33 +37,33 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "20000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-05-14T15:55:48Z"
+                - "2025-05-14T16:08:20Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "8000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "8000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-05-14T15:55:48Z"
+                - "2025-05-14T16:08:21Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "50"
             Anthropic-Ratelimit-Requests-Remaining:
                 - "49"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-05-14T15:55:48Z"
+                - "2025-05-14T16:08:21Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "28000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "28000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-05-14T15:55:48Z"
+                - "2025-05-14T16:08:20Z"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93fb94f6d81d33ee-YUL
+                - 93fba7559e19a315-YUL
             Content-Type:
                 - application/json
             Request-Id:
-                - req_011CP7hH48FAwvgvPp5YbdGe
+                - req_011CP7iEX8z1EsGGazh9C1eM
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,4 +74,4 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 1.258s
+        duration: 1.866s

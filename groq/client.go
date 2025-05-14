@@ -124,10 +124,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 						}
 					}
 				}
-				if v.ThinkingBudget > 0 {
-					// https://console.groq.com/docs/reasoning/
-					unsupported = append(unsupported, "ThinkingBudget")
-				}
+				// https://console.groq.com/docs/reasoning/
 				// Groq refuses requests unless the model is a reasoning model. As of May 2025, these are qwen-qwq-32b
 				// and deepseek-r1-distill-llama-70b.
 				switch model {

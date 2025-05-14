@@ -108,9 +108,6 @@ type ChatOptions struct {
 	DecodeAs ReflectedToJSON
 	// Tools is the list of tools that the LLM can request to call.
 	Tools []ToolDef
-	// ThinkingBudget is the maximum number of tokens the LLM can use to think about the answer. When 0,
-	// thinking is disabled. It generally must be above 1024 and below MaxTokens.
-	ThinkingBudget int64
 
 	_ struct{}
 }

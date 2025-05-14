@@ -36,6 +36,9 @@ import (
 type ChatOptions struct {
 	genai.ChatOptions
 
+	// ThinkingBudget is the maximum number of tokens the LLM can use to think about the answer. When 0,
+	// thinking is disabled. It generally must be above 1024 and below MaxTokens.
+	ThinkingBudget int64
 	// MessagesToCache specify the number of messages to cache in the request.
 	//
 	// By default, the system prompt and tools will be cached.
@@ -77,8 +80,17 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 			case *ChatOptions:
 				unsupported = c.initOptions(&v.ChatOptions)
 				msgToCache = v.MessagesToCache
+				if v.ThinkingBudget > 0 {
+					// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
+					// Thinking isn’t compatible with temperature, top_p, or top_k modifications as well as forced tool use.
+					c.Thinking.BudgetTokens = v.ThinkingBudget
+					c.Thinking.Type = "enabled"
+				} else {
+					c.Thinking.Type = "disabled"
+				}
 			case *genai.ChatOptions:
 				unsupported = c.initOptions(v)
+				c.Thinking.Type = "disabled"
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}
@@ -156,14 +168,6 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions) []string {
 			}
 			// Unclear if this has any impact: c.Tools[i].CacheControl.Type = "ephemeral"
 		}
-	}
-	if v.ThinkingBudget > 0 {
-		// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
-		// Thinking isn’t compatible with temperature, top_p, or top_k modifications as well as forced tool use.
-		c.Thinking.BudgetTokens = v.ThinkingBudget
-		c.Thinking.Type = "enabled"
-	} else {
-		c.Thinking.Type = "disabled"
 	}
 	return unsupported
 }

@@ -36,6 +36,15 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// ChatOptions includes Gemini specific options.
+type ChatOptions struct {
+	genai.ChatOptions
+
+	// ThinkingBudget is the maximum number of tokens the LLM can use to think about the answer. When 0,
+	// thinking is disabled. It generally must be above 1024 and below MaxTokens and 24576.
+	ThinkingBudget int64
+}
+
 // https://ai.google.dev/api/caching?hl=en#Blob
 type Blob struct {
 	MimeType string `json:"mimeType,omitzero"`
@@ -239,6 +248,21 @@ type ChatRequest struct {
 func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model string) error {
 	var errs []error
 	var unsupported []string
+
+	// Disable thinking by default.
+	// Hard code which models accept it.
+	// - Gemini only.
+	// - Not lite
+	// - Not 1.x
+	// - Not 2.0-flash except if contains thinking.
+	if !strings.Contains(model, "lite") &&
+		strings.HasPrefix(model, "gemini-") &&
+		!strings.HasPrefix(model, "gemini-1") &&
+		(!strings.HasPrefix(model, "gemini-2.0-flash") || strings.Contains(model, "thinking")) {
+		// Disable thinking.
+		c.GenerationConfig.ThinkingConfig = &ThinkingConfig{}
+	}
+
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
 			errs = append(errs, err)
@@ -246,65 +270,17 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 			// This doesn't seem to be well supported yet:
 			//    in.GenerationConfig.ResponseLogprobs = true
 			switch v := opts.(type) {
-			case *genai.ChatOptions:
-				c.GenerationConfig.MaxOutputTokens = v.MaxTokens
-				c.GenerationConfig.Temperature = v.Temperature
-				c.GenerationConfig.TopP = v.TopP
-				// For large ones, we could use cached storage.
-				if v.SystemPrompt != "" {
-					c.SystemInstruction.Parts = []Part{{Text: v.SystemPrompt}}
-				}
-				c.GenerationConfig.Seed = v.Seed
-				c.GenerationConfig.TopK = v.TopK
-				c.GenerationConfig.StopSequences = v.Stop
-				// https://ai.google.dev/gemini-api/docs/image-generation
-				// SOON: "Image"
-				c.GenerationConfig.ResponseModalities = []Modality{ModalityText}
-				if v.ReplyAsJSON {
-					c.GenerationConfig.ResponseMimeType = "application/json"
-				}
-				if v.DecodeAs != nil {
-					c.GenerationConfig.ResponseMimeType = "application/json"
-					c.GenerationConfig.ResponseSchema.FromJSONSchema(jsonschema.Reflect(v.DecodeAs))
-				}
-				if len(v.Tools) != 0 {
-					// "any" actually means required.
-					c.ToolConfig.FunctionCallingConfig.Mode = ToolModeAny
-					c.Tools = make([]Tool, len(v.Tools))
-					for i, t := range v.Tools {
-						params := Schema{}
-						if t.InputsAs != nil {
-							params.FromJSONSchema(jsonschema.Reflect(t.InputsAs))
-						}
-						c.Tools[i].FunctionDeclarations = []FunctionDeclaration{{
-							Name:        t.Name,
-							Description: t.Description,
-							Parameters:  params,
-							// Expose this eventually? We have to test if Google supports non-string answers.
-							Response: Schema{Type: "string"},
-						}}
-					}
-				}
+			case *ChatOptions:
 				if v.ThinkingBudget > 0 {
 					// https://ai.google.dev/gemini-api/docs/thinking
 					c.GenerationConfig.ThinkingConfig = &ThinkingConfig{
 						IncludeThoughts: true,
 						ThinkingBudget:  v.ThinkingBudget,
 					}
-				} else {
-					// Hard code which models accept it.
-					// - Gemini only.
-					// - Not lite
-					// - Not 1.x
-					// - Not 2.0-flash except if contains thinking.
-					if !strings.Contains(model, "lite") &&
-						strings.HasPrefix(model, "gemini-") &&
-						!strings.HasPrefix(model, "gemini-1") &&
-						(!strings.HasPrefix(model, "gemini-2.0-flash") || strings.Contains(model, "thinking")) {
-						// Disable thinking.
-						c.GenerationConfig.ThinkingConfig = &ThinkingConfig{}
-					}
 				}
+				unsupported = c.initOptions(&v.ChatOptions, model)
+			case *genai.ChatOptions:
+				unsupported = c.initOptions(v, model)
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}
@@ -330,6 +306,49 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 		errs = append(errs, &genai.UnsupportedContinuableError{Unsupported: unsupported})
 	}
 	return errors.Join(errs...)
+}
+
+func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) []string {
+	var unsupported []string
+	c.GenerationConfig.MaxOutputTokens = v.MaxTokens
+	c.GenerationConfig.Temperature = v.Temperature
+	c.GenerationConfig.TopP = v.TopP
+	// For large ones, we could use cached storage.
+	if v.SystemPrompt != "" {
+		c.SystemInstruction.Parts = []Part{{Text: v.SystemPrompt}}
+	}
+	c.GenerationConfig.Seed = v.Seed
+	c.GenerationConfig.TopK = v.TopK
+	c.GenerationConfig.StopSequences = v.Stop
+	// https://ai.google.dev/gemini-api/docs/image-generation
+	// SOON: "Image"
+	c.GenerationConfig.ResponseModalities = []Modality{ModalityText}
+	if v.ReplyAsJSON {
+		c.GenerationConfig.ResponseMimeType = "application/json"
+	}
+	if v.DecodeAs != nil {
+		c.GenerationConfig.ResponseMimeType = "application/json"
+		c.GenerationConfig.ResponseSchema.FromJSONSchema(jsonschema.Reflect(v.DecodeAs))
+	}
+	if len(v.Tools) != 0 {
+		// "any" actually means required.
+		c.ToolConfig.FunctionCallingConfig.Mode = ToolModeAny
+		c.Tools = make([]Tool, len(v.Tools))
+		for i, t := range v.Tools {
+			params := Schema{}
+			if t.InputsAs != nil {
+				params.FromJSONSchema(jsonschema.Reflect(t.InputsAs))
+			}
+			c.Tools[i].FunctionDeclarations = []FunctionDeclaration{{
+				Name:        t.Name,
+				Description: t.Description,
+				Parameters:  params,
+				// Expose this eventually? We have to test if Google supports non-string answers.
+				Response: Schema{Type: "string"},
+			}}
+		}
+	}
+	return unsupported
 }
 
 // Content is the equivalent of Message for other providers.

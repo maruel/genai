@@ -111,9 +111,6 @@ func (c *CompletionRequest) Init(opts genai.Validatable) error {
 					// It's unclear how I'll implement this.
 					unsupported = append(unsupported, "Tools")
 				}
-				if v.ThinkingBudget > 0 {
-					unsupported = append(unsupported, "ThinkingBudget")
-				}
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}

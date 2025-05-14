@@ -55,7 +55,13 @@ func TestClient_Chat_allModels(t *testing.T) {
 
 func TestClient_Chat_thinking(t *testing.T) {
 	// https://platform.openai.com/docs/guides/reasoning
-	testCases.TestChatThinking(t, &internaltest.Settings{Model: "o4-mini"})
+	testCases.TestChatThinking(t,
+		&internaltest.Settings{
+			Model: "o4-mini",
+			Options: func(opts *genai.ChatOptions) genai.Validatable {
+				return &openai.ChatOptions{ChatOptions: *opts, ReasoningEffort: openai.ReasoningEffortMedium}
+			},
+		})
 }
 
 func TestClient_ChatStream(t *testing.T) {

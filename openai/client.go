@@ -39,6 +39,10 @@ import (
 type ChatOptions struct {
 	genai.ChatOptions
 
+	// ReasoningEffort is the amount of effort (number of tokens) the LLM can use to think about the answer.
+	//
+	// When unspecified, defaults to medium.
+	ReasoningEffort ReasoningEffort
 	// ServiceTier specify the priority.
 	ServiceTier ServiceTier
 }
@@ -136,6 +140,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 		} else {
 			switch v := opts.(type) {
 			case *ChatOptions:
+				c.ReasoningEffort = v.ReasoningEffort
 				c.ServiceTier = v.ServiceTier
 				unsupported = c.initOptions(&v.ChatOptions, model)
 				sp = v.SystemPrompt
@@ -229,15 +234,6 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) []string {
 			if t.InputsAs != nil {
 				c.Tools[i].Function.Parameters = jsonschema.Reflect(t.InputsAs)
 			}
-		}
-	}
-	if v.ThinkingBudget > 0 {
-		if v.ThinkingBudget <= v.MaxTokens/3 {
-			c.ReasoningEffort = ReasoningEffortLow
-		} else if v.ThinkingBudget <= v.MaxTokens/2 {
-			c.ReasoningEffort = ReasoningEffortMedium
-		} else {
-			c.ReasoningEffort = ReasoningEffortHigh
 		}
 	}
 	return unsupported

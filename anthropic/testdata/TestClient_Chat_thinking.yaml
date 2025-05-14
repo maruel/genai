@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 220
+        content_length: 200
         transfer_encoding: []
         trailer: {}
         host: api.anthropic.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"claude-3-7-sonnet-20250219","max_tokens":2000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"thinking":{"budget_tokens":1900,"type":"enabled"}}
+            {"model":"claude-3-7-sonnet-20250219","max_tokens":2000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"thinking":{"type":"disabled"}}
         form: {}
         headers:
             Content-Type:
@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"msg_01BcqruzxAJ8AdaEEgecYzSR","type":"message","role":"assistant","model":"claude-3-7-sonnet-20250219","content":[{"type":"thinking","thinking":"The instructions ask me to:\n1. Say hello\n2. Use only one word\n3. Say only hello\n\nThe simplest and most direct way to comply with these instructions is to simply say:\n\n\"Hello\"\n\nThis is one word, and it''s exactly the word \"hello\" as requested. There''s no need to add anything else or elaborate further.","signature":"ErUBCkYIAxgCIkDwQMFT5L+gzUITU4M6tXYdyRFPiblgoTy17k2YRe+BQ7ArE/JWaJLclKzT+fziOeBP2x/9vY7XcTWO76pRzDsnEgyQ5bD0n4HWGSzroGMaDM2QP1i2up305LijVCIwkL4GaDG17/QmrEhIIQrfUOeIbBkXo28t3+yYIo4ANZzTuj5hJX+bBu4eop9jaK6pKh3UhIO+uFBSQF3XJUdY1qpKosek0fmvciz3eRGVqRgC"},{"type":"text","text":"Hello"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":47,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":89}}'
+        body: '{"id":"msg_01CFqHWYqQ4ak6n9x6kHYM4K","type":"message","role":"assistant","model":"claude-3-7-sonnet-20250219","content":[{"type":"text","text":"Hello."}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":19,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":5}}'
         headers:
             Anthropic-Organization-Id:
                 - b0607a1c-e615-400e-9924-e7a556d22e9f
@@ -37,33 +37,33 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "20000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-05-13T21:16:31Z"
+                - "2025-05-14T15:55:48Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "8000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "8000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-05-13T21:16:33Z"
+                - "2025-05-14T15:55:48Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "50"
             Anthropic-Ratelimit-Requests-Remaining:
                 - "49"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-05-13T21:16:32Z"
+                - "2025-05-14T15:55:48Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "28000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "28000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-05-13T21:16:31Z"
+                - "2025-05-14T15:55:48Z"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93f52d679d376e0a-YUL
+                - 93fb94f6d81d33ee-YUL
             Content-Type:
                 - application/json
             Request-Id:
-                - req_011CP6DvfsanXNYf9vWPz8qb
+                - req_011CP7hH48FAwvgvPp5YbdGe
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,4 +74,4 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 2.025s
+        duration: 1.258s

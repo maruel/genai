@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 245
+        content_length: 243
         transfer_encoding: []
         trailer: {}
         host: generativelanguage.googleapis.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word. Say only hello."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":2000,"seed":1,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":1900}}}
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word. Say only hello."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":2000,"seed":1,"thinkingConfig":{"includeThoughts":false,"thinkingBudget":0}}}
         form: {}
         headers:
             Content-Type:
@@ -35,7 +35,7 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "Hello."
+                        "text": "Hello"
                       }
                     ],
                     "role": "model"
@@ -46,15 +46,14 @@ interactions:
               ],
               "usageMetadata": {
                 "promptTokenCount": 13,
-                "candidatesTokenCount": 2,
-                "totalTokenCount": 81,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 14,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 13
                   }
-                ],
-                "thoughtsTokenCount": 66
+                ]
               },
               "modelVersion": "gemini-2.0-flash-thinking-exp-01-21"
             }
@@ -66,7 +65,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=824
+                - gfet4t7; dur=546
             Vary:
                 - Origin
                 - X-Origin
@@ -79,4 +78,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 900ms
+        duration: 628ms

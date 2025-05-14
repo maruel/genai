@@ -69,6 +69,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 		if err := opts.Validate(); err != nil {
 			errs = append(errs, err)
 		} else {
+			// https://api-docs.deepseek.com/guides/reasoning_model Soon "reasoning_effort"
 			switch v := opts.(type) {
 			case *genai.ChatOptions:
 				c.MaxToks = v.MaxTokens
@@ -100,10 +101,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 							c.Tools[i].Function.Parameters = jsonschema.Reflect(t.InputsAs)
 						}
 					}
-				}
-				if v.ThinkingBudget > 0 {
-					// https://api-docs.deepseek.com/guides/reasoning_model Soon "reasoning_effort"
-					unsupported = append(unsupported, "ThinkingBudget")
 				}
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))

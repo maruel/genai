@@ -91,9 +91,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 				if len(v.Tools) != 0 {
 					unsupported = append(unsupported, "Tools")
 				}
-				if v.ThinkingBudget > 0 {
-					unsupported = append(unsupported, "ThinkingBudget")
-				}
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}

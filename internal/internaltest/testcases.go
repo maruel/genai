@@ -70,9 +70,8 @@ func (tc *TestCases) TestChatThinking(t *testing.T, override *Settings) {
 	}
 	// I believe most thinking models do not like Temperature to be set.
 	opts := tc.getOptions(&genai.ChatOptions{
-		MaxTokens:      2000,
-		Seed:           1,
-		ThinkingBudget: 1900,
+		MaxTokens: 2000,
+		Seed:      1,
 	})
 	resp, err := c.Chat(ctx, msgs, opts)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {

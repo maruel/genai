@@ -30,7 +30,29 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-// TODO: https://console.groq.com/docs/flex-processing
+type ChatOptions struct {
+	genai.ChatOptions
+
+	// ServiceTier specify the priority.
+	ServiceTier ServiceTier
+}
+
+// ServiceTier is the quality of service to determine the request's priority.
+// https://console.groq.com/docs/flex-processing
+type ServiceTier string
+
+const (
+	// ServiceTierOnDemand is the default tier and the one you are used to. We have kept rate limits low in
+	// order to ensure fairness and a consistent experience.
+	ServiceTierOnDemand ServiceTier = "on_demand"
+	// ServiceTierAuto uses on-demand rate limits, then falls back to flex tier if those limits are exceeded.
+	ServiceTierAuto ServiceTier = "auto"
+	// ServiceTierFlex offers on-demand processing when capacity is available, with rapid timeouts if resources
+	// are constrained. This tier is perfect for workloads that prioritize fast inference and can gracefully
+	// handle occasional request failures. It provides an optimal balance between performance and reliability
+	// for workloads that don't require guaranteed processing.
+	ServiceTierFlex ServiceTier = "flex"
+)
 
 // https://console.groq.com/docs/api-reference#chat-create
 type ChatRequest struct {
@@ -45,10 +67,10 @@ type ChatRequest struct {
 		Type       string         `json:"type,omitzero"` // "json_object", "json_schema"
 		JSONSchema map[string]any `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
-	Seed          int64    `json:"seed,omitzero"`
-	ServiceTier   string   `json:"service_tier,omitzero"` // "on_demand", "auto", "flex"
-	Stop          []string `json:"stop,omitzero"`         // keywords to stop completion
-	Stream        bool     `json:"stream"`
+	Seed          int64       `json:"seed,omitzero"`
+	ServiceTier   ServiceTier `json:"service_tier,omitzero"`
+	Stop          []string    `json:"stop,omitzero"` // keywords to stop completion
+	Stream        bool        `json:"stream"`
 	StreamOptions struct {
 		IncludeUsage bool `json:"include_usage,omitzero"`
 	} `json:"stream_options,omitzero"`
@@ -84,59 +106,13 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *genai.ChatOptions:
-				c.MaxChatTokens = v.MaxTokens
-				c.Temperature = v.Temperature
-				c.TopP = v.TopP
+			case *ChatOptions:
+				unsupported, errs = c.initOptions(&v.ChatOptions, model)
 				sp = v.SystemPrompt
-				c.Seed = v.Seed
-				if v.TopK != 0 {
-					unsupported = append(unsupported, "TopK")
-				}
-				c.Stop = v.Stop
-				if v.DecodeAs != nil {
-					// Groq seems to require a "name" property. Hack by encoding, decoding, changing.
-					b, err := json.Marshal(jsonschema.Reflect(v.DecodeAs))
-					if err != nil {
-						errs = append(errs, err)
-					} else {
-						m := map[string]any{}
-						if err = json.Unmarshal(b, &m); err != nil {
-							errs = append(errs, err)
-						} else {
-							c.ResponseFormat.Type = "json_schema"
-							m["name"] = "response"
-							c.ResponseFormat.JSONSchema = m
-						}
-					}
-				} else if v.ReplyAsJSON {
-					c.ResponseFormat.Type = "json_object"
-				}
-				if len(v.Tools) != 0 {
-					if v.ToolCallRequired {
-						c.ToolChoice = "required"
-					} else {
-						c.ToolChoice = "auto"
-					}
-					// Documentation states max is 128 tools.
-					c.Tools = make([]Tool, len(v.Tools))
-					for i, t := range v.Tools {
-						c.Tools[i].Type = "function"
-						c.Tools[i].Function.Name = t.Name
-						c.Tools[i].Function.Description = t.Description
-						if t.InputsAs != nil {
-							c.Tools[i].Function.Parameters = jsonschema.Reflect(t.InputsAs)
-						}
-					}
-				}
-				// https://console.groq.com/docs/reasoning/
-				// Groq refuses requests unless the model is a reasoning model. As of May 2025, these are qwen-qwq-32b
-				// and deepseek-r1-distill-llama-70b.
-				switch model {
-				case "qwen-qwq-32b", "deepseek-r1-distill-llama-70b":
-					c.ReasoningFormat = ReasoningFormatParsed
-				default:
-				}
+				c.ServiceTier = v.ServiceTier
+			case *genai.ChatOptions:
+				unsupported, errs = c.initOptions(v, model)
+				sp = v.SystemPrompt
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}
@@ -170,6 +146,63 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 		errs = append(errs, &genai.UnsupportedContinuableError{Unsupported: unsupported})
 	}
 	return errors.Join(errs...)
+}
+
+func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) ([]string, []error) {
+	var errs []error
+	var unsupported []string
+	c.MaxChatTokens = v.MaxTokens
+	c.Temperature = v.Temperature
+	c.TopP = v.TopP
+	c.Seed = v.Seed
+	if v.TopK != 0 {
+		unsupported = append(unsupported, "TopK")
+	}
+	c.Stop = v.Stop
+	if v.DecodeAs != nil {
+		// Groq seems to require a "name" property. Hack by encoding, decoding, changing.
+		b, err := json.Marshal(jsonschema.Reflect(v.DecodeAs))
+		if err != nil {
+			errs = append(errs, err)
+		} else {
+			m := map[string]any{}
+			if err = json.Unmarshal(b, &m); err != nil {
+				errs = append(errs, err)
+			} else {
+				c.ResponseFormat.Type = "json_schema"
+				m["name"] = "response"
+				c.ResponseFormat.JSONSchema = m
+			}
+		}
+	} else if v.ReplyAsJSON {
+		c.ResponseFormat.Type = "json_object"
+	}
+	if len(v.Tools) != 0 {
+		if v.ToolCallRequired {
+			c.ToolChoice = "required"
+		} else {
+			c.ToolChoice = "auto"
+		}
+		// Documentation states max is 128 tools.
+		c.Tools = make([]Tool, len(v.Tools))
+		for i, t := range v.Tools {
+			c.Tools[i].Type = "function"
+			c.Tools[i].Function.Name = t.Name
+			c.Tools[i].Function.Description = t.Description
+			if t.InputsAs != nil {
+				c.Tools[i].Function.Parameters = jsonschema.Reflect(t.InputsAs)
+			}
+		}
+	}
+	// https://console.groq.com/docs/reasoning/
+	// Groq refuses requests unless the model is a reasoning model. As of May 2025, these are qwen-qwq-32b
+	// and deepseek-r1-distill-llama-70b.
+	switch model {
+	case "qwen-qwq-32b", "deepseek-r1-distill-llama-70b":
+		c.ReasoningFormat = ReasoningFormatParsed
+	default:
+	}
+	return unsupported, errs
 }
 
 // ReasoningFormat defines the post processing format of the reasoning done by groq for select models.

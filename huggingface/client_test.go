@@ -69,7 +69,7 @@ func getClient(t *testing.T, m string) *huggingface.Client {
 		if err != nil {
 			t.Fatal("can't find home directory")
 		}
-		if _, err := os.Stat(filepath.Join(h, ".cache", "huggingface", "token")); err == nil {
+		if _, err := os.Stat(filepath.Join(h, ".cache", "huggingface", "token")); err != nil {
 			apiKey = "<insert_api_key_here>"
 		}
 	}

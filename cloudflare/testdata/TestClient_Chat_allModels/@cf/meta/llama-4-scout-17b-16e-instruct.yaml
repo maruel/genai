@@ -31,13 +31,13 @@ interactions:
         body: '{"result":{"response":"Hello.","tool_calls":[],"usage":{"prompt_tokens":22,"completion_tokens":3,"total_tokens":25}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
-                - "2025-05-09"
+                - "2025-05-15"
             Cf-Ai-Req-Id:
-                - 532890b5-6949-468e-ad0b-92b84b589190
+                - 8cc754bc-a26c-452d-ad66-ce15dddc2fb1
             Cf-Auditlog-Id:
-                - 0196b294-20d3-7469-8495-c6e9fadff99e
+                - 0196d41b-f636-71df-bacf-3d9a3c20184a
             Cf-Ray:
-                - 93cd4b079d58a251-YUL
+                - 9402f129d96ca314-YUL
             Content-Type:
                 - application/json
             Server:
@@ -46,4 +46,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 2.078s
+        duration: 308ms

@@ -54,9 +54,11 @@ func TestClient_Chat_tool_use(t *testing.T) {
 func getClient(t *testing.T, m string) *cloudflare.Client {
 	testRecorder.Signal(t)
 	t.Parallel()
+	realAccountID := os.Getenv("CLOUDFLARE_ACCOUNT_ID")
 	accountID := ""
-	if os.Getenv("CLOUDFLARE_ACCOUNT_ID") == "" {
-		accountID = "<insert_accountid_key_here>"
+	if realAccountID == "" {
+		accountID = "INSERT_ACCOUNTID_KEY_HERE"
+		realAccountID = accountID
 	}
 	apiKey := ""
 	if os.Getenv("CLOUDFLARE_API_KEY") == "" {
@@ -68,11 +70,11 @@ func getClient(t *testing.T, m string) *cloudflare.Client {
 	}
 	fnMatch := func(r *http.Request, i cassette.Request) bool {
 		r = r.Clone(r.Context())
-		r.URL.Path = strings.Replace(r.URL.Path, accountID, "ACCOUNT_ID", 1)
+		r.URL.Path = strings.Replace(r.URL.Path, realAccountID, "ACCOUNT_ID", 1)
 		return defaultMatcher(r, i)
 	}
 	fnSave := func(i *cassette.Interaction) error {
-		i.Request.URL = strings.Replace(i.Request.URL, accountID, "ACCOUNT_ID", 1)
+		i.Request.URL = strings.Replace(i.Request.URL, realAccountID, "ACCOUNT_ID", 1)
 		return nil
 	}
 	c.Client.Client.Transport = testRecorder.Record(t, c.Client.Client.Transport, recorder.WithHook(fnSave, recorder.AfterCaptureHook), recorder.WithMatcher(fnMatch))

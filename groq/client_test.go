@@ -60,11 +60,12 @@ func TestClient_Chat_tool_use(t *testing.T) {
 
 func getClient(t *testing.T, m string) *groq.Client {
 	testRecorder.Signal(t)
-	if os.Getenv("GROQ_API_KEY") == "" {
-		t.Skip("GROQ_API_KEY not set")
-	}
 	t.Parallel()
-	c, err := groq.New("", m)
+	apiKey := ""
+	if os.Getenv("GROQ_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := groq.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)
 	}

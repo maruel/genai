@@ -48,11 +48,12 @@ func TestClient_Chat_tool_use(t *testing.T) {
 
 func getClient(t *testing.T, m string) *cerebras.Client {
 	testRecorder.Signal(t)
-	if os.Getenv("CEREBRAS_API_KEY") == "" {
-		t.Skip("CEREBRAS_API_KEY not set")
-	}
 	t.Parallel()
-	c, err := cerebras.New("", m)
+	apiKey := ""
+	if os.Getenv("CEREBRAS_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := cerebras.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -53,15 +53,16 @@ func TestClient_Chat_tool_use(t *testing.T) {
 
 func getClient(t *testing.T, m string) *cloudflare.Client {
 	testRecorder.Signal(t)
-	accountID := os.Getenv("CLOUDFLARE_ACCOUNT_ID")
-	if accountID == "" {
-		t.Skip("CLOUDFLARE_ACCOUNT_ID not set")
-	}
-	if os.Getenv("CLOUDFLARE_API_KEY") == "" {
-		t.Skip("CLOUDFLARE_API_KEY not set")
-	}
 	t.Parallel()
-	c, err := cloudflare.New("", "", m)
+	accountID := ""
+	if os.Getenv("CLOUDFLARE_ACCOUNT_ID") == "" {
+		accountID = "<insert_accountid_key_here>"
+	}
+	apiKey := ""
+	if os.Getenv("CLOUDFLARE_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := cloudflare.New(accountID, apiKey, m)
 	if err != nil {
 		t.Fatal(err)
 	}

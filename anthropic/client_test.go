@@ -64,11 +64,12 @@ func TestClient_Chat_tool_use(t *testing.T) {
 
 func getClient(t *testing.T, m string) *anthropic.Client {
 	testRecorder.Signal(t)
-	if os.Getenv("ANTHROPIC_API_KEY") == "" {
-		t.Skip("ANTHROPIC_API_KEY not set")
-	}
 	t.Parallel()
-	c, err := anthropic.New("", m)
+	apiKey := ""
+	if os.Getenv("ANTHROPIC_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := anthropic.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)
 	}

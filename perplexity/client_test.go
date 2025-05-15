@@ -56,10 +56,12 @@ func TestClient_ChatStream(t *testing.T) {
 
 func getClient(t *testing.T, m string) *perplexity.Client {
 	testRecorder.Signal(t)
+	t.Parallel()
+	apiKey := os.Getenv("PERPLEXITY_API_KEY")
 	if os.Getenv("PERPLEXITY_API_KEY") == "" {
-		t.Skip("PERPLEXITY_API_KEY not set")
+		apiKey = "<insert_api_key_here>"
 	}
-	c, err := perplexity.New("", m)
+	c, err := perplexity.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)
 	}

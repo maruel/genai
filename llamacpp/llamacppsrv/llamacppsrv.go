@@ -95,7 +95,7 @@ func NewServer(ctx context.Context, exe, modelPath string, logOutput io.Writer, 
 		}
 		return cmd.Process.Signal(os.Interrupt)
 	}
-	if err := cmd.Start(); err != nil {
+	if err = cmd.Start(); err != nil {
 		return nil, err
 	}
 	done := make(chan error)

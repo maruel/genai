@@ -50,11 +50,12 @@ func TestClient_Chat_tool_use(t *testing.T) {
 
 func getClient(t *testing.T, m string) *cohere.Client {
 	testRecorder.Signal(t)
-	if os.Getenv("COHERE_API_KEY") == "" {
-		t.Skip("COHERE_API_KEY not set")
-	}
 	t.Parallel()
-	c, err := cohere.New("", m)
+	apiKey := ""
+	if os.Getenv("COHERE_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := cohere.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)
 	}

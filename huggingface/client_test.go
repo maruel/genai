@@ -61,18 +61,19 @@ func TestClient_Chat_tool_use(t *testing.T) {
 
 func getClient(t *testing.T, m string) *huggingface.Client {
 	testRecorder.Signal(t)
+	t.Parallel()
+	apiKey := ""
 	if os.Getenv("HUGGINGFACE_API_KEY") == "" {
 		// Fallback to loading from the python client's cache.
 		h, err := os.UserHomeDir()
 		if err != nil {
 			t.Fatal("can't find home directory")
 		}
-		if _, err := os.Stat(filepath.Join(h, ".cache", "huggingface", "token")); err != nil {
-			t.Skip("HUGGINGFACE_API_KEY not set and can't find ~/.cache/huggingface/token")
+		if _, err := os.Stat(filepath.Join(h, ".cache", "huggingface", "token")); err == nil {
+			apiKey = "<insert_api_key_here>"
 		}
 	}
-	t.Parallel()
-	c, err := huggingface.New("", m)
+	c, err := huggingface.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)
 	}

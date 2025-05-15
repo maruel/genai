@@ -97,11 +97,12 @@ func TestClient_Chat_tool_use(t *testing.T) {
 
 func getClient(t *testing.T, m string) *openai.Client {
 	testRecorder.Signal(t)
-	if os.Getenv("OPENAI_API_KEY") == "" {
-		t.Skip("OPENAI_API_KEY not set")
-	}
 	t.Parallel()
-	c, err := openai.New("", m)
+	apiKey := ""
+	if os.Getenv("OPENAI_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := openai.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)
 	}

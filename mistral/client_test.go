@@ -62,11 +62,12 @@ func TestClient_Chat_tool_use(t *testing.T) {
 
 func getClient(t *testing.T, m string) *mistral.Client {
 	testRecorder.Signal(t)
-	if os.Getenv("MISTRAL_API_KEY") == "" {
-		t.Skip("MISTRAL_API_KEY not set")
-	}
 	t.Parallel()
-	c, err := mistral.New("", m)
+	apiKey := ""
+	if os.Getenv("MISTRAL_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := mistral.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)
 	}

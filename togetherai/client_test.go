@@ -106,11 +106,12 @@ func TestClient_Chat_tool_use(t *testing.T) {
 
 func getClient(t *testing.T, m string) *togetherai.Client {
 	testRecorder.Signal(t)
-	if os.Getenv("TOGETHER_API_KEY") == "" {
-		t.Skip("TOGETHER_API_KEY not set")
-	}
 	t.Parallel()
-	c, err := togetherai.New("", m)
+	apiKey := ""
+	if os.Getenv("TOGETHER_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := togetherai.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)
 	}

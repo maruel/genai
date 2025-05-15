@@ -264,11 +264,12 @@ Ultimately, the human endeavor is a quest for understanding, not just of the ext
 
 func getClient(t *testing.T, m string) *gemini.Client {
 	testRecorder.Signal(t)
-	if os.Getenv("GEMINI_API_KEY") == "" {
-		t.Skip("GEMINI_API_KEY not set")
-	}
 	t.Parallel()
-	c, err := gemini.New("", m)
+	apiKey := ""
+	if os.Getenv("GEMINI_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := gemini.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)
 	}

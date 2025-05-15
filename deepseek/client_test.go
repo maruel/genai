@@ -45,11 +45,12 @@ func TestClient_Chat_tool_use(t *testing.T) {
 
 func getClient(t *testing.T, m string) *deepseek.Client {
 	testRecorder.Signal(t)
-	if os.Getenv("DEEPSEEK_API_KEY") == "" {
-		t.Skip("DEEPSEEK_API_KEY not set")
-	}
 	t.Parallel()
-	c, err := deepseek.New("", m)
+	apiKey := ""
+	if os.Getenv("DEEPSEEK_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := deepseek.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)
 	}

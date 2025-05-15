@@ -29,12 +29,11 @@ func TestClient_Chat_allModels(t *testing.T) {
 		func(m genai.Model) bool {
 			id := m.GetID()
 			// Groq doesn't provide model metadata, so guess based on the name.
-			return !(strings.Contains(id, "tts") || strings.Contains(id, "whisper") || strings.HasPrefix(id, "llama-guard") || id == "mistral-saba-24b")
+			return !(strings.Contains(id, "tts") || strings.Contains(id, "whisper") || strings.Contains(id, "llama-guard") || id == "mistral-saba-24b")
 		})
 }
 
 func TestClient_Chat_thinking(t *testing.T) {
-	t.Skip("Currently broken. To be investigated. See https://discord.com/channels/1207099205563457597/1207101178631159830/1372301381612081163")
 	testCases.TestChatThinking(t, &internaltest.Settings{Model: "qwen-qwq-32b"})
 }
 

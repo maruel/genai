@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 214
+        content_length: 189
         transfer_encoding: []
         trailer: {}
         host: api.groq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"max_completion_tokens":1000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"model":"compound-beta-mini","seed":1,"stream":false,"temperature":0.1}
+            {"max_completion_tokens":1000,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"model":"compound-beta-mini","seed":1,"stream":false,"temperature":0.1}
         form: {}
         headers:
             Content-Type:
@@ -29,7 +29,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"stub","object":"chat.completion","created":1746752127,"model":"compound-beta-mini","choices":[{"index":0,"message":{"role":"assistant","content":"Hello.","reasoning":""},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":2.197145,"prompt_tokens":345,"prompt_time":0.023471,"completion_tokens":5,"completion_time":0.022758,"total_tokens":350,"total_time":0.046228},"usage_breakdown":{"models":[{"model":"llama-3.3-70b-versatile","usage":{"queue_time":0.21344994099999998,"prompt_tokens":269,"prompt_time":0.018477802,"completion_tokens":2,"completion_time":0.015700599,"total_tokens":271,"total_time":0.034178401}},{"model":"meta-llama/llama-4-scout-17b-16e-instruct","usage":{"queue_time":1.983695499,"prompt_tokens":76,"prompt_time":0.004992957,"completion_tokens":3,"completion_time":0.007057032,"total_tokens":79,"total_time":0.012049989}}]},"system_fingerprint":null,"x_groq":{"id":"stub"}}
+            {"id":"stub","object":"chat.completion","created":1747270712,"model":"compound-beta-mini","choices":[{"index":0,"message":{"role":"assistant","content":"Hello.","reasoning":""},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.39808,"prompt_tokens":345,"prompt_time":0.021854,"completion_tokens":5,"completion_time":0.034663,"total_tokens":350,"total_time":0.056517},"usage_breakdown":{"models":[{"model":"llama-3.3-70b-versatile","usage":{"queue_time":0.206106733,"prompt_tokens":269,"prompt_time":0.017211323,"completion_tokens":2,"completion_time":0.028488566,"total_tokens":271,"total_time":0.045699889}},{"model":"meta-llama/llama-4-scout-17b-16e-instruct","usage":{"queue_time":0.191973271,"prompt_tokens":76,"prompt_time":0.004642982,"completion_tokens":3,"completion_time":0.006173674,"total_tokens":79,"total_time":0.010816656}}]},"system_fingerprint":null,"x_groq":{"id":"stub"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,7 +38,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cd3b2d4c3fa2b8-YUL
+                - 93feaffe7a1133f1-YUL
             Content-Type:
                 - application/json
             Server:
@@ -60,7 +60,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 4.8ms
             X-Request-Id:
-                - req_01jts8me3pftmt7vn3qxhvw1kb
+                - req_01jv8q6estfxwvrqsz1y29510q
         status: 200 OK
         code: 200
-        duration: 2.298s
+        duration: 522ms

@@ -220,7 +220,7 @@ const (
 type Message struct {
 	Role       string     `json:"role"`          // "system", "assistant", "user"
 	Name       string     `json:"name,omitzero"` // An optional name for the participant. Provides the model information to differentiate between participants of the same role.
-	Content    []Content  `json:"content,omitzero"`
+	Content    Contents   `json:"content,omitzero"`
 	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
 	ToolCallID string     `json:"tool_call_id,omitzero"` // Docs says to not use.
 }
@@ -248,6 +248,18 @@ func (m *Message) From(in *genai.Message) error {
 		}
 	}
 	return nil
+}
+
+// Contents exists to marshal single content text block as a string.
+//
+// Groq requires this for assistant messages.
+type Contents []Content
+
+func (c *Contents) MarshalJSON() ([]byte, error) {
+	if len(*c) == 1 && (*c)[0].Type == "text" {
+		return json.Marshal((*c)[0].Text)
+	}
+	return json.Marshal(([]Content)(*c))
 }
 
 type Content struct {

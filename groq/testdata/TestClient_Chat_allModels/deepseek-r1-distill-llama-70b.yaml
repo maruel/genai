@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 253
+        content_length: 228
         transfer_encoding: []
         trailer: {}
         host: api.groq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"max_completion_tokens":1000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"model":"deepseek-r1-distill-llama-70b","reasoning_format":"parsed","seed":1,"stream":false,"temperature":0.1}
+            {"max_completion_tokens":1000,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"model":"deepseek-r1-distill-llama-70b","reasoning_format":"parsed","seed":1,"stream":false,"temperature":0.1}
         form: {}
         headers:
             Content-Type:
@@ -29,7 +29,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-00e232b7-2a26-49dd-8ac4-c001a9f2c654","object":"chat.completion","created":1746752125,"model":"deepseek-r1-distill-llama-70b","choices":[{"index":0,"message":{"role":"assistant","content":"hello","reasoning":"Okay, so I need to figure out how to respond to the user's request. They said, \"Say hello. Use only one word. Say only hello.\" Hmm, that's pretty straightforward, but I want to make sure I understand it correctly.\n\nFirst, the user is asking me to say hello, but there are some constraints. They specified that I should use only one word and that the only thing I should say is \"hello.\" So, I can't add anything else, not even a period or any other punctuation. It has to be just the word \"hello\" by itself.\n\nI should also consider the context. Maybe the user is testing if I can follow specific instructions precisely. They might be checking if I can adhere to the constraints without adding extra information. So, it's important to comply exactly as they've asked.\n\nI wonder if there's any hidden meaning or if they're trying to see if I can avoid any markdown or additional text. Sometimes, users have specific formatting needs, so I should make sure not to include anything else. Just the word \"hello\" without any embellishments.\n\nAlso, I should think about the tone. Since it's a greeting, it should be friendly and straightforward. No need for any fancy language or additional words. Just a simple \"hello\" as requested.\n\nI should double-check the instructions to make sure I'm not missing anything. They said to use only one word and only say hello. So, I can't even say \"Hello!\" with an exclamation mark because that's adding punctuation. It has to be just \"hello.\"\n\nAlright, I think I've got it. I'll respond with \"hello\" and nothing else. That should meet all the user's requirements and show that I can follow their instructions accurately.\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.009819152999999999,"prompt_tokens":15,"prompt_time":0.00051867,"completion_tokens":365,"completion_time":1.763932263,"total_tokens":380,"total_time":1.764450933},"usage_breakdown":{"models":null},"system_fingerprint":"fp_87eae35036","x_groq":{"id":"req_01jts8me4pftmvrrpygyk65zss"}}
+            {"id":"chatcmpl-19725411-5407-423b-ac5e-6e79e4513255","object":"chat.completion","created":1747270712,"model":"deepseek-r1-distill-llama-70b","choices":[{"index":0,"message":{"role":"assistant","content":"hello","reasoning":"Okay, so I need to figure out how to respond to the user's request. They said, \"Say hello. Use only one word. Say only hello.\" Hmm, that's pretty straightforward, but I want to make sure I understand it correctly.\n\nFirst, the user is asking me to say hello, but there are some constraints. They specified that I should use only one word and that the only thing I should say is \"hello.\" So, I can't add anything else, not even a period or any other punctuation. It has to be just the word \"hello\" by itself.\n\nI should also consider the context. Maybe the user is testing if I can follow specific instructions precisely. They might be checking if I can adhere to the constraints without adding extra information. So, it's important to comply exactly as they've asked.\n\nI wonder if there's any hidden meaning or if they're trying to see if I can avoid any markdown or additional text. Sometimes, users have specific formatting needs, so I should make sure not to include anything else. Just the word \"hello\" without any embellishments.\n\nAlso, I should think about the tone. Since it's a greeting, it should be friendly and straightforward. No need for any fancy language or additional words. Just a simple \"hello\" as requested.\n\nI should double-check the instructions to make sure I'm not missing anything. They said to use only one word and only say hello. So, I can't even say \"Hello!\" with an exclamation mark because that's adding punctuation. It has to be just \"hello.\"\n\nAlright, I think I've got it. I'll respond with \"hello\" and nothing else. That should meet all the user's requirements and show that I can follow their instructions accurately.\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.076607447,"prompt_tokens":15,"prompt_time":0.000524275,"completion_tokens":365,"completion_time":1.821492653,"total_tokens":380,"total_time":1.822016928},"usage_breakdown":{"models":null},"system_fingerprint":"fp_87ec4d1ec3","x_groq":{"id":"req_01jv8q6ev0e2a9h0w31bq0cqwc"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,7 +38,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cd3b2d4c3ba2b8-YUL
+                - 93feaffe7a1233f1-YUL
             Content-Type:
                 - application/json
             Server:
@@ -60,7 +60,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 3.2ms
             X-Request-Id:
-                - req_01jts8me4pftmvrrpygyk65zss
+                - req_01jv8q6ev0e2a9h0w31bq0cqwc
         status: 200 OK
         code: 200
-        duration: 1.862s
+        duration: 2.004s

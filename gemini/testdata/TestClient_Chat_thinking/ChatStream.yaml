@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-thinking-exp:generateContent
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-thinking-exp:streamGenerateContent
         method: POST
       response:
         proto: HTTP/2.0
@@ -27,46 +27,19 @@ interactions:
         transfer_encoding: []
         trailer: {}
         content_length: -1
-        uncompressed: true
-        body: |
-            {
-              "candidates": [
-                {
-                  "content": {
-                    "parts": [
-                      {
-                        "text": "Hello."
-                      }
-                    ],
-                    "role": "model"
-                  },
-                  "finishReason": "STOP",
-                  "index": 0
-                }
-              ],
-              "usageMetadata": {
-                "promptTokenCount": 13,
-                "candidatesTokenCount": 2,
-                "totalTokenCount": 57,
-                "promptTokensDetails": [
-                  {
-                    "modality": "TEXT",
-                    "tokenCount": 13
-                  }
-                ],
-                "thoughtsTokenCount": 42
-              },
-              "modelVersion": "gemini-2.0-flash-thinking-exp-01-21"
-            }
+        uncompressed: false
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Hello.\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 2,\"totalTokenCount\": 57,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 42},\"modelVersion\": \"gemini-2.0-flash-thinking-exp-01-21\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
             Content-Type:
-                - application/json; charset=UTF-8
+                - text/event-stream
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=712
+                - gfet4t7; dur=572
             Vary:
                 - Origin
                 - X-Origin
@@ -79,7 +52,7 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 783ms
+        duration: 652ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -97,7 +70,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-thinking-exp:generateContent
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-thinking-exp:streamGenerateContent
         method: POST
       response:
         proto: HTTP/2.0
@@ -106,46 +79,19 @@ interactions:
         transfer_encoding: []
         trailer: {}
         content_length: -1
-        uncompressed: true
-        body: |
-            {
-              "candidates": [
-                {
-                  "content": {
-                    "parts": [
-                      {
-                        "text": "Hello."
-                      }
-                    ],
-                    "role": "model"
-                  },
-                  "finishReason": "STOP",
-                  "index": 0
-                }
-              ],
-              "usageMetadata": {
-                "promptTokenCount": 28,
-                "candidatesTokenCount": 2,
-                "totalTokenCount": 119,
-                "promptTokensDetails": [
-                  {
-                    "modality": "TEXT",
-                    "tokenCount": 28
-                  }
-                ],
-                "thoughtsTokenCount": 89
-              },
-              "modelVersion": "gemini-2.0-flash-thinking-exp-01-21"
-            }
+        uncompressed: false
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Hello.\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 28,\"candidatesTokenCount\": 2,\"totalTokenCount\": 119,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 28}],\"thoughtsTokenCount\": 89},\"modelVersion\": \"gemini-2.0-flash-thinking-exp-01-21\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
             Content-Type:
-                - application/json; charset=UTF-8
+                - text/event-stream
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=745
+                - gfet4t7; dur=605
             Vary:
                 - Origin
                 - X-Origin
@@ -158,4 +104,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 757ms
+        duration: 615ms

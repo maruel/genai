@@ -67,7 +67,7 @@ func TestClient_Chat_thinking(t *testing.T) {
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	testCases.TestChatStream(t, &internaltest.Settings{UsageIsBroken: true})
+	testCases.TestChatStream(t, nil)
 }
 
 func TestClient_Chat_jSON(t *testing.T) {

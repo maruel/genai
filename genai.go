@@ -437,10 +437,9 @@ func (c *Content) ReadDocument(maxSize int64) (string, []byte, error) {
 
 // MessageFragment is a fragment of a message the LLM is sending back as part
 // of the ChatStream().
-//
-// Only one of the item can be set.
 type MessageFragment struct {
-	TextFragment string
+	TextFragment     string
+	ThinkingFragment string
 
 	Filename         string
 	DocumentFragment []byte
@@ -461,32 +460,63 @@ type MessageFragment struct {
 //
 // The assumption is that the fragment is always a message from the Assistant.
 func (m *MessageFragment) Accumulate(msgs Messages) (Messages, error) {
-	if len(msgs) > 0 {
-		if lastMsg := &msgs[len(msgs)-1]; lastMsg.Role == Assistant {
-			if m.TextFragment != "" {
-				if len(lastMsg.Contents) == 0 {
-					lastMsg.Contents = append(lastMsg.Contents, Content{Text: m.TextFragment})
-					return msgs, nil
-				}
-				if lastBlock := &lastMsg.Contents[len(lastMsg.Contents)-1]; lastBlock.Text != "" {
-					lastBlock.Text += m.TextFragment
-					return msgs, nil
-				}
-			}
-			if m.DocumentFragment != nil {
-				return nil, fmt.Errorf("cannot accumulate documents yet")
-			}
-			if m.ToolCall.Name != "" {
-				lastMsg.ToolCalls = append(lastMsg.ToolCalls, m.ToolCall)
-				return msgs, nil
-			}
-		}
+	if len(msgs) == 0 {
+		// First message.
+		return append(msgs, m.toMessage()), nil
 	}
-	return append(msgs, m.toMessage()), nil
+	lastMsg := &msgs[len(msgs)-1]
+	if lastMsg.Role != Assistant {
+		// First reply.
+		return append(msgs, m.toMessage()), nil
+	}
+
+	// Generally the first message fragment.
+	if m.ThinkingFragment != "" {
+		if len(lastMsg.Contents) == 0 {
+			lastMsg.Contents = append(lastMsg.Contents, Content{Thinking: m.ThinkingFragment})
+			return msgs, nil
+		}
+		if lastBlock := &lastMsg.Contents[len(lastMsg.Contents)-1]; lastBlock.Thinking != "" {
+			lastBlock.Thinking += m.ThinkingFragment
+			return msgs, nil
+		}
+		return append(msgs, m.toMessage()), nil
+	}
+
+	// Content.
+	if m.TextFragment != "" {
+		if len(lastMsg.Contents) == 0 {
+			lastMsg.Contents = append(lastMsg.Contents, Content{Text: m.TextFragment})
+			return msgs, nil
+		}
+		if lastBlock := &lastMsg.Contents[len(lastMsg.Contents)-1]; lastBlock.Text != "" {
+			lastBlock.Text += m.TextFragment
+			return msgs, nil
+		}
+		return append(msgs, m.toMessage()), nil
+	}
+	if m.DocumentFragment != nil {
+		return nil, fmt.Errorf("cannot accumulate documents yet")
+	}
+	if m.ToolCall.Name != "" {
+		lastMsg.ToolCalls = append(lastMsg.ToolCalls, m.ToolCall)
+		return msgs, nil
+	}
+
+	// Generally the last message fragment.
+	if m.FinishReason != "" {
+		// TODO: lastMsg.FinishReason = m.FinishReason
+		return msgs, nil
+	}
+	// Nothing to accumulate. It should be an error but there are bugs where the system hangs.
+	return msgs, nil
 }
 
 // toMessage converts the fragment to a standalone message.
 func (m *MessageFragment) toMessage() Message {
+	if m.ThinkingFragment != "" {
+		return Message{Role: Assistant, Contents: []Content{{Thinking: m.ThinkingFragment}}}
+	}
 	if m.TextFragment != "" {
 		return NewTextMessage(Assistant, m.TextFragment)
 	}

@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BXCLKpQPIrMpkNY4t8PwMAhp0d4fz",
+              "id": "chatcmpl-BXRiKBB1ZsLeRzDz6TvuhrgmuDA4f",
               "object": "chat.completion",
-              "created": 1747251970,
+              "created": 1747311056,
               "model": "o4-mini-2025-04-16",
               "choices": [
                 {
@@ -72,13 +72,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93fce66d0c3da288-YUL
+                - 940288f84de5a28d-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "9946"
+                - "7417"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -88,7 +88,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "9954"
+                - "7424"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -102,10 +102,10 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 4ms
             X-Request-Id:
-                - req_05b26c6ae464c05e372b7e9eec9af793
+                - req_17af1670b0660e715655f2de6a9cc5df
         status: 200 OK
         code: 200
-        duration: 10.114s
+        duration: 7.571s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -135,9 +135,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BXCLUs6KU0UHz9kia0XEwd3ZgQDIF",
+              "id": "chatcmpl-BXRiSqQFW0GmjpMIYTQsK3oZwyccQ",
               "object": "chat.completion",
-              "created": 1747251980,
+              "created": 1747311064,
               "model": "o4-mini-2025-04-16",
               "choices": [
                 {
@@ -153,8 +153,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 40,
-                "completion_tokens": 19,
-                "total_tokens": 59,
+                "completion_tokens": 20,
+                "total_tokens": 60,
                 "prompt_tokens_details": {
                   "cached_tokens": 0,
                   "audio_tokens": 0
@@ -177,13 +177,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93fce6ac194ea288-YUL
+                - 940289274802a28d-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "9968"
+                - "7909"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -193,7 +193,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "9975"
+                - "7915"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -201,13 +201,13 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "199972"
+                - "199971"
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
                 - 8ms
             X-Request-Id:
-                - req_937560244270112713aee952e5e0a7d8
+                - req_62404b79661d6be5d4d93627811e6952
         status: 200 OK
         code: 200
-        duration: 10.127s
+        duration: 8.013s

@@ -525,12 +525,12 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 //     final Message object.
 //   - A final message_stop event.
 type ChatStreamChunkResponse struct {
-	Type string `json:"type"` // // "message_start", "content_block_start", "content_block_delta", "message_delta", "message_stop"
+	Type string `json:"type"` // // "message_start", "content_block_start", "content_block_delta", "content_block_stop", "message_delta", "message_stop", "ping"
 
 	// Type == "message_start"
 	Message struct {
 		ID           string   `json:"id"`
-		Type         string   `json:"type"` // "message"
+		Type         string   `json:"type"` // "message", "thinking"
 		Role         string   `json:"role"`
 		Model        string   `json:"model"`
 		Content      []string `json:"content"`
@@ -547,6 +547,10 @@ type ChatStreamChunkResponse struct {
 
 		// Type == "text"
 		Text string `json:"text"`
+
+		// Type == "thinking"
+		Thinking  string `json:"thinking"`
+		Signature []byte `json:"signature"` // Never actually filed but present on content_block_start.
 
 		// Type == "tool_use"
 		ID    string `json:"id"`
@@ -713,11 +717,10 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 	}()
 	for pkt := range ch {
-		word := ""
-		finishReason := ""
-		if pkt.Message.Usage.OutputTokens != 0 {
-			*finalUsage = pkt.Message.Usage
-		}
+		var word, thinking, finishReason string
+		var signature []byte
+		// See testdata/TestClient_Chat_thinking/ChatStream.yaml as a great example.
+		// TODO: pkt.Index matters here, as the LLM may fill multiple content blocks simultaneously.
 		switch pkt.Type {
 		case "message_start":
 			switch pkt.Message.Role {
@@ -725,22 +728,60 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			default:
 				return fmt.Errorf("unexpected role %q", pkt.Message.Role)
 			}
+			*finalUsage = pkt.Message.Usage
+			continue
 		case "content_block_start":
-			word = pkt.ContentBlock.Text
-		case "content_block_delta":
-			word = pkt.Delta.Text
-		case "message_stop":
-			// When we get message_stop, we need to pass the stop reason
-			finishReason = pkt.Message.StopReason
-		}
-		// slog.DebugContext(ctx, "anthropic", "word", word, "duration", time.Since(start).Round(time.Millisecond))
-		if word != "" || finishReason != "" {
-			fragment := genai.MessageFragment{TextFragment: word}
-			if finishReason != "" {
-				fragment.FinishReason = finishReason
+			switch pkt.ContentBlock.Type {
+			case "text":
+				if word = pkt.ContentBlock.Text; word == "" {
+					continue
+				}
+			case "thinking":
+				if thinking = pkt.ContentBlock.Thinking; thinking == "" {
+					continue
+				}
+				// case "tool_use":
+			default:
+				return fmt.Errorf("missing implementation for content block %q", pkt.ContentBlock.Type)
 			}
-			chunks <- fragment
+		case "content_block_delta":
+			switch pkt.Delta.Type {
+			case "text_delta":
+				if word = pkt.Delta.Text; word == "" {
+					continue
+				}
+			case "thinking_delta":
+				if thinking = pkt.Delta.Thinking; thinking == "" {
+					continue
+				}
+			case "signature_delta":
+				if signature = pkt.Delta.Signature; len(signature) == 0 {
+					continue
+				}
+				// case "tool_use":
+			default:
+				return fmt.Errorf("missing implementation for content block delta %q", pkt.Delta.Type)
+			}
+		case "content_block_stop":
+			// Marks a closure of the block pkt.Index. Nothing to do.
+			continue
+		case "message_delta":
+			// Includes finish reason and output tokens usage (but not input tokens!)
+			finishReason = pkt.Message.StopReason
+			finalUsage.OutputTokens = pkt.Usage.OutputTokens
+		case "message_stop":
+			// Doesn't contain anything.
+			continue
+		case "ping":
+			// Doesn't contain anything.
+			continue
+		default:
+			return fmt.Errorf("unknown stream block %q", pkt.Type)
 		}
+		// TODO: Signature!
+		fragment := genai.MessageFragment{TextFragment: word, ThinkingFragment: thinking, FinishReason: finishReason}
+		// slog.DebugContext(ctx, "anthropic", "fragment", fragment, "duration", time.Since(start).Round(time.Millisecond))
+		chunks <- fragment
 	}
 	return nil
 }

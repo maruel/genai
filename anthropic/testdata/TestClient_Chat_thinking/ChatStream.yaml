@@ -1,0 +1,263 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 234
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"claude-3-7-sonnet-20250219","max_tokens":2000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"stream":true,"thinking":{"budget_tokens":1999,"type":"enabled"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"id":"msg_01HmUV4oHAfwP7KgaCA5tw4y","type":"message","role":"assistant","model":"claude-3-7-sonnet-20250219","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":47,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":4}}   }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}       }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"The user has"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" asked me to say hello using only one word."}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I'm instructed to say only \""}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"hello\" and nothing else.\n\nSo my"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" response should simply be:\n\"Hello"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\"\n\nThis follows all the instructions"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" - it's a greeting,"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" it's one word, and it's only"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the word \"hello\"."}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"ErUBCkYIAxgCIkC42//yiSsppbe1Kgqm6qTNW4d3y73HOYkx6EMXC+OTP9YC1KcIFDZcqObf0UicNVmdRs9DDwB6dDY/BJhuvcfdEgysPH6XOx0W+1cF0BcaDOyvZs4NVePa8hd/giIwh+tN6INtawkYl4yNQ6GwgpMqNtD/UOXhXBGSxevaCbvngGcu60jttol7snG5kbDwKh3c0ZkvFX2rsrN1EpWoPhl4CRiwx0Hl3X5G5/k+hBgC"}      }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0    }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Hello"}               }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1               }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null},"usage":{"output_tokens":78} }
+
+            event: message_stop
+            data: {"type":"message_stop"            }
+
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "20000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2025-05-15T01:22:29Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "8000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "6000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2025-05-15T01:22:41Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "50"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "49"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2025-05-15T01:22:30Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "28000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "26000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2025-05-15T01:22:29Z"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93fed3154ba9a31a-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Request-Id:
+                - req_011CP8SVTxYyDm4rAsXxbbHu
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.758s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 395
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"claude-3-7-sonnet-20250219","max_tokens":2000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]},{"role":"assistant","content":[{"type":"text","text":"Hello"}]},{"role":"user","content":[{"type":"text","text":"Say the same word again. Use only one word."}]}],"stream":true,"thinking":{"budget_tokens":1999,"type":"enabled"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"id":"msg_01RaGYJM8c38pM5SQ1B8YRHo","type":"message","role":"assistant","model":"claude-3-7-sonnet-20250219","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":65,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":5}}            }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""} }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I need to say"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the same word again that I"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" said before, which was \"Hello\"."}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I need to use only one wor"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"d.\n\nThe word I"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" said previously was: \"Hello\"\n\nSo"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I should respond with just:"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"ErUBCkYIAxgCIkDgaVkmzvnwzsAd6YCYjMU3xvtxmx8gbnLKuxnd7V3aBCU3sSwjBvMwSzhYLUJxdLpIrsu2BRjyWt8tA+0aP9dfEgw8/r+Yccsk8bjiJ9UaDPWOe+uYKLY5poVnmCIwncFCvWEoQ80d0zvK6upAohq17esWhHJF2/TMoZB33HLJCML/Nz1bEUc9YGJTLvjXKh1jO81L+5ggjVr8WCSXbH9J50HPvJwXNA4S2cwzoBgC"}            }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0  }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Hello"}             }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1               }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null},"usage":{"output_tokens":58}     }
+
+            event: message_stop
+            data: {"type":"message_stop"            }
+
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "20000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2025-05-15T01:22:32Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "8000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "6000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2025-05-15T01:22:44Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "50"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "49"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2025-05-15T01:22:33Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "28000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "26000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2025-05-15T01:22:32Z"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 93fed3292e64a31a-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Request-Id:
+                - req_011CP8SVhTQPksSE5jSGos3S
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.667s

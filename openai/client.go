@@ -701,11 +701,11 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 	}()
 	for pkt := range ch {
-		if len(pkt.Choices) != 1 {
-			continue
-		}
 		if pkt.Usage.TotalTokens != 0 {
 			*finalUsage = pkt.Usage
+		}
+		if len(pkt.Choices) != 1 {
+			continue
 		}
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "", "assistant":
@@ -729,6 +729,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return err
 	}
 	in.Stream = true
+	in.StreamOptions.IncludeUsage = true
 	resp, err := c.Client.PostRequest(ctx, "https://api.openai.com/v1/chat/completions", nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
@@ -766,9 +767,6 @@ func parseStreamLine(line []byte, out chan<- ChatStreamChunkResponse) error {
 	msg := ChatStreamChunkResponse{}
 	if err := d.Decode(&msg); err != nil {
 		return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
-	}
-	if len(msg.Choices) != 1 {
-		return fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(msg.Choices))
 	}
 	out <- msg
 	return nil

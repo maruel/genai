@@ -16,9 +16,9 @@ import (
 )
 
 var testCases = &internaltest.TestCases{
-	GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 	Default: internaltest.Settings{
-		Model: "command-r-08-2024",
+		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+		Model:     "command-r-08-2024",
 	},
 }
 

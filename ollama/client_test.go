@@ -26,9 +26,9 @@ import (
 func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 	tc := &internaltest.TestCases{
-		GetClient: func(t *testing.T, m string) genai.ChatProvider { return s.getClient(t, m) },
 		Default: internaltest.Settings{
-			Model: "gemma3:4b",
+			GetClient: func(t *testing.T, m string) genai.ChatProvider { return s.getClient(t, m) },
+			Model:     "gemma3:4b",
 		},
 	}
 

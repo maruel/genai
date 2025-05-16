@@ -23,6 +23,8 @@ type ChatProviderFactory func(t *testing.T) genai.ChatProvider
 type ModelChatProviderFactory func(t *testing.T, model string) genai.ChatProvider
 
 type Settings struct {
+	// GetClient is a factory function that returns a chat provider for a specific model.
+	GetClient ModelChatProviderFactory
 	// Model is the model to use when none is specified.
 	Model string
 	// Options return a genai.ChatOptions or one of the model specific options.
@@ -33,18 +35,22 @@ type Settings struct {
 
 // TestCases contains shared test cases that can be reused across providers.
 type TestCases struct {
-	// GetClient is a factory function that returns a chat provider for a specific model.
-	GetClient ModelChatProviderFactory
 	// Default is the default settings to use.
 	Default Settings
 }
 
 func (tc *TestCases) getClient(t *testing.T, override *Settings) genai.ChatProvider {
 	model := tc.Default.Model
-	if override != nil && override.Model != "" {
-		model = override.Model
+	gc := tc.Default.GetClient
+	if override != nil {
+		if override.Model != "" {
+			model = override.Model
+		}
+		if override.GetClient != nil {
+			gc = override.GetClient
+		}
 	}
-	return tc.GetClient(t, model)
+	return gc(t, model)
 }
 
 func (tc *TestCases) getOptions(opts *genai.ChatOptions, override *Settings) genai.Validatable {
@@ -103,7 +109,7 @@ func (tc *TestCases) TestChatStream(t *testing.T, override *Settings) {
 // TestChatAllModels says hello with all models.
 func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Model) bool) {
 	ctx := t.Context()
-	l := tc.GetClient(t, "").(genai.ModelProvider)
+	l := tc.getClient(t, nil).(genai.ModelProvider)
 	models, err := l.ListModels(ctx)
 	if err != nil {
 		t.Fatal(err)
@@ -121,7 +127,7 @@ func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Mod
 		}
 		t.Run(id, func(t *testing.T) {
 			t.Helper()
-			c := tc.GetClient(t, id)
+			c := tc.getClient(t, &Settings{Model: id})
 			msgs := genai.Messages{
 				genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello."),
 			}

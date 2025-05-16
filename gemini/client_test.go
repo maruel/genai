@@ -23,8 +23,8 @@ import (
 )
 
 var testCases = &internaltest.TestCases{
-	GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 	Default: internaltest.Settings{
+		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 		// Using small model for testing.
 		// For tests that do not use function calling nor images, a good zero cost alternative is "gemma-3-27b-it".
 		// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en

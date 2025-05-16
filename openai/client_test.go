@@ -17,8 +17,8 @@ import (
 )
 
 var testCases = &internaltest.TestCases{
-	GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 	Default: internaltest.Settings{
+		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 		// https://platform.openai.com/docs/models/gpt-4.1-nano
 		Model: "gpt-4.1-nano",
 	},

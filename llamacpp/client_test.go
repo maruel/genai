@@ -26,7 +26,9 @@ import (
 func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 	tc := &internaltest.TestCases{
-		GetClient: func(t *testing.T, m string) genai.ChatProvider { return s.getClient(t) },
+		Default: internaltest.Settings{
+			GetClient: func(t *testing.T, m string) genai.ChatProvider { return s.getClient(t) },
+		},
 	}
 
 	t.Run("Chat", func(t *testing.T) {

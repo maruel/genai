@@ -159,12 +159,14 @@ func (m *Message) From(in *genai.Message) error {
 		return fmt.Errorf("unsupported role %q", in.Role)
 	}
 	m.Name = in.User
-	if len(in.Contents) > 1 {
-		return errors.New("deepseek doesn't support multiple content blocks; TODO split transparently")
-	}
-	// TODO: ReasoningContent
-	if len(in.Contents) == 1 {
-		m.Content = in.Contents[0].Text
+	for i := range in.Contents {
+		m.Content += in.Contents[i].Text
+		if in.Contents[i].Thinking != "" {
+			continue
+		}
+		if in.Contents[i].Filename != "" || in.Contents[i].Document != nil || in.Contents[i].URL != "" {
+			return errors.New("deepseek doesn't support document content blocks")
+		}
 	}
 	if len(in.ToolCalls) != 0 {
 		m.ToolCalls = make([]ToolCall, len(in.ToolCalls))
@@ -177,7 +179,6 @@ func (m *Message) From(in *genai.Message) error {
 
 func (m *Message) To(out *genai.Message) error {
 	// TODO: "tool"
-	// TODO: ReasoningContent
 	switch role := m.Role; role {
 	case "user":
 		out.Role = genai.Role(role)
@@ -191,6 +192,9 @@ func (m *Message) To(out *genai.Message) error {
 		for i := range m.ToolCalls {
 			m.ToolCalls[i].To(&out.ToolCalls[i])
 		}
+	}
+	if m.ReasoningContent != "" {
+		out.Contents = []genai.Content{{Thinking: m.Content}}
 	}
 	if m.Content != "" {
 		out.Contents = []genai.Content{{Text: m.Content}}

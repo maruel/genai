@@ -26,7 +26,6 @@ func TestClient_Chat_allModels(t *testing.T) {
 }
 
 func TestClient_Chat_thinking(t *testing.T) {
-	// TODO: Use deepseek.ChatOptions.
 	testCases.TestChatThinking(t, &internaltest.Settings{Model: "deepseek-reasoner"})
 }
 

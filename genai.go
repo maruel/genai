@@ -15,6 +15,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"maps"
 	"mime"
 	"path"
 	"path/filepath"
@@ -438,8 +439,10 @@ func (c *Content) ReadDocument(maxSize int64) (string, []byte, error) {
 // MessageFragment is a fragment of a message the LLM is sending back as part
 // of the ChatStream().
 type MessageFragment struct {
-	TextFragment     string
+	TextFragment string
+
 	ThinkingFragment string
+	Opaque           map[string]any
 
 	Filename         string
 	DocumentFragment []byte
@@ -454,6 +457,10 @@ type MessageFragment struct {
 	FinishReason string
 
 	_ struct{}
+}
+
+func (m *MessageFragment) IsZero() bool {
+	return m.TextFragment == "" && m.ThinkingFragment == "" && len(m.Opaque) == 0 && m.Filename == "" && len(m.DocumentFragment) == 0 && m.ToolCall.IsZero() && m.FinishReason == ""
 }
 
 // Accumulate accumulates the message fragment into the list of messages.
@@ -472,28 +479,47 @@ func (m *MessageFragment) Accumulate(msgs Messages) (Messages, error) {
 
 	// Generally the first message fragment.
 	if m.ThinkingFragment != "" {
-		if len(lastMsg.Contents) == 0 {
-			lastMsg.Contents = append(lastMsg.Contents, Content{Thinking: m.ThinkingFragment})
-			return msgs, nil
+		if len(lastMsg.Contents) != 0 {
+			if lastBlock := &lastMsg.Contents[len(lastMsg.Contents)-1]; lastBlock.Thinking != "" {
+				lastBlock.Thinking += m.ThinkingFragment
+				if len(m.Opaque) != 0 {
+					if lastBlock.Opaque == nil {
+						lastBlock.Opaque = map[string]any{}
+					}
+					maps.Copy(lastBlock.Opaque, m.Opaque)
+				}
+				return msgs, nil
+			}
 		}
-		if lastBlock := &lastMsg.Contents[len(lastMsg.Contents)-1]; lastBlock.Thinking != "" {
-			lastBlock.Thinking += m.ThinkingFragment
-			return msgs, nil
+		lastMsg.Contents = append(lastMsg.Contents, Content{Thinking: m.ThinkingFragment, Opaque: m.Opaque})
+		return msgs, nil
+	}
+	if len(m.Opaque) != 0 {
+		if len(lastMsg.Contents) != 0 {
+			// Only add Opaque to Thinking block.
+			if lastBlock := &lastMsg.Contents[len(lastMsg.Contents)-1]; lastBlock.Thinking != "" {
+				if lastBlock.Opaque == nil {
+					lastBlock.Opaque = map[string]any{}
+				}
+				maps.Copy(lastBlock.Opaque, m.Opaque)
+				return msgs, nil
+			}
 		}
-		return append(msgs, m.toMessage()), nil
+		// Unlikely.
+		lastMsg.Contents = append(lastMsg.Contents, Content{Opaque: m.Opaque})
+		return msgs, nil
 	}
 
 	// Content.
 	if m.TextFragment != "" {
-		if len(lastMsg.Contents) == 0 {
-			lastMsg.Contents = append(lastMsg.Contents, Content{Text: m.TextFragment})
-			return msgs, nil
+		if len(lastMsg.Contents) != 0 {
+			if lastBlock := &lastMsg.Contents[len(lastMsg.Contents)-1]; lastBlock.Text != "" {
+				lastBlock.Text += m.TextFragment
+				return msgs, nil
+			}
 		}
-		if lastBlock := &lastMsg.Contents[len(lastMsg.Contents)-1]; lastBlock.Text != "" {
-			lastBlock.Text += m.TextFragment
-			return msgs, nil
-		}
-		return append(msgs, m.toMessage()), nil
+		lastMsg.Contents = append(lastMsg.Contents, Content{Text: m.TextFragment})
+		return msgs, nil
 	}
 	if m.DocumentFragment != nil {
 		return nil, fmt.Errorf("cannot accumulate documents yet")
@@ -609,6 +635,10 @@ type ToolCall struct {
 	Arguments string // encoded as JSON
 
 	_ struct{}
+}
+
+func (t *ToolCall) IsZero() bool {
+	return t.ID == "" && t.Name == "" && t.Arguments == ""
 }
 
 // Decode decodes the JSON tool call.

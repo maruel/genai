@@ -717,8 +717,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 	}()
 	for pkt := range ch {
-		var word, thinking, finishReason string
-		var signature []byte
+		f := genai.MessageFragment{}
 		// See testdata/TestClient_Chat_thinking/ChatStream.yaml as a great example.
 		// TODO: pkt.Index matters here, as the LLM may fill multiple content blocks simultaneously.
 		switch pkt.Type {
@@ -733,13 +732,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		case "content_block_start":
 			switch pkt.ContentBlock.Type {
 			case "text":
-				if word = pkt.ContentBlock.Text; word == "" {
-					continue
-				}
+				f.TextFragment = pkt.ContentBlock.Text
 			case "thinking":
-				if thinking = pkt.ContentBlock.Thinking; thinking == "" {
-					continue
-				}
+				f.ThinkingFragment = pkt.ContentBlock.Thinking
 				// case "tool_use":
 			default:
 				return fmt.Errorf("missing implementation for content block %q", pkt.ContentBlock.Type)
@@ -747,17 +742,11 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		case "content_block_delta":
 			switch pkt.Delta.Type {
 			case "text_delta":
-				if word = pkt.Delta.Text; word == "" {
-					continue
-				}
+				f.TextFragment = pkt.Delta.Text
 			case "thinking_delta":
-				if thinking = pkt.Delta.Thinking; thinking == "" {
-					continue
-				}
+				f.ThinkingFragment = pkt.Delta.Thinking
 			case "signature_delta":
-				if signature = pkt.Delta.Signature; len(signature) == 0 {
-					continue
-				}
+				f.Opaque = map[string]any{"signature": pkt.Delta.Signature}
 				// case "tool_use":
 			default:
 				return fmt.Errorf("missing implementation for content block delta %q", pkt.Delta.Type)
@@ -767,7 +756,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			continue
 		case "message_delta":
 			// Includes finish reason and output tokens usage (but not input tokens!)
-			finishReason = pkt.Message.StopReason
+			f.FinishReason = pkt.Message.StopReason
 			finalUsage.OutputTokens = pkt.Usage.OutputTokens
 		case "message_stop":
 			// Doesn't contain anything.
@@ -778,10 +767,10 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unknown stream block %q", pkt.Type)
 		}
-		// TODO: Signature!
-		fragment := genai.MessageFragment{TextFragment: word, ThinkingFragment: thinking, FinishReason: finishReason}
-		// slog.DebugContext(ctx, "anthropic", "fragment", fragment, "duration", time.Since(start).Round(time.Millisecond))
-		chunks <- fragment
+		if !f.IsZero() {
+			// slog.DebugContext(ctx, "anthropic", "fragment", fragment, "duration", time.Since(start).Round(time.Millisecond))
+			chunks <- f
+		}
 	}
 	return nil
 }

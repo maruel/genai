@@ -354,9 +354,11 @@ func TestMessageFragment_Accumulate(t *testing.T) {
 							Filename: "document.txt",
 							Document: &buffer{"document content"},
 						},
+						{
+							Text: "No",
+						},
 					},
 				},
-				NewTextMessage(Assistant, "No"),
 			},
 		},
 		{

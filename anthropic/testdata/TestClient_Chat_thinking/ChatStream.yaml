@@ -30,61 +30,58 @@ interactions:
         uncompressed: false
         body: |+
             event: message_start
-            data: {"type":"message_start","message":{"id":"msg_01HmUV4oHAfwP7KgaCA5tw4y","type":"message","role":"assistant","model":"claude-3-7-sonnet-20250219","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":47,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":4}}   }
+            data: {"type":"message_start","message":{"id":"msg_014py9wKy5JBCrwS8y4GStdk","type":"message","role":"assistant","model":"claude-3-7-sonnet-20250219","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":47,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":3}}      }
 
             event: content_block_start
-            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}       }
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}             }
 
             event: ping
             data: {"type": "ping"}
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"The user has"}               }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"The human"}      }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" asked me to say hello using only one word."}  }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" is asking me to say hello using only one word. The"} }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I'm instructed to say only \""}  }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" instruction is very clear:\n1"}      }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"hello\" and nothing else.\n\nSo my"}       }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":". I should only use one word\n2. That"}            }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" response should simply be:\n\"Hello"}     }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" word should be \"hello\"\n\nSo my response should simply"}               }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\"\n\nThis follows all the instructions"}         }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" be:\n\n\"Hello\"\n\nThis"}}
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" - it's a greeting,"}        }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" follows the instruction exactly - it's just one"}    }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" it's one word, and it's only"}             }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" word, and that word is \"hello\"."}       }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the word \"hello\"."}            }
-
-            event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"ErUBCkYIAxgCIkC42//yiSsppbe1Kgqm6qTNW4d3y73HOYkx6EMXC+OTP9YC1KcIFDZcqObf0UicNVmdRs9DDwB6dDY/BJhuvcfdEgysPH6XOx0W+1cF0BcaDOyvZs4NVePa8hd/giIwh+tN6INtawkYl4yNQ6GwgpMqNtD/UOXhXBGSxevaCbvngGcu60jttol7snG5kbDwKh3c0ZkvFX2rsrN1EpWoPhl4CRiwx0Hl3X5G5/k+hBgC"}      }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"ErUBCkYIAxgCIkDDrWCeKfjeRKGjOSoPiuKsIWR6irDnVGgotAaMoH6KWn7QfLs7t6882/8ESyp3u14019wpDujZcbkzO6w6LyCFEgwPV49uvIW0lJg8WHsaDG3aX+es9St7hSMLwiIwtB8TgtTj+io5EBVumLv/0mqYQPNiXBJET4YO7N+3ywT6CIH3vLhNLYg6bpm0E9oUKh0BPzEkYXd4IcWbHg+ZeLU/DOWB8tN5do+K7bm3gBgC"}          }
 
             event: content_block_stop
-            data: {"type":"content_block_stop","index":0    }
+            data: {"type":"content_block_stop","index":0               }
 
             event: content_block_start
-            data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}           }
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}    }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Hello"}               }
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Hello"}    }
 
             event: content_block_stop
-            data: {"type":"content_block_stop","index":1               }
+            data: {"type":"content_block_stop","index":1            }
 
             event: message_delta
-            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null},"usage":{"output_tokens":78} }
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null},"usage":{"output_tokens":83}       }
 
             event: message_stop
-            data: {"type":"message_stop"            }
+            data: {"type":"message_stop"               }
 
         headers:
             Anthropic-Organization-Id:
@@ -94,35 +91,35 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "20000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-05-15T01:22:29Z"
+                - "2025-05-17T13:28:27Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "8000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "6000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-05-15T01:22:41Z"
+                - "2025-05-17T13:28:39Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "50"
             Anthropic-Ratelimit-Requests-Remaining:
                 - "49"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-05-15T01:22:30Z"
+                - "2025-05-17T13:28:28Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "28000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "26000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-05-15T01:22:29Z"
+                - "2025-05-17T13:28:27Z"
             Cache-Control:
                 - no-cache
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93fed3154ba9a31a-YUL
+                - 941375441b27714b-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Request-Id:
-                - req_011CP8SVTxYyDm4rAsXxbbHu
+                - req_011CPDBUA7kDMmQAhJfV2KtZ
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -133,20 +130,20 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 1.758s
+        duration: 1.08s
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 395
+        content_length: 983
         transfer_encoding: []
         trailer: {}
         host: api.anthropic.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"claude-3-7-sonnet-20250219","max_tokens":2000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]},{"role":"assistant","content":[{"type":"text","text":"Hello"}]},{"role":"user","content":[{"type":"text","text":"Say the same word again. Use only one word."}]}],"stream":true,"thinking":{"budget_tokens":1999,"type":"enabled"}}
+            {"model":"claude-3-7-sonnet-20250219","max_tokens":2000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]},{"role":"assistant","content":[{"type":"thinking","thinking":"The human is asking me to say hello using only one word. The instruction is very clear:\n1. I should only use one word\n2. That word should be \"hello\"\n\nSo my response should simply be:\n\n\"Hello\"\n\nThis follows the instruction exactly - it's just one word, and that word is \"hello\".","signature":"ErUBCkYIAxgCIkDDrWCeKfjeRKGjOSoPiuKsIWR6irDnVGgotAaMoH6KWn7QfLs7t6882/8ESyp3u14019wpDujZcbkzO6w6LyCFEgwPV49uvIW0lJg8WHsaDG3aX+es9St7hSMLwiIwtB8TgtTj+io5EBVumLv/0mqYQPNiXBJET4YO7N+3ywT6CIH3vLhNLYg6bpm0E9oUKh0BPzEkYXd4IcWbHg+ZeLU/DOWB8tN5do+K7bm3gBgC"},{"type":"text","text":"Hello"}]},{"role":"user","content":[{"type":"text","text":"Say the same word again. Use only one word."}]}],"stream":true,"thinking":{"budget_tokens":1999,"type":"enabled"}}
         form: {}
         headers:
             Content-Type:
@@ -163,55 +160,49 @@ interactions:
         uncompressed: false
         body: |+
             event: message_start
-            data: {"type":"message_start","message":{"id":"msg_01RaGYJM8c38pM5SQ1B8YRHo","type":"message","role":"assistant","model":"claude-3-7-sonnet-20250219","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":65,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":5}}            }
+            data: {"type":"message_start","message":{"id":"msg_01Rz84HqvxJkGq4VuNhTNkyt","type":"message","role":"assistant","model":"claude-3-7-sonnet-20250219","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":65,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":2}}   }
 
             event: content_block_start
-            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""} }
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}             }
 
             event: ping
             data: {"type": "ping"}
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I need to say"}         }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I"}}
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the same word again that I"}            }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" need to say the same word I said before, which was"}    }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" said before, which was \"Hello\"."}     }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" \"Hello\". The instruction is to use only one"}  }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I need to use only one wor"}      }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" word, so I'll just respond with \"Hello\" again"}   }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"d.\n\nThe word I"}         }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"."}            }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" said previously was: \"Hello\"\n\nSo"} }
-
-            event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I should respond with just:"}}
-
-            event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"ErUBCkYIAxgCIkDgaVkmzvnwzsAd6YCYjMU3xvtxmx8gbnLKuxnd7V3aBCU3sSwjBvMwSzhYLUJxdLpIrsu2BRjyWt8tA+0aP9dfEgw8/r+Yccsk8bjiJ9UaDPWOe+uYKLY5poVnmCIwncFCvWEoQ80d0zvK6upAohq17esWhHJF2/TMoZB33HLJCML/Nz1bEUc9YGJTLvjXKh1jO81L+5ggjVr8WCSXbH9J50HPvJwXNA4S2cwzoBgC"}            }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"ErUBCkYIAxgCIkAvs22Atqka1NoID9gBXUqz2CiG3iWJxNyW8xutiR0LbOrYbuSLESVacpt4FiaIbLetHw8XxhJ1ycOj/jc0m7EtEgyRvVytkVTUl6Xe1zIaDJZQ4DinSd+Awpkh+iIwGN1ZDTqZ+y5pbztZ5435TrsGLYe7eNzrUmJihodv9GX1ciY2ErxNHR0AdtWBW8reKh1n96od6FALtv5XxqXL5PDSaw3KhYNHmyQIJhIfzRgC"}    }
 
             event: content_block_stop
-            data: {"type":"content_block_stop","index":0  }
+            data: {"type":"content_block_stop","index":0}
 
             event: content_block_start
-            data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}      }
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}             }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Hello"}             }
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Hello"}   }
 
             event: content_block_stop
-            data: {"type":"content_block_stop","index":1               }
+            data: {"type":"content_block_stop","index":1     }
 
             event: message_delta
-            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null},"usage":{"output_tokens":58}     }
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null},"usage":{"output_tokens":49} }
 
             event: message_stop
-            data: {"type":"message_stop"            }
+            data: {"type":"message_stop"               }
 
         headers:
             Anthropic-Organization-Id:
@@ -221,35 +212,35 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "20000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-05-15T01:22:32Z"
+                - "2025-05-17T13:28:30Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "8000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "6000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-05-15T01:22:44Z"
+                - "2025-05-17T13:28:42Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "50"
             Anthropic-Ratelimit-Requests-Remaining:
                 - "49"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-05-15T01:22:33Z"
+                - "2025-05-17T13:28:31Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "28000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "26000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-05-15T01:22:32Z"
+                - "2025-05-17T13:28:30Z"
             Cache-Control:
                 - no-cache
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93fed3292e64a31a-YUL
+                - 94137553abb3714b-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Request-Id:
-                - req_011CP8SVhTQPksSE5jSGos3S
+                - req_011CPDBULngrzZrdxhg28NMJ
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -260,4 +251,4 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 1.667s
+        duration: 616ms

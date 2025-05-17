@@ -117,8 +117,7 @@ func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Mod
 
 	// MaxTokens has to be long because of some thinking models (e.g. qwen-qwq-32b and
 	// deepseek-r1-distill-llama-70b) cannot have thinking disabled.
-	baseOpts := &genai.ChatOptions{Temperature: 0.1, Seed: 1, MaxTokens: 1000}
-	opts := tc.getOptions(baseOpts, nil)
+	opts := genai.ChatOptions{Temperature: 0.1, Seed: 1, MaxTokens: 1000}
 
 	for _, m := range models {
 		id := m.GetID()
@@ -126,19 +125,8 @@ func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Mod
 			continue
 		}
 		t.Run(id, func(t *testing.T) {
-			t.Helper()
-			c := tc.getClient(t, &Settings{Model: id})
-			msgs := genai.Messages{
-				genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello."),
-			}
-			resp, err := c.Chat(ctx, msgs, opts)
-			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-				t.Log(uce)
-			} else if err != nil {
-				t.Fatal(err)
-			}
-			t.Logf("Raw response: %#v", resp)
-			testUsage(t, &resp.Usage, false)
+			msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello.")}
+			resp := tc.testChatHelper(t, msgs, &Settings{Model: id}, opts)
 			validateSingleWordResponse(t, resp, "hello")
 		})
 	}
@@ -146,8 +134,10 @@ func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Mod
 
 // Tool
 
-// TestChatToolUseCountry runs a Chat with tool use and verifies that the tools are called correctly.
-// It runs subtests for both Chat and ChatStream methods.
+// TestChatToolUseCountry confirms that LLMs are position biased.
+//
+// Presented with a choice where they can't easily chose, they will always select the first item presented, in
+// this case a country name.
 func (tc *TestCases) TestChatToolUseCountry(t *testing.T, override *Settings) {
 	t.Run("Chat", func(t *testing.T) {
 		tc.chatToolUseCountryCore(t, override, false)
@@ -162,16 +152,14 @@ func (tc *TestCases) TestChatToolUseCountry(t *testing.T, override *Settings) {
 // The useStream parameter determines whether to use Chat or ChatStream.
 // It returns the response for further validation.
 func (tc *TestCases) chatToolUseCountryCore(t *testing.T, override *Settings, useStream bool) {
-	ctx := t.Context()
 	t.Run("Canada", func(t *testing.T) {
-		c := tc.getClient(t, override)
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."),
 		}
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 		}
-		opts := tc.getOptions(&genai.ChatOptions{
+		opts := genai.ChatOptions{
 			MaxTokens: 200,
 			Seed:      1,
 			Tools: []genai.ToolDef{
@@ -182,15 +170,13 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, override *Settings, us
 				},
 			},
 			ToolCallRequired: true,
-		}, override)
+		}
 		var resp genai.ChatResult
 		if useStream {
-			resp = processChatStream(t, ctx, c, msgs, opts)
+			resp = tc.testChatStreamHelper(t, msgs, override, opts)
 		} else {
-			resp = processChat(t, ctx, c, msgs, opts)
+			resp = tc.testChatHelper(t, msgs, override, opts)
 		}
-		testUsage(t, &resp.Usage, tc.usageIsBroken(override))
-
 		want := "best_country"
 		if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
 			t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
@@ -205,14 +191,13 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, override *Settings, us
 	})
 
 	t.Run("USA", func(t *testing.T) {
-		c := tc.getClient(t, override)
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."),
 		}
 		var got struct {
 			Country string `json:"country" jsonschema:"enum=USA,enum=Canada"`
 		}
-		opts := tc.getOptions(&genai.ChatOptions{
+		opts := genai.ChatOptions{
 			MaxTokens: 200,
 			Seed:      1,
 			Tools: []genai.ToolDef{
@@ -223,15 +208,13 @@ func (tc *TestCases) chatToolUseCountryCore(t *testing.T, override *Settings, us
 				},
 			},
 			ToolCallRequired: true,
-		}, override)
+		}
 		var resp genai.ChatResult
 		if useStream {
-			resp = processChatStream(t, ctx, c, msgs, opts)
+			resp = tc.testChatStreamHelper(t, msgs, override, opts)
 		} else {
-			resp = processChat(t, ctx, c, msgs, opts)
+			resp = tc.testChatHelper(t, msgs, override, opts)
 		}
-		testUsage(t, &resp.Usage, tc.usageIsBroken(override))
-
 		want := "best_country"
 		if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
 			t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
@@ -563,8 +546,8 @@ func (tc *TestCases) testChat(t *testing.T, msgs genai.Messages, c genai.ChatPro
 	}
 	t.Logf("Raw response: %#v", resp)
 	testUsage(t, &resp.Usage, usageIsBroken)
-	if len(resp.Contents) == 0 {
-		t.Fatal("Unexpected response")
+	if len(resp.Contents) == 0 && len(resp.ToolCalls) == 0 {
+		t.Fatal("missing response")
 	}
 	return resp
 }

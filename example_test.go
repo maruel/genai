@@ -197,7 +197,7 @@ func ExampleChatProvider_chat_vision_and_JSON_schema() {
 	// This would Output: Banana: true
 }
 
-func ExampleChatProvider_chat_PDF() {
+func ExampleChatProvider_chat_pdf() {
 	// Using small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	c, err := gemini.New("", "gemini-2.0-flash-lite")

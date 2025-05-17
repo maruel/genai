@@ -73,51 +73,67 @@ func (tp *ThinkingChatProvider) ChatStream(ctx context.Context, msgs Messages, o
 
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		// gotText is set once we got any form of text. This is to discard leading whitespace, which sometimes
-		// happens before the initial thinking tag.
-		gotText := false
-		// gotTag is true when a tag is found until non-whitespace is found.
-		gotTag := false
-		foundEndTag := false
-		sentText := false
+		state := start
 		for f := range internalReplies {
-			buf := f.TextFragment
-			if buf != "" && !foundEndTag {
-				if !gotText || gotTag {
-					buf = strings.TrimLeftFunc(buf, unicode.IsSpace)
-				}
-				if strings.TrimSpace(buf) != "" {
-					gotText = false
-					gotTag = false
-				}
+			switch state {
+			case start:
+				// Ignore whitespace until text or thinking tag is seen.
+				buf := strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace)
 				if tStart := strings.Index(buf, tagStart); tStart != -1 {
-					gotTag = true
-					// Was there an empty prefix?
-					if strings.TrimSpace(buf[:tStart]) != "" || sentText {
-						// Empty the channel.
-						for range internalReplies {
-						}
-						return fmt.Errorf("ignoring prefix before thinking tag: %q", buf[:tStart])
+					if tStart != 0 {
+						return fmt.Errorf("unexpected prefix before thinking tag: %q", f.TextFragment)
 					}
-					// Process thinking after the tag, if any. Generally there's none.
-					buf = strings.TrimLeftFunc(buf[tStart+len(tagStart):], unicode.IsSpace)
+					state = startTagSeen
+					if buf = strings.TrimLeftFunc(buf[len(tagStart):], unicode.IsSpace); buf != "" {
+						state = thinkingTextSeen
+						f.ThinkingFragment = buf
+						f.TextFragment = ""
+						replies <- f
+					}
+					continue
 				}
-				if tEnd := strings.Index(buf, tagEnd); tEnd != -1 {
-					gotTag = true
-					replies <- MessageFragment{ThinkingFragment: buf[:tEnd]}
-					foundEndTag = true
-					// Process text after the tag, if any. Generally there's none.
-					f.TextFragment = strings.TrimLeftFunc(buf[tEnd+len(tagEnd):], unicode.IsSpace)
+				if buf != "" {
+					// Some model do not always send tagStart.
+					state = thinkingTextSeen
+					f.ThinkingFragment = buf
+					f.TextFragment = ""
+					replies <- f
 				}
-			}
-			if !foundEndTag {
+			case startTagSeen:
+				// Ignore whitespace until text is seen.
+				if buf := strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace); buf != "" {
+					state = thinkingTextSeen
+					f.ThinkingFragment = buf
+					f.TextFragment = ""
+					replies <- f
+				}
+			case thinkingTextSeen:
+				if tEnd := strings.Index(f.TextFragment, tagEnd); tEnd != -1 {
+					state = endTagSeen
+					buf := f.TextFragment
+					if tEnd != 0 {
+						f.ThinkingFragment = buf[:tEnd]
+						f.TextFragment = ""
+						replies <- f
+					}
+					if buf = strings.TrimLeftFunc(buf[tEnd+len(tagEnd):], unicode.IsSpace); buf != "" {
+						state = textSeen
+						f.TextFragment = buf
+						replies <- f
+					}
+					continue
+				}
+				f.ThinkingFragment = f.TextFragment
 				f.TextFragment = ""
-				f.ThinkingFragment = buf
-				if !sentText && strings.TrimSpace(buf) != "" {
-					sentText = true
+				replies <- f
+			case endTagSeen:
+				// Ignore whitespace until text is seen.
+				if buf := strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace); buf != "" {
+					state = textSeen
+					f.TextFragment = buf
+					replies <- f
 				}
-			}
-			if !f.IsZero() {
+			case textSeen:
 				replies <- f
 			}
 		}
@@ -130,3 +146,13 @@ func (tp *ThinkingChatProvider) ChatStream(ctx context.Context, msgs Messages, o
 	}
 	return usage, err
 }
+
+type tagProcessingState int
+
+const (
+	start tagProcessingState = iota
+	startTagSeen
+	thinkingTextSeen
+	endTagSeen
+	textSeen
+)

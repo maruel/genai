@@ -25,6 +25,15 @@ func TestClient_Chat_allModels(t *testing.T) {
 	testCases.TestChatAllModels(t, nil)
 }
 
+func TestClient_Chat_thinking(t *testing.T) {
+	testCases.TestChatThinking(t, &internaltest.Settings{
+		GetClient: func(t *testing.T, m string) genai.ChatProvider {
+			return &genai.ThinkingChatProvider{Provider: getClient(t, m), TagName: "think"}
+		},
+		Model: "qwen-3-32b",
+	})
+}
+
 func TestClient_ChatStream(t *testing.T) {
 	testCases.TestChatStream(t, nil)
 }

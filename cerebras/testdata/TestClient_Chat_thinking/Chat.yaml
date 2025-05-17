@@ -1,0 +1,131 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 148
+        transfer_encoding: []
+        trailer: {}
+        host: api.cerebras.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"max_completion_tokens":2000,"seed":1}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-c31a5e87-913e-49db-b357-d742893348a4","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, the user wants me to say hello using only one word and just \"hello\". Let me check the instructions again. They specified to use only one word and say only hello. So I need to make sure I don''t add anything else. Maybe they want a simple greeting without any extra text. I''ll just type \"Hello\" as the response. That should meet their requirements. Let me confirm there''s no additional instructions. Yep, just a single word \"hello\". Alright, done.\n</think>\n\nHello","role":"assistant"}}],"created":1747520407,"model":"qwen-3-32b","system_fingerprint":"fp_15704afc722bd2f68f75","object":"chat.completion","usage":{"prompt_tokens":20,"completion_tokens":106,"total_tokens":126},"time_info":{"queue_time":0.00021435,"prompt_time":0.001520417,"completion_time":0.079991567,"total_time":0.10785365104675293,"created":1747520407}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9416800fad33a28c-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-c31a5e87-913e-49db-b357-d742893348a4
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14396"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Reset-Requests-Day:
+                - "5992.539245843887"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "52.53924584388733"
+            X-Request-Id:
+                - 9416800fad33a28c-YUL
+        status: 200 OK
+        code: 200
+        duration: 634ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 259
+        transfer_encoding: []
+        trailer: {}
+        host: api.cerebras.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."},{"role":"assistant","content":"Hello"},{"role":"user","content":"Say the same word again. Use only one word."}],"max_completion_tokens":2000,"seed":1}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-d8557c26-d382-4517-a265-1c42e72b1a13","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, the user wants me to say the same word again, which is \"Hello.\" Let me make sure I follow the instructions correctly. They specified to use only one word and say only \"Hello\" again. So I need to check if there''s any other word or punctuation that might be added by mistake.\n\nFirst, the previous interaction: the user asked to say \"Hello\" with one word, and I responded with \"Hello\". Now they want the same word again. The key points here are to use exactly one word and not add anything else. I need to avoid any typos or extra characters. Let me confirm the spelling of \"Hello\" is correct. No uppercase letters beyond the first, but since it''s a greeting, starting with a capital is standard. Wait, actually, in the previous response, I used \"Hello\" with a capital H. But the user''s current instruction says to say the same word again. So the same word would be \"Hello\", but in the example, they might accept lowercase if that''s what was used before. Wait, no, in the first response, the user''s assistant used \"Hello\" with a capital. So I should replicate that exactly. Let me check the first message again.\n\nYes, the user said \"Say hello. Use only one word. Say only hello.\" And my response was \"Hello\". So the same word is \"Hello\". Therefore, the correct response now should be \"Hello\" again, exactly the same. I need to make sure there are no extra spaces or characters. Also, ensure that the format is correct, using only the word and no markdown. Since the user is testing consistency, any deviation might be flagged. Alright, I think that''s all. Just output \"Hello\".\n</think>\n\nHello","role":"assistant"}}],"created":1747520408,"model":"qwen-3-32b","system_fingerprint":"fp_15704afc722bd2f68f75","object":"chat.completion","usage":{"prompt_tokens":42,"completion_tokens":363,"total_tokens":405},"time_info":{"queue_time":0.00011072,"prompt_time":0.001576852,"completion_time":0.271285857,"total_time":0.2743561267852783,"created":1747520408}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9416801a09a0a28c-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-d8557c26-d382-4517-a265-1c42e72b1a13
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14393"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "59307"
+            X-Ratelimit-Reset-Requests-Day:
+                - "5990.9544014930725"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "50.95440149307251"
+            X-Request-Id:
+                - 9416801a09a0a28c-YUL
+        status: 200 OK
+        code: 200
+        duration: 1.582s

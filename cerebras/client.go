@@ -200,6 +200,8 @@ func (m *Message) From(in *genai.Message) error {
 					Type: "text",
 					Text: in.Contents[i].Text,
 				})
+			} else if in.Contents[i].Thinking != "" {
+				// Ignore
 			} else {
 				// Cerebras doesn't support documents yet.
 				return fmt.Errorf("unsupported content type %#v", in.Contents[i])

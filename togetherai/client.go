@@ -158,9 +158,13 @@ func (m *Message) From(in *genai.Message) error {
 		return fmt.Errorf("unsupported role %q", in.Role)
 	}
 	if len(in.Contents) != 0 {
-		m.Content = make([]Content, len(in.Contents))
+		m.Content = make([]Content, 0, len(in.Contents))
 		for i := range in.Contents {
-			if err := m.Content[i].From(&in.Contents[i]); err != nil {
+			if in.Contents[i].Thinking != "" {
+				continue
+			}
+			m.Content = append(m.Content, Content{})
+			if err := m.Content[len(m.Content)-1].From(&in.Contents[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		}
@@ -386,6 +390,13 @@ type errorResponse struct {
 	} `json:"error"`
 }
 
+func (er *errorResponse) String() string {
+	if er.Error.Code != "" {
+		return fmt.Sprintf("error %s (%s): %s", er.Error.Code, er.Error.Type, er.Error.Message)
+	}
+	return fmt.Sprintf("error (%s): %s", er.Error.Type, er.Error.Message)
+}
+
 // Client implements the REST JSON based API.
 type Client struct {
 	// Client is exported for testing replay purposes.
@@ -550,6 +561,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
+	first := true
 	for r := bufio.NewReader(resp.Body); ; {
 		line, err := r.ReadBytes('\n')
 		if line = bytes.TrimSpace(line); err == io.EOF {
@@ -560,10 +572,27 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 			return fmt.Errorf("failed to get server response: %w", err)
 		}
 		if len(line) != 0 {
+			// When there's an error, the reply will be sent as a single JSON blob. It's printing in indented mode
+			// so we need to read it all.
+			if first && bytes.HasPrefix(line, []byte("{")) {
+				rest, err := io.ReadAll(r)
+				if err != nil {
+					return fmt.Errorf("failed to get server response while decoding an error: %w", err)
+				}
+				d := json.NewDecoder(bytes.NewReader(append(line, rest...)))
+				d.DisallowUnknownFields()
+				d.UseNumber()
+				er := errorResponse{}
+				if err := d.Decode(&er); err != nil {
+					return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
+				}
+				return fmt.Errorf("server error: %s", er.String())
+			}
 			if err := parseStreamLine(line, out); err != nil {
 				return err
 			}
 		}
+		first = false
 	}
 }
 
@@ -671,11 +700,11 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
 			if herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: error %s (%s): %s. You can get a new API key at %s", herr, er.Error.Code, er.Error.Type, er.Error.Message, apiKeyURL)
+				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
 			}
-			return fmt.Errorf("%w: error %s (%s): %s", herr, er.Error.Code, er.Error.Type, er.Error.Message)
+			return fmt.Errorf("%w: %s", herr, er.String())
 		}
-		return fmt.Errorf("error %s (%s): %s", er.Error.Code, er.Error.Type, er.Error.Message)
+		return errors.New(er.String())
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {

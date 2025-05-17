@@ -44,8 +44,13 @@ func TestClient_Chat_allModels(t *testing.T) {
 }
 
 func TestClient_Chat_thinking(t *testing.T) {
-	t.Skip(`would need to split manually "\n</think>\n\n"`)
-	testCases.TestChatThinking(t, &internaltest.Settings{Model: "Qwen/Qwen3-235B-A22B-fp8-tput"})
+	t.Skip(`bugged when using streaming; https://discord.com/channels/1082503318624022589/1082503319165083700/1373293708438405170`)
+	testCases.TestChatThinking(t, &internaltest.Settings{
+		GetClient: func(t *testing.T, m string) genai.ChatProvider {
+			return &genai.ThinkingChatProvider{Provider: getClient(t, m), TagName: "think"}
+		},
+		Model: "Qwen/Qwen3-235B-A22B-fp8-tput",
+	})
 }
 
 // google/gemma-3-4b-it and google/gemma-3-27b-it are not available without a dedicated endpoint. We must

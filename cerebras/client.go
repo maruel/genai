@@ -29,12 +29,18 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// Official python client: https://github.com/Cerebras/cerebras-cloud-sdk-python
+//
+// CompletionsResource.create() at
+// https://github.com/Cerebras/cerebras-cloud-sdk-python/blob/main/src/cerebras/cloud/sdk/resources/chat/completions.py
+
 // https://inference-docs.cerebras.ai/api-reference/chat-completions
 type ChatRequest struct {
-	Model          string    `json:"model"`
-	Messages       []Message `json:"messages"`
-	MaxChatTokens  int64     `json:"max_completion_tokens,omitzero"`
-	ResponseFormat struct {
+	Model               string    `json:"model"`
+	Messages            []Message `json:"messages"`
+	MaxCompletionTokens int64     `json:"max_completion_tokens,omitzero"` // Includes reasoning tokens
+	MinCompletionTokens int64     `json:"min_completion_tokens,omitzero"`
+	ResponseFormat      struct {
 		// https://inference-docs.cerebras.ai/capabilities/structured-outputs
 		Type       string `json:"type"` // "json_object", "json_schema"
 		JSONSchema struct {
@@ -43,16 +49,25 @@ type ChatRequest struct {
 			Strict bool               `json:"strict"`
 		} `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
-	Seed        int64    `json:"seed,omitzero"`
-	Stop        []string `json:"stop,omitzero"`
-	Stream      bool     `json:"stream,omitzero"`
-	Temperature float64  `json:"temperature,omitzero"`
-	TopP        float64  `json:"top_p,omitzero"`       // [0, 1.0]
-	ToolChoice  string   `json:"tool_choice,omitzero"` // "none", "auto", "required" or a struct {"type": "function", "function": {"name": "my_function"}}
-	Tools       []Tool   `json:"tools,omitzero"`
-	User        string   `json:"user,omitzero"`
-	Logprobs    bool     `json:"logprobs,omitzero"`
-	TopLogprobs int64    `json:"top_logprobs,omitzero"` // [0, 20]
+	Seed          int64    `json:"seed,omitzero"`
+	Stop          []string `json:"stop,omitzero"` // Up to 4 sequences
+	Stream        bool     `json:"stream,omitzero"`
+	StreamOptions struct {
+		IncludeUsage bool `json:"include_usage,omitzero"` // Isn't necessary.
+	} `json:"stream_options,omitzero"`
+	Temperature       float64           `json:"temperature,omitzero"`
+	TopP              float64           `json:"top_p,omitzero"`       // [0, 1.0]
+	ToolChoice        string            `json:"tool_choice,omitzero"` // "none", "auto", "required" or a struct {"type": "function", "function": {"name": "my_function"}}
+	Tools             []Tool            `json:"tools,omitzero"`
+	ParallelToolCalls bool              `json:"parallel_tool_calls,omitzero"`
+	FrequencyPenalty  float64           `json:"frequency_penalty,omitzero"`
+	LogitBias         map[int64]float64 `json:"logit_bias,omitzero"`       // Token bias [-100, 100]
+	N                 int64             `json:"n,omitzero"`                // Number of choices
+	ServiceTier       complex128        `json:"service_tier,omitzero"`     // "auto", "default"
+	PresencePenalty   float64           `json:"presence_penalty,omitzero"` // [-2, 2]
+	User              string            `json:"user,omitzero"`             // End user ID to help identify abuse
+	Logprobs          bool              `json:"logprobs,omitzero"`         // Whether to return log probabilities
+	TopLogprobs       int64             `json:"top_logprobs,omitzero"`     // [0, 20]
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
@@ -67,7 +82,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 		} else {
 			switch v := opts.(type) {
 			case *genai.ChatOptions:
-				c.MaxChatTokens = v.MaxTokens
+				c.MaxCompletionTokens = v.MaxTokens
 				c.Temperature = v.Temperature
 				c.TopP = v.TopP
 				sp = v.SystemPrompt
@@ -89,7 +104,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 						c.ToolChoice = "required"
 					} else {
 						c.ToolChoice = "auto"
+						// c.ToolChoice = "none"
 					}
+					c.ParallelToolCalls = true
 					c.Tools = make([]Tool, len(v.Tools))
 					for i, t := range v.Tools {
 						c.Tools[i].Type = "function"
@@ -138,11 +155,16 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 	return errors.Join(errs...)
 }
 
+// Message is completely undocumented as of May 2025.
 // https://inference-docs.cerebras.ai/api-reference/chat-completions
+//
+// https://discord.com/channels/1085960591052644463/1345047923339296819/1348990530956034058
 type Message struct {
-	Role      string     `json:"role,omitzero"` // "system", "assistant", "user"
-	Content   Contents   `json:"content,omitzero"`
-	ToolCalls []ToolCall `json:"tool_calls,omitzero"`
+	Role       string     `json:"role,omitzero"` // "system", "assistant", "user"
+	Content    Contents   `json:"content,omitzero"`
+	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
+	ToolCallID string     `json:"tool_call_id,omitzero"`
+	Name       string     `json:"name,omitzero"` // Tool call name.
 }
 
 type Content struct {
@@ -221,7 +243,19 @@ func (m *Message) From(in *genai.Message) error {
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
-		return errors.New("implement tool call results")
+		if len(in.Contents) != 0 || len(in.ToolCalls) != 0 {
+			// This could be worked around.
+			return fmt.Errorf("can't have tool call result along content or tool calls")
+		}
+		if len(in.ToolCallResults) != 1 {
+			// This could be worked around.
+			return fmt.Errorf("can't have more than one tool call result at a time")
+		}
+		m.Role = "tool"
+		// Cheat here because Cerebras API seems to be fucked up.
+		m.Content = Contents{{Type: ContentText, Text: in.ToolCallResults[0].Result}}
+		m.ToolCallID = in.ToolCallResults[0].ID
+		m.Name = in.ToolCallResults[0].Name
 	}
 	return nil
 }
@@ -323,8 +357,10 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 type FinishReason string
 
 const (
-	FinishStop      FinishReason = "stop"
-	FinishToolCalls FinishReason = "tool_calls"
+	FinishStop          FinishReason = "stop"
+	FinishToolCalls     FinishReason = "tool_calls"
+	FinishLength        FinishReason = "length"
+	FinishContentFilter FinishReason = "content_filter"
 )
 
 func (f FinishReason) ToFinishReason() string {

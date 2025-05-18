@@ -22,7 +22,10 @@ var testCases = &internaltest.TestCases{
 }
 
 func TestClient_Chat_allModels(t *testing.T) {
-	testCases.TestChatAllModels(t, nil)
+	testCases.TestChatAllModels(t, func(model genai.Model) bool {
+		// Skip it because it requires explicit processing and it's tested at TestClient_Chat_thinking below.
+		return model.GetID() != "qwen-3-32b"
+	})
 }
 
 func TestClient_Chat_thinking(t *testing.T) {
@@ -40,7 +43,7 @@ func TestClient_ChatStream(t *testing.T) {
 
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {
 	t.Skip("Implement multi-content messages")
-	testCases.TestChatVisionJPGInline(t, &internaltest.Settings{Model: "meta-llama/llama-4-scout-17b-16e-instruct"})
+	testCases.TestChatVisionJPGInline(t, &internaltest.Settings{Model: "llama-4-scout-17b-16e-instruct"})
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
@@ -52,8 +55,8 @@ func TestClient_Chat_jSON_schema(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use_reply(t *testing.T) {
-	t.Skip("TODO: Soon!")
-	testCases.TestChatToolUseReply(t, nil)
+	t.Skip("A bit too tool call happy, will revisit later.")
+	testCases.TestChatToolUseReply(t, &internaltest.Settings{Model: "llama-3.3-70b"})
 }
 
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {

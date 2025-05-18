@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 589
+        content_length: 616
         transfer_encoding: []
         trailer: {}
         host: api.cerebras.ai
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"llama-3.1-8b","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"max_completion_tokens":200,"seed":1,"stream":true,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+            {"model":"llama-3.1-8b","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"max_completion_tokens":200,"seed":1,"stream":true,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
         form: {}
         headers:
             Content-Type:
@@ -29,11 +29,11 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"chatcmpl-5f1f5c1b-25f2-491b-a356-078154ad5c03","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1747579402,"model":"llama3.1-8b","system_fingerprint":"fp_fd530e96020e4e77c6b2","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-0517c356-d508-4d22-8187-b600bf99bbe6","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1747595513,"model":"llama3.1-8b","system_fingerprint":"fp_fd530e96020e4e77c6b2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-5f1f5c1b-25f2-491b-a356-078154ad5c03","choices":[{"delta":{"tool_calls":[{"id":"5e0492a80","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0}]},"index":0}],"created":1747579402,"model":"llama3.1-8b","system_fingerprint":"fp_fd530e96020e4e77c6b2","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-0517c356-d508-4d22-8187-b600bf99bbe6","choices":[{"delta":{"tool_calls":[{"id":"b501a8888","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0}]},"index":0}],"created":1747595513,"model":"llama3.1-8b","system_fingerprint":"fp_fd530e96020e4e77c6b2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-5f1f5c1b-25f2-491b-a356-078154ad5c03","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1747579402,"model":"llama3.1-8b","system_fingerprint":"fp_fd530e96020e4e77c6b2","object":"chat.completion.chunk","usage":{"prompt_tokens":433,"completion_tokens":17,"total_tokens":450},"time_info":{"queue_time":0.30609384,"prompt_time":0.02219133,"completion_time":0.007888049,"total_time":0.3385610580444336,"created":1747579402}}
+            data: {"id":"chatcmpl-0517c356-d508-4d22-8187-b600bf99bbe6","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1747595513,"model":"llama3.1-8b","system_fingerprint":"fp_fd530e96020e4e77c6b2","object":"chat.completion.chunk","usage":{"prompt_tokens":433,"completion_tokens":17,"total_tokens":450},"time_info":{"queue_time":0.001924145,"prompt_time":0.022108153,"completion_time":0.00787082,"total_time":0.03375053405761719,"created":1747595513}}
 
         headers:
             Alt-Svc:
@@ -41,11 +41,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941c205ec8f5a2c7-YUL
+                - 941da9b63d3da303-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Inference-Id:
-                - chatcmpl-5f1f5c1b-25f2-491b-a356-078154ad5c03
+                - chatcmpl-0517c356-d508-4d22-8187-b600bf99bbe6
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -59,15 +59,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14398"
+                - "14383"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "60000"
+                - "59550"
             X-Ratelimit-Reset-Requests-Day:
-                - "33397.62987232208"
+                - "17286.570177316666"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "37.62987232208252"
+                - "6.570177316665649"
             X-Request-Id:
-                - 941c205ec8f5a2c7-YUL
+                - 941da9b63d3da303-YUL
         status: 200 OK
         code: 200
-        duration: 443ms
+        duration: 166ms

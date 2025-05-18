@@ -27,14 +27,14 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"object":"list","data":[{"id":"llama3.1-8b","object":"model","created":1721692800,"owned_by":"Meta"},{"id":"llama-3.3-70b","object":"model","created":1733443200,"owned_by":"Meta"},{"id":"llama-4-scout-17b-16e-instruct","object":"model","created":1746316800,"owned_by":"Meta"}]}'
+        body: '{"object":"list","data":[{"id":"llama3.1-8b","object":"model","created":1721692800,"owned_by":"Meta"},{"id":"llama-3.3-70b","object":"model","created":1733443200,"owned_by":"Meta"},{"id":"llama-4-scout-17b-16e-instruct","object":"model","created":1743811200,"owned_by":"Meta"},{"id":"qwen-3-32b","object":"model","created":1745798400,"owned_by":"Qwen"}]}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93fcb5efecb0a293-YUL
+                - 941da9c0fdfca303-YUL
             Content-Type:
                 - application/json
             Referrer-Policy:
@@ -47,4 +47,4 @@ interactions:
                 - nosniff
         status: 200 OK
         code: 200
-        duration: 112ms
+        duration: 241ms

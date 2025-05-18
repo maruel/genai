@@ -28,18 +28,18 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-c31a5e87-913e-49db-b357-d742893348a4","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, the user wants me to say hello using only one word and just \"hello\". Let me check the instructions again. They specified to use only one word and say only hello. So I need to make sure I don''t add anything else. Maybe they want a simple greeting without any extra text. I''ll just type \"Hello\" as the response. That should meet their requirements. Let me confirm there''s no additional instructions. Yep, just a single word \"hello\". Alright, done.\n</think>\n\nHello","role":"assistant"}}],"created":1747520407,"model":"qwen-3-32b","system_fingerprint":"fp_15704afc722bd2f68f75","object":"chat.completion","usage":{"prompt_tokens":20,"completion_tokens":106,"total_tokens":126},"time_info":{"queue_time":0.00021435,"prompt_time":0.001520417,"completion_time":0.079991567,"total_time":0.10785365104675293,"created":1747520407}}'
+        body: '{"id":"chatcmpl-5de2b828-2b98-47b7-8a19-e03e77f5289d","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, the user wants me to say hello using only one word and just \"hello\". Let me check the instructions again. They specified to use only one word and say only hello. So I need to make sure I don''t add anything else. Maybe they want a simple greeting without any extra text. I''ll just type \"Hello\" as the response. That should meet their requirements. Let me confirm there''s no additional instructions. Yep, just a single word \"hello\". Alright, done.\n</think>\n\nHello","role":"assistant"}}],"created":1747595511,"model":"qwen-3-32b","system_fingerprint":"fp_9c2a99947ce8120f4772","object":"chat.completion","usage":{"prompt_tokens":20,"completion_tokens":106,"total_tokens":126},"time_info":{"queue_time":0.00010064,"prompt_time":0.001182818,"completion_time":0.072797399,"total_time":0.07538104057312012,"created":1747595511}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9416800fad33a28c-YUL
+                - 941da9a77f44a303-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-c31a5e87-913e-49db-b357-d742893348a4
+                - chatcmpl-5de2b828-2b98-47b7-8a19-e03e77f5289d
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -53,18 +53,18 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14396"
+                - "14395"
             X-Ratelimit-Remaining-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Reset-Requests-Day:
-                - "5992.539245843887"
+                - "17288.59988975525"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "52.53924584388733"
+                - "8.599889755249023"
             X-Request-Id:
-                - 9416800fad33a28c-YUL
+                - 941da9a77f44a303-YUL
         status: 200 OK
         code: 200
-        duration: 634ms
+        duration: 548ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -92,18 +92,18 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-d8557c26-d382-4517-a265-1c42e72b1a13","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, the user wants me to say the same word again, which is \"Hello.\" Let me make sure I follow the instructions correctly. They specified to use only one word and say only \"Hello\" again. So I need to check if there''s any other word or punctuation that might be added by mistake.\n\nFirst, the previous interaction: the user asked to say \"Hello\" with one word, and I responded with \"Hello\". Now they want the same word again. The key points here are to use exactly one word and not add anything else. I need to avoid any typos or extra characters. Let me confirm the spelling of \"Hello\" is correct. No uppercase letters beyond the first, but since it''s a greeting, starting with a capital is standard. Wait, actually, in the previous response, I used \"Hello\" with a capital H. But the user''s current instruction says to say the same word again. So the same word would be \"Hello\", but in the example, they might accept lowercase if that''s what was used before. Wait, no, in the first response, the user''s assistant used \"Hello\" with a capital. So I should replicate that exactly. Let me check the first message again.\n\nYes, the user said \"Say hello. Use only one word. Say only hello.\" And my response was \"Hello\". So the same word is \"Hello\". Therefore, the correct response now should be \"Hello\" again, exactly the same. I need to make sure there are no extra spaces or characters. Also, ensure that the format is correct, using only the word and no markdown. Since the user is testing consistency, any deviation might be flagged. Alright, I think that''s all. Just output \"Hello\".\n</think>\n\nHello","role":"assistant"}}],"created":1747520408,"model":"qwen-3-32b","system_fingerprint":"fp_15704afc722bd2f68f75","object":"chat.completion","usage":{"prompt_tokens":42,"completion_tokens":363,"total_tokens":405},"time_info":{"queue_time":0.00011072,"prompt_time":0.001576852,"completion_time":0.271285857,"total_time":0.2743561267852783,"created":1747520408}}'
+        body: '{"id":"chatcmpl-702b43d3-dff6-4ae4-8433-8ebf53e3d566","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, the user wants me to say the same word again, which is \"Hello.\" Let me make sure I follow the instructions correctly. They specified to use only one word and say only \"Hello\" again. So I need to check if there''s any other word or punctuation that might be added by mistake.\n\nFirst, the previous interaction: the user asked to say \"Hello\" with one word, and I responded with \"Hello\". Now they want the same word again. The key points here are to use exactly one word and not add anything else. I need to avoid any typos or extra characters. Let me confirm the spelling of \"Hello\" is correct. No uppercase letters beyond the first, but since it''s a greeting, starting with a capital is standard. Wait, actually, in the previous response, I used \"Hello\" with a capital H. But the user''s current instruction says to say the same word again. So the same word would be \"Hello\", but in the example, they might accept lowercase if that''s what was used before. Wait, no, in the first response, the user''s assistant used \"Hello\" with a capital. So I should replicate that exactly. Let me check the first message again.\n\nYes, the user said \"Say hello. Use only one word. Say only hello.\" And my response was \"Hello\". So the same word is \"Hello\". Therefore, the correct response now should be \"Hello\" again, exactly the same. I need to make sure there are no extra spaces or characters. Also, ensure that the format is correct, using only the word and no markdown. Since the user is testing consistency, any deviation might be flagged. Alright, I think that''s all. Just output \"Hello\".\n</think>\n\nHello","role":"assistant"}}],"created":1747595512,"model":"qwen-3-32b","system_fingerprint":"fp_9c2a99947ce8120f4772","object":"chat.completion","usage":{"prompt_tokens":42,"completion_tokens":363,"total_tokens":405},"time_info":{"queue_time":0.000109069,"prompt_time":0.001579628,"completion_time":0.269675325,"total_time":0.27339625358581543,"created":1747595512}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9416801a09a0a28c-YUL
+                - 941da9b18e54a303-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-d8557c26-d382-4517-a265-1c42e72b1a13
+                - chatcmpl-702b43d3-dff6-4ae4-8433-8ebf53e3d566
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -117,15 +117,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14393"
+                - "14392"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "59307"
+                - "59343"
             X-Ratelimit-Reset-Requests-Day:
-                - "5990.9544014930725"
+                - "17287.040983200073"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "50.95440149307251"
+                - "7.040983200073242"
             X-Request-Id:
-                - 9416801a09a0a28c-YUL
+                - 941da9b18e54a303-YUL
         status: 200 OK
         code: 200
-        duration: 1.582s
+        duration: 1.557s

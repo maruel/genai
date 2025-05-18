@@ -29,15 +29,15 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"chatcmpl-2b6fe634-21db-480e-8981-8682d5e24618","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1747162922,"model":"llama3.1-8b","system_fingerprint":"fp_d4032cc64cc617db1426","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-d68a4405-1ab2-4b8a-aea2-ac5d10135a90","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1747595515,"model":"llama3.1-8b","system_fingerprint":"fp_fd530e96020e4e77c6b2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-2b6fe634-21db-480e-8981-8682d5e24618","choices":[{"delta":{"content":"Hello"},"index":0}],"created":1747162922,"model":"llama3.1-8b","system_fingerprint":"fp_d4032cc64cc617db1426","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-d68a4405-1ab2-4b8a-aea2-ac5d10135a90","choices":[{"delta":{"content":"Hello"},"index":0}],"created":1747595515,"model":"llama3.1-8b","system_fingerprint":"fp_fd530e96020e4e77c6b2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-2b6fe634-21db-480e-8981-8682d5e24618","choices":[{"delta":{"content":"."},"index":0}],"created":1747162922,"model":"llama3.1-8b","system_fingerprint":"fp_d4032cc64cc617db1426","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-d68a4405-1ab2-4b8a-aea2-ac5d10135a90","choices":[{"delta":{"content":"."},"index":0}],"created":1747595515,"model":"llama3.1-8b","system_fingerprint":"fp_fd530e96020e4e77c6b2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-2b6fe634-21db-480e-8981-8682d5e24618","choices":[{"delta":{},"index":0}],"created":1747162922,"model":"llama3.1-8b","system_fingerprint":"fp_d4032cc64cc617db1426","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-d68a4405-1ab2-4b8a-aea2-ac5d10135a90","choices":[{"delta":{},"index":0}],"created":1747595515,"model":"llama3.1-8b","system_fingerprint":"fp_fd530e96020e4e77c6b2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-2b6fe634-21db-480e-8981-8682d5e24618","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1747162922,"model":"llama3.1-8b","system_fingerprint":"fp_d4032cc64cc617db1426","object":"chat.completion.chunk","usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46},"time_info":{"queue_time":0.000188121,"prompt_time":0.002233352,"completion_time":0.001385839,"total_time":0.00543665885925293,"created":1747162922}}
+            data: {"id":"chatcmpl-d68a4405-1ab2-4b8a-aea2-ac5d10135a90","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1747595515,"model":"llama3.1-8b","system_fingerprint":"fp_fd530e96020e4e77c6b2","object":"chat.completion.chunk","usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46},"time_info":{"queue_time":0.00010436,"prompt_time":0.002238902,"completion_time":0.001379611,"total_time":0.005671024322509766,"created":1747595515}}
 
         headers:
             Alt-Svc:
@@ -45,11 +45,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93f468684d80a286-YUL
+                - 941da9c0fdfba303-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Inference-Id:
-                - chatcmpl-2b6fe634-21db-480e-8981-8682d5e24618
+                - chatcmpl-d68a4405-1ab2-4b8a-aea2-ac5d10135a90
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -63,15 +63,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14391"
+                - "14381"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "60000"
+                - "58650"
             X-Ratelimit-Reset-Requests-Day:
-                - "17877.53780388832"
+                - "17284.84122109413"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "57.53780388832092"
+                - "4.84122109413147"
             X-Request-Id:
-                - 93f468684d80a286-YUL
+                - 941da9c0fdfba303-YUL
         status: 200 OK
         code: 200
-        duration: 328ms
+        duration: 175ms

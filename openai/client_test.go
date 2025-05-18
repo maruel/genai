@@ -91,8 +91,8 @@ func TestClient_Chat_vision_pDF_inline(t *testing.T) {
 	testCases.TestChatVisionPDFInline(t, nil)
 }
 
-func TestClient_Chat_tool_use(t *testing.T) {
-	testCases.TestChatToolUseCountry(t, nil)
+func TestClient_Chat_tool_use_position_bias(t *testing.T) {
+	testCases.TestChatToolUsePositionBias(t, nil)
 }
 
 func getClient(t *testing.T, m string) *openai.Client {

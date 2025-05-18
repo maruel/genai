@@ -54,9 +54,9 @@ func TestClient_Chat_jSON_schema(t *testing.T) {
 	testCases.TestChatJSONSchema(t, nil)
 }
 
-func TestClient_Chat_tool_use(t *testing.T) {
+func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 	// TODO: Figure out why smaller models fail.
-	testCases.TestChatToolUseCountry(t, nil)
+	testCases.TestChatToolUsePositionBias(t, nil)
 }
 
 func getClient(t *testing.T, m string) *huggingface.Client {

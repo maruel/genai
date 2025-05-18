@@ -47,8 +47,8 @@ func TestClient_Chat_jSON_schema(t *testing.T) {
 	testCases.TestChatJSONSchema(t, &internaltest.Settings{UsageIsBroken: true})
 }
 
-func TestClient_Chat_tool_use(t *testing.T) {
-	testCases.TestChatToolUseCountry(t, &internaltest.Settings{UsageIsBroken: true})
+func TestClient_Chat_tool_use_position_bias(t *testing.T) {
+	testCases.TestChatToolUsePositionBias(t, &internaltest.Settings{UsageIsBroken: true})
 }
 
 func getClient(t *testing.T, m string) *cloudflare.Client {

@@ -56,8 +56,8 @@ func TestClient_Chat_vision_pDF_uRL(t *testing.T) {
 	testCases.TestChatVisionPDFURL(t, nil)
 }
 
-func TestClient_Chat_tool_use(t *testing.T) {
-	testCases.TestChatToolUseCountry(t, &internaltest.Settings{Model: "ministral-3b-latest"})
+func TestClient_Chat_tool_use_position_bias(t *testing.T) {
+	testCases.TestChatToolUsePositionBias(t, &internaltest.Settings{Model: "ministral-3b-latest"})
 }
 
 func getClient(t *testing.T, m string) *mistral.Client {

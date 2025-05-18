@@ -51,8 +51,8 @@ func TestClient_Chat_jSON_schema(t *testing.T) {
 	testCases.TestChatJSONSchema(t, nil)
 }
 
-func TestClient_Chat_tool_use(t *testing.T) {
-	testCases.TestChatToolUseCountry(t, nil)
+func TestClient_Chat_tool_use_position_bias(t *testing.T) {
+	testCases.TestChatToolUsePositionBias(t, nil)
 }
 
 func getClient(t *testing.T, m string) *cerebras.Client {

@@ -7,6 +7,7 @@ package internaltest
 import (
 	"bytes"
 	_ "embed"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -133,99 +134,77 @@ func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Mod
 
 // Tool
 
-// TestChatToolUseCountry confirms that LLMs are position biased.
+// TestChatToolUsePositionBias confirms that LLMs are position biased.
 //
-// Presented with a choice where they can't easily chose, they will always select the first item presented, in
-// this case a country name.
-func (tc *TestCases) TestChatToolUseCountry(t *testing.T, override *Settings) {
+// Presented with a choice where they can't easily chose, they will always select the first item presented
+// (!). In this case, this is a country name.
+func (tc *TestCases) TestChatToolUsePositionBias(t *testing.T, override *Settings) {
 	t.Run("Chat", func(t *testing.T) {
-		tc.chatToolUseCountryCore(t, override, false)
+		tc.chatToolUsePositionBiasCore(t, override, false)
 	})
 	t.Run("ChatStream", func(t *testing.T) {
 		t.Skip("TODO: Soon!")
-		tc.chatToolUseCountryCore(t, override, true)
+		tc.chatToolUsePositionBiasCore(t, override, true)
 	})
 }
 
-// chatToolUseCountryCore runs a Chat or ChatStream with tool use and verifies that the tools are called correctly.
+// chatToolUsePositionBiasCore runs a Chat or ChatStream with tool use and verifies that the tools are called correctly.
 // The useStream parameter determines whether to use Chat or ChatStream.
 // It returns the response for further validation.
-func (tc *TestCases) chatToolUseCountryCore(t *testing.T, override *Settings, useStream bool) {
-	t.Run("Canada", func(t *testing.T) {
-		msgs := genai.Messages{
-			genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."),
-		}
-		var got struct {
-			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
-		}
-		opts := genai.ChatOptions{
-			MaxTokens: 200,
-			Seed:      1,
-			Tools: []genai.ToolDef{
-				{
-					Name:        "best_country",
-					Description: "A tool to determine the best country",
-					InputsAs:    &got,
+func (tc *TestCases) chatToolUsePositionBiasCore(t *testing.T, override *Settings, useStream bool) {
+	var gotCanadaFirst struct {
+		Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
+	}
+	var gotUSAFirst struct {
+		Country string `json:"country" jsonschema:"enum=USA,enum=Canada"`
+	}
+	data := []struct {
+		structDesc      any
+		countrySelected string
+		country1        string
+		country2        string
+	}{
+		{&gotCanadaFirst, "Canada", "Canada", "the USA"},
+		{&gotUSAFirst, "USA", "the USA", "Canada"},
+	}
+	for _, line := range data {
+		t.Run(line.countrySelected, func(t *testing.T) {
+			msgs := genai.Messages{
+				genai.NewTextMessage(genai.User, fmt.Sprintf("I wonder if %s is a better country than %s? Call the tool best_country to tell me which country is the best one.", line.country1, line.country2)),
+			}
+			opts := genai.ChatOptions{
+				MaxTokens: 200,
+				Seed:      1,
+				Tools: []genai.ToolDef{
+					{
+						Name:        "best_country",
+						Description: "A tool to determine the best country",
+						InputsAs:    line.structDesc,
+					},
 				},
-			},
-			ToolCallRequired: true,
-		}
-		var resp genai.ChatResult
-		if useStream {
-			resp = tc.testChatStreamHelper(t, msgs, override, opts)
-		} else {
-			resp = tc.testChatHelper(t, msgs, override, opts)
-		}
-		want := "best_country"
-		if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
-			t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
-		}
-		if err := resp.ToolCalls[0].Decode(&got); err != nil {
-			t.Fatal(err)
-		}
-		if got.Country != "Canada" {
-			t.Fatal(got.Country)
-		}
-		// TODO: Follow up!
-	})
-
-	t.Run("USA", func(t *testing.T) {
-		msgs := genai.Messages{
-			genai.NewTextMessage(genai.User, "I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."),
-		}
-		var got struct {
-			Country string `json:"country" jsonschema:"enum=USA,enum=Canada"`
-		}
-		opts := genai.ChatOptions{
-			MaxTokens: 200,
-			Seed:      1,
-			Tools: []genai.ToolDef{
-				{
-					Name:        "best_country",
-					Description: "A tool to determine the best country",
-					InputsAs:    &got,
-				},
-			},
-			ToolCallRequired: true,
-		}
-		var resp genai.ChatResult
-		if useStream {
-			resp = tc.testChatStreamHelper(t, msgs, override, opts)
-		} else {
-			resp = tc.testChatHelper(t, msgs, override, opts)
-		}
-		want := "best_country"
-		if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
-			t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
-		}
-		if err := resp.ToolCalls[0].Decode(&got); err != nil {
-			t.Fatal(err)
-		}
-		if got.Country != "USA" {
-			t.Fatal(got.Country)
-		}
-		// TODO: Follow up!
-	})
+				ToolCallRequired: true,
+			}
+			var resp genai.ChatResult
+			if useStream {
+				resp = tc.testChatStreamHelper(t, msgs, override, opts)
+			} else {
+				resp = tc.testChatHelper(t, msgs, override, opts)
+			}
+			want := "best_country"
+			if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
+				t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
+			}
+			var got struct {
+				Country string `json:"country"`
+			}
+			if err := resp.ToolCalls[0].Decode(&got); err != nil {
+				t.Fatal(err)
+			}
+			if got.Country != line.countrySelected {
+				t.Fatal(got.Country)
+			}
+		})
+	}
 }
 
 // Multi-modal (audio, image, video)

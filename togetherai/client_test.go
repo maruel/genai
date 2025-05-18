@@ -105,8 +105,8 @@ func TestClient_Chat_video(t *testing.T) {
 	}
 }
 
-func TestClient_Chat_tool_use(t *testing.T) {
-	testCases.TestChatToolUseCountry(t, &internaltest.Settings{Model: "Qwen/Qwen2.5-7B-Instruct-Turbo"})
+func TestClient_Chat_tool_use_position_bias(t *testing.T) {
+	testCases.TestChatToolUsePositionBias(t, &internaltest.Settings{Model: "Qwen/Qwen2.5-7B-Instruct-Turbo"})
 }
 
 func getClient(t *testing.T, m string) *togetherai.Client {

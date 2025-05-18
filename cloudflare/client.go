@@ -566,6 +566,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return err
 	}
 	in.Stream = true
+	// TODO: Block when tool calls are detected?
 	url := "https://api.cloudflare.com/client/v4/accounts/" + c.accountID + "/ai/run/" + c.model
 	resp, err := c.Client.PostRequest(ctx, url, nil, in)
 	if err != nil {

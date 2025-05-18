@@ -140,18 +140,17 @@ func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Mod
 // (!). In this case, this is a country name.
 func (tc *TestCases) TestChatToolUsePositionBias(t *testing.T, override *Settings) {
 	t.Run("Chat", func(t *testing.T) {
-		tc.chatToolUsePositionBiasCore(t, override, false)
+		tc.TestChatToolUsePositionBiasCore(t, override, false)
 	})
 	t.Run("ChatStream", func(t *testing.T) {
-		t.Skip("TODO: Soon!")
-		tc.chatToolUsePositionBiasCore(t, override, true)
+		tc.TestChatToolUsePositionBiasCore(t, override, true)
 	})
 }
 
-// chatToolUsePositionBiasCore runs a Chat or ChatStream with tool use and verifies that the tools are called correctly.
+// TestChatToolUsePositionBiasCore runs a Chat or ChatStream with tool use and verifies that the tools are called correctly.
 // The useStream parameter determines whether to use Chat or ChatStream.
 // It returns the response for further validation.
-func (tc *TestCases) chatToolUsePositionBiasCore(t *testing.T, override *Settings, useStream bool) {
+func (tc *TestCases) TestChatToolUsePositionBiasCore(t *testing.T, override *Settings, useStream bool) {
 	var gotCanadaFirst struct {
 		Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 	}

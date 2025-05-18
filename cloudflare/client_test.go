@@ -48,7 +48,13 @@ func TestClient_Chat_jSON_schema(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {
-	testCases.TestChatToolUsePositionBias(t, &internaltest.Settings{UsageIsBroken: true})
+	t.Run("Chat", func(t *testing.T) {
+		testCases.TestChatToolUsePositionBiasCore(t, &internaltest.Settings{UsageIsBroken: true}, false)
+	})
+	t.Run("ChatStream", func(t *testing.T) {
+		t.Skip("cloudflare has broken streaming tool calling")
+		testCases.TestChatToolUsePositionBiasCore(t, &internaltest.Settings{UsageIsBroken: true}, true)
+	})
 }
 
 func getClient(t *testing.T, m string) *cloudflare.Client {

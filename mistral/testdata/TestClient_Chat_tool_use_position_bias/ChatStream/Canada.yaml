@@ -1,0 +1,77 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 631
+        transfer_encoding: []
+        trailer: {}
+        host: api.mistral.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"ministral-3b-latest","max_tokens":200,"stream":true,"random_seed":1,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"id":"83120384298a427393947efc86bd80e1","object":"chat.completion.chunk","created":1747579402,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"83120384298a427393947efc86bd80e1","object":"chat.completion.chunk","created":1747579402,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"tool_calls":[{"id":"eOA1pPuxH","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 941c205ebabca2bc-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Ratelimitbysize-Limit:
+                - "2000000"
+            Ratelimitbysize-Query-Cost:
+                - "200"
+            Ratelimitbysize-Remaining:
+                - "1999800"
+            Ratelimitbysize-Reset:
+                - "38"
+            Server:
+                - cloudflare
+            X-Envoy-Upstream-Service-Time:
+                - "176"
+            X-Kong-Proxy-Latency:
+                - "7"
+            X-Kong-Request-Id:
+                - 0617e80cf1bc3222e402857d5a675a65
+            X-Kong-Upstream-Latency:
+                - "177"
+            X-Ratelimitbysize-Limit-Minute:
+                - "2000000"
+            X-Ratelimitbysize-Limit-Month:
+                - "10000000000"
+            X-Ratelimitbysize-Remaining-Minute:
+                - "1999800"
+            X-Ratelimitbysize-Remaining-Month:
+                - "9999999800"
+        status: 200 OK
+        code: 200
+        duration: 349ms

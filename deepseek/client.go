@@ -463,12 +463,16 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		for range ch {
 		}
 	}()
+	pendingCall := ToolCall{}
 	for pkt := range ch {
 		if len(pkt.Choices) != 1 {
 			continue
 		}
 		if pkt.Usage.CompletionTokens != 0 {
 			*finalUsage = pkt.Usage
+		}
+		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
+			return fmt.Errorf("implement multiple tool calls: %#v", pkt)
 		}
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "assistant", "":
@@ -478,6 +482,33 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		f := genai.MessageFragment{
 			TextFragment: pkt.Choices[0].Delta.Content,
 			FinishReason: pkt.Choices[0].FinishReason.ToFinishReason(),
+		}
+		// DeepSeek streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
+		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
+			if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {
+				// A new call.
+				if pendingCall.ID == "" {
+					pendingCall = t
+					if !f.IsZero() {
+						return fmt.Errorf("implement tool call with metadata: %#v", pkt)
+					}
+					continue
+				}
+				// Flush.
+				pendingCall.To(&f.ToolCall)
+				pendingCall = t
+			} else if pendingCall.ID != "" {
+				// Continuation.
+				pendingCall.Function.Arguments += t.Function.Arguments
+				if !f.IsZero() {
+					return fmt.Errorf("implement tool call with metadata: %#v", pkt)
+				}
+				continue
+			}
+		} else if pendingCall.ID != "" {
+			// Flush.
+			pendingCall.To(&f.ToolCall)
+			pendingCall = ToolCall{}
 		}
 		if !f.IsZero() {
 			chunks <- f

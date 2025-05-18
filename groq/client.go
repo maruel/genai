@@ -322,6 +322,7 @@ type Tool struct {
 }
 
 type ToolCall struct {
+	Index    int64  `json:"index,omitzero"`
 	Type     string `json:"type,omitzero"` // "function"
 	ID       string `json:"id,omitzero"`
 	Function struct {
@@ -452,9 +453,10 @@ type ChatStreamChunkResponse struct {
 	Choices           []struct {
 		Index int64 `json:"index"`
 		Delta struct {
-			Role      string `json:"role"`
-			Content   string `json:"content"`
-			Reasoning string `json:"reasoning"`
+			Role      string     `json:"role"`
+			Content   string     `json:"content"`
+			Reasoning string     `json:"reasoning"`
+			ToolCalls []ToolCall `json:"tool_calls"`
 		} `json:"delta"`
 		Logprobs     struct{}     `json:"logprobs"`
 		FinishReason FinishReason `json:"finish_reason"`
@@ -619,10 +621,16 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
+		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
+			return errors.New("implement multiple tool calls")
+		}
 		f := genai.MessageFragment{
 			TextFragment:     pkt.Choices[0].Delta.Content,
 			ThinkingFragment: pkt.Choices[0].Delta.Reasoning,
 			FinishReason:     pkt.Choices[0].FinishReason.ToFinishReason(),
+		}
+		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
+			pkt.Choices[0].Delta.ToolCalls[0].To(&f.ToolCall)
 		}
 		if !f.IsZero() {
 			chunks <- f

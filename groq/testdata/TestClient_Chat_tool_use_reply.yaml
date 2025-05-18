@@ -1,0 +1,129 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 793
+        transfer_encoding: []
+        trailer: {}
+        host: api.groq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"max_completion_tokens":200,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"llama3-8b-8192","seed":1,"stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-3cf60bf3-62cf-4ff2-9465-b145c87d8f35","object":"chat.completion","created":1747597340,"model":"llama3-8b-8192","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"call_jybw","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.073610091,"prompt_tokens":895,"prompt_time":0.113024216,"completion_tokens":61,"completion_time":0.050833333,"total_tokens":956,"total_time":0.163857549},"usage_breakdown":{"models":null},"system_fingerprint":"fp_dadc9d6142","x_groq":{"id":"req_01jvjepbx8eg5tb9jh73qx1fbx"}}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 941dd6522cbea313-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - us-south-1
+            X-Ratelimit-Limit-Requests:
+                - "50000"
+            X-Ratelimit-Limit-Tokens:
+                - "100000"
+            X-Ratelimit-Remaining-Requests:
+                - "49999"
+            X-Ratelimit-Remaining-Tokens:
+                - "99915"
+            X-Ratelimit-Reset-Requests:
+                - 1.728s
+            X-Ratelimit-Reset-Tokens:
+                - 51ms
+            X-Request-Id:
+                - req_01jvjepbx8eg5tb9jh73qx1fbx
+        status: 200 OK
+        code: 200
+        duration: 411ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 992
+        transfer_encoding: []
+        trailer: {}
+        host: api.groq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"max_completion_tokens":200,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"call_jybw","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_jybw"}],"model":"llama3-8b-8192","seed":1,"stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"auto"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-f7ba9ee1-5afe-4fce-95ff-4c07b5990e76","object":"chat.completion","created":1747597341,"model":"llama3-8b-8192","choices":[{"index":0,"message":{"role":"assistant","content":"363.89"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":-0.29893567899999995,"prompt_tokens":2143,"prompt_time":0.267751288,"completion_tokens":4,"completion_time":0.003333333,"total_tokens":2147,"total_time":0.271084621},"usage_breakdown":{"models":null},"system_fingerprint":"fp_179b0f92c9","x_groq":{"id":"req_01jvjepc7yeg7vvjh0178tahaj"}}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 941dd654880da313-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - us-south-1
+            X-Ratelimit-Limit-Requests:
+                - "50000"
+            X-Ratelimit-Limit-Tokens:
+                - "100000"
+            X-Ratelimit-Remaining-Requests:
+                - "49998"
+            X-Ratelimit-Remaining-Tokens:
+                - "99088"
+            X-Ratelimit-Reset-Requests:
+                - 3.117s
+            X-Ratelimit-Reset-Tokens:
+                - 547.2ms
+            X-Request-Id:
+                - req_01jvjepc7yeg7vvjh0178tahaj
+        status: 200 OK
+        code: 200
+        duration: 673ms

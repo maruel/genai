@@ -222,7 +222,7 @@ type Message struct {
 	Name       string     `json:"name,omitzero"` // An optional name for the participant. Provides the model information to differentiate between participants of the same role.
 	Content    Contents   `json:"content,omitzero"`
 	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
-	ToolCallID string     `json:"tool_call_id,omitzero"` // Docs says to not use.
+	ToolCallID string     `json:"tool_call_id,omitzero"`
 }
 
 func (m *Message) From(in *genai.Message) error {
@@ -253,7 +253,18 @@ func (m *Message) From(in *genai.Message) error {
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
-		return errors.New("implement tool call results")
+		// return errors.New("implement tool call results")
+		if len(in.Contents) != 0 || len(in.ToolCalls) != 0 {
+			// This could be worked around.
+			return fmt.Errorf("can't have tool call result along content or tool calls")
+		}
+		if len(in.ToolCallResults) != 1 {
+			// This could be worked around.
+			return fmt.Errorf("can't have more than one tool call result at a time")
+		}
+		m.Role = "tool"
+		m.Content = Contents{{Type: ContentText, Text: in.ToolCallResults[0].Result}}
+		m.ToolCallID = in.ToolCallResults[0].ID
 	}
 	return nil
 }

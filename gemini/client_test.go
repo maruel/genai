@@ -102,8 +102,7 @@ func TestClient_Chat_audio_opus_inline(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use_reply(t *testing.T) {
-	t.Skip("TODO: Soon!")
-	testCases.TestChatToolUseReply(t, nil)
+	testCases.TestChatToolUseReply(t, &internaltest.Settings{Model: "gemini-2.0-flash"})
 }
 
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {

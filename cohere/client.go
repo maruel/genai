@@ -140,12 +140,13 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 type Message struct {
 	Role string `json:"role"` // "system", "assistant", "user"
 	// Type == "system", "assistant", or "user".
-	Content []Content `json:"content"`
+	Content []Content `json:"content,omitzero"`
 	// Type == "assistant"
-	Citations any `json:"citations,omitzero"` // TODO
+	Citations []Citation `json:"citations,omitzero"`
 	// Type == "assistant"
 	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
-	ToolCallID string     `json:"tool_call_id,omitzero"` // TODO
+	ToolCallID string     `json:"tool_call_id,omitzero"`
+	ToolPlan   string     `json:"tool_plan,omitzero"`
 }
 
 func (m *Message) From(in *genai.Message) error {
@@ -184,12 +185,21 @@ type Content struct {
 	} `json:"document,omitzero"`
 }
 
+func (c *Content) IsZero() bool {
+	return c.Type == "" && c.Text == "" && c.ImageURL.URL == "" && len(c.Document.Data) == 0 && c.Document.ID == ""
+}
+
 func (c *Content) From(in *genai.Content) error {
+	if in.Thinking != "" {
+		return errors.New("thinking is not supported")
+	}
+
 	if in.Text != "" {
 		c.Type = "text"
 		c.Text = in.Text
 		return nil
 	}
+
 	// Currently fails with: http 400: error: invalid request: all elements in history must have a message
 	// TODO: Investigate one day. Maybe because trial key.
 	mimeType, data, err := in.ReadDocument(10 * 1024 * 1024)
@@ -208,6 +218,14 @@ func (c *Content) From(in *genai.Content) error {
 		return fmt.Errorf("unsupported mime type %s", mimeType)
 	}
 	return nil
+}
+
+type Citation struct {
+	Start   int64  `json:"start,omitzero"`
+	End     int64  `json:"end,omitzero"`
+	Text    string `json:"text,omitzero"`
+	Sources []any  `json:"sources,omitzero"`
+	Type    string `json:"type,omitzero"` // TEXT_CONTENT, PLAN
 }
 
 type Tool struct {
@@ -229,7 +247,7 @@ type Document struct {
 
 type ChatResponse struct {
 	ID           string          `json:"id"`
-	FinishReason string          `json:"finish_reason"` // COMPLETE, STOP_SEQUENCe, MAX_TOKENS, TOOL_CALL, ERROR
+	FinishReason string          `json:"finish_reason"` // COMPLETE, STOP_SEQUENCE, MAX_TOKENS, TOOL_CALL, ERROR
 	Message      MessageResponse `json:"message"`
 	Usage        Usage           `json:"usage"`
 	Logprobs     []struct {

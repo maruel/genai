@@ -175,13 +175,22 @@ func (m *Message) From(in *genai.Message) error {
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
-		return errors.New("implement tool call results")
+		if len(in.Contents) != 0 || len(in.ToolCalls) != 0 {
+			// This could be worked around.
+			return fmt.Errorf("can't have tool call result along content or tool calls")
+		}
+		if len(in.ToolCallResults) != 1 {
+			// This could be worked around.
+			return fmt.Errorf("can't have more than one tool call result at a time")
+		}
+		m.Role = "tool"
+		m.Content = in.ToolCallResults[0].Result
+		m.ToolCallID = in.ToolCallResults[0].ID
 	}
 	return nil
 }
 
 func (m *Message) To(out *genai.Message) error {
-	// TODO: "tool"
 	switch role := m.Role; role {
 	case "user":
 		out.Role = genai.Role(role)
@@ -272,8 +281,11 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 type FinishReason string
 
 const (
-	FinishStop      FinishReason = "stop"
-	FinishToolCalls FinishReason = "tool_calls"
+	FinishStop          FinishReason = "stop"
+	FinishToolCalls     FinishReason = "tool_calls"
+	FinishLength        FinishReason = "length"
+	FinishContentFilter FinishReason = "content_filter"
+	FinishInsufficient  FinishReason = "insufficient_system_resource"
 )
 
 func (f FinishReason) ToFinishReason() string {

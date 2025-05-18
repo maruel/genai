@@ -1,0 +1,139 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 859
+        transfer_encoding: []
+        trailer: {}
+        host: api.mistral.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"mistral-small-latest","max_tokens":200,"stream":false,"random_seed":1,"messages":[{"role":"system","content":[{"type":"text","text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}]},{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"24bb02460e104fecb7fd68579b9cb27b","object":"chat.completion","created":1747598837,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"yiRg8951S","function":{"name":"square_root","arguments":"{\"number\": 132413}"},"index":0}],"content":""},"finish_reason":"tool_calls","logprobs":null}],"usage":{"prompt_tokens":167,"total_tokens":192,"completion_tokens":25}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 941dfade3bcaa305-YUL
+            Content-Type:
+                - application/json
+            Ratelimitbysize-Limit:
+                - "2000000"
+            Ratelimitbysize-Query-Cost:
+                - "200"
+            Ratelimitbysize-Remaining:
+                - "1999800"
+            Ratelimitbysize-Reset:
+                - "43"
+            Server:
+                - cloudflare
+            X-Envoy-Upstream-Service-Time:
+                - "279"
+            X-Kong-Proxy-Latency:
+                - "10"
+            X-Kong-Request-Id:
+                - 28951c5d461e3c7944c1b3640aa4c023
+            X-Kong-Upstream-Latency:
+                - "280"
+            X-Ratelimitbysize-Limit-Minute:
+                - "2000000"
+            X-Ratelimitbysize-Limit-Month:
+                - "10000000000"
+            X-Ratelimitbysize-Remaining-Minute:
+                - "1999800"
+            X-Ratelimitbysize-Remaining-Month:
+                - "9999998350"
+        status: 200 OK
+        code: 200
+        duration: 453ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1105
+        transfer_encoding: []
+        trailer: {}
+        host: api.mistral.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"mistral-small-latest","max_tokens":200,"stream":false,"random_seed":1,"messages":[{"role":"system","content":[{"type":"text","text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}]},{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"id":"yiRg8951S","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"yiRg8951S","name":"square_root"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"auto"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"20c3eb718cdf423cba4cab9b4274ea94","object":"chat.completion","created":1747598837,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"363.89"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":222,"total_tokens":229,"completion_tokens":7}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 941dfae0dfd8a305-YUL
+            Content-Type:
+                - application/json
+            Ratelimitbysize-Limit:
+                - "2000000"
+            Ratelimitbysize-Query-Cost:
+                - "200"
+            Ratelimitbysize-Remaining:
+                - "1999800"
+            Ratelimitbysize-Reset:
+                - "43"
+            Server:
+                - cloudflare
+            X-Envoy-Upstream-Service-Time:
+                - "505"
+            X-Kong-Proxy-Latency:
+                - "12"
+            X-Kong-Request-Id:
+                - 61b28209171d802eac67d6148f71d076
+            X-Kong-Upstream-Latency:
+                - "506"
+            X-Ratelimitbysize-Limit-Minute:
+                - "2000000"
+            X-Ratelimitbysize-Limit-Month:
+                - "10000000000"
+            X-Ratelimitbysize-Remaining-Minute:
+                - "1999800"
+            X-Ratelimitbysize-Remaining-Month:
+                - "9999999800"
+        status: 200 OK
+        code: 200
+        duration: 640ms

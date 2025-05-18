@@ -143,7 +143,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 		c.Messages = make([]Message, len(msgs)+offset)
 		if sp != "" {
 			c.Messages[0].Role = "system"
-			c.Messages[0].Content = []Content{{Type: "text", Text: sp}}
+			c.Messages[0].Content = []Content{{Type: ContentText, Text: sp}}
 		}
 		for i := range msgs {
 			if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
@@ -164,8 +164,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 
 // https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post
 type Message struct {
-	Role    string    `json:"role"` // "system", "assistant", "user"
-	Content []Content `json:"content"`
+	Role       string     `json:"role"` // "system", "assistant", "user", "tool"
+	Content    []Content  `json:"content,omitzero"`
+	Prefix     bool       `json:"prefix,omitzero"`
+	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
+	ToolCallID string     `json:"tool_call_id,omitzero"`
+	Name       string     `json:"name,omitzero"`
 }
 
 func (m *Message) From(in *genai.Message) error {
@@ -184,16 +188,31 @@ func (m *Message) From(in *genai.Message) error {
 		}
 	}
 	if len(in.ToolCalls) != 0 {
-		return errors.New("mistral supports tool calls, we need to implement it")
+		m.ToolCalls = make([]ToolCall, len(in.ToolCalls))
+		for i := range in.ToolCalls {
+			m.ToolCalls[i].From(&in.ToolCalls[i])
+		}
 	}
 	if len(in.ToolCallResults) != 0 {
-		return errors.New("mistral supports tool calls, we need to implement it")
+		if len(in.Contents) != 0 || len(in.ToolCalls) != 0 {
+			// This could be worked around.
+			return fmt.Errorf("can't have tool call result along content or tool calls")
+		}
+		if len(in.ToolCallResults) != 1 {
+			// This could be worked around.
+			return fmt.Errorf("can't have more than one tool call result at a time")
+		}
+		m.Role = "tool"
+		m.ToolCallID = in.ToolCallResults[0].ID
+		m.Name = in.ToolCallResults[0].Name
+		// Mistral supports images urls!!
+		m.Content = []Content{{Type: ContentText, Text: in.ToolCallResults[0].Result}}
 	}
 	return nil
 }
 
 type Content struct {
-	Type string `json:"type"` // "text", "reference", "document_url", "image_url"
+	Type ContentType `json:"type"`
 
 	// Type == "text"
 	Text string `json:"text,omitzero"`
@@ -214,7 +233,7 @@ type Content struct {
 
 func (c *Content) From(in *genai.Content) error {
 	if in.Text != "" {
-		c.Type = "text"
+		c.Type = ContentText
 		c.Text = in.Text
 		return nil
 	}
@@ -224,14 +243,14 @@ func (c *Content) From(in *genai.Content) error {
 	}
 	switch {
 	case (in.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
-		c.Type = "image_url"
+		c.Type = ContentImageURL
 		if in.URL == "" {
 			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 		} else {
 			c.ImageURL.URL = in.URL
 		}
 	case mimeType == "application/pdf":
-		c.Type = "document_url"
+		c.Type = ContentDocumentURL
 		if in.URL == "" {
 			return errors.New("unsupported inline document")
 		}
@@ -241,6 +260,15 @@ func (c *Content) From(in *genai.Content) error {
 	}
 	return nil
 }
+
+type ContentType string
+
+const (
+	ContentText        ContentType = "text"
+	ContentReference   ContentType = "reference"
+	ContentDocumentURL ContentType = "document_url"
+	ContentImageURL    ContentType = "image_url"
+)
 
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
@@ -312,13 +340,13 @@ func (m *MessageResponse) To(out *genai.Message) error {
 }
 
 type ToolCall struct {
-	ID       string `json:"id"`
-	Type     string `json:"type"` // Omitted
+	ID       string `json:"id,omitzero"`
+	Type     string `json:"type,omitzero"`
 	Function struct {
-		Name      string `json:"name"`
-		Arguments string `json:"arguments"`
-	} `json:"function"`
-	Index int64 `json:"index"`
+		Name      string `json:"name,omitzero"`
+		Arguments string `json:"arguments,omitzero"`
+	} `json:"function,omitzero"`
+	Index int64 `json:"index,omitzero"`
 }
 
 func (t *ToolCall) From(in *genai.ToolCall) {
@@ -326,7 +354,6 @@ func (t *ToolCall) From(in *genai.ToolCall) {
 	t.ID = in.ID
 	t.Function.Name = in.Name
 	t.Function.Arguments = in.Arguments
-	t.Index = 0 // Unsure
 }
 
 func (t *ToolCall) To(out *genai.ToolCall) {

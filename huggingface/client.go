@@ -210,6 +210,7 @@ func (c *Content) From(in *genai.Content) error {
 }
 
 type ToolCall struct {
+	Index    int64  `json:"index,omitzero"`
 	ID       string `json:"id,omitzero"`
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
@@ -337,18 +338,10 @@ type ChatStreamChunkResponse struct {
 		Index        int64  `json:"index"`
 		FinishReason string `json:"finish_reason"` // stop
 		Delta        struct {
-			Role       genai.Role `json:"role"`
-			Content    string     `json:"content"`
-			ToolCallID string     `json:"tool_call_id"`
-			ToolCalls  []struct {
-				ID       string `json:"id"`
-				Type     string `json:"type"` // function
-				Function struct {
-					Name        string   `json:"name"`
-					Description struct{} `json:"description"`
-					Arguments   any      `json:"arguments"`
-				} `json:"function"`
-			} `json:"tool_calls"`
+			Role    genai.Role `json:"role"`
+			Content string     `json:"content"`
+			// ToolCallID string     `json:"tool_call_id"`
+			ToolCalls []ToolCall `json:"tool_calls"`
 		} `json:"delta"`
 		Logprobs struct {
 			Content []struct {
@@ -522,26 +515,61 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		for range ch {
 		}
 	}()
+	pendingCall := ToolCall{}
 	for pkt := range ch {
-		if len(pkt.Choices) != 1 {
-			continue
-		}
 		if pkt.Usage.TotalTokens != 0 {
 			*finalUsage = pkt.Usage
+		}
+		if len(pkt.Choices) != 1 {
+			continue
 		}
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "assistant", "":
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		if word := pkt.Choices[0].Delta.Content; word != "" {
-			fragment := genai.MessageFragment{TextFragment: word}
-			// Include FinishReason if available
-			if pkt.Choices[0].FinishReason != "" {
-				fragment.FinishReason = pkt.Choices[0].FinishReason
-			}
-			chunks <- fragment
+		// There's only one at a time ever.
+		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
+			return fmt.Errorf("implement multiple tool calls: %#v", pkt.Choices[0].Delta.ToolCalls)
 		}
+		f := genai.MessageFragment{TextFragment: pkt.Choices[0].Delta.Content, FinishReason: pkt.Choices[0].FinishReason}
+		// Huggingface streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
+		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
+			if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID == pendingCall.ID {
+				// Continuation.
+				pendingCall.Function.Arguments += t.Function.Arguments
+				if !f.IsZero() {
+					return fmt.Errorf("implement tool call with metadata: %#v", pkt)
+				}
+				continue
+			} else {
+				// A new call.
+				if pendingCall.ID == "" {
+					pendingCall = t
+					if !f.IsZero() {
+						return fmt.Errorf("implement tool call with metadata: %#v", pkt)
+					}
+					continue
+				}
+				// Flush.
+				pendingCall.To(&f.ToolCall)
+				pendingCall = t
+			}
+		} else if pendingCall.ID != "" {
+			// Flush.
+			pendingCall.To(&f.ToolCall)
+			pendingCall = ToolCall{}
+		}
+		if !f.IsZero() {
+			chunks <- f
+		}
+	}
+	// Hugginface doesn't send an "ending" packet, FinishReason isn't even set on the last packet.
+	if pendingCall.ID != "" {
+		// Flush.
+		f := genai.MessageFragment{}
+		pendingCall.To(&f.ToolCall)
+		chunks <- f
 	}
 	return nil
 }

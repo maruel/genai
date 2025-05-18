@@ -379,7 +379,7 @@ func (c *Content) From(in *genai.Message) error {
 	}
 	offset := len(in.Contents)
 	for i := range in.ToolCalls {
-		if err := c.Parts[offset+i].FromToolCall(&in.ToolCalls[i]); err != nil {
+		if err := c.Parts[offset+i].FunctionCall.From(&in.ToolCalls[i]); err != nil {
 			return fmt.Errorf("part %d: %w", offset+i, err)
 		}
 	}
@@ -426,16 +426,10 @@ func (c *Content) To(out *genai.Message) error {
 			continue
 		}
 		if part.FunctionCall.Name != "" {
-			raw, err := json.Marshal(part.FunctionCall.Args)
-			if err != nil {
-				return fmt.Errorf("failed to marshal arguments: %w", err)
+			out.ToolCalls = append(out.ToolCalls, genai.ToolCall{})
+			if err := part.FunctionCall.To(&out.ToolCalls[len(out.ToolCalls)-1]); err != nil {
+				return err
 			}
-			out.ToolCalls = append(out.ToolCalls,
-				genai.ToolCall{
-					ID:        part.FunctionCall.ID,
-					Name:      part.FunctionCall.Name,
-					Arguments: string(raw),
-				})
 			continue
 		}
 		if reflect.ValueOf(part).IsZero() {
@@ -453,13 +447,8 @@ func (c *Content) To(out *genai.Message) error {
 type Part struct {
 	Text string `json:"text,omitzero"`
 	// Uploaded with /v1beta/cachedContents. Content is deleted after 1 hour.
-	InlineData Blob `json:"inlineData,omitzero"`
-	// https://ai.google.dev/api/caching?hl=en#FunctionCall
-	FunctionCall struct {
-		ID   string      `json:"id,omitzero"`
-		Name string      `json:"name,omitzero"`
-		Args StructValue `json:"args,omitzero"`
-	} `json:"functionCall,omitzero"`
+	InlineData   Blob         `json:"inlineData,omitzero"`
+	FunctionCall FunctionCall `json:"functionCall,omitzero"`
 	// https://ai.google.dev/api/caching?hl=en#FunctionResponse
 	FunctionResponse struct {
 		ID       string      `json:"id,omitzero"`
@@ -509,19 +498,26 @@ func (p *Part) FromContent(in *genai.Content) error {
 	return nil
 }
 
-func (p *Part) FromToolCall(in *genai.ToolCall) error {
-	p.FunctionCall.ID = in.ID
-	p.FunctionCall.Name = in.Name
-	if err := json.Unmarshal([]byte(in.Arguments), &p.FunctionCall.Args); err != nil {
+// https://ai.google.dev/api/caching?hl=en#FunctionCall
+type FunctionCall struct {
+	ID   string      `json:"id,omitzero"`
+	Name string      `json:"name,omitzero"`
+	Args StructValue `json:"args,omitzero"`
+}
+
+func (f *FunctionCall) From(in *genai.ToolCall) error {
+	f.ID = in.ID
+	f.Name = in.Name
+	if err := json.Unmarshal([]byte(in.Arguments), &f.Args); err != nil {
 		return fmt.Errorf("failed to unmarshal arguments: %w", err)
 	}
 	return nil
 }
 
-func (p *Part) ToToolCall(out *genai.ToolCall) error {
-	out.ID = p.FunctionCall.ID
-	out.Name = p.FunctionCall.Name
-	raw, err := json.Marshal(p.FunctionCall.Args)
+func (f *FunctionCall) To(out *genai.ToolCall) error {
+	out.ID = f.ID
+	out.Name = f.Name
+	raw, err := json.Marshal(f.Args)
 	if err != nil {
 		return fmt.Errorf("failed to marshal arguments: %w", err)
 	}
@@ -1061,18 +1057,37 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			return fmt.Errorf("unexpected role %q", role)
 		}
 
-		finishReason := pkt.Candidates[0].FinishReason
-
+		// Gemini is the only one returning uppercase so convert down for compatibility.
+		f := genai.MessageFragment{FinishReason: strings.ToLower(pkt.Candidates[0].FinishReason)}
 		for _, part := range pkt.Candidates[0].Content.Parts {
-			if part.Text != "" {
-				fragment := genai.MessageFragment{TextFragment: part.Text}
-				// Only set FinishReason on fragments that have it (typically last chunk)
-				if finishReason != "" {
-					// Gemini is the only one returning uppercase so convert down for compatibility.
-					fragment.FinishReason = strings.ToLower(finishReason)
-				}
-				chunks <- fragment
+			f.TextFragment += part.Text
+			if part.InlineData.MimeType != "" || len(part.InlineData.Data) != 0 {
+				return fmt.Errorf("implemented inline blob %#v", part)
 			}
+			if part.FunctionCall.ID != "" || part.FunctionCall.Name != "" {
+				// https://ai.google.dev/api/caching?hl=en#FunctionCall
+				if err := part.FunctionCall.To(&f.ToolCall); err != nil {
+					return err
+				}
+			}
+			if part.FunctionResponse.ID != "" {
+				// https://ai.google.dev/api/caching?hl=en#FunctionResponse
+				return fmt.Errorf("implemented function response %#v", part)
+			}
+			if part.FileData.MimeType != "" || part.FileData.FileURI != "" {
+				return fmt.Errorf("implemented file data %#v", part)
+			}
+			if part.ExecutableCode.Language != "" || part.ExecutableCode.Code != "" {
+				// https://ai.google.dev/api/caching?hl=en#ExecutableCode
+				return fmt.Errorf("implemented executable code %#v", part)
+			}
+			if part.CodeExecutionResult.Outcome != "" || part.CodeExecutionResult.Output != "" {
+				// https://ai.google.dev/api/caching?hl=en#CodeExecutionResult
+				return fmt.Errorf("implemented code execution result %#v", part)
+			}
+		}
+		if !f.IsZero() {
+			chunks <- f
 		}
 	}
 	return nil

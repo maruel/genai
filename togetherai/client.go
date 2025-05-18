@@ -527,6 +527,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		for range ch {
 		}
 	}()
+	pendingCall := ToolCall{}
 	for pkt := range ch {
 		if len(pkt.Choices) != 1 {
 			continue
@@ -539,13 +540,45 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		if word := pkt.Choices[0].Delta.Content; word != "" {
-			fragment := genai.MessageFragment{TextFragment: word}
-			// Include FinishReason if available
-			if pkt.Choices[0].FinishReason != "" {
-				fragment.FinishReason = pkt.Choices[0].FinishReason
+		// There's only one at a time ever.
+		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
+			return fmt.Errorf("implement multiple tool calls: %#v", pkt.Choices[0].Delta.ToolCalls)
+		}
+		// TogetherAI streams the arguments. Buffer the arguments to send the fragment as a
+		// whole tool call.
+		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
+			t := pkt.Choices[0].Delta.ToolCalls[0]
+			if t.ID != "" {
+				// A new call.
+				if pendingCall.ID != "" {
+					// Flush.
+					chunks <- genai.MessageFragment{ToolCall: genai.ToolCall{
+						ID:        pendingCall.ID,
+						Name:      pendingCall.Function.Name,
+						Arguments: pendingCall.Function.Arguments,
+					}}
+				}
+				pendingCall = t
+				continue
 			}
-			chunks <- fragment
+			if pendingCall.ID != "" {
+				// Continuation.
+				pendingCall.Function.Arguments += t.Function.Arguments
+				continue
+			}
+		} else {
+			// Flush.
+			if pendingCall.ID != "" {
+				chunks <- genai.MessageFragment{ToolCall: genai.ToolCall{
+					ID:        pendingCall.ID,
+					Name:      pendingCall.Function.Name,
+					Arguments: pendingCall.Function.Arguments,
+				}}
+			}
+		}
+		f := genai.MessageFragment{TextFragment: pkt.Choices[0].Delta.Content, FinishReason: pkt.Choices[0].FinishReason}
+		if !f.IsZero() {
+			chunks <- f
 		}
 	}
 	return nil

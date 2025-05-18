@@ -142,7 +142,7 @@ func (tc *TestCases) TestChatToolUseCountry(t *testing.T, override *Settings) {
 		tc.chatToolUseCountryCore(t, override, false)
 	})
 	t.Run("ChatStream", func(t *testing.T) {
-		t.Skip("TODO")
+		t.Skip("TODO: Soon!")
 		tc.chatToolUseCountryCore(t, override, true)
 	})
 }
@@ -439,6 +439,7 @@ func (tc *TestCases) testChatStream(t *testing.T, msgs genai.Messages, c genai.C
 				if !ok {
 					return
 				}
+				t.Logf("Packet: %v", pkt)
 				var err2 error
 				if pendingMsgs, err2 = pkt.Accumulate(pendingMsgs); err2 != nil {
 					t.Error(err2)

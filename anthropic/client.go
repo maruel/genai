@@ -716,6 +716,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		for range ch {
 		}
 	}()
+	pendingCall := genai.ToolCall{}
 	for pkt := range ch {
 		f := genai.MessageFragment{}
 		// See testdata/TestClient_Chat_thinking/ChatStream.yaml as a great example.
@@ -735,7 +736,11 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				f.TextFragment = pkt.ContentBlock.Text
 			case "thinking":
 				f.ThinkingFragment = pkt.ContentBlock.Thinking
-				// case "tool_use":
+			case "tool_use":
+				pendingCall.ID = pkt.ContentBlock.ID
+				pendingCall.Name = pkt.ContentBlock.Name
+				pendingCall.Arguments = ""
+				// TODO: Is there anything to do with Inputs? pendingCall.Arguments = pkt.ContentBlock.Inputs
 			default:
 				return fmt.Errorf("missing implementation for content block %q", pkt.ContentBlock.Type)
 			}
@@ -747,12 +752,17 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				f.ThinkingFragment = pkt.Delta.Thinking
 			case "signature_delta":
 				f.Opaque = map[string]any{"signature": pkt.Delta.Signature}
-				// case "tool_use":
+			case "input_json_delta":
+				pendingCall.Arguments += pkt.Delta.PartialJSON
 			default:
 				return fmt.Errorf("missing implementation for content block delta %q", pkt.Delta.Type)
 			}
 		case "content_block_stop":
 			// Marks a closure of the block pkt.Index. Nothing to do.
+			if pendingCall.ID != "" {
+				chunks <- genai.MessageFragment{ToolCall: pendingCall}
+				pendingCall = genai.ToolCall{}
+			}
 			continue
 		case "message_delta":
 			// Includes finish reason and output tokens usage (but not input tokens!)

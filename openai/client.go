@@ -432,12 +432,13 @@ func (c *Content) To(out *genai.Content) error {
 }
 
 type ToolCall struct {
-	ID       string `json:"id"`
-	Type     string `json:"type"` // function
+	Index    int64  `json:"index,omitzero"`
+	ID       string `json:"id,omitzero"`
+	Type     string `json:"type,omitzero"` // function
 	Function struct {
-		Name      string `json:"name"`
-		Arguments string `json:"arguments"` // Generally JSON
-	} `json:"function"`
+		Name      string `json:"name,omitzero"`
+		Arguments string `json:"arguments,omitzero"`
+	} `json:"function,omitzero"`
 }
 
 func (t *ToolCall) From(in *genai.ToolCall) {
@@ -533,9 +534,10 @@ type Logprobs struct {
 type ChatStreamChunkResponse struct {
 	Choices []struct {
 		Delta struct {
-			Content  string `json:"content"`
-			Role     string `json:"role"`
-			Refulsal string `json:"refusal"`
+			Content   string     `json:"content"`
+			Role      string     `json:"role"`
+			Refusal   string     `json:"refusal"`
+			ToolCalls []ToolCall `json:"tool_calls"`
 		} `json:"delta"`
 		// FinishReason is one of null, "stop", "length", "content_filter" or "tool_calls".
 		FinishReason string   `json:"finish_reason"`
@@ -545,7 +547,7 @@ type ChatStreamChunkResponse struct {
 	Created           Time   `json:"created"`
 	ID                string `json:"id"`
 	Model             string `json:"model"`
-	Object            string `json:"object"`
+	Object            string `json:"object"` // "chat.completion.chunk"
 	ServiceTier       string `json:"service_tier"`
 	SystemFingerprint string `json:"system_fingerprint"`
 	Usage             Usage  `json:"usage"`
@@ -700,6 +702,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		for range ch {
 		}
 	}()
+	pendingCall := ToolCall{}
 	for pkt := range ch {
 		if pkt.Usage.TotalTokens != 0 {
 			*finalUsage = pkt.Usage
@@ -712,13 +715,40 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		if word := pkt.Choices[0].Delta.Content; word != "" {
-			fragment := genai.MessageFragment{TextFragment: word}
-			// Only include FinishReason if it's not empty (only on the final fragment)
-			if pkt.Choices[0].FinishReason != "" {
-				fragment.FinishReason = pkt.Choices[0].FinishReason
+		// There's only one at a time ever.
+		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
+			return fmt.Errorf("implement multiple tool calls: %#v", pkt)
+		}
+		f := genai.MessageFragment{TextFragment: pkt.Choices[0].Delta.Content, FinishReason: pkt.Choices[0].FinishReason}
+		// OpenAI streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
+		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
+			if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {
+				// A new call.
+				if pendingCall.ID == "" {
+					pendingCall = t
+					if !f.IsZero() {
+						return fmt.Errorf("implement tool call with metadata: %#v", pkt)
+					}
+					continue
+				}
+				// Flush.
+				pendingCall.To(&f.ToolCall)
+				pendingCall = t
+			} else if pendingCall.ID != "" {
+				// Continuation.
+				pendingCall.Function.Arguments += t.Function.Arguments
+				if !f.IsZero() {
+					return fmt.Errorf("implement tool call with metadata: %#v", pkt)
+				}
+				continue
 			}
-			chunks <- fragment
+		} else if pendingCall.ID != "" {
+			// Flush.
+			pendingCall.To(&f.ToolCall)
+			pendingCall = ToolCall{}
+		}
+		if !f.IsZero() {
+			chunks <- f
 		}
 	}
 	return nil

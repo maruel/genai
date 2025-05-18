@@ -344,8 +344,9 @@ type ChatStreamChunkResponse struct {
 	Choices []struct {
 		Index int64 `json:"index"`
 		Delta struct {
-			Role    genai.Role `json:"role"`
-			Content string     `json:"content"`
+			Role      genai.Role `json:"role"`
+			Content   string     `json:"content"`
+			ToolCalls []ToolCall `json:"tool_calls"`
 		} `json:"delta"`
 		FinishReason string `json:"finish_reason"`
 	} `json:"choices"`
@@ -372,7 +373,7 @@ type errorResponseAPI2 struct {
 	Detail []struct {
 		Type string `json:"type"` // "string_type", "missing"
 		Msg  string `json:"msg"`
-		Loc  []any  `json:"loc"` // to be joined, a mix of string and nuber
+		Loc  []any  `json:"loc"` // to be joined, a mix of string and number
 		// Input is either a list or an instance of struct { Type string `json:"type"` }.
 		Input any    `json:"input"`
 		Ctx   any    `json:"ctx"`
@@ -535,13 +536,16 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		if word := pkt.Choices[0].Delta.Content; word != "" {
-			fragment := genai.MessageFragment{TextFragment: word}
-			// Include FinishReason if available (typically on the last chunk)
-			if pkt.Choices[0].FinishReason != "" {
-				fragment.FinishReason = pkt.Choices[0].FinishReason
-			}
-			chunks <- fragment
+		// There's only one at a time ever.
+		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
+			return fmt.Errorf("implement multiple tool calls: %#v", pkt.Choices[0].Delta.ToolCalls)
+		}
+		f := genai.MessageFragment{TextFragment: pkt.Choices[0].Delta.Content, FinishReason: pkt.Choices[0].FinishReason}
+		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
+			pkt.Choices[0].Delta.ToolCalls[0].To(&f.ToolCall)
+		}
+		if !f.IsZero() {
+			chunks <- f
 		}
 	}
 	return nil

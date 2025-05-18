@@ -92,7 +92,6 @@ func TestClient_Chat_vision_pDF_inline(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use_reply(t *testing.T) {
-	t.Skip("TODO: Soon!")
 	testCases.TestChatToolUseReply(t, nil)
 }
 

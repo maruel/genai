@@ -101,8 +101,13 @@ func TestClient_Chat_audio_opus_inline(t *testing.T) {
 	testCases.TestChatAudioOpusInline(t, nil)
 }
 
+func TestClient_Chat_tool_use_reply(t *testing.T) {
+	t.Skip("TODO: Soon!")
+	testCases.TestChatToolUseReply(t, nil)
+}
+
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {
-	testCases.TestChatToolUsePositionBias(t, nil)
+	testCases.TestChatToolUsePositionBias(t, nil, true)
 }
 
 func TestClient_Chat_video_mp4_inline(t *testing.T) {

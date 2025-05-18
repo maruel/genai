@@ -342,16 +342,20 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) []string {
 			if t.InputsAs != nil {
 				params.FromJSONSchema(jsonschema.Reflect(t.InputsAs))
 			}
+			// See FunctionResponse.To().
 			c.Tools[i].FunctionDeclarations = []FunctionDeclaration{{
 				Name:        t.Name,
 				Description: t.Description,
 				Parameters:  params,
-				// Expose this eventually? We have to test if Google supports non-string answers.
-				Response: Schema{Type: "string"},
 			}}
+			c.Tools[i].FunctionDeclarations[0].Response.FromJSONSchema(jsonschema.Reflect(functionResponse))
 		}
 	}
 	return unsupported
+}
+
+var functionResponse struct {
+	Response string `json:"response"`
 }
 
 // Content is the equivalent of Message for other providers.
@@ -371,7 +375,7 @@ func (c *Content) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", in.Role)
 	}
-	c.Parts = make([]Part, len(in.Contents)+len(in.ToolCalls))
+	c.Parts = make([]Part, len(in.Contents)+len(in.ToolCalls)+len(in.ToolCallResults))
 	for i := range in.Contents {
 		if err := c.Parts[i].FromContent(&in.Contents[i]); err != nil {
 			return fmt.Errorf("part %d: %w", i, err)
@@ -380,6 +384,12 @@ func (c *Content) From(in *genai.Message) error {
 	offset := len(in.Contents)
 	for i := range in.ToolCalls {
 		if err := c.Parts[offset+i].FunctionCall.From(&in.ToolCalls[i]); err != nil {
+			return fmt.Errorf("part %d: %w", offset+i, err)
+		}
+	}
+	offset += len(in.ToolCalls)
+	for i := range in.ToolCallResults {
+		if err := c.Parts[offset+i].FunctionResponse.From(&in.ToolCallResults[i]); err != nil {
 			return fmt.Errorf("part %d: %w", offset+i, err)
 		}
 	}
@@ -445,28 +455,13 @@ func (c *Content) To(out *genai.Message) error {
 //
 // https://ai.google.dev/api/caching?hl=en#Part
 type Part struct {
-	Text string `json:"text,omitzero"`
-	// Uploaded with /v1beta/cachedContents. Content is deleted after 1 hour.
-	InlineData   Blob         `json:"inlineData,omitzero"`
-	FunctionCall FunctionCall `json:"functionCall,omitzero"`
-	// https://ai.google.dev/api/caching?hl=en#FunctionResponse
-	FunctionResponse struct {
-		ID       string      `json:"id,omitzero"`
-		Name     string      `json:"name,omitzero"`
-		Response StructValue `json:"response,omitzero"`
-	} `json:"functionResponse,omitzero"`
-	// Uploaded with /upload/v1beta/files. Files are deleted after 2 days.
-	FileData FileData `json:"fileData,omitzero"`
-	// https://ai.google.dev/api/caching?hl=en#ExecutableCode
-	ExecutableCode struct {
-		Language string `json:"language,omitzero"` // Only PYTHON is supported as of March 2025.
-		Code     string `json:"code,omitzero"`
-	} `json:"executableCode,omitzero"` // TODO
-	// https://ai.google.dev/api/caching?hl=en#CodeExecutionResult
-	CodeExecutionResult struct {
-		Outcome string `json:"outcome,omitzero"` // One of OUTCOME_UNSPECIFIED, OUTCOME_OK, OUTCOME_FAILED, OUTCOME_DEADLINE_EXCEEDED
-		Output  string `json:"output,omitzero"`
-	} `json:"codeExecutionResult,omitzero"` // TODO
+	Text                string              `json:"text,omitzero"`
+	InlineData          Blob                `json:"inlineData,omitzero"` // Uploaded with /v1beta/cachedContents. Content is deleted after 1 hour.
+	FunctionCall        FunctionCall        `json:"functionCall,omitzero"`
+	FunctionResponse    FunctionResponse    `json:"functionResponse,omitzero"`
+	FileData            FileData            `json:"fileData,omitzero"`            // Uploaded with /upload/v1beta/files. Files are deleted after 2 days.
+	ExecutableCode      ExecutableCode      `json:"executableCode,omitzero"`      // TODO
+	CodeExecutionResult CodeExecutionResult `json:"codeExecutionResult,omitzero"` // TODO
 }
 
 func (p *Part) FromContent(in *genai.Content) error {
@@ -523,6 +518,33 @@ func (f *FunctionCall) To(out *genai.ToolCall) error {
 	}
 	out.Arguments = string(raw)
 	return nil
+}
+
+// https://ai.google.dev/api/caching?hl=en#FunctionResponse
+type FunctionResponse struct {
+	ID       string      `json:"id,omitzero"`
+	Name     string      `json:"name,omitzero"`
+	Response StructValue `json:"response,omitzero"`
+}
+
+func (f *FunctionResponse) From(in *genai.ToolCallResult) error {
+	f.ID = in.ID
+	f.Name = in.Name
+	// Must match functionResponse
+	f.Response = StructValue{"response": in.Result}
+	return nil
+}
+
+// https://ai.google.dev/api/caching?hl=en#ExecutableCode
+type ExecutableCode struct {
+	Language string `json:"language,omitzero"` // Only PYTHON is supported as of March 2025.
+	Code     string `json:"code,omitzero"`
+}
+
+// https://ai.google.dev/api/caching?hl=en#CodeExecutionResult
+type CodeExecutionResult struct {
+	Outcome string `json:"outcome,omitzero"` // One of OUTCOME_UNSPECIFIED, OUTCOME_OK, OUTCOME_FAILED, OUTCOME_DEADLINE_EXCEEDED
+	Output  string `json:"output,omitzero"`
 }
 
 // https://ai.google.dev/api/generate-content?hl=en#ThinkingConfig

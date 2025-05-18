@@ -8,6 +8,7 @@ import (
 	"bytes"
 	_ "embed"
 	"fmt"
+	"math"
 	"os"
 	"path/filepath"
 	"strings"
@@ -145,23 +146,64 @@ func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Mod
 
 // Tool
 
+// TestChatToolUseReply confirms tool use fully works.
+func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
+	msgs := genai.Messages{
+		genai.NewTextMessage(genai.User, "Use the square_root tool to calculate the square root of 7 and reply with only the result."),
+	}
+	var got struct {
+		Number float64 `json:"number"`
+	}
+	opts := tc.getOptions(&genai.ChatOptions{
+		MaxTokens: 200,
+		Seed:      1,
+		Tools: []genai.ToolDef{
+			{
+				Name:        "square_root",
+				Description: "Calculates and return the square root of a number",
+				InputsAs:    got,
+			},
+		},
+		ToolCallRequired: true,
+	}, override)
+	c := tc.getClient(t, override)
+	resp := tc.testChat(t, msgs, c, opts, tc.usageIsBroken(override), tc.finishReasonIsBroken(override))
+	want := "square_root"
+	if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
+		t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
+	}
+	if err := resp.ToolCalls[0].Decode(&got); err != nil {
+		t.Fatal(err)
+	}
+	if got.Number != 7 {
+		t.Fatal(got.Number)
+	}
+	sq := fmt.Sprintf("%.2f", math.Sqrt(7))
+	msgs = append(msgs, genai.Message{
+		Role:            genai.Assistant,
+		ToolCallResults: []genai.ToolCallResult{{ID: resp.ToolCalls[0].ID, Name: resp.ToolCalls[0].Name, Result: sq}},
+	})
+	resp = tc.testChat(t, msgs, c, opts, tc.usageIsBroken(override), tc.finishReasonIsBroken(override))
+	validateSingleWordResponse(t, resp, sq)
+}
+
 // TestChatToolUsePositionBias confirms that LLMs are position biased.
 //
 // Presented with a choice where they can't easily chose, they will always select the first item presented
 // (!). In this case, this is a country name.
-func (tc *TestCases) TestChatToolUsePositionBias(t *testing.T, override *Settings) {
+func (tc *TestCases) TestChatToolUsePositionBias(t *testing.T, override *Settings, allowOther bool) {
 	t.Run("Chat", func(t *testing.T) {
-		tc.TestChatToolUsePositionBiasCore(t, override, false)
+		tc.TestChatToolUsePositionBiasCore(t, override, allowOther, false)
 	})
 	t.Run("ChatStream", func(t *testing.T) {
-		tc.TestChatToolUsePositionBiasCore(t, override, true)
+		tc.TestChatToolUsePositionBiasCore(t, override, allowOther, true)
 	})
 }
 
 // TestChatToolUsePositionBiasCore runs a Chat or ChatStream with tool use and verifies that the tools are called correctly.
 // The useStream parameter determines whether to use Chat or ChatStream.
 // It returns the response for further validation.
-func (tc *TestCases) TestChatToolUsePositionBiasCore(t *testing.T, override *Settings, useStream bool) {
+func (tc *TestCases) TestChatToolUsePositionBiasCore(t *testing.T, override *Settings, allowOther, useStream bool) {
 	var gotCanadaFirst struct {
 		Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 	}
@@ -210,7 +252,7 @@ func (tc *TestCases) TestChatToolUsePositionBiasCore(t *testing.T, override *Set
 			if err := resp.ToolCalls[0].Decode(&got); err != nil {
 				t.Fatal(err)
 			}
-			if got.Country != line.countrySelected {
+			if !allowOther && got.Country != line.countrySelected {
 				t.Fatal(got.Country)
 			}
 		})

@@ -232,9 +232,8 @@ type Message struct {
 	Contents []Content // For example when the LLM replies with multiple content blocks, an explanation and a code block.
 
 	// ToolCall is a tool call that the LLM requested to make.
-	ToolCalls []ToolCall
-
-	// TODO: Tool replies
+	ToolCalls       []ToolCall
+	ToolCallResults []ToolCallResult
 
 	_ struct{}
 }
@@ -254,12 +253,22 @@ func (m *Message) Validate() error {
 	if m.User != "" {
 		errs = append(errs, errors.New("field User: not supported yet"))
 	}
-	if len(m.Contents) == 0 {
-		errs = append(errs, errors.New("field Contents: required"))
+	if len(m.Contents) == 0 && len(m.ToolCalls) == 0 && len(m.ToolCallResults) == 0 {
+		errs = append(errs, errors.New("at least one of fields Contents, ToolCalls or ToolCallsResults is required"))
 	}
 	for i, b := range m.Contents {
 		if err := b.Validate(); err != nil {
-			errs = append(errs, fmt.Errorf("block %d: %w", i, err))
+			errs = append(errs, fmt.Errorf("content %d: %w", i, err))
+		}
+	}
+	for i, b := range m.ToolCalls {
+		if err := b.Validate(); err != nil {
+			errs = append(errs, fmt.Errorf("tool call %d: %w", i, err))
+		}
+	}
+	for i, b := range m.ToolCallResults {
+		if err := b.Validate(); err != nil {
+			errs = append(errs, fmt.Errorf("tool result %d: %w", i, err))
 		}
 	}
 	return errors.Join(errs...)
@@ -436,6 +445,8 @@ func (c *Content) ReadDocument(maxSize int64) (string, []byte, error) {
 
 // MessageFragment is a fragment of a message the LLM is sending back as part
 // of the ChatStream().
+//
+// The role is always implicitly the assistant.
 type MessageFragment struct {
 	TextFragment string
 
@@ -628,6 +639,23 @@ func (t *ToolCall) IsZero() bool {
 	return t.ID == "" && t.Name == "" && t.Arguments == ""
 }
 
+// Validate ensures the tool call request from the LLM is valid.
+func (t *ToolCall) Validate() error {
+	// Some provider like Gemini doesn't set an ID.
+	if t.ID == "" && t.Name == "" {
+		return errors.New("at least one of field ID or Name is required")
+	}
+	// Excessive?
+	d := json.NewDecoder(strings.NewReader(t.Arguments))
+	d.DisallowUnknownFields()
+	d.UseNumber()
+	var x any
+	if err := d.Decode(&x); err != nil {
+		return fmt.Errorf("field Arguments: %w", err)
+	}
+	return nil
+}
+
 // Decode decodes the JSON tool call.
 //
 // This function doesn't validate x is the same as InputsAs in the ToolDef.
@@ -671,6 +699,25 @@ func (t *ToolCall) Call(toolDef *ToolDef) (string, error) {
 	return reflect.ValueOf(toolDef.Callback).Call([]reflect.Value{input})[0].String(), nil
 }
 
+// ToolCallResult is the result for a tool call that the LLM requested to make.
+type ToolCallResult struct {
+	ID     string
+	Name   string
+	Result string
+}
+
+// Validate ensures the tool result is valid.
+func (t *ToolCallResult) Validate() error {
+	// Some provider like Gemini doesn't set an ID.
+	if t.ID == "" && t.Name == "" {
+		return errors.New("at least one of field ID or Name is required")
+	}
+	if t.Result == "" {
+		return errors.New("field Result: required")
+	}
+	return nil
+}
+
 // Models
 
 // ModelProvider represents a provider that can list models.
@@ -708,4 +755,6 @@ var (
 	_ Validatable = (*Message)(nil)
 	_ Validatable = (*Content)(nil)
 	_ Validatable = (*ToolDef)(nil)
+	_ Validatable = (*ToolCall)(nil)
+	_ Validatable = (*ToolCallResult)(nil)
 )

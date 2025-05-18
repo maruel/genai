@@ -92,7 +92,7 @@ func TestClient_Chat_vision_pDF_inline(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {
-	testCases.TestChatToolUsePositionBias(t, nil)
+	testCases.TestChatToolUsePositionBias(t, nil, false)
 }
 
 func getClient(t *testing.T, m string) *openai.Client {

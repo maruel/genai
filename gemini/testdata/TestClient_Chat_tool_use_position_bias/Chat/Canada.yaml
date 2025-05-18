@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 574
+        content_length: 642
         transfer_encoding: []
         trailer: {}
         host: generativelanguage.googleapis.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to determine the best country","parameters":{"type":"object","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"required":["country"]},"response":{"type":"string"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":200,"seed":1}}
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to determine the best country","parameters":{"type":"object","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"required":["country"]},"response":{"type":"object","properties":{"response":{"type":"string"}},"required":["response"]}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":200,"seed":1}}
         form: {}
         headers:
             Content-Type:
@@ -41,28 +41,36 @@ interactions:
                             "country": "Canada"
                           }
                         }
+                      },
+                      {
+                        "functionCall": {
+                          "name": "best_country",
+                          "args": {
+                            "country": "USA"
+                          }
+                        }
                       }
                     ],
                     "role": "model"
                   },
                   "finishReason": "STOP",
-                  "avgLogprobs": -0.005229757726192474
+                  "avgLogprobs": -0.045450770854949953
                 }
               ],
               "usageMetadata": {
-                "promptTokenCount": 45,
-                "candidatesTokenCount": 5,
-                "totalTokenCount": 50,
+                "promptTokenCount": 48,
+                "candidatesTokenCount": 10,
+                "totalTokenCount": 58,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
-                    "tokenCount": 45
+                    "tokenCount": 48
                   }
                 ],
                 "candidatesTokensDetails": [
                   {
                     "modality": "TEXT",
-                    "tokenCount": 5
+                    "tokenCount": 10
                   }
                 ]
               },
@@ -76,7 +84,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=719
+                - gfet4t7; dur=598
             Vary:
                 - Origin
                 - X-Origin
@@ -89,4 +97,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 787ms
+        duration: 663ms

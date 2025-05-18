@@ -149,7 +149,7 @@ func TestMessages_Validate(t *testing.T) {
 						Contents: []Content{{}},
 					},
 				},
-				errMsg: "message 0: block 0: field Filename can't be used along Text\nmessage 1: block 0: no content",
+				errMsg: "message 0: content 0: field Filename can't be used along Text\nmessage 1: content 0: no content",
 			},
 		}
 		for _, tt := range tests {
@@ -206,7 +206,7 @@ func TestMessage_Validate(t *testing.T) {
 			{
 				name:    "empty",
 				message: Message{},
-				errMsg:  "field Role: role \"\" is not supported\nfield Contents: required",
+				errMsg:  "field Role: role \"\" is not supported\nat least one of fields Contents, ToolCalls or ToolCallsResults is required",
 			},
 			{
 				name:    "user",

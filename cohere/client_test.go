@@ -45,7 +45,7 @@ func TestClient_Chat_jSON_schema(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {
-	testCases.TestChatToolUsePositionBias(t, nil)
+	testCases.TestChatToolUsePositionBias(t, nil, false)
 }
 
 func getClient(t *testing.T, m string) *cohere.Client {

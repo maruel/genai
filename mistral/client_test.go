@@ -57,7 +57,7 @@ func TestClient_Chat_vision_pDF_uRL(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {
-	testCases.TestChatToolUsePositionBias(t, &internaltest.Settings{Model: "ministral-3b-latest"})
+	testCases.TestChatToolUsePositionBias(t, &internaltest.Settings{Model: "ministral-3b-latest"}, false)
 }
 
 func getClient(t *testing.T, m string) *mistral.Client {

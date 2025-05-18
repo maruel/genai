@@ -57,10 +57,10 @@ func TestClient_Chat_jSON_schema(t *testing.T) {
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 	// TODO: Figure out why smaller models fail.
 	t.Run("Chat", func(t *testing.T) {
-		testCases.TestChatToolUsePositionBiasCore(t, nil, false)
+		testCases.TestChatToolUsePositionBiasCore(t, nil, false, false)
 	})
 	t.Run("ChatStream", func(t *testing.T) {
-		testCases.TestChatToolUsePositionBiasCore(t, &internaltest.Settings{UsageIsBroken: true, FinishReasonIsBroken: true}, true)
+		testCases.TestChatToolUsePositionBiasCore(t, &internaltest.Settings{UsageIsBroken: true, FinishReasonIsBroken: true}, false, true)
 	})
 }
 

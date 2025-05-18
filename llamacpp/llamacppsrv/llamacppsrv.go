@@ -215,16 +215,16 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 			// TODO: Vulkan, HIP, OpenCL, sycl.
 			zipname = "llama-" + build + "-bin-win-cuda12.4-x64.zip"
 		} else if runtime.GOARCH == "arm64" {
-			zipname = "llama-" + build + "-bin-win-arm64.zip"
+			zipname = "llama-" + build + "-bin-win-cpu-arm64.zip"
 		} else if runtime.GOARCH == "amd64" {
-			zipname = "llama-" + build + "-bin-win-x64.zip"
+			zipname = "llama-" + build + "-bin-win-cou-x64.zip"
 		} else {
 			return "", fmt.Errorf("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
 		}
 		wantedFiles = append(wantedFiles, "*.dll")
 	default:
 		return "", fmt.Errorf("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
-}
+	}
 	zippath := filepath.Join(cache, zipname)
 	if err := downloadFile(ctx, url+zipname, zippath); err != nil {
 		return "", fmt.Errorf("failed to download %s from github: %w", zipname, err)

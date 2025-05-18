@@ -217,7 +217,7 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 		} else if runtime.GOARCH == "arm64" {
 			zipname = "llama-" + build + "-bin-win-cpu-arm64.zip"
 		} else if runtime.GOARCH == "amd64" {
-			zipname = "llama-" + build + "-bin-win-cou-x64.zip"
+			zipname = "llama-" + build + "-bin-win-cpu-x64.zip"
 		} else {
 			return "", fmt.Errorf("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
 		}

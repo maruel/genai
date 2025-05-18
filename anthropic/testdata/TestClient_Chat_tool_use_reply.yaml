@@ -1,0 +1,151 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 806
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"claude-3-5-haiku-20241022","max_tokens":200,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"system":[{"type":"text","text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}],"thinking":{"type":"disabled"},"tool_choice":{"type":"any"},"tools":[{"description":"Calculates and return the square root of a number","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"name":"square_root"}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"msg_019J8vNzEZZhpWanHMBBDZey","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"tool_use","id":"toolu_01KfFhxVDX9WC9eAwDuAWhCa","name":"square_root","input":{"number":132413}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":518,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":39}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "50000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "50000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2025-05-18T19:52:52Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "10000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "10000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2025-05-18T19:52:52Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "50"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "49"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2025-05-18T19:52:52Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "60000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "60000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2025-05-18T19:52:52Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 941de5b52f92a302-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPFabAPVuuWikvCutkanh
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.793s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1087
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"claude-3-5-haiku-20241022","max_tokens":200,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","content":[{"type":"tool_use","id":"toolu_01KfFhxVDX9WC9eAwDuAWhCa","input":{"number":132413},"name":"square_root"}]},{"role":"user","content":[{"type":"tool_result","tool_use_id":"toolu_01KfFhxVDX9WC9eAwDuAWhCa","content":[{"type":"text","text":"363.89"}]}]}],"system":[{"type":"text","text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}],"thinking":{"type":"disabled"},"tool_choice":{"type":"auto"},"tools":[{"description":"Calculates and return the square root of a number","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"name":"square_root"}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"msg_01KNrVwHmyQn8JBKBFbHb15g","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"363.89"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":496,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":7}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "50000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "50000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2025-05-18T19:52:53Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "10000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "10000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2025-05-18T19:52:53Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "50"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "49"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2025-05-18T19:52:53Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "60000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "60000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2025-05-18T19:52:53Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 941de5c03f2fa302-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPFabHxum4aqqcpGUdVMs
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.336s

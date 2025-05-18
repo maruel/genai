@@ -59,8 +59,7 @@ func TestClient_Chat_vision_pDF_uRL(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use_reply(t *testing.T) {
-	t.Skip("TODO: Soon!")
-	testCases.TestChatToolUseReply(t, nil)
+	testCases.TestChatToolUseReply(t, &internaltest.Settings{Model: "claude-3-5-haiku-20241022"})
 }
 
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {

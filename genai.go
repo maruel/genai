@@ -261,10 +261,16 @@ func (m *Message) Validate() error {
 			errs = append(errs, fmt.Errorf("content %d: %w", i, err))
 		}
 	}
+	if len(m.ToolCalls) != 0 && m.Role != Assistant {
+		errs = append(errs, errors.New("only role assistant can call tools"))
+	}
 	for i, b := range m.ToolCalls {
 		if err := b.Validate(); err != nil {
 			errs = append(errs, fmt.Errorf("tool call %d: %w", i, err))
 		}
+	}
+	if len(m.ToolCallResults) != 0 && m.Role != User {
+		errs = append(errs, errors.New("only role user can provide tool call results"))
 	}
 	for i, b := range m.ToolCallResults {
 		if err := b.Validate(); err != nil {

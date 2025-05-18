@@ -184,7 +184,7 @@ func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
 	msgs = append(msgs,
 		resp.Message,
 		genai.Message{
-			Role:            genai.Assistant,
+			Role:            genai.User,
 			ToolCallResults: []genai.ToolCallResult{{ID: resp.ToolCalls[0].ID, Name: resp.ToolCalls[0].Name, Result: sq}},
 		})
 	// Important!

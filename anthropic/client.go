@@ -206,7 +206,7 @@ func (m *Message) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", role)
 	}
-	m.Content = make([]Content, len(in.Contents)+len(in.ToolCalls))
+	m.Content = make([]Content, len(in.Contents)+len(in.ToolCalls)+len(in.ToolCallResults))
 	for i := range in.Contents {
 		if err := m.Content[i].FromContent(&in.Contents[i]); err != nil {
 			return fmt.Errorf("block %d: %w", i, err)
@@ -218,8 +218,11 @@ func (m *Message) From(in *genai.Message) error {
 			return fmt.Errorf("block %d: %w", offset+i, err)
 		}
 	}
-	if len(in.ToolCallResults) != 0 {
-		return errors.New("implement tool call results")
+	offset += len(in.ToolCalls)
+	for i := range in.ToolCallResults {
+		if err := m.Content[offset+i].FromToolCallResult(&in.ToolCallResults[i]); err != nil {
+			return fmt.Errorf("block %d: %w", offset+i, err)
+		}
 	}
 	return nil
 }
@@ -378,6 +381,16 @@ func (c *Content) FromToolCall(in *genai.ToolCall) error {
 	if err := json.Unmarshal([]byte(in.Arguments), &c.Input); err != nil {
 		return fmt.Errorf("failed to marshal input: %w; for tool call: %#v", err, in)
 	}
+	return nil
+}
+
+func (c *Content) FromToolCallResult(in *genai.ToolCallResult) error {
+	// TODO: Support text citation.
+	// TODO: Support image.
+	c.Type = ContentToolResult
+	c.ToolUseID = in.ID
+	c.IsError = false // Interesting!
+	c.Content = []Content{{Type: ContentText, Text: in.Result}}
 	return nil
 }
 

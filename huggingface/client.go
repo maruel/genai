@@ -169,9 +169,7 @@ func (m *Message) From(in *genai.Message) error {
 	}
 	if len(in.ToolCalls) != 0 {
 		for j := range in.ToolCalls {
-			if err := m.ToolCalls[j].From(&in.ToolCalls[j]); err != nil {
-				return fmt.Errorf("tool call %d: %w", j, err)
-			}
+			m.ToolCalls[j].From(&in.ToolCalls[j])
 		}
 	}
 	return nil
@@ -227,17 +225,16 @@ type ToolCall struct {
 	} `json:"function,omitzero"`
 }
 
-func (t *ToolCall) From(in *genai.ToolCall) error {
+func (t *ToolCall) From(in *genai.ToolCall) {
 	t.ID = in.ID
 	t.Type = "function"
 	t.Function.Name = in.Name
 	// The API seems to flip-flop between JSON and string.
 	// return json.Unmarshal([]byte(in.Arguments), &t.Function.Arguments)
 	t.Function.Arguments = in.Arguments
-	return nil
 }
 
-func (t *ToolCall) To(out *genai.ToolCall) error {
+func (t *ToolCall) To(out *genai.ToolCall) {
 	out.ID = t.ID
 	out.Name = t.Function.Name
 	// b, err := json.Marshal(t.Function.Arguments)
@@ -246,7 +243,6 @@ func (t *ToolCall) To(out *genai.ToolCall) error {
 	// }
 	// out.Arguments = string(b)
 	out.Arguments = t.Function.Arguments
-	return nil
 }
 
 type Tool struct {
@@ -317,9 +313,7 @@ func (m *MessageResponse) To(out *genai.Message) error {
 	if len(m.ToolCalls) != 0 {
 		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))
 		for i := range m.ToolCalls {
-			if err := m.ToolCalls[i].To(&out.ToolCalls[i]); err != nil {
-				return fmt.Errorf("tool call %d: %w", i, err)
-			}
+			m.ToolCalls[i].To(&out.ToolCalls[i])
 		}
 	}
 

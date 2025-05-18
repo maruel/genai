@@ -157,9 +157,13 @@ func (m *Message) From(in *genai.Message) error {
 		return fmt.Errorf("unsupported role %q", in.Role)
 	}
 	if len(in.Contents) != 0 {
-		m.Content = make([]Content, len(in.Contents))
 		for i := range in.Contents {
-			if err := m.Content[i].From(&in.Contents[i]); err != nil {
+			if in.Contents[i].Thinking != "" {
+				// Silently ignore thinking blocks.
+				continue
+			}
+			m.Content = append(m.Content, Content{})
+			if err := m.Content[len(m.Content)-1].From(&in.Contents[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		}
@@ -171,7 +175,18 @@ func (m *Message) From(in *genai.Message) error {
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
-		return errors.New("implement tool call results")
+		if len(in.Contents) != 0 || len(in.ToolCalls) != 0 {
+			// This could be worked around.
+			return fmt.Errorf("can't have tool call result along content or tool calls")
+		}
+		if len(in.ToolCallResults) != 1 {
+			// This could be worked around.
+			return fmt.Errorf("can't have more than one tool call result at a time")
+		}
+		// Cohere supports Document!
+		m.Role = "tool"
+		m.ToolCallID = in.ToolCallResults[0].ID
+		m.Content = []Content{{Type: ContentText, Text: in.ToolCallResults[0].Result}}
 	}
 	return nil
 }
@@ -193,10 +208,6 @@ func (c *Content) IsZero() bool {
 }
 
 func (c *Content) From(in *genai.Content) error {
-	if in.Thinking != "" {
-		return errors.New("thinking is not supported")
-	}
-
 	if in.Text != "" {
 		c.Type = ContentText
 		c.Text = in.Text
@@ -353,56 +364,26 @@ func (m *MessageResponse) To(out *genai.Message) error {
 			m.ToolCalls[i].To(&out.ToolCalls[i])
 		}
 	}
-	/*
-		if !m.ToolCalls.IsZero() {
-			out.ToolCalls = []genai.ToolCall{{}}
-			m.ToolCalls.To(&out.ToolCalls[0])
-		}
-	*/
 	if m.ToolCallID != "" && !internal.BeLenient {
 		return fmt.Errorf("implement tool call id")
 	}
-	// TODO: m.ToolPlan is actually thinking!!
-
+	if m.ToolPlan != "" {
+		out.Contents = []genai.Content{{Thinking: m.ToolPlan}}
+	}
 	if len(m.Content) != 0 {
-		out.Contents = make([]genai.Content, len(m.Content))
 		for i := range m.Content {
-			if err := m.Content[i].To(&out.Contents[i]); err != nil {
+			out.Contents = append(out.Contents, genai.Content{})
+			if err := m.Content[len(m.Content)-1].To(&out.Contents[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		}
 	}
-
 	if len(m.Citations) != 0 && !internal.BeLenient {
-		return fmt.Errorf("implement citations: %#v", m.Citations)
+		// It's already used!
+		// return fmt.Errorf("implement citations: %#v", m.Citations)
 	}
-
 	return nil
 }
-
-/*
-func (m *MessageResponse) UnmarshalJSON(b []byte) error {
-	// When replying, it inlines the content which is weird.
-		mr := messageResponse{}
-		if err := json.Unmarshal(b, &mr); err == nil {
-			m.Role = mr.Role
-			m.Citations = mr.Citations
-			if !mr.ToolCalls.IsZero() {
-				m.ToolCalls = []ToolCall{mr.ToolCalls}
-			}
-			m.ToolCallID = mr.ToolCallID
-			m.ToolPlan = mr.ToolPlan
-			if !mr.Content.IsZero() {
-				m.Content = []Content{mr.Content}
-			}
-			if !mr.ContentAlt.IsZero() {
-				m.Content = []Content{mr.ContentAlt}
-			}
-			return nil
-		}
-	return json.Unmarshal(b, (*Message)(m))
-}
-*/
 
 type Contents []Content
 

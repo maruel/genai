@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: 258
         uncompressed: false
-        body: '{"id":"66f5f8b1-e56a-41b9-bcc0-3fba6f99e319","message":{"role":"assistant","content":[{"type":"text","text":"Hello."}]},"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":12,"output_tokens":2},"tokens":{"input_tokens":507,"output_tokens":4}}}'
+        body: '{"id":"949a4d90-9e09-4ebe-9186-cebf81384118","message":{"role":"assistant","content":[{"type":"text","text":"Hello."}]},"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":12,"output_tokens":2},"tokens":{"input_tokens":507,"output_tokens":4}}}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -57,15 +57,9 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - 32482a110c9b403d47c7684ed62596b8
-            X-Endpoint-Monthly-Call-Limit:
-                - "1000"
+                - a6bd74d66b515ce79cb8eb5de7ef1836
             X-Envoy-Upstream-Service-Time:
-                - "1283"
-            X-Trial-Endpoint-Call-Limit:
-                - "10"
-            X-Trial-Endpoint-Call-Remaining:
-                - "1"
+                - "139"
         status: 200 OK
         code: 200
-        duration: 1.33s
+        duration: 183ms

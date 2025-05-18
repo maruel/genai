@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 200
+        content_length: 325
         transfer_encoding: []
         trailer: {}
         host: api.cohere.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"stream":false,"model":"command-nightly","messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"max_tokens":1000,"temperature":0.1,"seed":1}
+            {"stream":false,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"response_format":{"type":"json_object"},"max_tokens":200,"temperature":0.1,"seed":1}
         form: {}
         headers:
             Content-Type:
@@ -26,9 +26,9 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 258
+        content_length: 272
         uncompressed: false
-        body: '{"id":"b1f77ddf-36f1-4703-b101-55f3c19b06ef","message":{"role":"assistant","content":[{"type":"text","text":"Hello."}]},"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":12,"output_tokens":2},"tokens":{"input_tokens":507,"output_tokens":4}}}'
+        body: '{"id":"f124982e-80db-4fb2-8626-6153fa736338","message":{"role":"assistant","content":[{"type":"text","text":"{\"is_fruit\": true}"}]},"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":29,"output_tokens":7},"tokens":{"input_tokens":524,"output_tokens":9}}}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -37,15 +37,15 @@ interactions:
             Cache-Control:
                 - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
             Content-Length:
-                - "258"
+                - "272"
             Content-Type:
                 - application/json
             Expires:
                 - Thu, 01 Jan 1970 00:00:00 UTC
             Num_chars:
-                - "2623"
+                - "2702"
             Num_tokens:
-                - "14"
+                - "36"
             Pragma:
                 - no-cache
             Server:
@@ -57,15 +57,9 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - 06464c0ec35850cd20f1a1f1d599c585
-            X-Endpoint-Monthly-Call-Limit:
-                - "1000"
+                - 606fb1916e91b9ba483520757a7fc04c
             X-Envoy-Upstream-Service-Time:
-                - "175"
-            X-Trial-Endpoint-Call-Limit:
-                - "10"
-            X-Trial-Endpoint-Call-Remaining:
-                - "7"
+                - "751"
         status: 200 OK
         code: 200
-        duration: 225ms
+        duration: 795ms

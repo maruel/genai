@@ -18,7 +18,8 @@ import (
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
 		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
-		Model:     "command-r-08-2024",
+		// https://cohere.com/pricing
+		Model: "command-r7b-12-2024",
 	},
 }
 
@@ -27,16 +28,16 @@ func TestClient_Chat_allModels(t *testing.T) {
 		t,
 		func(m genai.Model) bool {
 			id := m.GetID()
-			return strings.HasPrefix(id, "command-")
+			// command-nightly randomly breaks.
+			return strings.HasPrefix(id, "command-") && !strings.HasSuffix(id, "-nightly")
 		})
 }
 
 func TestClient_ChatStream(t *testing.T) {
-	testCases.TestChatStream(t, &internaltest.Settings{Model: "command-r7b-12-2024"})
+	testCases.TestChatStream(t, nil)
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
-	t.Skip("Cohere's model seem to struggle at unstructured JSON. To be investigated.")
 	testCases.TestChatJSON(t, nil)
 }
 
@@ -45,7 +46,6 @@ func TestClient_Chat_jSON_schema(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use_reply(t *testing.T) {
-	t.Skip("TODO: Soon!")
 	testCases.TestChatToolUseReply(t, nil)
 }
 

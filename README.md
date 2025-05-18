@@ -172,8 +172,5 @@ list-models -provider hugginface
 - Batch
 - Tuning
 - Embeddings
-- Handle rate limiting
 - Moderation
-- Thinking
-- Content Blocks
 - Citations

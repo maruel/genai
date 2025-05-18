@@ -89,9 +89,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 					unsupported = append(unsupported, "ReplyAsJSON")
 				}
 				if len(v.Tools) != 0 {
-					if v.ToolCallRequired {
-						unsupported = append(unsupported, "ToolCallRequired")
-					}
 					unsupported = append(unsupported, "Tools")
 				}
 			default:

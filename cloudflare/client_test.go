@@ -48,13 +48,19 @@ func TestClient_Chat_jSON_schema(t *testing.T) {
 	testCases.TestChatJSONSchema(t, &internaltest.Settings{UsageIsBroken: true})
 }
 
+func TestClient_Chat_tool_use_reply(t *testing.T) {
+	t.Skip("To be fixed later.")
+	testCases.TestChatToolUseReply(t, &internaltest.Settings{Model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"})
+}
+
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {
+	s := &internaltest.Settings{Model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
 	t.Run("Chat", func(t *testing.T) {
-		testCases.TestChatToolUsePositionBiasCore(t, &internaltest.Settings{UsageIsBroken: true}, false, false)
+		testCases.TestChatToolUsePositionBiasCore(t, s, false, false)
 	})
 	t.Run("ChatStream", func(t *testing.T) {
 		t.Skip("cloudflare has broken streaming tool calling")
-		testCases.TestChatToolUsePositionBiasCore(t, &internaltest.Settings{UsageIsBroken: true}, false, true)
+		testCases.TestChatToolUsePositionBiasCore(t, s, false, true)
 	})
 }
 

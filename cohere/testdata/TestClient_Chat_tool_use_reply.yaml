@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 857
+        content_length: 858
         transfer_encoding: []
         trailer: {}
         host: api.cohere.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"stream":false,"model":"command-r7b-12-2024","messages":[{"role":"system","content":[{"type":"text","text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}]},{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"max_tokens":200,"seed":1,"tools":[{"type":"function","function":{"name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"description":"Calculates and return the square root of a number"}}],"tool_choice":"required","strict_tools":true}
+            {"stream":false,"model":"command-r7b-12-2024","messages":[{"role":"system","content":[{"type":"text","text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}]},{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"max_tokens":4096,"seed":1,"tools":[{"type":"function","function":{"name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]},"description":"Calculates and return the square root of a number"}}],"tool_choice":"required","strict_tools":true}
         form: {}
         headers:
             Content-Type:
@@ -26,9 +26,9 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 434
+        content_length: 436
         uncompressed: false
-        body: '{"id":"124e6f2a-cbf4-48ff-a05d-afb4d2b571af","message":{"role":"assistant","tool_plan":"I will use one or more of the available tools to find the answer","tool_calls":[{"id":"square_root_z1j5j29sza64","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413.0}"}}]},"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":83,"output_tokens":29},"tokens":{"input_tokens":1582,"output_tokens":40}}}'
+        body: '{"id":"377fae33-62ac-4c4d-805f-0dd8e613210d","message":{"role":"assistant","tool_plan":"I will use one or more of the available tools to find the answer","tool_calls":[{"id":"square_root_cqmpsqyzf7kw","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":83,"output_tokens":27},"tokens":{"input_tokens":1582,"output_tokens":38}}}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -37,7 +37,7 @@ interactions:
             Cache-Control:
                 - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
             Content-Length:
-                - "434"
+                - "436"
             Content-Type:
                 - application/json
             Expires:
@@ -45,7 +45,7 @@ interactions:
             Num_chars:
                 - "7455"
             Num_tokens:
-                - "112"
+                - "110"
             Pragma:
                 - no-cache
             Server:
@@ -57,25 +57,25 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - be563b34e628b321034d9e9d60e46d5e
+                - ecd2999f1d61aa4e0d8021e2788fc731
             X-Envoy-Upstream-Service-Time:
                 - "520"
         status: 200 OK
         code: 200
-        duration: 582ms
+        duration: 597ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1092
+        content_length: 1096
         transfer_encoding: []
         trailer: {}
         host: api.cohere.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"stream":false,"model":"command-r7b-12-2024","messages":[{"role":"system","content":[{"type":"text","text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}]},{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"id":"square_root_z1j5j29sza64","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413.0}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"square_root_z1j5j29sza64"}],"max_tokens":200,"seed":1,"tools":[{"type":"function","function":{"name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"description":"Calculates and return the square root of a number"}}],"strict_tools":true}
+            {"stream":false,"model":"command-r7b-12-2024","messages":[{"role":"system","content":[{"type":"text","text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}]},{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"id":"square_root_cqmpsqyzf7kw","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"square_root_cqmpsqyzf7kw"}],"max_tokens":4096,"seed":1,"tools":[{"type":"function","function":{"name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]},"description":"Calculates and return the square root of a number"}}],"tool_choice":"none"}
         form: {}
         headers:
             Content-Type:
@@ -90,7 +90,7 @@ interactions:
         trailer: {}
         content_length: 429
         uncompressed: false
-        body: '{"id":"eb70ceea-525c-454b-9f98-f38e38131428","message":{"role":"assistant","content":[{"type":"text","text":"363.89"}],"citations":[{"start":0,"end":6,"text":"363.89","sources":[{"type":"tool","id":"square_root_z1j5j29sza64:0","tool_output":{"content":"363.89"}}],"type":"TEXT_CONTENT"}]},"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":92,"output_tokens":6},"tokens":{"input_tokens":1661,"output_tokens":19}}}'
+        body: '{"id":"260f2768-4cf0-4d5c-85de-27971c49fcd0","message":{"role":"assistant","content":[{"type":"text","text":"363.89"}],"citations":[{"start":0,"end":6,"text":"363.89","sources":[{"type":"tool","id":"square_root_cqmpsqyzf7kw:0","tool_output":{"content":"363.89"}}],"type":"TEXT_CONTENT"}]},"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":92,"output_tokens":6},"tokens":{"input_tokens":1660,"output_tokens":18}}}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -105,7 +105,7 @@ interactions:
             Expires:
                 - Thu, 01 Jan 1970 00:00:00 UTC
             Num_chars:
-                - "7764"
+                - "7782"
             Num_tokens:
                 - "98"
             Pragma:
@@ -119,9 +119,9 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - 03c9fb015e7283275ff03e6e19deb513
+                - 6b8b5288fc914ba5a726f9140748e3ea
             X-Envoy-Upstream-Service-Time:
-                - "281"
+                - "232"
         status: 200 OK
         code: 200
-        duration: 321ms
+        duration: 275ms

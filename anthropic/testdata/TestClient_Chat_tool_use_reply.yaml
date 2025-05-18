@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 806
+        content_length: 807
         transfer_encoding: []
         trailer: {}
         host: api.anthropic.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"claude-3-5-haiku-20241022","max_tokens":200,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"system":[{"type":"text","text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}],"thinking":{"type":"disabled"},"tool_choice":{"type":"any"},"tools":[{"description":"Calculates and return the square root of a number","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"name":"square_root"}]}
+            {"model":"claude-3-5-haiku-20241022","max_tokens":4096,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"system":[{"type":"text","text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}],"thinking":{"type":"disabled"},"tool_choice":{"type":"any"},"tools":[{"description":"Calculates and return the square root of a number","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]},"name":"square_root"}]}
         form: {}
         headers:
             Content-Type:
@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"msg_019J8vNzEZZhpWanHMBBDZey","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"tool_use","id":"toolu_01KfFhxVDX9WC9eAwDuAWhCa","name":"square_root","input":{"number":132413}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":518,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":39}}'
+        body: '{"id":"msg_017bUSJ9kXy93CGrk3rtcLBD","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"tool_use","id":"toolu_01JPtgSgWCc1iKSPqS3wop4P","name":"square_root","input":{"number":"132413"}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":518,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":39}}'
         headers:
             Anthropic-Organization-Id:
                 - b0607a1c-e615-400e-9924-e7a556d22e9f
@@ -37,33 +37,33 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "50000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-05-18T19:52:52Z"
+                - "2025-05-18T21:16:47Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-05-18T19:52:52Z"
+                - "2025-05-18T21:16:47Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "50"
             Anthropic-Ratelimit-Requests-Remaining:
                 - "49"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-05-18T19:52:52Z"
+                - "2025-05-18T21:16:47Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-05-18T19:52:52Z"
+                - "2025-05-18T21:16:47Z"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941de5b52f92a302-YUL
+                - 941e60a5abdaa255-YUL
             Content-Type:
                 - application/json
             Request-Id:
-                - req_011CPFabAPVuuWikvCutkanh
+                - req_011CPFgzMjDH8E43bnWTxiwD
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,20 +74,20 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 1.793s
+        duration: 853ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1087
+        content_length: 1090
         transfer_encoding: []
         trailer: {}
         host: api.anthropic.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"claude-3-5-haiku-20241022","max_tokens":200,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","content":[{"type":"tool_use","id":"toolu_01KfFhxVDX9WC9eAwDuAWhCa","input":{"number":132413},"name":"square_root"}]},{"role":"user","content":[{"type":"tool_result","tool_use_id":"toolu_01KfFhxVDX9WC9eAwDuAWhCa","content":[{"type":"text","text":"363.89"}]}]}],"system":[{"type":"text","text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}],"thinking":{"type":"disabled"},"tool_choice":{"type":"auto"},"tools":[{"description":"Calculates and return the square root of a number","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"name":"square_root"}]}
+            {"model":"claude-3-5-haiku-20241022","max_tokens":4096,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","content":[{"type":"tool_use","id":"toolu_01JPtgSgWCc1iKSPqS3wop4P","input":{"number":"132413"},"name":"square_root"}]},{"role":"user","content":[{"type":"tool_result","tool_use_id":"toolu_01JPtgSgWCc1iKSPqS3wop4P","content":[{"type":"text","text":"363.89"}]}]}],"system":[{"type":"text","text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}],"thinking":{"type":"disabled"},"tool_choice":{"type":"none"},"tools":[{"description":"Calculates and return the square root of a number","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]},"name":"square_root"}]}
         form: {}
         headers:
             Content-Type:
@@ -102,7 +102,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"msg_01KNrVwHmyQn8JBKBFbHb15g","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"363.89"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":496,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":7}}'
+        body: '{"id":"msg_0147BjVriRjuFhncurZ52BRh","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"363.89"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":496,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":7}}'
         headers:
             Anthropic-Organization-Id:
                 - b0607a1c-e615-400e-9924-e7a556d22e9f
@@ -111,33 +111,33 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "50000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-05-18T19:52:53Z"
+                - "2025-05-18T21:16:48Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-05-18T19:52:53Z"
+                - "2025-05-18T21:16:48Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "50"
             Anthropic-Ratelimit-Requests-Remaining:
-                - "49"
+                - "48"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-05-18T19:52:53Z"
+                - "2025-05-18T21:16:48Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-05-18T19:52:53Z"
+                - "2025-05-18T21:16:48Z"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941de5c03f2fa302-YUL
+                - 941e60aacbe3a255-YUL
             Content-Type:
                 - application/json
             Request-Id:
-                - req_011CPFabHxum4aqqcpGUdVMs
+                - req_011CPFgzRG3GgReZqhTXL7mE
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -148,4 +148,4 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 1.336s
+        duration: 881ms

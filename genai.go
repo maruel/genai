@@ -110,8 +110,8 @@ type ChatOptions struct {
 	DecodeAs ReflectedToJSON
 	// Tools is the list of tools that the LLM can request to call.
 	Tools []ToolDef
-	// ToolCallRequired tells the LLM a tool call must be done.
-	ToolCallRequired bool
+	// ToolCallRequest tells the LLM a tool call must be done.
+	ToolCallRequest ToolCallRequest
 
 	_ struct{}
 }
@@ -143,11 +143,26 @@ func (c *ChatOptions) Validate() error {
 			return fmt.Errorf("tool %d: %w", i, err)
 		}
 	}
-	if len(c.Tools) == 0 && c.ToolCallRequired {
-		return fmt.Errorf("field ToolCallRequired: Tools are required")
+	if len(c.Tools) == 0 && c.ToolCallRequest == ToolCallRequired {
+		return fmt.Errorf("field ToolCallRequest is ToolCallRequired: Tools are required")
 	}
 	return nil
 }
+
+// ToolCallRequest determines if we want the LLM to request a tool call.
+type ToolCallRequest int
+
+const (
+	// ToolCallAny is the default, the model is free to choose if a tool is called or not. For some models (like
+	// llama family), it may be a bit too "tool call happy".
+	ToolCallAny ToolCallRequest = iota
+	// ToolCallRequired means a tool call is required. Don't forget to change the value after sending the
+	// response!
+	ToolCallRequired
+	// ToolCallNone means that while tools are described, they should not be called. It is useful when a LLM did
+	// tool calls, got the response and now it's time to generate some text to present to the end user.
+	ToolCallNone
+)
 
 // ChatResult is the result of a completion.
 type ChatResult struct {

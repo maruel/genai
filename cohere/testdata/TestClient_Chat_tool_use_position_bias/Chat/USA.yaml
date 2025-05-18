@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 631
+        content_length: 632
         transfer_encoding: []
         trailer: {}
         host: api.cohere.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"stream":false,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":200,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"description":"A tool to determine the best country"}}],"tool_choice":"required","strict_tools":true}
+            {"stream":false,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":4096,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"description":"A tool to determine the best country"}}],"tool_choice":"required","strict_tools":true}
         form: {}
         headers:
             Content-Type:
@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: 563
         uncompressed: false
-        body: '{"id":"04a0095e-0443-49e2-8f19-9fd92d777d34","message":{"role":"assistant","tool_plan":"I will use one or more of the available tools to find the answer","tool_calls":[{"id":"best_country_7mcf21275sqv","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}},{"id":"best_country_k4mqyph720ey","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":49,"output_tokens":30},"tokens":{"input_tokens":1514,"output_tokens":63}}}'
+        body: '{"id":"d20a0b6c-ee94-4477-8aeb-c0d986b888a5","message":{"role":"assistant","tool_plan":"I will use one or more of the available tools to find the answer","tool_calls":[{"id":"best_country_0gtm86cf3k6s","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}},{"id":"best_country_jectxp3h7xtx","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":49,"output_tokens":30},"tokens":{"input_tokens":1514,"output_tokens":63}}}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -57,9 +57,9 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - e1eb439fb166113b4871377a8dc8b8c4
+                - 75b8649c5941a680b785fb187ff87bbb
             X-Envoy-Upstream-Service-Time:
-                - "677"
+                - "659"
         status: 200 OK
         code: 200
-        duration: 759ms
+        duration: 721ms

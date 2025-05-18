@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 856
+        content_length: 857
         transfer_encoding: []
         trailer: {}
         host: generativelanguage.googleapis.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"type":"object","properties":{"number":{"type":"number"}},"required":["number"]},"response":{"type":"object","properties":{"response":{"type":"string"}},"required":["response"]}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"systemInstruction":{"parts":[{"text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}]},"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":200,"seed":1}}
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"type":"object","properties":{"number":{"type":"string"}},"required":["number"]},"response":{"type":"object","properties":{"response":{"type":"string"}},"required":["response"]}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"systemInstruction":{"parts":[{"text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}]},"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":4096,"seed":1}}
         form: {}
         headers:
             Content-Type:
@@ -38,7 +38,7 @@ interactions:
                         "functionCall": {
                           "name": "square_root",
                           "args": {
-                            "number": 132413
+                            "number": "132413"
                           }
                         }
                       }
@@ -46,13 +46,13 @@ interactions:
                     "role": "model"
                   },
                   "finishReason": "STOP",
-                  "avgLogprobs": -3.8855941966176031e-07
+                  "avgLogprobs": 8.7304506450891491e-07
                 }
               ],
               "usageMetadata": {
                 "promptTokenCount": 91,
-                "candidatesTokenCount": 5,
-                "totalTokenCount": 96,
+                "candidatesTokenCount": 10,
+                "totalTokenCount": 101,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
@@ -62,7 +62,7 @@ interactions:
                 "candidatesTokensDetails": [
                   {
                     "modality": "TEXT",
-                    "tokenCount": 5
+                    "tokenCount": 10
                   }
                 ]
               },
@@ -76,7 +76,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=608
+                - gfet4t7; dur=573
             Vary:
                 - Origin
                 - X-Origin
@@ -89,20 +89,20 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 671ms
+        duration: 633ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1057
+        content_length: 1055
         transfer_encoding: []
         trailer: {}
         host: generativelanguage.googleapis.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"model","parts":[{"functionCall":{"name":"square_root","args":{"number":132413}}}]},{"role":"user","parts":[{"functionResponse":{"name":"square_root","response":{"response":"363.89"}}}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"type":"object","properties":{"number":{"type":"number"}},"required":["number"]},"response":{"type":"object","properties":{"response":{"type":"string"}},"required":["response"]}}]}],"toolConfig":{"functionCallingConfig":{"mode":"VALIDATED"}},"systemInstruction":{"parts":[{"text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}]},"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":200,"seed":1}}
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"model","parts":[{"functionCall":{"name":"square_root","args":{"number":"132413"}}}]},{"role":"user","parts":[{"functionResponse":{"name":"square_root","response":{"response":"363.89"}}}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"type":"object","properties":{"number":{"type":"string"}},"required":["number"]},"response":{"type":"object","properties":{"response":{"type":"string"}},"required":["response"]}}]}],"toolConfig":{"functionCallingConfig":{"mode":"NONE"}},"systemInstruction":{"parts":[{"text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}]},"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":4096,"seed":1}}
         form: {}
         headers:
             Content-Type:
@@ -130,17 +130,17 @@ interactions:
                     "role": "model"
                   },
                   "finishReason": "STOP",
-                  "avgLogprobs": 1.2328049966267178e-06
+                  "avgLogprobs": -0.00038025591389409134
                 }
               ],
               "usageMetadata": {
-                "promptTokenCount": 106,
+                "promptTokenCount": 111,
                 "candidatesTokenCount": 7,
-                "totalTokenCount": 113,
+                "totalTokenCount": 118,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
-                    "tokenCount": 106
+                    "tokenCount": 111
                   }
                 ],
                 "candidatesTokensDetails": [
@@ -160,7 +160,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=540
+                - gfet4t7; dur=393
             Vary:
                 - Origin
                 - X-Origin
@@ -173,4 +173,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 551ms
+        duration: 403ms

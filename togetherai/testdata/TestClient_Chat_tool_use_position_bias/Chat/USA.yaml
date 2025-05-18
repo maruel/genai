@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 604
+        content_length: 605
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"Qwen/Qwen2.5-7B-Instruct-Turbo","stream_tokens":false,"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"max_tokens":200,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+            {"model":"Qwen/Qwen2.5-7B-Instruct-Turbo","stream_tokens":false,"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"max_tokens":4096,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nuZp6MS-4Yz4kd-941d6d250ca36e02",
+              "id": "nuadXF4-3NKUce-941e4f148adfa275",
               "object": "chat.completion",
-              "created": 1747593032,
+              "created": 1747602286,
               "model": "Qwen/Qwen2.5-7B-Instruct-Turbo",
               "prompt": [],
               "choices": [
@@ -47,7 +47,7 @@ interactions:
                     "tool_calls": [
                       {
                         "index": 0,
-                        "id": "call_70jynusbl9jxjfoncpikqty2",
+                        "id": "call_lt23oabl5wgeh0ho252u1hxo",
                         "type": "function",
                         "function": {
                           "arguments": "{\"country\":\"USA\"}",
@@ -72,11 +72,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941d6d250ca36e02-YUL
+                - 941e4f148adfa275-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"2fa-1WukVilg6URRv6aclGcZHla5514"
+                - W/"2fa-2TmryQLECr35sbjmuqx/DFjRHYc"
             Retry-After:
                 - "2"
             Server:
@@ -86,13 +86,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 3092cc9a-f858-4d56-b07e-a553c6c87374-noamzn
+                - 5ea6645b-c085-4044-9717-fe55b777dee2-noamzn
             X-Api-Call-End:
-                - "2025-05-18T18:30:32.891Z"
+                - "2025-05-18T21:04:46.819Z"
             X-Api-Call-Start:
-                - "2025-05-18T18:30:32.589Z"
+                - "2025-05-18T21:04:46.563Z"
             X-Api-Received:
-                - "2025-05-18T18:30:32.557Z"
+                - "2025-05-18T21:04:46.551Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -102,13 +102,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "1"
+                - "0"
             X-Ratelimit-Remaining-Tokens:
                 - "1000"
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - nuZp6MS-4Yz4kd-941d6d250ca36e02
+                - nuadXF4-3NKUce-941e4f148adfa275
         status: 200 OK
         code: 200
-        duration: 479ms
+        duration: 358ms

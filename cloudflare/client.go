@@ -81,9 +81,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 					c.ResponseFormat.JSONSchema = jsonschema.Reflect(v.DecodeAs)
 				}
 				if len(v.Tools) != 0 {
-					if v.ToolCallRequired {
+					if v.ToolCallRequest != genai.ToolCallAny {
 						// Cloudflare doesn't provide a way to force tool use.
-						unsupported = append(unsupported, "ToolCallRequired")
+						unsupported = append(unsupported, "ToolCallRequest")
 					}
 					c.Tools = make([]Tool, len(v.Tools))
 					for i, t := range v.Tools {
@@ -144,7 +144,7 @@ func (m *Message) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", in.Role)
 	}
-	if len(in.Contents) != 1 {
+	if len(in.Contents) > 1 {
 		return errors.New("cloudflare doesn't support multiple content blocks; TODO split transparently")
 	}
 	if len(in.ToolCalls) != 0 {
@@ -184,7 +184,7 @@ type prompt struct {
 	Lora              string  `json:"lora,omitzero"`
 	MaxTokens         int64   `json:"max_tokens,omitzero"`
 	PresencePenalty   float64 `json:"presence_penalty,omitzero"`   // [0, 2.0]
-	Raw               bool    `json:"raw,omitzero"`                // Do not aply chat template
+	Raw               bool    `json:"raw,omitzero"`                // Do not apply chat template
 	RepetitionPenalty float64 `json:"repetition_penalty,omitzero"` // [0, 2.0]
 	ResponseFormat    struct {
 		Type       string              `json:"type,omitzero"` // json_object, json_schema
@@ -303,35 +303,6 @@ func (msg *MessageResponse) To(schema string, out *genai.Message) error {
 	case string:
 		// This is just sad.
 		if strings.HasPrefix(v, "<tool_call>") {
-			/*
-				out.Contents[0].Type = genai.ToolCalls
-				// Example with "@hf/nousresearch/hermes-2-pro-mistral-7b" that is
-				// supposed to support tool calling (and yes it supply the tool call XML
-				// tags):
-				// "<tool_call>\n{'arguments': {'country': 'Canada'}, 'name': 'best_country'}\n</tool_call>\n<tool_call>\n{'arguments': {'country': 'US'}, 'name': 'best_country'}\n</tool_call>"
-
-				var toolCalls ToolCalls
-				if err := xml.Unmarshal([]byte("<root>"+v+"</root>"), &toolCalls); err != nil {
-					return out, fmt.Errorf("failed to unmarshal tool calls XML: %w; content: %q", err, v)
-				}
-				for i, tc := range toolCalls.Content {
-					var toolCall ToolCall
-					tc = strings.TrimSpace(tc)
-					if err := json.Unmarshal([]byte(tc), &toolCall); err != nil {
-						// This is ugly.
-						tc2 := strings.ReplaceAll(tc, "'", "\"")
-						if err := json.Unmarshal([]byte(tc2), &toolCall); err != nil {
-							return out, fmt.Errorf("failed to unmarshal tool call as JSON: %w; content: %q", err, tc)
-						}
-					}
-					raw, err := json.Marshal(toolCall.Arguments)
-					if err != nil {
-						return out, fmt.Errorf("failed to marshal tool call arguments: %w", err)
-					}
-					// Cloudflare doesn't support tool call IDs yet.
-					out.Contents[0].ToolCalls = append(out.Contents[0].ToolCalls, genai.ToolCall{ID: fmt.Sprintf("tool_call%d", i), Name: toolCall.Name, Arguments: string(raw)})
-				}
-			*/
 			return fmt.Errorf("hacked up XML tool calls are not supported")
 		} else {
 			out.Contents = []genai.Content{{Text: v}}
@@ -376,13 +347,6 @@ type Usage struct {
 	PromptTokens     int64 `json:"prompt_tokens"`
 	TotalTokens      int64 `json:"total_tokens"`
 }
-
-/*
-type toolCalls struct {
-	XMLName xml.Name `xml:"root"`
-	Content []string `xml:"tool_call"`
-}
-*/
 
 type ToolCall struct {
 	Arguments any    `json:"arguments"`

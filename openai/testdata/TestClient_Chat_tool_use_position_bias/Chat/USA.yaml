@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 664
+        content_length: 665
         transfer_encoding: []
         trailer: {}
         host: api.openai.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"gpt-4.1-nano","max_completion_tokens":200,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"seed":1,"service_tier":"auto","tools":[{"type":"function","function":{"description":"A tool to determine the best country","name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required","parallel_tool_calls":true}
+            {"model":"gpt-4.1-nano","max_completion_tokens":4096,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"seed":1,"service_tier":"auto","tools":[{"type":"function","function":{"description":"A tool to determine the best country","name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required","parallel_tool_calls":true}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BXC8JcKbqmueSdvBxxCaXTaxnfcid",
+              "id": "chatcmpl-BYfTaKxr9vBQI4JnK9p8QjtliAPVc",
               "object": "chat.completion",
-              "created": 1747251163,
+              "created": 1747602286,
               "model": "gpt-4.1-nano-2025-04-14",
               "choices": [
                 {
@@ -42,7 +42,7 @@ interactions:
                     "content": null,
                     "tool_calls": [
                       {
-                        "id": "call_JqCtJ68sBl5xdawdYhcl3Gei",
+                        "id": "call_8hGTGzZWFZEsUNV0SPQrViyh",
                         "type": "function",
                         "function": {
                           "name": "best_country",
@@ -50,7 +50,7 @@ interactions:
                         }
                       },
                       {
-                        "id": "call_4Y53m7jH8udfBKHR8E7EqDvd",
+                        "id": "call_CGlnxFOvVxnL98KeO7C4bZXM",
                         "type": "function",
                         "function": {
                           "name": "best_country",
@@ -67,8 +67,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 78,
-                "completion_tokens": 46,
-                "total_tokens": 124,
+                "completion_tokens": 45,
+                "total_tokens": 123,
                 "prompt_tokens_details": {
                   "cached_tokens": 0,
                   "audio_tokens": 0
@@ -91,13 +91,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93fcd2b83c3aa290-YUL
+                - 941e4f147fce4bd0-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "323"
+                - "370"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -107,7 +107,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "327"
+                - "375"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -115,13 +115,13 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "498"
             X-Ratelimit-Remaining-Tokens:
-                - "199960"
+                - "199943"
             X-Ratelimit-Reset-Requests:
-                - 232ms
+                - 237ms
             X-Ratelimit-Reset-Tokens:
-                - 11ms
+                - 17ms
             X-Request-Id:
-                - req_cd7b100f3a62518fdcc41799620f733b
+                - req_62291c8f385b00ed1321eff45c66a74f
         status: 200 OK
         code: 200
-        duration: 722ms
+        duration: 467ms

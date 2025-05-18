@@ -111,9 +111,6 @@ func (c *CompletionRequest) Init(opts genai.Validatable) error {
 					unsupported = append(unsupported, "DecodeAs")
 				}
 				if len(v.Tools) != 0 {
-					if v.ToolCallRequired {
-						unsupported = append(unsupported, "ToolCallRequired")
-					}
 					// It's unclear how I'll implement this.
 					unsupported = append(unsupported, "Tools")
 				}

@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 611
+        content_length: 612
         transfer_encoding: []
         trailer: {}
         host: api.anthropic.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"claude-3-haiku-20240307","max_tokens":200,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"stream":true,"thinking":{"type":"disabled"},"tool_choice":{"type":"any"},"tools":[{"description":"A tool to determine the best country","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"name":"best_country"}]}
+            {"model":"claude-3-haiku-20240307","max_tokens":4096,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"stream":true,"thinking":{"type":"disabled"},"tool_choice":{"type":"any"},"tools":[{"description":"A tool to determine the best country","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"name":"best_country"}]}
         form: {}
         headers:
             Content-Type:
@@ -30,10 +30,10 @@ interactions:
         uncompressed: false
         body: |+
             event: message_start
-            data: {"type":"message_start","message":{"id":"msg_0194EkEKQ5rLsEzfY3jHaMdf","type":"message","role":"assistant","model":"claude-3-haiku-20240307","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":483,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":12}}        }
+            data: {"type":"message_start","message":{"id":"msg_01HGrKkHZJinMuLyF4GtQpUN","type":"message","role":"assistant","model":"claude-3-haiku-20240307","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":483,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":12}}}
 
             event: content_block_start
-            data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_01WS446e886ZJEUfw6jECJhb","name":"best_country","input":{}} }
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_01Rzu7P82h6P44eCj3CfLEa9","name":"best_country","input":{}}     }
 
             event: ping
             data: {"type": "ping"}
@@ -42,22 +42,22 @@ interactions:
             data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":""}  }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"{\"country\": "}         }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"{\"count"}   }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"\"U"}    }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"ry\":"} }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"SA\"}"}          }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":" \"USA\"}"}        }
 
             event: content_block_stop
-            data: {"type":"content_block_stop","index":0               }
+            data: {"type":"content_block_stop","index":0  }
 
             event: message_delta
-            data: {"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null},"usage":{"output_tokens":38}             }
+            data: {"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null},"usage":{"output_tokens":38}}
 
             event: message_stop
-            data: {"type":"message_stop"           }
+            data: {"type":"message_stop"       }
 
         headers:
             Anthropic-Organization-Id:
@@ -67,35 +67,35 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "49000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-05-18T14:43:23Z"
+                - "2025-05-18T21:04:48Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
-                - "10000"
+                - "4000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-05-18T14:43:24Z"
+                - "2025-05-18T21:05:21Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "50"
             Anthropic-Ratelimit-Requests-Remaining:
-                - "48"
+                - "46"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-05-18T14:43:24Z"
+                - "2025-05-18T21:04:51Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Remaining:
-                - "59000"
+                - "53000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-05-18T14:43:23Z"
+                - "2025-05-18T21:04:48Z"
             Cache-Control:
                 - no-cache
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941c205e8bc57150-YUL
+                - 941e4f198b18a29f-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Request-Id:
-                - req_011CPFAzPCH5FJem9GaQD9L3
+                - req_011CPFg5Nuvcmq7K17SyxVef
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -106,4 +106,4 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 801ms
+        duration: 635ms

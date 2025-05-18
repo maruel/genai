@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 555
+        content_length: 556
         transfer_encoding: []
         trailer: {}
         host: router.huggingface.co
         remote_addr: ""
         request_uri: ""
         body: |
-            {"stream":false,"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"max_tokens":200,"seed":1,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+            {"stream":false,"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"max_tokens":4096,"seed":1,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
         form: {}
         headers:
             Content-Type:
@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: 420
         uncompressed: false
-        body: '{"object":"chat.completion","id":"","created":1747596833,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":262,"completion_tokens":17,"total_tokens":279}}'
+        body: '{"object":"chat.completion","id":"","created":1747602287,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":262,"completion_tokens":17,"total_tokens":279}}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
@@ -47,9 +47,9 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 aaba6cbb29b8ee11a630e2a990704d30.cloudfront.net (CloudFront)
+                - 1.1 41fd1c68f697ac2776898df61c02b992.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - -B7vI5daLZSWkx22f8n6SHBnZ-vkS07RmF975oQb3GZETc5vjfSygA==
+                - LQP86uxg_cn4chSbV81mcLCRdWznnW_OrtFm80uov8Zop5jYVBnCiQ==
             X-Amz-Cf-Pop:
                 - YTO53-P1
             X-Cache:
@@ -57,15 +57,15 @@ interactions:
             X-Compute-Characters:
                 - "1301"
             X-Compute-Time:
-                - "31.208802955"
+                - "0.958790626"
             X-Compute-Type:
                 - 4-nvida-a100-sxm4-80gb
             X-Generated-Tokens:
                 - "17"
             X-Inference-Id:
-                - 89da8a9b-0039-41d0-bb18-4af5d09e0e73
+                - 3e1be068-2e8b-4394-bc9f-d71aa9cf9524
             X-Inference-Time:
-                - "18153"
+                - "932"
             X-Powered-By:
                 - huggingface-moon
             X-Prompt-Tokens:
@@ -77,17 +77,17 @@ interactions:
             X-Proxied-Replica:
                 - fyj5qcci-2zr2c
             X-Queue-Time:
-                - "13053"
+                - "24"
             X-Request-Id:
-                - jFP69ZnkYG3cvTov
+                - B6AkQWaBoPQzlCox
             X-Robots-Tag:
                 - none
             X-Time-Per-Token:
-                - "1067"
+                - "54"
             X-Total-Time:
-                - "31208"
+                - "958"
             X-Validation-Time:
                 - "1"
         status: 200 OK
         code: 200
-        duration: 31.549s
+        duration: 1.098s

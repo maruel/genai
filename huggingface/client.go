@@ -101,11 +101,13 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 					c.ResponseFormat.Value = jsonschema.Reflect(v.DecodeAs)
 				}
 				if len(v.Tools) != 0 {
-					if v.ToolCallRequired {
-						c.ToolChoice = "required"
-					} else {
+					switch v.ToolCallRequest {
+					case genai.ToolCallAny:
 						c.ToolChoice = "auto"
-						// c.ToolChoice = "none"
+					case genai.ToolCallRequired:
+						c.ToolChoice = "required"
+					case genai.ToolCallNone:
+						c.ToolChoice = "none"
 					}
 					c.Tools = make([]Tool, len(v.Tools))
 					for i, t := range v.Tools {

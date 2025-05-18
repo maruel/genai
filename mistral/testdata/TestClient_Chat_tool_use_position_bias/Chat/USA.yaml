@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 632
+        content_length: 633
         transfer_encoding: []
         trailer: {}
         host: api.mistral.ai
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"ministral-3b-latest","max_tokens":200,"stream":false,"random_seed":1,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+            {"model":"ministral-3b-latest","max_tokens":4096,"stream":false,"random_seed":1,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
         form: {}
         headers:
             Content-Type:
@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"1b77ba30120b4bd7aeaacbccc7a58298","object":"chat.completion","created":1747251163,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"SAVU27Ix9","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":0}],"content":""},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}'
+        body: '{"id":"8166025d37214fe4af4343a2703f807c","object":"chat.completion","created":1747602286,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"ThichaA04","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":0}],"content":""},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -37,35 +37,35 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93fcd2b8483ca294-YUL
+                - 941e4f1478a5a26d-YUL
             Content-Type:
                 - application/json
             Ratelimitbysize-Limit:
                 - "2000000"
             Ratelimitbysize-Query-Cost:
-                - "200"
+                - "4096"
             Ratelimitbysize-Remaining:
-                - "1999800"
+                - "1995904"
             Ratelimitbysize-Reset:
-                - "17"
+                - "14"
             Server:
                 - cloudflare
             X-Envoy-Upstream-Service-Time:
-                - "157"
+                - "211"
             X-Kong-Proxy-Latency:
                 - "7"
             X-Kong-Request-Id:
-                - bccd2b1e1f91fc37f232e93b1526f146
+                - 0b330c34d1323069c2ab68103489441f
             X-Kong-Upstream-Latency:
-                - "248"
+                - "212"
             X-Ratelimitbysize-Limit-Minute:
                 - "2000000"
             X-Ratelimitbysize-Limit-Month:
                 - "10000000000"
             X-Ratelimitbysize-Remaining-Minute:
-                - "1999800"
+                - "1995904"
             X-Ratelimitbysize-Remaining-Month:
-                - "9999999400"
+                - "9999995904"
         status: 200 OK
         code: 200
-        duration: 445ms
+        duration: 383ms

@@ -55,7 +55,6 @@ func TestClient_Chat_jSON_schema(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use_reply(t *testing.T) {
-	// testCases.TestChatToolUseReply(t, nil) //&internaltest.Settings{Model: "llama-3.3-70b"})
 	testCases.TestChatToolUseReply(t, &internaltest.Settings{
 		GetClient: func(t *testing.T, m string) genai.ChatProvider {
 			return &genai.ThinkingChatProvider{Provider: getClient(t, m), TagName: "think"}

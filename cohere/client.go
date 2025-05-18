@@ -86,11 +86,16 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 					c.ResponseFormat.Type = "json_object"
 				}
 				if len(v.Tools) != 0 {
-					// Cohere doesn't have an "auto" value, instead the value must not be specified.
-					if v.ToolCallRequired {
+					switch v.ToolCallRequest {
+					case genai.ToolCallAny:
+						// Cohere doesn't have an "auto" value, instead the value must not be specified.
+						c.StrictTools = true
+					case genai.ToolCallRequired:
 						c.ToolChoice = "required"
+						c.StrictTools = true
+					case genai.ToolCallNone:
+						c.ToolChoice = "none"
 					}
-					c.StrictTools = true
 					c.Tools = make([]Tool, len(v.Tools))
 					for i, t := range v.Tools {
 						c.Tools[i].Type = "function"

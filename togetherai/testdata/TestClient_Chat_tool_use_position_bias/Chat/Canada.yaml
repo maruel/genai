@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 604
+        content_length: 605
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"Qwen/Qwen2.5-7B-Instruct-Turbo","stream_tokens":false,"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"max_tokens":200,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+            {"model":"Qwen/Qwen2.5-7B-Instruct-Turbo","stream_tokens":false,"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"max_tokens":4096,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nuZp6MR-4Yz4kd-941d6d250ca16e02",
+              "id": "nuadXF5-3NKUce-941e4f148adda275",
               "object": "chat.completion",
-              "created": 1747593032,
+              "created": 1747602286,
               "model": "Qwen/Qwen2.5-7B-Instruct-Turbo",
               "prompt": [],
               "choices": [
@@ -47,7 +47,7 @@ interactions:
                     "tool_calls": [
                       {
                         "index": 0,
-                        "id": "call_4176hrzps5ubx6z44gbarx3g",
+                        "id": "call_00bi7o3ij7fx8ebdouh0g4f7",
                         "type": "function",
                         "function": {
                           "arguments": "{\"country\":\"Canada\"}",
@@ -72,11 +72,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941d6d250ca16e02-YUL
+                - 941e4f148adda275-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"2fd-M0btkP1MdBNcCUJFAL70osrPZGc"
+                - W/"2fd-zLdNz/b5diebaz95J2bWQwYOKPs"
             Retry-After:
                 - "2"
             Server:
@@ -86,13 +86,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - ac7d326d-d2dc-4f13-96d8-02eef2540e80-noamzn
+                - 17673cd2-0228-488e-83c5-abab75b11f30-noamzn
             X-Api-Call-End:
-                - "2025-05-18T18:30:32.880Z"
+                - "2025-05-18T21:04:46.857Z"
             X-Api-Call-Start:
-                - "2025-05-18T18:30:32.590Z"
+                - "2025-05-18T21:04:46.569Z"
             X-Api-Received:
-                - "2025-05-18T18:30:32.556Z"
+                - "2025-05-18T21:04:46.552Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -102,13 +102,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "0"
+                - "1"
             X-Ratelimit-Remaining-Tokens:
                 - "1000"
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - nuZp6MR-4Yz4kd-941d6d250ca16e02
+                - nuadXF5-3NKUce-941e4f148adda275
         status: 200 OK
         code: 200
-        duration: 459ms
+        duration: 395ms

@@ -7,6 +7,7 @@ package internaltest
 import (
 	"bytes"
 	_ "embed"
+	"encoding/json"
 	"fmt"
 	"math"
 	"os"
@@ -152,12 +153,13 @@ func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
 		genai.NewTextMessage(genai.User, "Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."),
 	}
 	var got struct {
-		Number float64 `json:"number"`
+		Number json.Number `json:"number"`
 	}
 	opts := genai.ChatOptions{
 		SystemPrompt: "You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is.",
-		MaxTokens:    200,
-		Seed:         1,
+		// Must be long enough for thinking models.
+		MaxTokens: 4096,
+		Seed:      1,
 		Tools: []genai.ToolDef{
 			{
 				Name:        "square_root",
@@ -165,7 +167,8 @@ func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
 				InputsAs:    got,
 			},
 		},
-		ToolCallRequired: true,
+		// For this test, we want to make sure the tool is called.
+		ToolCallRequest: genai.ToolCallRequired,
 	}
 	c := tc.getClient(t, override)
 	resp := tc.testChat(t, msgs, c, tc.getOptions(&opts, override), tc.usageIsBroken(override), tc.finishReasonIsBroken(override))
@@ -176,10 +179,14 @@ func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
 	if err := resp.ToolCalls[0].Decode(&got); err != nil {
 		t.Fatal(err)
 	}
-	if got.Number != 132413 {
+	i, err := got.Number.Int64()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if i != 132413 {
 		t.Fatal(got.Number)
 	}
-	sq := fmt.Sprintf("%.2f", math.Sqrt(got.Number))
+	sq := fmt.Sprintf("%.2f", math.Sqrt(float64(i)))
 	// Don't forget to add the tool call request first before the reply.
 	msgs = append(msgs,
 		resp.Message,
@@ -188,7 +195,7 @@ func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
 			ToolCallResults: []genai.ToolCallResult{{ID: resp.ToolCalls[0].ID, Name: resp.ToolCalls[0].Name, Result: sq}},
 		})
 	// Important!
-	opts.ToolCallRequired = false
+	opts.ToolCallRequest = genai.ToolCallNone
 	resp = tc.testChat(t, msgs, c, tc.getOptions(&opts, override), tc.usageIsBroken(override), tc.finishReasonIsBroken(override))
 	// This is very annoying, llama4 is not following instructions.
 
@@ -233,7 +240,8 @@ func (tc *TestCases) TestChatToolUsePositionBiasCore(t *testing.T, override *Set
 				genai.NewTextMessage(genai.User, fmt.Sprintf("I wonder if %s is a better country than %s? Call the tool best_country to tell me which country is the best one.", line.country1, line.country2)),
 			}
 			opts := genai.ChatOptions{
-				MaxTokens: 200,
+				// Must be long enough for thinking models.
+				MaxTokens: 4096,
 				Seed:      1,
 				Tools: []genai.ToolDef{
 					{
@@ -242,7 +250,7 @@ func (tc *TestCases) TestChatToolUsePositionBiasCore(t *testing.T, override *Set
 						InputsAs:    line.structDesc,
 					},
 				},
-				ToolCallRequired: true,
+				ToolCallRequest: genai.ToolCallRequired,
 			}
 			var resp genai.ChatResult
 			if useStream {

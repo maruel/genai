@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 893
+        content_length: 894
         transfer_encoding: []
         trailer: {}
         host: api.openai.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"gpt-4.1-nano","max_completion_tokens":200,"stream":false,"messages":[{"role":"developer","content":[{"type":"text","text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}]},{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"seed":1,"service_tier":"auto","tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required","parallel_tool_calls":true}
+            {"model":"gpt-4.1-nano","max_completion_tokens":4096,"stream":false,"messages":[{"role":"developer","content":[{"type":"text","text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}]},{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"seed":1,"service_tier":"auto","tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required","parallel_tool_calls":true}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BYeQlAOKjmJQdjIaib82kAwX4obWZ",
+              "id": "chatcmpl-BYffC4uBC5cPudGRdPm5CBrOP6JxN",
               "object": "chat.completion",
-              "created": 1747598267,
+              "created": 1747603006,
               "model": "gpt-4.1-nano-2025-04-14",
               "choices": [
                 {
@@ -42,11 +42,11 @@ interactions:
                     "content": null,
                     "tool_calls": [
                       {
-                        "id": "call_TH3ECd7eiD2fOfsbVx9gOK7y",
+                        "id": "call_utOnIsony9drs3BWGX0O2m4L",
                         "type": "function",
                         "function": {
                           "name": "square_root",
-                          "arguments": "{\"number\":132413}"
+                          "arguments": "{\"number\": \"132413\"}"
                         }
                       }
                     ],
@@ -59,8 +59,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 109,
-                "completion_tokens": 15,
-                "total_tokens": 124,
+                "completion_tokens": 31,
+                "total_tokens": 140,
                 "prompt_tokens_details": {
                   "cached_tokens": 0,
                   "audio_tokens": 0
@@ -83,13 +83,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941decf53e83a25b-YUL
+                - 941e60a62a7aa26d-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "468"
+                - "430"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -99,7 +99,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "487"
+                - "436"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -113,23 +113,23 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 24ms
             X-Request-Id:
-                - req_da7534531fd57cc189d580ae0573d18d
+                - req_179b89e0753bd2e30c1947a318afba2d
         status: 200 OK
         code: 200
-        duration: 586ms
+        duration: 583ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1157
+        content_length: 1163
         transfer_encoding: []
         trailer: {}
         host: api.openai.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"gpt-4.1-nano","max_completion_tokens":200,"stream":false,"messages":[{"role":"developer","content":[{"type":"text","text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}]},{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"id":"call_TH3ECd7eiD2fOfsbVx9gOK7y","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"call_TH3ECd7eiD2fOfsbVx9gOK7y"}],"seed":1,"service_tier":"auto","tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"auto","parallel_tool_calls":true}
+            {"model":"gpt-4.1-nano","max_completion_tokens":4096,"stream":false,"messages":[{"role":"developer","content":[{"type":"text","text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}]},{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"id":"call_utOnIsony9drs3BWGX0O2m4L","type":"function","function":{"name":"square_root","arguments":"{\"number\": \"132413\"}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"call_utOnIsony9drs3BWGX0O2m4L"}],"seed":1,"service_tier":"auto","tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","parallel_tool_calls":true}
         form: {}
         headers:
             Content-Type:
@@ -146,9 +146,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BYeQmy5kY4C1zg1ycOXbCRbTmc4jV",
+              "id": "chatcmpl-BYffDWZrELh12wGME7Z4JHcT64bjV",
               "object": "chat.completion",
-              "created": 1747598268,
+              "created": 1747603007,
               "model": "gpt-4.1-nano-2025-04-14",
               "choices": [
                 {
@@ -164,8 +164,8 @@ interactions:
                 }
               ],
               "usage": {
-                "prompt_tokens": 135,
-                "completion_tokens": 4,
+                "prompt_tokens": 136,
+                "completion_tokens": 3,
                 "total_tokens": 139,
                 "prompt_tokens_details": {
                   "cached_tokens": 0,
@@ -189,13 +189,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941decf8cbe9a25b-YUL
+                - 941e60a9afdba26d-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "219"
+                - "205"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -205,7 +205,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "221"
+                - "210"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -219,7 +219,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 24ms
             X-Request-Id:
-                - req_a980a9aa9edcf73305a922feb47af60e
+                - req_c2c7ea809a457ed90ea4c7dec643df3a
         status: 200 OK
         code: 200
-        duration: 290ms
+        duration: 279ms

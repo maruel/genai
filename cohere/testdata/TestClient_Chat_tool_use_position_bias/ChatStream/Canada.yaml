@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 630
+        content_length: 631
         transfer_encoding: []
         trailer: {}
         host: api.cohere.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"stream":true,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":200,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"description":"A tool to determine the best country"}}],"tool_choice":"required","strict_tools":true}
+            {"stream":true,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":4096,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"description":"A tool to determine the best country"}}],"tool_choice":"required","strict_tools":true}
         form: {}
         headers:
             Content-Type:
@@ -30,7 +30,7 @@ interactions:
         uncompressed: false
         body: |+
             event: message-start
-            data: {"id":"05eb5b8e-e71c-4d96-9575-6b496fa1f68a","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
+            data: {"id":"bde74cba-a0b7-4423-88d5-a9950beab653","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
 
             event: tool-plan-delta
             data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"I"}}}
@@ -75,7 +75,7 @@ interactions:
             data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" answer"}}}
 
             event: tool-call-start
-            data: {"type":"tool-call-start","index":0,"delta":{"message":{"tool_calls":{"id":"best_country_4yjmpptfk8pj","type":"function","function":{"name":"best_country","arguments":""}}}}}
+            data: {"type":"tool-call-start","index":0,"delta":{"message":{"tool_calls":{"id":"best_country_wh8tf29s0gv1","type":"function","function":{"name":"best_country","arguments":""}}}}}
 
             event: tool-call-delta
             data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"{\""}}}}}
@@ -99,7 +99,7 @@ interactions:
             data: {"type":"tool-call-end","index":0}
 
             event: tool-call-start
-            data: {"type":"tool-call-start","index":1,"delta":{"message":{"tool_calls":{"id":"best_country_dkeqc2gybp2k","type":"function","function":{"name":"best_country","arguments":""}}}}}
+            data: {"type":"tool-call-start","index":1,"delta":{"message":{"tool_calls":{"id":"best_country_efgy8dgfbh40","type":"function","function":{"name":"best_country","arguments":""}}}}}
 
             event: tool-call-delta
             data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"{\""}}}}}
@@ -149,9 +149,9 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - 93cfe1b9377a2fcdb4bffa6f79bd2026
+                - 61a0c4d5a0a8884bb1474131326beee4
             X-Envoy-Upstream-Service-Time:
-                - "49"
+                - "32"
         status: 200 OK
         code: 200
-        duration: 91ms
+        duration: 74ms

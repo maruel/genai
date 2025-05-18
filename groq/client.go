@@ -178,10 +178,13 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) ([]string,
 		c.ResponseFormat.Type = "json_object"
 	}
 	if len(v.Tools) != 0 {
-		if v.ToolCallRequired {
-			c.ToolChoice = "required"
-		} else {
+		switch v.ToolCallRequest {
+		case genai.ToolCallAny:
 			c.ToolChoice = "auto"
+		case genai.ToolCallRequired:
+			c.ToolChoice = "required"
+		case genai.ToolCallNone:
+			c.ToolChoice = "none"
 		}
 		// Documentation states max is 128 tools.
 		c.Tools = make([]Tool, len(v.Tools))

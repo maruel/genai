@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 793
+        content_length: 794
         transfer_encoding: []
         trailer: {}
         host: api.groq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"max_completion_tokens":200,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"llama3-8b-8192","seed":1,"stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+            {"max_completion_tokens":4096,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"llama3-8b-8192","seed":1,"stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
         form: {}
         headers:
             Content-Type:
@@ -29,7 +29,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-3cf60bf3-62cf-4ff2-9465-b145c87d8f35","object":"chat.completion","created":1747597340,"model":"llama3-8b-8192","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"call_jybw","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.073610091,"prompt_tokens":895,"prompt_time":0.113024216,"completion_tokens":61,"completion_time":0.050833333,"total_tokens":956,"total_time":0.163857549},"usage_breakdown":{"models":null},"system_fingerprint":"fp_dadc9d6142","x_groq":{"id":"req_01jvjepbx8eg5tb9jh73qx1fbx"}}
+            {"id":"chatcmpl-bec11f9c-4a4f-4a66-a166-48de0f834d64","object":"chat.completion","created":1747603006,"model":"llama3-8b-8192","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"call_2ahe","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.18844521199999997,"prompt_tokens":895,"prompt_time":0.132626517,"completion_tokens":62,"completion_time":0.051666667,"total_tokens":957,"total_time":0.184293184},"usage_breakdown":{"models":null},"system_fingerprint":"fp_dadc9d6142","x_groq":{"id":"req_01jvjm390bfdjvap76c08jftsa"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,15 +38,17 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941dd6522cbea313-YUL
+                - 941e60a5ec497154-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Vary:
                 - Origin
+            Via:
+                - 1.1 google
             X-Groq-Region:
-                - us-south-1
+                - us-west-1
             X-Ratelimit-Limit-Requests:
                 - "50000"
             X-Ratelimit-Limit-Tokens:
@@ -60,23 +62,23 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 51ms
             X-Request-Id:
-                - req_01jvjepbx8eg5tb9jh73qx1fbx
+                - req_01jvjm390bfdjvap76c08jftsa
         status: 200 OK
         code: 200
-        duration: 411ms
+        duration: 541ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 992
+        content_length: 997
         transfer_encoding: []
         trailer: {}
         host: api.groq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"max_completion_tokens":200,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"call_jybw","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_jybw"}],"model":"llama3-8b-8192","seed":1,"stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"auto"}
+            {"max_completion_tokens":4096,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"call_2ahe","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_2ahe"}],"model":"llama3-8b-8192","seed":1,"stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
         form: {}
         headers:
             Content-Type:
@@ -92,7 +94,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-f7ba9ee1-5afe-4fce-95ff-4c07b5990e76","object":"chat.completion","created":1747597341,"model":"llama3-8b-8192","choices":[{"index":0,"message":{"role":"assistant","content":"363.89"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":-0.29893567899999995,"prompt_tokens":2143,"prompt_time":0.267751288,"completion_tokens":4,"completion_time":0.003333333,"total_tokens":2147,"total_time":0.271084621},"usage_breakdown":{"models":null},"system_fingerprint":"fp_179b0f92c9","x_groq":{"id":"req_01jvjepc7yeg7vvjh0178tahaj"}}
+            {"id":"chatcmpl-34d1f6c0-36c3-4970-b6ea-e7041bfbdece","object":"chat.completion","created":1747603006,"model":"llama3-8b-8192","choices":[{"index":0,"message":{"role":"assistant","content":"363.89"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.018984342,"prompt_tokens":296,"prompt_time":0.037439677,"completion_tokens":4,"completion_time":0.003333333,"total_tokens":300,"total_time":0.04077301},"usage_breakdown":{"models":null},"system_fingerprint":"fp_dadc9d6142","x_groq":{"id":"req_01jvjm39eyeetvmxzbjc5b91k1"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -101,15 +103,17 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941dd654880da313-YUL
+                - 941e60a91fa97154-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Vary:
                 - Origin
+            Via:
+                - 1.1 google
             X-Groq-Region:
-                - us-south-1
+                - us-west-1
             X-Ratelimit-Limit-Requests:
                 - "50000"
             X-Ratelimit-Limit-Tokens:
@@ -117,13 +121,13 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "49998"
             X-Ratelimit-Remaining-Tokens:
-                - "99088"
+                - "99098"
             X-Ratelimit-Reset-Requests:
-                - 3.117s
+                - 2.989999999s
             X-Ratelimit-Reset-Tokens:
-                - 547.2ms
+                - 540.799999ms
             X-Request-Id:
-                - req_01jvjepc7yeg7vvjh0178tahaj
+                - req_01jvjm39eyeetvmxzbjc5b91k1
         status: 200 OK
         code: 200
-        duration: 673ms
+        duration: 158ms

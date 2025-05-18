@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 591
+        content_length: 592
         transfer_encoding: []
         trailer: {}
         host: api.groq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"max_completion_tokens":200,"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"model":"llama3-8b-8192","seed":1,"stream":true,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+            {"max_completion_tokens":4096,"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"model":"llama3-8b-8192","seed":1,"stream":true,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
         form: {}
         headers:
             Content-Type:
@@ -29,11 +29,11 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"chatcmpl-ed565456-21a3-4721-ac7e-2f549947200c","object":"chat.completion.chunk","created":1747579402,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jvhxjxthey0r8f541fhe02ge"}}
+            data: {"id":"chatcmpl-c059357a-21b3-4543-aca2-f9e1d67accac","object":"chat.completion.chunk","created":1747602287,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jvjkdajsevzvqd4jv67mx4ag"}}
 
-            data: {"id":"chatcmpl-ed565456-21a3-4721-ac7e-2f549947200c","object":"chat.completion.chunk","created":1747579402,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"tool_calls":[{"id":"call_tczx","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-c059357a-21b3-4543-aca2-f9e1d67accac","object":"chat.completion.chunk","created":1747602287,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"tool_calls":[{"id":"call_4032","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-ed565456-21a3-4721-ac7e-2f549947200c","object":"chat.completion.chunk","created":1747579402,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01jvhxjxthey0r8f541fhe02ge","usage":{"queue_time":0.094660598,"prompt_tokens":875,"prompt_time":0.109428033,"completion_tokens":73,"completion_time":0.060833333,"total_tokens":948,"total_time":0.170261366}}}
+            data: {"id":"chatcmpl-c059357a-21b3-4543-aca2-f9e1d67accac","object":"chat.completion.chunk","created":1747602287,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01jvjkdajsevzvqd4jv67mx4ag","usage":{"queue_time":0.07835394600000001,"prompt_tokens":875,"prompt_time":0.126130212,"completion_tokens":73,"completion_time":0.060833333,"total_tokens":948,"total_time":0.186963545}}}
 
             data: [DONE]
 
@@ -45,7 +45,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941c205ebd5ba26d-YUL
+                - 941e4f16ca26a303-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -59,15 +59,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "100000"
             X-Ratelimit-Remaining-Requests:
-                - "49999"
+                - "49997"
             X-Ratelimit-Remaining-Tokens:
-                - "99965"
+                - "98293"
             X-Ratelimit-Reset-Requests:
-                - 1.728s
+                - 4.754s
             X-Ratelimit-Reset-Tokens:
-                - 20.999999ms
+                - 1.023799999s
             X-Request-Id:
-                - req_01jvhxjxthey0r8f541fhe02ge
+                - req_01jvjkdajsevzvqd4jv67mx4ag
         status: 200 OK
         code: 200
-        duration: 368ms
+        duration: 316ms

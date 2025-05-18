@@ -55,7 +55,6 @@ func TestClient_Chat_jSON_schema(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use_reply(t *testing.T) {
-	t.Skip("a bit too happy to call tools in repetition. to fix later.")
 	testCases.TestChatToolUseReply(t, nil)
 }
 

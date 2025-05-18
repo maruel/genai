@@ -158,10 +158,13 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions) []string {
 		unsupported = append(unsupported, "JSON schema (ReplyAsJSON/DecodeAs)")
 	}
 	if len(v.Tools) != 0 {
-		if v.ToolCallRequired {
-			c.ToolChoice.Type = ToolChoiceAny
-		} else {
+		switch v.ToolCallRequest {
+		case genai.ToolCallAny:
 			c.ToolChoice.Type = ToolChoiceAuto
+		case genai.ToolCallRequired:
+			c.ToolChoice.Type = ToolChoiceAny
+		case genai.ToolCallNone:
+			c.ToolChoice.Type = ToolChoiceNone
 		}
 		c.Tools = make([]Tool, len(v.Tools))
 		for i, t := range v.Tools {

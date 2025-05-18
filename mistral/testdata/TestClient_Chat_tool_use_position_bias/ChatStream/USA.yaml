@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 631
+        content_length: 632
         transfer_encoding: []
         trailer: {}
         host: api.mistral.ai
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"ministral-3b-latest","max_tokens":200,"stream":true,"random_seed":1,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+            {"model":"ministral-3b-latest","max_tokens":4096,"stream":true,"random_seed":1,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
         form: {}
         headers:
             Content-Type:
@@ -29,9 +29,9 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"434c6e650e4a4f3cb1acc195d88f705d","object":"chat.completion.chunk","created":1747579402,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+            data: {"id":"446abcee8c264828b2874fa7b21d4e8a","object":"chat.completion.chunk","created":1747602287,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
 
-            data: {"id":"434c6e650e4a4f3cb1acc195d88f705d","object":"chat.completion.chunk","created":1747579402,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"tool_calls":[{"id":"RfwwK2knL","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":0}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}
+            data: {"id":"446abcee8c264828b2874fa7b21d4e8a","object":"chat.completion.chunk","created":1747602287,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"tool_calls":[{"id":"eqgXNOyTG","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":0}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}
 
             data: [DONE]
 
@@ -43,35 +43,35 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941c205ebabaa2bc-YUL
+                - 941e4f16bc2fa26d-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Ratelimitbysize-Limit:
                 - "2000000"
             Ratelimitbysize-Query-Cost:
-                - "200"
+                - "4096"
             Ratelimitbysize-Remaining:
-                - "1999800"
+                - "1995904"
             Ratelimitbysize-Reset:
-                - "38"
+                - "13"
             Server:
                 - cloudflare
             X-Envoy-Upstream-Service-Time:
-                - "155"
+                - "180"
             X-Kong-Proxy-Latency:
-                - "6"
+                - "7"
             X-Kong-Request-Id:
-                - 40659e0f58bb25411764c66d51ae8e4d
+                - 7882ae1ec23c626d4bcfb8509291ad2a
             X-Kong-Upstream-Latency:
-                - "157"
+                - "181"
             X-Ratelimitbysize-Limit-Minute:
                 - "2000000"
             X-Ratelimitbysize-Limit-Month:
                 - "10000000000"
             X-Ratelimitbysize-Remaining-Minute:
-                - "1999800"
+                - "1995904"
             X-Ratelimitbysize-Remaining-Month:
-                - "9999999800"
+                - "9999994504"
         status: 200 OK
         code: 200
-        duration: 547ms
+        duration: 312ms

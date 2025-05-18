@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 230
+        content_length: 205
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"meta-llama/Llama-3.2-3B-Instruct-Turbo","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"max_tokens":1000,"temperature":0.1,"seed":1}
+            {"model":"meta-llama/Llama-3.2-3B-Instruct-Turbo","stream_tokens":false,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"max_tokens":1000,"temperature":0.1,"seed":1}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ntHPASU-57nCBj-93cd198d1df5a281",
+              "id": "nuZp7Pw-4pPsy7-941d6d39ed92a2eb",
               "object": "chat.completion",
-              "created": 1746750747,
+              "created": 1747593036,
               "model": "meta-llama/Llama-3.2-3B-Instruct-Turbo",
               "prompt": [],
               "choices": [
@@ -63,11 +63,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cd198d1df5a281-YUL
+                - 941d6d39ed92a2eb-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"208-Vy+PQ7vlDlUcuhO0vv59qkMZWfw"
+                - W/"208-EXsEUaE8Kv6aEKAkwlvznL4JM0c"
             Retry-After:
                 - "2"
             Server:
@@ -77,13 +77,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - b9379758-b83b-4bde-a2e8-cb8ab04abbdd-noamzn
+                - 865e118d-bdab-4096-a792-34e8dcd95e57-noamzn
             X-Api-Call-End:
-                - "2025-05-09T00:32:28.536Z"
+                - "2025-05-18T18:30:36.241Z"
             X-Api-Call-Start:
-                - "2025-05-09T00:32:27.817Z"
+                - "2025-05-18T18:30:36.086Z"
             X-Api-Received:
-                - "2025-05-09T00:32:27.801Z"
+                - "2025-05-18T18:30:36.066Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -93,13 +93,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "1"
+                - "0"
             X-Ratelimit-Remaining-Tokens:
                 - "1000"
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - ntHPASU-57nCBj-93cd198d1df5a281
+                - nuZp7Pw-4pPsy7-941d6d39ed92a2eb
         status: 200 OK
         code: 200
-        duration: 998ms
+        duration: 456ms

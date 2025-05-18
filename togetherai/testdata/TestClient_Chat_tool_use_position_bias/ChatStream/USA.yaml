@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 628
+        content_length: 603
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"Qwen/Qwen2.5-7B-Instruct-Turbo","stream_tokens":true,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":200,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+            {"model":"Qwen/Qwen2.5-7B-Instruct-Turbo","stream_tokens":true,"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"max_tokens":200,"seed":1,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
         form: {}
         headers:
             Content-Type:
@@ -29,13 +29,13 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"nuYcEVN-2j9zxn-941c205ece12a296","object":"chat.completion.chunk","created":1747579402,"model":"Qwen/Qwen2.5-7B-Instruct-Turbo","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"nuZp78C-4Yz4kd-941d6d353e37a2eb","object":"chat.completion.chunk","created":1747593035,"model":"Qwen/Qwen2.5-7B-Instruct-Turbo","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"nuYcEVN-2j9zxn-941c205ece12a296","object":"chat.completion.chunk","created":1747579402,"model":"Qwen/Qwen2.5-7B-Instruct-Turbo","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_jw5bgaihr4sbpuyq2pkltaxa","type":"function","function":{"name":"best_country","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"nuZp78C-4Yz4kd-941d6d353e37a2eb","object":"chat.completion.chunk","created":1747593035,"model":"Qwen/Qwen2.5-7B-Instruct-Turbo","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_gi13yko1xxq2nu3z7nhtpig4","type":"function","function":{"name":"best_country","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"nuYcEVN-2j9zxn-941c205ece12a296","object":"chat.completion.chunk","created":1747579402,"model":"Qwen/Qwen2.5-7B-Instruct-Turbo","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"nuZp78C-4Yz4kd-941d6d353e37a2eb","object":"chat.completion.chunk","created":1747593035,"model":"Qwen/Qwen2.5-7B-Instruct-Turbo","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"nuYcEVN-2j9zxn-941c205ece12a296","object":"chat.completion.chunk","created":1747579402,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"tool_calls","seed":1,"delta":{"token_id":151645,"role":"assistant","content":"","tool_calls":null}}],"model":"Qwen/Qwen2.5-7B-Instruct-Turbo","usage":{"prompt_tokens":260,"completion_tokens":20,"total_tokens":280}}
+            data: {"id":"nuZp78C-4Yz4kd-941d6d353e37a2eb","object":"chat.completion.chunk","created":1747593035,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"tool_calls","seed":1,"delta":{"token_id":151645,"role":"assistant","content":"","tool_calls":null}}],"model":"Qwen/Qwen2.5-7B-Instruct-Turbo","usage":{"prompt_tokens":260,"completion_tokens":20,"total_tokens":280}}
 
             data: [DONE]
 
@@ -49,7 +49,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941c205ece12a296-YUL
+                - 941d6d353e37a2eb-YUL
             Content-Type:
                 - text/event-stream;charset=utf-8
             Retry-After:
@@ -61,11 +61,11 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - e2f9cfae-0de1-4116-a4ca-9c0198796c5e-noamzn
+                - c3a796d9-5efe-4bc3-841b-d48db5820568-noamzn
             X-Api-Call-Start:
-                - "2025-05-18T14:43:22.186Z"
+                - "2025-05-18T18:30:35.189Z"
             X-Api-Received:
-                - "2025-05-18T14:43:22.089Z"
+                - "2025-05-18T18:30:35.153Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -75,13 +75,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "0"
+                - "1"
             X-Ratelimit-Remaining-Tokens:
                 - "1000"
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - nuYcEVN-2j9zxn-941c205ece12a296
+                - nuZp78C-4Yz4kd-941d6d353e37a2eb
         status: 200 OK
         code: 200
-        duration: 679ms
+        duration: 2.595s

@@ -147,7 +147,8 @@ type Message struct {
 	Role    string   `json:"role,omitzero"` // "system", "assistant", "user"
 	Content Contents `json:"content,omitzero"`
 	// Warning: using a small model may fail.
-	ToolCalls []ToolCall `json:"tool_calls,omitzero"`
+	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
+	ToolCallID string     `json:"tool_call_id,omitzero"`
 }
 
 func (m *Message) From(in *genai.Message) error {
@@ -174,6 +175,20 @@ func (m *Message) From(in *genai.Message) error {
 		for i := range in.ToolCalls {
 			m.ToolCalls[i].From(&in.ToolCalls[i])
 		}
+	}
+	if len(in.ToolCallResults) != 0 {
+		if len(in.Contents) != 0 || len(in.ToolCalls) != 0 {
+			// This could be worked around.
+			return fmt.Errorf("can't have tool call result along content or tool calls")
+		}
+		if len(in.ToolCallResults) != 1 {
+			// This could be worked around.
+			return fmt.Errorf("can't have more than one tool call result at a time")
+		}
+		m.Role = "tool"
+		// Cheat here because TogetherAI API seems to be fucked up.
+		m.Content = Contents{{Type: ContentText, Text: in.ToolCallResults[0].Result}}
+		m.ToolCallID = in.ToolCallResults[0].ID
 	}
 	return nil
 }
@@ -217,6 +232,14 @@ func (c *Contents) UnmarshalJSON(data []byte) error {
 	}
 	*c = Contents(v)
 	return nil
+}
+
+// Together.AI really prefer simple strings.
+func (c *Contents) MarshalJSON() ([]byte, error) {
+	if len(*c) == 1 && (*c)[0].Type == ContentText {
+		return json.Marshal((*c)[0].Text)
+	}
+	return json.Marshal(([]Content)(*c))
 }
 
 type Content struct {
@@ -447,6 +470,11 @@ func New(apiKey, model string) (*Client, error) {
 				Transport: &roundtrippers.Retry{
 					Transport: &roundtrippers.RequestID{
 						Transport: http.DefaultTransport,
+					},
+					Policy: &roundtrippers.ExponentialBackoff{
+						MaxTryCount: 10,
+						MaxDuration: 60 * time.Second,
+						Exp:         1.5,
 					},
 				},
 				Header: http.Header{"Authorization": {"Bearer " + apiKey}},

@@ -58,6 +58,11 @@ func TestClient_Chat_vision_pDF_uRL(t *testing.T) {
 	testCases.TestChatVisionPDFURL(t, &internaltest.Settings{Model: "claude-3-5-haiku-20241022"})
 }
 
+func TestClient_Chat_tool_use_reply(t *testing.T) {
+	t.Skip("TODO: Soon!")
+	testCases.TestChatToolUseReply(t, nil)
+}
+
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 	testCases.TestChatToolUsePositionBias(t, nil, false)
 }

@@ -149,14 +149,15 @@ func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Mod
 // TestChatToolUseReply confirms tool use fully works.
 func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
 	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Use the square_root tool to calculate the square root of 7 and reply with only the result."),
+		genai.NewTextMessage(genai.User, "Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."),
 	}
 	var got struct {
 		Number float64 `json:"number"`
 	}
-	opts := tc.getOptions(&genai.ChatOptions{
-		MaxTokens: 200,
-		Seed:      1,
+	opts := genai.ChatOptions{
+		SystemPrompt: "You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is.",
+		MaxTokens:    200,
+		Seed:         1,
 		Tools: []genai.ToolDef{
 			{
 				Name:        "square_root",
@@ -165,9 +166,9 @@ func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
 			},
 		},
 		ToolCallRequired: true,
-	}, override)
+	}
 	c := tc.getClient(t, override)
-	resp := tc.testChat(t, msgs, c, opts, tc.usageIsBroken(override), tc.finishReasonIsBroken(override))
+	resp := tc.testChat(t, msgs, c, tc.getOptions(&opts, override), tc.usageIsBroken(override), tc.finishReasonIsBroken(override))
 	want := "square_root"
 	if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
 		t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
@@ -175,15 +176,22 @@ func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
 	if err := resp.ToolCalls[0].Decode(&got); err != nil {
 		t.Fatal(err)
 	}
-	if got.Number != 7 {
+	if got.Number != 132413 {
 		t.Fatal(got.Number)
 	}
-	sq := fmt.Sprintf("%.2f", math.Sqrt(7))
-	msgs = append(msgs, genai.Message{
-		Role:            genai.Assistant,
-		ToolCallResults: []genai.ToolCallResult{{ID: resp.ToolCalls[0].ID, Name: resp.ToolCalls[0].Name, Result: sq}},
-	})
-	resp = tc.testChat(t, msgs, c, opts, tc.usageIsBroken(override), tc.finishReasonIsBroken(override))
+	sq := fmt.Sprintf("%.2f", math.Sqrt(got.Number))
+	// Don't forget to add the tool call request first before the reply.
+	msgs = append(msgs,
+		resp.Message,
+		genai.Message{
+			Role:            genai.Assistant,
+			ToolCallResults: []genai.ToolCallResult{{ID: resp.ToolCalls[0].ID, Name: resp.ToolCalls[0].Name, Result: sq}},
+		})
+	// Important!
+	opts.ToolCallRequired = false
+	resp = tc.testChat(t, msgs, c, tc.getOptions(&opts, override), tc.usageIsBroken(override), tc.finishReasonIsBroken(override))
+	// This is very annoying, llama4 is not following instructions.
+
 	validateSingleWordResponse(t, resp, sq)
 }
 

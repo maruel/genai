@@ -32,6 +32,7 @@ func TestClient_Chat_allModels(t *testing.T) {
 				model.ID == "google/gemma-2b-it" || // Doesn't follow instruction.
 				model.ID == "deepseek-ai/DeepSeek-V3-p-dp" || // Causes HTTP 503.
 				model.ID == "meta-llama/Llama-3.3-70B-Instruct-Turbo" || // rate_limit even if been a while.
+				model.ID == "togethercomputer/Refuel-Llm-V2-Small" || // Fails because Seed option.
 				strings.HasPrefix(model.ID, "deepseek-ai/DeepSeek-R1") || // Requires CoT processing.
 				strings.HasPrefix(model.ID, "perplexity-ai/r1-") || // Requires CoT processing.
 				strings.HasPrefix(model.ID, "Qwen/QwQ-32B") || // Requires CoT processing.
@@ -103,6 +104,10 @@ func TestClient_Chat_video(t *testing.T) {
 	if saw := strings.ToLower(resp.Contents[0].Text); saw != "banana" {
 		t.Fatal(saw)
 	}
+}
+
+func TestClient_Chat_tool_use_reply(t *testing.T) {
+	testCases.TestChatToolUseReply(t, nil)
 }
 
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {

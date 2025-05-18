@@ -304,6 +304,12 @@ func (msg *Message) From(m *genai.Message) error {
 	} else {
 		return fmt.Errorf("unsupported content type %v", m.Contents[0])
 	}
+	if len(m.ToolCalls) != 0 {
+		return errors.New("implement tool call results")
+	}
+	if len(m.ToolCallResults) != 0 {
+		return errors.New("implement tool call results")
+	}
 	return nil
 }
 

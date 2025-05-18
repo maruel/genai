@@ -186,6 +186,9 @@ func (m *Message) From(in *genai.Message) error {
 	if len(in.ToolCalls) != 0 {
 		return errors.New("mistral supports tool calls, we need to implement it")
 	}
+	if len(in.ToolCallResults) != 0 {
+		return errors.New("mistral supports tool calls, we need to implement it")
+	}
 	return nil
 }
 

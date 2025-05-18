@@ -218,6 +218,9 @@ func (m *Message) From(in *genai.Message) error {
 			return fmt.Errorf("block %d: %w", offset+i, err)
 		}
 	}
+	if len(in.ToolCallResults) != 0 {
+		return errors.New("implement tool call results")
+	}
 	return nil
 }
 

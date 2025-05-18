@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 197
+        content_length: 221
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"meta-llama/Llama-3-70b-chat-hf","stream_tokens":false,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"max_tokens":1000,"temperature":0.1,"seed":1}
+            {"model":"togethercomputer/Refuel-Llm-V2-Small","stream_tokens":false,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello.","tool_call_id":""}],"max_tokens":1000,"temperature":0.1,"seed":1}
         form: {}
         headers:
             Content-Type:
@@ -30,10 +30,10 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nuZp82G-4yUbBN-941d6d484b82a2eb",
+              "id": "nuZnNWX-6UHjtw-941d64f21d65a2f8",
               "object": "chat.completion",
-              "created": 1747593038,
-              "model": "meta-llama/Llama-3-70b-chat-hf",
+              "created": 1747592696,
+              "model": "togethercomputer/Refuel-Llm-V2-Small",
               "prompt": [],
               "choices": [
                 {
@@ -43,15 +43,16 @@ interactions:
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "Hello",
+                    "content": "Hello.",
                     "tool_calls": []
                   }
                 }
               ],
               "usage": {
                 "prompt_tokens": 22,
-                "completion_tokens": 2,
-                "total_tokens": 24
+                "completion_tokens": 4,
+                "total_tokens": 26,
+                "cache_hit_rate": 0
               }
             }
         headers:
@@ -62,11 +63,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941d6d484b82a2eb-YUL
+                - 941d64f21d65a2f8-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"1e7-gZsuqIhHwBEGzfVoD5innmPqa30"
+                - W/"207-uElWYOG00Z3haZKn9ABws1mTPu0"
             Retry-After:
                 - "2"
             Server:
@@ -75,14 +76,14 @@ interactions:
                 - max-age=15552000; includeSubDomains
             Vary:
                 - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - b0303b81-a732-4274-a282-9059baeff370-noamzn
             X-Api-Call-End:
-                - "2025-05-18T18:30:38.497Z"
+                - "2025-05-18T18:24:56.752Z"
             X-Api-Call-Start:
-                - "2025-05-18T18:30:38.201Z"
+                - "2025-05-18T18:24:56.693Z"
             X-Api-Received:
-                - "2025-05-18T18:30:38.173Z"
-            X-Content-Type-Options:
-                - nosniff
+                - "2025-05-18T18:24:56.684Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -92,13 +93,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "0"
+                - "1"
             X-Ratelimit-Remaining-Tokens:
                 - "1000"
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - nuZp82G-4yUbBN-941d6d484b82a2eb
+                - nuZnNWX-6UHjtw-941d64f21d65a2f8
         status: 200 OK
         code: 200
-        duration: 2.553s
+        duration: 4.291s

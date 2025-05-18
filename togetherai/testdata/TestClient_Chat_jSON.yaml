@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 354
+        content_length: 329
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"max_tokens":200,"temperature":0.1,"seed":1,"response_format":{"type":"json_object"}}
+            {"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","stream_tokens":false,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"max_tokens":200,"temperature":0.1,"seed":1,"response_format":{"type":"json_object"}}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nu3cL46-6UHjtw-93fcd4a72bbaa30a",
+              "id": "nuZp7Jb-6UHjtw-941d6d382ad8a2eb",
               "object": "chat.completion",
-              "created": 1747251242,
+              "created": 1747593035,
               "model": "meta-llama/Llama-4-Scout-17B-16E-Instruct",
               "prompt": [],
               "choices": [
@@ -62,11 +62,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93fcd4a72bbaa30a-YUL
+                - 941d6d382ad8a2eb-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"204-7Cld9ooPI0rAQfWwoX6nIhBeHUU"
+                - W/"204-ktsGEyfPPGHlPWGKMtM3QZbGecE"
             Retry-After:
                 - "2"
             Server:
@@ -76,13 +76,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 9593b013-cea2-4d16-81c2-8a2da2164e77-noamzn
+                - ef798f3b-70d3-4380-8d0d-98d8bf7d95b3-noamzn
             X-Api-Call-End:
-                - "2025-05-14T19:34:02.547Z"
+                - "2025-05-18T18:30:35.946Z"
             X-Api-Call-Start:
-                - "2025-05-14T19:34:02.438Z"
+                - "2025-05-18T18:30:35.767Z"
             X-Api-Received:
-                - "2025-05-14T19:34:02.423Z"
+                - "2025-05-18T18:30:35.756Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -92,13 +92,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "1"
-            X-Ratelimit-Remaining-Tokens:
                 - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - nu3cL46-6UHjtw-93fcd4a72bbaa30a
+                - nuZp7Jb-6UHjtw-941d6d382ad8a2eb
         status: 200 OK
         code: 200
-        duration: 495ms
+        duration: 431ms

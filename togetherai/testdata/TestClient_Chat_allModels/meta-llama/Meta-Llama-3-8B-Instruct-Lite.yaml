@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 232
+        content_length: 207
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"meta-llama/Meta-Llama-3-8B-Instruct-Lite","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"max_tokens":1000,"temperature":0.1,"seed":1}
+            {"model":"meta-llama/Meta-Llama-3-8B-Instruct-Lite","stream_tokens":false,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"max_tokens":1000,"temperature":0.1,"seed":1}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ntHPCiT-2j9zxn-93cd19bd3d5ba2ff",
+              "id": "nuZp7NE-4Yz4kd-941d6d39ed8ca2eb",
               "object": "chat.completion",
-              "created": 1746750755,
+              "created": 1747593035,
               "model": "meta-llama/Meta-Llama-3-8B-Instruct-Lite",
               "prompt": [],
               "choices": [
@@ -62,13 +62,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cd19bd3d5ba2ff-YUL
+                - 941d6d39ed8ca2eb-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"1f2-6hq4RFZA1T3ECEgBLEj7IVls+iA"
+                - W/"1f2-CuSzKLmzXGn8c6BRDWPZWcs3f1Y"
             Retry-After:
-                - "2"
+                - "1"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -76,13 +76,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 7dfee930-ee22-4a3d-8522-0c70e71b529a-noamzn
+                - 5db49aa1-0753-4368-8bfd-233c35e2d4d0-noamzn
             X-Api-Call-End:
-                - "2025-05-09T00:32:35.913Z"
+                - "2025-05-18T18:30:36.731Z"
             X-Api-Call-Start:
-                - "2025-05-09T00:32:35.464Z"
+                - "2025-05-18T18:30:35.997Z"
             X-Api-Received:
-                - "2025-05-09T00:32:35.456Z"
+                - "2025-05-18T18:30:35.967Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -92,13 +92,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "1"
+                - "0"
             X-Ratelimit-Remaining-Tokens:
-                - "1000"
+                - "720"
             X-Ratelimit-Reset:
-                - "2"
+                - "1"
             X-Request-Id:
-                - ntHPCiT-2j9zxn-93cd19bd3d5ba2ff
+                - nuZp7NE-4Yz4kd-941d6d39ed8ca2eb
         status: 200 OK
         code: 200
-        duration: 7.999s
+        duration: 949ms

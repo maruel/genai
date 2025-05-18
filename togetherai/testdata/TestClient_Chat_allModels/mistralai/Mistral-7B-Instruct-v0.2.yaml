@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 226
+        content_length: 201
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"mistralai/Mistral-7B-Instruct-v0.2","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"max_tokens":1000,"temperature":0.1,"seed":1}
+            {"model":"mistralai/Mistral-7B-Instruct-v0.2","stream_tokens":false,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"max_tokens":1000,"temperature":0.1,"seed":1}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ntHPAVk-6UHjtw-93cd198ced78a281",
+              "id": "nuZp9Ku-3NKUce-941d6d654e6ca2eb",
               "object": "chat.completion",
-              "created": 1746750747,
+              "created": 1747593042,
               "model": "mistralai/Mistral-7B-Instruct-v0.2",
               "prompt": [],
               "choices": [
@@ -62,13 +62,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cd198ced78a281-YUL
+                - 941d6d654e6ca2eb-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"1ed-ewkhis8/n7PkXzJB37Fz45h1Onk"
+                - W/"1ed-4+im0DVo5I1KwE74XZ0kIrHiLyA"
             Retry-After:
-                - "2"
+                - "1"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -76,13 +76,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 77dea4ad-0fec-459f-9f76-0f42560ef59a-noamzn
+                - 0f4c88d5-040d-4a11-85c0-68e017b261ac-noamzn
             X-Api-Call-End:
-                - "2025-05-09T00:32:28.155Z"
+                - "2025-05-18T18:30:42.676Z"
             X-Api-Call-Start:
-                - "2025-05-09T00:32:28.005Z"
+                - "2025-05-18T18:30:42.563Z"
             X-Api-Received:
-                - "2025-05-09T00:32:27.991Z"
+                - "2025-05-18T18:30:42.560Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -92,13 +92,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "1"
+                - "0"
             X-Ratelimit-Remaining-Tokens:
-                - "1000"
+                - "969"
             X-Ratelimit-Reset:
-                - "2"
+                - "1"
             X-Request-Id:
-                - ntHPAVk-6UHjtw-93cd198ced78a281
+                - nuZp9Ku-3NKUce-941d6d654e6ca2eb
         status: 200 OK
         code: 200
-        duration: 521ms
+        duration: 6.617s

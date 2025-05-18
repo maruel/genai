@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 212
+        content_length: 187
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"meta-llama/Llama-3.2-3B-Instruct-Turbo","stream_tokens":true,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"max_tokens":50,"temperature":0.01,"seed":1}
+            {"model":"meta-llama/Llama-3.2-3B-Instruct-Turbo","stream_tokens":true,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"max_tokens":50,"temperature":0.01,"seed":1}
         form: {}
         headers:
             Content-Type:
@@ -29,11 +29,11 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"nsSW4hX-57nCBj-9398589e7a564bb8","object":"chat.completion.chunk","created":1746197585,"choices":[{"index":0,"text":"Hello","logprobs":null,"finish_reason":null,"seed":null,"delta":{"token_id":9906,"role":"assistant","content":"Hello","tool_calls":null}}],"model":"meta-llama/Llama-3.2-3B-Instruct-Turbo","usage":null}
+            data: {"id":"nuZp7L1-4pPsy7-941d6d382acca2eb","object":"chat.completion.chunk","created":1747593035,"choices":[{"index":0,"text":"Hello","logprobs":null,"finish_reason":null,"seed":null,"delta":{"token_id":9906,"role":"assistant","content":"Hello","tool_calls":null}}],"model":"meta-llama/Llama-3.2-3B-Instruct-Turbo","usage":null}
 
-            data: {"id":"nsSW4hX-57nCBj-9398589e7a564bb8","object":"chat.completion.chunk","created":1746197585,"choices":[{"index":0,"text":".","logprobs":null,"finish_reason":null,"seed":null,"delta":{"token_id":13,"role":"assistant","content":".","tool_calls":null}}],"model":"meta-llama/Llama-3.2-3B-Instruct-Turbo","usage":null}
+            data: {"id":"nuZp7L1-4pPsy7-941d6d382acca2eb","object":"chat.completion.chunk","created":1747593035,"choices":[{"index":0,"text":".","logprobs":null,"finish_reason":null,"seed":null,"delta":{"token_id":13,"role":"assistant","content":".","tool_calls":null}}],"model":"meta-llama/Llama-3.2-3B-Instruct-Turbo","usage":null}
 
-            data: {"id":"nsSW4hX-57nCBj-9398589e7a564bb8","object":"chat.completion.chunk","created":1746197585,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"stop","seed":1,"delta":{"token_id":128009,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-3.2-3B-Instruct-Turbo","usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46,"cached_tokens":0}}
+            data: {"id":"nuZp7L1-4pPsy7-941d6d382acca2eb","object":"chat.completion.chunk","created":1747593035,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"stop","seed":1,"delta":{"token_id":128009,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-3.2-3B-Instruct-Turbo","usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46,"cached_tokens":0}}
 
             data: [DONE]
 
@@ -47,7 +47,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9398589e7a564bb8-YUL
+                - 941d6d382acca2eb-YUL
             Content-Type:
                 - text/event-stream;charset=utf-8
             Retry-After:
@@ -59,11 +59,11 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 323ea5ba-8987-4f4a-9f05-587b7118bccb-noamzn
+                - b219c3d1-756c-4027-9b3b-13d9df1d034a-noamzn
             X-Api-Call-Start:
-                - "2025-05-02T14:53:06.085Z"
+                - "2025-05-18T18:30:35.890Z"
             X-Api-Received:
-                - "2025-05-02T14:53:05.970Z"
+                - "2025-05-18T18:30:35.838Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -75,11 +75,11 @@ interactions:
             X-Ratelimit-Remaining:
                 - "1"
             X-Ratelimit-Remaining-Tokens:
-                - "956"
+                - "1000"
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - nsSW4hX-57nCBj-9398589e7a564bb8
+                - nuZp7L1-4pPsy7-941d6d382acca2eb
         status: 200 OK
         code: 200
-        duration: 859ms
+        duration: 435ms

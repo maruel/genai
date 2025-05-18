@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 234
+        content_length: 209
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"meta-llama/Meta-Llama-3-70B-Instruct-Turbo","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"max_tokens":1000,"temperature":0.1,"seed":1}
+            {"model":"meta-llama/Meta-Llama-3-70B-Instruct-Turbo","stream_tokens":false,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"max_tokens":1000,"temperature":0.1,"seed":1}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ntHPALz-4Yz4kd-93cd198b3af7a281",
+              "id": "nuZp7ur-4Yz4kd-941d6d45dfa1a2eb",
               "object": "chat.completion",
-              "created": 1746750747,
+              "created": 1747593037,
               "model": "meta-llama/Meta-Llama-3-70B-Instruct-Turbo",
               "prompt": [],
               "choices": [
@@ -62,13 +62,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cd198b3af7a281-YUL
+                - 941d6d45dfa1a2eb-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"1f3-2X90BYYi0T0Z33eyLY62dkGt9Ws"
+                - W/"1f3-P1fwk0Elf/q4aB1tZe6XOIHWDh0"
             Retry-After:
-                - "2"
+                - "1"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -76,13 +76,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - f79ece71-8579-4041-b2b4-c29657b6a145-noamzn
+                - 49d72c59-eb61-461a-80e2-242262452eb3-noamzn
             X-Api-Call-End:
-                - "2025-05-09T00:32:27.887Z"
+                - "2025-05-18T18:30:38.009Z"
             X-Api-Call-Start:
-                - "2025-05-09T00:32:27.508Z"
+                - "2025-05-18T18:30:37.815Z"
             X-Api-Received:
-                - "2025-05-09T00:32:27.483Z"
+                - "2025-05-18T18:30:37.801Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -92,13 +92,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "1"
+                - "0"
             X-Ratelimit-Remaining-Tokens:
-                - "1000"
+                - "982"
             X-Ratelimit-Reset:
-                - "2"
+                - "1"
             X-Request-Id:
-                - ntHPALz-4Yz4kd-93cd198b3af7a281
+                - nuZp7ur-4Yz4kd-941d6d45dfa1a2eb
         status: 200 OK
         code: 200
-        duration: 575ms
+        duration: 1.407s

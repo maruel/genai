@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 228
+        content_length: 203
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"mistralai/Mixtral-8x7B-Instruct-v0.1","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"max_tokens":1000,"temperature":0.1,"seed":1}
+            {"model":"mistralai/Mixtral-8x7B-Instruct-v0.1","stream_tokens":false,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"max_tokens":1000,"temperature":0.1,"seed":1}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ntHPALa-4yUbBN-93cd198b3afca281",
+              "id": "nuZp8jQ-4yUbBN-941d6d57294ca2eb",
               "object": "chat.completion",
-              "created": 1746750747,
+              "created": 1747593040,
               "model": "mistralai/Mixtral-8x7B-Instruct-v0.1",
               "prompt": [],
               "choices": [
@@ -62,11 +62,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cd198b3afca281-YUL
+                - 941d6d57294ca2eb-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"1f2-HUKFeGaRufvGWbeQnAq9nfNIBTs"
+                - W/"1f2-sBbyt1DP0GDPZzSo4cQWeMOBnTw"
             Retry-After:
                 - "2"
             Server:
@@ -76,11 +76,11 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Api-Call-End:
-                - "2025-05-09T00:32:27.625Z"
+                - "2025-05-18T18:30:40.710Z"
             X-Api-Call-Start:
-                - "2025-05-09T00:32:27.512Z"
+                - "2025-05-18T18:30:40.589Z"
             X-Api-Received:
-                - "2025-05-09T00:32:27.459Z"
+                - "2025-05-18T18:30:40.559Z"
             X-Content-Type-Options:
                 - nosniff
             X-Inference-Version:
@@ -98,7 +98,7 @@ interactions:
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - ntHPALa-4yUbBN-93cd198b3afca281
+                - nuZp8jQ-4yUbBN-941d6d57294ca2eb
         status: 200 OK
         code: 200
-        duration: 336ms
+        duration: 4.476s

@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 220
+        content_length: 195
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"Qwen/Qwen2.5-VL-72B-Instruct","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"max_tokens":1000,"temperature":0.1,"seed":1}
+            {"model":"Qwen/Qwen2.5-VL-72B-Instruct","stream_tokens":false,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"max_tokens":1000,"temperature":0.1,"seed":1}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ntHPB2k-2j9zxn-93cd19995b2ba281",
+              "id": "nuZp8f4-66dFFu-941d6d55bf94a2eb",
               "object": "chat.completion",
-              "created": 1746750749,
+              "created": 1747593040,
               "model": "Qwen/Qwen2.5-VL-72B-Instruct",
               "prompt": [],
               "choices": [
@@ -40,7 +40,7 @@ interactions:
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "Hello",
+                    "content": "Hello.",
                     "tool_calls": []
                   },
                   "logprobs": null,
@@ -50,8 +50,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 31,
-                "total_tokens": 33,
-                "completion_tokens": 2
+                "total_tokens": 34,
+                "completion_tokens": 3
               }
             }
         headers:
@@ -62,11 +62,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cd19995b2ba281-YUL
+                - 941d6d55bf94a2eb-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"1e8-UxozseJ+0xYW7BtF+qpXobCpy+k"
+                - W/"1e9-+UscwGjyBJHpV5ACjyLGs2ZoZlw"
             Retry-After:
                 - "2"
             Server:
@@ -76,13 +76,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 685d0e51-2b48-4dbe-bada-e09ecde18ee3-noamzn
+                - 71917e62-72c3-4110-a007-81b37112f638-noamzn
             X-Api-Call-End:
-                - "2025-05-09T00:32:29.894Z"
+                - "2025-05-18T18:30:40.439Z"
             X-Api-Call-Start:
-                - "2025-05-09T00:32:29.797Z"
+                - "2025-05-18T18:30:40.319Z"
             X-Api-Received:
-                - "2025-05-09T00:32:29.789Z"
+                - "2025-05-18T18:30:40.307Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -92,13 +92,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "0"
+                - "1"
             X-Ratelimit-Remaining-Tokens:
                 - "1000"
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - ntHPB2k-2j9zxn-93cd19995b2ba281
+                - nuZp8f4-66dFFu-941d6d55bf94a2eb
         status: 200 OK
         code: 200
-        duration: 2.568s
+        duration: 3.379s

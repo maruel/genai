@@ -172,6 +172,9 @@ func (m *Message) From(in *genai.Message) error {
 			m.ToolCalls[j].From(&in.ToolCalls[j])
 		}
 	}
+	if len(in.ToolCallResults) != 0 {
+		return errors.New("implement tool call results")
+	}
 	return nil
 }
 

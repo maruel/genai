@@ -91,6 +91,11 @@ func TestClient_Chat_vision_pDF_inline(t *testing.T) {
 	testCases.TestChatVisionPDFInline(t, nil)
 }
 
+func TestClient_Chat_tool_use_reply(t *testing.T) {
+	t.Skip("TODO: Soon!")
+	testCases.TestChatToolUseReply(t, nil)
+}
+
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 	testCases.TestChatToolUsePositionBias(t, nil, false)
 }

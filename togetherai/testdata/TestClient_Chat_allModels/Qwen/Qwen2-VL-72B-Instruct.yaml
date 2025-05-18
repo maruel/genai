@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 218
+        content_length: 193
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"Qwen/Qwen2-VL-72B-Instruct","stream_tokens":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word. Say only hello."}]}],"max_tokens":1000,"temperature":0.1,"seed":1}
+            {"model":"Qwen/Qwen2-VL-72B-Instruct","stream_tokens":false,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"max_tokens":1000,"temperature":0.1,"seed":1}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ntHPBan-6UHjtw-93cd19a56dcca281",
+              "id": "nuZp87p-6UHjtw-941d6d4a5eb9a2eb",
               "object": "chat.completion",
-              "created": 1746750751,
+              "created": 1747593038,
               "model": "Qwen/Qwen2-VL-72B-Instruct",
               "prompt": [],
               "choices": [
@@ -62,13 +62,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93cd19a56dcca281-YUL
+                - 941d6d4a5eb9a2eb-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"1e7-mHB59UVwZJIYWQQTzp5YAiS+41Q"
+                - W/"1e7-GM0fibMMyu5ULW1lF05tuNbH+J8"
             Retry-After:
-                - "2"
+                - "1"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -76,13 +76,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 3aa53185-2d39-45cc-b455-42c2dc491c3a-noamzn
+                - cabfc730-2a60-4926-a010-ba1ece032b94-noamzn
             X-Api-Call-End:
-                - "2025-05-09T00:32:31.807Z"
+                - "2025-05-18T18:30:38.634Z"
             X-Api-Call-Start:
-                - "2025-05-09T00:32:31.657Z"
+                - "2025-05-18T18:30:38.505Z"
             X-Api-Received:
-                - "2025-05-09T00:32:31.647Z"
+                - "2025-05-18T18:30:38.495Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -94,11 +94,11 @@ interactions:
             X-Ratelimit-Remaining:
                 - "0"
             X-Ratelimit-Remaining-Tokens:
-                - "1000"
+                - "975"
             X-Ratelimit-Reset:
-                - "2"
+                - "1"
             X-Request-Id:
-                - ntHPBan-6UHjtw-93cd19a56dcca281
+                - nuZp87p-6UHjtw-941d6d4a5eb9a2eb
         status: 200 OK
         code: 200
-        duration: 4.468s
+        duration: 2.403s

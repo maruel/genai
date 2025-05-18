@@ -1,0 +1,215 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 816
+        transfer_encoding: []
+        trailer: {}
+        host: api.together.xyz
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","stream_tokens":false,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"max_tokens":200,"seed":1,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "nuZrqyT-6UHjtw-941d7a40ba60a2d2",
+              "object": "chat.completion",
+              "created": 1747593569,
+              "model": "meta-llama/Llama-4-Scout-17B-16E-Instruct",
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "logprobs": null,
+                  "finish_reason": "tool_calls",
+                  "seed": null,
+                  "message": {
+                    "role": "assistant",
+                    "content": null,
+                    "tool_calls": [
+                      {
+                        "index": 0,
+                        "id": "call_3lf7kk4fi5vbnu28b1mtvd1l",
+                        "type": "function",
+                        "function": {
+                          "arguments": "{\"number\":132413}",
+                          "name": "square_root"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 246,
+                "total_tokens": 265,
+                "completion_tokens": 19
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 941d7a40ba60a2d2-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"305-D0yd92BKdk7daL3aXL6hp1iQa/c"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - 74530d3d-2037-45e1-8796-b8595ddacbd9-noamzn
+            X-Api-Call-End:
+                - "2025-05-18T18:39:29.769Z"
+            X-Api-Call-Start:
+                - "2025-05-18T18:39:29.540Z"
+            X-Api-Received:
+                - "2025-05-18T18:39:29.522Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "1"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - nuZrqyT-6UHjtw-941d7a40ba60a2d2
+        status: 200 OK
+        code: 200
+        duration: 418ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1065
+        transfer_encoding: []
+        trailer: {}
+        host: api.together.xyz
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","stream_tokens":false,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"index":0,"id":"call_3lf7kk4fi5vbnu28b1mtvd1l","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_3lf7kk4fi5vbnu28b1mtvd1l"}],"max_tokens":200,"seed":1,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"auto"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "nuZrr11-3NKUce-941d7a433e10a2d2",
+              "object": "chat.completion",
+              "created": 1747593569,
+              "model": "meta-llama/Llama-4-Scout-17B-16E-Instruct",
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "logprobs": null,
+                  "finish_reason": "stop",
+                  "seed": null,
+                  "message": {
+                    "role": "assistant",
+                    "content": "363.89",
+                    "tool_calls": []
+                  }
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 160,
+                "total_tokens": 164,
+                "completion_tokens": 4
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 941d7a433e10a2d2-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"1f8-mxqOl6c6a+RGnFSkgOJyAgEd2PY"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - 220946e2-a5ad-491a-9e5a-3dab62253d9d-noamzn
+            X-Api-Call-End:
+                - "2025-05-18T18:39:29.678Z"
+            X-Api-Call-Start:
+                - "2025-05-18T18:39:29.623Z"
+            X-Api-Received:
+                - "2025-05-18T18:39:29.612Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "1"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - nuZrr11-3NKUce-941d7a433e10a2d2
+        status: 200 OK
+        code: 200
+        duration: 157ms

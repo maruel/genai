@@ -51,6 +51,11 @@ func TestClient_Chat_jSON_schema(t *testing.T) {
 	testCases.TestChatJSONSchema(t, nil)
 }
 
+func TestClient_Chat_tool_use_reply(t *testing.T) {
+	t.Skip("TODO: Soon!")
+	testCases.TestChatToolUseReply(t, nil)
+}
+
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 	testCases.TestChatToolUsePositionBias(t, nil, false)
 }

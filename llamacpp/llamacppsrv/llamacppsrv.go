@@ -13,6 +13,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"net/http"
 	"os"
@@ -25,7 +26,6 @@ import (
 	"time"
 
 	"github.com/maruel/genai/llamacpp"
-	"golang.org/x/sys/cpu"
 )
 
 // BuildNumber is the build number that was last tried from
@@ -76,6 +76,7 @@ func NewServer(ctx context.Context, exe, modelPath string, logOutput io.Writer, 
 		args = append(args, "--host", host)
 	}
 	args = append(args, extraArgs...)
+	log.Printf("Args: %s", args)
 	cmd := exec.CommandContext(ctx, args[0], args[1:]...)
 	// Make sure dynamic libraries will be found.
 	cmd.Dir = filepath.Dir(exe)
@@ -188,15 +189,22 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 	}
 
 	build := "b" + strconv.Itoa(version)
-	url := "https://github.com/ggerganov/llama.cpp/releases/download/" + build + "/"
+	url := "https://github.com/ggml-org/llama.cpp/releases/download/" + build + "/"
 	zipname := ""
 	wantedFiles := []string{filepath.Base(llamaserver)}
 	switch runtime.GOOS {
 	case "darwin":
+		// There's no point in supporting x64.
 		zipname = "llama-" + build + "-bin-macos-arm64.zip"
 		wantedFiles = append(wantedFiles, "*.dylib", "*.metal")
 	case "linux":
-		zipname = "llama-" + build + "-bin-ubuntu-x64.zip"
+		if runtime.GOARCH == "arm64" {
+			zipname = "llama-" + build + "-bin-ubuntu-arm64.zip"
+		} else if runtime.GOARCH == "amd64" {
+			zipname = "llama-" + build + "-bin-ubuntu-x64.zip"
+		} else {
+			return "", fmt.Errorf("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
+		}
 		wantedFiles = append(wantedFiles, "*.so")
 	case "windows":
 		_, err := exec.Command("nvcc", "--version").CombinedOutput()
@@ -204,16 +212,19 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 			// This is tricky because in the case of image generation, we may want to
 			// run on the CPU instead.
 			// TODO: We'll have to list the files on GH to determine the cuda version to get the exact filename. :(
-			zipname = "llama-" + build + "-bin-win-cuda-cu12.4-x64.zip"
-		} else if cpu.X86.HasAVX512BF16 {
-			zipname = "llama-" + build + "-bin-win-avx512-x64.zip"
-		} else if cpu.X86.HasAVX2 {
-			zipname = "llama-" + build + "-bin-win-avx2-x64.zip"
+			// TODO: Vulkan, HIP, OpenCL, sycl.
+			zipname = "llama-" + build + "-bin-win-cuda12.4-x64.zip"
+		} else if runtime.GOARCH == "arm64" {
+			zipname = "llama-" + build + "-bin-win-arm64.zip"
+		} else if runtime.GOARCH == "amd64" {
+			zipname = "llama-" + build + "-bin-win-x64.zip"
 		} else {
-			zipname = "llama-" + build + "-bin-win-avx-x64.zip"
+			return "", fmt.Errorf("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
 		}
 		wantedFiles = append(wantedFiles, "*.dll")
-	}
+	default:
+		return "", fmt.Errorf("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
+}
 	zippath := filepath.Join(cache, zipname)
 	if err := downloadFile(ctx, url+zipname, zippath); err != nil {
 		return "", fmt.Errorf("failed to download %s from github: %w", zipname, err)
@@ -265,6 +276,9 @@ func downloadFile(ctx context.Context, url, dst string) error {
 		return err
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		return fmt.Errorf("unexpected http status code %d", resp.StatusCode)
+	}
 	// Only then create the file.
 	f, err := os.OpenFile(dst, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o666)
 	if err != nil {

@@ -99,5 +99,5 @@ func startServer(ctx context.Context) (*llamacppsrv.Server, error) {
 		return nil, err
 	}
 	defer l.Close()
-	return llamacppsrv.NewServer(ctx, exe, modelPath, l, fmt.Sprintf("127.0.01:%d", port), 0, nil)
+	return llamacppsrv.NewServer(ctx, exe, modelPath, l, fmt.Sprintf("127.0.0.1:%d", port), 0, nil)
 }

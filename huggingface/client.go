@@ -31,6 +31,11 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// Official python SDK: https://github.com/huggingface/huggingface_hub
+//
+// But the real spec source of truth is
+// https://github.com/huggingface/huggingface.js/tree/main/packages/tasks/src/tasks/chat-completion
+
 // https://huggingface.co/docs/api-inference/tasks/chat-completion#api-specification
 type ChatRequest struct {
 	Model            string    `json:"model,omitempty"` // It's already in the URL.
@@ -47,7 +52,7 @@ type ChatRequest struct {
 		Value *jsonschema.Schema `json:"value"`
 	} `json:"response_format,omitzero"`
 	Seed          int64    `json:"seed,omitzero"`
-	Stop          []string `json:"stop,omitzero"`
+	Stop          []string `json:"stop,omitzero"` // Up to 4
 	StreamOptions struct {
 		IncludeUsage bool `json:"include_usage,omitzero"`
 	} `json:"stream_options,omitzero"`
@@ -65,6 +70,7 @@ type ChatRequest struct {
 	Tools       []Tool  `json:"tools,omitzero"`
 	TopLogprobs int64   `json:"top_logprobs,omitzero"`
 	TopP        float64 `json:"top_p,omitzero"` // [0, 1]
+	// logit_bias, n are documented as ignored.
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
@@ -99,6 +105,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 						c.ToolChoice = "required"
 					} else {
 						c.ToolChoice = "auto"
+						// c.ToolChoice = "none"
 					}
 					c.Tools = make([]Tool, len(v.Tools))
 					for i, t := range v.Tools {
@@ -145,11 +152,13 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 	return errors.Join(errs...)
 }
 
+// Message is incorrectly documented at
 // https://huggingface.co/docs/api-inference/tasks/chat-completion#api-specification
 type Message struct {
-	Role      string     `json:"role"` // "system", "assistant", "user"
-	Content   []Content  `json:"content,omitzero"`
+	Role      string     `json:"role"` // "system", "assistant", "user", "tool"
+	Content   Contents   `json:"content,omitzero"`
 	ToolCalls []ToolCall `json:"tool_calls,omitzero"`
+	Name      string     `json:"name,omitzero"` // Not really documented
 }
 
 func (m *Message) From(in *genai.Message) error {
@@ -168,12 +177,25 @@ func (m *Message) From(in *genai.Message) error {
 		}
 	}
 	if len(in.ToolCalls) != 0 {
+		m.ToolCalls = make([]ToolCall, len(in.ToolCalls))
 		for j := range in.ToolCalls {
 			m.ToolCalls[j].From(&in.ToolCalls[j])
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
-		return errors.New("implement tool call results")
+		if len(in.Contents) != 0 || len(in.ToolCalls) != 0 {
+			// This could be worked around.
+			return fmt.Errorf("can't have tool call result along content or tool calls")
+		}
+		if len(in.ToolCallResults) != 1 {
+			// This could be worked around.
+			return fmt.Errorf("can't have more than one tool call result at a time")
+		}
+		m.Role = "tool"
+		// Cheat here because Huggingface API seems to be fucked up.
+		m.Content = Contents{{Type: ContentText, Text: in.ToolCallResults[0].Result}}
+		m.Name = in.ToolCallResults[0].Name
+
 	}
 	return nil
 }
@@ -208,6 +230,17 @@ func (c *Content) From(in *genai.Content) error {
 		return fmt.Errorf("unsupported mime type %s", mimeType)
 	}
 	return nil
+}
+
+// Contents represents a slice of Content with custom unmarshalling to handle
+// both string and Content struct types.
+type Contents []Content
+
+func (c *Contents) MarshalJSON() ([]byte, error) {
+	if len(*c) == 1 && (*c)[0].Type == ContentText {
+		return json.Marshal((*c)[0].Text)
+	}
+	return json.Marshal(([]Content)(*c))
 }
 
 type ContentType string
@@ -532,11 +565,11 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			usage.InputTokens = pkt.Usage.PromptTokens
 			usage.OutputTokens = pkt.Usage.CompletionTokens
 		}
-		if pkt.Choices[0].FinishReason != "" {
-			usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
-		}
 		if len(pkt.Choices) != 1 {
 			continue
+		}
+		if pkt.Choices[0].FinishReason != "" {
+			usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 		}
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "assistant", "":
@@ -594,6 +627,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return err
 	}
 	in.Stream = true
+	in.StreamOptions.IncludeUsage = true
 	url := "https://router.huggingface.co/hf-inference/models/" + c.model + "/v1/chat/completions"
 	resp, err := c.Client.PostRequest(ctx, url, nil, in)
 	if err != nil {

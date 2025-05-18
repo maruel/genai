@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 156
+        content_length: 171
         transfer_encoding: []
         trailer: {}
         host: router.huggingface.co
         remote_addr: ""
         request_uri: ""
         body: |
-            {"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"max_tokens":50,"seed":1,"temperature":0.01}
+            {"stream":true,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"max_tokens":50,"seed":1,"stream_options":{"include_usage":true},"temperature":0.01}
         form: {}
         headers:
             Content-Type:
@@ -29,11 +29,13 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"object":"chat.completion.chunk","id":"","created":1746728874,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1747596844,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1746728874,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1747596844,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1746728874,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":"stop"}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1747596845,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":"stop"}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1747596845,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[],"usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46}}
 
             data: [DONE]
 
@@ -55,11 +57,11 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 bf162a8b9bcf17e02f2843479d4278e2.cloudfront.net (CloudFront)
+                - 1.1 aaba6cbb29b8ee11a630e2a990704d30.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - ib55oKVOTsXXlVkMGnjtkayIUAaGN6RKicusy11aFYIDLoHJMvE2Tg==
+                - 9kp8QCK4QXOEYAwkakJLcywQd9qWPNuyEk64DTtkFOSul4vpAXIkJg==
             X-Amz-Cf-Pop:
-                - YUL62-P2
+                - YTO53-P1
             X-Cache:
                 - Miss from cloudfront
             X-Compute-Characters:
@@ -67,19 +69,19 @@ interactions:
             X-Compute-Type:
                 - 4-nvida-a100-sxm4-80gb
             X-Inference-Id:
-                - 65a8d827-18b2-437c-8452-480e6a213116
+                - da71b5fb-543d-46aa-bff5-e2a1e6a4e5de
             X-Powered-By:
                 - huggingface-moon
             X-Proxied-Host:
-                - http://10.102.93.248
+                - http://10.102.44.56
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - fyj5qcci-9cb1t
+                - fyj5qcci-9gfbs
             X-Request-Id:
-                - Cblj24W-LFXFHUA-
+                - jP57bGaffmKO65Is
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 1.566s
+        duration: 196ms

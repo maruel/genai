@@ -42,7 +42,7 @@ func TestClient_Chat_thinking(t *testing.T) {
 
 func TestClient_ChatStream(t *testing.T) {
 	// TODO: Figure out why smaller models fail.
-	testCases.TestChatStream(t, &internaltest.Settings{UsageIsBroken: true})
+	testCases.TestChatStream(t, nil)
 }
 
 func TestClient_Chat_jSON(t *testing.T) {
@@ -55,7 +55,7 @@ func TestClient_Chat_jSON_schema(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use_reply(t *testing.T) {
-	t.Skip("TODO: Soon!")
+	t.Skip("a bit too happy to call tools in repetition. to fix later.")
 	testCases.TestChatToolUseReply(t, nil)
 }
 
@@ -65,7 +65,7 @@ func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 		testCases.TestChatToolUsePositionBiasCore(t, nil, false, false)
 	})
 	t.Run("ChatStream", func(t *testing.T) {
-		testCases.TestChatToolUsePositionBiasCore(t, &internaltest.Settings{UsageIsBroken: true, FinishReasonIsBroken: true}, false, true)
+		testCases.TestChatToolUsePositionBiasCore(t, &internaltest.Settings{FinishReasonIsBroken: true}, false, true)
 	})
 }
 

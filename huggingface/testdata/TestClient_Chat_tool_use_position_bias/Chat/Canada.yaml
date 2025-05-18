@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 580
+        content_length: 555
         transfer_encoding: []
         trailer: {}
         host: router.huggingface.co
         remote_addr: ""
         request_uri: ""
         body: |
-            {"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"max_tokens":200,"seed":1,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+            {"stream":false,"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"max_tokens":200,"seed":1,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
         form: {}
         headers:
             Content-Type:
@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: 423
         uncompressed: false
-        body: '{"object":"chat.completion","id":"","created":1747251165,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":262,"completion_tokens":17,"total_tokens":279}}'
+        body: '{"object":"chat.completion","id":"","created":1747596805,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":262,"completion_tokens":17,"total_tokens":279}}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
@@ -47,47 +47,47 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 54f8dfc32403dc4b8a1c2d5ea7335730.cloudfront.net (CloudFront)
+                - 1.1 aaba6cbb29b8ee11a630e2a990704d30.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - kweH209YKrgquMspyD-fxztgHDtL7DAfzIby1iAnfpweRiV-zmoKBg==
+                - iLyzyfAXxfEwMk6eN7TES3P_NYyWo9e20FV9u7oOm4yWesEwX_L32g==
             X-Amz-Cf-Pop:
-                - YTO50-P1
+                - YTO53-P1
             X-Cache:
                 - Miss from cloudfront
             X-Compute-Characters:
                 - "1301"
             X-Compute-Time:
-                - "2.612365424"
+                - "3.950281245"
             X-Compute-Type:
                 - 4-nvida-a100-sxm4-80gb
             X-Generated-Tokens:
                 - "17"
             X-Inference-Id:
-                - 8f6f5b1c-a5df-4d1d-a77f-456f79c0eb06
+                - 40e2c5f1-e31b-43d8-8b1d-c2337c05b40e
             X-Inference-Time:
-                - "2579"
+                - "3944"
             X-Powered-By:
                 - huggingface-moon
             X-Prompt-Tokens:
                 - "262"
             X-Proxied-Host:
-                - http://10.102.89.89
+                - http://10.102.95.233
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - fyj5qcci-x3ppt
+                - fyj5qcci-y5cet
             X-Queue-Time:
-                - "31"
+                - "4"
             X-Request-Id:
-                - PtKL9MfGSXIHdUiH
+                - vQDTQXyPCQnMHWAP
             X-Robots-Tag:
                 - none
             X-Time-Per-Token:
-                - "151"
+                - "232"
             X-Total-Time:
-                - "2612"
+                - "3950"
             X-Validation-Time:
                 - "1"
         status: 200 OK
         code: 200
-        duration: 2.743s
+        duration: 4.085s

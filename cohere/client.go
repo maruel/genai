@@ -220,6 +220,18 @@ func (c *Content) From(in *genai.Content) error {
 	return nil
 }
 
+func (c *Content) To(in *genai.Content) error {
+	switch c.Type {
+	case "text":
+		in.Text = c.Text
+	// case "image_url":
+	// case "document":
+	default:
+		return fmt.Errorf("implement %s", c.Type)
+	}
+	return nil
+}
+
 type Citation struct {
 	Start   int64  `json:"start,omitzero"`
 	End     int64  `json:"end,omitzero"`
@@ -267,6 +279,7 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 		},
 		FinishReason: c.FinishReason,
 	}
+	// It is very frustrating that Cohere uses different message response types.
 	err := c.Message.To(&out.Message)
 	return out, err
 }
@@ -284,21 +297,22 @@ type Usage struct {
 	} `json:"tokens"`
 }
 
+// MessageResponse handles all the various forms that Cohere can reply.
+//
+//   - For non-stream text, "content" is []Content.
+//   - For streaming text, "content" is initially an empty list, then Content (not a list).
+//   - For non-stream tool call, Tool* members are set and Content is never present. ToolCalls is a list.
+//   - For streaming tool call, Tool* members are set and Content is never present. ToolCalls is a ToolCall (not
+//     a list).
 type MessageResponse struct {
-	Role      genai.Role `json:"role"`
-	ToolCalls []ToolCall `json:"tool_calls"`
-	ToolPlan  string     `json:"tool_plan"`
-	Content   []struct {
-		Type string `json:"type"` // text
-		Text string `json:"text"`
-	} `json:"content"`
-	Citations []struct {
-		Start   int64  `json:"start"`
-		End     int64  `json:"end"`
-		Text    string `json:"text"`
-		Sources []any  `json:"sources"`
-		Type    string `json:"type"` // TEXT_CONTENT, PLAN
-	} `json:"citations"`
+	Content Contents `json:"content"` // Generally a []Content but will be a Content when streaming text.
+	Role    string   `json:"role"`    // "system", "assistant", "user"
+	// Type == "assistant"
+	Citations []Citation `json:"citations,omitzero"`
+	// Type == "assistant"
+	ToolCalls  ToolCalls `json:"tool_calls,omitzero"` // Generally []ToolCall but will be a ToolCall when streaming tool call.
+	ToolCallID string    `json:"tool_call_id,omitzero"`
+	ToolPlan   string    `json:"tool_plan,omitzero"`
 }
 
 func (m *MessageResponse) To(out *genai.Message) error {
@@ -314,13 +328,68 @@ func (m *MessageResponse) To(out *genai.Message) error {
 			m.ToolCalls[i].To(&out.ToolCalls[i])
 		}
 	}
+	/*
+		if !m.ToolCalls.IsZero() {
+			out.ToolCalls = []genai.ToolCall{{}}
+			m.ToolCalls.To(&out.ToolCalls[0])
+		}
+	*/
+	if m.ToolCallID != "" && !internal.BeLenient {
+		return fmt.Errorf("implement tool call id")
+	}
+	// TODO: m.ToolPlan is actually thinking!!
+
 	if len(m.Content) != 0 {
 		out.Contents = make([]genai.Content, len(m.Content))
 		for i := range m.Content {
-			out.Contents[i].Text = m.Content[i].Text
+			if err := m.Content[i].To(&out.Contents[i]); err != nil {
+				return fmt.Errorf("block %d: %w", i, err)
+			}
 		}
 	}
+
+	if len(m.Citations) != 0 && !internal.BeLenient {
+		return fmt.Errorf("implement citations: %#v", m.Citations)
+	}
+
 	return nil
+}
+
+/*
+func (m *MessageResponse) UnmarshalJSON(b []byte) error {
+	// When replying, it inlines the content which is weird.
+		mr := messageResponse{}
+		if err := json.Unmarshal(b, &mr); err == nil {
+			m.Role = mr.Role
+			m.Citations = mr.Citations
+			if !mr.ToolCalls.IsZero() {
+				m.ToolCalls = []ToolCall{mr.ToolCalls}
+			}
+			m.ToolCallID = mr.ToolCallID
+			m.ToolPlan = mr.ToolPlan
+			if !mr.Content.IsZero() {
+				m.Content = []Content{mr.Content}
+			}
+			if !mr.ContentAlt.IsZero() {
+				m.Content = []Content{mr.ContentAlt}
+			}
+			return nil
+		}
+	return json.Unmarshal(b, (*Message)(m))
+}
+*/
+
+type Contents []Content
+
+func (c *Contents) UnmarshalJSON(b []byte) error {
+	cc := Content{}
+	if err := json.Unmarshal(b, &cc); err == nil {
+		if !cc.IsZero() {
+			*c = (Contents)([]Content{cc})
+		}
+		return nil
+	}
+	return json.Unmarshal(b, (*[]Content)(c))
 }
 
 type ToolCall struct {
@@ -330,6 +399,10 @@ type ToolCall struct {
 		Name      string `json:"name"`
 		Arguments string `json:"arguments"`
 	} `json:"function"`
+}
+
+func (t *ToolCall) IsZero() bool {
+	return t.ID == "" && t.Type == "" && t.Function.Name == "" && t.Function.Arguments == ""
 }
 
 func (t *ToolCall) From(in *genai.ToolCall) {
@@ -345,48 +418,43 @@ func (t *ToolCall) To(out *genai.ToolCall) {
 	out.Arguments = t.Function.Arguments
 }
 
+type ToolCalls []ToolCall
+
+func (t *ToolCalls) UnmarshalJSON(b []byte) error {
+	tc := ToolCall{}
+	if err := json.Unmarshal(b, &tc); err == nil {
+		if !tc.IsZero() {
+			*t = (ToolCalls)([]ToolCall{tc})
+		}
+		return nil
+	}
+	return json.Unmarshal(b, (*[]ToolCall)(t))
+}
+
 type ChatStreamChunkResponse struct {
-	ID    string `json:"id"`
-	Type  string `json:"type"` // "message_start", "content-start", "message-end"
-	Index int64  `json:"index"`
+	ID    string    `json:"id"`
+	Type  ChunkType `json:"type"`
+	Index int64     `json:"index"`
 	Delta struct {
-		Message struct {
-			Role    genai.Role `json:"role"`
-			Content struct {
-				Type string `json:"type"` // text
-				Text string `json:"text"`
-			} `json:"content"`
-			ToolPlan  string     `json:"tool_plan"`
-			ToolCalls []ToolCall `json:"tool_calls"`
-			Citations []struct{} `json:"citations"`
-		} `json:"message"`
-		FinishReason string `json:"finish_reason"` // COMPLETE
-		Usage        Usage  `json:"usage"`
+		Message      MessageResponse `json:"message"`
+		FinishReason string          `json:"finish_reason"` // COMPLETE
+		Usage        Usage           `json:"usage"`
 	} `json:"delta"`
 }
 
-// content can be a struct or an empty list. Go doesn't like that.
-type completionStreamChunkMsgStartResponse struct {
-	ID    string `json:"id"`
-	Type  string `json:"type"` // "message_start"
-	Delta struct {
-		Message struct {
-			Role genai.Role `json:"role"`
-			// WTF are they doing?
-			Content   []struct{} `json:"content"`
-			ToolPlan  string     `json:"tool_plan"`
-			ToolCalls []ToolCall `json:"tool_calls"`
-			Citations []struct{} `json:"citations"`
-		} `json:"message"`
-	} `json:"delta"`
-}
+type ChunkType string
 
-func (c *completionStreamChunkMsgStartResponse) translateTo(msg *ChatStreamChunkResponse) {
-	msg.ID = c.ID
-	msg.Type = c.Type
-	msg.Delta.Message.Role = c.Delta.Message.Role
-	msg.Delta.Message.ToolPlan = c.Delta.Message.ToolPlan
-}
+const (
+	ChunkMessageStart  ChunkType = "message-start"
+	ChunkMessageEnd    ChunkType = "message-end"
+	ChunkContentStart  ChunkType = "content-start"
+	ChunkContentDelta  ChunkType = "content-delta"
+	ChunkContentEnd    ChunkType = "content-end"
+	ChunkToolPlanDelta ChunkType = "tool-plan-delta"
+	ChunkToolCallStart ChunkType = "tool-call-start"
+	ChunkToolCallDelta ChunkType = "tool-call-delta"
+	ChunkToolCallEnd   ChunkType = "tool-call-end"
+)
 
 //
 
@@ -524,22 +592,63 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		for range ch {
 		}
 	}()
+	pendingCall := ToolCall{}
 	for pkt := range ch {
-		if pkt.Delta.Usage.Tokens.OutputTokens != 0 {
-			*finalUsage = pkt.Delta.Usage
+		// These can't happen.
+		if len(pkt.Delta.Message.Content) > 1 {
+			return errors.New("implement multiple content")
 		}
+		if len(pkt.Delta.Message.ToolCalls) > 1 {
+			return errors.New("implement multiple tool calls")
+		}
+
 		switch role := pkt.Delta.Message.Role; role {
 		case "assistant", "":
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		if word := pkt.Delta.Message.Content.Text; word != "" {
-			fragment := genai.MessageFragment{TextFragment: word}
-			// Include FinishReason if available
-			if pkt.Delta.FinishReason != "" {
-				fragment.FinishReason = pkt.Delta.FinishReason
+		f := genai.MessageFragment{FinishReason: pkt.Delta.FinishReason}
+		switch pkt.Type {
+		case ChunkMessageStart:
+			// Nothing useful.
+			continue
+		case ChunkMessageEnd:
+			// Contain usage and finish reason.
+			*finalUsage = pkt.Delta.Usage
+		case ChunkContentStart:
+			if len(pkt.Delta.Message.Content) != 1 {
+				return fmt.Errorf("expected content %#v", pkt)
 			}
-			chunks <- fragment
+			if t := pkt.Delta.Message.Content[0].Type; t != "text" {
+				return fmt.Errorf("implement content %q", t)
+			}
+		case ChunkContentDelta:
+		case ChunkContentEnd:
+			// Will be useful when there's multiple index.
+		case ChunkToolPlanDelta:
+			f.ThinkingFragment = pkt.Delta.Message.ToolPlan
+			continue
+		case ChunkToolCallStart:
+			if len(pkt.Delta.Message.ToolCalls) != 1 {
+				return fmt.Errorf("expected tool call %#v", pkt)
+			}
+			pendingCall = pkt.Delta.Message.ToolCalls[0]
+		case ChunkToolCallDelta:
+			pendingCall.Function.Arguments += pkt.Delta.Message.ToolCalls[0].Function.Arguments
+		case ChunkToolCallEnd:
+			pendingCall.To(&f.ToolCall)
+			pendingCall = ToolCall{}
+		default:
+			if !internal.BeLenient {
+				return fmt.Errorf("unknown packet %q", pkt.Type)
+			}
+		}
+
+		if len(pkt.Delta.Message.Content) == 1 {
+			f.TextFragment = pkt.Delta.Message.Content[0].Text
+		}
+		if !f.IsZero() {
+			chunks <- f
 		}
 	}
 	return nil
@@ -585,14 +694,7 @@ func parseStreamLine(line []byte, out chan<- ChatStreamChunkResponse) error {
 		d.UseNumber()
 		msg := ChatStreamChunkResponse{}
 		if err := d.Decode(&msg); err != nil {
-			fallback := completionStreamChunkMsgStartResponse{}
-			d := json.NewDecoder(strings.NewReader(suffix))
-			d.DisallowUnknownFields()
-			d.UseNumber()
-			if err := d.Decode(&fallback); err != nil {
-				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
-			}
-			fallback.translateTo(&msg)
+			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
 		}
 		out <- msg
 	case string(line) == ": keep-alive":

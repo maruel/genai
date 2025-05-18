@@ -520,8 +520,8 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 			InputTokens:       c.Usage.InputTokens,
 			InputCachedTokens: c.Usage.CacheReadInputTokens,
 			OutputTokens:      c.Usage.OutputTokens,
+			FinishReason:      c.StopReason.ToFinishReason(),
 		},
-		FinishReason: c.StopReason.ToFinishReason(),
 	}
 	err := c.To(&out.Message)
 	return out, err
@@ -738,18 +738,14 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
-	finalUsage := Usage{}
 	eg.Go(func() error {
-		return processStreamPackets(ch, chunks, &finalUsage)
+		return processStreamPackets(ch, chunks, &usage)
 	})
 	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
-	usage.InputTokens = finalUsage.InputTokens
-	usage.OutputTokens = finalUsage.OutputTokens
-	usage.InputCachedTokens = finalUsage.CacheReadInputTokens
 	// Return the continuable error if no other error occurred
 	if err == nil && continuableErr != nil {
 		return usage, continuableErr
@@ -757,7 +753,7 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	return usage, err
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, finalUsage *Usage) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, usage *genai.Usage) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -775,7 +771,10 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			default:
 				return fmt.Errorf("unexpected role %q", pkt.Message.Role)
 			}
-			*finalUsage = pkt.Message.Usage
+			usage.InputTokens = pkt.Message.Usage.InputTokens
+			usage.InputCachedTokens = pkt.Message.Usage.CacheReadInputTokens
+			// There's some tokens listed there. Still save it in case it breaks midway.
+			usage.OutputTokens = pkt.Message.Usage.OutputTokens
 			continue
 		case ChunkContentBlockStart:
 			switch pkt.ContentBlock.Type {
@@ -787,7 +786,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				pendingCall.ID = pkt.ContentBlock.ID
 				pendingCall.Name = pkt.ContentBlock.Name
 				pendingCall.Arguments = ""
-				// TODO: Is there anything to do with Inputs? pendingCall.Arguments = pkt.ContentBlock.Inputs
+				// TODO: Is there anything to do with Input? pendingCall.Arguments = pkt.ContentBlock.Input
 			default:
 				return fmt.Errorf("missing implementation for content block %q", pkt.ContentBlock.Type)
 			}
@@ -813,8 +812,8 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			continue
 		case ChunkMessageDelta:
 			// Includes finish reason and output tokens usage (but not input tokens!)
-			f.FinishReason = pkt.Message.StopReason.ToFinishReason()
-			finalUsage.OutputTokens = pkt.Usage.OutputTokens
+			usage.FinishReason = pkt.Delta.StopReason.ToFinishReason()
+			usage.OutputTokens = pkt.Usage.OutputTokens
 		case ChunkMessageStop:
 			// Doesn't contain anything.
 			continue

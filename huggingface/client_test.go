@@ -60,7 +60,7 @@ func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 		testCases.TestChatToolUsePositionBiasCore(t, nil, false)
 	})
 	t.Run("ChatStream", func(t *testing.T) {
-		testCases.TestChatToolUsePositionBiasCore(t, &internaltest.Settings{UsageIsBroken: true}, true)
+		testCases.TestChatToolUsePositionBiasCore(t, &internaltest.Settings{UsageIsBroken: true, FinishReasonIsBroken: true}, true)
 	})
 }
 

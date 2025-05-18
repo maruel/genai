@@ -31,6 +31,8 @@ type Settings struct {
 	Options func(opts *genai.ChatOptions) genai.Validatable
 	// UsageIsBroken is true if the provider doesn't report usage properly, i.e. it is buggy.
 	UsageIsBroken bool
+	// FinishReasonIsBroken is true if the provider doesn't report finish reason properly, i.e. it is buggy.
+	FinishReasonIsBroken bool
 }
 
 // TestCases contains shared test cases that can be reused across providers.
@@ -70,6 +72,13 @@ func (tc *TestCases) usageIsBroken(override *Settings) bool {
 	return tc.Default.UsageIsBroken
 }
 
+func (tc *TestCases) finishReasonIsBroken(override *Settings) bool {
+	if override != nil && override.FinishReasonIsBroken {
+		return true
+	}
+	return tc.Default.FinishReasonIsBroken
+}
+
 // TestChatThinking runs a test for the thinking feature of a chat model.
 func (tc *TestCases) TestChatThinking(t *testing.T, override *Settings) {
 	t.Run("Chat", func(t *testing.T) {
@@ -78,10 +87,11 @@ func (tc *TestCases) TestChatThinking(t *testing.T, override *Settings) {
 		opts := tc.getOptions(&genai.ChatOptions{MaxTokens: 2000, Seed: 1}, override)
 		c := tc.getClient(t, override)
 		usageIsBroken := tc.usageIsBroken(override)
-		resp := tc.testChat(t, msgs, c, opts, usageIsBroken)
+		finishReasonIsBroken := tc.finishReasonIsBroken(override)
+		resp := tc.testChat(t, msgs, c, opts, usageIsBroken, finishReasonIsBroken)
 		validateSingleWordResponse(t, resp, "hello")
 		msgs = append(msgs, resp.Message, genai.NewTextMessage(genai.User, "Say the same word again. Use only one word."))
-		resp = tc.testChat(t, msgs, c, opts, usageIsBroken)
+		resp = tc.testChat(t, msgs, c, opts, usageIsBroken, finishReasonIsBroken)
 		validateSingleWordResponse(t, resp, "hello")
 	})
 	t.Run("ChatStream", func(t *testing.T) {
@@ -90,10 +100,11 @@ func (tc *TestCases) TestChatThinking(t *testing.T, override *Settings) {
 		opts := tc.getOptions(&genai.ChatOptions{MaxTokens: 2000, Seed: 1}, override)
 		c := tc.getClient(t, override)
 		usageIsBroken := tc.usageIsBroken(override)
-		resp := tc.testChatStream(t, msgs, c, opts, usageIsBroken)
+		finishReasonIsBroken := tc.finishReasonIsBroken(override)
+		resp := tc.testChatStream(t, msgs, c, opts, usageIsBroken, finishReasonIsBroken)
 		validateSingleWordResponse(t, resp, "hello")
 		msgs = append(msgs, resp.Message, genai.NewTextMessage(genai.User, "Say the same word again. Use only one word."))
-		resp = tc.testChatStream(t, msgs, c, opts, usageIsBroken)
+		resp = tc.testChatStream(t, msgs, c, opts, usageIsBroken, finishReasonIsBroken)
 		validateSingleWordResponse(t, resp, "hello")
 	})
 }
@@ -376,10 +387,11 @@ func (tc *TestCases) TestChatJSONSchema(t *testing.T, override *Settings) {
 }
 
 func (tc *TestCases) testChatHelper(t *testing.T, msgs genai.Messages, override *Settings, opts genai.ChatOptions) genai.ChatResult {
-	return tc.testChat(t, msgs, tc.getClient(t, override), tc.getOptions(&opts, override), tc.usageIsBroken(override))
+	return tc.testChat(t, msgs, tc.getClient(t, override), tc.getOptions(&opts, override),
+		tc.usageIsBroken(override), tc.finishReasonIsBroken(override))
 }
 
-func (tc *TestCases) testChat(t *testing.T, msgs genai.Messages, c genai.ChatProvider, opts genai.Validatable, usageIsBroken bool) genai.ChatResult {
+func (tc *TestCases) testChat(t *testing.T, msgs genai.Messages, c genai.ChatProvider, opts genai.Validatable, usageIsBroken, finishReasonIsBroken bool) genai.ChatResult {
 	ctx := t.Context()
 	resp, err := c.Chat(ctx, msgs, opts)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
@@ -388,7 +400,7 @@ func (tc *TestCases) testChat(t *testing.T, msgs genai.Messages, c genai.ChatPro
 		t.Fatal(err)
 	}
 	t.Logf("Raw response: %#v", resp)
-	testUsage(t, &resp.Usage, usageIsBroken)
+	testUsage(t, &resp.Usage, usageIsBroken, finishReasonIsBroken)
 	if len(resp.Contents) == 0 && len(resp.ToolCalls) == 0 {
 		t.Fatal("missing response")
 	}
@@ -396,10 +408,11 @@ func (tc *TestCases) testChat(t *testing.T, msgs genai.Messages, c genai.ChatPro
 }
 
 func (tc *TestCases) testChatStreamHelper(t *testing.T, msgs genai.Messages, override *Settings, opts genai.ChatOptions) genai.ChatResult {
-	return tc.testChatStream(t, msgs, tc.getClient(t, override), tc.getOptions(&opts, override), tc.usageIsBroken(override))
+	return tc.testChatStream(t, msgs, tc.getClient(t, override), tc.getOptions(&opts, override),
+		tc.usageIsBroken(override), tc.finishReasonIsBroken(override))
 }
 
-func (tc *TestCases) testChatStream(t *testing.T, msgs genai.Messages, c genai.ChatProvider, opts genai.Validatable, usageIsBroken bool) genai.ChatResult {
+func (tc *TestCases) testChatStream(t *testing.T, msgs genai.Messages, c genai.ChatProvider, opts genai.Validatable, usageIsBroken, finishReasonIsBroken bool) genai.ChatResult {
 	ctx := t.Context()
 	chunks := make(chan genai.MessageFragment)
 	end := make(chan genai.Messages, 1)
@@ -441,7 +454,7 @@ func (tc *TestCases) testChatStream(t *testing.T, msgs genai.Messages, c genai.C
 	// BUG: This discards the reasoning.
 	resp := genai.ChatResult{Message: responses[len(responses)-1], Usage: usage}
 	t.Logf("Raw response: %#v", resp)
-	testUsage(t, &resp.Usage, usageIsBroken)
+	testUsage(t, &resp.Usage, usageIsBroken, finishReasonIsBroken)
 	return resp
 }
 
@@ -453,7 +466,7 @@ func (tc *TestCases) testChatStream(t *testing.T, msgs genai.Messages, c genai.C
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
 
-func testUsage(t *testing.T, u *genai.Usage, usageIsBroken bool) {
+func testUsage(t *testing.T, u *genai.Usage, usageIsBroken, finishReasonIsBroken bool) {
 	if usageIsBroken {
 		if u.InputTokens != 0 {
 			t.Error("expected Usage.InputTokens to be zero")
@@ -470,6 +483,15 @@ func testUsage(t *testing.T, u *genai.Usage, usageIsBroken bool) {
 		}
 		if u.OutputTokens == 0 {
 			t.Error("expected Usage.OutputTokens to be set")
+		}
+	}
+	if finishReasonIsBroken {
+		if u.FinishReason != "" {
+			t.Fatalf("expected no FinishReason, got %q", u.FinishReason)
+		}
+	} else {
+		if u.FinishReason == "" {
+			t.Fatal("expected FinishReason")
 		}
 	}
 }

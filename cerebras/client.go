@@ -307,8 +307,8 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 		Usage: genai.Usage{
 			InputTokens:  c.Usage.PromptTokens,
 			OutputTokens: c.Usage.CompletionTokens,
+			FinishReason: c.Choices[0].FinishReason.ToFinishReason(),
 		},
-		FinishReason: c.Choices[0].FinishReason.ToFinishReason(),
 	}
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("expected 1 choice, got %#v", c.Choices)
@@ -483,17 +483,14 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
-	finalUsage := Usage{}
 	eg.Go(func() error {
-		return processStreamPackets(ch, chunks, &finalUsage)
+		return processStreamPackets(ch, chunks, &usage)
 	})
 	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
-	usage.InputTokens = finalUsage.PromptTokens
-	usage.OutputTokens = finalUsage.CompletionTokens
 	// Return the continuable error if no other error occurred
 	if err == nil && continuableErr != nil {
 		return usage, continuableErr
@@ -501,7 +498,7 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	return usage, err
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, finalUsage *Usage) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, usage *genai.Usage) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -517,22 +514,29 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			return fmt.Errorf("unexpected role %q", role)
 		}
 		if pkt.Usage.TotalTokens != 0 {
-			*finalUsage = pkt.Usage
+			usage.InputTokens = pkt.Usage.PromptTokens
+			usage.OutputTokens = pkt.Usage.CompletionTokens
+			usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 		}
 
 		// TODO: Improve.
-		finishReason := pkt.Choices[0].FinishReason.ToFinishReason()
 		for _, nt := range pkt.Choices[0].Delta.ToolCalls {
 			tc := genai.ToolCall{
 				ID:        nt.ID,
 				Name:      nt.Function.Name,
 				Arguments: nt.Function.Arguments,
 			}
-			chunks <- genai.MessageFragment{ToolCall: tc, FinishReason: finishReason}
+			chunks <- genai.MessageFragment{ToolCall: tc}
 		}
 		for _, content := range pkt.Choices[0].Delta.Content {
-			if content.Type == ContentText && content.Text != "" {
-				chunks <- genai.MessageFragment{TextFragment: content.Text, FinishReason: finishReason}
+			switch content.Type {
+			case ContentText:
+				f := genai.MessageFragment{TextFragment: content.Text}
+				if !f.IsZero() {
+					chunks <- f
+				}
+			default:
+				return fmt.Errorf("unexpected content type %q", content.Type)
 			}
 		}
 	}

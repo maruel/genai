@@ -262,8 +262,8 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 		Usage: genai.Usage{
 			InputTokens:  c.PromptEvalCount,
 			OutputTokens: c.EvalCount,
+			FinishReason: c.DoneReason.ToFinishReason(),
 		},
-		FinishReason: c.DoneReason.ToFinishReason(),
 	}
 	err := c.Message.To(&out.Message)
 	return out, err
@@ -398,17 +398,14 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
-	var lastChunk ChatStreamChunkResponse
 	eg.Go(func() error {
-		return processStreamPackets(ch, chunks, &lastChunk)
+		return processStreamPackets(ch, chunks, &usage)
 	})
 	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
-	usage.InputTokens = lastChunk.PromptEvalCount
-	usage.OutputTokens = lastChunk.EvalCount
 	// Return the continuable error if no other error occurred
 	if err == nil && continuableErr != nil {
 		return usage, continuableErr
@@ -416,7 +413,7 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	return usage, err
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, lastChunk *ChatStreamChunkResponse) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, usage *genai.Usage) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -424,17 +421,16 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	}()
 	for pkt := range ch {
 		if pkt.EvalCount != 0 {
-			*lastChunk = pkt
+			usage.InputTokens = pkt.PromptEvalCount
+			usage.OutputTokens = pkt.EvalCount
+			usage.FinishReason = pkt.DoneReason.ToFinishReason()
 		}
 		switch role := pkt.Message.Role; role {
 		case "", "assistant":
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		f := genai.MessageFragment{
-			TextFragment: pkt.Message.Content,
-			FinishReason: pkt.DoneReason.ToFinishReason(),
-		}
+		f := genai.MessageFragment{TextFragment: pkt.Message.Content}
 		if !f.IsZero() {
 			chunks <- f
 		}

@@ -191,12 +191,12 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 		Usage: genai.Usage{
 			InputTokens:  c.Usage.PromptTokens,
 			OutputTokens: c.Usage.CompletionTokens,
+			FinishReason: c.Choices[0].FinishReason.ToFinishReason(),
 		},
 	}
 	if len(c.Choices) != 1 {
 		return out, errors.New("expected 1 choice")
 	}
-	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
 	return out, err
 }
@@ -337,17 +337,14 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
-	finalUsage := Usage{}
 	eg.Go(func() error {
-		return processStreamPackets(ch, chunks, &finalUsage)
+		return processStreamPackets(ch, chunks, &usage)
 	})
 	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
-	usage.InputTokens = finalUsage.PromptTokens
-	usage.OutputTokens = finalUsage.CompletionTokens
 	// Return the continuable error if no other error occurred
 	if err == nil && continuableErr != nil {
 		return usage, continuableErr
@@ -355,7 +352,7 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	return usage, err
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, finalUsage *Usage) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, usage *genai.Usage) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -365,18 +362,25 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		if len(pkt.Choices) != 1 {
 			continue
 		}
-		if pkt.Usage.TotalTokens != 0 {
-			*finalUsage = pkt.Usage
+		if pkt.Usage.PromptTokens != 0 {
+			usage.InputTokens = pkt.Usage.PromptTokens
+			usage.OutputTokens = pkt.Usage.CompletionTokens
+		}
+		if pkt.Choices[0].FinishReason != "" {
+			usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 		}
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "", "assistant":
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		f := genai.MessageFragment{
-			TextFragment: pkt.Choices[0].Delta.Content,
-			FinishReason: pkt.Choices[0].FinishReason.ToFinishReason(),
+		// TODO: Citations!!
+		f := genai.MessageFragment{TextFragment: pkt.Choices[0].Delta.Content}
+		/* ??
+		if pkt.Choices[0].Message.Content != "" {
+			f.TextFragment = pkt.Choices[0].Message.Content
 		}
+		*/
 		if !f.IsZero() {
 			chunks <- f
 		}

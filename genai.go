@@ -153,13 +153,6 @@ func (c *ChatOptions) Validate() error {
 type ChatResult struct {
 	Message
 	Usage
-
-	// FinishReason indicates why the model stopped generating tokens.
-	// Common values include "stop", "length", "content_filter", "tool_calls", etc.
-	// The exact values depend on the specific provider.
-	FinishReason string
-
-	_ struct{}
 }
 
 // Usage from the LLM provider.
@@ -167,6 +160,11 @@ type Usage struct {
 	InputTokens       int64
 	InputCachedTokens int64
 	OutputTokens      int64
+
+	// FinishReason indicates why the model stopped generating tokens.
+	// Common values include "stop", "length", "content_filter", "tool_calls", etc.
+	// The exact values depend on the specific provider.
+	FinishReason string
 }
 
 func (u *Usage) String() string {
@@ -450,17 +448,11 @@ type MessageFragment struct {
 	// ToolCall is a tool call that the LLM requested to make.
 	ToolCall ToolCall
 
-	// FinishReason indicates why the model stopped generating tokens.
-	// Common values include "stop", "length", "content_filter", "tool_calls", etc.
-	// The exact values depend on the specific provider.
-	// This is only populated in the final MessageFragment of a stream.
-	FinishReason string
-
 	_ struct{}
 }
 
 func (m *MessageFragment) IsZero() bool {
-	return m.TextFragment == "" && m.ThinkingFragment == "" && len(m.Opaque) == 0 && m.Filename == "" && len(m.DocumentFragment) == 0 && m.ToolCall.IsZero() && m.FinishReason == ""
+	return m.TextFragment == "" && m.ThinkingFragment == "" && len(m.Opaque) == 0 && m.Filename == "" && len(m.DocumentFragment) == 0 && m.ToolCall.IsZero()
 }
 
 // Accumulate accumulates the message fragment into the list of messages.
@@ -529,11 +521,6 @@ func (m *MessageFragment) Accumulate(msgs Messages) (Messages, error) {
 		return msgs, nil
 	}
 
-	// Generally the last message fragment.
-	if m.FinishReason != "" {
-		// TODO: lastMsg.FinishReason = m.FinishReason
-		return msgs, nil
-	}
 	// Nothing to accumulate. It should be an error but there are bugs where the system hangs.
 	return msgs, nil
 }

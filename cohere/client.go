@@ -284,8 +284,8 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 			// What about BilledUnits, especially for SearchUnits and Classifications?
 			InputTokens:  c.Usage.Tokens.InputTokens,
 			OutputTokens: c.Usage.Tokens.OutputTokens,
+			FinishReason: c.FinishReason.ToFinishReason(),
 		},
-		FinishReason: c.FinishReason.ToFinishReason(),
 	}
 	// It is very frustrating that Cohere uses different message response types.
 	err := c.Message.To(&out.Message)
@@ -590,17 +590,14 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
-	finalUsage := Usage{}
 	eg.Go(func() error {
-		return processStreamPackets(ch, chunks, &finalUsage)
+		return processStreamPackets(ch, chunks, &usage)
 	})
 	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
-	usage.InputTokens = finalUsage.Tokens.InputTokens
-	usage.OutputTokens = finalUsage.Tokens.OutputTokens
 	// Return the continuable error if no other error occurred
 	if err == nil && continuableErr != nil {
 		return usage, continuableErr
@@ -608,7 +605,7 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	return usage, err
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, finalUsage *Usage) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, usage *genai.Usage) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -629,14 +626,16 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		f := genai.MessageFragment{FinishReason: pkt.Delta.FinishReason.ToFinishReason()}
+		f := genai.MessageFragment{}
 		switch pkt.Type {
 		case ChunkMessageStart:
 			// Nothing useful.
 			continue
 		case ChunkMessageEnd:
 			// Contain usage and finish reason.
-			*finalUsage = pkt.Delta.Usage
+			usage.InputTokens = pkt.Delta.Usage.Tokens.InputTokens
+			usage.OutputTokens = pkt.Delta.Usage.Tokens.OutputTokens
+			usage.FinishReason = pkt.Delta.FinishReason.ToFinishReason()
 		case ChunkContentStart:
 			if len(pkt.Delta.Message.Content) != 1 {
 				return fmt.Errorf("expected content %#v", pkt)

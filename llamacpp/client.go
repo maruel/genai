@@ -189,13 +189,13 @@ type CompletionResponse struct {
 		Lora                []any    `json:"lora"`
 		TopNSigma           float64  `json:"top_n_sigma"`
 	} `json:"generation_settings"`
-	Prompt       string  `json:"prompt"`
-	HasNewLine   bool    `json:"has_new_line"`
-	Truncated    bool    `json:"truncated"`
-	StopType     string  `json:"stop_type"`
-	StoppingWord string  `json:"stopping_word"`
-	TokensCached int64   `json:"tokens_cached"`
-	Timings      Timings `json:"timings"`
+	Prompt       string   `json:"prompt"`
+	HasNewLine   bool     `json:"has_new_line"`
+	Truncated    bool     `json:"truncated"`
+	StopType     StopType `json:"stop_type"`
+	StoppingWord string   `json:"stopping_word"`
+	TokensCached int64    `json:"tokens_cached"`
+	Timings      Timings  `json:"timings"`
 }
 
 func (c *CompletionResponse) ToResult() (genai.ChatResult, error) {
@@ -209,13 +209,16 @@ func (c *CompletionResponse) ToResult() (genai.ChatResult, error) {
 			InputTokens:       c.TokensPredicted,
 			InputCachedTokens: c.TokensCached,
 			OutputTokens:      c.TokensEvaluated,
+			FinishReason:      c.StopType.ToFinishReason(),
 		},
 	}
-	// Set FinishReason based on Stop field
-	if c.Stop {
-		out.FinishReason = "stop"
-	}
 	return out, nil
+}
+
+type StopType string
+
+func (s StopType) ToFinishReason() string {
+	return string(s)
 }
 
 type Timings struct {
@@ -240,15 +243,15 @@ type CompletionStreamChunkResponse struct {
 	TokensEvaluated int64   `json:"tokens_evaluated"`
 
 	// Last message
-	Model              string  `json:"model"`
-	GenerationSettings any     `json:"generation_settings"`
-	Prompt             string  `json:"prompt"`
-	HasNewLine         bool    `json:"has_new_line"`
-	Truncated          bool    `json:"truncated"`
-	StopType           string  `json:"stop_type"`
-	StoppingWord       string  `json:"stopping_word"`
-	TokensCached       int64   `json:"tokens_cached"`
-	Timings            Timings `json:"timings"`
+	Model              string   `json:"model"`
+	GenerationSettings any      `json:"generation_settings"`
+	Prompt             string   `json:"prompt"`
+	HasNewLine         bool     `json:"has_new_line"`
+	Truncated          bool     `json:"truncated"`
+	StopType           StopType `json:"stop_type"`
+	StoppingWord       string   `json:"stopping_word"`
+	TokensCached       int64    `json:"tokens_cached"`
+	Timings            Timings  `json:"timings"`
 }
 
 type applyTemplateRequest struct {
@@ -449,22 +452,19 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	end := make(chan error)
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
-	finalUsage := Timings{}
 	go func() {
 		for msg := range ch {
 			if msg.Timings.PredictedN != 0 {
-				finalUsage = msg.Timings
+				usage.InputTokens = msg.Timings.PromptN
+				usage.OutputTokens = msg.Timings.PredictedN
+				usage.FinishReason = msg.StopType.ToFinishReason()
 			}
 			// slog.DebugContext(ctx, "llm", "word", word, "stop", msg.Stop, "prompt tok", msg.Timings.PromptN, "gen tok", msg.Timings.PredictedN, "prompt tok/ms", msg.Timings.PromptPerTokenMS, "gen tok/ms", msg.Timings.PredictedPerTokenMS, "duration", time.Since(start).Round(time.Millisecond))
-			if word := msg.Content; word != "" {
-				// Mistral Nemo really likes "▁".
-				// word = strings.ReplaceAll(msg.Content, "\u2581", " ")
-				fragment := genai.MessageFragment{TextFragment: word}
-				// Include FinishReason if available (StopType is equivalent to FinishReason)
-				if msg.Stop && msg.StopType != "" {
-					fragment.FinishReason = msg.StopType
-				}
-				chunks <- fragment
+			// Mistral Nemo really likes "▁".
+			// word = strings.ReplaceAll(msg.Content, "\u2581", " ")
+			f := genai.MessageFragment{TextFragment: msg.Content}
+			if !f.IsZero() {
+				chunks <- f
 			}
 		}
 		end <- nil
@@ -474,8 +474,6 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	if err2 := <-end; err2 != nil {
 		err = err2
 	}
-	usage.InputTokens = finalUsage.PromptN
-	usage.OutputTokens = finalUsage.PredictedN
 	// usage.InputCachedTokens = finalUsage.TokensCached
 	// Return the continuable error if no other error occurred
 	if err == nil && continuableErr != nil {

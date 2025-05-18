@@ -257,11 +257,11 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 			InputCachedTokens: c.Usage.PromptCacheHitTokens,
 			OutputTokens:      c.Usage.CompletionTokens,
 		},
-		FinishReason: c.Choices[0].FinishReason.ToFinishReason(),
 	}
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("expected 1 choice, got %#v", c.Choices)
 	}
+	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
 	return out, err
 }
@@ -438,18 +438,14 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
-	finalUsage := Usage{}
 	eg.Go(func() error {
-		return processStreamPackets(ch, chunks, &finalUsage)
+		return processStreamPackets(ch, chunks, &usage)
 	})
 	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
-	usage.InputTokens = finalUsage.PromptTokens
-	usage.InputCachedTokens = finalUsage.PromptCacheHitTokens
-	usage.OutputTokens = finalUsage.CompletionTokens
 	// Return the continuable error if no other error occurred
 	if err == nil && continuableErr != nil {
 		return usage, continuableErr
@@ -457,7 +453,7 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	return usage, err
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, finalUsage *Usage) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, usage *genai.Usage) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -469,7 +465,10 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			continue
 		}
 		if pkt.Usage.CompletionTokens != 0 {
-			*finalUsage = pkt.Usage
+			usage.InputTokens = pkt.Usage.PromptTokens
+			usage.InputCachedTokens = pkt.Usage.PromptCacheHitTokens
+			usage.OutputTokens = pkt.Usage.CompletionTokens
+			usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 		}
 		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
 			return fmt.Errorf("implement multiple tool calls: %#v", pkt)
@@ -479,10 +478,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		f := genai.MessageFragment{
-			TextFragment: pkt.Choices[0].Delta.Content,
-			FinishReason: pkt.Choices[0].FinishReason.ToFinishReason(),
-		}
+		f := genai.MessageFragment{TextFragment: pkt.Choices[0].Delta.Content}
 		// DeepSeek streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
 		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
 			if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {

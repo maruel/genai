@@ -20,8 +20,9 @@ import (
 
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
-		Model:     "@hf/nousresearch/hermes-2-pro-mistral-7b",
+		GetClient:            func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+		Model:                "@hf/nousresearch/hermes-2-pro-mistral-7b",
+		FinishReasonIsBroken: true,
 	},
 }
 

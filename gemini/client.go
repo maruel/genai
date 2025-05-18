@@ -1040,17 +1040,14 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
-	finalUsage := UsageMetadata{}
 	eg.Go(func() error {
-		return processStreamPackets(ch, chunks, &finalUsage)
+		return processStreamPackets(ch, chunks, &usage)
 	})
 	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
-	usage.InputTokens = finalUsage.PromptTokenCount
-	usage.OutputTokens = finalUsage.TotalTokenCount
 	// Return the continuable error if no other error occurred
 	if err == nil && continuableErr != nil {
 		return usage, continuableErr
@@ -1058,7 +1055,7 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	return usage, err
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, finalUsage *UsageMetadata) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, usage *genai.Usage) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -1069,7 +1066,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			continue
 		}
 		if pkt.UsageMetadata.TotalTokenCount != 0 {
-			*finalUsage = pkt.UsageMetadata
+			usage.InputTokens = pkt.UsageMetadata.PromptTokenCount
+			usage.OutputTokens = pkt.UsageMetadata.TotalTokenCount
+			usage.FinishReason = pkt.Candidates[0].FinishReason.ToFinishReason()
 		}
 		switch role := pkt.Candidates[0].Content.Role; role {
 		case "model", "":
@@ -1078,7 +1077,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 
 		// Gemini is the only one returning uppercase so convert down for compatibility.
-		f := genai.MessageFragment{FinishReason: pkt.Candidates[0].FinishReason.ToFinishReason()}
+		f := genai.MessageFragment{}
 		for _, part := range pkt.Candidates[0].Content.Parts {
 			f.TextFragment += part.Text
 			if part.InlineData.MimeType != "" || len(part.InlineData.Data) != 0 {

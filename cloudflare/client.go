@@ -354,6 +354,7 @@ func (c *ChatResponse) ToResult(rpcin *ChatRequest) (genai.ChatResult, error) {
 		Usage: genai.Usage{
 			InputTokens:  c.Result.Usage.PromptTokens,
 			OutputTokens: c.Result.Usage.CompletionTokens,
+			// Cloudflare doesn't provide FinishReason.
 		},
 	}
 	err := c.Result.To(rpcin.ResponseFormat.Type, &out.Message)
@@ -523,17 +524,14 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
-	finalUsage := Usage{}
 	eg.Go(func() error {
-		return processStreamPackets(ch, chunks, &finalUsage)
+		return processStreamPackets(ch, chunks, &usage)
 	})
 	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
-	usage.InputTokens = finalUsage.PromptTokens
-	usage.OutputTokens = finalUsage.CompletionTokens
 	// Return the continuable error if no other error occurred
 	if err == nil && continuableErr != nil {
 		return usage, continuableErr
@@ -541,7 +539,7 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	return usage, err
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, finalUsage *Usage) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, usage *genai.Usage) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -549,7 +547,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	}()
 	for pkt := range ch {
 		if pkt.Usage.TotalTokens != 0 {
-			*finalUsage = pkt.Usage
+			usage.InputTokens = pkt.Usage.PromptTokens
+			usage.OutputTokens = pkt.Usage.CompletionTokens
+			// Cloudflare doesn't provide FinishReason.
 		}
 		if word := pkt.Response; word != "" {
 			chunks <- genai.MessageFragment{TextFragment: word}

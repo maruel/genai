@@ -585,17 +585,14 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
-	finalUsage := Usage{}
 	eg.Go(func() error {
-		return processStreamPackets(ch, chunks, &finalUsage)
+		return processStreamPackets(ch, chunks, &usage)
 	})
 	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
-	usage.InputTokens = finalUsage.PromptTokens
-	usage.OutputTokens = finalUsage.CompletionTokens
 	// Return the continuable error if no other error occurred
 	if err == nil && continuableErr != nil {
 		return usage, continuableErr
@@ -603,7 +600,7 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	return usage, err
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, finalUsage *Usage) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, usage *genai.Usage) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -614,7 +611,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			continue
 		}
 		if pkt.Xgroq.Usage.TotalTokens != 0 {
-			*finalUsage = pkt.Xgroq.Usage
+			usage.InputTokens = pkt.Xgroq.Usage.PromptTokens
+			usage.OutputTokens = pkt.Xgroq.Usage.CompletionTokens
+			usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 		}
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "assistant", "":
@@ -627,7 +626,6 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		f := genai.MessageFragment{
 			TextFragment:     pkt.Choices[0].Delta.Content,
 			ThinkingFragment: pkt.Choices[0].Delta.Reasoning,
-			FinishReason:     pkt.Choices[0].FinishReason.ToFinishReason(),
 		}
 		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
 			pkt.Choices[0].Delta.ToolCalls[0].To(&f.ToolCall)

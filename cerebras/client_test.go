@@ -55,8 +55,13 @@ func TestClient_Chat_jSON_schema(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use_reply(t *testing.T) {
-	t.Skip("A bit too tool call happy, will revisit later.")
-	testCases.TestChatToolUseReply(t, &internaltest.Settings{Model: "llama-3.3-70b"})
+	// testCases.TestChatToolUseReply(t, nil) //&internaltest.Settings{Model: "llama-3.3-70b"})
+	testCases.TestChatToolUseReply(t, &internaltest.Settings{
+		GetClient: func(t *testing.T, m string) genai.ChatProvider {
+			return &genai.ThinkingChatProvider{Provider: getClient(t, m), TagName: "think"}
+		},
+		Model: "qwen-3-32b",
+	})
 }
 
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {

@@ -34,9 +34,12 @@ func (tp *ThinkingChatProvider) Chat(ctx context.Context, msgs Messages, opts Va
 	if err != nil {
 		return result, err
 	}
-	if len(result.Contents) != 1 {
-		// This is extremely unlikely this will happen.
-		return result, fmt.Errorf("implement when there's no or multiple content blocks")
+	if len(result.Contents) == 0 {
+		// It can be a function call.
+		return result, nil
+	}
+	if len(result.Contents) > 1 {
+		return result, fmt.Errorf("multiple content block: %#v", result.Contents)
 	}
 	text := result.Contents[0].Text
 	if text == "" {

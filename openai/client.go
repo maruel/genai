@@ -328,7 +328,7 @@ func (c *Contents) UnmarshalJSON(data []byte) error {
 		if err = json.Unmarshal(data, &s); err != nil {
 			return err
 		}
-		*c = []Content{{Type: "text", Text: s}}
+		*c = []Content{{Type: ContentText, Text: s}}
 		return nil
 	}
 	*c = Contents(v)
@@ -336,7 +336,7 @@ func (c *Contents) UnmarshalJSON(data []byte) error {
 }
 
 type Content struct {
-	Type string `json:"type,omitzero"` // "text", "image_url", "input_audio", "refusal", "audio", "file"
+	Type ContentType `json:"type,omitzero"`
 
 	// Type == "text"
 	Text string `json:"text,omitzero"`
@@ -364,7 +364,7 @@ type Content struct {
 
 func (c *Content) From(in *genai.Content) error {
 	if in.Text != "" {
-		c.Type = "text"
+		c.Type = ContentText
 		c.Text = in.Text
 		return nil
 	}
@@ -379,7 +379,7 @@ func (c *Content) From(in *genai.Content) error {
 	}
 	switch {
 	case strings.HasPrefix(mimeType, "image/"):
-		c.Type = "image_url"
+		c.Type = ContentImageURL
 		if in.URL == "" {
 			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 		} else {
@@ -389,14 +389,14 @@ func (c *Content) From(in *genai.Content) error {
 		if in.URL != "" {
 			return errors.New("URL to audio file not supported")
 		}
-		c.Type = "input_audio"
+		c.Type = ContentInputAudio
 		c.InputAudio.Data = data
 		c.InputAudio.Format = "mp3"
 	case mimeType == "audio/wav":
 		if in.URL != "" {
 			return errors.New("URL to audio file not supported")
 		}
-		c.Type = "input_audio"
+		c.Type = ContentInputAudio
 		c.InputAudio.Data = data
 		c.InputAudio.Format = "wav"
 	default:
@@ -414,7 +414,7 @@ func (c *Content) From(in *genai.Content) error {
 			}
 			filename = "content" + exts[0]
 		}
-		c.Type = "file"
+		c.Type = ContentFile
 		c.File.Filename = filename
 		c.File.FileData = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 	}
@@ -423,7 +423,7 @@ func (c *Content) From(in *genai.Content) error {
 
 func (c *Content) To(out *genai.Content) error {
 	switch c.Type {
-	case "text":
+	case ContentText:
 		out.Text = c.Text
 	default:
 		return fmt.Errorf("unsupported content type %q", c.Type)
@@ -431,10 +431,21 @@ func (c *Content) To(out *genai.Content) error {
 	return nil
 }
 
+type ContentType string
+
+const (
+	ContentText       ContentType = "text"
+	ContentImageURL   ContentType = "image_url"
+	ContentInputAudio ContentType = "input_audio"
+	ContentRefusal    ContentType = "refusal"
+	ContentAudio      ContentType = "audio"
+	ContentFile       ContentType = "file"
+)
+
 type ToolCall struct {
 	Index    int64  `json:"index,omitzero"`
 	ID       string `json:"id,omitzero"`
-	Type     string `json:"type,omitzero"` // function
+	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
 		Name      string `json:"name,omitzero"`
 		Arguments string `json:"arguments,omitzero"`
@@ -468,11 +479,10 @@ type Tool struct {
 // https://platform.openai.com/docs/api-reference/chat/object
 type ChatResponse struct {
 	Choices []struct {
-		// FinishReason is one of "stop", "length", "content_filter" or "tool_calls".
-		FinishReason string   `json:"finish_reason"`
-		Index        int64    `json:"index"`
-		Message      Message  `json:"message"`
-		Logprobs     Logprobs `json:"logprobs"`
+		FinishReason FinishReason `json:"finish_reason"`
+		Index        int64        `json:"index"`
+		Message      Message      `json:"message"`
+		Logprobs     Logprobs     `json:"logprobs"`
 	} `json:"choices"`
 	Created           Time   `json:"created"`
 	ID                string `json:"id"`
@@ -494,9 +504,22 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
 	}
-	out.FinishReason = c.Choices[0].FinishReason
+	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
 	return out, err
+}
+
+type FinishReason string
+
+const (
+	FinishStop          FinishReason = "stop"
+	FinishLength        FinishReason = "length"
+	FinishToolCalls     FinishReason = "tool_calls"
+	FinishContentFilter FinishReason = "content_filter"
+)
+
+func (f FinishReason) ToFinishReason() string {
+	return string(f)
 }
 
 type Usage struct {
@@ -539,10 +562,9 @@ type ChatStreamChunkResponse struct {
 			Refusal   string     `json:"refusal"`
 			ToolCalls []ToolCall `json:"tool_calls"`
 		} `json:"delta"`
-		// FinishReason is one of null, "stop", "length", "content_filter" or "tool_calls".
-		FinishReason string   `json:"finish_reason"`
-		Index        int64    `json:"index"`
-		Logprobs     Logprobs `json:"logprobs"`
+		FinishReason FinishReason `json:"finish_reason"`
+		Index        int64        `json:"index"`
+		Logprobs     Logprobs     `json:"logprobs"`
 	} `json:"choices"`
 	Created           Time   `json:"created"`
 	ID                string `json:"id"`
@@ -719,7 +741,13 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
 			return fmt.Errorf("implement multiple tool calls: %#v", pkt)
 		}
-		f := genai.MessageFragment{TextFragment: pkt.Choices[0].Delta.Content, FinishReason: pkt.Choices[0].FinishReason}
+		if r := pkt.Choices[0].Delta.Refusal; r != "" {
+			return fmt.Errorf("refused: %q", r)
+		}
+		f := genai.MessageFragment{
+			TextFragment: pkt.Choices[0].Delta.Content,
+			FinishReason: pkt.Choices[0].FinishReason.ToFinishReason(),
+		}
 		// OpenAI streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
 		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
 			if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {

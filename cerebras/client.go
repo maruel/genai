@@ -117,7 +117,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 		if sp != "" {
 			c.Messages[0].Role = "system"
 			c.Messages[0].Content = []Content{{
-				Type: "text",
+				Type: ContentText,
 				Text: sp,
 			}}
 		}
@@ -146,16 +146,22 @@ type Message struct {
 }
 
 type Content struct {
-	Type string `json:"type,omitzero"` // "text"
-	Text string `json:"text,omitzero"`
+	Type ContentType `json:"type,omitzero"`
+	Text string      `json:"text,omitzero"`
 }
+
+type ContentType string
+
+const (
+	ContentText ContentType = "text"
+)
 
 // Contents represents a slice of Content with custom unmarshalling to handle
 // both string and Content struct types.
 type Contents []Content
 
 func (c *Contents) MarshalJSON() ([]byte, error) {
-	if len(*c) == 1 && (*c)[0].Type == "text" {
+	if len(*c) == 1 && (*c)[0].Type == ContentText {
 		return json.Marshal((*c)[0].Text)
 	}
 	return json.Marshal(([]Content)(*c))
@@ -169,7 +175,7 @@ func (c *Contents) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &contentStr); err == nil {
 		// If it worked, create a single content with the string
 		*c = Contents{{
-			Type: "text",
+			Type: ContentText,
 			Text: contentStr,
 		}}
 		return nil
@@ -197,7 +203,7 @@ func (m *Message) From(in *genai.Message) error {
 		for i := range in.Contents {
 			if in.Contents[i].Text != "" {
 				m.Content = append(m.Content, Content{
-					Type: "text",
+					Type: ContentText,
 					Text: in.Contents[i].Text,
 				})
 			} else if in.Contents[i].Thinking != "" {
@@ -233,7 +239,7 @@ func (m *Message) To(out *genai.Message) error {
 	if len(m.Content) != 0 {
 		out.Contents = make([]genai.Content, len(m.Content))
 		for i, content := range m.Content {
-			if content.Type == "text" {
+			if content.Type == ContentText {
 				out.Contents[i] = genai.Content{Text: content.Text}
 			}
 		}
@@ -281,9 +287,9 @@ type ChatResponse struct {
 	SystemFingerprint string `json:"system_fingerprint"`
 	Created           Time   `json:"created"`
 	Choices           []struct {
-		Index        int64   `json:"index"`
-		FinishReason string  `json:"finish_reason"` // "stop", "tool_calls"
-		Message      Message `json:"message"`
+		Index        int64        `json:"index"`
+		FinishReason FinishReason `json:"finish_reason"`
+		Message      Message      `json:"message"`
 	} `json:"choices"`
 	Usage    Usage `json:"usage"`
 	TimeInfo struct {
@@ -302,13 +308,24 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 			InputTokens:  c.Usage.PromptTokens,
 			OutputTokens: c.Usage.CompletionTokens,
 		},
-		FinishReason: c.Choices[0].FinishReason,
+		FinishReason: c.Choices[0].FinishReason.ToFinishReason(),
 	}
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("expected 1 choice, got %#v", c.Choices)
 	}
 	err := c.Choices[0].Message.To(&out.Message)
 	return out, err
+}
+
+type FinishReason string
+
+const (
+	FinishStop      FinishReason = "stop"
+	FinishToolCalls FinishReason = "tool_calls"
+)
+
+func (f FinishReason) ToFinishReason() string {
+	return string(f)
 }
 
 type ChatStreamChunkResponse struct {
@@ -323,8 +340,8 @@ type ChatStreamChunkResponse struct {
 			Content   Contents   `json:"content"`
 			ToolCalls []ToolCall `json:"tool_calls"`
 		} `json:"delta"`
-		Index        int64  `json:"index"`
-		FinishReason string `json:"finish_reason"`
+		Index        int64        `json:"index"`
+		FinishReason FinishReason `json:"finish_reason"`
 	} `json:"choices"`
 	Usage    Usage `json:"usage"`
 	TimeInfo struct {
@@ -503,27 +520,19 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			*finalUsage = pkt.Usage
 		}
 
-		finishReason := pkt.Choices[0].FinishReason
-
+		// TODO: Improve.
+		finishReason := pkt.Choices[0].FinishReason.ToFinishReason()
 		for _, nt := range pkt.Choices[0].Delta.ToolCalls {
 			tc := genai.ToolCall{
 				ID:        nt.ID,
 				Name:      nt.Function.Name,
 				Arguments: nt.Function.Arguments,
 			}
-			fragment := genai.MessageFragment{ToolCall: tc}
-			if finishReason != "" {
-				fragment.FinishReason = finishReason
-			}
-			chunks <- fragment
+			chunks <- genai.MessageFragment{ToolCall: tc, FinishReason: finishReason}
 		}
 		for _, content := range pkt.Choices[0].Delta.Content {
-			if content.Type == "text" && content.Text != "" {
-				fragment := genai.MessageFragment{TextFragment: content.Text}
-				if finishReason != "" {
-					fragment.FinishReason = finishReason
-				}
-				chunks <- fragment
+			if content.Type == ContentText && content.Text != "" {
+				chunks <- genai.MessageFragment{TextFragment: content.Text, FinishReason: finishReason}
 			}
 		}
 	}

@@ -220,7 +220,7 @@ func (c *Contents) UnmarshalJSON(data []byte) error {
 }
 
 type Content struct {
-	Type string `json:"type,omitzero"` // "text", "image_url", "video_url"
+	Type ContentType `json:"type,omitzero"`
 
 	// Type == "text"
 	Text string `json:"text,omitzero"`
@@ -238,7 +238,7 @@ type Content struct {
 
 func (c *Content) From(in *genai.Content) error {
 	if in.Text != "" {
-		c.Type = "text"
+		c.Type = ContentText
 		c.Text = in.Text
 		return nil
 	}
@@ -248,14 +248,14 @@ func (c *Content) From(in *genai.Content) error {
 	}
 	switch {
 	case strings.HasPrefix(mimeType, "image/"):
-		c.Type = "image_url"
+		c.Type = ContentImageURL
 		if in.URL == "" {
 			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 		} else {
 			c.ImageURL.URL = in.URL
 		}
 	case strings.HasPrefix(mimeType, "video/"):
-		c.Type = "video_url"
+		c.Type = ContentVideoURL
 		if in.URL == "" {
 			c.VideoURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 		} else {
@@ -269,13 +269,21 @@ func (c *Content) From(in *genai.Content) error {
 
 func (c *Content) To(out *genai.Content) error {
 	switch c.Type {
-	case "text":
+	case ContentText:
 		out.Text = c.Text
 	default:
 		return fmt.Errorf("unsupported content type %q", c.Type)
 	}
 	return nil
 }
+
+type ContentType string
+
+const (
+	ContentText     ContentType = "text"
+	ContentImageURL ContentType = "image_url"
+	ContentVideoURL ContentType = "video_url"
+)
 
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
@@ -317,10 +325,9 @@ type ChatResponse struct {
 		// Text  string `json:"text"`
 		Index int64 `json:"index"`
 		// The seed is returned as a int128.
-		Seed big.Int `json:"seed"`
-		// FinishReason is one of "stop", "eos", "length", "function_call" or "tool_calls".
-		FinishReason string  `json:"finish_reason"`
-		Message      Message `json:"message"`
+		Seed         big.Int      `json:"seed"`
+		FinishReason FinishReason `json:"finish_reason"`
+		Message      Message      `json:"message"`
 		Logprobs     struct {
 			TokenIDs      []int64   `json:"token_ids"`
 			Tokens        []string  `json:"tokens"`
@@ -340,13 +347,27 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 			InputCachedTokens: c.Usage.CachedTokens,
 			OutputTokens:      c.Usage.CompletionTokens,
 		},
-		FinishReason: c.Choices[0].FinishReason,
+		FinishReason: c.Choices[0].FinishReason.ToFinishReason(),
 	}
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
 	}
 	err := c.Choices[0].Message.To(&out.Message)
 	return out, err
+}
+
+type FinishReason string
+
+const (
+	FinishStop         FinishReason = "stop"
+	FinishEOS          FinishReason = "eos"
+	FinishLength       FinishReason = "length"
+	FinishFunctionCall FinishReason = "function_call"
+	FinishToolCalls    FinishReason = "tool_calls"
+)
+
+func (f FinishReason) ToFinishReason() string {
+	return string(f)
 }
 
 type Usage struct {
@@ -371,8 +392,8 @@ type ChatStreamChunkResponse struct {
 			Content   string     `json:"content"`
 			ToolCalls []ToolCall `json:"tool_calls"`
 		} `json:"delta"`
-		Logprobs     struct{} `json:"logprobs"`
-		FinishReason string   `json:"finish_reason"` //
+		Logprobs     struct{}     `json:"logprobs"`
+		FinishReason FinishReason `json:"finish_reason"`
 	} `json:"choices"`
 	// SystemFingerprint string `json:"system_fingerprint"`
 	Usage Usage `json:"usage"`
@@ -576,7 +597,10 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				}}
 			}
 		}
-		f := genai.MessageFragment{TextFragment: pkt.Choices[0].Delta.Content, FinishReason: pkt.Choices[0].FinishReason}
+		f := genai.MessageFragment{
+			TextFragment: pkt.Choices[0].Delta.Content,
+			FinishReason: pkt.Choices[0].FinishReason.ToFinishReason(),
+		}
 		if !f.IsZero() {
 			chunks <- f
 		}

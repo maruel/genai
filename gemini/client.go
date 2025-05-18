@@ -538,9 +538,8 @@ type ThinkingConfig struct {
 type ChatResponse struct {
 	// https://ai.google.dev/api/generate-content?hl=en#v1beta.Candidate
 	Candidates []struct {
-		Content Content `json:"content"`
-		// https://ai.google.dev/api/generate-content?hl=en#FinishReason
-		FinishReason string `json:"finishReason"` // "STOP" (uppercase)
+		Content      Content      `json:"content"`
+		FinishReason FinishReason `json:"finishReason"`
 		// https://ai.google.dev/api/generate-content?hl=en#v1beta.SafetyRating
 		SafetyRatings []struct {
 			// https://ai.google.dev/api/generate-content?hl=en#v1beta.HarmCategory
@@ -619,9 +618,30 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 		return out, fmt.Errorf("unexpected number of candidates; expected 1, got %v", c.Candidates)
 	}
 	// Gemini is the only one returning uppercase so convert down for compatibility.
-	out.FinishReason = strings.ToLower(c.Candidates[0].FinishReason)
+	out.FinishReason = c.Candidates[0].FinishReason.ToFinishReason()
 	err := c.Candidates[0].Content.To(&out.Message)
 	return out, err
+}
+
+// https://ai.google.dev/api/generate-content?hl=en#FinishReason
+type FinishReason string
+
+const (
+	FinishStop              FinishReason = "STOP"
+	FinishMaxTokens         FinishReason = "MAX_TOKENS"
+	FinishSafety            FinishReason = "SAFETY"
+	FinishRecitation        FinishReason = "RECITATION"
+	FinishLanguage          FinishReason = "LANGUAGE"
+	FinishOther             FinishReason = "OTHER"
+	FinishBlocklist         FinishReason = "BLOCKLIST"
+	FinishProhibitedContent FinishReason = "PROHIBITED_CONTENT"
+	FinishSPII              FinishReason = "SPII"
+	FinishMalformed         FinishReason = "MALFORMED_FUNCTION_CALL"
+	FinishImageSafety       FinishReason = "IMAGE_SAFETY"
+)
+
+func (f FinishReason) ToFinishReason() string {
+	return strings.ToLower(string(f))
 }
 
 // https://ai.google.dev/api/generate-content?hl=en#UsageMetadata
@@ -646,9 +666,9 @@ type ModalityTokenCount struct {
 
 type ChatStreamChunkResponse struct {
 	Candidates []struct {
-		Content      Content `json:"content"`
-		FinishReason string  `json:"finishReason"` // STOP
-		Index        int64   `json:"index"`
+		Content      Content      `json:"content"`
+		FinishReason FinishReason `json:"finishReason"`
+		Index        int64        `json:"index"`
 	} `json:"candidates"`
 	UsageMetadata UsageMetadata `json:"usageMetadata"`
 	ModelVersion  string        `json:"modelVersion"`
@@ -1058,7 +1078,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 
 		// Gemini is the only one returning uppercase so convert down for compatibility.
-		f := genai.MessageFragment{FinishReason: strings.ToLower(pkt.Candidates[0].FinishReason)}
+		f := genai.MessageFragment{FinishReason: pkt.Candidates[0].FinishReason.ToFinishReason()}
 		for _, part := range pkt.Candidates[0].Content.Parts {
 			f.TextFragment += part.Text
 			if part.InlineData.MimeType != "" || len(part.InlineData.Data) != 0 {

@@ -174,9 +174,9 @@ type ChatResponse struct {
 	Created   Time     `json:"created"`
 	Citations []string `json:"citations"`
 	Choices   []struct {
-		Index        int64   `json:"index"`
-		FinishReason string  `json:"finish_reason"` // stop, length
-		Message      Message `json:"message"`
+		Index        int64        `json:"index"`
+		FinishReason FinishReason `json:"finish_reason"`
+		Message      Message      `json:"message"`
 		Delta        struct {
 			Content string `json:"content"`
 			Role    string `json:"role"`
@@ -196,9 +196,20 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	if len(c.Choices) != 1 {
 		return out, errors.New("expected 1 choice")
 	}
-	out.FinishReason = c.Choices[0].FinishReason
+	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
 	return out, err
+}
+
+type FinishReason string
+
+const (
+	FinishStop   FinishReason = "stop"
+	FinishLength FinishReason = "length"
+)
+
+func (f FinishReason) ToFinishReason() string {
+	return string(f)
 }
 
 type Usage struct {
@@ -362,13 +373,12 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		if word := pkt.Choices[0].Delta.Content; word != "" {
-			fragment := genai.MessageFragment{TextFragment: word}
-			// Include FinishReason if available
-			if pkt.Choices[0].FinishReason != "" {
-				fragment.FinishReason = pkt.Choices[0].FinishReason
-			}
-			chunks <- fragment
+		f := genai.MessageFragment{
+			TextFragment: pkt.Choices[0].Delta.Content,
+			FinishReason: pkt.Choices[0].FinishReason.ToFinishReason(),
+		}
+		if !f.IsZero() {
+			chunks <- f
 		}
 	}
 	return nil

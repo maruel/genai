@@ -238,10 +238,10 @@ type Tool struct {
 type ChatResponse struct {
 	ID      string `json:"id"`
 	Choices []struct {
-		FinishReason string   `json:"finish_reason"` // "tool_calls"
-		Index        int64    `json:"index"`
-		Message      Message  `json:"message"`
-		Logprobs     Logprobs `json:"logprobs"`
+		FinishReason FinishReason `json:"finish_reason"`
+		Index        int64        `json:"index"`
+		Message      Message      `json:"message"`
+		Logprobs     Logprobs     `json:"logprobs"`
 	} `json:"choices"`
 	Created           int64  `json:"created"` // Unix timestamp
 	Model             string `json:"model"`
@@ -257,13 +257,24 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 			InputCachedTokens: c.Usage.PromptCacheHitTokens,
 			OutputTokens:      c.Usage.CompletionTokens,
 		},
-		FinishReason: c.Choices[0].FinishReason,
+		FinishReason: c.Choices[0].FinishReason.ToFinishReason(),
 	}
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("expected 1 choice, got %#v", c.Choices)
 	}
 	err := c.Choices[0].Message.To(&out.Message)
 	return out, err
+}
+
+type FinishReason string
+
+const (
+	FinishStop      FinishReason = "stop"
+	FinishToolCalls FinishReason = "tool_calls"
+)
+
+func (f FinishReason) ToFinishReason() string {
+	return string(f)
 }
 
 type Usage struct {
@@ -300,10 +311,10 @@ type ChatStreamChunkResponse struct {
 	Model             string `json:"model"`
 	SystemFingerprint string `json:"system_fingerprint"`
 	Choices           []struct {
-		Index        int64    `json:"index"`
-		Delta        Message  `json:"delta"`
-		Logprobs     Logprobs `json:"logprobs"`
-		FinishReason string   `json:"finish_reason"`
+		Index        int64        `json:"index"`
+		Delta        Message      `json:"delta"`
+		Logprobs     Logprobs     `json:"logprobs"`
+		FinishReason FinishReason `json:"finish_reason"`
 	} `json:"choices"`
 	Usage Usage `json:"usage"`
 }
@@ -464,13 +475,12 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		if word := pkt.Choices[0].Delta.Content; word != "" {
-			fragment := genai.MessageFragment{TextFragment: word}
-			// Include FinishReason if available
-			if pkt.Choices[0].FinishReason != "" {
-				fragment.FinishReason = pkt.Choices[0].FinishReason
-			}
-			chunks <- fragment
+		f := genai.MessageFragment{
+			TextFragment: pkt.Choices[0].Delta.Content,
+			FinishReason: pkt.Choices[0].FinishReason.ToFinishReason(),
+		}
+		if !f.IsZero() {
+			chunks <- f
 		}
 	}
 	return nil

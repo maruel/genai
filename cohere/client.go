@@ -174,8 +174,8 @@ func (m *Message) From(in *genai.Message) error {
 }
 
 type Content struct {
-	Type     string `json:"type,omitzero"` // "text", "image_url" or "document"
-	Text     string `json:"text,omitzero"`
+	Type     ContentType `json:"type,omitzero"`
+	Text     string      `json:"text,omitzero"`
 	ImageURL struct {
 		URL string `json:"url,omitzero"`
 	} `json:"image_url,omitzero"`
@@ -195,7 +195,7 @@ func (c *Content) From(in *genai.Content) error {
 	}
 
 	if in.Text != "" {
-		c.Type = "text"
+		c.Type = ContentText
 		c.Text = in.Text
 		return nil
 	}
@@ -208,7 +208,7 @@ func (c *Content) From(in *genai.Content) error {
 	}
 	switch {
 	case (in.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
-		c.Type = "image_url"
+		c.Type = ContentImageURL
 		if in.URL != "" {
 			c.ImageURL.URL = in.URL
 		} else {
@@ -222,15 +222,23 @@ func (c *Content) From(in *genai.Content) error {
 
 func (c *Content) To(in *genai.Content) error {
 	switch c.Type {
-	case "text":
+	case ContentText:
 		in.Text = c.Text
-	// case "image_url":
-	// case "document":
+	// case ContentImageURL:
+	// case ContentDocument:
 	default:
 		return fmt.Errorf("implement %s", c.Type)
 	}
 	return nil
 }
+
+type ContentType string
+
+const (
+	ContentText     ContentType = "text"
+	ContentImageURL ContentType = "image_url"
+	ContentDocument ContentType = "document"
+)
 
 type Citation struct {
 	Start   int64  `json:"start,omitzero"`
@@ -259,7 +267,7 @@ type Document struct {
 
 type ChatResponse struct {
 	ID           string          `json:"id"`
-	FinishReason string          `json:"finish_reason"` // COMPLETE, STOP_SEQUENCE, MAX_TOKENS, TOOL_CALL, ERROR
+	FinishReason FinishReason    `json:"finish_reason"`
 	Message      MessageResponse `json:"message"`
 	Usage        Usage           `json:"usage"`
 	Logprobs     []struct {
@@ -277,11 +285,25 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 			InputTokens:  c.Usage.Tokens.InputTokens,
 			OutputTokens: c.Usage.Tokens.OutputTokens,
 		},
-		FinishReason: c.FinishReason,
+		FinishReason: c.FinishReason.ToFinishReason(),
 	}
 	// It is very frustrating that Cohere uses different message response types.
 	err := c.Message.To(&out.Message)
 	return out, err
+}
+
+type FinishReason string
+
+const (
+	FinishComplete     FinishReason = "COMPLETE"
+	FinishStopSequence FinishReason = "STOP_SEQUENCE"
+	FinishMaxTokens    FinishReason = "MAX_TOKENS"
+	FinishToolCall     FinishReason = "TOOL_CALL"
+	FinishError        FinishReason = "ERROR"
+)
+
+func (f FinishReason) ToFinishReason() string {
+	return string(f)
 }
 
 type Usage struct {
@@ -437,7 +459,7 @@ type ChatStreamChunkResponse struct {
 	Index int64     `json:"index"`
 	Delta struct {
 		Message      MessageResponse `json:"message"`
-		FinishReason string          `json:"finish_reason"` // COMPLETE
+		FinishReason FinishReason    `json:"finish_reason"`
 		Usage        Usage           `json:"usage"`
 	} `json:"delta"`
 }
@@ -607,7 +629,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		f := genai.MessageFragment{FinishReason: pkt.Delta.FinishReason}
+		f := genai.MessageFragment{FinishReason: pkt.Delta.FinishReason.ToFinishReason()}
 		switch pkt.Type {
 		case ChunkMessageStart:
 			// Nothing useful.
@@ -619,7 +641,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			if len(pkt.Delta.Message.Content) != 1 {
 				return fmt.Errorf("expected content %#v", pkt)
 			}
-			if t := pkt.Delta.Message.Content[0].Type; t != "text" {
+			if t := pkt.Delta.Message.Content[0].Type; t != ContentText {
 				return fmt.Errorf("implement content %q", t)
 			}
 		case ChunkContentDelta:

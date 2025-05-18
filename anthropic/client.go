@@ -231,16 +231,17 @@ func (m *Message) To(out *genai.Message) error {
 	// We need to split actual content and tool calls.
 	for i := range m.Content {
 		switch m.Content[i].Type {
-		case "text", "thinking", "redacted_thinking":
+		case ContentText, ContentThinking, ContentRedactedThinking:
 			out.Contents = append(out.Contents, genai.Content{})
 			if err := m.Content[i].ToContent(&out.Contents[len(out.Contents)-1]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
-		case "tool_use":
+		case ContentToolUse:
 			out.ToolCalls = append(out.ToolCalls, genai.ToolCall{})
 			if err := m.Content[i].ToToolCall(&out.ToolCalls[len(out.ToolCalls)-1]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
+			// ContentImage, ContentDocument, ContentToolResult
 		default:
 			return fmt.Errorf("unsupported content type %q", m.Content[i].Type)
 		}
@@ -249,7 +250,7 @@ func (m *Message) To(out *genai.Message) error {
 }
 
 type Content struct {
-	Type string `json:"type"` // "text", "image", "tool_use", "tool_result", "document", "thinking", "redacted_thinking"
+	Type ContentType `json:"type"`
 	// Type == "text"
 	Text string `json:"text,omitzero"`
 
@@ -308,12 +309,12 @@ type Content struct {
 
 func (c *Content) FromContent(in *genai.Content) error {
 	if in.Text != "" {
-		c.Type = "text"
+		c.Type = ContentText
 		c.Text = in.Text
 		return nil
 	}
 	if in.Thinking != "" {
-		c.Type = "thinking"
+		c.Type = ContentThinking
 		c.Thinking = in.Thinking
 		if in.Opaque != nil {
 			if b, ok := in.Opaque["signature"].([]byte); ok {
@@ -324,7 +325,7 @@ func (c *Content) FromContent(in *genai.Content) error {
 	}
 	if in.Opaque != nil {
 		if s, ok := in.Opaque["redacted_thinking"].(string); ok {
-			c.Type = "redacted_thinking"
+			c.Type = ContentRedactedThinking
 			c.Data = s
 			return nil
 		}
@@ -342,7 +343,7 @@ func (c *Content) FromContent(in *genai.Content) error {
 	c.CacheControl.Type = "ephemeral"
 	switch {
 	case strings.HasPrefix(mimeType, "image/"):
-		c.Type = "image"
+		c.Type = ContentImage
 		if in.URL != "" {
 			c.Source.Type = "url"
 			c.Source.URL = in.URL
@@ -352,7 +353,7 @@ func (c *Content) FromContent(in *genai.Content) error {
 			c.Source.Data = data
 		}
 	case mimeType == "application/pdf":
-		c.Type = "document"
+		c.Type = ContentDocument
 		if in.URL != "" {
 			c.Source.Type = "url"
 			c.Source.URL = in.URL
@@ -368,7 +369,7 @@ func (c *Content) FromContent(in *genai.Content) error {
 }
 
 func (c *Content) FromToolCall(in *genai.ToolCall) error {
-	c.Type = "tool_use"
+	c.Type = ContentToolUse
 	c.ID = in.ID
 	c.Name = in.Name
 	if err := json.Unmarshal([]byte(in.Arguments), &c.Input); err != nil {
@@ -379,12 +380,12 @@ func (c *Content) FromToolCall(in *genai.ToolCall) error {
 
 func (c *Content) ToContent(out *genai.Content) error {
 	switch c.Type {
-	case "text":
+	case ContentText:
 		out.Text = c.Text
-	case "thinking":
+	case ContentThinking:
 		out.Thinking = c.Thinking
 		out.Opaque = map[string]any{"signature": c.Signature}
-	case "redacted_thinking":
+	case ContentRedactedThinking:
 		out.Opaque = map[string]any{"redacted_thinking": c.Signature}
 	default:
 		return fmt.Errorf("unsupported content type %q", c.Type)
@@ -394,7 +395,7 @@ func (c *Content) ToContent(out *genai.Content) error {
 
 func (c *Content) ToToolCall(out *genai.ToolCall) error {
 	switch c.Type {
-	case "tool_use":
+	case ContentToolUse:
 		out.ID = c.ID
 		out.Name = c.Name
 		raw, err := json.Marshal(c.Input)
@@ -407,6 +408,18 @@ func (c *Content) ToToolCall(out *genai.ToolCall) error {
 	}
 	return nil
 }
+
+type ContentType string
+
+const (
+	ContentText             ContentType = "text"
+	ContentImage            ContentType = "image"
+	ContentToolUse          ContentType = "tool_use"
+	ContentToolResult       ContentType = "tool_result"
+	ContentDocument         ContentType = "document"
+	ContentThinking         ContentType = "thinking"
+	ContentRedactedThinking ContentType = "redacted_thinking"
+)
 
 // Citation is used both for system message and user message.
 //
@@ -492,13 +505,13 @@ type Tool struct {
 }
 
 type ChatResponse struct {
-	Message             // Role is always "assistant"
-	ID           string `json:"id"`
-	Model        string `json:"model"`
-	StopReason   string `json:"stop_reason"` // "end_turn", "tool_use", "stop_sequence", "max_tokens"
-	StopSequence string `json:"stop_sequence"`
-	Type         string `json:"type"` // "message"
-	Usage        Usage  `json:"usage"`
+	Message                 // Role is always "assistant"
+	ID           string     `json:"id"`
+	Model        string     `json:"model"`
+	StopReason   StopReason `json:"stop_reason"`
+	StopSequence string     `json:"stop_sequence"`
+	Type         string     `json:"type"` // "message"
+	Usage        Usage      `json:"usage"`
 }
 
 func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
@@ -508,10 +521,23 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 			InputCachedTokens: c.Usage.CacheReadInputTokens,
 			OutputTokens:      c.Usage.OutputTokens,
 		},
-		FinishReason: c.StopReason,
+		FinishReason: c.StopReason.ToFinishReason(),
 	}
 	err := c.To(&out.Message)
 	return out, err
+}
+
+type StopReason string
+
+const (
+	StopEndTurn   StopReason = "end_turn"
+	StopToolUse   StopReason = "tool_use"
+	StopSequence  StopReason = "stop_sequence"
+	StopMaxTokens StopReason = "max_tokens"
+)
+
+func (s StopReason) ToFinishReason() string {
+	return string(s)
 }
 
 // https://docs.anthropic.com/en/api/messages-streaming
@@ -525,25 +551,25 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 //     final Message object.
 //   - A final message_stop event.
 type ChatStreamChunkResponse struct {
-	Type string `json:"type"` // // "message_start", "content_block_start", "content_block_delta", "content_block_stop", "message_delta", "message_stop", "ping"
+	Type ChunkType `json:"type"`
 
 	// Type == "message_start"
 	Message struct {
-		ID           string   `json:"id"`
-		Type         string   `json:"type"` // "message", "thinking"
-		Role         string   `json:"role"`
-		Model        string   `json:"model"`
-		Content      []string `json:"content"`
-		StopReason   string   `json:"stop_reason"`
-		StopSequence string   `json:"stop_sequence"`
-		Usage        Usage    `json:"usage"`
+		ID           string     `json:"id"`
+		Type         string     `json:"type"` // "message", "thinking"
+		Role         string     `json:"role"`
+		Model        string     `json:"model"`
+		Content      []string   `json:"content"`
+		StopReason   StopReason `json:"stop_reason"`
+		StopSequence string     `json:"stop_sequence"`
+		Usage        Usage      `json:"usage"`
 	} `json:"message"`
 
 	Index int64 `json:"index"`
 
 	// Type == "content_block_start"
 	ContentBlock struct {
-		Type string `json:"type"` // "text", "tool_use", "thinking"
+		Type ContentType `json:"type"`
 
 		// Type == "text"
 		Text string `json:"text"`
@@ -560,7 +586,7 @@ type ChatStreamChunkResponse struct {
 
 	// Type == "content_block_delta"
 	Delta struct {
-		Type string `json:"type"` // "text_delta", "input_json_delta", "thinking_delta", "signature_delta", ""
+		Type DeltaType `json:"type"`
 
 		// Type == "text_delta"
 		Text string `json:"text"`
@@ -575,11 +601,32 @@ type ChatStreamChunkResponse struct {
 		Signature []byte `json:"signature"`
 
 		// Type == ""
-		StopReason   string `json:"stop_reason"` // "end_turn", "tool_use", "stop_sequence", "max_tokens"
-		StopSequence string `json:"stop_sequence"`
+		StopReason   StopReason `json:"stop_reason"`
+		StopSequence string     `json:"stop_sequence"`
 	} `json:"delta"`
 	Usage Usage `json:"usage"`
 }
+
+type ChunkType string
+
+const (
+	ChunkMessageStart      ChunkType = "message_start"
+	ChunkMessageDelta      ChunkType = "message_delta"
+	ChunkMessageStop       ChunkType = "message_stop"
+	ChunkContentBlockStart ChunkType = "content_block_start"
+	ChunkContentBlockDelta ChunkType = "content_block_delta"
+	ChunkContentBlockStop  ChunkType = "content_block_stop"
+	ChunkPing              ChunkType = "ping"
+)
+
+type DeltaType string
+
+const (
+	DeltaText      DeltaType = "text_delta"
+	DeltaInputJSON DeltaType = "input_json_delta"
+	DeltaThinking  DeltaType = "thinking_delta"
+	DeltaSignature DeltaType = "signature_delta"
+)
 
 type Usage struct {
 	InputTokens              int64 `json:"input_tokens"`
@@ -722,7 +769,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		// See testdata/TestClient_Chat_thinking/ChatStream.yaml as a great example.
 		// TODO: pkt.Index matters here, as the LLM may fill multiple content blocks simultaneously.
 		switch pkt.Type {
-		case "message_start":
+		case ChunkMessageStart:
 			switch pkt.Message.Role {
 			case "assistant":
 			default:
@@ -730,13 +777,13 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			}
 			*finalUsage = pkt.Message.Usage
 			continue
-		case "content_block_start":
+		case ChunkContentBlockStart:
 			switch pkt.ContentBlock.Type {
-			case "text":
+			case ContentText:
 				f.TextFragment = pkt.ContentBlock.Text
-			case "thinking":
+			case ContentThinking:
 				f.ThinkingFragment = pkt.ContentBlock.Thinking
-			case "tool_use":
+			case ContentToolUse:
 				pendingCall.ID = pkt.ContentBlock.ID
 				pendingCall.Name = pkt.ContentBlock.Name
 				pendingCall.Arguments = ""
@@ -744,34 +791,34 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			default:
 				return fmt.Errorf("missing implementation for content block %q", pkt.ContentBlock.Type)
 			}
-		case "content_block_delta":
+		case ChunkContentBlockDelta:
 			switch pkt.Delta.Type {
-			case "text_delta":
+			case DeltaText:
 				f.TextFragment = pkt.Delta.Text
-			case "thinking_delta":
+			case DeltaThinking:
 				f.ThinkingFragment = pkt.Delta.Thinking
-			case "signature_delta":
+			case DeltaSignature:
 				f.Opaque = map[string]any{"signature": pkt.Delta.Signature}
-			case "input_json_delta":
+			case DeltaInputJSON:
 				pendingCall.Arguments += pkt.Delta.PartialJSON
 			default:
 				return fmt.Errorf("missing implementation for content block delta %q", pkt.Delta.Type)
 			}
-		case "content_block_stop":
+		case ChunkContentBlockStop:
 			// Marks a closure of the block pkt.Index. Nothing to do.
 			if pendingCall.ID != "" {
 				chunks <- genai.MessageFragment{ToolCall: pendingCall}
 				pendingCall = genai.ToolCall{}
 			}
 			continue
-		case "message_delta":
+		case ChunkMessageDelta:
 			// Includes finish reason and output tokens usage (but not input tokens!)
-			f.FinishReason = pkt.Message.StopReason
+			f.FinishReason = pkt.Message.StopReason.ToFinishReason()
 			finalUsage.OutputTokens = pkt.Usage.OutputTokens
-		case "message_stop":
+		case ChunkMessageStop:
 			// Doesn't contain anything.
 			continue
-		case "ping":
+		case ChunkPing:
 			// Doesn't contain anything.
 			continue
 		default:

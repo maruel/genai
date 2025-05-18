@@ -255,13 +255,25 @@ type ChatResponse struct {
 	Model   string `json:"model"`
 	Created Time   `json:"created"`
 	Choices []struct {
-		// FinishReason is one of "stop", "length", "content_filter" or "tool_calls".
-		FinishReason string          `json:"finish_reason"`
+		FinishReason FinishReason    `json:"finish_reason"`
 		Index        int64           `json:"index"`
 		Message      MessageResponse `json:"message"`
 		Logprobs     struct{}        `json:"logprobs"`
 	} `json:"choices"`
 	Usage Usage `json:"usage"`
+}
+
+type FinishReason string
+
+const (
+	FinishStop          FinishReason = "stop"
+	FinishLength        FinishReason = "length"
+	FinishToolCalls     FinishReason = "tool_calls"
+	FinishContentFilter FinishReason = "content_filter"
+)
+
+func (f FinishReason) ToFinishReason() string {
+	return string(f)
 }
 
 type Usage struct {
@@ -327,7 +339,7 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 			InputTokens:  c.Usage.PromptTokens,
 			OutputTokens: c.Usage.CompletionTokens,
 		},
-		FinishReason: c.Choices[0].FinishReason,
+		FinishReason: c.Choices[0].FinishReason.ToFinishReason(),
 	}
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
@@ -348,7 +360,7 @@ type ChatStreamChunkResponse struct {
 			Content   string     `json:"content"`
 			ToolCalls []ToolCall `json:"tool_calls"`
 		} `json:"delta"`
-		FinishReason string `json:"finish_reason"`
+		FinishReason FinishReason `json:"finish_reason"`
 	} `json:"choices"`
 	Usage Usage `json:"usage"`
 }
@@ -540,7 +552,10 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
 			return fmt.Errorf("implement multiple tool calls: %#v", pkt.Choices[0].Delta.ToolCalls)
 		}
-		f := genai.MessageFragment{TextFragment: pkt.Choices[0].Delta.Content, FinishReason: pkt.Choices[0].FinishReason}
+		f := genai.MessageFragment{
+			TextFragment: pkt.Choices[0].Delta.Content,
+			FinishReason: pkt.Choices[0].FinishReason.ToFinishReason(),
+		}
 		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
 			pkt.Choices[0].Delta.ToolCalls[0].To(&f.ToolCall)
 		}

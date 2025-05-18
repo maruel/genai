@@ -241,11 +241,11 @@ type Tool struct {
 // https://github.com/ollama/ollama/blob/main/docs/api.md#response-10
 // https://pkg.go.dev/github.com/ollama/ollama/api#ChatResponse
 type ChatResponse struct {
-	Model      string    `json:"model"`
-	CreatedAt  time.Time `json:"created_at"`
-	Message    Message   `json:"message"`
-	DoneReason string    `json:"done_reason"`
-	Done       bool      `json:"done"`
+	Model      string     `json:"model"`
+	CreatedAt  time.Time  `json:"created_at"`
+	Message    Message    `json:"message"`
+	DoneReason DoneReason `json:"done_reason"`
+	Done       bool       `json:"done"`
 
 	// 	https://pkg.go.dev/github.com/ollama/ollama/api#Metrics
 	TotalDuration      time.Duration `json:"total_duration"`
@@ -263,10 +263,20 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 			InputTokens:  c.PromptEvalCount,
 			OutputTokens: c.EvalCount,
 		},
-		FinishReason: c.DoneReason,
+		FinishReason: c.DoneReason.ToFinishReason(),
 	}
 	err := c.Message.To(&out.Message)
 	return out, err
+}
+
+type DoneReason string
+
+const (
+	DoneStop DoneReason = "stop"
+)
+
+func (d DoneReason) ToFinishReason() string {
+	return string(d)
 }
 
 type ChatStreamChunkResponse ChatResponse
@@ -421,13 +431,12 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		if word := pkt.Message.Content; word != "" {
-			fragment := genai.MessageFragment{TextFragment: word}
-			// Include FinishReason if available
-			if pkt.DoneReason != "" {
-				fragment.FinishReason = pkt.DoneReason
-			}
-			chunks <- fragment
+		f := genai.MessageFragment{
+			TextFragment: pkt.Message.Content,
+			FinishReason: pkt.DoneReason.ToFinishReason(),
+		}
+		if !f.IsZero() {
+			chunks <- f
 		}
 	}
 	return nil

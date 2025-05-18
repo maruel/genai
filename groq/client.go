@@ -129,7 +129,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 		c.Messages = make([]Message, len(msgs)+offset)
 		if sp != "" {
 			c.Messages[0].Role = "system"
-			c.Messages[0].Content = []Content{{Type: "text", Text: sp}}
+			c.Messages[0].Content = []Content{{Type: ContentText, Text: sp}}
 		}
 		for i := range msgs {
 			if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
@@ -261,14 +261,14 @@ func (m *Message) From(in *genai.Message) error {
 type Contents []Content
 
 func (c *Contents) MarshalJSON() ([]byte, error) {
-	if len(*c) == 1 && (*c)[0].Type == "text" {
+	if len(*c) == 1 && (*c)[0].Type == ContentText {
 		return json.Marshal((*c)[0].Text)
 	}
 	return json.Marshal(([]Content)(*c))
 }
 
 type Content struct {
-	Type string `json:"type,omitzero"` // "text", "image_url"
+	Type ContentType `json:"type,omitzero"`
 
 	// Type == "text"
 	Text string `json:"text,omitzero"`
@@ -283,7 +283,7 @@ type Content struct {
 func (c *Content) From(in *genai.Content) error {
 	// DeepSeek and Qwen recommend against passing reasoning back to the model.
 	if in.Text != "" {
-		c.Type = "text"
+		c.Type = ContentText
 		c.Text = in.Text
 		return nil
 	}
@@ -293,7 +293,7 @@ func (c *Content) From(in *genai.Content) error {
 	}
 	switch {
 	case (in.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
-		c.Type = "image_url"
+		c.Type = ContentImageURL
 		if in.URL == "" {
 			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 		} else {
@@ -304,6 +304,13 @@ func (c *Content) From(in *genai.Content) error {
 	}
 	return nil
 }
+
+type ContentType string
+
+const (
+	ContentText     ContentType = "text"
+	ContentImageURL ContentType = "image_url"
+)
 
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
@@ -338,8 +345,7 @@ func (t *ToolCall) To(out *genai.ToolCall) {
 
 type ChatResponse struct {
 	Choices []struct {
-		// FinishReason is one of "stop", "length", "content_filter" or "tool_calls".
-		FinishReason string          `json:"finish_reason"`
+		FinishReason FinishReason    `json:"finish_reason"`
 		Index        int64           `json:"index"`
 		Message      MessageResponse `json:"message"`
 		Logprobs     struct{}        `json:"logprobs"`
@@ -380,9 +386,22 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
 	}
-	out.FinishReason = c.Choices[0].FinishReason
+	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
 	return out, err
+}
+
+type FinishReason string
+
+const (
+	FinishStop          FinishReason = "stop"
+	FinishLength        FinishReason = "length"
+	FinishToolCalls     FinishReason = "tool_calls"
+	FinishContentFilter FinishReason = "content_filter"
+)
+
+func (f FinishReason) ToFinishReason() string {
+	return string(f)
 }
 
 type Usage struct {
@@ -437,8 +456,8 @@ type ChatStreamChunkResponse struct {
 			Content   string `json:"content"`
 			Reasoning string `json:"reasoning"`
 		} `json:"delta"`
-		Logprobs     struct{} `json:"logprobs"`
-		FinishReason string   `json:"finish_reason"` // stop
+		Logprobs     struct{}     `json:"logprobs"`
+		FinishReason FinishReason `json:"finish_reason"`
 	} `json:"choices"`
 	Xgroq struct {
 		ID    string `json:"id"`
@@ -600,21 +619,13 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		if word := pkt.Choices[0].Delta.Reasoning; word != "" {
-			fragment := genai.MessageFragment{ThinkingFragment: word}
-			// Include FinishReason if available
-			if pkt.Choices[0].FinishReason != "" {
-				fragment.FinishReason = pkt.Choices[0].FinishReason
-			}
-			chunks <- fragment
+		f := genai.MessageFragment{
+			TextFragment:     pkt.Choices[0].Delta.Content,
+			ThinkingFragment: pkt.Choices[0].Delta.Reasoning,
+			FinishReason:     pkt.Choices[0].FinishReason.ToFinishReason(),
 		}
-		if word := pkt.Choices[0].Delta.Content; word != "" {
-			fragment := genai.MessageFragment{TextFragment: word}
-			// Include FinishReason if available
-			if pkt.Choices[0].FinishReason != "" {
-				fragment.FinishReason = pkt.Choices[0].FinishReason
-			}
-			chunks <- fragment
+		if !f.IsZero() {
+			chunks <- f
 		}
 	}
 	return nil

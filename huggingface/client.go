@@ -126,7 +126,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 		c.Messages = make([]Message, len(msgs)+offset)
 		if sp != "" {
 			c.Messages[0].Role = "system"
-			c.Messages[0].Content = []Content{{Type: "text", Text: sp}}
+			c.Messages[0].Content = []Content{{Type: ContentText, Text: sp}}
 		}
 		for i := range msgs {
 			if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
@@ -178,8 +178,8 @@ func (m *Message) From(in *genai.Message) error {
 }
 
 type Content struct {
-	Type     string `json:"type"` // "text", "image_url"
-	Text     string `json:"text,omitzero"`
+	Type     ContentType `json:"type"`
+	Text     string      `json:"text,omitzero"`
 	ImageURL struct {
 		URL string `json:"url,omitzero"`
 	} `json:"image_url,omitzero"`
@@ -187,7 +187,7 @@ type Content struct {
 
 func (c *Content) From(in *genai.Content) error {
 	if in.Text != "" {
-		c.Type = "text"
+		c.Type = ContentText
 		c.Text = in.Text
 		return nil
 	}
@@ -197,7 +197,7 @@ func (c *Content) From(in *genai.Content) error {
 	}
 	switch {
 	case (in.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
-		c.Type = "image_url"
+		c.Type = ContentImageURL
 		if in.URL == "" {
 			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 		} else {
@@ -208,6 +208,13 @@ func (c *Content) From(in *genai.Content) error {
 	}
 	return nil
 }
+
+type ContentType string
+
+const (
+	ContentText     ContentType = "text"
+	ContentImageURL ContentType = "image_url"
+)
 
 type ToolCall struct {
 	Index    int64  `json:"index,omitzero"`
@@ -259,7 +266,7 @@ type ChatResponse struct {
 	SystemFingerprint string `json:"system_fingerprint"`
 
 	Choices []struct {
-		FinishReason string          `json:"finish_reason"`
+		FinishReason FinishReason    `json:"finish_reason"`
 		Index        int64           `json:"index"`
 		Message      MessageResponse `json:"message"`
 		Logprobs     struct {
@@ -274,6 +281,16 @@ type ChatResponse struct {
 		} `json:"logprobs"`
 	} `json:"choices"`
 	Usage Usage `json:"usage"`
+}
+
+type FinishReason string
+
+const (
+	FinishStop FinishReason = "stop"
+)
+
+func (f FinishReason) ToFinishReason() string {
+	return string(f)
 }
 
 type Usage struct {
@@ -319,7 +336,7 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 			InputTokens:  c.Usage.PromptTokens,
 			OutputTokens: c.Usage.CompletionTokens,
 		},
-		FinishReason: c.Choices[0].FinishReason,
+		FinishReason: c.Choices[0].FinishReason.ToFinishReason(),
 	}
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
@@ -335,8 +352,8 @@ type ChatStreamChunkResponse struct {
 	Model             string `json:"model"`
 	SystemFingerprint string `json:"system_fingerprint"`
 	Choices           []struct {
-		Index        int64  `json:"index"`
-		FinishReason string `json:"finish_reason"` // stop
+		Index        int64        `json:"index"`
+		FinishReason FinishReason `json:"finish_reason"`
 		Delta        struct {
 			Role    genai.Role `json:"role"`
 			Content string     `json:"content"`
@@ -532,7 +549,10 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
 			return fmt.Errorf("implement multiple tool calls: %#v", pkt.Choices[0].Delta.ToolCalls)
 		}
-		f := genai.MessageFragment{TextFragment: pkt.Choices[0].Delta.Content, FinishReason: pkt.Choices[0].FinishReason}
+		f := genai.MessageFragment{
+			TextFragment: pkt.Choices[0].Delta.Content,
+			FinishReason: pkt.Choices[0].FinishReason.ToFinishReason(),
+		}
 		// Huggingface streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
 		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
 			if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID == pendingCall.ID {

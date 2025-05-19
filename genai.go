@@ -226,9 +226,11 @@ type Messages []Message
 // Validate ensures the messages are valid.
 func (msgs Messages) Validate() error {
 	var errs []error
-	for i, m := range msgs {
-		if err := m.Validate(); err != nil {
+	for i := range msgs {
+		if err := msgs[i].Validate(); err != nil {
 			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+		} else if msgs[i].IsZero() {
+			errs = append(errs, fmt.Errorf("message %d: is empty", i))
 		}
 		// if i > 0 && msgs[i-1].Role == m.Role {
 		// 	errs = append(errs, fmt.Errorf("message %d: role must alternate", i))
@@ -262,6 +264,10 @@ type Message struct {
 // text block.
 func NewTextMessage(role Role, text string) Message {
 	return Message{Role: role, Contents: []Content{{Text: text}}}
+}
+
+func (m *Message) IsZero() bool {
+	return m.Role == "" && m.User == "" && len(m.Contents) == 0 && len(m.ToolCalls) == 0 && len(m.ToolCallResults) == 0
 }
 
 // Validate ensures the messages are valid.
@@ -332,6 +338,27 @@ func (m *Message) Decode(x any) error {
 		return fmt.Errorf("failed to decode message text as JSON: %w; content: %q", err, s)
 	}
 	return nil
+}
+
+// DoToolCalls processes all the ToolCalls if any.
+//
+// Returns a Message to be added back to the list of messages, only if msg.IsZero() is true.
+func (m *Message) DoToolCalls(tools []ToolDef) (Message, error) {
+	var out Message
+	for i := range m.ToolCalls {
+		res, err := m.ToolCalls[i].Call(tools)
+		if err != nil {
+			return out, err
+		}
+		// Set User as the role. Some provider will use "tool".
+		out.Role = User
+		out.ToolCallResults = append(out.ToolCallResults, ToolCallResult{
+			ID:     m.ToolCalls[i].ID,
+			Name:   m.ToolCalls[i].Name,
+			Result: res,
+		})
+	}
+	return out, nil
 }
 
 // Content is a block of content in the message meant to be visible in a

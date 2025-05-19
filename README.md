@@ -92,11 +92,11 @@ import (
 	"log"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/cerebras"
+	"github.com/maruel/genai/groq"
 )
 
 func main() {
-	c, err := cerebras.New("", "llama3.1-8b")
+	c, err := groq.New("", "llama3-8b-8192")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -105,31 +105,50 @@ func main() {
 		B int `json:"b"`
 	}
 	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "What is 3214 + 5632? Call the tool add to tell me the answer."),
+		genai.NewTextMessage(genai.User, "What is 3214 + 5632? Call the tool \"add\" to tell me the answer. Do not explain. Be terse. Include only the answer."),
 	}
 	opts := genai.ChatOptions{
 		Tools: []genai.ToolDef{
 			{
 				Name:        "add",
-				Description: "Add two numbers together",
+				Description: "Add two numbers together and provides the result",
 				Callback: func(input *math) (string, error) {
-					return fmt.Sprintf("%d + %d = %d", input.A, input.B, input.A+input.B), nil
+					return fmt.Sprintf("%d", input.A+input.B), nil
 				},
 			},
 		},
+		// For the LLM to do a tool call.
+		ToolCallRequest: genai.ToolCallRequired,
 	}
 	resp, err := c.Chat(context.Background(), msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}
-	result, err := resp.ToolCalls[0].Call(opts.Tools)
+
+	// Add the assistant's message to the messages list.
+	msgs = append(msgs, resp.Message)
+
+	// Process the tool call from the assistant.
+	msg, err := resp.DoToolCalls(opts.Tools)
 	if err != nil {
-		fmt.Printf("Error calling tool: %v\n", err)
-		return
+		log.Fatalf("Error calling tool: %v", err)
+	}
+	if msg.IsZero() {
+		log.Fatal("Expected a tool call")
 	}
 
-	// Print the result
-	fmt.Println(result)
+	// Add the tool call response to the messages list.
+	msgs = append(msgs, msg)
+
+	// Follow up so the LLM can interpret the tool call response. Tell the LLM to not do a tool call this time.
+	opts.ToolCallRequest = genai.ToolCallNone
+	resp, err = c.Chat(context.Background(), msgs, &opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Print the result.
+	fmt.Println(resp.AsText())
 }
 ```
 

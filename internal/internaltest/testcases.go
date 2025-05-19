@@ -185,23 +185,24 @@ func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
 	if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
 		t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
 	}
-	sq, err := resp.ToolCalls[0].Call(opts.Tools)
+	// Don't forget to add the tool call request first before the reply.
+	msgs = append(msgs, resp.Message)
+	msg, err := resp.DoToolCalls(opts.Tools)
 	if err != nil {
 		t.Fatal(err)
 	}
-	// Don't forget to add the tool call request first before the reply.
-	msgs = append(msgs,
-		resp.Message,
-		genai.Message{
-			Role:            genai.User,
-			ToolCallResults: []genai.ToolCallResult{{ID: resp.ToolCalls[0].ID, Name: resp.ToolCalls[0].Name, Result: sq}},
-		})
+	if !msg.IsZero() {
+		// Don't forget to add the tool call request first before the reply.
+		msgs = append(msgs, msg)
+	} else {
+		t.Fatal("unexpected zero message")
+	}
 	// Important!
 	opts.ToolCallRequest = genai.ToolCallNone
 	resp = tc.testChat(t, msgs, c, tc.getOptions(&opts, override), tc.usageIsBroken(override), tc.finishReasonIsBroken(override))
 	// This is very annoying, llama4 is not following instructions.
 
-	validateSingleWordResponse(t, resp, sq)
+	validateSingleWordResponse(t, resp, "363.89")
 }
 
 // TestChatToolUsePositionBias confirms that LLMs are position biased.

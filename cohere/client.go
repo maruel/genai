@@ -320,7 +320,7 @@ const (
 )
 
 func (f FinishReason) ToFinishReason() string {
-	return string(f)
+	return strings.ToLower(string(f))
 }
 
 type Usage struct {

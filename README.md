@@ -19,6 +19,9 @@ The _high performance_ low level native Go client for LLMs.
 | [Perplexity](https://www.perplexity.ai/settings/api)        | 🇺🇸      | ✅   | ✅        | ❌     | ❌  | ❌    | ❌    | ❌          | ⏳          | ❌   | ❌    | ❌      |
 | [TogetherAI](https://api.together.ai/settings/billing)      | 🇺🇸      | ✅   | ✅        | ✅     | ❌  | ❌    | ✅    | ✅          | ✅          | ✅   | ✅    | ❌      |
 
+<details>
+  <summary>Legend</summary>
+
 - ✅ Implemented
 - ⏳ To be implemented
 - ❌ Not supported
@@ -31,16 +34,20 @@ The _high performance_ low level native Go client for LLMs.
 - Seed: deterministic seed for reproducibility
 - Tools: tool calling
 
+</details>
+
+
 ## Features
 
 - **Full functionality**: Full access to each backend-specific functionality.
   Access the raw API if needed with full message schema as Go structs.
+- **Native tool calling**: Tell the LLM to call a tool directly, described a Go
+  struct. No need to manually fiddle with JSON.
 - **Native JSON struct serialization**: Pass a struct to tell the LLM what to
   generate, decode the reply into your struct. No need to manually fiddle with
   JSON. Supports required fields, enums, descriptions, etc.
-- **Native tool calling**: Tell the LLM to call a tool directly, described a Go
-  struct. No need to manually fiddle with JSON.
-- **Streaming**: Streams completion reply as the output is being generated.
+- **Streaming**: Streams completion reply as the output is being generated, including thinking and tool
+  calling.
 - **Vision**: Process images, PDFs and videos (!) as input.
 - **Unit testing friendly**: record and play back API calls at HTTP level.
 
@@ -54,7 +61,7 @@ Implementation is in flux. :)
 - **Safe and strict API implementation**. All you love from a statically typed
   language. Immediately fails on unknown RPC fields. Error code paths are
   properly implemented.
-- **Stateless*: no global state, clients are safe to use concurrently lock-less.
+- **Stateless**: no global state, clients are safe to use concurrently lock-less.
 - **Professional grade**: unit tested on live services.
 - **Optimized for speed**: minimize memory allocations, compress data at the
   transport layer when possible. Groq, Mistral and OpenAI use brotli for HTTP compression instead of gzip.
@@ -64,7 +71,10 @@ Implementation is in flux. :)
 
 ## I'm poor 💸
 
-As of March 2025, the following services offer a free tier (other limits
+<details>
+  <summary>List of providers offering free quota</summary>
+
+As of May 2025, the following services offer a free tier (other limits
 apply):
 
 - [Cerebras](https://cerebras.ai/inference) has unspecified "generous" free tier
@@ -77,11 +87,79 @@ apply):
 - [Together.AI](https://api.together.ai/settings/plans) provides many models for free at 1qps
 - Running [Ollama](https://ollama.com/) or [llama.cpp](https://github.com/ggml-org/llama.cpp) locally is free. :)
 
+</details>
+
 
 ## Look and feel
 
 
 ### Tool calling
+
+<details>
+  <summary>Click to see/hide</summary>
+
+#### Reusing a pre-defined tool
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	"github.com/maruel/genai"
+	"github.com/maruel/genai/genaitools"
+	"github.com/maruel/genai/groq"
+)
+
+func main() {
+	c, err := groq.New("", "llama3-8b-8192")
+	if err != nil {
+		log.Fatal(err)
+	}
+	msgs := genai.Messages{
+		genai.NewTextMessage(genai.User, "What is 3214 + 5632? Leverage the tool available to you to tell me the answer. Do not explain. Be terse. Include only the answer."),
+	}
+	opts := genai.ChatOptions{
+		Tools: []genai.ToolDef{genaitools.Arithmetic},
+		// Force the LLM to do a tool call.
+		ToolCallRequest: genai.ToolCallRequired,
+	}
+	resp, err := c.Chat(context.Background(), msgs, &opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Add the assistant's message to the messages list.
+	msgs = append(msgs, resp.Message)
+
+	// Process the tool call from the assistant.
+	msg, err := resp.DoToolCalls(opts.Tools)
+	if err != nil {
+		log.Fatalf("Error calling tool: %v", err)
+	}
+	if msg.IsZero() {
+		log.Fatal("Expected a tool call")
+	}
+
+	// Add the tool call response to the messages list.
+	msgs = append(msgs, msg)
+
+	// Follow up so the LLM can interpret the tool call response. Tell the LLM to not do a tool call this time.
+	opts.ToolCallRequest = genai.ToolCallNone
+	resp, err = c.Chat(context.Background(), msgs, &opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Print the result.
+	fmt.Println(resp.AsText())
+}
+```
+
+
+#### Custom tool
 
 ```go
 package main
@@ -152,8 +230,13 @@ func main() {
 }
 ```
 
+</details>
+
 
 ### Decoding answer as a typed struct
+
+<details>
+  <summary>Click to see/hide</summary>
 
 Tell the LLM to use a specific JSON schema to generate the response.
 
@@ -192,6 +275,8 @@ func main() {
 }
 ```
 
+</details>
+
 
 ## Models
 
@@ -201,6 +286,7 @@ Try it:
 
 ```bash
 go install github.com/maruel/genai/cmd/...@latest
+
 list-models -provider hugginface
 ```
 

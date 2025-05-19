@@ -114,9 +114,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 						c.Tools[i].Type = "function"
 						c.Tools[i].Function.Name = t.Name
 						c.Tools[i].Function.Description = t.Description
-						if t.InputsAs != nil {
-							c.Tools[i].Function.Arguments = jsonschema.Reflect(t.InputsAs)
-						}
+						c.Tools[i].Function.Arguments = t.InputSchema()
 					}
 				}
 			default:

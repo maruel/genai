@@ -152,7 +152,7 @@ func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."),
 	}
-	var got struct {
+	type got struct {
 		Number json.Number `json:"number"`
 	}
 	opts := genai.ChatOptions{
@@ -164,7 +164,16 @@ func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
 			{
 				Name:        "square_root",
 				Description: "Calculates and return the square root of a number",
-				InputsAs:    got,
+				Callback: func(g *got) string {
+					i, err := g.Number.Int64()
+					if err != nil {
+						t.Fatal(err)
+					}
+					if i != 132413 {
+						t.Fatal(g.Number)
+					}
+					return fmt.Sprintf("%.2f", math.Sqrt(float64(i)))
+				},
 			},
 		},
 		// For this test, we want to make sure the tool is called.
@@ -176,17 +185,10 @@ func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
 	if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
 		t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
 	}
-	if err := resp.ToolCalls[0].Decode(&got); err != nil {
-		t.Fatal(err)
-	}
-	i, err := got.Number.Int64()
+	sq, err := resp.ToolCalls[0].Call(&opts.Tools[0])
 	if err != nil {
 		t.Fatal(err)
 	}
-	if i != 132413 {
-		t.Fatal(got.Number)
-	}
-	sq := fmt.Sprintf("%.2f", math.Sqrt(float64(i)))
 	// Don't forget to add the tool call request first before the reply.
 	msgs = append(msgs,
 		resp.Message,
@@ -219,20 +221,30 @@ func (tc *TestCases) TestChatToolUsePositionBias(t *testing.T, override *Setting
 // The useStream parameter determines whether to use Chat or ChatStream.
 // It returns the response for further validation.
 func (tc *TestCases) TestChatToolUsePositionBiasCore(t *testing.T, override *Settings, allowOther, useStream bool) {
-	var gotCanadaFirst struct {
+	type gotCanadaFirst struct {
 		Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 	}
-	var gotUSAFirst struct {
+	type gotUSAFirst struct {
 		Country string `json:"country" jsonschema:"enum=USA,enum=Canada"`
 	}
 	data := []struct {
-		structDesc      any
+		callback        any
 		countrySelected string
 		country1        string
 		country2        string
 	}{
-		{&gotCanadaFirst, "Canada", "Canada", "the USA"},
-		{&gotUSAFirst, "USA", "the USA", "Canada"},
+		{
+			func(g *gotCanadaFirst) string {
+				return g.Country
+			},
+			"Canada", "Canada", "the USA",
+		},
+		{
+			func(g *gotUSAFirst) string {
+				return g.Country
+			},
+			"USA", "the USA", "Canada",
+		},
 	}
 	for _, line := range data {
 		t.Run(line.countrySelected, func(t *testing.T) {
@@ -247,7 +259,7 @@ func (tc *TestCases) TestChatToolUsePositionBiasCore(t *testing.T, override *Set
 					{
 						Name:        "best_country",
 						Description: "A tool to determine the best country",
-						InputsAs:    line.structDesc,
+						Callback:    line.callback,
 					},
 				},
 				ToolCallRequest: genai.ToolCallRequired,
@@ -262,14 +274,12 @@ func (tc *TestCases) TestChatToolUsePositionBiasCore(t *testing.T, override *Set
 			if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
 				t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
 			}
-			var got struct {
-				Country string `json:"country"`
-			}
-			if err := resp.ToolCalls[0].Decode(&got); err != nil {
+			res, err := resp.ToolCalls[0].Call(&opts.Tools[0])
+			if err != nil {
 				t.Fatal(err)
 			}
-			if !allowOther && got.Country != line.countrySelected {
-				t.Fatal(got.Country)
+			if !allowOther && res != line.countrySelected {
+				t.Fatal(res)
 			}
 		})
 	}

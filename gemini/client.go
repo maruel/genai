@@ -342,9 +342,7 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) []string {
 		c.Tools = make([]Tool, len(v.Tools))
 		for i, t := range v.Tools {
 			params := Schema{}
-			if t.InputsAs != nil {
-				params.FromJSONSchema(jsonschema.Reflect(t.InputsAs))
-			}
+			params.FromJSONSchema(t.InputSchema())
 			// See FunctionResponse.To().
 			c.Tools[i].FunctionDeclarations = []FunctionDeclaration{{
 				Name:        t.Name,

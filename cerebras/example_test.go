@@ -45,6 +45,8 @@ func ExampleClient_Chat_jSON() {
 }
 
 func ExampleClient_ChatStream_tool_use() {
+	// This example shows LLM positional bias. It will always return the first country listed.
+
 	c, err := cerebras.New("", "llama-3.1-8b")
 	if err == nil {
 		log.Fatal(err)
@@ -53,7 +55,7 @@ func ExampleClient_ChatStream_tool_use() {
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
 	}
-	var got struct {
+	type got struct {
 		Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 	}
 	opts := genai.ChatOptions{
@@ -64,7 +66,9 @@ func ExampleClient_ChatStream_tool_use() {
 			{
 				Name:        "best_country",
 				Description: "A tool to determine the best country",
-				InputsAs:    &got,
+				Callback: func(g *got) string {
+					return g.Country
+				},
 			},
 		},
 	}
@@ -111,10 +115,11 @@ func ExampleClient_ChatStream_tool_use() {
 	if len(resp.ToolCalls) != 1 || resp.ToolCalls[0].Name != "best_country" {
 		log.Fatal("Unexpected response")
 	}
-	if err := resp.ToolCalls[0].Decode(&got); err != nil {
+	res, err := resp.ToolCalls[0].Call(&opts.Tools[0])
+	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Best: %v\n", got.Country)
+	fmt.Printf("Best: %v\n", res)
 	// This would Output: Best: Canada
 }
 

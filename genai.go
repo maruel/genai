@@ -589,10 +589,9 @@ type ToolDef struct {
 	Name string
 	// Description must be a LLM-friendly short description of the tool.
 	Description string
-	// InputsAs enforces a tool call with a specific JSON structure for
-	// arguments.
-	InputsAs ReflectedToJSON
-	// Callback is the function to call with the inputs in InputAs. It must return a string.
+	// Callback is the function to call with the inputs.
+	// It must accept one struct pointer.
+	// It must return a string. Other return value may be added later. error will be supported later.
 	Callback any
 
 	_ struct{}
@@ -606,15 +605,24 @@ func (t *ToolDef) Validate() error {
 	if t.Description == "" {
 		return errors.New("field Description: required")
 	}
-	if t.InputsAs != nil {
-		if err := validateReflectedToJSON(t.InputsAs); err != nil {
-			return fmt.Errorf("field InputsAs: %w", err)
-		}
-	}
 	if t.Callback != nil {
 		cbType := reflect.TypeOf(t.Callback)
 		if cbType.Kind() != reflect.Func {
 			return errors.New("field Callback: must be a function")
+		}
+		if cbType.NumIn() != 1 {
+			return errors.New("field Callback: must accept exactly one parameter")
+		}
+		paramType := cbType.In(0)
+		if paramType.Kind() != reflect.Ptr {
+			return fmt.Errorf("field Callback: must accept exactly one parameter that is a pointer to a struct, not a %s", paramType.Kind())
+		}
+		paramType = paramType.Elem()
+		if paramType.Kind() != reflect.Struct {
+			return fmt.Errorf("field Callback: must accept exactly one parameter that is a pointer to a struct, not a %s", paramType.Kind())
+		}
+		if err := validateReflectedToJSON(paramType); err != nil {
+			return fmt.Errorf("field Callback: must accept exactly one parameter that is a pointer to a struct that has valid json schema: %w", err)
 		}
 		if cbType.NumOut() != 1 {
 			return errors.New("field Callback: must return exactly one value")
@@ -622,29 +630,16 @@ func (t *ToolDef) Validate() error {
 		if cbType.Out(0).Kind() != reflect.String {
 			return errors.New("field Callback: must return a string")
 		}
-		if t.InputsAs != nil {
-			if cbType.NumIn() != 1 {
-				return errors.New("field Callback: must accept exactly one parameter")
-			}
-			inputType := reflect.TypeOf(t.InputsAs)
-			if inputType.Kind() == reflect.Ptr {
-				inputType = inputType.Elem()
-			}
-			paramType := cbType.In(0)
-			isParamPtr := false
-			if paramType.Kind() == reflect.Ptr {
-				isParamPtr = true
-				paramType = paramType.Elem()
-			}
-			if paramType != inputType {
-				return fmt.Errorf("field Callback: parameter type %v does not match InputsAs type %v", cbType.In(0), reflect.TypeOf(t.InputsAs))
-			}
-			if reflect.TypeOf(t.InputsAs).Kind() == reflect.Ptr && !isParamPtr {
-				return errors.New("field Callback: InputsAs is a pointer but parameter is not")
-			}
-		}
 	}
 	return nil
+}
+
+// InputSchema returns the json schema for the input argument of the callback.
+func (t *ToolDef) InputSchema() *jsonschema.Schema {
+	// This function assumes Validate() was called.
+	// No need to set an ID on the struct, it's unnecessary data that may confuse the tool.
+	r := jsonschema.Reflector{Anonymous: true, DoNotReference: true}
+	return r.ReflectFromType(reflect.TypeOf(t.Callback).In(0))
 }
 
 // ToolCall is a tool call that the LLM requested to make.
@@ -677,45 +672,17 @@ func (t *ToolCall) Validate() error {
 	return nil
 }
 
-// Decode decodes the JSON tool call.
+// Call invokes the ToolDef.Callback with arguments from the ToolCall, returning the result string.
 //
-// This function doesn't validate x is the same as InputsAs in the ToolDef.
-func (t *ToolCall) Decode(x any) error {
+// It decodes the ToolCall.Arguments and passes it to the ToolDef.Callback.
+func (t *ToolCall) Call(toolDef *ToolDef) (string, error) {
+	// This function assumes Validate() was called on both object and that they match.
+	input := reflect.New(reflect.TypeOf(toolDef.Callback).In(0).Elem())
 	d := json.NewDecoder(strings.NewReader(t.Arguments))
 	d.DisallowUnknownFields()
 	d.UseNumber()
-	if err := d.Decode(x); err != nil {
-		return fmt.Errorf("failed to decode tool call arguments: %w; arguments: %q", err, t.Arguments)
-	}
-	return nil
-}
-
-// Call invokes the ToolDef.Callback with arguments from the ToolCall, returning the result string.
-//
-// It decodes the ToolCall.Arguments into a new instance of ToolDef.InputsAs and passes it to the Callback.
-func (t *ToolCall) Call(toolDef *ToolDef) (string, error) {
-	if toolDef == nil {
-		return "", errors.New("toolDef is nil")
-	}
-	if toolDef.Callback == nil {
-		return "", errors.New("toolDef.Callback is nil")
-	}
-	if toolDef.InputsAs == nil {
-		return reflect.ValueOf(toolDef.Callback).Call(nil)[0].String(), nil
-	}
-
-	inputType := reflect.TypeOf(toolDef.InputsAs)
-	var input reflect.Value
-	if inputType.Kind() == reflect.Ptr {
-		input = reflect.New(inputType.Elem())
-	} else {
-		input = reflect.New(inputType)
-	}
-	if err := t.Decode(input.Interface()); err != nil {
-		return "", fmt.Errorf("failed to decode arguments: %w", err)
-	}
-	if inputType.Kind() != reflect.Ptr {
-		input = input.Elem()
+	if err := d.Decode(input.Interface()); err != nil {
+		return "", fmt.Errorf("failed to decode tool call arguments: %w; arguments: %q", err, t.Arguments)
 	}
 	return reflect.ValueOf(toolDef.Callback).Call([]reflect.Value{input})[0].String(), nil
 }

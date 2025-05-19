@@ -488,7 +488,7 @@ func TestToolDef_Validate_error(t *testing.T) {
 			toolDef: ToolDef{
 				Name:        "tool",
 				Description: "do stuff",
-				Callback:    func() int { return 1 },
+				Callback:    func(b *TestInputStruct) int { return 1 },
 			},
 			errMsg: "field Callback: must return a string",
 		},
@@ -497,7 +497,7 @@ func TestToolDef_Validate_error(t *testing.T) {
 			toolDef: ToolDef{
 				Name:        "tool",
 				Description: "do stuff",
-				Callback:    func() (string, error) { return "", nil },
+				Callback:    func(b *TestInputStruct) (string, error) { return "", nil },
 			},
 			errMsg: "field Callback: must return exactly one value",
 		},
@@ -506,30 +506,18 @@ func TestToolDef_Validate_error(t *testing.T) {
 			toolDef: ToolDef{
 				Name:        "tool",
 				Description: "do stuff",
-				InputsAs:    TestInputStruct{},
-				Callback:    func(a, b TestInputStruct) string { return "" },
+				Callback:    func(a, b *TestInputStruct) string { return "" },
 			},
 			errMsg: "field Callback: must accept exactly one parameter",
 		},
 		{
-			name: "Callback with mismatched parameter type",
+			name: "parameter not pointer",
 			toolDef: ToolDef{
 				Name:        "tool",
 				Description: "do stuff",
-				InputsAs:    TestInputStruct{},
-				Callback:    func(input TestDifferentStruct) string { return "" },
-			},
-			errMsg: "field Callback: parameter type genai.TestDifferentStruct does not match InputsAs type genai.TestInputStruct",
-		},
-		{
-			name: "InputsAs pointer but parameter not pointer",
-			toolDef: ToolDef{
-				Name:        "tool",
-				Description: "do stuff",
-				InputsAs:    &TestInputStruct{},
 				Callback:    func(input TestInputStruct) string { return "" },
 			},
-			errMsg: "field Callback: InputsAs is a pointer but parameter is not",
+			errMsg: "field Callback: must accept exactly one parameter that is a pointer to a struct, not a struct",
 		},
 	}
 	for _, tt := range tests {
@@ -547,35 +535,10 @@ func TestToolDef_Validate_success(t *testing.T) {
 		toolDef ToolDef
 	}{
 		{
-			name: "Valid minimal ToolDef",
-			toolDef: ToolDef{
-				Name:        "tool",
-				Description: "do stuff",
-			},
-		},
-		{
-			name: "Valid ToolDef with function no InputsAs",
-			toolDef: ToolDef{
-				Name:        "tool",
-				Description: "do stuff",
-				Callback:    func() string { return "" },
-			},
-		},
-		{
-			name: "Valid ToolDef with function and InputsAs",
-			toolDef: ToolDef{
-				Name:        "tool",
-				Description: "do stuff",
-				InputsAs:    TestInputStruct{},
-				Callback:    func(input TestInputStruct) string { return "" },
-			},
-		},
-		{
 			name: "Valid ToolDef with function and pointer InputsAs",
 			toolDef: ToolDef{
 				Name:        "tool",
 				Description: "do stuff",
-				InputsAs:    &TestInputStruct{},
 				Callback:    func(input *TestInputStruct) string { return "" },
 			},
 		},
@@ -595,29 +558,6 @@ func TestToolCall_Validate(t *testing.T) {
 }
 
 func TestToolCall_Call(t *testing.T) {
-	t.Run("with no arguments", func(t *testing.T) {
-		noArgTool := ToolDef{
-			Name:        "noArgTool",
-			Description: "A tool that takes no arguments",
-			Callback:    func() string { return "no args result" },
-		}
-
-		tc := ToolCall{
-			ID:        "call1",
-			Name:      "noArgTool",
-			Arguments: "{}",
-		}
-
-		result, err := tc.Call(&noArgTool)
-		if err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
-		if result != "no args result" {
-			t.Fatalf("unexpected result: got %q, want %q", result, "no args result")
-		}
-	})
-
-	// Define test structures
 	type CalculateInput struct {
 		A int `json:"a"`
 		B int `json:"b"`
@@ -627,16 +567,21 @@ func TestToolCall_Call(t *testing.T) {
 		structTool := ToolDef{
 			Name:        "calculateTool",
 			Description: "A tool that performs a calculation",
-			InputsAs:    CalculateInput{},
-			Callback: func(input CalculateInput) string {
+			Callback: func(input *CalculateInput) string {
 				return fmt.Sprintf("%d + %d = %d", input.A, input.B, input.A+input.B)
 			},
+		}
+		if err := structTool.Validate(); err != nil {
+			t.Fatal(err)
 		}
 
 		tc := ToolCall{
 			ID:        "call2",
 			Name:      "calculateTool",
 			Arguments: `{"a": 5, "b": 3}`,
+		}
+		if err := tc.Validate(); err != nil {
+			t.Fatal(err)
 		}
 
 		result, err := tc.Call(&structTool)
@@ -652,16 +597,21 @@ func TestToolCall_Call(t *testing.T) {
 		pointerTool := ToolDef{
 			Name:        "pointerTool",
 			Description: "A tool that takes a pointer argument",
-			InputsAs:    &CalculateInput{},
 			Callback: func(input *CalculateInput) string {
 				return fmt.Sprintf("%d * %d = %d", input.A, input.B, input.A*input.B)
 			},
+		}
+		if err := pointerTool.Validate(); err != nil {
+			t.Fatal(err)
 		}
 
 		tc := ToolCall{
 			ID:        "call3",
 			Name:      "pointerTool",
 			Arguments: `{"a": 5, "b": 3}`,
+		}
+		if err := tc.Validate(); err != nil {
+			t.Fatal(err)
 		}
 
 		result, err := tc.Call(&pointerTool)
@@ -677,10 +627,13 @@ func TestToolCall_Call(t *testing.T) {
 		structTool := ToolDef{
 			Name:        "calculateTool",
 			Description: "A tool that performs a calculation",
-			InputsAs:    CalculateInput{},
-			Callback: func(input CalculateInput) string {
+			Callback: func(input *CalculateInput) string {
+				t.Error("unexpected call")
 				return fmt.Sprintf("%d + %d = %d", input.A, input.B, input.A+input.B)
 			},
+		}
+		if err := structTool.Validate(); err != nil {
+			t.Fatal(err)
 		}
 
 		tc := ToolCall{
@@ -688,63 +641,18 @@ func TestToolCall_Call(t *testing.T) {
 			Name:      "calculateTool",
 			Arguments: `{"a": "not an integer", "b": 3}`,
 		}
+		if err := tc.Validate(); err != nil {
+			t.Fatal(err)
+		}
 
-		_, err := tc.Call(&structTool)
+		result, err := tc.Call(&structTool)
 		if err == nil {
 			t.Fatalf("expected error, got nil")
 		}
-	})
-
-	t.Run("with nil toolDef", func(t *testing.T) {
-		tc := ToolCall{
-			ID:        "call5",
-			Name:      "tool",
-			Arguments: "{}",
-		}
-
-		_, err := tc.Call(nil)
-		if err == nil {
-			t.Fatalf("expected error, got nil")
-		}
-		if err.Error() != "toolDef is nil" {
-			t.Fatalf("unexpected error message: got %q, want %q", err.Error(), "toolDef is nil")
+		if want := ""; result != want {
+			t.Fatal(result)
 		}
 	})
-
-	t.Run("with nil callback", func(t *testing.T) {
-		tc := ToolCall{
-			ID:        "call6",
-			Name:      "tool",
-			Arguments: "{}",
-		}
-
-		nilCallbackTool := ToolDef{
-			Name:        "nilCallbackTool",
-			Description: "A tool with a nil callback",
-		}
-
-		_, err := tc.Call(&nilCallbackTool)
-		if err == nil {
-			t.Fatalf("expected error, got nil")
-		}
-		if err.Error() != "toolDef.Callback is nil" {
-			t.Fatalf("unexpected error message: got %q, want %q", err.Error(), "toolDef.Callback is nil")
-		}
-	})
-}
-
-func TestToolCall_Decode(t *testing.T) {
-	tc := ToolCall{
-		ID:        "call1",
-		Name:      "tool",
-		Arguments: "{\"round\":true}",
-	}
-	var expected struct {
-		Round bool `json:"round"`
-	}
-	if err := tc.Decode(&expected); err != nil {
-		t.Fatalf("unexpected error: %q", err)
-	}
 }
 
 type buffer struct {

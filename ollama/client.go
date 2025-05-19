@@ -95,9 +95,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 						c.Tools[i].Type = "function"
 						c.Tools[i].Function.Name = t.Name
 						c.Tools[i].Function.Description = t.Description
-						if t.InputsAs != nil {
-							c.Tools[i].Function.Parameters = jsonschema.Reflect(t.InputsAs)
-						}
+						c.Tools[i].Function.Parameters = t.InputSchema()
 					}
 				}
 			default:
@@ -136,6 +134,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 }
 
 // https://github.com/ollama/ollama/blob/main/docs/api.md#parameters-1
+//
+// https://pkg.go.dev/github.com/ollama/ollama/api#Message
 type Message struct {
 	Role      string     `json:"role,omitzero"` // "system", "assistant", "user"
 	Content   string     `json:"content,omitzero"`
@@ -184,7 +184,16 @@ func (m *Message) From(in *genai.Message) error {
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
-		return errors.New("implement tool call results")
+		if len(in.Contents) != 0 || len(in.ToolCalls) != 0 {
+			// This could be worked around.
+			return fmt.Errorf("can't have tool call result along content or tool calls")
+		}
+		if len(in.ToolCallResults) != 1 {
+			// This could be worked around.
+			return fmt.Errorf("can't have more than one tool call result at a time")
+		}
+		m.Role = "tool"
+		m.Content = in.ToolCallResults[0].Result
 	}
 	return nil
 }
@@ -217,6 +226,7 @@ func (m *Message) To(out *genai.Message) error {
 // https://pkg.go.dev/github.com/ollama/ollama/api#ToolCall
 type ToolCall struct {
 	Function struct {
+		Index     int64  `json:"index,omitzero"`
 		Name      string `json:"name"`
 		Arguments any    `json:"arguments"`
 	} `json:"function"`
@@ -436,6 +446,13 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		case "", "assistant":
 		default:
 			return fmt.Errorf("unexpected role %q", role)
+		}
+		for i := range pkt.Message.ToolCalls {
+			t := genai.MessageFragment{}
+			if err := pkt.Message.ToolCalls[i].To(&t.ToolCall); err != nil {
+				return err
+			}
+			chunks <- t
 		}
 		f := genai.MessageFragment{TextFragment: pkt.Message.Content}
 		if !f.IsZero() {

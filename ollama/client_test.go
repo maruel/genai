@@ -86,37 +86,12 @@ func TestClient(t *testing.T) {
 		tc.TestChatJSONSchema(t, nil)
 	})
 
-	t.Run("Tool", func(t *testing.T) {
-		c := s.getClient(t, "llama3.1:8b")
-		msgs := genai.Messages{
-			genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
-		}
-		var out struct {
-			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
-		}
-		opts := genai.ChatOptions{
-			Seed:        1,
-			Temperature: 0.01,
-			MaxTokens:   50,
-			Tools: []genai.ToolDef{
-				{
-					Name:        "best_country",
-					Description: "A tool to determine the best country",
-					InputsAs:    &out,
-				},
-			},
-		}
-		got, err := c.Chat(t.Context(), msgs, &opts)
-		if err != nil {
-			t.Fatal(err)
-		}
-		want := genai.Message{Role: genai.Assistant, ToolCalls: []genai.ToolCall{{Name: "best_country", Arguments: `{"country":"Canada"}`}}}
-		if diff := cmp.Diff(want, got.Message); diff != "" {
-			t.Fatalf("unexpected response (-want +got):\n%s", diff)
-		}
-		if got.InputTokens != 188 || got.OutputTokens != 17 {
-			t.Logf("Unexpected tokens usage: %v", got.Usage)
-		}
+	t.Run("tool_use_reply", func(t *testing.T) {
+		tc.TestChatToolUseReply(t, &internaltest.Settings{Model: "llama3.1:8b"})
+	})
+
+	t.Run("tool_use_position_bias", func(t *testing.T) {
+		tc.TestChatToolUsePositionBias(t, &internaltest.Settings{Model: "llama3.1:8b"}, true)
 	})
 }
 

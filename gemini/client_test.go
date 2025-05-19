@@ -138,7 +138,7 @@ func TestClient_Cache(t *testing.T) {
 			},
 		},
 	}
-	var got struct {
+	type got struct {
 		Word string `json:"word" jsonschema:"enum=Orange,enum=Banana,enum=Apple"`
 	}
 	opts := genai.ChatOptions{
@@ -204,7 +204,9 @@ Ultimately, the human endeavor is a quest for understanding, not just of the ext
 			{
 				Name:        "hidden_word",
 				Description: "A tool to state what word was seen in the video.",
-				InputsAs:    &got,
+				Callback: func(g *got) string {
+					return ""
+				},
 			},
 		},
 	}

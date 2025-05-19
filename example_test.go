@@ -264,7 +264,7 @@ func ExampleChatProvider_chat_audio() {
 }
 
 func ExampleChatProvider_chat_tool_use() {
-	c, err := gemini.New("", "gemini-2.0-flash-lite")
+	c, err := gemini.New("", "gemini-2.0-flash")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -282,7 +282,7 @@ func ExampleChatProvider_chat_tool_use() {
 			},
 		},
 	}
-	var got struct {
+	type Word struct {
 		Word string `json:"word" jsonschema:"enum=Orange,enum=Banana,enum=Apple"`
 	}
 	opts := genai.ChatOptions{
@@ -292,7 +292,14 @@ func ExampleChatProvider_chat_tool_use() {
 			{
 				Name:        "hidden_word",
 				Description: "A tool to state what word was seen in the video.",
-				InputsAs:    &got,
+				Callback: func(got *Word) string {
+					w := strings.ToLower(got.Word)
+					fmt.Printf("Saw: %q\n", w)
+					if w == "banana" {
+						return "That's correct!"
+					}
+					return "That's incorrect."
+				},
 			},
 		},
 	}
@@ -305,11 +312,15 @@ func ExampleChatProvider_chat_tool_use() {
 	if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "hidden_word" {
 		log.Fatal("Unexpected response")
 	}
-	if err := resp.ToolCalls[0].Decode(&got); err != nil {
+	res, err := resp.ToolCalls[0].Call(&opts.Tools[0])
+	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Saw: %v\n", strings.ToLower(got.Word))
-	// This would Output: Saw: banana
+	fmt.Printf("%s\n", res)
+	// Remove this comment line to run the example.
+	// Output:
+	// Saw: "banana"
+	// That's correct!
 }
 
 func ExampleChatProvider_chatStream() {
@@ -372,18 +383,14 @@ func ExampleChatProvider_chatStream() {
 
 func ExampleToolCall_Call() {
 	// Define a tool that adds two numbers
+	type math struct {
+		A int `json:"a"`
+		B int `json:"b"`
+	}
 	tool := genai.ToolDef{
 		Name:        "add",
 		Description: "Add two numbers together",
-		InputsAs: &struct {
-			A int `json:"a"`
-			B int `json:"b"`
-		}{},
-		Callback: func(input *struct {
-			A int `json:"a"`
-			B int `json:"b"`
-		},
-		) string {
+		Callback: func(input *math) string {
 			return fmt.Sprintf("%d + %d = %d", input.A, input.B, input.A+input.B)
 		},
 	}

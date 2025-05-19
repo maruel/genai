@@ -192,9 +192,7 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) ([]string,
 			c.Tools[i].Type = "function"
 			c.Tools[i].Function.Name = t.Name
 			c.Tools[i].Function.Description = t.Description
-			if t.InputsAs != nil {
-				c.Tools[i].Function.Parameters = jsonschema.Reflect(t.InputsAs)
-			}
+			c.Tools[i].Function.Parameters = t.InputSchema()
 		}
 	}
 	// https://console.groq.com/docs/reasoning/

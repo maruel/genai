@@ -145,7 +145,7 @@ func ExampleClient_Chat_tool_use() {
 			},
 		},
 	}
-	var got struct {
+	type got struct {
 		Word string `json:"word" jsonschema:"enum=Orange,enum=Banana,enum=Apple"`
 	}
 	opts := genai.ChatOptions{
@@ -156,7 +156,9 @@ func ExampleClient_Chat_tool_use() {
 			{
 				Name:        "hidden_word",
 				Description: "A tool to state what word was seen in the video.",
-				InputsAs:    &got,
+				Callback: func(g *got) string {
+					return strings.ToLower(g.Word)
+				},
 			},
 		},
 	}
@@ -169,10 +171,11 @@ func ExampleClient_Chat_tool_use() {
 	if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "hidden_word" {
 		log.Fatal("Unexpected response")
 	}
-	if err := resp.ToolCalls[0].Decode(&got); err != nil {
+	res, err := resp.ToolCalls[0].Call(&opts.Tools[0])
+	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Saw: %v\n", strings.ToLower(got.Word))
+	fmt.Printf("Saw: %v\n", res)
 	// This would Output: Saw: banana
 }
 

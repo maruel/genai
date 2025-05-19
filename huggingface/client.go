@@ -187,12 +187,11 @@ func (m *Message) From(in *genai.Message) error {
 			// This could be worked around.
 			return fmt.Errorf("can't have tool call result along content or tool calls")
 		}
+		// Huggingface doesn't use tool ID in the result, hence only one tool can safely be called at a time.
 		if len(in.ToolCallResults) != 1 {
-			// This could be worked around.
 			return fmt.Errorf("can't have more than one tool call result at a time")
 		}
 		m.Role = "tool"
-		// Cheat here because Huggingface API seems to be fucked up.
 		m.Content = Contents{{Type: ContentText, Text: in.ToolCallResults[0].Result}}
 		m.Name = in.ToolCallResults[0].Name
 

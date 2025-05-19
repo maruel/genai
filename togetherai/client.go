@@ -187,7 +187,6 @@ func (m *Message) From(in *genai.Message) error {
 			return fmt.Errorf("can't have more than one tool call result at a time")
 		}
 		m.Role = "tool"
-		// Cheat here because TogetherAI API seems to be fucked up.
 		m.Content = Contents{{Type: ContentText, Text: in.ToolCallResults[0].Result}}
 		m.ToolCallID = in.ToolCallResults[0].ID
 	}

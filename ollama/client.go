@@ -188,8 +188,8 @@ func (m *Message) From(in *genai.Message) error {
 			// This could be worked around.
 			return fmt.Errorf("can't have tool call result along content or tool calls")
 		}
+		// Ollama doesn't use tool ID nor name in the result, hence only one tool can be called at a time.
 		if len(in.ToolCallResults) != 1 {
-			// This could be worked around.
 			return fmt.Errorf("can't have more than one tool call result at a time")
 		}
 		m.Role = "tool"

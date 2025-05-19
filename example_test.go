@@ -7,6 +7,7 @@ package genai_test
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -292,13 +293,13 @@ func ExampleChatProvider_chat_tool_use() {
 			{
 				Name:        "hidden_word",
 				Description: "A tool to state what word was seen in the video.",
-				Callback: func(got *Word) string {
+				Callback: func(got *Word) (string, error) {
 					w := strings.ToLower(got.Word)
 					fmt.Printf("Saw: %q\n", w)
 					if w == "banana" {
-						return "That's correct!"
+						return "That's correct!", nil
 					}
-					return "That's incorrect."
+					return "", errors.New("That's incorrect.")
 				},
 			},
 		},
@@ -390,8 +391,8 @@ func ExampleToolCall_Call() {
 	tool := genai.ToolDef{
 		Name:        "add",
 		Description: "Add two numbers together",
-		Callback: func(input *math) string {
-			return fmt.Sprintf("%d + %d = %d", input.A, input.B, input.A+input.B)
+		Callback: func(input *math) (string, error) {
+			return fmt.Sprintf("%d + %d = %d", input.A, input.B, input.A+input.B), nil
 		},
 	}
 

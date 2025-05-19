@@ -164,15 +164,15 @@ func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
 			{
 				Name:        "square_root",
 				Description: "Calculates and return the square root of a number",
-				Callback: func(g *got) string {
+				Callback: func(g *got) (string, error) {
 					i, err := g.Number.Int64()
 					if err != nil {
-						t.Fatal(err)
+						return "", fmt.Errorf("wanted 132413 as an int, got %q: %w", g.Number, err)
 					}
 					if i != 132413 {
-						t.Fatal(g.Number)
+						return "", fmt.Errorf("wanted 132413 as an int, got %s", g.Number)
 					}
-					return fmt.Sprintf("%.2f", math.Sqrt(float64(i)))
+					return fmt.Sprintf("%.2f", math.Sqrt(float64(i))), nil
 				},
 			},
 		},
@@ -234,14 +234,14 @@ func (tc *TestCases) TestChatToolUsePositionBiasCore(t *testing.T, override *Set
 		country2        string
 	}{
 		{
-			func(g *gotCanadaFirst) string {
-				return g.Country
+			func(g *gotCanadaFirst) (string, error) {
+				return g.Country, nil
 			},
 			"Canada", "Canada", "the USA",
 		},
 		{
-			func(g *gotUSAFirst) string {
-				return g.Country
+			func(g *gotUSAFirst) (string, error) {
+				return g.Country, nil
 			},
 			"USA", "the USA", "Canada",
 		},

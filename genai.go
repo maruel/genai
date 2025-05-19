@@ -615,20 +615,23 @@ func (t *ToolDef) Validate() error {
 		}
 		paramType := cbType.In(0)
 		if paramType.Kind() != reflect.Ptr {
-			return fmt.Errorf("field Callback: must accept exactly one parameter that is a pointer to a struct, not a %s", paramType.Kind())
+			return fmt.Errorf("field Callback: must accept exactly one parameter that is a pointer to a struct, not a %q", paramType.Name())
 		}
 		paramType = paramType.Elem()
 		if paramType.Kind() != reflect.Struct {
-			return fmt.Errorf("field Callback: must accept exactly one parameter that is a pointer to a struct, not a %s", paramType.Kind())
+			return fmt.Errorf("field Callback: must accept exactly one parameter that is a pointer to a struct, not a %q", paramType.Name())
 		}
 		if err := validateReflectedToJSON(paramType); err != nil {
 			return fmt.Errorf("field Callback: must accept exactly one parameter that is a pointer to a struct that has valid json schema: %w", err)
 		}
-		if cbType.NumOut() != 1 {
-			return errors.New("field Callback: must return exactly one value")
+		if cbType.NumOut() != 2 {
+			return errors.New("field Callback: must return exactly two values: (string, error)")
 		}
 		if cbType.Out(0).Kind() != reflect.String {
-			return errors.New("field Callback: must return a string")
+			return fmt.Errorf("field Callback: must return a string first, not %q", cbType.Out(0).Name())
+		}
+		if !isErrorType(cbType.Out(1)) {
+			return fmt.Errorf("field Callback: must return an error second, not %q", cbType.Out(1).Name())
 		}
 	}
 	return nil
@@ -684,7 +687,12 @@ func (t *ToolCall) Call(toolDef *ToolDef) (string, error) {
 	if err := d.Decode(input.Interface()); err != nil {
 		return "", fmt.Errorf("failed to decode tool call arguments: %w; arguments: %q", err, t.Arguments)
 	}
-	return reflect.ValueOf(toolDef.Callback).Call([]reflect.Value{input})[0].String(), nil
+	res := reflect.ValueOf(toolDef.Callback).Call([]reflect.Value{input})
+	s := res[0].String()
+	if e := res[1].Interface(); e != nil {
+		return s, e.(error)
+	}
+	return s, nil
 }
 
 // ToolCallResult is the result for a tool call that the LLM requested to make.
@@ -734,6 +742,11 @@ func validateReflectedToJSON(r ReflectedToJSON) error {
 		return fmt.Errorf("must be a struct, not %T", r)
 	}
 	return nil
+}
+
+// isErrorType returns true if the type is of error type.
+func isErrorType(t reflect.Type) bool {
+	return t == reflect.TypeOf((*error)(nil)).Elem()
 }
 
 var (

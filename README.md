@@ -105,6 +105,60 @@ supports gzip.
 
 ## Look and feel
 
+
+### Tool calling
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	"github.com/maruel/genai"
+	"github.com/maruel/genai/cerebras"
+)
+
+func main() {
+	c, err := cerebras.New("", "llama3.1-8b")
+	if err != nil {
+		log.Fatal(err)
+	}
+	type math struct {
+		A int `json:"a"`
+		B int `json:"b"`
+	}
+	msgs := genai.Messages{
+		genai.NewTextMessage(genai.User, "What is 3214 + 5632? Call the tool add to tell me the answer."),
+	}
+	opts := genai.ChatOptions{
+		Tools: []genai.ToolDef{
+			{
+				Name:        "add",
+				Description: "Add two numbers together",
+				Callback: func(input *math) (string, error) {
+					return fmt.Sprintf("%d + %d = %d", input.A, input.B, input.A+input.B), nil
+				},
+			},
+		},
+	}
+	resp, err := c.Chat(context.Background(), msgs, &opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+	result, err := resp.ToolCalls[0].Call(opts.Tools)
+	if err != nil {
+		fmt.Printf("Error calling tool: %v\n", err)
+		return
+	}
+
+	// Print the result
+	fmt.Println(result)
+}
+```
+
+
 ### Decoding answer as a typed struct
 
 Tell the LLM to use a specific JSON schema to generate the response.
@@ -116,39 +170,31 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"strings"
 
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/cerebras"
-	"github.com/maruel/genai/genai"
 )
 
-type Circle struct {
-    Round bool `json:"round"`
-}
-
 func main() {
-    c, err := cerebras.New("", "llama3.1-8b")
-    if err != nil {
-        log.Fatal(err)
-    }
-    msgs := genai.Messages{
-        genai.NewTextMessage(genai.User, "Is a circle round? Reply as JSON."),
-    }
-    opts := genai.ChatOptions{
-        Seed:        1,
-        Temperature: 0.01,
-        MaxTokens:   50,
-        DecodeAs:    &Circle{},
-    }
-    resp, err := c.Chat(context.Background(), msgs, &opts)
-    if err != nil {
-        log.Fatal(err)
-    }
-    got := Circle{}
-    if err := resp.Contents[0].Decode(&got); err != nil {
-        log.Fatal(err)
-    }
-    fmt.Printf("Round: %v\n", got.Round)
+	c, err := cerebras.New("", "llama3.1-8b")
+	if err != nil {
+		log.Fatal(err)
+	}
+	msgs := genai.Messages{
+		genai.NewTextMessage(genai.User, "Is a circle round? Reply as JSON."),
+	}
+	var circle struct {
+		Round bool `json:"round"`
+	}
+	opts := genai.ChatOptions{DecodeAs: &circle}
+	resp, err := c.Chat(context.Background(), msgs, &opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := resp.Decode(&circle); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Round: %v\n", circle.Round)
 }
 ```
 

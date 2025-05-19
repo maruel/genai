@@ -57,7 +57,7 @@ Implementation is in flux. :)
 - **Stateless*: no global state, clients are safe to use concurrently lock-less.
 - **Professional grade**: unit tested on live services.
 - **Optimized for speed**: minimize memory allocations, compress data at the
-  transport layer when possible.
+  transport layer when possible. Groq, Mistral and OpenAI use brotli for HTTP compression instead of gzip.
 - **Lean**: Few dependencies. No unnecessary abstraction layer.
 - Easy to add new providers.
 
@@ -76,31 +76,6 @@ apply):
 - [Mistral](https://help.mistral.ai/en/articles/225174-what-are-the-limits-of-the-free-tier) 1qps, 1B tokens/month
 - [Together.AI](https://api.together.ai/settings/plans) provides many models for free at 1qps
 - Running [Ollama](https://ollama.com/) or [llama.cpp](https://github.com/ggml-org/llama.cpp) locally is free. :)
-
-
-## HTTP transport compression
-
-Each service provider was manually tested to see if the accept compressed POST body.
-
-As for March 2025, here's the HTTP POST compression supported by each provider:
-
-| Provider    | Compression accepted for POST data | Response compressed |
-| ----------- | ---------------------------------- | ------------------- |
-| Anthropic   | none                               | gzip                |
-| Cerebras    | none                               | none                |
-| Cloudflare Workers AI | none                     | gzip                |
-| Cohere      | none                               | none                |
-| DeepSeek    | none                               | gzip                |
-| Google's Gemini | gzip                           | gzip                |
-| Groq        | none                               | br                  |
-| HuggingFace | none                               | none                |
-| Mistral     | none                               | br                  |
-| OpenAI      | none                               | br                  |
-| Perplexity  | none                               | none                |
-
-It matters if you care about your ingress/egress bandwidth. Only HuggingFace
-supports brotli and zstd as POST data but replies uncompressed (!). Google
-supports gzip.
 
 
 ## Look and feel

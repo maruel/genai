@@ -117,7 +117,7 @@ func main() {
 				},
 			},
 		},
-		// For the LLM to do a tool call.
+		// Force the LLM to do a tool call.
 		ToolCallRequest: genai.ToolCallRequired,
 	}
 	resp, err := c.Chat(context.Background(), msgs, &opts)

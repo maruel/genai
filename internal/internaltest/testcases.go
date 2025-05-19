@@ -185,7 +185,7 @@ func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
 	if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
 		t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
 	}
-	sq, err := resp.ToolCalls[0].Call(&opts.Tools[0])
+	sq, err := resp.ToolCalls[0].Call(opts.Tools)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -274,7 +274,7 @@ func (tc *TestCases) TestChatToolUsePositionBiasCore(t *testing.T, override *Set
 			if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
 				t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
 			}
-			res, err := resp.ToolCalls[0].Call(&opts.Tools[0])
+			res, err := resp.ToolCalls[0].Call(opts.Tools)
 			if err != nil {
 				t.Fatal(err)
 			}

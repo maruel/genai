@@ -117,7 +117,7 @@ func ExampleClient_Chat_tool_use() {
 	if len(resp.ToolCalls) != 1 || resp.ToolCalls[0].Name != "best_country" {
 		log.Fatal("Unexpected response")
 	}
-	res, err := resp.ToolCalls[0].Call(&opts.Tools[0])
+	res, err := resp.ToolCalls[0].Call(opts.Tools)
 	if err != nil {
 		log.Fatal(err)
 	}

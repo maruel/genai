@@ -313,7 +313,7 @@ func ExampleChatProvider_chat_tool_use() {
 	if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "hidden_word" {
 		log.Fatal("Unexpected response")
 	}
-	res, err := resp.ToolCalls[0].Call(&opts.Tools[0])
+	res, err := resp.ToolCalls[0].Call(opts.Tools)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -404,7 +404,7 @@ func ExampleToolCall_Call() {
 	}
 
 	// Invoke the tool with the arguments
-	result, err := toolCall.Call(&tool)
+	result, err := toolCall.Call([]genai.ToolDef{tool})
 	if err != nil {
 		fmt.Printf("Error calling tool: %v\n", err)
 		return

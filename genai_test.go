@@ -584,7 +584,7 @@ func TestToolCall_Call(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		result, err := tc.Call(&structTool)
+		result, err := tc.Call([]ToolDef{structTool})
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -614,7 +614,7 @@ func TestToolCall_Call(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		result, err := tc.Call(&pointerTool)
+		result, err := tc.Call([]ToolDef{pointerTool})
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -644,7 +644,7 @@ func TestToolCall_Call(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		result, err := tc.Call(&errorTool)
+		result, err := tc.Call([]ToolDef{errorTool})
 		if err == nil {
 			t.Fatal("expected error, got nil")
 		}
@@ -678,7 +678,7 @@ func TestToolCall_Call(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		result, err := tc.Call(&structTool)
+		result, err := tc.Call([]ToolDef{structTool})
 		if err == nil {
 			t.Fatalf("expected error, got nil")
 		}

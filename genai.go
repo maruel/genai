@@ -138,10 +138,15 @@ func (c *ChatOptions) Validate() error {
 			return fmt.Errorf("field DecodeAs: %w", err)
 		}
 	}
+	names := map[string]int{}
 	for i, t := range c.Tools {
 		if err := t.Validate(); err != nil {
 			return fmt.Errorf("tool %d: %w", i, err)
 		}
+		if j, ok := names[t.Name]; ok {
+			return fmt.Errorf("tool %d: has name %q which is the same as tool %d", i, t.Name, j)
+		}
+		names[t.Name] = i
 	}
 	if len(c.Tools) == 0 && c.ToolCallRequest == ToolCallRequired {
 		return fmt.Errorf("field ToolCallRequest is ToolCallRequired: Tools are required")
@@ -678,16 +683,25 @@ func (t *ToolCall) Validate() error {
 // Call invokes the ToolDef.Callback with arguments from the ToolCall, returning the result string.
 //
 // It decodes the ToolCall.Arguments and passes it to the ToolDef.Callback.
-func (t *ToolCall) Call(toolDef *ToolDef) (string, error) {
+func (t *ToolCall) Call(tools []ToolDef) (string, error) {
+	i := 0
+	for ; i < len(tools); i++ {
+		if tools[i].Name == t.Name {
+			break
+		}
+	}
+	if i == len(tools) {
+		return "", fmt.Errorf("failed to find tool named %q", t.Name)
+	}
 	// This function assumes Validate() was called on both object and that they match.
-	input := reflect.New(reflect.TypeOf(toolDef.Callback).In(0).Elem())
+	input := reflect.New(reflect.TypeOf(tools[i].Callback).In(0).Elem())
 	d := json.NewDecoder(strings.NewReader(t.Arguments))
 	d.DisallowUnknownFields()
 	d.UseNumber()
 	if err := d.Decode(input.Interface()); err != nil {
 		return "", fmt.Errorf("failed to decode tool call arguments: %w; arguments: %q", err, t.Arguments)
 	}
-	res := reflect.ValueOf(toolDef.Callback).Call([]reflect.Value{input})
+	res := reflect.ValueOf(tools[i].Callback).Call([]reflect.Value{input})
 	s := res[0].String()
 	if e := res[1].Interface(); e != nil {
 		return s, e.(error)

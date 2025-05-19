@@ -20,7 +20,7 @@ The _high performance_ low level native Go client for LLMs.
 | [TogetherAI](https://api.together.ai/settings/billing)      | 🇺🇸      | ✅   | ✅        | ✅     | ❌  | ❌    | ✅    | ✅          | ✅          | ✅   | ✅    | ❌      |
 
 <details>
-  <summary>Legend</summary>
+  <summary>Click here for legend of ✅ ⏳ ❌ 🔁 and columns</summary>
 
 - ✅ Implemented
 - ⏳ To be implemented
@@ -72,7 +72,7 @@ Implementation is in flux. :)
 ## I'm poor 💸
 
 <details>
-  <summary>List of providers offering free quota</summary>
+  <summary>Click here for a list of providers offering free quota</summary>
 
 As of May 2025, the following services offer a free tier (other limits
 apply):
@@ -93,12 +93,11 @@ apply):
 ## Look and feel
 
 
-### Tool calling
+### Tool calling using predefined tool
 
-<details>
-  <summary>Click to see/hide</summary>
-
-#### Reusing a pre-defined tool
+Tool calling is the idea that a LLM can't know it call, so we provide ways for the LLM to get more knowledge
+on the fly or to have side-effects. It unblocks a whole realm of possibilities. Our design enables dense
+strongly typed code that favorably compares to python.
 
 ```go
 package main
@@ -158,8 +157,12 @@ func main() {
 }
 ```
 
+<details>
+  <summary>Click to see more examples!</summary>
 
-#### Custom tool
+### Tool calling using a fully custom tool
+
+This example provides all the details to implement a complete custom tool.
 
 ```go
 package main
@@ -230,15 +233,12 @@ func main() {
 }
 ```
 
-</details>
-
 
 ### Decoding answer as a typed struct
 
-<details>
-  <summary>Click to see/hide</summary>
-
-Tell the LLM to use a specific JSON schema to generate the response.
+Tell the LLM to use a specific JSON schema to generate the response. This is more lightweight than tool
+calling. It is very useful when we want the LLM to make a choice between values, to return a number or a
+boolean (true/false).
 
 ```go
 package main

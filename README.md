@@ -20,7 +20,7 @@ The _high performance_ low level native Go client for LLMs.
 | [TogetherAI](https://api.together.ai/settings/billing)      | 🇺🇸      | ✅   | ✅        | ✅     | ❌  | ❌    | ✅    | ✅          | ✅          | ✅   | ✅    | ❌      |
 
 <details>
-  <summary>Click here for legend of ✅ ⏳ ❌ 🔁 and columns</summary>
+  <summary>‼️ Click here for legend of ✅ ⏳ ❌ 🔁 and columns</summary>
 
 - ✅ Implemented
 - ⏳ To be implemented
@@ -72,7 +72,7 @@ Implementation is in flux. :)
 ## I'm poor 💸
 
 <details>
-  <summary>Click here for a list of providers offering free quota</summary>
+  <summary>‼️ Click here for a list of providers offering free quota</summary>
 
 As of May 2025, the following services offer a free tier (other limits
 apply):
@@ -158,7 +158,7 @@ func main() {
 ```
 
 <details>
-  <summary>Click to see more examples!</summary>
+  <summary>‼️ Click to see more examples!</summary>
 
 ### Tool calling using a fully custom tool
 

@@ -23,14 +23,6 @@ import (
 
 // Not implementing TestClient_AllModels since we need to preload Ollama models. Can be done later.
 
-func getErrorClient(t *testing.T, serverURL, model string) *ollama.Client {
-	c, err := ollama.New(serverURL, model)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return c
-}
-
 func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 	tc := &internaltest.TestCases{

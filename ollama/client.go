@@ -473,7 +473,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	err = processJSONStream(resp.Body, out)
-	resp.Body.Close()
+	_ = resp.Body.Close()
 	if err == nil || !strings.Contains(err.Error(), "not found, try pulling it first") {
 		return err
 	}

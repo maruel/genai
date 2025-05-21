@@ -45,7 +45,8 @@ func TestClient_Chat_allModels(t *testing.T) {
 			if len(parts) < 2 {
 				return false
 			}
-			if parts[0] == "gemini" {
+			switch parts[0] {
+			case "gemini":
 				// Minimum gemini-2
 				if i, err := strconv.Atoi(parts[1]); err != nil || i < 2 {
 					return false
@@ -53,12 +54,12 @@ func TestClient_Chat_allModels(t *testing.T) {
 				if strings.HasSuffix(id, "image-generation") {
 					return false
 				}
-			} else if parts[0] == "gemma" {
+			case "gemma":
 				// Minimum gemma-3
 				if i, err := strconv.Atoi(parts[1]); err != nil || i < 3 {
 					return false
 				}
-			} else {
+			default:
 				return false
 			}
 			return true

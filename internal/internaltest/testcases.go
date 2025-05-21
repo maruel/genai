@@ -139,7 +139,7 @@ func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Mod
 		}
 		t.Run(id, func(t *testing.T) {
 			msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello.")}
-			resp := tc.testChatHelper(t, msgs, &Settings{Model: id}, opts)
+			resp := tc.TestChatHelper(t, msgs, &Settings{Model: id}, opts)
 			validateSingleWordResponse(t, resp, "hello")
 		})
 	}
@@ -269,7 +269,7 @@ func (tc *TestCases) TestChatToolUsePositionBiasCore(t *testing.T, override *Set
 			if useStream {
 				resp = tc.testChatStreamHelper(t, msgs, override, opts)
 			} else {
-				resp = tc.testChatHelper(t, msgs, override, opts)
+				resp = tc.TestChatHelper(t, msgs, override, opts)
 			}
 			want := "best_country"
 			if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
@@ -301,7 +301,7 @@ func (tc *TestCases) TestChatVisionJPGInline(t *testing.T, override *Settings) {
 		},
 	}
 	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 200, Seed: 1}
-	resp := tc.testChatHelper(t, msgs, override, opts)
+	resp := tc.TestChatHelper(t, msgs, override, opts)
 	// Normalize some of the variance. Obviously many models will still fail this test.
 	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.AsText())), ".!")
 	if txt != "yes" {
@@ -326,7 +326,7 @@ func (tc *TestCases) TestChatVisionPDFInline(t *testing.T, override *Settings) {
 		},
 	}
 	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 50, Seed: 1}
-	resp := tc.testChatHelper(t, msgs, override, opts)
+	resp := tc.TestChatHelper(t, msgs, override, opts)
 	if got := strings.TrimSpace(strings.ToLower(resp.AsText())); got != "orange" {
 		t.Fatal(got)
 	}
@@ -343,7 +343,7 @@ func (tc *TestCases) TestChatVisionPDFURL(t *testing.T, override *Settings) {
 		},
 	}
 	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 50, Seed: 1}
-	resp := tc.testChatHelper(t, msgs, override, opts)
+	resp := tc.TestChatHelper(t, msgs, override, opts)
 	if got := strings.TrimSpace(strings.ToLower(resp.AsText())); got != "orange" {
 		t.Fatal(got)
 	}
@@ -369,7 +369,7 @@ func (tc *TestCases) testChatAudioInline(t *testing.T, override *Settings, filen
 		genai.NewTextMessage(genai.User, "What is the word said? Reply with only the word."),
 	}
 	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 50, Seed: 1}
-	resp := tc.testChatHelper(t, msgs, override, opts)
+	resp := tc.TestChatHelper(t, msgs, override, opts)
 	if heard := strings.TrimRight(strings.ToLower(resp.AsText()), "."); heard != "orange" {
 		t.Fatal(heard)
 	}
@@ -392,7 +392,7 @@ func (tc *TestCases) TestChatVideoMP4Inline(t *testing.T, override *Settings) {
 		},
 	}
 	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 50, Seed: 1}
-	resp := tc.testChatHelper(t, msgs, override, opts)
+	resp := tc.TestChatHelper(t, msgs, override, opts)
 	if saw := strings.TrimSpace(strings.ToLower(resp.AsText())); saw != "banana" {
 		t.Fatal(saw)
 	}
@@ -406,7 +406,7 @@ func (tc *TestCases) TestChatJSON(t *testing.T, override *Settings) {
 		genai.NewTextMessage(genai.User, `Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {"is_fruit": bool}.`),
 	}
 	opts := genai.ChatOptions{Temperature: 0.1, MaxTokens: 200, Seed: 1, ReplyAsJSON: true}
-	resp := tc.testChatHelper(t, msgs, override, opts)
+	resp := tc.TestChatHelper(t, msgs, override, opts)
 	got := map[string]any{}
 	if err := resp.Decode(&got); err != nil {
 		// Gemini returns a list of map. Tolerate that too.
@@ -446,7 +446,7 @@ func (tc *TestCases) TestChatJSONSchema(t *testing.T, override *Settings) {
 	}
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Is a banana a fruit? Reply as JSON according to the provided schema.")}
 	opts := genai.ChatOptions{Temperature: 0.1, MaxTokens: 200, Seed: 1, DecodeAs: &got}
-	resp := tc.testChatHelper(t, msgs, override, opts)
+	resp := tc.TestChatHelper(t, msgs, override, opts)
 	if err := resp.Decode(&got); err != nil {
 		t.Fatal(err)
 	}
@@ -455,7 +455,7 @@ func (tc *TestCases) TestChatJSONSchema(t *testing.T, override *Settings) {
 	}
 }
 
-func (tc *TestCases) testChatHelper(t *testing.T, msgs genai.Messages, override *Settings, opts genai.ChatOptions) genai.ChatResult {
+func (tc *TestCases) TestChatHelper(t *testing.T, msgs genai.Messages, override *Settings, opts genai.ChatOptions) genai.ChatResult {
 	return tc.testChat(t, msgs, tc.getClient(t, override), tc.getOptions(&opts, override),
 		tc.usageIsBroken(override), tc.finishReasonIsBroken(override))
 }

@@ -43,6 +43,11 @@ type ChatOptions struct {
 	// ThinkingBudget is the maximum number of tokens the LLM can use to think about the answer. When 0,
 	// thinking is disabled. It generally must be above 1024 and below MaxTokens and 24576.
 	ThinkingBudget int64
+
+	// ResponseModalities defines what the LLM can return, text, images or audio. Default to text.
+	//
+	// https://ai.google.dev/gemini-api/docs/image-generation
+	ResponseModalities []Modality
 }
 
 // https://ai.google.dev/api/caching?hl=en#Blob
@@ -278,11 +283,18 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 						ThinkingBudget:  v.ThinkingBudget,
 					}
 				}
+				if len(v.ResponseModalities) != 0 {
+					c.GenerationConfig.ResponseModalities = v.ResponseModalities
+				}
 				unsupported = c.initOptions(&v.ChatOptions, model)
 			case *genai.ChatOptions:
 				unsupported = c.initOptions(v, model)
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+			}
+			// Default to text generation.
+			if len(c.GenerationConfig.ResponseModalities) == 0 {
+				c.GenerationConfig.ResponseModalities = []Modality{ModalityText}
 			}
 		}
 	}
@@ -320,9 +332,6 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) []string {
 	c.GenerationConfig.Seed = v.Seed
 	c.GenerationConfig.TopK = v.TopK
 	c.GenerationConfig.StopSequences = v.Stop
-	// https://ai.google.dev/gemini-api/docs/image-generation
-	// SOON: "Image"
-	c.GenerationConfig.ResponseModalities = []Modality{ModalityText}
 	if v.ReplyAsJSON {
 		c.GenerationConfig.ResponseMimeType = "application/json"
 	}
@@ -638,7 +647,7 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 		},
 	}
 	if len(c.Candidates) != 1 {
-		return out, fmt.Errorf("unexpected number of candidates; expected 1, got %v", c.Candidates)
+		return out, fmt.Errorf("unexpected number of candidates; expected 1, got %d", len(c.Candidates))
 	}
 	// Gemini is the only one returning uppercase so convert down for compatibility.
 	out.FinishReason = c.Candidates[0].FinishReason.ToFinishReason()
@@ -1106,7 +1115,16 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		for _, part := range pkt.Candidates[0].Content.Parts {
 			f.TextFragment += part.Text
 			if part.InlineData.MimeType != "" || len(part.InlineData.Data) != 0 {
-				return fmt.Errorf("implemented inline blob %#v", part)
+				exts, err := mime.ExtensionsByType(part.InlineData.MimeType)
+				if err != nil {
+					return fmt.Errorf("failed to get extension for mime type %q: %w", part.InlineData.MimeType, err)
+				}
+				if len(exts) == 0 {
+					return fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
+				}
+				f.Filename = "content" + exts[0]
+				f.DocumentFragment = part.InlineData.Data
+				// return fmt.Errorf("implement inline blob %#v", part)
 			}
 			if part.FunctionCall.ID != "" || part.FunctionCall.Name != "" {
 				// https://ai.google.dev/api/caching?hl=en#FunctionCall
@@ -1116,18 +1134,18 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			}
 			if part.FunctionResponse.ID != "" {
 				// https://ai.google.dev/api/caching?hl=en#FunctionResponse
-				return fmt.Errorf("implemented function response %#v", part)
+				return fmt.Errorf("implement function response %#v", part)
 			}
 			if part.FileData.MimeType != "" || part.FileData.FileURI != "" {
-				return fmt.Errorf("implemented file data %#v", part)
+				return fmt.Errorf("implement file data %#v", part)
 			}
 			if part.ExecutableCode.Language != "" || part.ExecutableCode.Code != "" {
 				// https://ai.google.dev/api/caching?hl=en#ExecutableCode
-				return fmt.Errorf("implemented executable code %#v", part)
+				return fmt.Errorf("implement executable code %#v", part)
 			}
 			if part.CodeExecutionResult.Outcome != "" || part.CodeExecutionResult.Output != "" {
 				// https://ai.google.dev/api/caching?hl=en#CodeExecutionResult
-				return fmt.Errorf("implemented code execution result %#v", part)
+				return fmt.Errorf("implement code execution result %#v", part)
 			}
 		}
 		if !f.IsZero() {

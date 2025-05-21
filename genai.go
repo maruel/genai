@@ -389,8 +389,7 @@ type Content struct {
 	// implements a method with the signature `Name() string`, like an
 	// `*os.File`, Filename is optional.
 	Filename string
-	// Document is raw document data. It is perfectly fine to use a
-	// bytes.Buffer{}, bytes.NewReader() or *os.File.
+	// Document is raw document data. It is perfectly fine to use a bytes.NewReader() or *os.File.
 	Document io.ReadSeeker
 	// URL is the reference to the raw data. When set, the mime-type is derived from the URL.
 	URL string
@@ -577,9 +576,18 @@ func (m *MessageFragment) Accumulate(msgs Messages) (Messages, error) {
 		lastMsg.Contents = append(lastMsg.Contents, Content{Text: m.TextFragment})
 		return msgs, nil
 	}
-	if m.DocumentFragment != nil {
-		return nil, fmt.Errorf("cannot accumulate documents yet")
+
+	if m.Filename != "" || m.DocumentFragment != nil {
+		if len(lastMsg.Contents) != 0 {
+			if lastBlock := &lastMsg.Contents[len(lastMsg.Contents)-1]; lastBlock.Filename != "" {
+				lastBlock.Document.(*bytesBuffer).Write(m.DocumentFragment)
+				return msgs, nil
+			}
+		}
+		lastMsg.Contents = append(lastMsg.Contents, Content{Filename: m.Filename, Document: &bytesBuffer{d: m.DocumentFragment}})
+		return msgs, nil
 	}
+
 	if m.ToolCall.Name != "" {
 		lastMsg.ToolCalls = append(lastMsg.ToolCalls, m.ToolCall)
 		return msgs, nil
@@ -587,6 +595,47 @@ func (m *MessageFragment) Accumulate(msgs Messages) (Messages, error) {
 
 	// Nothing to accumulate. It should be an error but there are bugs where the system hangs.
 	return msgs, nil
+}
+
+type bytesBuffer struct {
+	d   []byte
+	pos int
+}
+
+func (b *bytesBuffer) Read(p []byte) (int, error) {
+	n := copy(p, b.d[b.pos:])
+	if n == 0 {
+		return 0, io.EOF
+	}
+	b.pos += n
+	return n, nil
+}
+
+func (b *bytesBuffer) Seek(offset int64, whence int) (int64, error) {
+	var p int64
+	if whence == io.SeekCurrent {
+		offset += int64(b.pos)
+		whence = io.SeekStart
+	}
+	switch whence {
+	case io.SeekEnd:
+		offset = int64(len(b.d)) - offset
+		fallthrough
+	case io.SeekStart:
+		if offset < 0 || offset > int64(len(b.d)) {
+			return p, errors.New("out of bound")
+		}
+		p = offset
+		b.pos = int(p)
+	default:
+		return p, fmt.Errorf("unknown whence %d", whence)
+	}
+	return p, nil
+}
+
+func (b *bytesBuffer) Write(p []byte) (int, error) {
+	b.d = append(b.d, p...)
+	return len(p), nil
 }
 
 // toMessage converts the fragment to a standalone message.

@@ -139,14 +139,13 @@ func TestClient_ModelProvider_errors(t *testing.T) {
 func getClient(t *testing.T, m string) *openai.Client {
 	testRecorder.Signal(t)
 	t.Parallel()
-	apiKey := ""
-	if os.Getenv("OPENAI_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
-	}
-	return getClientInner(t, apiKey, m)
+	return getClientInner(t, "", m)
 }
 
 func getClientInner(t *testing.T, apiKey, m string) *openai.Client {
+	if apiKey == "" && os.Getenv("OPENAI_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
 	c, err := openai.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)

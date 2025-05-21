@@ -86,14 +86,13 @@ func TestClient_ModelProvider_errors(t *testing.T) {
 func getClient(t *testing.T, m string) *deepseek.Client {
 	testRecorder.Signal(t)
 	t.Parallel()
-	apiKey := ""
-	if os.Getenv("DEEPSEEK_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
-	}
-	return getClientInner(t, apiKey, m)
+	return getClientInner(t, "", m)
 }
 
 func getClientInner(t *testing.T, apiKey, m string) *deepseek.Client {
+	if apiKey == "" && os.Getenv("DEEPSEEK_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
 	c, err := deepseek.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)

@@ -79,14 +79,13 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 func getClient(t *testing.T, m string) *perplexity.Client {
 	testRecorder.Signal(t)
 	t.Parallel()
-	apiKey := os.Getenv("PERPLEXITY_API_KEY")
-	if os.Getenv("PERPLEXITY_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
-	}
-	return getClientInner(t, apiKey, m)
+	return getClientInner(t, "", m)
 }
 
 func getClientInner(t *testing.T, apiKey, m string) *perplexity.Client {
+	if apiKey == "" && os.Getenv("PERPLEXITY_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
 	c, err := perplexity.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)

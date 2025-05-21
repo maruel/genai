@@ -108,8 +108,11 @@ func TestClient_ModelProvider_errors(t *testing.T) {
 func getClient(t *testing.T, m string) *huggingface.Client {
 	testRecorder.Signal(t)
 	t.Parallel()
-	apiKey := ""
-	if os.Getenv("HUGGINGFACE_API_KEY") == "" {
+	return getClientInner(t, "", m)
+}
+
+func getClientInner(t *testing.T, apiKey, m string) *huggingface.Client {
+	if apiKey == "" && os.Getenv("HUGGINGFACE_API_KEY") == "" {
 		// Fallback to loading from the python client's cache.
 		h, err := os.UserHomeDir()
 		if err != nil {
@@ -119,10 +122,6 @@ func getClient(t *testing.T, m string) *huggingface.Client {
 			apiKey = "<insert_api_key_here>"
 		}
 	}
-	return getClientInner(t, apiKey, m)
-}
-
-func getClientInner(t *testing.T, apiKey, m string) *huggingface.Client {
 	c, err := huggingface.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)

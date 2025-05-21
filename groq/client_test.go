@@ -102,14 +102,13 @@ func TestClient_ModelProvider_errors(t *testing.T) {
 func getClient(t *testing.T, m string) *groq.Client {
 	testRecorder.Signal(t)
 	t.Parallel()
-	apiKey := ""
-	if os.Getenv("GROQ_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
-	}
-	return getClientInner(t, apiKey, m)
+	return getClientInner(t, "", m)
 }
 
 func getClientInner(t *testing.T, apiKey, m string) *groq.Client {
+	if apiKey == "" && os.Getenv("GROQ_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
 	c, err := groq.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)

@@ -628,6 +628,9 @@ func (m *Model) GetID() string {
 func (m *Model) String() string {
 	var suffixes []string
 	for _, p := range m.Properties {
+		if p.PropertyID == "info" || p.PropertyID == "terms" {
+			continue
+		}
 		suffixes = append(suffixes, fmt.Sprintf("%s=%v", p.PropertyID, p.Value))
 	}
 	suffix := ""

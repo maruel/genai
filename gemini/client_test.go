@@ -77,6 +77,47 @@ func TestClient_Chat_thinking(t *testing.T) {
 	})
 }
 
+func TestClient_Chat_genImage(t *testing.T) {
+	// Inspired by https://aistudio.google.com/apps/bundled/gif_maker?showCode=true
+	testRecorder.Signal(t)
+	t.Parallel()
+	const request = "a shiba inu eating ice-cream"
+
+	prompt := `A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
+	const style = `Simple, vibrant, varied-colored doodle/hand-drawn sketch`
+	contents := `Generate one square, white-background doodle with smooth, vibrantly colored image depicting ` + prompt + `.
+
+*Mandatory Requirements (Compacted):**
+
+**Style:** ${style}.
+**Background:** Plain solid white (no background colors/elements). Absolutely no black background.
+**Content & Motion:** Clearly depict **` + prompt + `** action with colored, moving subject (no static images). If there's an action specified, it should be the main difference between frames.
+**Format:** Square image (1:1 aspect ratio).
+**Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.
+**Output:** Actual image file for a smooth, colorful doodle-style image on a white background.`
+
+	override := &internaltest.Settings{
+		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClientInner(t, "", m) },
+		Options: func(opts *genai.ChatOptions) genai.Validatable {
+			return &gemini.ChatOptions{ResponseModalities: []gemini.Modality{gemini.ModalityText, gemini.ModalityImage}, ChatOptions: *opts}
+		},
+		Model: "gemini-2.0-flash-preview-image-generation",
+	}
+	msgs := genai.Messages{genai.NewTextMessage(genai.User, contents)}
+	resp := testCases.TestChatHelper(t, msgs, override, genai.ChatOptions{Temperature: 1, Seed: 1})
+	if len(resp.Contents) == 0 {
+		t.Fatal("expected content")
+	}
+	t.Logf("%d", len(resp.Contents))
+	if len(resp.Contents) != 1 {
+		t.Fatalf("expected one content, got %d", len(resp.Contents))
+	}
+	if resp.Contents[0].Filename != "content.png" {
+		t.Fatalf("expected one image, got %#v", resp.Contents[0])
+	}
+	// It can have text, images or both.
+}
+
 func TestClient_ChatStream(t *testing.T) {
 	testCases.TestChatStream(t, nil)
 }

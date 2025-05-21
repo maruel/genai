@@ -468,65 +468,57 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	in.Stream = true
 	// Try first, if it immediately errors out requesting to pull, pull then try again.
-	var err error
-	for range 2 {
-		var resp *http.Response
-		if resp, err = c.Client.PostRequest(ctx, c.baseURL+"/api/chat", nil, in); err != nil {
-			return fmt.Errorf("failed to get server response: %w", err)
-		}
-		sent := false
-		for r := bufio.NewReader(resp.Body); ; {
-			var line []byte
-			line, err = r.ReadBytes('\n')
-			if line = bytes.TrimSpace(line); err == io.EOF {
-				if len(line) == 0 {
-					_ = resp.Body.Close()
-					return nil
-				}
-			} else if err != nil {
-				_ = resp.Body.Close()
-				return fmt.Errorf("failed to get server response: %w", err)
-			}
-			if len(line) == 0 {
-				continue
-			}
-			if err = parseStreamLine(line, out); err != nil {
-				_ = resp.Body.Close()
-				// Missing local model error.
-				if !sent && strings.Contains(err.Error(), "not found, try pulling it first") {
-					if err = c.PullModel(ctx, c.model); err != nil {
-						return fmt.Errorf("failed to pull model: %w", err)
-					}
-					// Breaak of the inner for loop to retry the HTTP request.
-					break
-				}
-				// Generic error.
-				return err
-			}
-			// A chunk was sent. We can't retry past that point.
-			sent = true
-		}
+	resp, err := c.Client.PostRequest(ctx, c.baseURL+"/api/chat", nil, in)
+	if err != nil {
+		return fmt.Errorf("failed to get server response: %w", err)
 	}
-	return err
+	err = processJSONStream(resp.Body, out)
+	resp.Body.Close()
+	if err == nil || !strings.Contains(err.Error(), "not found, try pulling it first") {
+		return err
+	}
+	// Model was not present. Try to pull then rerun again.
+	if err = c.PullModel(ctx, c.model); err != nil {
+		return fmt.Errorf("failed to pull model: %w", err)
+	}
+	if resp, err = c.Client.PostRequest(ctx, c.baseURL+"/api/chat", nil, in); err != nil {
+		return fmt.Errorf("failed to get server response: %w", err)
+	}
+	defer resp.Body.Close()
+	return processJSONStream(resp.Body, out)
 }
 
-func parseStreamLine(line []byte, out chan<- ChatStreamChunkResponse) error {
-	d := json.NewDecoder(bytes.NewReader(line))
-	d.DisallowUnknownFields()
-	d.UseNumber()
-	msg := ChatStreamChunkResponse{}
-	if err := d.Decode(&msg); err != nil {
-		er := errorResponse{}
+// processJSONStream processes a \n separated JSON stream. This is different from other backends which use
+// SSE.
+func processJSONStream(body io.Reader, out chan<- ChatStreamChunkResponse) error {
+	for r := bufio.NewReader(body); ; {
+		line, err := r.ReadBytes('\n')
+		if line = bytes.TrimSpace(line); err == io.EOF {
+			if len(line) == 0 {
+				return nil
+			}
+		} else if err != nil {
+			return fmt.Errorf("failed to get server response: %w", err)
+		}
+		if len(line) == 0 {
+			continue
+		}
 		d := json.NewDecoder(bytes.NewReader(line))
 		d.DisallowUnknownFields()
 		d.UseNumber()
-		if err := d.Decode(&er); err != nil {
-			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+		msg := ChatStreamChunkResponse{}
+		if err := d.Decode(&msg); err != nil {
+			er := errorResponse{}
+			d := json.NewDecoder(bytes.NewReader(line))
+			d.DisallowUnknownFields()
+			d.UseNumber()
+			if err := d.Decode(&er); err != nil {
+				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+			}
+			return fmt.Errorf("server error: %s", er.Error)
 		}
-		return fmt.Errorf("server error: %s", er.Error)
+		out <- msg
 	}
-	out <- msg
-	return nil
 }
 
 // https://pkg.go.dev/github.com/ollama/ollama/api#ListModelResponse

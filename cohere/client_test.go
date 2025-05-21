@@ -53,6 +53,43 @@ func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 	testCases.TestChatToolUsePositionBias(t, nil, false)
 }
 
+func TestClient_ChatProvider_errors(t *testing.T) {
+	data := []internaltest.ChatProviderError{
+		{
+			Name:          "bad apiKey",
+			ApiKey:        "bad apiKey",
+			Model:         "command-r7b-12-2024",
+			ErrChat:       "failed to get chat response: http 401\n{\"message\":\"invalid api token\"}: error: invalid api token. You can get a new API key at https://dashboard.cohere.com/api-keys",
+			ErrChatStream: "unexpected line. expected \"data: \", got \"{\\\"message\\\":\\\"invalid api token\\\"}\"",
+		},
+		{
+			Name:          "bad model",
+			Model:         "bad model",
+			ErrChat:       "failed to get chat response: http 404\n{\"message\":\"model 'bad model' not found, make sure the correct model ID was used and that you have access to the model.\"}: error: model 'bad model' not found, make sure the correct model ID was used and that you have access to the model.",
+			ErrChatStream: "unexpected line. expected \"data: \", got \"{\\\"message\\\":\\\"model 'bad model' not found, make sure the correct model ID was used and that you have access to the model.\\\"}\"",
+		},
+	}
+	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
+		return getClientInner(t, apiKey, model)
+	}
+	internaltest.TestClient_ChatProvider_errors(t, f, data)
+}
+
+func TestClient_ModelProvider_errors(t *testing.T) {
+	t.Skip("TODO")
+	data := []internaltest.ModelProviderError{
+		{
+			Name:   "bad apiKey",
+			ApiKey: "badApiKey",
+			Err:    "TODO",
+		},
+	}
+	f := func(t *testing.T, apiKey string) genai.ModelProvider {
+		return getClientInner(t, apiKey, "")
+	}
+	internaltest.TestClient_ModelProvider_errors(t, f, data)
+}
+
 func getClient(t *testing.T, m string) *cohere.Client {
 	testRecorder.Signal(t)
 	t.Parallel()
@@ -60,6 +97,10 @@ func getClient(t *testing.T, m string) *cohere.Client {
 	if os.Getenv("COHERE_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
+	return getClientInner(t, apiKey, m)
+}
+
+func getClientInner(t *testing.T, apiKey, m string) *cohere.Client {
 	c, err := cohere.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)

@@ -66,6 +66,43 @@ func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 	testCases.TestChatToolUsePositionBias(t, nil, false)
 }
 
+func TestClient_ChatProvider_errors(t *testing.T) {
+	data := []internaltest.ChatProviderError{
+		{
+			Name:          "bad apiKey",
+			ApiKey:        "bad apiKey",
+			Model:         "claude-3-haiku-20240307",
+			ErrChat:       "http 401\n{\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"}}: error authentication_error: invalid x-api-key. You can get a new API key at https://console.anthropic.com/settings/keys",
+			ErrChatStream: "error authentication_error: invalid x-api-key",
+		},
+		{
+			Name:          "bad model",
+			Model:         "bad model",
+			ErrChat:       "http 404\n" + `{"type":"error","error":{"type":"not_found_error","message":"model: bad model"}}: error not_found_error: model: bad model`,
+			ErrChatStream: "error not_found_error: model: bad model",
+		},
+	}
+	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
+		return getClientInner(t, apiKey, model)
+	}
+	internaltest.TestClient_ChatProvider_errors(t, f, data)
+}
+
+func TestClient_ModelProvider_errors(t *testing.T) {
+	t.Skip("TODO")
+	data := []internaltest.ModelProviderError{
+		{
+			Name:   "bad apiKey",
+			ApiKey: "badApiKey",
+			Err:    "TODO",
+		},
+	}
+	f := func(t *testing.T, apiKey string) genai.ModelProvider {
+		return getClientInner(t, apiKey, "")
+	}
+	internaltest.TestClient_ModelProvider_errors(t, f, data)
+}
+
 func getClient(t *testing.T, m string) *anthropic.Client {
 	testRecorder.Signal(t)
 	t.Parallel()
@@ -73,6 +110,10 @@ func getClient(t *testing.T, m string) *anthropic.Client {
 	if os.Getenv("ANTHROPIC_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
+	return getClientInner(t, apiKey, m)
+}
+
+func getClientInner(t *testing.T, apiKey, m string) *anthropic.Client {
 	c, err := anthropic.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)

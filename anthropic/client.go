@@ -859,7 +859,14 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
-	for r := bufio.NewReader(resp.Body); ; {
+	return processSSE(resp.Body, out)
+}
+
+func processSSE(body io.Reader, out chan<- ChatStreamChunkResponse) error {
+	dataPrefix := []byte("data: ")
+	eventPrefix := []byte("event:")
+	done := []byte("[DONE]")
+	for r := bufio.NewReader(body); ; {
 		line, err := r.ReadBytes('\n')
 		if line = bytes.TrimSpace(line); err == io.EOF {
 			if len(line) == 0 {
@@ -868,46 +875,40 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		} else if err != nil {
 			return fmt.Errorf("failed to get server response: %w", err)
 		}
-		if len(line) != 0 {
-			if err := parseStreamLine(line, out); err != nil {
-				return err
+		if len(line) == 0 {
+			continue
+		}
+		// https://docs.anthropic.com/en/api/messages-streaming
+		// and
+		// https://developer.mozilla.org/en-US/docs/Web/API/Server-sent%5Fevents/Using%5Fserver-sent%5Fevents
+		switch {
+		case bytes.HasPrefix(line, dataPrefix):
+			suffix := line[len(dataPrefix):]
+			if bytes.Equal(suffix, done) {
+				return nil
 			}
+			d := json.NewDecoder(bytes.NewReader(suffix))
+			d.DisallowUnknownFields()
+			d.UseNumber()
+			msg := ChatStreamChunkResponse{}
+			if err := d.Decode(&msg); err != nil {
+				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+			}
+			out <- msg
+		case bytes.HasPrefix(line, eventPrefix):
+			// Ignore.
+		default:
+			// Error will be a single JSON line.
+			d := json.NewDecoder(bytes.NewReader(line))
+			d.DisallowUnknownFields()
+			d.UseNumber()
+			er := errorResponse{}
+			if err := d.Decode(&er); err == nil {
+				return fmt.Errorf("error %s: %s", er.Error.Type, er.Error.Message)
+			}
+			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
 		}
 	}
-}
-
-func parseStreamLine(line []byte, out chan<- ChatStreamChunkResponse) error {
-	// https://docs.anthropic.com/en/api/messages-streaming
-	// and
-	// https://developer.mozilla.org/en-US/docs/Web/API/Server-sent%5Fevents/Using%5Fserver-sent%5Fevents
-	const dataPrefix = "data: "
-	switch {
-	case bytes.HasPrefix(line, []byte(dataPrefix)):
-		suffix := string(line[len(dataPrefix):])
-		if suffix == "[DONE]" {
-			return nil
-		}
-		d := json.NewDecoder(strings.NewReader(suffix))
-		d.DisallowUnknownFields()
-		d.UseNumber()
-		msg := ChatStreamChunkResponse{}
-		if err := d.Decode(&msg); err != nil {
-			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
-		}
-		out <- msg
-	case bytes.HasPrefix(line, []byte("event:")):
-		// Ignore for now.
-	default:
-		d := json.NewDecoder(bytes.NewReader(line))
-		d.DisallowUnknownFields()
-		d.UseNumber()
-		er := errorResponse{}
-		if err := d.Decode(&er); err == nil {
-			return fmt.Errorf("error %s: %s", er.Error.Type, er.Error.Message)
-		}
-		return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
-	}
-	return nil
 }
 
 type Model struct {

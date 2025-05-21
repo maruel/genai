@@ -1,0 +1,73 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 121
+        transfer_encoding: []
+        trailer: {}
+        host: api.mistral.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"bad model","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Tell a short joke."}]}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 105
+        uncompressed: false
+        body: '{"object":"error","message":"Invalid model: bad model","type":"invalid_model","param":null,"code":"1500"}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9435de75a8c6a27f-YUL
+            Content-Length:
+                - "105"
+            Content-Type:
+                - application/json
+            Ratelimitbysize-Limit:
+                - "2000000"
+            Ratelimitbysize-Query-Cost:
+                - "32000"
+            Ratelimitbysize-Remaining:
+                - "1936000"
+            Ratelimitbysize-Reset:
+                - "48"
+            Server:
+                - cloudflare
+            X-Envoy-Upstream-Service-Time:
+                - "5"
+            X-Kong-Proxy-Latency:
+                - "5"
+            X-Kong-Request-Id:
+                - 6faf74702f0f696f8c817c2d63a6f16d
+            X-Kong-Upstream-Latency:
+                - "6"
+            X-Ratelimitbysize-Limit-Minute:
+                - "2000000"
+            X-Ratelimitbysize-Limit-Month:
+                - "10000000000"
+            X-Ratelimitbysize-Remaining-Minute:
+                - "1936000"
+            X-Ratelimitbysize-Remaining-Month:
+                - "9999936000"
+        status: 400 Bad Request
+        code: 400
+        duration: 161ms

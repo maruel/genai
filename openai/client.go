@@ -804,7 +804,14 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
-	for r := bufio.NewReader(resp.Body); ; {
+	return processSSE(resp.Body, out)
+}
+
+func processSSE(body io.Reader, out chan<- ChatStreamChunkResponse) error {
+	dataPrefix := []byte("data: ")
+	eventPrefix := []byte("event:")
+	done := []byte("[DONE]")
+	for r := bufio.NewReader(body); ; {
 		line, err := r.ReadBytes('\n')
 		if line = bytes.TrimSpace(line); err == io.EOF {
 			if len(line) == 0 {
@@ -813,32 +820,29 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		} else if err != nil {
 			return fmt.Errorf("failed to get server response: %w", err)
 		}
-		if len(line) != 0 {
-			if err := parseStreamLine(line, out); err != nil {
-				return err
+		if len(line) == 0 {
+			continue
+		}
+		switch {
+		case bytes.HasPrefix(line, dataPrefix):
+			suffix := line[len(dataPrefix):]
+			if bytes.Equal(suffix, done) {
+				return nil
 			}
+			d := json.NewDecoder(bytes.NewReader(suffix))
+			d.DisallowUnknownFields()
+			d.UseNumber()
+			msg := ChatStreamChunkResponse{}
+			if err := d.Decode(&msg); err != nil {
+				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+			}
+			out <- msg
+		case bytes.HasPrefix(line, eventPrefix):
+			// Ignore.
+		default:
+			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
 		}
 	}
-}
-
-func parseStreamLine(line []byte, out chan<- ChatStreamChunkResponse) error {
-	const prefix = "data: "
-	if !bytes.HasPrefix(line, []byte(prefix)) {
-		return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
-	}
-	suffix := string(line[len(prefix):])
-	if suffix == "[DONE]" {
-		return nil
-	}
-	d := json.NewDecoder(strings.NewReader(suffix))
-	d.DisallowUnknownFields()
-	d.UseNumber()
-	msg := ChatStreamChunkResponse{}
-	if err := d.Decode(&msg); err != nil {
-		return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
-	}
-	out <- msg
-	return nil
 }
 
 type Time int64

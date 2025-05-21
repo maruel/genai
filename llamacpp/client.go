@@ -492,7 +492,14 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		return fmt.Errorf("failed to get llama server response: %w", err)
 	}
 	defer resp.Body.Close()
-	for r := bufio.NewReader(resp.Body); ; {
+	return processSSE(resp.Body, out)
+}
+
+func processSSE(body io.Reader, out chan<- CompletionStreamChunkResponse) error {
+	dataPrefix := []byte("data: ")
+	eventPrefix := []byte("event:")
+	done := []byte("[DONE]")
+	for r := bufio.NewReader(body); ; {
 		line, err := r.ReadBytes('\n')
 		if line = bytes.TrimSpace(line); err == io.EOF {
 			if len(line) == 0 {
@@ -501,31 +508,29 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 		} else if err != nil {
 			return fmt.Errorf("failed to get server response: %w", err)
 		}
-		if len(line) != 0 {
-			if err := parseStreamLine(line, out); err != nil {
-				return err
+		if len(line) == 0 {
+			continue
+		}
+		switch {
+		case bytes.HasPrefix(line, []byte(dataPrefix)):
+			suffix := line[len(dataPrefix):]
+			if bytes.Equal(suffix, done) {
+				return nil
 			}
+			d := json.NewDecoder(bytes.NewReader(suffix))
+			d.DisallowUnknownFields()
+			d.UseNumber()
+			msg := CompletionStreamChunkResponse{}
+			if err := d.Decode(&msg); err != nil {
+				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+			}
+			out <- msg
+		case bytes.HasPrefix(line, eventPrefix):
+			// Ignore.
+		default:
+			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
 		}
 	}
-}
-
-func parseStreamLine(line []byte, out chan<- CompletionStreamChunkResponse) error {
-	const prefix = "data: "
-	if !bytes.HasPrefix(line, []byte(prefix)) {
-		return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
-	}
-	d := json.NewDecoder(bytes.NewReader(line[len(prefix):]))
-	d.DisallowUnknownFields()
-	d.UseNumber()
-	msg := CompletionStreamChunkResponse{}
-	if err := d.Decode(&msg); err != nil {
-		return fmt.Errorf("failed to decode llama server response %q: %w", string(line), err)
-	}
-	out <- msg
-	if msg.Stop {
-		return nil
-	}
-	return nil
 }
 
 func (c *Client) GetHealth(ctx context.Context) (string, error) {

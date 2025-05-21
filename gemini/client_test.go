@@ -268,6 +268,43 @@ Ultimately, the human endeavor is a quest for understanding, not just of the ext
 
 //
 
+func TestClient_ChatProvider_errors(t *testing.T) {
+	data := []internaltest.ChatProviderError{
+		{
+			Name:          "bad apiKey",
+			ApiKey:        "badApiKey",
+			Model:         "gemini-2.0-flash-lite",
+			ErrChat:       "http 400\n{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key not valid. Please pass a valid API key.\",\n    \"status\": \"INVALID_ARGUMENT\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",\n        \"reason\": \"API_KEY_INVALID\",\n        \"domain\": \"googleapis.com\",\n        \"metadata\": {\n          \"service\": \"generativelanguage.googleapis.com\"\n        }\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.LocalizedMessage\",\n        \"locale\": \"en-US\",\n        \"message\": \"API key not valid. Please pass a valid API key.\"\n      }\n    ]\n  }\n}\n: error 400 (INVALID_ARGUMENT): API key not valid. Please pass a valid API key. You can get a new API key at https://ai.google.dev/gemini-api/docs/getting-started",
+			ErrChatStream: "unexpected line. expected \"data: \", got \"{\"",
+		},
+		{
+			Name:          "bad model",
+			Model:         "bad model",
+			ErrChat:       "http 400\n{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"* GenerateContentRequest.model: unexpected model name format\\n\",\n    \"status\": \"INVALID_ARGUMENT\"\n  }\n}\n: error 400 (INVALID_ARGUMENT): * GenerateContentRequest.model: unexpected model name format\n You can get a new API key at https://ai.google.dev/gemini-api/docs/getting-started",
+			ErrChatStream: "unexpected line. expected \"data: \", got \"{\"",
+		},
+	}
+	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
+		return getClientInner(t, apiKey, model)
+	}
+	internaltest.TestClient_ChatProvider_errors(t, f, data)
+}
+
+func TestClient_ModelProvider_errors(t *testing.T) {
+	t.Skip("TODO")
+	data := []internaltest.ModelProviderError{
+		{
+			Name:   "bad apiKey",
+			ApiKey: "badApiKey",
+			Err:    "TODO",
+		},
+	}
+	f := func(t *testing.T, apiKey string) genai.ModelProvider {
+		return getClientInner(t, apiKey, "")
+	}
+	internaltest.TestClient_ModelProvider_errors(t, f, data)
+}
+
 func getClient(t *testing.T, m string) *gemini.Client {
 	testRecorder.Signal(t)
 	t.Parallel()
@@ -275,6 +312,10 @@ func getClient(t *testing.T, m string) *gemini.Client {
 	if os.Getenv("GEMINI_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
+	return getClientInner(t, apiKey, m)
+}
+
+func getClientInner(t *testing.T, apiKey, m string) *gemini.Client {
 	c, err := gemini.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)

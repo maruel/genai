@@ -64,18 +64,59 @@ func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 	})
 }
 
+func TestClient_ChatProvider_errors(t *testing.T) {
+	data := []internaltest.ChatProviderError{
+		{
+			Name:          "bad apiKey",
+			ApiKey:        "bad apiKey",
+			Model:         "@hf/nousresearch/hermes-2-pro-mistral-7b",
+			ErrChat:       "failed to get chat response: http 401\n{\"result\":null,\"success\":false,\"errors\":[{\"code\":10000,\"message\":\"Authentication error\"}],\"messages\":[]}: error: Authentication error. You can get a new API key at https://dash.cloudflare.com/profile/api-tokens",
+			ErrChatStream: "got server error: Authentication error",
+		},
+		{
+			Name:          "bad model",
+			Model:         "bad model",
+			ErrChat:       "failed to get chat response: http 400\n{\"success\":false,\"errors\":[{\"code\":7000,\"message\":\"No route for that URI\"}],\"messages\":[],\"result\":null}: error: No route for that URI",
+			ErrChatStream: "got server error: No route for that URI",
+		},
+	}
+	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
+		return getClientInner(t, apiKey, model)
+	}
+	internaltest.TestClient_ChatProvider_errors(t, f, data)
+}
+
+func TestClient_ModelProvider_errors(t *testing.T) {
+	t.Skip("TODO")
+	data := []internaltest.ModelProviderError{
+		{
+			Name:   "bad apiKey",
+			ApiKey: "badApiKey",
+			Err:    "TODO",
+		},
+	}
+	f := func(t *testing.T, apiKey string) genai.ModelProvider {
+		return getClientInner(t, apiKey, "")
+	}
+	internaltest.TestClient_ModelProvider_errors(t, f, data)
+}
+
 func getClient(t *testing.T, m string) *cloudflare.Client {
 	testRecorder.Signal(t)
 	t.Parallel()
+	apiKey := ""
+	if os.Getenv("CLOUDFLARE_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	return getClientInner(t, apiKey, m)
+}
+
+func getClientInner(t *testing.T, apiKey, m string) *cloudflare.Client {
 	realAccountID := os.Getenv("CLOUDFLARE_ACCOUNT_ID")
 	accountID := ""
 	if realAccountID == "" {
 		accountID = "INSERT_ACCOUNTID_KEY_HERE"
 		realAccountID = accountID
-	}
-	apiKey := ""
-	if os.Getenv("CLOUDFLARE_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
 	}
 	c, err := cloudflare.New(accountID, apiKey, m)
 	if err != nil {

@@ -1,0 +1,55 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 100
+        transfer_encoding: []
+        trailer: {}
+        host: api.deepseek.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"deepseek-chat","messages":[{"role":"user","content":"Tell a short joke."}],"stream":true}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 153
+        uncompressed: false
+        body: '{"error":{"message":"Authentication Fails, Your api key: ****iKey is invalid","type":"authentication_error","param":null,"code":"invalid_request_error"}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9435de715ca4a2fe-YUL
+            Content-Length:
+                - "153"
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            X-Content-Type-Options:
+                - nosniff
+            X-Ds-Trace-Id:
+                - de187251a8c26e39a6e915dc6645ade9
+        status: 401 Unauthorized
+        code: 401
+        duration: 271ms

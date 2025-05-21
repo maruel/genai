@@ -67,6 +67,43 @@ func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 	testCases.TestChatToolUsePositionBias(t, nil, false)
 }
 
+func TestClient_ChatProvider_errors(t *testing.T) {
+	data := []internaltest.ChatProviderError{
+		{
+			Name:          "bad apiKey",
+			ApiKey:        "bad apiKey",
+			Model:         "llama-3.1-8b",
+			ErrChat:       "failed to get chat response: http 401\n{\"message\":\"Wrong API Key\",\"type\":\"invalid_request_error\",\"param\":\"api_key\",\"code\":\"wrong_api_key\"}: error: invalid_request_error/api_key/wrong_api_key: Wrong API Key. You can get a new API key at https://cloud.cerebras.ai/platform/",
+			ErrChatStream: "unexpected line. expected \"data: \", got \"{\\\"message\\\":\\\"Wrong API Key\\\",\\\"type\\\":\\\"invalid_request_error\\\",\\\"param\\\":\\\"api_key\\\",\\\"code\\\":\\\"wrong_api_key\\\"}\"",
+		},
+		{
+			Name:          "bad model",
+			Model:         "bad model",
+			ErrChat:       "failed to get chat response: http 404\n{\"message\":\"Model bad model does not exist or you do not have access to it.\",\"type\":\"not_found_error\",\"param\":\"model\",\"code\":\"model_not_found\"}: error: not_found_error/model/model_not_found: Model bad model does not exist or you do not have access to it.",
+			ErrChatStream: "unexpected line. expected \"data: \", got \"{\\\"message\\\":\\\"Model bad model does not exist or you do not have access to it.\\\",\\\"type\\\":\\\"not_found_error\\\",\\\"param\\\":\\\"model\\\",\\\"code\\\":\\\"model_not_found\\\"}\"",
+		},
+	}
+	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
+		return getClientInner(t, apiKey, model)
+	}
+	internaltest.TestClient_ChatProvider_errors(t, f, data)
+}
+
+func TestClient_ModelProvider_errors(t *testing.T) {
+	t.Skip("TODO")
+	data := []internaltest.ModelProviderError{
+		{
+			Name:   "bad apiKey",
+			ApiKey: "badApiKey",
+			Err:    "TODO",
+		},
+	}
+	f := func(t *testing.T, apiKey string) genai.ModelProvider {
+		return getClientInner(t, apiKey, "")
+	}
+	internaltest.TestClient_ModelProvider_errors(t, f, data)
+}
+
 func getClient(t *testing.T, m string) *cerebras.Client {
 	testRecorder.Signal(t)
 	t.Parallel()
@@ -74,6 +111,10 @@ func getClient(t *testing.T, m string) *cerebras.Client {
 	if os.Getenv("CEREBRAS_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
+	return getClientInner(t, apiKey, m)
+}
+
+func getClientInner(t *testing.T, apiKey, m string) *cerebras.Client {
 	c, err := cerebras.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)

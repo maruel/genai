@@ -114,6 +114,42 @@ func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 	testCases.TestChatToolUsePositionBias(t, &internaltest.Settings{Model: "Qwen/Qwen2.5-7B-Instruct-Turbo"}, false)
 }
 
+func TestClient_ChatProvider_errors(t *testing.T) {
+	data := []internaltest.ChatProviderError{
+		{
+			Name:   "bad apiKey",
+			ApiKey: "bad apiKey",
+			Model:  "meta-llama/Llama-3.2-3B-Instruct-Turbo",
+			// ErrChat:       "TODO",
+			ErrChatStream: "server error: error invalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
+		},
+		{
+			Name:  "bad model",
+			Model: "bad model",
+			// ErrChat:       "TODO",
+			ErrChatStream: "server error: error model_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
+		},
+	}
+	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
+		return getClientInner(t, apiKey, model)
+	}
+	internaltest.TestClient_ChatProvider_errors(t, f, data)
+}
+
+func TestClient_ModelProvider_errors(t *testing.T) {
+	data := []internaltest.ModelProviderError{
+		{
+			Name:   "bad apiKey",
+			ApiKey: "badApiKey",
+			Err:    "json: cannot unmarshal object into Go value of type []togetherai.Model\nhttp 401\n{\"error\":{\"message\":\"Unauthorized\"}}",
+		},
+	}
+	f := func(t *testing.T, apiKey string) genai.ModelProvider {
+		return getClientInner(t, apiKey, "")
+	}
+	internaltest.TestClient_ModelProvider_errors(t, f, data)
+}
+
 func getClient(t *testing.T, m string) *togetherai.Client {
 	testRecorder.Signal(t)
 	t.Parallel()
@@ -121,6 +157,10 @@ func getClient(t *testing.T, m string) *togetherai.Client {
 	if os.Getenv("TOGETHER_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
+	return getClientInner(t, apiKey, m)
+}
+
+func getClientInner(t *testing.T, apiKey, m string) *togetherai.Client {
 	c, err := togetherai.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)

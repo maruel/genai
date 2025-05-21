@@ -68,6 +68,43 @@ func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 	})
 }
 
+func TestClient_ChatProvider_errors(t *testing.T) {
+	data := []internaltest.ChatProviderError{
+		{
+			Name:          "bad apiKey",
+			ApiKey:        "bad apiKey",
+			Model:         "Qwen/Qwen3-4B",
+			ErrChat:       "failed to get chat response: huggingface: Unauthorized",
+			ErrChatStream: "http 401: 401 Unauthorized",
+		},
+		{
+			Name:          "bad model",
+			Model:         "bad model",
+			ErrChat:       "failed to get chat response: huggingface: Not Found",
+			ErrChatStream: "http 404: 404 Not Found",
+		},
+	}
+	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
+		return getClientInner(t, apiKey, model)
+	}
+	internaltest.TestClient_ChatProvider_errors(t, f, data)
+}
+
+func TestClient_ModelProvider_errors(t *testing.T) {
+	t.Skip("TODO")
+	data := []internaltest.ModelProviderError{
+		{
+			Name:   "bad apiKey",
+			ApiKey: "badApiKey",
+			Err:    "TODO",
+		},
+	}
+	f := func(t *testing.T, apiKey string) genai.ModelProvider {
+		return getClientInner(t, apiKey, "")
+	}
+	internaltest.TestClient_ModelProvider_errors(t, f, data)
+}
+
 func getClient(t *testing.T, m string) *huggingface.Client {
 	testRecorder.Signal(t)
 	t.Parallel()
@@ -82,6 +119,10 @@ func getClient(t *testing.T, m string) *huggingface.Client {
 			apiKey = "<insert_api_key_here>"
 		}
 	}
+	return getClientInner(t, apiKey, m)
+}
+
+func getClientInner(t *testing.T, apiKey, m string) *huggingface.Client {
 	c, err := huggingface.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)

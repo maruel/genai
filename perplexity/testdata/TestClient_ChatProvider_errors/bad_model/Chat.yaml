@@ -1,0 +1,47 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 97
+        transfer_encoding: []
+        trailer: {}
+        host: api.perplexity.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"bad model","messages":[{"role":"user","content":"Tell a short joke."}],"stream":false}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 185
+        uncompressed: false
+        body: '{"error":{"message":"Invalid model ''bad model''. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.","type":"invalid_model","code":400}}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9435e72faad6a30c-YUL
+            Content-Length:
+                - "185"
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 400 Bad Request
+        code: 400
+        duration: 51ms

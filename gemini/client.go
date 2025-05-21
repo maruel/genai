@@ -1078,6 +1078,8 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	return usage, err
 }
 
+// processStreamPackets is the function used to convert the chunks sent by Gemini's SSE data into
+// MessageFragment.
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, usage *genai.Usage) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
@@ -1146,7 +1148,14 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return err
 	}
 	defer resp.Body.Close()
-	for r := bufio.NewReader(resp.Body); ; {
+	return processSSE(resp.Body, out)
+}
+
+func processSSE(body io.Reader, out chan<- ChatStreamChunkResponse) error {
+	dataPrefix := []byte("data: ")
+	eventPrefix := []byte("event:")
+	done := []byte("[DONE]")
+	for r := bufio.NewReader(body); ; {
 		line, err := r.ReadBytes('\n')
 		if line = bytes.TrimSpace(line); err == io.EOF {
 			if len(line) == 0 {
@@ -1155,29 +1164,30 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		} else if err != nil {
 			return fmt.Errorf("failed to get server response: %w", err)
 		}
-		if len(line) != 0 {
-			if err := parseStreamLine(line, out); err != nil {
-				return err
+		if len(line) == 0 {
+			continue
+		}
+		switch {
+		case bytes.HasPrefix(line, dataPrefix):
+			suffix := line[len(dataPrefix):]
+			if bytes.Equal(suffix, done) {
+				return nil
 			}
+			d := json.NewDecoder(bytes.NewReader(suffix))
+			d.DisallowUnknownFields()
+			d.UseNumber()
+			msg := ChatStreamChunkResponse{}
+			if err := d.Decode(&msg); err != nil {
+				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+			}
+			out <- msg
+		case bytes.HasPrefix(line, eventPrefix):
+			// Ignore.
+		default:
+			// TODO: Error will be a multi-line JSON error.
+			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
 		}
 	}
-}
-
-func parseStreamLine(line []byte, out chan<- ChatStreamChunkResponse) error {
-	const prefix = "data: "
-	if !bytes.HasPrefix(line, []byte(prefix)) {
-		return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
-	}
-	suffix := string(line[len(prefix):])
-	d := json.NewDecoder(strings.NewReader(suffix))
-	d.DisallowUnknownFields()
-	d.UseNumber()
-	msg := ChatStreamChunkResponse{}
-	if err := d.Decode(&msg); err != nil {
-		return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
-	}
-	out <- msg
-	return nil
 }
 
 // https://ai.google.dev/api/models#Model

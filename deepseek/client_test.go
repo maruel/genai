@@ -46,6 +46,43 @@ func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 	testCases.TestChatToolUsePositionBias(t, nil, false)
 }
 
+func TestClient_ChatProvider_errors(t *testing.T) {
+	data := []internaltest.ChatProviderError{
+		{
+			Name:          "bad apiKey",
+			ApiKey:        "bad apiKey",
+			Model:         "deepseek-chat",
+			ErrChat:       "http 401\n{\"error\":{\"message\":\"Authentication Fails, Your api key: ****iKey is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}}: error authentication_error: Authentication Fails, Your api key: ****iKey is invalid. You can get a new API key at https://platform.deepseek.com/api_keys",
+			ErrChatStream: "unexpected line. expected \"data: \", got \"{\\\"error\\\":{\\\"message\\\":\\\"Authentication Fails, Your api key: ****iKey is invalid\\\",\\\"type\\\":\\\"authentication_error\\\",\\\"param\\\":null,\\\"code\\\":\\\"invalid_request_error\\\"}}\"",
+		},
+		{
+			Name:          "bad model",
+			Model:         "bad model",
+			ErrChat:       "http 400\n{\"error\":{\"message\":\"Model Not Exist\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}: error invalid_request_error: Model Not Exist",
+			ErrChatStream: "unexpected line. expected \"data: \", got \"{\\\"error\\\":{\\\"message\\\":\\\"Model Not Exist\\\",\\\"type\\\":\\\"invalid_request_error\\\",\\\"param\\\":null,\\\"code\\\":\\\"invalid_request_error\\\"}}\"",
+		},
+	}
+	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
+		return getClientInner(t, apiKey, model)
+	}
+	internaltest.TestClient_ChatProvider_errors(t, f, data)
+}
+
+func TestClient_ModelProvider_errors(t *testing.T) {
+	t.Skip("TODO")
+	data := []internaltest.ModelProviderError{
+		{
+			Name:   "bad apiKey",
+			ApiKey: "badApiKey",
+			Err:    "TODO",
+		},
+	}
+	f := func(t *testing.T, apiKey string) genai.ModelProvider {
+		return getClientInner(t, apiKey, "")
+	}
+	internaltest.TestClient_ModelProvider_errors(t, f, data)
+}
+
 func getClient(t *testing.T, m string) *deepseek.Client {
 	testRecorder.Signal(t)
 	t.Parallel()
@@ -53,6 +90,10 @@ func getClient(t *testing.T, m string) *deepseek.Client {
 	if os.Getenv("DEEPSEEK_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
+	return getClientInner(t, apiKey, m)
+}
+
+func getClientInner(t *testing.T, apiKey, m string) *deepseek.Client {
 	c, err := deepseek.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)

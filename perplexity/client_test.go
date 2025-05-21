@@ -54,6 +54,28 @@ func TestClient_ChatStream(t *testing.T) {
 	testCases.TestChatStream(t, nil)
 }
 
+func TestClient_ChatProvider_errors(t *testing.T) {
+	data := []internaltest.ChatProviderError{
+		{
+			Name:   "bad apiKey",
+			ApiKey: "bad apiKey",
+			Model:  "sonar",
+			// ErrChat:       "TODO",
+			ErrChatStream: "unexpected line. expected \"data: \", got \"<html>\"",
+		},
+		{
+			Name:          "bad model",
+			Model:         "bad model",
+			ErrChat:       "failed to get chat response: failed to decode server response option #0: unknown field \"error\" of type \"map[string]interface {}\"\nfailed to decode server response option #1: unknown field \"error\" of type \"map[string]interface {}\"\nhttp 400\n{\"error\":{\"message\":\"Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.\",\"type\":\"invalid_model\",\"code\":400}}",
+			ErrChatStream: "server error: Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.",
+		},
+	}
+	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
+		return getClientInner(t, apiKey, model)
+	}
+	internaltest.TestClient_ChatProvider_errors(t, f, data)
+}
+
 func getClient(t *testing.T, m string) *perplexity.Client {
 	testRecorder.Signal(t)
 	t.Parallel()
@@ -61,6 +83,10 @@ func getClient(t *testing.T, m string) *perplexity.Client {
 	if os.Getenv("PERPLEXITY_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
+	return getClientInner(t, apiKey, m)
+}
+
+func getClientInner(t *testing.T, apiKey, m string) *perplexity.Client {
 	c, err := perplexity.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)

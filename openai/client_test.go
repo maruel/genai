@@ -99,6 +99,43 @@ func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 	testCases.TestChatToolUsePositionBias(t, nil, false)
 }
 
+func TestClient_ChatProvider_errors(t *testing.T) {
+	data := []internaltest.ChatProviderError{
+		{
+			Name:          "bad apiKey",
+			ApiKey:        "bad apiKey",
+			Model:         "gpt-4.1-nano",
+			ErrChat:       "failed to get chat response: http 401\n{\n    \"error\": {\n        \"message\": \"Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.\",\n        \"type\": \"invalid_request_error\",\n        \"param\": null,\n        \"code\": \"invalid_api_key\"\n    }\n}\n: error invalid_api_key (): Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
+			ErrChatStream: "unexpected line. expected \"data: \", got \"{\"",
+		},
+		{
+			Name:          "bad model",
+			Model:         "bad model",
+			ErrChat:       "failed to get chat response: http 400\n{\n    \"error\": {\n        \"message\": \"invalid model ID\",\n        \"type\": \"invalid_request_error\",\n        \"param\": null,\n        \"code\": null\n    }\n}\n: error invalid_request_error: invalid model ID",
+			ErrChatStream: "unexpected line. expected \"data: \", got \"{\"",
+		},
+	}
+	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
+		return getClientInner(t, apiKey, model)
+	}
+	internaltest.TestClient_ChatProvider_errors(t, f, data)
+}
+
+func TestClient_ModelProvider_errors(t *testing.T) {
+	t.Skip("TODO")
+	data := []internaltest.ModelProviderError{
+		{
+			Name:   "bad apiKey",
+			ApiKey: "badApiKey",
+			Err:    "TODO",
+		},
+	}
+	f := func(t *testing.T, apiKey string) genai.ModelProvider {
+		return getClientInner(t, apiKey, "")
+	}
+	internaltest.TestClient_ModelProvider_errors(t, f, data)
+}
+
 func getClient(t *testing.T, m string) *openai.Client {
 	testRecorder.Signal(t)
 	t.Parallel()
@@ -106,6 +143,10 @@ func getClient(t *testing.T, m string) *openai.Client {
 	if os.Getenv("OPENAI_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
+	return getClientInner(t, apiKey, m)
+}
+
+func getClientInner(t *testing.T, apiKey, m string) *openai.Client {
 	c, err := openai.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)

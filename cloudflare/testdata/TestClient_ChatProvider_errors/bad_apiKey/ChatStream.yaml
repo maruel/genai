@@ -1,0 +1,49 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 76
+        transfer_encoding: []
+        trailer: {}
+        host: api.cloudflare.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"content":"Tell a short joke.","role":"user"}],"stream":true}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@hf/nousresearch/hermes-2-pro-mistral-7b
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 104
+        uncompressed: false
+        body: '{"result":null,"success":false,"errors":[{"code":10000,"message":"Authentication error"}],"messages":[]}'
+        headers:
+            Api-Version:
+                - "2025-05-21"
+            Cf-Auditlog-Id:
+                - 0196f3f0-41ad-710a-a86b-3e2afb9fed04
+            Cf-Ray:
+                - 9435de6f6d6ca2f7-YUL
+            Content-Length:
+                - "104"
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 401 Unauthorized
+        code: 401
+        duration: 38ms

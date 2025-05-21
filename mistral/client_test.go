@@ -64,6 +64,43 @@ func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 	testCases.TestChatToolUsePositionBias(t, &internaltest.Settings{Model: "ministral-3b-latest"}, false)
 }
 
+func TestClient_ChatProvider_errors(t *testing.T) {
+	data := []internaltest.ChatProviderError{
+		{
+			Name:          "bad apiKey",
+			ApiKey:        "bad apiKey",
+			Model:         "ministral-3b-2410",
+			ErrChat:       "failed to get chat response: http 401\n{\n  \"message\":\"Unauthorized\",\n  \"request_id\":\"29d8c6779788a8372904e87046743654\"\n}: Unauthorized. You can get a new API key at https://console.mistral.ai/api-keys",
+			ErrChatStream: "unexpected line. expected \"data: \", got \"{\"",
+		},
+		{
+			Name:  "bad model",
+			Model: "bad model",
+			// ErrChat:       "TODO",
+			ErrChatStream: "unexpected line. expected \"data: \", got \"{\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"Invalid model: bad model\\\",\\\"type\\\":\\\"invalid_model\\\",\\\"param\\\":null,\\\"code\\\":\\\"1500\\\"}\"",
+		},
+	}
+	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
+		return getClientInner(t, apiKey, model)
+	}
+	internaltest.TestClient_ChatProvider_errors(t, f, data)
+}
+
+func TestClient_ModelProvider_errors(t *testing.T) {
+	t.Skip("TODO")
+	data := []internaltest.ModelProviderError{
+		{
+			Name:   "bad apiKey",
+			ApiKey: "badApiKey",
+			Err:    "TODO",
+		},
+	}
+	f := func(t *testing.T, apiKey string) genai.ModelProvider {
+		return getClientInner(t, apiKey, "")
+	}
+	internaltest.TestClient_ModelProvider_errors(t, f, data)
+}
+
 func getClient(t *testing.T, m string) *mistral.Client {
 	testRecorder.Signal(t)
 	t.Parallel()
@@ -71,6 +108,10 @@ func getClient(t *testing.T, m string) *mistral.Client {
 	if os.Getenv("MISTRAL_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
+	return getClientInner(t, apiKey, m)
+}
+
+func getClientInner(t *testing.T, apiKey, m string) *mistral.Client {
 	c, err := mistral.New(apiKey, m)
 	if err != nil {
 		t.Fatal(err)

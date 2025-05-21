@@ -638,7 +638,14 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		_, _ = io.Copy(io.Discard, resp.Body)
 		return fmt.Errorf("http %d: %s", resp.StatusCode, resp.Status)
 	}
-	r := bufio.NewReader(resp.Body)
+	return processSSE(resp.Body, out)
+}
+
+func processSSE(body io.Reader, out chan<- ChatStreamChunkResponse) error {
+	dataPrefix := []byte("data: ")
+	eventPrefix := []byte("event:")
+	done := []byte("[DONE]")
+	r := bufio.NewReader(body)
 	for first := true; ; first = false {
 		line, err := r.ReadBytes('\n')
 		if line = bytes.TrimSpace(line); err == io.EOF {
@@ -648,45 +655,43 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		} else if err != nil {
 			return fmt.Errorf("failed to get server response: %w", err)
 		}
-		if len(line) != 0 {
-			// HuggingFace has the bad habit of returning errors as HTML pages.
-			if first && bytes.HasPrefix(line, []byte("<!DOCTYPE html>")) {
-				// Often has a 503 in there as a <div>.
-				rest, _ := io.ReadAll(r)
-				return fmt.Errorf("unexpected error: %s\n%s", line, rest)
+		if len(line) == 0 {
+			continue
+		}
+		// HuggingFace has the bad habit of returning errors as HTML pages.
+		if first && bytes.HasPrefix(line, []byte("<!DOCTYPE html>")) {
+			// Often has a 503 in there as a <div>.
+			rest, _ := io.ReadAll(r)
+			return fmt.Errorf("unexpected error: %s\n%s", line, rest)
+		}
+		switch {
+		case bytes.HasPrefix(line, dataPrefix):
+			suffix := line[len(dataPrefix):]
+			if bytes.Equal(suffix, done) {
+				return nil
 			}
-			if err := parseStreamLine(line, out); err != nil {
-				return err
+			d := json.NewDecoder(bytes.NewReader(suffix))
+			d.DisallowUnknownFields()
+			d.UseNumber()
+			msg := ChatStreamChunkResponse{}
+			if err := d.Decode(&msg); err != nil {
+				// Errors are returned as data: JSON line.
+				d = json.NewDecoder(bytes.NewReader(suffix))
+				d.DisallowUnknownFields()
+				d.UseNumber()
+				er2 := errorResponse2{}
+				if err := d.Decode(&er2); err != nil {
+					return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+				}
+				return fmt.Errorf("got error from server: http %d: %s", er2.Error.HTTPStatusCode, er2.Error.Message)
 			}
+			out <- msg
+		case bytes.HasPrefix(line, eventPrefix):
+			// Ignore.
+		default:
+			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
 		}
 	}
-}
-
-func parseStreamLine(line []byte, out chan<- ChatStreamChunkResponse) error {
-	const prefix = "data: "
-	if !bytes.HasPrefix(line, []byte(prefix)) {
-		return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
-	}
-	suffix := string(line[len(prefix):])
-	if suffix == "[DONE]" {
-		return nil
-	}
-	d := json.NewDecoder(strings.NewReader(suffix))
-	d.DisallowUnknownFields()
-	d.UseNumber()
-	msg := ChatStreamChunkResponse{}
-	if err := d.Decode(&msg); err != nil {
-		d = json.NewDecoder(strings.NewReader(suffix))
-		d.DisallowUnknownFields()
-		d.UseNumber()
-		er2 := errorResponse2{}
-		if err := d.Decode(&er2); err != nil {
-			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
-		}
-		return fmt.Errorf("got error from server: http %d: %s", er2.Error.HTTPStatusCode, er2.Error.Message)
-	}
-	out <- msg
-	return nil
 }
 
 type Time int64

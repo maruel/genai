@@ -2,22 +2,23 @@
 
 The _high performance_ low level native Go client for LLMs.
 
-| Provider                                                    | Country | Chat | Streaming | Vision | PDF | Audio | Video | JSON output | JSON schema | Seed | Tools | Caching |
-| ----------------------------------------------------------- | ------- | ---- | --------- | ------ | --- | ----- | ----- | ----------- | ----------- | ---- | ----- | ------- |
-| [Anthropic](https://console.anthropic.com/settings/billing) | 🇺🇸      | ✅   | ✅        | ✅     | ✅  | ❌    | ❌    | ❌          | ❌          | ❌   | ✅    | ⏳      |
-| [Cerebras](https://cloud.cerebras.ai)                       | 🇺🇸      | ✅   | ✅        | ❌     | ❌  | ❌    | ❌    | ✅          | ✅          | ✅   | ✅    | ❌      |
-| [Cloudflare Workers AI](https://dash.cloudflare.com)        | 🇺🇸      | ✅   | ✅        | ⏳     | ❌  | ⏳    | ❌    | ✅          | ✅          | ✅   | ✅    | ❌      |
-| [Cohere](https://dashboard.cohere.com/billing)              | 🇨🇦      | ✅   | ✅        | ⏳     | ❌  | ❌    | ❌    | ✅          | ✅          | ✅   | ✅    | ❌      |
-| [DeepSeek](https://platform.deepseek.com)                   | 🇨🇳      | ✅   | ✅        | ❌     | ❌  | ❌    | ❌    | ✅          | ❌          | ❌   | ✅    | ⏳      |
-| [Google's Gemini](http://aistudio.google.com)               | 🇺🇸      | ✅   | ✅        | ✅     | ✅  | ✅    | ✅    | ✅          | ✅          | ✅   | ✅    | ✅      |
-| [Groq](https://console.groq.com/dashboard/usage)            | 🇺🇸      | ✅   | ✅        | ✅     | ❌  | ❌    | ❌    | ✅          | ❌          | ✅   | ✅    | ❌      |
-| [HuggingFace](https://huggingface.co/settings/billing)      | 🇺🇸      | ✅   | ✅        | ⏳     | ⏳  | ❌    | ❌    | ⏳          | ⏳          | ✅   | ✅    | ❌      |
-| [llama.cpp](https://github.com/ggml-org/llama.cpp)          | N/A     | ✅   | ✅        | ⏳     | ⏳  | ⏳    | ⏳    | ⏳          | ⏳          | ✅   | ⏳    | 🔁      |
-| [Mistral](https://console.mistral.ai/usage)                 | 🇫🇷      | ✅   | ✅        | ✅     | ✅  | ❌    | ❌    | ✅          | ✅          | ✅   | ✅    | ❌      |
-| [Ollama](https://ollama.com/)                               | N/A     | ✅   | ✅        | ✅     | ❌  | ❌    | ❌    | ❌          | ✅          | ✅   | ✅    | 🔁      |
-| [OpenAI](https://platform.openai.com/usage)                 | 🇺🇸      | ✅   | ✅        | ✅     | ✅  | ✅    | ❌    | ✅          | ✅          | ✅   | ✅    | [🔁](https://platform.openai.com/docs/guides/prompt-caching) |
-| [Perplexity](https://www.perplexity.ai/settings/api)        | 🇺🇸      | ✅   | ✅        | ❌     | ❌  | ❌    | ❌    | ❌          | ⏳          | ❌   | ❌    | ❌      |
-| [TogetherAI](https://api.together.ai/settings/billing)      | 🇺🇸      | ✅   | ✅        | ✅     | ❌  | ❌    | ✅    | ✅          | ✅          | ✅   | ✅    | ❌      |
+|                                                             |         | In ➛   |     |       |       | Out ➛ |             |       | Features |           |      |       |         |
+| Provider                                                    | Country | Vision | PDF | Audio | Video | JSON  | JSON+schema | Image | Chat     | Streaming | Seed | Tools | Caching |
+| ----------------------------------------------------------- | ------- | ------ | --- | ----- | ----- | ----- | ----------- | ----- | -------- | --------- | ---- | ----- | ------- |
+| [Anthropic](https://console.anthropic.com/settings/billing) | 🇺🇸      | ✅     | ✅  | ❌    | ❌    | ❌    | ❌          | ❌    | ✅       | ✅        | ❌   | ✅    | ⏳      |
+| [Cerebras](https://cloud.cerebras.ai)                       | 🇺🇸      | ❌     | ❌  | ❌    | ❌    | ✅    | ✅          | ❌    | ✅       | ✅        | ✅   | ✅    | ❌      |
+| [Cloudflare Workers AI](https://dash.cloudflare.com)        | 🇺🇸      | ⏳     | ❌  | ⏳    | ❌    | ✅    | ✅          | ⏳    | ✅       | ✅        | ✅   | ✅    | ❌      |
+| [Cohere](https://dashboard.cohere.com/billing)              | 🇨🇦      | ⏳     | ❌  | ❌    | ❌    | ✅    | ✅          | ❌    | ✅       | ✅        | ✅   | ✅    | ❌      |
+| [DeepSeek](https://platform.deepseek.com)                   | 🇨🇳      | ❌     | ❌  | ❌    | ❌    | ✅    | ❌          | ❌    | ✅       | ✅        | ❌   | ✅    | ⏳      |
+| [Google's Gemini](http://aistudio.google.com)               | 🇺🇸      | ✅     | ✅  | ✅    | ✅    | ✅    | ✅          | ✅    | ✅       | ✅        | ✅   | ✅    | ✅      |
+| [Groq](https://console.groq.com/dashboard/usage)            | 🇺🇸      | ✅     | ❌  | ❌    | ❌    | ✅    | ❌          | ❌    | ✅       | ✅        | ✅   | ✅    | ❌      |
+| [HuggingFace](https://huggingface.co/settings/billing)      | 🇺🇸      | ⏳     | ⏳  | ❌    | ❌    | ⏳    | ⏳          | ❌    | ✅       | ✅        | ✅   | ✅    | ❌      |
+| [llama.cpp](https://github.com/ggml-org/llama.cpp)          | N/A     | ⏳     | ⏳  | ⏳    | ⏳    | ⏳    | ⏳          | ⏳    | ✅       | ✅        | ✅   | ⏳    | 🔁      |
+| [Mistral](https://console.mistral.ai/usage)                 | 🇫🇷      | ✅     | ✅  | ❌    | ❌    | ✅    | ✅          | ❌    | ✅       | ✅        | ✅   | ✅    | ❌      |
+| [Ollama](https://ollama.com/)                               | N/A     | ✅     | ❌  | ❌    | ❌    | ❌    | ✅          | ❌    | ✅       | ✅        | ✅   | ✅    | 🔁      |
+| [OpenAI](https://platform.openai.com/usage)                 | 🇺🇸      | ✅     | ✅  | ✅    | ❌    | ✅    | ✅          | ⏳    | ✅       | ✅        | ✅   | ✅    | [🔁](https://platform.openai.com/docs/guides/prompt-caching) |
+| [Perplexity](https://www.perplexity.ai/settings/api)        | 🇺🇸      | ❌     | ❌  | ❌    | ❌    | ❌    | ⏳          | ❌    | ✅       | ✅        | ❌   | ❌    | ❌      |
+| [TogetherAI](https://api.together.ai/settings/billing)      | 🇺🇸      | ✅     | ❌  | ❌    | ✅    | ✅    | ✅          | ⏳    | ✅       | ✅        | ✅   | ✅    | ❌      |
 
 <details>
   <summary>‼️ Click here for legend of ✅ ⏳ ❌ 🔁 and columns</summary>
@@ -30,9 +31,10 @@ The _high performance_ low level native Go client for LLMs.
 - Vision: ability to process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF
 - Video: ability to process a video (e.g. MP4) as input.
 - PDF: ability to process a PDF as input, possibly with OCR
-- JSON output/schema: ability to output JSON in free form or with a schema
+- JSON and JSON+schema: ability to output JSON in free form, or with a forced schema specified as a Go struct
 - Seed: deterministic seed for reproducibility
-- Tools: tool calling
+- Tools: tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef)
+- Caching: reusing previous processed tokens to reduce cost
 
 </details>
 

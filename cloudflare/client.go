@@ -375,6 +375,14 @@ type errorResponse struct {
 	Messages []struct{} `json:"messages"` // Annoyingly, it's included all the time
 }
 
+func (er *errorResponse) String() string {
+	if len(er.Errors) == 0 {
+		return fmt.Sprintf("unknown error (%#v)", er)
+	}
+	// Sometimes Code is set too.
+	return er.Errors[0].Message
+}
+
 // Client implements the REST JSON based API.
 type Client struct {
 	// Client is exported for testing replay purposes.
@@ -444,7 +452,7 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 	}
 	rpcout := ChatResponse{}
 	if err := c.ChatRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genai.ChatResult{}, fmt.Errorf("failed to get chat response: %w", err)
+		return genai.ChatResult{}, err
 	}
 	result, err := rpcout.ToResult(&rpcin)
 	if err != nil {
@@ -538,6 +546,9 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		return decodeError(ctx, url, resp)
+	}
 	return processSSE(resp.Body, out)
 }
 
@@ -582,7 +593,7 @@ func processSSE(body io.Reader, out chan<- ChatStreamChunkResponse) error {
 			if err := d.Decode(&er); err != nil || len(er.Errors) == 0 {
 				return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
 			}
-			return fmt.Errorf("got server error: %s", er.Errors[0].Message)
+			return fmt.Errorf("got server error: %s", er.String())
 		}
 	}
 }
@@ -703,18 +714,39 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	case 0:
 		return nil
 	case 1:
-		if len(er.Errors) == 0 {
-			return err
-		}
-		msg := er.Errors[0]
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
+			herr.PrintBody = false
 			if herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: error: %s. You can get a new API key at %s", herr, msg.Message, apiKeyURL)
+				return fmt.Errorf("%w: error: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
 			}
-			return fmt.Errorf("%w: error: %s", herr, msg.Message)
+			return fmt.Errorf("%w: error: %s", herr, er.String())
 		}
-		return fmt.Errorf("error: %s", msg.Message)
+		return fmt.Errorf("error: %s", er.String())
+	default:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			slog.WarnContext(ctx, "cloudflare", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
+		} else {
+			slog.WarnContext(ctx, "cloudflare", "url", url, "err", err)
+		}
+		return err
+	}
+}
+
+func decodeError(ctx context.Context, url string, resp *http.Response) error {
+	er := errorResponse{}
+	switch i, err := httpjson.DecodeResponse(resp, &er); i {
+	case 0:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			herr.PrintBody = false
+			if herr.StatusCode == http.StatusUnauthorized {
+				return fmt.Errorf("%w: error: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
+			}
+			return fmt.Errorf("%w: error: %s", herr, er.String())
+		}
+		return fmt.Errorf("error: %s", er.String())
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {

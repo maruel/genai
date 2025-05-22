@@ -70,14 +70,14 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
 			Model:         "@hf/nousresearch/hermes-2-pro-mistral-7b",
-			ErrChat:       "failed to get chat response: http 401\n{\"result\":null,\"success\":false,\"errors\":[{\"code\":10000,\"message\":\"Authentication error\"}],\"messages\":[]}: error: Authentication error. You can get a new API key at https://dash.cloudflare.com/profile/api-tokens",
-			ErrChatStream: "got server error: Authentication error",
+			ErrChat:       "http 401: error: Authentication error. You can get a new API key at https://dash.cloudflare.com/profile/api-tokens",
+			ErrChatStream: "http 401: error: Authentication error. You can get a new API key at https://dash.cloudflare.com/profile/api-tokens",
 		},
 		{
 			Name:          "bad model",
 			Model:         "bad model",
-			ErrChat:       "failed to get chat response: http 400\n{\"success\":false,\"errors\":[{\"code\":7000,\"message\":\"No route for that URI\"}],\"messages\":[],\"result\":null}: error: No route for that URI",
-			ErrChatStream: "got server error: No route for that URI",
+			ErrChat:       "http 400: error: No route for that URI",
+			ErrChatStream: "http 400: error: No route for that URI",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {

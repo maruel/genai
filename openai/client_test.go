@@ -122,12 +122,11 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 }
 
 func TestClient_ModelProvider_errors(t *testing.T) {
-	t.Skip("TODO")
 	data := []internaltest.ModelProviderError{
 		{
 			Name:   "bad apiKey",
 			ApiKey: "badApiKey",
-			Err:    "TODO",
+			Err:    "http 401: error: invalid_api_key (): Incorrect API key provided: badApiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 		},
 	}
 	f := func(t *testing.T, apiKey string) genai.ModelProvider {

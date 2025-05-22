@@ -741,7 +741,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 		return err
 	}
 	in.Stream = false
-	return c.post(ctx, "https://api.anthropic.com/v1/messages", in, out)
+	return c.doRequest(ctx, "POST", "https://api.anthropic.com/v1/messages", in, out)
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
@@ -946,7 +946,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		HasMore bool    `json:"has_more"`
 		LastID  string  `json:"last_id"`
 	}
-	err := c.Client.Get(ctx, "https://api.anthropic.com/v1/models?limit=1000", nil, &out)
+	err := c.doRequest(ctx, "GET", "https://api.anthropic.com/v1/models?limit=1000", nil, &out)
 	if err != nil {
 		return nil, err
 	}
@@ -964,8 +964,8 @@ func (c *Client) validate() error {
 	return nil
 }
 
-func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	resp, err := c.Client.PostRequest(ctx, url, nil, in)
+func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
+	resp, err := c.Client.Request(ctx, method, url, nil, in)
 	if err != nil {
 		return err
 	}

@@ -579,7 +579,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 		return err
 	}
 	in.Stream = false
-	return c.post(ctx, "https://api.groq.com/openai/v1/chat/completions", in, out)
+	return c.doRequest(ctx, "POST", "https://api.groq.com/openai/v1/chat/completions", in, out)
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
@@ -765,7 +765,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		Object string  `json:"object"` // list
 		Data   []Model `json:"data"`
 	}
-	if err := c.Client.Get(ctx, "https://api.groq.com/openai/v1/models", nil, &out); err != nil {
+	if err := c.doRequest(ctx, "GET", "https://api.groq.com/openai/v1/models", nil, &out); err != nil {
 		return nil, err
 	}
 	models := make([]genai.Model, len(out.Data))
@@ -782,8 +782,8 @@ func (c *Client) validate() error {
 	return nil
 }
 
-func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	resp, err := c.Client.PostRequest(ctx, url, nil, in)
+func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
+	resp, err := c.Client.Request(ctx, method, url, nil, in)
 	if err != nil {
 		return err
 	}

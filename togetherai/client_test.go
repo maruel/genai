@@ -141,7 +141,7 @@ func TestClient_ModelProvider_errors(t *testing.T) {
 		{
 			Name:   "bad apiKey",
 			ApiKey: "badApiKey",
-			Err:    "json: cannot unmarshal object into Go value of type []togetherai.Model\nhttp 401\n{\"error\":{\"message\":\"Unauthorized\"}}",
+			Err:    "http 401: error (): Unauthorized. You can get a new API key at https://api.together.ai/settings/api-keys",
 		},
 	}
 	f := func(t *testing.T, apiKey string) genai.ModelProvider {

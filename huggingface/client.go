@@ -533,7 +533,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 	}
 	in.Stream = false
 	url := "https://router.huggingface.co/hf-inference/models/" + c.model + "/v1/chat/completions"
-	return c.post(ctx, url, in, out)
+	return c.doRequest(ctx, "POST", url, in, out)
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
@@ -771,7 +771,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	var out []Model
 	// There's 20k models warm as of March 2025. There's no way to sort by
 	// trending. Sorting by download is not useful.
-	if err := c.Client.Get(ctx, "https://huggingface.co/api/models?inference=warm", nil, &out); err != nil {
+	if err := c.doRequest(ctx, "GET", "https://huggingface.co/api/models?inference=warm", nil, &out); err != nil {
 		return nil, err
 	}
 	models := make([]genai.Model, len(out))
@@ -788,8 +788,8 @@ func (c *Client) validate() error {
 	return nil
 }
 
-func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	resp, err := c.Client.PostRequest(ctx, url, nil, in)
+func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
+	resp, err := c.Client.Request(ctx, method, url, nil, in)
 	if err != nil {
 		return err
 	}

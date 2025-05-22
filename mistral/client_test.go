@@ -87,12 +87,11 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 }
 
 func TestClient_ModelProvider_errors(t *testing.T) {
-	t.Skip("TODO")
 	data := []internaltest.ModelProviderError{
 		{
 			Name:   "bad apiKey",
 			ApiKey: "badApiKey",
-			Err:    "TODO",
+			Err:    "http 401: error: Unauthorized. You can get a new API key at https://console.mistral.ai/api-keys",
 		},
 	}
 	f := func(t *testing.T, apiKey string) genai.ModelProvider {

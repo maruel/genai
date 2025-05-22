@@ -471,7 +471,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 	}
 	in.Stream = false
 	url := "https://api.cloudflare.com/client/v4/accounts/" + c.accountID + "/ai/run/" + c.model
-	return c.post(ctx, url, in, out)
+	return c.doRequest(ctx, "POST", url, in, out)
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
@@ -683,7 +683,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		}
 		// Cloudflare's pagination is surprisingly brittle.
 		url := fmt.Sprintf("https://api.cloudflare.com/client/v4/accounts/%s/ai/models/search?page=%d&per_page=100&hide_experimental=false", c.accountID, page)
-		err := c.Client.Get(ctx, url, nil, &out)
+		err := c.doRequest(ctx, "GET", url, nil, &out)
 		if err != nil {
 			return nil, err
 		}
@@ -704,8 +704,8 @@ func (c *Client) validate() error {
 	return nil
 }
 
-func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	resp, err := c.Client.PostRequest(ctx, url, nil, in)
+func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
+	resp, err := c.Client.Request(ctx, method, url, nil, in)
 	if err != nil {
 		return err
 	}

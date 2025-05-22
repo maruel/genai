@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.mistral.ai
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/models
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 81
+        uncompressed: false
+        body: |-
+            {
+              "message":"Unauthorized",
+              "request_id":"b257186f2fcc371f6e65857d6cdaa12e"
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 943d6b005e9fa2bc-YUL
+            Content-Length:
+                - "81"
+            Content-Type:
+                - application/json; charset=utf-8
+            Server:
+                - cloudflare
+            Www-Authenticate:
+                - Key
+            X-Kong-Request-Id:
+                - b257186f2fcc371f6e65857d6cdaa12e
+            X-Kong-Response-Latency:
+                - "6"
+        status: 401 Unauthorized
+        code: 401
+        duration: 232ms

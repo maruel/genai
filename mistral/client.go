@@ -398,38 +398,89 @@ type ChatStreamChunkResponse struct {
 
 //
 
-// errorResponseAuth is used when simple issue like auth failure.
-type errorResponseAuth struct {
-	Message   string `json:"message"`
+// errorResponse is the most goddam unstructured way to process errors. Basically what happens is that any
+// point in the Mistral stack can return an error and each python library generates a different structure.
+type errorResponse struct {
+	// When simple issue like auth failure.
+	// Message   string `json:"message"`
 	RequestID string `json:"request_id"`
+
+	// First error type
+	Object string `json:"object"` // "error"
+	// Message string `json:"message"`
+	Type  string      `json:"type"`
+	Param string      `json:"param"`
+	Code  json.Number `json:"code"` // Sometimes a string, sometimes a int64.
+
+	// Second error type
+	Detail errorDetails `json:"detail"`
+
+	// Third error type
+	// Object  string `json:"object"` // error
+	Message errorMessage `json:"message"`
+	// Type  string `json:"type"`
+	// Param string `json:"param"`
+	// Code  int64  `json:"code"`
 }
 
-type errorResponseAPI1 struct {
-	Object  string `json:"object"` // error
-	Message string `json:"message"`
-	Type    string `json:"type"`
-	Param   string `json:"param"`
-	Code    int64  `json:"code"`
+func (er *errorResponse) String() string {
+	out := er.Type
+	if out != "" {
+		out += ": "
+	}
+	if s := er.Detail.String(); s != "" {
+		return out + s
+	}
+	return out + er.Message.Detail.String()
 }
 
-type errorResponseAPI2 struct {
-	Detail []struct {
-		Type string `json:"type"` // "string_type", "missing"
-		Msg  string `json:"msg"`
-		Loc  []any  `json:"loc"` // to be joined, a mix of string and number
-		// Input is either a list or an instance of struct { Type string `json:"type"` }.
-		Input any    `json:"input"`
-		Ctx   any    `json:"ctx"`
-		URL   string `json:"url"`
-	} `json:"detail"`
+// errorDetail can be either a struct or a string. When a string, it decodes into Msg.
+type errorDetail struct {
+	Type string `json:"type"` // "string_type", "missing"
+	Msg  string `json:"msg"`
+	Loc  []any  `json:"loc"` // to be joined, a mix of string and number
+	// Input is either a list or an instance of struct { Type string `json:"type"` }.
+	Input any    `json:"input"`
+	Ctx   any    `json:"ctx"`
+	URL   string `json:"url"`
 }
 
-type errorResponseAPI3 struct {
-	Object  string            `json:"object"` // error
-	Message errorResponseAPI2 `json:"message"`
-	Type    string            `json:"type"`
-	Param   string            `json:"param"`
-	Code    int64             `json:"code"`
+func (er *errorDetail) String() string {
+	if er.Type == "" && len(er.Loc) == 0 {
+		// This was actually a string
+		return er.Msg
+	}
+	return fmt.Sprintf("%s: %s at %s", er.Type, er.Msg, er.Loc)
+}
+
+type errorDetails []errorDetail
+
+func (er *errorDetails) String() string {
+	out := ""
+	for _, e := range *er {
+		out += e.String()
+	}
+	return out
+}
+
+type errorMessage struct {
+	Detail errorDetails `json:"detail"`
+}
+
+func (er *errorMessage) UnmarshalJSON(d []byte) error {
+	s := ""
+	if err := json.Unmarshal(d, &s); err == nil {
+		er.Detail = errorDetails{{Msg: s}}
+		return nil
+	}
+	var x struct {
+		Detail errorDetails `json:"detail"`
+	}
+	if err := json.Unmarshal(d, &x); err != nil {
+		return err
+	}
+	er.Detail = x.Detail
+	return nil
 }
 
 // Client implements the REST JSON based API.
@@ -496,7 +547,7 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 	}
 	rpcout := ChatResponse{}
 	if err := c.ChatRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genai.ChatResult{}, fmt.Errorf("failed to get chat response: %w", err)
+		return genai.ChatResult{}, err
 	}
 	result, err := rpcout.ToResult()
 	if err != nil {
@@ -598,11 +649,15 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return err
 	}
 	in.Stream = true
-	resp, err := c.Client.PostRequest(ctx, "https://api.mistral.ai/v1/chat/completions", nil, in)
+	url := "https://api.mistral.ai/v1/chat/completions"
+	resp, err := c.Client.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		return decodeError(ctx, url, resp)
+	}
 	return processSSE(resp.Body, out)
 }
 
@@ -643,19 +698,11 @@ func processSSE(body io.Reader, out chan<- ChatStreamChunkResponse) error {
 			d := json.NewDecoder(bytes.NewReader(line))
 			d.DisallowUnknownFields()
 			d.UseNumber()
-			erAuth := errorResponseAuth{}
-			if err := d.Decode(&erAuth); err != nil {
-				return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
+			er := errorResponse{}
+			if err := d.Decode(&er); err != nil {
+				return fmt.Errorf("error: %s", er.String())
 			}
-			// This is clunky but the best we can do.
-			if erAuth.Message == "Requests rate limit exceeded" {
-				return &httpjson.Error{
-					ResponseBody: []byte(erAuth.Message),
-					StatusCode:   http.StatusTooManyRequests,
-					Status:       erAuth.Message,
-				}
-			}
-			return errors.New(erAuth.Message)
+			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
 		}
 	}
 }
@@ -755,41 +802,44 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	if err != nil {
 		return err
 	}
-	// This is so cute.
-	erAuth := errorResponseAuth{}
-	erAPI1 := errorResponseAPI1{}
-	erAPI2 := errorResponseAPI2{}
-	erAPI3 := errorResponseAPI3{}
-	switch i, err := httpjson.DecodeResponse(resp, out, &erAuth, &erAPI1, &erAPI2, &erAPI3); i {
+	er := errorResponse{}
+	switch i, err := httpjson.DecodeResponse(resp, out, &er); i {
 	case 0:
 		return nil
 	case 1:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
+			herr.PrintBody = false
 			if herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, erAuth.Message, apiKeyURL)
+				return fmt.Errorf("%w: error: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
 			}
-			return fmt.Errorf("%w: %s", herr, erAuth.Message)
+			return fmt.Errorf("%w: error: %s", herr, er.String())
 		}
-		return errors.New(erAuth.Message)
-	case 2:
+		return fmt.Errorf("error: %s", er.String())
+	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
-			return fmt.Errorf("%w: error %s: %s", herr, erAPI1.Type, erAPI1.Message)
+			slog.WarnContext(ctx, "mistral", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
+		} else {
+			slog.WarnContext(ctx, "mistral", "url", url, "err", err)
 		}
-		return fmt.Errorf("error %s: %s", erAPI1.Type, erAPI1.Message)
-	case 3:
+		return err
+	}
+}
+
+func decodeError(ctx context.Context, url string, resp *http.Response) error {
+	er := errorResponse{}
+	switch i, err := httpjson.DecodeResponse(resp, &er); i {
+	case 0:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
-			return fmt.Errorf("%w: error %s: %s at %s", herr, erAPI2.Detail[0].Type, erAPI2.Detail[0].Msg, erAPI2.Detail[0].Loc)
+			herr.PrintBody = false
+			if herr.StatusCode == http.StatusUnauthorized {
+				return fmt.Errorf("%w: error: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
+			}
+			return fmt.Errorf("%w: error: %s", herr, er.String())
 		}
-		return fmt.Errorf("error %s: %s at %s", erAPI2.Detail[0].Type, erAPI2.Detail[0].Msg, erAPI2.Detail[0].Loc)
-	case 4:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			return fmt.Errorf("%w: error %s/%s: %s at %s", herr, erAPI3.Type, erAPI3.Message.Detail[0].Type, erAPI3.Message.Detail[0].Msg, erAPI3.Message.Detail[0].Loc)
-		}
-		return fmt.Errorf("error %s/%s: %s at %s", erAPI3.Type, erAPI3.Message.Detail[0].Type, erAPI3.Message.Detail[0].Msg, erAPI3.Message.Detail[0].Loc)
+		return fmt.Errorf("error: %s", er.String())
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {

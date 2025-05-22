@@ -70,14 +70,14 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
 			Model:         "ministral-3b-2410",
-			ErrChat:       "failed to get chat response: http 401\n{\n  \"message\":\"Unauthorized\",\n  \"request_id\":\"29d8c6779788a8372904e87046743654\"\n}: Unauthorized. You can get a new API key at https://console.mistral.ai/api-keys",
-			ErrChatStream: "unexpected line. expected \"data: \", got \"{\"",
+			ErrChat:       "http 401: error: Unauthorized. You can get a new API key at https://console.mistral.ai/api-keys",
+			ErrChatStream: "http 401: error: Unauthorized. You can get a new API key at https://console.mistral.ai/api-keys",
 		},
 		{
-			Name:  "bad model",
-			Model: "bad model",
-			// ErrChat:       "TODO",
-			ErrChatStream: "unexpected line. expected \"data: \", got \"{\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"Invalid model: bad model\\\",\\\"type\\\":\\\"invalid_model\\\",\\\"param\\\":null,\\\"code\\\":\\\"1500\\\"}\"",
+			Name:          "bad model",
+			Model:         "bad model",
+			ErrChat:       "http 400: error: invalid_model: Invalid model: bad model",
+			ErrChatStream: "http 400: error: invalid_model: Invalid model: bad model",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {

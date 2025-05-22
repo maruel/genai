@@ -580,7 +580,7 @@ func (m *MessageFragment) Accumulate(msgs Messages) (Messages, error) {
 	if m.Filename != "" || m.DocumentFragment != nil {
 		if len(lastMsg.Contents) != 0 {
 			if lastBlock := &lastMsg.Contents[len(lastMsg.Contents)-1]; lastBlock.Filename != "" {
-				lastBlock.Document.(*bytesBuffer).Write(m.DocumentFragment)
+				_, _ = lastBlock.Document.(*bytesBuffer).Write(m.DocumentFragment)
 				return msgs, nil
 			}
 		}

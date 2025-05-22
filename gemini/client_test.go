@@ -81,7 +81,6 @@ func TestClient_Chat_genImage(t *testing.T) {
 	// Inspired by https://aistudio.google.com/apps/bundled/gif_maker?showCode=true
 	testRecorder.Signal(t)
 	t.Parallel()
-	const request = "a shiba inu eating ice-cream"
 
 	prompt := `A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
 	const style = `Simple, vibrant, varied-colored doodle/hand-drawn sketch`
@@ -89,7 +88,7 @@ func TestClient_Chat_genImage(t *testing.T) {
 
 *Mandatory Requirements (Compacted):**
 
-**Style:** ${style}.
+**Style:** ` + style + `.
 **Background:** Plain solid white (no background colors/elements). Absolutely no black background.
 **Content & Motion:** Clearly depict **` + prompt + `** action with colored, moving subject (no static images). If there's an action specified, it should be the main difference between frames.
 **Format:** Square image (1:1 aspect ratio).

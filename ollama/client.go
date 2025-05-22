@@ -358,7 +358,7 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 	}
 	rpcout := ChatResponse{}
 	if err := c.ChatRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genai.ChatResult{}, fmt.Errorf("failed to get chat response: %w", err)
+		return genai.ChatResult{}, err
 	}
 	result, err := rpcout.ToResult()
 	if err != nil {
@@ -381,7 +381,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 		// TODO: Cheezy.
 		if strings.Contains(err.Error(), "not found, try pulling it first") {
 			if err = c.PullModel(ctx, c.model); err != nil {
-				return fmt.Errorf("failed to pull model: %w", err)
+				return err
 			}
 			// Retry.
 			err = c.post(ctx, c.baseURL+"/api/chat", in, out)
@@ -467,8 +467,9 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return err
 	}
 	in.Stream = true
+	url := c.baseURL + "/api/chat"
 	// Try first, if it immediately errors out requesting to pull, pull then try again.
-	resp, err := c.Client.PostRequest(ctx, c.baseURL+"/api/chat", nil, in)
+	resp, err := c.Client.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
@@ -479,12 +480,15 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	// Model was not present. Try to pull then rerun again.
 	if err = c.PullModel(ctx, c.model); err != nil {
-		return fmt.Errorf("failed to pull model: %w", err)
+		return err
 	}
-	if resp, err = c.Client.PostRequest(ctx, c.baseURL+"/api/chat", nil, in); err != nil {
+	if resp, err = c.Client.PostRequest(ctx, url, nil, in); err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		return decodeError(ctx, url, resp)
+	}
 	return processJSONStream(resp.Body, out)
 }
 
@@ -609,9 +613,30 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	case 0:
 		return nil
 	case 1:
-		// OpenAI error message prints the api key URL already.
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
+			herr.PrintBody = false
+			return fmt.Errorf("%w: error: %s", herr, er.Error)
+		}
+		return fmt.Errorf("%w: error: %s", herr, er.Error)
+	default:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			slog.WarnContext(ctx, "ollama", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
+		} else {
+			slog.WarnContext(ctx, "ollama", "url", url, "err", err)
+		}
+		return err
+	}
+}
+
+func decodeError(ctx context.Context, url string, resp *http.Response) error {
+	er := errorResponse{}
+	switch i, err := httpjson.DecodeResponse(resp, &er); i {
+	case 0:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			herr.PrintBody = false
 			return fmt.Errorf("%w: error: %s", herr, er.Error)
 		}
 		return fmt.Errorf("%w: error: %s", herr, er.Error)

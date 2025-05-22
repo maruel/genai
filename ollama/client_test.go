@@ -93,6 +93,21 @@ func TestClient(t *testing.T) {
 	t.Run("tool_use_position_bias", func(t *testing.T) {
 		tc.TestChatToolUsePositionBias(t, &internaltest.Settings{Model: "llama3.1:8b"}, true)
 	})
+
+	t.Run("ChatProvider_errors", func(t *testing.T) {
+		data := []internaltest.ChatProviderError{
+			{
+				Name:          "bad model",
+				Model:         "bad_model",
+				ErrChat:       "pull failed: http 500: error: pull model manifest: file does not exist",
+				ErrChatStream: "pull failed: http 500: error: pull model manifest: file does not exist",
+			},
+		}
+		f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
+			return s.getClient(t, model)
+		}
+		internaltest.TestClient_ChatProvider_errors(t, f, data)
+	})
 }
 
 type lazyServer struct {

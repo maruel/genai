@@ -57,17 +57,17 @@ func TestClient_ChatStream(t *testing.T) {
 func TestClient_ChatProvider_errors(t *testing.T) {
 	data := []internaltest.ChatProviderError{
 		{
-			Name:   "bad apiKey",
-			ApiKey: "bad apiKey",
-			Model:  "sonar",
-			// ErrChat:       "TODO",
-			ErrChatStream: "unexpected line. expected \"data: \", got \"<html>\"",
+			Name:          "bad apiKey",
+			ApiKey:        "bad apiKey",
+			Model:         "sonar",
+			ErrChat:       "http 401: Unauthorized. You can get a new API key at https://www.perplexity.ai/settings/api",
+			ErrChatStream: "http 401: Unauthorized. You can get a new API key at https://www.perplexity.ai/settings/api",
 		},
 		{
 			Name:          "bad model",
 			Model:         "bad model",
-			ErrChat:       "failed to get chat response: failed to decode server response option #0: unknown field \"error\" of type \"map[string]interface {}\"\nfailed to decode server response option #1: unknown field \"error\" of type \"map[string]interface {}\"\nhttp 400\n{\"error\":{\"message\":\"Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.\",\"type\":\"invalid_model\",\"code\":400}}",
-			ErrChatStream: "server error: Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.",
+			ErrChat:       "http 400: error: Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.",
+			ErrChatStream: "http 400: error: Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {

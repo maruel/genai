@@ -227,16 +227,20 @@ func (t *Time) AsTime() time.Time {
 
 //
 
-type errorResponse1 struct {
+type errorResponse struct {
 	Detail string `json:"detail"`
-}
-
-type errorResponse2 struct {
-	Error struct {
+	Error  struct {
 		Message string `json:"message"`
 		Type    string `json:"type"`
 		Code    int    `json:"code"`
 	} `json:"error"`
+}
+
+func (er *errorResponse) String() string {
+	if er.Detail != "" {
+		return er.Detail
+	}
+	return er.Error.Message
 }
 
 // Client implements the REST JSON based API.
@@ -295,7 +299,7 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 	}
 	rpcout := ChatResponse{}
 	if err := c.ChatRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genai.ChatResult{}, fmt.Errorf("failed to get chat response: %w", err)
+		return genai.ChatResult{}, err
 	}
 	result, err := rpcout.ToResult()
 	if err != nil {
@@ -389,11 +393,15 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 
 func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
 	in.Stream = true
-	resp, err := c.Client.PostRequest(ctx, "https://api.perplexity.ai/chat/completions", nil, in)
+	url := "https://api.perplexity.ai/chat/completions"
+	resp, err := c.Client.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		return decodeError(ctx, url, resp)
+	}
 	return processSSE(resp.Body, out)
 }
 
@@ -434,18 +442,11 @@ func processSSE(body io.Reader, out chan<- ChatStreamChunkResponse) error {
 			d := json.NewDecoder(bytes.NewReader(line))
 			d.DisallowUnknownFields()
 			d.UseNumber()
-			er1 := errorResponse1{}
-			if err := d.Decode(&er1); err != nil {
-				d = json.NewDecoder(bytes.NewReader(line))
-				d.DisallowUnknownFields()
-				d.UseNumber()
-				er2 := errorResponse2{}
-				if err := d.Decode(&er2); err != nil {
-					return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
-				}
-				return fmt.Errorf("server error: %s", er2.Error.Message)
+			er := errorResponse{}
+			if err := d.Decode(&er); err == nil {
+				return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
 			}
-			return fmt.Errorf("server error: %s", er1.Detail)
+			return fmt.Errorf("error: %s", er.String())
 		}
 	}
 }
@@ -455,27 +456,60 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	if err != nil {
 		return err
 	}
-	er1 := errorResponse1{}
-	switch i, err := httpjson.DecodeResponse(resp, out, &er1); i {
+	er := errorResponse{}
+	switch i, err := httpjson.DecodeResponse(resp, out, &er); i {
 	case 0:
 		return nil
 	case 1:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
+			herr.PrintBody = false
 			if herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: error: %s. You can get a new API key at %s", herr, er1.Detail, apiKeyURL)
+				return fmt.Errorf("%w: error: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
 			}
-			return fmt.Errorf("%w: error: %s", herr, er1.Detail)
+			return fmt.Errorf("%w: error: %s", herr, er.String())
 		}
-		return fmt.Errorf("error: %s", er1.Detail)
+		return fmt.Errorf("error: %s", er.String())
 	default:
+		// Perplexity rarely return a structured error.
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
-			// Perplexity may return an HTML page on invalid API key.
-			if bytes.HasPrefix(herr.ResponseBody, []byte("<html>")) {
-				return fmt.Errorf("%w: You can get a new API key at %s", herr, apiKeyURL)
+			herr.PrintBody = false
+			slog.WarnContext(ctx, "perplexity", "url", url, "err", err, "status", herr.StatusCode)
+			if herr.StatusCode == http.StatusUnauthorized {
+				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, http.StatusText(herr.StatusCode), apiKeyURL)
 			}
-			slog.WarnContext(ctx, "perplexity", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
+			return fmt.Errorf("%w: %s", herr, http.StatusText(herr.StatusCode))
+		} else {
+			slog.WarnContext(ctx, "perplexity", "url", url, "err", err)
+		}
+		return err
+	}
+}
+
+func decodeError(ctx context.Context, url string, resp *http.Response) error {
+	er := errorResponse{}
+	switch i, err := httpjson.DecodeResponse(resp, &er); i {
+	case 0:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			herr.PrintBody = false
+			if herr.StatusCode == http.StatusUnauthorized {
+				return fmt.Errorf("%w: error: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
+			}
+			return fmt.Errorf("%w: error: %s", herr, er.String())
+		}
+		return fmt.Errorf("error: %s", er.String())
+	default:
+		// Perplexity rarely return a structured error.
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			herr.PrintBody = false
+			slog.WarnContext(ctx, "perplexity", "url", url, "err", err, "status", herr.StatusCode)
+			if herr.StatusCode == http.StatusUnauthorized {
+				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, http.StatusText(herr.StatusCode), apiKeyURL)
+			}
+			return fmt.Errorf("%w: %s", herr, http.StatusText(herr.StatusCode))
 		} else {
 			slog.WarnContext(ctx, "perplexity", "url", url, "err", err)
 		}

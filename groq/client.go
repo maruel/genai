@@ -492,6 +492,14 @@ type errorResponse struct {
 	} `json:"error"`
 }
 
+func (er *errorResponse) String() string {
+	suffix := ""
+	if er.Error.FailedGeneration != "" {
+		suffix = fmt.Sprintf(" Failed generation: %q", er.Error.FailedGeneration)
+	}
+	return fmt.Sprintf("%s (%s): %s%s", er.Error.Code, er.Error.Type, er.Error.Message, suffix)
+}
+
 // Client implements the REST JSON based API.
 type Client struct {
 	// Client is exported for testing replay purposes.
@@ -553,7 +561,7 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 	}
 	rpcout := ChatResponse{}
 	if err := c.ChatRaw(ctx, &in, &rpcout); err != nil {
-		return genai.ChatResult{}, fmt.Errorf("failed to get chat response: %w", err)
+		return genai.ChatResult{}, err
 	}
 	result, err := rpcout.ToResult()
 	if err != nil {
@@ -656,11 +664,15 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return err
 	}
 	in.Stream = true
-	resp, err := c.Client.PostRequest(ctx, "https://api.groq.com/openai/v1/chat/completions", nil, in)
+	url := "https://api.groq.com/openai/v1/chat/completions"
+	resp, err := c.Client.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		return decodeError(ctx, url, resp)
+	}
 	return processSSE(resp.Body, out)
 }
 
@@ -703,7 +715,7 @@ func processSSE(body io.Reader, out chan<- ChatStreamChunkResponse) error {
 			d.UseNumber()
 			er := errorResponse{}
 			if err := d.Decode(&er); err == nil {
-				return fmt.Errorf("error %s: %s", er.Error.Type, er.Error.Message)
+				return fmt.Errorf("error: %s", er.String())
 			}
 			suffix := ""
 			if er.Error.FailedGeneration != "" {
@@ -780,18 +792,39 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	case 0:
 		return nil
 	case 1:
-		suffix := ""
-		if er.Error.FailedGeneration != "" {
-			suffix = fmt.Sprintf(" Failed generation: %q", er.Error.FailedGeneration)
-		}
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
+			herr.PrintBody = false
 			if herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: error %s (%s): %s%s. You can get a new API key at %s", herr, er.Error.Code, er.Error.Type, er.Error.Message, suffix, apiKeyURL)
+				return fmt.Errorf("%w: error: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
 			}
-			return fmt.Errorf("%w: error %s (%s): %s%s", herr, er.Error.Code, er.Error.Type, er.Error.Message, suffix)
+			return fmt.Errorf("%w: error: %s", herr, er.String())
 		}
-		return fmt.Errorf("error %s (%s): %s%s", er.Error.Code, er.Error.Type, er.Error.Message, suffix)
+		return fmt.Errorf("error: %s", er.String())
+	default:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			slog.WarnContext(ctx, "groq", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
+		} else {
+			slog.WarnContext(ctx, "groq", "url", url, "err", err)
+		}
+		return err
+	}
+}
+
+func decodeError(ctx context.Context, url string, resp *http.Response) error {
+	er := errorResponse{}
+	switch i, err := httpjson.DecodeResponse(resp, &er); i {
+	case 0:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			herr.PrintBody = false
+			if herr.StatusCode == http.StatusUnauthorized {
+				return fmt.Errorf("%w: error: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
+			}
+			return fmt.Errorf("%w: error: %s", herr, er.String())
+		}
+		return fmt.Errorf("error: %s", er.String())
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {

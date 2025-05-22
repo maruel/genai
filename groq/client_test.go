@@ -68,14 +68,14 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
 			Model:         "llama3-8b-8192",
-			ErrChat:       "failed to get chat response: http 401\n{\"error\":{\"message\":\"Invalid API Key\",\"type\":\"invalid_request_error\",\"code\":\"invalid_api_key\"}}\n: error invalid_api_key (invalid_request_error): Invalid API Key. You can get a new API key at https://console.groq.com/keys",
-			ErrChatStream: "error invalid_request_error: Invalid API Key",
+			ErrChat:       "http 401: error: invalid_api_key (invalid_request_error): Invalid API Key. You can get a new API key at https://console.groq.com/keys",
+			ErrChatStream: "http 401: error: invalid_api_key (invalid_request_error): Invalid API Key. You can get a new API key at https://console.groq.com/keys",
 		},
 		{
 			Name:          "bad model",
 			Model:         "bad model",
-			ErrChat:       "failed to get chat response: http 404\n{\"error\":{\"message\":\"The model `bad model` does not exist or you do not have access to it.\",\"type\":\"invalid_request_error\",\"code\":\"model_not_found\"}}\n: error model_not_found (invalid_request_error): The model `bad model` does not exist or you do not have access to it.",
-			ErrChatStream: "error invalid_request_error: The model `bad model` does not exist or you do not have access to it.",
+			ErrChat:       "http 404: error: model_not_found (invalid_request_error): The model `bad model` does not exist or you do not have access to it.",
+			ErrChatStream: "http 404: error: model_not_found (invalid_request_error): The model `bad model` does not exist or you do not have access to it.",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {

@@ -73,14 +73,14 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
 			Model:         "llama-3.1-8b",
-			ErrChat:       "failed to get chat response: http 401\n{\"message\":\"Wrong API Key\",\"type\":\"invalid_request_error\",\"param\":\"api_key\",\"code\":\"wrong_api_key\"}: error: invalid_request_error/api_key/wrong_api_key: Wrong API Key. You can get a new API key at https://cloud.cerebras.ai/platform/",
-			ErrChatStream: "unexpected line. expected \"data: \", got \"{\\\"message\\\":\\\"Wrong API Key\\\",\\\"type\\\":\\\"invalid_request_error\\\",\\\"param\\\":\\\"api_key\\\",\\\"code\\\":\\\"wrong_api_key\\\"}\"",
+			ErrChat:       "http 401: error: invalid_request_error/api_key/wrong_api_key: Wrong API Key. You can get a new API key at https://cloud.cerebras.ai/platform/",
+			ErrChatStream: "http 401: error: invalid_request_error/api_key/wrong_api_key: Wrong API Key. You can get a new API key at https://cloud.cerebras.ai/platform/",
 		},
 		{
 			Name:          "bad model",
 			Model:         "bad model",
-			ErrChat:       "failed to get chat response: http 404\n{\"message\":\"Model bad model does not exist or you do not have access to it.\",\"type\":\"not_found_error\",\"param\":\"model\",\"code\":\"model_not_found\"}: error: not_found_error/model/model_not_found: Model bad model does not exist or you do not have access to it.",
-			ErrChatStream: "unexpected line. expected \"data: \", got \"{\\\"message\\\":\\\"Model bad model does not exist or you do not have access to it.\\\",\\\"type\\\":\\\"not_found_error\\\",\\\"param\\\":\\\"model\\\",\\\"code\\\":\\\"model_not_found\\\"}\"",
+			ErrChat:       "http 404: error: not_found_error/model/model_not_found: Model bad model does not exist or you do not have access to it.",
+			ErrChatStream: "http 404: error: not_found_error/model/model_not_found: Model bad model does not exist or you do not have access to it.",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {

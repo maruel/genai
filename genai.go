@@ -24,6 +24,7 @@ import (
 	"unicode"
 
 	"github.com/invopop/jsonschema"
+	"golang.org/x/sync/errgroup"
 )
 
 // UnsupportedContinuableError is an error when an unsupported option is used but the operation still
@@ -890,5 +891,76 @@ func ChatWithToolCallLoop(ctx context.Context, provider ChatProvider, msgs Messa
 		}
 		out = append(out, tr)
 		workMsgs = append(workMsgs, tr)
+	}
+}
+
+// ChatStreamWithToolCallLoop runs a conversation loop with an LLM that handles tool calls via streaming
+// until there are no more. It will repeatedly call ChatStream(), collect fragments into a complete message,
+// process tool calls with DoToolCalls(), and continue the conversation until the LLM response
+// has no more tool calls.
+//
+// The function will return early if any error occurs. The returned Messages will include
+// all the messages including the original ones, the LLM's responses, and the tool call result
+// messages.
+//
+// No need to process the tool calls or accumulate the MessageFragment.
+func ChatStreamWithToolCallLoop(ctx context.Context, provider ChatProvider, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Messages, Usage, error) {
+	usage := Usage{}
+	var out Messages
+	workMsgs := make(Messages, len(msgs))
+	copy(workMsgs, msgs)
+	chatOpts, ok := opts.(*ChatOptions)
+	if !ok || len(chatOpts.Tools) == 0 {
+		return out, usage, errors.New("no tools found")
+	}
+	tools := chatOpts.Tools
+	for {
+		internalReplies := make(chan MessageFragment)
+		var loopMsgs Messages
+		eg := errgroup.Group{}
+		eg.Go(func() error {
+			for f := range internalReplies {
+				replies <- f
+				var err2 error
+				if loopMsgs, err2 = f.Accumulate(loopMsgs); err2 != nil {
+					for range internalReplies {
+					}
+					return err2
+				}
+			}
+			return nil
+		})
+		u, err := provider.ChatStream(ctx, workMsgs, opts, internalReplies)
+		usage.InputTokens += u.InputTokens
+		usage.InputCachedTokens += u.InputCachedTokens
+		usage.OutputTokens += u.OutputTokens
+		usage.FinishReason = u.FinishReason
+		if err3 := eg.Wait(); err == nil {
+			err = err3
+		}
+		if err != nil {
+			return out, usage, err
+		}
+		out = append(out, loopMsgs...)
+		workMsgs = append(workMsgs, loopMsgs...)
+		hadTool := false
+		for i := range loopMsgs {
+			if len(loopMsgs[i].ToolCalls) == 0 {
+				continue
+			}
+			hadTool = true
+			tr, err := loopMsgs[i].DoToolCalls(tools)
+			if err != nil {
+				return out, usage, err
+			}
+			if tr.IsZero() {
+				return out, usage, fmt.Errorf("expected tool call to return a result or an error")
+			}
+			out = append(out, tr)
+			workMsgs = append(workMsgs, tr)
+		}
+		if !hadTool {
+			return out, usage, nil
+		}
 	}
 }

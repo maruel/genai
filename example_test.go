@@ -324,6 +324,57 @@ func ExampleChatProvider_chat_tool_use() {
 	// That's correct!
 }
 
+func ExampleChatWithToolCallLoop() {
+	c, err := gemini.New("", "gemini-2.0-flash")
+	if err != nil {
+		log.Fatal(err)
+	}
+	f, err := os.Open("internal/internaltest/testdata/animation.mp4")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	msgs := genai.Messages{
+		{
+			Role: genai.User,
+			Contents: []genai.Content{
+				{Text: "What is the word? Call the tool hidden_word to tell me what word you saw."},
+				{Document: f},
+			},
+		},
+	}
+	type Word struct {
+		Word string `json:"word" jsonschema:"enum=Orange,enum=Banana,enum=Apple"`
+	}
+	opts := genai.ChatOptions{
+		Seed:      1,
+		MaxTokens: 50,
+		Tools: []genai.ToolDef{
+			{
+				Name:        "hidden_word",
+				Description: "A tool to state what word was seen in the video.",
+				Callback: func(got *Word) (string, error) {
+					w := strings.ToLower(got.Word)
+					fmt.Printf("Saw: %q\n", w)
+					if w == "banana" {
+						return "That's correct!", nil
+					}
+					return "", errors.New("That's incorrect.")
+				},
+			},
+		},
+	}
+	newMsgs, _, err := genai.ChatWithToolCallLoop(context.Background(), c, msgs, &opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%s\n", newMsgs[len(newMsgs)-1].AsText())
+	// Remove this comment line to run the example.
+	// Output:
+	// Saw: "banana"
+	// That's correct!
+}
+
 func ExampleChatProvider_chatStream() {
 	c, err := gemini.New("", "gemini-2.0-flash-lite")
 	if err != nil {

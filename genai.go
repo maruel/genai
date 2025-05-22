@@ -849,3 +849,46 @@ var (
 	_ Validatable = (*ToolCall)(nil)
 	_ Validatable = (*ToolCallResult)(nil)
 )
+
+// ChatWithToolCallLoop runs a conversation with the LLM, handling tool calls in a loop until there are no
+// more tool calls.
+//
+// It calls the provided ChatProvider.Chat() method, processes any tool calls using Message.DoToolCalls(),
+// and continues the conversation in a loop until the LLM's response has no more tool calls.
+//
+// It returns the messages to accumulate to the thread. The last message is the LLM's response.
+func ChatWithToolCallLoop(ctx context.Context, provider ChatProvider, msgs Messages, opts Validatable) (Messages, Usage, error) {
+	usage := Usage{}
+	var out Messages
+	workMsgs := make(Messages, len(msgs))
+	copy(workMsgs, msgs)
+	chatOpts, ok := opts.(*ChatOptions)
+	if !ok || len(chatOpts.Tools) == 0 {
+		return out, usage, errors.New("no tools found")
+	}
+	tools := chatOpts.Tools
+	for {
+		result, err := provider.Chat(ctx, workMsgs, opts)
+		usage.InputTokens += result.InputTokens
+		usage.InputCachedTokens += result.InputCachedTokens
+		usage.OutputTokens += result.OutputTokens
+		usage.FinishReason = result.FinishReason
+		if err != nil {
+			return out, usage, err
+		}
+		out = append(out, result.Message)
+		workMsgs = append(workMsgs, result.Message)
+		if len(result.ToolCalls) == 0 {
+			return out, usage, nil
+		}
+		tr, err := result.DoToolCalls(tools)
+		if err != nil {
+			return out, usage, err
+		}
+		if tr.IsZero() {
+			return out, usage, fmt.Errorf("expected tool call to return a result or an error")
+		}
+		out = append(out, tr)
+		workMsgs = append(workMsgs, tr)
+	}
+}

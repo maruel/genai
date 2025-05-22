@@ -287,8 +287,7 @@ func ExampleChatProvider_chat_tool_use() {
 		Word string `json:"word" jsonschema:"enum=Orange,enum=Banana,enum=Apple"`
 	}
 	opts := genai.ChatOptions{
-		Seed:      1,
-		MaxTokens: 50,
+		Seed: 1,
 		Tools: []genai.ToolDef{
 			{
 				Name:        "hidden_word",
@@ -347,8 +346,7 @@ func ExampleChatWithToolCallLoop() {
 		Word string `json:"word" jsonschema:"enum=Orange,enum=Banana,enum=Apple"`
 	}
 	opts := genai.ChatOptions{
-		Seed:      1,
-		MaxTokens: 50,
+		Seed: 1,
 		Tools: []genai.ToolDef{
 			{
 				Name:        "hidden_word",

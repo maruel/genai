@@ -1,0 +1,70 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 133
+        transfer_encoding: []
+        trailer: {}
+        host: api.together.xyz
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"meta-llama/Llama-3.2-3B-Instruct-Turbo","stream_tokens":false,"messages":[{"role":"user","content":"Tell a short joke."}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 266
+        uncompressed: false
+        body: |-
+            {
+              "id": "nv5G2Vs-57nCBj-943d34d66f624bcb",
+              "error": {
+                "message": "Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
+                "type": "invalid_request_error",
+                "param": null,
+                "code": "invalid_api_key"
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 943d34d66f624bcb-YUL
+            Content-Length:
+                - "266"
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"10a-VLJt+/0RLFVMT7+oZO+FFlvwO2E"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - 069b895f-a7a0-4521-a676-857859412499-noamzn
+            X-Api-Received:
+                - "2025-05-22T15:04:30.886Z"
+            X-Request-Id:
+                - nv5G2Vs-57nCBj-943d34d66f624bcb
+        status: 401 Unauthorized
+        code: 401
+        duration: 500ms

@@ -507,7 +507,7 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 	}
 	rpcout := ChatResponse{}
 	if err := c.ChatRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genai.ChatResult{}, fmt.Errorf("failed to get chat response: %w", err)
+		return genai.ChatResult{}, err
 	}
 	result, err := rpcout.ToResult()
 	if err != nil {
@@ -639,11 +639,15 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return err
 	}
 	in.StreamTokens = true
-	resp, err := c.Client.PostRequest(ctx, "https://api.together.xyz/v1/chat/completions", nil, in)
+	url := "https://api.together.xyz/v1/chat/completions"
+	resp, err := c.Client.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		return decodeError(ctx, url, resp)
+	}
 	return processSSE(resp.Body, out)
 }
 
@@ -788,6 +792,31 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	case 1:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
+			herr.PrintBody = false
+			if herr.StatusCode == http.StatusUnauthorized {
+				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
+			}
+			return fmt.Errorf("%w: %s", herr, er.String())
+		}
+		return errors.New(er.String())
+	default:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			slog.WarnContext(ctx, "togetherai", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
+		} else {
+			slog.WarnContext(ctx, "togetherai", "url", url, "err", err)
+		}
+		return err
+	}
+}
+
+func decodeError(ctx context.Context, url string, resp *http.Response) error {
+	er := errorResponse{}
+	switch i, err := httpjson.DecodeResponse(resp, &er); i {
+	case 0:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			herr.PrintBody = false
 			if herr.StatusCode == http.StatusUnauthorized {
 				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
 			}

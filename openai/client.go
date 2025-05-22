@@ -595,6 +595,13 @@ type errorResponse struct {
 	Error errorResponseError `json:"error"`
 }
 
+func (er *errorResponse) String() string {
+	if er.Error.Code == "" {
+		return fmt.Sprintf("%s: %s", er.Error.Type, er.Error.Message)
+	}
+	return fmt.Sprintf("%s (%s): %s", er.Error.Code, er.Error.Status, er.Error.Message)
+}
+
 type errorResponseError struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
@@ -669,7 +676,7 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 	}
 	rpcout := ChatResponse{}
 	if err := c.ChatRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genai.ChatResult{}, fmt.Errorf("failed to get chat response: %w", err)
+		return genai.ChatResult{}, err
 	}
 	result, err := rpcout.ToResult()
 	if err != nil {
@@ -799,11 +806,15 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	in.Stream = true
 	in.StreamOptions.IncludeUsage = true
-	resp, err := c.Client.PostRequest(ctx, "https://api.openai.com/v1/chat/completions", nil, in)
+	url := "https://api.openai.com/v1/chat/completions"
+	resp, err := c.Client.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		return decodeError(ctx, url, resp)
+	}
 	return processSSE(resp.Body, out)
 }
 
@@ -907,15 +918,32 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 		// OpenAI error message prints the api key URL already.
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
-			if er.Error.Code == "" {
-				return fmt.Errorf("%w: error %s: %s", herr, er.Error.Type, er.Error.Message)
-			}
-			return fmt.Errorf("%w: error %s (%s): %s", herr, er.Error.Code, er.Error.Status, er.Error.Message)
+			herr.PrintBody = false
+			return fmt.Errorf("%w: error: %s", herr, er.String())
 		}
-		if er.Error.Code == "" {
-			return fmt.Errorf("error %s: %s", er.Error.Type, er.Error.Message)
+		return fmt.Errorf("error: %s", er.String())
+	default:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			slog.WarnContext(ctx, "openai", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
+		} else {
+			slog.WarnContext(ctx, "openai", "url", url, "err", err)
 		}
-		return fmt.Errorf("error %s (%s): %s", er.Error.Code, er.Error.Status, er.Error.Message)
+		return err
+	}
+}
+
+func decodeError(ctx context.Context, url string, resp *http.Response) error {
+	er := errorResponse{}
+	switch i, err := httpjson.DecodeResponse(resp, &er); i {
+	case 0:
+		// OpenAI error message prints the api key URL already.
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			herr.PrintBody = false
+			return fmt.Errorf("%w: error: %s", herr, er.String())
+		}
+		return fmt.Errorf("error: %s", er.String())
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {

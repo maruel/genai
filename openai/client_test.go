@@ -105,14 +105,14 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
 			Model:         "gpt-4.1-nano",
-			ErrChat:       "failed to get chat response: http 401\n{\n    \"error\": {\n        \"message\": \"Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.\",\n        \"type\": \"invalid_request_error\",\n        \"param\": null,\n        \"code\": \"invalid_api_key\"\n    }\n}\n: error invalid_api_key (): Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
-			ErrChatStream: "unexpected line. expected \"data: \", got \"{\"",
+			ErrChat:       "http 401: error: invalid_api_key (): Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
+			ErrChatStream: "http 401: error: invalid_api_key (): Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 		},
 		{
 			Name:          "bad model",
 			Model:         "bad model",
-			ErrChat:       "failed to get chat response: http 400\n{\n    \"error\": {\n        \"message\": \"invalid model ID\",\n        \"type\": \"invalid_request_error\",\n        \"param\": null,\n        \"code\": null\n    }\n}\n: error invalid_request_error: invalid model ID",
-			ErrChatStream: "unexpected line. expected \"data: \", got \"{\"",
+			ErrChat:       "http 400: error: invalid_request_error: invalid model ID",
+			ErrChatStream: "http 400: error: invalid_request_error: invalid model ID",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {

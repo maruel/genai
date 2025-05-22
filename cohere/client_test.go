@@ -59,14 +59,14 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
 			Model:         "command-r7b-12-2024",
-			ErrChat:       "failed to get chat response: http 401\n{\"message\":\"invalid api token\"}: error: invalid api token. You can get a new API key at https://dashboard.cohere.com/api-keys",
-			ErrChatStream: "unexpected line. expected \"data: \", got \"{\\\"message\\\":\\\"invalid api token\\\"}\"",
+			ErrChat:       "http 401: error: invalid api token. You can get a new API key at https://dashboard.cohere.com/api-keys",
+			ErrChatStream: "http 401: error: invalid api token. You can get a new API key at https://dashboard.cohere.com/api-keys",
 		},
 		{
 			Name:          "bad model",
 			Model:         "bad model",
-			ErrChat:       "failed to get chat response: http 404\n{\"message\":\"model 'bad model' not found, make sure the correct model ID was used and that you have access to the model.\"}: error: model 'bad model' not found, make sure the correct model ID was used and that you have access to the model.",
-			ErrChatStream: "unexpected line. expected \"data: \", got \"{\\\"message\\\":\\\"model 'bad model' not found, make sure the correct model ID was used and that you have access to the model.\\\"}\"",
+			ErrChat:       "http 404: error: model 'bad model' not found, make sure the correct model ID was used and that you have access to the model.",
+			ErrChatStream: "http 404: error: model 'bad model' not found, make sure the correct model ID was used and that you have access to the model.",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {

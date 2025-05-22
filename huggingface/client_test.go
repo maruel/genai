@@ -74,14 +74,14 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
 			Model:         "Qwen/Qwen3-4B",
-			ErrChat:       "failed to get chat response: huggingface: Unauthorized",
-			ErrChatStream: "http 401: 401 Unauthorized",
+			ErrChat:       "http 401: Unauthorized",
+			ErrChatStream: "http 401: Unauthorized",
 		},
 		{
 			Name:          "bad model",
 			Model:         "bad model",
-			ErrChat:       "failed to get chat response: huggingface: Not Found",
-			ErrChatStream: "http 404: 404 Not Found",
+			ErrChat:       "http 404: Not Found",
+			ErrChatStream: "http 404: Not Found",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {

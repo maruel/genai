@@ -17,6 +17,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -403,15 +404,38 @@ type ChatStreamChunkResponse struct {
 	Usage Usage `json:"usage"`
 }
 
-type errorResponse1 struct {
-	Error string `json:"error"`
+type errorResponse struct {
+	Error errorError `json:"error"`
 }
 
-type errorResponse2 struct {
-	Error struct {
+func (er *errorResponse) String() string {
+	if er.Error.HTTPStatusCode != 0 {
+		return fmt.Sprintf("http %d: %s", er.Error.HTTPStatusCode, er.Error.Message)
+	}
+	return er.Error.Message
+}
+
+type errorError struct {
+	Message        string `json:"message"`
+	HTTPStatusCode int64  `json:"http_status_code"`
+}
+
+func (ee *errorError) UnmarshalJSON(d []byte) error {
+	s := ""
+	if err := json.Unmarshal(d, &s); err == nil {
+		ee.Message = s
+		return nil
+	}
+	var x struct {
 		Message        string `json:"message"`
 		HTTPStatusCode int64  `json:"http_status_code"`
-	} `json:"error"`
+	}
+	if err := json.Unmarshal(d, &x); err != nil {
+		return err
+	}
+	ee.Message = x.Message
+	ee.HTTPStatusCode = x.HTTPStatusCode
+	return nil
 }
 
 // Client implements the REST JSON based API.
@@ -490,7 +514,7 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 	}
 	rpcout := ChatResponse{}
 	if err := c.ChatRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genai.ChatResult{}, fmt.Errorf("failed to get chat response: %w", err)
+		return genai.ChatResult{}, err
 	}
 	result, err := rpcout.ToResult()
 	if err != nil {
@@ -633,11 +657,16 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode > 400 {
-		// HuggingFace has the bad habit of returning errors as HTML pages.
-		_, _ = io.Copy(io.Discard, resp.Body)
-		return fmt.Errorf("http %d: %s", resp.StatusCode, resp.Status)
+	if resp.StatusCode != 200 {
+		return decodeError(ctx, url, resp)
 	}
+	/*
+		if resp.StatusCode > 400 {
+			// HuggingFace has the bad habit of returning errors as HTML pages.
+			_, _ = io.Copy(io.Discard, resp.Body)
+			return fmt.Errorf("http %d: %s", resp.StatusCode, resp.Status)
+		}
+	*/
 	return processSSE(resp.Body, out)
 }
 
@@ -679,11 +708,11 @@ func processSSE(body io.Reader, out chan<- ChatStreamChunkResponse) error {
 				d = json.NewDecoder(bytes.NewReader(suffix))
 				d.DisallowUnknownFields()
 				d.UseNumber()
-				er2 := errorResponse2{}
-				if err := d.Decode(&er2); err != nil {
+				er := errorResponse{}
+				if err := d.Decode(&er); err != nil {
 					return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
 				}
-				return fmt.Errorf("got error from server: http %d: %s", er2.Error.HTTPStatusCode, er2.Error.Message)
+				return fmt.Errorf("error: %s", er.String())
 			}
 			out <- msg
 		case bytes.HasPrefix(line, eventPrefix):
@@ -764,35 +793,56 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	if err != nil {
 		return err
 	}
-	er1 := errorResponse1{}
-	switch i, err := httpjson.DecodeResponse(resp, out, &er1); i {
+	er := errorResponse{}
+	switch i, err := httpjson.DecodeResponse(resp, out, &er); i {
 	case 0:
 		return nil
 	case 1:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
-			if herr.StatusCode >= 400 {
-				return fmt.Errorf("huggingface: %s; %s", http.StatusText(herr.StatusCode), er1.Error)
+			herr.PrintBody = false
+			if herr.StatusCode == http.StatusUnauthorized {
+				return fmt.Errorf("%w: error: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
 			}
+			return fmt.Errorf("%w: error: %s", herr, er.String())
 		}
-		return fmt.Errorf("huggingface: %s", er1.Error)
+		return fmt.Errorf("error: %s", er.String())
 	default:
 		// HuggingFace rarely return a structured error.
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
-			// Only include the body if it's not a whole HTML page.
-			suffix := ""
-			if bytes.HasPrefix(herr.ResponseBody, []byte("{")) {
-				suffix = "; " + string(herr.ResponseBody)
+			herr.PrintBody = false
+			slog.WarnContext(ctx, "huggingface", "url", url, "err", err, "status", herr.StatusCode)
+			return fmt.Errorf("%w: %s", herr, http.StatusText(herr.StatusCode))
+		} else {
+			slog.WarnContext(ctx, "huggingface", "url", url, "err", err)
+		}
+		return err
+	}
+}
+
+func decodeError(ctx context.Context, url string, resp *http.Response) error {
+	er := errorResponse{}
+	switch i, err := httpjson.DecodeResponse(resp, &er); i {
+	case 0:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			herr.PrintBody = false
+			if herr.StatusCode == http.StatusUnauthorized {
+				return fmt.Errorf("%w: error: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
 			}
-			if herr.StatusCode >= 400 {
-				return fmt.Errorf("huggingface: %s%s", http.StatusText(herr.StatusCode), suffix)
-			}
-			// slog.WarnContext(ctx, "huggingface", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
-			// Hugginface returns raw unstructured text if it fails decoding. Just
-			// return the content. Sometimes it's a web page because why not?
-			// return fmt.Errorf("%s: %w", string(herr.ResponseBody), err)
-			return fmt.Errorf("%w%s", err, suffix)
+			return fmt.Errorf("%w: error: %s", herr, er.String())
+		}
+		return fmt.Errorf("error: %s", er.String())
+	default:
+		// HuggingFace rarely return a structured error.
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			herr.PrintBody = false
+			slog.WarnContext(ctx, "huggingface", "url", url, "err", err, "status", herr.StatusCode)
+			return fmt.Errorf("%w: %s", herr, http.StatusText(herr.StatusCode))
+		} else {
+			slog.WarnContext(ctx, "huggingface", "url", url, "err", err)
 		}
 		return err
 	}

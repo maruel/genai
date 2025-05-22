@@ -329,6 +329,10 @@ type errorResponse struct {
 	} `json:"error"`
 }
 
+func (er *errorResponse) String() string {
+	return fmt.Sprintf("%d (%s): %s", er.Error.Code, er.Error.Type, er.Error.Message)
+}
+
 //
 
 // PromptEncoding describes how to encode the prompt.
@@ -487,11 +491,15 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
 	in.Stream = true
-	resp, err := c.Client.PostRequest(ctx, c.baseURL+"/completion", nil, in)
+	url := c.baseURL + "/completion"
+	resp, err := c.Client.PostRequest(ctx, url, nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get llama server response: %w", err)
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		return decodeError(ctx, url, resp)
+	}
 	return processSSE(resp.Body, out)
 }
 
@@ -700,9 +708,31 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	case 1:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
-			return fmt.Errorf("%w: error %d (%s): %s", herr, er.Error.Code, er.Error.Type, er.Error.Message)
+			herr.PrintBody = false
+			return fmt.Errorf("%w: error: %s", herr, er.String())
 		}
-		return fmt.Errorf("error %d (%s): %s", er.Error.Code, er.Error.Type, er.Error.Message)
+		return fmt.Errorf("error: %s", er.String())
+	default:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			slog.WarnContext(ctx, "llamacpp", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
+		} else {
+			slog.WarnContext(ctx, "llamacpp", "url", url, "err", err)
+		}
+		return err
+	}
+}
+
+func decodeError(ctx context.Context, url string, resp *http.Response) error {
+	er := errorResponse{}
+	switch i, err := httpjson.DecodeResponse(resp, &er); i {
+	case 0:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			herr.PrintBody = false
+			return fmt.Errorf("%w: error: %s", herr, er.String())
+		}
+		return fmt.Errorf("error: %s", er.String())
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {

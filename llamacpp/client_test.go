@@ -77,6 +77,45 @@ func TestClient(t *testing.T) {
 	t.Run("stream", func(t *testing.T) {
 		tc.TestChatStream(t, nil)
 	})
+
+	/* TODO: Find a way to make it error out.
+	t.Run("ChatProvider_errors", func(t *testing.T) {
+		// We can't use internaltest.TestClient_ChatProvider_errors() because llama.cpp doesn't have a concept of
+		// api key nor model.
+		msgs := genai.Messages{genai.NewTextMessage(genai.User, "Tell a short joke.")}
+		opts := &genai.ChatOptions{}
+		t.Run("Chat", func(t *testing.T) {
+			want := "foo"
+			c := s.getClient(t)
+			_, err := c.Chat(t.Context(), msgs, opts)
+			if err == nil {
+				t.Fatal("expected error")
+			} else if _, ok := err.(*genai.UnsupportedContinuableError); ok {
+				t.Fatal("should not be continuable")
+			} else if got := err.Error(); got != want {
+				t.Fatalf("Unexpected error.\nwant: %q\ngot : %q", want, got)
+			}
+		})
+		t.Run("ChatStream", func(t *testing.T) {
+			want := "foo"
+			c := s.getClient(t)
+			ch := make(chan genai.MessageFragment, 100)
+			_, err := c.ChatStream(t.Context(), msgs, opts, ch)
+			if err == nil {
+				t.Fatal("expected error")
+			} else if _, ok := err.(*genai.UnsupportedContinuableError); ok {
+				t.Fatal("should not be continuable")
+			} else if got := err.Error(); got != want {
+				t.Fatalf("Unexpected error.\nwant: %q\ngot : %q", want, got)
+			}
+			select {
+			case pkt := <-ch:
+				t.Fatal(pkt)
+			default:
+			}
+		})
+	})
+	*/
 }
 
 type lazyServer struct {

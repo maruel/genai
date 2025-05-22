@@ -663,6 +663,10 @@ type errorResponse struct {
 	} `json:"error"`
 }
 
+func (er *errorResponse) String() string {
+	return fmt.Sprintf("%s: %s", er.Error.Type, er.Error.Message)
+}
+
 // Client implements the REST JSON based API.
 type Client struct {
 	// Client is exported for testing replay purposes.
@@ -908,7 +912,7 @@ func processSSE(body io.Reader, out chan<- ChatStreamChunkResponse) error {
 			d.UseNumber()
 			er := errorResponse{}
 			if err := d.Decode(&er); err == nil {
-				return fmt.Errorf("error %s: %s", er.Error.Type, er.Error.Message)
+				return fmt.Errorf("error: %s", er.String())
 			}
 			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
 		}
@@ -974,11 +978,11 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 		if errors.As(err, &herr) {
 			herr.PrintBody = false
 			if herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: error %s: %s. You can get a new API key at %s", herr, er.Error.Type, er.Error.Message, apiKeyURL)
+				return fmt.Errorf("%w: error: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
 			}
-			return fmt.Errorf("%w: error %s: %s", herr, er.Error.Type, er.Error.Message)
+			return fmt.Errorf("%w: error: %s", herr, er.String())
 		}
-		return fmt.Errorf("error %s: %s", er.Error.Type, er.Error.Message)
+		return fmt.Errorf("error: %s", er.String())
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
@@ -998,11 +1002,11 @@ func decodeError(ctx context.Context, url string, resp *http.Response) error {
 		if errors.As(err, &herr) {
 			herr.PrintBody = false
 			if herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: error %s: %s. You can get a new API key at %s", herr, er.Error.Type, er.Error.Message, apiKeyURL)
+				return fmt.Errorf("%w: error: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
 			}
-			return fmt.Errorf("%w: error %s: %s", herr, er.Error.Type, er.Error.Message)
+			return fmt.Errorf("%w: error: %s", herr, er.String())
 		}
-		return fmt.Errorf("error %s: %s", er.Error.Type, er.Error.Message)
+		return fmt.Errorf("error: %s", er.String())
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {

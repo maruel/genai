@@ -2,7 +2,7 @@
 
 The _high performance_ low level native Go client for LLMs.
 
-|                                                             |         | In ➛   |     |       |       | Out ➛ |             |       | Features |           |      |       |         |
+| .                                                           |         | In ➛   |     |       |       | Out ➛ |             |       | Features |           |      |       |         |
 | Provider                                                    | Country | Vision | PDF | Audio | Video | JSON  | JSON+schema | Image | Chat     | Streaming | Seed | Tools | Caching |
 | ----------------------------------------------------------- | ------- | ------ | --- | ----- | ----- | ----- | ----------- | ----- | -------- | --------- | ---- | ----- | ------- |
 | [Anthropic](https://console.anthropic.com/settings/billing) | 🇺🇸      | ✅     | ✅  | ❌    | ❌    | ❌    | ❌          | ❌    | ✅       | ✅        | ❌   | ✅    | ⏳      |

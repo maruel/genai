@@ -72,14 +72,14 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
 			Model:         "claude-3-haiku-20240307",
-			ErrChat:       "http 401\n{\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"}}: error authentication_error: invalid x-api-key. You can get a new API key at https://console.anthropic.com/settings/keys",
-			ErrChatStream: "error authentication_error: invalid x-api-key",
+			ErrChat:       "http 401: error authentication_error: invalid x-api-key. You can get a new API key at https://console.anthropic.com/settings/keys",
+			ErrChatStream: "http 401: error authentication_error: invalid x-api-key. You can get a new API key at https://console.anthropic.com/settings/keys",
 		},
 		{
 			Name:          "bad model",
 			Model:         "bad model",
-			ErrChat:       "http 404\n" + `{"type":"error","error":{"type":"not_found_error","message":"model: bad model"}}: error not_found_error: model: bad model`,
-			ErrChatStream: "error not_found_error: model: bad model",
+			ErrChat:       "http 404: error not_found_error: model: bad model",
+			ErrChatStream: "http 404: error not_found_error: model: bad model",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {

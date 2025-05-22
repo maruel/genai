@@ -52,14 +52,14 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
 			Model:         "deepseek-chat",
-			ErrChat:       "http 401\n{\"error\":{\"message\":\"Authentication Fails, Your api key: ****iKey is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}}: error authentication_error: Authentication Fails, Your api key: ****iKey is invalid. You can get a new API key at https://platform.deepseek.com/api_keys",
-			ErrChatStream: "unexpected line. expected \"data: \", got \"{\\\"error\\\":{\\\"message\\\":\\\"Authentication Fails, Your api key: ****iKey is invalid\\\",\\\"type\\\":\\\"authentication_error\\\",\\\"param\\\":null,\\\"code\\\":\\\"invalid_request_error\\\"}}\"",
+			ErrChat:       "http 401: error: authentication_error: Authentication Fails, Your api key: ****iKey is invalid. You can get a new API key at https://platform.deepseek.com/api_keys",
+			ErrChatStream: "http 401: error: authentication_error: Authentication Fails, Your api key: ****iKey is invalid. You can get a new API key at https://platform.deepseek.com/api_keys",
 		},
 		{
 			Name:          "bad model",
 			Model:         "bad model",
-			ErrChat:       "http 400\n{\"error\":{\"message\":\"Model Not Exist\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}: error invalid_request_error: Model Not Exist",
-			ErrChatStream: "unexpected line. expected \"data: \", got \"{\\\"error\\\":{\\\"message\\\":\\\"Model Not Exist\\\",\\\"type\\\":\\\"invalid_request_error\\\",\\\"param\\\":null,\\\"code\\\":\\\"invalid_request_error\\\"}}\"",
+			ErrChat:       "http 400: error: invalid_request_error: Model Not Exist",
+			ErrChatStream: "http 400: error: invalid_request_error: Model Not Exist",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {

@@ -857,6 +857,9 @@ var (
 // It calls the provided ChatProvider.Chat() method, processes any tool calls using Message.DoToolCalls(),
 // and continues the conversation in a loop until the LLM's response has no more tool calls.
 //
+// Warning: If opts.ToolCallRequest == ToolCallRequired, it will be mutated to ToolCallAny after the first
+// tool call.
+//
 // It returns the messages to accumulate to the thread. The last message is the LLM's response.
 func ChatWithToolCallLoop(ctx context.Context, provider ChatProvider, msgs Messages, opts Validatable) (Messages, Usage, error) {
 	usage := Usage{}
@@ -891,6 +894,9 @@ func ChatWithToolCallLoop(ctx context.Context, provider ChatProvider, msgs Messa
 		}
 		out = append(out, tr)
 		workMsgs = append(workMsgs, tr)
+		if chatOpts.ToolCallRequest == ToolCallRequired {
+			chatOpts.ToolCallRequest = ToolCallAny
+		}
 	}
 }
 
@@ -902,6 +908,9 @@ func ChatWithToolCallLoop(ctx context.Context, provider ChatProvider, msgs Messa
 // The function will return early if any error occurs. The returned Messages will include
 // all the messages including the original ones, the LLM's responses, and the tool call result
 // messages.
+//
+// Warning: If opts.ToolCallRequest == ToolCallRequired, it will be mutated to ToolCallAny after the first
+// tool call.
 //
 // No need to process the tool calls or accumulate the MessageFragment.
 func ChatStreamWithToolCallLoop(ctx context.Context, provider ChatProvider, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Messages, Usage, error) {
@@ -961,6 +970,9 @@ func ChatStreamWithToolCallLoop(ctx context.Context, provider ChatProvider, msgs
 		}
 		if !hadTool {
 			return out, usage, nil
+		}
+		if chatOpts.ToolCallRequest == ToolCallRequired {
+			chatOpts.ToolCallRequest = ToolCallAny
 		}
 	}
 }

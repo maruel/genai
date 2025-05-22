@@ -125,38 +125,15 @@ func main() {
 	}
 	opts := genai.ChatOptions{
 		Tools: []genai.ToolDef{genaitools.Arithmetic},
-		// Force the LLM to do a tool call.
+		// Force the LLM to do a tool call first.
 		ToolCallRequest: genai.ToolCallRequired,
 	}
-	resp, err := c.Chat(context.Background(), msgs, &opts)
+	newMsgs, _, err := genai.ChatWithToolCallLoop(context.Background(), c, msgs, &opts)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Received %#v, got error %s", newMsgs, err)
 	}
-
-	// Add the assistant's message to the messages list.
-	msgs = append(msgs, resp.Message)
-
-	// Process the tool call from the assistant.
-	msg, err := resp.DoToolCalls(opts.Tools)
-	if err != nil {
-		log.Fatalf("Error calling tool: %v", err)
-	}
-	if msg.IsZero() {
-		log.Fatal("Expected a tool call")
-	}
-
-	// Add the tool call response to the messages list.
-	msgs = append(msgs, msg)
-
-	// Follow up so the LLM can interpret the tool call response. Tell the LLM to not do a tool call this time.
-	opts.ToolCallRequest = genai.ToolCallNone
-	resp, err = c.Chat(context.Background(), msgs, &opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	// Print the result.
-	fmt.Println(resp.AsText())
+	fmt.Println(msgs[len(msgs)-1].AsText())
 }
 ```
 

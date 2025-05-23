@@ -676,7 +676,7 @@ type ModelsResponse struct {
 	LastID  string  `json:"last_id"`
 }
 
-// ToGenAIModels converts Anthropic models to genai.Model interfaces
+// ToModels converts Anthropic models to genai.Model interfaces
 func (r *ModelsResponse) ToModels() []genai.Model {
 	models := make([]genai.Model, len(r.Data))
 	for i := range r.Data {

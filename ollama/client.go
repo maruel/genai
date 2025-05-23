@@ -411,44 +411,6 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	return internal.ChatStream(ctx, msgs, opts, chunks, c.model, c.ChatStreamRaw, processStreamPackets, false)
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {
-	defer func() {
-		// We need to empty the channel to avoid blocking the goroutine.
-		for range ch {
-		}
-	}()
-	for pkt := range ch {
-		if pkt.EvalCount != 0 {
-			result.InputTokens = pkt.PromptEvalCount
-			result.OutputTokens = pkt.EvalCount
-			result.FinishReason = pkt.DoneReason.ToFinishReason()
-		}
-		switch role := pkt.Message.Role; role {
-		case "", "assistant":
-		default:
-			return fmt.Errorf("unexpected role %q", role)
-		}
-		for i := range pkt.Message.ToolCalls {
-			f := genai.MessageFragment{}
-			if err := pkt.Message.ToolCalls[i].To(&f.ToolCall); err != nil {
-				return err
-			}
-			if err := result.Accumulate(f); err != nil {
-				return err
-			}
-			chunks <- f
-		}
-		f := genai.MessageFragment{TextFragment: pkt.Message.Content}
-		if !f.IsZero() {
-			if err := result.Accumulate(f); err != nil {
-				return err
-			}
-			chunks <- f
-		}
-	}
-	return nil
-}
-
 func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
 	if err := c.validate(); err != nil {
 		return err
@@ -476,6 +438,41 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return c.DecodeError(ctx, c.chatURL, resp)
 	}
 	return processJSONStream(resp.Body, out)
+}
+
+func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	// https://github.com/ollama/ollama/blob/main/docs/api.md#list-local-models
+	var out struct {
+		Models []Model `json:"models"`
+	}
+	if err := c.DoRequest(ctx, "GET", c.baseURL+"/api/tags", nil, &out); err != nil {
+		return nil, err
+	}
+	models := make([]genai.Model, len(out.Models))
+	for i := range out.Models {
+		models[i] = &out.Models[i]
+	}
+	return models, nil
+}
+
+// PullModel is the equivalent of "ollama pull".
+func (c *Client) PullModel(ctx context.Context, model string) error {
+	in := pullModelRequest{Model: model}
+	// TODO: Stream updates instead of hanging for several minutes.
+	out := pullModelResponse{}
+	if err := c.DoRequest(ctx, "POST", c.baseURL+"/api/pull", &in, &out); err != nil {
+		return fmt.Errorf("pull failed: %w", err)
+	} else if out.Status != "success" {
+		return fmt.Errorf("pull failed: %s", out.Status)
+	}
+	return nil
+}
+
+func (c *Client) validate() error {
+	if c.model == "" {
+		return errors.New("a model is required")
+	}
+	return nil
 }
 
 // processJSONStream processes a \n separated JSON stream. This is different from other backends which use
@@ -511,37 +508,40 @@ func processJSONStream(body io.Reader, out chan<- ChatStreamChunkResponse) error
 	}
 }
 
-func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
-	// https://github.com/ollama/ollama/blob/main/docs/api.md#list-local-models
-	var out struct {
-		Models []Model `json:"models"`
-	}
-	if err := c.DoRequest(ctx, "GET", c.baseURL+"/api/tags", nil, &out); err != nil {
-		return nil, err
-	}
-	models := make([]genai.Model, len(out.Models))
-	for i := range out.Models {
-		models[i] = &out.Models[i]
-	}
-	return models, nil
-}
-
-// PullModel is the equivalent of "ollama pull".
-func (c *Client) PullModel(ctx context.Context, model string) error {
-	in := pullModelRequest{Model: model}
-	// TODO: Stream updates instead of hanging for several minutes.
-	out := pullModelResponse{}
-	if err := c.DoRequest(ctx, "POST", c.baseURL+"/api/pull", &in, &out); err != nil {
-		return fmt.Errorf("pull failed: %w", err)
-	} else if out.Status != "success" {
-		return fmt.Errorf("pull failed: %s", out.Status)
-	}
-	return nil
-}
-
-func (c *Client) validate() error {
-	if c.model == "" {
-		return errors.New("a model is required")
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {
+	defer func() {
+		// We need to empty the channel to avoid blocking the goroutine.
+		for range ch {
+		}
+	}()
+	for pkt := range ch {
+		if pkt.EvalCount != 0 {
+			result.InputTokens = pkt.PromptEvalCount
+			result.OutputTokens = pkt.EvalCount
+			result.FinishReason = pkt.DoneReason.ToFinishReason()
+		}
+		switch role := pkt.Message.Role; role {
+		case "", "assistant":
+		default:
+			return fmt.Errorf("unexpected role %q", role)
+		}
+		for i := range pkt.Message.ToolCalls {
+			f := genai.MessageFragment{}
+			if err := pkt.Message.ToolCalls[i].To(&f.ToolCall); err != nil {
+				return err
+			}
+			if err := result.Accumulate(f); err != nil {
+				return err
+			}
+			chunks <- f
+		}
+		f := genai.MessageFragment{TextFragment: pkt.Message.Content}
+		if !f.IsZero() {
+			if err := result.Accumulate(f); err != nil {
+				return err
+			}
+			chunks <- f
+		}
 	}
 	return nil
 }

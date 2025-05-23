@@ -8,14 +8,11 @@
 package togetherai
 
 import (
-	"bufio"
-	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"math/big"
 	"net/http"
 	"os"
@@ -25,6 +22,7 @@ import (
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
@@ -668,65 +666,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	if resp.StatusCode != 200 {
 		return c.DecodeError(ctx, c.chatURL, resp)
 	}
-	return processSSE(resp.Body, out)
-}
-
-func processSSE(body io.Reader, out chan<- ChatStreamChunkResponse) error {
-	dataPrefix := []byte("data: ")
-	eventPrefix := []byte("event:")
-	done := []byte("[DONE]")
-	keepAlive := []byte(": keep-alive")
-	r := bufio.NewReader(body)
-	for first := true; ; first = false {
-		line, err := r.ReadBytes('\n')
-		if line = bytes.TrimSpace(line); err == io.EOF {
-			if len(line) == 0 {
-				return nil
-			}
-		} else if err != nil {
-			return fmt.Errorf("failed to get server response: %w", err)
-		}
-		if len(line) == 0 {
-			continue
-		}
-		// When there's an error, the reply will be sent as a single JSON blob. It's printing in indented mode
-		// so we need to read it all.
-		if first && bytes.HasPrefix(line, []byte("{")) {
-			rest, err := io.ReadAll(r)
-			if err != nil {
-				return fmt.Errorf("failed to get server response while decoding an error: %w", err)
-			}
-			d := json.NewDecoder(bytes.NewReader(append(line, rest...)))
-			d.DisallowUnknownFields()
-			d.UseNumber()
-			er := errorResponse{}
-			if err := d.Decode(&er); err != nil {
-				return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
-			}
-			return errors.New(er.String())
-		}
-		switch {
-		case bytes.HasPrefix(line, dataPrefix):
-			suffix := line[len(dataPrefix):]
-			if bytes.Equal(suffix, done) {
-				return nil
-			}
-			d := json.NewDecoder(bytes.NewReader(suffix))
-			d.DisallowUnknownFields()
-			d.UseNumber()
-			msg := ChatStreamChunkResponse{}
-			if err := d.Decode(&msg); err != nil {
-				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
-			}
-			out <- msg
-		case bytes.Equal(line, keepAlive):
-			// Ignore.
-		case bytes.HasPrefix(line, eventPrefix):
-			// Ignore.
-		default:
-			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
-		}
-	}
+	return sse.Process(resp.Body, out, &errorResponse{})
 }
 
 type Time int64

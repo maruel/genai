@@ -10,13 +10,10 @@ package cloudflare
 // See official client at https://github.com/cloudflare/cloudflare-go
 
 import (
-	"bufio"
-	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"strconv"
@@ -26,6 +23,7 @@ import (
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
@@ -555,53 +553,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	if resp.StatusCode != 200 {
 		return c.DecodeError(ctx, c.chatURL, resp)
 	}
-	return processSSE(resp.Body, out)
-}
-
-func processSSE(body io.Reader, out chan<- ChatStreamChunkResponse) error {
-	dataPrefix := []byte("data: ")
-	eventPrefix := []byte("event:")
-	done := []byte("[DONE]")
-	for r := bufio.NewReader(body); ; {
-		line, err := r.ReadBytes('\n')
-		if line = bytes.TrimSpace(line); err == io.EOF {
-			if len(line) == 0 {
-				return nil
-			}
-		} else if err != nil {
-			return fmt.Errorf("failed to get server response: %w", err)
-		}
-		if len(line) == 0 {
-			continue
-		}
-		switch {
-		case bytes.HasPrefix(line, dataPrefix):
-			suffix := line[len(dataPrefix):]
-			if bytes.Equal(suffix, done) {
-				return nil
-			}
-			d := json.NewDecoder(bytes.NewReader(suffix))
-			d.DisallowUnknownFields()
-			d.UseNumber()
-			msg := ChatStreamChunkResponse{}
-			if err := d.Decode(&msg); err != nil {
-				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
-			}
-			out <- msg
-		case bytes.HasPrefix(line, eventPrefix):
-			// Ignore.
-		default:
-			// Error will be a single JSON line.
-			d := json.NewDecoder(bytes.NewReader(line))
-			d.DisallowUnknownFields()
-			d.UseNumber()
-			er := errorResponse{}
-			if err := d.Decode(&er); err != nil || len(er.Errors) == 0 {
-				return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
-			}
-			return errors.New(er.String())
-		}
-	}
+	return sse.Process(resp.Body, out, &errorResponse{})
 }
 
 // Time is a wrapper around time.Time to support unmarshalling for cloudflare non-standard encoding.

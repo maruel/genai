@@ -11,13 +11,10 @@ package anthropic
 // See official client at https://github.com/anthropics/anthropic-sdk-go
 
 import (
-	"bufio"
-	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"strings"
@@ -26,6 +23,7 @@ import (
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
@@ -871,56 +869,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	if resp.StatusCode != 200 {
 		return c.DecodeError(ctx, c.chatURL, resp)
 	}
-	return processSSE(resp.Body, out)
-}
-
-func processSSE(body io.Reader, out chan<- ChatStreamChunkResponse) error {
-	dataPrefix := []byte("data: ")
-	eventPrefix := []byte("event:")
-	done := []byte("[DONE]")
-	for r := bufio.NewReader(body); ; {
-		line, err := r.ReadBytes('\n')
-		if line = bytes.TrimSpace(line); err == io.EOF {
-			if len(line) == 0 {
-				return nil
-			}
-		} else if err != nil {
-			return fmt.Errorf("failed to get server response: %w", err)
-		}
-		if len(line) == 0 {
-			continue
-		}
-		// https://docs.anthropic.com/en/api/messages-streaming
-		// and
-		// https://developer.mozilla.org/en-US/docs/Web/API/Server-sent%5Fevents/Using%5Fserver-sent%5Fevents
-		switch {
-		case bytes.HasPrefix(line, dataPrefix):
-			suffix := line[len(dataPrefix):]
-			if bytes.Equal(suffix, done) {
-				return nil
-			}
-			d := json.NewDecoder(bytes.NewReader(suffix))
-			d.DisallowUnknownFields()
-			d.UseNumber()
-			msg := ChatStreamChunkResponse{}
-			if err := d.Decode(&msg); err != nil {
-				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
-			}
-			out <- msg
-		case bytes.HasPrefix(line, eventPrefix):
-			// Ignore.
-		default:
-			// Error will be a single JSON line.
-			d := json.NewDecoder(bytes.NewReader(line))
-			d.DisallowUnknownFields()
-			d.UseNumber()
-			er := errorResponse{}
-			if err := d.Decode(&er); err == nil {
-				return errors.New(er.String())
-			}
-			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
-		}
-	}
+	return sse.Process(resp.Body, out, &errorResponse{})
 }
 
 type Model struct {

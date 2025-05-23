@@ -310,7 +310,7 @@ func (er *errorResponse) String() string {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientBase[errorResponse]
+	internal.ClientBase[*errorResponse]
 
 	model   string
 	baseURL string
@@ -323,7 +323,7 @@ type Client struct {
 // Use one of the model from https://ollama.com/library
 func New(baseURL, model string) (*Client, error) {
 	return &Client{
-		ClientBase: internal.ClientBase[errorResponse]{
+		ClientBase: internal.ClientBase[*errorResponse]{
 			ClientJSON: httpjson.Client{
 				Client: &http.Client{
 					Transport: &roundtrippers.Retry{

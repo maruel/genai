@@ -23,7 +23,7 @@ import (
 var BeLenient = true
 
 // ClientBase implements the shared HTTP client functionality used across all API clients.
-type ClientBase[E any] struct {
+type ClientBase[E fmt.Stringer] struct {
 	// ClientJSON is exported for testing replay purposes.
 	ClientJSON httpjson.Client
 	// APIKeyURL is the URL to present to the user upon authentication error.
@@ -49,15 +49,15 @@ func (c *ClientBase[E]) DoRequest(ctx context.Context, method, url string, in, o
 			herr.PrintBody = false
 			if c.APIKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
 				// Check if the error message already contains an API key URL
-				errorMsg := fmt.Sprintf("%v", &er)
+				errorMsg := fmt.Sprintf("%s", er)
 				if !strings.Contains(errorMsg, "API key") || !strings.Contains(errorMsg, "http") {
-					return fmt.Errorf("%w: %v. You can get a new API key at %s", herr, errorMsg, c.APIKeyURL)
+					return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, errorMsg, c.APIKeyURL)
 				}
 				return fmt.Errorf("%w: %s", herr, errorMsg)
 			}
-			return fmt.Errorf("%w: %v", herr, &er)
+			return fmt.Errorf("%w: %s", herr, er)
 		}
-		return fmt.Errorf("%v", &er)
+		return errors.New(er.String())
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
@@ -83,11 +83,11 @@ func (c *ClientBase[E]) DecodeError(ctx context.Context, url string, resp *http.
 		if errors.As(err, &herr) {
 			herr.PrintBody = false
 			if c.APIKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: %v. You can get a new API key at %s", herr, &er, c.APIKeyURL)
+				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, er, c.APIKeyURL)
 			}
-			return fmt.Errorf("%w: %v", herr, &er)
+			return fmt.Errorf("%w: %s", herr, er)
 		}
-		return fmt.Errorf("%v", &er)
+		return errors.New(er.String())
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
@@ -214,7 +214,7 @@ type ListModelsResponse interface {
 
 // ListModels is a generic function that implements the common pattern for listing models across providers.
 // It makes an HTTP GET request to the specified URL and converts the response to a slice of genai.Model.
-func ListModels[E any, R ListModelsResponse](ctx context.Context, c *ClientBase[E], url string) ([]genai.Model, error) {
+func ListModels[E fmt.Stringer, R ListModelsResponse](ctx context.Context, c *ClientBase[E], url string) ([]genai.Model, error) {
 	var resp R
 	if err := c.DoRequest(ctx, "GET", url, nil, &resp); err != nil {
 		return nil, err

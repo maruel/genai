@@ -791,7 +791,7 @@ type errorResponseError struct {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientBase[errorResponse]
+	internal.ClientBase[*errorResponse]
 
 	apiKey        string
 	model         string
@@ -869,7 +869,7 @@ func New(apiKey, model string) (*Client, error) {
 		model:         model,
 		chatURL:       "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey,
 		chatStreamURL: "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":streamGenerateContent?alt=sse&key=" + apiKey,
-		ClientBase: internal.ClientBase[errorResponse]{
+		ClientBase: internal.ClientBase[*errorResponse]{
 			ClientJSON: httpjson.Client{
 				Client: &http.Client{Transport: &roundtrippers.PostCompressed{
 					Transport: &roundtrippers.Retry{
@@ -1149,7 +1149,7 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://ai.google.dev/api/models?hl=en#method:-models.list
-	return internal.ListModels[errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.apiKey)
+	return internal.ListModels[*errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.apiKey)
 }
 
 func (c *Client) validate() error {

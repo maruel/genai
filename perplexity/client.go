@@ -240,7 +240,7 @@ func (er *errorResponse) String() string {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientBase[errorResponse]
+	internal.ClientBase[*errorResponse]
 
 	model   string
 	chatURL string
@@ -263,7 +263,7 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{
 		model:   model,
 		chatURL: "https://api.perplexity.ai/chat/completions",
-		ClientBase: internal.ClientBase[errorResponse]{
+		ClientBase: internal.ClientBase[*errorResponse]{
 			ClientJSON: httpjson.Client{
 				Client: &http.Client{Transport: &roundtrippers.Header{
 					Transport: &roundtrippers.Retry{Transport: http.DefaultTransport},

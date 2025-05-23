@@ -436,7 +436,7 @@ func (ee *errorError) UnmarshalJSON(d []byte) error {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientBase[errorResponse]
+	internal.ClientBase[*errorResponse]
 
 	model   string
 	chatURL string
@@ -475,7 +475,7 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{
 		model:   model,
 		chatURL: "https://router.huggingface.co/hf-inference/models/" + model + "/v1/chat/completions",
-		ClientBase: internal.ClientBase[errorResponse]{
+		ClientBase: internal.ClientBase[*errorResponse]{
 			ClientJSON: httpjson.Client{
 				Client: &http.Client{Transport: &roundtrippers.Header{
 					Header: http.Header{"Authorization": {"Bearer " + apiKey}},
@@ -658,7 +658,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://huggingface.co/docs/hub/api
 	// There's 20k models warm as of March 2025. There's no way to sort by
 	// trending. Sorting by download is not useful. There's no pagination.
-	return internal.ListModels[errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://huggingface.co/api/models?inference=warm")
+	return internal.ListModels[*errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://huggingface.co/api/models?inference=warm")
 }
 
 func (c *Client) validate() error {

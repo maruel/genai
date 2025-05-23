@@ -665,7 +665,7 @@ func (er *errorResponse) String() string {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientBase[errorResponse]
+	internal.ClientBase[*errorResponse]
 
 	model   string
 	chatURL string
@@ -689,7 +689,7 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{
 		model:   model,
 		chatURL: "https://api.anthropic.com/v1/messages",
-		ClientBase: internal.ClientBase[errorResponse]{
+		ClientBase: internal.ClientBase[*errorResponse]{
 			ClientJSON: httpjson.Client{
 				Client: &http.Client{Transport: &roundtrippers.Header{
 					Transport: &roundtrippers.Retry{
@@ -860,7 +860,7 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.anthropic.com/en/api/models-list
-	return internal.ListModels[errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.anthropic.com/v1/models?limit=1000")
+	return internal.ListModels[*errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.anthropic.com/v1/models?limit=1000")
 }
 
 func (c *Client) validate() error {

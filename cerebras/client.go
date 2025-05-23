@@ -420,7 +420,7 @@ func (er *errorResponse) String() string {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientBase[errorResponse]
+	internal.ClientBase[*errorResponse]
 
 	model   string
 	chatURL string
@@ -444,7 +444,7 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{
 		model:   model,
 		chatURL: "https://api.cerebras.ai/v1/chat/completions",
-		ClientBase: internal.ClientBase[errorResponse]{
+		ClientBase: internal.ClientBase[*errorResponse]{
 			ClientJSON: httpjson.Client{
 				Client: &http.Client{Transport: &roundtrippers.Header{
 					Transport: &roundtrippers.Retry{
@@ -587,7 +587,7 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://inference-docs.cerebras.ai/api-reference/models
-	return internal.ListModels[errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.cerebras.ai/v1/models")
+	return internal.ListModels[*errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.cerebras.ai/v1/models")
 }
 
 var (

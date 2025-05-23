@@ -362,7 +362,7 @@ func (p *PromptEncoding) Validate() error {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientBase[errorResponse]
+	internal.ClientBase[*errorResponse]
 
 	baseURL  string
 	chatURL  string
@@ -377,7 +377,7 @@ func New(baseURL string, encoding *PromptEncoding) (*Client, error) {
 		return nil, errors.New("baseURL is required")
 	}
 	return &Client{
-		ClientBase: internal.ClientBase[errorResponse]{
+		ClientBase: internal.ClientBase[*errorResponse]{
 			ClientJSON: httpjson.Client{
 				Client: &http.Client{
 					Transport: &roundtrippers.Retry{

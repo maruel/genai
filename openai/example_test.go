@@ -44,38 +44,6 @@ func ExampleClient_Chat_audio() {
 	// This would Output: Heard: orange
 }
 
-func ExampleClient_Chat_pDF() {
-	c, err := openai.New("", "gpt-4.1-nano")
-	if err != nil {
-		log.Fatal(err)
-	}
-	f, err := os.Open("hidden_word.pdf")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "What is the hidden word? Reply with only the word."},
-				{Document: f},
-			},
-		},
-	}
-	opts := genai.ChatOptions{
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	resp, err := c.Chat(context.Background(), msgs, &opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("Raw response: %#v", resp)
-	fmt.Printf("Hidden word in PDF: %v\n", strings.ToLower(resp.AsText()))
-	// This would Output: Hidden word in PDF: orange
-}
-
 func ExampleClient_Chat_tool_use() {
 	// This example shows LLM positional bias. It will always return the first country listed.
 

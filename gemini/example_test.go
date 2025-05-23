@@ -16,41 +16,6 @@ import (
 	"github.com/maruel/genai/gemini"
 )
 
-func ExampleClient_Chat_pDF() {
-	// Using small model for testing.
-	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New("", "gemini-2.0-flash-lite")
-	if err != nil {
-		log.Fatal(err)
-	}
-	f, err := os.Open("hidden_word.pdf")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "What is the word? Reply with only the word."},
-				{Document: f},
-			},
-		},
-	}
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	resp, err := c.Chat(context.Background(), msgs, &opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("Raw response: %#v", resp)
-	fmt.Printf("Hidden word in PDF: %v\n", strings.ToLower(resp.AsText()))
-	// This would Output: Hidden word in PDF: orange
-}
-
 func ExampleClient_Chat_audio() {
 	c, err := gemini.New("", "gemini-2.0-flash-lite")
 	if err != nil {

@@ -15,39 +15,6 @@ import (
 	"github.com/maruel/genai/mistral"
 )
 
-func ExampleClient_Chat_pDF() {
-	// Require a model which has the "OCR" or the "Document understanding"
-	// capability. There's a subtle difference between the two; from what I
-	// understand, the document understanding will only parse the text, while the
-	// OCR will try to understand the pictures.
-	// https://docs.mistral.ai/capabilities/document/
-	// https://docs.mistral.ai/capabilities/vision/
-	c, err := mistral.New("", "mistral-small-latest")
-	if err != nil {
-		log.Fatal(err)
-	}
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "What is the word? Reply with only the word."},
-				{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/hidden_word.pdf"},
-			},
-		},
-	}
-	opts := genai.ChatOptions{
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	resp, err := c.Chat(context.Background(), msgs, &opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("Raw response: %#v", resp)
-	fmt.Printf("Hidden word in PDF: %v\n", strings.ToLower(resp.AsText()))
-	// This would Output: Hidden word in PDF: orange
-}
-
 func ExampleClient_Chat_tool_use() {
 	// This example shows LLM positional bias. It will always return the first country listed.
 

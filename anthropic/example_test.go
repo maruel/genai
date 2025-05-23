@@ -9,45 +9,11 @@ import (
 	_ "embed"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/anthropic"
 )
-
-func ExampleClient_Chat_pDF() {
-	// Claude 3.5 is required for PDF input.
-	c, err := anthropic.New("", "claude-3-5-haiku-20241022")
-	if err != nil {
-		log.Fatal(err)
-	}
-	f, err := os.Open("hidden_word.pdf")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "What is the word? Reply with only the word."},
-				{Document: f},
-			},
-		},
-	}
-	opts := genai.ChatOptions{
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	resp, err := c.Chat(context.Background(), msgs, &opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("Raw response: %#v", resp)
-	fmt.Printf("Hidden word in PDF: %v\n", strings.ToLower(resp.AsText()))
-	// This would Output: Hidden word in PDF: orange
-}
 
 func ExampleClient_Chat_tool_use() {
 	// This example shows LLM positional bias. It will always return the first country listed.

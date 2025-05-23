@@ -504,6 +504,15 @@ type Client struct {
 // If no model is provided, only functions that do not require a model, like ListModels, will work.
 // To use multiple models, create multiple clients.
 // Use one of the model from https://docs.mistral.ai/getting-started/models/models_overview/
+//
+// # PDF understanding
+//
+// PDF understanding requires a model which has the "OCR" or the "Document understanding" capability. There's
+// a subtle difference between the two; from what I understand, the document understanding will only parse the
+// text, while the OCR will try to understand the pictures.
+//
+// https://docs.mistral.ai/capabilities/document/
+// https://docs.mistral.ai/capabilities/vision/
 func New(apiKey, model string) (*Client, error) {
 	if apiKey == "" {
 		if apiKey = os.Getenv("MISTRAL_API_KEY"); apiKey == "" {

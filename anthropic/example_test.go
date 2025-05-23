@@ -5,7 +5,6 @@
 package anthropic_test
 
 import (
-	"bytes"
 	"context"
 	_ "embed"
 	"fmt"
@@ -16,43 +15,6 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/anthropic"
 )
-
-func ExampleClient_Chat_vision() {
-	// Using very small model for testing. As of March 2025,
-	// claude-3-haiku-20240307 is 0.20$/1.25$ while claude-3-5-haiku-20241022 is
-	// 0.80$/4.00$. 3.0 supports images, 3.5 supports PDFs.
-	// https://docs.anthropic.com/en/docs/about-claude/models/all-models
-	c, err := anthropic.New("", "claude-3-haiku-20240307")
-	if err != nil {
-		log.Fatal(err)
-	}
-	bananaJpg, err := os.ReadFile("banana.jpg")
-	if err != nil {
-		log.Fatal(err)
-	}
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "Is it a banana? Reply with only one word."},
-				{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
-			},
-		},
-	}
-	opts := genai.ChatOptions{
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	resp, err := c.Chat(context.Background(), msgs, &opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("Raw response: %#v", resp)
-	// Normalize some of the variance. Obviously many models will still fail this test.
-	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.AsText())), ".!")
-	fmt.Printf("Response: %s\n", txt)
-	// This would Output: Response: yes
-}
 
 func ExampleClient_Chat_pDF() {
 	// Claude 3.5 is required for PDF input.

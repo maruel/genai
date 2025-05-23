@@ -5,59 +5,15 @@
 package groq_test
 
 import (
-	"bytes"
 	"context"
 	_ "embed"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/groq"
 )
-
-func ExampleClient_Chat_vision_and_JSON() {
-	// We must select a model that supports vision *and* JSON mode (not
-	// necessarily tool use).
-	// See "JSON Mode with Images" at https://console.groq.com/docs/vision
-	c, err := groq.New("", "meta-llama/llama-4-scout-17b-16e-instruct")
-	if err != nil {
-		log.Fatal(err)
-	}
-	bananaJpg, err := os.ReadFile("banana.pdf")
-	if err != nil {
-		log.Fatal(err)
-	}
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "Is it a banana? Reply as JSON with the form {\"banana\": false} or {\"banana\": true}."},
-				{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
-			},
-		},
-	}
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-		ReplyAsJSON: true,
-	}
-	resp, err := c.Chat(context.Background(), msgs, &opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("Raw response: %#v", resp)
-	var got struct {
-		Banana bool `json:"banana"`
-	}
-	if err := resp.Decode(&got); err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Banana: %v\n", got.Banana)
-	// This would Output: Banana: true
-}
 
 func ExampleClient_Chat_tool_use() {
 	// This example shows LLM positional bias. It will always return the first country listed.

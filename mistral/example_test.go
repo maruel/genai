@@ -5,58 +5,15 @@
 package mistral_test
 
 import (
-	"bytes"
 	"context"
 	_ "embed"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/mistral"
 )
-
-func ExampleClient_Chat_vision_and_JSON() {
-	// Require a model which has the "vision" capability.
-	// https://docs.mistral.ai/capabilities/vision/
-	c, err := mistral.New("", "mistral-small-latest")
-	if err != nil {
-		log.Fatal(err)
-	}
-	bananaJpg, err := os.ReadFile("banana.jpg")
-	if err != nil {
-		log.Fatal(err)
-	}
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "Is it a banana? Reply as JSON."},
-				{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
-			},
-		},
-	}
-	var got struct {
-		Banana bool `json:"banana"`
-	}
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-		DecodeAs:    &got,
-	}
-	resp, err := c.Chat(context.Background(), msgs, &opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("Raw response: %#v", resp)
-	if err := resp.Decode(&got); err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Banana: %v\n", got.Banana)
-	// This would Output: Banana: true
-}
 
 func ExampleClient_Chat_pDF() {
 	// Require a model which has the "OCR" or the "Document understanding"

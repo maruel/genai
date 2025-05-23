@@ -5,7 +5,6 @@
 package gemini_test
 
 import (
-	"bytes"
 	"context"
 	_ "embed"
 	"fmt"
@@ -16,47 +15,6 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/gemini"
 )
-
-func ExampleClient_Chat_vision_and_JSON() {
-	// Using small model for testing.
-	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New("", "gemini-2.0-flash-lite")
-	if err != nil {
-		log.Fatal(err)
-	}
-	bananaJpg, err := os.ReadFile("banana.jpg")
-	if err != nil {
-		log.Fatal(err)
-	}
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "Is it a banana? Reply as JSON."},
-				{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
-			},
-		},
-	}
-	var got struct {
-		Banana bool `json:"banana"`
-	}
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-		DecodeAs:    &got,
-	}
-	resp, err := c.Chat(context.Background(), msgs, &opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("Raw response: %#v", resp)
-	if err := resp.Decode(&got); err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Banana: %v\n", got.Banana)
-	// This would Output: Banana: true
-}
 
 func ExampleClient_Chat_pDF() {
 	// Using small model for testing.

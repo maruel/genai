@@ -5,7 +5,6 @@
 package ollama_test
 
 import (
-	"bytes"
 	"context"
 	_ "embed"
 	"fmt"
@@ -21,56 +20,6 @@ import (
 
 // Ollama build to use.
 const version = "v0.6.2"
-
-func ExampleClient_Chat_vision_and_JSON() {
-	// Download and start the server.
-	ctx := context.Background()
-	srv, err := startServer(ctx)
-	if err != nil {
-		log.Print(err)
-		return
-	}
-	defer srv.Close()
-	// Connect the client.
-	c, err := ollama.New(srv.URL(), "gemma3:4b")
-	if err != nil {
-		log.Print(err)
-		return
-	}
-	bananaJpg, err := os.ReadFile("banana.jpg")
-	if err != nil {
-		log.Fatal(err)
-	}
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "Is it a banana? Reply as JSON."},
-				{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
-			},
-		},
-	}
-	var got struct {
-		Banana bool `json:"banana"`
-	}
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-		DecodeAs:    &got,
-	}
-	resp, err := c.Chat(ctx, msgs, &opts)
-	if err != nil {
-		log.Print(err)
-		return
-	}
-	log.Printf("Raw response: %#v", resp)
-	if err := resp.Decode(&got); err != nil {
-		log.Print(err)
-		return
-	}
-	fmt.Printf("Banana: %v\n", got.Banana)
-}
 
 func ExampleClient_Chat_tool_use() {
 	// This example shows LLM positional bias. It will always return the first country listed.

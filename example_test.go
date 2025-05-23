@@ -159,7 +159,9 @@ func ExampleChatProvider_all() {
 }
 
 func ExampleChatProvider_chat_vision_and_JSON_schema() {
-	// Using small model for testing.
+	// Supported by Anthropic (except for JSON), Gemini, Groq, Mistral, Ollama, OpenAI, TogetherAI.
+
+	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	c, err := gemini.New("", "gemini-2.0-flash-lite")
 	if err != nil {

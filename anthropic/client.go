@@ -20,7 +20,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"reflect"
 	"strings"
 	"time"
 
@@ -669,7 +668,7 @@ func (er *errorResponse) String() string {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientBase
+	internal.ClientBase[errorResponse]
 
 	model   string
 	chatURL string
@@ -693,7 +692,7 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{
 		model:   model,
 		chatURL: "https://api.anthropic.com/v1/messages",
-		ClientBase: internal.ClientBase{
+		ClientBase: internal.ClientBase[errorResponse]{
 			ClientJSON: httpjson.Client{
 				Client: &http.Client{Transport: &roundtrippers.Header{
 					Transport: &roundtrippers.Retry{
@@ -706,7 +705,6 @@ func New(apiKey, model string) (*Client, error) {
 				Lenient: internal.BeLenient,
 			},
 			APIKeyURL: apiKeyURL,
-			ErrorType: reflect.TypeOf(errorResponse{}),
 		},
 	}, nil
 }

@@ -20,7 +20,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"reflect"
 	"strings"
 	"time"
 
@@ -440,7 +439,7 @@ func (ee *errorError) UnmarshalJSON(d []byte) error {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientBase
+	internal.ClientBase[errorResponse]
 
 	model   string
 	chatURL string
@@ -479,7 +478,7 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{
 		model:   model,
 		chatURL: "https://router.huggingface.co/hf-inference/models/" + model + "/v1/chat/completions",
-		ClientBase: internal.ClientBase{
+		ClientBase: internal.ClientBase[errorResponse]{
 			ClientJSON: httpjson.Client{
 				Client: &http.Client{Transport: &roundtrippers.Header{
 					Header: http.Header{"Authorization": {"Bearer " + apiKey}},
@@ -492,7 +491,6 @@ func New(apiKey, model string) (*Client, error) {
 				Lenient: internal.BeLenient,
 			},
 			APIKeyURL: apiKeyURL,
-			ErrorType: reflect.TypeOf(errorResponse{}),
 		},
 	}, nil
 }

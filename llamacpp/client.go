@@ -20,7 +20,6 @@ import (
 	"log/slog"
 	"math"
 	"net/http"
-	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -365,7 +364,7 @@ func (p *PromptEncoding) Validate() error {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientBase
+	internal.ClientBase[errorResponse]
 
 	baseURL  string
 	chatURL  string
@@ -380,7 +379,7 @@ func New(baseURL string, encoding *PromptEncoding) (*Client, error) {
 		return nil, errors.New("baseURL is required")
 	}
 	return &Client{
-		ClientBase: internal.ClientBase{
+		ClientBase: internal.ClientBase[errorResponse]{
 			ClientJSON: httpjson.Client{
 				Client: &http.Client{
 					Transport: &roundtrippers.Retry{
@@ -391,7 +390,6 @@ func New(baseURL string, encoding *PromptEncoding) (*Client, error) {
 				},
 				Lenient: internal.BeLenient,
 			},
-			ErrorType: reflect.TypeOf(errorResponse{}),
 		},
 		baseURL:  baseURL,
 		chatURL:  baseURL + "/completion",

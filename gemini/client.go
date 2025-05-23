@@ -793,7 +793,7 @@ type errorResponseError struct {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientBase
+	internal.ClientBase[errorResponse]
 
 	apiKey        string
 	model         string
@@ -871,7 +871,7 @@ func New(apiKey, model string) (*Client, error) {
 		model:         model,
 		chatURL:       "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey,
 		chatStreamURL: "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":streamGenerateContent?alt=sse&key=" + apiKey,
-		ClientBase: internal.ClientBase{
+		ClientBase: internal.ClientBase[errorResponse]{
 			ClientJSON: httpjson.Client{
 				Client: &http.Client{Transport: &roundtrippers.PostCompressed{
 					Transport: &roundtrippers.Retry{
@@ -885,7 +885,6 @@ func New(apiKey, model string) (*Client, error) {
 				Lenient: internal.BeLenient,
 			},
 			APIKeyURL: apiKeyURL,
-			ErrorType: reflect.TypeOf(errorResponse{}),
 		},
 	}, nil
 }

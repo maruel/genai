@@ -23,7 +23,6 @@ import (
 	"mime"
 	"net/http"
 	"os"
-	"reflect"
 	"strings"
 	"time"
 
@@ -614,7 +613,7 @@ type errorResponseError struct {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientBase
+	internal.ClientBase[errorResponse]
 
 	model   string
 	chatURL string
@@ -642,7 +641,7 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{
 		model:   model,
 		chatURL: "https://api.openai.com/v1/chat/completions",
-		ClientBase: internal.ClientBase{
+		ClientBase: internal.ClientBase[errorResponse]{
 			ClientJSON: httpjson.Client{
 				Client: &http.Client{Transport: &roundtrippers.Header{
 					Transport: &roundtrippers.Retry{
@@ -656,7 +655,6 @@ func New(apiKey, model string) (*Client, error) {
 			},
 			// OpenAI error message prints the api key URL already.
 			APIKeyURL: "",
-			ErrorType: reflect.TypeOf(errorResponse{}),
 		},
 	}, nil
 }

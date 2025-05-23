@@ -19,7 +19,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -385,7 +384,7 @@ func (er *errorResponse) String() string {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientBase
+	internal.ClientBase[errorResponse]
 
 	accountID string
 	model     string
@@ -417,7 +416,7 @@ func New(accountID, apiKey, model string) (*Client, error) {
 		accountID: accountID,
 		model:     model,
 		chatURL:   "https://api.cloudflare.com/client/v4/accounts/" + accountID + "/ai/run/" + model,
-		ClientBase: internal.ClientBase{
+		ClientBase: internal.ClientBase[errorResponse]{
 			ClientJSON: httpjson.Client{
 				Client: &http.Client{Transport: &roundtrippers.Header{
 					Transport: &roundtrippers.Retry{
@@ -430,7 +429,6 @@ func New(accountID, apiKey, model string) (*Client, error) {
 				Lenient: internal.BeLenient,
 			},
 			APIKeyURL: apiKeyURL,
-			ErrorType: reflect.TypeOf(errorResponse{}),
 		},
 	}, nil
 }

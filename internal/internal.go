@@ -47,15 +47,15 @@ func (c *ClientBase[E]) DoRequest(ctx context.Context, method, url string, in, o
 			herr.PrintBody = false
 			if c.APIKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
 				// Check if the error message already contains an API key URL
-				errorMsg := fmt.Sprintf("%s", &er)
+				errorMsg := fmt.Sprintf("%v", &er)
 				if !strings.Contains(errorMsg, "API key") || !strings.Contains(errorMsg, "http") {
-					return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, errorMsg, c.APIKeyURL)
+					return fmt.Errorf("%w: %v. You can get a new API key at %s", herr, errorMsg, c.APIKeyURL)
 				}
 				return fmt.Errorf("%w: %s", herr, errorMsg)
 			}
-			return fmt.Errorf("%w: %s", herr, &er)
+			return fmt.Errorf("%w: %v", herr, &er)
 		}
-		return fmt.Errorf("%s", &er)
+		return fmt.Errorf("%v", &er)
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
@@ -81,11 +81,11 @@ func (c *ClientBase[E]) DecodeError(ctx context.Context, url string, resp *http.
 		if errors.As(err, &herr) {
 			herr.PrintBody = false
 			if c.APIKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, &er, c.APIKeyURL)
+				return fmt.Errorf("%w: %v. You can get a new API key at %s", herr, &er, c.APIKeyURL)
 			}
-			return fmt.Errorf("%w: %s", herr, &er)
+			return fmt.Errorf("%w: %v", herr, &er)
 		}
-		return fmt.Errorf("%s", &er)
+		return fmt.Errorf("%v", &er)
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {

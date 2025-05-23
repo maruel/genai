@@ -1,3 +1,7 @@
+// Copyright 2025 Marc-Antoine Ruel. All rights reserved.
+// Use of this source code is governed under the Apache License, Version 2.0
+// that can be found in the LICENSE file.
+
 // Package sse provides Server-Sent Events (SSE) processing utilities.
 package sse
 
@@ -38,12 +42,12 @@ func Process[T any](body io.Reader, out chan<- T, er any) error {
 			d.DisallowUnknownFields()
 			d.UseNumber()
 			var msg T
-			if err := d.Decode(&msg); err != nil {
+			if err = d.Decode(&msg); err != nil {
 				if er != nil {
 					d = json.NewDecoder(bytes.NewReader(suffix))
 					d.DisallowUnknownFields()
 					d.UseNumber()
-					if err := d.Decode(er); err == nil {
+					if err = d.Decode(er); err == nil {
 						return fmt.Errorf("%s", er)
 					}
 				}

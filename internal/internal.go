@@ -101,34 +101,28 @@ func (c *ClientBase[E]) DecodeError(ctx context.Context, url string, resp *http.
 	}
 }
 
-// ChatStreamRequest is an interface for request types used in ChatStreamRaw methods
-type ChatStreamRequest interface{ any }
+// Obj is a generic interface for chat-related types (both requests and responses)
+type Obj interface{ any }
 
-// InitializableRequest is an interface for request types that can be initialized
-type InitializableRequest interface {
+// initializableRequest is an interface for request types that can be initialized
+type initializableRequest interface {
 	// Init initializes the request with messages, options, and model
 	Init(msgs genai.Messages, opts genai.Validatable, model string) error
 }
 
-// ChatStreamResponse is an interface for response types used in ChatStreamRaw methods
-type ChatStreamResponse interface{ any }
+// resultConverter converts a provider-specific result to a genai.ChatResult.
+type resultConverter interface {
+	ToResult() (genai.ChatResult, error)
+}
 
-// ChatStreamRawFunc is a function type for client-specific ChatStreamRaw methods
-type ChatStreamRawFunc[TRequest ChatStreamRequest, TResponse ChatStreamResponse] func(ctx context.Context, in *TRequest, out chan<- TResponse) error
-
-// ProcessStreamPacketsFunc is a function type for client-specific processStreamPackets methods
-type ProcessStreamPacketsFunc[TResponse any] func(ch <-chan TResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error
-
-// ChatStream is a generic function that implements the common pattern of ChatStream methods across providers.
-// It is meant to be called by client-specific ChatStream methods to avoid code duplication.
-func ChatStream[TRequest ChatStreamRequest, TResponse ChatStreamResponse](
+// Chat is a generic function that implements the common pattern of Chat methods across providers.
+// It is meant to be called by client-specific Chat methods to avoid code duplication.
+func Chat[TRequest, TResponse Obj](
 	ctx context.Context,
 	msgs genai.Messages,
 	opts genai.Validatable,
-	chunks chan<- genai.MessageFragment,
 	model string,
-	chatStreamRaw ChatStreamRawFunc[TRequest, TResponse],
-	processStreamPackets ProcessStreamPacketsFunc[TResponse],
+	chatRaw func(ctx context.Context, in *TRequest, out *TResponse) error,
 	allowOpaqueFields bool,
 ) (genai.ChatResult, error) {
 	result := genai.ChatResult{}
@@ -145,7 +139,51 @@ func ChatStream[TRequest ChatStreamRequest, TResponse ChatStreamResponse](
 
 	in := new(TRequest)
 	var continuableErr error
-	if err := any(in).(InitializableRequest).Init(msgs, opts, model); err != nil {
+	if err := any(in).(initializableRequest).Init(msgs, opts, model); err != nil {
+		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+			continuableErr = uce
+		} else {
+			return result, err
+		}
+	}
+	out := new(TResponse)
+	if err := chatRaw(ctx, in, out); err != nil {
+		return result, err
+	}
+	result, err := any(out).(resultConverter).ToResult()
+	if err != nil {
+		return result, err
+	}
+	return result, continuableErr
+}
+
+// ChatStream is a generic function that implements the common pattern of ChatStream methods across providers.
+// It is meant to be called by client-specific ChatStream methods to avoid code duplication.
+func ChatStream[TRequest, TResponse Obj](
+	ctx context.Context,
+	msgs genai.Messages,
+	opts genai.Validatable,
+	chunks chan<- genai.MessageFragment,
+	model string,
+	chatStreamRaw func(ctx context.Context, in *TRequest, out chan<- TResponse) error,
+	processStreamPackets func(ch <-chan TResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error,
+	allowOpaqueFields bool,
+) (genai.ChatResult, error) {
+	result := genai.ChatResult{}
+	// Check for non-empty Opaque field unless explicitly allowed
+	if !allowOpaqueFields {
+		for i, msg := range msgs {
+			for j, content := range msg.Contents {
+				if len(content.Opaque) != 0 {
+					return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
+				}
+			}
+		}
+	}
+
+	in := new(TRequest)
+	var continuableErr error
+	if err := any(in).(initializableRequest).Init(msgs, opts, model); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {

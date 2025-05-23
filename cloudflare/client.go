@@ -276,7 +276,7 @@ type MessageResponse struct {
 	ToolCalls []ToolCall `json:"tool_calls"`
 }
 
-func (msg *MessageResponse) To(schema string, out *genai.Message) error {
+func (msg *MessageResponse) To(out *genai.Message) error {
 	out.Role = genai.Assistant
 	if len(msg.ToolCalls) != 0 {
 		// Starting 2025-03-17, "@hf/nousresearch/hermes-2-pro-mistral-7b" is finally returning structured tool call.
@@ -302,21 +302,17 @@ func (msg *MessageResponse) To(schema string, out *genai.Message) error {
 			out.Contents = []genai.Content{{Text: v}}
 		}
 	default:
-		if schema == "json_schema" {
-			// Marshal back into JSON for now.
-			b, err := json.Marshal(v)
-			if err != nil {
-				return fmt.Errorf("failed to JSON marshal type %T: %v: %w", v, v, err)
-			}
-			out.Contents = []genai.Content{{Text: string(b)}}
-		} else {
-			return fmt.Errorf("unexpected type %T: %v", v, v)
+		// Marshal back into JSON.
+		b, err := json.Marshal(v)
+		if err != nil {
+			return fmt.Errorf("failed to JSON marshal type %T: %v: %w", v, v, err)
 		}
+		out.Contents = []genai.Content{{Text: string(b)}}
 	}
 	return nil
 }
 
-func (c *ChatResponse) ToResult(rpcin *ChatRequest) (genai.ChatResult, error) {
+func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	out := genai.ChatResult{
 		// At the moment, Cloudflare doesn't support cached tokens.
 		Usage: genai.Usage{
@@ -325,7 +321,7 @@ func (c *ChatResponse) ToResult(rpcin *ChatRequest) (genai.ChatResult, error) {
 			// Cloudflare doesn't provide FinishReason.
 		},
 	}
-	err := c.Result.To(rpcin.ResponseFormat.Type, &out.Message)
+	err := c.Result.To(&out.Message)
 	return out, err
 }
 
@@ -432,38 +428,7 @@ func New(accountID, apiKey, model string) (*Client, error) {
 
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	// https://developers.cloudflare.com/api/resources/ai/methods/run/
-	for i, msg := range msgs {
-		for j, content := range msg.Contents {
-			if len(content.Opaque) != 0 {
-				return genai.ChatResult{}, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
-			}
-		}
-	}
-	rpcin := ChatRequest{}
-	var continuableErr error
-	if err := rpcin.Init(msgs, opts, c.model); err != nil {
-		// If it's an UnsupportedContinuableError, we can continue
-		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-			// Store the error to return later if no other error occurs
-			continuableErr = uce
-			// Otherwise log the error but continue
-		} else {
-			return genai.ChatResult{}, err
-		}
-	}
-	rpcout := ChatResponse{}
-	if err := c.ChatRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genai.ChatResult{}, err
-	}
-	result, err := rpcout.ToResult(&rpcin)
-	if err != nil {
-		return result, err
-	}
-	// Return the continuable error if no other error occurred
-	if continuableErr != nil {
-		return result, continuableErr
-	}
-	return result, nil
+	return internal.Chat(ctx, msgs, opts, c.model, c.ChatRaw, false)
 }
 
 func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {

@@ -1001,38 +1001,7 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 // As of May 2025, price on Pro model increases when more than 200k input tokens are used.
 // Cached input tokens are 25% of the price of new tokens.
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
-	for i, msg := range msgs {
-		for j, content := range msg.Contents {
-			if len(content.Opaque) != 0 {
-				return genai.ChatResult{}, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
-			}
-		}
-	}
-	rpcin := ChatRequest{}
-	var continuableErr error
-	if err := rpcin.Init(msgs, opts, c.model); err != nil {
-		// If it's an UnsupportedContinuableError, we can continue
-		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-			// Store the error to return later if no other error occurs
-			continuableErr = uce
-			// Otherwise log the error but continue
-		} else {
-			return genai.ChatResult{}, err
-		}
-	}
-	rpcout := ChatResponse{}
-	if err := c.ChatRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genai.ChatResult{}, err
-	}
-	result, err := rpcout.ToResult()
-	if err != nil {
-		return result, err
-	}
-	// Return the continuable error if no other error occurred
-	if continuableErr != nil {
-		return result, continuableErr
-	}
-	return result, nil
+	return internal.Chat(ctx, msgs, opts, c.model, c.ChatRaw, false)
 }
 
 func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {

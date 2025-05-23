@@ -710,31 +710,8 @@ func New(apiKey, model string) (*Client, error) {
 
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	// https://docs.anthropic.com/en/api/messages
-	rpcin := ChatRequest{}
-	var continuableErr error
-	if err := rpcin.Init(msgs, opts, c.model); err != nil {
-		// If it's an UnsupportedContinuableError, we can continue
-		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-			// Store the error to return later if no other error occurs
-			continuableErr = uce
-			// Otherwise log the error but continue
-		} else {
-			return genai.ChatResult{}, err
-		}
-	}
-	rpcout := ChatResponse{}
-	if err := c.ChatRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genai.ChatResult{}, err
-	}
-	result, err := rpcout.ToResult()
-	if err != nil {
-		return result, err
-	}
-	// Return the continuable error if no other error occurred
-	if continuableErr != nil {
-		return result, continuableErr
-	}
-	return result, nil
+	// Anthropic allows Opaque fields for thinking signatures
+	return internal.Chat(ctx, msgs, opts, c.model, c.ChatRaw, true)
 }
 
 func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {

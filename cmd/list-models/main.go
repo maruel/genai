@@ -25,6 +25,7 @@ import (
 	"github.com/maruel/genai/gemini"
 	"github.com/maruel/genai/groq"
 	"github.com/maruel/genai/huggingface"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/mistral"
 	"github.com/maruel/genai/openai"
 	"github.com/maruel/genai/togetherai"
@@ -129,9 +130,13 @@ func mainImpl() error {
 	sort.Strings(names)
 	provider := flag.String("provider", "", "backend to use: "+strings.Join(names, ", "))
 	all := flag.Bool("all", false, "include all details")
+	strict := flag.Bool("strict", false, "assert no unknown fields in the APIs are found")
 	flag.Parse()
 	if flag.NArg() != 0 {
 		return errors.New("unexpected arguments")
+	}
+	if *strict {
+		internal.BeLenient = false
 	}
 	fn := providers[*provider]
 	if fn == nil {

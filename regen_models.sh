@@ -16,7 +16,7 @@ for i in "${PROVIDERS[@]}"; do
 	echo "" >> MODELS.new.md
     echo "## $i" >> MODELS.new.md
 	echo "" >> MODELS.new.md
-    list-models -provider $i | sed 's/^/- /' >> MODELS.new.md
+    list-models -strict -provider $i | sed 's/^/- /' >> MODELS.new.md
 done
 
 mv MODELS.new.md MODELS.md

@@ -20,46 +20,19 @@ import (
 // It is true by default. Tests must manually set it to false.
 var BeLenient = true
 
-// DecodeError handles HTTP error responses from API calls.
-//
-// It handles JSON decoding of error responses and provides appropriate error messages
-// with context such as API key URLs for unauthorized errors.
-func DecodeError(ctx context.Context, url string, resp *http.Response, er fmt.Stringer, apiKeyURL string) error {
-	switch i, err := httpjson.DecodeResponse(resp, er); i {
-	case 0:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			herr.PrintBody = false
-			if apiKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
-			}
-			return fmt.Errorf("%w: %s", herr, er.String())
-		}
-		return errors.New(er.String())
-	default:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			herr.PrintBody = false
-			if apiKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, http.StatusText(herr.StatusCode), apiKeyURL)
-			}
-			return fmt.Errorf("%w: %s", herr, http.StatusText(herr.StatusCode))
-		}
-		return err
-	}
-}
-
 // ClientBase implements the shared HTTP client functionality used across all API clients.
 type ClientBase struct {
 	// ClientJSON is exported for testing replay purposes.
 	ClientJSON httpjson.Client
+	// APIKeyURL is the URL to present to the user upon authentication error.
+	APIKeyURL string
 }
 
 // DoRequest performs an HTTP request and handles error responses.
 //
 // It takes care of sending the request, decoding the response, and handling errors.
 // All API clients should use this method for their HTTP communication needs.
-func (c *ClientBase) DoRequest(ctx context.Context, method, url string, in, out any, er fmt.Stringer, apiKeyURL string) error {
+func (c *ClientBase) DoRequest(ctx context.Context, method, url string, in, out any, er fmt.Stringer) error {
 	resp, err := c.ClientJSON.Request(ctx, method, url, nil, in)
 	if err != nil {
 		return err
@@ -72,8 +45,8 @@ func (c *ClientBase) DoRequest(ctx context.Context, method, url string, in, out 
 			var herr *httpjson.Error
 			if errors.As(err, &herr) {
 				herr.PrintBody = false
-				if apiKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
-					return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, http.StatusText(herr.StatusCode), apiKeyURL)
+				if c.APIKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
+					return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, http.StatusText(herr.StatusCode), c.APIKeyURL)
 				}
 				return fmt.Errorf("%w: %s", herr, http.StatusText(herr.StatusCode))
 			}
@@ -88,11 +61,11 @@ func (c *ClientBase) DoRequest(ctx context.Context, method, url string, in, out 
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
 			herr.PrintBody = false
-			if apiKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
+			if c.APIKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
 				// Check if the error message already contains an API key URL
 				errorMsg := er.String()
 				if !strings.Contains(errorMsg, "API key") || !strings.Contains(errorMsg, "http") {
-					return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, errorMsg, apiKeyURL)
+					return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, errorMsg, c.APIKeyURL)
 				}
 				return fmt.Errorf("%w: %s", herr, errorMsg)
 			}
@@ -103,8 +76,37 @@ func (c *ClientBase) DoRequest(ctx context.Context, method, url string, in, out 
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
 			herr.PrintBody = false
-			if apiKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, http.StatusText(herr.StatusCode), apiKeyURL)
+			if c.APIKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
+				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, http.StatusText(herr.StatusCode), c.APIKeyURL)
+			}
+			return fmt.Errorf("%w: %s", herr, http.StatusText(herr.StatusCode))
+		}
+		return err
+	}
+}
+
+// DecodeError handles HTTP error responses from API calls.
+//
+// It handles JSON decoding of error responses and provides appropriate error messages
+// with context such as API key URLs for unauthorized errors.
+func (c *ClientBase) DecodeError(ctx context.Context, url string, resp *http.Response, er fmt.Stringer) error {
+	switch i, err := httpjson.DecodeResponse(resp, er); i {
+	case 0:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			herr.PrintBody = false
+			if c.APIKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
+				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, er.String(), c.APIKeyURL)
+			}
+			return fmt.Errorf("%w: %s", herr, er.String())
+		}
+		return errors.New(er.String())
+	default:
+		var herr *httpjson.Error
+		if errors.As(err, &herr) {
+			herr.PrintBody = false
+			if c.APIKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
+				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, http.StatusText(herr.StatusCode), c.APIKeyURL)
 			}
 			return fmt.Errorf("%w: %s", herr, http.StatusText(herr.StatusCode))
 		}

@@ -438,6 +438,7 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the model from https://cerebras.ai/inference
 func New(apiKey, model string) (*Client, error) {
+	const apiKeyURL = "https://cloud.cerebras.ai/platform/"
 	if apiKey == "" {
 		if apiKey = os.Getenv("CEREBRAS_API_KEY"); apiKey == "" {
 			return nil, errors.New("cerebras API key is required; get one at " + apiKeyURL)
@@ -458,6 +459,7 @@ func New(apiKey, model string) (*Client, error) {
 				}},
 				Lenient: internal.BeLenient,
 			},
+			APIKeyURL: apiKeyURL,
 		},
 	}, nil
 }
@@ -605,7 +607,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return internal.DecodeError(ctx, c.chatURL, resp, &errorResponse{}, apiKeyURL)
+		return c.DecodeError(ctx, c.chatURL, resp, &errorResponse{})
 	}
 	return processSSE(resp.Body, out)
 }
@@ -699,10 +701,8 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 }
 
 func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
-	return c.DoRequest(ctx, method, url, in, out, &errorResponse{}, apiKeyURL)
+	return c.DoRequest(ctx, method, url, in, out, &errorResponse{})
 }
-
-const apiKeyURL = "https://cloud.cerebras.ai/platform/"
 
 var (
 	_ genai.ChatProvider  = &Client{}

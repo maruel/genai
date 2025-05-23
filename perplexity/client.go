@@ -258,6 +258,7 @@ type Client struct {
 //
 // Models are listed at https://docs.perplexity.ai/guides/model-cards
 func New(apiKey, model string) (*Client, error) {
+	const apiKeyURL = "https://www.perplexity.ai/settings/api"
 	if apiKey == "" {
 		if apiKey = os.Getenv("PERPLEXITY_API_KEY"); apiKey == "" {
 			return nil, errors.New("perplexity API key is required; get one at " + apiKeyURL)
@@ -274,6 +275,7 @@ func New(apiKey, model string) (*Client, error) {
 				}},
 				Lenient: internal.BeLenient,
 			},
+			APIKeyURL: apiKeyURL,
 		},
 	}, nil
 }
@@ -405,7 +407,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return internal.DecodeError(ctx, c.chatURL, resp, &errorResponse{}, apiKeyURL)
+		return c.DecodeError(ctx, c.chatURL, resp, &errorResponse{})
 	}
 	return processSSE(resp.Body, out)
 }
@@ -457,9 +459,7 @@ func processSSE(body io.Reader, out chan<- ChatStreamChunkResponse) error {
 }
 
 func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
-	return c.DoRequest(ctx, method, url, in, out, &errorResponse{}, apiKeyURL)
+	return c.DoRequest(ctx, method, url, in, out, &errorResponse{})
 }
-
-const apiKeyURL = "https://www.perplexity.ai/settings/api"
 
 var _ genai.ChatProvider = &Client{}

@@ -859,6 +859,7 @@ type Client struct {
 // - text/xml
 // - text/rtf
 func New(apiKey, model string) (*Client, error) {
+	const apiKeyURL = "https://ai.google.dev/gemini-api/docs/getting-started"
 	if apiKey == "" {
 		if apiKey = os.Getenv("GEMINI_API_KEY"); apiKey == "" {
 			return nil, errors.New("gemini API key is required; get one at " + apiKeyURL)
@@ -883,6 +884,7 @@ func New(apiKey, model string) (*Client, error) {
 				}},
 				Lenient: internal.BeLenient,
 			},
+			APIKeyURL: apiKeyURL,
 		},
 	}, nil
 }
@@ -1173,7 +1175,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return internal.DecodeError(ctx, c.chatStreamURL, resp, &errorResponse{}, apiKeyURL)
+		return c.DecodeError(ctx, c.chatStreamURL, resp, &errorResponse{})
 	}
 	return processSSE(resp.Body, out)
 }
@@ -1270,10 +1272,8 @@ func (c *Client) validate() error {
 }
 
 func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
-	return c.DoRequest(ctx, method, url, in, out, &errorResponse{}, apiKeyURL)
+	return c.DoRequest(ctx, method, url, in, out, &errorResponse{})
 }
-
-const apiKeyURL = "https://ai.google.dev/gemini-api/docs/getting-started"
 
 var (
 	_ genai.ChatProvider  = &Client{}

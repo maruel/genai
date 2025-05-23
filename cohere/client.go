@@ -495,6 +495,7 @@ type Client struct {
 // Tool use requires the use a model that supports structured output.
 // https://docs.cohere.com/v2/docs/structured-outputs
 func New(apiKey, model string) (*Client, error) {
+	const apiKeyURL = "https://dashboard.cohere.com/api-keys"
 	if apiKey == "" {
 		if apiKey = os.Getenv("COHERE_API_KEY"); apiKey == "" {
 			return nil, errors.New("cohere API key is required; get one at " + apiKeyURL)
@@ -515,6 +516,7 @@ func New(apiKey, model string) (*Client, error) {
 				}},
 				Lenient: internal.BeLenient,
 			},
+			APIKeyURL: apiKeyURL,
 		},
 	}, nil
 }
@@ -685,7 +687,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return internal.DecodeError(ctx, c.chatURL, resp, &errorResponse{}, apiKeyURL)
+		return c.DecodeError(ctx, c.chatURL, resp, &errorResponse{})
 	}
 	return processSSE(resp.Body, out)
 }
@@ -795,10 +797,8 @@ func (c *Client) validate() error {
 }
 
 func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
-	return c.DoRequest(ctx, method, url, in, out, &errorResponse{}, apiKeyURL)
+	return c.DoRequest(ctx, method, url, in, out, &errorResponse{})
 }
-
-const apiKeyURL = "https://dashboard.cohere.com/api-keys"
 
 var (
 	_ genai.ChatProvider  = &Client{}

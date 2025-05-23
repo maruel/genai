@@ -500,7 +500,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return internal.DecodeError(ctx, c.chatURL, resp, &errorResponse{}, "")
+		return c.DecodeError(ctx, c.chatURL, resp, &errorResponse{})
 	}
 	return processSSE(resp.Body, out)
 }
@@ -699,7 +699,7 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 }
 
 func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
-	return c.DoRequest(ctx, method, url, in, out, &errorResponse{}, "")
+	return c.DoRequest(ctx, method, url, in, out, &errorResponse{})
 }
 
 var _ genai.ChatProvider = &Client{}

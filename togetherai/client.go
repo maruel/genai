@@ -462,6 +462,7 @@ type Client struct {
 // We must select a model that supports video.
 // https://docs.together.ai/docs/serverless-models#vision-models
 func New(apiKey, model string) (*Client, error) {
+	const apiKeyURL = "https://api.together.ai/settings/api-keys"
 	if apiKey == "" {
 		if apiKey = os.Getenv("TOGETHER_API_KEY"); apiKey == "" {
 			return nil, errors.New("together.ai API key is required; get one at " + apiKeyURL)
@@ -487,6 +488,7 @@ func New(apiKey, model string) (*Client, error) {
 				}},
 				Lenient: internal.BeLenient,
 			},
+			APIKeyURL: apiKeyURL,
 		},
 	}, nil
 }
@@ -664,7 +666,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return internal.DecodeError(ctx, c.chatURL, resp, &errorResponse{}, apiKeyURL)
+		return c.DecodeError(ctx, c.chatURL, resp, &errorResponse{})
 	}
 	return processSSE(resp.Body, out)
 }
@@ -799,10 +801,8 @@ func (c *Client) validate() error {
 }
 
 func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
-	return c.DoRequest(ctx, method, url, in, out, &errorResponse{}, apiKeyURL)
+	return c.DoRequest(ctx, method, url, in, out, &errorResponse{})
 }
-
-const apiKeyURL = "https://api.together.ai/settings/api-keys"
 
 var (
 	_ genai.ChatProvider  = &Client{}

@@ -401,6 +401,7 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the model from https://developers.cloudflare.com/workers-ai/models/
 func New(accountID, apiKey, model string) (*Client, error) {
+	const apiKeyURL = "https://dash.cloudflare.com/profile/api-tokens"
 	if accountID == "" {
 		if accountID = os.Getenv("CLOUDFLARE_ACCOUNT_ID"); accountID == "" {
 			return nil, errors.New("cloudflare account ID is required; get one at " + apiKeyURL)
@@ -427,6 +428,7 @@ func New(accountID, apiKey, model string) (*Client, error) {
 				}},
 				Lenient: internal.BeLenient,
 			},
+			APIKeyURL: apiKeyURL,
 		},
 	}, nil
 }
@@ -551,7 +553,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return internal.DecodeError(ctx, c.chatURL, resp, &errorResponse{}, apiKeyURL)
+		return c.DecodeError(ctx, c.chatURL, resp, &errorResponse{})
 	}
 	return processSSE(resp.Body, out)
 }
@@ -709,10 +711,8 @@ func (c *Client) validate() error {
 }
 
 func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
-	return c.DoRequest(ctx, method, url, in, out, &errorResponse{}, apiKeyURL)
+	return c.DoRequest(ctx, method, url, in, out, &errorResponse{})
 }
-
-const apiKeyURL = "https://dash.cloudflare.com/profile/api-tokens"
 
 var (
 	_ genai.ChatProvider  = &Client{}

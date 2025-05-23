@@ -498,7 +498,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return internal.DecodeError(ctx, c.chatURL, resp, &errorResponse{}, "")
+		return c.DecodeError(ctx, c.chatURL, resp, &errorResponse{})
 	}
 	return processJSONStream(resp.Body, out)
 }
@@ -615,7 +615,7 @@ func (c *Client) validate() error {
 }
 
 func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
-	return c.DoRequest(ctx, method, url, in, out, &errorResponse{}, "")
+	return c.DoRequest(ctx, method, url, in, out, &errorResponse{})
 }
 
 var (

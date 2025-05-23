@@ -457,6 +457,7 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the tens of thousands of models to chose from at https://huggingface.co/models?inference=warm&sort=trending
 func New(apiKey, model string) (*Client, error) {
+	const apiKeyURL = "https://huggingface.co/settings/tokens"
 	if apiKey == "" {
 		if apiKey = os.Getenv("HUGGINGFACE_API_KEY"); apiKey == "" {
 			// Fallback to loading from the python client's cache.
@@ -489,6 +490,7 @@ func New(apiKey, model string) (*Client, error) {
 				}},
 				Lenient: internal.BeLenient,
 			},
+			APIKeyURL: apiKeyURL,
 		},
 	}, nil
 }
@@ -664,7 +666,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return internal.DecodeError(ctx, c.chatURL, resp, &errorResponse{}, apiKeyURL)
+		return c.DecodeError(ctx, c.chatURL, resp, &errorResponse{})
 	}
 	return processSSE(resp.Body, out)
 }
@@ -788,10 +790,8 @@ func (c *Client) validate() error {
 }
 
 func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
-	return c.DoRequest(ctx, method, url, in, out, &errorResponse{}, apiKeyURL)
+	return c.DoRequest(ctx, method, url, in, out, &errorResponse{})
 }
-
-const apiKeyURL = "https://huggingface.co/settings/tokens"
 
 var (
 	_ genai.ChatProvider  = &Client{}

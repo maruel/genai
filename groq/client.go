@@ -477,6 +477,55 @@ type ChatStreamChunkResponse struct {
 	} `json:"x_groq"`
 }
 
+// Time is a JSON encoded unix timestamp.
+type Time int64
+
+func (t *Time) AsTime() time.Time {
+	return time.Unix(int64(*t), 0)
+}
+
+type Model struct {
+	ID                  string   `json:"id"`
+	Object              string   `json:"object"`
+	Created             Time     `json:"created"`
+	OwnedBy             string   `json:"owned_by"`
+	Active              bool     `json:"active"`
+	ContextWindow       int64    `json:"context_window"`
+	PublicApps          []string `json:"public_apps"`
+	MaxCompletionTokens int64    `json:"max_completion_tokens"`
+}
+
+func (m *Model) GetID() string {
+	return m.ID
+}
+
+func (m *Model) String() string {
+	suffix := ""
+	if !m.Active {
+		suffix = " (inactive)"
+	}
+	return fmt.Sprintf("%s (%s) Context: %d/%d%s", m.ID, m.Created.AsTime().Format("2006-01-02"), m.ContextWindow, m.MaxCompletionTokens, suffix)
+}
+
+func (m *Model) Context() int64 {
+	return m.ContextWindow
+}
+
+// ModelsResponse represents the response structure for Groq models listing
+type ModelsResponse struct {
+	Object string  `json:"object"` // list
+	Data   []Model `json:"data"`
+}
+
+// ToModels converts Groq models to genai.Model interfaces
+func (r *ModelsResponse) ToModels() []genai.Model {
+	models := make([]genai.Model, len(r.Data))
+	for i := range r.Data {
+		models[i] = &r.Data[i]
+	}
+	return models
+}
+
 //
 
 type errorResponse struct {
@@ -613,54 +662,6 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return c.DecodeError(ctx, c.chatURL, resp)
 	}
 	return sse.Process(resp.Body, out, nil)
-}
-
-type Time int64
-
-func (t *Time) AsTime() time.Time {
-	return time.Unix(int64(*t), 0)
-}
-
-type Model struct {
-	ID                  string   `json:"id"`
-	Object              string   `json:"object"`
-	Created             Time     `json:"created"`
-	OwnedBy             string   `json:"owned_by"`
-	Active              bool     `json:"active"`
-	ContextWindow       int64    `json:"context_window"`
-	PublicApps          []string `json:"public_apps"`
-	MaxCompletionTokens int64    `json:"max_completion_tokens"`
-}
-
-func (m *Model) GetID() string {
-	return m.ID
-}
-
-func (m *Model) String() string {
-	suffix := ""
-	if !m.Active {
-		suffix = " (inactive)"
-	}
-	return fmt.Sprintf("%s (%s) Context: %d/%d%s", m.ID, m.Created.AsTime().Format("2006-01-02"), m.ContextWindow, m.MaxCompletionTokens, suffix)
-}
-
-func (m *Model) Context() int64 {
-	return m.ContextWindow
-}
-
-// ModelsResponse represents the response structure for Groq models listing
-type ModelsResponse struct {
-	Object string  `json:"object"` // list
-	Data   []Model `json:"data"`
-}
-
-// ToModels converts Groq models to genai.Model interfaces
-func (r *ModelsResponse) ToModels() []genai.Model {
-	models := make([]genai.Model, len(r.Data))
-	for i := range r.Data {
-		models[i] = &r.Data[i]
-	}
-	return models
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

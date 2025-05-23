@@ -214,6 +214,7 @@ type Usage struct {
 
 type ChatStreamChunkResponse = ChatResponse
 
+// Time is a JSON encoded unix timestamp.
 type Time int64
 
 func (t *Time) AsTime() time.Time {

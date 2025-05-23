@@ -355,6 +355,87 @@ func (c *ToolCall) To(id string, out *genai.ToolCall) error {
 	return nil
 }
 
+// Time is a wrapper around time.Time to support unmarshalling for cloudflare non-standard encoding.
+type Time time.Time
+
+func (t *Time) UnmarshalJSON(b []byte) error {
+	s := ""
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	t2, err := time.Parse("2006-01-02 15:04:05.999999999", s)
+	if err != nil {
+		return err
+	}
+	*t = Time(t2)
+	return nil
+}
+
+type Model struct {
+	ID          string `json:"id"`
+	Source      int64  `json:"source"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	CreatedAt   Time   `json:"created_at"`
+	Task        struct {
+		ID          string `json:"id"`
+		Name        string `json:"name"`
+		Description string `json:"description"`
+	} `json:"task"`
+	Tags       []string `json:"tags"`
+	Properties []struct {
+		PropertyID string `json:"property_id"`
+		Value      any    `json:"value"` // sometimes a string, sometimes an array
+	} `json:"properties"`
+}
+
+func (m *Model) GetID() string {
+	return m.Name
+}
+
+func (m *Model) String() string {
+	var suffixes []string
+	for _, p := range m.Properties {
+		if p.PropertyID == "info" || p.PropertyID == "terms" {
+			continue
+		}
+		suffixes = append(suffixes, fmt.Sprintf("%s=%v", p.PropertyID, p.Value))
+	}
+	suffix := ""
+	if len(suffixes) != 0 {
+		suffix = " (" + strings.Join(suffixes, ", ") + ")"
+	}
+	// Description is good but it's verbose and the models are well known.
+	return fmt.Sprintf("%s%s", m.Name, suffix)
+}
+
+func (m *Model) Context() int64 {
+	for _, p := range m.Properties {
+		if p.PropertyID == "context_window" || p.PropertyID == "max_input_tokens" {
+			if s, ok := p.Value.(string); ok {
+				if v, err := strconv.ParseInt(s, 10, 64); err == nil {
+					return v
+				}
+			}
+		}
+	}
+	return 0
+}
+
+// ModelsResponse represents the response structure for Cloudflare models listing
+type ModelsResponse struct {
+	Result     []Model `json:"result"`
+	ResultInfo struct {
+		Count      int64 `json:"count"`
+		Page       int64 `json:"page"`
+		PerPage    int64 `json:"per_page"`
+		TotalCount int64 `json:"total_count"`
+	} `json:"result_info"`
+	Success  bool       `json:"success"`
+	Errors   []struct{} `json:"errors"`   // Annoyingly, it's included all the time
+	Messages []struct{} `json:"messages"` // Annoyingly, it's included all the time
+}
+
 //
 
 type errorResponse struct {
@@ -484,87 +565,6 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return c.DecodeError(ctx, c.chatURL, resp)
 	}
 	return sse.Process(resp.Body, out, &errorResponse{})
-}
-
-// Time is a wrapper around time.Time to support unmarshalling for cloudflare non-standard encoding.
-type Time time.Time
-
-func (t *Time) UnmarshalJSON(b []byte) error {
-	s := ""
-	if err := json.Unmarshal(b, &s); err != nil {
-		return err
-	}
-	t2, err := time.Parse("2006-01-02 15:04:05.999999999", s)
-	if err != nil {
-		return err
-	}
-	*t = Time(t2)
-	return nil
-}
-
-type Model struct {
-	ID          string `json:"id"`
-	Source      int64  `json:"source"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	CreatedAt   Time   `json:"created_at"`
-	Task        struct {
-		ID          string `json:"id"`
-		Name        string `json:"name"`
-		Description string `json:"description"`
-	} `json:"task"`
-	Tags       []string `json:"tags"`
-	Properties []struct {
-		PropertyID string `json:"property_id"`
-		Value      any    `json:"value"` // sometimes a string, sometimes an array
-	} `json:"properties"`
-}
-
-func (m *Model) GetID() string {
-	return m.Name
-}
-
-func (m *Model) String() string {
-	var suffixes []string
-	for _, p := range m.Properties {
-		if p.PropertyID == "info" || p.PropertyID == "terms" {
-			continue
-		}
-		suffixes = append(suffixes, fmt.Sprintf("%s=%v", p.PropertyID, p.Value))
-	}
-	suffix := ""
-	if len(suffixes) != 0 {
-		suffix = " (" + strings.Join(suffixes, ", ") + ")"
-	}
-	// Description is good but it's verbose and the models are well known.
-	return fmt.Sprintf("%s%s", m.Name, suffix)
-}
-
-func (m *Model) Context() int64 {
-	for _, p := range m.Properties {
-		if p.PropertyID == "context_window" || p.PropertyID == "max_input_tokens" {
-			if s, ok := p.Value.(string); ok {
-				if v, err := strconv.ParseInt(s, 10, 64); err == nil {
-					return v
-				}
-			}
-		}
-	}
-	return 0
-}
-
-// ModelsResponse represents the response structure for Cloudflare models listing
-type ModelsResponse struct {
-	Result     []Model `json:"result"`
-	ResultInfo struct {
-		Count      int64 `json:"count"`
-		Page       int64 `json:"page"`
-		PerPage    int64 `json:"per_page"`
-		TotalCount int64 `json:"total_count"`
-	} `json:"result_info"`
-	Success  bool       `json:"success"`
-	Errors   []struct{} `json:"errors"`   // Annoyingly, it's included all the time
-	Messages []struct{} `json:"messages"` // Annoyingly, it's included all the time
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

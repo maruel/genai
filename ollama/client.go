@@ -296,6 +296,49 @@ func (d DoneReason) ToFinishReason() string {
 
 type ChatStreamChunkResponse ChatResponse
 
+// https://pkg.go.dev/github.com/ollama/ollama/api#ListModelResponse
+type Model struct {
+	Name       string    `json:"name"`
+	Model      string    `json:"model"`
+	ModifiedAt time.Time `json:"modified_at"`
+	Size       int64     `json:"size"`
+	Digest     string    `json:"digest"`
+	// https://pkg.go.dev/github.com/ollama/ollama/api#ModelDetails
+	Details struct {
+		ParentModel       string   `json:"parent_model"`
+		Format            string   `json:"format"`
+		Family            string   `json:"family"`
+		Families          []string `json:"families"`
+		ParameterSize     string   `json:"parameter_size"`
+		QuantizationLevel string   `json:"quantization_level"`
+	} `json:"details"`
+}
+
+func (m *Model) GetID() string {
+	return m.Name
+}
+
+func (m *Model) String() string {
+	return fmt.Sprintf("%s (%s)", m.Name, m.Details.QuantizationLevel)
+}
+
+func (m *Model) Context() int64 {
+	return 0
+}
+
+type pullModelRequest struct {
+	Model    string `json:"model"`
+	Insecure bool   `json:"insecure"`
+	Stream   bool   `json:"stream"`
+}
+
+type pullModelResponse struct {
+	Status    string `json:"status"`
+	Digest    string `json:"digest"`
+	Total     int64  `json:"total"`
+	Completed int64  `json:"completed"`
+}
+
 //
 
 type errorResponse struct {
@@ -468,36 +511,6 @@ func processJSONStream(body io.Reader, out chan<- ChatStreamChunkResponse) error
 	}
 }
 
-// https://pkg.go.dev/github.com/ollama/ollama/api#ListModelResponse
-type Model struct {
-	Name       string    `json:"name"`
-	Model      string    `json:"model"`
-	ModifiedAt time.Time `json:"modified_at"`
-	Size       int64     `json:"size"`
-	Digest     string    `json:"digest"`
-	// https://pkg.go.dev/github.com/ollama/ollama/api#ModelDetails
-	Details struct {
-		ParentModel       string   `json:"parent_model"`
-		Format            string   `json:"format"`
-		Family            string   `json:"family"`
-		Families          []string `json:"families"`
-		ParameterSize     string   `json:"parameter_size"`
-		QuantizationLevel string   `json:"quantization_level"`
-	} `json:"details"`
-}
-
-func (m *Model) GetID() string {
-	return m.Name
-}
-
-func (m *Model) String() string {
-	return fmt.Sprintf("%s (%s)", m.Name, m.Details.QuantizationLevel)
-}
-
-func (m *Model) Context() int64 {
-	return 0
-}
-
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://github.com/ollama/ollama/blob/main/docs/api.md#list-local-models
 	var out struct {
@@ -511,19 +524,6 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		models[i] = &out.Models[i]
 	}
 	return models, nil
-}
-
-type pullModelRequest struct {
-	Model    string `json:"model"`
-	Insecure bool   `json:"insecure"`
-	Stream   bool   `json:"stream"`
-}
-
-type pullModelResponse struct {
-	Status    string `json:"status"`
-	Digest    string `json:"digest"`
-	Total     int64  `json:"total"`
-	Completed int64  `json:"completed"`
 }
 
 // PullModel is the equivalent of "ollama pull".

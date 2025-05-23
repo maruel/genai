@@ -329,6 +329,39 @@ type ChatStreamChunkResponse struct {
 	Usage Usage `json:"usage"`
 }
 
+type Model struct {
+	ID      string `json:"id"`
+	Object  string `json:"object"` // model
+	OwnedBy string `json:"owned_by"`
+}
+
+func (m *Model) GetID() string {
+	return m.ID
+}
+
+func (m *Model) String() string {
+	return m.ID
+}
+
+func (m *Model) Context() int64 {
+	return 0
+}
+
+// ModelsResponse represents the response structure for Deepseek models listing
+type ModelsResponse struct {
+	Object string  `json:"object"` // list
+	Data   []Model `json:"data"`
+}
+
+// ToModels converts Deepseek models to genai.Model interfaces
+func (r *ModelsResponse) ToModels() []genai.Model {
+	models := make([]genai.Model, len(r.Data))
+	for i := range r.Data {
+		models[i] = &r.Data[i]
+	}
+	return models
+}
+
 //
 
 type errorResponse struct {
@@ -484,39 +517,6 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return c.DecodeError(ctx, c.chatURL, resp)
 	}
 	return sse.Process(resp.Body, out, nil)
-}
-
-type Model struct {
-	ID      string `json:"id"`
-	Object  string `json:"object"` // model
-	OwnedBy string `json:"owned_by"`
-}
-
-func (m *Model) GetID() string {
-	return m.ID
-}
-
-func (m *Model) String() string {
-	return m.ID
-}
-
-func (m *Model) Context() int64 {
-	return 0
-}
-
-// ModelsResponse represents the response structure for Deepseek models listing
-type ModelsResponse struct {
-	Object string  `json:"object"` // list
-	Data   []Model `json:"data"`
-}
-
-// ToModels converts Deepseek models to genai.Model interfaces
-func (r *ModelsResponse) ToModels() []genai.Model {
-	models := make([]genai.Model, len(r.Data))
-	for i := range r.Data {
-		models[i] = &r.Data[i]
-	}
-	return models
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

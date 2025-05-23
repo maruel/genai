@@ -392,6 +392,88 @@ type ChatStreamChunkResponse struct {
 	Usage Usage `json:"usage"`
 }
 
+// Time is a JSON encoded unix timestamp.
+type Time int64
+
+func (t *Time) AsTime() time.Time {
+	return time.Unix(int64(*t), 0)
+}
+
+// https://docs.mistral.ai/api/#tag/models/operation/retrieve_model_v1_models__model_id__get
+type Model struct {
+	ID           string `json:"id"`
+	Object       string `json:"object"`
+	Created      Time   `json:"created"`
+	OwnedBy      string `json:"owned_by"`
+	Capabilities struct {
+		CompletionChat  bool `json:"completion_chat"`
+		CompletionFim   bool `json:"completion_fim"`
+		FunctionCalling bool `json:"function_calling"`
+		FineTuning      bool `json:"fine_tuning"`
+		Vision          bool `json:"vision"`
+		Classification  bool `json:"classification"`
+	} `json:"capabilities"`
+	Name                    string   `json:"name"`
+	Description             string   `json:"description"`
+	MaxContextLength        int64    `json:"max_context_length"`
+	Aliases                 []string `json:"aliases"`
+	Deprecation             string   `json:"deprecation"`
+	DefaultModelTemperature float64  `json:"default_model_temperature"`
+	Type                    string   `json:"type"`
+}
+
+func (m *Model) GetID() string {
+	return m.ID
+}
+
+func (m *Model) String() string {
+	var caps []string
+	if m.Capabilities.CompletionChat {
+		caps = append(caps, "chat")
+	}
+	if m.Capabilities.CompletionFim {
+		caps = append(caps, "fim")
+	}
+	if m.Capabilities.FunctionCalling {
+		caps = append(caps, "function")
+	}
+	if m.Capabilities.FineTuning {
+		caps = append(caps, "fine-tuning")
+	}
+	if m.Capabilities.Vision {
+		caps = append(caps, "vision")
+	}
+	suffix := ""
+	if m.Deprecation != "" {
+		suffix += " (deprecated)"
+	}
+	prefix := m.ID
+	if m.ID != m.Name {
+		prefix += " (" + m.Name + ")"
+	}
+	// Not including Created and Description because Created is not set and Description is not useful.
+	return fmt.Sprintf("%s: %s Context: %d%s", prefix, strings.Join(caps, "/"), m.MaxContextLength, suffix)
+}
+
+func (m *Model) Context() int64 {
+	return m.MaxContextLength
+}
+
+// ModelsResponse represents the response structure for Mistral models listing
+type ModelsResponse struct {
+	Object string  `json:"object"` // list
+	Data   []Model `json:"data"`
+}
+
+// ToModels converts Mistral models to genai.Model interfaces
+func (r *ModelsResponse) ToModels() []genai.Model {
+	models := make([]genai.Model, len(r.Data))
+	for i := range r.Data {
+		models[i] = &r.Data[i]
+	}
+	return models
+}
+
 //
 
 // errorResponse is the most goddam unstructured way to process errors. Basically what happens is that any
@@ -609,88 +691,6 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return c.DecodeError(ctx, c.chatURL, resp)
 	}
 	return sse.Process(resp.Body, out, &errorResponse{})
-}
-
-// Time is a JSON encoded unix timestamp.
-type Time int64
-
-func (t *Time) AsTime() time.Time {
-	return time.Unix(int64(*t), 0)
-}
-
-// https://docs.mistral.ai/api/#tag/models/operation/retrieve_model_v1_models__model_id__get
-type Model struct {
-	ID           string `json:"id"`
-	Object       string `json:"object"`
-	Created      Time   `json:"created"`
-	OwnedBy      string `json:"owned_by"`
-	Capabilities struct {
-		CompletionChat  bool `json:"completion_chat"`
-		CompletionFim   bool `json:"completion_fim"`
-		FunctionCalling bool `json:"function_calling"`
-		FineTuning      bool `json:"fine_tuning"`
-		Vision          bool `json:"vision"`
-		Classification  bool `json:"classification"`
-	} `json:"capabilities"`
-	Name                    string   `json:"name"`
-	Description             string   `json:"description"`
-	MaxContextLength        int64    `json:"max_context_length"`
-	Aliases                 []string `json:"aliases"`
-	Deprecation             string   `json:"deprecation"`
-	DefaultModelTemperature float64  `json:"default_model_temperature"`
-	Type                    string   `json:"type"`
-}
-
-func (m *Model) GetID() string {
-	return m.ID
-}
-
-func (m *Model) String() string {
-	var caps []string
-	if m.Capabilities.CompletionChat {
-		caps = append(caps, "chat")
-	}
-	if m.Capabilities.CompletionFim {
-		caps = append(caps, "fim")
-	}
-	if m.Capabilities.FunctionCalling {
-		caps = append(caps, "function")
-	}
-	if m.Capabilities.FineTuning {
-		caps = append(caps, "fine-tuning")
-	}
-	if m.Capabilities.Vision {
-		caps = append(caps, "vision")
-	}
-	suffix := ""
-	if m.Deprecation != "" {
-		suffix += " (deprecated)"
-	}
-	prefix := m.ID
-	if m.ID != m.Name {
-		prefix += " (" + m.Name + ")"
-	}
-	// Not including Created and Description because Created is not set and Description is not useful.
-	return fmt.Sprintf("%s: %s Context: %d%s", prefix, strings.Join(caps, "/"), m.MaxContextLength, suffix)
-}
-
-func (m *Model) Context() int64 {
-	return m.MaxContextLength
-}
-
-// ModelsResponse represents the response structure for Mistral models listing
-type ModelsResponse struct {
-	Object string  `json:"object"` // list
-	Data   []Model `json:"data"`
-}
-
-// ToModels converts Mistral models to genai.Model interfaces
-func (r *ModelsResponse) ToModels() []genai.Model {
-	models := make([]genai.Model, len(r.Data))
-	for i := range r.Data {
-		models[i] = &r.Data[i]
-	}
-	return models
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

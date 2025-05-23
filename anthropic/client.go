@@ -649,6 +649,42 @@ type Usage struct {
 	CacheReadInputTokens     int64 `json:"cache_read_input_tokens"`
 }
 
+type Model struct {
+	CreatedAt   time.Time `json:"created_at"`
+	DisplayName string    `json:"display_name"`
+	ID          string    `json:"id"`
+	Type        string    `json:"type"`
+}
+
+func (m *Model) GetID() string {
+	return m.ID
+}
+
+func (m *Model) String() string {
+	return fmt.Sprintf("%s: %s (%s)", m.ID, m.DisplayName, m.CreatedAt.Format("2006-01-02"))
+}
+
+func (m *Model) Context() int64 {
+	return 0
+}
+
+// ModelsResponse represents the response structure for Anthropic models listing
+type ModelsResponse struct {
+	Data    []Model `json:"data"`
+	FirstID string  `json:"first_id"`
+	HasMore bool    `json:"has_more"`
+	LastID  string  `json:"last_id"`
+}
+
+// ToGenAIModels converts Anthropic models to genai.Model interfaces
+func (r *ModelsResponse) ToModels() []genai.Model {
+	models := make([]genai.Model, len(r.Data))
+	for i := range r.Data {
+		models[i] = &r.Data[i]
+	}
+	return models
+}
+
 //
 
 type errorResponse struct {
@@ -820,42 +856,6 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return c.DecodeError(ctx, c.chatURL, resp)
 	}
 	return sse.Process(resp.Body, out, &errorResponse{})
-}
-
-type Model struct {
-	CreatedAt   time.Time `json:"created_at"`
-	DisplayName string    `json:"display_name"`
-	ID          string    `json:"id"`
-	Type        string    `json:"type"`
-}
-
-func (m *Model) GetID() string {
-	return m.ID
-}
-
-func (m *Model) String() string {
-	return fmt.Sprintf("%s: %s (%s)", m.ID, m.DisplayName, m.CreatedAt.Format("2006-01-02"))
-}
-
-func (m *Model) Context() int64 {
-	return 0
-}
-
-// ModelsResponse represents the response structure for Anthropic models listing
-type ModelsResponse struct {
-	Data    []Model `json:"data"`
-	FirstID string  `json:"first_id"`
-	HasMore bool    `json:"has_more"`
-	LastID  string  `json:"last_id"`
-}
-
-// ToGenAIModels converts Anthropic models to genai.Model interfaces
-func (r *ModelsResponse) ToModels() []genai.Model {
-	models := make([]genai.Model, len(r.Data))
-	for i := range r.Data {
-		models[i] = &r.Data[i]
-	}
-	return models
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

@@ -400,6 +400,62 @@ type ChatStreamChunkResponse struct {
 	Usage Usage `json:"usage"`
 }
 
+// Time is a JSON encoded unix timestamp.
+type Time int64
+
+func (t *Time) AsTime() time.Time {
+	return time.Unix(int64(*t), 0)
+}
+
+type Model struct {
+	ID            string    `json:"id"`
+	ID2           string    `json:"_id"`
+	Likes         int64     `json:"likes"`
+	TrendingScore float64   `json:"trendingScore"`
+	Private       bool      `json:"private"`
+	Downloads     int64     `json:"downloads"`
+	Tags          []string  `json:"tags"` // Tags can be a single word or key:value, like base_model, doi, license, region, arxiv.
+	PipelineTag   string    `json:"pipeline_tag"`
+	LibraryName   string    `json:"library_name"`
+	CreatedAt     time.Time `json:"createdAt"`
+	ModelId       string    `json:"modelId"`
+
+	// When full=true is specified:
+	Author       string    `json:"author"`
+	Gated        bool      `json:"gated"`
+	LastModified time.Time `json:"lastModified"`
+	SHA          string    `json:"sha"`
+	Siblings     []struct {
+		RFilename string `json:"r_filename"`
+	} `json:"siblings"`
+}
+
+func (m *Model) GetID() string {
+	return m.ID
+}
+
+func (m *Model) String() string {
+	return fmt.Sprintf("%s (%s) %s Trending: %.1f", m.ID, m.CreatedAt.Format("2006-01-02"), m.PipelineTag, m.TrendingScore)
+}
+
+func (m *Model) Context() int64 {
+	return 0
+}
+
+// ModelsResponse represents the response structure for Huggingface models listing
+type ModelsResponse []Model
+
+// ToModels converts Huggingface models to genai.Model interfaces
+func (r *ModelsResponse) ToModels() []genai.Model {
+	models := make([]genai.Model, len(*r))
+	for i := range *r {
+		models[i] = &(*r)[i]
+	}
+	return models
+}
+
+//
+
 type errorResponse struct {
 	Error errorError `json:"error"`
 }
@@ -599,59 +655,6 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return c.DecodeError(ctx, c.chatURL, resp)
 	}
 	return sse.Process(resp.Body, out, &errorResponse{})
-}
-
-type Time int64
-
-func (t *Time) AsTime() time.Time {
-	return time.Unix(int64(*t), 0)
-}
-
-type Model struct {
-	ID            string    `json:"id"`
-	ID2           string    `json:"_id"`
-	Likes         int64     `json:"likes"`
-	TrendingScore float64   `json:"trendingScore"`
-	Private       bool      `json:"private"`
-	Downloads     int64     `json:"downloads"`
-	Tags          []string  `json:"tags"` // Tags can be a single word or key:value, like base_model, doi, license, region, arxiv.
-	PipelineTag   string    `json:"pipeline_tag"`
-	LibraryName   string    `json:"library_name"`
-	CreatedAt     time.Time `json:"createdAt"`
-	ModelId       string    `json:"modelId"`
-
-	// When full=true is specified:
-	Author       string    `json:"author"`
-	Gated        bool      `json:"gated"`
-	LastModified time.Time `json:"lastModified"`
-	SHA          string    `json:"sha"`
-	Siblings     []struct {
-		RFilename string `json:"r_filename"`
-	} `json:"siblings"`
-}
-
-func (m *Model) GetID() string {
-	return m.ID
-}
-
-func (m *Model) String() string {
-	return fmt.Sprintf("%s (%s) %s Trending: %.1f", m.ID, m.CreatedAt.Format("2006-01-02"), m.PipelineTag, m.TrendingScore)
-}
-
-func (m *Model) Context() int64 {
-	return 0
-}
-
-// ModelsResponse represents the response structure for Huggingface models listing
-type ModelsResponse []Model
-
-// ToModels converts Huggingface models to genai.Model interfaces
-func (r *ModelsResponse) ToModels() []genai.Model {
-	models := make([]genai.Model, len(*r))
-	for i := range *r {
-		models[i] = &(*r)[i]
-	}
-	return models
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

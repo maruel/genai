@@ -418,6 +418,70 @@ type ChatStreamChunkResponse struct {
 	Usage Usage `json:"usage"`
 }
 
+// Time is a JSON encoded unix timestamp.
+type Time int64
+
+func (t *Time) AsTime() time.Time {
+	return time.Unix(int64(*t), 0)
+}
+
+type Model struct {
+	ID            string `json:"id"`
+	Object        string `json:"object"`
+	Created       Time   `json:"created"`
+	Type          string `json:"type"` // chat,moderation,image,
+	Running       bool   `json:"running"`
+	DisplayName   string `json:"display_name"`
+	Organization  string `json:"organization"`
+	Link          string `json:"link"`
+	License       string `json:"license"`
+	ContextLength int64  `json:"context_length"`
+	Config        struct {
+		ChatTemplate    string   `json:"chat_template"`
+		Stop            []string `json:"stop"`
+		BosToken        string   `json:"bos_token"`
+		EosToken        string   `json:"eos_token"`
+		MaxOutputLength int64    `json:"max_output_length"`
+	} `json:"config"`
+	Pricing struct {
+		Hourly   float64 `json:"hourly"`
+		Input    float64 `json:"input"`
+		Output   float64 `json:"output"`
+		Base     float64 `json:"base"`
+		Finetune float64 `json:"finetune"`
+	} `json:"pricing"`
+}
+
+func (m *Model) GetID() string {
+	return m.ID
+}
+
+func (m *Model) String() string {
+	c := ""
+	if m.Config.MaxOutputLength != 0 {
+		c = fmt.Sprintf("%d/%d", m.ContextLength, m.Config.MaxOutputLength)
+	} else {
+		c = fmt.Sprintf("%d", m.ContextLength)
+	}
+	return fmt.Sprintf("%s (%s): %s Context: %s; in: %.2f$/Mt out: %.2f$/Mt", m.ID, m.Created.AsTime().Format("2006-01-02"), m.Type, c, m.Pricing.Input, m.Pricing.Output)
+}
+
+func (m *Model) Context() int64 {
+	return m.ContextLength
+}
+
+// ModelsResponse represents the response structure for TogetherAI models listing
+type ModelsResponse []Model
+
+// ToModels converts TogetherAI models to genai.Model interfaces
+func (r *ModelsResponse) ToModels() []genai.Model {
+	models := make([]genai.Model, len(*r))
+	for i := range *r {
+		models[i] = &(*r)[i]
+	}
+	return models
+}
+
 //
 
 type errorResponse struct {
@@ -600,69 +664,6 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return c.DecodeError(ctx, c.chatURL, resp)
 	}
 	return sse.Process(resp.Body, out, &errorResponse{})
-}
-
-type Time int64
-
-func (t *Time) AsTime() time.Time {
-	return time.Unix(int64(*t), 0)
-}
-
-type Model struct {
-	ID            string `json:"id"`
-	Object        string `json:"object"`
-	Created       Time   `json:"created"`
-	Type          string `json:"type"` // chat,moderation,image,
-	Running       bool   `json:"running"`
-	DisplayName   string `json:"display_name"`
-	Organization  string `json:"organization"`
-	Link          string `json:"link"`
-	License       string `json:"license"`
-	ContextLength int64  `json:"context_length"`
-	Config        struct {
-		ChatTemplate    string   `json:"chat_template"`
-		Stop            []string `json:"stop"`
-		BosToken        string   `json:"bos_token"`
-		EosToken        string   `json:"eos_token"`
-		MaxOutputLength int64    `json:"max_output_length"`
-	} `json:"config"`
-	Pricing struct {
-		Hourly   float64 `json:"hourly"`
-		Input    float64 `json:"input"`
-		Output   float64 `json:"output"`
-		Base     float64 `json:"base"`
-		Finetune float64 `json:"finetune"`
-	} `json:"pricing"`
-}
-
-func (m *Model) GetID() string {
-	return m.ID
-}
-
-func (m *Model) String() string {
-	c := ""
-	if m.Config.MaxOutputLength != 0 {
-		c = fmt.Sprintf("%d/%d", m.ContextLength, m.Config.MaxOutputLength)
-	} else {
-		c = fmt.Sprintf("%d", m.ContextLength)
-	}
-	return fmt.Sprintf("%s (%s): %s Context: %s; in: %.2f$/Mt out: %.2f$/Mt", m.ID, m.Created.AsTime().Format("2006-01-02"), m.Type, c, m.Pricing.Input, m.Pricing.Output)
-}
-
-func (m *Model) Context() int64 {
-	return m.ContextLength
-}
-
-// ModelsResponse represents the response structure for TogetherAI models listing
-type ModelsResponse []Model
-
-// ToModels converts TogetherAI models to genai.Model interfaces
-func (r *ModelsResponse) ToModels() []genai.Model {
-	models := make([]genai.Model, len(*r))
-	for i := range *r {
-		models[i] = &(*r)[i]
-	}
-	return models
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

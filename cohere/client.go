@@ -461,6 +461,61 @@ const (
 	ChunkToolCallEnd   ChunkType = "tool-call-end"
 )
 
+type Model struct {
+	Name             string   `json:"name"`
+	Endpoints        []string `json:"endpoints"` // chat, embed, classify, summarize, rerank, rate, generate
+	Features         []string `json:"features"`  // json_mode, json_schema, safety_modes, strict_tools, tools
+	Finetuned        bool     `json:"finetuned"`
+	ContextLength    int64    `json:"context_length"`
+	TokenizerURL     string   `json:"tokenizer_url"`
+	SupportsVision   bool     `json:"supports_vision"`
+	DefaultEndpoints []string `json:"default_endpoints"`
+}
+
+func (m *Model) GetID() string {
+	return m.Name
+}
+
+func (m *Model) String() string {
+	suffix := ""
+	if m.Finetuned {
+		suffix += " (finetuned)"
+	}
+	if m.SupportsVision {
+		suffix += " (vision)"
+	}
+	endpoints := make([]string, len(m.Endpoints))
+	copy(endpoints, m.Endpoints)
+	sort.Strings(endpoints)
+	f := ""
+	if len(m.Features) > 0 {
+		features := make([]string, len(m.Features))
+		copy(features, m.Features)
+		sort.Strings(features)
+		f = " with " + strings.Join(features, "/")
+	}
+	return fmt.Sprintf("%s: %s%s. Context: %d%s", m.Name, strings.Join(endpoints, "/"), f, m.ContextLength, suffix)
+}
+
+func (m *Model) Context() int64 {
+	return m.ContextLength
+}
+
+// ModelsResponse represents the response structure for Cohere models listing
+type ModelsResponse struct {
+	Models        []Model `json:"models"`
+	NextPageToken string  `json:"next_page_token"`
+}
+
+// ToModels converts Cohere models to genai.Model interfaces
+func (r *ModelsResponse) ToModels() []genai.Model {
+	models := make([]genai.Model, len(r.Models))
+	for i := range r.Models {
+		models[i] = &r.Models[i]
+	}
+	return models
+}
+
 //
 
 type errorResponse struct {
@@ -626,61 +681,6 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return c.DecodeError(ctx, c.chatURL, resp)
 	}
 	return sse.Process(resp.Body, out, nil)
-}
-
-type Model struct {
-	Name             string   `json:"name"`
-	Endpoints        []string `json:"endpoints"` // chat, embed, classify, summarize, rerank, rate, generate
-	Features         []string `json:"features"`  // json_mode, json_schema, safety_modes, strict_tools, tools
-	Finetuned        bool     `json:"finetuned"`
-	ContextLength    int64    `json:"context_length"`
-	TokenizerURL     string   `json:"tokenizer_url"`
-	SupportsVision   bool     `json:"supports_vision"`
-	DefaultEndpoints []string `json:"default_endpoints"`
-}
-
-func (m *Model) GetID() string {
-	return m.Name
-}
-
-func (m *Model) String() string {
-	suffix := ""
-	if m.Finetuned {
-		suffix += " (finetuned)"
-	}
-	if m.SupportsVision {
-		suffix += " (vision)"
-	}
-	endpoints := make([]string, len(m.Endpoints))
-	copy(endpoints, m.Endpoints)
-	sort.Strings(endpoints)
-	f := ""
-	if len(m.Features) > 0 {
-		features := make([]string, len(m.Features))
-		copy(features, m.Features)
-		sort.Strings(features)
-		f = " with " + strings.Join(features, "/")
-	}
-	return fmt.Sprintf("%s: %s%s. Context: %d%s", m.Name, strings.Join(endpoints, "/"), f, m.ContextLength, suffix)
-}
-
-func (m *Model) Context() int64 {
-	return m.ContextLength
-}
-
-// ModelsResponse represents the response structure for Cohere models listing
-type ModelsResponse struct {
-	Models        []Model `json:"models"`
-	NextPageToken string  `json:"next_page_token"`
-}
-
-// ToModels converts Cohere models to genai.Model interfaces
-func (r *ModelsResponse) ToModels() []genai.Model {
-	models := make([]genai.Model, len(r.Models))
-	for i := range r.Models {
-		models[i] = &r.Models[i]
-	}
-	return models
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

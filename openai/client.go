@@ -585,6 +585,48 @@ type ChatStreamChunkResponse struct {
 	Usage             Usage  `json:"usage"`
 }
 
+// Time is a JSON encoded unix timestamp.
+type Time int64
+
+func (t *Time) AsTime() time.Time {
+	return time.Unix(int64(*t), 0)
+}
+
+// https://platform.openai.com/docs/api-reference/models/object
+type Model struct {
+	ID      string `json:"id"`
+	Object  string `json:"object"`
+	Created Time   `json:"created"`
+	OwnedBy string `json:"owned_by"`
+}
+
+func (m *Model) GetID() string {
+	return m.ID
+}
+
+func (m *Model) String() string {
+	return fmt.Sprintf("%s (%s)", m.ID, m.Created.AsTime().Format("2006-01-02"))
+}
+
+func (m *Model) Context() int64 {
+	return 0
+}
+
+// ModelsResponse represents the response structure for OpenAI models listing
+type ModelsResponse struct {
+	Object string  `json:"object"` // list
+	Data   []Model `json:"data"`
+}
+
+// ToModels converts OpenAI models to genai.Model interfaces
+func (r *ModelsResponse) ToModels() []genai.Model {
+	models := make([]genai.Model, len(r.Data))
+	for i := range r.Data {
+		models[i] = &r.Data[i]
+	}
+	return models
+}
+
 //
 
 type errorResponse struct {
@@ -755,47 +797,6 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return c.DecodeError(ctx, c.chatURL, resp)
 	}
 	return sse.Process(resp.Body, out, nil)
-}
-
-type Time int64
-
-func (t *Time) AsTime() time.Time {
-	return time.Unix(int64(*t), 0)
-}
-
-// https://platform.openai.com/docs/api-reference/models/object
-type Model struct {
-	ID      string `json:"id"`
-	Object  string `json:"object"`
-	Created Time   `json:"created"`
-	OwnedBy string `json:"owned_by"`
-}
-
-func (m *Model) GetID() string {
-	return m.ID
-}
-
-func (m *Model) String() string {
-	return fmt.Sprintf("%s (%s)", m.ID, m.Created.AsTime().Format("2006-01-02"))
-}
-
-func (m *Model) Context() int64 {
-	return 0
-}
-
-// ModelsResponse represents the response structure for OpenAI models listing
-type ModelsResponse struct {
-	Object string  `json:"object"` // list
-	Data   []Model `json:"data"`
-}
-
-// ToModels converts OpenAI models to genai.Model interfaces
-func (r *ModelsResponse) ToModels() []genai.Model {
-	models := make([]genai.Model, len(r.Data))
-	for i := range r.Data {
-		models[i] = &r.Data[i]
-	}
-	return models
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

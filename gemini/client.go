@@ -759,6 +759,49 @@ type CachingUsageMetadata struct {
 	TotalTokenCount int64 `json:"totalTokenCount"`
 }
 
+// https://ai.google.dev/api/models#Model
+type Model struct {
+	Name                       string   `json:"name"`
+	BaseModelID                string   `json:"baseModelId"`
+	Version                    string   `json:"version"`
+	DisplayName                string   `json:"displayName"`
+	Description                string   `json:"description"`
+	InputTokenLimit            int64    `json:"inputTokenLimit"`
+	OutputTokenLimit           int64    `json:"outputTokenLimit"`
+	SupportedGenerationMethods []string `json:"supportedGenerationMethods"`
+	Temperature                float64  `json:"temperature"`
+	MaxTemperature             float64  `json:"maxTemperature"`
+	TopP                       float64  `json:"topP"`
+	TopK                       int64    `json:"topK"`
+}
+
+func (m *Model) GetID() string {
+	return strings.TrimPrefix(m.Name, "models/")
+}
+
+func (m *Model) String() string {
+	return fmt.Sprintf("%s: %s (%s) Context: %d/%d", m.GetID(), m.DisplayName, m.Description, m.InputTokenLimit, m.OutputTokenLimit)
+}
+
+func (m *Model) Context() int64 {
+	return m.InputTokenLimit
+}
+
+// ModelsResponse represents the response structure for Gemini models listing
+type ModelsResponse struct {
+	Models        []Model `json:"models"`
+	NextPageToken string  `json:"nextPageToken"`
+}
+
+// ToIModels converts Gemini models to genai.Model interfaces
+func (r *ModelsResponse) ToModels() []genai.Model {
+	models := make([]genai.Model, len(r.Models))
+	for i := range r.Models {
+		models[i] = &r.Models[i]
+	}
+	return models
+}
+
 //
 
 type errorResponse struct {
@@ -1102,49 +1145,6 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return c.DecodeError(ctx, c.chatStreamURL, resp)
 	}
 	return sse.Process(resp.Body, out, nil)
-}
-
-// https://ai.google.dev/api/models#Model
-type Model struct {
-	Name                       string   `json:"name"`
-	BaseModelID                string   `json:"baseModelId"`
-	Version                    string   `json:"version"`
-	DisplayName                string   `json:"displayName"`
-	Description                string   `json:"description"`
-	InputTokenLimit            int64    `json:"inputTokenLimit"`
-	OutputTokenLimit           int64    `json:"outputTokenLimit"`
-	SupportedGenerationMethods []string `json:"supportedGenerationMethods"`
-	Temperature                float64  `json:"temperature"`
-	MaxTemperature             float64  `json:"maxTemperature"`
-	TopP                       float64  `json:"topP"`
-	TopK                       int64    `json:"topK"`
-}
-
-func (m *Model) GetID() string {
-	return strings.TrimPrefix(m.Name, "models/")
-}
-
-func (m *Model) String() string {
-	return fmt.Sprintf("%s: %s (%s) Context: %d/%d", m.GetID(), m.DisplayName, m.Description, m.InputTokenLimit, m.OutputTokenLimit)
-}
-
-func (m *Model) Context() int64 {
-	return m.InputTokenLimit
-}
-
-// ModelsResponse represents the response structure for Gemini models listing
-type ModelsResponse struct {
-	Models        []Model `json:"models"`
-	NextPageToken string  `json:"nextPageToken"`
-}
-
-// ToIModels converts Gemini models to genai.Model interfaces
-func (r *ModelsResponse) ToModels() []genai.Model {
-	models := make([]genai.Model, len(r.Models))
-	for i := range r.Models {
-		models[i] = &r.Models[i]
-	}
-	return models
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

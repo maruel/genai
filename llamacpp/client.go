@@ -314,24 +314,6 @@ type Message struct {
 	Content string `json:"content"`
 }
 
-type applyTemplateResponse struct {
-	Prompt string `json:"prompt"`
-}
-
-//
-
-type errorResponse struct {
-	Error struct {
-		Code    int64
-		Message string
-		Type    string
-	} `json:"error"`
-}
-
-func (er *errorResponse) String() string {
-	return fmt.Sprintf("error %d (%s): %s", er.Error.Code, er.Error.Type, er.Error.Message)
-}
-
 //
 
 // PromptEncoding describes how to encode the prompt.
@@ -359,6 +341,50 @@ func (p *PromptEncoding) Validate() error {
 	// TODO: I lied. Please send a PR.
 	return nil
 }
+
+// TokenPerformance is the performance for the metrics
+type TokenPerformance struct {
+	Count    int
+	Duration time.Duration
+}
+
+// Rate is the number of token per second.
+func (t *TokenPerformance) Rate() float64 {
+	if t.Duration == 0 {
+		return 0
+	}
+	return float64(t.Count) / (float64(t.Duration) / float64(time.Second))
+}
+
+// Metrics represents the metrics for the LLM server.
+type Metrics struct {
+	Prompt             TokenPerformance
+	Generated          TokenPerformance
+	KVCacheUsage       float64
+	KVCacheTokens      int
+	RequestsProcessing int
+	RequestedPending   int
+}
+
+//
+
+type applyTemplateResponse struct {
+	Prompt string `json:"prompt"`
+}
+
+type errorResponse struct {
+	Error struct {
+		Code    int64
+		Message string
+		Type    string
+	} `json:"error"`
+}
+
+func (er *errorResponse) String() string {
+	return fmt.Sprintf("error %d (%s): %s", er.Error.Code, er.Error.Type, er.Error.Message)
+}
+
+//
 
 // Client implements the REST JSON based API.
 type Client struct {
@@ -513,30 +539,6 @@ func (c *Client) GetHealth(ctx context.Context) (string, error) {
 	return msg.Status, nil
 }
 
-// TokenPerformance is the performance for the metrics
-type TokenPerformance struct {
-	Count    int
-	Duration time.Duration
-}
-
-// Rate is the number of token per second.
-func (t *TokenPerformance) Rate() float64 {
-	if t.Duration == 0 {
-		return 0
-	}
-	return float64(t.Count) / (float64(t.Duration) / float64(time.Second))
-}
-
-// Metrics represents the metrics for the LLM server.
-type Metrics struct {
-	Prompt             TokenPerformance
-	Generated          TokenPerformance
-	KVCacheUsage       float64
-	KVCacheTokens      int
-	RequestsProcessing int
-	RequestedPending   int
-}
-
 // GetMetrics retrieves the performance statistics from the server.
 func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 	// TODO: Generalize.
@@ -545,7 +547,7 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 		return fmt.Errorf("failed to create HTTP request: %w", err)
 	}
 	// This is not a JSON response.
-	resp, err := c.ClientBase.ClientJSON.Client.Do(req)
+	resp, err := c.ClientJSON.Client.Do(req)
 	if err != nil {
 		return fmt.Errorf("failed to get metrics response: %w", err)
 	}

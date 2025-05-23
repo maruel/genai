@@ -99,8 +99,8 @@ func TestClient(t *testing.T) {
 			{
 				Name:          "bad model",
 				Model:         "bad_model",
-				ErrChat:       "pull failed: http 500: error: pull model manifest: file does not exist",
-				ErrChatStream: "pull failed: http 500: error: pull model manifest: file does not exist",
+				ErrChat:       "pull failed: http 500: error pull model manifest: file does not exist",
+				ErrChatStream: "pull failed: http 500: error pull model manifest: file does not exist",
 			},
 		}
 		f := func(t *testing.T, apiKey, model string) genai.ChatProvider {

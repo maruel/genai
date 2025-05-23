@@ -68,14 +68,14 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
 			Model:         "llama3-8b-8192",
-			ErrChat:       "http 401: error: invalid_api_key (invalid_request_error): Invalid API Key. You can get a new API key at https://console.groq.com/keys",
-			ErrChatStream: "http 401: error: invalid_api_key (invalid_request_error): Invalid API Key. You can get a new API key at https://console.groq.com/keys",
+			ErrChat:       "http 401: error invalid_api_key (invalid_request_error): Invalid API Key. You can get a new API key at https://console.groq.com/keys",
+			ErrChatStream: "http 401: error invalid_api_key (invalid_request_error): Invalid API Key. You can get a new API key at https://console.groq.com/keys",
 		},
 		{
 			Name:          "bad model",
 			Model:         "bad model",
-			ErrChat:       "http 404: error: model_not_found (invalid_request_error): The model `bad model` does not exist or you do not have access to it.",
-			ErrChatStream: "http 404: error: model_not_found (invalid_request_error): The model `bad model` does not exist or you do not have access to it.",
+			ErrChat:       "http 404: error model_not_found (invalid_request_error): The model `bad model` does not exist or you do not have access to it.",
+			ErrChatStream: "http 404: error model_not_found (invalid_request_error): The model `bad model` does not exist or you do not have access to it.",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
@@ -89,7 +89,7 @@ func TestClient_ModelProvider_errors(t *testing.T) {
 		{
 			Name:   "bad apiKey",
 			ApiKey: "badApiKey",
-			Err:    "http 401: error: invalid_api_key (invalid_request_error): Invalid API Key. You can get a new API key at https://console.groq.com/keys",
+			Err:    "http 401: error invalid_api_key (invalid_request_error): Invalid API Key. You can get a new API key at https://console.groq.com/keys",
 		},
 	}
 	f := func(t *testing.T, apiKey string) genai.ModelProvider {

@@ -305,7 +305,7 @@ type errorResponse struct {
 }
 
 func (er *errorResponse) String() string {
-	return er.Error
+	return "error " + er.Error
 }
 
 //
@@ -498,7 +498,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return decodeError(ctx, c.chatURL, resp, &errorResponse{})
+		return internal.DecodeError(ctx, c.chatURL, resp, &errorResponse{}, "")
 	}
 	return processJSONStream(resp.Body, out)
 }
@@ -530,7 +530,7 @@ func processJSONStream(body io.Reader, out chan<- ChatStreamChunkResponse) error
 			if err := d.Decode(&er); err != nil {
 				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
 			}
-			return fmt.Errorf("server error: %s", er.String())
+			return errors.New(er.String())
 		}
 		out <- msg
 	}
@@ -627,29 +627,9 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
 			herr.PrintBody = false
-			return fmt.Errorf("%w: error: %s", herr, er.String())
+			return fmt.Errorf("%w: %s", herr, er.String())
 		}
-		return fmt.Errorf("%w: error: %s", herr, er.String())
-	default:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			slog.WarnContext(ctx, "ollama", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
-		} else {
-			slog.WarnContext(ctx, "ollama", "url", url, "err", err)
-		}
-		return err
-	}
-}
-
-func decodeError(ctx context.Context, url string, resp *http.Response, er fmt.Stringer) error {
-	switch i, err := httpjson.DecodeResponse(resp, er); i {
-	case 0:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			herr.PrintBody = false
-			return fmt.Errorf("%w: error: %s", herr, er.String())
-		}
-		return fmt.Errorf("%w: error: %s", herr, er.String())
+		return fmt.Errorf("%w: %s", err, er.String())
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {

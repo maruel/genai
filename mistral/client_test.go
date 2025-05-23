@@ -70,14 +70,14 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
 			Model:         "ministral-3b-2410",
-			ErrChat:       "http 401: error: Unauthorized. You can get a new API key at https://console.mistral.ai/api-keys",
-			ErrChatStream: "http 401: error: Unauthorized. You can get a new API key at https://console.mistral.ai/api-keys",
+			ErrChat:       "http 401: error Unauthorized. You can get a new API key at https://console.mistral.ai/api-keys",
+			ErrChatStream: "http 401: error Unauthorized. You can get a new API key at https://console.mistral.ai/api-keys",
 		},
 		{
 			Name:          "bad model",
 			Model:         "bad model",
-			ErrChat:       "http 400: error: invalid_model: Invalid model: bad model",
-			ErrChatStream: "http 400: error: invalid_model: Invalid model: bad model",
+			ErrChat:       "http 400: error invalid_model: Invalid model: bad model",
+			ErrChatStream: "http 400: error invalid_model: Invalid model: bad model",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
@@ -91,7 +91,7 @@ func TestClient_ModelProvider_errors(t *testing.T) {
 		{
 			Name:   "bad apiKey",
 			ApiKey: "badApiKey",
-			Err:    "http 401: error: Unauthorized. You can get a new API key at https://console.mistral.ai/api-keys",
+			Err:    "http 401: error Unauthorized. You can get a new API key at https://console.mistral.ai/api-keys",
 		},
 	}
 	f := func(t *testing.T, apiKey string) genai.ModelProvider {

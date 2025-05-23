@@ -597,9 +597,9 @@ type errorResponse struct {
 
 func (er *errorResponse) String() string {
 	if er.Error.Code == "" {
-		return fmt.Sprintf("%s: %s", er.Error.Type, er.Error.Message)
+		return fmt.Sprintf("error %s: %s", er.Error.Type, er.Error.Message)
 	}
-	return fmt.Sprintf("%s (%s): %s", er.Error.Code, er.Error.Status, er.Error.Message)
+	return fmt.Sprintf("error %s (%s): %s", er.Error.Code, er.Error.Status, er.Error.Message)
 }
 
 type errorResponseError struct {
@@ -818,7 +818,8 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return decodeError(ctx, c.chatURL, resp, &errorResponse{})
+		// OpenAI error message prints the api key URL already.
+		return internal.DecodeError(ctx, c.chatURL, resp, &errorResponse{}, "")
 	}
 	return processSSE(resp.Body, out)
 }
@@ -924,30 +925,9 @@ func (c *Client) doRequest(ctx context.Context, method, url string, in, out any)
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
 			herr.PrintBody = false
-			return fmt.Errorf("%w: error: %s", herr, er.String())
+			return fmt.Errorf("%w: %s", herr, er.String())
 		}
-		return fmt.Errorf("error: %s", er.String())
-	default:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			slog.WarnContext(ctx, "openai", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
-		} else {
-			slog.WarnContext(ctx, "openai", "url", url, "err", err)
-		}
-		return err
-	}
-}
-
-func decodeError(ctx context.Context, url string, resp *http.Response, er fmt.Stringer) error {
-	switch i, err := httpjson.DecodeResponse(resp, er); i {
-	case 0:
-		// OpenAI error message prints the api key URL already.
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			herr.PrintBody = false
-			return fmt.Errorf("%w: error: %s", herr, er.String())
-		}
-		return fmt.Errorf("error: %s", er.String())
+		return errors.New(er.String())
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {

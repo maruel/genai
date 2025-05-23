@@ -105,14 +105,14 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
 			Model:         "gpt-4.1-nano",
-			ErrChat:       "http 401: error: invalid_api_key (): Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
-			ErrChatStream: "http 401: error: invalid_api_key (): Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
+			ErrChat:       "http 401: error invalid_api_key (): Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
+			ErrChatStream: "http 401: error invalid_api_key (): Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 		},
 		{
 			Name:          "bad model",
 			Model:         "bad model",
-			ErrChat:       "http 400: error: invalid_request_error: invalid model ID",
-			ErrChatStream: "http 400: error: invalid_request_error: invalid model ID",
+			ErrChat:       "http 400: error invalid_request_error: invalid model ID",
+			ErrChatStream: "http 400: error invalid_request_error: invalid model ID",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
@@ -126,7 +126,7 @@ func TestClient_ModelProvider_errors(t *testing.T) {
 		{
 			Name:   "bad apiKey",
 			ApiKey: "badApiKey",
-			Err:    "http 401: error: invalid_api_key (): Incorrect API key provided: badApiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
+			Err:    "http 401: error invalid_api_key (): Incorrect API key provided: badApiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 		},
 	}
 	f := func(t *testing.T, apiKey string) genai.ModelProvider {

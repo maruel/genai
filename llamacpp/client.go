@@ -331,7 +331,7 @@ type errorResponse struct {
 }
 
 func (er *errorResponse) String() string {
-	return fmt.Sprintf("%d (%s): %s", er.Error.Code, er.Error.Type, er.Error.Message)
+	return fmt.Sprintf("error %d (%s): %s", er.Error.Code, er.Error.Type, er.Error.Message)
 }
 
 //
@@ -499,7 +499,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return decodeError(ctx, c.chatURL, resp, &errorResponse{})
+		return internal.DecodeError(ctx, c.chatURL, resp, &errorResponse{}, "")
 	}
 	return processSSE(resp.Body, out)
 }
@@ -707,26 +707,6 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	case 0:
 		return nil
 	case 1:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			herr.PrintBody = false
-			return fmt.Errorf("%w: error: %s", herr, er.String())
-		}
-		return fmt.Errorf("error: %s", er.String())
-	default:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			slog.WarnContext(ctx, "llamacpp", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
-		} else {
-			slog.WarnContext(ctx, "llamacpp", "url", url, "err", err)
-		}
-		return err
-	}
-}
-
-func decodeError(ctx context.Context, url string, resp *http.Response, er fmt.Stringer) error {
-	switch i, err := httpjson.DecodeResponse(resp, er); i {
-	case 0:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
 			herr.PrintBody = false

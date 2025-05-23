@@ -66,8 +66,8 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 		{
 			Name:          "bad model",
 			Model:         "bad model",
-			ErrChat:       "http 400: error: Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.",
-			ErrChatStream: "http 400: error: Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.",
+			ErrChat:       "http 400: error Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.",
+			ErrChatStream: "http 400: error Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {

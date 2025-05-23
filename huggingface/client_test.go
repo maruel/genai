@@ -74,8 +74,8 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
 			Model:         "Qwen/Qwen3-4B",
-			ErrChat:       "http 401: Unauthorized",
-			ErrChatStream: "http 401: Unauthorized",
+			ErrChat:       "http 401: Unauthorized. You can get a new API key at https://huggingface.co/settings/tokens",
+			ErrChatStream: "http 401: Unauthorized. You can get a new API key at https://huggingface.co/settings/tokens",
 		},
 		{
 			Name:          "bad model",
@@ -95,7 +95,7 @@ func TestClient_ModelProvider_errors(t *testing.T) {
 		{
 			Name:   "bad apiKey",
 			ApiKey: "badApiKey",
-			Err:    "http 401: error: Invalid credentials in Authorization header. You can get a new API key at https://huggingface.co/settings/tokens",
+			Err:    "http 401: error Invalid credentials in Authorization header. You can get a new API key at https://huggingface.co/settings/tokens",
 		},
 	}
 	f := func(t *testing.T, apiKey string) genai.ModelProvider {

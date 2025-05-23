@@ -347,7 +347,7 @@ type errorResponse struct {
 }
 
 func (er *errorResponse) String() string {
-	return fmt.Sprintf("%s: %s", er.Error.Type, er.Error.Message)
+	return fmt.Sprintf("error %s: %s", er.Error.Type, er.Error.Message)
 }
 
 // Client implements the REST JSON based API.
@@ -548,7 +548,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return decodeError(ctx, c.chatURL, resp, &errorResponse{})
+		return internal.DecodeError(ctx, c.chatURL, resp, &errorResponse{}, apiKeyURL)
 	}
 	return processSSE(resp.Body, out)
 }
@@ -649,34 +649,11 @@ func (c *Client) doRequest(ctx context.Context, method, url string, in, out any)
 		if errors.As(err, &herr) {
 			herr.PrintBody = false
 			if herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: error: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
+				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
 			}
-			return fmt.Errorf("%w: error: %s", herr, er.String())
+			return fmt.Errorf("%w: %s", herr, er.String())
 		}
-		return fmt.Errorf("error: %s", er.String())
-	default:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			slog.WarnContext(ctx, "deepseek", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
-		} else {
-			slog.WarnContext(ctx, "deepseek", "url", url, "err", err)
-		}
-		return err
-	}
-}
-
-func decodeError(ctx context.Context, url string, resp *http.Response, er fmt.Stringer) error {
-	switch i, err := httpjson.DecodeResponse(resp, er); i {
-	case 0:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			herr.PrintBody = false
-			if herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: error: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
-			}
-			return fmt.Errorf("%w: error: %s", herr, er.String())
-		}
-		return fmt.Errorf("error: %s", er.String())
+		return errors.New(er.String())
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {

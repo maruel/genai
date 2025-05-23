@@ -73,14 +73,14 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
 			Model:         "llama-3.1-8b",
-			ErrChat:       "http 401: error: invalid_request_error/api_key/wrong_api_key: Wrong API Key. You can get a new API key at https://cloud.cerebras.ai/platform/",
-			ErrChatStream: "http 401: error: invalid_request_error/api_key/wrong_api_key: Wrong API Key. You can get a new API key at https://cloud.cerebras.ai/platform/",
+			ErrChat:       "http 401: error invalid_request_error/api_key/wrong_api_key: Wrong API Key. You can get a new API key at https://cloud.cerebras.ai/platform/",
+			ErrChatStream: "http 401: error invalid_request_error/api_key/wrong_api_key: Wrong API Key. You can get a new API key at https://cloud.cerebras.ai/platform/",
 		},
 		{
 			Name:          "bad model",
 			Model:         "bad model",
-			ErrChat:       "http 404: error: not_found_error/model/model_not_found: Model bad model does not exist or you do not have access to it.",
-			ErrChatStream: "http 404: error: not_found_error/model/model_not_found: Model bad model does not exist or you do not have access to it.",
+			ErrChat:       "http 404: error not_found_error/model/model_not_found: Model bad model does not exist or you do not have access to it.",
+			ErrChatStream: "http 404: error not_found_error/model/model_not_found: Model bad model does not exist or you do not have access to it.",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
@@ -94,7 +94,7 @@ func TestClient_ModelProvider_errors(t *testing.T) {
 		{
 			Name:   "bad apiKey",
 			ApiKey: "badApiKey",
-			Err:    "http 401: error: invalid_request_error/api_key/wrong_api_key: Wrong API Key. You can get a new API key at https://cloud.cerebras.ai/platform/",
+			Err:    "http 401: error invalid_request_error/api_key/wrong_api_key: Wrong API Key. You can get a new API key at https://cloud.cerebras.ai/platform/",
 		},
 	}
 	f := func(t *testing.T, apiKey string) genai.ModelProvider {

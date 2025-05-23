@@ -25,6 +25,7 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
+	"golang.org/x/sync/errgroup"
 )
 
 // https://github.com/ollama/ollama/blob/main/docs/api.md#generate-a-chat-completion
@@ -326,6 +327,18 @@ func (m *Model) Context() int64 {
 	return 0
 }
 
+type ModelsResponse struct {
+	Models []Model `json:"models"`
+}
+
+func (r *ModelsResponse) ToModels() []genai.Model {
+	models := make([]genai.Model, len(r.Models))
+	for i := range r.Models {
+		models[i] = &r.Models[i]
+	}
+	return models
+}
+
 type pullModelRequest struct {
 	Model    string `json:"model"`
 	Insecure bool   `json:"insecure"`
@@ -352,6 +365,9 @@ func (er *errorResponse) String() string {
 //
 
 // Client implements the REST JSON based API.
+//
+// We cannot use ClientChat because Chat and ChatStream try to pull on first failure, and ChatStream receives
+// line separated JSON instead of SSE.
 type Client struct {
 	internal.ClientBase[*errorResponse]
 
@@ -385,7 +401,33 @@ func New(baseURL, model string) (*Client, error) {
 }
 
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
-	return internal.Chat(ctx, msgs, opts, c.model, c.ChatRaw, false)
+	result := genai.ChatResult{}
+	for i, msg := range msgs {
+		for j, content := range msg.Contents {
+			if len(content.Opaque) != 0 {
+				return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
+			}
+		}
+	}
+
+	var in ChatRequest
+	var continuableErr error
+	if err := in.Init(msgs, opts, c.model); err != nil {
+		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+			continuableErr = uce
+		} else {
+			return result, err
+		}
+	}
+	var out ChatResponse
+	if err := c.ChatRaw(ctx, &in, &out); err != nil {
+		return result, err
+	}
+	result, err := out.ToResult()
+	if err != nil {
+		return result, err
+	}
+	return result, continuableErr
 }
 
 func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
@@ -408,7 +450,38 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
-	return internal.ChatStream(ctx, msgs, opts, chunks, c.model, c.ChatStreamRaw, processStreamPackets, false)
+	result := genai.ChatResult{}
+	for i, msg := range msgs {
+		for j, content := range msg.Contents {
+			if len(content.Opaque) != 0 {
+				return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
+			}
+		}
+	}
+
+	in := ChatRequest{}
+	var continuableErr error
+	if err := in.Init(msgs, opts, c.model); err != nil {
+		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+			continuableErr = uce
+		} else {
+			return result, err
+		}
+	}
+	ch := make(chan ChatStreamChunkResponse)
+	eg, ctx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		return processStreamPackets(ch, chunks, &result)
+	})
+	err := c.ChatStreamRaw(ctx, &in, ch)
+	close(ch)
+	if err2 := eg.Wait(); err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return result, err
+	}
+	return result, continuableErr
 }
 
 func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
@@ -442,17 +515,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://github.com/ollama/ollama/blob/main/docs/api.md#list-local-models
-	var out struct {
-		Models []Model `json:"models"`
-	}
-	if err := c.DoRequest(ctx, "GET", c.baseURL+"/api/tags", nil, &out); err != nil {
-		return nil, err
-	}
-	models := make([]genai.Model, len(out.Models))
-	for i := range out.Models {
-		models[i] = &out.Models[i]
-	}
-	return models, nil
+	return internal.ListModels[*errorResponse, *ModelsResponse](ctx, &c.ClientBase, c.baseURL+"/api/tags")
 }
 
 // PullModel is the equivalent of "ollama pull".

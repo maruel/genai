@@ -23,7 +23,6 @@ import (
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
-	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -128,6 +127,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 		errs = append(errs, &genai.UnsupportedContinuableError{Unsupported: unsupported})
 	}
 	return errors.Join(errs...)
+}
+
+func (r *ChatRequest) SetStream(stream bool) {
+	r.Stream = stream
 }
 
 func (c *ChatRequest) initOptions(v *genai.ChatOptions) []string {
@@ -701,10 +704,7 @@ func (er *errorResponse) String() string {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientBase[*errorResponse]
-
-	model   string
-	chatURL string
+	internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Anthropic platform API.
@@ -712,6 +712,7 @@ type Client struct {
 // If apiKey is not provided, it tries to load it from the ANTHROPIC_API_KEY environment variable.
 // If none is found, it returns an error.
 // Get an API key at https://console.anthropic.com/settings/keys
+//
 // If no model is provided, only functions that do not require a model, like ListModels, will work.
 // To use multiple models, create multiple clients.
 // Use one of the model from https://docs.anthropic.com/en/docs/about-claude/models/all-models
@@ -722,45 +723,34 @@ func New(apiKey, model string) (*Client, error) {
 			return nil, errors.New("anthropic API key is required; get one at " + apiKeyURL)
 		}
 	}
+	// Anthropic allows Opaque fields for thinking signatures
 	return &Client{
-		model:   model,
-		chatURL: "https://api.anthropic.com/v1/messages",
-		ClientBase: internal.ClientBase[*errorResponse]{
-			ClientJSON: httpjson.Client{
-				Client: &http.Client{Transport: &roundtrippers.Header{
-					Transport: &roundtrippers.Retry{
-						Transport: &roundtrippers.RequestID{
-							Transport: http.DefaultTransport,
+		ClientChat: internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+			Model:                model,
+			ChatURL:              "https://api.anthropic.com/v1/messages",
+			AllowOpaqueFields:    true,
+			ProcessStreamPackets: processStreamPackets,
+			ClientBase: internal.ClientBase[*errorResponse]{
+				ClientJSON: httpjson.Client{
+					Client: &http.Client{Transport: &roundtrippers.Header{
+						Transport: &roundtrippers.Retry{
+							Transport: &roundtrippers.RequestID{
+								Transport: http.DefaultTransport,
+							},
 						},
-					},
-					Header: http.Header{"x-api-key": {apiKey}, "anthropic-version": {"2023-06-01"}},
-				}},
-				Lenient: internal.BeLenient,
+						Header: http.Header{"x-api-key": {apiKey}, "anthropic-version": {"2023-06-01"}},
+					}},
+					Lenient: internal.BeLenient,
+				},
+				APIKeyURL: apiKeyURL,
 			},
-			APIKeyURL: apiKeyURL,
 		},
 	}, nil
 }
 
-// TODO: Caching: https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching
-
-func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
-	// https://docs.anthropic.com/en/api/messages
-	// Anthropic allows Opaque fields for thinking signatures
-	return internal.Chat(ctx, msgs, opts, c.model, c.ChatRaw, true)
-}
-
-func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
-	if err := c.validate(); err != nil {
-		return err
-	}
-	in.Stream = false
-	return c.DoRequest(ctx, "POST", c.chatURL, in, out)
-}
-
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
-	// Anthropic allows Opaque fields for thinking signatures.
-	return internal.ChatStream(ctx, msgs, opts, chunks, c.model, c.ChatStreamRaw, processStreamPackets, true)
+func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	// https://docs.anthropic.com/en/api/models-list
+	return internal.ListModels[*errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.anthropic.com/v1/models?limit=1000")
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {
@@ -838,34 +828,6 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			}
 			chunks <- f
 		}
-	}
-	return nil
-}
-
-func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
-	if err := c.validate(); err != nil {
-		return err
-	}
-	in.Stream = true
-	resp, err := c.ClientJSON.Request(ctx, "POST", c.chatURL, nil, in)
-	if err != nil {
-		return fmt.Errorf("failed to get server response: %w", err)
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != 200 {
-		return c.DecodeError(ctx, c.chatURL, resp)
-	}
-	return sse.Process(resp.Body, out, &errorResponse{})
-}
-
-func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
-	// https://docs.anthropic.com/en/api/models-list
-	return internal.ListModels[*errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.anthropic.com/v1/models?limit=1000")
-}
-
-func (c *Client) validate() error {
-	if c.model == "" {
-		return errors.New("a model is required")
 	}
 	return nil
 }

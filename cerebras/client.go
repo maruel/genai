@@ -19,7 +19,6 @@ import (
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
-	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -148,6 +147,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 		errs = append(errs, &genai.UnsupportedContinuableError{Unsupported: unsupported})
 	}
 	return errors.Join(errs...)
+}
+
+func (r *ChatRequest) SetStream(stream bool) {
+	r.Stream = stream
 }
 
 // Message is completely undocumented as of May 2025.
@@ -455,10 +458,7 @@ func (er *errorResponse) String() string {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientBase[*errorResponse]
-
-	model   string
-	chatURL string
+	internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Cerebras platform API.
@@ -477,40 +477,31 @@ func New(apiKey, model string) (*Client, error) {
 		}
 	}
 	return &Client{
-		model:   model,
-		chatURL: "https://api.cerebras.ai/v1/chat/completions",
-		ClientBase: internal.ClientBase[*errorResponse]{
-			ClientJSON: httpjson.Client{
-				Client: &http.Client{Transport: &roundtrippers.Header{
-					Transport: &roundtrippers.Retry{
-						Transport: &roundtrippers.RequestID{
-							Transport: http.DefaultTransport,
+		ClientChat: internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+			Model:                model,
+			ChatURL:              "https://api.cerebras.ai/v1/chat/completions",
+			ProcessStreamPackets: processStreamPackets,
+			ClientBase: internal.ClientBase[*errorResponse]{
+				ClientJSON: httpjson.Client{
+					Client: &http.Client{Transport: &roundtrippers.Header{
+						Transport: &roundtrippers.Retry{
+							Transport: &roundtrippers.RequestID{
+								Transport: http.DefaultTransport,
+							},
 						},
-					},
-					Header: http.Header{"Authorization": {"Bearer " + apiKey}},
-				}},
-				Lenient: internal.BeLenient,
+						Header: http.Header{"Authorization": {"Bearer " + apiKey}},
+					}},
+					Lenient: internal.BeLenient,
+				},
+				APIKeyURL: apiKeyURL,
 			},
-			APIKeyURL: apiKeyURL,
 		},
 	}, nil
 }
 
-func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
-	// https://inference-docs.cerebras.ai/api-reference/chat-completions
-	return internal.Chat(ctx, msgs, opts, c.model, c.ChatRaw, false)
-}
-
-func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
-	if err := c.validate(); err != nil {
-		return err
-	}
-	in.Stream = false
-	return c.DoRequest(ctx, "POST", c.chatURL, in, out)
-}
-
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
-	return internal.ChatStream(ctx, msgs, opts, chunks, c.model, c.ChatStreamRaw, processStreamPackets, false)
+func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	// https://inference-docs.cerebras.ai/api-reference/models
+	return internal.ListModels[*errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.cerebras.ai/v1/models")
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {
@@ -561,34 +552,6 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 	}
 	return nil
-}
-
-func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
-	if err := c.validate(); err != nil {
-		return err
-	}
-	in.Stream = true
-	resp, err := c.ClientJSON.Request(ctx, "POST", c.chatURL, nil, in)
-	if err != nil {
-		return fmt.Errorf("failed to get server response: %w", err)
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != 200 {
-		return c.DecodeError(ctx, c.chatURL, resp)
-	}
-	return sse.Process(resp.Body, out, &errorResponse{})
-}
-
-func (c *Client) validate() error {
-	if c.model == "" {
-		return errors.New("a model is required")
-	}
-	return nil
-}
-
-func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
-	// https://inference-docs.cerebras.ai/api-reference/models
-	return internal.ListModels[*errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.cerebras.ai/v1/models")
 }
 
 var (

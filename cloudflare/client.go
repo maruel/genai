@@ -23,7 +23,6 @@ import (
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
-	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -122,6 +121,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 		errs = append(errs, &genai.UnsupportedContinuableError{Unsupported: unsupported})
 	}
 	return errors.Join(errs...)
+}
+
+func (r *ChatRequest) SetStream(stream bool) {
+	r.Stream = stream
 }
 
 // Message is not well specified in the API documentation.
@@ -458,11 +461,9 @@ func (er *errorResponse) String() string {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientBase[*errorResponse]
+	internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 
 	accountID string
-	model     string
-	chatURL   string
 }
 
 // New creates a new client to talk to the Cloudflare Workers AI platform API.
@@ -486,85 +487,31 @@ func New(accountID, apiKey, model string) (*Client, error) {
 			return nil, errors.New("cloudflare API key is required; get one at " + apiKeyURL)
 		}
 	}
-	return &Client{
-		accountID: accountID,
-		model:     model,
-		chatURL:   "https://api.cloudflare.com/client/v4/accounts/" + accountID + "/ai/run/" + model,
-		ClientBase: internal.ClientBase[*errorResponse]{
-			ClientJSON: httpjson.Client{
-				Client: &http.Client{Transport: &roundtrippers.Header{
-					Transport: &roundtrippers.Retry{
-						Transport: &roundtrippers.RequestID{
-							Transport: http.DefaultTransport,
-						},
-					},
-					Header: http.Header{"Authorization": {"Bearer " + apiKey}},
-				}},
-				Lenient: internal.BeLenient,
-			},
-			APIKeyURL: apiKeyURL,
-		},
-	}, nil
-}
-
-func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
-	// https://developers.cloudflare.com/api/resources/ai/methods/run/
-	return internal.Chat(ctx, msgs, opts, c.model, c.ChatRaw, false)
-}
-
-func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
-	if err := c.validate(); err != nil {
-		return err
-	}
-	in.Stream = false
-	return c.DoRequest(ctx, "POST", c.chatURL, in, out)
-}
-
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
-	return internal.ChatStream(ctx, msgs, opts, chunks, c.model, c.ChatStreamRaw, processStreamPackets, false)
-}
-
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {
-	defer func() {
-		// We need to empty the channel to avoid blocking the goroutine.
-		for range ch {
-		}
-	}()
-	for pkt := range ch {
-		if pkt.Usage.TotalTokens != 0 {
-			result.InputTokens = pkt.Usage.PromptTokens
-			result.OutputTokens = pkt.Usage.CompletionTokens
-			// Cloudflare doesn't provide FinishReason.
-		}
-		// TODO: Tools.
-		if word := pkt.Response; word != "" {
-			f := genai.MessageFragment{TextFragment: word}
-			if err := result.Accumulate(f); err != nil {
-				return err
-			}
-			chunks <- f
-		}
-	}
-	return nil
-}
-
-func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
 	// Investigate websockets?
 	// https://blog.cloudflare.com/workers-ai-streaming/ and
 	// https://developers.cloudflare.com/workers/examples/websockets/
-	if err := c.validate(); err != nil {
-		return err
-	}
-	in.Stream = true
-	resp, err := c.ClientJSON.Request(ctx, "POST", c.chatURL, nil, in)
-	if err != nil {
-		return fmt.Errorf("failed to get server response: %w", err)
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != 200 {
-		return c.DecodeError(ctx, c.chatURL, resp)
-	}
-	return sse.Process(resp.Body, out, &errorResponse{})
+	return &Client{
+		ClientChat: internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+			Model:                model,
+			ChatURL:              "https://api.cloudflare.com/client/v4/accounts/" + accountID + "/ai/run/" + model,
+			ProcessStreamPackets: processStreamPackets,
+			ClientBase: internal.ClientBase[*errorResponse]{
+				ClientJSON: httpjson.Client{
+					Client: &http.Client{Transport: &roundtrippers.Header{
+						Transport: &roundtrippers.Retry{
+							Transport: &roundtrippers.RequestID{
+								Transport: http.DefaultTransport,
+							},
+						},
+						Header: http.Header{"Authorization": {"Bearer " + apiKey}},
+					}},
+					Lenient: internal.BeLenient,
+				},
+				APIKeyURL: apiKeyURL,
+			},
+		},
+		accountID: accountID,
+	}, nil
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
@@ -588,9 +535,26 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return models, nil
 }
 
-func (c *Client) validate() error {
-	if c.model == "" {
-		return errors.New("a model is required")
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {
+	defer func() {
+		// We need to empty the channel to avoid blocking the goroutine.
+		for range ch {
+		}
+	}()
+	for pkt := range ch {
+		if pkt.Usage.TotalTokens != 0 {
+			result.InputTokens = pkt.Usage.PromptTokens
+			result.OutputTokens = pkt.Usage.CompletionTokens
+			// Cloudflare doesn't provide FinishReason.
+		}
+		// TODO: Tools.
+		if word := pkt.Response; word != "" {
+			f := genai.MessageFragment{TextFragment: word}
+			if err := result.Accumulate(f); err != nil {
+				return err
+			}
+			chunks <- f
+		}
 	}
 	return nil
 }

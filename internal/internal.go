@@ -10,9 +10,12 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"reflect"
 	"strings"
+	"sync"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/httpjson"
 	"golang.org/x/sync/errgroup"
 )
@@ -22,8 +25,10 @@ import (
 // It is true by default. Tests must manually set it to false.
 var BeLenient = true
 
+//
+
 // ClientBase implements the shared HTTP client functionality used across all API clients.
-type ClientBase[E fmt.Stringer] struct {
+type ClientBase[Err fmt.Stringer] struct {
 	// ClientJSON is exported for testing replay purposes.
 	ClientJSON httpjson.Client
 	// APIKeyURL is the URL to present to the user upon authentication error.
@@ -34,12 +39,12 @@ type ClientBase[E fmt.Stringer] struct {
 //
 // It takes care of sending the request, decoding the response, and handling errors.
 // All API clients should use this method for their HTTP communication needs.
-func (c *ClientBase[E]) DoRequest(ctx context.Context, method, url string, in, out any) error {
+func (c *ClientBase[Err]) DoRequest(ctx context.Context, method, url string, in, out any) error {
 	resp, err := c.ClientJSON.Request(ctx, method, url, nil, in)
 	if err != nil {
 		return err
 	}
-	var er E
+	var er Err
 	switch i, err := httpjson.DecodeResponse(resp, out, &er); i {
 	case 0:
 		return nil
@@ -75,8 +80,8 @@ func (c *ClientBase[E]) DoRequest(ctx context.Context, method, url string, in, o
 //
 // It handles JSON decoding of error responses and provides appropriate error messages
 // with context such as API key URLs for unauthorized errors.
-func (c *ClientBase[E]) DecodeError(ctx context.Context, url string, resp *http.Response) error {
-	var er E
+func (c *ClientBase[Err]) DecodeError(ctx context.Context, url string, resp *http.Response) error {
+	var er Err
 	switch i, err := httpjson.DecodeResponse(resp, &er); i {
 	case 0:
 		var herr *httpjson.Error
@@ -101,33 +106,48 @@ func (c *ClientBase[E]) DecodeError(ctx context.Context, url string, resp *http.
 	}
 }
 
+//
+
 // Obj is a generic interface for chat-related types (both requests and responses)
 type Obj interface{ any }
 
-// initializableRequest is an interface for request types that can be initialized
-type initializableRequest interface {
-	// Init initializes the request with messages, options, and model
+// InitializableRequest is an interface for request types that can be initialized.
+type InitializableRequest interface {
+	// Init initializes the request with messages, options, and model.
 	Init(msgs genai.Messages, opts genai.Validatable, model string) error
+	// SetStream set the stream mode.
+	SetStream(bool)
 }
 
-// resultConverter converts a provider-specific result to a genai.ChatResult.
-type resultConverter interface {
+// ResultConverter converts a provider-specific result to a genai.ChatResult.
+type ResultConverter interface {
 	ToResult() (genai.ChatResult, error)
 }
 
-// Chat is a generic function that implements the common pattern of Chat methods across providers.
-// It is meant to be called by client-specific Chat methods to avoid code duplication.
-func Chat[TRequest, TResponse Obj](
-	ctx context.Context,
-	msgs genai.Messages,
-	opts genai.Validatable,
-	model string,
-	chatRaw func(ctx context.Context, in *TRequest, out *TResponse) error,
-	allowOpaqueFields bool,
-) (genai.ChatResult, error) {
+//
+
+// ClientChat implements common functionality for clients that provide chat capabilities.
+// It embeds ClientBase and adds a Model field and common chat methods.
+type ClientChat[Err fmt.Stringer, ChatRequest InitializableRequest, ChatResponse ResultConverter, StreamChunk Obj] struct {
+	ClientBase[Err]
+	// Model is the default model used for chat requests
+	Model string
+	// ChatURL is the endpoint URL for chat API requests
+	ChatURL string
+	// ChatStreamURL is the endpoint URL for chat stream API requests. It defaults to ChatURL if unset.
+	ChatStreamURL        string
+	AllowOpaqueFields    bool
+	ProcessStreamPackets func(ch <-chan StreamChunk, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error
+
+	mu           sync.Mutex
+	chatRequest  reflect.Type
+	chatResponse reflect.Type
+}
+
+func (c *ClientChat[Err, ChatRequest, ChatResponse, StreamChunk]) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	result := genai.ChatResult{}
 	// Check for non-empty Opaque field unless explicitly allowed
-	if !allowOpaqueFields {
+	if !c.AllowOpaqueFields {
 		for i, msg := range msgs {
 			for j, content := range msg.Contents {
 				if len(content.Opaque) != 0 {
@@ -137,41 +157,31 @@ func Chat[TRequest, TResponse Obj](
 		}
 	}
 
-	in := new(TRequest)
+	c.lateInit()
+	in := reflect.New(c.chatRequest).Interface().(ChatRequest)
 	var continuableErr error
-	if err := any(in).(initializableRequest).Init(msgs, opts, model); err != nil {
+	if err := in.Init(msgs, opts, c.Model); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {
 			return result, err
 		}
 	}
-	out := new(TResponse)
-	if err := chatRaw(ctx, in, out); err != nil {
+	out := reflect.New(c.chatResponse).Interface().(ChatResponse)
+	if err := c.ChatRaw(ctx, in, out); err != nil {
 		return result, err
 	}
-	result, err := any(out).(resultConverter).ToResult()
+	result, err := out.ToResult()
 	if err != nil {
 		return result, err
 	}
 	return result, continuableErr
 }
 
-// ChatStream is a generic function that implements the common pattern of ChatStream methods across providers.
-// It is meant to be called by client-specific ChatStream methods to avoid code duplication.
-func ChatStream[TRequest, TResponse Obj](
-	ctx context.Context,
-	msgs genai.Messages,
-	opts genai.Validatable,
-	chunks chan<- genai.MessageFragment,
-	model string,
-	chatStreamRaw func(ctx context.Context, in *TRequest, out chan<- TResponse) error,
-	processStreamPackets func(ch <-chan TResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error,
-	allowOpaqueFields bool,
-) (genai.ChatResult, error) {
+func (c *ClientChat[Err, ChatRequest, ChatResponse, StreamChunk]) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
 	result := genai.ChatResult{}
 	// Check for non-empty Opaque field unless explicitly allowed
-	if !allowOpaqueFields {
+	if !c.AllowOpaqueFields {
 		for i, msg := range msgs {
 			for j, content := range msg.Contents {
 				if len(content.Opaque) != 0 {
@@ -181,21 +191,22 @@ func ChatStream[TRequest, TResponse Obj](
 		}
 	}
 
-	in := new(TRequest)
+	c.lateInit()
+	in := reflect.New(c.chatRequest).Interface().(ChatRequest)
 	var continuableErr error
-	if err := any(in).(initializableRequest).Init(msgs, opts, model); err != nil {
+	if err := in.Init(msgs, opts, c.Model); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {
 			return result, err
 		}
 	}
-	ch := make(chan TResponse)
+	ch := make(chan StreamChunk)
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		return processStreamPackets(ch, chunks, &result)
+		return c.ProcessStreamPackets(ch, chunks, &result)
 	})
-	err := chatStreamRaw(ctx, in, ch)
+	err := c.ChatStreamRaw(ctx, in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
@@ -206,6 +217,60 @@ func ChatStream[TRequest, TResponse Obj](
 	return result, continuableErr
 }
 
+// ChatRaw is the generic raw implementation for the Chat API endpoint.
+// It sets Stream to false and sends a request to the chat URL.
+func (c *ClientChat[Err, ChatRequest, ChatResponse, StreamChunk]) ChatRaw(ctx context.Context, in ChatRequest, out ChatResponse) error {
+	if err := c.Validate(); err != nil {
+		return err
+	}
+	in.SetStream(false)
+	return c.DoRequest(ctx, "POST", c.ChatURL, in, out)
+}
+
+// ChatStreamRaw is the generic raw implementation for streaming Chat API endpoints.
+// It sets Stream to true, enables stream options if available, and handles the SSE response.
+func (c *ClientChat[Err, ChatRequest, ChatResponse, StreamChunk]) ChatStreamRaw(ctx context.Context, in ChatRequest, out chan<- StreamChunk) error {
+	if err := c.Validate(); err != nil {
+		return err
+	}
+	in.SetStream(true)
+	url := c.ChatStreamURL
+	if url == "" {
+		url = c.ChatURL
+	}
+	resp, err := c.ClientJSON.Request(ctx, "POST", url, nil, in)
+	if err != nil {
+		return fmt.Errorf("failed to get server response: %w", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		return c.DecodeError(ctx, url, resp)
+	}
+	var er Err
+	return sse.Process(resp.Body, out, &er)
+}
+
+func (c *ClientChat[Err, ChatRequest, ChatResponse, StreamChunk]) Validate() error {
+	if c.Model == "" {
+		return errors.New("a model is required")
+	}
+	return nil
+}
+
+func (c *ClientChat[Err, ChatRequest, ChatResponse, StreamChunk]) lateInit() {
+	// TODO: Figure out how to not use reflection.
+	c.mu.Lock()
+	if c.chatRequest == nil {
+		var in ChatRequest
+		c.chatRequest = reflect.TypeOf(in).Elem()
+		var out ChatResponse
+		c.chatResponse = reflect.TypeOf(out).Elem()
+	}
+	c.mu.Unlock()
+}
+
+//
+
 // ListModelsResponse is an interface for responses that contain model data.
 type ListModelsResponse interface {
 	// ToModels converts the provider-specific models to a slice of genai.Model
@@ -214,7 +279,7 @@ type ListModelsResponse interface {
 
 // ListModels is a generic function that implements the common pattern for listing models across providers.
 // It makes an HTTP GET request to the specified URL and converts the response to a slice of genai.Model.
-func ListModels[E fmt.Stringer, R ListModelsResponse](ctx context.Context, c *ClientBase[E], url string) ([]genai.Model, error) {
+func ListModels[Err fmt.Stringer, R ListModelsResponse](ctx context.Context, c *ClientBase[Err], url string) ([]genai.Model, error) {
 	var resp R
 	if err := c.DoRequest(ctx, "GET", url, nil, &resp); err != nil {
 		return nil, err

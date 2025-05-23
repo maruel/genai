@@ -29,7 +29,6 @@ import (
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
-	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -316,6 +315,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 		errs = append(errs, &genai.UnsupportedContinuableError{Unsupported: unsupported})
 	}
 	return errors.Join(errs...)
+}
+
+func (r *ChatRequest) SetStream(stream bool) {
+	// There's no field to set, the URL is different.
 }
 
 func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) []string {
@@ -834,12 +837,9 @@ type errorResponseError struct {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientBase[*errorResponse]
+	internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 
-	apiKey        string
-	model         string
-	chatURL       string
-	chatStreamURL string
+	apiKey string
 }
 
 // New creates a new client to talk to Google's Gemini platform API.
@@ -899,6 +899,11 @@ type Client struct {
 // - text/csv
 // - text/xml
 // - text/rtf
+//
+// Visit https://ai.google.dev/gemini-api/docs/pricing for up to date information.
+//
+// As of May 2025, price on Pro model increases when more than 200k input tokens are used.
+// Cached input tokens are 25% of the price of new tokens.
 func New(apiKey, model string) (*Client, error) {
 	const apiKeyURL = "https://ai.google.dev/gemini-api/docs/getting-started"
 	if apiKey == "" {
@@ -908,25 +913,28 @@ func New(apiKey, model string) (*Client, error) {
 	}
 	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
 	return &Client{
-		apiKey:        apiKey,
-		model:         model,
-		chatURL:       "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey,
-		chatStreamURL: "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":streamGenerateContent?alt=sse&key=" + apiKey,
-		ClientBase: internal.ClientBase[*errorResponse]{
-			ClientJSON: httpjson.Client{
-				Client: &http.Client{Transport: &roundtrippers.PostCompressed{
-					Transport: &roundtrippers.Retry{
-						Transport: &roundtrippers.RequestID{
-							Transport: http.DefaultTransport,
+		ClientChat: internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+			Model:                model,
+			ChatURL:              "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey,
+			ChatStreamURL:        "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":streamGenerateContent?alt=sse&key=" + apiKey,
+			ProcessStreamPackets: processStreamPackets,
+			ClientBase: internal.ClientBase[*errorResponse]{
+				ClientJSON: httpjson.Client{
+					Client: &http.Client{Transport: &roundtrippers.PostCompressed{
+						Transport: &roundtrippers.Retry{
+							Transport: &roundtrippers.RequestID{
+								Transport: http.DefaultTransport,
+							},
 						},
-					},
-					// Google supports HTTP POST gzip compression!
-					Encoding: "gzip",
-				}},
-				Lenient: internal.BeLenient,
+						// Google supports HTTP POST gzip compression!
+						Encoding: "gzip",
+					}},
+					Lenient: internal.BeLenient,
+				},
+				APIKeyURL: apiKeyURL,
 			},
-			APIKeyURL: apiKeyURL,
 		},
+		apiKey: apiKey,
 	}, nil
 }
 
@@ -949,7 +957,7 @@ func (c *Client) CacheAdd(ctx context.Context, msgs genai.Messages, opts *genai.
 	// Useful when reusing the same large data multiple times to reduce token usage.
 	// This requires a pinned model, with trailing -001.
 	in := CachedContent{
-		Model:       "models/" + c.model,
+		Model:       "models/" + c.Model,
 		DisplayName: displayName,
 	}
 	if name != "" {
@@ -983,7 +991,7 @@ func (c *Client) CacheExtend(ctx context.Context, name string, ttl time.Duration
 	// https://ai.google.dev/api/caching#method:-cachedcontents.patch
 	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + name + "?key=" + c.apiKey
 	// Model is required.
-	in := CachedContent{Model: "models/" + c.model, Expiration: Expiration{TTL: Duration(ttl)}}
+	in := CachedContent{Model: "models/" + c.Model, Expiration: Expiration{TTL: Duration(ttl)}}
 	out := CachedContent{}
 	return c.DoRequest(ctx, "PATCH", url, &in, &out)
 }
@@ -1037,27 +1045,9 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 	return c.DoRequest(ctx, "DELETE", url, nil, &out)
 }
 
-// Chat implements genai.ChatProvider.
-//
-// Visit https://ai.google.dev/gemini-api/docs/pricing for up to date information.
-//
-// As of May 2025, price on Pro model increases when more than 200k input tokens are used.
-// Cached input tokens are 25% of the price of new tokens.
-func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
-	return internal.Chat(ctx, msgs, opts, c.model, c.ChatRaw, false)
-}
-
-func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
-	// https://ai.google.dev/api/generate-content?hl=en#text_gen_text_only_prompt-SHELL
-	if err := c.validate(); err != nil {
-		return err
-	}
-	return c.DoRequest(ctx, "POST", c.chatURL, in, out)
-}
-
-// ChatStream implements genai.ChatProvider.
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
-	return internal.ChatStream(ctx, msgs, opts, chunks, c.model, c.ChatStreamRaw, processStreamPackets, false)
+func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	// https://ai.google.dev/api/models?hl=en#method:-models.list
+	return internal.ListModels[*errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.apiKey)
 }
 
 // processStreamPackets is the function used to convert the chunks sent by Gemini's SSE data into
@@ -1127,34 +1117,6 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			}
 			chunks <- f
 		}
-	}
-	return nil
-}
-
-func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
-	// https://ai.google.dev/api/generate-content?hl=en#v1beta.GenerateContentResponse
-	if err := c.validate(); err != nil {
-		return err
-	}
-	resp, err := c.ClientJSON.Request(ctx, "POST", c.chatStreamURL, nil, in)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != 200 {
-		return c.DecodeError(ctx, c.chatStreamURL, resp)
-	}
-	return sse.Process(resp.Body, out, nil)
-}
-
-func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
-	// https://ai.google.dev/api/models?hl=en#method:-models.list
-	return internal.ListModels[*errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.apiKey)
-}
-
-func (c *Client) validate() error {
-	if c.model == "" {
-		return errors.New("a model is required")
 	}
 	return nil
 }

@@ -437,7 +437,6 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 	if err := rpcin.Init(msgs, opts, ""); err != nil {
 		return genai.ChatResult{}, err
 	}
-	// TODO: Figure out how to inject this in internal.Chat()
 	if err := c.initPrompt(ctx, &rpcin, opts, msgs); err != nil {
 		return genai.ChatResult{}, err
 	}
@@ -479,7 +478,6 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 			return result, err
 		}
 	}
-	// TODO: Figure out how to inject this in internal.ChatStream()
 	if err := c.initPrompt(ctx, &in, opts, msgs); err != nil {
 		return result, err
 	}
@@ -498,24 +496,6 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 		return result, continuableErr
 	}
 	return result, err
-}
-
-func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {
-	for msg := range ch {
-		if msg.Timings.PredictedN != 0 {
-			result.InputTokens = msg.Timings.PromptN
-			result.OutputTokens = msg.Timings.PredictedN
-			result.FinishReason = msg.StopType.ToFinishReason()
-		}
-		f := genai.MessageFragment{TextFragment: msg.Content}
-		if !f.IsZero() {
-			if err := result.Accumulate(f); err != nil {
-				return err
-			}
-			chunks <- f
-		}
-	}
-	return nil
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
@@ -657,6 +637,24 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 			// in.Prompt += c.encoding.ToolCallTokenStart + m.Text + c.encoding.ToolCallTokenEnd
 		default:
 			return fmt.Errorf("unexpected role %q", m.Role)
+		}
+	}
+	return nil
+}
+
+func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {
+	for msg := range ch {
+		if msg.Timings.PredictedN != 0 {
+			result.InputTokens = msg.Timings.PromptN
+			result.OutputTokens = msg.Timings.PredictedN
+			result.FinishReason = msg.StopType.ToFinishReason()
+		}
+		f := genai.MessageFragment{TextFragment: msg.Content}
+		if !f.IsZero() {
+			if err := result.Accumulate(f); err != nil {
+				return err
+			}
+			chunks <- f
 		}
 	}
 	return nil

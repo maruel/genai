@@ -205,3 +205,19 @@ func ChatStream[TRequest, TResponse Obj](
 	}
 	return result, continuableErr
 }
+
+// ListModelsResponse is an interface for responses that contain model data.
+type ListModelsResponse interface {
+	// ToModels converts the provider-specific models to a slice of genai.Model
+	ToModels() []genai.Model
+}
+
+// ListModels is a generic function that implements the common pattern for listing models across providers.
+// It makes an HTTP GET request to the specified URL and converts the response to a slice of genai.Model.
+func ListModels[E any, R ListModelsResponse](ctx context.Context, c *ClientBase[E], url string) ([]genai.Model, error) {
+	var resp R
+	if err := c.DoRequest(ctx, "GET", url, nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp.ToModels(), nil
+}

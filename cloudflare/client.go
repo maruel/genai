@@ -553,22 +553,25 @@ func (m *Model) Context() int64 {
 	return 0
 }
 
+// ModelsResponse represents the response structure for Cloudflare models listing
+type ModelsResponse struct {
+	Result     []Model `json:"result"`
+	ResultInfo struct {
+		Count      int64 `json:"count"`
+		Page       int64 `json:"page"`
+		PerPage    int64 `json:"per_page"`
+		TotalCount int64 `json:"total_count"`
+	} `json:"result_info"`
+	Success  bool       `json:"success"`
+	Errors   []struct{} `json:"errors"`   // Annoyingly, it's included all the time
+	Messages []struct{} `json:"messages"` // Annoyingly, it's included all the time
+}
+
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://developers.cloudflare.com/api/resources/ai/subresources/models/methods/list/
 	var models []genai.Model
 	for page := 1; ; page++ {
-		var out struct {
-			Result     []Model `json:"result"`
-			ResultInfo struct {
-				Count      int64 `json:"count"`
-				Page       int64 `json:"page"`
-				PerPage    int64 `json:"per_page"`
-				TotalCount int64 `json:"total_count"`
-			} `json:"result_info"`
-			Success  bool       `json:"success"`
-			Errors   []struct{} `json:"errors"`   // Annoyingly, it's included all the time
-			Messages []struct{} `json:"messages"` // Annoyingly, it's included all the time
-		}
+		out := ModelsResponse{}
 		// Cloudflare's pagination is surprisingly brittle.
 		url := fmt.Sprintf("https://api.cloudflare.com/client/v4/accounts/%s/ai/models/search?page=%d&per_page=100&hide_experimental=false", c.accountID, page)
 		err := c.DoRequest(ctx, "GET", url, nil, &out)

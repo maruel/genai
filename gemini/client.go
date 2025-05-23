@@ -1132,21 +1132,24 @@ func (m *Model) Context() int64 {
 	return m.InputTokenLimit
 }
 
+// ModelsResponse represents the response structure for Gemini models listing
+type ModelsResponse struct {
+	Models        []Model `json:"models"`
+	NextPageToken string  `json:"nextPageToken"`
+}
+
+// ToIModels converts Gemini models to genai.Model interfaces
+func (r *ModelsResponse) ToModels() []genai.Model {
+	models := make([]genai.Model, len(r.Models))
+	for i := range r.Models {
+		models[i] = &r.Models[i]
+	}
+	return models
+}
+
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://ai.google.dev/api/models?hl=en#method:-models.list
-	var out struct {
-		Models        []Model `json:"models"`
-		NextPageToken string  `json:"nextPageToken"`
-	}
-	err := c.DoRequest(ctx, "GET", "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.apiKey, nil, &out)
-	if err != nil {
-		return nil, err
-	}
-	models := make([]genai.Model, len(out.Models))
-	for i := range out.Models {
-		models[i] = &out.Models[i]
-	}
-	return models, err
+	return internal.ListModels[errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.apiKey)
 }
 
 func (c *Client) validate() error {

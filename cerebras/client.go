@@ -570,20 +570,24 @@ func (m *Model) Context() int64 {
 	return 0
 }
 
+// ModelsResponse represents the response structure for Cerebras models listing
+type ModelsResponse struct {
+	Object string  `json:"object"`
+	Data   []Model `json:"data"`
+}
+
+// ToModels converts Cerebras models to genai.Model interfaces
+func (r *ModelsResponse) ToModels() []genai.Model {
+	models := make([]genai.Model, len(r.Data))
+	for i := range r.Data {
+		models[i] = &r.Data[i]
+	}
+	return models
+}
+
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://inference-docs.cerebras.ai/api-reference/models
-	var out struct {
-		Object string  `json:"object"`
-		Data   []Model `json:"data"`
-	}
-	if err := c.DoRequest(ctx, "GET", "https://api.cerebras.ai/v1/models", nil, &out); err != nil {
-		return nil, err
-	}
-	models := make([]genai.Model, len(out.Data))
-	for i := range out.Data {
-		models[i] = &out.Data[i]
-	}
-	return models, nil
+	return internal.ListModels[errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.cerebras.ai/v1/models")
 }
 
 var (

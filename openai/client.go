@@ -783,20 +783,24 @@ func (m *Model) Context() int64 {
 	return 0
 }
 
+// ModelsResponse represents the response structure for OpenAI models listing
+type ModelsResponse struct {
+	Object string  `json:"object"` // list
+	Data   []Model `json:"data"`
+}
+
+// ToModels converts OpenAI models to genai.Model interfaces
+func (r *ModelsResponse) ToModels() []genai.Model {
+	models := make([]genai.Model, len(r.Data))
+	for i := range r.Data {
+		models[i] = &r.Data[i]
+	}
+	return models
+}
+
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://platform.openai.com/docs/api-reference/models/list
-	var out struct {
-		Object string  `json:"object"` // list
-		Data   []Model `json:"data"`
-	}
-	if err := c.DoRequest(ctx, "GET", "https://api.openai.com/v1/models", nil, &out); err != nil {
-		return nil, err
-	}
-	models := make([]genai.Model, len(out.Data))
-	for i := range out.Data {
-		models[i] = &out.Data[i]
-	}
-	return models, nil
+	return internal.ListModels[errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.openai.com/v1/models")
 }
 
 func (c *Client) validate() error {

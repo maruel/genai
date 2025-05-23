@@ -664,20 +664,24 @@ func (m *Model) Context() int64 {
 	return m.ContextLength
 }
 
+// ModelsResponse represents the response structure for Cohere models listing
+type ModelsResponse struct {
+	Models        []Model `json:"models"`
+	NextPageToken string  `json:"next_page_token"`
+}
+
+// ToModels converts Cohere models to genai.Model interfaces
+func (r *ModelsResponse) ToModels() []genai.Model {
+	models := make([]genai.Model, len(r.Models))
+	for i := range r.Models {
+		models[i] = &r.Models[i]
+	}
+	return models
+}
+
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.cohere.com/reference/list-models
-	var out struct {
-		Models        []Model `json:"models"`
-		NextPageToken string  `json:"next_page_token"`
-	}
-	if err := c.DoRequest(ctx, "GET", "https://api.cohere.com/v1/models?page_size=1000", nil, &out); err != nil {
-		return nil, err
-	}
-	models := make([]genai.Model, len(out.Models))
-	for i := range out.Models {
-		models[i] = &out.Models[i]
-	}
-	return models, nil
+	return internal.ListModels[errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.cohere.com/v1/models?page_size=1000")
 }
 
 func (c *Client) validate() error {

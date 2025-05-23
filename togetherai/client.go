@@ -653,17 +653,21 @@ func (m *Model) Context() int64 {
 	return m.ContextLength
 }
 
+// ModelsResponse represents the response structure for TogetherAI models listing
+type ModelsResponse []Model
+
+// ToModels converts TogetherAI models to genai.Model interfaces
+func (r *ModelsResponse) ToModels() []genai.Model {
+	models := make([]genai.Model, len(*r))
+	for i := range *r {
+		models[i] = &(*r)[i]
+	}
+	return models
+}
+
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.together.ai/reference/models-1
-	var out []Model
-	if err := c.DoRequest(ctx, "GET", "https://api.together.xyz/v1/models", nil, &out); err != nil {
-		return nil, err
-	}
-	models := make([]genai.Model, len(out))
-	for i := range out {
-		models[i] = &out[i]
-	}
-	return models, nil
+	return internal.ListModels[errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.together.xyz/v1/models")
 }
 
 func (c *Client) validate() error {

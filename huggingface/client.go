@@ -642,21 +642,23 @@ func (m *Model) Context() int64 {
 	return 0
 }
 
+// ModelsResponse represents the response structure for Huggingface models listing
+type ModelsResponse []Model
+
+// ToModels converts Huggingface models to genai.Model interfaces
+func (r *ModelsResponse) ToModels() []genai.Model {
+	models := make([]genai.Model, len(*r))
+	for i := range *r {
+		models[i] = &(*r)[i]
+	}
+	return models
+}
+
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://huggingface.co/docs/hub/api
-
-	// return nil, errors.New("not implemented; there's just too many, tens of thousands to chose from at https://huggingface.co/models?inference=warm&sort=trending")
-	var out []Model
 	// There's 20k models warm as of March 2025. There's no way to sort by
-	// trending. Sorting by download is not useful.
-	if err := c.DoRequest(ctx, "GET", "https://huggingface.co/api/models?inference=warm", nil, &out); err != nil {
-		return nil, err
-	}
-	models := make([]genai.Model, len(out))
-	for i := range out {
-		models[i] = &out[i]
-	}
-	return models, nil
+	// trending. Sorting by download is not useful. There's no pagination.
+	return internal.ListModels[errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://huggingface.co/api/models?inference=warm")
 }
 
 func (c *Client) validate() error {

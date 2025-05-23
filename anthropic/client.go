@@ -841,23 +841,26 @@ func (m *Model) Context() int64 {
 	return 0
 }
 
+// ModelsResponse represents the response structure for Anthropic models listing
+type ModelsResponse struct {
+	Data    []Model `json:"data"`
+	FirstID string  `json:"first_id"`
+	HasMore bool    `json:"has_more"`
+	LastID  string  `json:"last_id"`
+}
+
+// ToGenAIModels converts Anthropic models to genai.Model interfaces
+func (r *ModelsResponse) ToModels() []genai.Model {
+	models := make([]genai.Model, len(r.Data))
+	for i := range r.Data {
+		models[i] = &r.Data[i]
+	}
+	return models
+}
+
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.anthropic.com/en/api/models-list
-	var out struct {
-		Data    []Model `json:"data"`
-		FirstID string  `json:"first_id"`
-		HasMore bool    `json:"has_more"`
-		LastID  string  `json:"last_id"`
-	}
-	err := c.DoRequest(ctx, "GET", "https://api.anthropic.com/v1/models?limit=1000", nil, &out)
-	if err != nil {
-		return nil, err
-	}
-	models := make([]genai.Model, len(out.Data))
-	for i := range out.Data {
-		models[i] = &out.Data[i]
-	}
-	return models, err
+	return internal.ListModels[errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.anthropic.com/v1/models?limit=1000")
 }
 
 func (c *Client) validate() error {

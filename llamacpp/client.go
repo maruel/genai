@@ -364,8 +364,7 @@ func (p *PromptEncoding) Validate() error {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	// Client is exported for testing replay purposes.
-	Client httpjson.Client
+	internal.ClientBase
 
 	baseURL  string
 	chatURL  string
@@ -380,15 +379,17 @@ func New(baseURL string, encoding *PromptEncoding) (*Client, error) {
 		return nil, errors.New("baseURL is required")
 	}
 	return &Client{
-		Client: httpjson.Client{
-			Client: &http.Client{
-				Transport: &roundtrippers.Retry{
-					Transport: &roundtrippers.RequestID{
-						Transport: http.DefaultTransport,
+		ClientBase: internal.ClientBase{
+			ClientJSON: httpjson.Client{
+				Client: &http.Client{
+					Transport: &roundtrippers.Retry{
+						Transport: &roundtrippers.RequestID{
+							Transport: http.DefaultTransport,
+						},
 					},
 				},
+				Lenient: internal.BeLenient,
 			},
-			Lenient: internal.BeLenient,
 		},
 		baseURL:  baseURL,
 		chatURL:  baseURL + "/completion",
@@ -493,7 +494,7 @@ func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<-
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
 	in.Stream = true
-	resp, err := c.Client.PostRequest(ctx, c.chatURL, nil, in)
+	resp, err := c.ClientJSON.Request(ctx, "POST", c.chatURL, nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get llama server response: %w", err)
 	}
@@ -582,7 +583,7 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 		return fmt.Errorf("failed to create HTTP request: %w", err)
 	}
 	// This is not a JSON response.
-	resp, err := c.Client.Client.Do(req)
+	resp, err := c.ClientBase.ClientJSON.Client.Do(req)
 	if err != nil {
 		return fmt.Errorf("failed to get metrics response: %w", err)
 	}
@@ -698,30 +699,7 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 }
 
 func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
-	resp, err := c.Client.Request(ctx, method, url, nil, in)
-	if err != nil {
-		return err
-	}
-	er := errorResponse{}
-	switch i, err := httpjson.DecodeResponse(resp, out, &er); i {
-	case 0:
-		return nil
-	case 1:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			herr.PrintBody = false
-			return fmt.Errorf("%w: %s", herr, er.String())
-		}
-		return errors.New(er.String())
-	default:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			slog.WarnContext(ctx, "llamacpp", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
-		} else {
-			slog.WarnContext(ctx, "llamacpp", "url", url, "err", err)
-		}
-		return err
-	}
+	return c.DoRequest(ctx, method, url, in, out, &errorResponse{}, "")
 }
 
 var _ genai.ChatProvider = &Client{}

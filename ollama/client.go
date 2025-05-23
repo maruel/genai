@@ -16,7 +16,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log/slog"
 	"net/http"
 	"strings"
 	"time"
@@ -312,8 +311,7 @@ func (er *errorResponse) String() string {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	// Client is exported for testing replay purposes.
-	Client httpjson.Client
+	internal.ClientBase
 
 	model   string
 	baseURL string
@@ -326,15 +324,17 @@ type Client struct {
 // Use one of the model from https://ollama.com/library
 func New(baseURL, model string) (*Client, error) {
 	return &Client{
-		Client: httpjson.Client{
-			Client: &http.Client{
-				Transport: &roundtrippers.Retry{
-					Transport: &roundtrippers.RequestID{
-						Transport: http.DefaultTransport,
+		ClientBase: internal.ClientBase{
+			ClientJSON: httpjson.Client{
+				Client: &http.Client{
+					Transport: &roundtrippers.Retry{
+						Transport: &roundtrippers.RequestID{
+							Transport: http.DefaultTransport,
+						},
 					},
 				},
+				Lenient: internal.BeLenient,
 			},
-			Lenient: internal.BeLenient,
 		},
 		baseURL: baseURL,
 		chatURL: baseURL + "/api/chat",
@@ -480,7 +480,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	in.Stream = true
 	// Try first, if it immediately errors out requesting to pull, pull then try again.
-	resp, err := c.Client.PostRequest(ctx, c.chatURL, nil, in)
+	resp, err := c.ClientJSON.Request(ctx, "POST", c.chatURL, nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
@@ -493,7 +493,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	if err = c.PullModel(ctx, c.model); err != nil {
 		return err
 	}
-	if resp, err = c.Client.PostRequest(ctx, c.chatURL, nil, in); err != nil {
+	if resp, err = c.ClientJSON.Request(ctx, "POST", c.chatURL, nil, in); err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
@@ -615,30 +615,7 @@ func (c *Client) validate() error {
 }
 
 func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
-	resp, err := c.Client.Request(ctx, method, url, nil, in)
-	if err != nil {
-		return err
-	}
-	er := errorResponse{}
-	switch i, err := httpjson.DecodeResponse(resp, out, &er); i {
-	case 0:
-		return nil
-	case 1:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			herr.PrintBody = false
-			return fmt.Errorf("%w: %s", herr, er.String())
-		}
-		return fmt.Errorf("%w: %s", err, er.String())
-	default:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			slog.WarnContext(ctx, "ollama", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
-		} else {
-			slog.WarnContext(ctx, "ollama", "url", url, "err", err)
-		}
-		return err
-	}
+	return c.DoRequest(ctx, method, url, in, out, &errorResponse{}, "")
 }
 
 var (

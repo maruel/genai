@@ -129,7 +129,7 @@ func getClientInner(t *testing.T, apiKey, m string) *cloudflare.Client {
 		i.Request.URL = strings.Replace(i.Request.URL, realAccountID, "ACCOUNT_ID", 1)
 		return nil
 	}
-	c.Client.Client.Transport = testRecorder.Record(t, c.Client.Client.Transport, recorder.WithHook(fnSave, recorder.AfterCaptureHook), recorder.WithMatcher(fnMatch))
+	c.ClientBase.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientBase.ClientJSON.Client.Transport, recorder.WithHook(fnSave, recorder.AfterCaptureHook), recorder.WithMatcher(fnMatch))
 	return c
 }
 

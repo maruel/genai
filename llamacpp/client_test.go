@@ -37,7 +37,7 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		c.Client.Client = &http.Client{Transport: transport}
+		c.ClientBase.ClientJSON.Client = &http.Client{Transport: transport}
 		opts := genai.ChatOptions{
 			Seed:        1,
 			Temperature: 0.01,
@@ -170,7 +170,7 @@ func (l *lazyServer) getClient(t *testing.T) genai.ChatProvider {
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.Client.Client = &http.Client{Transport: transport}
+	c.ClientBase.ClientJSON.Client = &http.Client{Transport: transport}
 	return c
 }
 

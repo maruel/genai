@@ -103,7 +103,7 @@ func getClientInner(t *testing.T, apiKey, m string) *cohere.Client {
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.Client.Client.Transport = testRecorder.Record(t, c.Client.Client.Transport)
+	c.ClientBase.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientBase.ClientJSON.Client.Transport)
 	return c
 }
 

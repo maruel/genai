@@ -613,8 +613,7 @@ type errorResponseError struct {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	// Client is exported for testing replay purposes.
-	Client httpjson.Client
+	internal.ClientBase
 
 	model   string
 	chatURL string
@@ -641,16 +640,18 @@ func New(apiKey, model string) (*Client, error) {
 	return &Client{
 		model:   model,
 		chatURL: "https://api.openai.com/v1/chat/completions",
-		Client: httpjson.Client{
-			Client: &http.Client{Transport: &roundtrippers.Header{
-				Transport: &roundtrippers.Retry{
-					Transport: &roundtrippers.RequestID{
-						Transport: http.DefaultTransport,
+		ClientBase: internal.ClientBase{
+			ClientJSON: httpjson.Client{
+				Client: &http.Client{Transport: &roundtrippers.Header{
+					Transport: &roundtrippers.Retry{
+						Transport: &roundtrippers.RequestID{
+							Transport: http.DefaultTransport,
+						},
 					},
-				},
-				Header: http.Header{"Authorization": {"Bearer " + apiKey}},
-			}},
-			Lenient: internal.BeLenient,
+					Header: http.Header{"Authorization": {"Bearer " + apiKey}},
+				}},
+				Lenient: internal.BeLenient,
+			},
 		},
 	}, nil
 }
@@ -811,7 +812,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	in.Stream = true
 	in.StreamOptions.IncludeUsage = true
-	resp, err := c.Client.PostRequest(ctx, c.chatURL, nil, in)
+	resp, err := c.ClientJSON.Request(ctx, "POST", c.chatURL, nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
@@ -911,33 +912,7 @@ func (c *Client) validate() error {
 }
 
 func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
-	resp, err := c.Client.Request(ctx, method, url, nil, in)
-	if err != nil {
-		return err
-	}
-	er := errorResponse{}
-	switch i, err := httpjson.DecodeResponse(resp, out, &er); i {
-	case 0:
-		return nil
-	case 1:
-		// OpenAI error message prints the api key URL already.
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			herr.PrintBody = false
-			return fmt.Errorf("%w: %s", herr, er.String())
-		}
-		return errors.New(er.String())
-	default:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			herr.PrintBody = false
-			if apiKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, http.StatusText(herr.StatusCode), apiKeyURL)
-			}
-			return fmt.Errorf("%w: %s", herr, http.StatusText(herr.StatusCode))
-		}
-		return err
-	}
+	return c.DoRequest(ctx, method, url, in, out, &errorResponse{}, apiKeyURL)
 }
 
 const apiKeyURL = "https://platform.openai.com/settings/organization/api-keys"

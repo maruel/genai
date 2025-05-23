@@ -162,7 +162,7 @@ func (l *lazyServer) getClient(t *testing.T, model string) genai.ChatProvider {
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.Client.Client = &http.Client{Transport: transport}
+	c.ClientBase.ClientJSON.Client = &http.Client{Transport: transport}
 	return c
 }
 

@@ -369,7 +369,7 @@ func getClientInner(t *testing.T, apiKey, m string) *gemini.Client {
 		i.Request.URL = i.Request.URL[:j]
 		return nil
 	}
-	c.Client.Client.Transport = testRecorder.Record(t, c.Client.Client.Transport, recorder.WithHook(fnSave, recorder.AfterCaptureHook), recorder.WithMatcher(fnMatch))
+	c.ClientBase.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientBase.ClientJSON.Client.Transport, recorder.WithHook(fnSave, recorder.AfterCaptureHook), recorder.WithMatcher(fnMatch))
 	return c
 }
 

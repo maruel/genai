@@ -120,7 +120,7 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
 			Model:         "meta-llama/Llama-3.2-3B-Instruct-Turbo",
-			ErrChat:       "http 401: error invalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.. You can get a new API key at https://api.together.ai/settings/api-keys",
+			ErrChat:       "http 401: error invalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
 			ErrChatStream: "http 401: error invalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.. You can get a new API key at https://api.together.ai/settings/api-keys",
 		},
 		{
@@ -164,7 +164,7 @@ func getClientInner(t *testing.T, apiKey, m string) *togetherai.Client {
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.Client.Client.Transport = testRecorder.Record(t, c.Client.Client.Transport)
+	c.ClientBase.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientBase.ClientJSON.Client.Transport)
 	return c
 }
 

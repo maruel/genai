@@ -793,8 +793,7 @@ type errorResponseError struct {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	// Client is exported for testing replay purposes.
-	Client httpjson.Client
+	internal.ClientBase
 
 	apiKey        string
 	model         string
@@ -871,17 +870,19 @@ func New(apiKey, model string) (*Client, error) {
 		model:         model,
 		chatURL:       "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey,
 		chatStreamURL: "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":streamGenerateContent?alt=sse&key=" + apiKey,
-		Client: httpjson.Client{
-			Client: &http.Client{Transport: &roundtrippers.PostCompressed{
-				Transport: &roundtrippers.Retry{
-					Transport: &roundtrippers.RequestID{
-						Transport: http.DefaultTransport,
+		ClientBase: internal.ClientBase{
+			ClientJSON: httpjson.Client{
+				Client: &http.Client{Transport: &roundtrippers.PostCompressed{
+					Transport: &roundtrippers.Retry{
+						Transport: &roundtrippers.RequestID{
+							Transport: http.DefaultTransport,
+						},
 					},
-				},
-				// Google supports HTTP POST gzip compression!
-				Encoding: "gzip",
-			}},
-			Lenient: internal.BeLenient,
+					// Google supports HTTP POST gzip compression!
+					Encoding: "gzip",
+				}},
+				Lenient: internal.BeLenient,
+			},
 		},
 	}, nil
 }
@@ -1166,7 +1167,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	if err := c.validate(); err != nil {
 		return err
 	}
-	resp, err := c.Client.PostRequest(ctx, c.chatStreamURL, nil, in)
+	resp, err := c.ClientJSON.Request(ctx, "POST", c.chatStreamURL, nil, in)
 	if err != nil {
 		return err
 	}
@@ -1269,35 +1270,7 @@ func (c *Client) validate() error {
 }
 
 func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
-	resp, err := c.Client.Request(ctx, method, url, nil, in)
-	if err != nil {
-		return err
-	}
-	er := errorResponse{}
-	switch i, err := httpjson.DecodeResponse(resp, out, &er); i {
-	case 0:
-		return nil
-	case 1:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			herr.PrintBody = false
-			if herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
-			}
-			return fmt.Errorf("%w: %s", herr, er.String())
-		}
-		return errors.New(er.String())
-	default:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			herr.PrintBody = false
-			if apiKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, http.StatusText(herr.StatusCode), apiKeyURL)
-			}
-			return fmt.Errorf("%w: %s", herr, http.StatusText(herr.StatusCode))
-		}
-		return err
-	}
+	return c.DoRequest(ctx, method, url, in, out, &errorResponse{}, apiKeyURL)
 }
 
 const apiKeyURL = "https://ai.google.dev/gemini-api/docs/getting-started"

@@ -57,15 +57,6 @@ func ExampleClient_Chat() {
 
 //
 
-func findFreePort() int {
-	l, err := net.Listen("tcp", "localhost:0")
-	if err != nil {
-		panic(err)
-	}
-	defer l.Close()
-	return l.Addr().(*net.TCPAddr).Port
-}
-
 func startServer(ctx context.Context) (*ollamasrv.Server, error) {
 	cache, err := filepath.Abs("testdata/tmp")
 	if err != nil {
@@ -86,4 +77,13 @@ func startServer(ctx context.Context) (*ollamasrv.Server, error) {
 	}
 	defer l.Close()
 	return ollamasrv.NewServer(ctx, exe, l, port)
+}
+
+func findFreePort() int {
+	l, err := net.Listen("tcp", "localhost:0")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer l.Close()
+	return l.Addr().(*net.TCPAddr).Port
 }

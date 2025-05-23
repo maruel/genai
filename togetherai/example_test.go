@@ -196,19 +196,3 @@ func ExampleClient_ChatStream() {
 	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.AsText())), ".!"))
 	// This would Output: Response: hello
 }
-
-func ExampleClient_ListModels() {
-	c, err := togetherai.New("", "")
-	if err != nil {
-		fmt.Printf("Couldn't connect: %v\n", err)
-		return
-	}
-	models, err := c.ListModels(context.Background())
-	if err != nil {
-		fmt.Printf("Failed to get models: %v\n", err)
-		return
-	}
-	for _, model := range models {
-		fmt.Printf("- %s\n", model)
-	}
-}

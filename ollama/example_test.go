@@ -192,31 +192,6 @@ func ExampleClient_ChatStream() {
 	fmt.Println(resp.AsText())
 }
 
-func ExampleClient_ListModels() {
-	// Download and start the server.
-	ctx := context.Background()
-	srv, err := startServer(ctx)
-	if err != nil {
-		log.Print(err)
-		return
-	}
-	defer srv.Close()
-	// Connect the client.
-	c, err := ollama.New(srv.URL(), "")
-	if err != nil {
-		fmt.Printf("Couldn't connect: %v\n", err)
-		return
-	}
-	models, err := c.ListModels(context.Background())
-	if err != nil {
-		fmt.Printf("Failed to get models: %v\n", err)
-		return
-	}
-	for _, model := range models {
-		fmt.Printf("- %s\n", model)
-	}
-}
-
 //
 
 func findFreePort() int {

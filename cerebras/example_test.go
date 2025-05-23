@@ -122,19 +122,3 @@ func ExampleClient_ChatStream_tool_use() {
 	fmt.Printf("Best: %v\n", res)
 	// This would Output: Best: Canada
 }
-
-func ExampleClient_ListModels() {
-	c, err := cerebras.New("", "")
-	if err != nil {
-		fmt.Printf("Couldn't connect: %v\n", err)
-		return
-	}
-	models, err := c.ListModels(context.Background())
-	if err != nil {
-		fmt.Printf("Failed to get models: %v\n", err)
-		return
-	}
-	for _, model := range models {
-		fmt.Printf("- %s\n", model)
-	}
-}

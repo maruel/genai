@@ -15,7 +15,7 @@ import (
 	"github.com/maruel/genai"
 )
 
-func TestThinkingChat(t *testing.T) {
+func TestChatProviderThinking_Chat(t *testing.T) {
 	tests := []struct {
 		name        string
 		tagName     string
@@ -67,7 +67,7 @@ func TestThinkingChat(t *testing.T) {
 				},
 			}}
 
-			tp := &genai.ThinkingChatProvider{Provider: mp, TagName: "thinking"}
+			tp := &genai.ChatProviderThinking{Provider: mp, TagName: "thinking"}
 			got, err := tp.Chat(t.Context(), genai.Messages{}, nil)
 			if tc.expectError {
 				if err == nil {
@@ -84,7 +84,7 @@ func TestThinkingChat(t *testing.T) {
 	}
 }
 
-func TestThinkingChatStream(t *testing.T) {
+func TestChatProviderThinking_ChatStream(t *testing.T) {
 	tests := []struct {
 		name        string
 		in          []string
@@ -179,7 +179,7 @@ func TestThinkingChatStream(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			mp := &mockChatStreamProvider{in: tc.in}
-			tp := &genai.ThinkingChatProvider{Provider: mp, TagName: "thinking"}
+			tp := &genai.ChatProviderThinking{Provider: mp, TagName: "thinking"}
 			ch := make(chan genai.MessageFragment)
 			var msgs genai.Messages
 

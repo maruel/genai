@@ -485,9 +485,13 @@ type Client struct {
 // If apiKey is not provided, it tries to load it from the COHERE_API_KEY environment variable.
 // If none is found, it returns an error.
 // Get your API key at https://dashboard.cohere.com/api-keys
+//
 // If no model is provided, only functions that do not require a model, like ListModels, will work.
-// To use multiple models, create multiple clients.
 // Use one of the model from https://cohere.com/pricing and https://docs.cohere.com/v2/docs/models
+//
+// To use multiple models, create multiple clients.
+//
+// # Tool use
 //
 // Tool use requires the use a model that supports structured output.
 // https://docs.cohere.com/v2/docs/structured-outputs

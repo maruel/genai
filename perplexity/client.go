@@ -401,7 +401,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return decodeError(ctx, c.chatURL, resp)
+		return decodeError(ctx, c.chatURL, resp, &errorResponse{})
 	}
 	return processSSE(resp.Body, out)
 }
@@ -488,9 +488,8 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	}
 }
 
-func decodeError(ctx context.Context, url string, resp *http.Response) error {
-	er := errorResponse{}
-	switch i, err := httpjson.DecodeResponse(resp, &er); i {
+func decodeError(ctx context.Context, url string, resp *http.Response, er fmt.Stringer) error {
+	switch i, err := httpjson.DecodeResponse(resp, er); i {
 	case 0:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {

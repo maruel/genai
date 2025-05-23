@@ -547,7 +547,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return decodeError(ctx, c.chatURL, resp)
+		return decodeError(ctx, c.chatURL, resp, &errorResponse{})
 	}
 	return processSSE(resp.Body, out)
 }
@@ -586,10 +586,10 @@ func processSSE(body io.Reader, out chan<- ChatStreamChunkResponse) error {
 			// Ignore.
 		default:
 			// Error will be a single JSON line.
-			er := errorResponse{}
 			d := json.NewDecoder(bytes.NewReader(line))
 			d.DisallowUnknownFields()
 			d.UseNumber()
+			er := errorResponse{}
 			if err := d.Decode(&er); err != nil || len(er.Errors) == 0 {
 				return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
 			}
@@ -734,9 +734,8 @@ func (c *Client) doRequest(ctx context.Context, method, url string, in, out any)
 	}
 }
 
-func decodeError(ctx context.Context, url string, resp *http.Response) error {
-	er := errorResponse{}
-	switch i, err := httpjson.DecodeResponse(resp, &er); i {
+func decodeError(ctx context.Context, url string, resp *http.Response, er fmt.Stringer) error {
+	switch i, err := httpjson.DecodeResponse(resp, er); i {
 	case 0:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {

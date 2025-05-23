@@ -814,7 +814,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return decodeError(ctx, c.chatURL, resp)
+		return decodeError(ctx, c.chatURL, resp, &errorResponse{})
 	}
 	return processSSE(resp.Body, out)
 }
@@ -934,9 +934,8 @@ func (c *Client) doRequest(ctx context.Context, method, url string, in, out any)
 	}
 }
 
-func decodeError(ctx context.Context, url string, resp *http.Response) error {
-	er := errorResponse{}
-	switch i, err := httpjson.DecodeResponse(resp, &er); i {
+func decodeError(ctx context.Context, url string, resp *http.Response, er fmt.Stringer) error {
+	switch i, err := httpjson.DecodeResponse(resp, er); i {
 	case 0:
 		// OpenAI error message prints the api key URL already.
 		var herr *httpjson.Error

@@ -304,6 +304,10 @@ type errorResponse struct {
 	Error string `json:"error"`
 }
 
+func (er *errorResponse) String() string {
+	return er.Error
+}
+
 //
 
 // Client implements the REST JSON based API.
@@ -488,7 +492,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return decodeError(ctx, c.chatURL, resp)
+		return decodeError(ctx, c.chatURL, resp, &errorResponse{})
 	}
 	return processJSONStream(resp.Body, out)
 }
@@ -513,14 +517,14 @@ func processJSONStream(body io.Reader, out chan<- ChatStreamChunkResponse) error
 		d.UseNumber()
 		msg := ChatStreamChunkResponse{}
 		if err := d.Decode(&msg); err != nil {
-			er := errorResponse{}
 			d := json.NewDecoder(bytes.NewReader(line))
 			d.DisallowUnknownFields()
 			d.UseNumber()
+			er := errorResponse{}
 			if err := d.Decode(&er); err != nil {
 				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
 			}
-			return fmt.Errorf("server error: %s", er.Error)
+			return fmt.Errorf("server error: %s", er.String())
 		}
 		out <- msg
 	}
@@ -617,9 +621,9 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
 			herr.PrintBody = false
-			return fmt.Errorf("%w: error: %s", herr, er.Error)
+			return fmt.Errorf("%w: error: %s", herr, er.String())
 		}
-		return fmt.Errorf("%w: error: %s", herr, er.Error)
+		return fmt.Errorf("%w: error: %s", herr, er.String())
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
@@ -631,16 +635,15 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 	}
 }
 
-func decodeError(ctx context.Context, url string, resp *http.Response) error {
-	er := errorResponse{}
-	switch i, err := httpjson.DecodeResponse(resp, &er); i {
+func decodeError(ctx context.Context, url string, resp *http.Response, er fmt.Stringer) error {
+	switch i, err := httpjson.DecodeResponse(resp, er); i {
 	case 0:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
 			herr.PrintBody = false
-			return fmt.Errorf("%w: error: %s", herr, er.Error)
+			return fmt.Errorf("%w: error: %s", herr, er.String())
 		}
-		return fmt.Errorf("%w: error: %s", herr, er.Error)
+		return fmt.Errorf("%w: error: %s", herr, er.String())
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {

@@ -17,6 +17,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"reflect"
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
@@ -388,6 +389,7 @@ func New(apiKey, model string) (*Client, error) {
 				Lenient: internal.BeLenient,
 			},
 			APIKeyURL: apiKeyURL,
+			ErrorType: reflect.TypeOf(errorResponse{}),
 		},
 	}, nil
 }
@@ -435,7 +437,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 		return err
 	}
 	in.Stream = false
-	return c.doRequest(ctx, "POST", c.chatURL, in, out)
+	return c.DoRequest(ctx, "POST", c.chatURL, in, out)
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
@@ -550,7 +552,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return c.DecodeError(ctx, c.chatURL, resp, &errorResponse{})
+		return c.DecodeError(ctx, c.chatURL, resp)
 	}
 	return processSSE(resp.Body, out)
 }
@@ -620,7 +622,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		Object string  `json:"object"` // list
 		Data   []Model `json:"data"`
 	}
-	if err := c.doRequest(ctx, "GET", "https://api.deepseek.com/models", nil, &out); err != nil {
+	if err := c.DoRequest(ctx, "GET", "https://api.deepseek.com/models", nil, &out); err != nil {
 		return nil, err
 	}
 	models := make([]genai.Model, len(out.Data))
@@ -635,10 +637,6 @@ func (c *Client) validate() error {
 		return errors.New("a model is required")
 	}
 	return nil
-}
-
-func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
-	return c.DoRequest(ctx, method, url, in, out, &errorResponse{})
 }
 
 var (

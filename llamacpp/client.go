@@ -20,6 +20,7 @@ import (
 	"log/slog"
 	"math"
 	"net/http"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -390,6 +391,7 @@ func New(baseURL string, encoding *PromptEncoding) (*Client, error) {
 				},
 				Lenient: internal.BeLenient,
 			},
+			ErrorType: reflect.TypeOf(errorResponse{}),
 		},
 		baseURL:  baseURL,
 		chatURL:  baseURL + "/completion",
@@ -426,7 +428,7 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
 	// TODO: Distinguish between completion and chat. Chat is completion with the template applied.
 	in.Stream = false
-	return c.doRequest(ctx, "POST", c.chatURL, in, out)
+	return c.DoRequest(ctx, "POST", c.chatURL, in, out)
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
@@ -500,7 +502,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return c.DecodeError(ctx, c.chatURL, resp, &errorResponse{})
+		return c.DecodeError(ctx, c.chatURL, resp)
 	}
 	return processSSE(resp.Body, out)
 }
@@ -545,7 +547,7 @@ func processSSE(body io.Reader, out chan<- CompletionStreamChunkResponse) error 
 
 func (c *Client) GetHealth(ctx context.Context) (string, error) {
 	msg := healthResponse{}
-	if err := c.doRequest(ctx, "GET", c.baseURL+"/health", nil, &msg); err != nil {
+	if err := c.DoRequest(ctx, "GET", c.baseURL+"/health", nil, &msg); err != nil {
 		return "", fmt.Errorf("failed to get health response: %w", err)
 	}
 	return msg.Status, nil
@@ -659,7 +661,7 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 			}
 		}
 		out := applyTemplateResponse{}
-		if err := c.doRequest(ctx, "POST", c.baseURL+"/apply-template", &in2, &out); err != nil {
+		if err := c.DoRequest(ctx, "POST", c.baseURL+"/apply-template", &in2, &out); err != nil {
 			return err
 		}
 		in.Prompt = out.Prompt
@@ -696,10 +698,6 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 		}
 	}
 	return nil
-}
-
-func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
-	return c.DoRequest(ctx, method, url, in, out, &errorResponse{})
 }
 
 var _ genai.ChatProvider = &Client{}

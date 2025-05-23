@@ -17,6 +17,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"reflect"
 	"strings"
 	"time"
 
@@ -335,6 +336,7 @@ func New(baseURL, model string) (*Client, error) {
 				},
 				Lenient: internal.BeLenient,
 			},
+			ErrorType: reflect.TypeOf(errorResponse{}),
 		},
 		baseURL: baseURL,
 		chatURL: baseURL + "/api/chat",
@@ -382,7 +384,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 		return err
 	}
 	in.Stream = false
-	err := c.doRequest(ctx, "POST", c.chatURL, in, out)
+	err := c.DoRequest(ctx, "POST", c.chatURL, in, out)
 	if err != nil {
 		// TODO: Cheezy.
 		if strings.Contains(err.Error(), "not found, try pulling it first") {
@@ -390,7 +392,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 				return err
 			}
 			// Retry.
-			err = c.doRequest(ctx, "POST", c.chatURL, in, out)
+			err = c.DoRequest(ctx, "POST", c.chatURL, in, out)
 		}
 	}
 	return err
@@ -498,7 +500,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return c.DecodeError(ctx, c.chatURL, resp, &errorResponse{})
+		return c.DecodeError(ctx, c.chatURL, resp)
 	}
 	return processJSONStream(resp.Body, out)
 }
@@ -571,7 +573,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	var out struct {
 		Models []Model `json:"models"`
 	}
-	if err := c.doRequest(ctx, "GET", c.baseURL+"/api/tags", nil, &out); err != nil {
+	if err := c.DoRequest(ctx, "GET", c.baseURL+"/api/tags", nil, &out); err != nil {
 		return nil, err
 	}
 	models := make([]genai.Model, len(out.Models))
@@ -599,7 +601,7 @@ func (c *Client) PullModel(ctx context.Context, model string) error {
 	in := pullModelRequest{Model: model}
 	// TODO: Stream updates instead of hanging for several minutes.
 	out := pullModelResponse{}
-	if err := c.doRequest(ctx, "POST", c.baseURL+"/api/pull", &in, &out); err != nil {
+	if err := c.DoRequest(ctx, "POST", c.baseURL+"/api/pull", &in, &out); err != nil {
 		return fmt.Errorf("pull failed: %w", err)
 	} else if out.Status != "success" {
 		return fmt.Errorf("pull failed: %s", out.Status)
@@ -612,10 +614,6 @@ func (c *Client) validate() error {
 		return errors.New("a model is required")
 	}
 	return nil
-}
-
-func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
-	return c.DoRequest(ctx, method, url, in, out, &errorResponse{})
 }
 
 var (

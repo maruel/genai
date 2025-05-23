@@ -885,6 +885,7 @@ func New(apiKey, model string) (*Client, error) {
 				Lenient: internal.BeLenient,
 			},
 			APIKeyURL: apiKeyURL,
+			ErrorType: reflect.TypeOf(errorResponse{}),
 		},
 	}, nil
 }
@@ -930,7 +931,7 @@ func (c *Client) CacheAdd(ctx context.Context, msgs genai.Messages, opts *genai.
 	// TODO: ToolConfig
 	out := CachedContent{}
 	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents?key=" + c.apiKey
-	if err := c.doRequest(ctx, "POST", url, &in, &out); err != nil {
+	if err := c.DoRequest(ctx, "POST", url, &in, &out); err != nil {
 		return "", err
 	}
 	name = strings.TrimPrefix(out.Name, "cachedContents/")
@@ -944,7 +945,7 @@ func (c *Client) CacheExtend(ctx context.Context, name string, ttl time.Duration
 	// Model is required.
 	in := CachedContent{Model: "models/" + c.model, Expiration: Expiration{TTL: Duration(ttl)}}
 	out := CachedContent{}
-	return c.doRequest(ctx, "PATCH", url, &in, &out)
+	return c.DoRequest(ctx, "PATCH", url, &in, &out)
 }
 
 // CacheList retrieves the list of cached items.
@@ -966,7 +967,7 @@ func (c *Client) CacheList(ctx context.Context) ([]CachedContent, error) {
 			data.CachedContents = data.CachedContents[:0]
 		}
 		data.NextPageToken = ""
-		if err := c.doRequest(ctx, "GET", url, nil, &data); err != nil {
+		if err := c.DoRequest(ctx, "GET", url, nil, &data); err != nil {
 			return nil, err
 		}
 		for i := range data.CachedContents {
@@ -984,7 +985,7 @@ func (c *Client) CacheGet(ctx context.Context, name string) (CachedContent, erro
 	// https://ai.google.dev/api/caching#method:-cachedcontents.get
 	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + name + "?key=" + c.apiKey
 	out := CachedContent{}
-	err := c.doRequest(ctx, "GET", url, nil, &out)
+	err := c.DoRequest(ctx, "GET", url, nil, &out)
 	return out, err
 }
 
@@ -992,15 +993,8 @@ func (c *Client) CacheGet(ctx context.Context, name string) (CachedContent, erro
 func (c *Client) CacheDelete(ctx context.Context, name string) error {
 	// https://ai.google.dev/api/caching#method:-cachedcontents.delete
 	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + name + "?key=" + c.apiKey
-	er := errorResponse{}
-	err := c.doRequest(ctx, "DELETE", url, nil, &er)
-	if err != nil {
-		return err
-	}
-	if er.Error.Code != 0 {
-		return errors.New(er.String())
-	}
-	return nil
+	var out struct{}
+	return c.DoRequest(ctx, "DELETE", url, nil, &out)
 }
 
 // Chat implements genai.ChatProvider.
@@ -1049,7 +1043,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 	if err := c.validate(); err != nil {
 		return err
 	}
-	return c.doRequest(ctx, "POST", c.chatURL, in, out)
+	return c.DoRequest(ctx, "POST", c.chatURL, in, out)
 }
 
 // ChatStream implements genai.ChatProvider.
@@ -1175,7 +1169,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return c.DecodeError(ctx, c.chatStreamURL, resp, &errorResponse{})
+		return c.DecodeError(ctx, c.chatStreamURL, resp)
 	}
 	return processSSE(resp.Body, out)
 }
@@ -1253,7 +1247,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		Models        []Model `json:"models"`
 		NextPageToken string  `json:"nextPageToken"`
 	}
-	err := c.doRequest(ctx, "GET", "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.apiKey, nil, &out)
+	err := c.DoRequest(ctx, "GET", "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.apiKey, nil, &out)
 	if err != nil {
 		return nil, err
 	}
@@ -1269,10 +1263,6 @@ func (c *Client) validate() error {
 		return errors.New("a model is required")
 	}
 	return nil
-}
-
-func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
-	return c.DoRequest(ctx, method, url, in, out, &errorResponse{})
 }
 
 var (

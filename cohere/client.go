@@ -20,6 +20,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"reflect"
 	"sort"
 	"strings"
 
@@ -517,6 +518,7 @@ func New(apiKey, model string) (*Client, error) {
 				Lenient: internal.BeLenient,
 			},
 			APIKeyURL: apiKeyURL,
+			ErrorType: reflect.TypeOf(errorResponse{}),
 		},
 	}, nil
 }
@@ -562,7 +564,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 		return err
 	}
 	in.Stream = false
-	return c.doRequest(ctx, "POST", c.chatURL, in, out)
+	return c.DoRequest(ctx, "POST", c.chatURL, in, out)
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
@@ -687,7 +689,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return c.DecodeError(ctx, c.chatURL, resp, &errorResponse{})
+		return c.DecodeError(ctx, c.chatURL, resp)
 	}
 	return processSSE(resp.Body, out)
 }
@@ -779,7 +781,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		Models        []Model `json:"models"`
 		NextPageToken string  `json:"next_page_token"`
 	}
-	if err := c.doRequest(ctx, "GET", "https://api.cohere.com/v1/models?page_size=1000", nil, &out); err != nil {
+	if err := c.DoRequest(ctx, "GET", "https://api.cohere.com/v1/models?page_size=1000", nil, &out); err != nil {
 		return nil, err
 	}
 	models := make([]genai.Model, len(out.Models))
@@ -794,10 +796,6 @@ func (c *Client) validate() error {
 		return errors.New("a model is required")
 	}
 	return nil
-}
-
-func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
-	return c.DoRequest(ctx, method, url, in, out, &errorResponse{})
 }
 
 var (

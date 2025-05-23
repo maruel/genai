@@ -17,6 +17,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"reflect"
 	"time"
 
 	"github.com/invopop/jsonschema"
@@ -276,6 +277,7 @@ func New(apiKey, model string) (*Client, error) {
 				Lenient: internal.BeLenient,
 			},
 			APIKeyURL: apiKeyURL,
+			ErrorType: reflect.TypeOf(errorResponse{}),
 		},
 	}, nil
 }
@@ -318,7 +320,7 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 
 func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
 	in.Stream = false
-	return c.doRequest(ctx, "POST", c.chatURL, in, out)
+	return c.DoRequest(ctx, "POST", c.chatURL, in, out)
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
@@ -407,7 +409,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return c.DecodeError(ctx, c.chatURL, resp, &errorResponse{})
+		return c.DecodeError(ctx, c.chatURL, resp)
 	}
 	return processSSE(resp.Body, out)
 }
@@ -456,10 +458,6 @@ func processSSE(body io.Reader, out chan<- ChatStreamChunkResponse) error {
 			return errors.New(er.String())
 		}
 	}
-}
-
-func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
-	return c.DoRequest(ctx, method, url, in, out, &errorResponse{})
 }
 
 var _ genai.ChatProvider = &Client{}

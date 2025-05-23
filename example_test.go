@@ -7,7 +7,6 @@ package genai_test
 import (
 	"bytes"
 	"context"
-	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -20,6 +19,7 @@ import (
 	"github.com/maruel/genai/cohere"
 	"github.com/maruel/genai/deepseek"
 	"github.com/maruel/genai/gemini"
+	"github.com/maruel/genai/genaitools"
 	"github.com/maruel/genai/groq"
 	"github.com/maruel/genai/huggingface"
 	"github.com/maruel/genai/llamacpp"
@@ -185,7 +185,6 @@ func ExampleChatProvider_chat_vision() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("Raw response: %#v", resp)
 	fmt.Printf("Banana: %v\n", resp.AsText())
 	// This would Output: Banana: yes
 }
@@ -207,7 +206,6 @@ func ExampleClient_Chat_jSON() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("Raw response: %#v", resp)
 	got := map[string]any{}
 	if err := resp.Decode(&got); err != nil {
 		log.Fatal(err)
@@ -236,7 +234,6 @@ func ExampleClient_Chat_jSON_schema() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("Raw response: %#v", resp)
 	if err := resp.Decode(&got); err != nil {
 		log.Fatal(err)
 	}
@@ -267,27 +264,24 @@ func ExampleChatProvider_chat_pdf() {
 			},
 		},
 	}
-	opts := genai.ChatOptions{
-		Seed:      1,
-		MaxTokens: 50,
-	}
-	resp, err := c.Chat(context.Background(), msgs, &opts)
+	resp, err := c.Chat(context.Background(), msgs, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("Raw response: %#v", resp)
 	fmt.Printf("Hidden word in PDF: %v\n", strings.ToLower(resp.AsText()))
 	// This would Output: Hidden word in PDF: orange
 }
 
 func ExampleChatProvider_chat_audio() {
+	// Supported by Gemini, OpenAI.
+
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	c, err := gemini.New("", "gemini-2.0-flash-lite")
 	if err != nil {
 		log.Fatal(err)
 	}
-	f, err := os.Open("internal/internaltest/testdata/mystery_word.opus")
+	f, err := os.Open("internal/internaltest/testdata/mystery_word.mp3")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -301,17 +295,39 @@ func ExampleChatProvider_chat_audio() {
 			},
 		},
 	}
-	opts := genai.ChatOptions{
-		Seed:      1,
-		MaxTokens: 50,
-	}
-	resp, err := c.Chat(context.Background(), msgs, &opts)
+	resp, err := c.Chat(context.Background(), msgs, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("Raw response: %#v", resp)
 	fmt.Printf("Heard: %v\n", strings.TrimRight(strings.ToLower(resp.AsText()), "."))
 	// This would Output: Heard: orange
+}
+
+func ExampleChatProvider_chat_video() {
+	// Supported by Gemini, TogetherAI.
+
+	// Using a free small model for testing.
+	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
+	c, err := gemini.New("", "gemini-2.0-flash")
+	if err != nil {
+		log.Fatal(err)
+	}
+	f, err := os.Open("internal/internaltest/testdata/animation.mp4")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	// TogetherAI seems to require separate messages for text and images.
+	msgs := genai.Messages{
+		genai.NewTextMessage(genai.User, "What is the word? Reply with exactly and only one word."),
+		{Role: genai.User, Contents: []genai.Content{{Document: f}}},
+	}
+	resp, err := c.Chat(context.Background(), msgs, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Saw: %v\n", strings.ToLower(resp.AsText()))
+	// This would Output: Saw: banana
 }
 
 func ExampleChatWithToolCallLoop() {
@@ -324,39 +340,14 @@ func ExampleChatWithToolCallLoop() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	f, err := os.Open("internal/internaltest/testdata/animation.mp4")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-
-	// Define a custom tool "hidden_word".
-	type Word struct {
-		Word string `json:"word" jsonschema:"enum=Orange,enum=Banana,enum=Apple"`
-	}
-	hiddenWordTool := genai.ToolDef{
-		Name:        "hidden_word",
-		Description: "A tool to state what word was seen in the video.",
-		Callback: func(got *Word) (string, error) {
-			w := strings.ToLower(got.Word)
-			fmt.Printf("Saw: %q\n", w)
-			if w == "banana" {
-				return "That's correct!", nil
-			}
-			return "", errors.New("That's incorrect.")
-		},
-	}
-
 	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "What is the word? Call the tool hidden_word to tell me what word you saw."},
-				{Document: f},
-			},
-		},
+		genai.NewTextMessage(genai.User, "What is 3214 + 5632? Leverage the tool available to you to tell me the answer. Do not explain. Be terse. Include only the answer."),
 	}
-	opts := genai.ChatOptions{Tools: []genai.ToolDef{hiddenWordTool}}
+	opts := genai.ChatOptions{
+		Tools: []genai.ToolDef{genaitools.Arithmetic},
+		// Force the LLM to do a tool call first.
+		ToolCallRequest: genai.ToolCallRequired,
+	}
 	newMsgs, _, err := genai.ChatWithToolCallLoop(context.Background(), c, msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
@@ -364,8 +355,7 @@ func ExampleChatWithToolCallLoop() {
 	fmt.Printf("%s\n", newMsgs[len(newMsgs)-1].AsText())
 	// Remove this comment line to run the example.
 	// Output:
-	// Saw: "banana"
-	// That's correct!
+	// 8846
 }
 
 func ExampleChatStreamWithToolCallLoop() {
@@ -378,39 +368,13 @@ func ExampleChatStreamWithToolCallLoop() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	f, err := os.Open("internal/internaltest/testdata/animation.mp4")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
 	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "What is the word? Call the tool hidden_word to tell me what word you saw."},
-				{Document: f},
-			},
-		},
-	}
-	type Word struct {
-		Word string `json:"word" jsonschema:"enum=Orange,enum=Banana,enum=Apple"`
+		genai.NewTextMessage(genai.User, "What is 3214 + 5632? Leverage the tool available to you to tell me the answer. Do not explain. Be terse. Include only the answer."),
 	}
 	opts := genai.ChatOptions{
-		Seed: 1,
-		Tools: []genai.ToolDef{
-			{
-				Name:        "hidden_word",
-				Description: "A tool to state what word was seen in the video.",
-				Callback: func(got *Word) (string, error) {
-					w := strings.ToLower(got.Word)
-					fmt.Printf("Saw: %q\n", w)
-					if w == "banana" {
-						return "That's correct!", nil
-					}
-					return "", errors.New("That's incorrect.")
-				},
-			},
-		},
+		Tools: []genai.ToolDef{genaitools.Arithmetic},
+		// Force the LLM to do a tool call first.
+		ToolCallRequest: genai.ToolCallRequired,
 	}
 	chunks := make(chan genai.MessageFragment)
 	ctx, cancel := context.WithCancel(context.Background())
@@ -424,23 +388,17 @@ func ExampleChatStreamWithToolCallLoop() {
 				if !ok {
 					return
 				}
-				// Print text fragments as they arrive
-				if fragment.TextFragment != "" {
-					fmt.Printf("Fragment: %s", fragment.TextFragment)
-				}
-				// Ignore all tool calls here, they are handled transparently!
+				_, _ = os.Stdout.WriteString(fragment.TextFragment)
 			}
 		}
 	}()
-	newMsgs, _, err := genai.ChatStreamWithToolCallLoop(ctx, c, msgs, &opts, chunks)
+	_, _, err = genai.ChatStreamWithToolCallLoop(ctx, c, msgs, &opts, chunks)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Final response: %s\n", newMsgs[len(newMsgs)-1].AsText())
 	// Remove this comment line to run the example.
 	// Output:
-	// Saw: "banana"
-	// Final response: That's correct!
+	// 8846
 }
 
 func ExampleChatProvider_ChatStream() {

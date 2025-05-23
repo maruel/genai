@@ -458,6 +458,11 @@ type Client struct {
 // If no model is provided, only functions that do not require a model, like ListModels, will work.
 // To use multiple models, create multiple clients.
 // Use one of the model from https://docs.together.ai/docs/serverless-models
+//
+// # Vision
+//
+// We must select a model that supports video.
+// https://docs.together.ai/docs/serverless-models#vision-models
 func New(apiKey, model string) (*Client, error) {
 	if apiKey == "" {
 		if apiKey = os.Getenv("TOGETHER_API_KEY"); apiKey == "" {

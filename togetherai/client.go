@@ -25,7 +25,6 @@ import (
 	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
-	"golang.org/x/sync/errgroup"
 )
 
 // Official python client library at https://github.com/togethercomputer/together-python/tree/main/src/together
@@ -536,42 +535,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
-	result := genai.ChatResult{}
-	// Check for non-empty Opaque field
-	for i, msg := range msgs {
-		for j, content := range msg.Contents {
-			if len(content.Opaque) != 0 {
-				return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
-			}
-		}
-	}
-	in := ChatRequest{}
-	var continuableErr error
-	if err := in.Init(msgs, opts, c.model); err != nil {
-		// If it's an UnsupportedContinuableError, we can continue
-		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-			// Store the error to return later if no other error occurs
-			continuableErr = uce
-			// Otherwise log the error but continue
-		} else {
-			return result, err
-		}
-	}
-	ch := make(chan ChatStreamChunkResponse)
-	eg, ctx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
-		return processStreamPackets(ch, chunks, &result)
-	})
-	err := c.ChatStreamRaw(ctx, &in, ch)
-	close(ch)
-	if err2 := eg.Wait(); err2 != nil {
-		err = err2
-	}
-	// Return the continuable error if no other error occurred
-	if err == nil && continuableErr != nil {
-		return result, continuableErr
-	}
-	return result, err
+	return internal.ChatStream(ctx, msgs, opts, chunks, c.model, c.ChatStreamRaw, processStreamPackets, false)
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {

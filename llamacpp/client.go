@@ -14,7 +14,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log/slog"
 	"math"
 	"net/http"
 	"strconv"
@@ -88,9 +87,10 @@ type CompletionRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *CompletionRequest) Init(opts genai.Validatable) error {
+func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Validatable, model string) error {
 	var errs []error
 	var unsupported []string
+	c.CachePrompt = true
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
 			errs = append(errs, err)
@@ -397,6 +397,7 @@ func New(baseURL string, encoding *PromptEncoding) (*Client, error) {
 
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	// https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
+	// TODO: return internal.Chat(ctx, msgs, opts, "", c.CompletionRaw, false)
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
 	for i, msg := range msgs {
@@ -407,9 +408,10 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 		}
 	}
 	rpcin := CompletionRequest{CachePrompt: true}
-	if err := rpcin.Init(opts); err != nil {
+	if err := rpcin.Init(msgs, opts, ""); err != nil {
 		return genai.ChatResult{}, err
 	}
+	// TODO: Figure out how to inject this in internal.Chat()
 	if err := c.initPrompt(ctx, &rpcin, opts, msgs); err != nil {
 		return genai.ChatResult{}, err
 	}
@@ -417,7 +419,6 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
 		return genai.ChatResult{}, fmt.Errorf("failed to get llama server response: %w", err)
 	}
-	slog.DebugContext(ctx, "llm", "prompt tok", rpcout.Timings.PromptN, "gen tok", rpcout.Timings.PredictedN, "prompt tok/ms", rpcout.Timings.PromptPerTokenMS, "gen tok/ms", rpcout.Timings.PredictedPerTokenMS)
 	return rpcout.ToResult()
 }
 
@@ -428,7 +429,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
-	// start := time.Now()
+	// TODO: return internal.ChatStream(ctx, msgs, opts, chunks, "", c.CompletionStreamRaw, processStreamPackets, false)
 	result := genai.ChatResult{}
 
 	// Check for non-empty Opaque field
@@ -440,9 +441,9 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 		}
 	}
 
-	in := CompletionRequest{CachePrompt: true}
+	in := CompletionRequest{}
 	var continuableErr error
-	if err := in.Init(opts); err != nil {
+	if err := in.Init(msgs, opts, ""); err != nil {
 		// If it's an UnsupportedContinuableError, we can continue
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			// Store the error to return later if no other error occurs
@@ -452,6 +453,7 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 			return result, err
 		}
 	}
+	// TODO: Figure out how to inject this in internal.ChatStream()
 	if err := c.initPrompt(ctx, &in, opts, msgs); err != nil {
 		return result, err
 	}

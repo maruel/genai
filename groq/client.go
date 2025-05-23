@@ -505,7 +505,8 @@ type Client struct {
 	// Client is exported for testing replay purposes.
 	Client httpjson.Client
 
-	model string
+	model   string
+	chatURL string
 }
 
 // New creates a new client to talk to the Groq platform API.
@@ -523,7 +524,8 @@ func New(apiKey, model string) (*Client, error) {
 		}
 	}
 	return &Client{
-		model: model,
+		model:   model,
+		chatURL: "https://api.groq.com/openai/v1/chat/completions",
 		Client: httpjson.Client{
 			Client: &http.Client{Transport: &roundtrippers.Header{
 				Transport: &roundtrippers.Retry{
@@ -579,7 +581,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 		return err
 	}
 	in.Stream = false
-	return c.doRequest(ctx, "POST", "https://api.groq.com/openai/v1/chat/completions", in, out)
+	return c.doRequest(ctx, "POST", c.chatURL, in, out)
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
@@ -664,14 +666,13 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return err
 	}
 	in.Stream = true
-	url := "https://api.groq.com/openai/v1/chat/completions"
-	resp, err := c.Client.PostRequest(ctx, url, nil, in)
+	resp, err := c.Client.PostRequest(ctx, c.chatURL, nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return decodeError(ctx, url, resp)
+		return decodeError(ctx, c.chatURL, resp)
 	}
 	return processSSE(resp.Body, out)
 }

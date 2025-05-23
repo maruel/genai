@@ -390,6 +390,7 @@ type Client struct {
 
 	accountID string
 	model     string
+	chatURL   string
 }
 
 // New creates a new client to talk to the Cloudflare Workers AI platform API.
@@ -415,6 +416,7 @@ func New(accountID, apiKey, model string) (*Client, error) {
 	return &Client{
 		accountID: accountID,
 		model:     model,
+		chatURL:   "https://api.cloudflare.com/client/v4/accounts/" + accountID + "/ai/run/" + model,
 		Client: httpjson.Client{
 			Client: &http.Client{Transport: &roundtrippers.Header{
 				Transport: &roundtrippers.Retry{
@@ -470,8 +472,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 		return err
 	}
 	in.Stream = false
-	url := "https://api.cloudflare.com/client/v4/accounts/" + c.accountID + "/ai/run/" + c.model
-	return c.doRequest(ctx, "POST", url, in, out)
+	return c.doRequest(ctx, "POST", c.chatURL, in, out)
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
@@ -540,14 +541,13 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	}
 	in.Stream = true
 	// TODO: Block when tool calls are detected?
-	url := "https://api.cloudflare.com/client/v4/accounts/" + c.accountID + "/ai/run/" + c.model
-	resp, err := c.Client.PostRequest(ctx, url, nil, in)
+	resp, err := c.Client.PostRequest(ctx, c.chatURL, nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return decodeError(ctx, url, resp)
+		return decodeError(ctx, c.chatURL, resp)
 	}
 	return processSSE(resp.Body, out)
 }

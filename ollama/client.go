@@ -313,6 +313,7 @@ type Client struct {
 
 	model   string
 	baseURL string
+	chatURL string
 }
 
 // New creates a new client to talk to the Ollama API.
@@ -332,6 +333,7 @@ func New(baseURL, model string) (*Client, error) {
 			Lenient: internal.BeLenient,
 		},
 		baseURL: baseURL,
+		chatURL: baseURL + "/api/chat",
 		model:   model,
 	}, nil
 }
@@ -376,7 +378,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 		return err
 	}
 	in.Stream = false
-	err := c.post(ctx, c.baseURL+"/api/chat", in, out)
+	err := c.post(ctx, c.chatURL, in, out)
 	if err != nil {
 		// TODO: Cheezy.
 		if strings.Contains(err.Error(), "not found, try pulling it first") {
@@ -384,7 +386,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 				return err
 			}
 			// Retry.
-			err = c.post(ctx, c.baseURL+"/api/chat", in, out)
+			err = c.post(ctx, c.chatURL, in, out)
 		}
 	}
 	return err
@@ -467,9 +469,8 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 		return err
 	}
 	in.Stream = true
-	url := c.baseURL + "/api/chat"
 	// Try first, if it immediately errors out requesting to pull, pull then try again.
-	resp, err := c.Client.PostRequest(ctx, url, nil, in)
+	resp, err := c.Client.PostRequest(ctx, c.chatURL, nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
@@ -482,12 +483,12 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	if err = c.PullModel(ctx, c.model); err != nil {
 		return err
 	}
-	if resp, err = c.Client.PostRequest(ctx, url, nil, in); err != nil {
+	if resp, err = c.Client.PostRequest(ctx, c.chatURL, nil, in); err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return decodeError(ctx, url, resp)
+		return decodeError(ctx, c.chatURL, resp)
 	}
 	return processJSONStream(resp.Body, out)
 }

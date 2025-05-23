@@ -796,8 +796,10 @@ type Client struct {
 	// Client is exported for testing replay purposes.
 	Client httpjson.Client
 
-	apiKey string
-	model  string
+	apiKey        string
+	model         string
+	chatURL       string
+	chatStreamURL string
 }
 
 // New creates a new client to talk to Google's Gemini platform API.
@@ -865,8 +867,10 @@ func New(apiKey, model string) (*Client, error) {
 	}
 	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
 	return &Client{
-		apiKey: apiKey,
-		model:  model,
+		apiKey:        apiKey,
+		model:         model,
+		chatURL:       "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey,
+		chatStreamURL: "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":streamGenerateContent?alt=sse&key=" + apiKey,
 		Client: httpjson.Client{
 			Client: &http.Client{Transport: &roundtrippers.PostCompressed{
 				Transport: &roundtrippers.Retry{
@@ -1042,8 +1046,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 	if err := c.validate(); err != nil {
 		return err
 	}
-	url := "https://generativelanguage.googleapis.com/v1beta/models/" + c.model + ":generateContent?key=" + c.apiKey
-	return c.doRequest(ctx, "POST", url, in, out)
+	return c.doRequest(ctx, "POST", c.chatURL, in, out)
 }
 
 // ChatStream implements genai.ChatProvider.
@@ -1160,14 +1163,13 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	if err := c.validate(); err != nil {
 		return err
 	}
-	url := "https://generativelanguage.googleapis.com/v1beta/models/" + c.model + ":streamGenerateContent?alt=sse&key=" + c.apiKey
-	resp, err := c.Client.PostRequest(ctx, url, nil, in)
+	resp, err := c.Client.PostRequest(ctx, c.chatStreamURL, nil, in)
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return decodeError(ctx, url, resp)
+		return decodeError(ctx, c.chatStreamURL, resp)
 	}
 	return processSSE(resp.Body, out)
 }

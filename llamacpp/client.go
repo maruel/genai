@@ -367,6 +367,7 @@ type Client struct {
 	Client httpjson.Client
 
 	baseURL  string
+	chatURL  string
 	encoding *PromptEncoding
 }
 
@@ -389,6 +390,7 @@ func New(baseURL string, encoding *PromptEncoding) (*Client, error) {
 			Lenient: internal.BeLenient,
 		},
 		baseURL:  baseURL,
+		chatURL:  baseURL + "/completion",
 		encoding: encoding,
 	}, nil
 }
@@ -422,7 +424,7 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
 	// TODO: Distinguish between completion and chat. Chat is completion with the template applied.
 	in.Stream = false
-	return c.post(ctx, c.baseURL+"/completion", in, out)
+	return c.post(ctx, c.chatURL, in, out)
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
@@ -491,14 +493,13 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
 	in.Stream = true
-	url := c.baseURL + "/completion"
-	resp, err := c.Client.PostRequest(ctx, url, nil, in)
+	resp, err := c.Client.PostRequest(ctx, c.chatURL, nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get llama server response: %w", err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return decodeError(ctx, url, resp)
+		return decodeError(ctx, c.chatURL, resp)
 	}
 	return processSSE(resp.Body, out)
 }

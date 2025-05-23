@@ -248,7 +248,8 @@ type Client struct {
 	// Client is exported for testing replay purposes.
 	Client httpjson.Client
 
-	model string
+	model   string
+	chatURL string
 }
 
 // New creates a new client to talk to the Perplexity platform API.
@@ -265,7 +266,8 @@ func New(apiKey, model string) (*Client, error) {
 		}
 	}
 	return &Client{
-		model: model,
+		model:   model,
+		chatURL: "https://api.perplexity.ai/chat/completions",
 		Client: httpjson.Client{
 			Client: &http.Client{Transport: &roundtrippers.Header{
 				Transport: &roundtrippers.Retry{Transport: http.DefaultTransport},
@@ -314,7 +316,7 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 
 func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
 	in.Stream = false
-	return c.post(ctx, "https://api.perplexity.ai/chat/completions", in, out)
+	return c.post(ctx, c.chatURL, in, out)
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
@@ -393,14 +395,13 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 
 func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
 	in.Stream = true
-	url := "https://api.perplexity.ai/chat/completions"
-	resp, err := c.Client.PostRequest(ctx, url, nil, in)
+	resp, err := c.Client.PostRequest(ctx, c.chatURL, nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return decodeError(ctx, url, resp)
+		return decodeError(ctx, c.chatURL, resp)
 	}
 	return processSSE(resp.Body, out)
 }

@@ -159,8 +159,8 @@ func ExampleChatProvider_all() {
 	}
 }
 
-func ExampleChatProvider_chat_vision_and_JSON_schema() {
-	// Supported by Anthropic (except for JSON), Gemini, Groq, Mistral, Ollama, OpenAI, TogetherAI.
+func ExampleChatProvider_chat_vision() {
+	// Supported by Anthropic, Gemini, Groq, Mistral, Ollama, OpenAI, TogetherAI.
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
@@ -176,19 +176,62 @@ func ExampleChatProvider_chat_vision_and_JSON_schema() {
 		{
 			Role: genai.User,
 			Contents: []genai.Content{
-				{Text: "Is it a banana? Reply as JSON."},
+				{Text: "Is it a banana? Reply with only the word yes or no."},
 				{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
 			},
 		},
 	}
+	resp, err := c.Chat(context.Background(), msgs, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("Raw response: %#v", resp)
+	fmt.Printf("Banana: %v\n", resp.AsText())
+	// This would Output: Banana: yes
+}
+
+func ExampleClient_Chat_jSON() {
+	// Supported by Cerebras, Cloudflare, Cohere, DeepSeek, Gemini, Groq, HuggingFace, Mistral, Ollama, OpenAI, TogetherAI.
+
+	// Using a free small model for testing.
+	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
+	c, err := gemini.New("", "gemini-2.0-flash-lite")
+	if err == nil {
+		log.Fatal(err)
+	}
+	msgs := genai.Messages{
+		genai.NewTextMessage(genai.User, "Is a circle round? Reply as JSON with the form {\"round\": false} or {\"round\": true}."),
+	}
+	opts := genai.ChatOptions{ReplyAsJSON: true}
+	resp, err := c.Chat(context.Background(), msgs, &opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("Raw response: %#v", resp)
+	got := map[string]any{}
+	if err := resp.Decode(&got); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Round: %v\n", got["round"])
+	// This would Output: Round: true
+}
+
+func ExampleClient_Chat_jSON_schema() {
+	// Supported by Cerebras, Cloudflare, Cohere, Gemini, Groq, HuggingFace, Mistral, Ollama, OpenAI, Perplexity, TogetherAI.
+
+	// Using a free small model for testing.
+	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
+	c, err := gemini.New("", "gemini-2.0-flash-lite")
+	if err == nil {
+		log.Fatal(err)
+	}
+	msgs := genai.Messages{
+		genai.NewTextMessage(genai.User, "Is a circle round? Reply as JSON."),
+	}
 	var got struct {
-		Banana bool `json:"banana"`
+		Round bool `json:"round"`
 	}
-	opts := genai.ChatOptions{
-		Seed:      1,
-		MaxTokens: 50,
-		DecodeAs:  &got,
-	}
+	opts := genai.ChatOptions{DecodeAs: got}
 	resp, err := c.Chat(context.Background(), msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
@@ -197,8 +240,8 @@ func ExampleChatProvider_chat_vision_and_JSON_schema() {
 	if err := resp.Decode(&got); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Banana: %v\n", got.Banana)
-	// This would Output: Banana: true
+	fmt.Printf("Round: %v\n", got.Round)
+	// This would Output: Round: true
 }
 
 func ExampleChatProvider_chat_pdf() {

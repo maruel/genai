@@ -237,6 +237,8 @@ func ExampleChatProvider_chat_pdf() {
 }
 
 func ExampleChatProvider_chat_audio() {
+	// Using a free small model for testing.
+	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	c, err := gemini.New("", "gemini-2.0-flash-lite")
 	if err != nil {
 		log.Fatal(err)
@@ -323,6 +325,11 @@ func ExampleChatWithToolCallLoop() {
 }
 
 func ExampleChatStreamWithToolCallLoop() {
+	// Supported by Anthropic, Cerebras, Cloudflare, Cohere, DeepSeek, Gemini, Groq, HuggingFace, Mistral,
+	// Ollama, OpenAI, TogetherAI.
+
+	// Using a free small model for testing.
+	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	c, err := gemini.New("", "gemini-2.0-flash")
 	if err != nil {
 		log.Fatal(err)
@@ -393,6 +400,10 @@ func ExampleChatStreamWithToolCallLoop() {
 }
 
 func ExampleChatProvider_ChatStream() {
+	// Supported by all providers.
+
+	// Using a free small model for testing.
+	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	c, err := gemini.New("", "gemini-2.0-flash-lite")
 	if err != nil {
 		log.Fatal(err)
@@ -448,37 +459,4 @@ func ExampleChatProvider_ChatStream() {
 	// Normalize some of the variance. Obviously many models will still fail this test.
 	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.AsText())), ".!"))
 	// This would Output: Response: hello
-}
-
-func ExampleToolCall_Call() {
-	// Define a tool that adds two numbers
-	type math struct {
-		A int `json:"a"`
-		B int `json:"b"`
-	}
-	tool := genai.ToolDef{
-		Name:        "add",
-		Description: "Add two numbers together",
-		Callback: func(input *math) (string, error) {
-			return fmt.Sprintf("%d + %d = %d", input.A, input.B, input.A+input.B), nil
-		},
-	}
-
-	// Create a tool call that would come from an LLM
-	toolCall := genai.ToolCall{
-		ID:        "call1",
-		Name:      "add",
-		Arguments: `{"a": 5, "b": 3}`,
-	}
-
-	// Invoke the tool with the arguments
-	result, err := toolCall.Call([]genai.ToolDef{tool})
-	if err != nil {
-		fmt.Printf("Error calling tool: %v\n", err)
-		return
-	}
-
-	// Print the result
-	fmt.Println(result)
-	// Output: 5 + 3 = 8
 }

@@ -493,6 +493,9 @@ type Client struct {
 // If no model is provided, only functions that do not require a model, like ListModels, will work.
 // To use multiple models, create multiple clients.
 // Use one of the model from https://cohere.com/pricing and https://docs.cohere.com/v2/docs/models
+//
+// Tool use requires the use a model that supports structured output.
+// https://docs.cohere.com/v2/docs/structured-outputs
 func New(apiKey, model string) (*Client, error) {
 	if apiKey == "" {
 		if apiKey = os.Getenv("COHERE_API_KEY"); apiKey == "" {

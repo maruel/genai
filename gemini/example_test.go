@@ -49,59 +49,6 @@ func ExampleClient_Chat_audio() {
 	// This would Output: Heard: orange
 }
 
-func ExampleClient_Chat_tool_use() {
-	c, err := gemini.New("", "gemini-2.0-flash-lite")
-	if err != nil {
-		log.Fatal(err)
-	}
-	f, err := os.Open("testdata/animation.mp4")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "What is the word? Call the tool hidden_word to tell me what word you saw."},
-				{Document: f},
-			},
-		},
-	}
-	type got struct {
-		Word string `json:"word" jsonschema:"enum=Orange,enum=Banana,enum=Apple"`
-	}
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-		Tools: []genai.ToolDef{
-			{
-				Name:        "hidden_word",
-				Description: "A tool to state what word was seen in the video.",
-				Callback: func(g *got) string {
-					return strings.ToLower(g.Word)
-				},
-			},
-		},
-	}
-	resp, err := c.Chat(context.Background(), msgs, &opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("Raw response: %#v", resp)
-	// Warning: there's a bug where it returns two identical tool calls. To verify.
-	if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "hidden_word" {
-		log.Fatal("Unexpected response")
-	}
-	res, err := resp.ToolCalls[0].Call(opts.Tools)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Saw: %v\n", res)
-	// This would Output: Saw: banana
-}
-
 func ExampleClient_ChatStream() {
 	c, err := gemini.New("", "gemini-2.0-flash-lite")
 	if err != nil {

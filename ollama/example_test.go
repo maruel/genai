@@ -19,59 +19,7 @@ import (
 )
 
 // Ollama build to use.
-const version = "v0.6.2"
-
-func ExampleClient_Chat_tool_use() {
-	// This example shows LLM positional bias. It will always return the first country listed.
-
-	// Download and start the server.
-	ctx := context.Background()
-	srv, err := startServer(ctx)
-	if err != nil {
-		log.Print(err)
-		return
-	}
-	defer srv.Close()
-	// Connect the client.
-	c, err := ollama.New(srv.URL(), "llama3.1:8b")
-	if err != nil {
-		log.Print(err)
-		return
-	}
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
-	}
-	type got struct {
-		Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
-	}
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-		Tools: []genai.ToolDef{
-			{
-				Name:        "best_country",
-				Description: "A tool to determine the best country",
-				Callback: func(g *got) string {
-					return g.Country
-				},
-			},
-		},
-	}
-	resp, err := c.Chat(context.Background(), msgs, &opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("Raw response: %#v", resp)
-	if len(resp.ToolCalls) != 1 || resp.ToolCalls[0].Name != "best_country" {
-		log.Fatal("Unexpected response")
-	}
-	res, err := resp.ToolCalls[0].Call(opts.Tools)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Best: %v\n", res)
-}
+const version = "v0.7.0"
 
 func ExampleClient_ChatStream() {
 	// Download and start the server.

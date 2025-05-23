@@ -268,66 +268,12 @@ func ExampleChatProvider_chat_audio() {
 	// This would Output: Heard: orange
 }
 
-func ExampleChatProvider_chat_tool_use() {
-	c, err := gemini.New("", "gemini-2.0-flash")
-	if err != nil {
-		log.Fatal(err)
-	}
-	f, err := os.Open("internal/internaltest/testdata/animation.mp4")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "What is the word? Call the tool hidden_word to tell me what word you saw."},
-				{Document: f},
-			},
-		},
-	}
-	type Word struct {
-		Word string `json:"word" jsonschema:"enum=Orange,enum=Banana,enum=Apple"`
-	}
-	opts := genai.ChatOptions{
-		Seed: 1,
-		Tools: []genai.ToolDef{
-			{
-				Name:        "hidden_word",
-				Description: "A tool to state what word was seen in the video.",
-				Callback: func(got *Word) (string, error) {
-					w := strings.ToLower(got.Word)
-					fmt.Printf("Saw: %q\n", w)
-					if w == "banana" {
-						return "That's correct!", nil
-					}
-					return "", errors.New("That's incorrect.")
-				},
-			},
-		},
-	}
-	resp, err := c.Chat(context.Background(), msgs, &opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("Raw response: %#v", resp)
-	// Warning: there's a bug where it returns two identical tool calls. To verify.
-	if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "hidden_word" {
-		log.Fatal("Unexpected response")
-	}
-	res, err := resp.ToolCalls[0].Call(opts.Tools)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("%s\n", res)
-	// Remove this comment line to run the example.
-	// Output:
-	// Saw: "banana"
-	// That's correct!
-}
-
 func ExampleChatWithToolCallLoop() {
+	// Supported by Anthropic, Cerebras, Cloudflare, Cohere, DeepSeek, Gemini, Groq, HuggingFace, Mistral,
+	// Ollama, OpenAI, TogetherAI.
+
+	// Using a free small model for testing.
+	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	c, err := gemini.New("", "gemini-2.0-flash")
 	if err != nil {
 		log.Fatal(err)
@@ -337,6 +283,24 @@ func ExampleChatWithToolCallLoop() {
 		log.Fatal(err)
 	}
 	defer f.Close()
+
+	// Define a custom tool "hidden_word".
+	type Word struct {
+		Word string `json:"word" jsonschema:"enum=Orange,enum=Banana,enum=Apple"`
+	}
+	hiddenWordTool := genai.ToolDef{
+		Name:        "hidden_word",
+		Description: "A tool to state what word was seen in the video.",
+		Callback: func(got *Word) (string, error) {
+			w := strings.ToLower(got.Word)
+			fmt.Printf("Saw: %q\n", w)
+			if w == "banana" {
+				return "That's correct!", nil
+			}
+			return "", errors.New("That's incorrect.")
+		},
+	}
+
 	msgs := genai.Messages{
 		{
 			Role: genai.User,
@@ -346,26 +310,7 @@ func ExampleChatWithToolCallLoop() {
 			},
 		},
 	}
-	type Word struct {
-		Word string `json:"word" jsonschema:"enum=Orange,enum=Banana,enum=Apple"`
-	}
-	opts := genai.ChatOptions{
-		Seed: 1,
-		Tools: []genai.ToolDef{
-			{
-				Name:        "hidden_word",
-				Description: "A tool to state what word was seen in the video.",
-				Callback: func(got *Word) (string, error) {
-					w := strings.ToLower(got.Word)
-					fmt.Printf("Saw: %q\n", w)
-					if w == "banana" {
-						return "That's correct!", nil
-					}
-					return "", errors.New("That's incorrect.")
-				},
-			},
-		},
-	}
+	opts := genai.ChatOptions{Tools: []genai.ToolDef{hiddenWordTool}}
 	newMsgs, _, err := genai.ChatWithToolCallLoop(context.Background(), c, msgs, &opts)
 	if err != nil {
 		log.Fatal(err)

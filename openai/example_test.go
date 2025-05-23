@@ -44,50 +44,6 @@ func ExampleClient_Chat_audio() {
 	// This would Output: Heard: orange
 }
 
-func ExampleClient_Chat_tool_use() {
-	// This example shows LLM positional bias. It will always return the first country listed.
-
-	c, err := openai.New("", "gpt-4.1-nano")
-	if err != nil {
-		log.Fatal(err)
-	}
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "I wonder if Canada is a better country than the US? Call the tool best_country to tell me which country is the best one."),
-	}
-	type got struct {
-		Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
-	}
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   200,
-		Tools: []genai.ToolDef{
-			{
-				Name:        "best_country",
-				Description: "A tool to determine the best country",
-				Callback: func(g *got) string {
-					return g.Country
-				},
-			},
-		},
-	}
-	resp, err := c.Chat(context.Background(), msgs, &opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("Raw response: %#v", resp)
-	// Warning: when the model is undecided, it call both.
-	if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != "best_country" {
-		log.Fatal("Unexpected response")
-	}
-	res, err := resp.ToolCalls[0].Call(opts.Tools)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Best: %v\n", res)
-	// This would Output: Best: Canada
-}
-
 func ExampleClient_ChatStream() {
 	c, err := openai.New("", "gpt-4.1-nano")
 	if err != nil {

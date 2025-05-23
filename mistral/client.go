@@ -513,6 +513,11 @@ type Client struct {
 //
 // https://docs.mistral.ai/capabilities/document/
 // https://docs.mistral.ai/capabilities/vision/
+//
+// # Tool use
+//
+// Tool use requires a model which has the tool capability. See
+// https://docs.mistral.ai/capabilities/function_calling/
 func New(apiKey, model string) (*Client, error) {
 	if apiKey == "" {
 		if apiKey = os.Getenv("MISTRAL_API_KEY"); apiKey == "" {

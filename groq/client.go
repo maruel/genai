@@ -517,6 +517,9 @@ type Client struct {
 // If no model is provided, only functions that do not require a model, like ListModels, will work.
 // To use multiple models, create multiple clients.
 // Use one of the model from https://console.groq.com/dashboard/limits or https://console.groq.com/docs/models
+//
+// Tool use requires the use of a model that supports it.
+// https://console.groq.com/docs/tool-use
 func New(apiKey, model string) (*Client, error) {
 	if apiKey == "" {
 		if apiKey = os.Getenv("GROQ_API_KEY"); apiKey == "" {

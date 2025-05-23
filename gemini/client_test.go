@@ -315,14 +315,14 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			Name:          "bad apiKey",
 			ApiKey:        "badApiKey",
 			Model:         "gemini-2.0-flash-lite",
-			ErrChat:       "http 400: error 400 (INVALID_ARGUMENT): API key not valid. Please pass a valid API key. You can get a new API key at https://ai.google.dev/gemini-api/docs/getting-started",
+			ErrChat:       "http 400: error 400 (INVALID_ARGUMENT): API key not valid. Please pass a valid API key.",
 			ErrChatStream: "http 400: error 400 (INVALID_ARGUMENT): API key not valid. Please pass a valid API key.",
 		},
 		{
 			Name:          "bad model",
 			Model:         "bad model",
-			ErrChat:       "http 400: error 400 (INVALID_ARGUMENT): * GenerateContentRequest.model: unexpected model name format\n You can get a new API key at https://ai.google.dev/gemini-api/docs/getting-started",
-			ErrChatStream: "http 400: error 400 (INVALID_ARGUMENT): * GenerateContentRequest.model: unexpected model name format\n",
+			ErrChat:       "http 400: error 400 (INVALID_ARGUMENT): * GenerateContentRequest.model: unexpected model name format",
+			ErrChatStream: "http 400: error 400 (INVALID_ARGUMENT): * GenerateContentRequest.model: unexpected model name format",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
@@ -336,7 +336,7 @@ func TestClient_ModelProvider_errors(t *testing.T) {
 		{
 			Name:   "bad apiKey",
 			ApiKey: "badApiKey",
-			Err:    "http 400: error 400 (INVALID_ARGUMENT): API key not valid. Please pass a valid API key. You can get a new API key at https://ai.google.dev/gemini-api/docs/getting-started",
+			Err:    "http 400: error 400 (INVALID_ARGUMENT): API key not valid. Please pass a valid API key.",
 		},
 	}
 	f := func(t *testing.T, apiKey string) genai.ModelProvider {

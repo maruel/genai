@@ -806,11 +806,10 @@ func (c *Client) doRequest(ctx context.Context, method, url string, in, out any)
 		}
 		return errors.New(er.String())
 	default:
-		// HuggingFace rarely return a structured error.
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
 			herr.PrintBody = false
-			if herr.StatusCode == http.StatusUnauthorized {
+			if apiKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
 				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, http.StatusText(herr.StatusCode), apiKeyURL)
 			}
 			return fmt.Errorf("%w: %s", herr, http.StatusText(herr.StatusCode))

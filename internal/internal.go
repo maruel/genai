@@ -38,8 +38,6 @@ func DecodeError(ctx context.Context, url string, resp *http.Response, er fmt.St
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
-			// Google may return an HTML page on invalid API key.
-			// Perplexity rarely return a structured error.
 			herr.PrintBody = false
 			if apiKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
 				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, http.StatusText(herr.StatusCode), apiKeyURL)

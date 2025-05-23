@@ -382,7 +382,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 		return err
 	}
 	in.Stream = false
-	err := c.post(ctx, c.chatURL, in, out)
+	err := c.doRequest(ctx, "POST", c.chatURL, in, out)
 	if err != nil {
 		// TODO: Cheezy.
 		if strings.Contains(err.Error(), "not found, try pulling it first") {
@@ -390,7 +390,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 				return err
 			}
 			// Retry.
-			err = c.post(ctx, c.chatURL, in, out)
+			err = c.doRequest(ctx, "POST", c.chatURL, in, out)
 		}
 	}
 	return err
@@ -571,7 +571,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	var out struct {
 		Models []Model `json:"models"`
 	}
-	if err := c.Client.Get(ctx, c.baseURL+"/api/tags", nil, &out); err != nil {
+	if err := c.doRequest(ctx, "GET", c.baseURL+"/api/tags", nil, &out); err != nil {
 		return nil, err
 	}
 	models := make([]genai.Model, len(out.Models))
@@ -599,7 +599,7 @@ func (c *Client) PullModel(ctx context.Context, model string) error {
 	in := pullModelRequest{Model: model}
 	// TODO: Stream updates instead of hanging for several minutes.
 	out := pullModelResponse{}
-	if err := c.post(ctx, c.baseURL+"/api/pull", &in, &out); err != nil {
+	if err := c.doRequest(ctx, "POST", c.baseURL+"/api/pull", &in, &out); err != nil {
 		return fmt.Errorf("pull failed: %w", err)
 	} else if out.Status != "success" {
 		return fmt.Errorf("pull failed: %s", out.Status)
@@ -614,8 +614,8 @@ func (c *Client) validate() error {
 	return nil
 }
 
-func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	resp, err := c.Client.PostRequest(ctx, url, nil, in)
+func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
+	resp, err := c.Client.Request(ctx, method, url, nil, in)
 	if err != nil {
 		return err
 	}

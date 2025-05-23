@@ -425,7 +425,7 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
 	// TODO: Distinguish between completion and chat. Chat is completion with the template applied.
 	in.Stream = false
-	return c.post(ctx, c.chatURL, in, out)
+	return c.doRequest(ctx, "POST", c.chatURL, in, out)
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
@@ -544,7 +544,7 @@ func processSSE(body io.Reader, out chan<- CompletionStreamChunkResponse) error 
 
 func (c *Client) GetHealth(ctx context.Context) (string, error) {
 	msg := healthResponse{}
-	if err := c.Client.Get(ctx, c.baseURL+"/health", nil, &msg); err != nil {
+	if err := c.doRequest(ctx, "GET", c.baseURL+"/health", nil, &msg); err != nil {
 		return "", fmt.Errorf("failed to get health response: %w", err)
 	}
 	return msg.Status, nil
@@ -658,7 +658,7 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 			}
 		}
 		out := applyTemplateResponse{}
-		if err := c.post(ctx, c.baseURL+"/apply-template", &in2, &out); err != nil {
+		if err := c.doRequest(ctx, "POST", c.baseURL+"/apply-template", &in2, &out); err != nil {
 			return err
 		}
 		in.Prompt = out.Prompt
@@ -697,8 +697,8 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 	return nil
 }
 
-func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	resp, err := c.Client.PostRequest(ctx, url, nil, in)
+func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
+	resp, err := c.Client.Request(ctx, method, url, nil, in)
 	if err != nil {
 		return err
 	}
@@ -710,9 +710,9 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
 			herr.PrintBody = false
-			return fmt.Errorf("%w: error: %s", herr, er.String())
+			return fmt.Errorf("%w: %s", herr, er.String())
 		}
-		return fmt.Errorf("error: %s", er.String())
+		return errors.New(er.String())
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {

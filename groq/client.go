@@ -16,7 +16,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log/slog"
 	"net/http"
 	"os"
 	"strings"
@@ -811,9 +810,11 @@ func (c *Client) doRequest(ctx context.Context, method, url string, in, out any)
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
-			slog.WarnContext(ctx, "groq", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
-		} else {
-			slog.WarnContext(ctx, "groq", "url", url, "err", err)
+			herr.PrintBody = false
+			if apiKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
+				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, http.StatusText(herr.StatusCode), apiKeyURL)
+			}
+			return fmt.Errorf("%w: %s", herr, http.StatusText(herr.StatusCode))
 		}
 		return err
 	}

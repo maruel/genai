@@ -15,7 +15,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log/slog"
 	"net/http"
 	"os"
 	"time"
@@ -316,7 +315,7 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 
 func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
 	in.Stream = false
-	return c.post(ctx, c.chatURL, in, out)
+	return c.doRequest(ctx, "POST", c.chatURL, in, out)
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
@@ -456,8 +455,8 @@ func processSSE(body io.Reader, out chan<- ChatStreamChunkResponse) error {
 	}
 }
 
-func (c *Client) post(ctx context.Context, url string, in, out any) error {
-	resp, err := c.Client.PostRequest(ctx, url, nil, in)
+func (c *Client) doRequest(ctx context.Context, method, url string, in, out any) error {
+	resp, err := c.Client.Request(ctx, method, url, nil, in)
 	if err != nil {
 		return err
 	}
@@ -476,17 +475,13 @@ func (c *Client) post(ctx context.Context, url string, in, out any) error {
 		}
 		return errors.New(er.String())
 	default:
-		// Perplexity rarely return a structured error.
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
 			herr.PrintBody = false
-			slog.WarnContext(ctx, "perplexity", "url", url, "err", err, "status", herr.StatusCode)
-			if herr.StatusCode == http.StatusUnauthorized {
+			if apiKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
 				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, http.StatusText(herr.StatusCode), apiKeyURL)
 			}
 			return fmt.Errorf("%w: %s", herr, http.StatusText(herr.StatusCode))
-		} else {
-			slog.WarnContext(ctx, "perplexity", "url", url, "err", err)
 		}
 		return err
 	}

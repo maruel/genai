@@ -768,7 +768,7 @@ type errorResponse struct {
 }
 
 func (e *errorResponse) String() string {
-	return fmt.Sprintf("error %d (%s): %s", e.Error.Code, e.Error.Status, e.Error.Message)
+	return fmt.Sprintf("error %d (%s): %s", e.Error.Code, e.Error.Status, strings.TrimSpace(e.Error.Message))
 }
 
 type errorResponseError struct {
@@ -1281,9 +1281,8 @@ func (c *Client) doRequest(ctx context.Context, method, url string, in, out any)
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
 			herr.PrintBody = false
-			// It's annoying that Google returns 400 instead of 401 for invalid API key.
-			if herr.StatusCode == http.StatusBadRequest || herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: %s You can get a new API key at %s", herr, er.String(), apiKeyURL)
+			if herr.StatusCode == http.StatusUnauthorized {
+				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, er.String(), apiKeyURL)
 			}
 			return fmt.Errorf("%w: %s", herr, er.String())
 		}
@@ -1291,13 +1290,11 @@ func (c *Client) doRequest(ctx context.Context, method, url string, in, out any)
 	default:
 		var herr *httpjson.Error
 		if errors.As(err, &herr) {
-			slog.WarnContext(ctx, "gemini", "url", url, "err", err, "response", string(herr.ResponseBody), "status", herr.StatusCode)
-			// Google may return an HTML page on invalid API key.
-			if bytes.HasPrefix(herr.ResponseBody, []byte("<!DOCTYPE html>")) {
-				return fmt.Errorf("%w: You can get a new API key at %s", herr, apiKeyURL)
+			herr.PrintBody = false
+			if apiKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
+				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, http.StatusText(herr.StatusCode), apiKeyURL)
 			}
-		} else {
-			slog.WarnContext(ctx, "gemini", "url", url, "err", err)
+			return fmt.Errorf("%w: %s", herr, http.StatusText(herr.StatusCode))
 		}
 		return err
 	}

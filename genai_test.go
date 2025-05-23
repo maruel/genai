@@ -316,7 +316,7 @@ func TestMessage_Decode(t *testing.T) {
 	})
 }
 
-func TestMessageFragment_Accumulate(t *testing.T) {
+func TestAccumulateMessageFragment(t *testing.T) {
 	tests := []struct {
 		name string
 		msgs Messages
@@ -390,10 +390,23 @@ func TestMessageFragment_Accumulate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := tt.f.Accumulate(tt.msgs)
+			got := make(Messages, len(tt.msgs))
+			copy(got, tt.msgs)
+
+			// Similar logic to ChatStreamWithToolCallLoop
+			var assistantMsg *Message
+			if len(got) == 0 || got[len(got)-1].Role != Assistant {
+				got = append(got, Message{Role: Assistant})
+				assistantMsg = &got[len(got)-1]
+			} else {
+				assistantMsg = &got[len(got)-1]
+			}
+
+			err := assistantMsg.Accumulate(tt.f)
 			if err != nil {
 				t.Fatalf("unexpected error: %q", err)
 			}
+
 			if diff := cmp.Diff(tt.want, got); diff != "" {
 				t.Fatalf("unexpected result: %s", diff)
 			}
@@ -401,45 +414,63 @@ func TestMessageFragment_Accumulate(t *testing.T) {
 	}
 }
 
-func TestMessageFragment_toMessage(t *testing.T) {
+func TestMessage_Accumulate(t *testing.T) {
 	tests := []struct {
-		name string
-		f    MessageFragment
-		want Message
+		name     string
+		message  Message
+		fragment MessageFragment
+		want     Message
 	}{
 		{
-			name: "Text",
-			f:    MessageFragment{TextFragment: "Hello"},
-			want: NewTextMessage(Assistant, "Hello"),
+			name:     "Text",
+			message:  Message{Role: Assistant},
+			fragment: MessageFragment{TextFragment: "Hello"},
+			want:     NewTextMessage(Assistant, "Hello"),
 		},
 		/* TODO: Implement document while streaming.
 		{
 			name: "Document",
-			f: MessageFragment{
+			message: Message{Role: Assistant},
+			fragment: MessageFragment{
 				Filename:         "document.txt",
 				DocumentFragment: []byte("document content"),
 			},
 			want: Message{
-				Role:   Assistant,
+				Role:     Assistant,
 				Contents: []Content{{Document: &buffer{"document content"}}},
 			},
 		},
 		*/
 		{
-			name: "Tool",
-			f: MessageFragment{
-				ToolCall: ToolCall{Name: "tool"},
-			},
+			name:     "Tool",
+			message:  Message{Role: Assistant},
+			fragment: MessageFragment{ToolCall: ToolCall{Name: "tool"}},
 			want: Message{
 				Role:      Assistant,
 				ToolCalls: []ToolCall{{Name: "tool"}},
 			},
 		},
+		{
+			name:     "Add text to existing text",
+			message:  NewTextMessage(Assistant, "Hello"),
+			fragment: MessageFragment{TextFragment: " world"},
+			want:     NewTextMessage(Assistant, "Hello world"),
+		},
+		{
+			name:     "Add thinking to existing thinking",
+			message:  Message{Role: Assistant, Contents: []Content{{Thinking: "I think "}}},
+			fragment: MessageFragment{ThinkingFragment: "therefore I am"},
+			want:     Message{Role: Assistant, Contents: []Content{{Thinking: "I think therefore I am"}}},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := tt.f.toMessage()
-			if diff := cmp.Diff(tt.want, got); diff != "" {
+			message := tt.message
+			err := message.Accumulate(tt.fragment)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if diff := cmp.Diff(tt.want, message); diff != "" {
 				t.Fatalf("unexpected result: %s", diff)
 			}
 		})
@@ -844,13 +875,18 @@ func (m *mockChatProvider) Chat(ctx context.Context, msgs Messages, opts Validat
 	return ChatResult{}, fmt.Errorf("Chat not implemented in mock")
 }
 
-func (m *mockChatProvider) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Usage, error) {
+func (m *mockChatProvider) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (ChatResult, error) {
 	if m.callIndex >= len(m.streamResponses) {
-		return Usage{}, fmt.Errorf("no more mock responses")
+		return ChatResult{}, fmt.Errorf("no more mock responses")
 	}
 
 	resp := m.streamResponses[m.callIndex]
 	m.callIndex++
+
+	result := ChatResult{
+		Usage:   resp.usage,
+		Message: Message{Role: Assistant},
+	}
 
 	go func() {
 		defer close(replies)
@@ -859,9 +895,11 @@ func (m *mockChatProvider) ChatStream(ctx context.Context, msgs Messages, opts V
 			case <-ctx.Done():
 				return
 			case replies <- fragment:
+				// Accumulate fragment into the result
+				result.Message.Accumulate(fragment)
 			}
 		}
 	}()
 
-	return resp.usage, nil
+	return result, nil
 }

@@ -89,52 +89,48 @@ func ChatStreamWithToolCallLoop(ctx context.Context, provider ChatProvider, msgs
 	tools := chatOpts.Tools
 	for {
 		internalReplies := make(chan MessageFragment)
-		var loopMsgs Messages
+		reply := Message{}
 		eg := errgroup.Group{}
 		eg.Go(func() error {
+			// TODO: Process tools as they arrive for maximum asynchronicity.
 			for f := range internalReplies {
 				replies <- f
-				var err2 error
-				if loopMsgs, err2 = f.Accumulate(loopMsgs); err2 != nil {
+				if err := reply.Accumulate(f); err != nil {
 					for range internalReplies {
+						// Drain channel
 					}
-					return err2
+					return err
 				}
 			}
 			return nil
 		})
-		u, err := provider.ChatStream(ctx, workMsgs, opts, internalReplies)
-		usage.InputTokens += u.InputTokens
-		usage.InputCachedTokens += u.InputCachedTokens
-		usage.OutputTokens += u.OutputTokens
-		usage.FinishReason = u.FinishReason
+		result, err := provider.ChatStream(ctx, workMsgs, opts, internalReplies)
+		usage.InputTokens += result.InputTokens
+		usage.InputCachedTokens += result.InputCachedTokens
+		usage.OutputTokens += result.OutputTokens
+		usage.FinishReason = result.FinishReason
+		// Note: We already have the complete message in result.Message, but we accumulate separately
+		// to preserve backward compatibility with existing behavior and tests
 		if err3 := eg.Wait(); err == nil {
 			err = err3
 		}
 		if err != nil {
 			return out, usage, err
 		}
-		out = append(out, loopMsgs...)
-		workMsgs = append(workMsgs, loopMsgs...)
-		hadTool := false
-		for i := range loopMsgs {
-			if len(loopMsgs[i].ToolCalls) == 0 {
-				continue
-			}
-			hadTool = true
-			tr, err := loopMsgs[i].DoToolCalls(tools)
-			if err != nil {
-				return out, usage, err
-			}
-			if tr.IsZero() {
-				return out, usage, fmt.Errorf("expected tool call to return a result or an error")
-			}
-			out = append(out, tr)
-			workMsgs = append(workMsgs, tr)
-		}
-		if !hadTool {
+		out = append(out, reply)
+		workMsgs = append(workMsgs, reply)
+		if len(reply.ToolCalls) == 0 {
 			return out, usage, nil
 		}
+		tr, err := reply.DoToolCalls(tools)
+		if err != nil {
+			return out, usage, err
+		}
+		if tr.IsZero() {
+			return out, usage, fmt.Errorf("expected tool call to return a result or an error")
+		}
+		out = append(out, tr)
+		workMsgs = append(workMsgs, tr)
 		if chatOpts.ToolCallRequest == ToolCallRequired {
 			chatOpts.ToolCallRequest = ToolCallAny
 		}
@@ -164,15 +160,15 @@ func (p *ChatProviderUsage) Chat(ctx context.Context, msgs Messages, opts Valida
 }
 
 // ChatStream implements the ChatProvider interface and accumulates usage statistics.
-func (p *ChatProviderUsage) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Usage, error) {
+func (p *ChatProviderUsage) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (ChatResult, error) {
 	// Call the wrapped provider and accumulate usage statistics
-	usage, err := p.Provider.ChatStream(ctx, msgs, opts, replies)
+	result, err := p.Provider.ChatStream(ctx, msgs, opts, replies)
 	p.mu.Lock()
-	p.accumUsage.InputTokens += usage.InputTokens
-	p.accumUsage.InputCachedTokens += usage.InputCachedTokens
-	p.accumUsage.OutputTokens += usage.OutputTokens
+	p.accumUsage.InputTokens += result.InputTokens
+	p.accumUsage.InputCachedTokens += result.InputCachedTokens
+	p.accumUsage.OutputTokens += result.OutputTokens
 	p.mu.Unlock()
-	return usage, err
+	return result, err
 }
 
 // GetAccumulatedUsage returns the current accumulated usage values.
@@ -205,32 +201,8 @@ func (tp *ChatProviderThinking) Chat(ctx context.Context, msgs Messages, opts Va
 	if err != nil {
 		return result, err
 	}
-	if len(result.Contents) == 0 {
-		// It can be a function call.
-		return result, nil
-	}
-	if len(result.Contents) > 1 {
-		return result, fmt.Errorf("multiple content block: %#v", result.Contents)
-	}
-	text := result.Contents[0].Text
-	if text == "" {
-		// Maybe an image.
-		return result, nil
-	}
-
-	tagStart := "<" + tp.TagName + ">"
-	tagEnd := "</" + tp.TagName + ">"
-	if tStart := strings.Index(text, tagStart); tStart != -1 {
-		if prefix := text[:tStart]; strings.TrimSpace(prefix) != "" {
-			return result, fmt.Errorf("failed to parse thinking tokens")
-		}
-		// Remove whitespace after the starting tag.
-		text = strings.TrimLeftFunc(text[tStart+len(tagStart):], unicode.IsSpace)
-	}
-	if tEnd := strings.Index(text, tagEnd); tEnd != -1 {
-		// Remove whitespace after the ending tag.
-		result.Contents[0].Text = strings.TrimLeftFunc(text[tEnd+len(tagEnd):], unicode.IsSpace)
-		result.Contents = append([]Content{{Thinking: text[:tEnd]}}, result.Contents...)
+	if err := tp.processThinkingMessage(&result.Message); err != nil {
+		return result, err
 	}
 	return result, nil
 }
@@ -238,7 +210,7 @@ func (tp *ChatProviderThinking) Chat(ctx context.Context, msgs Messages, opts Va
 // ChatStream implements the ChatProvider interface for streaming by delegating to the wrapped provider
 // and processing each fragment to extract thinking blocks.
 // If no thinking tags are present, the first part of the message is assumed to be thinking.
-func (tp *ChatProviderThinking) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Usage, error) {
+func (tp *ChatProviderThinking) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (ChatResult, error) {
 	internalReplies := make(chan MessageFragment)
 	// The tokens always have a trailing "\n". When streaming, the trailing "\n" will likely be sent as a
 	// separate event. This requires a small state machine to keep track of that.
@@ -313,12 +285,49 @@ func (tp *ChatProviderThinking) ChatStream(ctx context.Context, msgs Messages, o
 		}
 		return nil
 	})
-	usage, err := tp.Provider.ChatStream(ctx, msgs, opts, internalReplies)
+	result, err := tp.Provider.ChatStream(ctx, msgs, opts, internalReplies)
 	close(internalReplies)
 	if err3 := eg.Wait(); err == nil {
 		err = err3
 	}
-	return usage, err
+	if err != nil {
+		return result, err
+	}
+	if err := tp.processThinkingMessage(&result.Message); err != nil {
+		return result, err
+	}
+	return result, nil
+}
+
+func (tp *ChatProviderThinking) processThinkingMessage(m *Message) error {
+	if len(m.Contents) == 0 {
+		// It can be a function call.
+		return nil
+	}
+	if len(m.Contents) > 1 {
+		return fmt.Errorf("multiple content block: %#v", m.Contents)
+	}
+	text := m.Contents[0].Text
+	if text == "" {
+		// Maybe an image.
+		return nil
+	}
+
+	tagStart := "<" + tp.TagName + ">"
+	tagEnd := "</" + tp.TagName + ">"
+	if tStart := strings.Index(text, tagStart); tStart != -1 {
+		if prefix := text[:tStart]; strings.TrimSpace(prefix) != "" {
+			return fmt.Errorf("failed to parse thinking tokens")
+		}
+		// Remove whitespace after the starting tag.
+		text = strings.TrimLeftFunc(text[tStart+len(tagStart):], unicode.IsSpace)
+	}
+	if tEnd := strings.Index(text, tagEnd); tEnd != -1 {
+		// Remove whitespace after the ending tag.
+		m.Contents[0].Text = strings.TrimLeftFunc(text[tEnd+len(tagEnd):], unicode.IsSpace)
+		m.Contents = append([]Content{{Thinking: text[:tEnd]}}, m.Contents...)
+	}
+	return nil
 }
 
 type tagProcessingState int

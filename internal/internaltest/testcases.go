@@ -15,7 +15,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
+	"golang.org/x/sync/errgroup"
 )
 
 // ChatProviderFactory is what a Java developer would write.
@@ -484,47 +486,45 @@ func (tc *TestCases) testChatStreamHelper(t *testing.T, msgs genai.Messages, ove
 func (tc *TestCases) testChatStream(t *testing.T, msgs genai.Messages, c genai.ChatProvider, opts genai.Validatable, usageIsBroken, finishReasonIsBroken bool) genai.ChatResult {
 	ctx := t.Context()
 	chunks := make(chan genai.MessageFragment)
-	end := make(chan genai.Messages, 1)
-	go func() {
-		var pendingMsgs genai.Messages
+	// Assert that the message returned is the same as the one we accumulated.
+	accumulated := genai.Message{}
+	eg := errgroup.Group{}
+	eg.Go(func() error {
 		defer func() {
-			end <- pendingMsgs
-			close(end)
+			for range chunks {
+			}
 		}()
 		for {
 			select {
 			case <-ctx.Done():
-				return
+				return nil
 			case pkt, ok := <-chunks:
 				if !ok {
-					return
+					return nil
 				}
 				t.Logf("Packet: %v", pkt)
-				var err2 error
-				if pendingMsgs, err2 = pkt.Accumulate(pendingMsgs); err2 != nil {
-					t.Error(err2)
-					return
+				if err2 := accumulated.Accumulate(pkt); err2 != nil {
+					return err2
 				}
 			}
 		}
-	}()
-	usage, err := c.ChatStream(ctx, msgs, opts, chunks)
+	})
+	result, err := c.ChatStream(ctx, msgs, opts, chunks)
 	close(chunks)
-	responses := <-end
-	t.Logf("Raw responses: %#v", responses)
+	if err3 := eg.Wait(); err3 != nil {
+		t.Fatal(err3)
+	}
+	t.Logf("Raw response: %#v", result.Message)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
 	} else if err != nil {
 		t.Fatal(err)
 	}
-	if len(responses) == 0 {
-		t.Fatal("No response received")
+	if diff := cmp.Diff(&result.Message, &accumulated); diff != "" {
+		t.Errorf("(+want), (-got):\n%s", diff)
 	}
-	// BUG: This discards the reasoning.
-	resp := genai.ChatResult{Message: responses[len(responses)-1], Usage: usage}
-	t.Logf("Raw response: %#v", resp)
-	testUsage(t, &resp.Usage, usageIsBroken, finishReasonIsBroken)
-	return resp
+	testUsage(t, &result.Usage, usageIsBroken, finishReasonIsBroken)
+	return result
 }
 
 //

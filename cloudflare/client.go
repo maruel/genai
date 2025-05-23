@@ -475,12 +475,12 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 	return c.doRequest(ctx, "POST", c.chatURL, in, out)
 }
 
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
-	usage := genai.Usage{}
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
+	result := genai.ChatResult{}
 	for i, msg := range msgs {
 		for j, content := range msg.Contents {
 			if len(content.Opaque) != 0 {
-				return usage, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
+				return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
 			}
 		}
 	}
@@ -493,13 +493,13 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 			continuableErr = uce
 			// Otherwise log the error but continue
 		} else {
-			return usage, err
+			return result, err
 		}
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		return processStreamPackets(ch, chunks, &usage)
+		return processStreamPackets(ch, chunks, &result)
 	})
 	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
@@ -508,12 +508,12 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	}
 	// Return the continuable error if no other error occurred
 	if err == nil && continuableErr != nil {
-		return usage, continuableErr
+		return result, continuableErr
 	}
-	return usage, err
+	return result, err
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, usage *genai.Usage) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -521,12 +521,17 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	}()
 	for pkt := range ch {
 		if pkt.Usage.TotalTokens != 0 {
-			usage.InputTokens = pkt.Usage.PromptTokens
-			usage.OutputTokens = pkt.Usage.CompletionTokens
+			result.InputTokens = pkt.Usage.PromptTokens
+			result.OutputTokens = pkt.Usage.CompletionTokens
 			// Cloudflare doesn't provide FinishReason.
 		}
+		// TODO: Tools.
 		if word := pkt.Response; word != "" {
-			chunks <- genai.MessageFragment{TextFragment: word}
+			f := genai.MessageFragment{TextFragment: word}
+			if err := result.Accumulate(f); err != nil {
+				return err
+			}
+			chunks <- f
 		}
 	}
 	return nil

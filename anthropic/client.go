@@ -746,8 +746,8 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 	return c.doRequest(ctx, "POST", c.chatURL, in, out)
 }
 
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
-	usage := genai.Usage{}
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
+	result := genai.ChatResult{}
 	in := ChatRequest{}
 	var continuableErr error
 	if err := in.Init(msgs, opts, c.model); err != nil {
@@ -757,13 +757,13 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 			continuableErr = uce
 			// Otherwise log the error but continue
 		} else {
-			return usage, err
+			return result, err
 		}
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		return processStreamPackets(ch, chunks, &usage)
+		return processStreamPackets(ch, chunks, &result)
 	})
 	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
@@ -772,12 +772,12 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	}
 	// Return the continuable error if no other error occurred
 	if err == nil && continuableErr != nil {
-		return usage, continuableErr
+		return result, continuableErr
 	}
-	return usage, err
+	return result, err
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, usage *genai.Usage) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -795,10 +795,10 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			default:
 				return fmt.Errorf("unexpected role %q", pkt.Message.Role)
 			}
-			usage.InputTokens = pkt.Message.Usage.InputTokens
-			usage.InputCachedTokens = pkt.Message.Usage.CacheReadInputTokens
+			result.InputTokens = pkt.Message.Usage.InputTokens
+			result.InputCachedTokens = pkt.Message.Usage.CacheReadInputTokens
 			// There's some tokens listed there. Still save it in case it breaks midway.
-			usage.OutputTokens = pkt.Message.Usage.OutputTokens
+			result.OutputTokens = pkt.Message.Usage.OutputTokens
 			continue
 		case ChunkContentBlockStart:
 			switch pkt.ContentBlock.Type {
@@ -830,14 +830,13 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		case ChunkContentBlockStop:
 			// Marks a closure of the block pkt.Index. Nothing to do.
 			if pendingCall.ID != "" {
-				chunks <- genai.MessageFragment{ToolCall: pendingCall}
+				f.ToolCall = pendingCall
 				pendingCall = genai.ToolCall{}
 			}
-			continue
 		case ChunkMessageDelta:
 			// Includes finish reason and output tokens usage (but not input tokens!)
-			usage.FinishReason = pkt.Delta.StopReason.ToFinishReason()
-			usage.OutputTokens = pkt.Usage.OutputTokens
+			result.FinishReason = pkt.Delta.StopReason.ToFinishReason()
+			result.OutputTokens = pkt.Usage.OutputTokens
 		case ChunkMessageStop:
 			// Doesn't contain anything.
 			continue
@@ -848,7 +847,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			return fmt.Errorf("unknown stream block %q", pkt.Type)
 		}
 		if !f.IsZero() {
-			// slog.DebugContext(ctx, "anthropic", "fragment", fragment, "duration", time.Since(start).Round(time.Millisecond))
+			if err := result.Accumulate(f); err != nil {
+				return err
+			}
 			chunks <- f
 		}
 	}

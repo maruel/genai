@@ -27,6 +27,7 @@ import (
 	"github.com/maruel/genai/openai"
 	"github.com/maruel/genai/perplexity"
 	"github.com/maruel/genai/togetherai"
+	"golang.org/x/sync/errgroup"
 )
 
 func ExampleModelProvider_all() {
@@ -417,46 +418,27 @@ func ExampleChatProvider_ChatStream() {
 		MaxTokens: 50,
 	}
 	chunks := make(chan genai.MessageFragment)
-	end := make(chan genai.Message, 10)
-	go func() {
-		var pendingMsgs genai.Messages
-		defer func() {
-			for _, m := range pendingMsgs {
-				end <- m
-			}
-			close(end)
-		}()
+	eg := errgroup.Group{}
+	eg.Go(func() error {
 		for {
 			select {
 			case <-ctx.Done():
-				return
+				return nil
 			case pkt, ok := <-chunks:
 				if !ok {
-					return
+					return nil
 				}
-				var err2 error
-				if pendingMsgs, err2 = pkt.Accumulate(pendingMsgs); err2 != nil {
-					end <- genai.NewTextMessage(genai.Assistant, fmt.Sprintf("Error: %v", err2))
-					return
+				if _, err2 := os.Stdout.WriteString(pkt.TextFragment); err2 != nil {
+					return err2
 				}
 			}
 		}
-	}()
+	})
 	_, err = c.ChatStream(ctx, msgs, &opts, chunks)
 	close(chunks)
-	var responses genai.Messages
-	for m := range end {
-		responses = append(responses, m)
-	}
-	log.Printf("Raw responses: %#v", responses)
+	_ = eg.Wait()
 	if err != nil {
 		log.Fatal(err)
 	}
-	if len(responses) != 1 {
-		log.Fatal("Unexpected responses")
-	}
-	resp := responses[0]
-	// Normalize some of the variance. Obviously many models will still fail this test.
-	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.AsText())), ".!"))
 	// This would Output: Response: hello
 }

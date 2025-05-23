@@ -396,18 +396,18 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 	return err
 }
 
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
+	result := genai.ChatResult{}
 	// Check for non-empty Opaque field
 	for i, msg := range msgs {
 		for j, content := range msg.Contents {
 			if len(content.Opaque) != 0 {
-				return genai.Usage{}, fmt.Errorf("message #%d content #%d: Opaque field not supported", i, j)
+				return result, fmt.Errorf("message #%d content #%d: Opaque field not supported", i, j)
 			}
 		}
 	}
 
 	in := ChatRequest{}
-	usage := genai.Usage{}
 	var continuableErr error
 	if err := in.Init(msgs, opts, c.model); err != nil {
 		// If it's an UnsupportedContinuableError, we can continue
@@ -416,13 +416,13 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 			continuableErr = uce
 			// Otherwise log the error but continue
 		} else {
-			return usage, err
+			return result, err
 		}
 	}
 	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		return processStreamPackets(ch, chunks, &usage)
+		return processStreamPackets(ch, chunks, &result)
 	})
 	err := c.ChatStreamRaw(ctx, &in, ch)
 	close(ch)
@@ -431,12 +431,12 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	}
 	// Return the continuable error if no other error occurred
 	if err == nil && continuableErr != nil {
-		return usage, continuableErr
+		return result, continuableErr
 	}
-	return usage, err
+	return result, err
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, usage *genai.Usage) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -444,9 +444,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	}()
 	for pkt := range ch {
 		if pkt.EvalCount != 0 {
-			usage.InputTokens = pkt.PromptEvalCount
-			usage.OutputTokens = pkt.EvalCount
-			usage.FinishReason = pkt.DoneReason.ToFinishReason()
+			result.InputTokens = pkt.PromptEvalCount
+			result.OutputTokens = pkt.EvalCount
+			result.FinishReason = pkt.DoneReason.ToFinishReason()
 		}
 		switch role := pkt.Message.Role; role {
 		case "", "assistant":
@@ -454,14 +454,20 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			return fmt.Errorf("unexpected role %q", role)
 		}
 		for i := range pkt.Message.ToolCalls {
-			t := genai.MessageFragment{}
-			if err := pkt.Message.ToolCalls[i].To(&t.ToolCall); err != nil {
+			f := genai.MessageFragment{}
+			if err := pkt.Message.ToolCalls[i].To(&f.ToolCall); err != nil {
 				return err
 			}
-			chunks <- t
+			if err := result.Accumulate(f); err != nil {
+				return err
+			}
+			chunks <- f
 		}
 		f := genai.MessageFragment{TextFragment: pkt.Message.Content}
 		if !f.IsZero() {
+			if err := result.Accumulate(f); err != nil {
+				return err
+			}
 			chunks <- f
 		}
 	}

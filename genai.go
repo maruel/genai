@@ -69,7 +69,9 @@ type ChatProvider interface {
 	//
 	// opts must be either nil, *ChatOptions or a provider-specialized
 	// option struct.
-	ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Usage, error)
+	//
+	// No need to accumulate the replies into the result, the ChatResult contains the accumulated message.
+	ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (ChatResult, error)
 }
 
 // ChatOptions is a list of frequent options supported by most ChatProvider.
@@ -518,24 +520,15 @@ func (m *MessageFragment) IsZero() bool {
 	return m.TextFragment == "" && m.ThinkingFragment == "" && len(m.Opaque) == 0 && m.Filename == "" && len(m.DocumentFragment) == 0 && m.ToolCall.IsZero()
 }
 
-// Accumulate accumulates the message fragment into the list of messages.
-//
-// The assumption is that the fragment is always a message from the Assistant.
-func (m *MessageFragment) Accumulate(msgs Messages) (Messages, error) {
-	if len(msgs) == 0 {
-		// First message.
-		return append(msgs, m.toMessage()), nil
+// Accumulate adds a MessageFragment to the message being streamed.
+func (msg *Message) Accumulate(m MessageFragment) error {
+	if msg.Role == "" {
+		msg.Role = Assistant
 	}
-	lastMsg := &msgs[len(msgs)-1]
-	if lastMsg.Role != Assistant {
-		// First reply.
-		return append(msgs, m.toMessage()), nil
-	}
-
 	// Generally the first message fragment.
 	if m.ThinkingFragment != "" {
-		if len(lastMsg.Contents) != 0 {
-			if lastBlock := &lastMsg.Contents[len(lastMsg.Contents)-1]; lastBlock.Thinking != "" {
+		if len(msg.Contents) != 0 {
+			if lastBlock := &msg.Contents[len(msg.Contents)-1]; lastBlock.Thinking != "" {
 				lastBlock.Thinking += m.ThinkingFragment
 				if len(m.Opaque) != 0 {
 					if lastBlock.Opaque == nil {
@@ -543,58 +536,58 @@ func (m *MessageFragment) Accumulate(msgs Messages) (Messages, error) {
 					}
 					maps.Copy(lastBlock.Opaque, m.Opaque)
 				}
-				return msgs, nil
+				return nil
 			}
 		}
-		lastMsg.Contents = append(lastMsg.Contents, Content{Thinking: m.ThinkingFragment, Opaque: m.Opaque})
-		return msgs, nil
+		msg.Contents = append(msg.Contents, Content{Thinking: m.ThinkingFragment, Opaque: m.Opaque})
+		return nil
 	}
 	if len(m.Opaque) != 0 {
-		if len(lastMsg.Contents) != 0 {
+		if len(msg.Contents) != 0 {
 			// Only add Opaque to Thinking block.
-			if lastBlock := &lastMsg.Contents[len(lastMsg.Contents)-1]; lastBlock.Thinking != "" {
+			if lastBlock := &msg.Contents[len(msg.Contents)-1]; lastBlock.Thinking != "" {
 				if lastBlock.Opaque == nil {
 					lastBlock.Opaque = map[string]any{}
 				}
 				maps.Copy(lastBlock.Opaque, m.Opaque)
-				return msgs, nil
+				return nil
 			}
 		}
 		// Unlikely.
-		lastMsg.Contents = append(lastMsg.Contents, Content{Opaque: m.Opaque})
-		return msgs, nil
+		msg.Contents = append(msg.Contents, Content{Opaque: m.Opaque})
+		return nil
 	}
 
 	// Content.
 	if m.TextFragment != "" {
-		if len(lastMsg.Contents) != 0 {
-			if lastBlock := &lastMsg.Contents[len(lastMsg.Contents)-1]; lastBlock.Text != "" {
+		if len(msg.Contents) != 0 {
+			if lastBlock := &msg.Contents[len(msg.Contents)-1]; lastBlock.Text != "" {
 				lastBlock.Text += m.TextFragment
-				return msgs, nil
+				return nil
 			}
 		}
-		lastMsg.Contents = append(lastMsg.Contents, Content{Text: m.TextFragment})
-		return msgs, nil
+		msg.Contents = append(msg.Contents, Content{Text: m.TextFragment})
+		return nil
 	}
 
 	if m.Filename != "" || m.DocumentFragment != nil {
-		if len(lastMsg.Contents) != 0 {
-			if lastBlock := &lastMsg.Contents[len(lastMsg.Contents)-1]; lastBlock.Filename != "" {
+		if len(msg.Contents) != 0 {
+			if lastBlock := &msg.Contents[len(msg.Contents)-1]; lastBlock.Filename != "" {
 				_, _ = lastBlock.Document.(*bytesBuffer).Write(m.DocumentFragment)
-				return msgs, nil
+				return nil
 			}
 		}
-		lastMsg.Contents = append(lastMsg.Contents, Content{Filename: m.Filename, Document: &bytesBuffer{d: m.DocumentFragment}})
-		return msgs, nil
+		msg.Contents = append(msg.Contents, Content{Filename: m.Filename, Document: &bytesBuffer{d: m.DocumentFragment}})
+		return nil
 	}
 
 	if m.ToolCall.Name != "" {
-		lastMsg.ToolCalls = append(lastMsg.ToolCalls, m.ToolCall)
-		return msgs, nil
+		msg.ToolCalls = append(msg.ToolCalls, m.ToolCall)
+		return nil
 	}
 
 	// Nothing to accumulate. It should be an error but there are bugs where the system hangs.
-	return msgs, nil
+	return nil
 }
 
 type bytesBuffer struct {
@@ -636,30 +629,6 @@ func (b *bytesBuffer) Seek(offset int64, whence int) (int64, error) {
 func (b *bytesBuffer) Write(p []byte) (int, error) {
 	b.d = append(b.d, p...)
 	return len(p), nil
-}
-
-// toMessage converts the fragment to a standalone message.
-func (m *MessageFragment) toMessage() Message {
-	if m.ThinkingFragment != "" {
-		return Message{Role: Assistant, Contents: []Content{{Thinking: m.ThinkingFragment}}}
-	}
-	if m.TextFragment != "" {
-		return NewTextMessage(Assistant, m.TextFragment)
-	}
-	if m.DocumentFragment != nil {
-		// TODO: We need a seekable memory buffer, bytes.Buffer{} is not seekable.
-		return Message{
-			Role:     Assistant,
-			Contents: []Content{{Document: strings.NewReader(m.TextFragment)}},
-		}
-	}
-	if m.ToolCall.Name != "" {
-		return Message{
-			Role:      Assistant,
-			ToolCalls: []ToolCall{m.ToolCall},
-		}
-	}
-	return Message{}
 }
 
 // Tools

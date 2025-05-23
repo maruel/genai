@@ -29,6 +29,7 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
+	"golang.org/x/sync/errgroup"
 )
 
 // healthResponse is documented at
@@ -427,22 +428,20 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.post(ctx, c.chatURL, in, out)
 }
 
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Usage, error) {
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
 	// start := time.Now()
-	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
-	// specified. Disable if it becomes a problem.
+	result := genai.ChatResult{}
 
 	// Check for non-empty Opaque field
 	for i, msg := range msgs {
 		for j, content := range msg.Contents {
 			if len(content.Opaque) != 0 {
-				return genai.Usage{}, fmt.Errorf("message #%d content #%d: Opaque field not supported", i, j)
+				return result, fmt.Errorf("message #%d content #%d: Opaque field not supported", i, j)
 			}
 		}
 	}
 
 	in := CompletionRequest{CachePrompt: true}
-	usage := genai.Usage{}
 	var continuableErr error
 	if err := in.Init(opts); err != nil {
 		// If it's an UnsupportedContinuableError, we can continue
@@ -451,44 +450,45 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 			continuableErr = uce
 			// Otherwise log the error but continue
 		} else {
-			return usage, err
+			return result, err
 		}
 	}
 	if err := c.initPrompt(ctx, &in, opts, msgs); err != nil {
-		return usage, err
+		return result, err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
-	end := make(chan error)
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-	go func() {
-		for msg := range ch {
-			if msg.Timings.PredictedN != 0 {
-				usage.InputTokens = msg.Timings.PromptN
-				usage.OutputTokens = msg.Timings.PredictedN
-				usage.FinishReason = msg.StopType.ToFinishReason()
-			}
-			// slog.DebugContext(ctx, "llm", "word", word, "stop", msg.Stop, "prompt tok", msg.Timings.PromptN, "gen tok", msg.Timings.PredictedN, "prompt tok/ms", msg.Timings.PromptPerTokenMS, "gen tok/ms", msg.Timings.PredictedPerTokenMS, "duration", time.Since(start).Round(time.Millisecond))
-			// Mistral Nemo really likes "▁".
-			// word = strings.ReplaceAll(msg.Content, "\u2581", " ")
-			f := genai.MessageFragment{TextFragment: msg.Content}
-			if !f.IsZero() {
-				chunks <- f
-			}
-		}
-		end <- nil
-	}()
+	eg, ctx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		return processStreamPackets(ch, chunks, &result)
+	})
 	err := c.CompletionStreamRaw(ctx, &in, ch)
 	close(ch)
-	if err2 := <-end; err2 != nil {
+	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
-	// usage.InputCachedTokens = finalUsage.TokensCached
 	// Return the continuable error if no other error occurred
 	if err == nil && continuableErr != nil {
-		return usage, continuableErr
+		return result, continuableErr
 	}
-	return usage, err
+	return result, err
+}
+
+func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {
+	for msg := range ch {
+		if msg.Timings.PredictedN != 0 {
+			result.InputTokens = msg.Timings.PromptN
+			result.OutputTokens = msg.Timings.PredictedN
+			result.FinishReason = msg.StopType.ToFinishReason()
+		}
+		f := genai.MessageFragment{TextFragment: msg.Content}
+		if !f.IsZero() {
+			if err := result.Accumulate(f); err != nil {
+				return err
+			}
+			chunks <- f
+		}
+	}
+	return nil
 }
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {

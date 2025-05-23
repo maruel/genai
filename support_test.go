@@ -194,7 +194,16 @@ func TestChatProviderThinking_ChatStream(t *testing.T) {
 				defer wg.Done()
 				for pkt := range ch {
 					var err2 error
-					if msgs, err2 = pkt.Accumulate(msgs); err2 != nil {
+					// Create or get assistant message
+					var assistantMsg *genai.Message
+					if len(msgs) == 0 || msgs[len(msgs)-1].Role != genai.Assistant {
+						msgs = append(msgs, genai.Message{Role: genai.Assistant})
+						assistantMsg = &msgs[len(msgs)-1]
+					} else {
+						assistantMsg = &msgs[len(msgs)-1]
+					}
+
+					if err2 = assistantMsg.Accumulate(pkt); err2 != nil {
 						accumErrCh <- err2
 						return
 					}
@@ -251,8 +260,8 @@ func (m *mockChatProvider) Chat(ctx context.Context, msgs genai.Messages, opts g
 	return m.response, nil
 }
 
-func (m *mockChatProvider) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Usage, error) {
-	return genai.Usage{}, errors.New("unexpected")
+func (m *mockChatProvider) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.ChatResult, error) {
+	return genai.ChatResult{}, errors.New("unexpected")
 }
 
 // mockChatStreamProvider is a mock implementation of genai.ChatProvider for testing.
@@ -266,13 +275,21 @@ func (m *mockChatStreamProvider) Chat(ctx context.Context, msgs genai.Messages, 
 	return genai.ChatResult{}, errors.New("unexpected")
 }
 
-func (m *mockChatStreamProvider) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Usage, error) {
+func (m *mockChatStreamProvider) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.ChatResult, error) {
+	result := genai.ChatResult{
+		Usage:   genai.Usage{},
+		Message: genai.Message{Role: genai.Assistant},
+	}
+
 	for _, f := range m.in {
+		fragment := genai.MessageFragment{TextFragment: f}
 		select {
 		case <-ctx.Done():
-			return genai.Usage{}, ctx.Err()
-		case replies <- genai.MessageFragment{TextFragment: f}:
+			return result, ctx.Err()
+		case replies <- fragment:
+			// Accumulate fragment into result message
+			result.Message.Accumulate(fragment)
 		}
 	}
-	return genai.Usage{}, nil
+	return result, nil
 }

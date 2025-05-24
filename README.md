@@ -16,6 +16,7 @@ The _high performance_ low level native Go client for LLMs.
 | [Mistral](https://console.mistral.ai/usage)                 | 🇫🇷      | ✅      | ✅   | ❌     | ❌     | ✅    | ✅           | ❌     | ✅       | ✅        | ✅   | ✅    | ❌      |
 | [Ollama](https://ollama.com/)                               | N/A     | ✅      | ❌   | ❌     | ❌     | ❌    | ✅           | ❌     | ✅       | ✅        | ✅   | ✅    | 🔁      |
 | [OpenAI](https://platform.openai.com/usage)                 | 🇺🇸      | ✅      | ✅   | ✅     | ❌     | ✅    | ✅           | ⏳     | ✅       | ✅        | ✅   | ✅    | [🔁](https://platform.openai.com/docs/guides/prompt-caching) |
+| OpenAI compatible (generic)                                 | N/A     | ❌      | ❌   | ❌     | ❌     | ❌    | ❌           | ❌     | ✅       | ✅        | ✅   | ❌    | ❌      |
 | [Perplexity](https://www.perplexity.ai/settings/api)        | 🇺🇸      | ❌      | ❌   | ❌     | ❌     | ❌    | ⏳           | ❌     | ✅       | ✅        | ❌   | ❌    | ❌      |
 | [TogetherAI](https://api.together.ai/settings/billing)      | 🇺🇸      | ✅      | ❌   | ❌     | ✅     | ✅    | ✅           | ⏳     | ✅       | ✅        | ✅   | ✅    | ❌      |
 
@@ -52,7 +53,8 @@ The _high performance_ low level native Go client for LLMs.
 - **Streaming**: Streams completion reply as the output is being generated, including thinking and tool
   calling.
 - **Vision**: Process images, PDFs and videos (!) as input.
-- **Unit testing friendly**: record and play back API calls at HTTP level.
+- **Unit testing friendly**: record and play back API calls at HTTP level to save 💰 and keep tests fast and
+  reproducible, via the exposed HTTP transport.
 
 Implementation is in flux. :)
 

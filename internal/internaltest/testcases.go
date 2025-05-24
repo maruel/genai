@@ -93,10 +93,10 @@ func (tc *TestCases) TestChatThinking(t *testing.T, override *Settings) {
 		usageIsBroken := tc.usageIsBroken(override)
 		finishReasonIsBroken := tc.finishReasonIsBroken(override)
 		resp := tc.testChat(t, msgs, c, opts, usageIsBroken, finishReasonIsBroken)
-		validateSingleWordResponse(t, resp, "hello")
+		ValidateSingleWordResponse(t, resp, "hello")
 		msgs = append(msgs, resp.Message, genai.NewTextMessage(genai.User, "Say the same word again. Use only one word."))
 		resp = tc.testChat(t, msgs, c, opts, usageIsBroken, finishReasonIsBroken)
-		validateSingleWordResponse(t, resp, "hello")
+		ValidateSingleWordResponse(t, resp, "hello")
 	})
 	t.Run("ChatStream", func(t *testing.T) {
 		msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello.")}
@@ -106,10 +106,10 @@ func (tc *TestCases) TestChatThinking(t *testing.T, override *Settings) {
 		usageIsBroken := tc.usageIsBroken(override)
 		finishReasonIsBroken := tc.finishReasonIsBroken(override)
 		resp := tc.testChatStream(t, msgs, c, opts, usageIsBroken, finishReasonIsBroken)
-		validateSingleWordResponse(t, resp, "hello")
+		ValidateSingleWordResponse(t, resp, "hello")
 		msgs = append(msgs, resp.Message, genai.NewTextMessage(genai.User, "Say the same word again. Use only one word."))
 		resp = tc.testChatStream(t, msgs, c, opts, usageIsBroken, finishReasonIsBroken)
-		validateSingleWordResponse(t, resp, "hello")
+		ValidateSingleWordResponse(t, resp, "hello")
 	})
 }
 
@@ -119,7 +119,7 @@ func (tc *TestCases) TestChatSimple_simple(t *testing.T, override *Settings) {
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
 	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
 	resp := tc.TestChatHelper(t, msgs, override, opts)
-	validateSingleWordResponse(t, resp, "hello")
+	ValidateSingleWordResponse(t, resp, "hello")
 }
 
 // TestChatStream_simple makes sure ChatStream() works. Useful to restart a recording to determine if new fields were
@@ -128,7 +128,7 @@ func (tc *TestCases) TestChatStream_simple(t *testing.T, override *Settings) {
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
 	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
 	resp := tc.testChatStreamHelper(t, msgs, override, opts)
-	validateSingleWordResponse(t, resp, "hello")
+	ValidateSingleWordResponse(t, resp, "hello")
 }
 
 // TestChatAllModels says hello with all models.
@@ -152,7 +152,7 @@ func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Mod
 		t.Run(id, func(t *testing.T) {
 			msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello.")}
 			resp := tc.TestChatHelper(t, msgs, &Settings{Model: id}, opts)
-			validateSingleWordResponse(t, resp, "hello")
+			ValidateSingleWordResponse(t, resp, "hello")
 		})
 	}
 }
@@ -214,7 +214,7 @@ func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
 	resp = tc.testChat(t, msgs, c, tc.getOptions(&opts, override), tc.usageIsBroken(override), tc.finishReasonIsBroken(override))
 	// This is very annoying, llama4 is not following instructions.
 
-	validateSingleWordResponse(t, resp, "363.89")
+	ValidateSingleWordResponse(t, resp, "363.89")
 }
 
 // TestChatToolUsePositionBias confirms that LLMs are position biased.
@@ -519,22 +519,22 @@ func (tc *TestCases) testChatStream(t *testing.T, msgs genai.Messages, c genai.C
 			}
 		}
 	})
-	result, err := c.ChatStream(ctx, msgs, opts, chunks)
+	resp, err := c.ChatStream(ctx, msgs, opts, chunks)
 	close(chunks)
 	if err3 := eg.Wait(); err3 != nil {
 		t.Fatal(err3)
 	}
-	t.Logf("Raw response: %#v", result.Message)
+	t.Logf("Raw response: %#v", resp.Message)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 		t.Log(uce)
 	} else if err != nil {
 		t.Fatal(err)
 	}
-	if diff := cmp.Diff(&result.Message, &accumulated); diff != "" {
+	if diff := cmp.Diff(&resp.Message, &accumulated); diff != "" {
 		t.Errorf("(-result), (+accumulated):\n%s", diff)
 	}
-	testUsage(t, &result.Usage, usageIsBroken, finishReasonIsBroken)
-	return result
+	testUsage(t, &resp.Usage, usageIsBroken, finishReasonIsBroken)
+	return resp
 }
 
 //
@@ -647,8 +647,8 @@ func testUsage(t *testing.T, u *genai.Usage, usageIsBroken, finishReasonIsBroken
 	}
 }
 
-// validateSingleWordResponse validates that the response contains exactly one of the expected words.
-func validateSingleWordResponse(t *testing.T, resp genai.ChatResult, want string) {
+// ValidateSingleWordResponse validates that the response contains exactly one of the expected words.
+func ValidateSingleWordResponse(t *testing.T, resp genai.ChatResult, want string) {
 	s := resp.AsText()
 	if got := strings.TrimRight(strings.TrimSpace(strings.ToLower(s)), ".!"); want != got {
 		t.Fatalf("Expected %q, got %q", want, s)

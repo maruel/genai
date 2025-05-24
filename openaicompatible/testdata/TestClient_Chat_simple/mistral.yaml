@@ -1,0 +1,81 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 140
+        transfer_encoding: []
+        trailer: {}
+        host: api.mistral.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"ministral-3b-latest","messages":[{"role":"user","content":"Say hello. Use only one word."}],"max_tokens":2000,"temperature":0.01}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"2127a33e0f2042eda4d01dedef9c5945","object":"chat.completion","created":1748094219,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"Hello!"},"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"total_tokens":14,"completion_tokens":3}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 944d39250c47a2cc-YUL
+            Content-Type:
+                - application/json
+            Ratelimitbysize-Limit:
+                - "2000000"
+            Ratelimitbysize-Query-Cost:
+                - "2008"
+            Ratelimitbysize-Remaining:
+                - "1997992"
+            Ratelimitbysize-Reset:
+                - "21"
+            Server:
+                - cloudflare
+            X-Envoy-Upstream-Service-Time:
+                - "71"
+            X-Kong-Proxy-Latency:
+                - "9"
+            X-Kong-Request-Id:
+                - 0232d61a715bf64d76692b595f844807
+            X-Kong-Upstream-Latency:
+                - "72"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "2000000"
+            X-Ratelimit-Limit-Tokens-Month:
+                - "10000000000"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "1999986"
+            X-Ratelimit-Remaining-Tokens-Month:
+                - "9999999930"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "14"
+            X-Ratelimitbysize-Limit-Minute:
+                - "2000000"
+            X-Ratelimitbysize-Limit-Month:
+                - "10000000000"
+            X-Ratelimitbysize-Remaining-Minute:
+                - "1997992"
+            X-Ratelimitbysize-Remaining-Month:
+                - "9999997992"
+        status: 200 OK
+        code: 200
+        duration: 245ms

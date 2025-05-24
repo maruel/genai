@@ -341,12 +341,12 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 		Usage: genai.Usage{
 			InputTokens:  c.Usage.PromptTokens,
 			OutputTokens: c.Usage.CompletionTokens,
-			FinishReason: c.Choices[0].FinishReason.ToFinishReason(),
 		},
 	}
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("expected 1 choice, got %#v", c.Choices)
 	}
+	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
 	return out, err
 }

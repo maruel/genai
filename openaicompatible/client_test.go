@@ -1,0 +1,212 @@
+// Copyright 2025 Marc-Antoine Ruel. All rights reserved.
+// Use of this source code is governed under the Apache License, Version 2.0
+// that can be found in the LICENSE file.
+
+package openaicompatible_test
+
+import (
+	"net/http"
+	"os"
+	"testing"
+
+	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal/internaltest"
+	"github.com/maruel/genai/openaicompatible"
+	"golang.org/x/sync/errgroup"
+)
+
+func TestClient_Chat_simple(t *testing.T) {
+	for name := range providers {
+		t.Run(name, func(t *testing.T) {
+			c := getClient(t, name)
+			msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
+			opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
+			ctx := t.Context()
+			resp, err := c.Chat(ctx, msgs, &opts)
+			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+				t.Log(uce)
+			} else if err != nil {
+				t.Fatal(err)
+			}
+			t.Logf("Raw response: %#v", resp)
+			if len(resp.Contents) == 0 {
+				t.Fatal("missing response")
+			}
+			internaltest.ValidateSingleWordResponse(t, resp, "hello")
+		})
+	}
+}
+
+func TestClient_ChatStream_simple(t *testing.T) {
+	for name := range providers {
+		t.Run(name, func(t *testing.T) {
+			c := getClient(t, name)
+			msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
+			opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
+			ctx := t.Context()
+			chunks := make(chan genai.MessageFragment)
+			eg := errgroup.Group{}
+			eg.Go(func() error {
+				defer func() {
+					for range chunks {
+					}
+				}()
+				for {
+					select {
+					case <-ctx.Done():
+						return nil
+					case pkt, ok := <-chunks:
+						if !ok {
+							return nil
+						}
+						t.Logf("Packet: %#v", pkt)
+					}
+				}
+			})
+			resp, err := c.ChatStream(ctx, msgs, &opts, chunks)
+			close(chunks)
+			if err3 := eg.Wait(); err3 != nil {
+				t.Fatal(err3)
+			}
+			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+				t.Log(uce)
+			} else if err != nil {
+				t.Fatal(err)
+			}
+			t.Logf("Raw response: %#v", resp)
+			if len(resp.Contents) == 0 {
+				t.Fatal("missing response")
+			}
+			internaltest.ValidateSingleWordResponse(t, resp, "hello")
+		})
+	}
+}
+
+type provider struct {
+	envAPIKey string
+	chatURL   string
+	header    func(apiKey string) http.Header
+	model     string
+	thinking  string
+}
+
+// Keep in sync with ExampleChatProvider_all in ../example_test.go.
+var providers = map[string]provider{
+	"anthropic": {
+		envAPIKey: "ANTHROPIC_API_KEY",
+		chatURL:   "https://api.anthropic.com/v1/messages",
+		header: func(apiKey string) http.Header {
+			return http.Header{"x-api-key": {apiKey}, "anthropic-version": {"2023-06-01"}}
+		},
+		model: "claude-3-haiku-20240307",
+	},
+	"cerebras": {
+		envAPIKey: "CEREBRAS_API_KEY",
+		chatURL:   "https://api.cerebras.ai/v1/chat/completions",
+		header: func(apiKey string) http.Header {
+			return http.Header{"Authorization": {"Bearer " + apiKey}}
+		},
+		model: "llama-3.1-8b",
+	},
+	// "cloudflare": {
+	// 	envAPIKey:       "CLOUDFLARE_API_KEY",
+	// 	envAccountIDKey: "CLOUDFLARE_ACCOUNT_ID",
+	// 	chatURL:         "https://api.cloudflare.com/client/v4/accounts/" + accountID + "/ai/run/" + model,
+	// 	header: func(apiKey string) http.Header {
+	// 		return http.Header{"Authorization": {"Bearer " + apiKey}}
+	// 	},
+	// 	model: "@cf/meta/llama-3.2-3b-instruct",
+	// },
+	"cohere": {
+		envAPIKey: "COHERE_API_KEY",
+		chatURL:   "https://api.cohere.com/v2/chat",
+		header: func(apiKey string) http.Header {
+			return http.Header{"Authorization": {"Bearer " + apiKey}}
+		},
+		model: "command-r7b-12-2024",
+	},
+	"deepseek": {
+		envAPIKey: "DEEPSEEK_API_KEY",
+		chatURL:   "https://api.deepseek.com/chat/completions",
+		header: func(apiKey string) http.Header {
+			return http.Header{"Authorization": {"Bearer " + apiKey}}
+		},
+		model: "deepseek-chat",
+	},
+	"groq": {
+		envAPIKey: "GROQ_API_KEY",
+		chatURL:   "https://api.groq.com/openai/v1/chat/completions",
+		header: func(apiKey string) http.Header {
+			return http.Header{"Authorization": {"Bearer " + apiKey}}
+		},
+		model: "llama3-8b-8192",
+	},
+	// "huggingface": {
+	// 	envAPIKey: "HUGGINGFACE_API_KEY",
+	// 	// chatURL:   "https://router.huggingface.co/hf-inference/models/" + model + "/v1/chat/completions",
+	// 	header: func(apiKey string) http.Header {
+	// 		return http.Header{"Authorization": {"Bearer " + apiKey}}
+	// 	},
+	// 	model: "meta-llama/Llama-3.3-70B-Instruct",
+	// },
+	"mistral": {
+		envAPIKey: "MISTRAL_API_KEY",
+		chatURL:   "https://api.mistral.ai/v1/chat/completions",
+		header: func(apiKey string) http.Header {
+			return http.Header{"Authorization": {"Bearer " + apiKey}}
+		},
+		model: "ministral-3b-latest",
+	},
+	"openai": {
+		envAPIKey: "OPENAI_API_KEY",
+		chatURL:   "https://api.openai.com/v1/chat/completions",
+		header: func(apiKey string) http.Header {
+			return http.Header{"Authorization": {"Bearer " + apiKey}}
+		},
+		model: "gpt-4.1-nano",
+	},
+	"perplexity": {
+		envAPIKey: "PERPLEXITY_API_KEY",
+		chatURL:   "https://api.perplexity.ai/chat/completions",
+		header: func(apiKey string) http.Header {
+			return http.Header{"Authorization": {"Bearer " + apiKey}}
+		},
+		model:    "r1-1776",
+		thinking: "think",
+	},
+	"togetherai": {
+		envAPIKey: "TOGETHER_API_KEY",
+		chatURL:   "https://api.together.xyz/v1/chat/completions",
+		header: func(apiKey string) http.Header {
+			return http.Header{"Authorization": {"Bearer " + apiKey}}
+		},
+		model: "meta-llama/Llama-3.2-3B-Instruct-Turbo",
+	},
+}
+
+func getClient(t *testing.T, provider string) genai.ChatProvider {
+	testRecorder.Signal(t)
+	t.Parallel()
+	p := providers[provider]
+	apiKey := os.Getenv(p.envAPIKey)
+	if apiKey == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := openaicompatible.New(p.chatURL, p.header(apiKey), p.model)
+	if err != nil {
+		t.Fatal(err)
+	}
+	c.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientJSON.Client.Transport)
+	if p.thinking != "" {
+		return &genai.ChatProviderThinking{Provider: c, TagName: p.thinking}
+	}
+	return c
+}
+
+var testRecorder *internaltest.Records
+
+func TestMain(m *testing.M) {
+	testRecorder = internaltest.NewRecords()
+	code := m.Run()
+	os.Exit(max(code, testRecorder.Close()))
+}

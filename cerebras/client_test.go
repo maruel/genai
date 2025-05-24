@@ -117,7 +117,7 @@ func getClientInner(t *testing.T, apiKey, m string) *cerebras.Client {
 	if apiKey == "" && os.Getenv("CEREBRAS_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := cerebras.New(apiKey, m)
+	c, err := cerebras.New(apiKey, m, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

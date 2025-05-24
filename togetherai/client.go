@@ -516,20 +516,26 @@ type Client struct {
 // If apiKey is not provided, it tries to load it from the TOGETHER_API_KEY environment variable.
 // If none is found, it returns an error.
 // Get your API key at https://api.together.ai/settings/api-keys
+//
 // If no model is provided, only functions that do not require a model, like ListModels, will work.
 // To use multiple models, create multiple clients.
 // Use one of the model from https://docs.together.ai/docs/serverless-models
+//
+// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport.
 //
 // # Vision
 //
 // We must select a model that supports video.
 // https://docs.together.ai/docs/serverless-models#vision-models
-func New(apiKey, model string) (*Client, error) {
+func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://api.together.xyz/settings/api-keys"
 	if apiKey == "" {
 		if apiKey = os.Getenv("TOGETHER_API_KEY"); apiKey == "" {
 			return nil, errors.New("together.ai API key is required; get one at " + apiKeyURL)
 		}
+	}
+	if r == nil {
+		r = http.DefaultTransport
 	}
 	return &Client{
 		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
@@ -541,7 +547,7 @@ func New(apiKey, model string) (*Client, error) {
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Transport: &roundtrippers.Retry{
 							Transport: &roundtrippers.RequestID{
-								Transport: http.DefaultTransport,
+								Transport: r,
 							},
 							Policy: &roundtrippers.ExponentialBackoff{
 								MaxTryCount: 10,

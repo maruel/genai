@@ -562,14 +562,19 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the model from https://console.groq.com/dashboard/limits or https://console.groq.com/docs/models
 //
+// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport.
+//
 // Tool use requires the use of a model that supports it.
 // https://console.groq.com/docs/tool-use
-func New(apiKey, model string) (*Client, error) {
+func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://console.groq.com/keys"
 	if apiKey == "" {
 		if apiKey = os.Getenv("GROQ_API_KEY"); apiKey == "" {
 			return nil, errors.New("groq API key is required; get one at " + apiKeyURL)
 		}
+	}
+	if r == nil {
+		r = http.DefaultTransport
 	}
 	return &Client{
 		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
@@ -581,7 +586,7 @@ func New(apiKey, model string) (*Client, error) {
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Transport: &roundtrippers.Retry{
 							Transport: &roundtrippers.RequestID{
-								Transport: http.DefaultTransport,
+								Transport: r,
 							},
 						},
 						Header: http.Header{"Authorization": {"Bearer " + apiKey}},

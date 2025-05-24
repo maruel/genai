@@ -582,6 +582,8 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the model from https://docs.mistral.ai/getting-started/models/models_overview/
 //
+// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport.
+//
 // # PDF understanding
 //
 // PDF understanding requires a model which has the "OCR" or the "Document understanding" capability. There's
@@ -595,12 +597,15 @@ type Client struct {
 //
 // Tool use requires a model which has the tool capability. See
 // https://docs.mistral.ai/capabilities/function_calling/
-func New(apiKey, model string) (*Client, error) {
+func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://console.mistral.ai/api-keys"
 	if apiKey == "" {
 		if apiKey = os.Getenv("MISTRAL_API_KEY"); apiKey == "" {
 			return nil, errors.New("mistral API key is required; get one at " + apiKeyURL)
 		}
+	}
+	if r == nil {
+		r = http.DefaultTransport
 	}
 	return &Client{
 		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
@@ -612,7 +617,7 @@ func New(apiKey, model string) (*Client, error) {
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Transport: &roundtrippers.Retry{
 							Transport: &roundtrippers.RequestID{
-								Transport: http.DefaultTransport,
+								Transport: r,
 							},
 						},
 						Header: http.Header{"Authorization": {"Bearer " + apiKey}},

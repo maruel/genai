@@ -31,7 +31,7 @@ func ExampleClient_Chat() {
 	}
 	defer srv.Close()
 	// Connect the client.
-	c, err := ollama.New(srv.URL(), "gemma3:1b")
+	c, err := ollama.New(srv.URL(), "gemma3:1b", nil)
 	if err != nil {
 		log.Print(err)
 		return

@@ -103,7 +103,7 @@ func getClientInner(t *testing.T, apiKey, m string) *cohere.Client {
 	if apiKey == "" && os.Getenv("COHERE_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := cohere.New(apiKey, m)
+	c, err := cohere.New(apiKey, m, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -112,7 +112,7 @@ func getClientInner(t *testing.T, apiKey, m string) *groq.Client {
 	if apiKey == "" && os.Getenv("GROQ_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := groq.New(apiKey, m)
+	c, err := groq.New(apiKey, m, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

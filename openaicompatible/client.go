@@ -307,7 +307,12 @@ type Client struct {
 // New creates a new client to talk to an "OpenAI-compatible" platform API.
 //
 // It only support text exchanges (no multi-modal) and no tool calls.
-func New(chatURL string, h http.Header, model string) (*Client, error) {
+//
+// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport.
+func New(chatURL string, h http.Header, model string, r http.RoundTripper) (*Client, error) {
+	if r == nil {
+		r = http.DefaultTransport
+	}
 	return &Client{
 		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
@@ -319,7 +324,7 @@ func New(chatURL string, h http.Header, model string) (*Client, error) {
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Transport: &roundtrippers.Retry{
 							Transport: &roundtrippers.RequestID{
-								Transport: http.DefaultTransport,
+								Transport: r,
 							},
 						},
 						Header: h,

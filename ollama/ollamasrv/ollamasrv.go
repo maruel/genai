@@ -88,7 +88,7 @@ func NewServer(ctx context.Context, exe string, logOutput io.Writer, port int) (
 	}()
 
 	// Wait for the server to be ready.
-	c, err := ollama.New(url, "")
+	c, err := ollama.New(url, "", nil)
 	if err != nil {
 		_ = cmd.Cancel()
 		<-done

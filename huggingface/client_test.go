@@ -125,7 +125,7 @@ func getClientInner(t *testing.T, apiKey, m string) *huggingface.Client {
 			apiKey = "<insert_api_key_here>"
 		}
 	}
-	c, err := huggingface.New(apiKey, m)
+	c, err := huggingface.New(apiKey, m, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

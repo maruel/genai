@@ -96,7 +96,7 @@ func getClientInner(t *testing.T, apiKey, m string) *deepseek.Client {
 	if apiKey == "" && os.Getenv("DEEPSEEK_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := deepseek.New(apiKey, m)
+	c, err := deepseek.New(apiKey, m, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

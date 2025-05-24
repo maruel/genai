@@ -380,14 +380,19 @@ type Client struct {
 //
 // To use multiple models, create multiple clients.
 // Use one of the model from https://ollama.com/library
-func New(baseURL, model string) (*Client, error) {
+//
+// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport.
+func New(baseURL, model string, r http.RoundTripper) (*Client, error) {
+	if r == nil {
+		r = http.DefaultTransport
+	}
 	return &Client{
 		ClientBase: internal.ClientBase[*ErrorResponse]{
 			ClientJSON: httpjson.Client{
 				Client: &http.Client{
 					Transport: &roundtrippers.Retry{
 						Transport: &roundtrippers.RequestID{
-							Transport: http.DefaultTransport,
+							Transport: r,
 						},
 					},
 				},

@@ -158,7 +158,7 @@ func (l *lazyServer) shouldStart(t *testing.T) (string, http.RoundTripper) {
 
 func (l *lazyServer) getClient(t *testing.T, model string) genai.ChatProvider {
 	serverURL, transport := l.shouldStart(t)
-	c, err := ollama.New(serverURL, model)
+	c, err := ollama.New(serverURL, model, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

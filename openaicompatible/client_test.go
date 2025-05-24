@@ -192,7 +192,7 @@ func getClient(t *testing.T, provider string) genai.ChatProvider {
 	if apiKey == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := openaicompatible.New(p.chatURL, p.header(apiKey), p.model)
+	c, err := openaicompatible.New(p.chatURL, p.header(apiKey), p.model, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

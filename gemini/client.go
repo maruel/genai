@@ -853,6 +853,8 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the model from https://ai.google.dev/gemini-api/docs/models/gemini
 //
+// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport.
+//
 // See https://ai.google.dev/gemini-api/docs/file-prompting-strategies?hl=en
 // for good ideas on how to prompt with images.
 //
@@ -906,12 +908,15 @@ type Client struct {
 //
 // As of May 2025, price on Pro model increases when more than 200k input tokens are used.
 // Cached input tokens are 25% of the price of new tokens.
-func New(apiKey, model string) (*Client, error) {
+func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://ai.google.dev/gemini-api/docs/getting-started"
 	if apiKey == "" {
 		if apiKey = os.Getenv("GEMINI_API_KEY"); apiKey == "" {
 			return nil, errors.New("gemini API key is required; get one at " + apiKeyURL)
 		}
+	}
+	if r == nil {
+		r = http.DefaultTransport
 	}
 	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
 	return &Client{
@@ -925,7 +930,7 @@ func New(apiKey, model string) (*Client, error) {
 					Client: &http.Client{Transport: &roundtrippers.PostCompressed{
 						Transport: &roundtrippers.Retry{
 							Transport: &roundtrippers.RequestID{
-								Transport: http.DefaultTransport,
+								Transport: r,
 							},
 						},
 						// Google supports HTTP POST gzip compression!

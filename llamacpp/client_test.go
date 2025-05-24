@@ -33,7 +33,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("Chat", func(t *testing.T) {
 		serverURL, transport := s.shouldStart(t)
-		c, err := llamacpp.New(serverURL, nil)
+		c, err := llamacpp.New(serverURL, nil, nil)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -166,7 +166,7 @@ func (l *lazyServer) shouldStart(t *testing.T) (string, http.RoundTripper) {
 
 func (l *lazyServer) getClient(t *testing.T) genai.ChatProvider {
 	serverURL, transport := l.shouldStart(t)
-	c, err := llamacpp.New(serverURL, nil)
+	c, err := llamacpp.New(serverURL, nil, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

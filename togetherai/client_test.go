@@ -164,7 +164,7 @@ func getClientInner(t *testing.T, apiKey, m string) *togetherai.Client {
 	if apiKey == "" && os.Getenv("TOGETHER_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := togetherai.New(apiKey, m)
+	c, err := togetherai.New(apiKey, m, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

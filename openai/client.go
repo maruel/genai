@@ -671,12 +671,17 @@ type Client struct {
 // If no model is provided, only functions that do not require a model, like ListModels, will work.
 // To use multiple models, create multiple clients.
 // Use one of the model from https://platform.openai.com/docs/models
-func New(apiKey, model string) (*Client, error) {
+//
+// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport.
+func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://platform.openai.com/settings/organization/api-keys"
 	if apiKey == "" {
 		if apiKey = os.Getenv("OPENAI_API_KEY"); apiKey == "" {
 			return nil, errors.New("openai API key is required; get one at " + apiKeyURL)
 		}
+	}
+	if r == nil {
+		r = http.DefaultTransport
 	}
 	return &Client{
 		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
@@ -688,7 +693,7 @@ func New(apiKey, model string) (*Client, error) {
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Transport: &roundtrippers.Retry{
 							Transport: &roundtrippers.RequestID{
-								Transport: http.DefaultTransport,
+								Transport: r,
 							},
 						},
 						Header: http.Header{"Authorization": {"Bearer " + apiKey}},

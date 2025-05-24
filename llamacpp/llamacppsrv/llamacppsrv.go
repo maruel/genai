@@ -120,7 +120,7 @@ func NewServer(ctx context.Context, exe, modelPath string, logOutput io.Writer, 
 	}()
 
 	// Wait for the server to be ready.
-	c, err := llamacpp.New("http://localhost:"+strconv.Itoa(port), nil)
+	c, err := llamacpp.New("http://localhost:"+strconv.Itoa(port), nil, nil)
 	if err != nil {
 		_ = cmd.Cancel()
 		<-done

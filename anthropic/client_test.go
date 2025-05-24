@@ -116,7 +116,7 @@ func getClientInner(t *testing.T, apiKey, m string) *anthropic.Client {
 	if apiKey == "" && os.Getenv("ANTHROPIC_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := anthropic.New(apiKey, m)
+	c, err := anthropic.New(apiKey, m, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

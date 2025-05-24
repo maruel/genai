@@ -71,7 +71,7 @@ func getClientInner(t *testing.T, apiKey, m string) *perplexity.Client {
 	if apiKey == "" && os.Getenv("PERPLEXITY_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := perplexity.New(apiKey, m)
+	c, err := perplexity.New(apiKey, m, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

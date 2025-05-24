@@ -149,7 +149,7 @@ func getClientInner(t *testing.T, apiKey, m string) *openai.Client {
 	if apiKey == "" && os.Getenv("OPENAI_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := openai.New(apiKey, m)
+	c, err := openai.New(apiKey, m, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

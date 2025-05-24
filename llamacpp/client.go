@@ -398,9 +398,14 @@ type Client struct {
 // New creates a new client to talk to a llama-server instance.
 //
 // encoding is optional.
-func New(baseURL string, encoding *PromptEncoding) (*Client, error) {
+//
+// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport.
+func New(baseURL string, encoding *PromptEncoding, r http.RoundTripper) (*Client, error) {
 	if baseURL == "" {
 		return nil, errors.New("baseURL is required")
+	}
+	if r == nil {
+		r = http.DefaultTransport
 	}
 	return &Client{
 		ClientBase: internal.ClientBase[*ErrorResponse]{
@@ -408,7 +413,7 @@ func New(baseURL string, encoding *PromptEncoding) (*Client, error) {
 				Client: &http.Client{
 					Transport: &roundtrippers.Retry{
 						Transport: &roundtrippers.RequestID{
-							Transport: http.DefaultTransport,
+							Transport: r,
 						},
 					},
 				},

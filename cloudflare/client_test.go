@@ -120,7 +120,7 @@ func getClientInner(t *testing.T, apiKey, m string) *cloudflare.Client {
 		accountID = "INSERT_ACCOUNTID_KEY_HERE"
 		realAccountID = accountID
 	}
-	c, err := cloudflare.New(accountID, apiKey, m)
+	c, err := cloudflare.New(accountID, apiKey, m, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

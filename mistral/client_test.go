@@ -114,7 +114,7 @@ func getClientInner(t *testing.T, apiKey, m string) *mistral.Client {
 	if apiKey == "" && os.Getenv("MISTRAL_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := mistral.New(apiKey, m)
+	c, err := mistral.New(apiKey, m, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

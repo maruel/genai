@@ -34,7 +34,7 @@ func Example() {
 	}
 	defer srv.Close()
 	// Connect the client.
-	c, err := ollama.New(srv.URL(), model)
+	c, err := ollama.New(srv.URL(), model, nil)
 	if err != nil {
 		log.Print(err)
 		return

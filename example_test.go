@@ -32,39 +32,39 @@ import (
 
 func ExampleModelProvider_all() {
 	modelProviders := map[string]genai.ModelProvider{}
-	if c, err := anthropic.New("", ""); err == nil {
+	if c, err := anthropic.New("", "", nil); err == nil {
 		modelProviders["anthropic"] = c
 	}
-	if c, err := cerebras.New("", ""); err == nil {
+	if c, err := cerebras.New("", "", nil); err == nil {
 		modelProviders["cerebras"] = c
 	}
-	if c, err := cloudflare.New("", "", ""); err == nil {
+	if c, err := cloudflare.New("", "", "", nil); err == nil {
 		modelProviders["cloudflare"] = c
 	}
-	if c, err := cohere.New("", ""); err == nil {
+	if c, err := cohere.New("", "", nil); err == nil {
 		modelProviders["cohere"] = c
 	}
-	if c, err := deepseek.New("", ""); err == nil {
+	if c, err := deepseek.New("", "", nil); err == nil {
 		modelProviders["deepseek"] = c
 	}
-	if c, err := gemini.New("", ""); err == nil {
+	if c, err := gemini.New("", "", nil); err == nil {
 		modelProviders["gemini"] = c
 	}
-	if c, err := groq.New("", ""); err == nil {
+	if c, err := groq.New("", "", nil); err == nil {
 		modelProviders["groq"] = c
 	}
-	if c, err := huggingface.New("", ""); err == nil {
+	if c, err := huggingface.New("", "", nil); err == nil {
 		modelProviders["huggingface"] = c
 	}
 	// llamapcpp doesn't implement ModelProvider.
-	if c, err := mistral.New("", ""); err == nil {
+	if c, err := mistral.New("", "", nil); err == nil {
 		modelProviders["mistral"] = c
 	}
-	if c, err := openai.New("", ""); err == nil {
+	if c, err := openai.New("", "", nil); err == nil {
 		modelProviders["openai"] = c
 	}
 	// perplexity doesn't implement ModelProvider.
-	if c, err := togetherai.New("", ""); err == nil {
+	if c, err := togetherai.New("", "", nil); err == nil {
 		modelProviders["togetherai"] = c
 	}
 
@@ -83,57 +83,57 @@ func ExampleModelProvider_all() {
 func ExampleChatProvider_all() {
 	chatProviders := map[string]genai.ChatProvider{}
 	// https://docs.anthropic.com/en/docs/about-claude/models/all-models
-	if c, err := anthropic.New("", "claude-3-7-sonnet-latest"); err == nil {
+	if c, err := anthropic.New("", "claude-3-7-sonnet-latest", nil); err == nil {
 		chatProviders["anthropic"] = c
 	}
 	// https://inference-docs.cerebras.ai/api-reference/models
-	if c, err := cerebras.New("", "llama-3.3-70b"); err == nil {
+	if c, err := cerebras.New("", "llama-3.3-70b", nil); err == nil {
 		chatProviders["cerebras"] = c
 	}
 	// https://developers.cloudflare.com/workers-ai/models/
-	if c, err := cloudflare.New("", "", "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b"); err == nil {
+	if c, err := cloudflare.New("", "", "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b", nil); err == nil {
 		chatProviders["cloudflare"] = c
 	}
 	// https://docs.cohere.com/v2/docs/models
-	if c, err := cohere.New("", "command-r-plus"); err == nil {
+	if c, err := cohere.New("", "command-r-plus", nil); err == nil {
 		chatProviders["cohere"] = c
 	}
 	// https://api-docs.deepseek.com/quick_start/pricing
-	if c, err := deepseek.New("", "deepseek-reasoner"); err == nil {
+	if c, err := deepseek.New("", "deepseek-reasoner", nil); err == nil {
 		chatProviders["deepseek"] = c
 	}
 	// https://ai.google.dev/gemini-api/docs/models/gemini
-	if c, err := gemini.New("", "gemini-2.0-flash"); err == nil {
+	if c, err := gemini.New("", "gemini-2.0-flash", nil); err == nil {
 		chatProviders["gemini"] = c
 	}
 	// https://console.groq.com/docs/models
-	if c, err := groq.New("", "qwen-qwq-32b"); err == nil {
+	if c, err := groq.New("", "qwen-qwq-32b", nil); err == nil {
 		chatProviders["groq"] = c
 	}
 	// https://huggingface.co/models?inference=warm&sort=trending
-	if c, err := huggingface.New("", "Qwen/QwQ-32B"); err == nil {
+	if c, err := huggingface.New("", "Qwen/QwQ-32B", nil); err == nil {
 		chatProviders["huggingface"] = c
 	}
 	if false {
 		// See llamacpp/llamacppsrv to see how to run a local server.
-		if c, err := llamacpp.New("http://localhost:8080", nil); err == nil {
+		if c, err := llamacpp.New("http://localhost:8080", nil, nil); err == nil {
 			chatProviders["llamacpp"] = c
 		}
 	}
 	// https://docs.mistral.ai/getting-started/models/models_overview/
-	if c, err := mistral.New("", "mistral-large-latest"); err == nil {
+	if c, err := mistral.New("", "mistral-large-latest", nil); err == nil {
 		chatProviders["mistral"] = c
 	}
 	// https://platform.openai.com/docs/api-reference/models
-	if c, err := openai.New("", "o3-mini"); err == nil {
+	if c, err := openai.New("", "o3-mini", nil); err == nil {
 		chatProviders["openai"] = c
 	}
 	// https://docs.perplexity.ai/models/model-cards
-	if c, err := perplexity.New("", "sonar"); err == nil {
+	if c, err := perplexity.New("", "sonar", nil); err == nil {
 		chatProviders["perplexity"] = c
 	}
 	// https://api.together.ai/models
-	if c, err := togetherai.New("", "deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free"); err == nil {
+	if c, err := togetherai.New("", "deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free", nil); err == nil {
 		chatProviders["togetherai"] = c
 	}
 
@@ -164,7 +164,7 @@ func ExampleChatProvider_chat_vision() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New("", "gemini-2.0-flash-lite")
+	c, err := gemini.New("", "gemini-2.0-flash-lite", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -194,7 +194,7 @@ func ExampleClient_Chat_jSON() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New("", "gemini-2.0-flash-lite")
+	c, err := gemini.New("", "gemini-2.0-flash-lite", nil)
 	if err == nil {
 		log.Fatal(err)
 	}
@@ -219,7 +219,7 @@ func ExampleClient_Chat_jSON_schema() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New("", "gemini-2.0-flash-lite")
+	c, err := gemini.New("", "gemini-2.0-flash-lite", nil)
 	if err == nil {
 		log.Fatal(err)
 	}
@@ -246,7 +246,7 @@ func ExampleChatProvider_chat_pdf() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New("", "gemini-2.0-flash-lite")
+	c, err := gemini.New("", "gemini-2.0-flash-lite", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -277,7 +277,7 @@ func ExampleChatProvider_chat_audio() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New("", "gemini-2.0-flash-lite")
+	c, err := gemini.New("", "gemini-2.0-flash-lite", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -308,7 +308,7 @@ func ExampleChatProvider_chat_video() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New("", "gemini-2.0-flash")
+	c, err := gemini.New("", "gemini-2.0-flash", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -336,7 +336,7 @@ func ExampleChatWithToolCallLoop() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New("", "gemini-2.0-flash")
+	c, err := gemini.New("", "gemini-2.0-flash", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -364,7 +364,7 @@ func ExampleChatStreamWithToolCallLoop() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New("", "gemini-2.0-flash")
+	c, err := gemini.New("", "gemini-2.0-flash", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -406,7 +406,7 @@ func ExampleChatProvider_ChatStream() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New("", "gemini-2.0-flash-lite")
+	c, err := gemini.New("", "gemini-2.0-flash-lite", nil)
 	if err != nil {
 		log.Fatal(err)
 	}

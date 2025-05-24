@@ -31,7 +31,7 @@ var BeLenient = true
 //
 
 // ClientBase implements the shared HTTP client functionality used across all API clients.
-type ClientBase[Err fmt.Stringer] struct {
+type ClientBase[ErrorResponse fmt.Stringer] struct {
 	// ClientJSON is exported for testing replay purposes.
 	ClientJSON httpjson.Client
 	// APIKeyURL is the URL to present to the user upon authentication error.
@@ -42,7 +42,7 @@ type ClientBase[Err fmt.Stringer] struct {
 //
 // It takes care of sending the request, decoding the response, and handling errors.
 // All API clients should use this method for their HTTP communication needs.
-func (c *ClientBase[Err]) DoRequest(ctx context.Context, method, url string, in, out any) error {
+func (c *ClientBase[ErrorResponse]) DoRequest(ctx context.Context, method, url string, in, out any) error {
 	resp, err := c.ClientJSON.Request(ctx, method, url, nil, in)
 	if err != nil {
 		return err
@@ -74,7 +74,7 @@ func (c *ClientBase[Err]) DoRequest(ctx context.Context, method, url string, in,
 	} else if foundExtraKeys {
 		errs = append(errs, err2)
 	}
-	var er Err
+	var er ErrorResponse
 	if _, err = r.Seek(0, 0); err != nil {
 		return err
 	}
@@ -102,10 +102,10 @@ func (c *ClientBase[Err]) DoRequest(ctx context.Context, method, url string, in,
 //
 // It handles JSON decoding of error responses and provides appropriate error messages
 // with context such as API key URLs for unauthorized errors.
-func (c *ClientBase[Err]) DecodeError(ctx context.Context, url string, resp *http.Response) error {
+func (c *ClientBase[ErrorResponse]) DecodeError(ctx context.Context, url string, resp *http.Response) error {
 	// When we are in lenient mode, we do not want to buffer the result. When in strict mode, we want to buffer
 	// to give more details.
-	var er Err
+	var er ErrorResponse
 	b, err := io.ReadAll(resp.Body)
 	if err2 := resp.Body.Close(); err == nil {
 		err = err2
@@ -184,8 +184,8 @@ type ResultConverter interface {
 
 // ClientChat implements common functionality for clients that provide chat capabilities.
 // It embeds ClientBase and adds a Model field and common chat methods.
-type ClientChat[Err fmt.Stringer, ChatRequest InitializableRequest, ChatResponse ResultConverter, StreamChunk Obj] struct {
-	ClientBase[Err]
+type ClientChat[ErrorResponse fmt.Stringer, ChatRequest InitializableRequest, ChatResponse ResultConverter, ChatStreamChunkResponse Obj] struct {
+	ClientBase[ErrorResponse]
 	// Model is the default model used for chat requests
 	Model string
 	// ChatURL is the endpoint URL for chat API requests
@@ -193,14 +193,14 @@ type ClientChat[Err fmt.Stringer, ChatRequest InitializableRequest, ChatResponse
 	// ChatStreamURL is the endpoint URL for chat stream API requests. It defaults to ChatURL if unset.
 	ChatStreamURL        string
 	AllowOpaqueFields    bool
-	ProcessStreamPackets func(ch <-chan StreamChunk, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error
+	ProcessStreamPackets func(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error
 
 	mu           sync.Mutex
 	chatRequest  reflect.Type
 	chatResponse reflect.Type
 }
 
-func (c *ClientChat[Err, ChatRequest, ChatResponse, StreamChunk]) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+func (c *ClientChat[ErrorResponse, ChatRequest, ChatResponse, ChatStreamChunkResponse]) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	result := genai.ChatResult{}
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
@@ -234,7 +234,7 @@ func (c *ClientChat[Err, ChatRequest, ChatResponse, StreamChunk]) Chat(ctx conte
 	return result, continuableErr
 }
 
-func (c *ClientChat[Err, ChatRequest, ChatResponse, StreamChunk]) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
+func (c *ClientChat[ErrorResponse, ChatRequest, ChatResponse, ChatStreamChunkResponse]) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
 	result := genai.ChatResult{}
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
@@ -257,7 +257,7 @@ func (c *ClientChat[Err, ChatRequest, ChatResponse, StreamChunk]) ChatStream(ctx
 			return result, err
 		}
 	}
-	ch := make(chan StreamChunk)
+	ch := make(chan ChatStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		return c.ProcessStreamPackets(ch, chunks, &result)
@@ -275,7 +275,7 @@ func (c *ClientChat[Err, ChatRequest, ChatResponse, StreamChunk]) ChatStream(ctx
 
 // ChatRaw is the generic raw implementation for the Chat API endpoint.
 // It sets Stream to false and sends a request to the chat URL.
-func (c *ClientChat[Err, ChatRequest, ChatResponse, StreamChunk]) ChatRaw(ctx context.Context, in ChatRequest, out ChatResponse) error {
+func (c *ClientChat[ErrorResponse, ChatRequest, ChatResponse, ChatStreamChunkResponse]) ChatRaw(ctx context.Context, in ChatRequest, out ChatResponse) error {
 	if err := c.Validate(); err != nil {
 		return err
 	}
@@ -285,7 +285,7 @@ func (c *ClientChat[Err, ChatRequest, ChatResponse, StreamChunk]) ChatRaw(ctx co
 
 // ChatStreamRaw is the generic raw implementation for streaming Chat API endpoints.
 // It sets Stream to true, enables stream options if available, and handles the SSE response.
-func (c *ClientChat[Err, ChatRequest, ChatResponse, StreamChunk]) ChatStreamRaw(ctx context.Context, in ChatRequest, out chan<- StreamChunk) error {
+func (c *ClientChat[ErrorResponse, ChatRequest, ChatResponse, ChatStreamChunkResponse]) ChatStreamRaw(ctx context.Context, in ChatRequest, out chan<- ChatStreamChunkResponse) error {
 	if err := c.Validate(); err != nil {
 		return err
 	}
@@ -302,18 +302,18 @@ func (c *ClientChat[Err, ChatRequest, ChatResponse, StreamChunk]) ChatStreamRaw(
 	if resp.StatusCode != 200 {
 		return c.DecodeError(ctx, url, resp)
 	}
-	var er Err
+	var er ErrorResponse
 	return sse.Process(resp.Body, out, &er, c.ClientJSON.Lenient)
 }
 
-func (c *ClientChat[Err, ChatRequest, ChatResponse, StreamChunk]) Validate() error {
+func (c *ClientChat[ErrorResponse, ChatRequest, ChatResponse, ChatStreamChunkResponse]) Validate() error {
 	if c.Model == "" {
 		return errors.New("a model is required")
 	}
 	return nil
 }
 
-func (c *ClientChat[Err, ChatRequest, ChatResponse, StreamChunk]) lateInit() {
+func (c *ClientChat[ErrorResponse, ChatRequest, ChatResponse, ChatStreamChunkResponse]) lateInit() {
 	// TODO: Figure out how to not use reflection.
 	c.mu.Lock()
 	if c.chatRequest == nil {
@@ -335,7 +335,7 @@ type ListModelsResponse interface {
 
 // ListModels is a generic function that implements the common pattern for listing models across providers.
 // It makes an HTTP GET request to the specified URL and converts the response to a slice of genai.Model.
-func ListModels[Err fmt.Stringer, R ListModelsResponse](ctx context.Context, c *ClientBase[Err], url string) ([]genai.Model, error) {
+func ListModels[ErrorResponse fmt.Stringer, R ListModelsResponse](ctx context.Context, c *ClientBase[ErrorResponse], url string) ([]genai.Model, error) {
 	var resp R
 	if err := c.DoRequest(ctx, "GET", url, nil, &resp); err != nil {
 		return nil, err

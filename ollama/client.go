@@ -364,10 +364,10 @@ func (er *ErrorResponse) String() string {
 
 //
 
-// Client implements the REST JSON based API.
-//
 // We cannot use ClientChat because Chat and ChatStream try to pull on first failure, and ChatStream receives
 // line separated JSON instead of SSE.
+
+// Client implements genai.ChatProvider.
 type Client struct {
 	internal.ClientBase[*ErrorResponse]
 

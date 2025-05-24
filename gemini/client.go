@@ -837,7 +837,7 @@ type ErrorResponseError struct {
 	} `json:"details"`
 }
 
-// Client implements the REST JSON based API.
+// Client implements genai.ChatProvider and genai.ModelProvider.
 type Client struct {
 	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 

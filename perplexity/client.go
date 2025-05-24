@@ -242,7 +242,7 @@ func (er *ErrorResponse) String() string {
 	return "error " + er.Error.Message
 }
 
-// Client implements the REST JSON based API.
+// Client implements genai.ChatProvider.
 type Client struct {
 	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }

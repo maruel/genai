@@ -564,7 +564,7 @@ func (er *ErrorMessage) UnmarshalJSON(d []byte) error {
 	return nil
 }
 
-// Client implements the REST JSON based API.
+// Client implements genai.ChatProvider and genai.ModelProvider.
 type Client struct {
 	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }

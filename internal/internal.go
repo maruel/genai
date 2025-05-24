@@ -191,9 +191,12 @@ type ClientChat[ErrorResponse fmt.Stringer, ChatRequest InitializableRequest, Ch
 	// ChatURL is the endpoint URL for chat API requests
 	ChatURL string
 	// ChatStreamURL is the endpoint URL for chat stream API requests. It defaults to ChatURL if unset.
-	ChatStreamURL        string
-	ModelOptional        bool
-	AllowOpaqueFields    bool
+	ChatStreamURL string
+	// ModelOptional is true if a model name is not required to use the provider.
+	ModelOptional bool
+	// AllowOpaqueFields is true if the client allows the Opaque field in messages.
+	AllowOpaqueFields bool
+	// ProcessStreamPackets is the function that processes stream packets used by ChatStream.
 	ProcessStreamPackets func(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error
 
 	mu           sync.Mutex

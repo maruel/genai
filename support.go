@@ -198,13 +198,10 @@ type ChatProviderThinking struct {
 // and processing the result to extract thinking blocks.
 func (tp *ChatProviderThinking) Chat(ctx context.Context, msgs Messages, opts Validatable) (ChatResult, error) {
 	result, err := tp.Provider.Chat(ctx, msgs, opts)
-	if err != nil {
-		return result, err
+	if err2 := tp.processThinkingMessage(&result.Message); err == nil {
+		err = err2
 	}
-	if err := tp.processThinkingMessage(&result.Message); err != nil {
-		return result, err
-	}
-	return result, nil
+	return result, err
 }
 
 // ChatStream implements the ChatProvider interface for streaming by delegating to the wrapped provider
@@ -217,6 +214,7 @@ func (tp *ChatProviderThinking) ChatStream(ctx context.Context, msgs Messages, o
 	tagStart := "<" + tp.TagName + ">"
 	tagEnd := "</" + tp.TagName + ">"
 
+	accumulated := Message{}
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		state := start
@@ -235,6 +233,9 @@ func (tp *ChatProviderThinking) ChatStream(ctx context.Context, msgs Messages, o
 						f.ThinkingFragment = buf
 						f.TextFragment = ""
 						replies <- f
+						if err := accumulated.Accumulate(f); err != nil {
+							return err
+						}
 					}
 					continue
 				}
@@ -244,6 +245,9 @@ func (tp *ChatProviderThinking) ChatStream(ctx context.Context, msgs Messages, o
 					f.ThinkingFragment = buf
 					f.TextFragment = ""
 					replies <- f
+					if err := accumulated.Accumulate(f); err != nil {
+						return err
+					}
 				}
 			case startTagSeen:
 				// Ignore whitespace until text is seen.
@@ -252,6 +256,9 @@ func (tp *ChatProviderThinking) ChatStream(ctx context.Context, msgs Messages, o
 					f.ThinkingFragment = buf
 					f.TextFragment = ""
 					replies <- f
+					if err := accumulated.Accumulate(f); err != nil {
+						return err
+					}
 				}
 			case thinkingTextSeen:
 				if tEnd := strings.Index(f.TextFragment, tagEnd); tEnd != -1 {
@@ -261,26 +268,41 @@ func (tp *ChatProviderThinking) ChatStream(ctx context.Context, msgs Messages, o
 						f.ThinkingFragment = buf[:tEnd]
 						f.TextFragment = ""
 						replies <- f
+						if err := accumulated.Accumulate(f); err != nil {
+							return err
+						}
 					}
 					if buf = strings.TrimLeftFunc(buf[tEnd+len(tagEnd):], unicode.IsSpace); buf != "" {
 						state = textSeen
 						f.TextFragment = buf
 						replies <- f
+						if err := accumulated.Accumulate(f); err != nil {
+							return err
+						}
 					}
 					continue
 				}
 				f.ThinkingFragment = f.TextFragment
 				f.TextFragment = ""
 				replies <- f
+				if err := accumulated.Accumulate(f); err != nil {
+					return err
+				}
 			case endTagSeen:
 				// Ignore whitespace until text is seen.
 				if buf := strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace); buf != "" {
 					state = textSeen
 					f.TextFragment = buf
 					replies <- f
+					if err := accumulated.Accumulate(f); err != nil {
+						return err
+					}
 				}
 			case textSeen:
 				replies <- f
+				if err := accumulated.Accumulate(f); err != nil {
+					return err
+				}
 			}
 		}
 		return nil
@@ -290,10 +312,12 @@ func (tp *ChatProviderThinking) ChatStream(ctx context.Context, msgs Messages, o
 	if err3 := eg.Wait(); err == nil {
 		err = err3
 	}
-	if err != nil {
-		return result, err
+	// Use the accumulated contents from our processed message, which has correctly
+	// transformed TextFragments to ThinkingFragments according to the state machine
+	if len(accumulated.Contents) > 0 {
+		result.Contents = accumulated.Contents
 	}
-	if err := tp.processThinkingMessage(&result.Message); err != nil {
+	if err != nil {
 		return result, err
 	}
 	return result, nil
@@ -305,8 +329,26 @@ func (tp *ChatProviderThinking) processThinkingMessage(m *Message) error {
 		return nil
 	}
 	if len(m.Contents) > 1 {
+		// Check if one of the contents is already a Thinking block
+		// This is the case when streaming fragments were properly accumulated
+		hasThinking := false
+		for _, c := range m.Contents {
+			if c.Thinking != "" {
+				hasThinking = true
+				break
+			}
+		}
+		if hasThinking {
+			return nil
+		}
 		return fmt.Errorf("multiple content block: %#v", m.Contents)
 	}
+
+	// Handle case where the message already has thinking content
+	if m.Contents[0].Thinking != "" {
+		return nil
+	}
+
 	text := m.Contents[0].Text
 	if text == "" {
 		// Maybe an image.

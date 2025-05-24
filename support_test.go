@@ -174,6 +174,14 @@ func TestChatProviderThinking_ChatStream(t *testing.T) {
 				{Text: "Response"},
 			},
 		},
+		{
+			name: "Text after start tag",
+			in:   []string{"<thinking>\nOkay", " content", "</thinking>", "Response"},
+			want: []genai.Content{
+				{Thinking: "Okay content"},
+				{Text: "Response"},
+			},
+		},
 	}
 
 	for _, tc := range tests {
@@ -181,49 +189,31 @@ func TestChatProviderThinking_ChatStream(t *testing.T) {
 			mp := &mockChatStreamProvider{in: tc.in}
 			tp := &genai.ChatProviderThinking{Provider: mp, TagName: "thinking"}
 			ch := make(chan genai.MessageFragment)
-			var msgs genai.Messages
-
 			ctx, cancel := context.WithTimeout(t.Context(), 1*time.Second)
 			defer cancel()
-
 			wg := sync.WaitGroup{}
 			wg.Add(1)
 			accumErrCh := make(chan error, 1)
-
+			accumulated := genai.Message{}
 			go func() {
 				defer wg.Done()
 				for pkt := range ch {
 					var err2 error
-					// Create or get assistant message
-					var assistantMsg *genai.Message
-					if len(msgs) == 0 || msgs[len(msgs)-1].Role != genai.Assistant {
-						msgs = append(msgs, genai.Message{Role: genai.Assistant})
-						assistantMsg = &msgs[len(msgs)-1]
-					} else {
-						assistantMsg = &msgs[len(msgs)-1]
-					}
-
-					if err2 = assistantMsg.Accumulate(pkt); err2 != nil {
+					if err2 = accumulated.Accumulate(pkt); err2 != nil {
 						accumErrCh <- err2
 						return
 					}
 				}
 			}()
 
-			_, err := tp.ChatStream(ctx, genai.Messages{}, nil, ch)
+			result, err := tp.ChatStream(ctx, genai.Messages{}, nil, ch)
 			close(ch)
-
-			// Wait for the goroutine to finish
 			wg.Wait()
-
-			// Check for errors in the accumulation goroutine
 			select {
 			case accErr := <-accumErrCh:
 				t.Fatalf("error accumulating messages: %v", accErr)
 			default:
-				// No error
 			}
-
 			if tc.expectError {
 				if err == nil {
 					t.Fatal("expected error but got none")
@@ -232,15 +222,10 @@ func TestChatProviderThinking_ChatStream(t *testing.T) {
 			} else if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
-
-			if len(msgs) != 1 {
-				if len(tc.want) == 0 {
-					return
-				}
-				t.Fatalf("expected one message, got %#v", msgs)
+			if diff := cmp.Diff(tc.want, accumulated.Contents); diff != "" {
+				t.Fatalf("diff:\n%s", diff)
 			}
-
-			if diff := cmp.Diff(tc.want, msgs[0].Contents); diff != "" {
+			if diff := cmp.Diff(result.Message, accumulated); diff != "" {
 				t.Fatalf("diff:\n%s", diff)
 			}
 		})
@@ -287,8 +272,9 @@ func (m *mockChatStreamProvider) ChatStream(ctx context.Context, msgs genai.Mess
 		case <-ctx.Done():
 			return result, ctx.Err()
 		case replies <- fragment:
-			// Accumulate fragment into result message
-			result.Message.Accumulate(fragment)
+			// We don't accumulate in the result.Message since the wrapper will transform TextFragment to ThinkingFragment
+			// and the actual accumulation happens in the test code. The final message will be constructed properly
+			// by the ChatProviderThinking wrapper.
 		}
 	}
 	return result, nil

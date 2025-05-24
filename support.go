@@ -149,33 +149,33 @@ type ChatProviderUsage struct {
 }
 
 // Chat implements the ChatProvider interface and accumulates usage statistics.
-func (p *ChatProviderUsage) Chat(ctx context.Context, msgs Messages, opts Validatable) (ChatResult, error) {
-	result, err := p.ChatProvider.Chat(ctx, msgs, opts)
-	p.mu.Lock()
-	p.accumUsage.InputTokens += result.InputTokens
-	p.accumUsage.InputCachedTokens += result.InputCachedTokens
-	p.accumUsage.OutputTokens += result.OutputTokens
-	p.mu.Unlock()
+func (c *ChatProviderUsage) Chat(ctx context.Context, msgs Messages, opts Validatable) (ChatResult, error) {
+	result, err := c.ChatProvider.Chat(ctx, msgs, opts)
+	c.mu.Lock()
+	c.accumUsage.InputTokens += result.InputTokens
+	c.accumUsage.InputCachedTokens += result.InputCachedTokens
+	c.accumUsage.OutputTokens += result.OutputTokens
+	c.mu.Unlock()
 	return result, err
 }
 
 // ChatStream implements the ChatProvider interface and accumulates usage statistics.
-func (p *ChatProviderUsage) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (ChatResult, error) {
+func (c *ChatProviderUsage) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (ChatResult, error) {
 	// Call the wrapped provider and accumulate usage statistics
-	result, err := p.ChatProvider.ChatStream(ctx, msgs, opts, replies)
-	p.mu.Lock()
-	p.accumUsage.InputTokens += result.InputTokens
-	p.accumUsage.InputCachedTokens += result.InputCachedTokens
-	p.accumUsage.OutputTokens += result.OutputTokens
-	p.mu.Unlock()
+	result, err := c.ChatProvider.ChatStream(ctx, msgs, opts, replies)
+	c.mu.Lock()
+	c.accumUsage.InputTokens += result.InputTokens
+	c.accumUsage.InputCachedTokens += result.InputCachedTokens
+	c.accumUsage.OutputTokens += result.OutputTokens
+	c.mu.Unlock()
 	return result, err
 }
 
 // GetAccumulatedUsage returns the current accumulated usage values.
-func (p *ChatProviderUsage) GetAccumulatedUsage() Usage {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	return p.accumUsage
+func (c *ChatProviderUsage) GetAccumulatedUsage() Usage {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.accumUsage
 }
 
 //
@@ -195,9 +195,9 @@ type ChatProviderThinking struct {
 
 // Chat implements the ChatProvider interface by delegating to the wrapped provider
 // and processing the result to extract thinking blocks.
-func (tp *ChatProviderThinking) Chat(ctx context.Context, msgs Messages, opts Validatable) (ChatResult, error) {
-	result, err := tp.ChatProvider.Chat(ctx, msgs, opts)
-	if err2 := tp.processThinkingMessage(&result.Message); err == nil {
+func (c *ChatProviderThinking) Chat(ctx context.Context, msgs Messages, opts Validatable) (ChatResult, error) {
+	result, err := c.ChatProvider.Chat(ctx, msgs, opts)
+	if err2 := c.processThinkingMessage(&result.Message); err == nil {
 		err = err2
 	}
 	return result, err
@@ -206,12 +206,12 @@ func (tp *ChatProviderThinking) Chat(ctx context.Context, msgs Messages, opts Va
 // ChatStream implements the ChatProvider interface for streaming by delegating to the wrapped provider
 // and processing each fragment to extract thinking blocks.
 // If no thinking tags are present, the first part of the message is assumed to be thinking.
-func (tp *ChatProviderThinking) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (ChatResult, error) {
+func (c *ChatProviderThinking) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (ChatResult, error) {
 	internalReplies := make(chan MessageFragment)
 	// The tokens always have a trailing "\n". When streaming, the trailing "\n" will likely be sent as a
 	// separate event. This requires a small state machine to keep track of that.
-	tagStart := "<" + tp.TagName + ">"
-	tagEnd := "</" + tp.TagName + ">"
+	tagStart := "<" + c.TagName + ">"
+	tagEnd := "</" + c.TagName + ">"
 
 	accumulated := Message{}
 	eg, ctx := errgroup.WithContext(ctx)
@@ -306,7 +306,7 @@ func (tp *ChatProviderThinking) ChatStream(ctx context.Context, msgs Messages, o
 		}
 		return nil
 	})
-	result, err := tp.ChatProvider.ChatStream(ctx, msgs, opts, internalReplies)
+	result, err := c.ChatProvider.ChatStream(ctx, msgs, opts, internalReplies)
 	close(internalReplies)
 	if err3 := eg.Wait(); err == nil {
 		err = err3
@@ -322,7 +322,7 @@ func (tp *ChatProviderThinking) ChatStream(ctx context.Context, msgs Messages, o
 	return result, nil
 }
 
-func (tp *ChatProviderThinking) processThinkingMessage(m *Message) error {
+func (c *ChatProviderThinking) processThinkingMessage(m *Message) error {
 	if len(m.Contents) == 0 {
 		// It can be a function call.
 		return nil
@@ -354,8 +354,8 @@ func (tp *ChatProviderThinking) processThinkingMessage(m *Message) error {
 		return nil
 	}
 
-	tagStart := "<" + tp.TagName + ">"
-	tagEnd := "</" + tp.TagName + ">"
+	tagStart := "<" + c.TagName + ">"
+	tagEnd := "</" + c.TagName + ">"
 	if tStart := strings.Index(text, tagStart); tStart != -1 {
 		if prefix := text[:tStart]; strings.TrimSpace(prefix) != "" {
 			return fmt.Errorf("failed to parse thinking tokens")

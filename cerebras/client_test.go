@@ -31,7 +31,7 @@ func TestClient_Chat_allModels(t *testing.T) {
 func TestClient_Chat_thinking(t *testing.T) {
 	testCases.TestChatThinking(t, &internaltest.Settings{
 		GetClient: func(t *testing.T, m string) genai.ChatProvider {
-			return &genai.ChatProviderThinking{Provider: getClient(t, m), TagName: "think"}
+			return &genai.ChatProviderThinking{ChatProvider: getClient(t, m), TagName: "think"}
 		},
 		Model: "qwen-3-32b",
 	})
@@ -61,7 +61,7 @@ func TestClient_Chat_jSON_schema(t *testing.T) {
 func TestClient_Chat_tool_use_reply(t *testing.T) {
 	testCases.TestChatToolUseReply(t, &internaltest.Settings{
 		GetClient: func(t *testing.T, m string) genai.ChatProvider {
-			return &genai.ChatProviderThinking{Provider: getClient(t, m), TagName: "think"}
+			return &genai.ChatProviderThinking{ChatProvider: getClient(t, m), TagName: "think"}
 		},
 		Model: "qwen-3-32b",
 	})

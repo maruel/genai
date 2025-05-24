@@ -48,7 +48,7 @@ func TestClient_Chat_thinking(t *testing.T) {
 	t.Skip(`bugged when using streaming; https://discord.com/channels/1082503318624022589/1082503319165083700/1373293708438405170`)
 	testCases.TestChatThinking(t, &internaltest.Settings{
 		GetClient: func(t *testing.T, m string) genai.ChatProvider {
-			return &genai.ChatProviderThinking{Provider: getClient(t, m), TagName: "think"}
+			return &genai.ChatProviderThinking{ChatProvider: getClient(t, m), TagName: "think"}
 		},
 		Model: "Qwen/Qwen3-235B-A22B-fp8-tput",
 	})

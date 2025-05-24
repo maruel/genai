@@ -587,6 +587,10 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 	return nil
 }
 
+func (c *Client) ModelID() string {
+	return ""
+}
+
 func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts genai.Validatable, msgs genai.Messages) error {
 	if c.encoding == nil {
 		// Use the server to convert the OpenAI style format into a templated form.

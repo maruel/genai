@@ -903,3 +903,7 @@ func (m *mockChatProvider) ChatStream(ctx context.Context, msgs Messages, opts V
 
 	return result, nil
 }
+
+func (m *mockChatProvider) ModelID() string {
+	return "llm-sota"
+}

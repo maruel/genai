@@ -26,7 +26,7 @@ var testCases = &internaltest.TestCases{
 func TestClient_Chat_simple(t *testing.T) {
 	testCases.TestChatSimple_simple(t, &internaltest.Settings{
 		GetClient: func(t *testing.T, m string) genai.ChatProvider {
-			return &genai.ChatProviderThinking{Provider: getClient(t, m), TagName: "think"}
+			return &genai.ChatProviderThinking{ChatProvider: getClient(t, m), TagName: "think"}
 		},
 	})
 }
@@ -34,7 +34,7 @@ func TestClient_Chat_simple(t *testing.T) {
 func TestClient_ChatStream_simple(t *testing.T) {
 	testCases.TestChatStream_simple(t, &internaltest.Settings{
 		GetClient: func(t *testing.T, m string) genai.ChatProvider {
-			return &genai.ChatProviderThinking{Provider: getClient(t, m), TagName: "think"}
+			return &genai.ChatProviderThinking{ChatProvider: getClient(t, m), TagName: "think"}
 		},
 	})
 }

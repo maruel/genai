@@ -142,7 +142,7 @@ func ChatStreamWithToolCallLoop(ctx context.Context, provider ChatProvider, msgs
 // ChatProviderUsage wraps a ChatProvider and accumulates Usage values
 // across multiple requests to track total token consumption.
 type ChatProviderUsage struct {
-	Provider ChatProvider
+	ChatProvider
 
 	mu         sync.Mutex
 	accumUsage Usage
@@ -150,7 +150,7 @@ type ChatProviderUsage struct {
 
 // Chat implements the ChatProvider interface and accumulates usage statistics.
 func (p *ChatProviderUsage) Chat(ctx context.Context, msgs Messages, opts Validatable) (ChatResult, error) {
-	result, err := p.Provider.Chat(ctx, msgs, opts)
+	result, err := p.ChatProvider.Chat(ctx, msgs, opts)
 	p.mu.Lock()
 	p.accumUsage.InputTokens += result.InputTokens
 	p.accumUsage.InputCachedTokens += result.InputCachedTokens
@@ -162,7 +162,7 @@ func (p *ChatProviderUsage) Chat(ctx context.Context, msgs Messages, opts Valida
 // ChatStream implements the ChatProvider interface and accumulates usage statistics.
 func (p *ChatProviderUsage) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (ChatResult, error) {
 	// Call the wrapped provider and accumulate usage statistics
-	result, err := p.Provider.ChatStream(ctx, msgs, opts, replies)
+	result, err := p.ChatProvider.ChatStream(ctx, msgs, opts, replies)
 	p.mu.Lock()
 	p.accumUsage.InputTokens += result.InputTokens
 	p.accumUsage.InputCachedTokens += result.InputCachedTokens
@@ -185,8 +185,7 @@ func (p *ChatProviderUsage) GetAccumulatedUsage() Usage {
 // It looks for content within tags ("<TagName>" and "</TagName>") and places it in Thinking Content blocks
 // instead of Text.
 type ChatProviderThinking struct {
-	// Provider is the underlying ChatProvider.
-	Provider ChatProvider
+	ChatProvider
 
 	// TagName is the name of the tag to use for thinking content. Normally "think" or "thinking".
 	TagName string
@@ -197,7 +196,7 @@ type ChatProviderThinking struct {
 // Chat implements the ChatProvider interface by delegating to the wrapped provider
 // and processing the result to extract thinking blocks.
 func (tp *ChatProviderThinking) Chat(ctx context.Context, msgs Messages, opts Validatable) (ChatResult, error) {
-	result, err := tp.Provider.Chat(ctx, msgs, opts)
+	result, err := tp.ChatProvider.Chat(ctx, msgs, opts)
 	if err2 := tp.processThinkingMessage(&result.Message); err == nil {
 		err = err2
 	}
@@ -307,7 +306,7 @@ func (tp *ChatProviderThinking) ChatStream(ctx context.Context, msgs Messages, o
 		}
 		return nil
 	})
-	result, err := tp.Provider.ChatStream(ctx, msgs, opts, internalReplies)
+	result, err := tp.ChatProvider.ChatStream(ctx, msgs, opts, internalReplies)
 	close(internalReplies)
 	if err3 := eg.Wait(); err == nil {
 		err = err3

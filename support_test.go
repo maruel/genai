@@ -67,7 +67,7 @@ func TestChatProviderThinking_Chat(t *testing.T) {
 				},
 			}}
 
-			tp := &genai.ChatProviderThinking{Provider: mp, TagName: "thinking"}
+			tp := &genai.ChatProviderThinking{ChatProvider: mp, TagName: "thinking"}
 			got, err := tp.Chat(t.Context(), genai.Messages{}, nil)
 			if tc.expectError {
 				if err == nil {
@@ -187,7 +187,7 @@ func TestChatProviderThinking_ChatStream(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			mp := &mockChatStreamProvider{in: tc.in}
-			tp := &genai.ChatProviderThinking{Provider: mp, TagName: "thinking"}
+			tp := &genai.ChatProviderThinking{ChatProvider: mp, TagName: "thinking"}
 			ch := make(chan genai.MessageFragment)
 			ctx, cancel := context.WithTimeout(t.Context(), 1*time.Second)
 			defer cancel()
@@ -249,6 +249,10 @@ func (m *mockChatProvider) ChatStream(ctx context.Context, msgs genai.Messages, 
 	return genai.ChatResult{}, errors.New("unexpected")
 }
 
+func (m *mockChatProvider) ModelID() string {
+	return "llm-sota"
+}
+
 // mockChatStreamProvider is a mock implementation of genai.ChatProvider for testing.
 // It sends the predefined fragments to the replies channel for the ChatStream method
 // and returns an error for the Chat method.
@@ -278,4 +282,8 @@ func (m *mockChatStreamProvider) ChatStream(ctx context.Context, msgs genai.Mess
 		}
 	}
 	return result, nil
+}
+
+func (m *mockChatStreamProvider) ModelID() string {
+	return "llm-sota"
 }

@@ -198,7 +198,7 @@ func getClient(t *testing.T, provider string) genai.ChatProvider {
 	}
 	c.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientJSON.Client.Transport)
 	if p.thinking != "" {
-		return &genai.ChatProviderThinking{Provider: c, TagName: p.thinking}
+		return &genai.ChatProviderThinking{ChatProvider: c, TagName: p.thinking}
 	}
 	return c
 }

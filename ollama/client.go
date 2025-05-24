@@ -518,6 +518,10 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.ClientBase, c.baseURL+"/api/tags")
 }
 
+func (c *Client) ModelID() string {
+	return c.model
+}
+
 // PullModel is the equivalent of "ollama pull".
 func (c *Client) PullModel(ctx context.Context, model string) error {
 	in := pullModelRequest{Model: model}

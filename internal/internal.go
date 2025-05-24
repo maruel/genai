@@ -192,6 +192,7 @@ type ClientChat[ErrorResponse fmt.Stringer, ChatRequest InitializableRequest, Ch
 	ChatURL string
 	// ChatStreamURL is the endpoint URL for chat stream API requests. It defaults to ChatURL if unset.
 	ChatStreamURL        string
+	ModelOptional        bool
 	AllowOpaqueFields    bool
 	ProcessStreamPackets func(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error
 
@@ -307,7 +308,7 @@ func (c *ClientChat[ErrorResponse, ChatRequest, ChatResponse, ChatStreamChunkRes
 }
 
 func (c *ClientChat[ErrorResponse, ChatRequest, ChatResponse, ChatStreamChunkResponse]) Validate() error {
-	if c.Model == "" {
+	if !c.ModelOptional && c.Model == "" {
 		return errors.New("a model is required")
 	}
 	return nil

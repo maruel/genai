@@ -312,6 +312,7 @@ func New(chatURL string, h http.Header, model string) (*Client, error) {
 		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              chatURL,
+			ModelOptional:        true,
 			ProcessStreamPackets: processStreamPackets,
 			ClientBase: internal.ClientBase[*ErrorResponse]{
 				ClientJSON: httpjson.Client{

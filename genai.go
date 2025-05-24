@@ -642,8 +642,8 @@ type ToolDef struct {
 	// Description must be a LLM-friendly short description of the tool.
 	Description string
 	// Callback is the function to call with the inputs.
-	// It must accept one struct pointer.
-	// It must return a string. Other return value may be added later. error will be supported later.
+	// It must accept one struct pointer as input.
+	// It must return (string, error).
 	Callback any
 
 	_ struct{}

@@ -66,13 +66,13 @@ func (c *ClientBase[Err]) DoRequest(ctx context.Context, method, url string, in,
 		r2 = r
 	}
 	var errs []error
-	if foundExtraKeys, err := decodeJSON(d, out, r2); err == nil {
+	if foundExtraKeys, err2 := decodeJSON(d, out, r2); err2 == nil {
 		// It may have succeeded but not decoded anything.
 		if v := reflect.ValueOf(out); !reflect.DeepEqual(out, reflect.Zero(v.Type()).Interface()) {
 			return nil
 		}
 	} else if foundExtraKeys {
-		errs = append(errs, err)
+		errs = append(errs, err2)
 	}
 	var er Err
 	if _, err = r.Seek(0, 0); err != nil {

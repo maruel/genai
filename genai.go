@@ -72,6 +72,8 @@ type ChatProvider interface {
 	//
 	// No need to accumulate the replies into the result, the ChatResult contains the accumulated message.
 	ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (ChatResult, error)
+	// ModelID returns the model currently used by the provider. It can be an empty string.
+	ModelID() string
 }
 
 // ChatOptions is a list of frequent options supported by most ChatProvider.

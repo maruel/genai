@@ -310,6 +310,10 @@ func (c *ClientChat[ErrorResponse, ChatRequest, ChatResponse, ChatStreamChunkRes
 	return sse.Process(resp.Body, out, &er, c.ClientJSON.Lenient)
 }
 
+func (c *ClientChat[ErrorResponse, ChatRequest, ChatResponse, ChatStreamChunkResponse]) ModelID() string {
+	return c.Model
+}
+
 func (c *ClientChat[ErrorResponse, ChatRequest, ChatResponse, ChatStreamChunkResponse]) Validate() error {
 	if !c.ModelOptional && c.Model == "" {
 		return errors.New("a model is required")

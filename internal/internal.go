@@ -75,12 +75,22 @@ func (c *ClientBase[Err]) DoRequest(ctx context.Context, method, url string, in,
 		errs = append(errs, err)
 	}
 	var er Err
+	if _, err = r.Seek(0, 0); err != nil {
+		return err
+	}
+	d = json.NewDecoder(r)
+	if !c.ClientJSON.Lenient {
+		d.DisallowUnknownFields()
+		r2 = r
+	}
 	if foundExtraKeys, err := decodeJSON(d, &er, r2); err == nil {
 		// It may have succeeded but not decoded anything.
 		if v := reflect.ValueOf(er); !reflect.DeepEqual(out, reflect.Zero(v.Type()).Interface()) {
 			return nil
 		}
 	} else if foundExtraKeys {
+		// This is confusing, not sure it's a good idea. The problem is that we need to detect when error fields
+		// appear too!
 		errs = append(errs, err)
 	} else {
 		return err

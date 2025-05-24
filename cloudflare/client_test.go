@@ -36,8 +36,12 @@ func TestClient_Chat_allModels(t *testing.T) {
 		})
 }
 
-func TestClient_ChatStream(t *testing.T) {
-	testCases.TestChatStream(t, &internaltest.Settings{Model: "@cf/meta/llama-3.2-3b-instruct"})
+func TestClient_Chat_simple(t *testing.T) {
+	testCases.TestChatSimple_simple(t, &internaltest.Settings{Model: "@cf/meta/llama-3.2-3b-instruct"})
+}
+
+func TestClient_ChatStream_simple(t *testing.T) {
+	testCases.TestChatStream_simple(t, &internaltest.Settings{Model: "@cf/meta/llama-3.2-3b-instruct"})
 }
 
 func TestClient_Chat_jSON(t *testing.T) {

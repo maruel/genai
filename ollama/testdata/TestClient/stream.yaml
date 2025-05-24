@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 164
+        content_length: 166
         transfer_encoding: []
         trailer: {}
         host: localhost
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"gemma3:4b","stream":true,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"options":{"temperature":0.01,"seed":1,"num_predict":50}}
+            {"model":"gemma3:4b","stream":true,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"options":{"temperature":0.01,"seed":1,"num_predict":2000}}
         form: {}
         headers:
             Content-Type:
@@ -30,12 +30,12 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |
-            {"model":"gemma3:4b","created_at":"2025-05-13T19:02:03.643583639Z","message":{"role":"assistant","content":"Hello"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-05-13T19:02:03.69143092Z","message":{"role":"assistant","content":"."},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-05-13T19:02:03.735902805Z","message":{"role":"assistant","content":""},"done_reason":"stop","done":true,"total_duration":1510956234,"load_duration":908453802,"prompt_eval_count":17,"prompt_eval_duration":508712410,"eval_count":3,"eval_duration":93287628}
+            {"model":"gemma3:4b","created_at":"2025-05-24T01:37:43.327341661Z","message":{"role":"assistant","content":"Hello"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-05-24T01:37:43.422548438Z","message":{"role":"assistant","content":"."},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-05-24T01:37:43.511656339Z","message":{"role":"assistant","content":""},"done_reason":"stop","done":true,"total_duration":2084822414,"load_duration":1621099479,"prompt_eval_count":17,"prompt_eval_duration":277844923,"eval_count":3,"eval_duration":185259154}
         headers:
             Content-Type:
                 - application/x-ndjson
         status: 200 OK
         code: 200
-        duration: 1.419s
+        duration: 1.901s

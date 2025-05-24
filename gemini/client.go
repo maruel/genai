@@ -637,6 +637,7 @@ type ChatResponse struct {
 	PromptFeedback any           `json:"promptFeedback,omitzero"`
 	UsageMetadata  UsageMetadata `json:"usageMetadata"`
 	ModelVersion   string        `json:"modelVersion"`
+	ResponseID     string        `json:"responseId"`
 }
 
 func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
@@ -705,6 +706,7 @@ type ChatStreamChunkResponse struct {
 	} `json:"candidates"`
 	UsageMetadata UsageMetadata `json:"usageMetadata"`
 	ModelVersion  string        `json:"modelVersion"`
+	ResponseID    string        `json:"responseId"`
 }
 
 // Caching

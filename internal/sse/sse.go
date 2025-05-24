@@ -51,7 +51,7 @@ func Process[T any](body io.Reader, out chan<- T, er any, lenient bool) error {
 						d.DisallowUnknownFields()
 					}
 					d.UseNumber()
-					if err = d.Decode(er); err == nil {
+					if err2 := d.Decode(er); err2 == nil {
 						return fmt.Errorf("%s", er)
 					}
 				}

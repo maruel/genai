@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 193
+        content_length: 195
         transfer_encoding: []
         trailer: {}
         host: api.mistral.ai
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"ministral-3b-latest","temperature":0.01,"max_tokens":50,"stream":true,"random_seed":1,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
+            {"model":"ministral-3b-latest","temperature":0.01,"max_tokens":2000,"stream":true,"random_seed":1,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
         form: {}
         headers:
             Content-Type:
@@ -29,13 +29,13 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"30787c252ac940eaabeae2b3f9bf0e24","object":"chat.completion.chunk","created":1747149258,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+            data: {"id":"02d3b71b913842afae907ea4d184935f","object":"chat.completion.chunk","created":1748050506,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
 
-            data: {"id":"30787c252ac940eaabeae2b3f9bf0e24","object":"chat.completion.chunk","created":1747149258,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
+            data: {"id":"02d3b71b913842afae907ea4d184935f","object":"chat.completion.chunk","created":1748050506,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
 
-            data: {"id":"30787c252ac940eaabeae2b3f9bf0e24","object":"chat.completion.chunk","created":1747149258,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"!"},"finish_reason":null}]}
+            data: {"id":"02d3b71b913842afae907ea4d184935f","object":"chat.completion.chunk","created":1748050506,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"!"},"finish_reason":null}]}
 
-            data: {"id":"30787c252ac940eaabeae2b3f9bf0e24","object":"chat.completion.chunk","created":1747149258,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"total_tokens":14,"completion_tokens":3}}
+            data: {"id":"02d3b71b913842afae907ea4d184935f","object":"chat.completion.chunk","created":1748050506,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"total_tokens":14,"completion_tokens":3}}
 
             data: [DONE]
 
@@ -47,35 +47,35 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 93f31acedf56a2be-YUL
+                - 94490df1bee333f1-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Ratelimitbysize-Limit:
-                - "500000"
+                - "2000000"
             Ratelimitbysize-Query-Cost:
-                - "50"
+                - "2000"
             Ratelimitbysize-Remaining:
-                - "499950"
+                - "1998000"
             Ratelimitbysize-Reset:
-                - "42"
+                - "54"
             Server:
                 - cloudflare
             X-Envoy-Upstream-Service-Time:
                 - "59"
             X-Kong-Proxy-Latency:
-                - "10"
+                - "7"
             X-Kong-Request-Id:
-                - 66be8c764a54d63107184f5b904d1f71
+                - de84aa321a41f620d8f85968753de32f
             X-Kong-Upstream-Latency:
-                - "60"
+                - "59"
             X-Ratelimitbysize-Limit-Minute:
-                - "500000"
+                - "2000000"
             X-Ratelimitbysize-Limit-Month:
-                - "1000000000"
+                - "10000000000"
             X-Ratelimitbysize-Remaining-Minute:
-                - "499950"
+                - "1998000"
             X-Ratelimitbysize-Remaining-Month:
-                - "999970163"
+                - "9999935678"
         status: 200 OK
         code: 200
-        duration: 3.469s
+        duration: 242ms

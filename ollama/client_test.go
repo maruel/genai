@@ -71,7 +71,7 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("stream", func(t *testing.T) {
-		tc.TestChatStream(t, nil)
+		tc.TestChatStream_simple(t, nil)
 	})
 
 	t.Run("vision_jpg_inline", func(t *testing.T) {

@@ -117,8 +117,12 @@ func TestClient_Chat_genImage(t *testing.T) {
 	// It can have text, images or both.
 }
 
-func TestClient_ChatStream(t *testing.T) {
-	testCases.TestChatStream(t, nil)
+func TestClient_Chat_simple(t *testing.T) {
+	testCases.TestChatSimple_simple(t, nil)
+}
+
+func TestClient_ChatStream_simple(t *testing.T) {
+	testCases.TestChatStream_simple(t, nil)
 }
 
 func TestClient_Chat_jSON(t *testing.T) {

@@ -37,8 +37,12 @@ func TestClient_Chat_thinking(t *testing.T) {
 	})
 }
 
-func TestClient_ChatStream(t *testing.T) {
-	testCases.TestChatStream(t, nil)
+func TestClient_Chat_simple(t *testing.T) {
+	testCases.TestChatSimple_simple(t, nil)
+}
+
+func TestClient_ChatStream_simple(t *testing.T) {
+	testCases.TestChatStream_simple(t, nil)
 }
 
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {

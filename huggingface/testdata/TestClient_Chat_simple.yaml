@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 171
+        content_length: 134
         transfer_encoding: []
         trailer: {}
         host: router.huggingface.co
         remote_addr: ""
         request_uri: ""
         body: |
-            {"stream":true,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"max_tokens":50,"seed":1,"stream_options":{"include_usage":true},"temperature":0.01}
+            {"stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"max_tokens":2000,"seed":1,"temperature":0.01}
         form: {}
         headers:
             Content-Type:
@@ -26,19 +26,9 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: -1
+        content_length: 302
         uncompressed: false
-        body: |+
-            data: {"object":"chat.completion.chunk","id":"","created":1747596844,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"object":"chat.completion.chunk","id":"","created":1747596844,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"object":"chat.completion.chunk","id":"","created":1747596845,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":"stop"}],"usage":null}
-
-            data: {"object":"chat.completion.chunk","id":"","created":1747596845,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[],"usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46}}
-
-            data: [DONE]
-
+        body: '{"object":"chat.completion","id":"","created":1748050500,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"Hello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46}}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
@@ -46,10 +36,10 @@ interactions:
                 - '*'
             Access-Control-Expose-Headers:
                 - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
-            Cache-Control:
-                - no-cache
+            Content-Length:
+                - "302"
             Content-Type:
-                - text/event-stream
+                - application/json
             Cross-Origin-Opener-Policy:
                 - same-origin
             Referrer-Policy:
@@ -57,31 +47,47 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 aaba6cbb29b8ee11a630e2a990704d30.cloudfront.net (CloudFront)
+                - 1.1 792fd72f7da1e5732d6b6173dea66aa8.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - 9kp8QCK4QXOEYAwkakJLcywQd9qWPNuyEk64DTtkFOSul4vpAXIkJg==
+                - QDvXtv2nnTSzwDVLWwEQhbY9_0Rxcc1P7CkpMBobhD9gghoXRsKcdQ==
             X-Amz-Cf-Pop:
-                - YTO53-P1
+                - YTO50-P1
             X-Cache:
                 - Miss from cloudfront
             X-Compute-Characters:
                 - "262"
+            X-Compute-Time:
+                - "8.574738607"
             X-Compute-Type:
                 - 4-nvida-a100-sxm4-80gb
+            X-Generated-Tokens:
+                - "3"
             X-Inference-Id:
-                - da71b5fb-543d-46aa-bff5-e2a1e6a4e5de
+                - e82957f3-2f84-461f-a343-f1d48adce9ef
+            X-Inference-Time:
+                - "1740"
             X-Powered-By:
                 - huggingface-moon
+            X-Prompt-Tokens:
+                - "43"
             X-Proxied-Host:
-                - http://10.102.44.56
+                - http://10.102.78.120
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - fyj5qcci-9gfbs
+                - fyj5qcci-2zr2c
+            X-Queue-Time:
+                - "6833"
             X-Request-Id:
-                - jP57bGaffmKO65Is
+                - TxVZG37771qbiJLX
             X-Robots-Tag:
                 - none
+            X-Time-Per-Token:
+                - "580"
+            X-Total-Time:
+                - "8574"
+            X-Validation-Time:
+                - "0"
         status: 200 OK
         code: 200
-        duration: 196ms
+        duration: 8.681s

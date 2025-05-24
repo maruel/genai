@@ -75,7 +75,7 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("stream", func(t *testing.T) {
-		tc.TestChatStream(t, nil)
+		tc.TestChatStream_simple(t, nil)
 	})
 
 	/* TODO: Find a way to make it error out.

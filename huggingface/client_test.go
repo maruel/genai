@@ -40,9 +40,13 @@ func TestClient_Chat_thinking(t *testing.T) {
 	testCases.TestChatThinking(t, &internaltest.Settings{Model: "Qwen/QwQ-32B"})
 }
 
-func TestClient_ChatStream(t *testing.T) {
+func TestClient_Chat_simple(t *testing.T) {
+	testCases.TestChatSimple_simple(t, nil)
+}
+
+func TestClient_ChatStream_simple(t *testing.T) {
 	// TODO: Figure out why smaller models fail.
-	testCases.TestChatStream(t, nil)
+	testCases.TestChatStream_simple(t, nil)
 }
 
 func TestClient_Chat_jSON(t *testing.T) {

@@ -113,10 +113,20 @@ func (tc *TestCases) TestChatThinking(t *testing.T, override *Settings) {
 	})
 }
 
-// TestChatStream makes sure ChatStream() works.
-func (tc *TestCases) TestChatStream(t *testing.T, override *Settings) {
+// TestChatSimple_simple makes sure Chat() works. Useful to restart a recording to determine if new fields were
+// added.
+func (tc *TestCases) TestChatSimple_simple(t *testing.T, override *Settings) {
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
-	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 50, Seed: 1}
+	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
+	resp := tc.TestChatHelper(t, msgs, override, opts)
+	validateSingleWordResponse(t, resp, "hello")
+}
+
+// TestChatStream_simple makes sure ChatStream() works. Useful to restart a recording to determine if new fields were
+// added.
+func (tc *TestCases) TestChatStream_simple(t *testing.T, override *Settings) {
+	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
+	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
 	resp := tc.testChatStreamHelper(t, msgs, override, opts)
 	validateSingleWordResponse(t, resp, "hello")
 }
@@ -502,7 +512,7 @@ func (tc *TestCases) testChatStream(t *testing.T, msgs genai.Messages, c genai.C
 				if !ok {
 					return nil
 				}
-				t.Logf("Packet: %v", pkt)
+				t.Logf("Packet: %#v", pkt)
 				if err2 := accumulated.Accumulate(pkt); err2 != nil {
 					return err2
 				}
@@ -521,7 +531,7 @@ func (tc *TestCases) testChatStream(t *testing.T, msgs genai.Messages, c genai.C
 		t.Fatal(err)
 	}
 	if diff := cmp.Diff(&result.Message, &accumulated); diff != "" {
-		t.Errorf("(+want), (-got):\n%s", diff)
+		t.Errorf("(-result), (+accumulated):\n%s", diff)
 	}
 	testUsage(t, &result.Usage, usageIsBroken, finishReasonIsBroken)
 	return result

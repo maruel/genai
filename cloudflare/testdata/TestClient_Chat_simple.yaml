@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 131
+        content_length: 119
         transfer_encoding: []
         trailer: {}
         host: api.cloudflare.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"messages":[{"content":"Say hello. Use only one word.","role":"user"}],"max_tokens":50,"seed":1,"stream":true,"temperature":0.01}
+            {"messages":[{"content":"Say hello. Use only one word.","role":"user"}],"max_tokens":2000,"seed":1,"temperature":0.01}
         form: {}
         headers:
             Content-Type:
@@ -27,33 +27,23 @@ interactions:
         transfer_encoding: []
         trailer: {}
         content_length: -1
-        uncompressed: false
-        body: |+
-            data: {"response":"Hello","p":"abcdefgh"}
-
-            data: {"response":".","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklm"}
-
-            data: {"response":"","p":"abcdefghijklmnopqrstuvwxyz0123456789ab"}
-
-            data: {"response":"","usage":{"prompt_tokens":19,"completion_tokens":4,"total_tokens":23}}
-
-            data: [DONE]
-
+        uncompressed: true
+        body: '{"result":{"response":"Hello.","usage":{"prompt_tokens":19,"completion_tokens":3,"total_tokens":22}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
-                - "2025-05-15"
+                - "2025-05-24"
             Cf-Ai-Req-Id:
-                - 879eb0e2-26d3-4c89-9c78-656d87a326d5
+                - 1f99d3d4-f774-4f12-a36e-167f3a454103
             Cf-Auditlog-Id:
-                - 0196d41b-ef3b-7b8f-b1c4-e3afce2d6c77
+                - 0196ffed-b984-7f15-bb34-4e13827137d4
             Cf-Ray:
-                - 9402f11eae43a314-YUL
+                - 94490d958cf5a2ac-YUL
             Content-Type:
-                - text/event-stream
+                - application/json
             Server:
                 - cloudflare
             Vary:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 304ms
+        duration: 300ms

@@ -6,7 +6,6 @@ package perplexity_test
 
 import (
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -18,40 +17,26 @@ import (
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
 		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
-		Model:     "sonar",
+		Model:     "r1-1776",
 	},
 }
 
 // Not implementing TestClient_Chat_allModels since perplexity has no ListModels API.
 
-func TestClient_Chat(t *testing.T) {
-	c := getClient(t, "sonar")
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
-	}
-	opts := genai.ChatOptions{
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
-	if resp.InputTokens != 8 || resp.OutputTokens != 3 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	// Normalize some of the variance. Obviously many models will still fail this test.
-	if got := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!"); got != "hello" {
-		t.Fatal(got)
-	}
+func TestClient_Chat_simple(t *testing.T) {
+	testCases.TestChatSimple_simple(t, &internaltest.Settings{
+		GetClient: func(t *testing.T, m string) genai.ChatProvider {
+			return &genai.ChatProviderThinking{Provider: getClient(t, m), TagName: "think"}
+		},
+	})
 }
 
-func TestClient_ChatStream(t *testing.T) {
-	testCases.TestChatStream(t, nil)
+func TestClient_ChatStream_simple(t *testing.T) {
+	testCases.TestChatStream_simple(t, &internaltest.Settings{
+		GetClient: func(t *testing.T, m string) genai.ChatProvider {
+			return &genai.ChatProviderThinking{Provider: getClient(t, m), TagName: "think"}
+		},
+	})
 }
 
 func TestClient_ChatProvider_errors(t *testing.T) {

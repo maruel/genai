@@ -35,8 +35,12 @@ func TestClient_Chat_allModels(t *testing.T) {
 		})
 }
 
-func TestClient_ChatStream(t *testing.T) {
-	testCases.TestChatStream(t, &internaltest.Settings{Model: "ministral-3b-latest"})
+func TestClient_Chat_simple(t *testing.T) {
+	testCases.TestChatSimple_simple(t, &internaltest.Settings{Model: "ministral-3b-latest"})
+}
+
+func TestClient_ChatStream_simple(t *testing.T) {
+	testCases.TestChatStream_simple(t, &internaltest.Settings{Model: "ministral-3b-latest"})
 }
 
 func TestClient_Chat_jSON(t *testing.T) {

@@ -57,8 +57,12 @@ func TestClient_Chat_thinking(t *testing.T) {
 // google/gemma-3-4b-it and google/gemma-3-27b-it are not available without a dedicated endpoint. We must
 // select one of the Serverless at https://api.together.ai/models.
 
-func TestClient_ChatStream(t *testing.T) {
-	testCases.TestChatStream(t, &internaltest.Settings{Model: "meta-llama/Llama-3.2-3B-Instruct-Turbo"})
+func TestClient_Chat_simple(t *testing.T) {
+	testCases.TestChatSimple_simple(t, &internaltest.Settings{Model: "meta-llama/Llama-3.2-3B-Instruct-Turbo"})
+}
+
+func TestClient_ChatStream_simple(t *testing.T) {
+	testCases.TestChatStream_simple(t, &internaltest.Settings{Model: "meta-llama/Llama-3.2-3B-Instruct-Turbo"})
 }
 
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {

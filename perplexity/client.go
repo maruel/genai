@@ -209,9 +209,10 @@ func (f FinishReason) ToFinishReason() string {
 }
 
 type Usage struct {
-	PromptTokens     int64 `json:"prompt_tokens"`
-	CompletionTokens int64 `json:"completion_tokens"`
-	TotalTokens      int64 `json:"total_tokens"`
+	PromptTokens      int64  `json:"prompt_tokens"`
+	CompletionTokens  int64  `json:"completion_tokens"`
+	TotalTokens       int64  `json:"total_tokens"`
+	SearchContextSize string `json:"search_context_size"` // "low"
 }
 
 type ChatStreamChunkResponse = ChatResponse

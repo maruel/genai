@@ -37,8 +37,12 @@ func TestClient_Chat_thinking(t *testing.T) {
 	testCases.TestChatThinking(t, &internaltest.Settings{Model: "qwen-qwq-32b"})
 }
 
-func TestClient_ChatStream(t *testing.T) {
-	testCases.TestChatStream(t, &internaltest.Settings{Model: "llama-3.1-8b-instant"})
+func TestClient_Chat_simple(t *testing.T) {
+	testCases.TestChatSimple_simple(t, &internaltest.Settings{Model: "llama-3.1-8b-instant"})
+}
+
+func TestClient_ChatStream_simple(t *testing.T) {
+	testCases.TestChatStream_simple(t, &internaltest.Settings{Model: "llama-3.1-8b-instant"})
 }
 
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {

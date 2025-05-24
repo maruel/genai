@@ -42,20 +42,20 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 0s
+        duration: 1ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 173
+        content_length: 175
         transfer_encoding: []
         trailer: {}
         host: localhost
         remote_addr: ""
         request_uri: ""
         body: |
-            {"prompt":"<|im_start|>user\nSay hello. Use only one word.<|im_end|>\n<|im_start|>assistant\n","temperature":0.01,"n_predict":50,"stream":true,"seed":1,"cache_prompt":true}
+            {"prompt":"<|im_start|>user\nSay hello. Use only one word.<|im_end|>\n<|im_start|>assistant\n","temperature":0.01,"n_predict":2000,"stream":true,"seed":1,"cache_prompt":true}
         form: {}
         headers:
             Content-Type:
@@ -78,7 +78,7 @@ interactions:
 
             data: {"index":0,"content":"","tokens":[151645],"stop":false,"id_slot":-1,"tokens_predicted":3,"tokens_evaluated":16}
 
-            data: {"index":0,"content":"","tokens":[],"id_slot":0,"stop":true,"model":"gpt-3.5-turbo","tokens_predicted":3,"tokens_evaluated":16,"generation_settings":{"n_predict":50,"seed":1,"temperature":0.009999999776482582,"dynatemp_range":0.0,"dynatemp_exponent":1.0,"top_k":40,"top_p":0.949999988079071,"min_p":0.05000000074505806,"xtc_probability":0.0,"xtc_threshold":0.10000000149011612,"typical_p":1.0,"repeat_last_n":64,"repeat_penalty":1.0,"presence_penalty":0.0,"frequency_penalty":0.0,"dry_multiplier":0.0,"dry_base":1.75,"dry_allowed_length":2,"dry_penalty_last_n":4096,"dry_sequence_breakers":["\n",":","\"","*"],"mirostat":0,"mirostat_tau":5.0,"mirostat_eta":0.10000000149011612,"stop":[],"max_tokens":50,"n_keep":0,"n_discard":0,"ignore_eos":false,"stream":true,"logit_bias":[],"n_probs":0,"min_keep":0,"grammar":"","grammar_lazy":false,"grammar_triggers":[],"preserved_tokens":[],"chat_format":"Content-only","samplers":["penalties","dry","top_k","typ_p","top_p","min_p","xtc","temperature"],"speculative.n_max":16,"speculative.n_min":0,"speculative.p_min":0.75,"timings_per_token":false,"post_sampling_probs":false,"lora":[]},"prompt":"<|im_start|>user\nSay hello. Use only one word.<|im_end|>\n<|im_start|>assistant\n","has_new_line":false,"truncated":false,"stop_type":"eos","stopping_word":"","tokens_cached":18,"timings":{"prompt_n":16,"prompt_ms":12727.512,"prompt_per_token_ms":795.4695,"prompt_per_second":1.257119223301459,"predicted_n":3,"predicted_ms":16.187,"predicted_per_token_ms":5.395666666666667,"predicted_per_second":185.33390992771976}}
+            data: {"index":0,"content":"","tokens":[],"id_slot":0,"stop":true,"model":"gpt-3.5-turbo","tokens_predicted":3,"tokens_evaluated":16,"generation_settings":{"n_predict":2000,"seed":1,"temperature":0.009999999776482582,"dynatemp_range":0.0,"dynatemp_exponent":1.0,"top_k":40,"top_p":0.949999988079071,"min_p":0.05000000074505806,"top_n_sigma":-1.0,"xtc_probability":0.0,"xtc_threshold":0.10000000149011612,"typical_p":1.0,"repeat_last_n":64,"repeat_penalty":1.0,"presence_penalty":0.0,"frequency_penalty":0.0,"dry_multiplier":0.0,"dry_base":1.75,"dry_allowed_length":2,"dry_penalty_last_n":4096,"dry_sequence_breakers":["\n",":","\"","*"],"mirostat":0,"mirostat_tau":5.0,"mirostat_eta":0.10000000149011612,"stop":[],"max_tokens":2000,"n_keep":0,"n_discard":0,"ignore_eos":false,"stream":true,"logit_bias":[],"n_probs":0,"min_keep":0,"grammar":"","grammar_lazy":false,"grammar_triggers":[],"preserved_tokens":[],"chat_format":"Content-only","samplers":["penalties","dry","top_n_sigma","top_k","typ_p","top_p","min_p","xtc","temperature"],"speculative.n_max":16,"speculative.n_min":0,"speculative.p_min":0.75,"timings_per_token":false,"post_sampling_probs":false,"lora":[]},"prompt":"<|im_start|>user\nSay hello. Use only one word.<|im_end|>\n<|im_start|>assistant\n","has_new_line":false,"truncated":false,"stop_type":"eos","stopping_word":"","tokens_cached":18,"timings":{"prompt_n":16,"prompt_ms":31.732,"prompt_per_token_ms":1.98325,"prompt_per_second":504.2228665069961,"predicted_n":3,"predicted_ms":17.164,"predicted_per_token_ms":5.721333333333334,"predicted_per_second":174.78443253320904}}
 
         headers:
             Access-Control-Allow-Origin:
@@ -91,4 +91,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 1ms
+        duration: 3ms

@@ -148,9 +148,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 	return errors.Join(errs...)
 }
 
-func (r *ChatRequest) SetStream(stream bool) {
-	r.Stream = stream
-	r.StreamOptions.IncludeUsage = stream
+func (c *ChatRequest) SetStream(stream bool) {
+	c.Stream = stream
+	c.StreamOptions.IncludeUsage = stream
 }
 
 // Message is incorrectly documented at

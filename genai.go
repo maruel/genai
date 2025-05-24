@@ -228,12 +228,12 @@ func (r Role) Validate() error {
 type Messages []Message
 
 // Validate ensures the messages are valid.
-func (msgs Messages) Validate() error {
+func (m Messages) Validate() error {
 	var errs []error
-	for i := range msgs {
-		if err := msgs[i].Validate(); err != nil {
+	for i := range m {
+		if err := m[i].Validate(); err != nil {
 			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-		} else if msgs[i].IsZero() {
+		} else if m[i].IsZero() {
 			errs = append(errs, fmt.Errorf("message %d: is empty", i))
 		}
 		// if i > 0 && msgs[i-1].Role == m.Role {
@@ -523,68 +523,68 @@ func (m *MessageFragment) IsZero() bool {
 }
 
 // Accumulate adds a MessageFragment to the message being streamed.
-func (msg *Message) Accumulate(m MessageFragment) error {
-	if msg.Role == "" {
-		msg.Role = Assistant
+func (m *Message) Accumulate(mf MessageFragment) error {
+	if m.Role == "" {
+		m.Role = Assistant
 	}
 	// Generally the first message fragment.
-	if m.ThinkingFragment != "" {
-		if len(msg.Contents) != 0 {
-			if lastBlock := &msg.Contents[len(msg.Contents)-1]; lastBlock.Thinking != "" {
-				lastBlock.Thinking += m.ThinkingFragment
-				if len(m.Opaque) != 0 {
+	if mf.ThinkingFragment != "" {
+		if len(m.Contents) != 0 {
+			if lastBlock := &m.Contents[len(m.Contents)-1]; lastBlock.Thinking != "" {
+				lastBlock.Thinking += mf.ThinkingFragment
+				if len(mf.Opaque) != 0 {
 					if lastBlock.Opaque == nil {
 						lastBlock.Opaque = map[string]any{}
 					}
-					maps.Copy(lastBlock.Opaque, m.Opaque)
+					maps.Copy(lastBlock.Opaque, mf.Opaque)
 				}
 				return nil
 			}
 		}
-		msg.Contents = append(msg.Contents, Content{Thinking: m.ThinkingFragment, Opaque: m.Opaque})
+		m.Contents = append(m.Contents, Content{Thinking: mf.ThinkingFragment, Opaque: mf.Opaque})
 		return nil
 	}
-	if len(m.Opaque) != 0 {
-		if len(msg.Contents) != 0 {
+	if len(mf.Opaque) != 0 {
+		if len(m.Contents) != 0 {
 			// Only add Opaque to Thinking block.
-			if lastBlock := &msg.Contents[len(msg.Contents)-1]; lastBlock.Thinking != "" {
+			if lastBlock := &m.Contents[len(m.Contents)-1]; lastBlock.Thinking != "" {
 				if lastBlock.Opaque == nil {
 					lastBlock.Opaque = map[string]any{}
 				}
-				maps.Copy(lastBlock.Opaque, m.Opaque)
+				maps.Copy(lastBlock.Opaque, mf.Opaque)
 				return nil
 			}
 		}
 		// Unlikely.
-		msg.Contents = append(msg.Contents, Content{Opaque: m.Opaque})
+		m.Contents = append(m.Contents, Content{Opaque: mf.Opaque})
 		return nil
 	}
 
 	// Content.
-	if m.TextFragment != "" {
-		if len(msg.Contents) != 0 {
-			if lastBlock := &msg.Contents[len(msg.Contents)-1]; lastBlock.Text != "" {
-				lastBlock.Text += m.TextFragment
+	if mf.TextFragment != "" {
+		if len(m.Contents) != 0 {
+			if lastBlock := &m.Contents[len(m.Contents)-1]; lastBlock.Text != "" {
+				lastBlock.Text += mf.TextFragment
 				return nil
 			}
 		}
-		msg.Contents = append(msg.Contents, Content{Text: m.TextFragment})
+		m.Contents = append(m.Contents, Content{Text: mf.TextFragment})
 		return nil
 	}
 
-	if m.Filename != "" || m.DocumentFragment != nil {
-		if len(msg.Contents) != 0 {
-			if lastBlock := &msg.Contents[len(msg.Contents)-1]; lastBlock.Filename != "" {
-				_, _ = lastBlock.Document.(*bytesBuffer).Write(m.DocumentFragment)
+	if mf.Filename != "" || mf.DocumentFragment != nil {
+		if len(m.Contents) != 0 {
+			if lastBlock := &m.Contents[len(m.Contents)-1]; lastBlock.Filename != "" {
+				_, _ = lastBlock.Document.(*bytesBuffer).Write(mf.DocumentFragment)
 				return nil
 			}
 		}
-		msg.Contents = append(msg.Contents, Content{Filename: m.Filename, Document: &bytesBuffer{d: m.DocumentFragment}})
+		m.Contents = append(m.Contents, Content{Filename: mf.Filename, Document: &bytesBuffer{d: mf.DocumentFragment}})
 		return nil
 	}
 
-	if m.ToolCall.Name != "" {
-		msg.ToolCalls = append(msg.ToolCalls, m.ToolCall)
+	if mf.ToolCall.Name != "" {
+		m.ToolCalls = append(m.ToolCalls, mf.ToolCall)
 		return nil
 	}
 

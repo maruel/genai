@@ -158,8 +158,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 	return errors.Join(errs...)
 }
 
-func (r *ChatRequest) SetStream(stream bool) {
-	r.Stream = stream
+func (c *ChatRequest) SetStream(stream bool) {
+	c.Stream = stream
 }
 
 // https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post

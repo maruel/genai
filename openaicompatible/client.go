@@ -101,8 +101,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 	return errors.Join(errs...)
 }
 
-func (r *ChatRequest) SetStream(stream bool) {
-	r.Stream = stream
+func (c *ChatRequest) SetStream(stream bool) {
+	c.Stream = stream
 }
 
 // Message is completely undocumented as of May 2025.

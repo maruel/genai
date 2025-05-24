@@ -140,8 +140,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 	return errors.Join(errs...)
 }
 
-func (r *ChatRequest) SetStream(stream bool) {
-	r.StreamTokens = stream
+func (c *ChatRequest) SetStream(stream bool) {
+	c.StreamTokens = stream
 }
 
 // https://docs.together.ai/reference/chat-completions-1

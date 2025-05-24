@@ -2,6 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
+// Command list-models fetches and prints out the list of models from the selected providers.
 package main
 
 import (

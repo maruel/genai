@@ -441,7 +441,7 @@ type ModelsResponse struct {
 
 //
 
-type errorResponse struct {
+type ErrorResponse struct {
 	Errors []struct {
 		Message string `json:"message"`
 		Code    int    `json:"code"`
@@ -451,7 +451,7 @@ type errorResponse struct {
 	Messages []struct{} `json:"messages"` // Annoyingly, it's included all the time
 }
 
-func (er *errorResponse) String() string {
+func (er *ErrorResponse) String() string {
 	if len(er.Errors) == 0 {
 		return fmt.Sprintf("error unknown (%#v)", er)
 	}
@@ -461,7 +461,7 @@ func (er *errorResponse) String() string {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 
 	accountID string
 }
@@ -491,11 +491,11 @@ func New(accountID, apiKey, model string) (*Client, error) {
 	// https://blog.cloudflare.com/workers-ai-streaming/ and
 	// https://developers.cloudflare.com/workers/examples/websockets/
 	return &Client{
-		ClientChat: internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              "https://api.cloudflare.com/client/v4/accounts/" + accountID + "/ai/run/" + model,
 			ProcessStreamPackets: processStreamPackets,
-			ClientBase: internal.ClientBase[*errorResponse]{
+			ClientBase: internal.ClientBase[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Transport: &roundtrippers.Retry{

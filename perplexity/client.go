@@ -226,7 +226,7 @@ func (t *Time) AsTime() time.Time {
 
 //
 
-type errorResponse struct {
+type ErrorResponse struct {
 	Detail string `json:"detail"`
 	Error  struct {
 		Message string `json:"message"`
@@ -235,7 +235,7 @@ type errorResponse struct {
 	} `json:"error"`
 }
 
-func (er *errorResponse) String() string {
+func (er *ErrorResponse) String() string {
 	if er.Detail != "" {
 		return "error " + er.Detail
 	}
@@ -244,7 +244,7 @@ func (er *errorResponse) String() string {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Perplexity platform API.
@@ -262,11 +262,11 @@ func New(apiKey, model string) (*Client, error) {
 		}
 	}
 	return &Client{
-		ClientChat: internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              "https://api.perplexity.ai/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
-			ClientBase: internal.ClientBase[*errorResponse]{
+			ClientBase: internal.ClientBase[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Transport: &roundtrippers.Retry{Transport: http.DefaultTransport},

@@ -479,9 +479,9 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 //
 
-// errorResponse is the most goddam unstructured way to process errors. Basically what happens is that any
+// ErrorResponse is the most goddam unstructured way to process errors. Basically what happens is that any
 // point in the Mistral stack can return an error and each python library generates a different structure.
-type errorResponse struct {
+type ErrorResponse struct {
 	// When simple issue like auth failure.
 	// Message   string `json:"message"`
 	RequestID string `json:"request_id"`
@@ -494,17 +494,17 @@ type errorResponse struct {
 	Code  json.Number `json:"code"` // Sometimes a string, sometimes a int64.
 
 	// Second error type
-	Detail errorDetails `json:"detail"`
+	Detail ErrorDetails `json:"detail"`
 
 	// Third error type
 	// Object  string `json:"object"` // error
-	Message errorMessage `json:"message"`
+	Message ErrorMessage `json:"message"`
 	// Type  string `json:"type"`
 	// Param string `json:"param"`
 	// Code  int64  `json:"code"`
 }
 
-func (er *errorResponse) String() string {
+func (er *ErrorResponse) String() string {
 	out := er.Type
 	if out != "" {
 		out += ": "
@@ -515,8 +515,8 @@ func (er *errorResponse) String() string {
 	return "error " + out + er.Message.Detail.String()
 }
 
-// errorDetail can be either a struct or a string. When a string, it decodes into Msg.
-type errorDetail struct {
+// ErrorDetail can be either a struct or a string. When a string, it decodes into Msg.
+type ErrorDetail struct {
 	Type string `json:"type"` // "string_type", "missing"
 	Msg  string `json:"msg"`
 	Loc  []any  `json:"loc"` // to be joined, a mix of string and number
@@ -526,7 +526,7 @@ type errorDetail struct {
 	URL   string `json:"url"`
 }
 
-func (er *errorDetail) String() string {
+func (er *ErrorDetail) String() string {
 	if er.Type == "" && len(er.Loc) == 0 {
 		// This was actually a string
 		return er.Msg
@@ -534,9 +534,9 @@ func (er *errorDetail) String() string {
 	return fmt.Sprintf("%s: %s at %s", er.Type, er.Msg, er.Loc)
 }
 
-type errorDetails []errorDetail
+type ErrorDetails []ErrorDetail
 
-func (er *errorDetails) String() string {
+func (er *ErrorDetails) String() string {
 	out := ""
 	for _, e := range *er {
 		out += e.String()
@@ -544,18 +544,18 @@ func (er *errorDetails) String() string {
 	return out
 }
 
-type errorMessage struct {
-	Detail errorDetails `json:"detail"`
+type ErrorMessage struct {
+	Detail ErrorDetails `json:"detail"`
 }
 
-func (er *errorMessage) UnmarshalJSON(d []byte) error {
+func (er *ErrorMessage) UnmarshalJSON(d []byte) error {
 	s := ""
 	if err := json.Unmarshal(d, &s); err == nil {
-		er.Detail = errorDetails{{Msg: s}}
+		er.Detail = ErrorDetails{{Msg: s}}
 		return nil
 	}
 	var x struct {
-		Detail errorDetails `json:"detail"`
+		Detail ErrorDetails `json:"detail"`
 	}
 	if err := json.Unmarshal(d, &x); err != nil {
 		return err
@@ -566,7 +566,7 @@ func (er *errorMessage) UnmarshalJSON(d []byte) error {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // TODO:
@@ -603,11 +603,11 @@ func New(apiKey, model string) (*Client, error) {
 		}
 	}
 	return &Client{
-		ClientChat: internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              "https://api.mistral.ai/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
-			ClientBase: internal.ClientBase[*errorResponse]{
+			ClientBase: internal.ClientBase[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Transport: &roundtrippers.Retry{
@@ -627,7 +627,7 @@ func New(apiKey, model string) (*Client, error) {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.mistral.ai/api/#tag/models
-	return internal.ListModels[*errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.mistral.ai/v1/models")
+	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.mistral.ai/v1/models")
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {

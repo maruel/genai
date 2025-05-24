@@ -460,23 +460,23 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 //
 
-type errorResponse struct {
-	Error errorError `json:"error"`
+type ErrorResponse struct {
+	Error ErrorError `json:"error"`
 }
 
-func (er *errorResponse) String() string {
+func (er *ErrorResponse) String() string {
 	if er.Error.HTTPStatusCode != 0 {
 		return fmt.Sprintf("http %d: %s", er.Error.HTTPStatusCode, er.Error.Message)
 	}
 	return "error " + er.Error.Message
 }
 
-type errorError struct {
+type ErrorError struct {
 	Message        string `json:"message"`
 	HTTPStatusCode int64  `json:"http_status_code"`
 }
 
-func (ee *errorError) UnmarshalJSON(d []byte) error {
+func (ee *ErrorError) UnmarshalJSON(d []byte) error {
 	s := ""
 	if err := json.Unmarshal(d, &s); err == nil {
 		ee.Message = s
@@ -496,7 +496,7 @@ func (ee *errorError) UnmarshalJSON(d []byte) error {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // TODO: Investigate https://huggingface.co/blog/inference-providers and https://huggingface.co/docs/inference-endpoints/
@@ -530,11 +530,11 @@ func New(apiKey, model string) (*Client, error) {
 		}
 	}
 	return &Client{
-		ClientChat: internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              "https://router.huggingface.co/hf-inference/models/" + model + "/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
-			ClientBase: internal.ClientBase[*errorResponse]{
+			ClientBase: internal.ClientBase[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Header: http.Header{"Authorization": {"Bearer " + apiKey}},
@@ -556,7 +556,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://huggingface.co/docs/hub/api
 	// There's 20k models warm as of March 2025. There's no way to sort by
 	// trending. Sorting by download is not useful. There's no pagination.
-	return internal.ListModels[*errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://huggingface.co/api/models?inference=warm")
+	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://huggingface.co/api/models?inference=warm")
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {

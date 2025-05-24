@@ -354,11 +354,11 @@ type pullModelResponse struct {
 
 //
 
-type errorResponse struct {
+type ErrorResponse struct {
 	Error string `json:"error"`
 }
 
-func (er *errorResponse) String() string {
+func (er *ErrorResponse) String() string {
 	return "error " + er.Error
 }
 
@@ -369,7 +369,7 @@ func (er *errorResponse) String() string {
 // We cannot use ClientChat because Chat and ChatStream try to pull on first failure, and ChatStream receives
 // line separated JSON instead of SSE.
 type Client struct {
-	internal.ClientBase[*errorResponse]
+	internal.ClientBase[*ErrorResponse]
 
 	model   string
 	baseURL string
@@ -382,7 +382,7 @@ type Client struct {
 // Use one of the model from https://ollama.com/library
 func New(baseURL, model string) (*Client, error) {
 	return &Client{
-		ClientBase: internal.ClientBase[*errorResponse]{
+		ClientBase: internal.ClientBase[*ErrorResponse]{
 			ClientJSON: httpjson.Client{
 				Client: &http.Client{
 					Transport: &roundtrippers.Retry{
@@ -515,7 +515,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://github.com/ollama/ollama/blob/main/docs/api.md#list-local-models
-	return internal.ListModels[*errorResponse, *ModelsResponse](ctx, &c.ClientBase, c.baseURL+"/api/tags")
+	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.ClientBase, c.baseURL+"/api/tags")
 }
 
 // PullModel is the equivalent of "ollama pull".
@@ -565,7 +565,7 @@ func processJSONStream(body io.Reader, out chan<- ChatStreamChunkResponse, lenie
 				d.DisallowUnknownFields()
 			}
 			d.UseNumber()
-			er := errorResponse{}
+			er := ErrorResponse{}
 			if err := d.Decode(&er); err != nil {
 				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
 			}

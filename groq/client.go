@@ -531,7 +531,7 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 //
 
-type errorResponse struct {
+type ErrorResponse struct {
 	Error struct {
 		Message          string `json:"message"`
 		Type             string `json:"type"`
@@ -540,7 +540,7 @@ type errorResponse struct {
 	} `json:"error"`
 }
 
-func (er *errorResponse) String() string {
+func (er *ErrorResponse) String() string {
 	suffix := ""
 	if er.Error.FailedGeneration != "" {
 		suffix = fmt.Sprintf("error Failed generation: %q", er.Error.FailedGeneration)
@@ -550,7 +550,7 @@ func (er *errorResponse) String() string {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Groq platform API.
@@ -572,11 +572,11 @@ func New(apiKey, model string) (*Client, error) {
 		}
 	}
 	return &Client{
-		ClientChat: internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              "https://api.groq.com/openai/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
-			ClientBase: internal.ClientBase[*errorResponse]{
+			ClientBase: internal.ClientBase[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Transport: &roundtrippers.Retry{
@@ -596,7 +596,7 @@ func New(apiKey, model string) (*Client, error) {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://console.groq.com/docs/api-reference#models-list
-	return internal.ListModels[*errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.groq.com/openai/v1/models")
+	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.groq.com/openai/v1/models")
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {

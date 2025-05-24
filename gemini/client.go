@@ -809,15 +809,15 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 //
 
-type errorResponse struct {
-	Error errorResponseError `json:"error"`
+type ErrorResponse struct {
+	Error ErrorResponseError `json:"error"`
 }
 
-func (e *errorResponse) String() string {
+func (e *ErrorResponse) String() string {
 	return fmt.Sprintf("error %d (%s): %s", e.Error.Code, e.Error.Status, strings.TrimSpace(e.Error.Message))
 }
 
-type errorResponseError struct {
+type ErrorResponseError struct {
 	Code    int64  `json:"code"`
 	Message string `json:"message"`
 	Status  string `json:"status"`
@@ -839,7 +839,7 @@ type errorResponseError struct {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 
 	apiKey string
 }
@@ -915,12 +915,12 @@ func New(apiKey, model string) (*Client, error) {
 	}
 	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
 	return &Client{
-		ClientChat: internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey,
 			ChatStreamURL:        "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":streamGenerateContent?alt=sse&key=" + apiKey,
 			ProcessStreamPackets: processStreamPackets,
-			ClientBase: internal.ClientBase[*errorResponse]{
+			ClientBase: internal.ClientBase[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{Transport: &roundtrippers.PostCompressed{
 						Transport: &roundtrippers.Retry{
@@ -1049,7 +1049,7 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://ai.google.dev/api/models?hl=en#method:-models.list
-	return internal.ListModels[*errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.apiKey)
+	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.apiKey)
 }
 
 // processStreamPackets is the function used to convert the chunks sent by Gemini's SSE data into

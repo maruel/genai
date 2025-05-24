@@ -489,7 +489,7 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 //
 
-type errorResponse struct {
+type ErrorResponse struct {
 	ID    string `json:"id"`
 	Error struct {
 		Message string `json:"message"`
@@ -499,7 +499,7 @@ type errorResponse struct {
 	} `json:"error"`
 }
 
-func (er *errorResponse) String() string {
+func (er *ErrorResponse) String() string {
 	if er.Error.Code != "" {
 		return fmt.Sprintf("error %s (%s): %s", er.Error.Code, er.Error.Type, er.Error.Message)
 	}
@@ -508,7 +508,7 @@ func (er *errorResponse) String() string {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Together.AI platform API.
@@ -532,11 +532,11 @@ func New(apiKey, model string) (*Client, error) {
 		}
 	}
 	return &Client{
-		ClientChat: internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              "https://api.together.xyz/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
-			ClientBase: internal.ClientBase[*errorResponse]{
+			ClientBase: internal.ClientBase[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Transport: &roundtrippers.Retry{
@@ -561,7 +561,7 @@ func New(apiKey, model string) (*Client, error) {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.together.ai/reference/models-1
-	return internal.ListModels[*errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.together.xyz/v1/models")
+	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.together.xyz/v1/models")
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {

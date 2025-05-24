@@ -372,7 +372,7 @@ type applyTemplateResponse struct {
 	Prompt string `json:"prompt"`
 }
 
-type errorResponse struct {
+type ErrorResponse struct {
 	Error struct {
 		Code    int64
 		Message string
@@ -380,7 +380,7 @@ type errorResponse struct {
 	} `json:"error"`
 }
 
-func (er *errorResponse) String() string {
+func (er *ErrorResponse) String() string {
 	return fmt.Sprintf("error %d (%s): %s", er.Error.Code, er.Error.Type, er.Error.Message)
 }
 
@@ -388,7 +388,7 @@ func (er *errorResponse) String() string {
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientBase[*errorResponse]
+	internal.ClientBase[*ErrorResponse]
 
 	baseURL  string
 	chatURL  string
@@ -403,7 +403,7 @@ func New(baseURL string, encoding *PromptEncoding) (*Client, error) {
 		return nil, errors.New("baseURL is required")
 	}
 	return &Client{
-		ClientBase: internal.ClientBase[*errorResponse]{
+		ClientBase: internal.ClientBase[*ErrorResponse]{
 			ClientJSON: httpjson.Client{
 				Client: &http.Client{
 					Transport: &roundtrippers.Retry{

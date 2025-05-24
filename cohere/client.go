@@ -521,18 +521,18 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 //
 
-type errorResponse struct {
+type ErrorResponse struct {
 	Message   string `json:"message"`
 	RequestID string `json:"request_id"`
 }
 
-func (er *errorResponse) String() string {
+func (er *ErrorResponse) String() string {
 	return "error " + er.Message
 }
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Cohere platform API.
@@ -558,11 +558,11 @@ func New(apiKey, model string) (*Client, error) {
 		}
 	}
 	return &Client{
-		ClientChat: internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              "https://api.cohere.com/v2/chat",
 			ProcessStreamPackets: processStreamPackets,
-			ClientBase: internal.ClientBase[*errorResponse]{
+			ClientBase: internal.ClientBase[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Transport: &roundtrippers.Retry{
@@ -582,7 +582,7 @@ func New(apiKey, model string) (*Client, error) {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.cohere.com/reference/list-models
-	return internal.ListModels[*errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.cohere.com/v1/models?page_size=1000")
+	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.cohere.com/v1/models?page_size=1000")
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {

@@ -691,7 +691,7 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 //
 
-type errorResponse struct {
+type ErrorResponse struct {
 	Type  string `json:"type"` // "error"
 	Error struct {
 		Type    string `json:"type"` // e.g. "invalid_request_error"
@@ -699,13 +699,13 @@ type errorResponse struct {
 	} `json:"error"`
 }
 
-func (er *errorResponse) String() string {
+func (er *ErrorResponse) String() string {
 	return fmt.Sprintf("error %s: %s", er.Error.Type, er.Error.Message)
 }
 
 // Client implements the REST JSON based API.
 type Client struct {
-	internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Anthropic platform API.
@@ -726,12 +726,12 @@ func New(apiKey, model string) (*Client, error) {
 	}
 	// Anthropic allows Opaque fields for thinking signatures
 	return &Client{
-		ClientChat: internal.ClientChat[*errorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              "https://api.anthropic.com/v1/messages",
 			AllowOpaqueFields:    true,
 			ProcessStreamPackets: processStreamPackets,
-			ClientBase: internal.ClientBase[*errorResponse]{
+			ClientBase: internal.ClientBase[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Transport: &roundtrippers.Retry{
@@ -751,7 +751,7 @@ func New(apiKey, model string) (*Client, error) {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.anthropic.com/en/api/models-list
-	return internal.ListModels[*errorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.anthropic.com/v1/models?limit=1000")
+	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.anthropic.com/v1/models?limit=1000")
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {

@@ -5,6 +5,7 @@
 package gemini_test
 
 import (
+	"context"
 	_ "embed"
 	"log/slog"
 	"net/http"
@@ -249,7 +250,7 @@ Ultimately, the human endeavor is a quest for understanding, not just of the ext
 			{
 				Name:        "hidden_word",
 				Description: "A tool to state what word was seen in the video.",
-				Callback: func(g *got) string {
+				Callback: func(ctx context.Context, g *got) string {
 					return ""
 				},
 			},

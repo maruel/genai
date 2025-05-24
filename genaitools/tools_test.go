@@ -5,6 +5,7 @@
 package genaitools
 
 import (
+	"context"
 	"encoding/json"
 	"regexp"
 	"strings"
@@ -54,6 +55,7 @@ func TestArithmetic(t *testing.T) {
 
 		// Run each test in a subtest
 		t.Run(testName, func(t *testing.T) {
+			ctx := t.Context()
 			// Create the args for the callback
 			args := &calculateArgs{
 				Operation:    tt.operation,
@@ -62,8 +64,8 @@ func TestArithmetic(t *testing.T) {
 			}
 
 			// Call the callback with the args
-			callback := Arithmetic.Callback.(func(*calculateArgs) (string, error))
-			result, err := callback(args)
+			callback := Arithmetic.Callback.(func(context.Context, *calculateArgs) (string, error))
+			result, err := callback(ctx, args)
 
 			// Check error expectation
 			if tt.expectErr {
@@ -98,11 +100,12 @@ func TestArithmetic(t *testing.T) {
 }
 
 func TestGetTodayClockTime(t *testing.T) {
+	ctx := t.Context()
 	before := time.Now()
 
 	// Call the callback directly with an empty struct
-	callback := GetTodayClockTime.Callback.(func(*empty) (string, error))
-	result, err := callback(&empty{})
+	callback := GetTodayClockTime.Callback.(func(context.Context, *empty) (string, error))
+	result, err := callback(ctx, &empty{})
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}

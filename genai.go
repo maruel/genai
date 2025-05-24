@@ -347,10 +347,10 @@ func (m *Message) Decode(x any) error {
 // DoToolCalls processes all the ToolCalls if any.
 //
 // Returns a Message to be added back to the list of messages, only if msg.IsZero() is true.
-func (m *Message) DoToolCalls(tools []ToolDef) (Message, error) {
+func (m *Message) DoToolCalls(ctx context.Context, tools []ToolDef) (Message, error) {
 	var out Message
 	for i := range m.ToolCalls {
-		res, err := m.ToolCalls[i].Call(tools)
+		res, err := m.ToolCalls[i].Call(ctx, tools)
 		if err != nil {
 			return out, err
 		}
@@ -642,8 +642,9 @@ type ToolDef struct {
 	// Description must be a LLM-friendly short description of the tool.
 	Description string
 	// Callback is the function to call with the inputs.
-	// It must accept one struct pointer as input.
-	// It must return (string, error).
+	// It must accept a context.Context one struct pointer as input: (ctx context.Context, input *struct{}). The
+	// struct must use json_schema to be serializable as JSON.
+	// It must return the result and an error: (string, error).
 	Callback any
 
 	_ struct{}
@@ -662,19 +663,23 @@ func (t *ToolDef) Validate() error {
 		if cbType.Kind() != reflect.Func {
 			return errors.New("field Callback: must be a function")
 		}
-		if cbType.NumIn() != 1 {
-			return errors.New("field Callback: must accept exactly one parameter")
+		if cbType.NumIn() != 2 {
+			return errors.New("field Callback: must accept exactly two parameters: (context.Context, input *struct{})")
 		}
 		paramType := cbType.In(0)
+		if paramType != reflect.TypeFor[context.Context]() {
+			return fmt.Errorf("field Callback: must accept exactly two parameters, first that is a context.Context, not a %q", paramType.Name())
+		}
+		paramType = cbType.In(1)
 		if paramType.Kind() != reflect.Ptr {
-			return fmt.Errorf("field Callback: must accept exactly one parameter that is a pointer to a struct, not a %q", paramType.Name())
+			return fmt.Errorf("field Callback: must accept exactly two parameters, second that is a pointer to a struct, not a %q", paramType.Name())
 		}
 		paramType = paramType.Elem()
 		if paramType.Kind() != reflect.Struct {
-			return fmt.Errorf("field Callback: must accept exactly one parameter that is a pointer to a struct, not a %q", paramType.Name())
+			return fmt.Errorf("field Callback: must accept exactly two parameters, second that is a pointer to a struct, not a %q", paramType.Name())
 		}
 		if err := validateReflectedToJSON(paramType); err != nil {
-			return fmt.Errorf("field Callback: must accept exactly one parameter that is a pointer to a struct that has valid json schema: %w", err)
+			return fmt.Errorf("field Callback: must accept exactly two parameters, second that is a pointer to a struct that has valid json schema: %w", err)
 		}
 		if cbType.NumOut() != 2 {
 			return errors.New("field Callback: must return exactly two values: (string, error)")
@@ -694,7 +699,7 @@ func (t *ToolDef) InputSchema() *jsonschema.Schema {
 	// This function assumes Validate() was called.
 	// No need to set an ID on the struct, it's unnecessary data that may confuse the tool.
 	r := jsonschema.Reflector{Anonymous: true, DoNotReference: true}
-	return r.ReflectFromType(reflect.TypeOf(t.Callback).In(0))
+	return r.ReflectFromType(reflect.TypeOf(t.Callback).In(1))
 }
 
 // ToolCall is a tool call that the LLM requested to make.
@@ -730,7 +735,7 @@ func (t *ToolCall) Validate() error {
 // Call invokes the ToolDef.Callback with arguments from the ToolCall, returning the result string.
 //
 // It decodes the ToolCall.Arguments and passes it to the ToolDef.Callback.
-func (t *ToolCall) Call(tools []ToolDef) (string, error) {
+func (t *ToolCall) Call(ctx context.Context, tools []ToolDef) (string, error) {
 	i := 0
 	for ; i < len(tools); i++ {
 		if tools[i].Name == t.Name {
@@ -740,15 +745,16 @@ func (t *ToolCall) Call(tools []ToolDef) (string, error) {
 	if i == len(tools) {
 		return "", fmt.Errorf("failed to find tool named %q", t.Name)
 	}
-	// This function assumes Validate() was called on both object and that they match.
-	input := reflect.New(reflect.TypeOf(tools[i].Callback).In(0).Elem())
+	// This function assumes Validate() was called on both object and that they match. Otherwise this will
+	// panic.
+	input := reflect.New(reflect.TypeOf(tools[i].Callback).In(1).Elem())
 	d := json.NewDecoder(strings.NewReader(t.Arguments))
 	d.DisallowUnknownFields()
 	d.UseNumber()
 	if err := d.Decode(input.Interface()); err != nil {
 		return "", fmt.Errorf("failed to decode tool call arguments: %w; arguments: %q", err, t.Arguments)
 	}
-	res := reflect.ValueOf(tools[i].Callback).Call([]reflect.Value{input})
+	res := reflect.ValueOf(tools[i].Callback).Call([]reflect.Value{reflect.ValueOf(ctx), input})
 	s := res[0].String()
 	if e := res[1].Interface(); e != nil {
 		return s, e.(error)

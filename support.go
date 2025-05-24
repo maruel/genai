@@ -49,7 +49,7 @@ func ChatWithToolCallLoop(ctx context.Context, provider ChatProvider, msgs Messa
 		if len(result.ToolCalls) == 0 {
 			return out, usage, nil
 		}
-		tr, err := result.DoToolCalls(tools)
+		tr, err := result.DoToolCalls(ctx, tools)
 		if err != nil {
 			return out, usage, err
 		}
@@ -122,7 +122,7 @@ func ChatStreamWithToolCallLoop(ctx context.Context, provider ChatProvider, msgs
 		if len(reply.ToolCalls) == 0 {
 			return out, usage, nil
 		}
-		tr, err := reply.DoToolCalls(tools)
+		tr, err := reply.DoToolCalls(ctx, tools)
 		if err != nil {
 			return out, usage, err
 		}

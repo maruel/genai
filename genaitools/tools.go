@@ -6,6 +6,7 @@
 package genaitools
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"math"
@@ -23,7 +24,7 @@ import (
 var Arithmetic = genai.ToolDef{
 	Name:        "arithmetic",
 	Description: "Calculates a mathematical arithmetic operation.",
-	Callback: func(args *calculateArgs) (string, error) {
+	Callback: func(ctx context.Context, args *calculateArgs) (string, error) {
 		if i1, err := args.FirstNumber.Int64(); err == nil {
 			if i2, err := args.SecondNumber.Int64(); err == nil {
 				switch args.Operation {
@@ -86,7 +87,7 @@ type calculateArgs struct {
 var GetTodayClockTime = genai.ToolDef{
 	Name:        "get_today_date_current_clock_time",
 	Description: "Get the current clock time and today's date.",
-	Callback: func(e *empty) (string, error) {
+	Callback: func(ctx context.Context, e *empty) (string, error) {
 		return time.Now().Format("Monday 2006-01-02 15:04:05"), nil
 	},
 }

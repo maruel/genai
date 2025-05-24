@@ -520,7 +520,7 @@ func TestToolDef_Validate_error(t *testing.T) {
 			toolDef: ToolDef{
 				Name:        "tool",
 				Description: "do stuff",
-				Callback:    func(b *TestInputStruct) (int, error) { return 1, nil },
+				Callback:    func(ctx context.Context, b *TestInputStruct) (int, error) { return 1, nil },
 			},
 			errMsg: "field Callback: must return a string first, not \"int\"",
 		},
@@ -529,7 +529,7 @@ func TestToolDef_Validate_error(t *testing.T) {
 			toolDef: ToolDef{
 				Name:        "tool",
 				Description: "do stuff",
-				Callback:    func(b *TestInputStruct) (string, string) { return "", "" },
+				Callback:    func(ctx context.Context, b *TestInputStruct) (string, string) { return "", "" },
 			},
 			errMsg: "field Callback: must return an error second, not \"string\"",
 		},
@@ -538,18 +538,18 @@ func TestToolDef_Validate_error(t *testing.T) {
 			toolDef: ToolDef{
 				Name:        "tool",
 				Description: "do stuff",
-				Callback:    func(a, b *TestInputStruct) string { return "" },
+				Callback:    func(a, b, c *TestInputStruct) string { return "" },
 			},
-			errMsg: "field Callback: must accept exactly one parameter",
+			errMsg: "field Callback: must accept exactly two parameters: (context.Context, input *struct{})",
 		},
 		{
 			name: "parameter not pointer",
 			toolDef: ToolDef{
 				Name:        "tool",
 				Description: "do stuff",
-				Callback:    func(input TestInputStruct) string { return "" },
+				Callback:    func(ctx context.Context, input TestInputStruct) string { return "" },
 			},
-			errMsg: "field Callback: must accept exactly one parameter that is a pointer to a struct, not a \"TestInputStruct\"",
+			errMsg: "field Callback: must accept exactly two parameters, second that is a pointer to a struct, not a \"TestInputStruct\"",
 		},
 	}
 	for _, tt := range tests {
@@ -571,7 +571,7 @@ func TestToolDef_Validate_success(t *testing.T) {
 			toolDef: ToolDef{
 				Name:        "tool",
 				Description: "do stuff",
-				Callback:    func(input *TestInputStruct) (string, error) { return "", nil },
+				Callback:    func(ctx context.Context, input *TestInputStruct) (string, error) { return "", nil },
 			},
 		},
 	}
@@ -596,10 +596,11 @@ func TestToolCall_Call(t *testing.T) {
 	}
 
 	t.Run("with struct arguments", func(t *testing.T) {
+		ctx := t.Context()
 		structTool := ToolDef{
 			Name:        "calculateTool",
 			Description: "A tool that performs a calculation",
-			Callback: func(input *CalculateInput) (string, error) {
+			Callback: func(ctx context.Context, input *CalculateInput) (string, error) {
 				return fmt.Sprintf("%d + %d = %d", input.A, input.B, input.A+input.B), nil
 			},
 		}
@@ -616,7 +617,7 @@ func TestToolCall_Call(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		result, err := tc.Call([]ToolDef{structTool})
+		result, err := tc.Call(ctx, []ToolDef{structTool})
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -626,10 +627,11 @@ func TestToolCall_Call(t *testing.T) {
 	})
 
 	t.Run("with pointer arguments", func(t *testing.T) {
+		ctx := t.Context()
 		pointerTool := ToolDef{
 			Name:        "pointerTool",
 			Description: "A tool that takes a pointer argument",
-			Callback: func(input *CalculateInput) (string, error) {
+			Callback: func(ctx context.Context, input *CalculateInput) (string, error) {
 				return fmt.Sprintf("%d * %d = %d", input.A, input.B, input.A*input.B), nil
 			},
 		}
@@ -646,7 +648,7 @@ func TestToolCall_Call(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		result, err := tc.Call([]ToolDef{pointerTool})
+		result, err := tc.Call(ctx, []ToolDef{pointerTool})
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -656,10 +658,11 @@ func TestToolCall_Call(t *testing.T) {
 	})
 
 	t.Run("with callback returning error", func(t *testing.T) {
+		ctx := t.Context()
 		errorTool := ToolDef{
 			Name:        "errorTool",
 			Description: "A tool that returns an error",
-			Callback: func(input *CalculateInput) (string, error) {
+			Callback: func(ctx context.Context, input *CalculateInput) (string, error) {
 				return "operation failed", errors.New("intentional error from callback")
 			},
 		}
@@ -676,7 +679,7 @@ func TestToolCall_Call(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		result, err := tc.Call([]ToolDef{errorTool})
+		result, err := tc.Call(ctx, []ToolDef{errorTool})
 		if err == nil {
 			t.Fatal("expected error, got nil")
 		}
@@ -689,10 +692,11 @@ func TestToolCall_Call(t *testing.T) {
 	})
 
 	t.Run("with invalid arguments", func(t *testing.T) {
+		ctx := t.Context()
 		structTool := ToolDef{
 			Name:        "calculateTool",
 			Description: "A tool that performs a calculation",
-			Callback: func(input *CalculateInput) (string, error) {
+			Callback: func(ctx context.Context, input *CalculateInput) (string, error) {
 				t.Error("unexpected call")
 				return fmt.Sprintf("%d + %d = %d", input.A, input.B, input.A+input.B), nil
 			},
@@ -710,7 +714,7 @@ func TestToolCall_Call(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		result, err := tc.Call([]ToolDef{structTool})
+		result, err := tc.Call(ctx, []ToolDef{structTool})
 		if err == nil {
 			t.Fatalf("expected error, got nil")
 		}
@@ -801,7 +805,7 @@ func TestChatStreamWithToolCallLoop(t *testing.T) {
 			{
 				Name:        "calculator",
 				Description: "A simple calculator",
-				Callback: func(args *CalculatorArgs) (string, error) {
+				Callback: func(ctx context.Context, args *CalculatorArgs) (string, error) {
 					switch args.Operation {
 					case "add":
 						return fmt.Sprintf("%d", args.A+args.B), nil

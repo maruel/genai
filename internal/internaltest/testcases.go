@@ -6,6 +6,7 @@ package internaltest
 
 import (
 	"bytes"
+	"context"
 	_ "embed"
 	"encoding/json"
 	"fmt"
@@ -161,6 +162,7 @@ func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Mod
 
 // TestChatToolUseReply confirms tool use fully works.
 func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
+	ctx := t.Context()
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."),
 	}
@@ -176,7 +178,7 @@ func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
 			{
 				Name:        "square_root",
 				Description: "Calculates and return the square root of a number",
-				Callback: func(g *got) (string, error) {
+				Callback: func(ctx context.Context, g *got) (string, error) {
 					i, err := g.Number.Int64()
 					if err != nil {
 						return "", fmt.Errorf("wanted 132413 as an int, got %q: %w", g.Number, err)
@@ -199,7 +201,7 @@ func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
 	}
 	// Don't forget to add the tool call request first before the reply.
 	msgs = append(msgs, resp.Message)
-	msg, err := resp.DoToolCalls(opts.Tools)
+	msg, err := resp.DoToolCalls(ctx, opts.Tools)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -247,13 +249,13 @@ func (tc *TestCases) TestChatToolUsePositionBiasCore(t *testing.T, override *Set
 		country2        string
 	}{
 		{
-			func(g *gotCanadaFirst) (string, error) {
+			func(ctx context.Context, g *gotCanadaFirst) (string, error) {
 				return g.Country, nil
 			},
 			"Canada", "Canada", "the USA",
 		},
 		{
-			func(g *gotUSAFirst) (string, error) {
+			func(ctx context.Context, g *gotUSAFirst) (string, error) {
 				return g.Country, nil
 			},
 			"USA", "the USA", "Canada",
@@ -261,6 +263,7 @@ func (tc *TestCases) TestChatToolUsePositionBiasCore(t *testing.T, override *Set
 	}
 	for _, line := range data {
 		t.Run(line.countrySelected, func(t *testing.T) {
+			ctx := t.Context()
 			msgs := genai.Messages{
 				genai.NewTextMessage(genai.User, fmt.Sprintf("I wonder if %s is a better country than %s? Call the tool best_country to tell me which country is the best one.", line.country1, line.country2)),
 			}
@@ -287,7 +290,7 @@ func (tc *TestCases) TestChatToolUsePositionBiasCore(t *testing.T, override *Set
 			if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
 				t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
 			}
-			res, err := resp.ToolCalls[0].Call(opts.Tools)
+			res, err := resp.ToolCalls[0].Call(ctx, opts.Tools)
 			if err != nil {
 				t.Fatal(err)
 			}

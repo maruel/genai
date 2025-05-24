@@ -175,7 +175,7 @@ func main() {
 			{
 				Name:        "add",
 				Description: "Add two numbers together and provides the result",
-				Callback: func(input *math) (string, error) {
+				Callback: func(ctx context.Context, input *math) (string, error) {
 					return fmt.Sprintf("%d", input.A+input.B), nil
 				},
 			},
@@ -192,7 +192,7 @@ func main() {
 	msgs = append(msgs, resp.Message)
 
 	// Process the tool call from the assistant.
-	msg, err := resp.DoToolCalls(opts.Tools)
+	msg, err := resp.DoToolCalls(context.Background(), opts.Tools)
 	if err != nil {
 		log.Fatalf("Error calling tool: %v", err)
 	}

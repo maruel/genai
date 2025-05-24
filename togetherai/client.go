@@ -525,7 +525,7 @@ type Client struct {
 // We must select a model that supports video.
 // https://docs.together.ai/docs/serverless-models#vision-models
 func New(apiKey, model string) (*Client, error) {
-	const apiKeyURL = "https://api.together.ai/settings/api-keys"
+	const apiKeyURL = "https://api.together.xyz/settings/api-keys"
 	if apiKey == "" {
 		if apiKey = os.Getenv("TOGETHER_API_KEY"); apiKey == "" {
 			return nil, errors.New("together.ai API key is required; get one at " + apiKeyURL)

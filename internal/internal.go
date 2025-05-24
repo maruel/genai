@@ -6,9 +6,12 @@
 package internal
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"reflect"
 	"strings"
@@ -44,36 +47,45 @@ func (c *ClientBase[Err]) DoRequest(ctx context.Context, method, url string, in,
 	if err != nil {
 		return err
 	}
-	var er Err
-	switch i, err := httpjson.DecodeResponse(resp, out, &er); i {
-	case 0:
-		return nil
-	case 1:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			herr.PrintBody = false
-			if c.APIKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
-				// Check if the error message already contains an API key URL
-				errorMsg := fmt.Sprintf("%s", er)
-				if !strings.Contains(errorMsg, "API key") || !strings.Contains(errorMsg, "http") {
-					return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, errorMsg, c.APIKeyURL)
-				}
-				return fmt.Errorf("%w: %s", herr, errorMsg)
-			}
-			return fmt.Errorf("%w: %s", herr, er)
-		}
-		return errors.New(er.String())
-	default:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			herr.PrintBody = false
-			if c.APIKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, http.StatusText(herr.StatusCode), c.APIKeyURL)
-			}
-			return fmt.Errorf("%w: %s", herr, http.StatusText(herr.StatusCode))
-		}
+	if resp.StatusCode != 200 {
+		return c.DecodeError(ctx, url, resp)
+	}
+	b, err := io.ReadAll(resp.Body)
+	if err2 := resp.Body.Close(); err == nil {
+		err = err2
+	}
+	if err != nil {
 		return err
 	}
+	// It's an HTTP 200, it generally should be a success.
+	r := bytes.NewReader(b)
+	var r2 io.ReadSeeker
+	d := json.NewDecoder(r)
+	if !c.ClientJSON.Lenient {
+		d.DisallowUnknownFields()
+		r2 = r
+	}
+	var errs []error
+	if foundExtraKeys, err := decodeJSON(d, out, r2); err == nil {
+		// It may have succeeded but not decoded anything.
+		if v := reflect.ValueOf(out); !reflect.DeepEqual(out, reflect.Zero(v.Type()).Interface()) {
+			return nil
+		}
+	} else if foundExtraKeys {
+		errs = append(errs, err)
+	}
+	var er Err
+	if foundExtraKeys, err := decodeJSON(d, &er, r2); err == nil {
+		// It may have succeeded but not decoded anything.
+		if v := reflect.ValueOf(er); !reflect.DeepEqual(out, reflect.Zero(v.Type()).Interface()) {
+			return nil
+		}
+	} else if foundExtraKeys {
+		errs = append(errs, err)
+	} else {
+		return err
+	}
+	return errors.Join(errs...)
 }
 
 // DecodeError handles HTTP error responses from API calls.
@@ -81,29 +93,63 @@ func (c *ClientBase[Err]) DoRequest(ctx context.Context, method, url string, in,
 // It handles JSON decoding of error responses and provides appropriate error messages
 // with context such as API key URLs for unauthorized errors.
 func (c *ClientBase[Err]) DecodeError(ctx context.Context, url string, resp *http.Response) error {
+	// When we are in lenient mode, we do not want to buffer the result. When in strict mode, we want to buffer
+	// to give more details.
 	var er Err
-	switch i, err := httpjson.DecodeResponse(resp, &er); i {
-	case 0:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			herr.PrintBody = false
-			if c.APIKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, er, c.APIKeyURL)
-			}
-			return fmt.Errorf("%w: %s", herr, er)
-		}
-		return errors.New(er.String())
-	default:
-		var herr *httpjson.Error
-		if errors.As(err, &herr) {
-			herr.PrintBody = false
-			if c.APIKeyURL != "" && herr.StatusCode == http.StatusUnauthorized {
-				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, http.StatusText(herr.StatusCode), c.APIKeyURL)
-			}
-			return fmt.Errorf("%w: %s", herr, http.StatusText(herr.StatusCode))
-		}
+	b, err := io.ReadAll(resp.Body)
+	if err2 := resp.Body.Close(); err == nil {
+		err = err2
+	}
+	if err != nil {
 		return err
 	}
+	r := bytes.NewReader(b)
+	d := json.NewDecoder(r)
+	var r2 io.ReadSeeker
+	if !c.ClientJSON.Lenient {
+		d.DisallowUnknownFields()
+		r2 = r
+	}
+	if foundExtraKeys, err := decodeJSON(d, &er, r2); err == nil {
+		if c.APIKeyURL != "" && resp.StatusCode == http.StatusUnauthorized {
+			if s := er.String(); !strings.Contains(s, c.APIKeyURL) {
+				return fmt.Errorf("http %d: %s. You can get a new API key at %s", resp.StatusCode, s, c.APIKeyURL)
+			}
+		}
+		return fmt.Errorf("http %d: %s", resp.StatusCode, er)
+	} else if foundExtraKeys {
+		// In strict mode, return the decoding error instead.
+		return fmt.Errorf("http %d: %w", resp.StatusCode, err)
+	}
+	if c.APIKeyURL != "" && resp.StatusCode == http.StatusUnauthorized {
+		return fmt.Errorf("http %d: %s. You can get a new API key at %s", resp.StatusCode, http.StatusText(resp.StatusCode), c.APIKeyURL)
+	}
+	return fmt.Errorf("http %d: %s", resp.StatusCode, http.StatusText(resp.StatusCode))
+}
+
+func decodeJSON(d *json.Decoder, out any, r io.ReadSeeker) (bool, error) {
+	d.UseNumber()
+	if err := d.Decode(out); err != nil {
+		// decode.object() in encoding/json.go does not return a structured error
+		// when an unknown field is found. Process it manually.
+		if r != nil && strings.Contains(err.Error(), "json: unknown field ") {
+			// Decode again but this time capture all errors.
+			m := map[string]any{}
+			if _, err2 := r.Seek(0, 0); err2 != nil {
+				// Unexpected.
+				return false, err2
+			}
+			d = json.NewDecoder(r)
+			d.UseNumber()
+			if d.Decode(&m) == nil {
+				if err2 := errors.Join(httpjson.FindExtraKeys(reflect.TypeOf(out), m)...); err2 != nil {
+					return true, err2
+				}
+			}
+		}
+		return false, err
+	}
+	return false, nil
 }
 
 //
@@ -247,7 +293,7 @@ func (c *ClientChat[Err, ChatRequest, ChatResponse, StreamChunk]) ChatStreamRaw(
 		return c.DecodeError(ctx, url, resp)
 	}
 	var er Err
-	return sse.Process(resp.Body, out, &er)
+	return sse.Process(resp.Body, out, &er, c.ClientJSON.Lenient)
 }
 
 func (c *ClientChat[Err, ChatRequest, ChatResponse, StreamChunk]) Validate() error {

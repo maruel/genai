@@ -18,7 +18,7 @@ import (
 // The decoded values are sent to the provided channel.
 //
 // https://developer.mozilla.org/en-US/docs/Web/API/Server-sent%5Fevents/Using%5Fserver-sent%5Fevents
-func Process[T any](body io.Reader, out chan<- T, er any) error {
+func Process[T any](body io.Reader, out chan<- T, er any, lenient bool) error {
 	for r := bufio.NewReader(body); ; {
 		line, err := r.ReadBytes('\n')
 		if line = bytes.TrimSpace(line); err == io.EOF {
@@ -39,13 +39,17 @@ func Process[T any](body io.Reader, out chan<- T, er any) error {
 				return nil
 			}
 			d := json.NewDecoder(bytes.NewReader(suffix))
-			d.DisallowUnknownFields()
+			if !lenient {
+				d.DisallowUnknownFields()
+			}
 			d.UseNumber()
 			var msg T
 			if err = d.Decode(&msg); err != nil {
 				if er != nil {
 					d = json.NewDecoder(bytes.NewReader(suffix))
-					d.DisallowUnknownFields()
+					if !lenient {
+						d.DisallowUnknownFields()
+					}
 					d.UseNumber()
 					if err = d.Decode(er); err == nil {
 						return fmt.Errorf("%s", er)

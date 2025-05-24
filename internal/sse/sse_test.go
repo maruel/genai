@@ -64,7 +64,7 @@ func TestProcessSSE(t *testing.T) {
 			reader := strings.NewReader(tt.input)
 			outChan := make(chan testResponse, len(tt.expectedMsgs)+1)
 
-			err := Process(reader, outChan, nil)
+			err := Process(reader, outChan, nil, false)
 			close(outChan)
 
 			if (err != nil) != tt.expectedError {
@@ -98,7 +98,7 @@ func TestProcessSSEWithReader(t *testing.T) {
 	errorReader := &errorReaderMock{err: errors.New("read error")}
 	outChan := make(chan testResponse)
 
-	err := Process(errorReader, outChan, nil)
+	err := Process(errorReader, outChan, nil, false)
 	if err == nil {
 		t.Errorf("ProcessSSE() with error reader should return an error")
 	}

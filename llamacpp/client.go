@@ -508,7 +508,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	if resp.StatusCode != 200 {
 		return c.DecodeError(ctx, c.chatURL, resp)
 	}
-	return sse.Process(resp.Body, out, nil)
+	return sse.Process(resp.Body, out, nil, c.ClientJSON.Lenient)
 }
 
 func (c *Client) GetHealth(ctx context.Context) (string, error) {

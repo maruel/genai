@@ -121,7 +121,7 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			ApiKey:        "bad apiKey",
 			Model:         "meta-llama/Llama-3.2-3B-Instruct-Turbo",
 			ErrChat:       "http 401: error invalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
-			ErrChatStream: "http 401: error invalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.. You can get a new API key at https://api.together.ai/settings/api-keys",
+			ErrChatStream: "http 401: error invalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
 		},
 		{
 			Name:          "bad model",
@@ -141,7 +141,7 @@ func TestClient_ModelProvider_errors(t *testing.T) {
 		{
 			Name:   "bad apiKey",
 			ApiKey: "badApiKey",
-			Err:    "http 401: error (): Unauthorized. You can get a new API key at https://api.together.ai/settings/api-keys",
+			Err:    "http 401: error (): Unauthorized. You can get a new API key at https://api.together.xyz/settings/api-keys",
 		},
 	}
 	f := func(t *testing.T, apiKey string) genai.ModelProvider {

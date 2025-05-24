@@ -494,7 +494,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
-	err = processJSONStream(resp.Body, out)
+	err = processJSONStream(resp.Body, out, c.ClientJSON.Lenient)
 	_ = resp.Body.Close()
 	if err == nil || !strings.Contains(err.Error(), "not found, try pulling it first") {
 		return err
@@ -510,7 +510,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 	if resp.StatusCode != 200 {
 		return c.DecodeError(ctx, c.chatURL, resp)
 	}
-	return processJSONStream(resp.Body, out)
+	return processJSONStream(resp.Body, out, c.ClientJSON.Lenient)
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
@@ -540,7 +540,7 @@ func (c *Client) validate() error {
 
 // processJSONStream processes a \n separated JSON stream. This is different from other backends which use
 // SSE.
-func processJSONStream(body io.Reader, out chan<- ChatStreamChunkResponse) error {
+func processJSONStream(body io.Reader, out chan<- ChatStreamChunkResponse, lenient bool) error {
 	for r := bufio.NewReader(body); ; {
 		line, err := r.ReadBytes('\n')
 		if line = bytes.TrimSpace(line); err == io.EOF {
@@ -554,12 +554,16 @@ func processJSONStream(body io.Reader, out chan<- ChatStreamChunkResponse) error
 			continue
 		}
 		d := json.NewDecoder(bytes.NewReader(line))
-		d.DisallowUnknownFields()
+		if !lenient {
+			d.DisallowUnknownFields()
+		}
 		d.UseNumber()
 		msg := ChatStreamChunkResponse{}
 		if err := d.Decode(&msg); err != nil {
 			d := json.NewDecoder(bytes.NewReader(line))
-			d.DisallowUnknownFields()
+			if !lenient {
+				d.DisallowUnknownFields()
+			}
 			d.UseNumber()
 			er := errorResponse{}
 			if err := d.Decode(&er); err != nil {

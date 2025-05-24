@@ -20,7 +20,7 @@ import (
 )
 
 type ChatRequest struct {
-	Model            string    `json:"model,omitzoer"`
+	Model            string    `json:"model,omitzero"`
 	Messages         []Message `json:"messages"`
 	MaxTokens        int64     `json:"max_tokens,omitzero"`
 	Stop             []string  `json:"stop,omitzero"`

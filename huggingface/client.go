@@ -321,8 +321,13 @@ const (
 	FinishStop FinishReason = "stop"
 )
 
-func (f FinishReason) ToFinishReason() string {
-	return string(f)
+func (f FinishReason) ToFinishReason() genai.FinishReason {
+	switch f {
+	case FinishStop:
+		return genai.FinishedStop
+	default:
+		return genai.FinishReason(f)
+	}
 }
 
 type Usage struct {
@@ -372,6 +377,10 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	}
 	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
+	if len(out.ToolCalls) != 0 && out.FinishReason == genai.FinishedStop {
+		// Lie for the benefit of everyone.
+		out.FinishReason = genai.FinishedToolCalls
+	}
 	return out, err
 }
 

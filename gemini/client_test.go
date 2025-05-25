@@ -104,7 +104,7 @@ func TestClient_Chat_genImage(t *testing.T) {
 		Model: "gemini-2.0-flash-preview-image-generation",
 	}
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, contents)}
-	resp := testCases.TestChatHelper(t, msgs, override, genai.ChatOptions{Temperature: 1, Seed: 1})
+	resp := testCases.TestChatHelper(t, msgs, override, genai.ChatOptions{Temperature: 1, Seed: 1}, genai.FinishedStop)
 	if len(resp.Contents) == 0 {
 		t.Fatal("expected content")
 	}

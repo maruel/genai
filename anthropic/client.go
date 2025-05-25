@@ -553,8 +553,19 @@ const (
 	StopMaxTokens StopReason = "max_tokens"
 )
 
-func (s StopReason) ToFinishReason() string {
-	return string(s)
+func (s StopReason) ToFinishReason() genai.FinishReason {
+	switch s {
+	case StopEndTurn:
+		return genai.FinishedStop
+	case StopToolUse:
+		return genai.FinishedToolCalls
+	case StopSequence:
+		return genai.FinishedStopSequence
+	case StopMaxTokens:
+		return genai.FinishedLength
+	default:
+		return genai.FinishReason(s)
+	}
 }
 
 // https://docs.anthropic.com/en/api/messages-streaming

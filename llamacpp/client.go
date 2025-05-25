@@ -213,8 +213,8 @@ func (c *CompletionResponse) ToResult() (genai.ChatResult, error) {
 
 type StopType string
 
-func (s StopType) ToFinishReason() string {
-	return string(s)
+func (s StopType) ToFinishReason() genai.FinishReason {
+	return genai.FinishReason(s)
 }
 
 type Timings struct {

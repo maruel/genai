@@ -321,7 +321,7 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 		Usage: genai.Usage{
 			InputTokens:  c.Result.Usage.PromptTokens,
 			OutputTokens: c.Result.Usage.CompletionTokens,
-			// Cloudflare doesn't provide FinishReason.
+			// Cloudflare doesn't provide FinishReason (!?)
 		},
 	}
 	err := c.Result.To(&out.Message)

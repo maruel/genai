@@ -198,6 +198,8 @@ type ClientChat[ErrorResponse fmt.Stringer, ChatRequest InitializableRequest, Ch
 	AllowOpaqueFields bool
 	// ProcessStreamPackets is the function that processes stream packets used by ChatStream.
 	ProcessStreamPackets func(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error
+	// LieToolCalls lie the FinishReason on tool calls.
+	LieToolCalls bool
 
 	mu           sync.Mutex
 	chatRequest  reflect.Type
@@ -270,6 +272,10 @@ func (c *ClientChat[ErrorResponse, ChatRequest, ChatResponse, ChatStreamChunkRes
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
+	}
+	if c.LieToolCalls && len(result.ToolCalls) != 0 && result.FinishReason == genai.FinishedStop {
+		// Lie for the benefit of everyone.
+		result.FinishReason = genai.FinishedToolCalls
 	}
 	if err != nil {
 		return result, err

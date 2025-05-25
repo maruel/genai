@@ -390,8 +390,19 @@ const (
 	FinishToolCalls    FinishReason = "tool_calls"
 )
 
-func (f FinishReason) ToFinishReason() string {
-	return string(f)
+func (f FinishReason) ToFinishReason() genai.FinishReason {
+	switch f {
+	case FinishStop:
+		return genai.FinishedStop
+	case FinishEOS:
+		return genai.FinishedStopSequence
+	case FinishLength:
+		return genai.FinishedLength
+	case FinishToolCalls, FinishFunctionCall:
+		return genai.FinishedToolCalls
+	default:
+		return genai.FinishReason(f)
+	}
 }
 
 type Usage struct {

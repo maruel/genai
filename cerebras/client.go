@@ -348,6 +348,10 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 	}
 	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
+	if len(out.ToolCalls) != 0 && out.FinishReason == genai.FinishedStop {
+		// Lie for the benefit of everyone.
+		out.FinishReason = genai.FinishedToolCalls
+	}
 	return out, err
 }
 
@@ -360,8 +364,19 @@ const (
 	FinishContentFilter FinishReason = "content_filter"
 )
 
-func (f FinishReason) ToFinishReason() string {
-	return string(f)
+func (f FinishReason) ToFinishReason() genai.FinishReason {
+	switch f {
+	case FinishStop:
+		return genai.FinishedStop
+	case FinishToolCalls:
+		return genai.FinishedToolCalls
+	case FinishLength:
+		return genai.FinishedLength
+	case FinishContentFilter:
+		return genai.FinishedContentFilter
+	default:
+		return genai.FinishReason(f)
+	}
 }
 
 type ChatStreamChunkResponse struct {
@@ -489,6 +504,7 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 			Model:                model,
 			ChatURL:              "https://api.cerebras.ai/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
+			LieToolCalls:         true,
 			ClientBase: internal.ClientBase[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{Transport: &roundtrippers.Header{

@@ -282,6 +282,10 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 		},
 	}
 	err := c.Message.To(&out.Message)
+	if len(out.ToolCalls) != 0 && out.FinishReason == genai.FinishedStop {
+		// Lie for the benefit of everyone.
+		out.FinishReason = genai.FinishedToolCalls
+	}
 	return out, err
 }
 
@@ -291,8 +295,8 @@ const (
 	DoneStop DoneReason = "stop"
 )
 
-func (d DoneReason) ToFinishReason() string {
-	return string(d)
+func (d DoneReason) ToFinishReason() genai.FinishReason {
+	return genai.FinishReason(d)
 }
 
 type ChatStreamChunkResponse ChatResponse
@@ -482,6 +486,10 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
+	}
+	if len(result.ToolCalls) != 0 && result.FinishReason == genai.FinishedStop {
+		// Lie for the benefit of everyone.
+		result.FinishReason = genai.FinishedToolCalls
 	}
 	if err != nil {
 		return result, err

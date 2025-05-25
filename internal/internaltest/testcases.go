@@ -92,11 +92,14 @@ func (tc *TestCases) TestChatThinking(t *testing.T, override *Settings) {
 		opts := tc.getOptions(&genai.ChatOptions{MaxTokens: 2000, Seed: 1}, override)
 		c := tc.getClient(t, override)
 		usageIsBroken := tc.usageIsBroken(override)
-		finishReasonIsBroken := tc.finishReasonIsBroken(override)
-		resp := tc.testChat(t, msgs, c, opts, usageIsBroken, finishReasonIsBroken)
+		f := genai.FinishedStop
+		if tc.finishReasonIsBroken(override) {
+			f = ""
+		}
+		resp := tc.testChat(t, msgs, c, opts, usageIsBroken, f)
 		ValidateSingleWordResponse(t, resp, "hello")
 		msgs = append(msgs, resp.Message, genai.NewTextMessage(genai.User, "Say the same word again. Use only one word."))
-		resp = tc.testChat(t, msgs, c, opts, usageIsBroken, finishReasonIsBroken)
+		resp = tc.testChat(t, msgs, c, opts, usageIsBroken, f)
 		ValidateSingleWordResponse(t, resp, "hello")
 	})
 	t.Run("ChatStream", func(t *testing.T) {
@@ -105,11 +108,14 @@ func (tc *TestCases) TestChatThinking(t *testing.T, override *Settings) {
 		opts := tc.getOptions(&genai.ChatOptions{MaxTokens: 2000, Seed: 1}, override)
 		c := tc.getClient(t, override)
 		usageIsBroken := tc.usageIsBroken(override)
-		finishReasonIsBroken := tc.finishReasonIsBroken(override)
-		resp := tc.testChatStream(t, msgs, c, opts, usageIsBroken, finishReasonIsBroken)
+		f := genai.FinishedStop
+		if tc.finishReasonIsBroken(override) {
+			f = ""
+		}
+		resp := tc.testChatStream(t, msgs, c, opts, usageIsBroken, f)
 		ValidateSingleWordResponse(t, resp, "hello")
 		msgs = append(msgs, resp.Message, genai.NewTextMessage(genai.User, "Say the same word again. Use only one word."))
-		resp = tc.testChatStream(t, msgs, c, opts, usageIsBroken, finishReasonIsBroken)
+		resp = tc.testChatStream(t, msgs, c, opts, usageIsBroken, f)
 		ValidateSingleWordResponse(t, resp, "hello")
 	})
 }
@@ -119,7 +125,7 @@ func (tc *TestCases) TestChatThinking(t *testing.T, override *Settings) {
 func (tc *TestCases) TestChatSimple_simple(t *testing.T, override *Settings) {
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
 	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
-	resp := tc.TestChatHelper(t, msgs, override, opts)
+	resp := tc.TestChatHelper(t, msgs, override, opts, genai.FinishedStop)
 	ValidateSingleWordResponse(t, resp, "hello")
 }
 
@@ -128,7 +134,7 @@ func (tc *TestCases) TestChatSimple_simple(t *testing.T, override *Settings) {
 func (tc *TestCases) TestChatStream_simple(t *testing.T, override *Settings) {
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
 	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
-	resp := tc.testChatStreamHelper(t, msgs, override, opts)
+	resp := tc.testChatStreamHelper(t, msgs, override, opts, genai.FinishedStop)
 	ValidateSingleWordResponse(t, resp, "hello")
 }
 
@@ -152,7 +158,7 @@ func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Mod
 		}
 		t.Run(id, func(t *testing.T) {
 			msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello.")}
-			resp := tc.TestChatHelper(t, msgs, &Settings{Model: id}, opts)
+			resp := tc.TestChatHelper(t, msgs, &Settings{Model: id}, opts, genai.FinishedStop)
 			ValidateSingleWordResponse(t, resp, "hello")
 		})
 	}
@@ -194,7 +200,11 @@ func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
 		ToolCallRequest: genai.ToolCallRequired,
 	}
 	c := tc.getClient(t, override)
-	resp := tc.testChat(t, msgs, c, tc.getOptions(&opts, override), tc.usageIsBroken(override), tc.finishReasonIsBroken(override))
+	f := genai.FinishedToolCalls
+	if tc.finishReasonIsBroken(override) {
+		f = ""
+	}
+	resp := tc.testChat(t, msgs, c, tc.getOptions(&opts, override), tc.usageIsBroken(override), f)
 	want := "square_root"
 	if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
 		t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
@@ -213,7 +223,11 @@ func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
 	}
 	// Important!
 	opts.ToolCallRequest = genai.ToolCallNone
-	resp = tc.testChat(t, msgs, c, tc.getOptions(&opts, override), tc.usageIsBroken(override), tc.finishReasonIsBroken(override))
+	f = genai.FinishedStop
+	if tc.finishReasonIsBroken(override) {
+		f = ""
+	}
+	resp = tc.testChat(t, msgs, c, tc.getOptions(&opts, override), tc.usageIsBroken(override), f)
 	// This is very annoying, llama4 is not following instructions.
 
 	ValidateSingleWordResponse(t, resp, "363.89")
@@ -282,9 +296,9 @@ func (tc *TestCases) TestChatToolUsePositionBiasCore(t *testing.T, override *Set
 			}
 			var resp genai.ChatResult
 			if useStream {
-				resp = tc.testChatStreamHelper(t, msgs, override, opts)
+				resp = tc.testChatStreamHelper(t, msgs, override, opts, genai.FinishedToolCalls)
 			} else {
-				resp = tc.TestChatHelper(t, msgs, override, opts)
+				resp = tc.TestChatHelper(t, msgs, override, opts, genai.FinishedToolCalls)
 			}
 			want := "best_country"
 			if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
@@ -316,7 +330,7 @@ func (tc *TestCases) TestChatVisionJPGInline(t *testing.T, override *Settings) {
 		},
 	}
 	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 200, Seed: 1}
-	resp := tc.TestChatHelper(t, msgs, override, opts)
+	resp := tc.TestChatHelper(t, msgs, override, opts, genai.FinishedStop)
 	// Normalize some of the variance. Obviously many models will still fail this test.
 	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.AsText())), ".!")
 	if txt != "yes" {
@@ -341,7 +355,7 @@ func (tc *TestCases) TestChatVisionPDFInline(t *testing.T, override *Settings) {
 		},
 	}
 	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 50, Seed: 1}
-	resp := tc.TestChatHelper(t, msgs, override, opts)
+	resp := tc.TestChatHelper(t, msgs, override, opts, genai.FinishedStop)
 	if got := strings.TrimSpace(strings.ToLower(resp.AsText())); got != "orange" {
 		t.Fatal(got)
 	}
@@ -358,7 +372,7 @@ func (tc *TestCases) TestChatVisionPDFURL(t *testing.T, override *Settings) {
 		},
 	}
 	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 50, Seed: 1}
-	resp := tc.TestChatHelper(t, msgs, override, opts)
+	resp := tc.TestChatHelper(t, msgs, override, opts, genai.FinishedStop)
 	if got := strings.TrimSpace(strings.ToLower(resp.AsText())); got != "orange" {
 		t.Fatal(got)
 	}
@@ -384,7 +398,7 @@ func (tc *TestCases) testChatAudioInline(t *testing.T, override *Settings, filen
 		genai.NewTextMessage(genai.User, "What is the word said? Reply with only the word."),
 	}
 	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 50, Seed: 1}
-	resp := tc.TestChatHelper(t, msgs, override, opts)
+	resp := tc.TestChatHelper(t, msgs, override, opts, genai.FinishedStop)
 	if heard := strings.TrimRight(strings.ToLower(resp.AsText()), "."); heard != "orange" {
 		t.Fatal(heard)
 	}
@@ -407,7 +421,7 @@ func (tc *TestCases) TestChatVideoMP4Inline(t *testing.T, override *Settings) {
 		},
 	}
 	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 50, Seed: 1}
-	resp := tc.TestChatHelper(t, msgs, override, opts)
+	resp := tc.TestChatHelper(t, msgs, override, opts, genai.FinishedStop)
 	if saw := strings.TrimSpace(strings.ToLower(resp.AsText())); saw != "banana" {
 		t.Fatal(saw)
 	}
@@ -421,7 +435,7 @@ func (tc *TestCases) TestChatJSON(t *testing.T, override *Settings) {
 		genai.NewTextMessage(genai.User, `Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {"is_fruit": bool}.`),
 	}
 	opts := genai.ChatOptions{Temperature: 0.1, MaxTokens: 200, Seed: 1, ReplyAsJSON: true}
-	resp := tc.TestChatHelper(t, msgs, override, opts)
+	resp := tc.TestChatHelper(t, msgs, override, opts, genai.FinishedStop)
 	got := map[string]any{}
 	if err := resp.Decode(&got); err != nil {
 		// Gemini returns a list of map. Tolerate that too.
@@ -461,7 +475,7 @@ func (tc *TestCases) TestChatJSONSchema(t *testing.T, override *Settings) {
 	}
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Is a banana a fruit? Reply as JSON according to the provided schema.")}
 	opts := genai.ChatOptions{Temperature: 0.1, MaxTokens: 200, Seed: 1, DecodeAs: &got}
-	resp := tc.TestChatHelper(t, msgs, override, opts)
+	resp := tc.TestChatHelper(t, msgs, override, opts, genai.FinishedStop)
 	if err := resp.Decode(&got); err != nil {
 		t.Fatal(err)
 	}
@@ -470,12 +484,14 @@ func (tc *TestCases) TestChatJSONSchema(t *testing.T, override *Settings) {
 	}
 }
 
-func (tc *TestCases) TestChatHelper(t *testing.T, msgs genai.Messages, override *Settings, opts genai.ChatOptions) genai.ChatResult {
-	return tc.testChat(t, msgs, tc.getClient(t, override), tc.getOptions(&opts, override),
-		tc.usageIsBroken(override), tc.finishReasonIsBroken(override))
+func (tc *TestCases) TestChatHelper(t *testing.T, msgs genai.Messages, override *Settings, opts genai.ChatOptions, f genai.FinishReason) genai.ChatResult {
+	if tc.finishReasonIsBroken(override) {
+		f = ""
+	}
+	return tc.testChat(t, msgs, tc.getClient(t, override), tc.getOptions(&opts, override), tc.usageIsBroken(override), f)
 }
 
-func (tc *TestCases) testChat(t *testing.T, msgs genai.Messages, c genai.ChatProvider, opts genai.Validatable, usageIsBroken, finishReasonIsBroken bool) genai.ChatResult {
+func (tc *TestCases) testChat(t *testing.T, msgs genai.Messages, c genai.ChatProvider, opts genai.Validatable, usageIsBroken bool, f genai.FinishReason) genai.ChatResult {
 	ctx := t.Context()
 	resp, err := c.Chat(ctx, msgs, opts)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
@@ -484,19 +500,21 @@ func (tc *TestCases) testChat(t *testing.T, msgs genai.Messages, c genai.ChatPro
 		t.Fatal(err)
 	}
 	t.Logf("Raw response: %#v", resp)
-	testUsage(t, &resp.Usage, usageIsBroken, finishReasonIsBroken)
+	testUsage(t, &resp.Usage, usageIsBroken, f)
 	if len(resp.Contents) == 0 && len(resp.ToolCalls) == 0 {
 		t.Fatal("missing response")
 	}
 	return resp
 }
 
-func (tc *TestCases) testChatStreamHelper(t *testing.T, msgs genai.Messages, override *Settings, opts genai.ChatOptions) genai.ChatResult {
-	return tc.testChatStream(t, msgs, tc.getClient(t, override), tc.getOptions(&opts, override),
-		tc.usageIsBroken(override), tc.finishReasonIsBroken(override))
+func (tc *TestCases) testChatStreamHelper(t *testing.T, msgs genai.Messages, override *Settings, opts genai.ChatOptions, f genai.FinishReason) genai.ChatResult {
+	if tc.finishReasonIsBroken(override) {
+		f = ""
+	}
+	return tc.testChatStream(t, msgs, tc.getClient(t, override), tc.getOptions(&opts, override), tc.usageIsBroken(override), f)
 }
 
-func (tc *TestCases) testChatStream(t *testing.T, msgs genai.Messages, c genai.ChatProvider, opts genai.Validatable, usageIsBroken, finishReasonIsBroken bool) genai.ChatResult {
+func (tc *TestCases) testChatStream(t *testing.T, msgs genai.Messages, c genai.ChatProvider, opts genai.Validatable, usageIsBroken bool, f genai.FinishReason) genai.ChatResult {
 	ctx := t.Context()
 	chunks := make(chan genai.MessageFragment)
 	// Assert that the message returned is the same as the one we accumulated.
@@ -536,7 +554,7 @@ func (tc *TestCases) testChatStream(t *testing.T, msgs genai.Messages, c genai.C
 	if diff := cmp.Diff(&resp.Message, &accumulated); diff != "" {
 		t.Errorf("(-result), (+accumulated):\n%s", diff)
 	}
-	testUsage(t, &resp.Usage, usageIsBroken, finishReasonIsBroken)
+	testUsage(t, &resp.Usage, usageIsBroken, f)
 	return resp
 }
 
@@ -620,7 +638,7 @@ func TestClient_ModelProvider_errors(t *testing.T, getClient func(t *testing.T, 
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
 
-func testUsage(t *testing.T, u *genai.Usage, usageIsBroken, finishReasonIsBroken bool) {
+func testUsage(t *testing.T, u *genai.Usage, usageIsBroken bool, f genai.FinishReason) {
 	if usageIsBroken {
 		if u.InputTokens != 0 {
 			t.Error("expected Usage.InputTokens to be zero")
@@ -639,13 +657,11 @@ func testUsage(t *testing.T, u *genai.Usage, usageIsBroken, finishReasonIsBroken
 			t.Error("expected Usage.OutputTokens to be set")
 		}
 	}
-	if finishReasonIsBroken {
-		if u.FinishReason != "" {
-			t.Fatalf("expected no FinishReason, got %q", u.FinishReason)
-		}
-	} else {
-		if u.FinishReason == "" {
-			t.Fatal("expected FinishReason")
+	if u.FinishReason != f {
+		// TODO: llamacpp returns "eos" instead of "stop" when ending a stream. I need to find a way to improve
+		// the test validation.
+		if f != "" {
+			t.Fatalf("expected FinishReason %q, got %q", f, u.FinishReason)
 		}
 	}
 }

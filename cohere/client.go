@@ -318,8 +318,19 @@ const (
 	FinishError        FinishReason = "ERROR"
 )
 
-func (f FinishReason) ToFinishReason() string {
-	return strings.ToLower(string(f))
+func (f FinishReason) ToFinishReason() genai.FinishReason {
+	switch f {
+	case FinishComplete:
+		return genai.FinishedStop
+	case FinishToolCall:
+		return genai.FinishedToolCalls
+	case FinishMaxTokens:
+		return genai.FinishedLength
+	case FinishStopSequence:
+		return genai.FinishedStopSequence
+	default:
+		return genai.FinishReason(strings.ToLower(string(f)))
+	}
 }
 
 type Usage struct {

@@ -75,7 +75,9 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("stream", func(t *testing.T) {
-		tc.TestChatStream_simple(t, nil)
+		tc.TestChatStream_simple(t, &internaltest.Settings{
+			FinishReasonIsBroken: true,
+		})
 	})
 
 	/* TODO: Find a way to make it error out.

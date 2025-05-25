@@ -187,14 +187,32 @@ type Usage struct {
 	OutputTokens      int64
 
 	// FinishReason indicates why the model stopped generating tokens.
-	// Common values include "stop", "length", "content_filter", "tool_calls", etc.
-	// The exact values depend on the specific provider.
-	FinishReason string
+	FinishReason FinishReason
 }
 
 func (u *Usage) String() string {
 	return fmt.Sprintf("in: %d (cached %d), out: %d", u.InputTokens, u.InputCachedTokens, u.OutputTokens)
 }
+
+// FinishReason is the reason why the model stopped generating tokens.
+//
+// It can be one of the well known below or a custom value.
+type FinishReason string
+
+const (
+	// FinishedStop means the assistant was done for the turn. Some providers confuse it with
+	// FinishedStopSequence.
+	FinishedStop FinishReason = "stop"
+	// FinishedLength means the model reached the maximum number of tokens allowed as set in
+	// ChatOptions.MaxTokens or as limited by the provider.
+	FinishedLength FinishReason = "length"
+	// FinishedToolCalls means the model called one or multiple tools and needs the replies to continue the turn.
+	FinishedToolCalls FinishReason = "tool_calls"
+	// FinishedStopSequence means the model stopped because it saw a stop word as listed in ChatOptions.Stop.
+	FinishedStopSequence FinishReason = "stop"
+	// FinishedContentFilter means the model stopped because the reply got caught by a content filter.
+	FinishedContentFilter FinishReason = "content_filter"
+)
 
 // Messages
 

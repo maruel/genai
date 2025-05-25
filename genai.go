@@ -10,6 +10,7 @@
 package genai
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -252,14 +253,14 @@ func (m Messages) Validate() error {
 // The message may also contain tool calls. The tool call is a request from
 // the LLM to answer a specific question, so the LLM can continue its process.
 type Message struct {
-	Role Role
-	User string // Only used when Role == User. Only some provider (e.g. OpenAI, Groq, DeepSeek) support it.
+	Role Role   `json:"role,omitzero"`
+	User string `json:"user,omitzero"` // Only used when Role == User. Only some provider (e.g. OpenAI, Groq, DeepSeek) support it.
 
-	Contents []Content // For example when the LLM replies with multiple content blocks, an explanation and a code block.
+	Contents []Content `json:"contents,omitzero"` // For example when the LLM replies with multiple content blocks, an explanation and a code block.
 
 	// ToolCall is a tool call that the LLM requested to make.
-	ToolCalls       []ToolCall
-	ToolCallResults []ToolCallResult
+	ToolCalls       []ToolCall       `json:"tool_calls,omitzero"`
+	ToolCallResults []ToolCallResult `json:"tool_call_results,omitzero"`
 
 	_ struct{}
 }
@@ -276,13 +277,7 @@ func (m *Message) IsZero() bool {
 
 // Validate ensures the messages are valid.
 func (m *Message) Validate() error {
-	var errs []error
-	if err := m.Role.Validate(); err != nil {
-		errs = append(errs, fmt.Errorf("field Role: %w", err))
-	}
-	if m.User != "" {
-		errs = append(errs, errors.New("field User: not supported yet"))
-	}
+	errs := m.validate()
 	if len(m.Contents) == 0 && len(m.ToolCalls) == 0 && len(m.ToolCallResults) == 0 {
 		errs = append(errs, errors.New("at least one of fields Contents, ToolCalls or ToolCallsResults is required"))
 	}
@@ -308,6 +303,17 @@ func (m *Message) Validate() error {
 		}
 	}
 	return errors.Join(errs...)
+}
+
+func (m *Message) validate() []error {
+	var errs []error
+	if err := m.Role.Validate(); err != nil {
+		errs = append(errs, fmt.Errorf("field Role: %w", err))
+	}
+	if m.User != "" {
+		errs = append(errs, errors.New("field User: not supported yet"))
+	}
+	return errs
 }
 
 // AsText is a short hand to get the content as text.
@@ -365,6 +371,17 @@ func (m *Message) DoToolCalls(ctx context.Context, tools []ToolDef) (Message, er
 	return out, nil
 }
 
+func (m *Message) UnmarshalJSON(b []byte) error {
+	type Alias Message
+	a := struct{ *Alias }{Alias: (*Alias)(m)}
+	d := json.NewDecoder(bytes.NewReader(b))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&a); err != nil {
+		return err
+	}
+	return errors.Join(m.validate()...)
+}
+
 // Content is a block of content in the message meant to be visible in a
 // chat setting.
 //
@@ -374,16 +391,16 @@ type Content struct {
 	// Only Text, Thinking, Opaque or the rest can be set.
 
 	// Text is the content of the text message.
-	Text string
+	Text string `json:"text,omitzero"`
 
 	// Thinking is the reasoning done by the LLM.
-	Thinking string
+	Thinking string `json:"thinking,omitzero"`
 
 	// Opaque is added to keep continuity on the processing. A good example is Anthropic's extended thinking. It
 	// must be kept during an exchange.
 	//
 	// A message with only Opaque set is valid.
-	Opaque map[string]any
+	Opaque map[string]any `json:"opaque,omitzero"`
 
 	// If Text and Thinking are not set, then, one of Document or URL must be set.
 
@@ -392,11 +409,11 @@ type Content struct {
 	// extension. When an URL is provided or when the object provided to Document
 	// implements a method with the signature `Name() string`, like an
 	// `*os.File`, Filename is optional.
-	Filename string
+	Filename string `json:"filename,omitzero"`
 	// Document is raw document data. It is perfectly fine to use a bytes.NewReader() or *os.File.
-	Document io.ReadSeeker
+	Document io.ReadSeeker `json:"document,omitzero"`
 	// URL is the reference to the raw data. When set, the mime-type is derived from the URL.
-	URL string
+	URL string `json:"url,omitzero"`
 
 	_ struct{}
 }
@@ -497,6 +514,53 @@ func (c *Content) ReadDocument(maxSize int64) (string, []byte, error) {
 		return "", nil, errors.New("empty data")
 	}
 	return mimeType, data, nil
+}
+
+type contentSerialized struct {
+	Text     string         `json:"text,omitzero"`
+	Thinking string         `json:"thinking,omitzero"`
+	Opaque   map[string]any `json:"opaque,omitzero"`
+	Filename string         `json:"filename,omitzero"`
+	Document []byte         `json:"document,omitzero"`
+	URL      string         `json:"url,omitzero"`
+}
+
+func (c *Content) MarshalJSON() ([]byte, error) {
+	cc := contentSerialized{
+		Text:     c.Text,
+		Thinking: c.Thinking,
+		Opaque:   c.Opaque,
+		Filename: c.Filename,
+		URL:      c.URL,
+	}
+	if c.Document != nil {
+		if _, err := c.Document.Seek(0, io.SeekStart); err != nil {
+			return nil, err
+		}
+		var err error
+		if cc.Document, err = io.ReadAll(c.Document); err != nil {
+			return nil, err
+		}
+	}
+	return json.Marshal(&cc)
+}
+
+func (c *Content) UnmarshalJSON(b []byte) error {
+	cc := contentSerialized{}
+	d := json.NewDecoder(bytes.NewReader(b))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&cc); err != nil {
+		return err
+	}
+	c.Text = cc.Text
+	c.Thinking = cc.Thinking
+	c.Opaque = cc.Opaque
+	c.Filename = cc.Filename
+	c.URL = cc.URL
+	if len(cc.Document) != 0 {
+		c.Document = bytes.NewReader(cc.Document)
+	}
+	return c.Validate()
 }
 
 // MessageFragment is a fragment of a message the LLM is sending back as part
@@ -704,9 +768,9 @@ func (t *ToolDef) InputSchema() *jsonschema.Schema {
 
 // ToolCall is a tool call that the LLM requested to make.
 type ToolCall struct {
-	ID        string // Unique identifier for the tool call. Necessary for parallel tool calling.
-	Name      string // Tool being called.
-	Arguments string // encoded as JSON
+	ID        string `json:"id,omitzero"`        // Unique identifier for the tool call. Necessary for parallel tool calling.
+	Name      string `json:"name,omitzero"`      // Tool being called.
+	Arguments string `json:"arguments,omitzero"` // encoded as JSON
 
 	_ struct{}
 }
@@ -762,11 +826,22 @@ func (t *ToolCall) Call(ctx context.Context, tools []ToolDef) (string, error) {
 	return s, nil
 }
 
+func (t *ToolCall) UnmarshalJSON(data []byte) error {
+	type Alias ToolCall
+	a := struct{ *Alias }{Alias: (*Alias)(t)}
+	if err := json.Unmarshal(data, &a); err != nil {
+		return err
+	}
+	return t.Validate()
+}
+
 // ToolCallResult is the result for a tool call that the LLM requested to make.
 type ToolCallResult struct {
-	ID     string
-	Name   string
-	Result string
+	ID     string `json:"id,omitzero"`
+	Name   string `json:"name,omitzero"`
+	Result string `json:"result,omitzero"`
+
+	_ struct{}
 }
 
 // Validate ensures the tool result is valid.
@@ -779,6 +854,17 @@ func (t *ToolCallResult) Validate() error {
 		return errors.New("field Result: required")
 	}
 	return nil
+}
+
+func (t *ToolCallResult) UnmarshalJSON(b []byte) error {
+	type Alias ToolCallResult
+	a := struct{ *Alias }{Alias: (*Alias)(t)}
+	d := json.NewDecoder(bytes.NewReader(b))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&a); err != nil {
+		return err
+	}
+	return t.Validate()
 }
 
 // Models

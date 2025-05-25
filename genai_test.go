@@ -8,6 +8,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"strings"
 	"testing"
 
@@ -910,4 +911,353 @@ func (m *mockChatProvider) ChatStream(ctx context.Context, msgs Messages, opts V
 
 func (m *mockChatProvider) ModelID() string {
 	return "llm-sota"
+}
+
+// UnmarshalJSON Tests
+
+func TestMessage_UnmarshalJSON(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		tests := []struct {
+			name string
+			json string
+			want Message
+		}{
+			{
+				name: "User text message",
+				json: `{"role": "user", "contents": [{"text": "Hello"}]}`,
+				want: Message{
+					Role:     User,
+					Contents: []Content{{Text: "Hello"}},
+				},
+			},
+			{
+				name: "Assistant message with tool call",
+				json: `{"role": "assistant", "tool_calls": [{"id": "1", "name": "tool", "arguments": "{}"}]}`,
+				want: Message{
+					Role:      Assistant,
+					ToolCalls: []ToolCall{{ID: "1", Name: "tool", Arguments: "{}"}},
+				},
+			},
+			{
+				name: "Computer message with tool result",
+				json: `{"role": "computer", "tool_call_results": [{"id": "1", "name": "tool", "result": "success"}]}`,
+				want: Message{
+					Role:            Computer,
+					ToolCallResults: []ToolCallResult{{ID: "1", Name: "tool", Result: "success"}},
+				},
+			},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				var got Message
+				if err := got.UnmarshalJSON([]byte(tt.json)); err != nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				if diff := cmp.Diff(tt.want, got); diff != "" {
+					t.Errorf("Message mismatch (-want +got):\n%s", diff)
+				}
+			})
+		}
+	})
+
+	t.Run("error", func(t *testing.T) {
+		tests := []struct {
+			name   string
+			json   string
+			errMsg string
+		}{
+			{
+				name:   "Invalid JSON",
+				json:   `{"role": "user", "contents": invalid}`,
+				errMsg: "invalid character 'i' looking for beginning of value",
+			},
+			{
+				name:   "Unknown field",
+				json:   `{"role": "user", "contents": [{"text": "Hi"}], "unknown_field": "value"}`,
+				errMsg: "json: unknown field \"unknown_field\"",
+			},
+			{
+				name:   "Invalid role",
+				json:   `{"role": "invalid", "contents": [{"text": "Hi"}]}`,
+				errMsg: "field Role: role \"invalid\" is not supported",
+			},
+			// Note: Empty message (just role) passes UnmarshalJSON validation,
+			// but would fail full Validate() method. UnmarshalJSON only does partial validation.
+			{
+				name:   "User with User field",
+				json:   `{"role": "user", "user": "joe", "contents": [{"text": "Hi"}]}`,
+				errMsg: "field User: not supported yet",
+			},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				var got Message
+				err := got.UnmarshalJSON([]byte(tt.json))
+				if err == nil {
+					t.Fatal("expected error, got nil")
+				}
+				if !strings.Contains(err.Error(), tt.errMsg) {
+					t.Errorf("expected error to contain %q, got %q", tt.errMsg, err.Error())
+				}
+			})
+		}
+	})
+}
+
+func TestContent_UnmarshalJSON(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		tests := []struct {
+			name string
+			json string
+			want Content
+		}{
+			{
+				name: "Text content",
+				json: `{"text": "Hello world"}`,
+				want: Content{Text: "Hello world"},
+			},
+			{
+				name: "Thinking content",
+				json: `{"thinking": "Let me think about this"}`,
+				want: Content{Thinking: "Let me think about this"},
+			},
+			{
+				name: "Opaque content",
+				json: `{"opaque": {"key": "value", "num": 42}}`,
+				want: Content{Opaque: map[string]any{"key": "value", "num": float64(42)}},
+			},
+			{
+				name: "URL content",
+				json: `{"filename": "image.jpg", "url": "https://example.com/image.jpg"}`,
+				want: Content{Filename: "image.jpg", URL: "https://example.com/image.jpg"},
+			},
+			{
+				name: "Document content",
+				json: `{"filename": "doc.txt", "document": "SGVsbG8gV29ybGQ="}`,
+				want: Content{
+					Filename: "doc.txt",
+					Document: strings.NewReader("Hello World"),
+				},
+			},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				var got Content
+				if err := got.UnmarshalJSON([]byte(tt.json)); err != nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				// For Document comparison, read the content since we can't directly compare io.ReadSeeker
+				if tt.want.Document != nil {
+					wantData, _ := io.ReadAll(tt.want.Document)
+					gotData, _ := io.ReadAll(got.Document)
+					if string(wantData) != string(gotData) {
+						t.Errorf("Document content mismatch: want %q, got %q", string(wantData), string(gotData))
+					}
+					// Reset Document field for comparison
+					tt.want.Document = nil
+					got.Document = nil
+				}
+				if diff := cmp.Diff(tt.want, got); diff != "" {
+					t.Errorf("Content mismatch (-want +got):\n%s", diff)
+				}
+			})
+		}
+	})
+
+	t.Run("error", func(t *testing.T) {
+		tests := []struct {
+			name   string
+			json   string
+			errMsg string
+		}{
+			{
+				name:   "Invalid JSON",
+				json:   `{"text": invalid}`,
+				errMsg: "invalid character 'i' looking for beginning of value",
+			},
+			{
+				name:   "Unknown field",
+				json:   `{"text": "Hi", "unknown_field": "value"}`,
+				errMsg: "json: unknown field \"unknown_field\"",
+			},
+			{
+				name:   "Text and Thinking together",
+				json:   `{"text": "Hello", "thinking": "Let me think"}`,
+				errMsg: "field Thinking can't be used along Text",
+			},
+			{
+				name:   "Document without filename",
+				json:   `{"document": "SGVsbG8="}`,
+				errMsg: "field Filename is required with Document when not implementing Name()",
+			},
+			{
+				name:   "Empty content",
+				json:   `{}`,
+				errMsg: "no content",
+			},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				var got Content
+				err := got.UnmarshalJSON([]byte(tt.json))
+				if err == nil {
+					t.Fatal("expected error, got nil")
+				}
+				if !strings.Contains(err.Error(), tt.errMsg) {
+					t.Errorf("expected error to contain %q, got %q", tt.errMsg, err.Error())
+				}
+			})
+		}
+	})
+}
+
+func TestToolCall_UnmarshalJSON(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		tests := []struct {
+			name string
+			json string
+			want ToolCall
+		}{
+			{
+				name: "Complete tool call",
+				json: `{"id": "call_123", "name": "calculator", "arguments": "{\"a\": 5, \"b\": 3}"}`,
+				want: ToolCall{ID: "call_123", Name: "calculator", Arguments: "{\"a\": 5, \"b\": 3}"},
+			},
+			{
+				name: "Tool call with only name",
+				json: `{"name": "weather", "arguments": "{}"}`,
+				want: ToolCall{Name: "weather", Arguments: "{}"},
+			},
+			{
+				name: "Tool call with only ID",
+				json: `{"id": "call_456", "arguments": "{}"}`,
+				want: ToolCall{ID: "call_456", Arguments: "{}"},
+			},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				var got ToolCall
+				if err := got.UnmarshalJSON([]byte(tt.json)); err != nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				if diff := cmp.Diff(tt.want, got); diff != "" {
+					t.Errorf("ToolCall mismatch (-want +got):\n%s", diff)
+				}
+			})
+		}
+	})
+
+	t.Run("error", func(t *testing.T) {
+		tests := []struct {
+			name   string
+			json   string
+			errMsg string
+		}{
+			{
+				name:   "Invalid JSON",
+				json:   `{"name": "tool", "arguments": invalid}`,
+				errMsg: "invalid character 'i' looking for beginning of value",
+			},
+			{
+				name:   "Invalid arguments JSON",
+				json:   `{"name": "tool", "arguments": "invalid json"}`,
+				errMsg: "field Arguments: invalid character 'i' looking for beginning of value",
+			},
+			{
+				name:   "Missing both ID and name",
+				json:   `{"arguments": "{}"}`,
+				errMsg: "at least one of field ID or Name is required",
+			},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				var got ToolCall
+				err := got.UnmarshalJSON([]byte(tt.json))
+				if err == nil {
+					t.Fatal("expected error, got nil")
+				}
+				if !strings.Contains(err.Error(), tt.errMsg) {
+					t.Errorf("expected error to contain %q, got %q", tt.errMsg, err.Error())
+				}
+			})
+		}
+	})
+}
+
+func TestToolCallResult_UnmarshalJSON(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		tests := []struct {
+			name string
+			json string
+			want ToolCallResult
+		}{
+			{
+				name: "Complete tool call result",
+				json: `{"id": "call_123", "name": "calculator", "result": "8"}`,
+				want: ToolCallResult{ID: "call_123", Name: "calculator", Result: "8"},
+			},
+			{
+				name: "Tool call result with only name",
+				json: `{"name": "weather", "result": "sunny"}`,
+				want: ToolCallResult{Name: "weather", Result: "sunny"},
+			},
+			{
+				name: "Tool call result with only ID",
+				json: `{"id": "call_456", "result": "success"}`,
+				want: ToolCallResult{ID: "call_456", Result: "success"},
+			},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				var got ToolCallResult
+				if err := got.UnmarshalJSON([]byte(tt.json)); err != nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				if diff := cmp.Diff(tt.want, got); diff != "" {
+					t.Errorf("ToolCallResult mismatch (-want +got):\n%s", diff)
+				}
+			})
+		}
+	})
+
+	t.Run("error", func(t *testing.T) {
+		tests := []struct {
+			name   string
+			json   string
+			errMsg string
+		}{
+			{
+				name:   "Invalid JSON",
+				json:   `{"name": "tool", "result": invalid}`,
+				errMsg: "invalid character 'i' looking for beginning of value",
+			},
+			{
+				name:   "Unknown field",
+				json:   `{"name": "tool", "result": "success", "unknown_field": "value"}`,
+				errMsg: "json: unknown field \"unknown_field\"",
+			},
+			{
+				name:   "Missing both ID and name",
+				json:   `{"result": "success"}`,
+				errMsg: "at least one of field ID or Name is required",
+			},
+			{
+				name:   "Missing result",
+				json:   `{"name": "tool"}`,
+				errMsg: "field Result: required",
+			},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				var got ToolCallResult
+				err := got.UnmarshalJSON([]byte(tt.json))
+				if err == nil {
+					t.Fatal("expected error, got nil")
+				}
+				if !strings.Contains(err.Error(), tt.errMsg) {
+					t.Errorf("expected error to contain %q, got %q", tt.errMsg, err.Error())
+				}
+			})
+		}
+	})
 }

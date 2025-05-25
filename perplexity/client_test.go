@@ -39,6 +39,10 @@ func TestClient_ChatStream_simple(t *testing.T) {
 	})
 }
 
+func TestClient_max_tokens(t *testing.T) {
+	testCases.TestChatMaxTokens(t, nil)
+}
+
 func TestClient_ChatProvider_errors(t *testing.T) {
 	data := []internaltest.ChatProviderError{
 		{

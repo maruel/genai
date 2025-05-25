@@ -41,6 +41,10 @@ func TestClient_ChatStream_simple(t *testing.T) {
 	testCases.TestChatStream_simple(t, nil)
 }
 
+func TestClient_max_tokens(t *testing.T) {
+	testCases.TestChatMaxTokens(t, nil)
+}
+
 func TestClient_Chat_jSON(t *testing.T) {
 	testCases.TestChatJSON(t, nil)
 }

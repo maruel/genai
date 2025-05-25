@@ -391,7 +391,7 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 
 type ChatStreamChunkResponse struct {
 	ID      string `json:"id"`
-	Object  string `json:"object"` // chat.completion.chunk
+	Object  string `json:"object"` // "chat.completion.chunk"
 	Created Time   `json:"created"`
 	Model   string `json:"model"`
 	Choices []struct {
@@ -402,6 +402,7 @@ type ChatStreamChunkResponse struct {
 			ToolCalls []ToolCall `json:"tool_calls"`
 		} `json:"delta"`
 		FinishReason FinishReason `json:"finish_reason"`
+		Logprobs     struct{}     `json:"logprobs"`
 	} `json:"choices"`
 	Usage Usage `json:"usage"`
 }

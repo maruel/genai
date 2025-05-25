@@ -45,6 +45,10 @@ func TestClient_ChatStream_simple(t *testing.T) {
 	testCases.TestChatStream_simple(t, nil)
 }
 
+func TestClient_max_tokens(t *testing.T) {
+	testCases.TestChatMaxTokens(t, nil)
+}
+
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {
 	t.Skip("Implement multi-content messages")
 	testCases.TestChatVisionJPGInline(t, &internaltest.Settings{Model: "llama-4-scout-17b-16e-instruct"})

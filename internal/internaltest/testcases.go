@@ -164,6 +164,26 @@ func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Mod
 	}
 }
 
+// TestChatMaxTokens confirms MaxTokens take effect and that the FinishReason is correct.
+func (tc *TestCases) TestChatMaxTokens(t *testing.T, override *Settings) {
+	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Tell a joke in 10 words")}
+	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 2, Seed: 1}
+	t.Run("Chat", func(t *testing.T) {
+		resp := tc.TestChatHelper(t, msgs, override, opts, genai.FinishedLength)
+		// Perplexity returns the thinking xml tag anyway so it adds up in number of letters.
+		if len(resp.AsText()) > 12 {
+			t.Fatalf("Expected less than 10 letters, got %d", len(resp.AsText()))
+		}
+	})
+	t.Run("ChatStream", func(t *testing.T) {
+		resp := tc.testChatStreamHelper(t, msgs, override, opts, genai.FinishedLength)
+		// Perplexity returns the thinking xml tag anyway so it adds up in number of letters.
+		if len(resp.AsText()) > 12 {
+			t.Fatalf("Expected less than 10 letters, got %d", len(resp.AsText()))
+		}
+	})
+}
+
 // Tool
 
 // TestChatToolUseReply confirms tool use fully works.
@@ -483,6 +503,8 @@ func (tc *TestCases) TestChatJSONSchema(t *testing.T, override *Settings) {
 		t.Fatal(got.IsFruit)
 	}
 }
+
+//
 
 func (tc *TestCases) TestChatHelper(t *testing.T, msgs genai.Messages, override *Settings, opts genai.ChatOptions, f genai.FinishReason) genai.ChatResult {
 	if tc.finishReasonIsBroken(override) {

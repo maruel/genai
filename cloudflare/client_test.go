@@ -44,6 +44,10 @@ func TestClient_ChatStream_simple(t *testing.T) {
 	testCases.TestChatStream_simple(t, &internaltest.Settings{Model: "@cf/meta/llama-3.2-3b-instruct"})
 }
 
+func TestClient_max_tokens(t *testing.T) {
+	testCases.TestChatMaxTokens(t, &internaltest.Settings{UsageIsBroken: true})
+}
+
 func TestClient_Chat_jSON(t *testing.T) {
 	testCases.TestChatJSON(t, &internaltest.Settings{UsageIsBroken: true})
 }

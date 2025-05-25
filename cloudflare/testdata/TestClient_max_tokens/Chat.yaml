@@ -1,0 +1,49 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 110
+        transfer_encoding: []
+        trailer: {}
+        host: api.cloudflare.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"content":"Tell a joke in 10 words","role":"user"}],"max_tokens":2,"seed":1,"temperature":0.01}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@hf/nousresearch/hermes-2-pro-mistral-7b
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"result":{"response":"Why don","usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0}},"success":true,"errors":[],"messages":[]}'
+        headers:
+            Api-Version:
+                - "2025-05-25"
+            Cf-Ai-Req-Id:
+                - 8720c2b2-6efb-46a5-bdc1-56874f273a1d
+            Cf-Auditlog-Id:
+                - 019707b5-9283-7093-8598-1ec974ab9d43
+            Cf-Ray:
+                - 9455808a5d55a2f8-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 617ms

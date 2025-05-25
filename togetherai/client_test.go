@@ -45,7 +45,7 @@ func TestClient_Chat_allModels(t *testing.T) {
 }
 
 func TestClient_Chat_thinking(t *testing.T) {
-	t.Skip(`bugged when using streaming; https://discord.com/channels/1082503318624022589/1082503319165083700/1373293708438405170`)
+	t.Skip(`bugged when using streaming; https://discord.com/channels/1082503318624022589/1082503319165083700/threads/1373294576609136781`)
 	testCases.TestChatThinking(t, &internaltest.Settings{
 		GetClient: func(t *testing.T, m string) genai.ChatProvider {
 			return &genai.ChatProviderThinking{ChatProvider: getClient(t, m), TagName: "think"}
@@ -63,6 +63,11 @@ func TestClient_Chat_simple(t *testing.T) {
 
 func TestClient_ChatStream_simple(t *testing.T) {
 	testCases.TestChatStream_simple(t, &internaltest.Settings{Model: "meta-llama/Llama-3.2-3B-Instruct-Turbo"})
+}
+
+func TestClient_max_tokens(t *testing.T) {
+	t.Skip(`bugged when using streaming; https://discord.com/channels/1082503318624022589/1082503319165083700/threads/1373294576609136781`)
+	testCases.TestChatMaxTokens(t, nil)
 }
 
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {

@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 134
+        transfer_encoding: []
+        trailer: {}
+        host: api.perplexity.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"r1-1776","messages":[{"role":"user","content":"Tell a joke in 10 words"}],"max_tokens":2,"temperature":0.01,"stream":false}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id": "42a0eb03-a6f0-4407-8066-dc808cad6441", "model": "r1-1776", "created": 1748181326, "usage": {"prompt_tokens": 7, "completion_tokens": 2, "total_tokens": 9}, "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "length", "message": {"role": "assistant", "content": "<think>"}, "delta": {"role": "assistant", "content": ""}}]}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 945587c3c953a27b-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 652ms

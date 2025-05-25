@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 185
+        transfer_encoding: []
+        trailer: {}
+        host: api.deepseek.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"deepseek-chat","messages":[{"role":"user","content":"Talk about Canada in 10 words. Start with: Canada is"}],"stream":true,"temperature":0.01,"max_tokens":2048,"stop":["is"]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"id":"5dfd772a-3351-432b-8d1d-5d509598e51b","object":"chat.completion.chunk","created":1748181973,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"5dfd772a-3351-432b-8d1d-5d509598e51b","object":"chat.completion.chunk","created":1748181973,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"content":"Canada"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"5dfd772a-3351-432b-8d1d-5d509598e51b","object":"chat.completion.chunk","created":1748181973,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"content":" "},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"5dfd772a-3351-432b-8d1d-5d509598e51b","object":"chat.completion.chunk","created":1748181973,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"content":""},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":16,"completion_tokens":2,"total_tokens":18,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":16}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 945597914b1ca2dc-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            X-Content-Type-Options:
+                - nosniff
+            X-Ds-Trace-Id:
+                - 39a6d816aa31a0dc6ef636b4cad05832
+        status: 200 OK
+        code: 200
+        duration: 837ms

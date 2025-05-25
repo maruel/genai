@@ -70,6 +70,11 @@ func TestClient_max_tokens(t *testing.T) {
 	testCases.TestChatMaxTokens(t, nil)
 }
 
+func TestClient_stop_sequence(t *testing.T) {
+	t.Skip(`bugged when using streaming; https://discord.com/channels/1082503318624022589/1082503319165083700/threads/1373294576609136781`)
+	testCases.TestChatStopSequence(t, nil)
+}
+
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {
 	testCases.TestChatVisionJPGInline(t, nil)
 }

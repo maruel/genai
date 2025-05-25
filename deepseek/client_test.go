@@ -41,6 +41,10 @@ func TestClient_max_tokens(t *testing.T) {
 	testCases.TestChatMaxTokens(t, nil)
 }
 
+func TestClient_stop_sequence(t *testing.T) {
+	testCases.TestChatStopSequence(t, nil)
+}
+
 func TestClient_Chat_jSON(t *testing.T) {
 	t.Skip("Deep seek struggle to follow the requested JSON schema in the prompt. To be investigated.")
 	testCases.TestChatJSON(t, nil)

@@ -184,6 +184,24 @@ func (tc *TestCases) TestChatMaxTokens(t *testing.T, override *Settings) {
 	})
 }
 
+// TestChatStopSequence confirms StopSequence take effect and that the FinishReason is correct.
+func (tc *TestCases) TestChatStopSequence(t *testing.T, override *Settings) {
+	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Talk about Canada in 10 words. Start with: Canada is")}
+	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 2048, Stop: []string{"is"}, Seed: 1}
+	t.Run("Chat", func(t *testing.T) {
+		resp := tc.TestChatHelper(t, msgs, override, opts, genai.FinishedStopSequence)
+		if len(resp.AsText()) > 12 {
+			t.Fatalf("Expected less than 12 letters, got %d", len(resp.AsText()))
+		}
+	})
+	t.Run("ChatStream", func(t *testing.T) {
+		resp := tc.testChatStreamHelper(t, msgs, override, opts, genai.FinishedStopSequence)
+		if len(resp.AsText()) > 12 {
+			t.Fatalf("Expected less than 12 letters, got %d", len(resp.AsText()))
+		}
+	})
+}
+
 // Tool
 
 // TestChatToolUseReply confirms tool use fully works.

@@ -1,0 +1,85 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 210
+        transfer_encoding: []
+        trailer: {}
+        host: router.huggingface.co
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"stream":true,"messages":[{"role":"user","content":"Talk about Canada in 10 words. Start with: Canada is"}],"max_tokens":2048,"seed":1,"stop":["is"],"stream_options":{"include_usage":true},"temperature":0.01}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/hf-inference/models/meta-llama/Llama-3.3-70B-Instruct/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"object":"chat.completion.chunk","id":"","created":1748181972,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Canada"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1748181972,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" is"},"logprobs":null,"finish_reason":"stop_sequence"}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1748181972,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[],"usage":{"prompt_tokens":48,"completion_tokens":2,"total_tokens":50}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 4ddb3602395856d6beaf04efda8919b2.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - tNoBlKa2_nw5dkhfuL4pTQx4ScszzZl1GjDehrcliQzHYbQhm8ZroQ==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Compute-Characters:
+                - "285"
+            X-Compute-Type:
+                - 4-nvida-a100-sxm4-80gb
+            X-Inference-Id:
+                - 87b20724-da60-48fa-8de6-ae28e2905c32
+            X-Powered-By:
+                - huggingface-moon
+            X-Proxied-Host:
+                - http://10.102.32.65
+            X-Proxied-Path:
+                - /v1/chat/completions
+            X-Proxied-Replica:
+                - fyj5qcci-p8lev
+            X-Request-Id:
+                - KDOuOoOFRs_pTAap
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 318ms

@@ -49,6 +49,10 @@ func TestClient_max_tokens(t *testing.T) {
 	testCases.TestChatMaxTokens(t, nil)
 }
 
+func TestClient_stop_sequence(t *testing.T) {
+	testCases.TestChatStopSequence(t, nil)
+}
+
 func TestClient_Chat_vision_jPG_inline(t *testing.T) {
 	// Using very small model for testing. As of March 2025,
 	// claude-3-haiku-20240307 is 0.20$/1.25$ while claude-3-5-haiku-20241022 is

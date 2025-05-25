@@ -43,6 +43,11 @@ func TestClient_max_tokens(t *testing.T) {
 	testCases.TestChatMaxTokens(t, nil)
 }
 
+func TestClient_stop_sequence(t *testing.T) {
+	t.Skip("Way too verbose")
+	testCases.TestChatStopSequence(t, nil)
+}
+
 func TestClient_ChatProvider_errors(t *testing.T) {
 	data := []internaltest.ChatProviderError{
 		{

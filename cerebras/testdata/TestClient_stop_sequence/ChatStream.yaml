@@ -1,0 +1,73 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 204
+        transfer_encoding: []
+        trailer: {}
+        host: api.cerebras.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"llama-3.1-8b","messages":[{"role":"user","content":"Talk about Canada in 10 words. Start with: Canada is"}],"max_completion_tokens":2048,"seed":1,"stop":["is"],"stream":true,"temperature":0.01}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"id":"chatcmpl-04af9629-9021-4854-af3f-cfbae0ed353c","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1748181972,"model":"llama3.1-8b","system_fingerprint":"fp_2e8193d2b4ff9b2045dd","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-04af9629-9021-4854-af3f-cfbae0ed353c","choices":[{"delta":{"content":"Canada "},"index":0}],"created":1748181972,"model":"llama3.1-8b","system_fingerprint":"fp_2e8193d2b4ff9b2045dd","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-04af9629-9021-4854-af3f-cfbae0ed353c","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1748181972,"model":"llama3.1-8b","system_fingerprint":"fp_2e8193d2b4ff9b2045dd","object":"chat.completion.chunk","usage":{"prompt_tokens":48,"completion_tokens":4,"total_tokens":52,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000491131,"prompt_time":0.003045709,"completion_time":0.001835589,"total_time":0.007718324661254883,"created":1748181972}}
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 945597914ebaa2f8-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Inference-Id:
+                - chatcmpl-04af9629-9021-4854-af3f-cfbae0ed353c
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14397"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Reset-Requests-Day:
+                - "35627.19389843941"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "47.19389843940735"
+            X-Request-Id:
+                - 945597914ebaa2f8-YUL
+        status: 200 OK
+        code: 200
+        duration: 206ms

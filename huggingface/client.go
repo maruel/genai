@@ -318,13 +318,19 @@ type ChatResponse struct {
 type FinishReason string
 
 const (
-	FinishStop FinishReason = "stop"
+	FinishStop         FinishReason = "stop"
+	FinishLength       FinishReason = "length"
+	FinishStopSequence FinishReason = "stop_sequence"
 )
 
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
 	case FinishStop:
 		return genai.FinishedStop
+	case FinishLength:
+		return genai.FinishedLength
+	case FinishStopSequence:
+		return genai.FinishedStopSequence
 	default:
 		return genai.FinishReason(f)
 	}

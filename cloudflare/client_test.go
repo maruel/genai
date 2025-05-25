@@ -48,6 +48,11 @@ func TestClient_max_tokens(t *testing.T) {
 	testCases.TestChatMaxTokens(t, &internaltest.Settings{UsageIsBroken: true})
 }
 
+func TestClient_stop_sequence(t *testing.T) {
+	t.Skip("Cloudflare doesn't support stop sequences.")
+	testCases.TestChatStopSequence(t, nil)
+}
+
 func TestClient_Chat_jSON(t *testing.T) {
 	testCases.TestChatJSON(t, &internaltest.Settings{UsageIsBroken: true})
 }

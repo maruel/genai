@@ -728,6 +728,12 @@ type ToolDef struct {
 	// struct must use json_schema to be serializable as JSON.
 	// It must return the result and an error: (string, error).
 	Callback any
+	// InputSchemaOverride overrides the schema deduced from the Callback's second argument. It's meant to be
+	// used when an enum or a description is set dynamically, or with complex if/then/else that would be tedious
+	// to describe as struct tags.
+	//
+	// It is okay to initialize Callback, then take the return value of GetInputSchema() to initialize InputSchemaOverride, then mutate it.
+	InputSchemaOverride *jsonschema.Schema
 
 	_ struct{}
 }
@@ -776,8 +782,8 @@ func (t *ToolDef) Validate() error {
 	return nil
 }
 
-// InputSchema returns the json schema for the input argument of the callback.
-func (t *ToolDef) InputSchema() *jsonschema.Schema {
+// GetInputSchema returns the json schema for the input argument of the callback.
+func (t *ToolDef) GetInputSchema() *jsonschema.Schema {
 	// This function assumes Validate() was called.
 	// No need to set an ID on the struct, it's unnecessary data that may confuse the tool.
 	r := jsonschema.Reflector{Anonymous: true, DoNotReference: true}

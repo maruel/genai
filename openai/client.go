@@ -237,7 +237,9 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) []string {
 			c.Tools[i].Type = "function"
 			c.Tools[i].Function.Name = t.Name
 			c.Tools[i].Function.Description = t.Description
-			c.Tools[i].Function.Parameters = t.InputSchema()
+			if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
+				c.Tools[i].Function.Parameters = t.GetInputSchema()
+			}
 		}
 	}
 	return unsupported

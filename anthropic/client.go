@@ -172,7 +172,9 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions) []string {
 			// c.Tools[i].Type = "custom"
 			c.Tools[i].Name = t.Name
 			c.Tools[i].Description = t.Description
-			c.Tools[i].InputSchema = t.InputSchema()
+			if c.Tools[i].InputSchema = t.InputSchemaOverride; c.Tools[i].InputSchema == nil {
+				c.Tools[i].InputSchema = t.GetInputSchema()
+			}
 		}
 	}
 	return unsupported

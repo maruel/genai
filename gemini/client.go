@@ -352,7 +352,11 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) []string {
 		c.Tools = make([]Tool, len(v.Tools))
 		for i, t := range v.Tools {
 			params := Schema{}
-			params.FromJSONSchema(t.InputSchema())
+			if t.InputSchemaOverride != nil {
+				params.FromJSONSchema(t.InputSchemaOverride)
+			} else {
+				params.FromJSONSchema(t.GetInputSchema())
+			}
 			// See FunctionResponse.To().
 			c.Tools[i].FunctionDeclarations = []FunctionDeclaration{{
 				Name:        t.Name,

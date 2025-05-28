@@ -7,7 +7,7 @@ require (
 	github.com/invopop/jsonschema v0.13.0
 	github.com/maruel/httpjson v0.4.2
 	github.com/maruel/huggingface v0.0.0-20250313181651-d85dcc86b10e
-	github.com/maruel/roundtrippers v0.3.1
+	github.com/maruel/roundtrippers v0.3.2
 	golang.org/x/sync v0.12.0
 	gopkg.in/dnaeon/go-vcr.v4 v4.0.2
 )

@@ -137,24 +137,27 @@ func (c *ClientBase[ErrorResponse]) DecodeError(ctx context.Context, url string,
 	return fmt.Errorf("http %d: %s", resp.StatusCode, http.StatusText(resp.StatusCode))
 }
 
+// Duplicate from httpjson.go in https://github.com/maruel/httpjson.
 func decodeJSON(d *json.Decoder, out any, r io.ReadSeeker) (bool, error) {
 	d.UseNumber()
 	if err := d.Decode(out); err != nil {
 		// decode.object() in encoding/json.go does not return a structured error
-		// when an unknown field is found. Process it manually.
-		if r != nil && strings.Contains(err.Error(), "json: unknown field ") {
-			// Decode again but this time capture all errors. Try first as a map (JSON object), then as a slice
-			// (JSON list).
-			for _, t := range []any{map[string]any{}, []any{}} {
-				if _, err2 := r.Seek(0, 0); err2 != nil {
-					// Unexpected.
-					return false, err2
-				}
-				d = json.NewDecoder(r)
-				d.UseNumber()
-				if err2 := d.Decode(&t); err2 == nil {
-					if err2 = errors.Join(httpjson.FindExtraKeys(reflect.TypeOf(out), t)...); err2 != nil {
-						return true, err2
+		// when an unknown field is found or when the type is wrong. Process it manually.
+		if r != nil {
+			if s := err.Error(); strings.Contains(s, "json: unknown field ") || strings.Contains(s, "json: cannot unmarshal ") {
+				// Decode again but this time capture all errors. Try first as a map (JSON object), then as a slice
+				// (JSON list).
+				for _, t := range []any{map[string]any{}, []any{}} {
+					if _, err2 := r.Seek(0, 0); err2 != nil {
+						// Unexpected.
+						return false, err2
+					}
+					d = json.NewDecoder(r)
+					d.UseNumber()
+					if err2 := d.Decode(&t); err2 == nil {
+						if err2 = errors.Join(httpjson.FindExtraKeys(reflect.TypeOf(out), t)...); err2 != nil {
+							return true, err2
+						}
 					}
 				}
 			}

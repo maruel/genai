@@ -27,7 +27,11 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
-// https://developers.cloudflare.com/api/resources/ai/methods/run/
+// ChatRequest structure depends on the model used.
+//
+// The general description is at https://developers.cloudflare.com/api/resources/ai/methods/run/
+//
+// A specific one is https://developers.cloudflare.com/workers-ai/models/llama-4-scout-17b-16e-instruct/
 type ChatRequest struct {
 	Messages          []Message `json:"messages"`
 	FrequencyPenalty  float64   `json:"frequency_penalty,omitzero"` // [0, 2.0]
@@ -38,14 +42,13 @@ type ChatRequest struct {
 		Type       string             `json:"type,omitzero"` // json_object, json_schema
 		JSONSchema *jsonschema.Schema `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
-	Seed        int64   `json:"seed,omitzero"`
-	Stream      bool    `json:"stream,omitzero"`
-	Temperature float64 `json:"temperature,omitzero"` // [0, 5]
-	Tools       []Tool  `json:"tools,omitzero"`
-	TopK        int64   `json:"top_k,omitzero"` // [1, 50]
-	TopP        float64 `json:"top_p,omitzero"` // [0, 2.0]
-
-	// Functions         []function     `json:"functions,omitzero"`
+	GuidedJSON  *jsonschema.Schema `json:"guided_json,omitzero"`
+	Seed        int64              `json:"seed,omitzero"`
+	Stream      bool               `json:"stream,omitzero"`
+	Temperature float64            `json:"temperature,omitzero"` // [0, 5]
+	Tools       []Tool             `json:"tools,omitzero"`
+	TopK        int64              `json:"top_k,omitzero"` // [1, 50]
+	TopP        float64            `json:"top_p,omitzero"` // [0, 2.0]
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
@@ -66,7 +69,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 				c.Seed = v.Seed
 				c.TopK = v.TopK
 				if len(v.Stop) != 0 {
-					unsupported = append(unsupported, "Stop")
+					errs = append(errs, errors.New("unsupported option Stop"))
 				}
 				if v.DecodeAs != nil {
 					c.ResponseFormat.Type = "json_schema"
@@ -75,6 +78,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 					c.ResponseFormat.Type = "json_object"
 				}
 				if len(v.Tools) != 0 {
+					// Technically, Cloudflare does support tool calling but given how everything is broken, I stopped
+					// implementing there. If you want to use this, please send a PR!
+					errs = append(errs, errors.New("unsupported option Tools"))
 					if v.ToolCallRequest != genai.ToolCallAny {
 						// Cloudflare doesn't provide a way to force tool use. Don't fail.
 						unsupported = append(unsupported, "ToolCallRequest")
@@ -131,8 +137,9 @@ func (c *ChatRequest) SetStream(stream bool) {
 // Message is not well specified in the API documentation.
 // https://developers.cloudflare.com/api/resources/ai/methods/run/
 type Message struct {
-	Content string `json:"content"` // "system", "assistant", "user"
-	Role    string `json:"role"`
+	Role       string `json:"role"` // "system", "assistant", "user", "tool"
+	Content    string `json:"content,omitzero"`
+	ToolCallID string `json:"tool_call_id,omitzero"`
 }
 
 func (m *Message) From(in *genai.Message) error {
@@ -146,6 +153,9 @@ func (m *Message) From(in *genai.Message) error {
 		return errors.New("cloudflare doesn't support multiple content blocks; TODO split transparently")
 	}
 	if len(in.ToolCalls) != 0 {
+		if len(in.ToolCalls) > 1 {
+			return errors.New("cloudflare doesn't support multiple tool replies in a single message yet")
+		}
 		return errors.New("cloudflare tool calls are not supported yet")
 	}
 	if len(in.ToolCallResults) != 0 {
@@ -331,9 +341,10 @@ func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
 
 // If you find the documentation for this please tell me!
 type ChatStreamChunkResponse struct {
-	Response string `json:"response"`
-	P        string `json:"p"`
-	Usage    Usage  `json:"usage"`
+	Response  string     `json:"response"`
+	P         string     `json:"p"`
+	ToolCalls []ToolCall `json:"tool_calls"`
+	Usage     Usage      `json:"usage"`
 }
 
 type Usage struct {

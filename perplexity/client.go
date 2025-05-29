@@ -71,7 +71,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 				}
 				c.TopK = v.TopK
 				if len(v.Stop) != 0 {
-					unsupported = append(unsupported, "Stop tokens")
+					errs = append(errs, errors.New("unsupported option Stop"))
 				}
 				if v.DecodeAs != nil {
 					// Requires Tier 3 to work in practice.

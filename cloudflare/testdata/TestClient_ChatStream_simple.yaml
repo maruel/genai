@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"messages":[{"content":"Say hello. Use only one word.","role":"user"}],"max_tokens":2000,"seed":1,"stream":true,"temperature":0.01}
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"max_tokens":2000,"seed":1,"stream":true,"temperature":0.01}
         form: {}
         headers:
             Content-Type:
@@ -31,9 +31,9 @@ interactions:
         body: |+
             data: {"response":"Hello","p":"abcdefghijklmnopqrst"}
 
-            data: {"response":".","p":"abcdefghijklmnopqrstuvwxyz012345678"}
+            data: {"response":".","p":"abcdefghijkl"}
 
-            data: {"response":"","p":"abcdefghijklmn"}
+            data: {"response":"","p":"abcde"}
 
             data: {"response":"","usage":{"prompt_tokens":19,"completion_tokens":3,"total_tokens":22}}
 
@@ -41,13 +41,13 @@ interactions:
 
         headers:
             Api-Version:
-                - "2025-05-24"
+                - "2025-05-29"
             Cf-Ai-Req-Id:
-                - 2ac0830f-daa7-4dbf-8d2f-2693d6188b9a
+                - 12756205-1cac-45a4-b3ec-1c43fee1cafb
             Cf-Auditlog-Id:
-                - 0196ffed-f2f8-72bd-bdc9-380f6a6ea4fc
+                - 01971de3-1428-7a29-b651-f73acf49d397
             Cf-Ray:
-                - 94490df178cca254-YUL
+                - 9478fc8ce824a296-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -56,4 +56,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 312ms
+        duration: 317ms

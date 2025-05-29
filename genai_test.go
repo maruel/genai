@@ -304,7 +304,7 @@ func TestMessage_Decode(t *testing.T) {
 						},
 					},
 				},
-				errMsg: "only text messages can be decoded as JSON",
+				errMsg: "only text messages can be decoded as JSON, can't decode {\"role\":\"assistant\",\"contents\":[{\"document\":\"ZG9jdW1lbnQgY29udGVudA==\"}]}",
 			},
 		}
 		for _, tt := range tests {

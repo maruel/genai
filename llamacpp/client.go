@@ -213,8 +213,23 @@ func (c *CompletionResponse) ToResult() (genai.ChatResult, error) {
 
 type StopType string
 
+const (
+	StopEOS   StopType = "eos"
+	StopLimit StopType = "limit"
+	StopWord  StopType = "word"
+)
+
 func (s StopType) ToFinishReason() genai.FinishReason {
-	return genai.FinishReason(s)
+	switch s {
+	case StopEOS:
+		return genai.FinishedStop
+	case StopLimit:
+		return genai.FinishedLength
+	case StopWord:
+		return genai.FinishedStopSequence
+	default:
+		return genai.FinishReason(s)
+	}
 }
 
 type Timings struct {

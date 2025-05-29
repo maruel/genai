@@ -477,7 +477,8 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 //
 
 type ErrorResponse struct {
-	Error ErrorError `json:"error"`
+	Error     ErrorError `json:"error"`
+	ErrorType string     `json:"error_type"`
 }
 
 func (er *ErrorResponse) String() string {

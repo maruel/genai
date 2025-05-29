@@ -357,7 +357,7 @@ func (m *Message) AsText() string {
 func (m *Message) Decode(x any) error {
 	s := m.AsText()
 	if s == "" {
-		return errors.New("only text messages can be decoded as JSON")
+		return fmt.Errorf("only text messages can be decoded as JSON, can't decode %#v", m)
 	}
 	d := json.NewDecoder(strings.NewReader(s))
 	d.DisallowUnknownFields()
@@ -389,6 +389,7 @@ func (m *Message) DoToolCalls(ctx context.Context, tools []ToolDef) (Message, er
 	return out, nil
 }
 
+// UnmarshalJSON adds validation during decoding.
 func (m *Message) UnmarshalJSON(b []byte) error {
 	type Alias Message
 	a := struct{ *Alias }{Alias: (*Alias)(m)}
@@ -398,6 +399,11 @@ func (m *Message) UnmarshalJSON(b []byte) error {
 		return err
 	}
 	return errors.Join(m.validate()...)
+}
+
+func (m *Message) GoString() string {
+	b, _ := json.Marshal(m)
+	return string(b)
 }
 
 // Content is a block of content in the message meant to be visible in a

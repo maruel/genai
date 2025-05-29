@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"messages":[{"content":"Tell a short joke.","role":"user"}]}
+            {"messages":[{"role":"user","content":"Tell a short joke."}]}
         form: {}
         headers:
             Content-Type:
@@ -31,11 +31,11 @@ interactions:
         body: '{"result":null,"success":false,"errors":[{"code":10000,"message":"Authentication error"}],"messages":[]}'
         headers:
             Api-Version:
-                - "2025-05-21"
+                - "2025-05-29"
             Cf-Auditlog-Id:
-                - 0196f3f0-4177-7a15-8e5e-ec73572ba3b0
+                - 01971de4-471e-7122-80b7-ace96bb221f2
             Cf-Ray:
-                - 9435de6f1ce9a2f7-YUL
+                - 9478fe780a7e6e06-YUL
             Content-Length:
                 - "104"
             Content-Type:
@@ -46,4 +46,4 @@ interactions:
                 - Accept-Encoding
         status: 401 Unauthorized
         code: 401
-        duration: 108ms
+        duration: 98ms

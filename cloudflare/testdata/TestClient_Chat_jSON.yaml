@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"messages":[{"content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.","role":"user"}],"max_tokens":200,"response_format":{"type":"json_object"},"seed":1,"temperature":0.1}
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"max_tokens":200,"response_format":{"type":"json_object"},"seed":1,"temperature":0.1}
         form: {}
         headers:
             Content-Type:
@@ -31,13 +31,13 @@ interactions:
         body: '{"result":{"response":"{\"is_fruit\": true}","usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
-                - "2025-05-15"
+                - "2025-05-29"
             Cf-Ai-Req-Id:
-                - 25bfec0c-94ef-4726-a090-50bbe86d36a6
+                - 95dc5d4b-fa2c-4b99-93cc-563bea8e2658
             Cf-Auditlog-Id:
-                - 0196d41b-ef47-7238-bc1e-22f088eb02c5
+                - 01971de4-65ef-77bb-8de8-e75706ac9dde
             Cf-Ray:
-                - 9402f11eae46a314-YUL
+                - 9478fea96f8833ef-YUL
             Content-Type:
                 - application/json
             Server:
@@ -46,4 +46,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 968ms
+        duration: 993ms

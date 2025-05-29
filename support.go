@@ -178,6 +178,10 @@ func (c *ChatProviderUsage) GetAccumulatedUsage() Usage {
 	return c.accumUsage
 }
 
+func (c *ChatProviderUsage) Unwrap() ChatProvider {
+	return c.ChatProvider
+}
+
 //
 
 // ChatProviderThinking wraps a ChatProvider and processes its output to extract thinking blocks.
@@ -190,6 +194,9 @@ type ChatProviderThinking struct {
 	// TagName is the name of the tag to use for thinking content. Normally "think" or "thinking".
 	TagName string
 
+	// SkipJSON specifies to skip parsing when JSON is requested.
+	SkipJSON bool
+
 	_ struct{}
 }
 
@@ -197,8 +204,11 @@ type ChatProviderThinking struct {
 // and processing the result to extract thinking blocks.
 func (c *ChatProviderThinking) Chat(ctx context.Context, msgs Messages, opts Validatable) (ChatResult, error) {
 	result, err := c.ChatProvider.Chat(ctx, msgs, opts)
-	if err2 := c.processThinkingMessage(&result.Message); err == nil {
-		err = err2
+	// When replying in JSON, the thinking tokens are "denied" by the engine.
+	if o, ok := opts.(*ChatOptions); !ok || !c.SkipJSON || (!o.ReplyAsJSON && o.DecodeAs == nil) {
+		if err2 := c.processThinkingMessage(&result.Message); err == nil {
+			err = err2
+		}
 	}
 	return result, err
 }
@@ -207,6 +217,13 @@ func (c *ChatProviderThinking) Chat(ctx context.Context, msgs Messages, opts Val
 // and processing each fragment to extract thinking blocks.
 // If no thinking tags are present, the first part of the message is assumed to be thinking.
 func (c *ChatProviderThinking) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (ChatResult, error) {
+	if c.SkipJSON {
+		if o, ok := opts.(*ChatOptions); ok && (o.ReplyAsJSON || o.DecodeAs != nil) {
+			// When replying in JSON, the thinking tokens are "denied" by the engine.
+			return c.ChatProvider.ChatStream(ctx, msgs, opts, replies)
+		}
+	}
+
 	internalReplies := make(chan MessageFragment)
 	// The tokens always have a trailing "\n". When streaming, the trailing "\n" will likely be sent as a
 	// separate event. This requires a small state machine to keep track of that.
@@ -369,6 +386,10 @@ func (c *ChatProviderThinking) processThinkingMessage(m *Message) error {
 		m.Contents = append([]Content{{Thinking: text[:tEnd]}}, m.Contents...)
 	}
 	return nil
+}
+
+func (c *ChatProviderThinking) Unwrap() ChatProvider {
+	return c.ChatProvider
 }
 
 type tagProcessingState int

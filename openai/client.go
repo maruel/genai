@@ -222,7 +222,10 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) []string {
 		c.ResponseFormat.Type = "json_object"
 	}
 	if len(v.Tools) != 0 {
-		c.ParallelToolCalls = true
+		// TODO: Determine exactly which models do not support this.
+		if model != "o4-mini" {
+			c.ParallelToolCalls = true
+		}
 		switch v.ToolCallRequest {
 		case genai.ToolCallAny:
 			c.ToolChoice = "auto"

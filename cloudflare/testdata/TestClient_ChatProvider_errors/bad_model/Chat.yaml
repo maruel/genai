@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"messages":[{"content":"Tell a short joke.","role":"user"}]}
+            {"messages":[{"role":"user","content":"Tell a short joke."}]}
         form: {}
         headers:
             Content-Type:
@@ -31,11 +31,11 @@ interactions:
         body: '{"success":false,"errors":[{"code":7000,"message":"No route for that URI"}],"messages":[],"result":null}'
         headers:
             Api-Version:
-                - "2025-05-21"
+                - "2025-05-29"
             Cf-Auditlog-Id:
-                - 0196f3f0-41da-7374-a9df-b042bd78babe
+                - 01971de3-3489-7d6d-a722-9a3a9fec626c
             Cf-Ray:
-                - 9435de6f9ddba2f7-YUL
+                - 9478fcc0cc99a2fa-YUL
             Content-Length:
                 - "104"
             Content-Type:
@@ -46,4 +46,4 @@ interactions:
                 - Accept-Encoding
         status: 400 Bad Request
         code: 400
-        duration: 53ms
+        duration: 80ms

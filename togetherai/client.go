@@ -359,10 +359,13 @@ type ChatResponse struct {
 			TokenLogprobs []float64 `json:"token_logprobs"`
 		} `json:"logprobs"`
 	} `json:"choices"`
-	Usage   Usage  `json:"usage"`
-	Created Time   `json:"created"`
-	Model   string `json:"model"`
-	Object  string `json:"object"` // "chat.completion"
+	Usage    Usage  `json:"usage"`
+	Created  Time   `json:"created"`
+	Model    string `json:"model"`
+	Object   string `json:"object"` // "chat.completion"
+	Warnings []struct {
+		Message string `json:"message"`
+	} `json:"warnings"`
 }
 
 func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
@@ -419,9 +422,9 @@ type ChatStreamChunkResponse struct {
 	Created Time   `json:"created"`
 	Model   string `json:"model"`
 	Choices []struct {
-		Index int64  `json:"index"`
-		Text  string `json:"text"` // Duplicated to Delta.Text
-		Seed  int64  `json:"seed"`
+		Index int64   `json:"index"`
+		Text  string  `json:"text"` // Duplicated to Delta.Text
+		Seed  big.Int `json:"seed"`
 		Delta struct {
 			TokenID   int64      `json:"token_id"`
 			Role      genai.Role `json:"role"`
@@ -432,7 +435,10 @@ type ChatStreamChunkResponse struct {
 		FinishReason FinishReason `json:"finish_reason"`
 	} `json:"choices"`
 	// SystemFingerprint string `json:"system_fingerprint"`
-	Usage Usage `json:"usage"`
+	Usage    Usage `json:"usage"`
+	Warnings []struct {
+		Message string `json:"message"`
+	} `json:"warnings"`
 }
 
 // Time is a JSON encoded unix timestamp.

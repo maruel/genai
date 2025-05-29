@@ -160,10 +160,8 @@ func (m *Message) From(in *genai.Message) error {
 	}
 	m.Name = in.User
 	for i := range in.Contents {
+		// Thinking content should not be returned to the model.
 		m.Content += in.Contents[i].Text
-		if in.Contents[i].Thinking != "" {
-			continue
-		}
 		if in.Contents[i].Filename != "" || in.Contents[i].Document != nil || in.Contents[i].URL != "" {
 			return errors.New("deepseek doesn't support document content blocks")
 		}
@@ -205,11 +203,12 @@ func (m *Message) To(out *genai.Message) error {
 			m.ToolCalls[i].To(&out.ToolCalls[i])
 		}
 	}
+	// Both ReasoningContent and Content can be set on the same reply.
 	if m.ReasoningContent != "" {
 		out.Contents = []genai.Content{{Thinking: m.Content}}
 	}
 	if m.Content != "" {
-		out.Contents = []genai.Content{{Text: m.Content}}
+		out.Contents = append(out.Contents, genai.Content{Text: m.Content})
 	}
 	return nil
 }
@@ -474,7 +473,10 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		f := genai.MessageFragment{TextFragment: pkt.Choices[0].Delta.Content}
+		f := genai.MessageFragment{
+			TextFragment:     pkt.Choices[0].Delta.Content,
+			ThinkingFragment: pkt.Choices[0].Delta.ReasoningContent,
+		}
 		// DeepSeek streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
 		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
 			if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {

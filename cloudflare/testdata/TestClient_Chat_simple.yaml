@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"messages":[{"content":"Say hello. Use only one word.","role":"user"}],"max_tokens":2000,"seed":1,"temperature":0.01}
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"max_tokens":2000,"seed":1,"temperature":0.01}
         form: {}
         headers:
             Content-Type:
@@ -31,13 +31,13 @@ interactions:
         body: '{"result":{"response":"Hello.","usage":{"prompt_tokens":19,"completion_tokens":3,"total_tokens":22}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
-                - "2025-05-24"
+                - "2025-05-29"
             Cf-Ai-Req-Id:
-                - 1f99d3d4-f774-4f12-a36e-167f3a454103
+                - bd1721ae-6c01-4d67-ab8c-d2705ae14b83
             Cf-Auditlog-Id:
-                - 0196ffed-b984-7f15-bb34-4e13827137d4
+                - 01971de2-f111-772b-9700-0627af59625f
             Cf-Ray:
-                - 94490d958cf5a2ac-YUL
+                - 9478fc54db77a2b6-YUL
             Content-Type:
                 - application/json
             Server:
@@ -46,4 +46,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 300ms
+        duration: 314ms

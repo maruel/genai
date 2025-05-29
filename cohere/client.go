@@ -42,7 +42,7 @@ type ChatRequest struct {
 	} `json:"response_format,omitzero"`
 	SafetyMode       string   `json:"safety_mode,omitzero"` // "CONTEXTUAL", "STRICT", "OFF"
 	MaxTokens        int64    `json:"max_tokens,omitzero"`
-	StopSequences    []string `json:"stop_sequences,omitzero"` // keywords to stop completion
+	StopSequences    []string `json:"stop_sequences,omitzero"` // Up to 5 words
 	Temperature      float64  `json:"temperature,omitzero"`
 	Seed             int64    `json:"seed,omitzero"`
 	FrequencyPenalty float64  `json:"frequency_penalty,omitzero"` // [0, 1.0]
@@ -258,12 +258,45 @@ const (
 	ContentDocument ContentType = "document"
 )
 
+type Citations []Citation
+
+// UnmarshalJSON implements custom unmarshalling for Citations type
+// to handle cases where citations could be a list or a single object.
+func (c *Citations) UnmarshalJSON(data []byte) error {
+	// Try unmarshalling as a a list first
+	var l []Citation
+	if err := json.Unmarshal(data, &l); err == nil {
+		*c = (Citations)(l)
+		return nil
+	}
+
+	var v Citation
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	*c = Citations{v}
+	return nil
+}
+
 type Citation struct {
-	Start   int64  `json:"start,omitzero"`
-	End     int64  `json:"end,omitzero"`
-	Text    string `json:"text,omitzero"`
-	Sources []any  `json:"sources,omitzero"`
-	Type    string `json:"type,omitzero"` // TEXT_CONTENT, PLAN
+	Start   int64    `json:"start,omitzero"`
+	End     int64    `json:"end,omitzero"`
+	Text    string   `json:"text,omitzero"`
+	Sources []Source `json:"sources,omitzero"`
+	Type    string   `json:"type,omitzero"` // "TEXT_CONTENT", "PLAN"
+}
+
+type Source struct {
+	Type string `json:"type,omitzero"` // "tool", "document"
+
+	// Type == "tool", "document"
+	ID string `json:"id,omitzero"`
+
+	// Type == "tool"
+	ToolOutput map[string]any `json:"tool_output,omitzero"`
+
+	// Type == "document"
+	Document map[string]any `json:"document,omitzero"`
 }
 
 type Tool struct {
@@ -359,7 +392,7 @@ type MessageResponse struct {
 	Content Contents `json:"content"` // Generally a []Content but will be a Content when streaming text.
 	Role    string   `json:"role"`    // "system", "assistant", "user"
 	// Type == "assistant"
-	Citations []Citation `json:"citations,omitzero"`
+	Citations Citations `json:"citations,omitzero"`
 	// Type == "assistant"
 	ToolCalls  ToolCalls `json:"tool_calls,omitzero"` // Generally []ToolCall but will be a ToolCall when streaming tool call.
 	ToolCallID string    `json:"tool_call_id,omitzero"`
@@ -475,6 +508,8 @@ const (
 	ChunkToolCallStart ChunkType = "tool-call-start"
 	ChunkToolCallDelta ChunkType = "tool-call-delta"
 	ChunkToolCallEnd   ChunkType = "tool-call-end"
+	ChunkCitationStart ChunkType = "citation-start"
+	ChunkCitationEnd   ChunkType = "citation-end"
 )
 
 type Model struct {
@@ -657,6 +692,8 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		case ChunkToolCallEnd:
 			pendingCall.To(&f.ToolCall)
 			pendingCall = ToolCall{}
+		case ChunkCitationStart, ChunkCitationEnd:
+			// TODO:
 		default:
 			if !internal.BeLenient {
 				return fmt.Errorf("unknown packet %q", pkt.Type)

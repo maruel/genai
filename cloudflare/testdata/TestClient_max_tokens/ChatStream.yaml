@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"messages":[{"content":"Tell a joke in 10 words","role":"user"}],"max_tokens":2,"seed":1,"stream":true,"temperature":0.01}
+            {"messages":[{"role":"user","content":"Tell a joke in 10 words"}],"max_tokens":2,"seed":1,"stream":true,"temperature":0.01}
         form: {}
         headers:
             Content-Type:
@@ -29,9 +29,9 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"response":"Why","p":"abcdefghijklmnopqrstuvwxyz0123456789abcde"}
+            data: {"response":"Why","p":"a"}
 
-            data: {"response":" don","p":"abcdefghijklmno"}
+            data: {"response":" don","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdefghijkl"}
 
             data: {"response":"","usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0}}
 
@@ -39,13 +39,13 @@ interactions:
 
         headers:
             Api-Version:
-                - "2025-05-25"
+                - "2025-05-29"
             Cf-Ai-Req-Id:
-                - 17a810ac-988f-46a8-ba58-5c2d35404ef7
+                - e9301dea-52d7-4c0e-b39e-4df9803951fe
             Cf-Auditlog-Id:
-                - 019707b5-9286-7685-ac45-c796463b13b6
+                - 01971de3-7f48-7066-8048-abeaa61ac5b9
             Cf-Ray:
-                - 9455808a5d53a2f8-YUL
+                - 9478fd3839b2a320-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -54,4 +54,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 310ms
+        duration: 374ms

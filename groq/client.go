@@ -25,6 +25,7 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+// ChatOptions is the Groq-specific options.
 type ChatOptions struct {
 	genai.ChatOptions
 
@@ -177,22 +178,28 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) ([]string,
 		c.ResponseFormat.Type = "json_object"
 	}
 	if len(v.Tools) != 0 {
-		switch v.ToolCallRequest {
-		case genai.ToolCallAny:
-			c.ToolChoice = "auto"
-		case genai.ToolCallRequired:
-			c.ToolChoice = "required"
-		case genai.ToolCallNone:
-			c.ToolChoice = "none"
-		}
-		// Documentation states max is 128 tools.
-		c.Tools = make([]Tool, len(v.Tools))
-		for i, t := range v.Tools {
-			c.Tools[i].Type = "function"
-			c.Tools[i].Function.Name = t.Name
-			c.Tools[i].Function.Description = t.Description
-			if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
-				c.Tools[i].Function.Parameters = t.GetInputSchema()
+		// This is annoying to hardcode here but it still "succeeds" while returning nothing.
+		if model == "qwen-qwq-32b" {
+			// TODO: It works when not streaming.
+			errs = append(errs, errors.New("unsupported option Tools"))
+		} else {
+			switch v.ToolCallRequest {
+			case genai.ToolCallAny:
+				c.ToolChoice = "auto"
+			case genai.ToolCallRequired:
+				c.ToolChoice = "required"
+			case genai.ToolCallNone:
+				c.ToolChoice = "none"
+			}
+			// Documentation states max is 128 tools.
+			c.Tools = make([]Tool, len(v.Tools))
+			for i, t := range v.Tools {
+				c.Tools[i].Type = "function"
+				c.Tools[i].Function.Name = t.Name
+				c.Tools[i].Function.Description = t.Description
+				if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
+					c.Tools[i].Function.Parameters = t.GetInputSchema()
+				}
 			}
 		}
 	}

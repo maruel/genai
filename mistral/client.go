@@ -253,8 +253,10 @@ func (c *Content) From(in *genai.Content) error {
 	case mimeType == "application/pdf":
 		c.Type = ContentDocumentURL
 		if in.URL == "" {
+			// Inexplicably, Mistral supports inline images but not PDF.
 			return errors.New("unsupported inline document")
 		}
+		c.DocumentName = in.GetFilename()
 		c.DocumentURL = in.URL
 	default:
 		return fmt.Errorf("unsupported mime type %s", mimeType)

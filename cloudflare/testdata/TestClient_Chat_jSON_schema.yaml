@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"messages":[{"content":"Is a banana a fruit? Reply as JSON according to the provided schema.","role":"user"}],"max_tokens":200,"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean","description":"True if the answer is that it is a fruit, false otherwise"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}},"seed":1,"temperature":0.1}
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Reply as JSON according to the provided schema."}],"max_tokens":200,"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean","description":"True if the answer is that it is a fruit, false otherwise"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}},"seed":1,"temperature":0.1}
         form: {}
         headers:
             Content-Type:
@@ -31,13 +31,13 @@ interactions:
         body: '{"result":{"response":{"is_fruit":true}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
-                - "2025-05-15"
+                - "2025-05-29"
             Cf-Ai-Req-Id:
-                - d610f65d-fa3c-4c8d-b164-2ccf84ea589b
+                - b563ae74-4ef2-48ea-aeac-93a821998a60
             Cf-Auditlog-Id:
-                - 0196d41b-ef45-77b5-8313-6238008c64ac
+                - 01971de4-65eb-79da-8b73-7cc3794ab1bd
             Cf-Ray:
-                - 9402f11eae44a314-YUL
+                - 9478fea96f8633ef-YUL
             Content-Type:
                 - application/json
             Server:
@@ -46,4 +46,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 1.209s
+        duration: 1.253s

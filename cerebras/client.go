@@ -85,13 +85,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 					unsupported = append(unsupported, "TopK")
 				}
 				c.Stop = v.Stop
-				if v.ReplyAsJSON {
-					c.ResponseFormat.Type = "json_object"
-				}
 				if v.DecodeAs != nil {
 					c.ResponseFormat.Type = "json_schema"
 					c.ResponseFormat.JSONSchema.Schema = jsonschema.Reflect(v.DecodeAs)
 					c.ResponseFormat.JSONSchema.Strict = true
+				} else if v.ReplyAsJSON {
+					c.ResponseFormat.Type = "json_object"
 				}
 				if len(v.Tools) != 0 {
 					switch v.ToolCallRequest {
@@ -462,16 +461,33 @@ type ErrorResponse struct {
 	// Either this
 	Detail string `json:"detail"`
 
+	// Or this (tool call)
+	StatusCode int64 `json:"status_code"`
+	Error      struct {
+		Message          string `json:"message"`
+		Type             string `json:"type"`
+		Param            string `json:"param"`
+		Code             string `json:"code"`
+		FailedGeneration string `json:"failed_generation"`
+	} `json:"error"`
+
 	// Or this
-	Message string `json:"message"`
-	Type    string `json:"type"`
-	Param   string `json:"param"`
-	Code    string `json:"code"`
+	Message          string `json:"message"`
+	Type             string `json:"type"`
+	Param            string `json:"param"`
+	Code             string `json:"code"`
+	FailedGeneration string `json:"failed_generation"`
 }
 
 func (er *ErrorResponse) String() string {
 	if er.Detail != "" {
 		return fmt.Sprintf("error %s", er.Detail)
+	}
+	if er.StatusCode != 0 {
+		return fmt.Sprintf("error %s/%s/%s: %s while generating %q", er.Error.Type, er.Error.Param, er.Error.Code, er.Error.Message, er.Error.FailedGeneration)
+	}
+	if er.FailedGeneration != "" {
+		return fmt.Sprintf("error %s/%s/%s: %s while generating %q", er.Type, er.Param, er.Code, er.Message, er.FailedGeneration)
 	}
 	return fmt.Sprintf("error %s/%s/%s: %s", er.Type, er.Param, er.Code, er.Message)
 }

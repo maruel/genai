@@ -212,15 +212,14 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) []string {
 		unsupported = append(unsupported, "TopK")
 	}
 	c.Stop = v.Stop
-	if v.ReplyAsJSON {
-		c.ResponseFormat.Type = "json_object"
-	}
 	if v.DecodeAs != nil {
 		c.ResponseFormat.Type = "json_schema"
 		// OpenAI requires a name.
 		c.ResponseFormat.JSONSchema.Name = "response"
 		c.ResponseFormat.JSONSchema.Strict = true
 		c.ResponseFormat.JSONSchema.Schema = jsonschema.Reflect(v.DecodeAs)
+	} else if v.ReplyAsJSON {
+		c.ResponseFormat.Type = "json_object"
 	}
 	if len(v.Tools) != 0 {
 		c.ParallelToolCalls = true

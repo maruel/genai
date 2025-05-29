@@ -68,16 +68,15 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 				if len(v.Stop) != 0 {
 					unsupported = append(unsupported, "Stop")
 				}
-				if v.ReplyAsJSON {
-					c.ResponseFormat.Type = "json_object"
-				}
 				if v.DecodeAs != nil {
 					c.ResponseFormat.Type = "json_schema"
 					c.ResponseFormat.JSONSchema = jsonschema.Reflect(v.DecodeAs)
+				} else if v.ReplyAsJSON {
+					c.ResponseFormat.Type = "json_object"
 				}
 				if len(v.Tools) != 0 {
 					if v.ToolCallRequest != genai.ToolCallAny {
-						// Cloudflare doesn't provide a way to force tool use.
+						// Cloudflare doesn't provide a way to force tool use. Don't fail.
 						unsupported = append(unsupported, "ToolCallRequest")
 					}
 					c.Tools = make([]Tool, len(v.Tools))

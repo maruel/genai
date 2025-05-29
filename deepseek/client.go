@@ -80,7 +80,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 					c.ResponseFormat.Type = "json_object"
 				}
 				if v.DecodeAs != nil {
-					unsupported = append(unsupported, "JSON schema (DecodeAs)")
+					errs = append(errs, errors.New("unsupported option DecodeAs"))
 				}
 				if len(v.Tools) != 0 {
 					switch v.ToolCallRequest {

@@ -104,14 +104,14 @@ func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Validatable, mo
 				c.TopK = v.TopK
 				c.Stop = v.Stop
 				if v.ReplyAsJSON {
-					unsupported = append(unsupported, "ReplyAsJSON")
+					errs = append(errs, errors.New("unsupported option ReplyAsJSON"))
 				}
 				if v.DecodeAs != nil {
-					unsupported = append(unsupported, "DecodeAs")
+					errs = append(errs, errors.New("unsupported option DecodeAs"))
 				}
 				if len(v.Tools) != 0 {
-					// It's unclear how I'll implement this.
-					unsupported = append(unsupported, "Tools")
+					// TODO: June 2025, support was added recently for streaming.
+					errs = append(errs, errors.New("unsupported option Tools"))
 				}
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))

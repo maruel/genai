@@ -333,12 +333,11 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) []string {
 	c.GenerationConfig.Seed = v.Seed
 	c.GenerationConfig.TopK = v.TopK
 	c.GenerationConfig.StopSequences = v.Stop
-	if v.ReplyAsJSON {
-		c.GenerationConfig.ResponseMimeType = "application/json"
-	}
 	if v.DecodeAs != nil {
 		c.GenerationConfig.ResponseMimeType = "application/json"
 		c.GenerationConfig.ResponseSchema.FromJSONSchema(jsonschema.Reflect(v.DecodeAs))
+	} else if v.ReplyAsJSON {
+		c.GenerationConfig.ResponseMimeType = "application/json"
 	}
 	if len(v.Tools) != 0 {
 		switch v.ToolCallRequest {

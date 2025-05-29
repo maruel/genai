@@ -55,13 +55,13 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 				}
 				c.Stop = v.Stop
 				if v.ReplyAsJSON {
-					unsupported = append(unsupported, "ReplyAsJSON")
+					errs = append(errs, errors.New("unsupported option ReplyAsJSON"))
 				}
 				if v.DecodeAs != nil {
-					unsupported = append(unsupported, "DecodeAs")
+					errs = append(errs, errors.New("unsupported option DecodeAs"))
 				}
 				if len(v.Tools) != 0 {
-					unsupported = append(unsupported, "Tools")
+					errs = append(errs, errors.New("unsupported option Tools"))
 				}
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))

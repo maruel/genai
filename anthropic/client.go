@@ -75,7 +75,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 		} else {
 			switch v := opts.(type) {
 			case *ChatOptions:
-				unsupported = c.initOptions(&v.ChatOptions)
+				unsupported, errs = c.initOptions(&v.ChatOptions)
 				msgToCache = v.MessagesToCache
 				if v.ThinkingBudget > 0 {
 					if v.ThinkingBudget >= v.MaxTokens {
@@ -87,15 +87,28 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 					c.Thinking.Type = "enabled"
 				}
 			case *genai.ChatOptions:
-				unsupported = c.initOptions(v)
+				unsupported, errs = c.initOptions(v)
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}
 		}
 	}
 	if c.MaxToks == 0 {
-		// TODO: Query the model. Anthropic requires a value! Use the lowest common denominator for 3.5+.
-		c.MaxToks = 8192
+		// TODO: Query the model. Anthropic requires a value! This is quite annoying.
+		if strings.HasPrefix(model, "claude-3-opus-") || strings.HasPrefix(model, "claude-3-haiku-") {
+			c.MaxToks = 4096
+		} else if strings.HasPrefix(model, "claude-3-5-") {
+			c.MaxToks = 8192
+		} else if strings.HasPrefix(model, "claude-3-7-") {
+			c.MaxToks = 64000
+		} else if strings.HasPrefix(model, "claude-4-sonnet-") {
+			c.MaxToks = 64000
+		} else if strings.HasPrefix(model, "claude-4-opus-") {
+			c.MaxToks = 32000
+		} else {
+			// Default value for new models.
+			c.MaxToks = 32000
+		}
 	}
 
 	if err := msgs.Validate(); err != nil {
@@ -133,8 +146,9 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-func (c *ChatRequest) initOptions(v *genai.ChatOptions) []string {
+func (c *ChatRequest) initOptions(v *genai.ChatOptions) ([]string, []error) {
 	var unsupported []string
+	var errs []error
 	c.MaxToks = v.MaxTokens
 	c.Temperature = v.Temperature
 	if v.SystemPrompt != "" {
@@ -153,10 +167,18 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions) []string {
 	}
 	c.TopK = v.TopK
 	c.StopSequences = v.Stop
-	if v.ReplyAsJSON || v.DecodeAs != nil {
-		unsupported = append(unsupported, "JSON schema (ReplyAsJSON/DecodeAs)")
+	if v.ReplyAsJSON {
+		errs = append(errs, errors.New("unsupported option ReplyAsJSON"))
+	}
+	if v.DecodeAs != nil {
+		errs = append(errs, errors.New("unsupported option DecodeAs"))
 	}
 	if len(v.Tools) != 0 {
+		// We need to discard claude 2 and 3. This is a bit annoying to have to hardcode this.
+		if strings.HasPrefix(c.Model, "claude-2") || strings.HasPrefix(c.Model, "claude-3-haiku") ||
+			strings.HasPrefix(c.Model, "claude-3-sonnet") || strings.HasPrefix(c.Model, "claude-3-opus") {
+			errs = append(errs, errors.New("unsupported option Tools"))
+		}
 		switch v.ToolCallRequest {
 		case genai.ToolCallAny:
 			c.ToolChoice.Type = ToolChoiceAuto
@@ -177,7 +199,7 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions) []string {
 			}
 		}
 	}
-	return unsupported
+	return unsupported, errs
 }
 
 // SystemMessage is used in the system prompt.

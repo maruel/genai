@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 170
+        content_length: 171
         transfer_encoding: []
         trailer: {}
         host: api.anthropic.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"bad model","max_tokens":8192,"messages":[{"role":"user","content":[{"type":"text","text":"Tell a short joke."}]}],"stream":true,"thinking":{"type":"disabled"}}
+            {"model":"bad model","max_tokens":32000,"messages":[{"role":"user","content":[{"type":"text","text":"Tell a short joke."}]}],"stream":true,"thinking":{"type":"disabled"}}
         form: {}
         headers:
             Content-Type:
@@ -35,11 +35,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9435de704fd04bca-YUL
+                - 9472029d7ee7a2ae-YUL
             Content-Type:
                 - application/json
             Request-Id:
-                - req_011CPM642Ue6zGxZWgrC9Doi
+                - req_011CPauYHRcUedbziann4UXf
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -52,4 +52,4 @@ interactions:
                 - "false"
         status: 404 Not Found
         code: 404
-        duration: 82ms
+        duration: 71ms

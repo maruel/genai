@@ -85,6 +85,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 					switch v.ToolCallRequest {
 					case genai.ToolCallAny:
 					case genai.ToolCallRequired:
+						// Don't fail.
 						unsupported = append(unsupported, "ToolCallRequest")
 					case genai.ToolCallNone:
 						unsupported = append(unsupported, "ToolCallRequest")

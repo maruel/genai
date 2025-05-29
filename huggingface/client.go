@@ -89,12 +89,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 					unsupported = append(unsupported, "TopK")
 				}
 				c.Stop = v.Stop
-				if v.ReplyAsJSON {
-					c.ResponseFormat.Type = "json"
-				}
 				if v.DecodeAs != nil {
 					c.ResponseFormat.Type = "json"
 					c.ResponseFormat.Value = jsonschema.Reflect(v.DecodeAs)
+				} else if v.ReplyAsJSON {
+					c.ResponseFormat.Type = "json"
 				}
 				if len(v.Tools) != 0 {
 					switch v.ToolCallRequest {

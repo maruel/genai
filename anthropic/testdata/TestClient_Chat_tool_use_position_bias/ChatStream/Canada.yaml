@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 612
+        content_length: 614
         transfer_encoding: []
         trailer: {}
         host: api.anthropic.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"claude-3-haiku-20240307","max_tokens":4096,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"stream":true,"thinking":{"type":"disabled"},"tool_choice":{"type":"any"},"tools":[{"description":"A tool to determine the best country","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"name":"best_country"}]}
+            {"model":"claude-3-5-haiku-20241022","max_tokens":4096,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"stream":true,"thinking":{"type":"disabled"},"tool_choice":{"type":"any"},"tools":[{"description":"A tool to determine the best country","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"name":"best_country"}]}
         form: {}
         headers:
             Content-Type:
@@ -30,34 +30,37 @@ interactions:
         uncompressed: false
         body: |+
             event: message_start
-            data: {"type":"message_start","message":{"id":"msg_01EXR5MMYXtUSf9ach4JdNT2","type":"message","role":"assistant","model":"claude-3-haiku-20240307","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":483,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":16}}             }
+            data: {"type":"message_start","message":{"id":"msg_01SVSReQhevm7SLpA3gWRyY2","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":483,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":10,"service_tier":"standard"}}             }
 
             event: content_block_start
-            data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_0139gYLsLJ11hbppxZg8Yt38","name":"best_country","input":{}}  }
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_01NFrUDgvBP4Q4GWjBZGJvmy","name":"best_country","input":{}}            }
 
             event: ping
             data: {"type": "ping"}
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":""}        }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":""}           }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"{\"country"}        }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"{\""}    }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"\": \"Cana"}             }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"country\""}           }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"da\"}"}}
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":": \"Canada"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"\"}"}        }
 
             event: content_block_stop
-            data: {"type":"content_block_stop","index":0               }
+            data: {"type":"content_block_stop","index":0      }
 
             event: message_delta
-            data: {"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null},"usage":{"output_tokens":38}}
+            data: {"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null},"usage":{"output_tokens":38}               }
 
             event: message_stop
-            data: {"type":"message_stop"        }
+            data: {"type":"message_stop"          }
 
         headers:
             Anthropic-Organization-Id:
@@ -65,37 +68,37 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Limit:
                 - "50000"
             Anthropic-Ratelimit-Input-Tokens-Remaining:
-                - "49000"
+                - "50000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-05-18T21:04:48Z"
+                - "2025-05-29T00:52:21Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "7000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-05-18T21:05:04Z"
+                - "2025-05-29T00:52:37Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "50"
             Anthropic-Ratelimit-Requests-Remaining:
                 - "47"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-05-18T21:04:50Z"
+                - "2025-05-29T00:52:23Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Remaining:
-                - "56000"
+                - "57000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-05-18T21:04:48Z"
+                - "2025-05-29T00:52:21Z"
             Cache-Control:
                 - no-cache
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941e4f198b15a29f-YUL
+                - 9472022def75a2b1-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Request-Id:
-                - req_011CPFg5NnzCPPggqTBFjvGa
+                - req_011CPauWy8W6MjPUvjNTwzz9
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -106,4 +109,4 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 529ms
+        duration: 515ms

@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"claude-3-haiku-20240307","max_tokens":8192,"messages":[{"role":"user","content":[{"type":"text","text":"Tell a short joke."}]}],"thinking":{"type":"disabled"}}
+            {"model":"claude-3-haiku-20240307","max_tokens":4096,"messages":[{"role":"user","content":[{"type":"text","text":"Tell a short joke."}]}],"thinking":{"type":"disabled"}}
         form: {}
         headers:
             Content-Type:
@@ -33,13 +33,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9435de6eddf34bca-YUL
+                - 9472029bdc42a2ae-YUL
             Content-Length:
                 - "86"
             Content-Type:
                 - application/json
             Request-Id:
-                - req_011CPM641V7Rccino7nu3xtv
+                - req_011CPauYGKPN4gLh7gwN2MhQ
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -52,4 +52,4 @@ interactions:
                 - "false"
         status: 401 Unauthorized
         code: 401
-        duration: 117ms
+        duration: 108ms

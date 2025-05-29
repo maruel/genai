@@ -12,6 +12,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -57,7 +58,12 @@ func (r *Records) Close() int {
 	if len(r.preexisting) != 0 {
 		code = 1
 		println("Found orphaned recordings:")
+		names := make([]string, 0, len(r.preexisting))
 		for f := range r.preexisting {
+			names = append(names, f)
+		}
+		sort.Strings(names)
+		for _, f := range names {
 			println(fmt.Sprintf("- %q", f))
 		}
 	}

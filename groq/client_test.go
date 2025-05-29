@@ -124,7 +124,7 @@ func getClientInner(t *testing.T, apiKey, m string) *groq.Client {
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.ClientBase.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientBase.ClientJSON.Client.Transport)
+	c.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientJSON.Client.Transport)
 	return c
 }
 

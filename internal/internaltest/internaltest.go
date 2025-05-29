@@ -7,6 +7,7 @@ package internaltest
 
 import (
 	"fmt"
+	"io/fs"
 	"net/http"
 	"net/url"
 	"os"
@@ -33,15 +34,12 @@ func NewRecords() *Records {
 	r := &Records{
 		preexisting: make(map[string]struct{}),
 	}
-	const prefix = "testdata" + string(os.PathSeparator)
-	err := filepath.Walk(prefix, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
+	const root = "testdata" + string(os.PathSeparator)
+	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
+		if err == nil && !d.IsDir() && strings.HasSuffix(path, ".yaml") {
+			r.preexisting[path[len(root):]] = struct{}{}
 		}
-		if !info.IsDir() && strings.HasSuffix(info.Name(), ".yaml") {
-			r.preexisting[path[len(prefix):]] = struct{}{}
-		}
-		return nil
+		return err
 	})
 	if err != nil {
 		panic(err)
@@ -55,14 +53,6 @@ func (r *Records) Close() int {
 	defer r.mu.Unlock()
 	for _, f := range r.recorded {
 		delete(r.preexisting, f)
-		// Look for subdirectories. If a test case with subtest was skipped, we do not want to warn about it. This
-		// is crude but good enough as a starting point.
-		f = strings.TrimSuffix(f, ".yaml") + string(os.PathSeparator)
-		for k := range r.preexisting {
-			if strings.HasPrefix(k, f) {
-				delete(r.preexisting, k)
-			}
-		}
 	}
 	if len(r.preexisting) != 0 {
 		code = 1

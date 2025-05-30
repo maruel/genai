@@ -334,12 +334,12 @@ func testTextFunctionalities(t *testing.T, g ChatProviderModalityFactory, model 
 					Callback: func(ctx context.Context, g *got) (string, error) {
 						i, err := g.Number.Int64()
 						if err != nil {
-							err := fmt.Errorf("wanted 132413 as an int, got %q: %w", g.Number, err)
+							err = fmt.Errorf("wanted 132413 as an int, got %q: %w", g.Number, err)
 							t.Error(err)
 							return "", err
 						}
 						if i != 132413 {
-							err := fmt.Errorf("wanted 132413 as an int, got %s", g.Number)
+							err = fmt.Errorf("wanted 132413 as an int, got %s", g.Number)
 							t.Error(err)
 							return "", err
 						}

@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 186
+        content_length: 193
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"Qwen/Qwen2-VL-72B-Instruct","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"max_tokens":1000,"temperature":0.1,"seed":1}
+            {"model":"marin-community/marin-8b-instruct","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"max_tokens":1000,"temperature":0.1,"seed":1}
         form: {}
         headers:
             Content-Type:
@@ -30,17 +30,17 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nw8uQTk-3NKUce-947fbc106fa7a303",
+              "id": "nw8uNKA-2j9zxn-947fbbe72d30a2ee",
               "object": "chat.completion",
-              "created": 1748623870,
-              "model": "Qwen/Qwen2-VL-72B-Instruct",
+              "created": 1748623862,
+              "model": "marin-community/marin-8b-instruct",
               "prompt": [],
               "choices": [
                 {
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "Hello.",
+                    "content": "Hello",
                     "tool_calls": []
                   },
                   "logprobs": null,
@@ -49,9 +49,9 @@ interactions:
                 }
               ],
               "usage": {
-                "prompt_tokens": 31,
-                "total_tokens": 34,
-                "completion_tokens": 3
+                "prompt_tokens": 415,
+                "total_tokens": 417,
+                "completion_tokens": 2
               }
             }
         headers:
@@ -62,11 +62,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 947fbc106fa7a303-YUL
+                - 947fbbe72d30a2ee-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"1e7-qm7NGMpTac4Yvo6FBZPxCkv8zm0"
+                - W/"1ef-C0m/hiO6J5ao2nGpUlbK+83Z0a0"
             Retry-After:
                 - "2"
             Server:
@@ -76,13 +76,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - d4bfa71d-6f4b-4bbe-9f2a-200460b914f4-noamzn
+                - 90894459-31e9-441a-a0cf-170705face65-noamzn
             X-Api-Call-End:
-                - "2025-05-30T16:51:10.287Z"
+                - "2025-05-30T16:51:02.973Z"
             X-Api-Call-Start:
-                - "2025-05-30T16:51:10.177Z"
+                - "2025-05-30T16:51:02.952Z"
             X-Api-Received:
-                - "2025-05-30T16:51:10.171Z"
+                - "2025-05-30T16:51:02.945Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -98,7 +98,7 @@ interactions:
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - nw8uQTk-3NKUce-947fbc106fa7a303
+                - nw8uNKA-2j9zxn-947fbbe72d30a2ee
         status: 200 OK
         code: 200
-        duration: 8.664s
+        duration: 4.407s

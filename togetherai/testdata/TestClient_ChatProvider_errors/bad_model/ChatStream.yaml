@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 103
+        content_length: 96
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"bad model","stream_tokens":true,"messages":[{"role":"user","content":"Tell a short joke."}]}
+            {"model":"bad model","stream":true,"messages":[{"role":"user","content":"Tell a short joke."}]}
         form: {}
         headers:
             Content-Type:
@@ -30,7 +30,7 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nuxThMd-4yUbBN-9435de75e87c6e06",
+              "id": "nw8uLeF-4yUbBN-947fbbc3ca5da2ee",
               "error": {
                 "message": "Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
                 "type": "invalid_request_error",
@@ -46,11 +46,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9435de75e87c6e06-YUL
+                - 947fbbc3ca5da2ee-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"11f-x77742gB3ErPRExh2tbnnHOBlPs"
+                - W/"11f-PAiiprbHDcztJbNqQjgj8A5cpSc"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -58,11 +58,11 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Api-Received:
-                - "2025-05-21T17:42:12.364Z"
+                - "2025-05-30T16:50:57.324Z"
             X-Content-Type-Options:
                 - nosniff
             X-Request-Id:
-                - nuxThMd-4yUbBN-9435de75e87c6e06
+                - nw8uLeF-4yUbBN-947fbbc3ca5da2ee
         status: 404 Not Found
         code: 404
-        duration: 271ms
+        duration: 126ms

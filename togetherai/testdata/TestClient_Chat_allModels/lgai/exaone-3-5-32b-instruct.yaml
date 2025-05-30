@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 186
+        content_length: 188
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"Qwen/Qwen2-VL-72B-Instruct","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"max_tokens":1000,"temperature":0.1,"seed":1}
+            {"model":"lgai/exaone-3-5-32b-instruct","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"max_tokens":1000,"temperature":0.1,"seed":1}
         form: {}
         headers:
             Content-Type:
@@ -30,28 +30,29 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nw8uQTk-3NKUce-947fbc106fa7a303",
+              "id": "nw8uMDg-3NKUce-947fbbcc4d4ba2ee",
               "object": "chat.completion",
-              "created": 1748623870,
-              "model": "Qwen/Qwen2-VL-72B-Instruct",
+              "created": 1748623859,
+              "model": "lgai/exaone-3-5-32b-instruct",
               "prompt": [],
               "choices": [
                 {
+                  "finish_reason": "stop",
+                  "seed": 1,
+                  "logprobs": null,
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "Hello.",
+                    "content": "Hello",
                     "tool_calls": []
-                  },
-                  "logprobs": null,
-                  "finish_reason": "stop",
-                  "seed": null
+                  }
                 }
               ],
               "usage": {
                 "prompt_tokens": 31,
-                "total_tokens": 34,
-                "completion_tokens": 3
+                "completion_tokens": 2,
+                "total_tokens": 33,
+                "cached_tokens": 0
               }
             }
         headers:
@@ -62,13 +63,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 947fbc106fa7a303-YUL
+                - 947fbbcc4d4ba2ee-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"1e7-qm7NGMpTac4Yvo6FBZPxCkv8zm0"
-            Retry-After:
-                - "2"
+                - W/"1fd-67vNcw5VyS/729iYEpPF6eD19yQ"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -76,29 +75,17 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - d4bfa71d-6f4b-4bbe-9f2a-200460b914f4-noamzn
+                - 1ecb81ac-80f3-415d-8d7b-93b838cdfe5f-noamzn
             X-Api-Call-End:
-                - "2025-05-30T16:51:10.287Z"
+                - "2025-05-30T16:50:59.396Z"
             X-Api-Call-Start:
-                - "2025-05-30T16:51:10.177Z"
+                - "2025-05-30T16:50:59.268Z"
             X-Api-Received:
-                - "2025-05-30T16:51:10.171Z"
+                - "2025-05-30T16:50:59.263Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "1000"
-            X-Ratelimit-Remaining:
-                - "1"
-            X-Ratelimit-Remaining-Tokens:
-                - "1000"
-            X-Ratelimit-Reset:
-                - "2"
             X-Request-Id:
-                - nw8uQTk-3NKUce-947fbc106fa7a303
+                - nw8uMDg-3NKUce-947fbbcc4d4ba2ee
         status: 200 OK
         code: 200
-        duration: 8.664s
+        duration: 238ms

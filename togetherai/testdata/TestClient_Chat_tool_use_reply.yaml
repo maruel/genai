@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 817
+        content_length: 799
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","stream_tokens":false,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"max_tokens":4096,"seed":1,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+            {"model":"Qwen/Qwen2.5-7B-Instruct-Turbo","stream":false,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"max_tokens":4096,"seed":1,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
         form: {}
         headers:
             Content-Type:
@@ -30,24 +30,24 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nuahDJr-3NKUce-941e60a62d67a2ae",
+              "id": "nw8uz7S-2j9zxn-947fbed78df83400",
               "object": "chat.completion",
-              "created": 1747603006,
-              "model": "meta-llama/Llama-4-Scout-17B-16E-Instruct",
+              "created": 1748623983,
+              "model": "Qwen/Qwen2.5-7B-Instruct-Turbo",
               "prompt": [],
               "choices": [
                 {
-                  "index": 0,
-                  "logprobs": null,
                   "finish_reason": "tool_calls",
-                  "seed": null,
+                  "seed": 1,
+                  "logprobs": null,
+                  "index": 0,
                   "message": {
                     "role": "assistant",
                     "content": null,
                     "tool_calls": [
                       {
                         "index": 0,
-                        "id": "call_nynkzll4aak4qcbju3u42k86",
+                        "id": "call_qg7vxk9aroltf6vg2fydrgqp",
                         "type": "function",
                         "function": {
                           "arguments": "{\"number\":\"132413\"}",
@@ -59,9 +59,9 @@ interactions:
                 }
               ],
               "usage": {
-                "prompt_tokens": 246,
-                "total_tokens": 265,
-                "completion_tokens": 19
+                "prompt_tokens": 272,
+                "completion_tokens": 25,
+                "total_tokens": 297
               }
             }
         headers:
@@ -72,11 +72,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941e60a62d67a2ae-YUL
+                - 947fbed78df83400-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"309-ezIyrLtwjYHZgPwW+G2piHk8iJ0"
+                - W/"2fb-k9Pwe8Mj5wVKtyTMDlTCPFNdzro"
             Retry-After:
                 - "2"
             Server:
@@ -86,13 +86,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 664939d0-a982-49a0-8b99-34d10251be34-noamzn
+                - 2aa485ce-fc17-4a77-bd47-d71b3a922f90-noamzn
             X-Api-Call-End:
-                - "2025-05-18T21:16:46.939Z"
+                - "2025-05-30T16:53:03.593Z"
             X-Api-Call-Start:
-                - "2025-05-18T21:16:46.680Z"
+                - "2025-05-30T16:53:03.381Z"
             X-Api-Received:
-                - "2025-05-18T21:16:46.667Z"
+                - "2025-05-30T16:53:03.369Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -108,23 +108,23 @@ interactions:
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - nuahDJr-3NKUce-941e60a62d67a2ae
+                - nw8uz7S-2j9zxn-947fbed78df83400
         status: 200 OK
         code: 200
-        duration: 412ms
+        duration: 410ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1070
+        content_length: 1052
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","stream_tokens":false,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"index":0,"id":"call_nynkzll4aak4qcbju3u42k86","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_nynkzll4aak4qcbju3u42k86"}],"max_tokens":4096,"seed":1,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+            {"model":"Qwen/Qwen2.5-7B-Instruct-Turbo","stream":false,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"index":0,"id":"call_qg7vxk9aroltf6vg2fydrgqp","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_qg7vxk9aroltf6vg2fydrgqp"}],"max_tokens":4096,"seed":1,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
         form: {}
         headers:
             Content-Type:
@@ -141,17 +141,17 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nuahDNF-6UHjtw-941e60a8882ba2ae",
+              "id": "nw8uz5K-3NKUce-947fbed9e8733400",
               "object": "chat.completion",
-              "created": 1747603006,
-              "model": "meta-llama/Llama-4-Scout-17B-16E-Instruct",
+              "created": 1748623983,
+              "model": "Qwen/Qwen2.5-7B-Instruct-Turbo",
               "prompt": [],
               "choices": [
                 {
-                  "index": 0,
-                  "logprobs": null,
                   "finish_reason": "stop",
-                  "seed": null,
+                  "seed": 1,
+                  "logprobs": null,
+                  "index": 0,
                   "message": {
                     "role": "assistant",
                     "content": "363.89",
@@ -160,9 +160,9 @@ interactions:
                 }
               ],
               "usage": {
-                "prompt_tokens": 161,
-                "total_tokens": 165,
-                "completion_tokens": 4
+                "prompt_tokens": 182,
+                "completion_tokens": 7,
+                "total_tokens": 189
               }
             }
         headers:
@@ -173,11 +173,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941e60a8882ba2ae-YUL
+                - 947fbed9e8733400-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"1f8-W30zUcPpV1eHUq+7GrQff1QDgmU"
+                - W/"1ea-SsP7JLPZa6343Mjyx5Std/sWAEA"
             Retry-After:
                 - "2"
             Server:
@@ -187,13 +187,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 66909c1f-dfdb-43b7-ae52-2e39d466376c-noamzn
+                - ab9f5121-305e-4027-a4b6-08f55cd14f93-noamzn
             X-Api-Call-End:
-                - "2025-05-18T21:16:46.937Z"
+                - "2025-05-30T16:53:03.380Z"
             X-Api-Call-Start:
-                - "2025-05-18T21:16:46.875Z"
+                - "2025-05-30T16:53:03.259Z"
             X-Api-Received:
-                - "2025-05-18T21:16:46.864Z"
+                - "2025-05-30T16:53:03.246Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -209,7 +209,7 @@ interactions:
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - nuahDNF-6UHjtw-941e60a8882ba2ae
+                - nw8uz5K-3NKUce-947fbed9e8733400
         status: 200 OK
         code: 200
-        duration: 157ms
+        duration: 207ms

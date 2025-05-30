@@ -33,7 +33,7 @@ import (
 // https://docs.together.ai/docs/chat-overview
 type ChatRequest struct {
 	Model                         string             `json:"model"`
-	StreamTokens                  bool               `json:"stream_tokens"`
+	Stream                        bool               `json:"stream"`
 	Messages                      []Message          `json:"messages"`
 	MaxTokens                     int64              `json:"max_tokens,omitzero"`
 	Stop                          []string           `json:"stop,omitzero"`
@@ -142,7 +142,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 }
 
 func (c *ChatRequest) SetStream(stream bool) {
-	c.StreamTokens = stream
+	c.Stream = stream
 }
 
 // https://docs.together.ai/reference/chat-completions-1

@@ -34,6 +34,7 @@ func TestClient_Chat_allModels(t *testing.T) {
 				model.ID == "meta-llama/Llama-3.3-70B-Instruct-Turbo" || // rate_limit even if been a while.
 				model.ID == "togethercomputer/Refuel-Llm-V2-Small" || // Fails because Seed option.
 				strings.HasPrefix(model.ID, "deepseek-ai/DeepSeek-R1") || // Requires CoT processing.
+				strings.HasPrefix(model.ID, "lgai/exaone-deep-32b") || // Requires CoT processing.
 				strings.HasPrefix(model.ID, "perplexity-ai/r1-") || // Requires CoT processing.
 				strings.HasPrefix(model.ID, "Qwen/QwQ-32B") || // Requires CoT processing.
 				strings.HasPrefix(model.ID, "Qwen/Qwen3-235B-A22B-") || // Requires CoT processing.
@@ -121,7 +122,7 @@ func TestClient_Chat_video(t *testing.T) {
 }
 
 func TestClient_Chat_tool_use_reply(t *testing.T) {
-	testCases.TestChatToolUseReply(t, nil)
+	testCases.TestChatToolUseReply(t, &internaltest.Settings{Model: "Qwen/Qwen2.5-7B-Instruct-Turbo"})
 }
 
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {

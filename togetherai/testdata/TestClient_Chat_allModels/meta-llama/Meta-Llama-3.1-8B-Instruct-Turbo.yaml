@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 210
+        content_length: 203
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo","stream_tokens":false,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"max_tokens":1000,"temperature":0.1,"seed":1}
+            {"model":"meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"max_tokens":1000,"temperature":0.1,"seed":1}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nuZp7Wf-66dFFu-941d6d3d1a0ca2eb",
+              "id": "nw8uMfp-2j9zxn-947fbbd99d35a2ee",
               "object": "chat.completion",
-              "created": 1747593036,
+              "created": 1748623860,
               "model": "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
               "prompt": [],
               "choices": [
@@ -43,15 +43,15 @@ interactions:
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "Hello",
+                    "content": "Hello.",
                     "tool_calls": []
                   }
                 }
               ],
               "usage": {
                 "prompt_tokens": 47,
-                "completion_tokens": 2,
-                "total_tokens": 49,
+                "completion_tokens": 3,
+                "total_tokens": 50,
                 "cached_tokens": 0
               }
             }
@@ -63,13 +63,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941d6d3d1a0ca2eb-YUL
+                - 947fbbd99d35a2ee-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"20c-ZLbNfnxlJRUopHnckeJAi/Eg+go"
+                - W/"20d-xVfQW3QS9/pv7cfLkRDthAiu8WY"
             Retry-After:
-                - "1"
+                - "2"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -77,13 +77,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - e18cf26e-925e-4007-ad30-9c667bf6bcd8-noamzn
+                - 741c21dd-96dc-4658-a5ee-18fbfcedc331-noamzn
             X-Api-Call-End:
-                - "2025-05-18T18:30:36.625Z"
+                - "2025-05-30T16:51:01.027Z"
             X-Api-Call-Start:
-                - "2025-05-18T18:30:36.467Z"
+                - "2025-05-30T16:51:00.791Z"
             X-Api-Received:
-                - "2025-05-18T18:30:36.456Z"
+                - "2025-05-30T16:51:00.779Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -93,13 +93,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "913"
-            X-Ratelimit-Reset:
                 - "1"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "2"
             X-Request-Id:
-                - nuZp7Wf-66dFFu-941d6d3d1a0ca2eb
+                - nw8uMfp-2j9zxn-947fbbd99d35a2ee
         status: 200 OK
         code: 200
-        duration: 314ms
+        duration: 2.457s

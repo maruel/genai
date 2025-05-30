@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 201
+        content_length: 194
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"mistralai/Mistral-7B-Instruct-v0.1","stream_tokens":false,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"max_tokens":1000,"temperature":0.1,"seed":1}
+            {"model":"mistralai/Mistral-7B-Instruct-v0.1","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"max_tokens":1000,"temperature":0.1,"seed":1}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nuZp8MQ-3NKUce-941d6d5108c3a2eb",
+              "id": "nw8uS1u-3NKUce-947fbc37192ca303",
               "object": "chat.completion",
-              "created": 1747593039,
+              "created": 1748623875,
               "model": "mistralai/Mistral-7B-Instruct-v0.1",
               "prompt": [],
               "choices": [
@@ -51,7 +51,8 @@ interactions:
               "usage": {
                 "prompt_tokens": 22,
                 "completion_tokens": 3,
-                "total_tokens": 25
+                "total_tokens": 25,
+                "cached_tokens": 0
               }
             }
         headers:
@@ -62,11 +63,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941d6d5108c3a2eb-YUL
+                - 947fbc37192ca303-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"1ed-vBE7psPLXFyYrS/0dHG4X4LhC9M"
+                - W/"205-56NazyljuFCYqfSHvammmhlYNsQ"
             Retry-After:
                 - "2"
             Server:
@@ -76,13 +77,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - f7848d0a-f7cd-4733-8bd7-7be56a49c5c7-noamzn
+                - f47134dc-28bd-4cf6-b848-5706710bfaa8-noamzn
             X-Api-Call-End:
-                - "2025-05-18T18:30:39.468Z"
+                - "2025-05-30T16:51:15.546Z"
             X-Api-Call-Start:
-                - "2025-05-18T18:30:39.295Z"
+                - "2025-05-30T16:51:15.406Z"
             X-Api-Received:
-                - "2025-05-18T18:30:39.283Z"
+                - "2025-05-30T16:51:15.400Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -98,7 +99,7 @@ interactions:
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - nuZp8MQ-3NKUce-941d6d5108c3a2eb
+                - nw8uS1u-3NKUce-947fbc37192ca303
         status: 200 OK
         code: 200
-        duration: 3.46s
+        duration: 14.686s

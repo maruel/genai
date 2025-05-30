@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 190
+        content_length: 183
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"deepseek-ai/DeepSeek-V3","stream_tokens":false,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"max_tokens":1000,"temperature":0.1,"seed":1}
+            {"model":"deepseek-ai/DeepSeek-V3","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word. Say only hello."}],"max_tokens":1000,"temperature":0.1,"seed":1}
         form: {}
         headers:
             Content-Type:
@@ -30,9 +30,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nuZp7R6-zqrih-941d6d39ed7fa2eb",
+              "id": "nw8uM5N-zqrih-947fbbcc4d5ea2ee",
               "object": "chat.completion",
-              "created": 1747593036,
+              "created": 1748623858,
               "model": "deepseek-ai/DeepSeek-V3",
               "prompt": [],
               "choices": [
@@ -51,7 +51,8 @@ interactions:
               "usage": {
                 "prompt_tokens": 15,
                 "completion_tokens": 2,
-                "total_tokens": 17
+                "total_tokens": 17,
+                "cached_tokens": 0
               }
             }
         headers:
@@ -62,11 +63,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941d6d39ed7fa2eb-YUL
+                - 947fbbcc4d5ea2ee-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"1df-2mIT+Ix87C/SlRVzd3xircn36EE"
+                - W/"1f7-054qr+bsVWnzAX1rPzZkSMWa2wE"
             Retry-After:
                 - "2"
             Server:
@@ -76,29 +77,29 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 07108e0f-b529-4408-bae9-72be1411b4b6-noamzn
+                - d72a7a53-6cb6-4c90-940a-2a80be32dfb6-noamzn
             X-Api-Call-End:
-                - "2025-05-18T18:30:37.198Z"
+                - "2025-05-30T16:51:01.391Z"
             X-Api-Call-Start:
-                - "2025-05-18T18:30:36.145Z"
+                - "2025-05-30T16:50:58.792Z"
             X-Api-Received:
-                - "2025-05-18T18:30:36.133Z"
+                - "2025-05-30T16:50:58.781Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
                 - "false"
             X-Ratelimit-Limit:
-                - "25"
+                - "40"
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "49"
+                - "79"
             X-Ratelimit-Remaining-Tokens:
                 - "1000"
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - nuZp7R6-zqrih-941d6d39ed7fa2eb
+                - nw8uM5N-zqrih-947fbbcc4d5ea2ee
         status: 200 OK
         code: 200
-        duration: 1.422s
+        duration: 2.837s

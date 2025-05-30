@@ -25,6 +25,9 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+// TODO: Expose option c.ReasoningFormat through ChatOptions.
+// Ref: https://console.groq.com/docs/reasoning/
+
 // ChatOptions is the Groq-specific options.
 type ChatOptions struct {
 	genai.ChatOptions
@@ -202,14 +205,6 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) ([]string,
 				}
 			}
 		}
-	}
-	// https://console.groq.com/docs/reasoning/
-	// Groq refuses requests unless the model is a reasoning model. As of May 2025, these are qwen-qwq-32b
-	// and deepseek-r1-distill-llama-70b.
-	switch model {
-	case "qwen-qwq-32b", "deepseek-r1-distill-llama-70b":
-		c.ReasoningFormat = ReasoningFormatParsed
-	default:
 	}
 	return unsupported, errs
 }
@@ -557,6 +552,7 @@ type ErrorResponse struct {
 		Type             string `json:"type"`
 		Code             string `json:"code"`
 		FailedGeneration string `json:"failed_generation"`
+		StatusCode       int64  `json:"status_code"`
 	} `json:"error"`
 }
 

@@ -18,8 +18,14 @@ import (
 
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
-		Model:     "llama3-8b-8192",
+		GetClient: func(t *testing.T, m string) genai.ChatProvider {
+			c := getClient(t, m)
+			if m == "qwen-qwq-32b" || m == "deepseek-r1-distill-llama-70b" {
+				return &genai.ChatProviderThinking{ChatProvider: c, TagName: "think"}
+			}
+			return c
+		},
+		Model: "llama3-8b-8192",
 	},
 }
 
@@ -29,7 +35,7 @@ func TestClient_Chat_allModels(t *testing.T) {
 		func(m genai.Model) bool {
 			id := m.GetID()
 			// Groq doesn't provide model metadata, so guess based on the name.
-			return !(strings.Contains(id, "tts") || strings.Contains(id, "whisper") || strings.Contains(id, "llama-guard") || id == "mistral-saba-24b")
+			return !strings.Contains(id, "tts") && !strings.Contains(id, "whisper") && !strings.Contains(id, "llama-guard") && id != "mistral-saba-24b"
 		})
 }
 

@@ -22,14 +22,6 @@ func TestClient_Scoreboard(t *testing.T) {
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
 }
 
-var testCases = &internaltest.TestCases{
-	Default: internaltest.Settings{
-		GetClient:            func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
-		Model:                "@hf/nousresearch/hermes-2-pro-mistral-7b",
-		FinishReasonIsBroken: true,
-	},
-}
-
 func TestClient_ChatProvider_errors(t *testing.T) {
 	data := []internaltest.ChatProviderError{
 		{

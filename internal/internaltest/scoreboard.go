@@ -117,8 +117,10 @@ func TestScoreboard(t *testing.T, g ChatProviderModalityFactory, filter func(mod
 						ran = true
 					}
 					if slices.Contains(out, genai.ModalityAudio) {
-						// Don't fail as long as another test case was exercised.
-						t.Log("TODO")
+						t.Run("audiogen", func(t *testing.T) {
+							testAudioGenFunctionalities(t, g, s.Models[0], line.f, line.stream)
+						})
+						ran = true
 					}
 					if !ran {
 						t.Fatal("implement test case for this modalities combination")
@@ -215,7 +217,8 @@ func testTextFunctionalities(t *testing.T, g ChatProviderModalityFactory, model 
 				t.Errorf("unexpected thinking: %#v", resp.Message)
 			}
 		}
-		ValidateSingleWordResponse(t, resp, "hello")
+		// Some models are really bad at instruction following.
+		ValidateSingleWordResponse(t, resp, "hello", "hey", "hi")
 	})
 
 	t.Run("MaxTokens", func(t *testing.T) {
@@ -628,6 +631,28 @@ func testImageGenFunctionalities(t *testing.T, g ChatProviderModalityFactory, mo
 		t.Fatalf("expected one image, got %#v", resp.Contents[0])
 	}
 	// It can have text, images or both.
+}
+
+func testAudioGenFunctionalities(t *testing.T, g ChatProviderModalityFactory, model string, f *genai.Functionality, stream bool) {
+	defaultFR := genai.FinishedStop
+	if !f.ReportFinishReason {
+		defaultFR = ""
+	}
+	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hi. Just say this word, nothing else.")}
+	resp, err := run(t, g(t, model), msgs, nil, stream)
+	if !basicCheck(t, err, f.Inline) {
+		return
+	}
+	testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
+	if len(resp.Contents) == 0 {
+		t.Fatal("expected content")
+	}
+	if len(resp.Contents) != 1 {
+		t.Fatalf("expected one content, got %d", len(resp.Contents))
+	}
+	if resp.Contents[0].Filename != "sound.wav" {
+		t.Fatalf("expected one image, got %#v", resp.Contents[0])
+	}
 }
 
 func run(t *testing.T, c genai.ChatProvider, msgs genai.Messages, opts genai.Validatable, stream bool) (genai.ChatResult, error) {

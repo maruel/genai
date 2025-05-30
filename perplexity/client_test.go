@@ -24,13 +24,6 @@ func TestClient_Scoreboard(t *testing.T) {
 	}, nil)
 }
 
-var testCases = &internaltest.TestCases{
-	Default: internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
-		Model:     "r1-1776",
-	},
-}
-
 func TestClient_ChatProvider_errors(t *testing.T) {
 	data := []internaltest.ChatProviderError{
 		{

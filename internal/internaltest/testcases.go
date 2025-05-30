@@ -8,6 +8,7 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
+	"slices"
 	"strings"
 	"testing"
 
@@ -343,9 +344,10 @@ func testUsage(t *testing.T, u *genai.Usage, usageIsBroken bool, f genai.FinishR
 }
 
 // ValidateSingleWordResponse validates that the response contains exactly one of the expected words.
-func ValidateSingleWordResponse(t *testing.T, resp genai.ChatResult, want string) {
-	s := resp.AsText()
-	if got := strings.TrimRight(strings.TrimSpace(strings.ToLower(s)), ".!"); want != got {
-		t.Fatalf("Expected %q, got %q", want, s)
+func ValidateSingleWordResponse(t *testing.T, resp genai.ChatResult, want ...string) {
+	got := resp.AsText()
+	cleaned := strings.TrimRight(strings.TrimSpace(strings.ToLower(got)), ".!")
+	if !slices.Contains(want, cleaned) {
+		t.Fatalf("Expected %q, got %q", strings.Join(want, ", "), got)
 	}
 }

@@ -920,8 +920,8 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		if len(pkt.Choices) != 1 {
 			continue
 		}
-		if pkt.Choices[0].FinishReason != "" {
-			result.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
+		if fr := pkt.Choices[0].FinishReason; fr != "" {
+			result.FinishReason = fr.ToFinishReason()
 		}
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "", "assistant":

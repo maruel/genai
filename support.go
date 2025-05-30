@@ -235,90 +235,68 @@ func (c *ChatProviderThinking) ChatStream(ctx context.Context, msgs Messages, op
 	eg.Go(func() error {
 		state := start
 		for f := range internalReplies {
+			if f.ThinkingFragment != "" {
+				return fmt.Errorf("got unexpected thinking fragment: %q; do not use ChatProviderThinking with an explicit thinking CoT model", f.ThinkingFragment)
+			}
+			// Mutate the fragment then send it.
 			switch state {
 			case start:
 				// Ignore whitespace until text or thinking tag is seen.
-				buf := strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace)
-				if tStart := strings.Index(buf, tagStart); tStart != -1 {
+				f.ThinkingFragment = strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace)
+				f.TextFragment = ""
+				if tStart := strings.Index(f.ThinkingFragment, tagStart); tStart != -1 {
 					if tStart != 0 {
 						return fmt.Errorf("unexpected prefix before thinking tag: %q", f.TextFragment)
 					}
-					state = startTagSeen
-					if buf = strings.TrimLeftFunc(buf[len(tagStart):], unicode.IsSpace); buf != "" {
-						state = thinkingTextSeen
-						f.ThinkingFragment = buf
-						f.TextFragment = ""
-						replies <- f
-						if err := accumulated.Accumulate(f); err != nil {
-							return err
-						}
-					}
-					continue
+					f.ThinkingFragment = strings.TrimLeftFunc(f.ThinkingFragment[len(tagStart):], unicode.IsSpace)
 				}
-				if buf != "" {
+				if f.ThinkingFragment != "" {
 					// Some model do not always send tagStart.
 					state = thinkingTextSeen
-					f.ThinkingFragment = buf
-					f.TextFragment = ""
-					replies <- f
-					if err := accumulated.Accumulate(f); err != nil {
-						return err
-					}
 				}
 			case startTagSeen:
 				// Ignore whitespace until text is seen.
-				if buf := strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace); buf != "" {
+				f.ThinkingFragment = f.TextFragment
+				f.TextFragment = ""
+				if buf := strings.TrimLeftFunc(f.ThinkingFragment, unicode.IsSpace); buf != "" {
 					state = thinkingTextSeen
 					f.ThinkingFragment = buf
-					f.TextFragment = ""
-					replies <- f
-					if err := accumulated.Accumulate(f); err != nil {
-						return err
-					}
 				}
 			case thinkingTextSeen:
-				if tEnd := strings.Index(f.TextFragment, tagEnd); tEnd != -1 {
+				f.ThinkingFragment = f.TextFragment
+				f.TextFragment = ""
+				if tEnd := strings.Index(f.ThinkingFragment, tagEnd); tEnd != -1 {
 					state = endTagSeen
-					buf := f.TextFragment
+					after := f.ThinkingFragment[tEnd+len(tagEnd):]
 					if tEnd != 0 {
-						f.ThinkingFragment = buf[:tEnd]
+						// Unlikely case where we need to flush out the remainder.
+						f.ThinkingFragment = f.ThinkingFragment[:tEnd]
 						f.TextFragment = ""
 						replies <- f
 						if err := accumulated.Accumulate(f); err != nil {
 							return err
 						}
 					}
-					if buf = strings.TrimLeftFunc(buf[tEnd+len(tagEnd):], unicode.IsSpace); buf != "" {
+					f.TextFragment = after
+					f.ThinkingFragment = ""
+					if buf := strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace); buf != "" {
 						state = textSeen
 						f.TextFragment = buf
-						replies <- f
-						if err := accumulated.Accumulate(f); err != nil {
-							return err
-						}
 					}
-					continue
-				}
-				f.ThinkingFragment = f.TextFragment
-				f.TextFragment = ""
-				replies <- f
-				if err := accumulated.Accumulate(f); err != nil {
-					return err
 				}
 			case endTagSeen:
 				// Ignore whitespace until text is seen.
 				if buf := strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace); buf != "" {
 					state = textSeen
 					f.TextFragment = buf
-					replies <- f
-					if err := accumulated.Accumulate(f); err != nil {
-						return err
-					}
 				}
 			case textSeen:
-				replies <- f
-				if err := accumulated.Accumulate(f); err != nil {
-					return err
-				}
+			default:
+				panic("internal error")
+			}
+			replies <- f
+			if err := accumulated.Accumulate(f); err != nil {
+				return err
 			}
 		}
 		return nil
@@ -344,28 +322,18 @@ func (c *ChatProviderThinking) processThinkingMessage(m *Message) error {
 		// It can be a function call.
 		return nil
 	}
+
+	// Check if one of the contents is already a Thinking block
+	for _, c := range m.Contents {
+		if c.Thinking != "" {
+			return fmt.Errorf("got unexpected thinking content: %q; do not use ChatProviderThinking with an explicit thinking CoT model", c.Thinking)
+		}
+	}
 	if len(m.Contents) > 1 {
-		// Check if one of the contents is already a Thinking block
-		// This is the case when streaming fragments were properly accumulated
-		hasThinking := false
-		for _, c := range m.Contents {
-			if c.Thinking != "" {
-				hasThinking = true
-				break
-			}
-		}
-		if hasThinking {
-			return nil
-		}
-		return fmt.Errorf("multiple content block: %#v", m.Contents)
+		return fmt.Errorf("got multiple content blocks; to be implemented; %#v", m)
 	}
 
-	// Handle case where the message already has thinking content
-	if m.Contents[0].Thinking != "" {
-		return nil
-	}
-
-	text := m.Contents[0].Text
+	text := m.AsText()
 	if text == "" {
 		// Maybe an image.
 		return nil
@@ -373,7 +341,8 @@ func (c *ChatProviderThinking) processThinkingMessage(m *Message) error {
 
 	tagStart := "<" + c.TagName + ">"
 	tagEnd := "</" + c.TagName + ">"
-	if tStart := strings.Index(text, tagStart); tStart != -1 {
+	tStart := strings.Index(text, tagStart)
+	if tStart != -1 {
 		if prefix := text[:tStart]; strings.TrimSpace(prefix) != "" {
 			return fmt.Errorf("failed to parse thinking tokens")
 		}
@@ -384,6 +353,11 @@ func (c *ChatProviderThinking) processThinkingMessage(m *Message) error {
 		// Remove whitespace after the ending tag.
 		m.Contents[0].Text = strings.TrimLeftFunc(text[tEnd+len(tagEnd):], unicode.IsSpace)
 		m.Contents = append([]Content{{Thinking: text[:tEnd]}}, m.Contents...)
+	} else if tStart != -1 {
+		// This happens when MaxTokens is used or another reason which cut the stream off before the end tag is seen.
+		// Consider everything thinking.
+		m.Contents[0].Thinking = text
+		m.Contents[0].Text = ""
 	}
 	return nil
 }

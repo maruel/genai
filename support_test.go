@@ -52,6 +52,13 @@ func TestChatProviderThinking_Chat(t *testing.T) {
 			},
 		},
 		{
+			name: "With only whitespace before tag and cut off",
+			in:   "  \n\t<thinking>\nThinking with whitespace",
+			want: []genai.Content{
+				{Thinking: "Thinking with whitespace"},
+			},
+		},
+		{
 			name: "With empty text content",
 			in:   "",
 			want: []genai.Content{{}},
@@ -114,6 +121,14 @@ func TestChatProviderThinking_ChatStream(t *testing.T) {
 		{
 			name: "With whitespace before tag",
 			in:   []string{"  \n\t<thinking>", "Thinking content", "</thinking>", "Response"},
+			want: []genai.Content{
+				{Thinking: "Thinking content"},
+				{Text: "Response"},
+			},
+		},
+		{
+			name: "With whitespace before tag as a separate packet",
+			in:   []string{"  \n\t", "<thinking>", "Thinking content", "</thinking>", "Response"},
 			want: []genai.Content{
 				{Thinking: "Thinking content"},
 				{Text: "Response"},

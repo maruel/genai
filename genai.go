@@ -25,6 +25,7 @@ import (
 	"unicode"
 
 	"github.com/invopop/jsonschema"
+	"github.com/maruel/genai/internal/bb"
 )
 
 // UnsupportedContinuableError is an error when an unsupported option is used but the operation still
@@ -592,22 +593,27 @@ func (c *Content) UnmarshalJSON(b []byte) error {
 //
 // The role is always implicitly the assistant.
 type MessageFragment struct {
-	TextFragment string
+	TextFragment string `json:"text,omitzero"`
 
-	ThinkingFragment string
-	Opaque           map[string]any
+	ThinkingFragment string         `json:"thinking,omitzero"`
+	Opaque           map[string]any `json:"opaque,omitzero"`
 
-	Filename         string
-	DocumentFragment []byte
+	Filename         string `json:"filename,omitzero"`
+	DocumentFragment []byte `json:"document,omitzero"`
 
 	// ToolCall is a tool call that the LLM requested to make.
-	ToolCall ToolCall
+	ToolCall ToolCall `json:"tool_call,omitzero"`
 
 	_ struct{}
 }
 
 func (m *MessageFragment) IsZero() bool {
 	return m.TextFragment == "" && m.ThinkingFragment == "" && len(m.Opaque) == 0 && m.Filename == "" && len(m.DocumentFragment) == 0 && m.ToolCall.IsZero()
+}
+
+func (m *MessageFragment) GoString() string {
+	b, _ := json.Marshal(m)
+	return string(b)
 }
 
 // Accumulate adds a MessageFragment to the message being streamed.
@@ -663,11 +669,11 @@ func (m *Message) Accumulate(mf MessageFragment) error {
 	if mf.Filename != "" || mf.DocumentFragment != nil {
 		if len(m.Contents) != 0 {
 			if lastBlock := &m.Contents[len(m.Contents)-1]; lastBlock.Filename != "" {
-				_, _ = lastBlock.Document.(*bytesBuffer).Write(mf.DocumentFragment)
+				_, _ = lastBlock.Document.(*bb.BytesBuffer).Write(mf.DocumentFragment)
 				return nil
 			}
 		}
-		m.Contents = append(m.Contents, Content{Filename: mf.Filename, Document: &bytesBuffer{d: mf.DocumentFragment}})
+		m.Contents = append(m.Contents, Content{Filename: mf.Filename, Document: &bb.BytesBuffer{D: mf.DocumentFragment}})
 		return nil
 	}
 
@@ -678,47 +684,6 @@ func (m *Message) Accumulate(mf MessageFragment) error {
 
 	// Nothing to accumulate. It should be an error but there are bugs where the system hangs.
 	return nil
-}
-
-type bytesBuffer struct {
-	d   []byte
-	pos int
-}
-
-func (b *bytesBuffer) Read(p []byte) (int, error) {
-	n := copy(p, b.d[b.pos:])
-	if n == 0 {
-		return 0, io.EOF
-	}
-	b.pos += n
-	return n, nil
-}
-
-func (b *bytesBuffer) Seek(offset int64, whence int) (int64, error) {
-	var p int64
-	if whence == io.SeekCurrent {
-		offset += int64(b.pos)
-		whence = io.SeekStart
-	}
-	switch whence {
-	case io.SeekEnd:
-		offset = int64(len(b.d)) - offset
-		fallthrough
-	case io.SeekStart:
-		if offset < 0 || offset > int64(len(b.d)) {
-			return p, errors.New("out of bound")
-		}
-		p = offset
-		b.pos = int(p)
-	default:
-		return p, fmt.Errorf("unknown whence %d", whence)
-	}
-	return p, nil
-}
-
-func (b *bytesBuffer) Write(p []byte) (int, error) {
-	b.d = append(b.d, p...)
-	return len(p), nil
 }
 
 // Tools

@@ -876,6 +876,127 @@ type Model interface {
 	Context() int64
 }
 
+//
+
+// ProviderScoreboard describes the known state of the provider.
+type ProviderScoreboard interface {
+	// Scoreboard returns what the provider supports.
+	//
+	// Some models have more features than others, e.g. some models may be text-only while others have vision or
+	// audio support.
+	//
+	// The client code may be the limiting factor for some models, and not the provider itself.
+	//
+	// The values returned here are gone through a smoke test to make sure they are valid.
+	Scoreboard() Scoreboard
+}
+
+// Modality is one of the supported modalities.
+type Modality string
+
+const (
+	// ModalityText is text. This can include code blocksé
+	ModalityText Modality = "text"
+	// ModalityImage is support for PNG, JPG, often single frame GIF, WEBP.
+	ModalityImage Modality = "image"
+	// ModalityVideo is support for codecs like H264 and containers like MP4 or MKV.
+	ModalityVideo Modality = "video"
+	// ModalityPDF is support for PDF with multi-modal comprehension, both images and text.
+	ModalityPDF Modality = "pdf"
+	// ModalityAudio is support for audio MP3, sometimes OPUS.
+	ModalityAudio Modality = "audio"
+)
+
+// Modalities represents the modality supported by the provider in a specific scenario. It can be multiple
+// modalities in multi-modals scenarios.
+type Modalities []Modality
+
+func (m Modalities) String() string {
+	switch len(m) {
+	case 0:
+		return ""
+	case 1:
+		return string(m[0])
+	default:
+		// Inline strings.Join()
+		n := (len(m) - 1)
+		for _, elem := range m {
+			n += len(elem)
+		}
+		var b strings.Builder
+		b.Grow(n)
+		b.WriteString(string(m[0]))
+		for _, s := range m[1:] {
+			b.WriteString(",")
+			b.WriteString(string(s))
+		}
+		return b.String()
+	}
+}
+
+// Functionality defines which functionalites are supported in a scenario.
+type Functionality struct {
+	// Inline means the input modality can be provided inline. For non-textual data, it's generally as base64 encoded
+	// string.
+	Inline bool
+	// URL means that the data can be provided as a URL that the provider will fetch from.
+	URL bool
+	// Thinking means that the model does either explicit chain-of-thought or hidden thinking. For some
+	// providers, this is controlled via a ChatOptions. For some models (like Qwen3), a token "/nothink" or
+	// "/think" is used to control.
+	Thinking bool
+
+	// Features
+
+	// Tools means that tool call is supported. This is a requirement for MCP.
+	Tools bool
+	// JSON means that the model supports enforcing that the response is valid JSON but not necessarily with a
+	// schema.
+	JSON bool
+	// JSONSchema means that the model supports enforcing that the response is a specific JSON schema.
+	JSONSchema bool
+
+	// Bugged provider, if any of the following is false.
+
+	// ReportTokenUsage means that the usage is correctly reported.
+	ReportTokenUsage bool
+	// ReportFinishReason means that the finish reason (FinishStop, FinishLength, etc) is correctly reported.
+	ReportFinishReason bool
+	// StopSequence means that the model supports stop sequences. This is generally only supported in text-in
+	// modalities.
+	StopSequence bool
+
+	_ struct{}
+}
+
+// Scenario defines one way to use the provider.
+type Scenario struct {
+	In  Modalities
+	Out Modalities
+	// Models is a *non exhaustive* list of models that support this scenario. It can't be exhaustive since
+	// providers continuouly release new models. It is still valuable to use the first value
+	Models []string
+
+	// Chat declares features supported when using ChatProvider.Chat
+	Chat Functionality
+	// ChatStream declares features supported when using ChatProvider.ChatStream
+	ChatStream Functionality
+
+	_ struct{}
+}
+
+// Scoreboard is a snapshot of the capabilities of the provider. These are smoke tested to confirm the
+// accuracy.
+type Scoreboard struct {
+	// Scenarios is the list of all known supported and tested scenarios.
+	//
+	// A single provider can provide various distinct use cases, like text-to-text, multi-modal-to-text,
+	// text-to-audio, audio-to-text, etc.
+	Scenarios []Scenario
+
+	_ struct{}
+}
+
 // Private
 
 func validateReflectedToJSON(r ReflectedToJSON) error {

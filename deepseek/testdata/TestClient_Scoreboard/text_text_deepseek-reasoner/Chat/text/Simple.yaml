@@ -1,0 +1,53 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 116
+        transfer_encoding: []
+        trailer: {}
+        host: api.deepseek.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"deepseek-reasoner","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"7fad1503-79c1-45d6-9ea7-2ca76563f189","object":"chat.completion","created":1748530901,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"Hello.","reasoning_content":"Hmm, the user asked me to say hello but with only one word. That''s a simple and clear request. \n\nI wonder if they''re testing my ability to follow instructions precisely or just want a minimal response. The \"use only one word\" part feels like a constraint challenge. \n\nOkay, the obvious answer is \"Hello\" but since they specified one word, I should avoid adding anything else - no explanations, no emojis, just the bare minimum. \n\nThe user seems to prefer brevity here. Maybe they''re in a hurry or just enjoy concise communication. I''ll respect that by giving exactly what they asked for - nothing more, nothing less. \n\n\"Hello\" fits perfectly as it''s both friendly and compliant with the one-word rule. No need to overthink this one."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":13,"completion_tokens":166,"total_tokens":179,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":162},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":13},"system_fingerprint":"fp_393bca965e_prod0425fp8"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9476de533bc16e08-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            X-Content-Type-Options:
+                - nosniff
+            X-Ds-Trace-Id:
+                - ca67075766cf1be46e44c4d31e59960d
+        status: 200 OK
+        code: 200
+        duration: 362ms

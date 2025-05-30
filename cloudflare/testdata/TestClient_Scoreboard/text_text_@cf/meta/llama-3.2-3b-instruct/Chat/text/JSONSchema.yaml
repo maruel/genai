@@ -1,0 +1,47 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 414
+        transfer_encoding: []
+        trailer: {}
+        host: api.cloudflare.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Reply as JSON according to the provided schema."}],"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean","description":"True if the answer is that it is a fruit, false otherwise"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-3b-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":[{"message":"AiError: Ai: This model doesn''t suuport JSON Schema. (b34a9068-2ab7-475c-bc94-1006a1583162)","code":5025}],"success":false,"result":{},"messages":[]}'
+        headers:
+            Api-Version:
+                - "2025-05-29"
+            Cf-Auditlog-Id:
+                - 01971c4a-6f6d-7ea8-ab77-7db6dad50c8f
+            Cf-Ray:
+                - 94766eb89ec2a2db-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 403 Forbidden
+        code: 403
+        duration: 243ms

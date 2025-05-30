@@ -27,6 +27,99 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+// Scoreboard for Anthropic.
+//
+// # Warnings
+//
+//   - No Anthropic models support structured output, you have to use tool calling instead.
+//   - Thinking is set to false because it doesn't happen systematically and the smoke tests do not trigger the
+//     condition. This is a bug in the smoke test.
+var Scoreboard = genai.Scoreboard{
+	Scenarios: []genai.Scenario{
+		{
+			In:     []genai.Modality{genai.ModalityText},
+			Out:    []genai.Modality{genai.ModalityText},
+			Models: []string{"claude-3-haiku-20240307", "claude-2.0", "claude-2.1", "claude-3-opus-20240229", "claude-3-sonnet-20240229"},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              false,
+				JSON:               false,
+				JSONSchema:         false,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              false,
+				JSON:               false,
+				JSONSchema:         false,
+			},
+		},
+		{
+			In:     []genai.Modality{genai.ModalityText, genai.ModalityImage, genai.ModalityPDF},
+			Out:    []genai.Modality{genai.ModalityText},
+			Models: []string{"claude-3-5-haiku-20241022", "claude-3-5-sonnet-20240620", "claude-3-5-sonnet-20241022"},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                true,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               false,
+				JSONSchema:         false,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                true,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               false,
+				JSONSchema:         false,
+			},
+		},
+		{
+			In:     []genai.Modality{genai.ModalityText, genai.ModalityImage, genai.ModalityPDF},
+			Out:    []genai.Modality{genai.ModalityText},
+			Models: []string{"claude-3-7-sonnet-20250219", "claude-opus-4-20250514", "claude-sonnet-4-20250514"},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                true,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               false,
+				JSONSchema:         false,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                true,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               false,
+				JSONSchema:         false,
+			},
+		},
+	},
+}
+
 // ChatOptions includes Anthropic specific options.
 type ChatOptions struct {
 	genai.ChatOptions
@@ -787,6 +880,10 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 			},
 		},
 	}, nil
+}
+
+func (c *Client) Scoreboard() genai.Scoreboard {
+	return Scoreboard
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

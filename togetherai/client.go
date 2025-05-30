@@ -28,6 +28,101 @@ import (
 
 // Official python client library at https://github.com/togethercomputer/together-python/tree/main/src/together
 
+// Scoreboard for TogetherAI.
+//
+// # Warnings
+//
+//   - meta-llama/Llama-4-Scout-17B-16E-Instruct is very broken, tool call doesn't work and ChatStream is
+//     completely broken.
+//   - Qwen/Qwen3-235B-A22B-fp8-tput is in a similar situation
+//
+// # Models
+//
+//   - Suffix "-Turbo" means FP8 quantization.
+//   - Suffix "-Lite" means INT4 quantization.
+//   - Suffix "-Free" has lower rate limits.
+//
+// See https://docs.together.ai/docs/serverless-models and https://api.together.ai/models
+var Scoreboard = genai.Scoreboard{
+	Scenarios: []genai.Scenario{
+		{
+			In:  []genai.Modality{genai.ModalityText},
+			Out: []genai.Modality{genai.ModalityText},
+			// Note that many models do not in fact support tools.
+			Models: []string{
+				"meta-llama/Llama-3.3-70B-Instruct-Turbo", // Not reported by the endpoint as of May 2025
+				"meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
+				"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
+				"meta-llama/Llama-4-Scout-17B-16E-Instruct",
+
+				// Old or fringe models
+				"arcee-ai/arcee-blitz",
+				"arcee-ai/caller",
+				"arcee-ai/coder-large",
+				"arcee-ai/virtuoso-large",
+				"arcee-ai/virtuoso-medium-v2",
+				"arcee_ai/arcee-spotlight",
+				"deepseek-ai/DeepSeek-V3",
+				"google/gemma-2-27b-it",
+				"Gryphe/MythoMax-L2-13b",
+				"Gryphe/MythoMax-L2-13b-Lite",
+				"lgai/exaone-3-5-32b-instruct",
+				"lgai/exaone-deep-32b",
+				"marin-community/marin-8b-instruct",
+				"meta-llama/Llama-Vision-Free",
+				"meta-llama/Llama-3-70b-chat-hf",
+				"meta-llama/Llama-3-8b-chat-hf",
+				"meta-llama/Llama-3.2-11B-Vision-Instruct-Turbo",
+				"meta-llama/Llama-3.2-3B-Instruct-Turbo",
+				"meta-llama/Llama-3.2-90B-Vision-Instruct-Turbo",
+				"meta-llama/Meta-Llama-3-70B-Instruct-Turbo",
+				"meta-llama/Meta-Llama-3-8B-Instruct-Lite",
+				"meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
+				"meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo",
+				"meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
+				"mistralai/Mistral-7B-Instruct-v0.1",
+				"mistralai/Mistral-7B-Instruct-v0.2",
+				"mistralai/Mistral-7B-Instruct-v0.3",
+				"mistralai/Mistral-Small-24B-Instruct-2501",
+				"mistralai/Mixtral-8x7B-Instruct-v0.1",
+				"NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO",
+				"nvidia/Llama-3.1-Nemotron-70B-Instruct-HF",
+				"Qwen/Qwen2-72B-Instruct",
+				"Qwen/Qwen2-VL-72B-Instruct",
+				"Qwen/Qwen2.5-72B-Instruct-Turbo",
+				"Qwen/Qwen2.5-7B-Instruct-Turbo",
+				"Qwen/Qwen2.5-Coder-32B-Instruct",
+				"Qwen/Qwen2.5-VL-72B-Instruct",
+				"scb10x/scb10x-llama3-1-typhoon2-70b-instruct",
+				"scb10x/scb10x-llama3-1-typhoon2-8b-instruct",
+				"togethercomputer/Refuel-Llm-V2",
+			},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+		},
+	},
+}
+
 // https://docs.together.ai/reference/chat-completions-1
 //
 // https://docs.together.ai/docs/chat-overview
@@ -581,6 +676,10 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 			},
 		},
 	}, nil
+}
+
+func (c *Client) Scoreboard() genai.Scoreboard {
+	return Scoreboard
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

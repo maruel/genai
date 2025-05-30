@@ -1,0 +1,67 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 471
+        transfer_encoding: []
+        trailer: {}
+        host: api.cerebras.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"llama3.1-8b","messages":[{"role":"user","content":"Is a banana a fruit? Reply as JSON according to the provided schema."}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean","description":"True if the answer is that it is a fruit, false otherwise"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-f7329fd5-dcc9-4ae9-8dcd-d618461114f3","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"is_fruit\": true}","role":"assistant"}}],"created":1748615969,"model":"llama3.1-8b","system_fingerprint":"fp_bf7f141e20927499c729","object":"chat.completion","usage":{"prompt_tokens":201,"completion_tokens":8,"total_tokens":209,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.220689025,"prompt_time":0.010228552,"completion_time":0.003585467,"total_time":0.23705148696899414,"created":1748615969}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 947efb327fcb33fb-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-f7329fd5-dcc9-4ae9-8dcd-d618461114f3
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14399"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "59928"
+            X-Ratelimit-Reset-Requests-Day:
+                - "33629.84704232216"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "29.847042322158813"
+            X-Request-Id:
+                - 947efb327fcb33fb-YUL
+        status: 200 OK
+        code: 200
+        duration: 565ms

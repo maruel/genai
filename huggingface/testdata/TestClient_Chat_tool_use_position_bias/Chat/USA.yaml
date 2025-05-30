@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: 420
         uncompressed: false
-        body: '{"object":"chat.completion","id":"","created":1747602287,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":262,"completion_tokens":17,"total_tokens":279}}'
+        body: '{"object":"chat.completion","id":"","created":1748538281,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":262,"completion_tokens":17,"total_tokens":279}}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
@@ -47,47 +47,47 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 41fd1c68f697ac2776898df61c02b992.cloudfront.net (CloudFront)
+                - 1.1 81f76a57a3b40a803013e33a76a4e06e.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - LQP86uxg_cn4chSbV81mcLCRdWznnW_OrtFm80uov8Zop5jYVBnCiQ==
+                - m7-yU38QfLKles9Z5nbakH3w9B-Q_gBgW-D-O-pw6A3zN9IQBg_OHQ==
             X-Amz-Cf-Pop:
-                - YTO53-P1
+                - YTO50-P1
             X-Cache:
                 - Miss from cloudfront
             X-Compute-Characters:
                 - "1301"
             X-Compute-Time:
-                - "0.958790626"
+                - "3.8213866210000003"
             X-Compute-Type:
                 - 4-nvida-a100-sxm4-80gb
             X-Generated-Tokens:
                 - "17"
             X-Inference-Id:
-                - 3e1be068-2e8b-4394-bc9f-d71aa9cf9524
+                - f19acfd8-8294-4061-a068-5519d4ea4dcd
             X-Inference-Time:
-                - "932"
+                - "2197"
             X-Powered-By:
                 - huggingface-moon
             X-Prompt-Tokens:
                 - "262"
             X-Proxied-Host:
-                - http://10.102.78.120
+                - http://10.102.32.65
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - fyj5qcci-2zr2c
+                - fyj5qcci-p8lev
             X-Queue-Time:
-                - "24"
+                - "1622"
             X-Request-Id:
-                - B6AkQWaBoPQzlCox
+                - 738tMxpdvpn8vuVj
             X-Robots-Tag:
                 - none
             X-Time-Per-Token:
-                - "54"
+                - "129"
             X-Total-Time:
-                - "958"
+                - "3821"
             X-Validation-Time:
                 - "1"
         status: 200 OK
         code: 200
-        duration: 1.098s
+        duration: 3.989s

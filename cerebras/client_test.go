@@ -14,65 +14,21 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 )
 
+func TestClient_Scoreboard(t *testing.T) {
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider {
+		c := getClient(t, m)
+		if m == "qwen-3-32b" {
+			return &genai.ChatProviderThinking{ChatProvider: c, TagName: "think"}
+		}
+		return c
+	}, nil)
+}
+
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
 		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 		Model:     "llama-3.1-8b",
 	},
-}
-
-func TestClient_Chat_allModels(t *testing.T) {
-	testCases.TestChatAllModels(t, func(model genai.Model) bool {
-		// Skip it because it requires explicit processing and it's tested at TestClient_Chat_thinking below.
-		return model.GetID() != "qwen-3-32b"
-	})
-}
-
-func TestClient_Chat_thinking(t *testing.T) {
-	testCases.TestChatThinking(t, &internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ChatProvider {
-			return &genai.ChatProviderThinking{ChatProvider: getClient(t, m), TagName: "think"}
-		},
-		Model: "qwen-3-32b",
-	})
-}
-
-func TestClient_Chat_simple(t *testing.T) {
-	testCases.TestChatSimple_simple(t, nil)
-}
-
-func TestClient_ChatStream_simple(t *testing.T) {
-	testCases.TestChatStream_simple(t, nil)
-}
-
-func TestClient_max_tokens(t *testing.T) {
-	testCases.TestChatMaxTokens(t, nil)
-}
-
-func TestClient_stop_sequence(t *testing.T) {
-	testCases.TestChatStopSequence(t, nil)
-}
-
-func TestClient_Chat_vision_jPG_inline(t *testing.T) {
-	t.Skip("Implement multi-content messages")
-	testCases.TestChatVisionJPGInline(t, &internaltest.Settings{Model: "llama-4-scout-17b-16e-instruct"})
-}
-
-func TestClient_Chat_jSON(t *testing.T) {
-	testCases.TestChatJSON(t, nil)
-}
-
-func TestClient_Chat_jSON_schema(t *testing.T) {
-	testCases.TestChatJSONSchema(t, nil)
-}
-
-func TestClient_Chat_tool_use_reply(t *testing.T) {
-	testCases.TestChatToolUseReply(t, &internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ChatProvider {
-			return &genai.ChatProviderThinking{ChatProvider: getClient(t, m), TagName: "think"}
-		},
-		Model: "qwen-3-32b",
-	})
 }
 
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {

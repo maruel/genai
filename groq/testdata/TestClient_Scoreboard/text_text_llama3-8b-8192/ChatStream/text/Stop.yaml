@@ -1,0 +1,75 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 149
+        transfer_encoding: []
+        trailer: {}
+        host: api.groq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"role":"user","content":"Talk about Canada in 10 words. Start with: Canada is"}],"model":"llama3-8b-8192","stop":["is"],"stream":true}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"id":"chatcmpl-22a236ec-ba47-4f38-8588-b658ca15affb","object":"chat.completion.chunk","created":1748536423,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jwee8wsreprbmerecce2rp2a"}}
+
+            data: {"id":"chatcmpl-22a236ec-ba47-4f38-8588-b658ca15affb","object":"chat.completion.chunk","created":1748536423,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"content":"Canada"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-22a236ec-ba47-4f38-8588-b658ca15affb","object":"chat.completion.chunk","created":1748536423,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"content":" "},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-22a236ec-ba47-4f38-8588-b658ca15affb","object":"chat.completion.chunk","created":1748536423,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01jwee8wsreprbmerecce2rp2a","usage":{"queue_time":0.167406201,"prompt_tokens":23,"prompt_time":0.005175718,"completion_tokens":13,"completion_time":0.010833333,"total_tokens":36,"total_time":0.016009051}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94776524f886a2ee-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - us-central-1
+            X-Ratelimit-Limit-Requests:
+                - "50000"
+            X-Ratelimit-Limit-Tokens:
+                - "100000"
+            X-Ratelimit-Remaining-Requests:
+                - "49992"
+            X-Ratelimit-Remaining-Tokens:
+                - "99122"
+            X-Ratelimit-Reset-Requests:
+                - 13.821s
+            X-Ratelimit-Reset-Tokens:
+                - 526.6ms
+            X-Request-Id:
+                - req_01jwee8wsreprbmerecce2rp2a
+        status: 200 OK
+        code: 200
+        duration: 226ms

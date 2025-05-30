@@ -29,6 +29,44 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// Scoreboard for llama.cpp.
+//
+// # Warnings
+//
+//   - Figure out tools as streaming support recently got added to llama.cpp.
+//   - llama.cpp supports more than what the client supports, like vision.
+var Scoreboard = genai.Scoreboard{
+	Scenarios: []genai.Scenario{
+		{
+			In:     []genai.Modality{genai.ModalityText},
+			Out:    []genai.Modality{genai.ModalityText},
+			Models: []string{"unsloth/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q5_K_M.gguf"},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              false,
+				JSON:               false,
+				JSONSchema:         false,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              false,
+				JSON:               false,
+				JSONSchema:         false,
+			},
+		},
+	},
+}
+
 // healthResponse is documented at
 // https://github.com/ggerganov/llama.cpp/blob/master/examples/server/README.md#api-endpoints
 type healthResponse struct {
@@ -439,6 +477,10 @@ func New(baseURL string, encoding *PromptEncoding, r http.RoundTripper) (*Client
 		chatURL:  baseURL + "/completion",
 		encoding: encoding,
 	}, nil
+}
+
+func (c *Client) Scoreboard() genai.Scoreboard {
+	return Scoreboard
 }
 
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {

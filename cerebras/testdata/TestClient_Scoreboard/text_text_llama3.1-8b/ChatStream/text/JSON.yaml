@@ -1,0 +1,87 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 247
+        transfer_encoding: []
+        trailer: {}
+        host: api.cerebras.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"llama3.1-8b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"response_format":{"type":"json_object"},"stream":true}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"id":"chatcmpl-27f8aaef-1456-497c-b46f-764c9b65d8a6","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1748615976,"model":"llama3.1-8b","system_fingerprint":"fp_bf7f141e20927499c729","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-27f8aaef-1456-497c-b46f-764c9b65d8a6","choices":[{"delta":{"content":"{\""},"index":0}],"created":1748615976,"model":"llama3.1-8b","system_fingerprint":"fp_bf7f141e20927499c729","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-27f8aaef-1456-497c-b46f-764c9b65d8a6","choices":[{"delta":{"content":"is"},"index":0}],"created":1748615976,"model":"llama3.1-8b","system_fingerprint":"fp_bf7f141e20927499c729","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-27f8aaef-1456-497c-b46f-764c9b65d8a6","choices":[{"delta":{"content":"_f"},"index":0}],"created":1748615976,"model":"llama3.1-8b","system_fingerprint":"fp_bf7f141e20927499c729","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-27f8aaef-1456-497c-b46f-764c9b65d8a6","choices":[{"delta":{"content":"ruit"},"index":0}],"created":1748615976,"model":"llama3.1-8b","system_fingerprint":"fp_bf7f141e20927499c729","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-27f8aaef-1456-497c-b46f-764c9b65d8a6","choices":[{"delta":{"content":"\":"},"index":0}],"created":1748615976,"model":"llama3.1-8b","system_fingerprint":"fp_bf7f141e20927499c729","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-27f8aaef-1456-497c-b46f-764c9b65d8a6","choices":[{"delta":{"content":" true"},"index":0}],"created":1748615976,"model":"llama3.1-8b","system_fingerprint":"fp_bf7f141e20927499c729","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-27f8aaef-1456-497c-b46f-764c9b65d8a6","choices":[{"delta":{"content":"}"},"index":0}],"created":1748615976,"model":"llama3.1-8b","system_fingerprint":"fp_bf7f141e20927499c729","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-27f8aaef-1456-497c-b46f-764c9b65d8a6","choices":[{"delta":{},"index":0}],"created":1748615976,"model":"llama3.1-8b","system_fingerprint":"fp_bf7f141e20927499c729","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-27f8aaef-1456-497c-b46f-764c9b65d8a6","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1748615976,"model":"llama3.1-8b","system_fingerprint":"fp_bf7f141e20927499c729","object":"chat.completion.chunk","usage":{"prompt_tokens":64,"completion_tokens":8,"total_tokens":72,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.001747396,"prompt_time":0.003180785,"completion_time":0.003555649,"total_time":0.010698795318603516,"created":1748615976}}
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 947efb5a4a564bbf-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Inference-Id:
+                - chatcmpl-27f8aaef-1456-497c-b46f-764c9b65d8a6
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14386"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "58036"
+            X-Ratelimit-Reset-Requests-Day:
+                - "33623.82365322113"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "23.82365322113037"
+            X-Request-Id:
+                - 947efb5a4a564bbf-YUL
+        status: 200 OK
+        code: 200
+        duration: 3.409s

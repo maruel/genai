@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 136
+        transfer_encoding: []
+        trailer: {}
+        host: localhost
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"gemma3:4b","stream":false,"messages":[{"role":"user","content":"Is it a banana? Reply with only one word.","images":[null]}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 92
+        uncompressed: false
+        body: '{"error":"Failed to create new sequence: failed to process inputs: image: unknown format\n"}'
+        headers:
+            Content-Length:
+                - "92"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 500 Internal Server Error
+        code: 500
+        duration: 24ms

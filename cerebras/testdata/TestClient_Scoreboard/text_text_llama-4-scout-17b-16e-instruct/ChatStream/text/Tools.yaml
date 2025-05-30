@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 798
+        transfer_encoding: []
+        trailer: {}
+        host: api.cerebras.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"llama-4-scout-17b-16e-instruct","messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"id":"chatcmpl-0d5075b0-3593-47b0-9f80-15a4e0508310","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1748549482,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_dbfdda9d038d2b3a7e94","object":"chat.completion.chunk"}
+
+            data: {"status_code":400,"error":{"message":"Failed to generate tool_calls. Please adjust your prompt. See 'failed_generation' for more details. Exception: 'arguments'","type":"invalid_request_error","param":"","code":"tool_use_failed","failed_generation":"{\"name\": \"square_root\", \"parameters\": {\"number\": \"132413\"}}"}}
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9478a3fb3b46a28f-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Inference-Id:
+                - chatcmpl-0d5075b0-3593-47b0-9f80-15a4e0508310
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14384"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "59929"
+            X-Ratelimit-Reset-Requests-Day:
+                - "13717.118077278137"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "37.11807727813721"
+            X-Request-Id:
+                - 9478a3fb3b46a28f-YUL
+        status: 200 OK
+        code: 200
+        duration: 1.326s

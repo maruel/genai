@@ -21,6 +21,71 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+// Scoreboard for Deepseek.
+//
+// # Warnings
+//
+//   - JSON schema decoding is announced to be added later in the doc.
+//   - Tool calling is not supported with deepseek-reasoner.
+var Scoreboard = genai.Scoreboard{
+	Scenarios: []genai.Scenario{
+		{
+			In:     []genai.Modality{genai.ModalityText},
+			Out:    []genai.Modality{genai.ModalityText},
+			Models: []string{"deepseek-chat"},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         false,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         false,
+			},
+		},
+		{
+			In:     []genai.Modality{genai.ModalityText},
+			Out:    []genai.Modality{genai.ModalityText},
+			Models: []string{"deepseek-reasoner"},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           true,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              false,
+				JSON:               true,
+				JSONSchema:         false,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           true,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              false,
+				JSON:               true,
+				JSONSchema:         false,
+			},
+		},
+	},
+}
+
 // https://api-docs.deepseek.com/api/create-chat-completion
 type ChatRequest struct {
 	Model            string    `json:"model"`
@@ -439,6 +504,10 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 			},
 		},
 	}, nil
+}
+
+func (c *Client) Scoreboard() genai.Scoreboard {
+	return Scoreboard
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

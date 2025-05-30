@@ -5,9 +5,9 @@
 package openai_test
 
 import (
+	"context"
 	_ "embed"
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -16,95 +16,50 @@ import (
 	"github.com/maruel/genai/openai"
 )
 
+func TestClient_Scoreboard(t *testing.T) {
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider {
+		c := getClient(t, m)
+		if m == "o4-mini" {
+			return &injectOption{Client: c, t: t, opts: openai.ChatOptions{
+				// This will lead to spurious HTTP 500 but it is 25% of the cost.
+				ServiceTier:     openai.ServiceTierFlex,
+				ReasoningEffort: openai.ReasoningEffortHigh,
+			}}
+		}
+		return c
+	}, nil)
+}
+
+type injectOption struct {
+	*openai.Client
+	t    *testing.T
+	opts openai.ChatOptions
+}
+
+func (i *injectOption) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+	n := i.opts
+	if opts != nil {
+		n.ChatOptions = *opts.(*genai.ChatOptions)
+	}
+	opts = &n
+	return i.Client.Chat(ctx, msgs, opts)
+}
+
+func (i *injectOption) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.ChatResult, error) {
+	n := i.opts
+	if opts != nil {
+		n.ChatOptions = *opts.(*genai.ChatOptions)
+	}
+	opts = &n
+	return i.Client.ChatStream(ctx, msgs, opts, replies)
+}
+
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
 		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 		// https://platform.openai.com/docs/models/gpt-4.1-nano
 		Model: "gpt-4.1-nano",
 	},
-}
-
-func TestClient_Chat_allModels(t *testing.T) {
-	testCases.TestChatAllModels(
-		t,
-		func(m genai.Model) bool {
-			id := m.GetID()
-			// There's no way to know what model has which capability.
-			if id == "babbage-002" ||
-				strings.HasPrefix(id, "dall-") ||
-				strings.HasPrefix(id, "davinci-") ||
-				strings.HasPrefix(id, "gpt-3.5-") ||
-				strings.HasPrefix(id, "o1-pro") ||
-				strings.HasPrefix(id, "omni-moderation-") ||
-				strings.HasPrefix(id, "text-embedding-") ||
-				strings.HasPrefix(id, "tts-") ||
-				strings.HasPrefix(id, "whisper-") ||
-				strings.Contains(id, "-audio-") ||
-				strings.Contains(id, "-image-") ||
-				strings.Contains(id, "-realtime-") ||
-				strings.HasSuffix(id, "-transcribe") ||
-				strings.HasSuffix(id, "-tts") {
-				return false
-			}
-			return true
-		})
-}
-
-func TestClient_Chat_thinking(t *testing.T) {
-	// https://platform.openai.com/docs/guides/reasoning
-	testCases.TestChatThinking(t,
-		&internaltest.Settings{
-			Model: "o4-mini",
-			Options: func(opts *genai.ChatOptions) genai.Validatable {
-				return &openai.ChatOptions{
-					ChatOptions: *opts,
-					// This will lead to spurious HTTP 500 but it is 25% of the cost.
-					ServiceTier:     openai.ServiceTierFlex,
-					ReasoningEffort: openai.ReasoningEffortLow,
-				}
-			},
-		})
-}
-
-func TestClient_Chat_simple(t *testing.T) {
-	testCases.TestChatSimple_simple(t, nil)
-}
-
-func TestClient_ChatStream_simple(t *testing.T) {
-	testCases.TestChatStream_simple(t, nil)
-}
-
-func TestClient_max_tokens(t *testing.T) {
-	testCases.TestChatMaxTokens(t, nil)
-}
-
-func TestClient_stop_sequence(t *testing.T) {
-	testCases.TestChatStopSequence(t, nil)
-}
-
-func TestClient_Chat_jSON(t *testing.T) {
-	testCases.TestChatJSON(t, nil)
-}
-
-func TestClient_Chat_jSON_schema(t *testing.T) {
-	testCases.TestChatJSONSchema(t, nil)
-}
-
-func TestClient_Chat_audio_mp3_inline(t *testing.T) {
-	testCases.TestChatAudioMP3Inline(t, &internaltest.Settings{Model: "gpt-4o-audio-preview"})
-}
-
-func TestClient_Chat_vision_jPG_inline(t *testing.T) {
-	testCases.TestChatVisionJPGInline(t, nil)
-}
-
-func TestClient_Chat_vision_pDF_inline(t *testing.T) {
-	// TODO: Implement URL support.
-	testCases.TestChatVisionPDFInline(t, nil)
-}
-
-func TestClient_Chat_tool_use_reply(t *testing.T) {
-	testCases.TestChatToolUseReply(t, nil)
 }
 
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {

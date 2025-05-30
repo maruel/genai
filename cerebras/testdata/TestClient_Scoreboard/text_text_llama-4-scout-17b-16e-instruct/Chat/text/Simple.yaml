@@ -1,0 +1,67 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 114
+        transfer_encoding: []
+        trailer: {}
+        host: api.cerebras.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"llama-4-scout-17b-16e-instruct","messages":[{"role":"user","content":"Say hello. Use only one word."}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-6ab7662e-31bf-4569-aa48-742cdae071dc","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Hello!","role":"assistant"}}],"created":1748477597,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_dbfdda9d038d2b3a7e94","object":"chat.completion","usage":{"prompt_tokens":18,"completion_tokens":3,"total_tokens":21,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000669218,"prompt_time":0.000833044,"completion_time":0.002884624,"total_time":0.007021665573120117,"created":1748477597}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9471c8f89851a2c9-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-6ab7662e-31bf-4569-aa48-742cdae071dc
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14400"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Reset-Requests-Day:
+                - "85602.33287763596"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "42.33287763595581"
+            X-Request-Id:
+                - 9471c8f89851a2c9-YUL
+        status: 200 OK
+        code: 200
+        duration: 176ms

@@ -1,0 +1,183 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 730
+        transfer_encoding: []
+        trailer: {}
+        host: router.huggingface.co
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"stream":false,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/hf-inference/models/meta-llama/Llama-3.3-70B-Instruct/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 421
+        uncompressed: false
+        body: '{"object":"chat.completion","id":"","created":1748538004,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":293,"completion_tokens":18,"total_tokens":311}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "421"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 60c77d7f2a0954d991174a909a828016.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - ZiGBkZ8w5Kgsh_pOfeSNZ5dgV6iXnkGx3eUSbF9MC90GOHJV2-Q3aw==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Compute-Characters:
+                - "1465"
+            X-Compute-Time:
+                - "4.67173752"
+            X-Compute-Type:
+                - 4-nvida-a100-sxm4-80gb
+            X-Generated-Tokens:
+                - "18"
+            X-Inference-Id:
+                - 57429d03-ea35-494f-9e8a-9d155efe7ddd
+            X-Inference-Time:
+                - "3865"
+            X-Powered-By:
+                - huggingface-moon
+            X-Prompt-Tokens:
+                - "293"
+            X-Proxied-Host:
+                - http://10.102.44.56
+            X-Proxied-Path:
+                - /v1/chat/completions
+            X-Proxied-Replica:
+                - fyj5qcci-iqtyp
+            X-Queue-Time:
+                - "782"
+            X-Request-Id:
+                - CShlZGR87P5WeFKq
+            X-Robots-Tag:
+                - none
+            X-Time-Per-Token:
+                - "214"
+            X-Total-Time:
+                - "4671"
+            X-Validation-Time:
+                - "23"
+        status: 200 OK
+        code: 200
+        duration: 4.873s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 919
+        transfer_encoding: []
+        trailer: {}
+        host: router.huggingface.co
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"stream":false,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},{"role":"tool","content":"363.89","name":"square_root"}],"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/hf-inference/models/meta-llama/Llama-3.3-70B-Instruct/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 304
+        uncompressed: false
+        body: '{"object":"chat.completion","id":"","created":1748538004,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"363.89"},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":153,"completion_tokens":4,"total_tokens":157}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "304"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 60c77d7f2a0954d991174a909a828016.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - ySfPB2TlvfUOd45XRkHQD68abY9MyBs3iE3zHSw4EzdD7mrt6YEsNQ==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Compute-Characters:
+                - "791"
+            X-Compute-Time:
+                - "0.193765765"
+            X-Compute-Type:
+                - 4-nvida-a100-sxm4-80gb
+            X-Generated-Tokens:
+                - "4"
+            X-Inference-Id:
+                - 49e14744-eda8-4a71-af31-7372a25db0d9
+            X-Inference-Time:
+                - "192"
+            X-Powered-By:
+                - huggingface-moon
+            X-Prompt-Tokens:
+                - "153"
+            X-Proxied-Host:
+                - http://10.102.90.33
+            X-Proxied-Path:
+                - /v1/chat/completions
+            X-Proxied-Replica:
+                - fyj5qcci-6f65q
+            X-Queue-Time:
+                - "0"
+            X-Request-Id:
+                - pTnoLlhaFS7H_wHO
+            X-Robots-Tag:
+                - none
+            X-Time-Per-Token:
+                - "48"
+            X-Total-Time:
+                - "193"
+            X-Validation-Time:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 282ms

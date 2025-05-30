@@ -15,61 +15,15 @@ import (
 	"github.com/maruel/genai/mistral"
 )
 
+func TestClient_Scoreboard(t *testing.T) {
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
+}
+
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
 		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 		Model:     "mistral-small-latest",
 	},
-}
-
-func TestClient_Chat_allModels(t *testing.T) {
-	testCases.TestChatAllModels(
-		t,
-		func(m genai.Model) bool {
-			model := m.(*mistral.Model)
-			if !model.Capabilities.CompletionChat {
-				return false
-			}
-			id := model.ID
-			return id == "mistral-medium-2505"
-		})
-}
-
-func TestClient_Chat_simple(t *testing.T) {
-	testCases.TestChatSimple_simple(t, &internaltest.Settings{Model: "ministral-3b-latest"})
-}
-
-func TestClient_ChatStream_simple(t *testing.T) {
-	testCases.TestChatStream_simple(t, &internaltest.Settings{Model: "ministral-3b-latest"})
-}
-
-func TestClient_max_tokens(t *testing.T) {
-	testCases.TestChatMaxTokens(t, nil)
-}
-
-func TestClient_stop_sequence(t *testing.T) {
-	testCases.TestChatStopSequence(t, nil)
-}
-
-func TestClient_Chat_jSON(t *testing.T) {
-	testCases.TestChatJSON(t, nil)
-}
-
-func TestClient_Chat_jSON_schema(t *testing.T) {
-	testCases.TestChatJSONSchema(t, nil)
-}
-
-func TestClient_Chat_vision_jPG_inline(t *testing.T) {
-	testCases.TestChatVisionJPGInline(t, nil)
-}
-
-func TestClient_Chat_vision_pDF_uRL(t *testing.T) {
-	// Mistral does not support inline PDF.
-	testCases.TestChatVisionPDFURL(t, nil)
-}
-
-func TestClient_Chat_tool_use_reply(t *testing.T) {
-	testCases.TestChatToolUseReply(t, nil)
 }
 
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {

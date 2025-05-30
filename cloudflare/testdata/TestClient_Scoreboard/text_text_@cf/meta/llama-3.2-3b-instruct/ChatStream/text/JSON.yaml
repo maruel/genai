@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 225
+        transfer_encoding: []
+        trailer: {}
+        host: api.cloudflare.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"response_format":{"type":"json_object"},"stream":true}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-3b-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"response":"{\"","p":"abcdefghijklmnopqrstuvwxyz01"}
+
+            data: {"response":"is","p":"abcdefghijk"}
+
+            data: {"response":"_f","p":"abcdefghijkl"}
+
+            data: {"response":"ruit","p":"abcdefghijklmnopqrstuvwxyz0123456789ab"}
+
+            data: {"response":"\":","p":"abcdefghijklmnopqrstuvwxyz0123456789abcd"}
+
+            data: {"response":" true","p":"abcdefghij"}
+
+            data: {"response":"}","p":"abcdefg"}
+
+            data: {"response":"","p":"ab"}
+
+            data: {"response":"","usage":{"prompt_tokens":40,"completion_tokens":8,"total_tokens":48}}
+
+            data: [DONE]
+
+        headers:
+            Api-Version:
+                - "2025-05-29"
+            Cf-Ai-Req-Id:
+                - 7c57f2c2-4765-48b7-8e8b-04134c0bcf7c
+            Cf-Auditlog-Id:
+                - 01971c4a-70de-77fc-b7e1-c07c4c3f4d07
+            Cf-Ray:
+                - 94766ebad948a2db-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 330ms

@@ -1,0 +1,53 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 153
+        transfer_encoding: []
+        trailer: {}
+        host: api.deepseek.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"deepseek-reasoner","messages":[{"role":"user","content":"Talk about Canada in 10 words. Start with: Canada is"}],"stream":false,"stop":["is"]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"aa0b6f9d-aad9-4068-ab07-5260f404a903","object":"chat.completion","created":1748530901,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"Canada ","reasoning_content":"Hmm, the user wants me to talk about Canada in exactly 10 words, starting with \"Canada is\". This seems like a fun, concise challenge—probably for educational purposes or quick trivia. I should make it informative yet engaging.\n\nThe user might be a student, a traveler, or someone curious about geography. They could be testing my ability to summarize key facts succinctly. I''ll aim to cover diversity, nature, and culture to give a well-rounded snapshot.\n\nCanada is known for its vast landscapes and multicultural society. I''ll include words like \"vast\" for size, \"diverse\" for people, \"wilderness\" for nature, \"welcoming\" for inclusivity, and \"maple\" as a cultural icon. To hit exactly 10 words, I''ll choose impactful terms: \"Canada is vast, diverse, wilderness, welcoming, bilingual, multicultural, free, snowy, hockey-loving, maple.\"\n\nThis covers geography (vast, wilderness, snowy), society (diverse, welcoming, bilingual, multicultural, free), and culture (hockey-loving, maple). It''s neutral and factual, avoiding controversy. The response should satisfy the user''s request while sparking interest in learning more about Canada."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":18,"completion_tokens":248,"total_tokens":266,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":244},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":18},"system_fingerprint":"fp_393bca965e_prod0425fp8"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9476de533bbd6e08-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            X-Content-Type-Options:
+                - nosniff
+            X-Ds-Trace-Id:
+                - 6a0e3843f9819fdbe5c8d94d7793e2ee
+        status: 200 OK
+        code: 200
+        duration: 322ms

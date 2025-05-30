@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 131
+        transfer_encoding: []
+        trailer: {}
+        host: api.groq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"max_completion_tokens":3,"messages":[{"role":"user","content":"Tell a joke in 10 words"}],"model":"qwen-qwq-32b","stream":false}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-c589892b-73fd-43e9-9f60-f1b4e2cf5a04","object":"chat.completion","created":1748561451,"model":"qwen-qwq-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\n\u003cthink\u003e\nOkay, the"},"logprobs":null,"finish_reason":"length"}],"usage":{"queue_time":0.062743912,"prompt_tokens":18,"prompt_time":0.00301799,"completion_tokens":3,"completion_time":0.007422859,"total_tokens":21,"total_time":0.010440849},"usage_breakdown":{"models":null},"system_fingerprint":"fp_28178d7ff6","x_groq":{"id":"req_01jwf64p2sfvd8dkzss7hb0ejx"}}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9479c82d288ba267-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - us-central-1
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499997"
+            X-Ratelimit-Remaining-Tokens:
+                - "249990"
+            X-Ratelimit-Reset-Requests:
+                - 514.4ms
+            X-Ratelimit-Reset-Tokens:
+                - 2.4ms
+            X-Request-Id:
+                - req_01jwf64p2sfvd8dkzss7hb0ejx
+        status: 200 OK
+        code: 200
+        duration: 219ms

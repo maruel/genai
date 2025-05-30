@@ -25,6 +25,112 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+// Scoreboard for Groq.
+//
+// # Warnings
+//
+//   - qwen-qwq-32b fails with tool calling when streaming. Currently disabled even not streaming in the
+//     client code.
+var Scoreboard = genai.Scoreboard{
+	Scenarios: []genai.Scenario{
+		{
+			In:  []genai.Modality{genai.ModalityText},
+			Out: []genai.Modality{genai.ModalityText},
+
+			Models: []string{
+				"llama3-8b-8192",
+				"gemma2-9b-it",
+				"llama-3.1-8b-instant",
+				"llama-3.3-70b-versatile",
+				"llama3-70b-8192",
+				"mistral-saba-24b",
+			},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         false,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         false,
+			},
+		},
+		{
+			In:  []genai.Modality{genai.ModalityText},
+			Out: []genai.Modality{genai.ModalityText},
+			Models: []string{
+				"qwen-qwq-32b",
+				"deepseek-r1-distill-llama-70b",
+			},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           true,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              false,
+				JSON:               true,
+				JSONSchema:         false,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           true,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              false,
+				JSON:               true,
+				JSONSchema:         false,
+			},
+		},
+		{
+			In:  []genai.Modality{genai.ModalityImage, genai.ModalityText},
+			Out: []genai.Modality{genai.ModalityText},
+			Models: []string{
+				"meta-llama/llama-4-scout-17b-16e-instruct",
+				"meta-llama/llama-4-maverick-17b-128e-instruct",
+			},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                true,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              false,
+				JSON:               true,
+				JSONSchema:         false,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                true,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         false,
+			},
+		},
+	},
+}
+
 // TODO: Expose option c.ReasoningFormat through ChatOptions.
 // Ref: https://console.groq.com/docs/reasoning/
 
@@ -613,6 +719,10 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 			},
 		},
 	}, nil
+}
+
+func (c *Client) Scoreboard() genai.Scoreboard {
+	return Scoreboard
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

@@ -7,7 +7,6 @@ package groq_test
 import (
 	_ "embed"
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -15,6 +14,17 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 )
+
+func TestClient_Scoreboard(t *testing.T) {
+	// internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) })
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider {
+		c := getClient(t, m)
+		if m == "qwen-qwq-32b" || m == "deepseek-r1-distill-llama-70b" {
+			return &genai.ChatProviderThinking{ChatProvider: c, TagName: "think", SkipJSON: true}
+		}
+		return c
+	}, nil)
+}
 
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
@@ -27,53 +37,6 @@ var testCases = &internaltest.TestCases{
 		},
 		Model: "llama3-8b-8192",
 	},
-}
-
-func TestClient_Chat_allModels(t *testing.T) {
-	testCases.TestChatAllModels(
-		t,
-		func(m genai.Model) bool {
-			id := m.GetID()
-			// Groq doesn't provide model metadata, so guess based on the name.
-			return !strings.Contains(id, "tts") && !strings.Contains(id, "whisper") && !strings.Contains(id, "llama-guard") && id != "mistral-saba-24b"
-		})
-}
-
-func TestClient_Chat_thinking(t *testing.T) {
-	testCases.TestChatThinking(t, &internaltest.Settings{Model: "qwen-qwq-32b"})
-}
-
-func TestClient_Chat_simple(t *testing.T) {
-	testCases.TestChatSimple_simple(t, &internaltest.Settings{Model: "llama-3.1-8b-instant"})
-}
-
-func TestClient_ChatStream_simple(t *testing.T) {
-	testCases.TestChatStream_simple(t, &internaltest.Settings{Model: "llama-3.1-8b-instant"})
-}
-
-func TestClient_max_tokens(t *testing.T) {
-	testCases.TestChatMaxTokens(t, nil)
-}
-
-func TestClient_stop_sequence(t *testing.T) {
-	testCases.TestChatStopSequence(t, nil)
-}
-
-func TestClient_Chat_vision_jPG_inline(t *testing.T) {
-	testCases.TestChatVisionJPGInline(t, &internaltest.Settings{Model: "meta-llama/llama-4-scout-17b-16e-instruct"})
-}
-
-func TestClient_Chat_jSON(t *testing.T) {
-	testCases.TestChatJSON(t, nil)
-}
-
-func TestClient_Chat_jSON_schema(t *testing.T) {
-	t.Skip("Currently broken. To be investigated. See https://discord.com/channels/1207099205563457597/1207101178631159830/1371897729395064832")
-	testCases.TestChatJSONSchema(t, &internaltest.Settings{Model: "gemma2-9b-it"})
-}
-
-func TestClient_Chat_tool_use_reply(t *testing.T) {
-	testCases.TestChatToolUseReply(t, nil)
 }
 
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {

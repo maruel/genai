@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 143
+        transfer_encoding: []
+        trailer: {}
+        host: api.mistral.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"ministral-3b-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"2c083a7c501647b58e3dcf8505a50db0","object":"chat.completion","created":1748539055,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"Hello!"},"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"total_tokens":14,"completion_tokens":3}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9477a56b2e8b33f1-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            X-Envoy-Upstream-Service-Time:
+                - "79"
+            X-Kong-Proxy-Latency:
+                - "14"
+            X-Kong-Request-Id:
+                - 7589f634e6d6e93d2cd18556b8abf12c
+            X-Kong-Upstream-Latency:
+                - "80"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "2000000"
+            X-Ratelimit-Limit-Tokens-Month:
+                - "10000000000"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "1999986"
+            X-Ratelimit-Remaining-Tokens-Month:
+                - "9999999838"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "14"
+        status: 200 OK
+        code: 200
+        duration: 270ms

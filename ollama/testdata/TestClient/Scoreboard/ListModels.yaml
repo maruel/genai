@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: localhost
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/tags
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: '{"models":[{"name":"huggingface.co/lmstudio-community/DeepCoder-14B-Preview-GGUF:Q4_K_M","model":"huggingface.co/lmstudio-community/DeepCoder-14B-Preview-GGUF:Q4_K_M","modified_at":"2025-04-08T19:23:52.381835855-04:00","size":8988111855,"digest":"bd040998b117d42490e8c1fdb5d7ced8e6587effb906ec76af9b42d40c6ab129","details":{"parent_model":"","format":"gguf","family":"qwen2","families":["qwen2"],"parameter_size":"14.8B","quantization_level":"unknown"}},{"name":"qwen2.5:0.5b","model":"qwen2.5:0.5b","modified_at":"2025-03-21T17:37:04.747682614-04:00","size":397821319,"digest":"a8b0c51577010a279d933d14c2a8ab4b268079d44c5c8830c0a93900f1827c67","details":{"parent_model":"","format":"gguf","family":"qwen2","families":["qwen2"],"parameter_size":"494.03M","quantization_level":"Q4_K_M"}},{"name":"llama3.1:8b","model":"llama3.1:8b","modified_at":"2025-03-19T17:13:44.942913771-04:00","size":4920753328,"digest":"46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e","details":{"parent_model":"","format":"gguf","family":"llama","families":["llama"],"parameter_size":"8.0B","quantization_level":"Q4_K_M"}},{"name":"gemma3:12b","model":"gemma3:12b","modified_at":"2025-03-19T14:35:35.981002672-04:00","size":8149190199,"digest":"6fd036cefda5093cc827b6c16be5e447f23857d4a472ce0bdba0720573d4dcd9","details":{"parent_model":"","format":"gguf","family":"gemma3","families":["gemma3"],"parameter_size":"12.2B","quantization_level":"Q4_K_M"}},{"name":"gemma3:4b","model":"gemma3:4b","modified_at":"2025-03-19T14:24:43.45850521-04:00","size":3338801718,"digest":"c0494fe00251c4fc844e6a1801f9cbd26c37441d034af3cb9284402f7e91989d","details":{"parent_model":"","format":"gguf","family":"gemma3","families":["gemma3"],"parameter_size":"4.3B","quantization_level":"Q4_K_M"}},{"name":"gemma3:1b","model":"gemma3:1b","modified_at":"2025-03-19T13:36:27.633701698-04:00","size":815319769,"digest":"2d27a774bc629ba3d5a3b31a8f11d315e8f49e5b8f7e6fc024dce67f539d1a84","details":{"parent_model":"","format":"gguf","family":"gemma3","families":["gemma3"],"parameter_size":"999.89M","quantization_level":"Q4_K_M"}}]}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 1ms

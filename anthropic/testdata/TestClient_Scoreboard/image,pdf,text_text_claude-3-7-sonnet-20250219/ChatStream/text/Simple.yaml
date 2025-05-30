@@ -1,0 +1,100 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 199
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"claude-3-7-sonnet-20250219","max_tokens":64000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"stream":true,"thinking":{"type":"disabled"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"id":"msg_013JUkfRnjZEKBe8BxstedM2","type":"message","role":"assistant","model":"claude-3-7-sonnet-20250219","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":15,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":5,"service_tier":"standard"}}    }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}         }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hello!"}}
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0               }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null},"usage":{"output_tokens":5}}
+
+            event: message_stop
+            data: {"type":"message_stop"            }
+
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "20000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2025-05-29T00:15:15Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "8000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "0"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2025-05-29T00:16:36Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "50"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "49"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2025-05-29T00:15:16Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "28000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "20000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2025-05-29T00:15:15Z"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9471cbda4fc8a28f-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Request-Id:
+                - req_011CPargwMH4iGFwLSXYUnjf
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 3.452s

@@ -16,113 +16,31 @@ import (
 	"github.com/maruel/genai/togetherai"
 )
 
+func TestClient_Scoreboard(t *testing.T) {
+	f := func(m genai.Model) bool {
+		model := m.(*togetherai.Model)
+		if model.ID == "arcee-ai/maestro-reasoning" || // Requires CoT processing.
+			model.ID == "google/gemma-2b-it" || // Doesn't follow instruction.
+			model.ID == "deepseek-ai/DeepSeek-V3-p-dp" || // Causes HTTP 503.
+			model.ID == "meta-llama/Llama-3.3-70B-Instruct-Turbo" || // rate_limit even if been a while.
+			model.ID == "togethercomputer/Refuel-Llm-V2-Small" || // Fails because Seed option.
+			strings.HasPrefix(model.ID, "deepseek-ai/DeepSeek-R1") || // Requires CoT processing.
+			strings.HasPrefix(model.ID, "perplexity-ai/r1-") || // Requires CoT processing.
+			strings.HasPrefix(model.ID, "Qwen/QwQ-32B") || // Requires CoT processing.
+			strings.HasPrefix(model.ID, "Qwen/Qwen3-235B-A22B-") || // Requires CoT processing.
+			strings.HasPrefix(model.ID, "togethercomputer/MoA-1") { // Causes HTTP 500.
+			return false
+		}
+		return model.Type == "chat"
+	}
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, f)
+}
+
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
 		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 		Model:     "meta-llama/Llama-4-Scout-17B-16E-Instruct",
 	},
-}
-
-func TestClient_Chat_allModels(t *testing.T) {
-	testCases.TestChatAllModels(
-		t,
-		func(m genai.Model) bool {
-			model := m.(*togetherai.Model)
-			if model.ID == "arcee-ai/maestro-reasoning" || // Requires CoT processing.
-				model.ID == "google/gemma-2b-it" || // Doesn't follow instruction.
-				model.ID == "deepseek-ai/DeepSeek-V3-p-dp" || // Causes HTTP 503.
-				model.ID == "meta-llama/Llama-3.3-70B-Instruct-Turbo" || // rate_limit even if been a while.
-				model.ID == "togethercomputer/Refuel-Llm-V2-Small" || // Fails because Seed option.
-				strings.HasPrefix(model.ID, "deepseek-ai/DeepSeek-R1") || // Requires CoT processing.
-				strings.HasPrefix(model.ID, "lgai/exaone-deep-32b") || // Requires CoT processing.
-				strings.HasPrefix(model.ID, "perplexity-ai/r1-") || // Requires CoT processing.
-				strings.HasPrefix(model.ID, "Qwen/QwQ-32B") || // Requires CoT processing.
-				strings.HasPrefix(model.ID, "Qwen/Qwen3-235B-A22B-") || // Requires CoT processing.
-				strings.HasPrefix(model.ID, "togethercomputer/MoA-1") { // Causes HTTP 500.
-				return false
-			}
-			return model.Type == "chat"
-		})
-}
-
-func TestClient_Chat_thinking(t *testing.T) {
-	t.Skip(`bugged when using streaming; https://discord.com/channels/1082503318624022589/1082503319165083700/threads/1373294576609136781`)
-	testCases.TestChatThinking(t, &internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ChatProvider {
-			return &genai.ChatProviderThinking{ChatProvider: getClient(t, m), TagName: "think"}
-		},
-		Model: "Qwen/Qwen3-235B-A22B-fp8-tput",
-	})
-}
-
-// google/gemma-3-4b-it and google/gemma-3-27b-it are not available without a dedicated endpoint. We must
-// select one of the Serverless at https://api.together.ai/models.
-
-func TestClient_Chat_simple(t *testing.T) {
-	testCases.TestChatSimple_simple(t, &internaltest.Settings{Model: "meta-llama/Llama-3.2-3B-Instruct-Turbo"})
-}
-
-func TestClient_ChatStream_simple(t *testing.T) {
-	testCases.TestChatStream_simple(t, &internaltest.Settings{Model: "meta-llama/Llama-3.2-3B-Instruct-Turbo"})
-}
-
-func TestClient_max_tokens(t *testing.T) {
-	t.Skip(`bugged when using streaming; https://discord.com/channels/1082503318624022589/1082503319165083700/threads/1373294576609136781`)
-	testCases.TestChatMaxTokens(t, nil)
-}
-
-func TestClient_stop_sequence(t *testing.T) {
-	t.Skip(`bugged when using streaming; https://discord.com/channels/1082503318624022589/1082503319165083700/threads/1373294576609136781`)
-	testCases.TestChatStopSequence(t, nil)
-}
-
-func TestClient_Chat_vision_jPG_inline(t *testing.T) {
-	testCases.TestChatVisionJPGInline(t, nil)
-}
-
-func TestClient_Chat_jSON(t *testing.T) {
-	testCases.TestChatJSON(t, nil)
-}
-
-func TestClient_Chat_jSON_schema(t *testing.T) {
-	testCases.TestChatJSONSchema(t, nil)
-}
-
-func TestClient_Chat_video(t *testing.T) {
-	c := getClient(t, "Qwen/Qwen2.5-VL-72B-Instruct")
-	f, err := os.Open("testdata/animation.mp4")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer f.Close()
-	// TogetherAI seems to require separate messages for text and images.
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "What is the word? Reply with exactly and only one word."),
-		{Role: genai.User, Contents: []genai.Content{{Document: f}}},
-	}
-	opts := genai.ChatOptions{
-		Seed:        1,
-		Temperature: 0.01,
-		MaxTokens:   50,
-	}
-	resp, err := c.Chat(t.Context(), msgs, &opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("Raw response: %#v", resp)
-	if resp.InputTokens != 3025 || resp.OutputTokens != 4 {
-		t.Logf("Unexpected tokens usage: %v", resp.Usage)
-	}
-	if len(resp.Contents) != 1 {
-		t.Fatal("Unexpected response")
-	}
-	if saw := strings.ToLower(resp.Contents[0].Text); saw != "banana" {
-		t.Fatal(saw)
-	}
-}
-
-func TestClient_Chat_tool_use_reply(t *testing.T) {
-	testCases.TestChatToolUseReply(t, &internaltest.Settings{Model: "Qwen/Qwen2.5-7B-Instruct-Turbo"})
 }
 
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {

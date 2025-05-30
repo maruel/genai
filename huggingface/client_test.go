@@ -15,6 +15,16 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 )
 
+func TestClient_Scoreboard(t *testing.T) {
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider {
+		c := getClient(t, m)
+		if m == "Qwen/QwQ-32B" {
+			return &genai.ChatProviderThinking{ChatProvider: c, TagName: "think", SkipJSON: true}
+		}
+		return c
+	}, nil)
+}
+
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
 		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
@@ -22,56 +32,7 @@ var testCases = &internaltest.TestCases{
 	},
 }
 
-func TestClient_Chat_allModels(t *testing.T) {
-	testCases.TestChatAllModels(
-		t,
-		func(m genai.Model) bool {
-			model := m.(*huggingface.Model)
-			if model.PipelineTag != "text-generation" {
-				return false
-			}
-			id := model.ID
-			return id == "meta-llama/Llama-3.3-70B-Instruct"
-		})
-}
-
-func TestClient_Chat_thinking(t *testing.T) {
-	t.Skip(`would need to split manually "\n</think>\n\n"`)
-	testCases.TestChatThinking(t, &internaltest.Settings{Model: "Qwen/QwQ-32B"})
-}
-
-func TestClient_Chat_simple(t *testing.T) {
-	testCases.TestChatSimple_simple(t, nil)
-}
-
-func TestClient_ChatStream_simple(t *testing.T) {
-	// TODO: Figure out why smaller models fail.
-	testCases.TestChatStream_simple(t, nil)
-}
-
-func TestClient_max_tokens(t *testing.T) {
-	testCases.TestChatMaxTokens(t, nil)
-}
-
-func TestClient_stop_sequence(t *testing.T) {
-	testCases.TestChatStopSequence(t, nil)
-}
-
-func TestClient_Chat_jSON(t *testing.T) {
-	t.Skip(`{"error":"Input validation error: grammar is not supported","error_type":"validation"}`)
-	testCases.TestChatJSON(t, nil)
-}
-
-func TestClient_Chat_jSON_schema(t *testing.T) {
-	testCases.TestChatJSONSchema(t, nil)
-}
-
-func TestClient_Chat_tool_use_reply(t *testing.T) {
-	testCases.TestChatToolUseReply(t, nil)
-}
-
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {
-	// TODO: Figure out why smaller models fail.
 	t.Run("Chat", func(t *testing.T) {
 		testCases.TestChatToolUsePositionBiasCore(t, nil, false, false)
 	})

@@ -6,7 +6,6 @@ package cohere_test
 
 import (
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -15,50 +14,16 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 )
 
+func TestClient_Scoreboard(t *testing.T) {
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
+}
+
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
 		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 		// https://cohere.com/pricing
 		Model: "command-r7b-12-2024",
 	},
-}
-
-func TestClient_Chat_allModels(t *testing.T) {
-	testCases.TestChatAllModels(
-		t,
-		func(m genai.Model) bool {
-			id := m.GetID()
-			// command-nightly randomly breaks.
-			return strings.HasPrefix(id, "command-") && !strings.HasSuffix(id, "-nightly")
-		})
-}
-
-func TestClient_Chat_simple(t *testing.T) {
-	testCases.TestChatSimple_simple(t, nil)
-}
-
-func TestClient_ChatStream_simple(t *testing.T) {
-	testCases.TestChatStream_simple(t, nil)
-}
-
-func TestClient_max_tokens(t *testing.T) {
-	testCases.TestChatMaxTokens(t, nil)
-}
-
-func TestClient_stop_sequence(t *testing.T) {
-	testCases.TestChatStopSequence(t, nil)
-}
-
-func TestClient_Chat_jSON(t *testing.T) {
-	testCases.TestChatJSON(t, nil)
-}
-
-func TestClient_Chat_jSON_schema(t *testing.T) {
-	testCases.TestChatJSONSchema(t, nil)
-}
-
-func TestClient_Chat_tool_use_reply(t *testing.T) {
-	testCases.TestChatToolUseReply(t, nil)
 }
 
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {

@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 221
+        transfer_encoding: []
+        trailer: {}
+        host: localhost
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"gemma3:4b","stream":false,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"format":"json"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 313
+        uncompressed: false
+        body: '{"model":"gemma3:4b","created_at":"2025-05-29T20:50:36.656373412Z","message":{"role":"assistant","content":"{\"is_fruit\": true}"},"done_reason":"stop","done":true,"total_duration":905944108,"load_duration":20353306,"prompt_eval_count":38,"prompt_eval_duration":349339157,"eval_count":8,"eval_duration":452059918}'
+        headers:
+            Content-Length:
+                - "313"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 906ms

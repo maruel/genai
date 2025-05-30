@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 96
+        transfer_encoding: []
+        trailer: {}
+        host: api.cloudflare.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"role":"user","content":"Tell a joke in 10 words"}],"max_tokens":3,"stream":true}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-3b-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"response":"Why","p":"a"}
+
+            data: {"response":" don","p":"abcdefghijklmnopq"}
+
+            data: {"response":"'t","p":"abcdefg"}
+
+            data: {"response":"","usage":{"prompt_tokens":18,"completion_tokens":3,"total_tokens":21}}
+
+            data: [DONE]
+
+        headers:
+            Api-Version:
+                - "2025-05-29"
+            Cf-Ai-Req-Id:
+                - 5cfcd04e-0cc3-4424-a5e3-918a903b1cc3
+            Cf-Auditlog-Id:
+                - 01971c4a-70d8-7859-8a27-c4e9b9c077da
+            Cf-Ray:
+                - 94766ebad94da2db-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 278ms

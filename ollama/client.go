@@ -28,6 +28,44 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// Scoreboard for Ollama.
+//
+// # Warnings
+//
+//   - Figure out tools as streaming support recently got added to llama.cpp.
+//   - Ollama supports more than what the client supports.
+var Scoreboard = genai.Scoreboard{
+	Scenarios: []genai.Scenario{
+		{
+			In:     []genai.Modality{genai.ModalityImage, genai.ModalityText},
+			Out:    []genai.Modality{genai.ModalityText},
+			Models: []string{"gemma3:4b"},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              false,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              false,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+		},
+	},
+}
+
 // https://github.com/ollama/ollama/blob/main/docs/api.md#generate-a-chat-completion
 // https://pkg.go.dev/github.com/ollama/ollama/api#ChatRequest
 type ChatRequest struct {
@@ -412,6 +450,10 @@ func New(baseURL, model string, r http.RoundTripper) (*Client, error) {
 	}, nil
 }
 
+func (c *Client) Scoreboard() genai.Scoreboard {
+	return Scoreboard
+}
+
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	result := genai.ChatResult{}
 	for i, msg := range msgs {
@@ -539,6 +581,8 @@ func (c *Client) ModelID() string {
 }
 
 // PullModel is the equivalent of "ollama pull".
+//
+// Files are cached under $HOME/.ollama/models/manifests/registry.ollama.ai/library/ or $OLLAMA_MODELS
 func (c *Client) PullModel(ctx context.Context, model string) error {
 	in := pullModelRequest{Model: model}
 	// TODO: Stream updates instead of hanging for several minutes.

@@ -1,0 +1,77 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 174
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"claude-3-5-haiku-20241022","max_tokens":3,"messages":[{"role":"user","content":[{"type":"text","text":"Tell a joke in 10 words"}]}],"thinking":{"type":"disabled"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"msg_01TGw1yokTCdA987A8QvP8z3","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"Why did the"}],"stop_reason":"max_tokens","stop_sequence":null,"usage":{"input_tokens":15,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":3,"service_tier":"standard"}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "50000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "50000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2025-05-29T20:13:56Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "10000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "10000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2025-05-29T20:13:56Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "50"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "49"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2025-05-29T20:13:57Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "60000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "60000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2025-05-29T20:13:56Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9478a7ba3810a2c0-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPcS6Wy64AARdMtL7VKbg
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 21.79s

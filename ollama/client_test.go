@@ -12,7 +12,6 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
@@ -25,70 +24,19 @@ import (
 
 func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
+
+	t.Run("Scoreboard", func(t *testing.T) {
+		internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider {
+			return s.getClient(t, m)
+		}, nil)
+	})
+
 	tc := &internaltest.TestCases{
 		Default: internaltest.Settings{
 			GetClient: func(t *testing.T, m string) genai.ChatProvider { return s.getClient(t, m) },
 			Model:     "gemma3:4b",
 		},
 	}
-
-	t.Run("Chat", func(t *testing.T) {
-		c := s.getClient(t, "gemma3:4b")
-		opts := genai.ChatOptions{
-			Seed:        1,
-			Temperature: 0.01,
-			MaxTokens:   50,
-		}
-		msgs := genai.Messages{
-			genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
-		}
-		got, err := c.Chat(t.Context(), msgs, &opts)
-		if err != nil {
-			t.Fatal(err)
-		}
-		want := genai.NewTextMessage(genai.Assistant, "Hello.")
-		if diff := cmp.Diff(want, got.Message); diff != "" {
-			t.Fatalf("unexpected response (-want +got):\n%s", diff)
-		}
-		if got.InputTokens != 17 || got.OutputTokens != 3 {
-			t.Logf("Unexpected tokens usage: %v", got.Usage)
-		}
-
-		// Second message.
-		msgs = append(msgs, got.Message)
-		msgs = append(msgs, genai.NewTextMessage(genai.User, "Who created you? Use only one word."))
-		got, err = c.Chat(t.Context(), msgs, &opts)
-		if err != nil {
-			t.Fatal(err)
-		}
-		want = genai.NewTextMessage(genai.Assistant, "Google.")
-		if diff := cmp.Diff(want, got.Message); diff != "" {
-			t.Fatalf("unexpected response (-want +got):\n%s", diff)
-		}
-		if got.InputTokens != 38 || got.OutputTokens != 3 {
-			t.Logf("Unexpected tokens usage: %v", got.Usage)
-		}
-	})
-
-	t.Run("stream", func(t *testing.T) {
-		tc.TestChatStream_simple(t, nil)
-	})
-
-	t.Run("vision_jpg_inline", func(t *testing.T) {
-		tc.TestChatVisionJPGInline(t, nil)
-	})
-
-	t.Run("json", func(t *testing.T) {
-		tc.TestChatJSON(t, nil)
-	})
-
-	t.Run("json_schema", func(t *testing.T) {
-		tc.TestChatJSONSchema(t, nil)
-	})
-
-	t.Run("tool_use_reply", func(t *testing.T) {
-		tc.TestChatToolUseReply(t, &internaltest.Settings{Model: "llama3.1:8b"})
-	})
 
 	t.Run("tool_use_position_bias", func(t *testing.T) {
 		tc.TestChatToolUsePositionBias(t, &internaltest.Settings{Model: "llama3.1:8b"}, true)

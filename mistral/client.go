@@ -25,6 +25,165 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+// Scoreboard for Mistral.
+//
+// # Warnings
+//
+//   - Mistral supports more than what is exposed by the client.
+//   - PDF doesn't support inline document while images do.
+var Scoreboard = genai.Scoreboard{
+	Scenarios: []genai.Scenario{
+		{
+			In:  []genai.Modality{genai.ModalityText},
+			Out: []genai.Modality{genai.ModalityText},
+			Models: []string{
+				"ministral-3b-latest",
+				"codestral-2405",
+				"codestral-2411-rc5",
+				"codestral-2412",
+				"codestral-2501",
+				"codestral-latest",
+				"devstral-small-2505",
+				"devstral-small-latest",
+				"ministral-3b-2410",
+				"ministral-8b-2410",
+				"ministral-8b-latest",
+				"mistral-large-pixtral-2411",
+				"mistral-saba-2502",
+				"mistral-saba-latest",
+				"mistral-tiny",
+				"mistral-tiny-2312",
+				"mistral-tiny-2407",
+				"mistral-tiny-latest",
+				"open-mistral-7b",
+				"open-mistral-nemo",
+				"open-mistral-nemo-2407",
+				"open-mixtral-8x22b",
+				"open-mixtral-8x22b-2404",
+				"open-mixtral-8x7b",
+			},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+		},
+		{
+			In:  []genai.Modality{genai.ModalityImage, genai.ModalityText},
+			Out: []genai.Modality{genai.ModalityText},
+			Models: []string{
+				"mistral-small-latest",
+				"mistral-small",
+				"mistral-small-2312",
+				"mistral-small-2402",
+				"mistral-small-2409",
+				"mistral-small-2501",
+				//"mistral-small-2503",
+				"mistral-large-2402",
+				"mistral-large-2407",
+				"mistral-large-2411",
+				"mistral-large-latest",
+				"mistral-medium",
+				"mistral-medium-2312",
+				"mistral-medium-2505",
+				"mistral-medium-latest",
+				"pixtral-12b",
+				"pixtral-12b-2409",
+				"pixtral-12b-latest",
+				"pixtral-large-2411",
+				"pixtral-large-latest",
+			},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                true,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                true,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+		},
+		{
+			In:  []genai.Modality{genai.ModalityPDF, genai.ModalityText},
+			Out: []genai.Modality{genai.ModalityText},
+			Models: []string{
+				"mistral-small-2503",
+				/*
+					"mistral-small",
+					"mistral-small-2312",
+					"mistral-small-2402",
+					"mistral-small-2409",
+					"mistral-small-2501",
+					"mistral-small-latest",
+					"mistral-large-2402",
+					"mistral-large-2407",
+					"mistral-large-2411",
+					"mistral-large-latest",
+					"mistral-medium",
+					"mistral-medium-2312",
+					"mistral-medium-2505",
+					"mistral-medium-latest",
+				*/
+				"mistral-ocr-2503",
+				"mistral-ocr-2505",
+				"mistral-ocr-latest",
+			},
+			Chat: genai.Functionality{
+				Inline:             false,
+				URL:                true,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             false,
+				URL:                true,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+		},
+	},
+}
+
 // https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post
 type ChatRequest struct {
 	Model          string    `json:"model"`
@@ -643,6 +802,10 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 			},
 		},
 	}, nil
+}
+
+func (c *Client) Scoreboard() genai.Scoreboard {
+	return Scoreboard
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

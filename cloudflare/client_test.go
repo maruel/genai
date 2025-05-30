@@ -18,64 +18,16 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
+func TestClient_Scoreboard(t *testing.T) {
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
+}
+
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
 		GetClient:            func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 		Model:                "@hf/nousresearch/hermes-2-pro-mistral-7b",
 		FinishReasonIsBroken: true,
 	},
-}
-
-func TestClient_Chat_allModels(t *testing.T) {
-	testCases.TestChatAllModels(
-		t,
-		func(m genai.Model) bool {
-			id := m.GetID()
-			// Only test a few models because there are too many.
-			return id == "@cf/qwen/qwen2.5-coder-32b-instruct" || id == "@cf/meta/llama-4-scout-17b-16e-instruct"
-		})
-}
-
-func TestClient_Chat_simple(t *testing.T) {
-	testCases.TestChatSimple_simple(t, &internaltest.Settings{Model: "@cf/meta/llama-3.2-3b-instruct"})
-}
-
-func TestClient_ChatStream_simple(t *testing.T) {
-	testCases.TestChatStream_simple(t, &internaltest.Settings{Model: "@cf/meta/llama-3.2-3b-instruct"})
-}
-
-func TestClient_max_tokens(t *testing.T) {
-	testCases.TestChatMaxTokens(t, &internaltest.Settings{UsageIsBroken: true})
-}
-
-func TestClient_stop_sequence(t *testing.T) {
-	t.Skip("Cloudflare doesn't support stop sequences.")
-	testCases.TestChatStopSequence(t, nil)
-}
-
-func TestClient_Chat_jSON(t *testing.T) {
-	testCases.TestChatJSON(t, &internaltest.Settings{UsageIsBroken: true})
-}
-
-func TestClient_Chat_jSON_schema(t *testing.T) {
-	testCases.TestChatJSONSchema(t, &internaltest.Settings{UsageIsBroken: true})
-}
-
-func TestClient_Chat_tool_use_reply(t *testing.T) {
-	t.Skip("To be fixed later.")
-	testCases.TestChatToolUseReply(t, &internaltest.Settings{Model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"})
-}
-
-func TestClient_Chat_tool_use_position_bias(t *testing.T) {
-	t.Skip("To be fixed later.")
-	s := &internaltest.Settings{Model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
-	t.Run("Chat", func(t *testing.T) {
-		testCases.TestChatToolUsePositionBiasCore(t, s, false, false)
-	})
-	t.Run("ChatStream", func(t *testing.T) {
-		t.Skip("cloudflare has broken streaming tool calling")
-		testCases.TestChatToolUsePositionBiasCore(t, s, false, true)
-	})
 }
 
 func TestClient_ChatProvider_errors(t *testing.T) {

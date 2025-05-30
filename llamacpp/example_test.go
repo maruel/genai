@@ -22,7 +22,8 @@ import (
 func ExampleClient_Chat() {
 	// Download and start the server.
 	ctx := context.Background()
-	srv, err := startServer(ctx)
+	// Start a server with a minimalist model: Qwen2 0.5B in Q2_K quantization.
+	srv, err := startServer(ctx, "Qwen", "Qwen2-0.5B-Instruct-GGUF", "qwen2-0_5b-instruct-q2_k.gguf")
 	if err != nil {
 		log.Print(err)
 		return
@@ -54,7 +55,7 @@ func ExampleClient_Chat() {
 }
 
 // startServer starts a server with Qwen2 0.5B in Q2_K quantization.
-func startServer(ctx context.Context) (*llamacppsrv.Server, error) {
+func startServer(ctx context.Context, author, repo, file string) (*llamacppsrv.Server, error) {
 	cache, err := filepath.Abs("testdata/tmp")
 	if err != nil {
 		return nil, err
@@ -75,7 +76,7 @@ func startServer(ctx context.Context) (*llamacppsrv.Server, error) {
 		return nil, err
 	}
 	// A really small model.
-	modelPath, err := hf.EnsureFile(ctx, huggingface.ModelRef{Author: "Qwen", Repo: "Qwen2-0.5B-Instruct-GGUF"}, "HEAD", "qwen2-0_5b-instruct-q2_k.gguf")
+	modelPath, err := hf.EnsureFile(ctx, huggingface.ModelRef{Author: author, Repo: repo}, "HEAD", file)
 	if err != nil {
 		return nil, err
 	}

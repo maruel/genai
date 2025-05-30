@@ -1,0 +1,41 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 107
+        transfer_encoding: []
+        trailer: {}
+        host: localhost
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"gemma3:4b","stream":true,"messages":[{"role":"user","content":"Say hello. Use only one word."}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |
+            {"model":"gemma3:4b","created_at":"2025-05-29T20:50:58.484012342Z","message":{"role":"assistant","content":"Hello"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-05-29T20:50:58.54109437Z","message":{"role":"assistant","content":"."},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-05-29T20:50:58.617820562Z","message":{"role":"assistant","content":""},"done_reason":"stop","done":true,"total_duration":346089077,"load_duration":20366926,"prompt_eval_count":17,"prompt_eval_duration":188705353,"eval_count":3,"eval_duration":136537883}
+        headers:
+            Content-Type:
+                - application/x-ndjson
+        status: 200 OK
+        code: 200
+        duration: 212ms

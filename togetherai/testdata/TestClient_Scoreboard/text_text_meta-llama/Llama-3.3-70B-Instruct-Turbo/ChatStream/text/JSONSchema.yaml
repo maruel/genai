@@ -1,0 +1,95 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 473
+        transfer_encoding: []
+        trailer: {}
+        host: api.together.xyz
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","stream":true,"messages":[{"role":"user","content":"Is a banana a fruit? Reply as JSON according to the provided schema."}],"response_format":{"type":"json_schema","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean","description":"True if the answer is that it is a fruit, false otherwise"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"id":"nw8Vjrz-3NKUce-947f4b5a9e034bd6","object":"chat.completion.chunk","created":1748619252,"choices":[{"index":0,"text":"{\"","logprobs":null,"finish_reason":null,"seed":null,"delta":{"token_id":5018,"role":"assistant","content":"{\"","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo-cached","usage":null}
+
+            data: {"id":"nw8Vjrz-3NKUce-947f4b5a9e034bd6","object":"chat.completion.chunk","created":1748619252,"choices":[{"index":0,"text":"is","logprobs":null,"finish_reason":null,"seed":null,"delta":{"token_id":285,"role":"assistant","content":"is","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo-cached","usage":null}
+
+            data: {"id":"nw8Vjrz-3NKUce-947f4b5a9e034bd6","object":"chat.completion.chunk","created":1748619252,"choices":[{"index":0,"text":"_f","logprobs":null,"finish_reason":null,"seed":null,"delta":{"token_id":766,"role":"assistant","content":"_f","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo-cached","usage":null}
+
+            data: {"id":"nw8Vjrz-3NKUce-947f4b5a9e034bd6","object":"chat.completion.chunk","created":1748619252,"choices":[{"index":0,"text":"ruit","logprobs":null,"finish_reason":null,"seed":null,"delta":{"token_id":21702,"role":"assistant","content":"ruit","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo-cached","usage":null}
+
+            data: {"id":"nw8Vjrz-3NKUce-947f4b5a9e034bd6","object":"chat.completion.chunk","created":1748619252,"choices":[{"index":0,"text":"\":","logprobs":null,"finish_reason":null,"seed":null,"delta":{"token_id":794,"role":"assistant","content":"\":","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo-cached","usage":null}
+
+            data: {"id":"nw8Vjrz-3NKUce-947f4b5a9e034bd6","object":"chat.completion.chunk","created":1748619252,"choices":[{"index":0,"text":" true","logprobs":null,"finish_reason":null,"seed":null,"delta":{"token_id":837,"role":"assistant","content":" true","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo-cached","usage":null}
+
+            data: {"id":"nw8Vjrz-3NKUce-947f4b5a9e034bd6","object":"chat.completion.chunk","created":1748619252,"choices":[{"index":0,"text":"}","logprobs":null,"finish_reason":null,"seed":null,"delta":{"token_id":92,"role":"assistant","content":"}","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo-cached","usage":null}
+
+            data: {"id":"nw8Vjrz-3NKUce-947f4b5a9e034bd6","object":"chat.completion.chunk","created":1748619252,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"stop","seed":5405091152743484000,"delta":{"token_id":128009,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo-cached","usage":{"prompt_tokens":50,"completion_tokens":8,"total_tokens":58,"cached_tokens":0}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache, no-transform
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 947f4b5a9e034bd6-YUL
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - 1bd53fef-b883-432a-b97c-e9d21a67d5a6-noamzn
+            X-Api-Call-Start:
+                - "2025-05-30T15:34:12.759Z"
+            X-Api-Received:
+                - "2025-05-30T15:34:12.747Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "1"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - nw8Vjrz-3NKUce-947f4b5a9e034bd6
+        status: 200 OK
+        code: 200
+        duration: 442ms

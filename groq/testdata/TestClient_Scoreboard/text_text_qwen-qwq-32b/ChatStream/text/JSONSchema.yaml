@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 469
+        transfer_encoding: []
+        trailer: {}
+        host: api.groq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Reply as JSON according to the provided schema."}],"model":"qwen-qwq-32b","response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","additionalProperties":false,"name":"response","properties":{"is_fruit":{"description":"True if the answer is that it is a fruit, false otherwise","type":"boolean"}},"required":["is_fruit"],"type":"object"}},"stream":true}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 113
+        uncompressed: false
+        body: |
+            {"error":{"message":"This model does not support response format `json_schema`","type":"invalid_request_error"}}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9479c88a7af5a267-YUL
+            Content-Length:
+                - "113"
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - us-central-1
+            X-Request-Id:
+                - req_01jwf654n9em3tmn2khmsrbw89
+        status: 400 Bad Request
+        code: 400
+        duration: 52ms

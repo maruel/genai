@@ -23,6 +23,99 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+// Scoreboard for Cerebras.
+//
+// # Warnings
+//
+//   - qwen-3-32b has broken FinishReason when streaming.
+//   - Cerebras doesn't support images yet even if models could.
+//     https://discord.com/channels/1085960591052644463/1376887536072527982/1376887536072527982
+//   - llama-4-scout-17b-16e-instruct seems to have broken tool calling.
+var Scoreboard = genai.Scoreboard{
+	Scenarios: []genai.Scenario{
+		{
+			In:  []genai.Modality{genai.ModalityText},
+			Out: []genai.Modality{genai.ModalityText},
+			// "llama-3.1-8b" works too but the ListModels() API returns the malformed string.
+			Models: []string{"llama3.1-8b", "llama-3.3-70b"},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+		},
+		{
+			In:     []genai.Modality{genai.ModalityText},
+			Out:    []genai.Modality{genai.ModalityText},
+			Models: []string{"qwen-3-32b"},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           true,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           true,
+				ReportTokenUsage:   true,
+				ReportFinishReason: false,
+				StopSequence:       true,
+				Tools:              false,
+				JSON:               false,
+				JSONSchema:         false,
+			},
+		},
+		{
+			In:     []genai.Modality{genai.ModalityText},
+			Out:    []genai.Modality{genai.ModalityText},
+			Models: []string{"llama-4-scout-17b-16e-instruct"},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              false,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              false,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+		},
+	},
+}
+
 // Official python client: https://github.com/Cerebras/cerebras-cloud-sdk-python
 //
 // CompletionsResource.create() at
@@ -539,6 +632,10 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 			},
 		},
 	}, nil
+}
+
+func (c *Client) Scoreboard() genai.Scoreboard {
+	return Scoreboard
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

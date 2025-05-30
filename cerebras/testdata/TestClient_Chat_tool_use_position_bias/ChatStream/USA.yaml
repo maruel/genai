@@ -29,11 +29,11 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"chatcmpl-3ef2fe74-757c-4374-bb97-4f75a2df712a","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1747602287,"model":"llama3.1-8b","system_fingerprint":"fp_fd530e96020e4e77c6b2","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-2d182b88-fd4b-4c54-9b24-b2f8c0963bb7","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1748476125,"model":"llama3.1-8b","system_fingerprint":"fp_2e8193d2b4ff9b2045dd","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-3ef2fe74-757c-4374-bb97-4f75a2df712a","choices":[{"delta":{"tool_calls":[{"id":"8d372f173","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":0}]},"index":0}],"created":1747602287,"model":"llama3.1-8b","system_fingerprint":"fp_fd530e96020e4e77c6b2","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-2d182b88-fd4b-4c54-9b24-b2f8c0963bb7","choices":[{"delta":{"tool_calls":[{"id":"a0a0b48ca","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":0}]},"index":0}],"created":1748476125,"model":"llama3.1-8b","system_fingerprint":"fp_2e8193d2b4ff9b2045dd","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-3ef2fe74-757c-4374-bb97-4f75a2df712a","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1747602287,"model":"llama3.1-8b","system_fingerprint":"fp_fd530e96020e4e77c6b2","object":"chat.completion.chunk","usage":{"prompt_tokens":433,"completion_tokens":17,"total_tokens":450},"time_info":{"queue_time":0.30365588,"prompt_time":0.023180493,"completion_time":0.007857579,"total_time":0.33684349060058594,"created":1747602287}}
+            data: {"id":"chatcmpl-2d182b88-fd4b-4c54-9b24-b2f8c0963bb7","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1748476125,"model":"llama3.1-8b","system_fingerprint":"fp_2e8193d2b4ff9b2045dd","object":"chat.completion.chunk","usage":{"prompt_tokens":433,"completion_tokens":17,"total_tokens":450,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.001875003,"prompt_time":0.022157802,"completion_time":0.007945229,"total_time":0.035750627517700195,"created":1748476125}}
 
         headers:
             Alt-Svc:
@@ -41,11 +41,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941e4f175d36a2ec-YUL
+                - 9471a509fabea275-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Inference-Id:
-                - chatcmpl-3ef2fe74-757c-4374-bb97-4f75a2df712a
+                - chatcmpl-2d182b88-fd4b-4c54-9b24-b2f8c0963bb7
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -59,15 +59,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14373"
+                - "14356"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "59550"
+                - "58650"
             X-Ratelimit-Reset-Requests-Day:
-                - "10512.61840248108"
+                - "674.1760447025299"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "12.618402481079102"
+                - "14.176044702529907"
             X-Request-Id:
-                - 941e4f175d36a2ec-YUL
+                - 9471a509fabea275-YUL
         status: 200 OK
         code: 200
-        duration: 180ms
+        duration: 1.218s

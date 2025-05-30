@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 141
+        transfer_encoding: []
+        trailer: {}
+        host: api.mistral.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"mistral-small-2503","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"id":"6ca796852e5e4fe4ac59dbbe8d0fe488","object":"chat.completion.chunk","created":1748620120,"model":"mistral-small-2503","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}]}
+
+            data: {"id":"6ca796852e5e4fe4ac59dbbe8d0fe488","object":"chat.completion.chunk","created":1748620120,"model":"mistral-small-2503","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null,"logprobs":null}]}
+
+            data: {"id":"6ca796852e5e4fe4ac59dbbe8d0fe488","object":"chat.completion.chunk","created":1748620120,"model":"mistral-small-2503","choices":[{"index":0,"delta":{"content":"."},"finish_reason":null,"logprobs":null}]}
+
+            data: {"id":"6ca796852e5e4fe4ac59dbbe8d0fe488","object":"chat.completion.chunk","created":1748620120,"model":"mistral-small-2503","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":11,"total_tokens":14,"completion_tokens":3}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 947f6088786da2fe-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            X-Envoy-Upstream-Service-Time:
+                - "54"
+            X-Kong-Proxy-Latency:
+                - "14"
+            X-Kong-Request-Id:
+                - fcee8b7b712acf51b19e793a6d0e1b53
+            X-Kong-Upstream-Latency:
+                - "54"
+        status: 200 OK
+        code: 200
+        duration: 209ms

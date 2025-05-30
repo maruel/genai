@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 106
+        transfer_encoding: []
+        trailer: {}
+        host: api.perplexity.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"r1-1776","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id": "ce7f302f-2823-4368-9404-9701486d73a9", "model": "r1-1776", "created": 1748551521, "usage": {"prompt_tokens": 8, "completion_tokens": 133, "total_tokens": 141}, "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "<think>\nOkay, the user wants me to say hello but using only one word. Let me think.\n\nFirst, the usual response would be \"Hello!\" but that''s a single word. Wait, maybe they want something more creative? But the instruction says \"only one word\" so I need to stick to that.\n\nPossible options: \"Hi\", \"Hey\", \"Greetings\". All are one word. \"Howdy\" maybe? But \"Hello\" is straightforward and common. Let me check if \"Hello\" is acceptable. The user didn''t specify any other constraints. Yeah, \"Hello\" is the safest and correct answer here.\n</think>\n\nHello!"}, "delta": {"role": "assistant", "content": ""}}]}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9478d5b20ff57148-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 2.595s

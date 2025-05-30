@@ -1,0 +1,85 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 137
+        transfer_encoding: []
+        trailer: {}
+        host: api.together.xyz
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","stream":true,"messages":[{"role":"user","content":"Say hello. Use only one word."}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"id":"nw8VmBK-2j9zxn-947f4b74fdaea293","object":"chat.completion.chunk","created":1748619257,"choices":[{"index":0,"text":"Hello","logprobs":null,"finish_reason":null,"seed":null,"delta":{"token_id":9906,"role":"assistant","content":"Hello","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","usage":null}
+
+            data: {"id":"nw8VmBK-2j9zxn-947f4b74fdaea293","object":"chat.completion.chunk","created":1748619257,"choices":[{"index":0,"text":".","logprobs":null,"finish_reason":null,"seed":null,"delta":{"token_id":13,"role":"assistant","content":".","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","usage":null}
+
+            data: {"id":"nw8VmBK-2j9zxn-947f4b74fdaea293","object":"chat.completion.chunk","created":1748619257,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"stop","seed":5983694956196497000,"delta":{"token_id":128009,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46,"cached_tokens":0}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache, no-transform
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 947f4b74fdaea293-YUL
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - fcd9ddd5-fb65-4889-8493-aead5d74423b-noamzn
+            X-Api-Call-Start:
+                - "2025-05-30T15:34:17.186Z"
+            X-Api-Received:
+                - "2025-05-30T15:34:17.174Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - nw8VmBK-2j9zxn-947f4b74fdaea293
+        status: 200 OK
+        code: 200
+        duration: 4.456s

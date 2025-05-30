@@ -14,38 +14,21 @@ import (
 	"github.com/maruel/genai/perplexity"
 )
 
+func TestClient_Scoreboard(t *testing.T) {
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider {
+		c := getClient(t, m)
+		if m == "r1-1776" {
+			return &genai.ChatProviderThinking{ChatProvider: c, TagName: "think"}
+		}
+		return c
+	}, nil)
+}
+
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
 		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
 		Model:     "r1-1776",
 	},
-}
-
-// Not implementing TestClient_Chat_allModels since perplexity has no ListModels API.
-
-func TestClient_Chat_simple(t *testing.T) {
-	testCases.TestChatSimple_simple(t, &internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ChatProvider {
-			return &genai.ChatProviderThinking{ChatProvider: getClient(t, m), TagName: "think"}
-		},
-	})
-}
-
-func TestClient_ChatStream_simple(t *testing.T) {
-	testCases.TestChatStream_simple(t, &internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ChatProvider {
-			return &genai.ChatProviderThinking{ChatProvider: getClient(t, m), TagName: "think"}
-		},
-	})
-}
-
-func TestClient_max_tokens(t *testing.T) {
-	testCases.TestChatMaxTokens(t, nil)
-}
-
-func TestClient_stop_sequence(t *testing.T) {
-	t.Skip("Way too verbose")
-	testCases.TestChatStopSequence(t, nil)
 }
 
 func TestClient_ChatProvider_errors(t *testing.T) {

@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 250
+        transfer_encoding: []
+        trailer: {}
+        host: api.groq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"model":"llama3-8b-8192","response_format":{"type":"json_object"},"stream":true}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"id":"chatcmpl-aab374f7-afdb-4e22-8401-8be9e80a6e8e","object":"chat.completion.chunk","created":1748536424,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jwee8wvbengvqd61h4x2gx6q"}}
+
+            data: {"id":"chatcmpl-aab374f7-afdb-4e22-8401-8be9e80a6e8e","object":"chat.completion.chunk","created":1748536424,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"content":"{\n   \"is_fruit\": true\n}"},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01jwee8wvbengvqd61h4x2gx6q","usage":{"queue_time":0.985918439,"prompt_tokens":60,"prompt_time":0.021889566,"completion_tokens":9,"completion_time":0.0075,"total_tokens":69,"total_time":0.029389566}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94776524f880a2ee-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - us-central-1
+            X-Ratelimit-Limit-Requests:
+                - "50000"
+            X-Ratelimit-Limit-Tokens:
+                - "100000"
+            X-Ratelimit-Remaining-Requests:
+                - "49989"
+            X-Ratelimit-Remaining-Tokens:
+                - "99191"
+            X-Ratelimit-Reset-Requests:
+                - 18.988999999s
+            X-Ratelimit-Reset-Tokens:
+                - 485.4ms
+            X-Request-Id:
+                - req_01jwee8wvbengvqd61h4x2gx6q
+        status: 200 OK
+        code: 200
+        duration: 1.095s

@@ -30,34 +30,34 @@ interactions:
         uncompressed: false
         body: |+
             event: message_start
-            data: {"type":"message_start","message":{"id":"msg_01XtFiWpB2VdgxPmP8aw4DTr","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":483,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":10,"service_tier":"standard"}}}
+            data: {"type":"message_start","message":{"id":"msg_014419w4A4zNHjhfChvi6EVa","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":483,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":10,"service_tier":"standard"}}      }
 
             event: content_block_start
-            data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_01HWQ9NR2v4LkE9LMJxUX8Gi","name":"best_country","input":{}}           }
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_01Hzq397dhUVZZuu4Rozk19h","name":"best_country","input":{}}       }
 
             event: ping
             data: {"type": "ping"}
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":""}     }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":""}         }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"{\"country\""}   }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"{\"country\""}       }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":": \""}               }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":": "}          }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"USA\"}"}       }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"\"USA\"}"}     }
 
             event: content_block_stop
-            data: {"type":"content_block_stop","index":0              }
+            data: {"type":"content_block_stop","index":0             }
 
             event: message_delta
-            data: {"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null},"usage":{"output_tokens":38}      }
+            data: {"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null},"usage":{"output_tokens":38} }
 
             event: message_stop
-            data: {"type":"message_stop"           }
+            data: {"type":"message_stop"               }
 
         headers:
             Anthropic-Organization-Id:
@@ -67,35 +67,35 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "49000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-05-29T00:52:21Z"
+                - "2025-05-29T00:26:51Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "10000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
-                - "4000"
+                - "7000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-05-29T00:52:54Z"
+                - "2025-05-29T00:27:07Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "50"
             Anthropic-Ratelimit-Requests-Remaining:
-                - "46"
+                - "47"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-05-29T00:52:24Z"
+                - "2025-05-29T00:26:53Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "60000"
             Anthropic-Ratelimit-Tokens-Remaining:
-                - "53000"
+                - "56000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-05-29T00:52:21Z"
+                - "2025-05-29T00:26:51Z"
             Cache-Control:
                 - no-cache
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9472022def72a2b1-YUL
+                - 9471dcd59b93a286-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Request-Id:
-                - req_011CPauWy8W6qgyym2m8x7CU
+                - req_011CPasaDCgjdYJsRstjFEvi
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -106,4 +106,4 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 521ms
+        duration: 476ms

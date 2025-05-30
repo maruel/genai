@@ -10,7 +10,6 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
-	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -23,6 +22,44 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
+func TestClient_Scoreboard(t *testing.T) {
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider {
+		c := getClient(t, m)
+		// https://ai.google.dev/gemini-api/docs/thinking?hl=en
+		if strings.Contains(m, "thinking") {
+			// e.g. "gemini-2.0-flash-thinking-exp" or "gemini-2.5-flash-preview-04-17-thinking"
+			return &injectOption{Client: c, t: t, opts: &gemini.ChatOptions{ThinkingBudget: 4096}}
+		}
+		if strings.Contains(m, "image-generation") {
+			// e.g. "gemini-2.0-flash-preview-image-generation"
+			return &injectOption{Client: c, t: t, opts: &gemini.ChatOptions{ResponseModalities: []gemini.Modality{gemini.ModalityText, gemini.ModalityImage}}}
+		}
+		return c
+	}, nil)
+}
+
+type injectOption struct {
+	*gemini.Client
+	t    *testing.T
+	opts *gemini.ChatOptions
+}
+
+func (i *injectOption) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+	if opts != nil {
+		i.t.Fatal("expected nil opts")
+	}
+	return i.Client.Chat(ctx, msgs, i.opts)
+}
+
+func (i *injectOption) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.ChatResult, error) {
+	if opts != nil {
+		i.t.Fatal("expected nil opts")
+	}
+	return i.Client.ChatStream(ctx, msgs, i.opts, replies)
+}
+
+//
+
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
 		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
@@ -33,138 +70,8 @@ var testCases = &internaltest.TestCases{
 	},
 }
 
-func TestClient_Chat_allModels(t *testing.T) {
-	testCases.TestChatAllModels(
-		t,
-		func(m genai.Model) bool {
-			id := m.GetID()
-			if id == "gemini-2.0-flash-live-001" {
-				// It's reported but not usable?
-				return false
-			}
-			parts := strings.Split(strings.Split(id, ".")[0], "-")
-			if len(parts) < 2 {
-				return false
-			}
-			switch parts[0] {
-			case "gemini":
-				// Minimum gemini-2
-				if i, err := strconv.Atoi(parts[1]); err != nil || i < 2 {
-					return false
-				}
-				if strings.HasSuffix(id, "image-generation") {
-					return false
-				}
-			case "gemma":
-				// Minimum gemma-3
-				if i, err := strconv.Atoi(parts[1]); err != nil || i < 3 {
-					return false
-				}
-			default:
-				return false
-			}
-			return true
-		})
-}
-
-func TestClient_Chat_thinking(t *testing.T) {
-	// https://ai.google.dev/gemini-api/docs/thinking?hl=en
-	// "gemini-2.5-flash-preview-04-17-thinking"
-	testCases.TestChatThinking(t, &internaltest.Settings{
-		Model: "gemini-2.0-flash-thinking-exp",
-		Options: func(opts *genai.ChatOptions) genai.Validatable {
-			return &gemini.ChatOptions{ChatOptions: *opts, ThinkingBudget: opts.MaxTokens}
-		},
-	})
-}
-
-func TestClient_Chat_genImage(t *testing.T) {
-	// Inspired by https://aistudio.google.com/apps/bundled/gif_maker?showCode=true
-	testRecorder.Signal(t)
-	t.Parallel()
-
-	prompt := `A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
-	const style = `Simple, vibrant, varied-colored doodle/hand-drawn sketch`
-	contents := `Generate one square, white-background doodle with smooth, vibrantly colored image depicting ` + prompt + `.
-
-*Mandatory Requirements (Compacted):**
-
-**Style:** ` + style + `.
-**Background:** Plain solid white (no background colors/elements). Absolutely no black background.
-**Content & Motion:** Clearly depict **` + prompt + `** action with colored, moving subject (no static images). If there's an action specified, it should be the main difference between frames.
-**Format:** Square image (1:1 aspect ratio).
-**Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.
-**Output:** Actual image file for a smooth, colorful doodle-style image on a white background.`
-
-	override := &internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClientInner(t, "", m) },
-		Options: func(opts *genai.ChatOptions) genai.Validatable {
-			return &gemini.ChatOptions{ResponseModalities: []gemini.Modality{gemini.ModalityText, gemini.ModalityImage}, ChatOptions: *opts}
-		},
-		Model: "gemini-2.0-flash-preview-image-generation",
-	}
-	msgs := genai.Messages{genai.NewTextMessage(genai.User, contents)}
-	resp := testCases.TestChatHelper(t, msgs, override, genai.ChatOptions{Temperature: 1, Seed: 1}, genai.FinishedStop)
-	if len(resp.Contents) == 0 {
-		t.Fatal("expected content")
-	}
-	t.Logf("%d", len(resp.Contents))
-	if len(resp.Contents) != 1 {
-		t.Fatalf("expected one content, got %d", len(resp.Contents))
-	}
-	if resp.Contents[0].Filename != "content.png" {
-		t.Fatalf("expected one image, got %#v", resp.Contents[0])
-	}
-	// It can have text, images or both.
-}
-
-func TestClient_Chat_simple(t *testing.T) {
-	testCases.TestChatSimple_simple(t, nil)
-}
-
-func TestClient_ChatStream_simple(t *testing.T) {
-	testCases.TestChatStream_simple(t, nil)
-}
-
-func TestClient_max_tokens(t *testing.T) {
-	testCases.TestChatMaxTokens(t, nil)
-}
-
-func TestClient_stop_sequence(t *testing.T) {
-	testCases.TestChatStopSequence(t, nil)
-}
-
-func TestClient_Chat_jSON(t *testing.T) {
-	testCases.TestChatJSON(t, nil)
-}
-
-func TestClient_Chat_jSON_schema(t *testing.T) {
-	testCases.TestChatJSONSchema(t, nil)
-}
-
-func TestClient_Chat_vision_jPG_inline(t *testing.T) {
-	testCases.TestChatVisionJPGInline(t, nil)
-}
-
-func TestClient_Chat_vision_pDF_inline(t *testing.T) {
-	// TODO: Fix support for URL.
-	testCases.TestChatVisionPDFInline(t, nil)
-}
-
-func TestClient_Chat_audio_opus_inline(t *testing.T) {
-	testCases.TestChatAudioOpusInline(t, nil)
-}
-
-func TestClient_Chat_tool_use_reply(t *testing.T) {
-	testCases.TestChatToolUseReply(t, &internaltest.Settings{Model: "gemini-2.0-flash"})
-}
-
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 	testCases.TestChatToolUsePositionBias(t, nil, true)
-}
-
-func TestClient_Chat_video_mp4_inline(t *testing.T) {
-	testCases.TestChatVideoMP4Inline(t, nil)
 }
 
 func TestClient_Cache(t *testing.T) {

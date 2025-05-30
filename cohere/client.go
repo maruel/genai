@@ -27,6 +27,44 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+// Scoreboard for Cohere.
+//
+// # Warnings
+//
+//   - Cohere doesn't support multimodal inputs yet.
+//   - The API has good citations support but it's not well implemented yet.
+var Scoreboard = genai.Scoreboard{
+	Scenarios: []genai.Scenario{
+		{
+			In:     []genai.Modality{genai.ModalityText},
+			Out:    []genai.Modality{genai.ModalityText},
+			Models: []string{"command-r7b-12-2024"},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+		},
+	},
+}
+
 // https://docs.cohere.com/reference/chat
 type ChatRequest struct {
 	Stream          bool       `json:"stream"`
@@ -631,6 +669,10 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 			},
 		},
 	}, nil
+}
+
+func (c *Client) Scoreboard() genai.Scoreboard {
+	return Scoreboard
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

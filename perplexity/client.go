@@ -21,6 +21,52 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+// Scoreboard for Perplexity.
+//
+// # Warnings
+//
+//   - Thinking is not returned.
+//   - Websearch costs a lot.
+//   - Perplexity supports more than what the client supports.
+var Scoreboard = genai.Scoreboard{
+	Scenarios: []genai.Scenario{
+		{
+			In:  []genai.Modality{genai.ModalityText},
+			Out: []genai.Modality{genai.ModalityText},
+			Models: []string{
+				"r1-1776",
+				"sonar",
+				"sonar-pro",
+				"sonar-deep-research",
+				"sonar-reasoning-pro",
+				"sonar-reasoning",
+			},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           true,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       false,
+				Tools:              false,
+				JSON:               false,
+				JSONSchema:         true,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           true,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       false,
+				Tools:              false,
+				JSON:               false,
+				JSONSchema:         true,
+			},
+		},
+	},
+}
+
 // https://docs.perplexity.ai/api-reference/chat-completions
 type ChatRequest struct {
 	Model                  string    `json:"model"`
@@ -290,6 +336,10 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 			},
 		},
 	}, nil
+}
+
+func (c *Client) Scoreboard() genai.Scoreboard {
+	return Scoreboard
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {

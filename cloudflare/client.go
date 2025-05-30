@@ -27,6 +27,50 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+// Scoreboard for Cloudflare.
+//
+// # Warnings
+//
+//   - FinishReason is not returned.
+//   - StopSequence doesn't work.
+//   - Usage tokens isn't reported when streaming or using JSON.
+//   - ChatRequest format is model dependent.
+//   - Tool calling is supported on some models but client side implementation is not finished.
+//
+// Given the fact that FinishReason, StopSequence and Usage are broken, there isn't much point into improving
+// this provider's support. If this change, please send a PR!
+var Scoreboard = genai.Scoreboard{
+	Scenarios: []genai.Scenario{
+		{
+			In:     []genai.Modality{genai.ModalityText},
+			Out:    []genai.Modality{genai.ModalityText},
+			Models: []string{"@cf/meta/llama-3.2-3b-instruct"},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: false,
+				StopSequence:       false,
+				Tools:              false,
+				JSON:               true,
+				JSONSchema:         false,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: false,
+				StopSequence:       false,
+				Tools:              false,
+				JSON:               true,
+				JSONSchema:         false,
+			},
+		},
+	},
+}
+
 // ChatRequest structure depends on the model used.
 //
 // The general description is at https://developers.cloudflare.com/api/resources/ai/methods/run/
@@ -529,6 +573,10 @@ func New(accountID, apiKey, model string, r http.RoundTripper) (*Client, error) 
 		},
 		accountID: accountID,
 	}, nil
+}
+
+func (c *Client) Scoreboard() genai.Scoreboard {
+	return Scoreboard
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

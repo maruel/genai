@@ -32,6 +32,74 @@ import (
 // But the real spec source of truth is
 // https://github.com/huggingface/huggingface.js/tree/main/packages/tasks/src/tasks/chat-completion
 
+// Scoreboard for Huggingface.
+//
+// # Warnings
+//
+//   - Huggingface supports a ton of models on its serverless inference platform, more than any other
+//     provider.
+//   - Huggingface is also a router to other backends.
+//   - Huggingface as a platform is generally unstable, with error not being properly reported. Use with care.
+//   - It supports way more options than the client currently implements.
+var Scoreboard = genai.Scoreboard{
+	Scenarios: []genai.Scenario{
+		{
+			In:     []genai.Modality{genai.ModalityText},
+			Out:    []genai.Modality{genai.ModalityText},
+			Models: []string{"meta-llama/Llama-3.3-70B-Instruct"},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               false,
+				JSONSchema:         true,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: false,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               false,
+				JSONSchema:         true,
+			},
+		},
+		{
+			In:     []genai.Modality{genai.ModalityText},
+			Out:    []genai.Modality{genai.ModalityText},
+			Models: []string{"Qwen/QwQ-32B"},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           true,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               false,
+				JSONSchema:         true,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           true,
+				ReportTokenUsage:   true,
+				ReportFinishReason: false,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               false,
+				JSONSchema:         true,
+			},
+		},
+	},
+}
+
 // https://huggingface.co/docs/api-inference/tasks/chat-completion#api-specification
 type ChatRequest struct {
 	Model            string    `json:"model,omitempty"` // It's already in the URL.
@@ -572,6 +640,10 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 			},
 		},
 	}, nil
+}
+
+func (c *Client) Scoreboard() genai.Scoreboard {
+	return Scoreboard
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

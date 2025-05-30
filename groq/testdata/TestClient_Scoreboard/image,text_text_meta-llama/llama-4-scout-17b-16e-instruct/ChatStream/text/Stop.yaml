@@ -1,0 +1,75 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 176
+        transfer_encoding: []
+        trailer: {}
+        host: api.groq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"role":"user","content":"Talk about Canada in 10 words. Start with: Canada is"}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","stop":["is"],"stream":true}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"id":"chatcmpl-05999d04-e016-4813-9ba7-1ac255266b16","object":"chat.completion.chunk","created":1748550804,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jwevzrmee5xv9jve4ez7gkmt"}}
+
+            data: {"id":"chatcmpl-05999d04-e016-4813-9ba7-1ac255266b16","object":"chat.completion.chunk","created":1748550804,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"content":"Canada"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-05999d04-e016-4813-9ba7-1ac255266b16","object":"chat.completion.chunk","created":1748550804,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"content":" "},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-05999d04-e016-4813-9ba7-1ac255266b16","object":"chat.completion.chunk","created":1748550804,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01jwevzrmee5xv9jve4ez7gkmt","usage":{"queue_time":0.063462702,"prompt_tokens":22,"prompt_time":0.002458816,"completion_tokens":12,"completion_time":0.025489526,"total_tokens":34,"total_time":0.027948342}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9478c43d788fa293-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - us-central-1
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499998"
+            X-Ratelimit-Remaining-Tokens:
+                - "299982"
+            X-Ratelimit-Reset-Requests:
+                - 186.6ms
+            X-Ratelimit-Reset-Tokens:
+                - 3.6ms
+            X-Request-Id:
+                - req_01jwevzrmee5xv9jve4ez7gkmt
+        status: 200 OK
+        code: 200
+        duration: 128ms

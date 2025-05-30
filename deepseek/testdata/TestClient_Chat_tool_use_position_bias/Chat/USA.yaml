@@ -28,14 +28,14 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"53d59cde-cd98-4cfc-b239-075512c1247e","object":"chat.completion","created":1747602286,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"index":0,"id":"call_0_35a21b3f-f6d3-4838-9000-f23c5e354406","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}},{"index":1,"id":"call_1_417f273e-422f-4ecc-904b-0dec387cbafa","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":175,"completion_tokens":36,"total_tokens":211,"prompt_tokens_details":{"cached_tokens":128},"prompt_cache_hit_tokens":128,"prompt_cache_miss_tokens":47},"system_fingerprint":"fp_8802369eaa_prod0425fp8"}'
+        body: '{"id":"d0b510c1-1b53-409e-997b-3f09ec443422","object":"chat.completion","created":1748530983,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"index":0,"id":"call_0_d52f2bba-1d4c-4211-8304-64c693172479","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}},{"index":1,"id":"call_1_34ac22b0-5496-4367-9c30-81c80cca9818","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":175,"completion_tokens":36,"total_tokens":211,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":175},"system_fingerprint":"fp_8802369eaa_prod0425fp8"}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 941e4f140aada30e-YUL
+                - 9476e053af91a294-YUL
             Content-Type:
                 - application/json
             Server:
@@ -47,7 +47,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - 0cf84c8df189da85b1b050b2ee789550
+                - fd0504589ef824f0b18a88ae9c377267
         status: 200 OK
         code: 200
-        duration: 359ms
+        duration: 394ms

@@ -1,0 +1,77 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 109
+        transfer_encoding: []
+        trailer: {}
+        host: api.cerebras.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"llama3.1-8b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"id":"chatcmpl-67c6f020-ec51-464e-a923-49271e7baad9","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1748615974,"model":"llama3.1-8b","system_fingerprint":"fp_bf7f141e20927499c729","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-67c6f020-ec51-464e-a923-49271e7baad9","choices":[{"delta":{"content":"Hello"},"index":0}],"created":1748615974,"model":"llama3.1-8b","system_fingerprint":"fp_bf7f141e20927499c729","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-67c6f020-ec51-464e-a923-49271e7baad9","choices":[{"delta":{"content":"."},"index":0}],"created":1748615974,"model":"llama3.1-8b","system_fingerprint":"fp_bf7f141e20927499c729","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-67c6f020-ec51-464e-a923-49271e7baad9","choices":[{"delta":{},"index":0}],"created":1748615974,"model":"llama3.1-8b","system_fingerprint":"fp_bf7f141e20927499c729","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-67c6f020-ec51-464e-a923-49271e7baad9","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1748615974,"model":"llama3.1-8b","system_fingerprint":"fp_bf7f141e20927499c729","object":"chat.completion.chunk","usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000483071,"prompt_time":0.002153197,"completion_time":0.001340358,"total_time":0.006195783615112305,"created":1748615974}}
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 947efb4d3e4c4bbf-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Inference-Id:
+                - chatcmpl-67c6f020-ec51-464e-a923-49271e7baad9
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14389"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "58343"
+            X-Ratelimit-Reset-Requests-Day:
+                - "33625.97579288483"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "25.97579288482666"
+            X-Request-Id:
+                - 947efb4d3e4c4bbf-YUL
+        status: 200 OK
+        code: 200
+        duration: 1.273s

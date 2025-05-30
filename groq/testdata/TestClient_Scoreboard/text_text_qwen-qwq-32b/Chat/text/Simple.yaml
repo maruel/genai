@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 111
+        transfer_encoding: []
+        trailer: {}
+        host: api.groq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"qwen-qwq-32b","stream":false}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-119beede-33ff-4124-946e-33ffd6bc631c","object":"chat.completion","created":1748561451,"model":"qwen-qwq-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\n\u003cthink\u003e\nOkay, the user wants me to say hello, but I have to use only one word. Let me think... \"Hello\" itself is two words when written with the comma in \"Hello?\" or \"Hello!\", wait no, actually \"Hello\" is a single word. Wait, maybe they are asking for \"Hello\" itself without any additions. Oh wait, maybe there's an emoji? But the instruction says to use only one word. Let me make sure.\n\nAlternatively, maybe they want a different single-word greeting like \"Hi\" or \"Hi!\"? But \"Hi\" is one word, but \"Hello\" is longer. Wait but the task says to use one word, so \"Hello\" is actually a single word. Let me double-check. \"Hello\" counts as one word. The user's instruction might just want me to write \"Hello\", which is one word. But why specify \"only one word\"? Maybe because shorter versions like \"Hey\" are possible, but the user wants to see if \"Hello\" can be used as the exact single word. Alternatively, perhaps they consider \"Hello\" with an exclamation or something else, but the instruction says to use only one word, so I should just respond with \"Hello\" alone. Let me confirm: the correct answer is \"Hello\" since it's a single word and a direct response. I should not add any extra characters like emojis or punctuation to keep it one word. Alright, go with \"Hello\".\n\u003c/think\u003e\n\nHello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.06398788799999999,"prompt_tokens":18,"prompt_time":0.004082572,"completion_tokens":305,"completion_time":0.698502809,"total_tokens":323,"total_time":0.702585381},"usage_breakdown":{"models":null},"system_fingerprint":"fp_28178d7ff6","x_groq":{"id":"req_01jwf64p2me8fawetc1ee08y01"}}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9479c82d2886a267-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - us-central-1
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499998"
+            X-Ratelimit-Remaining-Tokens:
+                - "249988"
+            X-Ratelimit-Reset-Requests:
+                - 345.599999ms
+            X-Ratelimit-Reset-Tokens:
+                - 2.879999ms
+            X-Request-Id:
+                - req_01jwf64p2me8fawetc1ee08y01
+        status: 200 OK
+        code: 200
+        duration: 910ms

@@ -15,63 +15,15 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 )
 
+func TestClient_Scoreboard(t *testing.T) {
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
+}
+
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
 		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
-		Model:     "claude-3-haiku-20240307",
+		Model:     "claude-3-5-haiku-20241022",
 	},
-}
-
-func TestClient_Chat_allModels(t *testing.T) {
-	testCases.TestChatAllModels(t, nil)
-}
-
-func TestClient_Chat_thinking(t *testing.T) {
-	// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
-	// TODO: https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking#preserving-thinking-blocks
-	testCases.TestChatThinking(t, &internaltest.Settings{
-		Model: "claude-3-7-sonnet-20250219",
-		Options: func(opts *genai.ChatOptions) genai.Validatable {
-			return &anthropic.ChatOptions{ChatOptions: *opts, ThinkingBudget: opts.MaxTokens - 1}
-		},
-	})
-}
-
-func TestClient_Chat_simple(t *testing.T) {
-	testCases.TestChatSimple_simple(t, nil)
-}
-
-func TestClient_ChatStream_simple(t *testing.T) {
-	testCases.TestChatStream_simple(t, nil)
-}
-
-func TestClient_max_tokens(t *testing.T) {
-	testCases.TestChatMaxTokens(t, nil)
-}
-
-func TestClient_stop_sequence(t *testing.T) {
-	testCases.TestChatStopSequence(t, nil)
-}
-
-func TestClient_Chat_vision_jPG_inline(t *testing.T) {
-	// Using very small model for testing. As of March 2025,
-	// claude-3-haiku-20240307 is 0.20$/1.25$ while claude-3-5-haiku-20241022 is
-	// 0.80$/4.00$. 3.0 supports images, 3.5 supports PDFs.
-	// https://docs.anthropic.com/en/docs/about-claude/models/all-models
-	testCases.TestChatVisionJPGInline(t, nil)
-}
-
-func TestClient_Chat_vision_pDF_inline(t *testing.T) {
-	// 3.0 doesn't support PDFs.
-	testCases.TestChatVisionPDFInline(t, &internaltest.Settings{Model: "claude-3-5-haiku-20241022"})
-}
-
-func TestClient_Chat_vision_pDF_uRL(t *testing.T) {
-	testCases.TestChatVisionPDFURL(t, &internaltest.Settings{Model: "claude-3-5-haiku-20241022"})
-}
-
-func TestClient_Chat_tool_use_reply(t *testing.T) {
-	testCases.TestChatToolUseReply(t, &internaltest.Settings{Model: "claude-3-5-haiku-20241022"})
 }
 
 func TestClient_Chat_tool_use_position_bias(t *testing.T) {

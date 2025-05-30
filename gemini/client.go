@@ -33,6 +33,102 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+// Scoreboard for Gemini.
+//
+// # Warnings
+//
+//   - Gemini supports basically anything, but often on "preview" and "experimental" models. This means that
+//     the hardcoded model names in this scoreboard will have to be updated once stable models are released.
+//   - Gemini removed thinking in January 2025 and announced they will add a summarized version within 2025.
+//   - Not all features supported by Gemini are implemented.
+//   - Files can be referenced by URL but only if they have been uploaded via the file API, which is not
+//     implemented yet.
+var Scoreboard = genai.Scoreboard{
+	Scenarios: []genai.Scenario{
+		{
+			In:     []genai.Modality{genai.ModalityText},
+			Out:    []genai.Modality{genai.ModalityText},
+			Models: []string{"gemini-2.0-flash-lite"},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+		},
+		{
+			In:     []genai.Modality{genai.ModalityImage, genai.ModalityPDF, genai.ModalityAudio, genai.ModalityVideo, genai.ModalityText},
+			Out:    []genai.Modality{genai.ModalityText},
+			Models: []string{"gemini-2.0-flash"},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+		},
+		{
+			In:     []genai.Modality{genai.ModalityText},
+			Out:    []genai.Modality{genai.ModalityText, genai.ModalityImage},
+			Models: []string{"gemini-2.0-flash-preview-image-generation"},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           true,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           true,
+				ReportTokenUsage:   true,
+				ReportFinishReason: true,
+				StopSequence:       true,
+				Tools:              true,
+				JSON:               true,
+				JSONSchema:         true,
+			},
+		},
+	},
+}
+
 // ChatOptions includes Gemini specific options.
 type ChatOptions struct {
 	genai.ChatOptions
@@ -972,6 +1068,10 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 		},
 		apiKey: apiKey,
 	}, nil
+}
+
+func (c *Client) Scoreboard() genai.Scoreboard {
+	return Scoreboard
 }
 
 // CacheAdd caches the content for later use.

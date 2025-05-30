@@ -5,14 +5,9 @@
 package internaltest
 
 import (
-	"bytes"
 	"context"
 	_ "embed"
-	"encoding/json"
 	"fmt"
-	"math"
-	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 
@@ -20,9 +15,6 @@ import (
 	"github.com/maruel/genai"
 	"golang.org/x/sync/errgroup"
 )
-
-// ChatProviderFactory is what a Java developer would write.
-type ChatProviderFactory func(t *testing.T) genai.ChatProvider
 
 // ModelChatProviderFactory is what a Java developer would write.
 type ModelChatProviderFactory func(t *testing.T, model string) genai.ChatProvider
@@ -84,192 +76,7 @@ func (tc *TestCases) finishReasonIsBroken(override *Settings) bool {
 	return tc.Default.FinishReasonIsBroken
 }
 
-// TestChatThinking runs a test for the thinking feature of a chat model.
-func (tc *TestCases) TestChatThinking(t *testing.T, override *Settings) {
-	t.Run("Chat", func(t *testing.T) {
-		msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello.")}
-		// I believe most thinking models do not like Temperature to be set.
-		opts := tc.getOptions(&genai.ChatOptions{MaxTokens: 2000, Seed: 1}, override)
-		c := tc.getClient(t, override)
-		usageIsBroken := tc.usageIsBroken(override)
-		f := genai.FinishedStop
-		if tc.finishReasonIsBroken(override) {
-			f = ""
-		}
-		resp := tc.testChat(t, msgs, c, opts, usageIsBroken, f)
-		ValidateSingleWordResponse(t, resp, "hello")
-		msgs = append(msgs, resp.Message, genai.NewTextMessage(genai.User, "Say the same word again. Use only one word."))
-		resp = tc.testChat(t, msgs, c, opts, usageIsBroken, f)
-		ValidateSingleWordResponse(t, resp, "hello")
-	})
-	t.Run("ChatStream", func(t *testing.T) {
-		msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello.")}
-		// I believe most thinking models do not like Temperature to be set.
-		opts := tc.getOptions(&genai.ChatOptions{MaxTokens: 2000, Seed: 1}, override)
-		c := tc.getClient(t, override)
-		usageIsBroken := tc.usageIsBroken(override)
-		f := genai.FinishedStop
-		if tc.finishReasonIsBroken(override) {
-			f = ""
-		}
-		resp := tc.testChatStream(t, msgs, c, opts, usageIsBroken, f)
-		ValidateSingleWordResponse(t, resp, "hello")
-		msgs = append(msgs, resp.Message, genai.NewTextMessage(genai.User, "Say the same word again. Use only one word."))
-		resp = tc.testChatStream(t, msgs, c, opts, usageIsBroken, f)
-		ValidateSingleWordResponse(t, resp, "hello")
-	})
-}
-
-// TestChatSimple_simple makes sure Chat() works. Useful to restart a recording to determine if new fields were
-// added.
-func (tc *TestCases) TestChatSimple_simple(t *testing.T, override *Settings) {
-	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
-	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
-	resp := tc.TestChatHelper(t, msgs, override, opts, genai.FinishedStop)
-	ValidateSingleWordResponse(t, resp, "hello")
-}
-
-// TestChatStream_simple makes sure ChatStream() works. Useful to restart a recording to determine if new fields were
-// added.
-func (tc *TestCases) TestChatStream_simple(t *testing.T, override *Settings) {
-	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
-	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
-	resp := tc.testChatStreamHelper(t, msgs, override, opts, genai.FinishedStop)
-	ValidateSingleWordResponse(t, resp, "hello")
-}
-
-// TestChatAllModels says hello with all models.
-func (tc *TestCases) TestChatAllModels(t *testing.T, filter func(model genai.Model) bool) {
-	ctx := t.Context()
-	l := tc.getClient(t, nil).(genai.ModelProvider)
-	models, err := l.ListModels(ctx)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// MaxTokens has to be long because of some thinking models (e.g. qwen-qwq-32b and
-	// deepseek-r1-distill-llama-70b) cannot have thinking disabled.
-	opts := genai.ChatOptions{Temperature: 0.1, Seed: 1, MaxTokens: 1000}
-
-	for _, m := range models {
-		id := m.GetID()
-		if filter != nil && !filter(m) {
-			continue
-		}
-		t.Run(id, func(t *testing.T) {
-			msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word. Say only hello.")}
-			resp := tc.TestChatHelper(t, msgs, &Settings{Model: id}, opts, genai.FinishedStop)
-			ValidateSingleWordResponse(t, resp, "hello")
-		})
-	}
-}
-
-// TestChatMaxTokens confirms MaxTokens take effect and that the FinishReason is correct.
-func (tc *TestCases) TestChatMaxTokens(t *testing.T, override *Settings) {
-	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Tell a joke in 10 words")}
-	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 2, Seed: 1}
-	t.Run("Chat", func(t *testing.T) {
-		resp := tc.TestChatHelper(t, msgs, override, opts, genai.FinishedLength)
-		// Perplexity returns the thinking xml tag anyway so it adds up in number of letters.
-		if len(resp.AsText()) > 12 {
-			t.Fatalf("Expected less than 10 letters, got %d", len(resp.AsText()))
-		}
-	})
-	t.Run("ChatStream", func(t *testing.T) {
-		resp := tc.testChatStreamHelper(t, msgs, override, opts, genai.FinishedLength)
-		// Perplexity returns the thinking xml tag anyway so it adds up in number of letters.
-		if len(resp.AsText()) > 12 {
-			t.Fatalf("Expected less than 10 letters, got %d", len(resp.AsText()))
-		}
-	})
-}
-
-// TestChatStopSequence confirms StopSequence take effect and that the FinishReason is correct.
-func (tc *TestCases) TestChatStopSequence(t *testing.T, override *Settings) {
-	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Talk about Canada in 10 words. Start with: Canada is")}
-	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 2048, Stop: []string{"is"}, Seed: 1}
-	t.Run("Chat", func(t *testing.T) {
-		resp := tc.TestChatHelper(t, msgs, override, opts, genai.FinishedStopSequence)
-		if len(resp.AsText()) > 12 {
-			t.Fatalf("Expected less than 12 letters, got %d", len(resp.AsText()))
-		}
-	})
-	t.Run("ChatStream", func(t *testing.T) {
-		resp := tc.testChatStreamHelper(t, msgs, override, opts, genai.FinishedStopSequence)
-		if len(resp.AsText()) > 12 {
-			t.Fatalf("Expected less than 12 letters, got %d", len(resp.AsText()))
-		}
-	})
-}
-
 // Tool
-
-// TestChatToolUseReply confirms tool use fully works.
-func (tc *TestCases) TestChatToolUseReply(t *testing.T, override *Settings) {
-	ctx := t.Context()
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."),
-	}
-	type got struct {
-		Number json.Number `json:"number"`
-	}
-	opts := genai.ChatOptions{
-		SystemPrompt: "You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is.",
-		// Must be long enough for thinking models.
-		MaxTokens: 4096,
-		Seed:      1,
-		Tools: []genai.ToolDef{
-			{
-				Name:        "square_root",
-				Description: "Calculates and return the square root of a number",
-				Callback: func(ctx context.Context, g *got) (string, error) {
-					i, err := g.Number.Int64()
-					if err != nil {
-						return "", fmt.Errorf("wanted 132413 as an int, got %q: %w", g.Number, err)
-					}
-					if i != 132413 {
-						return "", fmt.Errorf("wanted 132413 as an int, got %s", g.Number)
-					}
-					return fmt.Sprintf("%.2f", math.Sqrt(float64(i))), nil
-				},
-			},
-		},
-		// For this test, we want to make sure the tool is called.
-		ToolCallRequest: genai.ToolCallRequired,
-	}
-	c := tc.getClient(t, override)
-	f := genai.FinishedToolCalls
-	if tc.finishReasonIsBroken(override) {
-		f = ""
-	}
-	resp := tc.testChat(t, msgs, c, tc.getOptions(&opts, override), tc.usageIsBroken(override), f)
-	want := "square_root"
-	if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
-		t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
-	}
-	// Don't forget to add the tool call request first before the reply.
-	msgs = append(msgs, resp.Message)
-	msg, err := resp.DoToolCalls(ctx, opts.Tools)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if !msg.IsZero() {
-		// Don't forget to add the tool call request first before the reply.
-		msgs = append(msgs, msg)
-	} else {
-		t.Fatal("unexpected zero message")
-	}
-	// Important!
-	opts.ToolCallRequest = genai.ToolCallNone
-	f = genai.FinishedStop
-	if tc.finishReasonIsBroken(override) {
-		f = ""
-	}
-	resp = tc.testChat(t, msgs, c, tc.getOptions(&opts, override), tc.usageIsBroken(override), f)
-	// This is very annoying, llama4 is not following instructions.
-
-	ValidateSingleWordResponse(t, resp, "363.89")
-}
 
 // TestChatToolUsePositionBias confirms that LLMs are position biased.
 //
@@ -336,7 +143,7 @@ func (tc *TestCases) TestChatToolUsePositionBiasCore(t *testing.T, override *Set
 			if useStream {
 				resp = tc.testChatStreamHelper(t, msgs, override, opts, genai.FinishedToolCalls)
 			} else {
-				resp = tc.TestChatHelper(t, msgs, override, opts, genai.FinishedToolCalls)
+				resp = tc.testChatHelper(t, msgs, override, opts, genai.FinishedToolCalls)
 			}
 			want := "best_country"
 			if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
@@ -353,178 +160,7 @@ func (tc *TestCases) TestChatToolUsePositionBiasCore(t *testing.T, override *Set
 	}
 }
 
-// Multi-modal (audio, image, video)
-
-// TestChatVisionJPGInline runs a Chat with vision capabilities and verifies that the model correctly identifies a
-// banana image.
-func (tc *TestCases) TestChatVisionJPGInline(t *testing.T, override *Settings) {
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "Is it a banana? Reply with only one word."},
-				{Filename: "banana.jpg", Document: bytes.NewReader(bananaJpg)},
-			},
-		},
-	}
-	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 200, Seed: 1}
-	resp := tc.TestChatHelper(t, msgs, override, opts, genai.FinishedStop)
-	// Normalize some of the variance. Obviously many models will still fail this test.
-	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.AsText())), ".!")
-	if txt != "yes" {
-		t.Fatal(txt)
-	}
-}
-
-func (tc *TestCases) TestChatVisionPDFInline(t *testing.T, override *Settings) {
-	// Path with the assumption it's run from "//<provider>/".
-	f, err := os.Open("../internal/internaltest/testdata/hidden_word.pdf")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer f.Close()
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "What is the word? Reply with only the word."},
-				{Document: f},
-			},
-		},
-	}
-	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 50, Seed: 1}
-	resp := tc.TestChatHelper(t, msgs, override, opts, genai.FinishedStop)
-	if got := strings.TrimSpace(strings.ToLower(resp.AsText())); got != "orange" {
-		t.Fatal(got)
-	}
-}
-
-func (tc *TestCases) TestChatVisionPDFURL(t *testing.T, override *Settings) {
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "What is the word? Reply with only the word."},
-				{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/hidden_word.pdf"},
-			},
-		},
-	}
-	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 50, Seed: 1}
-	resp := tc.TestChatHelper(t, msgs, override, opts, genai.FinishedStop)
-	if got := strings.TrimSpace(strings.ToLower(resp.AsText())); got != "orange" {
-		t.Fatal(got)
-	}
-}
-
-func (tc *TestCases) TestChatAudioMP3Inline(t *testing.T, override *Settings) {
-	tc.testChatAudioInline(t, override, "mystery_word.mp3")
-}
-
-func (tc *TestCases) TestChatAudioOpusInline(t *testing.T, override *Settings) {
-	tc.testChatAudioInline(t, override, "mystery_word.opus")
-}
-
-func (tc *TestCases) testChatAudioInline(t *testing.T, override *Settings, filename string) {
-	// Path with the assumption it's run from "//<provider>/".
-	f, err := os.Open(filepath.Join("..", "internal", "internaltest", "testdata", filename))
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer f.Close()
-	msgs := genai.Messages{
-		{Role: genai.User, Contents: []genai.Content{{Document: f}}},
-		genai.NewTextMessage(genai.User, "What is the word said? Reply with only the word."),
-	}
-	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 50, Seed: 1}
-	resp := tc.TestChatHelper(t, msgs, override, opts, genai.FinishedStop)
-	if heard := strings.TrimRight(strings.ToLower(resp.AsText()), "."); heard != "orange" {
-		t.Fatal(heard)
-	}
-}
-
-func (tc *TestCases) TestChatVideoMP4Inline(t *testing.T, override *Settings) {
-	// Path with the assumption it's run from "//<provider>/".
-	f, err := os.Open(filepath.Join("..", "internal", "internaltest", "testdata", "animation.mp4"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer f.Close()
-	msgs := genai.Messages{
-		{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{Text: "What is the word? Reply with only the word."},
-				{Document: f},
-			},
-		},
-	}
-	opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 50, Seed: 1}
-	resp := tc.TestChatHelper(t, msgs, override, opts, genai.FinishedStop)
-	if saw := strings.TrimSpace(strings.ToLower(resp.AsText())); saw != "banana" {
-		t.Fatal(saw)
-	}
-}
-
-// JSON
-
-// TestChatJSON runs a Chat verifying that the model correctly outputs JSON.
-func (tc *TestCases) TestChatJSON(t *testing.T, override *Settings) {
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, `Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {"is_fruit": bool}.`),
-	}
-	opts := genai.ChatOptions{Temperature: 0.1, MaxTokens: 200, Seed: 1, ReplyAsJSON: true}
-	resp := tc.TestChatHelper(t, msgs, override, opts, genai.FinishedStop)
-	got := map[string]any{}
-	if err := resp.Decode(&got); err != nil {
-		// Gemini returns a list of map. Tolerate that too.
-		got2 := []map[string]any{}
-		if err := resp.Decode(&got2); err != nil {
-			t.Fatal(err)
-		}
-		if len(got2) != 1 {
-			t.Fatal(got2)
-		}
-		got = got2[0]
-	}
-	val, ok := got["is_fruit"]
-	if !ok {
-		t.Fatal(got)
-	}
-	// Accept both strings and bool.
-	switch v := val.(type) {
-	case bool:
-		if !v {
-			t.Fatal(got)
-		}
-	case string:
-		if v != "true" {
-			t.Fatal(got)
-		}
-	default:
-		t.Fatal(got)
-	}
-}
-
-// TestChatJSONSchema runs a Chat verifying that the model correctly outputs JSON according to a schema.
-func (tc *TestCases) TestChatJSONSchema(t *testing.T, override *Settings) {
-	// TODO: Test optional vs required, enum, bool, int, etc.
-	var got struct {
-		IsFruit bool `json:"is_fruit" jsonschema_description:"True if the answer is that it is a fruit, false otherwise"`
-	}
-	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Is a banana a fruit? Reply as JSON according to the provided schema.")}
-	opts := genai.ChatOptions{Temperature: 0.1, MaxTokens: 200, Seed: 1, DecodeAs: &got}
-	resp := tc.TestChatHelper(t, msgs, override, opts, genai.FinishedStop)
-	if err := resp.Decode(&got); err != nil {
-		t.Fatal(err)
-	}
-	if !got.IsFruit {
-		t.Fatal(got.IsFruit)
-	}
-}
-
-//
-
-func (tc *TestCases) TestChatHelper(t *testing.T, msgs genai.Messages, override *Settings, opts genai.ChatOptions, f genai.FinishReason) genai.ChatResult {
+func (tc *TestCases) testChatHelper(t *testing.T, msgs genai.Messages, override *Settings, opts genai.ChatOptions, f genai.FinishReason) genai.ChatResult {
 	if tc.finishReasonIsBroken(override) {
 		f = ""
 	}

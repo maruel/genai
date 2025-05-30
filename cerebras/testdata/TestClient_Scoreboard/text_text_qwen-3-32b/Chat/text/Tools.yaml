@@ -1,0 +1,131 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 764
+        transfer_encoding: []
+        trailer: {}
+        host: api.cerebras.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"qwen-3-32b","messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-7c50cee5-627f-461e-94f6-7d869ad2b5db","choices":[{"finish_reason":"stop","index":0,"message":{"tool_calls":[{"id":"3e1af1fb6","type":"function","function":{"name":"square_root","arguments":"{\"number\": \"132413\"}"}}],"role":"assistant"}}],"created":1748549475,"model":"qwen-3-32b","system_fingerprint":"fp_9c2a99947ce8120f4772","object":"chat.completion","usage":{"prompt_tokens":264,"completion_tokens":127,"total_tokens":391,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.320674647,"prompt_time":0.006330563,"completion_time":0.079011866,"total_time":0.40679216384887695,"created":1748549475}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9478a3cd69cea28f-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-7c50cee5-627f-461e-94f6-7d869ad2b5db
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14388"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "59936"
+            X-Ratelimit-Reset-Requests-Day:
+                - "13723.900334835052"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "43.90033483505249"
+            X-Request-Id:
+                - 9478a3cd69cea28f-YUL
+        status: 200 OK
+        code: 200
+        duration: 768ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 989
+        transfer_encoding: []
+        trailer: {}
+        host: api.cerebras.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"qwen-3-32b","messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"3e1af1fb6","function":{"name":"square_root","arguments":"{\"number\": \"132413\"}"}}]},{"role":"tool","content":"363.89","tool_call_id":"3e1af1fb6","name":"square_root"}],"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-43fc9af8-0582-47b6-86ea-8490bc6262e9","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, the user asked for the square root of 132413 using the square_root tool. I called the tool with the number 132413, and the response was 363.89. I need to make sure that this is the correct result. Let me check by squaring 363.89 to see if it approximates 132413.\n\nCalculating 363.89 squared: 363.89 * 363.89. Let''s do this step by step. \n\nFirst, 360 squared is 129600. Then, 3.89 squared is approximately 15.13. Now, the cross term is 2 * 360 * 3.89 = 2 * 360 * 3.89. 360 * 3.89 is 1,399.8, so doubling that gives 2,799.6. Adding all parts together: 129,600 + 2,799.6 + 15.13 ≈ 132,414.73. \n\nThe original number is 132,413, which is very close to the squared result of 132,414.73. The slight difference is likely due to rounding in the decimal places. So, 363.89 is a correct approximation of the square root of 132413. Therefore, I can confidently return the result as provided by the tool without any additional explanation, as per the user''s request.\n</think>\n\n363.89","role":"assistant"}}],"created":1748549476,"model":"qwen-3-32b","system_fingerprint":"fp_9c2a99947ce8120f4772","object":"chat.completion","usage":{"prompt_tokens":124,"completion_tokens":378,"total_tokens":502,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00011876,"prompt_time":0.003465358,"completion_time":0.216157002,"total_time":0.2212529182434082,"created":1748549476}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9478a3d1ef03a28f-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-43fc9af8-0582-47b6-86ea-8490bc6262e9
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14387"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "59545"
+            X-Ratelimit-Reset-Requests-Day:
+                - "13723.499343156815"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "43.499343156814575"
+            X-Request-Id:
+                - 9478a3d1ef03a28f-YUL
+        status: 200 OK
+        code: 200
+        duration: 403ms

@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 282
+        transfer_encoding: []
+        trailer: {}
+        host: api.mistral.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"mistral-small-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"response_format":{"type":"json_object"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"6cfc4d39e7d642f2bccade47316d2bf2","object":"chat.completion","created":1748539528,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"{\n  \"is_fruit\": true\n}"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":32,"total_tokens":43,"completion_tokens":11}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9477b0f47cee33f5-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            X-Envoy-Upstream-Service-Time:
+                - "363"
+            X-Kong-Proxy-Latency:
+                - "12"
+            X-Kong-Request-Id:
+                - fab2c04d1596be0cf5d6144ff49a4969
+            X-Kong-Upstream-Latency:
+                - "574"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "2000000"
+            X-Ratelimit-Limit-Tokens-Month:
+                - "10000000000"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "1999957"
+            X-Ratelimit-Remaining-Tokens-Month:
+                - "9999996561"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "43"
+        status: 200 OK
+        code: 200
+        duration: 779ms

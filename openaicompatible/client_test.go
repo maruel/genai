@@ -15,6 +15,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// Testing is very different here as we test various providers to see if they work with this generic client.
+
 func TestClient_Chat_simple(t *testing.T) {
 	for name := range providers {
 		t.Run(name, func(t *testing.T) {

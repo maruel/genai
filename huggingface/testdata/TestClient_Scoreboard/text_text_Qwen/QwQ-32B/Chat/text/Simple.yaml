@@ -1,0 +1,93 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 88
+        transfer_encoding: []
+        trailer: {}
+        host: router.huggingface.co
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/hf-inference/models/Qwen/QwQ-32B/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 885
+        uncompressed: false
+        body: '{"object":"chat.completion","id":"","created":1748538342,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"Okay, the user wants me to say hello using only one word. Let me think. The obvious answer is \"Hello.\" But maybe they want something else? Wait, the instruction says \"use only one word,\" so \"Hello\" is a single word. But sometimes people might say \"Hi\" which is also one word. However, \"Hello\" is more formal and directly matches the request. I should check if there''s any trick here. Maybe a different language? But the user probably expects the answer in English. So the safest and correct answer is \"Hello.\" Yeah, that''s it. Just \"Hello\" as one word.\n</think>\n\nHello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":18,"completion_tokens":134,"total_tokens":152}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "885"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 875d50fae2ec2fc798461398e3cf2a5a.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - crCk9ng_HkHEURXRBk1QtuqZ5xMaZYrbYNgMEmlPr94JK6PVFW8x6g==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Compute-Characters:
+                - "87"
+            X-Compute-Time:
+                - "9.424061251"
+            X-Compute-Type:
+                - 4-nvida-l4
+            X-Generated-Tokens:
+                - "134"
+            X-Inference-Id:
+                - d9c7e807-8e38-4b3b-931e-eb8d1be5544f
+            X-Inference-Time:
+                - "9423"
+            X-Powered-By:
+                - huggingface-moon
+            X-Prompt-Tokens:
+                - "18"
+            X-Proxied-Host:
+                - http://10.101.12.185
+            X-Proxied-Path:
+                - /v1/chat/completions
+            X-Proxied-Replica:
+                - cvzt8xzc-9u4na
+            X-Queue-Time:
+                - "0"
+            X-Request-Id:
+                - sWiSc8ofQMgs_RCw
+            X-Robots-Tag:
+                - none
+            X-Time-Per-Token:
+                - "70"
+            X-Total-Time:
+                - "9424"
+            X-Validation-Time:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 9.559s

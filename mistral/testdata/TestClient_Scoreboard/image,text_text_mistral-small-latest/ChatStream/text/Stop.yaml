@@ -1,0 +1,63 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 180
+        transfer_encoding: []
+        trailer: {}
+        host: api.mistral.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"mistral-small-latest","stream":true,"stop":["is"],"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in 10 words. Start with: Canada is"}]}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"id":"9523215e52d444abaa0aec9d41a0e977","object":"chat.completion.chunk","created":1748539533,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}]}
+
+            data: {"id":"9523215e52d444abaa0aec9d41a0e977","object":"chat.completion.chunk","created":1748539533,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":"Canada"},"finish_reason":null,"logprobs":null}]}
+
+            data: {"id":"9523215e52d444abaa0aec9d41a0e977","object":"chat.completion.chunk","created":1748539533,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":" "},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":17,"total_tokens":19,"completion_tokens":2}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9477b114aec233f5-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            X-Envoy-Upstream-Service-Time:
+                - "53"
+            X-Kong-Proxy-Latency:
+                - "22"
+            X-Kong-Request-Id:
+                - f7e04a745fa3b90b0938905daaa2483e
+            X-Kong-Upstream-Latency:
+                - "54"
+        status: 200 OK
+        code: 200
+        duration: 240ms

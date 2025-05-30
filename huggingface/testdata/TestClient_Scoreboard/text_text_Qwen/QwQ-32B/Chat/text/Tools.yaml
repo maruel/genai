@@ -1,0 +1,183 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 730
+        transfer_encoding: []
+        trailer: {}
+        host: router.huggingface.co
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"stream":false,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/hf-inference/models/Qwen/QwQ-32B/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 421
+        uncompressed: false
+        body: '{"object":"chat.completion","id":"","created":1748538346,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":285,"completion_tokens":23,"total_tokens":308}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "421"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 875d50fae2ec2fc798461398e3cf2a5a.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - 3JpzZme3jYGMCLNwU9B9nygwqxW82ZJe0L_onup1oJCtbiGdWmoFyg==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Compute-Characters:
+                - "1357"
+            X-Compute-Time:
+                - "2.764511527"
+            X-Compute-Type:
+                - 4-nvida-l4
+            X-Generated-Tokens:
+                - "23"
+            X-Inference-Id:
+                - cc3881ce-1b3e-42b0-8986-b6350e3c3d77
+            X-Inference-Time:
+                - "2763"
+            X-Powered-By:
+                - huggingface-moon
+            X-Prompt-Tokens:
+                - "285"
+            X-Proxied-Host:
+                - http://10.101.12.185
+            X-Proxied-Path:
+                - /v1/chat/completions
+            X-Proxied-Replica:
+                - cvzt8xzc-9u4na
+            X-Queue-Time:
+                - "0"
+            X-Request-Id:
+                - oSgz5bZ34fd8Gois
+            X-Robots-Tag:
+                - none
+            X-Time-Per-Token:
+                - "120"
+            X-Total-Time:
+                - "2764"
+            X-Validation-Time:
+                - "1"
+        status: 200 OK
+        code: 200
+        duration: 3.696s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 919
+        transfer_encoding: []
+        trailer: {}
+        host: router.huggingface.co
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"stream":false,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},{"role":"tool","content":"363.89","name":"square_root"}],"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/hf-inference/models/Qwen/QwQ-32B/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 730
+        uncompressed: false
+        body: '{"object":"chat.completion","id":"","created":1748538354,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"Alright, the user asked for the square root of 132413 using the square_root tool. I called the function with the number 132413 as specified. The tool returned 363.89. Since the user wants only the result without any explanation, I just need to present that number. Let me double-check if there''s any extra info needed, but the instructions were clear. Just the result. So I''ll make sure to output exactly that.\n</think>\n\n363.89"},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":145,"completion_tokens":111,"total_tokens":256}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "730"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 875d50fae2ec2fc798461398e3cf2a5a.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - _jaHJ1zrM_Vwqqu64RtgvwR-N24wXW5BG5HwpYubGKiELN7zIOVynQ==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Compute-Characters:
+                - "626"
+            X-Compute-Time:
+                - "7.860347066"
+            X-Compute-Type:
+                - 4-nvida-l4
+            X-Generated-Tokens:
+                - "111"
+            X-Inference-Id:
+                - 85baec40-e673-4c6a-97a6-59b048fa94d6
+            X-Inference-Time:
+                - "7859"
+            X-Powered-By:
+                - huggingface-moon
+            X-Prompt-Tokens:
+                - "145"
+            X-Proxied-Host:
+                - http://10.101.12.185
+            X-Proxied-Path:
+                - /v1/chat/completions
+            X-Proxied-Replica:
+                - cvzt8xzc-9u4na
+            X-Queue-Time:
+                - "0"
+            X-Request-Id:
+                - OvcCF5OK6Z3gI29e
+            X-Robots-Tag:
+                - none
+            X-Time-Per-Token:
+                - "70"
+            X-Total-Time:
+                - "7860"
+            X-Validation-Time:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 7.936s

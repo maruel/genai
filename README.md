@@ -17,6 +17,7 @@ The _high performance_ low level native Go client for LLMs.
 | [Ollama](https://ollama.com/)                               | N/A     | ✅      | ❌   | ❌     | ❌     | ❌    | ✅           | ❌     | ✅       | ✅        | ✅   | ✅    | 🔁      |
 | [OpenAI](https://platform.openai.com/usage)                 | 🇺🇸      | ✅      | ✅   | ✅     | ❌     | ✅    | ✅           | ⏳     | ✅       | ✅        | ✅   | ✅    | [🔁](https://platform.openai.com/docs/guides/prompt-caching) |
 | OpenAI compatible (generic)                                 | N/A     | ❌      | ❌   | ❌     | ❌     | ❌    | ❌           | ❌     | ✅       | ✅        | ✅   | ❌    | ❌      |
+| [Pollinations](https://auth.pollinations.ai/)               | 🇩🇪      | ⏳      | ❌   | ⏳     | ❌     | ❌    | ⏳           | ⏳     | ✅       | ✅        | ❌   | ❌    | ❌      |
 | [Perplexity](https://www.perplexity.ai/settings/api)        | 🇺🇸      | ❌      | ❌   | ❌     | ❌     | ❌    | ⏳           | ❌     | ✅       | ✅        | ❌   | ❌    | ❌      |
 | [TogetherAI](https://api.together.ai/settings/billing)      | 🇺🇸      | ✅      | ❌   | ❌     | ✅     | ✅    | ✅           | ⏳     | ✅       | ✅        | ✅   | ✅    | ❌      |
 
@@ -89,6 +90,7 @@ apply):
 - [Groq](https://console.groq.com/docs/rate-limits) 0.5qps, 500k tokens/day
 - [HuggingFace](https://huggingface.co/docs/api-inference/pricing) 10¢/month
 - [Mistral](https://help.mistral.ai/en/articles/225174-what-are-the-limits-of-the-free-tier) 1qps, 1B tokens/month
+- [Pollinations.ai](https://api.together.ai/settings/plans) provides many models for free
 - [Together.AI](https://api.together.ai/settings/plans) provides many models for free at 1qps
 - Running [Ollama](https://ollama.com/) or [llama.cpp](https://github.com/ggml-org/llama.cpp) locally is free. :)
 

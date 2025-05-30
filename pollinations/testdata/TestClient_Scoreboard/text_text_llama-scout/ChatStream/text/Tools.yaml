@@ -1,0 +1,145 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 807
+        transfer_encoding: []
+        trailer: {}
+        host: text.pollinations.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"llama-scout","stream":true,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required","private":true,"stream_options":{"include_usage":true}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://text.pollinations.ai/openai
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3160
+        uncompressed: false
+        body: |+
+            data: {"choices":[],"created":0,"id":"","model":"","object":"","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"jailbreak":{"detected":false,"filtered":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}]}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":null,"refusal":null,"role":"assistant","tool_calls":[{"function":{"arguments":"","name":"square_root"},"id":"call_l3J2ikcJnKsblM6A0YuGSMII","index":0,"type":"function"}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1748626161,"id":"chatcmpl-BcxphD9C6oF3zAy6vkEBmnm0lbpVW","model":"gpt-4.1-nano-2025-04-14","object":"chat.completion.chunk","system_fingerprint":"fp_68472df8fd"}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"tool_calls":[{"function":{"arguments":"{\""},"index":0}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1748626161,"id":"chatcmpl-BcxphD9C6oF3zAy6vkEBmnm0lbpVW","model":"gpt-4.1-nano-2025-04-14","object":"chat.completion.chunk","system_fingerprint":"fp_68472df8fd"}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"tool_calls":[{"function":{"arguments":"number"},"index":0}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1748626161,"id":"chatcmpl-BcxphD9C6oF3zAy6vkEBmnm0lbpVW","model":"gpt-4.1-nano-2025-04-14","object":"chat.completion.chunk","system_fingerprint":"fp_68472df8fd"}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"tool_calls":[{"function":{"arguments":"\":\""},"index":0}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1748626161,"id":"chatcmpl-BcxphD9C6oF3zAy6vkEBmnm0lbpVW","model":"gpt-4.1-nano-2025-04-14","object":"chat.completion.chunk","system_fingerprint":"fp_68472df8fd"}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"tool_calls":[{"function":{"arguments":"132"},"index":0}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1748626161,"id":"chatcmpl-BcxphD9C6oF3zAy6vkEBmnm0lbpVW","model":"gpt-4.1-nano-2025-04-14","object":"chat.completion.chunk","system_fingerprint":"fp_68472df8fd"}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"tool_calls":[{"function":{"arguments":"413"},"index":0}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1748626161,"id":"chatcmpl-BcxphD9C6oF3zAy6vkEBmnm0lbpVW","model":"gpt-4.1-nano-2025-04-14","object":"chat.completion.chunk","system_fingerprint":"fp_68472df8fd"}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"tool_calls":[{"function":{"arguments":"\"}"},"index":0}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1748626161,"id":"chatcmpl-BcxphD9C6oF3zAy6vkEBmnm0lbpVW","model":"gpt-4.1-nano-2025-04-14","object":"chat.completion.chunk","system_fingerprint":"fp_68472df8fd"}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{},"finish_reason":"tool_calls","index":0,"logprobs":null}],"created":1748626161,"id":"chatcmpl-BcxphD9C6oF3zAy6vkEBmnm0lbpVW","model":"gpt-4.1-nano-2025-04-14","object":"chat.completion.chunk","system_fingerprint":"fp_68472df8fd"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9481242f2dcfa300-YUL
+            Content-Length:
+                - "3160"
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2025-05-30T17:29:22.918Z"
+            X-Cache-Key:
+                - 38459594a84ad7f2ad9a7d52374603039125668c74cb88cd024da22a3da70f1f
+            X-Powered-By:
+                - Express
+        status: 200 OK
+        code: 200
+        duration: 551ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1050
+        transfer_encoding: []
+        trailer: {}
+        host: text.pollinations.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"call_l3J2ikcJnKsblM6A0YuGSMII","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_l3J2ikcJnKsblM6A0YuGSMII"}],"model":"llama-scout","stream":true,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","private":true,"stream_options":{"include_usage":true}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://text.pollinations.ai/openai
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"choices":[],"created":0,"id":"","model":"","object":"","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"jailbreak":{"detected":false,"filtered":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}]}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":"","refusal":null,"role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"created":1748638622,"id":"chatcmpl-Bd14gd5adBeFOzsBlbaCAoMhVIhyU","model":"gpt-4.1-nano-2025-04-14","object":"chat.completion.chunk","system_fingerprint":"fp_68472df8fd"}
+
+            data: {"choices":[{"content_filter_results":{"protected_material_code":{"detected":false,"filtered":false}},"delta":{"content":"363"},"finish_reason":null,"index":0,"logprobs":null}],"created":1748638622,"id":"chatcmpl-Bd14gd5adBeFOzsBlbaCAoMhVIhyU","model":"gpt-4.1-nano-2025-04-14","object":"chat.completion.chunk","system_fingerprint":"fp_68472df8fd"}
+
+            data: {"choices":[{"content_filter_results":{"protected_material_code":{"detected":false,"filtered":false}},"delta":{"content":"."},"finish_reason":null,"index":0,"logprobs":null}],"created":1748638622,"id":"chatcmpl-Bd14gd5adBeFOzsBlbaCAoMhVIhyU","model":"gpt-4.1-nano-2025-04-14","object":"chat.completion.chunk","system_fingerprint":"fp_68472df8fd"}
+
+            data: {"choices":[{"content_filter_results":{"protected_material_code":{"detected":false,"filtered":false}},"delta":{"content":"89"},"finish_reason":null,"index":0,"logprobs":null}],"created":1748638622,"id":"chatcmpl-Bd14gd5adBeFOzsBlbaCAoMhVIhyU","model":"gpt-4.1-nano-2025-04-14","object":"chat.completion.chunk","system_fingerprint":"fp_68472df8fd"}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{},"finish_reason":"stop","index":0,"logprobs":null}],"created":1748638622,"id":"chatcmpl-Bd14gd5adBeFOzsBlbaCAoMhVIhyU","model":"gpt-4.1-nano-2025-04-14","object":"chat.completion.chunk","system_fingerprint":"fp_68472df8fd"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94812432493fa300-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+            X-Cache:
+                - MISS
+            X-Cache-Key:
+                - 800e4a5d33cc01697c8195b209832e9d38247c8a9ba40bcb67662b088cc038cc
+            X-Powered-By:
+                - Express
+        status: 200 OK
+        code: 200
+        duration: 1.774s

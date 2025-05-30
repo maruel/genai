@@ -26,6 +26,7 @@ import (
 	"github.com/maruel/genai/mistral"
 	"github.com/maruel/genai/openai"
 	"github.com/maruel/genai/perplexity"
+	"github.com/maruel/genai/pollinations"
 	"github.com/maruel/genai/togetherai"
 	"golang.org/x/sync/errgroup"
 )
@@ -62,6 +63,9 @@ func ExampleModelProvider_all() {
 	}
 	if c, err := openai.New("", "", nil); err == nil {
 		modelProviders["openai"] = c
+	}
+	if c, err := pollinations.New("", "", nil); err == nil {
+		modelProviders["pollinations"] = c
 	}
 	// perplexity doesn't implement ModelProvider.
 	if c, err := togetherai.New("", "", nil); err == nil {
@@ -131,6 +135,10 @@ func ExampleChatProvider_all() {
 	// https://docs.perplexity.ai/models/model-cards
 	if c, err := perplexity.New("", "sonar", nil); err == nil {
 		chatProviders["perplexity"] = c
+	}
+	// https://text.pollinations.ai/models
+	if c, err := pollinations.New("", "qwen-coder", nil); err == nil {
+		chatProviders["pollinations"] = c
 	}
 	// https://api.together.ai/models
 	if c, err := togetherai.New("", "deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free", nil); err == nil {

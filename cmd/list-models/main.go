@@ -29,6 +29,7 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/mistral"
 	"github.com/maruel/genai/openai"
+	"github.com/maruel/genai/pollinations"
 	"github.com/maruel/genai/togetherai"
 )
 
@@ -62,6 +63,9 @@ var providers = map[string]func() (genai.ModelProvider, error){
 	},
 	"openai": func() (genai.ModelProvider, error) {
 		return openai.New("", "", nil)
+	},
+	"pollinations": func() (genai.ModelProvider, error) {
+		return pollinations.New("", "", nil)
 	},
 	"togetherai": func() (genai.ModelProvider, error) {
 		return togetherai.New("", "", nil)

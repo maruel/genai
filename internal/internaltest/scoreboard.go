@@ -223,28 +223,43 @@ func testTextFunctionalities(t *testing.T, g ChatProviderModalityFactory, model 
 		// Give enough token so the <think> token can be emitted plus another word. MaxTokens:2 could cause
 		// problems and it's not a value that is expected to be used in practice for this use case.
 		resp, err := run(t, g(t, model), msgs, &genai.ChatOptions{MaxTokens: 3}, stream)
-		// Assume MaxTokens is supported everywhere, until proven otherwise.
-		if !basicCheck(t, err, true) {
+		// MaxTokens can fail in two ways:
+		// - Chat() or ChatRequest() return an irrecoverable error.
+		// - The length is not enforced.
+		if !basicCheckAcceptUnexpectedSuccess(t, err, true) {
 			return
 		}
 		fr := genai.FinishedLength
+		if !f.MaxTokens {
+			fr = genai.FinishedStop
+		}
 		if !f.ReportFinishReason {
 			fr = ""
 		}
 		testUsage(t, &resp.Usage, !f.ReportTokenUsage, fr)
 		if len(resp.AsText()) > 15 {
-			// Deepseek counts "\"Parallel lines" as 3 tokens (!)
-			t.Fatalf("Expected less than 15 letters, got %q", resp.AsText())
+			if f.MaxTokens {
+				// Deepseek counts "\"Parallel lines" as 3 tokens (!)
+				t.Fatalf("Expected less than 15 letters, got %q", resp.AsText())
+			}
+		} else if !f.MaxTokens {
+			t.Fatal("unexpected short answer")
 		}
 	})
 
 	t.Run("Stop", func(t *testing.T) {
 		msgs := genai.Messages{genai.NewTextMessage(genai.User, "Talk about Canada in 10 words. Start with: Canada is")}
 		resp, err := run(t, g(t, model), msgs, &genai.ChatOptions{Stop: []string{"is"}}, stream)
-		if !basicCheck(t, err, f.StopSequence) {
+		// Stop can fail in two ways:
+		// - Chat() or ChatRequest() return an irrecoverable error.
+		// - The Stop words to not stop generation.
+		if !basicCheckAcceptUnexpectedSuccess(t, err, f.StopSequence) {
 			return
 		}
 		fr := genai.FinishedStopSequence
+		if !f.StopSequence {
+			fr = genai.FinishedStop
+		}
 		if !f.ReportFinishReason {
 			fr = ""
 		}
@@ -253,9 +268,11 @@ func testTextFunctionalities(t *testing.T, g ChatProviderModalityFactory, model 
 		// question.
 		if s := resp.AsText(); len(s) > 12 && !strings.HasPrefix(s, "<think") {
 			// This is very unfortunate: Huggingface serves a version of the model that never prefixes with <think>.
-			if !strings.Contains(strings.ToLower(model), "qwq") {
+			if !strings.Contains(strings.ToLower(model), "qwq") && f.StopSequence {
 				t.Fatalf("Expected less than 12 letters, got %q", resp.AsText())
 			}
+		} else if !f.StopSequence {
+			t.Fatal("unexpected short answer")
 		}
 	})
 
@@ -264,12 +281,15 @@ func testTextFunctionalities(t *testing.T, g ChatProviderModalityFactory, model 
 			genai.NewTextMessage(genai.User, `Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {"is_fruit": bool}.`),
 		}
 		resp, err := run(t, g(t, model), msgs, &genai.ChatOptions{ReplyAsJSON: true}, stream)
-		if !basicCheck(t, err, f.JSON) {
+		if !basicCheckAcceptUnexpectedSuccess(t, err, f.JSON) {
 			return
 		}
 		testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
 		got := map[string]any{}
 		if err := resp.Decode(&got); err != nil {
+			if !f.JSON {
+				return
+			}
 			// Gemini returns a list of map. Tolerate that too.
 			got2 := []map[string]any{}
 			if err := resp.Decode(&got2); err != nil {
@@ -279,6 +299,8 @@ func testTextFunctionalities(t *testing.T, g ChatProviderModalityFactory, model 
 				t.Fatal(got2)
 			}
 			got = got2[0]
+		} else if !f.JSON {
+			t.Fatal("unexpected success")
 		}
 		val, ok := got["is_fruit"]
 		if !ok {
@@ -356,8 +378,14 @@ func testTextFunctionalities(t *testing.T, g ChatProviderModalityFactory, model 
 			fr = ""
 		}
 		resp, err := run(t, c, msgs, &opts, stream)
-		if !basicCheck(t, err, f.Tools) {
+		if !basicCheckAcceptUnexpectedSuccess(t, err, f.Tools) {
 			return
+		}
+		if !f.Tools {
+			if resp.FinishReason == genai.FinishedStop || resp.FinishReason == genai.FinishedLength {
+				return
+			}
+			t.Fatalf("unexpected success: %s", resp.FinishReason)
 		}
 		testUsage(t, &resp.Usage, !f.ReportTokenUsage, fr)
 		want := "square_root"
@@ -663,6 +691,22 @@ func basicCheck(t *testing.T, err error, expectedSuccess bool) bool {
 	}
 	if !expectedSuccess {
 		t.Error("unexpected success")
+	}
+	return true
+}
+
+// basicCheckAcceptUnexpectedSuccess returns true if the test should continue.
+func basicCheckAcceptUnexpectedSuccess(t *testing.T, err error, expectedSuccess bool) bool {
+	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+		t.Log(uce)
+		err = nil
+	}
+	if err != nil {
+		if !expectedSuccess {
+			// Skip the remainder.
+			return false
+		}
+		t.Fatalf("unexpected failure: %s", err.Error())
 	}
 	return true
 }

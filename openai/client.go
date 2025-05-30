@@ -85,6 +85,7 @@ var Scoreboard = genai.Scoreboard{
 				Thinking:           false,
 				ReportTokenUsage:   true,
 				ReportFinishReason: true,
+				MaxTokens:          true,
 				StopSequence:       true,
 				Tools:              true,
 				JSON:               true,
@@ -96,6 +97,7 @@ var Scoreboard = genai.Scoreboard{
 				Thinking:           false,
 				ReportTokenUsage:   true,
 				ReportFinishReason: true,
+				MaxTokens:          true,
 				StopSequence:       true,
 				Tools:              true,
 				JSON:               true,
@@ -122,6 +124,7 @@ var Scoreboard = genai.Scoreboard{
 				Thinking:           false,
 				ReportTokenUsage:   true,
 				ReportFinishReason: true,
+				MaxTokens:          true,
 				StopSequence:       true,
 				Tools:              true,
 				JSON:               true,
@@ -133,6 +136,7 @@ var Scoreboard = genai.Scoreboard{
 				Thinking:           false,
 				ReportTokenUsage:   true,
 				ReportFinishReason: true,
+				MaxTokens:          true,
 				StopSequence:       true,
 				Tools:              true,
 				JSON:               true,
@@ -162,6 +166,7 @@ var Scoreboard = genai.Scoreboard{
 				Thinking:           false,
 				ReportTokenUsage:   true,
 				ReportFinishReason: true,
+				MaxTokens:          true,
 				StopSequence:       false,
 				Tools:              true,
 				JSON:               true,
@@ -173,6 +178,7 @@ var Scoreboard = genai.Scoreboard{
 				Thinking:           false,
 				ReportTokenUsage:   true,
 				ReportFinishReason: true,
+				MaxTokens:          true,
 				StopSequence:       false,
 				Tools:              true,
 				JSON:               true,
@@ -871,14 +877,16 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 			ProcessStreamPackets: processStreamPackets,
 			ClientBase: internal.ClientBase[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
-					Client: &http.Client{Transport: &roundtrippers.Header{
-						Transport: &roundtrippers.Retry{
-							Transport: &roundtrippers.RequestID{
-								Transport: r,
+					Client: &http.Client{
+						Transport: &roundtrippers.Header{
+							Transport: &roundtrippers.Retry{
+								Transport: &roundtrippers.RequestID{
+									Transport: r,
+								},
 							},
+							Header: http.Header{"Authorization": {"Bearer " + apiKey}},
 						},
-						Header: http.Header{"Authorization": {"Bearer " + apiKey}},
-					}},
+					},
 					Lenient: internal.BeLenient,
 				},
 				// OpenAI error message prints the api key URL already.

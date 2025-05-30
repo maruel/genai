@@ -6,6 +6,7 @@
 package internaltest
 
 import (
+	"flag"
 	"fmt"
 	"io/fs"
 	"net/http"
@@ -46,12 +47,21 @@ func NewRecords() *Records {
 }
 
 func (r *Records) Close() int {
-	code := 0
+	filtered := false
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == "test.run" {
+			filtered = true
+		}
+	})
+	if filtered {
+		return 0
+	}
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	for _, f := range r.recorded {
 		delete(r.preexisting, f)
 	}
+	code := 0
 	if len(r.preexisting) != 0 {
 		code = 1
 		println("Found orphaned recordings:")

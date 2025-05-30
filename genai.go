@@ -962,7 +962,9 @@ type Functionality struct {
 	ReportTokenUsage bool
 	// ReportFinishReason means that the finish reason (FinishStop, FinishLength, etc) is correctly reported.
 	ReportFinishReason bool
-	// StopSequence means that the model supports stop sequences. This is generally only supported in text-in
+	// MaxTokens means that the provider supports limiting text output.
+	MaxTokens bool
+	// StopSequence means that the provider supports stop words. This is generally only supported in text-in
 	// modalities.
 	StopSequence bool
 

@@ -21,12 +21,15 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
-// Scoreboard for Deepseek.
+// Scoreboard for DeepSeek.
 //
 // # Warnings
 //
 //   - JSON schema decoding is announced to be added later in the doc.
+//   - Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the
+//     tool's first argument.
 //   - Tool calling is not supported with deepseek-reasoner.
+//   - DeepSeek doesn't do rate limiting: https://api-docs.deepseek.com/quick_start/rate_limit
 var Scoreboard = genai.Scoreboard{
 	Scenarios: []genai.Scenario{
 		{
@@ -41,7 +44,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.True,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         false,
@@ -54,7 +57,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.True,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         false,
@@ -72,7 +75,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              false,
+				Tools:              genai.False,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         false,
@@ -85,7 +88,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              false,
+				Tools:              genai.False,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         false,
@@ -435,13 +438,13 @@ func (m *Model) Context() int64 {
 	return 0
 }
 
-// ModelsResponse represents the response structure for Deepseek models listing
+// ModelsResponse represents the response structure for DeepSeek models listing
 type ModelsResponse struct {
 	Object string  `json:"object"` // list
 	Data   []Model `json:"data"`
 }
 
-// ToModels converts Deepseek models to genai.Model interfaces
+// ToModels converts DeepSeek models to genai.Model interfaces
 func (r *ModelsResponse) ToModels() []genai.Model {
 	models := make([]genai.Model, len(r.Data))
 	for i := range r.Data {

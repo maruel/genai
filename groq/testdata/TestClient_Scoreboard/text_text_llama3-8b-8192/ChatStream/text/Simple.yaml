@@ -29,11 +29,11 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"chatcmpl-78b9d5d4-0392-4fd9-9d22-38d4d84f9275","object":"chat.completion.chunk","created":1748536423,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jwee8wsneprb7wsdw9v6pytc"}}
+            data: {"id":"chatcmpl-b7b823cd-6064-4563-9bbd-28c8e2059da9","object":"chat.completion.chunk","created":1748716152,"model":"llama3-8b-8192","system_fingerprint":"fp_179b0f92c9","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jwksnsxbffn8s6eg60srqmpe"}}
 
-            data: {"id":"chatcmpl-78b9d5d4-0392-4fd9-9d22-38d4d84f9275","object":"chat.completion.chunk","created":1748536423,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-b7b823cd-6064-4563-9bbd-28c8e2059da9","object":"chat.completion.chunk","created":1748716152,"model":"llama3-8b-8192","system_fingerprint":"fp_179b0f92c9","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-78b9d5d4-0392-4fd9-9d22-38d4d84f9275","object":"chat.completion.chunk","created":1748536423,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01jwee8wsneprb7wsdw9v6pytc","usage":{"queue_time":0.167101404,"prompt_tokens":18,"prompt_time":0.00374212,"completion_tokens":2,"completion_time":0.001666667,"total_tokens":20,"total_time":0.005408787}}}
+            data: {"id":"chatcmpl-b7b823cd-6064-4563-9bbd-28c8e2059da9","object":"chat.completion.chunk","created":1748716152,"model":"llama3-8b-8192","system_fingerprint":"fp_179b0f92c9","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01jwksnsxbffn8s6eg60srqmpe","usage":{"queue_time":0.066595297,"prompt_tokens":18,"prompt_time":0.002892488,"completion_tokens":2,"completion_time":0.001809002,"total_tokens":20,"total_time":0.00470149}}}
 
             data: [DONE]
 
@@ -45,7 +45,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94776524f87ca2ee-YUL
+                - 948889126ecaa2a0-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -59,15 +59,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "100000"
             X-Ratelimit-Remaining-Requests:
-                - "49993"
+                - "49988"
             X-Ratelimit-Remaining-Tokens:
-                - "99121"
+                - "97354"
             X-Ratelimit-Reset-Requests:
-                - 11.929s
+                - 20.721999999s
             X-Ratelimit-Reset-Tokens:
-                - 526.999999ms
+                - 1.5876s
             X-Request-Id:
-                - req_01jwee8wsneprb7wsdw9v6pytc
+                - req_01jwksnsxbffn8s6eg60srqmpe
         status: 200 OK
         code: 200
-        duration: 221ms
+        duration: 145ms

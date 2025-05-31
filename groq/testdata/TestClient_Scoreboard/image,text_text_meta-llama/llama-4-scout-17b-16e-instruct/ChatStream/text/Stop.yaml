@@ -29,13 +29,13 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"chatcmpl-05999d04-e016-4813-9ba7-1ac255266b16","object":"chat.completion.chunk","created":1748550804,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jwevzrmee5xv9jve4ez7gkmt"}}
+            data: {"id":"chatcmpl-f31589d6-ac7e-44ab-ba9a-5d2bac196b20","object":"chat.completion.chunk","created":1748716167,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jwksp80fef89zbc5bpkyr0a3"}}
 
-            data: {"id":"chatcmpl-05999d04-e016-4813-9ba7-1ac255266b16","object":"chat.completion.chunk","created":1748550804,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"content":"Canada"},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-f31589d6-ac7e-44ab-ba9a-5d2bac196b20","object":"chat.completion.chunk","created":1748716167,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"content":"Canada"},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-05999d04-e016-4813-9ba7-1ac255266b16","object":"chat.completion.chunk","created":1748550804,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"content":" "},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-f31589d6-ac7e-44ab-ba9a-5d2bac196b20","object":"chat.completion.chunk","created":1748716167,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"content":" "},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-05999d04-e016-4813-9ba7-1ac255266b16","object":"chat.completion.chunk","created":1748550804,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01jwevzrmee5xv9jve4ez7gkmt","usage":{"queue_time":0.063462702,"prompt_tokens":22,"prompt_time":0.002458816,"completion_tokens":12,"completion_time":0.025489526,"total_tokens":34,"total_time":0.027948342}}}
+            data: {"id":"chatcmpl-f31589d6-ac7e-44ab-ba9a-5d2bac196b20","object":"chat.completion.chunk","created":1748716167,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01jwksp80fef89zbc5bpkyr0a3","usage":{"queue_time":0.06713172,"prompt_tokens":22,"prompt_time":0.002755944,"completion_tokens":12,"completion_time":0.023922122,"total_tokens":34,"total_time":0.026678066}}}
 
             data: [DONE]
 
@@ -47,7 +47,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9478c43d788fa293-YUL
+                - 9488896cb953a2a0-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -61,15 +61,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "300000"
             X-Ratelimit-Remaining-Requests:
-                - "499998"
+                - "499991"
             X-Ratelimit-Remaining-Tokens:
-                - "299982"
+                - "299852"
             X-Ratelimit-Reset-Requests:
-                - 186.6ms
+                - 1.5512s
             X-Ratelimit-Reset-Tokens:
-                - 3.6ms
+                - 29.6ms
             X-Request-Id:
-                - req_01jwevzrmee5xv9jve4ez7gkmt
+                - req_01jwksp80fef89zbc5bpkyr0a3
         status: 200 OK
         code: 200
-        duration: 128ms
+        duration: 129ms

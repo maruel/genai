@@ -33,8 +33,7 @@ import (
 //
 // # Warnings
 //
-//   - Figure out tools as streaming support recently got added to llama.cpp.
-//   - llama.cpp supports more than what the client supports, like vision.
+//   - llama.cpp supports now more than what the client here has implemented, like vision and tool calling.
 var Scoreboard = genai.Scoreboard{
 	Scenarios: []genai.Scenario{
 		{
@@ -49,7 +48,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              false,
+				Tools:              genai.False,
 				UnbiasedTool:       false,
 				JSON:               false,
 				JSONSchema:         false,
@@ -62,7 +61,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              false,
+				Tools:              genai.False,
 				UnbiasedTool:       false,
 				JSON:               false,
 				JSONSchema:         false,

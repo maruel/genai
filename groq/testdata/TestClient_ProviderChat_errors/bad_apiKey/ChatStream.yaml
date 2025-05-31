@@ -38,7 +38,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9486d0b27db333eb-YUL
+                - 9488890cafffa2a0-YUL
             Content-Length:
                 - "96"
             Content-Type:
@@ -47,12 +47,10 @@ interactions:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
-                - us-west-1
+                - us-central-1
             X-Request-Id:
-                - req_01jwk8faxrf2xvjdze3vsw9rch
+                - req_01jwksns03ef2rm9ygnkkk3yra
         status: 401 Unauthorized
         code: 401
-        duration: 87ms
+        duration: 53ms

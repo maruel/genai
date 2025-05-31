@@ -29,7 +29,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-529c6133-3bae-4887-a9c3-981d4d289ba3","object":"chat.completion","created":1748561451,"model":"qwen-qwq-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\n\u003cthink\u003e\nOkay, the user wants me to talk about Canada in 10 words, starting with \"Canada "},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.063917578,"prompt_tokens":24,"prompt_time":0.003105758,"completion_tokens":6446,"completion_time":14.809154343,"total_tokens":6470,"total_time":14.812260101},"usage_breakdown":{"models":null},"system_fingerprint":"fp_28178d7ff6","x_groq":{"id":"req_01jwf64p2kem1vv0ejczh9qfbc"}}
+            {"id":"chatcmpl-fa24e175-0f55-4f84-a189-cfcc12b61c46","object":"chat.completion","created":1748716153,"model":"qwen-qwq-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\n\u003cthink\u003e\nOkay, the user wants me to talk about Canada in 10 words, starting with \"Canada "},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.06707550699999999,"prompt_tokens":24,"prompt_time":0.003899392,"completion_tokens":4137,"completion_time":10.158701469,"total_tokens":4161,"total_time":10.162600861},"usage_breakdown":{"models":null},"system_fingerprint":"fp_1e88ca32eb","x_groq":{"id":"req_01jwksntcxfd1v520ss2dcj7a8"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,7 +38,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9479c82d2888a267-YUL
+                - 948889159a47a2a0-YUL
             Content-Type:
                 - application/json
             Server:
@@ -52,15 +52,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "250000"
             X-Ratelimit-Remaining-Requests:
-                - "499999"
+                - "499998"
             X-Ratelimit-Remaining-Tokens:
                 - "249982"
             X-Ratelimit-Reset-Requests:
-                - 172.799999ms
+                - 344.6ms
             X-Ratelimit-Reset-Tokens:
                 - 4.32ms
             X-Request-Id:
-                - req_01jwf64p2kem1vv0ejczh9qfbc
+                - req_01jwksntcxfd1v520ss2dcj7a8
         status: 200 OK
         code: 200
-        duration: 15.014s
+        duration: 10.288s

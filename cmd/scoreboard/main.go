@@ -127,37 +127,37 @@ func mainImpl() error {
 var textOnly = genai.Modalities{genai.ModalityText}
 
 func functionality(f *genai.Functionality) string {
-	var x []string
+	var items []string
 	if f.JSON {
-		x = append(x, "json")
+		items = append(items, "✅json")
 	}
 	if f.JSONSchema {
-		x = append(x, "jsonschema")
+		items = append(items, "✅jsonschema")
 	}
-	if f.Tools {
-		x = append(x, "tools")
+	flakyTool := false
+	switch f.Tools {
+	case genai.True:
+		items = append(items, "✅tools")
+	case genai.Flaky:
+		items = append(items, "✅tools")
+		flakyTool = true
 	}
-	s := ""
-	if len(x) != 0 {
-		s = "✅ " + strings.Join(x, ", ")
+
+	if flakyTool {
+		items = append(items, "💔flaky tool")
+	} else if !f.UnbiasedTool {
+		items = append(items, "💔biased tool")
 	}
-	if !f.ReportTokenUsage || !f.ReportFinishReason || !f.StopSequence {
-		var y []string
-		if f.ReportTokenUsage {
-			y = append(y, "usage")
-		}
-		if f.ReportFinishReason {
-			y = append(y, "finishreason")
-		}
-		if f.StopSequence {
-			y = append(y, "stopsequence")
-		}
-		if s != "" {
-			s += "  "
-		}
-		s += "💔 " + strings.Join(y, ", ")
+	if !f.ReportTokenUsage {
+		items = append(items, "💔usage")
 	}
-	return s
+	if !f.ReportFinishReason {
+		items = append(items, "💔finishreason")
+	}
+	if !f.StopSequence {
+		items = append(items, "💔stopsequence")
+	}
+	return strings.Join(items, ", ")
 }
 
 func main() {

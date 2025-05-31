@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-3b-instruct
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
         method: POST
       response:
         proto: HTTP/2.0
@@ -28,16 +28,16 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"result":{"response":"Hello.","usage":{"prompt_tokens":19,"completion_tokens":3,"total_tokens":22}},"success":true,"errors":[],"messages":[]}'
+        body: '{"result":{"response":"Hello!","tool_calls":[],"usage":{"prompt_tokens":18,"completion_tokens":3,"total_tokens":21}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
-                - "2025-05-29"
+                - "2025-05-31"
             Cf-Ai-Req-Id:
-                - c18c949c-937a-4c24-b463-817ca47c6211
+                - 4c8ff77e-e2d7-4f28-af99-b7d26f9751c1
             Cf-Auditlog-Id:
-                - 01971c4a-6f70-7596-bb3a-c1336dadabcb
+                - 0197275c-e533-74ff-9065-8776fdd0ad6a
             Cf-Ray:
-                - 94766eb89ebfa2db-YUL
+                - 948825db68c5a305-YUL
             Content-Type:
                 - application/json
             Server:
@@ -46,4 +46,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 321ms
+        duration: 889ms

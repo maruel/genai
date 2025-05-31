@@ -29,7 +29,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-accb99ae-2796-4a30-a20c-9a6893299ace","object":"chat.completion","created":1748536422,"model":"llama3-8b-8192","choices":[{"index":0,"message":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.06790895200000001,"prompt_tokens":18,"prompt_time":0.003531338,"completion_tokens":2,"completion_time":0.002755632,"total_tokens":20,"total_time":0.00628697},"usage_breakdown":{"models":null},"system_fingerprint":"fp_f974fb141b","x_groq":{"id":"req_01jwee8wamef491zz3vhjtq0ms"}}
+            {"id":"chatcmpl-9ff66790-452f-4fde-9121-d51ac83977b3","object":"chat.completion","created":1748716152,"model":"llama3-8b-8192","choices":[{"index":0,"message":{"role":"assistant","content":"Hello!"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.084771549,"prompt_tokens":18,"prompt_time":0.002569568,"completion_tokens":3,"completion_time":0.0025,"total_tokens":21,"total_time":0.005069568},"usage_breakdown":{"models":null},"system_fingerprint":"fp_179b0f92c9","x_groq":{"id":"req_01jwksnsenef2swekpq9eynneq"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,7 +38,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94776521ec82a2ee-YUL
+                - 9488890f8b69a2a0-YUL
             Content-Type:
                 - application/json
             Server:
@@ -52,15 +52,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "100000"
             X-Ratelimit-Remaining-Requests:
-                - "49998"
+                - "49994"
             X-Ratelimit-Remaining-Tokens:
-                - "99988"
+                - "97956"
             X-Ratelimit-Reset-Requests:
-                - 3.456s
+                - 10.368s
             X-Ratelimit-Reset-Tokens:
-                - 7.2ms
+                - 1.2262s
             X-Request-Id:
-                - req_01jwee8wamef491zz3vhjtq0ms
+                - req_01jwksnsenef2swekpq9eynneq
         status: 200 OK
         code: 200
-        duration: 266ms
+        duration: 147ms

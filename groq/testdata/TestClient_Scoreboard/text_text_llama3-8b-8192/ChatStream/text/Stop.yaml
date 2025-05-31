@@ -29,13 +29,13 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"chatcmpl-22a236ec-ba47-4f38-8588-b658ca15affb","object":"chat.completion.chunk","created":1748536423,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jwee8wsreprbmerecce2rp2a"}}
+            data: {"id":"chatcmpl-ac41294f-f678-4ccb-93c9-1b3d30977d54","object":"chat.completion.chunk","created":1748716152,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jwksnsxefsc8rn91xcycs9gy"}}
 
-            data: {"id":"chatcmpl-22a236ec-ba47-4f38-8588-b658ca15affb","object":"chat.completion.chunk","created":1748536423,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"content":"Canada"},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-ac41294f-f678-4ccb-93c9-1b3d30977d54","object":"chat.completion.chunk","created":1748716152,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"content":"Canada"},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-22a236ec-ba47-4f38-8588-b658ca15affb","object":"chat.completion.chunk","created":1748536423,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"content":" "},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-ac41294f-f678-4ccb-93c9-1b3d30977d54","object":"chat.completion.chunk","created":1748716152,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"content":" "},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-22a236ec-ba47-4f38-8588-b658ca15affb","object":"chat.completion.chunk","created":1748536423,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01jwee8wsreprbmerecce2rp2a","usage":{"queue_time":0.167406201,"prompt_tokens":23,"prompt_time":0.005175718,"completion_tokens":13,"completion_time":0.010833333,"total_tokens":36,"total_time":0.016009051}}}
+            data: {"id":"chatcmpl-ac41294f-f678-4ccb-93c9-1b3d30977d54","object":"chat.completion.chunk","created":1748716152,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01jwksnsxefsc8rn91xcycs9gy","usage":{"queue_time":0.084532453,"prompt_tokens":23,"prompt_time":0.003329235,"completion_tokens":13,"completion_time":0.010833333,"total_tokens":36,"total_time":0.014162568}}}
 
             data: [DONE]
 
@@ -47,7 +47,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94776524f886a2ee-YUL
+                - 948889126ecca2a0-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -61,15 +61,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "100000"
             X-Ratelimit-Remaining-Requests:
-                - "49992"
+                - "49987"
             X-Ratelimit-Remaining-Tokens:
-                - "99122"
+                - "97353"
             X-Ratelimit-Reset-Requests:
-                - 13.821s
+                - 22.461s
             X-Ratelimit-Reset-Tokens:
-                - 526.6ms
+                - 1.588199999s
             X-Request-Id:
-                - req_01jwee8wsreprbmerecce2rp2a
+                - req_01jwksnsxefsc8rn91xcycs9gy
         status: 200 OK
         code: 200
-        duration: 226ms
+        duration: 160ms

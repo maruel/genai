@@ -32,9 +32,7 @@ import (
 //
 // # Warnings
 //
-//   - meta-llama/Llama-4-Scout-17B-16E-Instruct is very broken, tool call doesn't work and ChatStream is
-//     completely broken.
-//   - Qwen/Qwen3-235B-A22B-fp8-tput is in a similar situation
+//   - Tool calling is solid with llama 3.3 70B quantized in FP8 (-Turbo) but is flaky in more recent models.
 //
 // # Models
 //
@@ -105,7 +103,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.True,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         true,
@@ -118,7 +116,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.True,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         true,

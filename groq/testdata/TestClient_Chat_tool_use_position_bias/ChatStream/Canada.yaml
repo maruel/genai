@@ -29,13 +29,13 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"chatcmpl-847ee121-df5e-4fb2-8b32-2e818fe790c1","object":"chat.completion.chunk","created":1748536609,"model":"llama3-8b-8192","system_fingerprint":"fp_179b0f92c9","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jweeejb0f9g828dv6ebt9v68"}}
+            data: {"id":"chatcmpl-ba603f18-e735-4ab0-9bc3-11b0ef7a687e","object":"chat.completion.chunk","created":1748716151,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jwksnrgafd192zthndrw5maf"}}
 
-            data: {"id":"chatcmpl-847ee121-df5e-4fb2-8b32-2e818fe790c1","object":"chat.completion.chunk","created":1748536609,"model":"llama3-8b-8192","system_fingerprint":"fp_179b0f92c9","choices":[{"index":0,"delta":{"tool_calls":[{"id":"call_1agj","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-ba603f18-e735-4ab0-9bc3-11b0ef7a687e","object":"chat.completion.chunk","created":1748716151,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"tool_calls":[{"id":"call_yefr","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-847ee121-df5e-4fb2-8b32-2e818fe790c1","object":"chat.completion.chunk","created":1748536609,"model":"llama3-8b-8192","system_fingerprint":"fp_179b0f92c9","choices":[{"index":0,"delta":{"tool_calls":[{"id":"call_8r42","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"index":1}]},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-ba603f18-e735-4ab0-9bc3-11b0ef7a687e","object":"chat.completion.chunk","created":1748716151,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"tool_calls":[{"id":"call_p493","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"index":1}]},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-847ee121-df5e-4fb2-8b32-2e818fe790c1","object":"chat.completion.chunk","created":1748536609,"model":"llama3-8b-8192","system_fingerprint":"fp_179b0f92c9","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01jweeejb0f9g828dv6ebt9v68","usage":{"queue_time":0.08819873900000001,"prompt_tokens":852,"prompt_time":0.106686351,"completion_tokens":127,"completion_time":0.105833333,"total_tokens":979,"total_time":0.212519684}}}
+            data: {"id":"chatcmpl-ba603f18-e735-4ab0-9bc3-11b0ef7a687e","object":"chat.completion.chunk","created":1748716151,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01jwksnrgafd192zthndrw5maf","usage":{"queue_time":0.08968852,"prompt_tokens":852,"prompt_time":0.131863321,"completion_tokens":127,"completion_time":0.105833333,"total_tokens":979,"total_time":0.237696654}}}
 
             data: [DONE]
 
@@ -47,7 +47,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 947769aed8bfa296-YUL
+                - 948889097c31a2a0-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -63,13 +63,13 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "49997"
             X-Ratelimit-Remaining-Tokens:
-                - "98491"
+                - "98276"
             X-Ratelimit-Reset-Requests:
-                - 4.472999999s
+                - 4.724s
             X-Ratelimit-Reset-Tokens:
-                - 905.2ms
+                - 1.033999999s
             X-Request-Id:
-                - req_01jweeejb0f9g828dv6ebt9v68
+                - req_01jwksnrgafd192zthndrw5maf
         status: 200 OK
         code: 200
-        duration: 350ms
+        duration: 443ms

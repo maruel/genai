@@ -971,8 +971,10 @@ type Functionality struct {
 	// "/think" is used to control.
 	Thinking bool
 
-	// Tools means that tool call is supported. This is a requirement for MCP.
-	Tools bool
+	// Tools means that tool call is supported. This is a requirement for MCP. Some provider support tool
+	// calling but the model is very flaky at actually requesting the calls. This is more frequent on highly
+	// quantized models, small models or MoE models.
+	Tools TriState
 	// JSON means that the model supports enforcing that the response is valid JSON but not necessarily with a
 	// schema.
 	JSON bool
@@ -996,6 +998,16 @@ type Functionality struct {
 
 	_ struct{}
 }
+
+// TriState helps describing support when a feature "kinda work", which is frequent with LLM's inherent
+// non-determinism.
+type TriState int8
+
+const (
+	False TriState = 0
+	True  TriState = 1
+	Flaky TriState = -1
+)
 
 // Scenario defines one way to use the provider.
 type Scenario struct {

@@ -6,19 +6,19 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 96
+        content_length: 87
         transfer_encoding: []
         trailer: {}
         host: api.cloudflare.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"messages":[{"role":"user","content":"Tell a joke in 10 words"}],"max_tokens":3,"stream":true}
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true}
         form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-3b-instruct
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
         method: POST
       response:
         proto: HTTP/2.0
@@ -29,11 +29,15 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"response":"Why","p":"a"}
+            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghi"}
 
-            data: {"response":" don","p":"abcdefghijklmnopq"}
+            data: {"response":"Hello","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijk"}
 
-            data: {"response":"'t","p":"abcdefg"}
+            data: {"response":"!","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghij"}
+
+            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdef"}
+
+            data: {"tool_calls":[],"p":"abdef"}
 
             data: {"response":"","usage":{"prompt_tokens":18,"completion_tokens":3,"total_tokens":21}}
 
@@ -41,13 +45,13 @@ interactions:
 
         headers:
             Api-Version:
-                - "2025-05-29"
+                - "2025-05-31"
             Cf-Ai-Req-Id:
-                - 5cfcd04e-0cc3-4424-a5e3-918a903b1cc3
+                - c121a52b-8e5f-4066-a5e0-0144d8e00ce1
             Cf-Auditlog-Id:
-                - 01971c4a-70d8-7859-8a27-c4e9b9c077da
+                - 0197275c-ebd5-77f8-abc7-06ad10d0f013
             Cf-Ray:
-                - 94766ebad94da2db-YUL
+                - 948825e60d4ba305-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -56,4 +60,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 278ms
+        duration: 299ms

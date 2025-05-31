@@ -26,8 +26,9 @@ import (
 // # Warnings
 //
 //   - Thinking is not returned.
-//   - Websearch costs a lot.
+//   - Websearch, which is automatic for all models except r1-1776, is very expensive.
 //   - Perplexity supports more than what the client supports.
+//   - No tool calling support.
 var Scoreboard = genai.Scoreboard{
 	Scenarios: []genai.Scenario{
 		{
@@ -49,7 +50,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       false,
-				Tools:              false,
+				Tools:              genai.False,
 				UnbiasedTool:       false,
 				JSON:               false,
 				JSONSchema:         true,
@@ -62,7 +63,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       false,
-				Tools:              false,
+				Tools:              genai.False,
 				UnbiasedTool:       false,
 				JSON:               false,
 				JSONSchema:         true,

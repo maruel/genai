@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 754
+        content_length: 782
         transfer_encoding: []
         trailer: {}
         host: api.groq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"qwen-qwq-32b","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+            {"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"qwen-qwq-32b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
         form: {}
         headers:
             Content-Type:
@@ -26,10 +26,10 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
+        content_length: 267
+        uncompressed: false
         body: |
-            {"id":"chatcmpl-de2ccdfc-c4e2-4f3d-887b-1c7780bf51e3","object":"chat.completion","created":1748561734,"model":"qwen-qwq-32b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Okay, the user wants the square root of 132413 using the square_root tool. Let me make sure I use the correct function. The tool requires a number as a string parameter. So I'll format the input as \"number\": \"132413\". I need to call the function and return just the result. No explanation, just the answer. Alright, let me set up the tool call accordingly.\n","tool_calls":[{"id":"call_gg8w","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":-0.082368656,"prompt_tokens":494,"prompt_time":0.025167112,"completion_tokens":117,"completion_time":0.266309757,"total_tokens":611,"total_time":0.291476869},"usage_breakdown":{"models":null},"system_fingerprint":"fp_a91d9c2cfb","x_groq":{"id":"req_01jwf6dad3fp6s4hh0z9ngs1ws"}}
+            {"error":{"message":"Failed to call a function. Please adjust your prompt. See 'failed_generation' for more details.","type":"invalid_request_error","code":"tool_use_failed","failed_generation":"{\"name\": \"square_root\", \"arguments\": {\"number\": \"132413\"}}"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,7 +38,9 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9479cf158a8aa2f9-YUL
+                - 948889159a4aa2a0-YUL
+            Content-Length:
+                - "267"
             Content-Type:
                 - application/json
             Server:
@@ -52,68 +54,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "250000"
             X-Ratelimit-Remaining-Requests:
-                - "499999"
+                - "499995"
             X-Ratelimit-Remaining-Tokens:
                 - "249915"
             X-Ratelimit-Reset-Requests:
-                - 172.799999ms
+                - 864ms
             X-Ratelimit-Reset-Tokens:
                 - 20.399999ms
             X-Request-Id:
-                - req_01jwf6dad3fp6s4hh0z9ngs1ws
-        status: 200 OK
-        code: 200
-        duration: 527ms
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 970
-        transfer_encoding: []
-        trailer: {}
-        host: api.groq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","content":[],"tool_calls":[{"type":"function","id":"call_gg8w","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_gg8w"}],"model":"qwen-qwq-32b","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 172
-        uncompressed: false
-        body: |
-            {"error":{"message":"'messages.2' : for 'role:assistant' the following must be satisfied[('messages.2.content' : value must be a string)]","type":"invalid_request_error"}}
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - private, max-age=0, no-store, no-cache, must-revalidate
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 9479cf185da8a2f9-YUL
-            Content-Length:
-                - "172"
-            Content-Type:
-                - application/json
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            X-Groq-Region:
-                - us-central-1
-            X-Request-Id:
-                - req_01jwf6datwfp6v4rk3s7p0x0qt
+                - req_01jwksntd1fd1rma0b07asktkv
         status: 400 Bad Request
         code: 400
-        duration: 65ms
+        duration: 2.297s

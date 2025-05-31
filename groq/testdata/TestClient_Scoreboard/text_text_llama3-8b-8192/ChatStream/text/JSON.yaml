@@ -29,9 +29,9 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"chatcmpl-aab374f7-afdb-4e22-8401-8be9e80a6e8e","object":"chat.completion.chunk","created":1748536424,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jwee8wvbengvqd61h4x2gx6q"}}
+            data: {"id":"chatcmpl-cc89f7d0-9870-41c9-a04c-a02aeda5b29c","object":"chat.completion.chunk","created":1748716152,"model":"llama3-8b-8192","system_fingerprint":"fp_179b0f92c9","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jwksnsxhfp388m0dg6p5cn7f"}}
 
-            data: {"id":"chatcmpl-aab374f7-afdb-4e22-8401-8be9e80a6e8e","object":"chat.completion.chunk","created":1748536424,"model":"llama3-8b-8192","system_fingerprint":"fp_dadc9d6142","choices":[{"index":0,"delta":{"content":"{\n   \"is_fruit\": true\n}"},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01jwee8wvbengvqd61h4x2gx6q","usage":{"queue_time":0.985918439,"prompt_tokens":60,"prompt_time":0.021889566,"completion_tokens":9,"completion_time":0.0075,"total_tokens":69,"total_time":0.029389566}}}
+            data: {"id":"chatcmpl-cc89f7d0-9870-41c9-a04c-a02aeda5b29c","object":"chat.completion.chunk","created":1748716152,"model":"llama3-8b-8192","system_fingerprint":"fp_179b0f92c9","choices":[{"index":0,"delta":{"content":"{\n   \"is_fruit\":true\n}"},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01jwksnsxhfp388m0dg6p5cn7f","usage":{"queue_time":0.084517919,"prompt_tokens":60,"prompt_time":0.007798766,"completion_tokens":9,"completion_time":0.0075,"total_tokens":69,"total_time":0.015298766}}}
 
             data: [DONE]
 
@@ -43,7 +43,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94776524f880a2ee-YUL
+                - 948889126ed1a2a0-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -57,15 +57,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "100000"
             X-Ratelimit-Remaining-Requests:
-                - "49989"
+                - "49985"
             X-Ratelimit-Remaining-Tokens:
-                - "99191"
+                - "97340"
             X-Ratelimit-Reset-Requests:
-                - 18.988999999s
+                - 25.919s
             X-Ratelimit-Reset-Tokens:
-                - 485.4ms
+                - 1.595999999s
             X-Request-Id:
-                - req_01jwee8wvbengvqd61h4x2gx6q
+                - req_01jwksnsxhfp388m0dg6p5cn7f
         status: 200 OK
         code: 200
-        duration: 1.095s
+        duration: 275ms

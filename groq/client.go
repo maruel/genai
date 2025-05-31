@@ -31,6 +31,7 @@ import (
 //
 //   - qwen-qwq-32b fails with tool calling when streaming. Currently disabled even not streaming in the
 //     client code.
+//   - No models has consistent tool calling.
 var Scoreboard = genai.Scoreboard{
 	Scenarios: []genai.Scenario{
 		{
@@ -53,7 +54,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.Flaky,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         false,
@@ -66,7 +67,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.Flaky,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         false,
@@ -87,7 +88,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              false,
+				Tools:              genai.Flaky,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         false,
@@ -100,7 +101,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              false,
+				Tools:              genai.False,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         false,
@@ -121,7 +122,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              false,
+				Tools:              genai.Flaky,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         false,
@@ -134,7 +135,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.Flaky,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         false,
@@ -150,6 +151,9 @@ var Scoreboard = genai.Scoreboard{
 type ChatOptions struct {
 	genai.ChatOptions
 
+	// ReasoningFormat requests Groq to process the stream on our behalf. It must only be used on thinking
+	// models. It is required for thinking models to enable JSON structured output or tool calling.
+	ReasoningFormat ReasoningFormat
 	// ServiceTier specify the priority.
 	ServiceTier ServiceTier
 }
@@ -227,6 +231,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 				unsupported, errs = c.initOptions(&v.ChatOptions, model)
 				sp = v.SystemPrompt
 				c.ServiceTier = v.ServiceTier
+				c.ReasoningFormat = v.ReasoningFormat
 			case *genai.ChatOptions:
 				unsupported, errs = c.initOptions(v, model)
 				sp = v.SystemPrompt
@@ -299,28 +304,22 @@ func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) ([]string,
 		c.ResponseFormat.Type = "json_object"
 	}
 	if len(v.Tools) != 0 {
-		// This is annoying to hardcode here but it still "succeeds" while returning nothing.
-		if model == "qwen-qwq-32b" {
-			// TODO: It works when not streaming.
-			errs = append(errs, errors.New("unsupported option Tools"))
-		} else {
-			switch v.ToolCallRequest {
-			case genai.ToolCallAny:
-				c.ToolChoice = "auto"
-			case genai.ToolCallRequired:
-				c.ToolChoice = "required"
-			case genai.ToolCallNone:
-				c.ToolChoice = "none"
-			}
-			// Documentation states max is 128 tools.
-			c.Tools = make([]Tool, len(v.Tools))
-			for i, t := range v.Tools {
-				c.Tools[i].Type = "function"
-				c.Tools[i].Function.Name = t.Name
-				c.Tools[i].Function.Description = t.Description
-				if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
-					c.Tools[i].Function.Parameters = t.GetInputSchema()
-				}
+		switch v.ToolCallRequest {
+		case genai.ToolCallAny:
+			c.ToolChoice = "auto"
+		case genai.ToolCallRequired:
+			c.ToolChoice = "required"
+		case genai.ToolCallNone:
+			c.ToolChoice = "none"
+		}
+		// Documentation states max is 128 tools.
+		c.Tools = make([]Tool, len(v.Tools))
+		for i, t := range v.Tools {
+			c.Tools[i].Type = "function"
+			c.Tools[i].Function.Name = t.Name
+			c.Tools[i].Function.Description = t.Description
+			if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
+				c.Tools[i].Function.Parameters = t.GetInputSchema()
 			}
 		}
 	}

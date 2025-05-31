@@ -30,7 +30,9 @@ import (
 // # Warnings
 //
 //   - Mistral supports more than what is exposed by the client.
+//   - Tool calling is excellent and unbiased for non "mini" models.
 //   - PDF doesn't support inline document while images do.
+//   - Rate limit depends on your tier: https://docs.mistral.ai/deployment/laplateforme/tier/
 var Scoreboard = genai.Scoreboard{
 	Scenarios: []genai.Scenario{
 		{
@@ -70,7 +72,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.True,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         true,
@@ -83,7 +85,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.True,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         true,
@@ -122,7 +124,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.True,
 				UnbiasedTool:       true,
 				JSON:               true,
 				JSONSchema:         true,
@@ -135,7 +137,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.True,
 				UnbiasedTool:       true,
 				JSON:               true,
 				JSONSchema:         true,
@@ -174,7 +176,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.True,
 				UnbiasedTool:       true,
 				JSON:               true,
 				JSONSchema:         true,
@@ -187,7 +189,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.True,
 				UnbiasedTool:       true,
 				JSON:               true,
 				JSONSchema:         true,

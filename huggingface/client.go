@@ -41,6 +41,8 @@ import (
 //   - Huggingface is also a router to other backends.
 //   - Huggingface as a platform is generally unstable, with error not being properly reported. Use with care.
 //   - It supports way more options than the client currently implements.
+//   - Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the
+//     tool's first argument.
 var Scoreboard = genai.Scoreboard{
 	Scenarios: []genai.Scenario{
 		{
@@ -55,7 +57,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.True,
 				UnbiasedTool:       false,
 				JSON:               false,
 				JSONSchema:         true,
@@ -68,7 +70,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: false,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.True,
 				UnbiasedTool:       false,
 				JSON:               false,
 				JSONSchema:         true,
@@ -86,7 +88,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.True,
 				UnbiasedTool:       false,
 				JSON:               false,
 				JSONSchema:         true,
@@ -99,7 +101,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: false,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.True,
 				UnbiasedTool:       false,
 				JSON:               false,
 				JSONSchema:         true,
@@ -604,7 +606,9 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the tens of thousands of models to chose from at https://huggingface.co/models?inference=warm&sort=trending
 //
-// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport.
+// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport. r can
+// also be used to add the HTTP header "X-HF-Bill-To" via roundtrippers.Header. See
+// https://huggingface.co/docs/inference-providers/pricing#organization-billing
 func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://huggingface.co/settings/tokens"
 	if apiKey == "" {

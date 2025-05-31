@@ -1,0 +1,63 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 96
+        transfer_encoding: []
+        trailer: {}
+        host: api.cloudflare.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"role":"user","content":"Tell a joke in 10 words"}],"max_tokens":3,"stream":true}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstuvxy"}
+
+            data: {"response":"Why","tool_calls":[],"p":"abdefghijklmnoprstuvxyz12345678"}
+
+            data: {"response":" did","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefgh"}
+
+            data: {"response":" the","tool_calls":[],"p":"abdefghijklmnoprstuvxyz123456789"}
+
+            data: {"tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefg"}
+
+            data: {"response":"","usage":{"prompt_tokens":17,"completion_tokens":3,"total_tokens":20}}
+
+            data: [DONE]
+
+        headers:
+            Api-Version:
+                - "2025-05-31"
+            Cf-Ai-Req-Id:
+                - 3ed66bbb-cfc7-4eaf-826c-572469dbde7a
+            Cf-Auditlog-Id:
+                - 0197275c-ebdd-7075-b4dd-b3edc6377d5c
+            Cf-Ray:
+                - 948825e61d58a305-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 284ms

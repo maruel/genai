@@ -31,9 +31,12 @@ import (
 //
 // # Warnings
 //
-//   - No Anthropic models support structured output, you have to use tool calling instead.
+//   - No Anthropic model support structured output, you have to use tool calling instead.
+//   - Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the
+//     tool's first argument.
 //   - Thinking is set to false because it doesn't happen systematically and the smoke tests do not trigger the
 //     condition. This is a bug in the smoke test.
+//   - Rate limit is based on how much you spend per month: https://docs.anthropic.com/en/api/rate-limits#requirements-to-advance-tier
 var Scoreboard = genai.Scoreboard{
 	Scenarios: []genai.Scenario{
 		{
@@ -48,7 +51,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              false,
+				Tools:              genai.False,
 				UnbiasedTool:       false,
 				JSON:               false,
 				JSONSchema:         false,
@@ -61,7 +64,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              false,
+				Tools:              genai.False,
 				UnbiasedTool:       false,
 				JSON:               false,
 				JSONSchema:         false,
@@ -79,7 +82,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.True,
 				UnbiasedTool:       false,
 				JSON:               false,
 				JSONSchema:         false,
@@ -92,7 +95,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.True,
 				UnbiasedTool:       false,
 				JSON:               false,
 				JSONSchema:         false,
@@ -110,7 +113,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.True,
 				UnbiasedTool:       false,
 				JSON:               false,
 				JSONSchema:         false,
@@ -123,7 +126,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.True,
 				UnbiasedTool:       false,
 				JSON:               false,
 				JSONSchema:         false,

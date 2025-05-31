@@ -28,11 +28,11 @@ func TestClient_Scoreboard(t *testing.T) {
 		// https://ai.google.dev/gemini-api/docs/thinking?hl=en
 		if strings.Contains(m, "thinking") {
 			// e.g. "gemini-2.0-flash-thinking-exp" or "gemini-2.5-flash-preview-04-17-thinking"
-			return &injectOption{Client: c, t: t, opts: &gemini.ChatOptions{ThinkingBudget: 4096}}
+			return &injectOption{Client: c, t: t, opts: gemini.ChatOptions{ThinkingBudget: 4096}}
 		}
 		if strings.Contains(m, "image-generation") {
 			// e.g. "gemini-2.0-flash-preview-image-generation"
-			return &injectOption{Client: c, t: t, opts: &gemini.ChatOptions{ResponseModalities: []gemini.Modality{gemini.ModalityText, gemini.ModalityImage}}}
+			return &injectOption{Client: c, t: t, opts: gemini.ChatOptions{ResponseModalities: []gemini.Modality{gemini.ModalityText, gemini.ModalityImage}}}
 		}
 		return c
 	}, nil)
@@ -41,21 +41,25 @@ func TestClient_Scoreboard(t *testing.T) {
 type injectOption struct {
 	*gemini.Client
 	t    *testing.T
-	opts *gemini.ChatOptions
+	opts gemini.ChatOptions
 }
 
 func (i *injectOption) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+	n := i.opts
 	if opts != nil {
-		i.t.Fatal("expected nil opts")
+		n.ChatOptions = *opts.(*genai.ChatOptions)
 	}
-	return i.Client.Chat(ctx, msgs, i.opts)
+	opts = &n
+	return i.Client.Chat(ctx, msgs, opts)
 }
 
 func (i *injectOption) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.ChatResult, error) {
+	n := i.opts
 	if opts != nil {
-		i.t.Fatal("expected nil opts")
+		n.ChatOptions = *opts.(*genai.ChatOptions)
 	}
-	return i.Client.ChatStream(ctx, msgs, i.opts, replies)
+	opts = &n
+	return i.Client.ChatStream(ctx, msgs, opts, replies)
 }
 
 //

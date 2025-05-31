@@ -5,6 +5,7 @@
 package groq_test
 
 import (
+	"context"
 	_ "embed"
 	"os"
 	"testing"
@@ -16,14 +17,40 @@ import (
 )
 
 func TestClient_Scoreboard(t *testing.T) {
-	// internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat { return getClient(t, m) })
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat {
 		c := getClient(t, m)
 		if m == "qwen-qwq-32b" || m == "deepseek-r1-distill-llama-70b" {
-			return &genai.ProviderChatThinking{ProviderChat: c, TagName: "think", SkipJSON: true}
+			return &handleReasoning{Client: c, t: t}
 		}
 		return c
 	}, nil)
+}
+
+type handleReasoning struct {
+	*groq.Client
+	t *testing.T
+}
+
+func (h *handleReasoning) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+	if opts != nil {
+		if o := opts.(*genai.ChatOptions); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
+			opts = &groq.ChatOptions{ReasoningFormat: groq.ReasoningFormatParsed, ChatOptions: *o}
+			return h.Client.Chat(ctx, msgs, opts)
+		}
+	}
+	c := genai.ProviderChatThinking{ProviderChat: h.Client, TagName: "think"}
+	return c.Chat(ctx, msgs, opts)
+}
+
+func (h *handleReasoning) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.ChatResult, error) {
+	if opts != nil {
+		if o := opts.(*genai.ChatOptions); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
+			opts = &groq.ChatOptions{ReasoningFormat: groq.ReasoningFormatParsed, ChatOptions: *o}
+			return h.Client.ChatStream(ctx, msgs, opts, replies)
+		}
+	}
+	c := genai.ProviderChatThinking{ProviderChat: h.Client, TagName: "think"}
+	return c.ChatStream(ctx, msgs, opts, replies)
 }
 
 var testCases = &internaltest.TestCases{

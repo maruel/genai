@@ -344,6 +344,9 @@ func testTextFunctionalities(t *testing.T, g ProviderChatModalityFactory, model 
 	})
 
 	t.Run("Tools", func(t *testing.T) {
+		if f.UnbiasedTool && f.Tools != genai.True {
+			t.Fatal("UnbiasedTool required Tools to be True")
+		}
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."),
 		}
@@ -381,18 +384,23 @@ func testTextFunctionalities(t *testing.T, g ProviderChatModalityFactory, model 
 			fr = ""
 		}
 		resp, err := run(t, c, msgs, &opts, stream)
-		if !basicCheckAcceptUnexpectedSuccess(t, err, f.Tools) {
+		if !basicCheckAcceptUnexpectedSuccess(t, err, f.Tools == genai.True) {
 			return
 		}
-		if !f.Tools {
+		if f.Tools != genai.True {
 			if resp.FinishReason == genai.FinishedStop || resp.FinishReason == genai.FinishedLength {
 				return
 			}
-			t.Fatalf("unexpected success: %s", resp.FinishReason)
+			if f.Tools == genai.False {
+				t.Fatalf("unexpected success: %s", resp.FinishReason)
+			}
 		}
 		testUsage(t, &resp.Usage, !f.ReportTokenUsage, fr)
 		want := "square_root"
 		if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
+			if f.Tools == genai.Flaky {
+				return
+			}
 			t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
 		}
 		// Don't forget to add the tool call request first before the reply.
@@ -412,7 +420,7 @@ func testTextFunctionalities(t *testing.T, g ProviderChatModalityFactory, model 
 			fr = genai.FinishedStop
 		}
 		resp, err = run(t, c, msgs, &opts, stream)
-		if !basicCheck(t, err, f.Tools) {
+		if !basicCheck(t, err, f.Tools != genai.False) {
 			return
 		}
 		testUsage(t, &resp.Usage, !f.ReportTokenUsage, fr)
@@ -421,6 +429,9 @@ func testTextFunctionalities(t *testing.T, g ProviderChatModalityFactory, model 
 		if got := strings.TrimRight(strings.TrimSpace(strings.ToLower(s)), ".!"); want != got {
 			// I don't know why but llama-4-scout loves to round the number!
 			if got != "364" {
+				if f.Tools == genai.Flaky {
+					return
+				}
 				t.Fatalf("Expected %q, got %q", want, s)
 			}
 		}
@@ -712,9 +723,11 @@ func basicCheck(t *testing.T, err error, expectedSuccess bool) bool {
 			// Skip the remainder.
 			return false
 		}
+		t.Helper()
 		t.Fatalf("unexpected failure: %s", err.Error())
 	}
 	if !expectedSuccess {
+		t.Helper()
 		t.Error("unexpected success")
 	}
 	return true
@@ -731,6 +744,7 @@ func basicCheckAcceptUnexpectedSuccess(t *testing.T, err error, expectedSuccess 
 			// Skip the remainder.
 			return false
 		}
+		t.Helper()
 		t.Fatalf("unexpected failure: %s", err.Error())
 	}
 	return true

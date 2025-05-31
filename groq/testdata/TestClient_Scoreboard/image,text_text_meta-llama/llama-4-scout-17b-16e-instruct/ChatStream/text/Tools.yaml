@@ -29,11 +29,11 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"chatcmpl-3b5c1b94-5e0a-490e-aaf7-84dc70da5877","object":"chat.completion.chunk","created":1748550853,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jwew196ae64thy08x5ykrgxf"}}
+            data: {"id":"chatcmpl-6e66b8b4-b176-419d-ad52-d7abf48fb05f","object":"chat.completion.chunk","created":1748716167,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jwksp80afd5b7d8f291z8gag"}}
 
-            data: {"id":"chatcmpl-3b5c1b94-5e0a-490e-aaf7-84dc70da5877","object":"chat.completion.chunk","created":1748550853,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"tool_calls":[{"id":"call_xv5d","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-6e66b8b4-b176-419d-ad52-d7abf48fb05f","object":"chat.completion.chunk","created":1748716167,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"tool_calls":[{"id":"call_n1vb","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-3b5c1b94-5e0a-490e-aaf7-84dc70da5877","object":"chat.completion.chunk","created":1748550853,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01jwew196ae64thy08x5ykrgxf","usage":{"queue_time":0.066641456,"prompt_tokens":297,"prompt_time":0.010138383,"completion_tokens":16,"completion_time":0.033006195,"total_tokens":313,"total_time":0.043144578}}}
+            data: {"id":"chatcmpl-6e66b8b4-b176-419d-ad52-d7abf48fb05f","object":"chat.completion.chunk","created":1748716167,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01jwksp80afd5b7d8f291z8gag","usage":{"queue_time":0.063346837,"prompt_tokens":297,"prompt_time":0.010041167,"completion_tokens":16,"completion_time":0.032226632,"total_tokens":313,"total_time":0.042267799}}}
 
             data: [DONE]
 
@@ -45,7 +45,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9478c5743d5c33fa-YUL
+                - 9488896cb95ba2a0-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -59,18 +59,18 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "300000"
             X-Ratelimit-Remaining-Requests:
-                - "499999"
+                - "499993"
             X-Ratelimit-Remaining-Tokens:
-                - "299915"
+                - "299765"
             X-Ratelimit-Reset-Requests:
-                - 172.799999ms
+                - 1.205199999s
             X-Ratelimit-Reset-Tokens:
-                - 17ms
+                - 47ms
             X-Request-Id:
-                - req_01jwew196ae64thy08x5ykrgxf
+                - req_01jwksp80afd5b7d8f291z8gag
         status: 200 OK
         code: 200
-        duration: 238ms
+        duration: 159ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -83,7 +83,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"call_xv5d","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_xv5d"}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","stream":true,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+            {"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"call_n1vb","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_n1vb"}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","stream":true,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
         form: {}
         headers:
             Content-Type:
@@ -99,11 +99,11 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"chatcmpl-c6f6998e-4130-4184-9aef-67efc2fd6f1b","object":"chat.completion.chunk","created":1748550854,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jwew19d0ectbn1z3e50av1m8"}}
+            data: {"id":"chatcmpl-74186b5e-0854-44da-9366-a06fb155b22c","object":"chat.completion.chunk","created":1748716167,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jwksp85dffqtmc21s6ttj8vj"}}
 
-            data: {"id":"chatcmpl-c6f6998e-4130-4184-9aef-67efc2fd6f1b","object":"chat.completion.chunk","created":1748550854,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"content":"364"},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-74186b5e-0854-44da-9366-a06fb155b22c","object":"chat.completion.chunk","created":1748716167,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"content":"364"},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-c6f6998e-4130-4184-9aef-67efc2fd6f1b","object":"chat.completion.chunk","created":1748550854,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01jwew19d0ectbn1z3e50av1m8","usage":{"queue_time":0.070365418,"prompt_tokens":131,"prompt_time":0.005596295,"completion_tokens":2,"completion_time":0.004712366,"total_tokens":133,"total_time":0.010308661}}}
+            data: {"id":"chatcmpl-74186b5e-0854-44da-9366-a06fb155b22c","object":"chat.completion.chunk","created":1748716167,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01jwksp85dffqtmc21s6ttj8vj","usage":{"queue_time":0.077611994,"prompt_tokens":131,"prompt_time":0.006496774,"completion_tokens":2,"completion_time":0.004235234,"total_tokens":133,"total_time":0.010732008}}}
 
             data: [DONE]
 
@@ -115,7 +115,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9478c5754edd33fa-YUL
+                - 9488896dbac4a2a0-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -129,15 +129,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "300000"
             X-Ratelimit-Remaining-Requests:
-                - "499999"
+                - "499988"
             X-Ratelimit-Remaining-Tokens:
-                - "299904"
+                - "299803"
             X-Ratelimit-Reset-Requests:
-                - 172.799999ms
+                - 1.9456s
             X-Ratelimit-Reset-Tokens:
-                - 19.2ms
+                - 39.4ms
             X-Request-Id:
-                - req_01jwew19d0ectbn1z3e50av1m8
+                - req_01jwksp85dffqtmc21s6ttj8vj
         status: 200 OK
         code: 200
-        duration: 189ms
+        duration: 186ms

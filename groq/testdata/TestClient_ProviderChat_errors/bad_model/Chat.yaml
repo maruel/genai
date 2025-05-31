@@ -38,19 +38,17 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9486d0b30e5e33eb-YUL
+                - 9488890cf865a2a0-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
-                - us-west-1
+                - us-central-1
             X-Request-Id:
-                - req_01jwk8fb1jf2xv5jdryjvybavj
+                - req_01jwksns1zf5k8fj7vmxezpsz5
         status: 404 Not Found
         code: 404
-        duration: 123ms
+        duration: 68ms

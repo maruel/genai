@@ -35,16 +35,19 @@ import (
 //   - StopSequence doesn't work.
 //   - Usage tokens isn't reported when streaming or using JSON.
 //   - ChatRequest format is model dependent.
-//   - Tool calling is supported on some models but client side implementation is not finished.
+//   - Tool calling is supported on some models but it's flaky.
 //
-// Given the fact that FinishReason, StopSequence and Usage are broken, there isn't much point into improving
-// this provider's support. If this change, please send a PR!
+// Given the fact that FinishReason, StopSequence and Usage are broken, I can't recommend this provider beside
+// toys.
 var Scoreboard = genai.Scoreboard{
 	Scenarios: []genai.Scenario{
 		{
-			In:     []genai.Modality{genai.ModalityText},
-			Out:    []genai.Modality{genai.ModalityText},
-			Models: []string{"@cf/meta/llama-3.2-3b-instruct"},
+			In:  []genai.Modality{genai.ModalityText},
+			Out: []genai.Modality{genai.ModalityText},
+			Models: []string{
+				"@cf/meta/llama-4-scout-17b-16e-instruct",
+				"@cf/meta/llama-3.2-3b-instruct",
+			},
 			Chat: genai.Functionality{
 				Inline:             true,
 				URL:                false,
@@ -53,10 +56,10 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: false,
 				MaxTokens:          true,
 				StopSequence:       false,
-				Tools:              false,
+				Tools:              genai.Flaky,
 				UnbiasedTool:       false,
 				JSON:               true,
-				JSONSchema:         false,
+				JSONSchema:         true,
 			},
 			ChatStream: genai.Functionality{
 				Inline:             true,
@@ -66,10 +69,10 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: false,
 				MaxTokens:          true,
 				StopSequence:       false,
-				Tools:              false,
+				Tools:              genai.Flaky,
 				UnbiasedTool:       false,
 				JSON:               true,
-				JSONSchema:         false,
+				JSONSchema:         true,
 			},
 		},
 	},
@@ -126,9 +129,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 					c.ResponseFormat.Type = "json_object"
 				}
 				if len(v.Tools) != 0 {
-					// Technically, Cloudflare does support tool calling but given how everything is broken, I stopped
-					// implementing there. If you want to use this, please send a PR!
-					errs = append(errs, errors.New("unsupported option Tools"))
 					if v.ToolCallRequest != genai.ToolCallAny {
 						// Cloudflare doesn't provide a way to force tool use. Don't fail.
 						unsupported = append(unsupported, "ToolCallRequest")
@@ -204,10 +204,29 @@ func (m *Message) From(in *genai.Message) error {
 		if len(in.ToolCalls) > 1 {
 			return errors.New("cloudflare doesn't support multiple tool replies in a single message yet")
 		}
-		return errors.New("cloudflare tool calls are not supported yet")
+		if len(in.Contents) != 0 {
+			return errors.New("cloudflare can't have both tool calls and contents in one message")
+		}
+		if len(in.ToolCallResults) != 0 {
+			return errors.New("cloudflare can't have both tool calls and tool call results in one message")
+		}
+		m.ToolCallID = in.ToolCalls[0].ID
+		m.Content = in.ToolCalls[0].Arguments
+		return nil
 	}
 	if len(in.ToolCallResults) != 0 {
-		return errors.New("cloudflare tool calls are not supported yet")
+		if len(in.Contents) != 0 || len(in.ToolCalls) != 0 {
+			// This could be worked around.
+			return fmt.Errorf("can't have tool call result along content or tool calls")
+		}
+		if len(in.ToolCallResults) != 1 {
+			// This could be worked around.
+			return fmt.Errorf("can't have more than one tool call result at a time")
+		}
+		m.Role = "tool"
+		m.ToolCallID = in.ToolCallResults[0].ID
+		m.Content = in.ToolCallResults[0].Result
+		return nil
 	}
 	if in.Contents[0].Text != "" {
 		m.Content = in.Contents[0].Text
@@ -341,17 +360,11 @@ type MessageResponse struct {
 func (msg *MessageResponse) To(out *genai.Message) error {
 	out.Role = genai.Assistant
 	if len(msg.ToolCalls) != 0 {
-		// Starting 2025-03-17, "@hf/nousresearch/hermes-2-pro-mistral-7b" is finally returning structured tool call.
 		out.ToolCalls = make([]genai.ToolCall, len(msg.ToolCalls))
 		for i, tc := range msg.ToolCalls {
-			// Cloudflare doesn't support tool call IDs yet.
-			id := fmt.Sprintf("tool_call%d", i)
-			if err := tc.To(id, &out.ToolCalls[i]); err != nil {
+			if err := tc.To(&out.ToolCalls[i]); err != nil {
 				return err
 			}
-		}
-		if msg.Response != nil {
-			return fmt.Errorf("unexpected tool call and response %T: %v", msg.Response, msg.Response)
 		}
 		return nil
 	}
@@ -401,20 +414,34 @@ type Usage struct {
 	TotalTokens      int64 `json:"total_tokens"`
 }
 
+// ToolCall can be populated differently depending on the model used.
 type ToolCall struct {
+	Type     string `json:"type,omitzero"` // "function"
+	ID       string `json:"id,omitzero"`
+	Index    int64  `json:"index,omitzero"`
+	Function struct {
+		Name      string `json:"name,omitzero"`
+		Arguments string `json:"arguments"`
+	} `json:"function,omitzero"`
+
 	Arguments any    `json:"arguments"`
 	Name      string `json:"name"`
 }
 
-func (c *ToolCall) To(id string, out *genai.ToolCall) error {
-	raw, err := json.Marshal(c.Arguments)
-	if err != nil {
-		return fmt.Errorf("failed to marshal tool call arguments: %w", err)
+func (c *ToolCall) To(out *genai.ToolCall) error {
+	out.ID = c.ID
+	if out.Name = c.Name; c.Name == "" {
+		out.Name = c.Function.Name
 	}
-	// Cloudflare doesn't support tool call IDs yet.
-	out.ID = id
-	out.Name = c.Name
-	out.Arguments = string(raw)
+	if c.Function.Arguments != "" {
+		out.Arguments = c.Function.Arguments
+	} else {
+		raw, err := json.Marshal(c.Arguments)
+		if err != nil {
+			return fmt.Errorf("failed to marshal tool call arguments: %w", err)
+		}
+		out.Arguments = string(raw)
+	}
 	return nil
 }
 

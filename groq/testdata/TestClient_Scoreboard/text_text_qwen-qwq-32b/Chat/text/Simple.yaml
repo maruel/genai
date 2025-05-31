@@ -29,7 +29,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-119beede-33ff-4124-946e-33ffd6bc631c","object":"chat.completion","created":1748561451,"model":"qwen-qwq-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\n\u003cthink\u003e\nOkay, the user wants me to say hello, but I have to use only one word. Let me think... \"Hello\" itself is two words when written with the comma in \"Hello?\" or \"Hello!\", wait no, actually \"Hello\" is a single word. Wait, maybe they are asking for \"Hello\" itself without any additions. Oh wait, maybe there's an emoji? But the instruction says to use only one word. Let me make sure.\n\nAlternatively, maybe they want a different single-word greeting like \"Hi\" or \"Hi!\"? But \"Hi\" is one word, but \"Hello\" is longer. Wait but the task says to use one word, so \"Hello\" is actually a single word. Let me double-check. \"Hello\" counts as one word. The user's instruction might just want me to write \"Hello\", which is one word. But why specify \"only one word\"? Maybe because shorter versions like \"Hey\" are possible, but the user wants to see if \"Hello\" can be used as the exact single word. Alternatively, perhaps they consider \"Hello\" with an exclamation or something else, but the instruction says to use only one word, so I should just respond with \"Hello\" alone. Let me confirm: the correct answer is \"Hello\" since it's a single word and a direct response. I should not add any extra characters like emojis or punctuation to keep it one word. Alright, go with \"Hello\".\n\u003c/think\u003e\n\nHello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.06398788799999999,"prompt_tokens":18,"prompt_time":0.004082572,"completion_tokens":305,"completion_time":0.698502809,"total_tokens":323,"total_time":0.702585381},"usage_breakdown":{"models":null},"system_fingerprint":"fp_28178d7ff6","x_groq":{"id":"req_01jwf64p2me8fawetc1ee08y01"}}
+            {"id":"chatcmpl-532de7bc-787d-42dc-b3be-1364dbb37a8c","object":"chat.completion","created":1748716153,"model":"qwen-qwq-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\n\u003cthink\u003e\nOkay, the user wants me to say \"hello\" using only one word. Let me think... The obvious answer is \"Hello.\" But wait, maybe they want something different? Like a variation or another language? The instructions specify to use one word in English, right? The query doesn't mention another language, so probably just \"Hello\". But the user might be testing if I follow the one-word rule strictly. Let me check the requirements again: \"Say hello. Use only one word.\" So \"Hello\" is exactly one word and does the job. No need to overcomplicate. Maybe they want it lowercase? But the example responses usually capitalize, and it's more polite. Yeah, I should just go with \"Hello\".\n\nWait, maybe \"Hi\" is shorter? But the question says \"say hello\", so \"Hi\" is a greeting but not exactly \"hello\". The exact word requested is \"hello\", so the answer must be \"Hello\". No other options fit better. Alright, I think that's it. Just \"Hello\".\n\u003c/think\u003e\n\nHello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.066814544,"prompt_tokens":18,"prompt_time":0.003260003,"completion_tokens":218,"completion_time":0.542081635,"total_tokens":236,"total_time":0.545341638},"usage_breakdown":{"models":null},"system_fingerprint":"fp_1e88ca32eb","x_groq":{"id":"req_01jwksntcxfp384jge5nz72qww"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,7 +38,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9479c82d2886a267-YUL
+                - 948889159a40a2a0-YUL
             Content-Type:
                 - application/json
             Server:
@@ -52,15 +52,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "250000"
             X-Ratelimit-Remaining-Requests:
-                - "499998"
+                - "499999"
             X-Ratelimit-Remaining-Tokens:
                 - "249988"
             X-Ratelimit-Reset-Requests:
-                - 345.599999ms
+                - 172.799999ms
             X-Ratelimit-Reset-Tokens:
                 - 2.879999ms
             X-Request-Id:
-                - req_01jwf64p2me8fawetc1ee08y01
+                - req_01jwksntcxfp384jge5nz72qww
         status: 200 OK
         code: 200
-        duration: 910ms
+        duration: 671ms

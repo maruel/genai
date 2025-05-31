@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-3b-instruct
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
         method: POST
       response:
         proto: HTTP/2.0
@@ -28,20 +28,22 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"errors":[{"message":"AiError: Ai: This model doesn''t suuport JSON Schema. (b34a9068-2ab7-475c-bc94-1006a1583162)","code":5025}],"success":false,"result":{},"messages":[]}'
+        body: '{"result":{"response":"{\n  \"is_fruit\": true\n}","tool_calls":[],"usage":{"prompt_tokens":25,"completion_tokens":11,"total_tokens":36}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
-                - "2025-05-29"
+                - "2025-05-31"
+            Cf-Ai-Req-Id:
+                - ab79e017-58b1-4721-95c9-fd53feb7b752
             Cf-Auditlog-Id:
-                - 01971c4a-6f6d-7ea8-ab77-7db6dad50c8f
+                - 0197275c-e52e-73f6-9011-18388dffa321
             Cf-Ray:
-                - 94766eb89ec2a2db-YUL
+                - 948825db68c2a305-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Vary:
                 - Accept-Encoding
-        status: 403 Forbidden
-        code: 403
-        duration: 243ms
+        status: 200 OK
+        code: 200
+        duration: 1.381s

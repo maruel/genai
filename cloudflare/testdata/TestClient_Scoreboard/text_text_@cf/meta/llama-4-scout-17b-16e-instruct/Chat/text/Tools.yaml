@@ -1,0 +1,95 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 691
+        transfer_encoding: []
+        trailer: {}
+        host: api.cloudflare.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"result":{"tool_calls":[{"id":"chatcmpl-tool-0b6ae2e1488e460a9d1b939bdcf0dc1b","type":"function","function":{"name":"square_root","arguments":"{\"number\": \"132413\"}"}}],"usage":{"prompt_tokens":257,"completion_tokens":18,"total_tokens":275}},"success":true,"errors":[],"messages":[]}'
+        headers:
+            Api-Version:
+                - "2025-05-31"
+            Cf-Ai-Req-Id:
+                - 777af7d6-c062-45d5-a23b-e650e47bb4a7
+            Cf-Auditlog-Id:
+                - 01972768-c6d2-7152-9d88-0c89f23866ae
+            Cf-Ray:
+                - 948838de0a6ea2f2-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 715ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 912
+        transfer_encoding: []
+        trailer: {}
+        host: api.cloudflare.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","content":"{\"number\": \"132413\"}","tool_call_id":"chatcmpl-tool-0b6ae2e1488e460a9d1b939bdcf0dc1b"},{"role":"tool","content":"363.89","tool_call_id":"chatcmpl-tool-0b6ae2e1488e460a9d1b939bdcf0dc1b"}],"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"result":{"tool_calls":[{"id":"chatcmpl-tool-27923ed20e4e470a96130c48d7092cd8","type":"function","function":{"name":"square_root","arguments":"{\"number\": \"132413\"}"}}],"usage":{"prompt_tokens":290,"completion_tokens":18,"total_tokens":308}},"success":true,"errors":[],"messages":[]}'
+        headers:
+            Api-Version:
+                - "2025-05-31"
+            Cf-Ai-Req-Id:
+                - be73d691-3086-42cf-a74d-6a4f85c7b59f
+            Cf-Auditlog-Id:
+                - 01972768-c977-755e-85c5-628c5b07ac14
+            Cf-Ray:
+                - 948838e24eaaa2f2-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 516ms

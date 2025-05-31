@@ -29,7 +29,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-156b014d-252d-4075-a965-c832127557eb","object":"chat.completion","created":1748550770,"model":"meta-llama/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"Hello!"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.097075626,"prompt_tokens":18,"prompt_time":0.002751956,"completion_tokens":3,"completion_time":0.006198937,"total_tokens":21,"total_time":0.008950893},"usage_breakdown":{"models":null},"system_fingerprint":"fp_35bcfb033c","x_groq":{"id":"req_01jwevyr6dexz8fwx7dmrdq9ky"}}
+            {"id":"chatcmpl-8df316cc-c1d5-41ed-86ae-e0c61c394457","object":"chat.completion","created":1748716166,"model":"meta-llama/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"Hello!"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.065262844,"prompt_tokens":18,"prompt_time":0.002751873,"completion_tokens":3,"completion_time":0.007090436,"total_tokens":21,"total_time":0.009842309},"usage_breakdown":{"models":null},"system_fingerprint":"fp_38b31b7025","x_groq":{"id":"req_01jwksp7ayef88xzkecm17jcr8"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,7 +38,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9478c36dd9cea2ab-YUL
+                - 948889686c0fa2a0-YUL
             Content-Type:
                 - application/json
             Server:
@@ -60,7 +60,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 2.4ms
             X-Request-Id:
-                - req_01jwevyr6dexz8fwx7dmrdq9ky
+                - req_01jwksp7ayef88xzkecm17jcr8
         status: 200 OK
         code: 200
-        duration: 245ms
+        duration: 129ms

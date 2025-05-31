@@ -6,19 +6,19 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 211
+        content_length: 82
         transfer_encoding: []
         trailer: {}
         host: api.cloudflare.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"response_format":{"type":"json_object"}}
+            {"messages":[{"role":"user","content":"Tell a joke in 10 words"}],"max_tokens":3}
         form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-3b-instruct
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
         method: POST
       response:
         proto: HTTP/2.0
@@ -28,16 +28,16 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"result":{"response":"{\"is_fruit\": true}","usage":{"prompt_tokens":40,"completion_tokens":8,"total_tokens":48}},"success":true,"errors":[],"messages":[]}'
+        body: '{"result":{"response":"Why did the","tool_calls":[],"usage":{"prompt_tokens":17,"completion_tokens":3,"total_tokens":20}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
-                - "2025-05-29"
+                - "2025-05-31"
             Cf-Ai-Req-Id:
-                - a5bb0e02-bc6d-4d42-9071-f7a37cb941bc
+                - 27990769-353f-4925-b0b8-ea3033fa81b9
             Cf-Auditlog-Id:
-                - 01971c4a-6f78-75a0-b6ed-89fe3b4364c3
+                - 0197275c-e535-7449-883e-6b439fab1b9d
             Cf-Ray:
-                - 94766eb89ebca2db-YUL
+                - 948825db68c4a305-YUL
             Content-Type:
                 - application/json
             Server:
@@ -46,4 +46,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 359ms
+        duration: 840ms

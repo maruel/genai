@@ -30,8 +30,9 @@ import (
 //
 // # Warnings
 //
-//   - TODO
-//   - TODO
+//   - This is a completely free provider so you get what you pay for. I would recommend against using this
+//     provider with any private data.
+//   - Pollinations is a router to other backends, so it inherits the drawback of each sub-provider.
 var Scoreboard = genai.Scoreboard{
 	Scenarios: []genai.Scenario{
 		{
@@ -55,7 +56,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          false,
 				StopSequence:       false,
-				Tools:              true,
+				Tools:              genai.Flaky,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         false,
@@ -68,7 +69,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          false,
 				StopSequence:       false,
-				Tools:              true,
+				Tools:              genai.Flaky,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         false,
@@ -89,7 +90,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          false,
 				StopSequence:       false,
-				Tools:              false,
+				Tools:              genai.False,
 				UnbiasedTool:       false,
 				JSON:               false,
 				JSONSchema:         false,
@@ -102,7 +103,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          false,
 				StopSequence:       false,
-				Tools:              false,
+				Tools:              genai.False,
 				UnbiasedTool:       false,
 				JSON:               false,
 				JSONSchema:         false,
@@ -124,7 +125,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          false,
 				StopSequence:       false,
-				Tools:              true,
+				Tools:              genai.True,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         false,
@@ -137,7 +138,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          false,
 				StopSequence:       false,
-				Tools:              true,
+				Tools:              genai.True,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         false,
@@ -160,7 +161,7 @@ var Scoreboard = genai.Scoreboard{
 					ReportFinishReason: true,
 					MaxTokens:          false,
 					StopSequence:       false,
-					Tools:              false,
+					Tools:              genai.False,
 					UnbiasedTool:       false,
 					JSON:               true,
 					JSONSchema:         false,
@@ -173,7 +174,7 @@ var Scoreboard = genai.Scoreboard{
 					ReportFinishReason: true,
 					MaxTokens:          false,
 					StopSequence:       false,
-					Tools:              false,
+					Tools:              genai.False,
 					UnbiasedTool:       false,
 					JSON:               true,
 					JSONSchema:         false,
@@ -197,7 +198,7 @@ var Scoreboard = genai.Scoreboard{
 					ReportFinishReason: true,
 					MaxTokens:          false,
 					StopSequence:       false,
-					Tools:              false,
+					Tools:              genai.False,
 					UnbiasedTool:       false,
 					JSON:               true,
 					JSONSchema:         false,
@@ -210,7 +211,7 @@ var Scoreboard = genai.Scoreboard{
 					ReportFinishReason: true,
 					MaxTokens:          false,
 					StopSequence:       false,
-					Tools:              false,
+					Tools:              genai.False,
 					UnbiasedTool:       false,
 					JSON:               true,
 					JSONSchema:         false,

@@ -27,10 +27,13 @@ import (
 //
 // # Warnings
 //
-//   - qwen-3-32b has broken FinishReason when streaming.
+//   - qwen-3-32b has broken FinishReason when streaming, and doesn't support tool calling with streaming.
 //   - Cerebras doesn't support images yet even if models could.
 //     https://discord.com/channels/1085960591052644463/1376887536072527982/1376887536072527982
-//   - llama-4-scout-17b-16e-instruct seems to have broken tool calling.
+//   - Tool calling is flaky with all models.
+//   - Most models are quantized to unspecified level: https://discord.com/channels/1085960591052644463/1085960592050896937/1372105565655928864
+//   - qwen-3-32b is not quantized: https://discord.com/channels/1085960591052644463/1085960592050896937/1374399258890997830
+//   - Free tier has limited context: https://inference-docs.cerebras.ai/support/pricing
 var Scoreboard = genai.Scoreboard{
 	Scenarios: []genai.Scenario{
 		{
@@ -46,7 +49,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.Flaky,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         true,
@@ -59,7 +62,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.Flaky,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         true,
@@ -77,7 +80,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              true,
+				Tools:              genai.Flaky,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         true,
@@ -90,7 +93,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: false,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              false,
+				Tools:              genai.False,
 				UnbiasedTool:       false,
 				JSON:               false,
 				JSONSchema:         false,
@@ -107,7 +110,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              false,
+				Tools:              genai.Flaky,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         true,
@@ -119,7 +122,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              false,
+				Tools:              genai.Flaky,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         true,

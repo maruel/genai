@@ -735,7 +735,7 @@ func testImageGenFunctionalities(t *testing.T, g ProviderChatModalityFactory, mo
 	if len(resp.Contents) != 1 {
 		t.Fatalf("expected one content, got %d", len(resp.Contents))
 	}
-	if resp.Contents[0].Filename != "content.png" {
+	if resp.Contents[0].Filename != "content.png" && resp.Contents[0].Filename != "content.jpg" {
 		t.Fatalf("expected one image, got %#v", resp.Contents[0])
 	}
 	// It can have text, images or both.

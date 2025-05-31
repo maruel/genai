@@ -14,14 +14,19 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
+	"net/url"
+	"os"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -110,6 +115,41 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		*/
+		{
+			In:  []genai.Modality{genai.ModalityText},
+			Out: []genai.Modality{genai.ModalityImage},
+			Models: []string{
+				"gptimage",
+				"flux",
+				"turbo",
+			},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   false,
+				ReportFinishReason: false,
+				MaxTokens:          false,
+				StopSequence:       false,
+				Tools:              genai.False,
+				UnbiasedTool:       false,
+				JSON:               false,
+				JSONSchema:         false,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   false,
+				ReportFinishReason: false,
+				MaxTokens:          false,
+				StopSequence:       false,
+				Tools:              genai.False,
+				UnbiasedTool:       false,
+				JSON:               false,
+				JSONSchema:         false,
+			},
+		},
 		{
 			In:  []genai.Modality{genai.ModalityImage, genai.ModalityText},
 			Out: []genai.Modality{genai.ModalityText},
@@ -809,6 +849,15 @@ type ErrorResponse struct {
 		Timestamp string            `json:"timestamp"`
 		Provider  string            `json:"provider"`
 	} `json:"details"`
+
+	Message    string   `json:"message"`
+	Debug      struct{} `json:"debug"`
+	TimingInfo []struct {
+		Step      string `json:"step"`
+		Timestamp int64  `json:"timestamp"`
+	} `json:"timingInfo"`
+	RequestId         string         `json:"requestId"`
+	RequestParameters map[string]any `json:"requestParameters"`
 }
 
 func (er *ErrorResponse) String() string {
@@ -831,7 +880,6 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderModel.
 type Client struct {
-	// internal.ClientBase[*ErrorResponse]
 	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
@@ -841,6 +889,9 @@ type Client struct {
 // https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#referrer-
 func New(auth, model string, r http.RoundTripper) (*Client, error) {
 	var h http.Header
+	if auth == "" {
+		auth = os.Getenv("POLLINATIONS_API_KEY")
+	}
 	if auth != "" {
 		if strings.HasPrefix(auth, "http://") || strings.HasPrefix(auth, "https://") {
 			h = http.Header{"Referrer": {auth}}
@@ -875,6 +926,99 @@ func New(auth, model string, r http.RoundTripper) (*Client, error) {
 			},
 		},
 	}, nil
+}
+
+func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+	switch c.Model {
+	case "flux", "gptimage", "turbo":
+		// Redirect to gen image.
+		return c.GenImage(ctx, msgs, opts)
+	default:
+		return c.ClientChat.Chat(ctx, msgs, opts)
+	}
+}
+
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
+	switch c.Model {
+	case "flux", "gptimage", "turbo":
+		// Redirect to gen image.
+		res, err := c.GenImage(ctx, msgs, opts)
+		if err == nil {
+			chunks <- genai.MessageFragment{
+				Filename:         res.Contents[0].Filename,
+				DocumentFragment: res.Contents[0].Document.(*bb.BytesBuffer).D,
+			}
+		}
+		return res, err
+	default:
+		return c.ClientChat.ChatStream(ctx, msgs, opts, chunks)
+	}
+}
+
+// GenImage uses the text-to-image API to generate an image.
+//
+// Default rate limit is 0.2 QPS / IP.
+func (c *Client) GenImage(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#text-to-image-get-%EF%B8%8F
+	res := genai.ChatResult{}
+	if len(msgs) != 1 {
+		return res, errors.New("must pass exactly one Message")
+	}
+	msg := msgs[0]
+
+	qp := url.Values{}
+	qp.Add("model", c.Model)
+	if o, ok := opts.(*genai.ChatOptions); ok {
+		// Defaults to 42 otherwise.
+		if o.Seed != 0 {
+			qp.Add("seed", strconv.FormatInt(o.Seed, 10))
+		}
+		// TODO: Deny most flags.
+	}
+	qp.Add("width", "1024")
+	qp.Add("height", "1024")
+	qp.Add("nologo", "true")
+	qp.Add("private", "true") // "nofeed"
+	qp.Add("enhance", "false")
+	qp.Add("safe", "false")
+	// qp.Add("negative_prompt", "worst quality, blurry")
+	qp.Add("quality", "medium")
+	qp.Add("prompt", msg.AsText())
+	for _, mc := range msg.Contents {
+		if mc.Document != nil {
+			return res, errors.New("inline document is not supported")
+		}
+		if mc.URL != "" {
+			qp.Add("image", mc.URL)
+		}
+	}
+
+	url := "https://image.pollinations.ai/prompt?" + qp.Encode()
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return res, err
+	}
+	resp, err := c.ClientJSON.Client.Do(req)
+	if err != nil {
+		return res, err
+	}
+	if resp.StatusCode != 200 {
+		_ = resp.Body.Close()
+		return res, c.DecodeError(ctx, url, resp)
+	}
+	b, err := io.ReadAll(resp.Body)
+	_ = resp.Body.Close()
+	if err != nil {
+		return res, err
+	}
+	res.Role = genai.Assistant
+	res.Contents = []genai.Content{{Document: &bb.BytesBuffer{D: b}}}
+	if ct := resp.Header.Get("Content-Type"); strings.HasPrefix(ct, "image/jpeg") {
+		res.Contents[0].Filename = "content.jpg"
+	} else {
+		return res, fmt.Errorf("unknown Content-Type: %s", ct)
+	}
+	return res, nil
 }
 
 func (c *Client) Name() string {

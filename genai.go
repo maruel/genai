@@ -95,9 +95,15 @@ type ProviderChat interface {
 
 // ChatOptions is a list of frequent options supported by most ProviderChat.
 // Each provider is free to support more options through a specialized struct.
+//
+// The first group are options supported by (nearly) all providers.
+//
+// The second group are options supported only by some providers. Using them may cause the chat operation to
+// succeed while returning a UnsupportedContinuableError.
+//
+// The third group are options supported by a few providers and a few models on each, that will slow down
+// generation (increase latency) and will increase token use (cost).
 type ChatOptions struct {
-	// Options supported by all providers.
-
 	// Temperature adjust the creativity of the sampling. Generally between 0 and 2.
 	Temperature float64
 	// TopP adjusts correctness sampling between 0 and 1. The higher the more diverse the output.
@@ -108,9 +114,6 @@ type ChatOptions struct {
 	// SystemPrompt is the prompt to use for the system role.
 	SystemPrompt string
 
-	// Options supported only by some providers. Using them may cause the
-	// chat operation to succeed while returning a UnsupportedContinuableError.
-
 	// Seed for the random number generator. Default is 0 which means
 	// non-deterministic.
 	Seed int64
@@ -118,10 +121,6 @@ type ChatOptions struct {
 	TopK int64
 	// Stop is the list of tokens to stop generation.
 	Stop []string
-
-	// Options supported by a few providers and a few models on each, that will
-	// slow down generation (increase latency) and will increase token use
-	// (cost).
 
 	// ReplyAsJSON enforces the output to be valid JSON, any JSON. It is
 	// important to tell the model to reply in JSON in the prompt itself.
@@ -287,10 +286,14 @@ func (m Messages) Validate() error {
 // The message may also contain tool calls. The tool call is a request from
 // the LLM to answer a specific question, so the LLM can continue its process.
 type Message struct {
-	Role Role   `json:"role,omitzero"`
-	User string `json:"user,omitzero"` // Only used when Role == User. Only some provider (e.g. OpenAI, Groq, DeepSeek) support it.
+	Role Role `json:"role,omitzero"`
+	// User must only be used when Role == User. Only some provider (e.g. OpenAI, Groq, DeepSeek) support it.
+	User string `json:"user,omitzero"`
 
-	Contents []Content `json:"contents,omitzero"` // For example when the LLM replies with multiple content blocks, an explanation and a code block.
+	// Contents slice is generally one item in text-only mode. It is more frequently multiple items when using
+	// multi-modal content or with advanced LLM providers that can emit multiple content blocks like a code
+	// block and a different block with an explanantion.
+	Contents []Content `json:"contents,omitzero"`
 
 	// ToolCall is a tool call that the LLM requested to make.
 	ToolCalls       []ToolCall       `json:"tool_calls,omitzero"`
@@ -427,9 +430,11 @@ func (m *Message) GoString() string {
 //
 // The content can be text or a document. The document may be audio, video,
 // image, PDF or any other format.
+//
+// Only Text, Thinking, Opaque or the rest can be set.
+//
+// If Text and Thinking are not set, then, one of Document or URL must be set.
 type Content struct {
-	// Only Text, Thinking, Opaque or the rest can be set.
-
 	// Text is the content of the text message.
 	Text string `json:"text,omitzero"`
 
@@ -441,8 +446,6 @@ type Content struct {
 	//
 	// A message with only Opaque set is valid.
 	Opaque map[string]any `json:"opaque,omitzero"`
-
-	// If Text and Thinking are not set, then, one of Document or URL must be set.
 
 	// Filename is the name of the file. For many providers, only the extension
 	// is relevant. They only use mime-type, which is derived from the filename's
@@ -952,6 +955,11 @@ func (m Modalities) String() string {
 }
 
 // Functionality defines which functionalites are supported in a scenario.
+//
+// The second group are supported features.
+//
+// The third group is to identify bugged providers. A provider is considered to be bugged if any of the field
+// is false.
 type Functionality struct {
 	// Inline means the input modality can be provided inline. For non-textual data, it's generally as base64 encoded
 	// string.
@@ -963,8 +971,6 @@ type Functionality struct {
 	// "/think" is used to control.
 	Thinking bool
 
-	// Features
-
 	// Tools means that tool call is supported. This is a requirement for MCP.
 	Tools bool
 	// JSON means that the model supports enforcing that the response is valid JSON but not necessarily with a
@@ -972,8 +978,6 @@ type Functionality struct {
 	JSON bool
 	// JSONSchema means that the model supports enforcing that the response is a specific JSON schema.
 	JSONSchema bool
-
-	// Bugged provider, if any of the following is false.
 
 	// ReportTokenUsage means that the usage is correctly reported.
 	ReportTokenUsage bool

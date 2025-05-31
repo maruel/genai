@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 108
+        content_length: 135
         transfer_encoding: []
         trailer: {}
         host: localhost
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"gemma3:4b","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."}]}
+            {"model":"gemma3:4b","stream":true,"messages":[{"role":"user","content":"Is it a banana? Reply with only one word.","images":[null]}]}
         form: {}
         headers:
             Content-Type:
@@ -24,16 +24,16 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
+        transfer_encoding:
+            - chunked
         trailer: {}
-        content_length: 302
+        content_length: -1
         uncompressed: false
-        body: '{"model":"gemma3:4b","created_at":"2025-05-29T20:50:35.174914606Z","message":{"role":"assistant","content":"Hello."},"done_reason":"stop","done":true,"total_duration":1523375139,"load_duration":1144936432,"prompt_eval_count":17,"prompt_eval_duration":262552739,"eval_count":3,"eval_duration":114312506}'
+        body: |
+            {"error":"Failed to create new sequence: failed to process inputs: image: unknown format\n"}
         headers:
-            Content-Length:
-                - "302"
             Content-Type:
-                - application/json; charset=utf-8
+                - application/x-ndjson
         status: 200 OK
         code: 200
-        duration: 1.524s
+        duration: 23ms

@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 136
+        content_length: 108
         transfer_encoding: []
         trailer: {}
         host: localhost
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"gemma3:4b","stream":false,"messages":[{"role":"user","content":"Is it a banana? Reply with only one word.","images":[null]}]}
+            {"model":"gemma3:4b","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."}]}
         form: {}
         headers:
             Content-Type:
@@ -26,14 +26,14 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 92
+        content_length: 301
         uncompressed: false
-        body: '{"error":"Failed to create new sequence: failed to process inputs: image: unknown format\n"}'
+        body: '{"model":"gemma3:4b","created_at":"2025-05-31T13:30:43.312038619Z","message":{"role":"assistant","content":"Hello."},"done_reason":"stop","done":true,"total_duration":1987549534,"load_duration":1647525448,"prompt_eval_count":17,"prompt_eval_duration":245957773,"eval_count":3,"eval_duration":93221760}'
         headers:
             Content-Length:
-                - "92"
+                - "301"
             Content-Type:
                 - application/json; charset=utf-8
-        status: 500 Internal Server Error
-        code: 500
-        duration: 24ms
+        status: 200 OK
+        code: 200
+        duration: 1.988s

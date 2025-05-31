@@ -30,12 +30,12 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |
-            {"model":"gemma3:4b","created_at":"2025-05-29T20:50:58.484012342Z","message":{"role":"assistant","content":"Hello"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-05-29T20:50:58.54109437Z","message":{"role":"assistant","content":"."},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-05-29T20:50:58.617820562Z","message":{"role":"assistant","content":""},"done_reason":"stop","done":true,"total_duration":346089077,"load_duration":20366926,"prompt_eval_count":17,"prompt_eval_duration":188705353,"eval_count":3,"eval_duration":136537883}
+            {"model":"gemma3:4b","created_at":"2025-05-31T13:31:05.815525548Z","message":{"role":"assistant","content":"Hello"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-05-31T13:31:05.86538379Z","message":{"role":"assistant","content":"."},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-05-31T13:31:05.914353257Z","message":{"role":"assistant","content":""},"done_reason":"stop","done":true,"total_duration":292836164,"load_duration":19722098,"prompt_eval_count":17,"prompt_eval_duration":173100419,"eval_count":3,"eval_duration":99522283}
         headers:
             Content-Type:
                 - application/x-ndjson
         status: 200 OK
         code: 200
-        duration: 212ms
+        duration: 194ms

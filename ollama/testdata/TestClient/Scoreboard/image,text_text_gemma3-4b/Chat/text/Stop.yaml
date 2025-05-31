@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 221
+        content_length: 157
         transfer_encoding: []
         trailer: {}
         host: localhost
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"gemma3:4b","stream":false,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"format":"json"}
+            {"model":"gemma3:4b","stream":false,"messages":[{"role":"user","content":"Talk about Canada in 10 words. Start with: Canada is"}],"options":{"stop":["is"]}}
         form: {}
         headers:
             Content-Type:
@@ -26,14 +26,14 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 313
+        content_length: 299
         uncompressed: false
-        body: '{"model":"gemma3:4b","created_at":"2025-05-29T20:50:36.656373412Z","message":{"role":"assistant","content":"{\"is_fruit\": true}"},"done_reason":"stop","done":true,"total_duration":905944108,"load_duration":20353306,"prompt_eval_count":38,"prompt_eval_duration":349339157,"eval_count":8,"eval_duration":452059918}'
+        body: '{"model":"gemma3:4b","created_at":"2025-05-31T13:30:43.895605506Z","message":{"role":"assistant","content":"Canada "},"done_reason":"stop","done":true,"total_duration":309825820,"load_duration":32249418,"prompt_eval_count":23,"prompt_eval_duration":223149078,"eval_count":2,"eval_duration":53932305}'
         headers:
             Content-Length:
-                - "313"
+                - "299"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 906ms
+        duration: 310ms

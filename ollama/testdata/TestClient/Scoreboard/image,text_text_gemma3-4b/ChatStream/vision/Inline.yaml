@@ -30,11 +30,11 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |
-            {"model":"gemma3:4b","created_at":"2025-05-29T20:51:24.94542381Z","message":{"role":"assistant","content":"Yes"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-05-29T20:51:25.00671347Z","message":{"role":"assistant","content":""},"done_reason":"stop","done":true,"total_duration":23767475659,"load_duration":19491886,"prompt_eval_count":280,"prompt_eval_duration":23684970883,"eval_count":2,"eval_duration":62416023}
+            {"model":"gemma3:4b","created_at":"2025-05-31T13:31:31.182443971Z","message":{"role":"assistant","content":"Yes"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-05-31T13:31:31.23177965Z","message":{"role":"assistant","content":""},"done_reason":"stop","done":true,"total_duration":22950101709,"load_duration":20309722,"prompt_eval_count":280,"prompt_eval_duration":22879218279,"eval_count":2,"eval_duration":49915161}
         headers:
             Content-Type:
                 - application/x-ndjson
         status: 200 OK
         code: 200
-        duration: 23.706s
+        duration: 22.901s

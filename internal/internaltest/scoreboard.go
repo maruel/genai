@@ -33,8 +33,8 @@ func TestScoreboard(t *testing.T, g ProviderChatModalityFactory, filter func(mod
 	var ps genai.ProviderScoreboard
 	{
 		baseC := g(t, "")
-		if u, ok := baseC.(interface{ Unwrap() genai.ProviderChat }); ok {
-			baseC = u.Unwrap()
+		if u, ok := baseC.(genai.ProviderUnwrap); ok {
+			baseC = u.Unwrap().(genai.ProviderChat)
 		}
 		ps = baseC.(genai.ProviderScoreboard)
 	}
@@ -139,8 +139,8 @@ func TestScoreboard(t *testing.T, g ProviderChatModalityFactory, filter func(mod
 
 	t.Run("ListModels", func(t *testing.T) {
 		baseC := g(t, "")
-		if u, ok := baseC.(interface{ Unwrap() genai.ProviderChat }); ok {
-			baseC = u.Unwrap()
+		if u, ok := baseC.(genai.ProviderUnwrap); ok {
+			baseC = u.Unwrap().(genai.ProviderChat)
 		}
 		ls, ok := baseC.(genai.ProviderModel)
 		if !ok {

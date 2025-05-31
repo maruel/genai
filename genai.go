@@ -58,10 +58,25 @@ type Validatable interface {
 	Validate() error
 }
 
+// Provider
+
+// Provider is the base interface that all provider interfaces embed.
+type Provider interface {
+	// Name returns the name of the provider.
+	Name() string
+}
+
+// ProviderUnwrap is exposed when the Provider is actually a wrapper around another one, like
+// ProviderChatThinking or ProviderChatUsage. This is useful when looking for other interfaces.
+type ProviderUnwrap interface {
+	Unwrap() Provider
+}
+
 // Chat
 
 // ProviderChat is the generic interface to interact with a LLM backend.
 type ProviderChat interface {
+	Provider
 	// Chat runs completion synchronously.
 	//
 	// opts must be either nil, *ChatOptions or a provider-specialized
@@ -866,6 +881,7 @@ func (t *ToolCallResult) UnmarshalJSON(b []byte) error {
 
 // ProviderModel represents a provider that can list models.
 type ProviderModel interface {
+	Provider
 	ListModels(ctx context.Context) ([]Model, error)
 }
 
@@ -880,6 +896,7 @@ type Model interface {
 
 // ProviderScoreboard describes the known state of the provider.
 type ProviderScoreboard interface {
+	Provider
 	// Scoreboard returns what the provider supports.
 	//
 	// Some models have more features than others, e.g. some models may be text-only while others have vision or

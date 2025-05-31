@@ -896,6 +896,10 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 	}, nil
 }
 
+func (c *Client) Name() string {
+	return "openai"
+}
+
 func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard
 }

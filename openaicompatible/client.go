@@ -311,6 +311,10 @@ type Client struct {
 	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
+func (c *Client) Name() string {
+	return "openaicompatible"
+}
+
 // New creates a new client to talk to an "OpenAI-compatible" platform API.
 //
 // It only support text exchanges (no multi-modal) and no tool calls.

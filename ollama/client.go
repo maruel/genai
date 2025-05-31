@@ -452,6 +452,10 @@ func New(baseURL, model string, r http.RoundTripper) (*Client, error) {
 	}, nil
 }
 
+func (c *Client) Name() string {
+	return "ollama"
+}
+
 func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard
 }

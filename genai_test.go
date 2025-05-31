@@ -876,6 +876,10 @@ type mockProviderChat struct {
 	callIndex       int
 }
 
+func (m *mockProviderChat) Name() string {
+	return "mock"
+}
+
 func (m *mockProviderChat) Chat(ctx context.Context, msgs Messages, opts Validatable) (ChatResult, error) {
 	return ChatResult{}, fmt.Errorf("Chat not implemented in mock")
 }

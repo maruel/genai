@@ -178,7 +178,7 @@ func (c *ProviderChatUsage) GetAccumulatedUsage() Usage {
 	return c.accumUsage
 }
 
-func (c *ProviderChatUsage) Unwrap() ProviderChat {
+func (c *ProviderChatUsage) Unwrap() Provider {
 	return c.ProviderChat
 }
 
@@ -362,7 +362,7 @@ func (c *ProviderChatThinking) processThinkingMessage(m *Message) error {
 	return nil
 }
 
-func (c *ProviderChatThinking) Unwrap() ProviderChat {
+func (c *ProviderChatThinking) Unwrap() Provider {
 	return c.ProviderChat
 }
 

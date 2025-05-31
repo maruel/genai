@@ -481,6 +481,10 @@ func New(baseURL string, encoding *PromptEncoding, r http.RoundTripper) (*Client
 	}, nil
 }
 
+func (c *Client) Name() string {
+	return "llamacpp"
+}
+
 func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard
 }

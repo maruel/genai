@@ -256,6 +256,10 @@ type mockProviderChat struct {
 	response genai.ChatResult
 }
 
+func (m *mockProviderChat) Name() string {
+	return "mock"
+}
+
 func (m *mockProviderChat) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	return m.response, nil
 }
@@ -273,6 +277,10 @@ func (m *mockProviderChat) ModelID() string {
 // and returns an error for the Chat method.
 type mockChatStreamProvider struct {
 	in []string
+}
+
+func (m *mockChatStreamProvider) Name() string {
+	return "mockstream"
 }
 
 func (m *mockChatStreamProvider) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {

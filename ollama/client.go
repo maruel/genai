@@ -430,10 +430,15 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the model from https://ollama.com/library
 //
+// baseURL defaults to http://localhost:11434.
+//
 // r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport.
 func New(baseURL, model string, r http.RoundTripper) (*Client, error) {
 	if r == nil {
 		r = http.DefaultTransport
+	}
+	if baseURL == "" {
+		baseURL = "http://localhost:11434"
 	}
 	return &Client{
 		ClientBase: internal.ClientBase[*ErrorResponse]{

@@ -6,7 +6,7 @@
 set -eu
 
 go install ./cmd/list-models
-PROVIDERS=(anthropic cerebras cloudflare cohere deepseek gemini groq huggingface mistral openai togetherai)
+PROVIDERS=(anthropic cerebras cloudflare cohere deepseek gemini groq huggingface mistral openai pollinations togetherai)
 
 echo "# List of models available on each provider" > MODELS.new.md
 echo "" >> MODELS.new.md

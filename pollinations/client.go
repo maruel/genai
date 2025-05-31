@@ -56,6 +56,7 @@ var Scoreboard = genai.Scoreboard{
 				MaxTokens:          false,
 				StopSequence:       false,
 				Tools:              true,
+				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         false,
 			},
@@ -68,6 +69,7 @@ var Scoreboard = genai.Scoreboard{
 				MaxTokens:          false,
 				StopSequence:       false,
 				Tools:              true,
+				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         false,
 			},
@@ -88,6 +90,7 @@ var Scoreboard = genai.Scoreboard{
 				MaxTokens:          false,
 				StopSequence:       false,
 				Tools:              false,
+				UnbiasedTool:       false,
 				JSON:               false,
 				JSONSchema:         false,
 			},
@@ -100,6 +103,7 @@ var Scoreboard = genai.Scoreboard{
 				MaxTokens:          false,
 				StopSequence:       false,
 				Tools:              false,
+				UnbiasedTool:       false,
 				JSON:               false,
 				JSONSchema:         false,
 			},
@@ -121,6 +125,7 @@ var Scoreboard = genai.Scoreboard{
 				MaxTokens:          false,
 				StopSequence:       false,
 				Tools:              true,
+				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         false,
 			},
@@ -133,6 +138,7 @@ var Scoreboard = genai.Scoreboard{
 				MaxTokens:          false,
 				StopSequence:       false,
 				Tools:              true,
+				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         false,
 			},
@@ -155,6 +161,7 @@ var Scoreboard = genai.Scoreboard{
 					MaxTokens:          false,
 					StopSequence:       false,
 					Tools:              false,
+					UnbiasedTool:       false,
 					JSON:               true,
 					JSONSchema:         false,
 				},
@@ -167,6 +174,7 @@ var Scoreboard = genai.Scoreboard{
 					MaxTokens:          false,
 					StopSequence:       false,
 					Tools:              false,
+					UnbiasedTool:       false,
 					JSON:               true,
 					JSONSchema:         false,
 				},
@@ -190,6 +198,7 @@ var Scoreboard = genai.Scoreboard{
 					MaxTokens:          false,
 					StopSequence:       false,
 					Tools:              false,
+					UnbiasedTool:       false,
 					JSON:               true,
 					JSONSchema:         false,
 				},
@@ -202,6 +211,7 @@ var Scoreboard = genai.Scoreboard{
 					MaxTokens:          false,
 					StopSequence:       false,
 					Tools:              false,
+					UnbiasedTool:       false,
 					JSON:               true,
 					JSONSchema:         false,
 				},
@@ -517,6 +527,7 @@ type ChatResponse struct {
 }
 
 func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
+	// There's a "X-Cache" HTTP response header that says when the whole request was cached.
 	out := genai.ChatResult{
 		Usage: genai.Usage{
 			InputTokens:  c.Usage.PromptTokens,

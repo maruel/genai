@@ -988,6 +988,11 @@ type Functionality struct {
 	// StopSequence means that the provider supports stop words. This is generally only supported in text-in
 	// modalities.
 	StopSequence bool
+	// UnbiasedTool is true when the LLM supports tools and when asking for a biased question, it will not
+	// always reply with the first readily available answer.
+	//
+	// This is affected by two factors: model size and quantization. Quantization affects this dramatically.
+	UnbiasedTool bool
 
 	_ struct{}
 }

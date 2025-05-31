@@ -71,6 +71,7 @@ var Scoreboard = genai.Scoreboard{
 				MaxTokens:          true,
 				StopSequence:       true,
 				Tools:              true,
+				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         true,
 			},
@@ -83,6 +84,7 @@ var Scoreboard = genai.Scoreboard{
 				MaxTokens:          true,
 				StopSequence:       true,
 				Tools:              true,
+				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         true,
 			},
@@ -121,6 +123,7 @@ var Scoreboard = genai.Scoreboard{
 				MaxTokens:          true,
 				StopSequence:       true,
 				Tools:              true,
+				UnbiasedTool:       true,
 				JSON:               true,
 				JSONSchema:         true,
 			},
@@ -133,6 +136,7 @@ var Scoreboard = genai.Scoreboard{
 				MaxTokens:          true,
 				StopSequence:       true,
 				Tools:              true,
+				UnbiasedTool:       true,
 				JSON:               true,
 				JSONSchema:         true,
 			},
@@ -171,6 +175,7 @@ var Scoreboard = genai.Scoreboard{
 				MaxTokens:          true,
 				StopSequence:       true,
 				Tools:              true,
+				UnbiasedTool:       true,
 				JSON:               true,
 				JSONSchema:         true,
 			},
@@ -183,6 +188,7 @@ var Scoreboard = genai.Scoreboard{
 				MaxTokens:          true,
 				StopSequence:       true,
 				Tools:              true,
+				UnbiasedTool:       true,
 				JSON:               true,
 				JSONSchema:         true,
 			},
@@ -843,19 +849,24 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		// There's only one at a time ever.
-		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
-			return fmt.Errorf("implement multiple tool calls: %#v", pkt.Choices[0].Delta.ToolCalls)
-		}
 		f := genai.MessageFragment{TextFragment: pkt.Choices[0].Delta.Content}
-		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
-			pkt.Choices[0].Delta.ToolCalls[0].To(&f.ToolCall)
-		}
 		if !f.IsZero() {
 			if err := result.Accumulate(f); err != nil {
 				return err
 			}
 			chunks <- f
+		}
+		// Mistral is one of the rare provider that can stream multiple tool calls all at once. It's probably
+		// because it's buffering server-side.
+		for i := range pkt.Choices[0].Delta.ToolCalls {
+			f := genai.MessageFragment{}
+			pkt.Choices[0].Delta.ToolCalls[i].To(&f.ToolCall)
+			if !f.IsZero() {
+				if err := result.Accumulate(f); err != nil {
+					return err
+				}
+				chunks <- f
+			}
 		}
 	}
 	return nil

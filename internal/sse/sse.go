@@ -60,6 +60,8 @@ func Process[T any](body io.Reader, out chan<- T, er any, lenient bool) error {
 			out <- msg
 		case bytes.Equal(line, keepAlive):
 			// Ignore keep-alive messages. Very few send this.
+		case bytes.Equal(line, keepAliveHuggingface):
+			// Huggingface...
 		case bytes.HasPrefix(line, eventPrefix):
 			// Ignore event headers. Very few send this.
 		default:
@@ -69,8 +71,9 @@ func Process[T any](body io.Reader, out chan<- T, er any, lenient bool) error {
 }
 
 var (
-	dataPrefix  = []byte("data: ")
-	eventPrefix = []byte("event:")
-	done        = []byte("[DONE]")
-	keepAlive   = []byte(": keep-alive")
+	dataPrefix           = []byte("data: ")
+	eventPrefix          = []byte("event:")
+	done                 = []byte("[DONE]")
+	keepAlive            = []byte(": keep-alive")
+	keepAliveHuggingface = []byte(":")
 )

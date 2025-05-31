@@ -1,0 +1,49 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.cloudflare.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/models/search?page=1&per_page=100&hide_experimental=false
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |
+            {"success":false,"errors":[{"code":10001,"message":"Unable to authenticate request"}]}
+        headers:
+            Api-Version:
+                - "2025-05-31"
+            Cf-Auditlog-Id:
+                - 01972687-abc0-714f-8845-a6d7c1e559dd
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9486d0b2bdc3a314-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 400 Bad Request
+        code: 400
+        duration: 106ms

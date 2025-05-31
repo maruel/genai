@@ -33,41 +33,41 @@ import (
 	"github.com/maruel/genai/togetherai"
 )
 
-var providers = map[string]func() (genai.ModelProvider, error){
-	"anthropic": func() (genai.ModelProvider, error) {
+var providers = map[string]func() (genai.ProviderModel, error){
+	"anthropic": func() (genai.ProviderModel, error) {
 		return anthropic.New("", "", nil)
 	},
-	"cerebras": func() (genai.ModelProvider, error) {
+	"cerebras": func() (genai.ProviderModel, error) {
 		return cerebras.New("", "", nil)
 	},
-	"cloudflare": func() (genai.ModelProvider, error) {
+	"cloudflare": func() (genai.ProviderModel, error) {
 		return cloudflare.New("", "", "", nil)
 	},
-	"cohere": func() (genai.ModelProvider, error) {
+	"cohere": func() (genai.ProviderModel, error) {
 		return cohere.New("", "", nil)
 	},
-	"deepseek": func() (genai.ModelProvider, error) {
+	"deepseek": func() (genai.ProviderModel, error) {
 		return deepseek.New("", "", nil)
 	},
-	"gemini": func() (genai.ModelProvider, error) {
+	"gemini": func() (genai.ProviderModel, error) {
 		return gemini.New("", "", nil)
 	},
-	"groq": func() (genai.ModelProvider, error) {
+	"groq": func() (genai.ProviderModel, error) {
 		return groq.New("", "", nil)
 	},
-	"huggingface": func() (genai.ModelProvider, error) {
+	"huggingface": func() (genai.ProviderModel, error) {
 		return huggingface.New("", "", nil)
 	},
-	"mistral": func() (genai.ModelProvider, error) {
+	"mistral": func() (genai.ProviderModel, error) {
 		return mistral.New("", "", nil)
 	},
-	"openai": func() (genai.ModelProvider, error) {
+	"openai": func() (genai.ProviderModel, error) {
 		return openai.New("", "", nil)
 	},
-	"pollinations": func() (genai.ModelProvider, error) {
+	"pollinations": func() (genai.ProviderModel, error) {
 		return pollinations.New("", "", nil)
 	},
-	"togetherai": func() (genai.ModelProvider, error) {
+	"togetherai": func() (genai.ProviderModel, error) {
 		return togetherai.New("", "", nil)
 	},
 }

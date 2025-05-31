@@ -21,19 +21,19 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-// ChatProviderModalityFactory is what a Java developer would write.
+// ProviderChatModalityFactory is what a Java developer would write.
 //
 // It permits selecting the most cost effective model for the requested modalities. For example a very cheap
 // model would be used for text-in, text-out test but use a slightly more expensive one for image-in, text-out
 // case.
-type ChatProviderModalityFactory func(t *testing.T, model string) genai.ChatProvider
+type ProviderChatModalityFactory func(t *testing.T, model string) genai.ProviderChat
 
-func TestScoreboard(t *testing.T, g ChatProviderModalityFactory, filter func(model genai.Model) bool) {
+func TestScoreboard(t *testing.T, g ProviderChatModalityFactory, filter func(model genai.Model) bool) {
 	var modelsSeen []string
 	var ps genai.ProviderScoreboard
 	{
 		baseC := g(t, "")
-		if u, ok := baseC.(interface{ Unwrap() genai.ChatProvider }); ok {
+		if u, ok := baseC.(interface{ Unwrap() genai.ProviderChat }); ok {
 			baseC = u.Unwrap()
 		}
 		ps = baseC.(genai.ProviderScoreboard)
@@ -139,15 +139,15 @@ func TestScoreboard(t *testing.T, g ChatProviderModalityFactory, filter func(mod
 
 	t.Run("ListModels", func(t *testing.T) {
 		baseC := g(t, "")
-		if u, ok := baseC.(interface{ Unwrap() genai.ChatProvider }); ok {
+		if u, ok := baseC.(interface{ Unwrap() genai.ProviderChat }); ok {
 			baseC = u.Unwrap()
 		}
-		ls, ok := baseC.(genai.ModelProvider)
+		ls, ok := baseC.(genai.ProviderModel)
 		if !ok {
 			if filter != nil {
-				t.Fatal("filter function is provided but provider doesn't implement ModelProvider")
+				t.Fatal("filter function is provided but provider doesn't implement ProviderModel")
 			}
-			t.Skip("provider doesn't implement ModelProvider")
+			t.Skip("provider doesn't implement ProviderModel")
 		}
 		knownModels, err := ls.ListModels(t.Context())
 		if err != nil {
@@ -189,7 +189,7 @@ func TestScoreboard(t *testing.T, g ChatProviderModalityFactory, filter func(mod
 	})
 }
 
-func testTextFunctionalities(t *testing.T, g ChatProviderModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testTextFunctionalities(t *testing.T, g ProviderChatModalityFactory, model string, f *genai.Functionality, stream bool) {
 	defaultFR := genai.FinishedStop
 	if !f.ReportFinishReason {
 		defaultFR = ""
@@ -427,7 +427,7 @@ func testTextFunctionalities(t *testing.T, g ChatProviderModalityFactory, model 
 	})
 }
 
-func testVisionFunctionalities(t *testing.T, g ChatProviderModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testVisionFunctionalities(t *testing.T, g ProviderChatModalityFactory, model string, f *genai.Functionality, stream bool) {
 	defaultFR := genai.FinishedStop
 	if !f.ReportFinishReason {
 		defaultFR = ""
@@ -471,7 +471,7 @@ func testVisionFunctionalities(t *testing.T, g ChatProviderModalityFactory, mode
 	})
 }
 
-func testAudioFunctionalities(t *testing.T, g ChatProviderModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testAudioFunctionalities(t *testing.T, g ProviderChatModalityFactory, model string, f *genai.Functionality, stream bool) {
 	defaultFR := genai.FinishedStop
 	if !f.ReportFinishReason {
 		defaultFR = ""
@@ -514,7 +514,7 @@ func testAudioFunctionalities(t *testing.T, g ChatProviderModalityFactory, model
 	})
 }
 
-func testVideoFunctionalities(t *testing.T, g ChatProviderModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testVideoFunctionalities(t *testing.T, g ProviderChatModalityFactory, model string, f *genai.Functionality, stream bool) {
 	defaultFR := genai.FinishedStop
 	if !f.ReportFinishReason {
 		defaultFR = ""
@@ -556,7 +556,7 @@ func testVideoFunctionalities(t *testing.T, g ChatProviderModalityFactory, model
 	})
 }
 
-func testPDFFunctionalities(t *testing.T, g ChatProviderModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testPDFFunctionalities(t *testing.T, g ProviderChatModalityFactory, model string, f *genai.Functionality, stream bool) {
 	defaultFR := genai.FinishedStop
 	if !f.ReportFinishReason {
 		defaultFR = ""
@@ -598,7 +598,7 @@ func testPDFFunctionalities(t *testing.T, g ChatProviderModalityFactory, model s
 	})
 }
 
-func testImageGenFunctionalities(t *testing.T, g ChatProviderModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testImageGenFunctionalities(t *testing.T, g ProviderChatModalityFactory, model string, f *genai.Functionality, stream bool) {
 	prompt := `A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
 	const style = `Simple, vibrant, varied-colored doodle/hand-drawn sketch`
 	contents := `Generate one square, white-background doodle with smooth, vibrantly colored image depicting ` + prompt + `.
@@ -633,7 +633,7 @@ func testImageGenFunctionalities(t *testing.T, g ChatProviderModalityFactory, mo
 	// It can have text, images or both.
 }
 
-func testAudioGenFunctionalities(t *testing.T, g ChatProviderModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testAudioGenFunctionalities(t *testing.T, g ProviderChatModalityFactory, model string, f *genai.Functionality, stream bool) {
 	defaultFR := genai.FinishedStop
 	if !f.ReportFinishReason {
 		defaultFR = ""
@@ -655,7 +655,7 @@ func testAudioGenFunctionalities(t *testing.T, g ChatProviderModalityFactory, mo
 	}
 }
 
-func run(t *testing.T, c genai.ChatProvider, msgs genai.Messages, opts genai.Validatable, stream bool) (genai.ChatResult, error) {
+func run(t *testing.T, c genai.ProviderChat, msgs genai.Messages, opts genai.Validatable, stream bool) (genai.ChatResult, error) {
 	ctx := t.Context()
 	if !stream {
 		resp, err := c.Chat(ctx, msgs, opts)

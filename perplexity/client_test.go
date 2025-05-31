@@ -15,17 +15,17 @@ import (
 )
 
 func TestClient_Scoreboard(t *testing.T) {
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider {
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat {
 		c := getClient(t, m)
 		if m == "r1-1776" {
-			return &genai.ChatProviderThinking{ChatProvider: c, TagName: "think"}
+			return &genai.ProviderChatThinking{ProviderChat: c, TagName: "think"}
 		}
 		return c
 	}, nil)
 }
 
-func TestClient_ChatProvider_errors(t *testing.T) {
-	data := []internaltest.ChatProviderError{
+func TestClient_ProviderChat_errors(t *testing.T) {
+	data := []internaltest.ProviderChatError{
 		{
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
@@ -40,10 +40,10 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			ErrChatStream: "http 400: error Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
+	f := func(t *testing.T, apiKey, model string) genai.ProviderChat {
 		return getClientInner(t, apiKey, model)
 	}
-	internaltest.TestClient_ChatProvider_errors(t, f, data)
+	internaltest.TestClient_ProviderChat_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *perplexity.Client {

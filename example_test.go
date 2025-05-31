@@ -31,8 +31,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func ExampleModelProvider_all() {
-	modelProviders := map[string]genai.ModelProvider{}
+func ExampleProviderModel_all() {
+	modelProviders := map[string]genai.ProviderModel{}
 	if c, err := anthropic.New("", "", nil); err == nil {
 		modelProviders["anthropic"] = c
 	}
@@ -57,7 +57,7 @@ func ExampleModelProvider_all() {
 	if c, err := huggingface.New("", "", nil); err == nil {
 		modelProviders["huggingface"] = c
 	}
-	// llamapcpp doesn't implement ModelProvider.
+	// llamapcpp doesn't implement ProviderModel.
 	if c, err := mistral.New("", "", nil); err == nil {
 		modelProviders["mistral"] = c
 	}
@@ -67,7 +67,7 @@ func ExampleModelProvider_all() {
 	if c, err := pollinations.New("", "", nil); err == nil {
 		modelProviders["pollinations"] = c
 	}
-	// perplexity doesn't implement ModelProvider.
+	// perplexity doesn't implement ProviderModel.
 	if c, err := togetherai.New("", "", nil); err == nil {
 		modelProviders["togetherai"] = c
 	}
@@ -84,8 +84,8 @@ func ExampleModelProvider_all() {
 	}
 }
 
-func ExampleChatProvider_all() {
-	chatProviders := map[string]genai.ChatProvider{}
+func ExampleProviderChat_all() {
+	chatProviders := map[string]genai.ProviderChat{}
 	// https://docs.anthropic.com/en/docs/about-claude/models/all-models
 	if c, err := anthropic.New("", "claude-3-7-sonnet-latest", nil); err == nil {
 		chatProviders["anthropic"] = c
@@ -167,7 +167,7 @@ func ExampleChatProvider_all() {
 	}
 }
 
-func ExampleChatProvider_chat_vision() {
+func ExampleProviderChat_chat_vision() {
 	// Supported by Anthropic, Gemini, Groq, Mistral, Ollama, OpenAI, TogetherAI.
 
 	// Using a free small model for testing.
@@ -249,7 +249,7 @@ func ExampleClient_Chat_jSON_schema() {
 	// This would Output: Round: true
 }
 
-func ExampleChatProvider_chat_pdf() {
+func ExampleProviderChat_chat_pdf() {
 	// Supported by Anthropic, Gemini, Mistral, OpenAI.
 
 	// Using a free small model for testing.
@@ -280,7 +280,7 @@ func ExampleChatProvider_chat_pdf() {
 	// This would Output: Hidden word in PDF: orange
 }
 
-func ExampleChatProvider_chat_audio() {
+func ExampleProviderChat_chat_audio() {
 	// Supported by Gemini, OpenAI.
 
 	// Using a free small model for testing.
@@ -311,7 +311,7 @@ func ExampleChatProvider_chat_audio() {
 	// This would Output: Heard: orange
 }
 
-func ExampleChatProvider_chat_video() {
+func ExampleProviderChat_chat_video() {
 	// Supported by Gemini, TogetherAI.
 
 	// Using a free small model for testing.
@@ -409,7 +409,7 @@ func ExampleChatStreamWithToolCallLoop() {
 	// 8846
 }
 
-func ExampleChatProvider_ChatStream() {
+func ExampleProviderChat_ChatStream() {
 	// Supported by all providers.
 
 	// Using a free small model for testing.

@@ -16,12 +16,12 @@ import (
 )
 
 func TestClient_Scoreboard(t *testing.T) {
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat { return getClient(t, m) }, nil)
 }
 
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+		GetClient: func(t *testing.T, m string) genai.ProviderChat { return getClient(t, m) },
 		Model:     "claude-3-5-haiku-20241022",
 	},
 }
@@ -30,8 +30,8 @@ func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 	testCases.TestChatToolUsePositionBias(t, &internaltest.Settings{Model: "claude-3-5-haiku-20241022"}, false)
 }
 
-func TestClient_ChatProvider_errors(t *testing.T) {
-	data := []internaltest.ChatProviderError{
+func TestClient_ProviderChat_errors(t *testing.T) {
+	data := []internaltest.ProviderChatError{
 		{
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
@@ -46,24 +46,24 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			ErrChatStream: "http 404: error not_found_error: model: bad model",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
+	f := func(t *testing.T, apiKey, model string) genai.ProviderChat {
 		return getClientInner(t, apiKey, model)
 	}
-	internaltest.TestClient_ChatProvider_errors(t, f, data)
+	internaltest.TestClient_ProviderChat_errors(t, f, data)
 }
 
-func TestClient_ModelProvider_errors(t *testing.T) {
-	data := []internaltest.ModelProviderError{
+func TestClient_ProviderModel_errors(t *testing.T) {
+	data := []internaltest.ProviderModelError{
 		{
 			Name:   "bad apiKey",
 			ApiKey: "badApiKey",
 			Err:    "http 401: error authentication_error: invalid x-api-key. You can get a new API key at https://console.anthropic.com/settings/keys",
 		},
 	}
-	f := func(t *testing.T, apiKey string) genai.ModelProvider {
+	f := func(t *testing.T, apiKey string) genai.ProviderModel {
 		return getClientInner(t, apiKey, "")
 	}
-	internaltest.TestClient_ModelProvider_errors(t, f, data)
+	internaltest.TestClient_ProviderModel_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *anthropic.Client {

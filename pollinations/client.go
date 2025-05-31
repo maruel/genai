@@ -817,7 +817,7 @@ func (er *ErrorResponse) String() string {
 	return fmt.Sprintf("error %s%s", er.Error, suffix)
 }
 
-// Client implements genai.ModelProvider.
+// Client implements genai.ProviderModel.
 type Client struct {
 	// internal.ClientBase[*ErrorResponse]
 	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
@@ -951,5 +951,5 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	return nil
 }
 
-// _ genai.ChatProvider  = &Client{}
-var _ genai.ModelProvider = &Client{}
+// _ genai.ProviderChat  = &Client{}
+var _ genai.ProviderModel = &Client{}

@@ -414,7 +414,7 @@ func (er *ErrorResponse) String() string {
 // We cannot use ClientChat because Chat and ChatStream try to pull on first failure, and ChatStream receives
 // line separated JSON instead of SSE.
 
-// Client implements genai.ChatProvider.
+// Client implements genai.ProviderChat.
 type Client struct {
 	internal.ClientBase[*ErrorResponse]
 
@@ -680,6 +680,6 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 }
 
 var (
-	_ genai.ChatProvider  = &Client{}
-	_ genai.ModelProvider = &Client{}
+	_ genai.ProviderChat  = &Client{}
+	_ genai.ProviderModel = &Client{}
 )

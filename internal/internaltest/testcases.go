@@ -17,12 +17,12 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-// ModelChatProviderFactory is what a Java developer would write.
-type ModelChatProviderFactory func(t *testing.T, model string) genai.ChatProvider
+// ProviderModelChatFactory is what a Java developer would write.
+type ProviderModelChatFactory func(t *testing.T, model string) genai.ProviderChat
 
 type Settings struct {
 	// GetClient is a factory function that returns a chat provider for a specific model.
-	GetClient ModelChatProviderFactory
+	GetClient ProviderModelChatFactory
 	// Model is the model to use when none is specified.
 	Model string
 	// Options return a genai.ChatOptions or one of the model specific options.
@@ -39,7 +39,7 @@ type TestCases struct {
 	Default Settings
 }
 
-func (tc *TestCases) getClient(t *testing.T, override *Settings) genai.ChatProvider {
+func (tc *TestCases) getClient(t *testing.T, override *Settings) genai.ProviderChat {
 	model := tc.Default.Model
 	gc := tc.Default.GetClient
 	if override != nil {
@@ -168,7 +168,7 @@ func (tc *TestCases) testChatHelper(t *testing.T, msgs genai.Messages, override 
 	return tc.testChat(t, msgs, tc.getClient(t, override), tc.getOptions(&opts, override), tc.usageIsBroken(override), f)
 }
 
-func (tc *TestCases) testChat(t *testing.T, msgs genai.Messages, c genai.ChatProvider, opts genai.Validatable, usageIsBroken bool, f genai.FinishReason) genai.ChatResult {
+func (tc *TestCases) testChat(t *testing.T, msgs genai.Messages, c genai.ProviderChat, opts genai.Validatable, usageIsBroken bool, f genai.FinishReason) genai.ChatResult {
 	ctx := t.Context()
 	resp, err := c.Chat(ctx, msgs, opts)
 	if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
@@ -191,7 +191,7 @@ func (tc *TestCases) testChatStreamHelper(t *testing.T, msgs genai.Messages, ove
 	return tc.testChatStream(t, msgs, tc.getClient(t, override), tc.getOptions(&opts, override), tc.usageIsBroken(override), f)
 }
 
-func (tc *TestCases) testChatStream(t *testing.T, msgs genai.Messages, c genai.ChatProvider, opts genai.Validatable, usageIsBroken bool, f genai.FinishReason) genai.ChatResult {
+func (tc *TestCases) testChatStream(t *testing.T, msgs genai.Messages, c genai.ProviderChat, opts genai.Validatable, usageIsBroken bool, f genai.FinishReason) genai.ChatResult {
 	ctx := t.Context()
 	chunks := make(chan genai.MessageFragment)
 	// Assert that the message returned is the same as the one we accumulated.
@@ -237,7 +237,7 @@ func (tc *TestCases) testChatStream(t *testing.T, msgs genai.Messages, c genai.C
 
 //
 
-type ChatProviderError struct {
+type ProviderChatError struct {
 	Name          string
 	ApiKey        string
 	Model         string
@@ -245,7 +245,7 @@ type ChatProviderError struct {
 	ErrChatStream string
 }
 
-func TestClient_ChatProvider_errors(t *testing.T, getClient func(t *testing.T, apiKey, model string) genai.ChatProvider, lines []ChatProviderError) {
+func TestClient_ProviderChat_errors(t *testing.T, getClient func(t *testing.T, apiKey, model string) genai.ProviderChat, lines []ProviderChatError) {
 	for _, line := range lines {
 		t.Run(line.Name, func(t *testing.T) {
 			msgs := genai.Messages{genai.NewTextMessage(genai.User, "Tell a short joke.")}
@@ -285,13 +285,13 @@ func TestClient_ChatProvider_errors(t *testing.T, getClient func(t *testing.T, a
 	}
 }
 
-type ModelProviderError struct {
+type ProviderModelError struct {
 	Name   string
 	ApiKey string
 	Err    string
 }
 
-func TestClient_ModelProvider_errors(t *testing.T, getClient func(t *testing.T, apiKey string) genai.ModelProvider, lines []ModelProviderError) {
+func TestClient_ProviderModel_errors(t *testing.T, getClient func(t *testing.T, apiKey string) genai.ProviderModel, lines []ProviderModelError) {
 	for _, line := range lines {
 		t.Run(line.Name, func(t *testing.T) {
 			t.Run("ListModels", func(t *testing.T) {

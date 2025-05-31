@@ -768,8 +768,8 @@ func TestUnsupportedContinuableError(t *testing.T) {
 
 // TestChatStreamWithToolCallLoop tests the ChatStreamWithToolCallLoop function.
 func TestChatStreamWithToolCallLoop(t *testing.T) {
-	// Define a mock ChatProvider
-	provider := &mockChatProvider{
+	// Define a mock ProviderChat
+	provider := &mockProviderChat{
 		streamResponses: []streamResponse{
 			{
 				fragments: []MessageFragment{
@@ -871,16 +871,16 @@ type streamResponse struct {
 	usage     Usage
 }
 
-type mockChatProvider struct {
+type mockProviderChat struct {
 	streamResponses []streamResponse
 	callIndex       int
 }
 
-func (m *mockChatProvider) Chat(ctx context.Context, msgs Messages, opts Validatable) (ChatResult, error) {
+func (m *mockProviderChat) Chat(ctx context.Context, msgs Messages, opts Validatable) (ChatResult, error) {
 	return ChatResult{}, fmt.Errorf("Chat not implemented in mock")
 }
 
-func (m *mockChatProvider) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (ChatResult, error) {
+func (m *mockProviderChat) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (ChatResult, error) {
 	if m.callIndex >= len(m.streamResponses) {
 		return ChatResult{}, fmt.Errorf("no more mock responses")
 	}
@@ -909,7 +909,7 @@ func (m *mockChatProvider) ChatStream(ctx context.Context, msgs Messages, opts V
 	return result, nil
 }
 
-func (m *mockChatProvider) ModelID() string {
+func (m *mockProviderChat) ModelID() string {
 	return "llm-sota"
 }
 

@@ -26,14 +26,14 @@ func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider {
+		internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat {
 			return s.getClient(t, m)
 		}, nil)
 	})
 
 	tc := &internaltest.TestCases{
 		Default: internaltest.Settings{
-			GetClient: func(t *testing.T, m string) genai.ChatProvider { return s.getClient(t, m) },
+			GetClient: func(t *testing.T, m string) genai.ProviderChat { return s.getClient(t, m) },
 			Model:     "gemma3:4b",
 		},
 	}
@@ -42,8 +42,8 @@ func TestClient(t *testing.T) {
 		tc.TestChatToolUsePositionBias(t, &internaltest.Settings{Model: "llama3.1:8b"}, true)
 	})
 
-	t.Run("ChatProvider_errors", func(t *testing.T) {
-		data := []internaltest.ChatProviderError{
+	t.Run("ProviderChat_errors", func(t *testing.T) {
+		data := []internaltest.ProviderChatError{
 			{
 				Name:          "bad model",
 				Model:         "bad_model",
@@ -51,10 +51,10 @@ func TestClient(t *testing.T) {
 				ErrChatStream: "pull failed: http 500: error pull model manifest: file does not exist",
 			},
 		}
-		f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
+		f := func(t *testing.T, apiKey, model string) genai.ProviderChat {
 			return s.getClient(t, model)
 		}
-		internaltest.TestClient_ChatProvider_errors(t, f, data)
+		internaltest.TestClient_ProviderChat_errors(t, f, data)
 	})
 }
 
@@ -104,7 +104,7 @@ func (l *lazyServer) shouldStart(t *testing.T) (string, http.RoundTripper) {
 	return l.url, transport
 }
 
-func (l *lazyServer) getClient(t *testing.T, model string) genai.ChatProvider {
+func (l *lazyServer) getClient(t *testing.T, model string) genai.ProviderChat {
 	serverURL, transport := l.shouldStart(t)
 	c, err := ollama.New(serverURL, model, nil)
 	if err != nil {

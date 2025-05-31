@@ -60,8 +60,8 @@ type Validatable interface {
 
 // Chat
 
-// ChatProvider is the generic interface to interact with a LLM backend.
-type ChatProvider interface {
+// ProviderChat is the generic interface to interact with a LLM backend.
+type ProviderChat interface {
 	// Chat runs completion synchronously.
 	//
 	// opts must be either nil, *ChatOptions or a provider-specialized
@@ -78,7 +78,7 @@ type ChatProvider interface {
 	ModelID() string
 }
 
-// ChatOptions is a list of frequent options supported by most ChatProvider.
+// ChatOptions is a list of frequent options supported by most ProviderChat.
 // Each provider is free to support more options through a specialized struct.
 type ChatOptions struct {
 	// Options supported by all providers.
@@ -864,8 +864,8 @@ func (t *ToolCallResult) UnmarshalJSON(b []byte) error {
 
 // Models
 
-// ModelProvider represents a provider that can list models.
-type ModelProvider interface {
+// ProviderModel represents a provider that can list models.
+type ProviderModel interface {
 	ListModels(ctx context.Context) ([]Model, error)
 }
 
@@ -979,9 +979,9 @@ type Scenario struct {
 	// providers continuouly release new models. It is still valuable to use the first value
 	Models []string
 
-	// Chat declares features supported when using ChatProvider.Chat
+	// Chat declares features supported when using ProviderChat.Chat
 	Chat Functionality
-	// ChatStream declares features supported when using ChatProvider.ChatStream
+	// ChatStream declares features supported when using ProviderChat.ChatStream
 	ChatStream Functionality
 
 	_ struct{}

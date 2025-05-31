@@ -15,7 +15,7 @@ import (
 	"github.com/maruel/genai"
 )
 
-func TestChatProviderThinking_Chat(t *testing.T) {
+func TestProviderChatThinking_Chat(t *testing.T) {
 	tests := []struct {
 		name        string
 		tagName     string
@@ -67,14 +67,14 @@ func TestChatProviderThinking_Chat(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			mp := &mockChatProvider{response: genai.ChatResult{
+			mp := &mockProviderChat{response: genai.ChatResult{
 				Message: genai.Message{
 					Role:     genai.Assistant,
 					Contents: []genai.Content{{Text: tc.in}},
 				},
 			}}
 
-			tp := &genai.ChatProviderThinking{ChatProvider: mp, TagName: "thinking"}
+			tp := &genai.ProviderChatThinking{ProviderChat: mp, TagName: "thinking"}
 			got, err := tp.Chat(t.Context(), genai.Messages{}, nil)
 			if tc.expectError {
 				if err == nil {
@@ -91,7 +91,7 @@ func TestChatProviderThinking_Chat(t *testing.T) {
 	}
 }
 
-func TestChatProviderThinking_ChatStream(t *testing.T) {
+func TestProviderChatThinking_ChatStream(t *testing.T) {
 	tests := []struct {
 		name        string
 		in          []string
@@ -202,7 +202,7 @@ func TestChatProviderThinking_ChatStream(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			mp := &mockChatStreamProvider{in: tc.in}
-			tp := &genai.ChatProviderThinking{ChatProvider: mp, TagName: "thinking"}
+			tp := &genai.ProviderChatThinking{ProviderChat: mp, TagName: "thinking"}
 			ch := make(chan genai.MessageFragment)
 			ctx, cancel := context.WithTimeout(t.Context(), 1*time.Second)
 			defer cancel()
@@ -249,26 +249,26 @@ func TestChatProviderThinking_ChatStream(t *testing.T) {
 
 //
 
-// mockChatProvider is a mock implementation of genai.ChatProvider for testing.
+// mockProviderChat is a mock implementation of genai.ProviderChat for testing.
 // It returns a predefined ChatResult for the Chat method and returns an error
 // for the ChatStream method.
-type mockChatProvider struct {
+type mockProviderChat struct {
 	response genai.ChatResult
 }
 
-func (m *mockChatProvider) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+func (m *mockProviderChat) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
 	return m.response, nil
 }
 
-func (m *mockChatProvider) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.ChatResult, error) {
+func (m *mockProviderChat) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.ChatResult, error) {
 	return genai.ChatResult{}, errors.New("unexpected")
 }
 
-func (m *mockChatProvider) ModelID() string {
+func (m *mockProviderChat) ModelID() string {
 	return "llm-sota"
 }
 
-// mockChatStreamProvider is a mock implementation of genai.ChatProvider for testing.
+// mockChatStreamProvider is a mock implementation of genai.ProviderChat for testing.
 // It sends the predefined fragments to the replies channel for the ChatStream method
 // and returns an error for the Chat method.
 type mockChatStreamProvider struct {
@@ -293,7 +293,7 @@ func (m *mockChatStreamProvider) ChatStream(ctx context.Context, msgs genai.Mess
 		case replies <- fragment:
 			// We don't accumulate in the result.Message since the wrapper will transform TextFragment to ThinkingFragment
 			// and the actual accumulation happens in the test code. The final message will be constructed properly
-			// by the ChatProviderThinking wrapper.
+			// by the ProviderChatThinking wrapper.
 		}
 	}
 	return result, nil

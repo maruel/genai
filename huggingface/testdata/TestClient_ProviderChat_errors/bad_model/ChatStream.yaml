@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 116
+        transfer_encoding: []
+        trailer: {}
+        host: router.huggingface.co
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"stream":true,"messages":[{"role":"user","content":"Tell a short joke."}],"stream_options":{"include_usage":true}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/hf-inference/models/bad%20model/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 9
+        uncompressed: false
+        body: Not Found
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "9"
+            Content-Type:
+                - text/plain; charset=utf-8
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 97a1bb4fb9aff82a97dbf758ce602258.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - jmoHkQ9DOTCrPfTu7nktqYXyXttYF0C3zPGpDL0SfKoPlBfBfVdY_w==
+            X-Amz-Cf-Pop:
+                - YUL62-P2
+            X-Cache:
+                - Error from cloudfront
+            X-Powered-By:
+                - huggingface-moon
+            X-Request-Id:
+                - 0lKQyPm6C6mAUKhC
+            X-Robots-Tag:
+                - none
+        status: 404 Not Found
+        code: 404
+        duration: 61ms

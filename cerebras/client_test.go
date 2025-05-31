@@ -15,10 +15,10 @@ import (
 )
 
 func TestClient_Scoreboard(t *testing.T) {
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider {
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat {
 		c := getClient(t, m)
 		if m == "qwen-3-32b" {
-			return &genai.ChatProviderThinking{ChatProvider: c, TagName: "think"}
+			return &genai.ProviderChatThinking{ProviderChat: c, TagName: "think"}
 		}
 		return c
 	}, nil)
@@ -26,7 +26,7 @@ func TestClient_Scoreboard(t *testing.T) {
 
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+		GetClient: func(t *testing.T, m string) genai.ProviderChat { return getClient(t, m) },
 		Model:     "llama-3.1-8b",
 	},
 }
@@ -35,8 +35,8 @@ func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 	testCases.TestChatToolUsePositionBias(t, nil, false)
 }
 
-func TestClient_ChatProvider_errors(t *testing.T) {
-	data := []internaltest.ChatProviderError{
+func TestClient_ProviderChat_errors(t *testing.T) {
+	data := []internaltest.ProviderChatError{
 		{
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
@@ -51,24 +51,24 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			ErrChatStream: "http 404: error not_found_error/model/model_not_found: Model bad model does not exist or you do not have access to it.",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
+	f := func(t *testing.T, apiKey, model string) genai.ProviderChat {
 		return getClientInner(t, apiKey, model)
 	}
-	internaltest.TestClient_ChatProvider_errors(t, f, data)
+	internaltest.TestClient_ProviderChat_errors(t, f, data)
 }
 
-func TestClient_ModelProvider_errors(t *testing.T) {
-	data := []internaltest.ModelProviderError{
+func TestClient_ProviderModel_errors(t *testing.T) {
+	data := []internaltest.ProviderModelError{
 		{
 			Name:   "bad apiKey",
 			ApiKey: "badApiKey",
 			Err:    "http 401: error invalid_request_error/api_key/wrong_api_key: Wrong API Key. You can get a new API key at https://cloud.cerebras.ai/platform/",
 		},
 	}
-	f := func(t *testing.T, apiKey string) genai.ModelProvider {
+	f := func(t *testing.T, apiKey string) genai.ProviderModel {
 		return getClientInner(t, apiKey, "")
 	}
-	internaltest.TestClient_ModelProvider_errors(t, f, data)
+	internaltest.TestClient_ProviderModel_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *cerebras.Client {

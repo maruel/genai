@@ -16,11 +16,11 @@ import (
 )
 
 func TestClient_Scoreboard(t *testing.T) {
-	// internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) })
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider {
+	// internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat { return getClient(t, m) })
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat {
 		c := getClient(t, m)
 		if m == "qwen-qwq-32b" || m == "deepseek-r1-distill-llama-70b" {
-			return &genai.ChatProviderThinking{ChatProvider: c, TagName: "think", SkipJSON: true}
+			return &genai.ProviderChatThinking{ProviderChat: c, TagName: "think", SkipJSON: true}
 		}
 		return c
 	}, nil)
@@ -28,10 +28,10 @@ func TestClient_Scoreboard(t *testing.T) {
 
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ChatProvider {
+		GetClient: func(t *testing.T, m string) genai.ProviderChat {
 			c := getClient(t, m)
 			if m == "qwen-qwq-32b" || m == "deepseek-r1-distill-llama-70b" {
-				return &genai.ChatProviderThinking{ChatProvider: c, TagName: "think"}
+				return &genai.ProviderChatThinking{ProviderChat: c, TagName: "think"}
 			}
 			return c
 		},
@@ -43,8 +43,8 @@ func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 	testCases.TestChatToolUsePositionBias(t, nil, false)
 }
 
-func TestClient_ChatProvider_errors(t *testing.T) {
-	data := []internaltest.ChatProviderError{
+func TestClient_ProviderChat_errors(t *testing.T) {
+	data := []internaltest.ProviderChatError{
 		{
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
@@ -59,24 +59,24 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			ErrChatStream: "http 404: error model_not_found (invalid_request_error): The model `bad model` does not exist or you do not have access to it.",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
+	f := func(t *testing.T, apiKey, model string) genai.ProviderChat {
 		return getClientInner(t, apiKey, model)
 	}
-	internaltest.TestClient_ChatProvider_errors(t, f, data)
+	internaltest.TestClient_ProviderChat_errors(t, f, data)
 }
 
-func TestClient_ModelProvider_errors(t *testing.T) {
-	data := []internaltest.ModelProviderError{
+func TestClient_ProviderModel_errors(t *testing.T) {
+	data := []internaltest.ProviderModelError{
 		{
 			Name:   "bad apiKey",
 			ApiKey: "badApiKey",
 			Err:    "http 401: error invalid_api_key (invalid_request_error): Invalid API Key. You can get a new API key at https://console.groq.com/keys",
 		},
 	}
-	f := func(t *testing.T, apiKey string) genai.ModelProvider {
+	f := func(t *testing.T, apiKey string) genai.ProviderModel {
 		return getClientInner(t, apiKey, "")
 	}
-	internaltest.TestClient_ModelProvider_errors(t, f, data)
+	internaltest.TestClient_ProviderModel_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *groq.Client {

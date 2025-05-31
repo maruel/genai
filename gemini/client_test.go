@@ -23,7 +23,7 @@ import (
 )
 
 func TestClient_Scoreboard(t *testing.T) {
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider {
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat {
 		c := getClient(t, m)
 		// https://ai.google.dev/gemini-api/docs/thinking?hl=en
 		if strings.Contains(m, "thinking") {
@@ -62,7 +62,7 @@ func (i *injectOption) ChatStream(ctx context.Context, msgs genai.Messages, opts
 
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+		GetClient: func(t *testing.T, m string) genai.ProviderChat { return getClient(t, m) },
 		// Using small model for testing.
 		// For tests that do not use function calling nor images, a good zero cost alternative is "gemma-3-27b-it".
 		// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
@@ -229,8 +229,8 @@ Ultimately, the human endeavor is a quest for understanding, not just of the ext
 
 //
 
-func TestClient_ChatProvider_errors(t *testing.T) {
-	data := []internaltest.ChatProviderError{
+func TestClient_ProviderChat_errors(t *testing.T) {
+	data := []internaltest.ProviderChatError{
 		{
 			Name:          "bad apiKey",
 			ApiKey:        "badApiKey",
@@ -245,24 +245,24 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			ErrChatStream: "http 400: error 400 (INVALID_ARGUMENT): * GenerateContentRequest.model: unexpected model name format",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
+	f := func(t *testing.T, apiKey, model string) genai.ProviderChat {
 		return getClientInner(t, apiKey, model)
 	}
-	internaltest.TestClient_ChatProvider_errors(t, f, data)
+	internaltest.TestClient_ProviderChat_errors(t, f, data)
 }
 
-func TestClient_ModelProvider_errors(t *testing.T) {
-	data := []internaltest.ModelProviderError{
+func TestClient_ProviderModel_errors(t *testing.T) {
+	data := []internaltest.ProviderModelError{
 		{
 			Name:   "bad apiKey",
 			ApiKey: "badApiKey",
 			Err:    "http 400: error 400 (INVALID_ARGUMENT): API key not valid. Please pass a valid API key.",
 		},
 	}
-	f := func(t *testing.T, apiKey string) genai.ModelProvider {
+	f := func(t *testing.T, apiKey string) genai.ProviderModel {
 		return getClientInner(t, apiKey, "")
 	}
-	internaltest.TestClient_ModelProvider_errors(t, f, data)
+	internaltest.TestClient_ProviderModel_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *gemini.Client {

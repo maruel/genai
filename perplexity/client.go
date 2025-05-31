@@ -297,7 +297,7 @@ func (er *ErrorResponse) String() string {
 	return "error " + er.Error.Message
 }
 
-// Client implements genai.ChatProvider.
+// Client implements genai.ProviderChat.
 type Client struct {
 	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
@@ -383,4 +383,4 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	return nil
 }
 
-var _ genai.ChatProvider = &Client{}
+var _ genai.ProviderChat = &Client{}

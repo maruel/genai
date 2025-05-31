@@ -16,10 +16,10 @@ import (
 )
 
 func TestClient_Scoreboard(t *testing.T) {
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider {
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat {
 		c := getClient(t, m)
 		if m == "Qwen/QwQ-32B" {
-			return &genai.ChatProviderThinking{ChatProvider: c, TagName: "think", SkipJSON: true}
+			return &genai.ProviderChatThinking{ProviderChat: c, TagName: "think", SkipJSON: true}
 		}
 		return c
 	}, nil)
@@ -27,7 +27,7 @@ func TestClient_Scoreboard(t *testing.T) {
 
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+		GetClient: func(t *testing.T, m string) genai.ProviderChat { return getClient(t, m) },
 		Model:     "meta-llama/Llama-3.3-70B-Instruct",
 	},
 }
@@ -41,8 +41,8 @@ func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 	})
 }
 
-func TestClient_ChatProvider_errors(t *testing.T) {
-	data := []internaltest.ChatProviderError{
+func TestClient_ProviderChat_errors(t *testing.T) {
+	data := []internaltest.ProviderChatError{
 		{
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
@@ -57,24 +57,24 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			ErrChatStream: "http 404: Not Found",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
+	f := func(t *testing.T, apiKey, model string) genai.ProviderChat {
 		return getClientInner(t, apiKey, model)
 	}
-	internaltest.TestClient_ChatProvider_errors(t, f, data)
+	internaltest.TestClient_ProviderChat_errors(t, f, data)
 }
 
-func TestClient_ModelProvider_errors(t *testing.T) {
-	data := []internaltest.ModelProviderError{
+func TestClient_ProviderModel_errors(t *testing.T) {
+	data := []internaltest.ProviderModelError{
 		{
 			Name:   "bad apiKey",
 			ApiKey: "badApiKey",
 			Err:    "http 401: error Invalid credentials in Authorization header. You can get a new API key at https://huggingface.co/settings/tokens",
 		},
 	}
-	f := func(t *testing.T, apiKey string) genai.ModelProvider {
+	f := func(t *testing.T, apiKey string) genai.ProviderModel {
 		return getClientInner(t, apiKey, "")
 	}
-	internaltest.TestClient_ModelProvider_errors(t, f, data)
+	internaltest.TestClient_ProviderModel_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *huggingface.Client {

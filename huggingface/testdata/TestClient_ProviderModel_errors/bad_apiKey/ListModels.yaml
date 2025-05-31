@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: huggingface.co
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://huggingface.co/api/models?inference=warm
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 55
+        uncompressed: false
+        body: '{"error":"Invalid credentials in Authorization header"}'
+        headers:
+            Access-Control-Allow-Origin:
+                - https://huggingface.co
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "55"
+            Content-Type:
+                - application/json; charset=utf-8
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Etag:
+                - W/"37-2rNK07tH7ceN3XGTWwIATU5bonw"
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Vary:
+                - Origin
+            Via:
+                - 1.1 6589108eb8812ce79de8a8eef3f72bee.cloudfront.net (CloudFront)
+            Www-Authenticate:
+                - Bearer realm="Authentication required", charset="UTF-8"
+            X-Amz-Cf-Id:
+                - kgTQxeRS3wo7khtADr2GxHQjQBScZxzfCbthwqxJ6mE8Ox66tyYqbg==
+            X-Amz-Cf-Pop:
+                - YTO50-P2
+            X-Cache:
+                - Error from cloudfront
+            X-Error-Message:
+                - Invalid credentials in Authorization header
+            X-Powered-By:
+                - huggingface-moon
+            X-Request-Id:
+                - h-swd_uK8nVulrzn
+        status: 401 Unauthorized
+        code: 401
+        duration: 1.122s

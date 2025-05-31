@@ -92,7 +92,7 @@ type provider struct {
 	thinking  string
 }
 
-// Keep in sync with ExampleChatProvider_all in ../example_test.go.
+// Keep in sync with ExampleProviderChat_all in ../example_test.go.
 var providers = map[string]provider{
 	"anthropic": {
 		envAPIKey: "ANTHROPIC_API_KEY",
@@ -186,7 +186,7 @@ var providers = map[string]provider{
 	},
 }
 
-func getClient(t *testing.T, provider string) genai.ChatProvider {
+func getClient(t *testing.T, provider string) genai.ProviderChat {
 	testRecorder.Signal(t)
 	t.Parallel()
 	p := providers[provider]
@@ -200,7 +200,7 @@ func getClient(t *testing.T, provider string) genai.ChatProvider {
 	}
 	c.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientJSON.Client.Transport)
 	if p.thinking != "" {
-		return &genai.ChatProviderThinking{ChatProvider: c, TagName: p.thinking}
+		return &genai.ProviderChatThinking{ProviderChat: c, TagName: p.thinking}
 	}
 	return c
 }

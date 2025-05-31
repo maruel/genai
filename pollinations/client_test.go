@@ -16,12 +16,12 @@ import (
 )
 
 func TestClient_Scoreboard(t *testing.T) {
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) }, nil)
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat { return getClient(t, m) }, nil)
 }
 
 var testCases = &internaltest.TestCases{
 	Default: internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ChatProvider { return getClient(t, m) },
+		GetClient: func(t *testing.T, m string) genai.ProviderChat { return getClient(t, m) },
 		Model:     "llama-scout",
 	},
 }
@@ -35,9 +35,9 @@ func TestClient_Chat_tool_use_position_bias(t *testing.T) {
 	})
 }
 
-func TestClient_ChatProvider_errors(t *testing.T) {
+func TestClient_ProviderChat_errors(t *testing.T) {
 	t.Skip("TODO")
-	data := []internaltest.ChatProviderError{
+	data := []internaltest.ProviderChatError{
 		{
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
@@ -52,10 +52,10 @@ func TestClient_ChatProvider_errors(t *testing.T) {
 			ErrChatStream: "http 404: error model_not_found (invalid_request_error): The model `bad model` does not exist or you do not have access to it.",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.ChatProvider {
+	f := func(t *testing.T, apiKey, model string) genai.ProviderChat {
 		return getClientInner(t, model)
 	}
-	internaltest.TestClient_ChatProvider_errors(t, f, data)
+	internaltest.TestClient_ProviderChat_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *pollinations.Client {

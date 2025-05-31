@@ -7,6 +7,7 @@ package internaltest
 import (
 	"bytes"
 	"context"
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"math"
@@ -218,7 +219,7 @@ func testTextFunctionalities(t *testing.T, g ProviderChatModalityFactory, model 
 			}
 		}
 		// Some models are really bad at instruction following.
-		ValidateSingleWordResponse(t, resp, "hello", "hey", "hi")
+		ValidateWordResponse(t, resp, "hello", "hey", "hi")
 	})
 
 	t.Run("MaxTokens", func(t *testing.T) {
@@ -396,7 +397,7 @@ func testTextFunctionalities(t *testing.T, g ProviderChatModalityFactory, model 
 			}
 		}
 		testUsage(t, &resp.Usage, !f.ReportTokenUsage, fr)
-		want := "square_root"
+		want := opts.Tools[0].Name
 		if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
 			if f.Tools == genai.Flaky {
 				return
@@ -414,7 +415,7 @@ func testTextFunctionalities(t *testing.T, g ProviderChatModalityFactory, model 
 		}
 		// Don't forget to add the tool call request first before the reply.
 		msgs = append(msgs, msg)
-		// Important!
+		// Important! We do not any any follow up tool call.
 		opts.ToolCallRequest = genai.ToolCallNone
 		if f.ReportFinishReason {
 			fr = genai.FinishedStop
@@ -434,6 +435,102 @@ func testTextFunctionalities(t *testing.T, g ProviderChatModalityFactory, model 
 				}
 				t.Fatalf("Expected %q, got %q", want, s)
 			}
+		}
+	})
+
+	t.Run("ToolsBiased", func(t *testing.T) {
+		type gotCanadaFirst struct {
+			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
+		}
+		type gotUSAFirst struct {
+			Country string `json:"country" jsonschema:"enum=USA,enum=Canada"`
+		}
+		data := []struct {
+			callback        any
+			countrySelected string
+			country1        string
+			country2        string
+		}{
+			{
+				func(ctx context.Context, g *gotCanadaFirst) (string, error) {
+					return g.Country, nil
+				},
+				"Canada", "Canada", "the USA",
+			},
+			{
+				func(ctx context.Context, g *gotUSAFirst) (string, error) {
+					return g.Country, nil
+				},
+				"USA", "the USA", "Canada",
+			},
+		}
+		for _, line := range data {
+			t.Run(line.countrySelected, func(t *testing.T) {
+				// This test case has the same challenge as "Tools" above.
+				msgs := genai.Messages{
+					genai.NewTextMessage(genai.User, fmt.Sprintf("I wonder if %s is a better country than %s? Call the tool best_country to tell me which country is the best one.", line.country1, line.country2)),
+				}
+				opts := genai.ChatOptions{
+					Tools: []genai.ToolDef{
+						{
+							Name:        "best_country",
+							Description: "A tool to determine the best country",
+							Callback:    line.callback,
+						},
+					},
+					ToolCallRequest: genai.ToolCallRequired,
+				}
+				c := g(t, model)
+				fr := genai.FinishedToolCalls
+				if !f.ReportFinishReason {
+					fr = ""
+				}
+				resp, err := run(t, c, msgs, &opts, stream)
+				if !basicCheckAcceptUnexpectedSuccess(t, err, f.Tools == genai.True) {
+					return
+				}
+				if f.Tools != genai.True {
+					if resp.FinishReason == genai.FinishedStop || resp.FinishReason == genai.FinishedLength {
+						return
+					}
+					if f.Tools == genai.False {
+						t.Fatalf("unexpected success: %s", resp.FinishReason)
+					}
+				}
+				testUsage(t, &resp.Usage, !f.ReportTokenUsage, fr)
+				if len(resp.ToolCalls) == 0 {
+					if f.Tools != genai.True {
+						return
+					}
+				} else {
+					if f.Tools == genai.False {
+						t.Fatal("unexpected tool call when not supported")
+					}
+				}
+				want := opts.Tools[0].Name
+				for i := range resp.ToolCalls {
+					if resp.ToolCalls[i].Name != want {
+						t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
+					}
+				}
+				if len(resp.ToolCalls) > 1 {
+					if f.UnbiasedTool {
+						return
+					}
+				} else {
+					if f.UnbiasedTool {
+						t.Fatal("expected multiple tool calls")
+					}
+				}
+				// Call the first.
+				res, err := resp.ToolCalls[0].Call(t.Context(), opts.Tools)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if f.UnbiasedTool && res != line.countrySelected {
+					t.Fatalf("Expected %q, got %q", line.countrySelected, res)
+				}
+			})
 		}
 	})
 }
@@ -460,7 +557,7 @@ func testVisionFunctionalities(t *testing.T, g ProviderChatModalityFactory, mode
 			return
 		}
 		testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
-		ValidateSingleWordResponse(t, resp, "yes")
+		ValidateWordResponse(t, resp, "yes")
 	})
 
 	t.Run("URL", func(t *testing.T) {
@@ -478,7 +575,7 @@ func testVisionFunctionalities(t *testing.T, g ProviderChatModalityFactory, mode
 			return
 		}
 		testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
-		ValidateSingleWordResponse(t, resp, "yes")
+		ValidateWordResponse(t, resp, "yes")
 	})
 }
 
@@ -503,7 +600,7 @@ func testAudioFunctionalities(t *testing.T, g ProviderChatModalityFactory, model
 			return
 		}
 		testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
-		ValidateSingleWordResponse(t, resp, "orange")
+		ValidateWordResponse(t, resp, "orange")
 	})
 
 	t.Run("URL", func(t *testing.T) {
@@ -521,7 +618,7 @@ func testAudioFunctionalities(t *testing.T, g ProviderChatModalityFactory, model
 			return
 		}
 		testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
-		ValidateSingleWordResponse(t, resp, "orange")
+		ValidateWordResponse(t, resp, "orange")
 	})
 }
 
@@ -545,7 +642,7 @@ func testVideoFunctionalities(t *testing.T, g ProviderChatModalityFactory, model
 			return
 		}
 		testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
-		ValidateSingleWordResponse(t, resp, "banana")
+		ValidateWordResponse(t, resp, "banana")
 	})
 
 	t.Run("URL", func(t *testing.T) {
@@ -563,7 +660,7 @@ func testVideoFunctionalities(t *testing.T, g ProviderChatModalityFactory, model
 			return
 		}
 		testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
-		ValidateSingleWordResponse(t, resp, "banana")
+		ValidateWordResponse(t, resp, "banana")
 	})
 }
 
@@ -587,7 +684,7 @@ func testPDFFunctionalities(t *testing.T, g ProviderChatModalityFactory, model s
 			return
 		}
 		testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
-		ValidateSingleWordResponse(t, resp, "orange")
+		ValidateWordResponse(t, resp, "orange")
 	})
 
 	t.Run("URL", func(t *testing.T) {
@@ -605,7 +702,7 @@ func testPDFFunctionalities(t *testing.T, g ProviderChatModalityFactory, model s
 			return
 		}
 		testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
-		ValidateSingleWordResponse(t, resp, "orange")
+		ValidateWordResponse(t, resp, "orange")
 	})
 }
 
@@ -775,3 +872,46 @@ func findMissing(want, got []string) []string {
 	}
 	return result
 }
+
+func testUsage(t *testing.T, u *genai.Usage, usageIsBroken bool, f genai.FinishReason) {
+	if usageIsBroken {
+		if u.InputTokens != 0 {
+			t.Error("expected Usage.InputTokens to be zero")
+		}
+		if u.InputCachedTokens != 0 {
+			t.Error("expected Usage.OutputTokens to be zero")
+		}
+		if u.OutputTokens != 0 {
+			t.Error("expected Usage.OutputTokens to be zero")
+		}
+	} else {
+		if u.InputTokens == 0 {
+			t.Error("expected Usage.InputTokens to be set")
+		}
+		if u.OutputTokens == 0 {
+			t.Error("expected Usage.OutputTokens to be set")
+		}
+	}
+	if u.FinishReason != f {
+		// TODO: llamacpp returns "eos" instead of "stop" when ending a stream. I need to find a way to improve
+		// the test validation.
+		if f != "" {
+			t.Fatalf("expected FinishReason %q, got %q", f, u.FinishReason)
+		}
+	}
+}
+
+// ValidateWordResponse validates that the response contains exactly one of the expected words.
+func ValidateWordResponse(t *testing.T, resp genai.ChatResult, want ...string) {
+	got := resp.AsText()
+	cleaned := strings.TrimRight(strings.TrimSpace(strings.ToLower(got)), ".!")
+	if !slices.Contains(want, cleaned) {
+		t.Fatalf("Expected %q, got %q", strings.Join(want, ", "), got)
+	}
+}
+
+// See the 3kib banana jpg online at
+// https://github.com/maruel/genai/blob/main/openai/testdata/banana.jpg
+//
+//go:embed testdata/banana.jpg
+var bananaJpg []byte

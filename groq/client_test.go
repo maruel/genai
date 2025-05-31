@@ -53,23 +53,6 @@ func (h *handleReasoning) ChatStream(ctx context.Context, msgs genai.Messages, o
 	return c.ChatStream(ctx, msgs, opts, replies)
 }
 
-var testCases = &internaltest.TestCases{
-	Default: internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ProviderChat {
-			c := getClient(t, m)
-			if m == "qwen-qwq-32b" || m == "deepseek-r1-distill-llama-70b" {
-				return &genai.ProviderChatThinking{ProviderChat: c, TagName: "think"}
-			}
-			return c
-		},
-		Model: "llama3-8b-8192",
-	},
-}
-
-func TestClient_Chat_tool_use_position_bias(t *testing.T) {
-	testCases.TestChatToolUsePositionBias(t, nil, false)
-}
-
 func TestClient_ProviderChat_errors(t *testing.T) {
 	data := []internaltest.ProviderChatError{
 		{

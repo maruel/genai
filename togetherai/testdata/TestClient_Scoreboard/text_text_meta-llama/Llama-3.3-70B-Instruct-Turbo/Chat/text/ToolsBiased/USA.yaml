@@ -1,0 +1,120 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 580
+        transfer_encoding: []
+        trailer: {}
+        host: api.together.xyz
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","stream":false,"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "nwFmGLU-2j9zxn-9487234659daa2fe",
+              "object": "chat.completion",
+              "created": 1748701497,
+              "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+              "prompt": [],
+              "choices": [
+                {
+                  "finish_reason": "tool_calls",
+                  "seed": 13531042007060834000,
+                  "logprobs": null,
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": null,
+                    "tool_calls": [
+                      {
+                        "index": 0,
+                        "id": "call_syqv9ilag0m0itmrwf0s2v5r",
+                        "type": "function",
+                        "function": {
+                          "arguments": "{\"country\":\"USA\"}",
+                          "name": "best_country"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 242,
+                "completion_tokens": 23,
+                "total_tokens": 265,
+                "cached_tokens": 0
+              },
+              "warnings": [
+                {
+                  "message": "Model supports only tool_choice auto"
+                }
+              ]
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9487234659daa2fe-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"387-4xKQA9enxSI6Hr85LMP4Z/gs8MI"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - 1bbe398a-e3b6-464a-b90a-94a10497262e-noamzn
+            X-Api-Call-End:
+                - "2025-05-31T14:24:57.641Z"
+            X-Api-Call-Start:
+                - "2025-05-31T14:24:57.425Z"
+            X-Api-Received:
+                - "2025-05-31T14:24:57.413Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - nwFmGLU-2j9zxn-9487234659daa2fe
+        status: 200 OK
+        code: 200
+        duration: 379ms

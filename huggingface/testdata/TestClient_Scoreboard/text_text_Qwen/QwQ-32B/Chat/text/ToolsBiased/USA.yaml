@@ -1,0 +1,93 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 529
+        transfer_encoding: []
+        trailer: {}
+        host: router.huggingface.co
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"stream":false,"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/hf-inference/models/Qwen/QwQ-32B/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 420
+        uncompressed: false
+        body: '{"object":"chat.completion","id":"","created":1748701857,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":250,"completion_tokens":19,"total_tokens":269}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "420"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 764453ad26f42978656c5c159a3b32ce.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - UdUnZ68Y9RJnTeIOszjPbgP6rpwZegdVF6EkLuSOpvxvkj1HOjQBNQ==
+            X-Amz-Cf-Pop:
+                - YUL62-P2
+            X-Cache:
+                - Miss from cloudfront
+            X-Compute-Characters:
+                - "1193"
+            X-Compute-Time:
+                - "2.5029716"
+            X-Compute-Type:
+                - 4-nvida-l4
+            X-Generated-Tokens:
+                - "19"
+            X-Inference-Id:
+                - c85320a0-02d4-406c-96ed-1a672374d60f
+            X-Inference-Time:
+                - "2478"
+            X-Powered-By:
+                - huggingface-moon
+            X-Prompt-Tokens:
+                - "250"
+            X-Proxied-Host:
+                - http://10.101.12.185
+            X-Proxied-Path:
+                - /v1/chat/completions
+            X-Proxied-Replica:
+                - cvzt8xzc-9u4na
+            X-Queue-Time:
+                - "22"
+            X-Request-Id:
+                - KJxl-jiWg6QRb5qt
+            X-Robots-Tag:
+                - none
+            X-Time-Per-Token:
+                - "130"
+            X-Total-Time:
+                - "2502"
+            X-Validation-Time:
+                - "1"
+        status: 200 OK
+        code: 200
+        duration: 2.608s

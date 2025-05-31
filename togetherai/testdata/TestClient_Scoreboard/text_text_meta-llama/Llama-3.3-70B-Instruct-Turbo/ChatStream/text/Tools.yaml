@@ -29,13 +29,13 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"nw8VkYZ-2j9zxn-947f4b67a8eb4bd6","object":"chat.completion.chunk","created":1748619255,"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"nwH7tPN-2j9zxn-948899c99b7ea314","object":"chat.completion.chunk","created":1748716837,"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"nw8VkYZ-2j9zxn-947f4b67a8eb4bd6","object":"chat.completion.chunk","created":1748619255,"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_s8ks5pe5q11y9nond56f579s","type":"function","function":{"name":"square_root","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"nwH7tPN-2j9zxn-948899c99b7ea314","object":"chat.completion.chunk","created":1748716837,"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_p08i42ly08hddnkipizfur97","type":"function","function":{"name":"square_root","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"nw8VkYZ-2j9zxn-947f4b67a8eb4bd6","object":"chat.completion.chunk","created":1748619255,"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\"number\":\"132413\"}"}}]},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"nwH7tPN-2j9zxn-948899c99b7ea314","object":"chat.completion.chunk","created":1748716837,"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\"number\":\"132413\"}"}}]},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"nw8VkYZ-2j9zxn-947f4b67a8eb4bd6","object":"chat.completion.chunk","created":1748619255,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"tool_calls","seed":4277979119920743000,"delta":{"token_id":128009,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","usage":{"prompt_tokens":266,"completion_tokens":24,"total_tokens":290,"cached_tokens":0},"warnings":[{"message":"Model supports only tool_choice auto"}]}
+            data: {"id":"nwH7tPN-2j9zxn-948899c99b7ea314","object":"chat.completion.chunk","created":1748716837,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"tool_calls","seed":10722945270856714000,"delta":{"token_id":128009,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","usage":{"prompt_tokens":266,"completion_tokens":24,"total_tokens":290,"cached_tokens":0},"warnings":[{"message":"Model supports only tool_choice auto"}]}
 
             data: [DONE]
 
@@ -49,11 +49,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 947f4b67a8eb4bd6-YUL
+                - 948899c99b7ea314-YUL
             Content-Type:
                 - text/event-stream;charset=utf-8
             Retry-After:
-                - "2"
+                - "1"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -61,11 +61,11 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 89bdc70d-4a1e-4cf1-a06a-c180b5192fb4-noamzn
+                - c6903846-c89c-41d2-aed9-11fbfdc5b613-noamzn
             X-Api-Call-Start:
-                - "2025-05-30T15:34:15.053Z"
+                - "2025-05-31T18:40:37.434Z"
             X-Api-Received:
-                - "2025-05-30T15:34:15.042Z"
+                - "2025-05-31T18:40:37.421Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -75,16 +75,16 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "1"
+                - "0"
             X-Ratelimit-Remaining-Tokens:
-                - "1000"
+                - "710"
             X-Ratelimit-Reset:
-                - "2"
+                - "1"
             X-Request-Id:
-                - nw8VkYZ-2j9zxn-947f4b67a8eb4bd6
+                - nwH7tPN-2j9zxn-948899c99b7ea314
         status: 200 OK
         code: 200
-        duration: 2.857s
+        duration: 259ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -97,7 +97,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","stream":true,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"index":0,"id":"call_s8ks5pe5q11y9nond56f579s","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_s8ks5pe5q11y9nond56f579s"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+            {"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","stream":true,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"index":0,"id":"call_p08i42ly08hddnkipizfur97","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_p08i42ly08hddnkipizfur97"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
         form: {}
         headers:
             Content-Type:
@@ -113,13 +113,13 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"id":"nw8VmMQ-3NKUce-947f4b79fbe6a293","object":"chat.completion.chunk","created":1748619257,"choices":[{"index":0,"text":"363","logprobs":null,"finish_reason":null,"seed":null,"delta":{"token_id":18199,"role":"assistant","content":"363","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","usage":null}
+            data: {"id":"nwH7to1-2j9zxn-948899d20ac6a2b6","object":"chat.completion.chunk","created":1748716838,"choices":[{"index":0,"text":"363","logprobs":null,"finish_reason":null,"seed":null,"delta":{"token_id":18199,"role":"assistant","content":"363","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo-cached","usage":null}
 
-            data: {"id":"nw8VmMQ-3NKUce-947f4b79fbe6a293","object":"chat.completion.chunk","created":1748619257,"choices":[{"index":0,"text":".","logprobs":null,"finish_reason":null,"seed":null,"delta":{"token_id":13,"role":"assistant","content":".","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","usage":null}
+            data: {"id":"nwH7to1-2j9zxn-948899d20ac6a2b6","object":"chat.completion.chunk","created":1748716838,"choices":[{"index":0,"text":".","logprobs":null,"finish_reason":null,"seed":null,"delta":{"token_id":13,"role":"assistant","content":".","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo-cached","usage":null}
 
-            data: {"id":"nw8VmMQ-3NKUce-947f4b79fbe6a293","object":"chat.completion.chunk","created":1748619257,"choices":[{"index":0,"text":"89","logprobs":null,"finish_reason":null,"seed":null,"delta":{"token_id":4578,"role":"assistant","content":"89","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","usage":null}
+            data: {"id":"nwH7to1-2j9zxn-948899d20ac6a2b6","object":"chat.completion.chunk","created":1748716838,"choices":[{"index":0,"text":"89","logprobs":null,"finish_reason":null,"seed":null,"delta":{"token_id":4578,"role":"assistant","content":"89","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo-cached","usage":null}
 
-            data: {"id":"nw8VmMQ-3NKUce-947f4b79fbe6a293","object":"chat.completion.chunk","created":1748619257,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"stop","seed":11932584680682506000,"delta":{"token_id":128009,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","usage":{"prompt_tokens":132,"completion_tokens":4,"total_tokens":136,"cached_tokens":0}}
+            data: {"id":"nwH7to1-2j9zxn-948899d20ac6a2b6","object":"chat.completion.chunk","created":1748716838,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"stop","seed":7973164868729900000,"delta":{"token_id":128009,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo-cached","usage":{"prompt_tokens":132,"completion_tokens":4,"total_tokens":136,"cached_tokens":0}}
 
             data: [DONE]
 
@@ -133,7 +133,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 947f4b79fbe6a293-YUL
+                - 948899d20ac6a2b6-YUL
             Content-Type:
                 - text/event-stream;charset=utf-8
             Retry-After:
@@ -145,11 +145,11 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - affb63e6-7bc4-43f9-90d8-2149728119d3-noamzn
+                - a7699106-89d6-471b-a845-afc22d72f80b-noamzn
             X-Api-Call-Start:
-                - "2025-05-30T15:34:17.769Z"
+                - "2025-05-31T18:40:38.803Z"
             X-Api-Received:
-                - "2025-05-30T15:34:17.759Z"
+                - "2025-05-31T18:40:38.792Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -165,7 +165,7 @@ interactions:
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - nw8VmMQ-3NKUce-947f4b79fbe6a293
+                - nwH7to1-2j9zxn-948899d20ac6a2b6
         status: 200 OK
         code: 200
-        duration: 2.392s
+        duration: 1.349s

@@ -54,18 +54,6 @@ func (i *injectOption) ChatStream(ctx context.Context, msgs genai.Messages, opts
 	return i.Client.ChatStream(ctx, msgs, opts, replies)
 }
 
-var testCases = &internaltest.TestCases{
-	Default: internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ProviderChat { return getClient(t, m) },
-		// https://platform.openai.com/docs/models/gpt-4.1-nano
-		Model: "gpt-4.1-nano",
-	},
-}
-
-func TestClient_Chat_tool_use_position_bias(t *testing.T) {
-	testCases.TestChatToolUsePositionBias(t, nil, false)
-}
-
 func TestClient_ProviderChat_errors(t *testing.T) {
 	data := []internaltest.ProviderChatError{
 		{

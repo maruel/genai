@@ -1,0 +1,85 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 553
+        transfer_encoding: []
+        trailer: {}
+        host: api.deepseek.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"deepseek-chat","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":true,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"id":"e4e7eb75-a052-4b50-98a9-153c126c35d9","object":"chat.completion.chunk","created":1748703832,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"e4e7eb75-a052-4b50-98a9-153c126c35d9","object":"chat.completion.chunk","created":1748703832,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_0_1e4d17fc-7e15-48ef-a3c5-f206d088c220","type":"function","function":{"name":"best_country","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"e4e7eb75-a052-4b50-98a9-153c126c35d9","object":"chat.completion.chunk","created":1748703832,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\""}}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"e4e7eb75-a052-4b50-98a9-153c126c35d9","object":"chat.completion.chunk","created":1748703832,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"country"}}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"e4e7eb75-a052-4b50-98a9-153c126c35d9","object":"chat.completion.chunk","created":1748703832,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\":\""}}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"e4e7eb75-a052-4b50-98a9-153c126c35d9","object":"chat.completion.chunk","created":1748703832,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"Canada"}}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"e4e7eb75-a052-4b50-98a9-153c126c35d9","object":"chat.completion.chunk","created":1748703832,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\"}"}}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"e4e7eb75-a052-4b50-98a9-153c126c35d9","object":"chat.completion.chunk","created":1748703832,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"id":"call_1_97add6a5-2f0f-47a0-ad8c-e05cc0047585","type":"function","function":{"name":"best_country","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"e4e7eb75-a052-4b50-98a9-153c126c35d9","object":"chat.completion.chunk","created":1748703832,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"{\""}}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"e4e7eb75-a052-4b50-98a9-153c126c35d9","object":"chat.completion.chunk","created":1748703832,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"country"}}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"e4e7eb75-a052-4b50-98a9-153c126c35d9","object":"chat.completion.chunk","created":1748703832,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"\":\""}}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"e4e7eb75-a052-4b50-98a9-153c126c35d9","object":"chat.completion.chunk","created":1748703832,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"USA"}}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"e4e7eb75-a052-4b50-98a9-153c126c35d9","object":"chat.completion.chunk","created":1748703832,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"\"}"}}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"e4e7eb75-a052-4b50-98a9-153c126c35d9","object":"chat.completion.chunk","created":1748703832,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"content":""},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":175,"completion_tokens":36,"total_tokens":211,"prompt_tokens_details":{"cached_tokens":128},"prompt_cache_hit_tokens":128,"prompt_cache_miss_tokens":47}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94875c471d2aa300-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            X-Content-Type-Options:
+                - nosniff
+            X-Ds-Trace-Id:
+                - b32348d701ca1e321eb97a31b19866bf
+        status: 200 OK
+        code: 200
+        duration: 290ms

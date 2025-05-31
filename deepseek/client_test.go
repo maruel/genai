@@ -18,17 +18,6 @@ func TestClient_Scoreboard(t *testing.T) {
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat { return getClient(t, m) }, nil)
 }
 
-var testCases = &internaltest.TestCases{
-	Default: internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ProviderChat { return getClient(t, m) },
-		Model:     "deepseek-chat",
-	},
-}
-
-func TestClient_Chat_tool_use_position_bias(t *testing.T) {
-	testCases.TestChatToolUsePositionBias(t, nil, false)
-}
-
 func TestClient_ProviderChat_errors(t *testing.T) {
 	data := []internaltest.ProviderChatError{
 		{

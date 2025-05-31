@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 555
+        transfer_encoding: []
+        trailer: {}
+        host: api.groq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"model":"llama3-8b-8192","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-c94e4386-c908-4d4e-ad0a-aaa5502b5e84","object":"chat.completion","created":1748716672,"model":"llama3-8b-8192","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"call_22mz","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.06864434,"prompt_tokens":852,"prompt_time":0.095401135,"completion_tokens":73,"completion_time":0.054446913,"total_tokens":925,"total_time":0.149848048},"usage_breakdown":{"models":null},"system_fingerprint":"fp_f974fb141b","x_groq":{"id":"req_01jwkt5nchfq9vk904wgbdn5m7"}}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 948895c25933a2ae-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - us-central-1
+            X-Ratelimit-Limit-Requests:
+                - "50000"
+            X-Ratelimit-Limit-Tokens:
+                - "100000"
+            X-Ratelimit-Remaining-Requests:
+                - "49999"
+            X-Ratelimit-Remaining-Tokens:
+                - "99965"
+            X-Ratelimit-Reset-Requests:
+                - 1.728s
+            X-Ratelimit-Reset-Tokens:
+                - 20.999999ms
+            X-Request-Id:
+                - req_01jwkt5nchfq9vk904wgbdn5m7
+        status: 200 OK
+        code: 200
+        duration: 356ms

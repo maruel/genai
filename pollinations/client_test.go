@@ -19,22 +19,6 @@ func TestClient_Scoreboard(t *testing.T) {
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat { return getClient(t, m) }, nil)
 }
 
-var testCases = &internaltest.TestCases{
-	Default: internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ProviderChat { return getClient(t, m) },
-		Model:     "llama-scout",
-	},
-}
-
-func TestClient_Chat_tool_use_position_bias(t *testing.T) {
-	t.Run("Chat", func(t *testing.T) {
-		testCases.TestChatToolUsePositionBiasCore(t, nil, false, false)
-	})
-	t.Run("ChatStream", func(t *testing.T) {
-		testCases.TestChatToolUsePositionBiasCore(t, &internaltest.Settings{UsageIsBroken: true}, false, true)
-	})
-}
-
 func TestClient_ProviderChat_errors(t *testing.T) {
 	t.Skip("TODO")
 	data := []internaltest.ProviderChatError{

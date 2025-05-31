@@ -101,7 +101,7 @@ var Scoreboard = genai.Scoreboard{
 				ReportFinishReason: true,
 				MaxTokens:          true,
 				StopSequence:       true,
-				Tools:              genai.False,
+				Tools:              genai.Flaky,
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         false,

@@ -34,7 +34,7 @@ func TestClient_Chat_simple(t *testing.T) {
 			if len(resp.Contents) == 0 {
 				t.Fatal("missing response")
 			}
-			internaltest.ValidateSingleWordResponse(t, resp, "hello")
+			internaltest.ValidateWordResponse(t, resp, "hello")
 		})
 	}
 }
@@ -79,7 +79,7 @@ func TestClient_ChatStream_simple(t *testing.T) {
 			if len(resp.Contents) == 0 {
 				t.Fatal("missing response")
 			}
-			internaltest.ValidateSingleWordResponse(t, resp, "hello")
+			internaltest.ValidateWordResponse(t, resp, "hello")
 		})
 	}
 }

@@ -1,0 +1,106 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 614
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"claude-3-5-haiku-20241022","max_tokens":8192,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"stream":true,"thinking":{"type":"disabled"},"tool_choice":{"type":"any"},"tools":[{"description":"A tool to determine the best country","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"name":"best_country"}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"id":"msg_01RevJVgzZemzdoS1jgdjt4m","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":483,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":10,"service_tier":"standard"}}       }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_01S5hvDREVdSZDWhQKyqVjvb","name":"best_country","input":{}}     }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":""}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"{\"country\":"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":" \"USA\"}"}         }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0       }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null},"usage":{"output_tokens":38}  }
+
+            event: message_stop
+            data: {"type":"message_stop"    }
+
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "50000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "49000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2025-05-31T15:19:25Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "10000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "6000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2025-05-31T15:19:51Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "50"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "47"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2025-05-31T15:19:27Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "60000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "55000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2025-05-31T15:19:25Z"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94877308ca62a2d0-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Request-Id:
+                - req_011CPfqFg9gTXQvnJc3tc7fk
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 715ms

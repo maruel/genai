@@ -1,0 +1,87 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 579
+        transfer_encoding: []
+        trailer: {}
+        host: api.together.xyz
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","stream":true,"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"id":"nwFmGYQ-3NKUce-948723488beba2fe","object":"chat.completion.chunk","created":1748701498,"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"nwFmGYQ-3NKUce-948723488beba2fe","object":"chat.completion.chunk","created":1748701498,"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_35jezgdmgjomrzw1a342oc34","type":"function","function":{"name":"best_country","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"nwFmGYQ-3NKUce-948723488beba2fe","object":"chat.completion.chunk","created":1748701498,"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"nwFmGYQ-3NKUce-948723488beba2fe","object":"chat.completion.chunk","created":1748701498,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"tool_calls","seed":5845680404047683000,"delta":{"token_id":128008,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","usage":{"prompt_tokens":242,"completion_tokens":23,"total_tokens":265,"cached_tokens":0},"warnings":[{"message":"Model supports only tool_choice auto"}]}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache, no-transform
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 948723488beba2fe-YUL
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - a3554715-2cff-4cee-9549-cf8641e1fc3b-noamzn
+            X-Api-Call-Start:
+                - "2025-05-31T14:24:58.120Z"
+            X-Api-Received:
+                - "2025-05-31T14:24:58.105Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "1"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - nwFmGYQ-3NKUce-948723488beba2fe
+        status: 200 OK
+        code: 200
+        duration: 598ms

@@ -36,17 +36,6 @@ func TestClient_Scoreboard(t *testing.T) {
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat { return getClient(t, m) }, f)
 }
 
-var testCases = &internaltest.TestCases{
-	Default: internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ProviderChat { return getClient(t, m) },
-		Model:     "meta-llama/Llama-4-Scout-17B-16E-Instruct",
-	},
-}
-
-func TestClient_Chat_tool_use_position_bias(t *testing.T) {
-	testCases.TestChatToolUsePositionBias(t, &internaltest.Settings{Model: "Qwen/Qwen2.5-7B-Instruct-Turbo"}, false)
-}
-
 func TestClient_ProviderChat_errors(t *testing.T) {
 	data := []internaltest.ProviderChatError{
 		{

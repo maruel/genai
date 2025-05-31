@@ -31,17 +31,6 @@ func TestClient(t *testing.T) {
 		}, nil)
 	})
 
-	tc := &internaltest.TestCases{
-		Default: internaltest.Settings{
-			GetClient: func(t *testing.T, m string) genai.ProviderChat { return s.getClient(t, m) },
-			Model:     "gemma3:4b",
-		},
-	}
-
-	t.Run("tool_use_position_bias", func(t *testing.T) {
-		tc.TestChatToolUsePositionBias(t, &internaltest.Settings{Model: "llama3.1:8b"}, true)
-	})
-
 	t.Run("ProviderChat_errors", func(t *testing.T) {
 		data := []internaltest.ProviderChatError{
 			{

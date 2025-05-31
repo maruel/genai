@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 602
+        transfer_encoding: []
+        trailer: {}
+        host: text.pollinations.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"model":"openai","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required","private":true,"stream_options":{"include_usage":true}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://text.pollinations.ai/openai
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"content_filter_results":{},"finish_reason":"tool_calls","index":0,"logprobs":null,"message":{"annotations":[],"content":null,"refusal":null,"role":"assistant","tool_calls":[{"function":{"arguments":"{\"country\":\"Canada\"}","name":"best_country"},"id":"call_eJLHgft8QFeKNmXdLsA3j8MX","type":"function"}]}}],"created":1748701466,"id":"pllns_e00d6ffa55300c0ed4c376f6adba6fce","model":"gpt-4.1-mini-2025-04-14","object":"chat.completion","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}],"system_fingerprint":"fp_178c8d546f","usage":{"completion_tokens":15,"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0},"prompt_tokens":315,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"total_tokens":330}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94875c433a42a306-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"3f1-kGBKs/cm7hUUR7Mbqs2y0YacicM"
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2025-05-31T14:24:28.156Z"
+            X-Cache-Key:
+                - c74a3347177434ce30b3f943713030df67b551820043c4fcd549661637a77691
+            X-Powered-By:
+                - Express
+        status: 200 OK
+        code: 200
+        duration: 486ms

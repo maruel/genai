@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 598
+        transfer_encoding: []
+        trailer: {}
+        host: api.mistral.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"mistral-small-2503","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"eb6d8be0959f457eb5405474f22935fb","object":"chat.completion","created":1748703864,"model":"mistral-small-2503","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"FEQcJIWw5","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":0},{"id":"oxialQSvK","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":1}],"content":""},"finish_reason":"tool_calls","logprobs":null}],"usage":{"prompt_tokens":129,"total_tokens":166,"completion_tokens":37}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94875d0dbb8ea2a8-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            X-Envoy-Upstream-Service-Time:
+                - "9612"
+            X-Kong-Proxy-Latency:
+                - "11"
+            X-Kong-Request-Id:
+                - 766589597bfdd52a52a3f51cd997470b
+            X-Kong-Upstream-Latency:
+                - "9613"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "2000000"
+            X-Ratelimit-Limit-Tokens-Month:
+                - "10000000000"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "1996724"
+            X-Ratelimit-Remaining-Tokens-Month:
+                - "9999985350"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "166"
+        status: 200 OK
+        code: 200
+        duration: 9.749s

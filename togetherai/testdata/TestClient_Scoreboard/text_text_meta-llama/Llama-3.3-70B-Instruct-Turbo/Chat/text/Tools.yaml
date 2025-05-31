@@ -30,15 +30,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nw8VicD-2j9zxn-947f4b3d2df1a24e",
+              "id": "nwH7t6S-2j9zxn-948899c33f43a314",
               "object": "chat.completion",
-              "created": 1748619248,
+              "created": 1748716836,
               "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
               "prompt": [],
               "choices": [
                 {
                   "finish_reason": "tool_calls",
-                  "seed": 17425907852607314000,
+                  "seed": 13918812265676696000,
                   "logprobs": null,
                   "index": 0,
                   "message": {
@@ -47,7 +47,7 @@ interactions:
                     "tool_calls": [
                       {
                         "index": 0,
-                        "id": "call_70lkxxn65kxuf9c97yfumnzw",
+                        "id": "call_004cu1ffdm0khbduglfzqs3n",
                         "type": "function",
                         "function": {
                           "arguments": "{\"number\":\"132413\"}",
@@ -78,11 +78,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 947f4b3d2df1a24e-YUL
+                - 948899c33f43a314-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"388-PYb1DpAevIxiSa1ApnIOnJYevug"
+                - W/"388-q1DRmOZWFOi0uSfhlwJTZXAgRY0"
             Retry-After:
                 - "2"
             Server:
@@ -92,13 +92,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 8a652432-55de-4d9b-90e6-97952b912bd7-noamzn
+                - d686d8b5-e606-453f-bc75-e4ba45ec0cd8-noamzn
             X-Api-Call-End:
-                - "2025-05-30T15:34:08.777Z"
+                - "2025-05-31T18:40:36.759Z"
             X-Api-Call-Start:
-                - "2025-05-30T15:34:08.538Z"
+                - "2025-05-31T18:40:36.451Z"
             X-Api-Received:
-                - "2025-05-30T15:34:08.526Z"
+                - "2025-05-31T18:40:36.439Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -108,16 +108,16 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "0"
+                - "1"
             X-Ratelimit-Remaining-Tokens:
                 - "1000"
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - nw8VicD-2j9zxn-947f4b3d2df1a24e
+                - nwH7t6S-2j9zxn-948899c33f43a314
         status: 200 OK
         code: 200
-        duration: 668ms
+        duration: 472ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -130,7 +130,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","stream":false,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"index":0,"id":"call_70lkxxn65kxuf9c97yfumnzw","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_70lkxxn65kxuf9c97yfumnzw"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+            {"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","stream":false,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"index":0,"id":"call_004cu1ffdm0khbduglfzqs3n","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_004cu1ffdm0khbduglfzqs3n"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
         form: {}
         headers:
             Content-Type:
@@ -147,15 +147,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nw8VjMR-2j9zxn-947f4b4e9b05a2a6",
+              "id": "nwH7tSn-3NKUce-948899c5f928a314",
               "object": "chat.completion",
-              "created": 1748619251,
+              "created": 1748716837,
               "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
               "prompt": [],
               "choices": [
                 {
                   "finish_reason": "stop",
-                  "seed": 16233663012699020000,
+                  "seed": 15264001535800370000,
                   "logprobs": null,
                   "index": 0,
                   "message": {
@@ -180,11 +180,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 947f4b4e9b05a2a6-YUL
+                - 948899c5f928a314-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"21e-BG/2Z6hdWcPd5/RVHzihRna5zb4"
+                - W/"21e-izUJGdXxd3PNyU10p8SBp+D4iAI"
             Retry-After:
                 - "2"
             Server:
@@ -194,13 +194,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 67f54a33-c9ed-44f7-9f55-eb3843c34ded-noamzn
+                - 6698ea9b-56b0-4185-91a4-33680f4b2e81-noamzn
             X-Api-Call-End:
-                - "2025-05-30T15:34:11.195Z"
+                - "2025-05-31T18:40:37.809Z"
             X-Api-Call-Start:
-                - "2025-05-30T15:34:11.042Z"
+                - "2025-05-31T18:40:37.629Z"
             X-Api-Received:
-                - "2025-05-30T15:34:11.032Z"
+                - "2025-05-31T18:40:37.619Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -210,13 +210,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "0"
+                - "1"
             X-Ratelimit-Remaining-Tokens:
-                - "955"
+                - "1000"
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - nw8VjMR-2j9zxn-947f4b4e9b05a2a6
+                - nwH7tSn-3NKUce-948899c5f928a314
         status: 200 OK
         code: 200
-        duration: 2.421s
+        duration: 574ms

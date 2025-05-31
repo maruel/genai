@@ -64,24 +64,10 @@ func (i *injectOption) ChatStream(ctx context.Context, msgs genai.Messages, opts
 
 //
 
-var testCases = &internaltest.TestCases{
-	Default: internaltest.Settings{
-		GetClient: func(t *testing.T, m string) genai.ProviderChat { return getClient(t, m) },
-		// Using small model for testing.
-		// For tests that do not use function calling nor images, a good zero cost alternative is "gemma-3-27b-it".
-		// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-		Model: "gemini-2.0-flash-lite",
-	},
-}
-
-func TestClient_Chat_tool_use_position_bias(t *testing.T) {
-	testCases.TestChatToolUsePositionBias(t, nil, true)
-}
-
 func TestClient_Cache(t *testing.T) {
 	slow := os.Getenv("GEMINI_SLOW") != ""
 	ctx := t.Context()
-	c := getClient(t, testCases.Default.Model)
+	c := getClient(t, "gemini-2.0-flash-lite")
 	f1, err := os.Open("../internal/internaltest/testdata/animation.mp4")
 	if err != nil {
 		t.Fatal(err)

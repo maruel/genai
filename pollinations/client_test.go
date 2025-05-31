@@ -5,6 +5,7 @@
 package pollinations_test
 
 import (
+	"context"
 	_ "embed"
 	"os"
 	"testing"
@@ -16,7 +17,37 @@ import (
 )
 
 func TestClient_Scoreboard(t *testing.T) {
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat { return getClient(t, m) }, nil)
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat {
+		c := getClient(t, m)
+		if m == "gptimage" {
+			return &injectOption{Client: c, t: t, opts: pollinations.ChatOptions{Width: 512, Height: 512}}
+		}
+		return c
+	}, nil)
+}
+
+type injectOption struct {
+	*pollinations.Client
+	t    *testing.T
+	opts pollinations.ChatOptions
+}
+
+func (i *injectOption) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+	n := i.opts
+	if opts != nil {
+		n.ChatOptions = *opts.(*genai.ChatOptions)
+	}
+	opts = &n
+	return i.Client.Chat(ctx, msgs, opts)
+}
+
+func (i *injectOption) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.ChatResult, error) {
+	n := i.opts
+	if opts != nil {
+		n.ChatOptions = *opts.(*genai.ChatOptions)
+	}
+	opts = &n
+	return i.Client.ChatStream(ctx, msgs, opts, replies)
 }
 
 func TestClient_ProviderChat_errors(t *testing.T) {

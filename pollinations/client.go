@@ -119,8 +119,8 @@ var Scoreboard = genai.Scoreboard{
 			In:  []genai.Modality{genai.ModalityText},
 			Out: []genai.Modality{genai.ModalityImage},
 			Models: []string{
-				"gptimage",
 				"flux",
+				"gptimage",
 				"turbo",
 			},
 			Chat: genai.Functionality{
@@ -261,6 +261,15 @@ var Scoreboard = genai.Scoreboard{
 	},
 }
 
+// ChatOptions is the Groq-specific options.
+type ChatOptions struct {
+	genai.ChatOptions
+
+	// Width and Height control the image width and height. Both default to 1024.
+	Width  int
+	Height int
+}
+
 // https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#text--multimodal-openai-compatible-post-%EF%B8%8F%EF%B8%8F
 //
 // The structure is severely underdocumented.
@@ -306,6 +315,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
+			case *ChatOptions:
+				unsupported, errs = c.initOptions(&v.ChatOptions, model)
+				sp = v.SystemPrompt
 			case *genai.ChatOptions:
 				unsupported, errs = c.initOptions(v, model)
 				sp = v.SystemPrompt
@@ -875,6 +887,9 @@ func (er *ErrorResponse) String() string {
 	if er.Details.Detail != "" {
 		return fmt.Sprintf("error %s%s", er.Details.Detail, suffix)
 	}
+	if er.Message != "" {
+		return fmt.Sprintf("error %s %s%s", er.Error, er.Message, suffix)
+	}
 	return fmt.Sprintf("error %s%s", er.Error, suffix)
 }
 
@@ -968,22 +983,34 @@ func (c *Client) GenImage(ctx context.Context, msgs genai.Messages, opts genai.V
 
 	qp := url.Values{}
 	qp.Add("model", c.Model)
-	if o, ok := opts.(*genai.ChatOptions); ok {
-		// Defaults to 42 otherwise.
-		if o.Seed != 0 {
-			qp.Add("seed", strconv.FormatInt(o.Seed, 10))
-		}
+	switch v := opts.(type) {
+	case *ChatOptions:
 		// TODO: Deny most flags.
+		if v.Seed != 0 {
+			// Defaults to 42 otherwise.
+			qp.Add("seed", strconv.FormatInt(v.Seed, 10))
+		}
+		if v.Width != 0 {
+			qp.Add("width", strconv.Itoa(v.Width))
+		}
+		if v.Height != 0 {
+			qp.Add("height", strconv.Itoa(v.Height))
+		}
+	case *genai.ChatOptions:
+		// TODO: Deny most flags.
+		if v.Seed != 0 {
+			// Defaults to 42 otherwise.
+			qp.Add("seed", strconv.FormatInt(v.Seed, 10))
+		}
+	default:
 	}
-	qp.Add("width", "1024")
-	qp.Add("height", "1024")
+
 	qp.Add("nologo", "true")
 	qp.Add("private", "true") // "nofeed"
 	qp.Add("enhance", "false")
 	qp.Add("safe", "false")
 	// qp.Add("negative_prompt", "worst quality, blurry")
 	qp.Add("quality", "medium")
-	qp.Add("prompt", msg.AsText())
 	for _, mc := range msg.Contents {
 		if mc.Document != nil {
 			return res, errors.New("inline document is not supported")
@@ -993,7 +1020,8 @@ func (c *Client) GenImage(ctx context.Context, msgs genai.Messages, opts genai.V
 		}
 	}
 
-	url := "https://image.pollinations.ai/prompt?" + qp.Encode()
+	prompt := url.QueryEscape(msg.AsText())
+	url := "https://image.pollinations.ai/prompt/" + prompt + "?" + qp.Encode()
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return res, err

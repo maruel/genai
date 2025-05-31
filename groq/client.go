@@ -144,9 +144,6 @@ var Scoreboard = genai.Scoreboard{
 	},
 }
 
-// TODO: Expose option c.ReasoningFormat through ChatOptions.
-// Ref: https://console.groq.com/docs/reasoning/
-
 // ChatOptions is the Groq-specific options.
 type ChatOptions struct {
 	genai.ChatOptions

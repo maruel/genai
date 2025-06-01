@@ -944,20 +944,26 @@ func New(auth, model string, r http.RoundTripper) (*Client, error) {
 }
 
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+	// TODO: Use Scoreboard list.
 	switch c.Model {
 	case "flux", "gptimage", "turbo":
-		// Redirect to gen image.
-		return c.GenImage(ctx, msgs, opts)
+		if len(msgs) != 1 {
+			return genai.ChatResult{}, errors.New("must pass exactly one Message")
+		}
+		return c.GenImage(ctx, msgs[0], opts)
 	default:
 		return c.ClientChat.Chat(ctx, msgs, opts)
 	}
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
+	// TODO: Use Scoreboard list.
 	switch c.Model {
 	case "flux", "gptimage", "turbo":
-		// Redirect to gen image.
-		res, err := c.GenImage(ctx, msgs, opts)
+		if len(msgs) != 1 {
+			return genai.ChatResult{}, errors.New("must pass exactly one Message")
+		}
+		res, err := c.GenImage(ctx, msgs[0], opts)
 		if err == nil {
 			chunks <- genai.MessageFragment{
 				Filename:         res.Contents[0].Filename,
@@ -973,14 +979,9 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 // GenImage uses the text-to-image API to generate an image.
 //
 // Default rate limit is 0.2 QPS / IP.
-func (c *Client) GenImage(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Validatable) (genai.ChatResult, error) {
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#text-to-image-get-%EF%B8%8F
 	res := genai.ChatResult{}
-	if len(msgs) != 1 {
-		return res, errors.New("must pass exactly one Message")
-	}
-	msg := msgs[0]
-
 	qp := url.Values{}
 	qp.Add("model", c.Model)
 	switch v := opts.(type) {
@@ -1139,5 +1140,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	return nil
 }
 
-// _ genai.ProviderChat  = &Client{}
-var _ genai.ProviderModel = &Client{}
+var (
+	_ genai.ProviderChat       = &Client{}
+	_ genai.ProviderImage      = &Client{}
+	_ genai.ProviderModel      = &Client{}
+	_ genai.ProviderScoreboard = &Client{}
+)

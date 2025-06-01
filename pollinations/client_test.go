@@ -19,7 +19,7 @@ import (
 func TestClient_Scoreboard(t *testing.T) {
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat {
 		c := getClient(t, m)
-		if m == "gptimage" {
+		if m == "flux" || m == "gptimage" || m == "turbo" {
 			return &injectOption{Client: c, t: t, opts: pollinations.ChatOptions{Width: 512, Height: 512}}
 		}
 		return c

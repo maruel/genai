@@ -618,6 +618,7 @@ type MessageFragment struct {
 
 	Filename         string `json:"filename,omitzero"`
 	DocumentFragment []byte `json:"document,omitzero"`
+	URL              string `json:"url,omitzero"`
 
 	// ToolCall is a tool call that the LLM requested to make.
 	ToolCall ToolCall `json:"tool_call,omitzero"`
@@ -626,7 +627,7 @@ type MessageFragment struct {
 }
 
 func (m *MessageFragment) IsZero() bool {
-	return m.TextFragment == "" && m.ThinkingFragment == "" && len(m.Opaque) == 0 && m.Filename == "" && len(m.DocumentFragment) == 0 && m.ToolCall.IsZero()
+	return m.TextFragment == "" && m.ThinkingFragment == "" && len(m.Opaque) == 0 && m.Filename == "" && len(m.DocumentFragment) == 0 && m.URL == "" && m.ToolCall.IsZero()
 }
 
 func (m *MessageFragment) GoString() string {
@@ -684,14 +685,25 @@ func (m *Message) Accumulate(mf MessageFragment) error {
 		return nil
 	}
 
-	if mf.Filename != "" || mf.DocumentFragment != nil {
+	if mf.URL != "" {
+		m.Contents = append(m.Contents, Content{Filename: mf.Filename, URL: mf.URL})
+		return nil
+	}
+	if mf.DocumentFragment != nil {
 		if len(m.Contents) != 0 {
-			if lastBlock := &m.Contents[len(m.Contents)-1]; lastBlock.Filename != "" {
+			if lastBlock := &m.Contents[len(m.Contents)-1]; lastBlock.Filename != "" || lastBlock.Document != nil {
+				if lastBlock.Document == nil {
+					lastBlock.Document = &bb.BytesBuffer{}
+				}
 				_, _ = lastBlock.Document.(*bb.BytesBuffer).Write(mf.DocumentFragment)
 				return nil
 			}
 		}
 		m.Contents = append(m.Contents, Content{Filename: mf.Filename, Document: &bb.BytesBuffer{D: mf.DocumentFragment}})
+		return nil
+	}
+	if mf.Filename != "" {
+		m.Contents = append(m.Contents, Content{Filename: mf.Filename})
 		return nil
 	}
 
@@ -878,6 +890,13 @@ func (t *ToolCallResult) UnmarshalJSON(b []byte) error {
 		return err
 	}
 	return t.Validate()
+}
+
+// Images
+
+// ProviderImage is the interface to interact with an image generator.
+type ProviderImage interface {
+	GenImage(ctx context.Context, msg Message, opts Validatable) (ChatResult, error)
 }
 
 // Models

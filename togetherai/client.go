@@ -22,6 +22,7 @@ import (
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -122,7 +123,59 @@ var Scoreboard = genai.Scoreboard{
 				JSONSchema:         true,
 			},
 		},
+		{
+			In:  []genai.Modality{genai.ModalityText},
+			Out: []genai.Modality{genai.ModalityImage},
+			Models: []string{
+				"black-forest-labs/FLUX.1-schnell-Free",
+				"black-forest-labs/FLUX.1-schnell",
+				//"black-forest-labs/FLUX.1-schnell-fixedres",
+				"black-forest-labs/FLUX.1-dev",
+				"black-forest-labs/FLUX.1.1-pro",
+				"black-forest-labs/FLUX.1-kontext-pro",
+				"black-forest-labs/FLUX.1-kontext-max",
+				"black-forest-labs/FLUX.1-canny",
+				"black-forest-labs/FLUX.1-depth",
+				"black-forest-labs/FLUX.1-redux",
+				"black-forest-labs/FLUX.1-pro",
+				"black-forest-labs/FLUX.1-dev-lora",
+			},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   false,
+				ReportFinishReason: false,
+				MaxTokens:          false,
+				StopSequence:       false,
+				Tools:              genai.False,
+				UnbiasedTool:       false,
+				JSON:               false,
+				JSONSchema:         false,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   false,
+				ReportFinishReason: false,
+				MaxTokens:          false,
+				StopSequence:       false,
+				Tools:              genai.False,
+				UnbiasedTool:       false,
+				JSON:               false,
+				JSONSchema:         false,
+			},
+		},
 	},
+}
+
+type ChatOptions struct {
+	genai.ChatOptions
+
+	// Width and Height control the image width and height. Both default to 1024.
+	Width  int
+	Height int
 }
 
 // https://docs.together.ai/reference/chat-completions-1
@@ -549,7 +602,7 @@ type Model struct {
 	ID            string `json:"id"`
 	Object        string `json:"object"`
 	Created       Time   `json:"created"`
-	Type          string `json:"type"` // chat,moderation,image,
+	Type          string `json:"type"` // "chat", "moderation", "image"
 	Running       bool   `json:"running"`
 	DisplayName   string `json:"display_name"`
 	Organization  string `json:"organization"`
@@ -600,6 +653,43 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 		models[i] = &(*r)[i]
 	}
 	return models
+}
+
+// ImageRequest doesn't have a formal documentation.
+//
+// https://github.com/togethercomputer/together-python/blob/main/src/together/resources/images.py is the
+// closest.
+type ImageRequest struct {
+	Prompt         string `json:"prompt"`
+	Model          string `json:"model,omitzero"`
+	Steps          int64  `json:"steps,omitzero"`  // Default 20
+	Seed           int64  `json:"seed,omitzero"`   //
+	N              int64  `json:"n,omitzero"`      // Default 1
+	Height         int64  `json:"height,omitzero"` // Default 1024
+	Width          int64  `json:"width,omitzero"`  // Default 1024
+	NegativePrompt string `json:"negative_prompt,omitzero"`
+	ImageURL       string `json:"image_url,omitzero"`
+	Image          []byte `json:"image_base64,omitzero"`
+}
+
+// ImageResponse doesn't have a formal documentation.
+//
+// https://github.com/togethercomputer/together-python/blob/main/src/together/types/images.py is the
+// closest.
+type ImageResponse struct {
+	ID     string            `json:"id"`
+	Model  string            `json:"model"`
+	Object string            `json:"object"` // "list"
+	Data   []ImageChoiceData `json:"data"`
+}
+
+type ImageChoiceData struct {
+	Index   int64  `json:"index"`
+	Data    []byte `json:"b64_json"`
+	URL     string `json:"url"`
+	Timings struct {
+		Inference float64 `json:"inference"`
+	} `json:"timings"`
 }
 
 //
@@ -678,6 +768,86 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 			},
 		},
 	}, nil
+}
+
+func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+	// TODO: Use Scoreboard list.
+	if strings.HasPrefix(c.Model, "black-forest-labs/") {
+		if len(msgs) != 1 {
+			return genai.ChatResult{}, errors.New("must pass exactly one Message")
+		}
+		return c.GenImage(ctx, msgs[0], opts)
+	}
+	return c.ClientChat.Chat(ctx, msgs, opts)
+}
+
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
+	// TODO: Use Scoreboard list.
+	if strings.HasPrefix(c.Model, "black-forest-labs/") {
+		if len(msgs) != 1 {
+			return genai.ChatResult{}, errors.New("must pass exactly one Message")
+		}
+		res, err := c.GenImage(ctx, msgs[0], opts)
+		if err == nil {
+			for i := range res.Contents {
+				if url := res.Contents[i].URL; url != "" {
+					chunks <- genai.MessageFragment{
+						Filename: res.Contents[i].Filename,
+						URL:      res.Contents[i].URL,
+					}
+				} else if d := res.Contents[i].Document; d != nil {
+					chunks <- genai.MessageFragment{
+						Filename:         res.Contents[i].Filename,
+						DocumentFragment: res.Contents[i].Document.(*bb.BytesBuffer).D,
+					}
+				} else {
+					return res, errors.New("internal error")
+				}
+			}
+		}
+		return res, err
+	}
+	return c.ClientChat.ChatStream(ctx, msgs, opts, chunks)
+}
+
+func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Validatable) (genai.ChatResult, error) {
+	res := genai.ChatResult{}
+	req := ImageRequest{
+		Prompt: msg.AsText(),
+		Model:  c.Model,
+	}
+	if opts != nil {
+		switch v := opts.(type) {
+		case *ChatOptions:
+			req.Height = int64(v.Height)
+			req.Width = int64(v.Width)
+			req.Seed = v.Seed
+		case *genai.ChatOptions:
+			req.Seed = v.Seed
+		}
+	}
+	resp := ImageResponse{}
+	if err := c.DoRequest(ctx, "POST", "https://api.together.xyz/v1/images/generations", &req, &resp); err != nil {
+		return res, err
+	}
+	res.Role = genai.Assistant
+	res.Contents = make([]genai.Content, len(resp.Data))
+	for i := range resp.Data {
+		n := "content.jpg"
+		if len(resp.Data) > 1 {
+			n = fmt.Sprintf("content%d.jpg", i+1)
+		}
+		if url := resp.Data[i].URL; url != "" {
+			res.Contents[i].Filename = n
+			res.Contents[i].URL = url
+		} else if d := resp.Data[i].Data; len(d) != 0 {
+			res.Contents[i].Filename = n
+			res.Contents[i].Document = &bb.BytesBuffer{D: resp.Data[i].Data}
+		} else {
+			return res, errors.New("internal error")
+		}
+	}
+	return res, nil
 }
 
 func (c *Client) Name() string {
@@ -773,6 +943,8 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 }
 
 var (
-	_ genai.ProviderChat  = &Client{}
-	_ genai.ProviderModel = &Client{}
+	_ genai.ProviderChat       = &Client{}
+	_ genai.ProviderImage      = &Client{}
+	_ genai.ProviderModel      = &Client{}
+	_ genai.ProviderScoreboard = &Client{}
 )

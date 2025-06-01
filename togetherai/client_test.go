@@ -5,6 +5,7 @@
 package togetherai_test
 
 import (
+	"context"
 	_ "embed"
 	"os"
 	"strings"
@@ -31,9 +32,40 @@ func TestClient_Scoreboard(t *testing.T) {
 			strings.HasPrefix(model.ID, "togethercomputer/MoA-1") { // Causes HTTP 500.
 			return false
 		}
-		return model.Type == "chat"
+		return model.Type == "chat" || model.Type == "image"
 	}
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat { return getClient(t, m) }, f)
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat {
+		c := getClient(t, m)
+		// TODO: Use Scoreboard list.
+		if strings.HasPrefix(c.Model, "black-forest-labs/") {
+			return &injectOption{Client: c, t: t, opts: togetherai.ChatOptions{Width: 512, Height: 512}}
+		}
+		return c
+	}, f)
+}
+
+type injectOption struct {
+	*togetherai.Client
+	t    *testing.T
+	opts togetherai.ChatOptions
+}
+
+func (i *injectOption) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+	n := i.opts
+	if opts != nil {
+		n.ChatOptions = *opts.(*genai.ChatOptions)
+	}
+	opts = &n
+	return i.Client.Chat(ctx, msgs, opts)
+}
+
+func (i *injectOption) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.ChatResult, error) {
+	n := i.opts
+	if opts != nil {
+		n.ChatOptions = *opts.(*genai.ChatOptions)
+	}
+	opts = &n
+	return i.Client.ChatStream(ctx, msgs, opts, replies)
 }
 
 func TestClient_ProviderChat_errors(t *testing.T) {

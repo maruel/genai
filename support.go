@@ -18,14 +18,14 @@ import (
 // ChatWithToolCallLoop runs a conversation with the LLM, handling tool calls in a loop until there are no
 // more tool calls.
 //
-// It calls the provided ProviderChat.Chat() method, processes any tool calls using Message.DoToolCalls(),
+// It calls the provided ProviderGen.GenSync() method, processes any tool calls using Message.DoToolCalls(),
 // and continues the conversation in a loop until the LLM's response has no more tool calls.
 //
 // Warning: If opts.ToolCallRequest == ToolCallRequired, it will be mutated to ToolCallAny after the first
 // tool call.
 //
 // It returns the messages to accumulate to the thread. The last message is the LLM's response.
-func ChatWithToolCallLoop(ctx context.Context, provider ProviderChat, msgs Messages, opts Validatable) (Messages, Usage, error) {
+func ChatWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Messages, opts Validatable) (Messages, Usage, error) {
 	usage := Usage{}
 	var out Messages
 	workMsgs := make(Messages, len(msgs))
@@ -36,7 +36,7 @@ func ChatWithToolCallLoop(ctx context.Context, provider ProviderChat, msgs Messa
 	}
 	tools := chatOpts.Tools
 	for {
-		result, err := provider.Chat(ctx, workMsgs, opts)
+		result, err := provider.GenSync(ctx, workMsgs, opts)
 		usage.InputTokens += result.InputTokens
 		usage.InputCachedTokens += result.InputCachedTokens
 		usage.OutputTokens += result.OutputTokens
@@ -65,7 +65,7 @@ func ChatWithToolCallLoop(ctx context.Context, provider ProviderChat, msgs Messa
 }
 
 // ChatStreamWithToolCallLoop runs a conversation loop with an LLM that handles tool calls via streaming
-// until there are no more. It will repeatedly call ChatStream(), collect fragments into a complete message,
+// until there are no more. It will repeatedly call GenStream(), collect fragments into a complete message,
 // process tool calls with DoToolCalls(), and continue the conversation until the LLM response
 // has no more tool calls.
 //
@@ -77,7 +77,7 @@ func ChatWithToolCallLoop(ctx context.Context, provider ProviderChat, msgs Messa
 // tool call.
 //
 // No need to process the tool calls or accumulate the MessageFragment.
-func ChatStreamWithToolCallLoop(ctx context.Context, provider ProviderChat, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Messages, Usage, error) {
+func ChatStreamWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Messages, Usage, error) {
 	usage := Usage{}
 	var out Messages
 	workMsgs := make(Messages, len(msgs))
@@ -104,7 +104,7 @@ func ChatStreamWithToolCallLoop(ctx context.Context, provider ProviderChat, msgs
 			}
 			return nil
 		})
-		result, err := provider.ChatStream(ctx, workMsgs, opts, internalReplies)
+		result, err := provider.GenStream(ctx, workMsgs, opts, internalReplies)
 		usage.InputTokens += result.InputTokens
 		usage.InputCachedTokens += result.InputCachedTokens
 		usage.OutputTokens += result.OutputTokens
@@ -139,18 +139,18 @@ func ChatStreamWithToolCallLoop(ctx context.Context, provider ProviderChat, msgs
 
 //
 
-// ProviderChatUsage wraps a ProviderChat and accumulates Usage values
+// ProviderGenUsage wraps a ProviderGen and accumulates Usage values
 // across multiple requests to track total token consumption.
-type ProviderChatUsage struct {
-	ProviderChat
+type ProviderGenUsage struct {
+	ProviderGen
 
 	mu         sync.Mutex
 	accumUsage Usage
 }
 
-// Chat implements the ProviderChat interface and accumulates usage statistics.
-func (c *ProviderChatUsage) Chat(ctx context.Context, msgs Messages, opts Validatable) (Result, error) {
-	result, err := c.ProviderChat.Chat(ctx, msgs, opts)
+// GenSync implements the ProviderGen interface and accumulates usage statistics.
+func (c *ProviderGenUsage) GenSync(ctx context.Context, msgs Messages, opts Validatable) (Result, error) {
+	result, err := c.ProviderGen.GenSync(ctx, msgs, opts)
 	c.mu.Lock()
 	c.accumUsage.InputTokens += result.InputTokens
 	c.accumUsage.InputCachedTokens += result.InputCachedTokens
@@ -159,10 +159,10 @@ func (c *ProviderChatUsage) Chat(ctx context.Context, msgs Messages, opts Valida
 	return result, err
 }
 
-// ChatStream implements the ProviderChat interface and accumulates usage statistics.
-func (c *ProviderChatUsage) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Result, error) {
+// GenStream implements the ProviderGen interface and accumulates usage statistics.
+func (c *ProviderGenUsage) GenStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Result, error) {
 	// Call the wrapped provider and accumulate usage statistics
-	result, err := c.ProviderChat.ChatStream(ctx, msgs, opts, replies)
+	result, err := c.ProviderGen.GenStream(ctx, msgs, opts, replies)
 	c.mu.Lock()
 	c.accumUsage.InputTokens += result.InputTokens
 	c.accumUsage.InputCachedTokens += result.InputCachedTokens
@@ -172,24 +172,24 @@ func (c *ProviderChatUsage) ChatStream(ctx context.Context, msgs Messages, opts 
 }
 
 // GetAccumulatedUsage returns the current accumulated usage values.
-func (c *ProviderChatUsage) GetAccumulatedUsage() Usage {
+func (c *ProviderGenUsage) GetAccumulatedUsage() Usage {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	return c.accumUsage
 }
 
-func (c *ProviderChatUsage) Unwrap() Provider {
-	return c.ProviderChat
+func (c *ProviderGenUsage) Unwrap() Provider {
+	return c.ProviderGen
 }
 
 //
 
-// ProviderChatThinking wraps a ProviderChat and processes its output to extract thinking blocks.
+// ProviderGenThinking wraps a ProviderGen and processes its output to extract thinking blocks.
 //
 // It looks for content within tags ("<TagName>" and "</TagName>") and places it in Thinking Content blocks
 // instead of Text.
-type ProviderChatThinking struct {
-	ProviderChat
+type ProviderGenThinking struct {
+	ProviderGen
 
 	// TagName is the name of the tag to use for thinking content. Normally "think" or "thinking".
 	TagName string
@@ -200,10 +200,10 @@ type ProviderChatThinking struct {
 	_ struct{}
 }
 
-// Chat implements the ProviderChat interface by delegating to the wrapped provider
+// GenSync implements the ProviderGen interface by delegating to the wrapped provider
 // and processing the result to extract thinking blocks.
-func (c *ProviderChatThinking) Chat(ctx context.Context, msgs Messages, opts Validatable) (Result, error) {
-	result, err := c.ProviderChat.Chat(ctx, msgs, opts)
+func (c *ProviderGenThinking) GenSync(ctx context.Context, msgs Messages, opts Validatable) (Result, error) {
+	result, err := c.ProviderGen.GenSync(ctx, msgs, opts)
 	// When replying in JSON, the thinking tokens are "denied" by the engine.
 	if o, ok := opts.(*TextOptions); !ok || !c.SkipJSON || (!o.ReplyAsJSON && o.DecodeAs == nil) {
 		if err2 := c.processThinkingMessage(&result.Message); err == nil {
@@ -213,14 +213,14 @@ func (c *ProviderChatThinking) Chat(ctx context.Context, msgs Messages, opts Val
 	return result, err
 }
 
-// ChatStream implements the ProviderChat interface for streaming by delegating to the wrapped provider
+// GenStream implements the ProviderGen interface for streaming by delegating to the wrapped provider
 // and processing each fragment to extract thinking blocks.
 // If no thinking tags are present, the first part of the message is assumed to be thinking.
-func (c *ProviderChatThinking) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Result, error) {
+func (c *ProviderGenThinking) GenStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Result, error) {
 	if c.SkipJSON {
 		if o, ok := opts.(*TextOptions); ok && (o.ReplyAsJSON || o.DecodeAs != nil) {
 			// When replying in JSON, the thinking tokens are "denied" by the engine.
-			return c.ProviderChat.ChatStream(ctx, msgs, opts, replies)
+			return c.ProviderGen.GenStream(ctx, msgs, opts, replies)
 		}
 	}
 
@@ -236,7 +236,7 @@ func (c *ProviderChatThinking) ChatStream(ctx context.Context, msgs Messages, op
 		state := start
 		for f := range internalReplies {
 			if f.ThinkingFragment != "" {
-				return fmt.Errorf("got unexpected thinking fragment: %q; do not use ProviderChatThinking with an explicit thinking CoT model", f.ThinkingFragment)
+				return fmt.Errorf("got unexpected thinking fragment: %q; do not use ProviderGenThinking with an explicit thinking CoT model", f.ThinkingFragment)
 			}
 			// Mutate the fragment then send it.
 			switch state {
@@ -301,7 +301,7 @@ func (c *ProviderChatThinking) ChatStream(ctx context.Context, msgs Messages, op
 		}
 		return nil
 	})
-	result, err := c.ProviderChat.ChatStream(ctx, msgs, opts, internalReplies)
+	result, err := c.ProviderGen.GenStream(ctx, msgs, opts, internalReplies)
 	close(internalReplies)
 	if err3 := eg.Wait(); err == nil {
 		err = err3
@@ -317,7 +317,7 @@ func (c *ProviderChatThinking) ChatStream(ctx context.Context, msgs Messages, op
 	return result, nil
 }
 
-func (c *ProviderChatThinking) processThinkingMessage(m *Message) error {
+func (c *ProviderGenThinking) processThinkingMessage(m *Message) error {
 	if len(m.Contents) == 0 {
 		// It can be a function call.
 		return nil
@@ -326,7 +326,7 @@ func (c *ProviderChatThinking) processThinkingMessage(m *Message) error {
 	// Check if one of the contents is already a Thinking block
 	for _, c := range m.Contents {
 		if c.Thinking != "" {
-			return fmt.Errorf("got unexpected thinking content: %q; do not use ProviderChatThinking with an explicit thinking CoT model", c.Thinking)
+			return fmt.Errorf("got unexpected thinking content: %q; do not use ProviderGenThinking with an explicit thinking CoT model", c.Thinking)
 		}
 	}
 	if len(m.Contents) > 1 {
@@ -362,8 +362,8 @@ func (c *ProviderChatThinking) processThinkingMessage(m *Message) error {
 	return nil
 }
 
-func (c *ProviderChatThinking) Unwrap() Provider {
-	return c.ProviderChat
+func (c *ProviderGenThinking) Unwrap() Provider {
+	return c.ProviderGen
 }
 
 type tagProcessingState int

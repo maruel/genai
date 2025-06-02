@@ -1,0 +1,70 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 126
+        transfer_encoding: []
+        trailer: {}
+        host: api.together.xyz
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"model":"meta-llama/Llama-3.2-3B-Instruct-Turbo","stream":false,"messages":[{"role":"user","content":"Tell a short joke."}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 266
+        uncompressed: false
+        body: |-
+            {
+              "id": "nwYVC5W-57nCBj-94992f7e7b6a33f5",
+              "error": {
+                "message": "Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
+                "type": "invalid_request_error",
+                "param": null,
+                "code": "invalid_api_key"
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94992f7e7b6a33f5-YUL
+            Content-Length:
+                - "266"
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"10a-mL9KjN/SY8bu0G+ZJKsZ1pUkG6U"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - a52d8b91-5971-47b3-9ec2-506037ca1557-noamzn
+            X-Api-Received:
+                - "2025-06-02T18:59:01.729Z"
+            X-Request-Id:
+                - nwYVC5W-57nCBj-94992f7e7b6a33f5
+        status: 401 Unauthorized
+        code: 401
+        duration: 248ms

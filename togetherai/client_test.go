@@ -35,7 +35,7 @@ func TestClient_Scoreboard(t *testing.T) {
 		}
 		return model.Type == "chat" || model.Type == "image"
 	}
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat {
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
 		c := getClient(t, m)
 		// TODO: Use Scoreboard list.
 		if strings.HasPrefix(c.Model, "black-forest-labs/") {
@@ -51,22 +51,22 @@ type injectOption struct {
 	opts genai.ImageOptions
 }
 
-func (i *injectOption) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
 		return genai.Result{}, errors.New("implement me")
 	}
 	opts = &n
-	return i.Client.Chat(ctx, msgs, opts)
+	return i.Client.GenSync(ctx, msgs, opts)
 }
 
-func (i *injectOption) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
+func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
 		return genai.Result{}, errors.New("implement me")
 	}
 	opts = &n
-	return i.Client.ChatStream(ctx, msgs, opts, replies)
+	return i.Client.GenStream(ctx, msgs, opts, replies)
 }
 
 func (i *injectOption) GenImage(ctx context.Context, msg genai.Message, opts genai.Validatable) (genai.Result, error) {
@@ -78,8 +78,8 @@ func (i *injectOption) GenImage(ctx context.Context, msg genai.Message, opts gen
 	return i.Client.GenImage(ctx, msg, opts)
 }
 
-func TestClient_ProviderChat_errors(t *testing.T) {
-	data := []internaltest.ProviderChatError{
+func TestClient_ProviderGen_errors(t *testing.T) {
+	data := []internaltest.ProviderGenError{
 		{
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
@@ -94,10 +94,10 @@ func TestClient_ProviderChat_errors(t *testing.T) {
 			ErrChatStream: "http 404: error model_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.ProviderChat {
+	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {
 		return getClientInner(t, apiKey, model)
 	}
-	internaltest.TestClient_ProviderChat_errors(t, f, data)
+	internaltest.TestClient_ProviderGen_errors(t, f, data)
 }
 
 func TestClient_ProviderModel_errors(t *testing.T) {

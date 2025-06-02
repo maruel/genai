@@ -193,7 +193,7 @@ type InitializableRequest interface {
 	SetStream(bool)
 }
 
-// ResultConverter converts a provider-specific result to a genai.ChatResult.
+// ResultConverter converts a provider-specific result to a genai.Result.
 type ResultConverter interface {
 	ToResult() (genai.Result, error)
 }
@@ -224,7 +224,7 @@ type BaseChat[PErrorResponse fmt.Stringer, PChatRequest InitializableRequest, PC
 	chatResponse reflect.Type
 }
 
-func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	result := genai.Result{}
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
@@ -248,7 +248,7 @@ func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkRe
 		}
 	}
 	out := reflect.New(c.chatResponse).Interface().(PChatResponse)
-	if err := c.ChatRaw(ctx, in, out); err != nil {
+	if err := c.GenSyncRaw(ctx, in, out); err != nil {
 		return result, err
 	}
 	result, err := out.ToResult()
@@ -258,7 +258,7 @@ func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkRe
 	return result, continuableErr
 }
 
-func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
+func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
 	result := genai.Result{}
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
@@ -286,7 +286,7 @@ func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkRe
 	eg.Go(func() error {
 		return c.ProcessStreamPackets(ch, chunks, &result)
 	})
-	err := c.ChatStreamRaw(ctx, in, ch)
+	err := c.GenStreamRaw(ctx, in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
@@ -301,9 +301,9 @@ func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkRe
 	return result, continuableErr
 }
 
-// ChatRaw is the generic raw implementation for the Chat API endpoint.
+// GenSyncRaw is the generic raw implementation for the Chat API endpoint.
 // It sets Stream to false and sends a request to the chat URL.
-func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) ChatRaw(ctx context.Context, in PChatRequest, out PChatResponse) error {
+func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) GenSyncRaw(ctx context.Context, in PChatRequest, out PChatResponse) error {
 	if err := c.Validate(); err != nil {
 		return err
 	}
@@ -311,9 +311,9 @@ func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkRe
 	return c.DoRequest(ctx, "POST", c.ChatURL, in, out)
 }
 
-// ChatStreamRaw is the generic raw implementation for streaming Chat API endpoints.
+// GenStreamRaw is the generic raw implementation for streaming Chat API endpoints.
 // It sets Stream to true, enables stream options if available, and handles the SSE response.
-func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) ChatStreamRaw(ctx context.Context, in PChatRequest, out chan<- ChatStreamChunkResponse) error {
+func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) GenStreamRaw(ctx context.Context, in PChatRequest, out chan<- ChatStreamChunkResponse) error {
 	if err := c.Validate(); err != nil {
 		return err
 	}

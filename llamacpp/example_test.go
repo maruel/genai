@@ -19,7 +19,7 @@ import (
 	"github.com/maruel/huggingface"
 )
 
-func ExampleClient_Chat() {
+func ExampleClient_GenSync() {
 	// Download and start the server.
 	ctx := context.Background()
 	// Start a server with a minimalist model: Qwen2 0.5B in Q2_K quantization.
@@ -43,7 +43,7 @@ func ExampleClient_Chat() {
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	resp, err := c.Chat(ctx, msgs, &opts)
+	resp, err := c.GenSync(ctx, msgs, &opts)
 	if err != nil {
 		log.Print(err)
 		return

@@ -185,7 +185,7 @@ func main() {
 		// Force the LLM to do a tool call.
 		ToolCallRequest: genai.ToolCallRequired,
 	}
-	resp, err := c.Chat(context.Background(), msgs, &opts)
+	resp, err := c.GenSync(context.Background(), msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -207,7 +207,7 @@ func main() {
 
 	// Follow up so the LLM can interpret the tool call response. Tell the LLM to not do a tool call this time.
 	opts.ToolCallRequest = genai.ToolCallNone
-	resp, err = c.Chat(context.Background(), msgs, &opts)
+	resp, err = c.GenSync(context.Background(), msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -248,7 +248,7 @@ func main() {
 		Round bool `json:"round"`
 	}
 	opts := genai.TextOptions{DecodeAs: &circle}
-	resp, err := c.Chat(context.Background(), msgs, &opts)
+	resp, err := c.GenSync(context.Background(), msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}

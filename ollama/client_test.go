@@ -26,13 +26,13 @@ func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat {
+		internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
 			return s.getClient(t, m)
 		}, nil)
 	})
 
-	t.Run("ProviderChat_errors", func(t *testing.T) {
-		data := []internaltest.ProviderChatError{
+	t.Run("ProviderGen_errors", func(t *testing.T) {
+		data := []internaltest.ProviderGenError{
 			{
 				Name:          "bad model",
 				Model:         "bad_model",
@@ -40,10 +40,10 @@ func TestClient(t *testing.T) {
 				ErrChatStream: "pull failed: http 500: error pull model manifest: file does not exist",
 			},
 		}
-		f := func(t *testing.T, apiKey, model string) genai.ProviderChat {
+		f := func(t *testing.T, apiKey, model string) genai.ProviderGen {
 			return s.getClient(t, model)
 		}
-		internaltest.TestClient_ProviderChat_errors(t, f, data)
+		internaltest.TestClient_ProviderGen_errors(t, f, data)
 	})
 }
 
@@ -93,7 +93,7 @@ func (l *lazyServer) shouldStart(t *testing.T) (string, http.RoundTripper) {
 	return l.url, transport
 }
 
-func (l *lazyServer) getClient(t *testing.T, model string) genai.ProviderChat {
+func (l *lazyServer) getClient(t *testing.T, model string) genai.ProviderGen {
 	serverURL, transport := l.shouldStart(t)
 	c, err := ollama.New(serverURL, model, nil)
 	if err != nil {

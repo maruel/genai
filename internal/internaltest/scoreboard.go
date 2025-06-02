@@ -22,20 +22,20 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-// ProviderChatModalityFactory is what a Java developer would write.
+// ProviderGenModalityFactory is what a Java developer would write.
 //
 // It permits selecting the most cost effective model for the requested modalities. For example a very cheap
 // model would be used for text-in, text-out test but use a slightly more expensive one for image-in, text-out
 // case.
-type ProviderChatModalityFactory func(t *testing.T, model string) genai.ProviderChat
+type ProviderGenModalityFactory func(t *testing.T, model string) genai.ProviderGen
 
-func TestScoreboard(t *testing.T, g ProviderChatModalityFactory, filter func(model genai.Model) bool) {
+func TestScoreboard(t *testing.T, g ProviderGenModalityFactory, filter func(model genai.Model) bool) {
 	var modelsSeen []string
 	var ps genai.ProviderScoreboard
 	{
 		baseC := g(t, "")
 		if u, ok := baseC.(genai.ProviderUnwrap); ok {
-			baseC = u.Unwrap().(genai.ProviderChat)
+			baseC = u.Unwrap().(genai.ProviderGen)
 		}
 		ps = baseC.(genai.ProviderScoreboard)
 	}
@@ -151,7 +151,7 @@ func TestScoreboard(t *testing.T, g ProviderChatModalityFactory, filter func(mod
 	t.Run("ListModels", func(t *testing.T) {
 		baseC := g(t, "")
 		if u, ok := baseC.(genai.ProviderUnwrap); ok {
-			baseC = u.Unwrap().(genai.ProviderChat)
+			baseC = u.Unwrap().(genai.ProviderGen)
 		}
 		ls, ok := baseC.(genai.ProviderModel)
 		if !ok {
@@ -200,7 +200,7 @@ func TestScoreboard(t *testing.T, g ProviderChatModalityFactory, filter func(mod
 	})
 }
 
-func testTextFunctionalities(t *testing.T, g ProviderChatModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.Functionality, stream bool) {
 	defaultFR := genai.FinishedStop
 	if !f.ReportFinishReason {
 		defaultFR = ""
@@ -238,7 +238,7 @@ func testTextFunctionalities(t *testing.T, g ProviderChatModalityFactory, model 
 		// problems and it's not a value that is expected to be used in practice for this use case.
 		resp, err := run(t, g(t, model), msgs, &genai.TextOptions{MaxTokens: 3}, stream)
 		// MaxTokens can fail in two ways:
-		// - Chat() or ChatRequest() return an irrecoverable error.
+		// - GenSync() or GenStream() return an irrecoverable error.
 		// - The length is not enforced.
 		if !basicCheckAcceptUnexpectedSuccess(t, err, true) {
 			return
@@ -265,7 +265,7 @@ func testTextFunctionalities(t *testing.T, g ProviderChatModalityFactory, model 
 		msgs := genai.Messages{genai.NewTextMessage(genai.User, "Talk about Canada in 10 words. Start with: Canada is")}
 		resp, err := run(t, g(t, model), msgs, &genai.TextOptions{Stop: []string{"is"}}, stream)
 		// Stop can fail in two ways:
-		// - Chat() or ChatRequest() return an irrecoverable error.
+		// - GenSync() or GenStream() return an irrecoverable error.
 		// - The Stop words to not stop generation.
 		if !basicCheckAcceptUnexpectedSuccess(t, err, f.StopSequence) {
 			return
@@ -545,7 +545,7 @@ func testTextFunctionalities(t *testing.T, g ProviderChatModalityFactory, model 
 	})
 }
 
-func testVisionFunctionalities(t *testing.T, g ProviderChatModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testVisionFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.Functionality, stream bool) {
 	defaultFR := genai.FinishedStop
 	if !f.ReportFinishReason {
 		defaultFR = ""
@@ -589,7 +589,7 @@ func testVisionFunctionalities(t *testing.T, g ProviderChatModalityFactory, mode
 	})
 }
 
-func testAudioFunctionalities(t *testing.T, g ProviderChatModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testAudioFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.Functionality, stream bool) {
 	defaultFR := genai.FinishedStop
 	if !f.ReportFinishReason {
 		defaultFR = ""
@@ -632,7 +632,7 @@ func testAudioFunctionalities(t *testing.T, g ProviderChatModalityFactory, model
 	})
 }
 
-func testVideoFunctionalities(t *testing.T, g ProviderChatModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testVideoFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.Functionality, stream bool) {
 	defaultFR := genai.FinishedStop
 	if !f.ReportFinishReason {
 		defaultFR = ""
@@ -674,7 +674,7 @@ func testVideoFunctionalities(t *testing.T, g ProviderChatModalityFactory, model
 	})
 }
 
-func testPDFFunctionalities(t *testing.T, g ProviderChatModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testPDFFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.Functionality, stream bool) {
 	defaultFR := genai.FinishedStop
 	if !f.ReportFinishReason {
 		defaultFR = ""
@@ -716,7 +716,7 @@ func testPDFFunctionalities(t *testing.T, g ProviderChatModalityFactory, model s
 	})
 }
 
-func testChatImageGenFunctionalities(t *testing.T, g ProviderChatModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testChatImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.Functionality, stream bool) {
 	prompt := `A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
 	const style = `Simple, vibrant, varied-colored doodle/hand-drawn sketch`
 	contents := `Generate one square, white-background doodle with smooth, vibrantly colored image depicting ` + prompt + `.
@@ -751,7 +751,7 @@ func testChatImageGenFunctionalities(t *testing.T, g ProviderChatModalityFactory
 	// It can have text, images or both.
 }
 
-func testImageGenFunctionalities(t *testing.T, g ProviderChatModalityFactory, model string, f *genai.Functionality) {
+func testImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.Functionality) {
 	prompt := `A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
 	const style = `Simple, vibrant, varied-colored doodle/hand-drawn sketch`
 	contents := `Generate one square, white-background doodle with smooth, vibrantly colored image depicting ` + prompt + `.
@@ -786,7 +786,7 @@ func testImageGenFunctionalities(t *testing.T, g ProviderChatModalityFactory, mo
 	}
 }
 
-func testAudioGenFunctionalities(t *testing.T, g ProviderChatModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testAudioGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.Functionality, stream bool) {
 	defaultFR := genai.FinishedStop
 	if !f.ReportFinishReason {
 		defaultFR = ""
@@ -808,10 +808,10 @@ func testAudioGenFunctionalities(t *testing.T, g ProviderChatModalityFactory, mo
 	}
 }
 
-func run(t *testing.T, c genai.ProviderChat, msgs genai.Messages, opts genai.Validatable, stream bool) (genai.Result, error) {
+func run(t *testing.T, c genai.ProviderGen, msgs genai.Messages, opts genai.Validatable, stream bool) (genai.Result, error) {
 	ctx := t.Context()
 	if !stream {
-		resp, err := c.Chat(ctx, msgs, opts)
+		resp, err := c.GenSync(ctx, msgs, opts)
 		// Uncomment to diagnose issues:
 		// t.Logf("Response: %v", resp.Message)
 		return resp, err
@@ -841,7 +841,7 @@ func run(t *testing.T, c genai.ProviderChat, msgs genai.Messages, opts genai.Val
 			}
 		}
 	})
-	resp, err := c.ChatStream(ctx, msgs, opts, chunks)
+	resp, err := c.GenStream(ctx, msgs, opts, chunks)
 	close(chunks)
 	if err3 := eg.Wait(); err3 != nil {
 		t.Fatal(err3)

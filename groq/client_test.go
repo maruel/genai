@@ -17,7 +17,7 @@ import (
 )
 
 func TestClient_Scoreboard(t *testing.T) {
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat {
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
 		c := getClient(t, m)
 		if m == "qwen-qwq-32b" || m == "deepseek-r1-distill-llama-70b" {
 			return &handleReasoning{Client: c, t: t}
@@ -31,30 +31,30 @@ type handleReasoning struct {
 	t *testing.T
 }
 
-func (h *handleReasoning) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (h *handleReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	if opts != nil {
 		if o := opts.(*genai.TextOptions); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
 			opts = &groq.TextOptions{ReasoningFormat: groq.ReasoningFormatParsed, TextOptions: *o}
-			return h.Client.Chat(ctx, msgs, opts)
+			return h.Client.GenSync(ctx, msgs, opts)
 		}
 	}
-	c := genai.ProviderChatThinking{ProviderChat: h.Client, TagName: "think"}
-	return c.Chat(ctx, msgs, opts)
+	c := genai.ProviderGenThinking{ProviderGen: h.Client, TagName: "think"}
+	return c.GenSync(ctx, msgs, opts)
 }
 
-func (h *handleReasoning) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
+func (h *handleReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
 	if opts != nil {
 		if o := opts.(*genai.TextOptions); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
 			opts = &groq.TextOptions{ReasoningFormat: groq.ReasoningFormatParsed, TextOptions: *o}
-			return h.Client.ChatStream(ctx, msgs, opts, replies)
+			return h.Client.GenStream(ctx, msgs, opts, replies)
 		}
 	}
-	c := genai.ProviderChatThinking{ProviderChat: h.Client, TagName: "think"}
-	return c.ChatStream(ctx, msgs, opts, replies)
+	c := genai.ProviderGenThinking{ProviderGen: h.Client, TagName: "think"}
+	return c.GenStream(ctx, msgs, opts, replies)
 }
 
-func TestClient_ProviderChat_errors(t *testing.T) {
-	data := []internaltest.ProviderChatError{
+func TestClient_ProviderGen_errors(t *testing.T) {
+	data := []internaltest.ProviderGenError{
 		{
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
@@ -69,10 +69,10 @@ func TestClient_ProviderChat_errors(t *testing.T) {
 			ErrChatStream: "http 404: error model_not_found (invalid_request_error): The model `bad model` does not exist or you do not have access to it.",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.ProviderChat {
+	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {
 		return getClientInner(t, apiKey, model)
 	}
-	internaltest.TestClient_ProviderChat_errors(t, f, data)
+	internaltest.TestClient_ProviderGen_errors(t, f, data)
 }
 
 func TestClient_ProviderModel_errors(t *testing.T) {

@@ -18,7 +18,7 @@ import (
 )
 
 func TestClient_Scoreboard(t *testing.T) {
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat {
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
 		c := getClient(t, m)
 		if m == "flux" || m == "gptimage" || m == "turbo" {
 			return &injectOption{Client: c, t: t, opts: genai.ImageOptions{Width: 256, Height: 256}}
@@ -33,22 +33,22 @@ type injectOption struct {
 	opts genai.ImageOptions
 }
 
-func (i *injectOption) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
 		return genai.Result{}, errors.New("implement me")
 	}
 	opts = &n
-	return i.Client.Chat(ctx, msgs, opts)
+	return i.Client.GenSync(ctx, msgs, opts)
 }
 
-func (i *injectOption) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
+func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
 		return genai.Result{}, errors.New("implement me")
 	}
 	opts = &n
-	return i.Client.ChatStream(ctx, msgs, opts, replies)
+	return i.Client.GenStream(ctx, msgs, opts, replies)
 }
 
 func (i *injectOption) GenImage(ctx context.Context, msg genai.Message, opts genai.Validatable) (genai.Result, error) {
@@ -60,9 +60,9 @@ func (i *injectOption) GenImage(ctx context.Context, msg genai.Message, opts gen
 	return i.Client.GenImage(ctx, msg, opts)
 }
 
-func TestClient_ProviderChat_errors(t *testing.T) {
+func TestClient_ProviderGen_errors(t *testing.T) {
 	t.Skip("TODO")
-	data := []internaltest.ProviderChatError{
+	data := []internaltest.ProviderGenError{
 		{
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
@@ -77,10 +77,10 @@ func TestClient_ProviderChat_errors(t *testing.T) {
 			ErrChatStream: "http 404: error model_not_found (invalid_request_error): The model `bad model` does not exist or you do not have access to it.",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.ProviderChat {
+	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {
 		return getClientInner(t, model)
 	}
-	internaltest.TestClient_ProviderChat_errors(t, f, data)
+	internaltest.TestClient_ProviderGen_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *pollinations.Client {

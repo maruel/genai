@@ -15,7 +15,7 @@ import (
 	"github.com/maruel/genai"
 )
 
-func TestProviderChatThinking_Chat(t *testing.T) {
+func TestProviderGenThinking_GenSync(t *testing.T) {
 	tests := []struct {
 		name        string
 		tagName     string
@@ -67,15 +67,15 @@ func TestProviderChatThinking_Chat(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			mp := &mockProviderChat{response: genai.Result{
+			mp := &mockProviderGen{response: genai.Result{
 				Message: genai.Message{
 					Role:     genai.Assistant,
 					Contents: []genai.Content{{Text: tc.in}},
 				},
 			}}
 
-			tp := &genai.ProviderChatThinking{ProviderChat: mp, TagName: "thinking"}
-			got, err := tp.Chat(t.Context(), genai.Messages{}, nil)
+			tp := &genai.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
+			got, err := tp.GenSync(t.Context(), genai.Messages{}, nil)
 			if tc.expectError {
 				if err == nil {
 					t.Fatal("expected error but got none")
@@ -91,7 +91,7 @@ func TestProviderChatThinking_Chat(t *testing.T) {
 	}
 }
 
-func TestProviderChatThinking_ChatStream(t *testing.T) {
+func TestProviderGenThinking_GenStream(t *testing.T) {
 	tests := []struct {
 		name        string
 		in          []string
@@ -201,8 +201,8 @@ func TestProviderChatThinking_ChatStream(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			mp := &mockChatStreamProvider{in: tc.in}
-			tp := &genai.ProviderChatThinking{ProviderChat: mp, TagName: "thinking"}
+			mp := &mockGenStreamProvider{in: tc.in}
+			tp := &genai.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
 			ch := make(chan genai.MessageFragment)
 			ctx, cancel := context.WithTimeout(t.Context(), 1*time.Second)
 			defer cancel()
@@ -221,7 +221,7 @@ func TestProviderChatThinking_ChatStream(t *testing.T) {
 				}
 			}()
 
-			result, err := tp.ChatStream(ctx, genai.Messages{}, nil, ch)
+			result, err := tp.GenStream(ctx, genai.Messages{}, nil, ch)
 			close(ch)
 			wg.Wait()
 			select {
@@ -249,45 +249,45 @@ func TestProviderChatThinking_ChatStream(t *testing.T) {
 
 //
 
-// mockProviderChat is a mock implementation of genai.ProviderChat for testing.
-// It returns a predefined ChatResult for the Chat method and returns an error
-// for the ChatStream method.
-type mockProviderChat struct {
+// mockProviderGen is a mock implementation of genai.ProviderGen for testing.
+// It returns a predefined Result for the GenSync method and returns an error
+// for the GenStream method.
+type mockProviderGen struct {
 	response genai.Result
 }
 
-func (m *mockProviderChat) Name() string {
+func (m *mockProviderGen) Name() string {
 	return "mock"
 }
 
-func (m *mockProviderChat) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (m *mockProviderGen) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	return m.response, nil
 }
 
-func (m *mockProviderChat) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
+func (m *mockProviderGen) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
 	return genai.Result{}, errors.New("unexpected")
 }
 
-func (m *mockProviderChat) ModelID() string {
+func (m *mockProviderGen) ModelID() string {
 	return "llm-sota"
 }
 
-// mockChatStreamProvider is a mock implementation of genai.ProviderChat for testing.
-// It sends the predefined fragments to the replies channel for the ChatStream method
-// and returns an error for the Chat method.
-type mockChatStreamProvider struct {
+// mockGenStreamProvider is a mock implementation of genai.ProviderGen for testing.
+// It sends the predefined fragments to the replies channel for the GenStream method
+// and returns an error for the GenSync method.
+type mockGenStreamProvider struct {
 	in []string
 }
 
-func (m *mockChatStreamProvider) Name() string {
+func (m *mockGenStreamProvider) Name() string {
 	return "mockstream"
 }
 
-func (m *mockChatStreamProvider) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (m *mockGenStreamProvider) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	return genai.Result{}, errors.New("unexpected")
 }
 
-func (m *mockChatStreamProvider) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
+func (m *mockGenStreamProvider) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
 	result := genai.Result{
 		Usage:   genai.Usage{},
 		Message: genai.Message{Role: genai.Assistant},
@@ -301,12 +301,12 @@ func (m *mockChatStreamProvider) ChatStream(ctx context.Context, msgs genai.Mess
 		case replies <- fragment:
 			// We don't accumulate in the result.Message since the wrapper will transform TextFragment to ThinkingFragment
 			// and the actual accumulation happens in the test code. The final message will be constructed properly
-			// by the ProviderChatThinking wrapper.
+			// by the ProviderGenThinking wrapper.
 		}
 	}
 	return result, nil
 }
 
-func (m *mockChatStreamProvider) ModelID() string {
+func (m *mockGenStreamProvider) ModelID() string {
 	return "llm-sota"
 }

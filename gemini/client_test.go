@@ -23,7 +23,7 @@ import (
 )
 
 func TestClient_Scoreboard(t *testing.T) {
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat {
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
 		c := getClient(t, m)
 		// https://ai.google.dev/gemini-api/docs/thinking?hl=en
 		if strings.Contains(m, "thinking") {
@@ -44,22 +44,22 @@ type injectOption struct {
 	opts gemini.TextOptions
 }
 
-func (i *injectOption) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
 		n.TextOptions = *opts.(*genai.TextOptions)
 	}
 	opts = &n
-	return i.Client.Chat(ctx, msgs, opts)
+	return i.Client.GenSync(ctx, msgs, opts)
 }
 
-func (i *injectOption) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
+func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
 		n.TextOptions = *opts.(*genai.TextOptions)
 	}
 	opts = &n
-	return i.Client.ChatStream(ctx, msgs, opts, replies)
+	return i.Client.GenStream(ctx, msgs, opts, replies)
 }
 
 //
@@ -219,8 +219,8 @@ Ultimately, the human endeavor is a quest for understanding, not just of the ext
 
 //
 
-func TestClient_ProviderChat_errors(t *testing.T) {
-	data := []internaltest.ProviderChatError{
+func TestClient_ProviderGen_errors(t *testing.T) {
+	data := []internaltest.ProviderGenError{
 		{
 			Name:          "bad apiKey",
 			ApiKey:        "badApiKey",
@@ -235,10 +235,10 @@ func TestClient_ProviderChat_errors(t *testing.T) {
 			ErrChatStream: "http 400: error 400 (INVALID_ARGUMENT): * GenerateContentRequest.model: unexpected model name format",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.ProviderChat {
+	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {
 		return getClientInner(t, apiKey, model)
 	}
-	internaltest.TestClient_ProviderChat_errors(t, f, data)
+	internaltest.TestClient_ProviderGen_errors(t, f, data)
 }
 
 func TestClient_ProviderModel_errors(t *testing.T) {

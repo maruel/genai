@@ -17,7 +17,7 @@ import (
 )
 
 func TestClient_Scoreboard(t *testing.T) {
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat {
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
 		c := getClient(t, m)
 		if m == "o4-mini" {
 			return &injectOption{Client: c, t: t, opts: openai.TextOptions{
@@ -36,26 +36,26 @@ type injectOption struct {
 	opts openai.TextOptions
 }
 
-func (i *injectOption) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
 		n.TextOptions = *opts.(*genai.TextOptions)
 	}
 	opts = &n
-	return i.Client.Chat(ctx, msgs, opts)
+	return i.Client.GenSync(ctx, msgs, opts)
 }
 
-func (i *injectOption) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
+func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
 		n.TextOptions = *opts.(*genai.TextOptions)
 	}
 	opts = &n
-	return i.Client.ChatStream(ctx, msgs, opts, replies)
+	return i.Client.GenStream(ctx, msgs, opts, replies)
 }
 
-func TestClient_ProviderChat_errors(t *testing.T) {
-	data := []internaltest.ProviderChatError{
+func TestClient_ProviderGen_errors(t *testing.T) {
+	data := []internaltest.ProviderGenError{
 		{
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
@@ -70,10 +70,10 @@ func TestClient_ProviderChat_errors(t *testing.T) {
 			ErrChatStream: "http 400: error invalid_request_error: invalid model ID",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.ProviderChat {
+	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {
 		return getClientInner(t, apiKey, model)
 	}
-	internaltest.TestClient_ProviderChat_errors(t, f, data)
+	internaltest.TestClient_ProviderGen_errors(t, f, data)
 }
 
 func TestClient_ProviderModel_errors(t *testing.T) {

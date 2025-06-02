@@ -16,17 +16,17 @@ import (
 )
 
 func TestClient_Scoreboard(t *testing.T) {
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat {
+	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
 		c := getClient(t, m)
 		if m == "Qwen/QwQ-32B" {
-			return &genai.ProviderChatThinking{ProviderChat: c, TagName: "think", SkipJSON: true}
+			return &genai.ProviderGenThinking{ProviderGen: c, TagName: "think", SkipJSON: true}
 		}
 		return c
 	}, nil)
 }
 
-func TestClient_ProviderChat_errors(t *testing.T) {
-	data := []internaltest.ProviderChatError{
+func TestClient_ProviderGen_errors(t *testing.T) {
+	data := []internaltest.ProviderGenError{
 		{
 			Name:          "bad apiKey",
 			ApiKey:        "bad apiKey",
@@ -41,10 +41,10 @@ func TestClient_ProviderChat_errors(t *testing.T) {
 			ErrChatStream: "http 404: Not Found",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.ProviderChat {
+	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {
 		return getClientInner(t, apiKey, model)
 	}
-	internaltest.TestClient_ProviderChat_errors(t, f, data)
+	internaltest.TestClient_ProviderGen_errors(t, f, data)
 }
 
 func TestClient_ProviderModel_errors(t *testing.T) {

@@ -10,7 +10,7 @@ import (
 	"github.com/maruel/genai"
 )
 
-type ProviderChatError struct {
+type ProviderGenError struct {
 	Name          string
 	ApiKey        string
 	Model         string
@@ -18,14 +18,14 @@ type ProviderChatError struct {
 	ErrChatStream string
 }
 
-func TestClient_ProviderChat_errors(t *testing.T, getClient func(t *testing.T, apiKey, model string) genai.ProviderChat, lines []ProviderChatError) {
+func TestClient_ProviderGen_errors(t *testing.T, getClient func(t *testing.T, apiKey, model string) genai.ProviderGen, lines []ProviderGenError) {
 	for _, line := range lines {
 		t.Run(line.Name, func(t *testing.T) {
 			msgs := genai.Messages{genai.NewTextMessage(genai.User, "Tell a short joke.")}
 			if line.ErrChat != "" {
 				t.Run("Chat", func(t *testing.T) {
 					c := getClient(t, line.ApiKey, line.Model)
-					_, err := c.Chat(t.Context(), msgs, &genai.TextOptions{})
+					_, err := c.GenSync(t.Context(), msgs, &genai.TextOptions{})
 					if err == nil {
 						t.Fatal("expected error")
 					} else if _, ok := err.(*genai.UnsupportedContinuableError); ok {
@@ -39,7 +39,7 @@ func TestClient_ProviderChat_errors(t *testing.T, getClient func(t *testing.T, a
 				t.Run("ChatStream", func(t *testing.T) {
 					c := getClient(t, line.ApiKey, line.Model)
 					ch := make(chan genai.MessageFragment, 1)
-					_, err := c.ChatStream(t.Context(), msgs, &genai.TextOptions{}, ch)
+					_, err := c.GenStream(t.Context(), msgs, &genai.TextOptions{}, ch)
 					if err == nil {
 						t.Fatal("expected error")
 					} else if _, ok := err.(*genai.UnsupportedContinuableError); ok {

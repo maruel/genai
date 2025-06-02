@@ -84,8 +84,8 @@ func ExampleProviderModel_all() {
 	}
 }
 
-func ExampleProviderChat_all() {
-	chatProviders := map[string]genai.ProviderChat{}
+func ExampleProviderGen_all() {
+	chatProviders := map[string]genai.ProviderGen{}
 	// https://docs.anthropic.com/en/docs/about-claude/models/all-models
 	if c, err := anthropic.New("", "claude-3-7-sonnet-latest", nil); err == nil {
 		chatProviders["anthropic"] = c
@@ -154,7 +154,7 @@ func ExampleProviderChat_all() {
 			TopK:      50, // Not all providers support this
 			MaxTokens: 512,
 		}
-		response, err := provider.Chat(context.Background(), msgs, opts)
+		response, err := provider.GenSync(context.Background(), msgs, opts)
 		if err != nil {
 			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 				fmt.Printf("- %s (ignored args: %s): %v\n", name, strings.Join(uce.Unsupported, ","), response)
@@ -167,7 +167,7 @@ func ExampleProviderChat_all() {
 	}
 }
 
-func ExampleProviderChat_chat_vision() {
+func ExampleProviderGen_chat_vision() {
 	// Supported by Anthropic, Gemini, Groq, Mistral, Ollama, OpenAI, TogetherAI.
 
 	// Using a free small model for testing.
@@ -189,7 +189,7 @@ func ExampleProviderChat_chat_vision() {
 			},
 		},
 	}
-	resp, err := c.Chat(context.Background(), msgs, nil)
+	resp, err := c.GenSync(context.Background(), msgs, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -197,7 +197,7 @@ func ExampleProviderChat_chat_vision() {
 	// This would Output: Banana: yes
 }
 
-func ExampleClient_Chat_jSON() {
+func ExampleClient_GenSync_jSON() {
 	// Supported by Cerebras, Cloudflare, Cohere, DeepSeek, Gemini, Groq, HuggingFace, Mistral, Ollama, OpenAI, TogetherAI.
 
 	// Using a free small model for testing.
@@ -210,7 +210,7 @@ func ExampleClient_Chat_jSON() {
 		genai.NewTextMessage(genai.User, "Is a circle round? Reply as JSON with the form {\"round\": false} or {\"round\": true}."),
 	}
 	opts := genai.TextOptions{ReplyAsJSON: true}
-	resp, err := c.Chat(context.Background(), msgs, &opts)
+	resp, err := c.GenSync(context.Background(), msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -222,7 +222,7 @@ func ExampleClient_Chat_jSON() {
 	// This would Output: Round: true
 }
 
-func ExampleClient_Chat_jSON_schema() {
+func ExampleClient_GenSync_jSON_schema() {
 	// Supported by Cerebras, Cloudflare, Cohere, Gemini, Groq, HuggingFace, Mistral, Ollama, OpenAI, Perplexity, TogetherAI.
 
 	// Using a free small model for testing.
@@ -238,7 +238,7 @@ func ExampleClient_Chat_jSON_schema() {
 		Round bool `json:"round"`
 	}
 	opts := genai.TextOptions{DecodeAs: got}
-	resp, err := c.Chat(context.Background(), msgs, &opts)
+	resp, err := c.GenSync(context.Background(), msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -249,7 +249,7 @@ func ExampleClient_Chat_jSON_schema() {
 	// This would Output: Round: true
 }
 
-func ExampleProviderChat_chat_pdf() {
+func ExampleProviderGen_chat_pdf() {
 	// Supported by Anthropic, Gemini, Mistral, OpenAI.
 
 	// Using a free small model for testing.
@@ -272,7 +272,7 @@ func ExampleProviderChat_chat_pdf() {
 			},
 		},
 	}
-	resp, err := c.Chat(context.Background(), msgs, nil)
+	resp, err := c.GenSync(context.Background(), msgs, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -280,7 +280,7 @@ func ExampleProviderChat_chat_pdf() {
 	// This would Output: Hidden word in PDF: orange
 }
 
-func ExampleProviderChat_chat_audio() {
+func ExampleProviderGen_chat_audio() {
 	// Supported by Gemini, OpenAI.
 
 	// Using a free small model for testing.
@@ -303,7 +303,7 @@ func ExampleProviderChat_chat_audio() {
 			},
 		},
 	}
-	resp, err := c.Chat(context.Background(), msgs, nil)
+	resp, err := c.GenSync(context.Background(), msgs, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -311,7 +311,7 @@ func ExampleProviderChat_chat_audio() {
 	// This would Output: Heard: orange
 }
 
-func ExampleProviderChat_chat_video() {
+func ExampleProviderGen_chat_video() {
 	// Supported by Gemini, TogetherAI.
 
 	// Using a free small model for testing.
@@ -330,7 +330,7 @@ func ExampleProviderChat_chat_video() {
 		genai.NewTextMessage(genai.User, "What is the word? Reply with exactly and only one word."),
 		{Role: genai.User, Contents: []genai.Content{{Document: f}}},
 	}
-	resp, err := c.Chat(context.Background(), msgs, nil)
+	resp, err := c.GenSync(context.Background(), msgs, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -409,7 +409,7 @@ func ExampleChatStreamWithToolCallLoop() {
 	// 8846
 }
 
-func ExampleProviderChat_ChatStream() {
+func ExampleProviderGen_GenStream() {
 	// Supported by all providers.
 
 	// Using a free small model for testing.
@@ -443,7 +443,7 @@ func ExampleProviderChat_ChatStream() {
 			}
 		}
 	})
-	_, err = c.ChatStream(ctx, msgs, &opts, chunks)
+	_, err = c.GenStream(ctx, msgs, &opts, chunks)
 	close(chunks)
 	_ = eg.Wait()
 	if err != nil {

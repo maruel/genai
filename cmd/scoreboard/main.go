@@ -32,41 +32,41 @@ import (
 
 // providers is the list of known providers. We only look at their scoreboard, so no need for an API key or
 // model name.
-var providers = map[string]func() (genai.ProviderChat, error){
-	"anthropic": func() (genai.ProviderChat, error) {
+var providers = map[string]func() (genai.ProviderGen, error){
+	"anthropic": func() (genai.ProviderGen, error) {
 		return anthropic.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
-	"cerebras": func() (genai.ProviderChat, error) {
+	"cerebras": func() (genai.ProviderGen, error) {
 		return cerebras.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
-	"cloudflare": func() (genai.ProviderChat, error) {
+	"cloudflare": func() (genai.ProviderGen, error) {
 		return cloudflare.New("FAKE_API_KEY", "", "FAKE_MODEL", nil)
 	},
-	"cohere": func() (genai.ProviderChat, error) {
+	"cohere": func() (genai.ProviderGen, error) {
 		return cohere.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
-	"deepseek": func() (genai.ProviderChat, error) {
+	"deepseek": func() (genai.ProviderGen, error) {
 		return deepseek.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
-	"gemini": func() (genai.ProviderChat, error) {
+	"gemini": func() (genai.ProviderGen, error) {
 		return gemini.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
-	"groq": func() (genai.ProviderChat, error) {
+	"groq": func() (genai.ProviderGen, error) {
 		return groq.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
-	"huggingface": func() (genai.ProviderChat, error) {
+	"huggingface": func() (genai.ProviderGen, error) {
 		return huggingface.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
-	"mistral": func() (genai.ProviderChat, error) {
+	"mistral": func() (genai.ProviderGen, error) {
 		return mistral.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
-	"openai": func() (genai.ProviderChat, error) {
+	"openai": func() (genai.ProviderGen, error) {
 		return openai.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
-	"perplexity": func() (genai.ProviderChat, error) {
+	"perplexity": func() (genai.ProviderGen, error) {
 		return perplexity.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
-	"togetherai": func() (genai.ProviderChat, error) {
+	"togetherai": func() (genai.ProviderGen, error) {
 		return togetherai.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
 }

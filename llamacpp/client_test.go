@@ -24,7 +24,7 @@ func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat { return s.getClient(t) }, nil)
+		internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen { return s.getClient(t) }, nil)
 	})
 }
 
@@ -75,7 +75,7 @@ func (l *lazyServer) shouldStart(t *testing.T) (string, http.RoundTripper) {
 	return l.url, transport
 }
 
-func (l *lazyServer) getClient(t *testing.T) genai.ProviderChat {
+func (l *lazyServer) getClient(t *testing.T) genai.ProviderGen {
 	serverURL, transport := l.shouldStart(t)
 	c, err := llamacpp.New(serverURL, nil, nil)
 	if err != nil {

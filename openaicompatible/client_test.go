@@ -17,14 +17,14 @@ import (
 
 // Testing is very different here as we test various providers to see if they work with this generic provider.
 
-func TestClient_Chat_simple(t *testing.T) {
+func TestClient_GenSync_simple(t *testing.T) {
 	for name := range providers {
 		t.Run(name, func(t *testing.T) {
 			c := getClient(t, name)
 			msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
 			opts := genai.TextOptions{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
 			ctx := t.Context()
-			resp, err := c.Chat(ctx, msgs, &opts)
+			resp, err := c.GenSync(ctx, msgs, &opts)
 			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 				t.Log(uce)
 			} else if err != nil {
@@ -39,7 +39,7 @@ func TestClient_Chat_simple(t *testing.T) {
 	}
 }
 
-func TestClient_ChatStream_simple(t *testing.T) {
+func TestClient_GenStream_simple(t *testing.T) {
 	for name := range providers {
 		t.Run(name, func(t *testing.T) {
 			c := getClient(t, name)
@@ -65,7 +65,7 @@ func TestClient_ChatStream_simple(t *testing.T) {
 					}
 				}
 			})
-			resp, err := c.ChatStream(ctx, msgs, &opts, chunks)
+			resp, err := c.GenStream(ctx, msgs, &opts, chunks)
 			close(chunks)
 			if err3 := eg.Wait(); err3 != nil {
 				t.Fatal(err3)
@@ -92,7 +92,7 @@ type provider struct {
 	thinking  string
 }
 
-// Keep in sync with ExampleProviderChat_all in ../example_test.go.
+// Keep in sync with ExampleProviderGen_all in ../example_test.go.
 var providers = map[string]provider{
 	"anthropic": {
 		envAPIKey: "ANTHROPIC_API_KEY",
@@ -186,7 +186,7 @@ var providers = map[string]provider{
 	},
 }
 
-func getClient(t *testing.T, provider string) genai.ProviderChat {
+func getClient(t *testing.T, provider string) genai.ProviderGen {
 	testRecorder.Signal(t)
 	t.Parallel()
 	p := providers[provider]
@@ -200,7 +200,7 @@ func getClient(t *testing.T, provider string) genai.ProviderChat {
 	}
 	c.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientJSON.Client.Transport)
 	if p.thinking != "" {
-		return &genai.ProviderChatThinking{ProviderChat: c, TagName: p.thinking}
+		return &genai.ProviderGenThinking{ProviderGen: c, TagName: p.thinking}
 	}
 	return c
 }

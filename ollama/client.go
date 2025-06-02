@@ -414,10 +414,10 @@ func (er *ErrorResponse) String() string {
 
 //
 
-// We cannot use ClientChat because Chat and ChatStream try to pull on first failure, and ChatStream receives
+// We cannot use ClientChat because GenSync and GenStream try to pull on first failure, and GenStream receives
 // line separated JSON instead of SSE.
 
-// Client implements genai.ProviderChat.
+// Client implements genai.ProviderGen.
 type Client struct {
 	provider.Base[*ErrorResponse]
 
@@ -464,7 +464,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard
 }
 
-func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	result := genai.Result{}
 	for i, msg := range msgs {
 		for j, content := range msg.Contents {
@@ -484,7 +484,7 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 		}
 	}
 	var out ChatResponse
-	if err := c.ChatRaw(ctx, &in, &out); err != nil {
+	if err := c.GenSyncRaw(ctx, &in, &out); err != nil {
 		return result, err
 	}
 	result, err := out.ToResult()
@@ -494,7 +494,7 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 	return result, continuableErr
 }
 
-func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
+func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
 	if err := c.validate(); err != nil {
 		return err
 	}
@@ -513,7 +513,7 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 	return err
 }
 
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
 	result := genai.Result{}
 	for i, msg := range msgs {
 		for j, content := range msg.Contents {
@@ -537,7 +537,7 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	eg.Go(func() error {
 		return processStreamPackets(ch, chunks, &result)
 	})
-	err := c.ChatStreamRaw(ctx, &in, ch)
+	err := c.GenStreamRaw(ctx, &in, ch)
 	close(ch)
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
@@ -552,7 +552,7 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	return result, continuableErr
 }
 
-func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
+func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
 	if err := c.validate(); err != nil {
 		return err
 	}
@@ -688,7 +688,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 }
 
 var (
-	_ genai.ProviderChat       = &Client{}
+	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderModel      = &Client{}
 	_ genai.ProviderScoreboard = &Client{}
 )

@@ -947,7 +947,7 @@ type ErrorResponseError struct {
 
 //
 
-// Client implements genai.ProviderChat and genai.ProviderModel.
+// Client implements genai.ProviderGen and genai.ProviderModel.
 type Client struct {
 	provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
@@ -1003,7 +1003,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard
 }
 
-func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	// TODO: Use Scoreboard list.
 	switch c.Model {
 	case "dall-e-2", "dall-e-3", "gpt-image-1":
@@ -1012,11 +1012,11 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 		}
 		return c.GenImage(ctx, msgs[0], opts)
 	default:
-		return c.BaseChat.Chat(ctx, msgs, opts)
+		return c.BaseChat.GenSync(ctx, msgs, opts)
 	}
 }
 
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
 	// TODO: Use Scoreboard list.
 	switch c.Model {
 	case "dall-e-2", "dall-e-3", "gpt-image-1":
@@ -1043,7 +1043,7 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 		}
 		return res, err
 	default:
-		return c.BaseChat.ChatStream(ctx, msgs, opts, chunks)
+		return c.BaseChat.GenStream(ctx, msgs, opts, chunks)
 	}
 }
 
@@ -1200,7 +1200,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 }
 
 var (
-	_ genai.ProviderChat       = &Client{}
+	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderImage      = &Client{}
 	_ genai.ProviderModel      = &Client{}
 	_ genai.ProviderScoreboard = &Client{}

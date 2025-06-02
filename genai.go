@@ -67,33 +67,33 @@ type Provider interface {
 }
 
 // ProviderUnwrap is exposed when the Provider is actually a wrapper around another one, like
-// ProviderChatThinking or ProviderChatUsage. This is useful when looking for other interfaces.
+// ProviderGenThinking or ProviderGenUsage. This is useful when looking for other interfaces.
 type ProviderUnwrap interface {
 	Unwrap() Provider
 }
 
-// Chat
+// Generation
 
-// ProviderChat is the generic interface to interact with a LLM backend.
-type ProviderChat interface {
+// ProviderGen is the generic interface to interact with a LLM backend.
+type ProviderGen interface {
 	Provider
-	// Chat runs completion synchronously.
+	// GenSync runs generation synchronously.
 	//
-	// opts must be either nil, *TextOptions or a provider-specialized
+	// opts must be either nil, *ImageOptions, *TextOptions or a provider-specialized
 	// option struct.
-	Chat(ctx context.Context, msgs Messages, opts Validatable) (Result, error)
-	// ChatStream runs completion synchronously, streaming the results to channel replies.
+	GenSync(ctx context.Context, msgs Messages, opts Validatable) (Result, error)
+	// GenStream runs generation synchronously, streaming the results to channel replies.
 	//
-	// opts must be either nil, *TextOptions or a provider-specialized
+	// opts must be either nil, *ImageOptions, *TextOptions or a provider-specialized
 	// option struct.
 	//
-	// No need to accumulate the replies into the result, the ChatResult contains the accumulated message.
-	ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Result, error)
+	// No need to accumulate the replies into the result, the Result contains the accumulated message.
+	GenStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Result, error)
 	// ModelID returns the model currently used by the provider. It can be an empty string.
 	ModelID() string
 }
 
-// TextOptions is a list of frequent options supported by most ProviderChat with text output modality.
+// TextOptions is a list of frequent options supported by most ProviderGen with text output modality.
 // Each provider is free to support more options through a specialized struct.
 //
 // The first group are options supported by (nearly) all providers.
@@ -607,7 +607,7 @@ func (c *Content) UnmarshalJSON(b []byte) error {
 }
 
 // MessageFragment is a fragment of a message the LLM is sending back as part
-// of the ChatStream().
+// of the GenStream().
 //
 // The role is always implicitly the assistant.
 type MessageFragment struct {
@@ -1061,9 +1061,9 @@ type Scenario struct {
 	// providers continuouly release new models. It is still valuable to use the first value
 	Models []string
 
-	// Chat declares features supported when using ProviderChat.Chat
+	// Chat declares features supported when using ProviderGen.GenSync
 	Chat Functionality
-	// ChatStream declares features supported when using ProviderChat.ChatStream
+	// ChatStream declares features supported when using ProviderGen.GenStream
 	ChatStream Functionality
 
 	_ struct{}

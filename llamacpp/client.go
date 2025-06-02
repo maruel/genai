@@ -443,7 +443,7 @@ func (er *ErrorResponse) String() string {
 
 //
 
-// Client implements genai.ProviderChat.
+// Client implements genai.ProviderGen.
 type Client struct {
 	provider.Base[*ErrorResponse]
 
@@ -487,9 +487,8 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard
 }
 
-func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	// https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
-	// TODO: return internal.Chat(ctx, msgs, opts, "", c.CompletionRaw, false)
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
 	for i, msg := range msgs {
@@ -519,8 +518,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.DoRequest(ctx, "POST", c.chatURL, in, out)
 }
 
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
-	// TODO: return internal.ChatStream(ctx, msgs, opts, chunks, "", c.CompletionStreamRaw, processStreamPackets, false)
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
 	result := genai.Result{}
 
 	// Check for non-empty Opaque field
@@ -731,6 +729,6 @@ func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<-
 }
 
 var (
-	_ genai.ProviderChat       = &Client{}
+	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderScoreboard = &Client{}
 )

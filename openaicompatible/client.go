@@ -308,7 +308,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderGen.
 type Client struct {
-	provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to an "OpenAI-compatible" platform API.
@@ -321,9 +321,9 @@ func New(chatURL string, h http.Header, model string, r http.RoundTripper) (*Cli
 		r = http.DefaultTransport
 	}
 	return &Client{
-		BaseChat: provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		BaseGen: provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
-			ChatURL:              chatURL,
+			GenSyncURL:           chatURL,
 			ModelOptional:        true,
 			ProcessStreamPackets: processStreamPackets,
 			Base: provider.Base[*ErrorResponse]{

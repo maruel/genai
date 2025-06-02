@@ -44,7 +44,7 @@ var Scoreboard = genai.Scoreboard{
 			In:     []genai.Modality{genai.ModalityText},
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"claude-3-haiku-20240307", "claude-2.0", "claude-2.1", "claude-3-opus-20240229", "claude-3-sonnet-20240229"},
-			Chat: genai.Functionality{
+			GenSync: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -57,7 +57,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               false,
 				JSONSchema:         false,
 			},
-			ChatStream: genai.Functionality{
+			GenStream: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -75,7 +75,7 @@ var Scoreboard = genai.Scoreboard{
 			In:     []genai.Modality{genai.ModalityText, genai.ModalityImage, genai.ModalityPDF},
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"claude-3-5-haiku-20241022", "claude-3-5-sonnet-20240620", "claude-3-5-sonnet-20241022"},
-			Chat: genai.Functionality{
+			GenSync: genai.Functionality{
 				Inline:             true,
 				URL:                true,
 				Thinking:           false,
@@ -88,7 +88,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               false,
 				JSONSchema:         false,
 			},
-			ChatStream: genai.Functionality{
+			GenStream: genai.Functionality{
 				Inline:             true,
 				URL:                true,
 				Thinking:           false,
@@ -106,7 +106,7 @@ var Scoreboard = genai.Scoreboard{
 			In:     []genai.Modality{genai.ModalityText, genai.ModalityImage, genai.ModalityPDF},
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"claude-3-7-sonnet-20250219", "claude-opus-4-20250514", "claude-sonnet-4-20250514"},
-			Chat: genai.Functionality{
+			GenSync: genai.Functionality{
 				Inline:             true,
 				URL:                true,
 				Thinking:           false,
@@ -119,7 +119,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               false,
 				JSONSchema:         false,
 			},
-			ChatStream: genai.Functionality{
+			GenStream: genai.Functionality{
 				Inline:             true,
 				URL:                true,
 				Thinking:           false,
@@ -849,7 +849,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderGen and genai.ProviderModel.
 type Client struct {
-	provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Anthropic platform API.
@@ -875,9 +875,9 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 	}
 	// Anthropic allows Opaque fields for thinking signatures
 	return &Client{
-		BaseChat: provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		BaseGen: provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
-			ChatURL:              "https://api.anthropic.com/v1/messages",
+			GenSyncURL:           "https://api.anthropic.com/v1/messages",
 			AllowOpaqueFields:    true,
 			ProcessStreamPackets: processStreamPackets,
 			Base: provider.Base[*ErrorResponse]{

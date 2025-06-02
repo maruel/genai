@@ -11,18 +11,18 @@ import (
 )
 
 type ProviderGenError struct {
-	Name          string
-	ApiKey        string
-	Model         string
-	ErrChat       string
-	ErrChatStream string
+	Name         string
+	ApiKey       string
+	Model        string
+	ErrGenSync   string
+	ErrSynStream string
 }
 
 func TestClient_ProviderGen_errors(t *testing.T, getClient func(t *testing.T, apiKey, model string) genai.ProviderGen, lines []ProviderGenError) {
 	for _, line := range lines {
 		t.Run(line.Name, func(t *testing.T) {
 			msgs := genai.Messages{genai.NewTextMessage(genai.User, "Tell a short joke.")}
-			if line.ErrChat != "" {
+			if line.ErrGenSync != "" {
 				t.Run("Chat", func(t *testing.T) {
 					c := getClient(t, line.ApiKey, line.Model)
 					_, err := c.GenSync(t.Context(), msgs, &genai.TextOptions{})
@@ -30,12 +30,12 @@ func TestClient_ProviderGen_errors(t *testing.T, getClient func(t *testing.T, ap
 						t.Fatal("expected error")
 					} else if _, ok := err.(*genai.UnsupportedContinuableError); ok {
 						t.Fatal("should not be continuable")
-					} else if got := err.Error(); got != line.ErrChat {
-						t.Fatalf("Unexpected error.\nwant: %q\ngot : %q", line.ErrChat, got)
+					} else if got := err.Error(); got != line.ErrGenSync {
+						t.Fatalf("Unexpected error.\nwant: %q\ngot : %q", line.ErrGenSync, got)
 					}
 				})
 			}
-			if line.ErrChatStream != "" {
+			if line.ErrSynStream != "" {
 				t.Run("ChatStream", func(t *testing.T) {
 					c := getClient(t, line.ApiKey, line.Model)
 					ch := make(chan genai.MessageFragment, 1)
@@ -44,8 +44,8 @@ func TestClient_ProviderGen_errors(t *testing.T, getClient func(t *testing.T, ap
 						t.Fatal("expected error")
 					} else if _, ok := err.(*genai.UnsupportedContinuableError); ok {
 						t.Fatal("should not be continuable")
-					} else if got := err.Error(); got != line.ErrChatStream {
-						t.Fatalf("Unexpected error.\nwant: %q\ngot : %q", line.ErrChatStream, got)
+					} else if got := err.Error(); got != line.ErrSynStream {
+						t.Fatalf("Unexpected error.\nwant: %q\ngot : %q", line.ErrSynStream, got)
 					}
 					select {
 					case pkt := <-ch:

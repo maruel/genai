@@ -200,31 +200,31 @@ type ResultConverter interface {
 
 //
 
-// BaseChat implements common functionality for clients that provide chat capabilities.
-// It embeds ClientBase and adds a Model field and common chat methods.
-type BaseChat[PErrorResponse fmt.Stringer, PChatRequest InitializableRequest, PChatResponse ResultConverter, ChatStreamChunkResponse Obj] struct {
+// BaseGen implements common functionality for clients that provide chat capabilities.
+// It embeds Base and adds a Model field and common chat methods.
+type BaseGen[PErrorResponse fmt.Stringer, PGenRequest InitializableRequest, PGenResponse ResultConverter, GenStreamChunkResponse Obj] struct {
 	Base[PErrorResponse]
 	// Model is the default model used for chat requests
 	Model string
-	// ChatURL is the endpoint URL for chat API requests
-	ChatURL string
-	// ChatStreamURL is the endpoint URL for chat stream API requests. It defaults to ChatURL if unset.
-	ChatStreamURL string
+	// GenSyncURL is the endpoint URL for chat API requests
+	GenSyncURL string
+	// GenStreamURL is the endpoint URL for chat stream API requests. It defaults to GenURL if unset.
+	GenStreamURL string
 	// ModelOptional is true if a model name is not required to use the provider.
 	ModelOptional bool
 	// AllowOpaqueFields is true if the client allows the Opaque field in messages.
 	AllowOpaqueFields bool
-	// ProcessStreamPackets is the function that processes stream packets used by ChatStream.
-	ProcessStreamPackets func(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error
+	// ProcessStreamPackets is the function that processes stream packets used by GenStream.
+	ProcessStreamPackets func(ch <-chan GenStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error
 	// LieToolCalls lie the FinishReason on tool calls.
 	LieToolCalls bool
 
-	// Protected by ClientBase.mu.
+	// Protected by Base.mu.
 	chatRequest  reflect.Type
 	chatResponse reflect.Type
 }
 
-func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	result := genai.Result{}
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
@@ -238,7 +238,7 @@ func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkRe
 	}
 
 	c.lateInit()
-	in := reflect.New(c.chatRequest).Interface().(PChatRequest)
+	in := reflect.New(c.chatRequest).Interface().(PGenRequest)
 	var continuableErr error
 	if err := in.Init(msgs, opts, c.Model); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
@@ -247,7 +247,7 @@ func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkRe
 			return result, err
 		}
 	}
-	out := reflect.New(c.chatResponse).Interface().(PChatResponse)
+	out := reflect.New(c.chatResponse).Interface().(PGenResponse)
 	if err := c.GenSyncRaw(ctx, in, out); err != nil {
 		return result, err
 	}
@@ -258,7 +258,7 @@ func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkRe
 	return result, continuableErr
 }
 
-func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
+func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
 	result := genai.Result{}
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
@@ -272,7 +272,7 @@ func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkRe
 	}
 
 	c.lateInit()
-	in := reflect.New(c.chatRequest).Interface().(PChatRequest)
+	in := reflect.New(c.chatRequest).Interface().(PGenRequest)
 	var continuableErr error
 	if err := in.Init(msgs, opts, c.Model); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
@@ -281,7 +281,7 @@ func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkRe
 			return result, err
 		}
 	}
-	ch := make(chan ChatStreamChunkResponse)
+	ch := make(chan GenStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		return c.ProcessStreamPackets(ch, chunks, &result)
@@ -301,26 +301,26 @@ func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkRe
 	return result, continuableErr
 }
 
-// GenSyncRaw is the generic raw implementation for the Chat API endpoint.
+// GenSyncRaw is the generic raw implementation for the generation API endpoint.
 // It sets Stream to false and sends a request to the chat URL.
-func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) GenSyncRaw(ctx context.Context, in PChatRequest, out PChatResponse) error {
+func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSyncRaw(ctx context.Context, in PGenRequest, out PGenResponse) error {
 	if err := c.Validate(); err != nil {
 		return err
 	}
 	in.SetStream(false)
-	return c.DoRequest(ctx, "POST", c.ChatURL, in, out)
+	return c.DoRequest(ctx, "POST", c.GenSyncURL, in, out)
 }
 
-// GenStreamRaw is the generic raw implementation for streaming Chat API endpoints.
+// GenStreamRaw is the generic raw implementation for streaming Gen API endpoints.
 // It sets Stream to true, enables stream options if available, and handles the SSE response.
-func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) GenStreamRaw(ctx context.Context, in PChatRequest, out chan<- ChatStreamChunkResponse) error {
+func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStreamRaw(ctx context.Context, in PGenRequest, out chan<- GenStreamChunkResponse) error {
 	if err := c.Validate(); err != nil {
 		return err
 	}
 	in.SetStream(true)
-	url := c.ChatStreamURL
+	url := c.GenStreamURL
 	if url == "" {
-		url = c.ChatURL
+		url = c.GenSyncURL
 	}
 	resp, err := c.ClientJSON.Request(ctx, "POST", url, nil, in)
 	if err != nil {
@@ -334,25 +334,25 @@ func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkRe
 	return sse.Process(resp.Body, out, er, c.ClientJSON.Lenient)
 }
 
-func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) ModelID() string {
+func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) ModelID() string {
 	return c.Model
 }
 
-func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) Validate() error {
+func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) Validate() error {
 	if !c.ModelOptional && c.Model == "" {
 		return errors.New("a model is required")
 	}
 	return nil
 }
 
-func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) lateInit() {
+func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) lateInit() {
 	// TODO: Figure out how to not use reflection.
 	c.Base.lateInit()
 	c.mu.Lock()
 	if c.chatRequest == nil {
-		var in PChatRequest
+		var in PGenRequest
 		c.chatRequest = reflect.TypeOf(in).Elem()
-		var out PChatResponse
+		var out PGenResponse
 		c.chatResponse = reflect.TypeOf(out).Elem()
 	}
 	c.mu.Unlock()

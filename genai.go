@@ -1061,10 +1061,10 @@ type Scenario struct {
 	// providers continuouly release new models. It is still valuable to use the first value
 	Models []string
 
-	// Chat declares features supported when using ProviderGen.GenSync
-	Chat Functionality
-	// ChatStream declares features supported when using ProviderGen.GenStream
-	ChatStream Functionality
+	// GenSync declares features supported when using ProviderGen.GenSync
+	GenSync Functionality
+	// GenStream declares features supported when using ProviderGen.GenStream
+	GenStream Functionality
 
 	_ struct{}
 }

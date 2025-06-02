@@ -41,7 +41,7 @@ var Scoreboard = genai.Scoreboard{
 			In:     []genai.Modality{genai.ModalityText},
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"unsloth/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q5_K_M.gguf"},
-			Chat: genai.Functionality{
+			GenSync: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -54,7 +54,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               false,
 				JSONSchema:         false,
 			},
-			ChatStream: genai.Functionality{
+			GenStream: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,

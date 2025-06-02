@@ -84,7 +84,7 @@ var Scoreboard = genai.Scoreboard{
 				"gpt-4o-search-preview",
 				"gpt-4o-search-preview-2025-03-11",
 			},
-			Chat: genai.Functionality{
+			GenSync: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -97,7 +97,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         true,
 			},
-			ChatStream: genai.Functionality{
+			GenStream: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -125,7 +125,7 @@ var Scoreboard = genai.Scoreboard{
 				"gpt-4o-mini-audio-preview",
 				"gpt-4o-mini-audio-preview-2024-12-17",
 			},
-			Chat: genai.Functionality{
+			GenSync: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -138,7 +138,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         true,
 			},
-			ChatStream: genai.Functionality{
+			GenStream: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -169,7 +169,7 @@ var Scoreboard = genai.Scoreboard{
 				"o3-mini-2025-01-31",
 				"o4-mini-2025-04-16",
 			},
-			Chat: genai.Functionality{
+			GenSync: genai.Functionality{
 				Inline:             true,
 				URL:                true,
 				Thinking:           false,
@@ -182,7 +182,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         true,
 			},
-			ChatStream: genai.Functionality{
+			GenStream: genai.Functionality{
 				Inline:             true,
 				URL:                true,
 				Thinking:           false,
@@ -204,7 +204,7 @@ var Scoreboard = genai.Scoreboard{
 				"dall-e-3",
 				"gpt-image-1",
 			},
-			Chat: genai.Functionality{
+			GenSync: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -217,7 +217,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               false,
 				JSONSchema:         false,
 			},
-			ChatStream: genai.Functionality{
+			GenStream: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -949,7 +949,7 @@ type ErrorResponseError struct {
 
 // Client implements genai.ProviderGen and genai.ProviderModel.
 type Client struct {
-	provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // TODO: Upload files
@@ -977,9 +977,9 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 		r = http.DefaultTransport
 	}
 	return &Client{
-		BaseChat: provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		BaseGen: provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
-			ChatURL:              "https://api.openai.com/v1/chat/completions",
+			GenSyncURL:           "https://api.openai.com/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
 			Base: provider.Base[*ErrorResponse]{
 				ProviderName: "openai",
@@ -1012,7 +1012,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Va
 		}
 		return c.GenImage(ctx, msgs[0], opts)
 	default:
-		return c.BaseChat.GenSync(ctx, msgs, opts)
+		return c.BaseGen.GenSync(ctx, msgs, opts)
 	}
 }
 
@@ -1043,7 +1043,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.
 		}
 		return res, err
 	default:
-		return c.BaseChat.GenStream(ctx, msgs, opts, chunks)
+		return c.BaseGen.GenStream(ctx, msgs, opts, chunks)
 	}
 }
 

@@ -97,7 +97,7 @@ var Scoreboard = genai.Scoreboard{
 				"scb10x/scb10x-llama3-1-typhoon2-8b-instruct",
 				"togethercomputer/Refuel-Llm-V2",
 			},
-			Chat: genai.Functionality{
+			GenSync: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -110,7 +110,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         true,
 			},
-			ChatStream: genai.Functionality{
+			GenStream: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -141,7 +141,7 @@ var Scoreboard = genai.Scoreboard{
 				"black-forest-labs/FLUX.1-pro",
 				"black-forest-labs/FLUX.1-dev-lora",
 			},
-			Chat: genai.Functionality{
+			GenSync: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -154,7 +154,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               false,
 				JSONSchema:         false,
 			},
-			ChatStream: genai.Functionality{
+			GenStream: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -706,7 +706,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderGen and genai.ProviderModel.
 type Client struct {
-	provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Together.AI platform API.
@@ -736,9 +736,9 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 		r = http.DefaultTransport
 	}
 	return &Client{
-		BaseChat: provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		BaseGen: provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
-			ChatURL:              "https://api.together.xyz/v1/chat/completions",
+			GenSyncURL:           "https://api.together.xyz/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
 			Base: provider.Base[*ErrorResponse]{
 				ProviderName: "togetherai",
@@ -776,7 +776,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Va
 		}
 		return c.GenImage(ctx, msgs[0], opts)
 	}
-	return c.BaseChat.GenSync(ctx, msgs, opts)
+	return c.BaseGen.GenSync(ctx, msgs, opts)
 }
 
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
@@ -805,7 +805,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.
 		}
 		return res, err
 	}
-	return c.BaseChat.GenStream(ctx, msgs, opts, chunks)
+	return c.BaseGen.GenStream(ctx, msgs, opts, chunks)
 }
 
 func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Validatable) (genai.Result, error) {

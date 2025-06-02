@@ -43,7 +43,7 @@ var Scoreboard = genai.Scoreboard{
 			In:     []genai.Modality{genai.ModalityText},
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"command-r7b-12-2024"},
-			Chat: genai.Functionality{
+			GenSync: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -56,7 +56,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         true,
 			},
-			ChatStream: genai.Functionality{
+			GenStream: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -626,7 +626,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderGen and genai.ProviderModel.
 type Client struct {
-	provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Cohere platform API.
@@ -657,9 +657,9 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 		r = http.DefaultTransport
 	}
 	return &Client{
-		BaseChat: provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		BaseGen: provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
-			ChatURL:              "https://api.cohere.com/v2/chat",
+			GenSyncURL:           "https://api.cohere.com/v2/chat",
 			ProcessStreamPackets: processStreamPackets,
 			Base: provider.Base[*ErrorResponse]{
 				ProviderName: "cohere",

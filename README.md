@@ -132,7 +132,7 @@ func main() {
 		// Force the LLM to do a tool call first.
 		ToolCallRequest: genai.ToolCallRequired,
 	}
-	newMsgs, _, err := genai.ChatWithToolCallLoop(context.Background(), c, msgs, &opts)
+	newMsgs, _, err := genai.GenSyncWithToolCallLoop(context.Background(), c, msgs, &opts)
 	if err != nil {
 		log.Fatalf("Received %#v, got error %s", newMsgs, err)
 	}

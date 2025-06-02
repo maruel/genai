@@ -52,10 +52,10 @@ func TestScoreboard(t *testing.T, g ProviderGenModalityFactory, filter func(mode
 		modelsSeen = append(modelsSeen, s.Models...)
 		t.Run(fmt.Sprintf("%s_%s_%s", in, out, s.Models[0]), func(t *testing.T) {
 			// TODO: Investigate if this could happen?
-			if s.Chat.Inline != s.ChatStream.Inline {
+			if s.GenSync.Inline != s.GenStream.Inline {
 				t.Fatal("Inconsistent Inline")
 			}
-			if s.Chat.URL != s.ChatStream.URL {
+			if s.GenSync.URL != s.GenStream.URL {
 				t.Fatal("Inconsistent URL")
 			}
 			data := []struct {
@@ -63,8 +63,8 @@ func TestScoreboard(t *testing.T, g ProviderGenModalityFactory, filter func(mode
 				name   string
 				f      *genai.Functionality
 			}{
-				{false, "Chat", &s.Chat},
-				{true, "ChatStream", &s.ChatStream},
+				{false, "Chat", &s.GenSync},
+				{true, "ChatStream", &s.GenStream},
 			}
 			for _, line := range data {
 				t.Run(line.name, func(t *testing.T) {

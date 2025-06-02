@@ -338,7 +338,7 @@ func ExampleProviderGen_chat_video() {
 	// This would Output: Saw: banana
 }
 
-func ExampleChatWithToolCallLoop() {
+func ExampleGenSyncWithToolCallLoop() {
 	// Supported by Anthropic, Cerebras, Cloudflare, Cohere, DeepSeek, Gemini, Groq, HuggingFace, Mistral,
 	// Ollama, OpenAI, TogetherAI.
 
@@ -356,7 +356,7 @@ func ExampleChatWithToolCallLoop() {
 		// Force the LLM to do a tool call first.
 		ToolCallRequest: genai.ToolCallRequired,
 	}
-	newMsgs, _, err := genai.ChatWithToolCallLoop(context.Background(), c, msgs, &opts)
+	newMsgs, _, err := genai.GenSyncWithToolCallLoop(context.Background(), c, msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -366,7 +366,7 @@ func ExampleChatWithToolCallLoop() {
 	// 8846
 }
 
-func ExampleChatStreamWithToolCallLoop() {
+func ExampleGenStreamWithToolCallLoop() {
 	// Supported by Anthropic, Cerebras, Cloudflare, Cohere, DeepSeek, Gemini, Groq, HuggingFace, Mistral,
 	// Ollama, OpenAI, TogetherAI.
 
@@ -400,7 +400,7 @@ func ExampleChatStreamWithToolCallLoop() {
 			}
 		}
 	}()
-	_, _, err = genai.ChatStreamWithToolCallLoop(ctx, c, msgs, &opts, chunks)
+	_, _, err = genai.GenStreamWithToolCallLoop(ctx, c, msgs, &opts, chunks)
 	if err != nil {
 		log.Fatal(err)
 	}

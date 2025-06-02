@@ -146,12 +146,12 @@ func printTable() error {
 			} else {
 				col.Video = "❌"
 			}
-			if s.Chat.JSON && s.ChatStream.JSON {
+			if s.GenSync.JSON && s.GenStream.JSON {
 				col.JSON = "✅"
 			} else {
 				col.JSON = "❌"
 			}
-			if s.Chat.JSONSchema && s.ChatStream.JSONSchema {
+			if s.GenSync.JSONSchema && s.GenStream.JSONSchema {
 				col.JSONSchema = "✅"
 			} else {
 				col.JSONSchema = "❌"
@@ -168,7 +168,7 @@ func printTable() error {
 				col.Chat = "❌"
 				col.Streaming = "❌"
 			}
-			if s.Chat.Tools == genai.True && s.ChatStream.Tools == genai.True {
+			if s.GenSync.Tools == genai.True && s.GenStream.Tools == genai.True {
 				col.Tools = "✅"
 			} else {
 				col.Tools = "❌"
@@ -342,16 +342,16 @@ func printList() error {
 				fmt.Printf("    in/out:   text only\n")
 			} else {
 				v := ""
-				if scenario.Chat.Inline && !scenario.Chat.URL {
+				if scenario.GenSync.Inline && !scenario.GenSync.URL {
 					v = " (inline only)"
 				}
-				if scenario.Chat.URL && !scenario.Chat.Inline {
+				if scenario.GenSync.URL && !scenario.GenSync.Inline {
 					v = " (url only)"
 				}
 				fmt.Printf("    in/out:   ⇒ %s%s / %s ⇒\n", scenario.In, v, scenario.Out)
 			}
-			chat := functionality(&scenario.Chat)
-			stream := functionality(&scenario.ChatStream)
+			chat := functionality(&scenario.GenSync)
+			stream := functionality(&scenario.GenStream)
 			if chat == stream {
 				if chat != "" {
 					fmt.Printf("    features: %s\n", chat)

@@ -65,7 +65,7 @@ var Scoreboard = genai.Scoreboard{
 				"open-mixtral-8x22b-2404",
 				"open-mixtral-8x7b",
 			},
-			Chat: genai.Functionality{
+			GenSync: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -78,7 +78,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         true,
 			},
-			ChatStream: genai.Functionality{
+			GenStream: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -117,7 +117,7 @@ var Scoreboard = genai.Scoreboard{
 				"pixtral-large-2411",
 				"pixtral-large-latest",
 			},
-			Chat: genai.Functionality{
+			GenSync: genai.Functionality{
 				Inline:             true,
 				URL:                true,
 				Thinking:           false,
@@ -130,7 +130,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         true,
 			},
-			ChatStream: genai.Functionality{
+			GenStream: genai.Functionality{
 				Inline:             true,
 				URL:                true,
 				Thinking:           false,
@@ -169,7 +169,7 @@ var Scoreboard = genai.Scoreboard{
 				"mistral-ocr-2505",
 				"mistral-ocr-latest",
 			},
-			Chat: genai.Functionality{
+			GenSync: genai.Functionality{
 				Inline:             false,
 				URL:                true,
 				Thinking:           false,
@@ -182,7 +182,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         true,
 			},
-			ChatStream: genai.Functionality{
+			GenStream: genai.Functionality{
 				Inline:             false,
 				URL:                true,
 				Thinking:           false,
@@ -755,7 +755,7 @@ func (er *ErrorMessage) UnmarshalJSON(d []byte) error {
 
 // Client implements genai.ProviderGen and genai.ProviderModel.
 type Client struct {
-	provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // TODO:
@@ -797,9 +797,9 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 		r = http.DefaultTransport
 	}
 	return &Client{
-		BaseChat: provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		BaseGen: provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
-			ChatURL:              "https://api.mistral.ai/v1/chat/completions",
+			GenSyncURL:           "https://api.mistral.ai/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
 			Base: provider.Base[*ErrorResponse]{
 				ProviderName: "mistral",

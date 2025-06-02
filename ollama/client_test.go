@@ -34,10 +34,10 @@ func TestClient(t *testing.T) {
 	t.Run("ProviderGen_errors", func(t *testing.T) {
 		data := []internaltest.ProviderGenError{
 			{
-				Name:          "bad model",
-				Model:         "bad_model",
-				ErrChat:       "pull failed: http 500: error pull model manifest: file does not exist",
-				ErrChatStream: "pull failed: http 500: error pull model manifest: file does not exist",
+				Name:         "bad model",
+				Model:        "bad_model",
+				ErrGenSync:   "pull failed: http 500: error pull model manifest: file does not exist",
+				ErrSynStream: "pull failed: http 500: error pull model manifest: file does not exist",
 			},
 		}
 		f := func(t *testing.T, apiKey, model string) genai.ProviderGen {

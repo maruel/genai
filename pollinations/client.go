@@ -54,7 +54,7 @@ var Scoreboard = genai.Scoreboard{
 				"openai-fast",
 				"qwen-coder",
 			},
-			Chat: genai.Functionality{
+			GenSync: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -67,7 +67,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         false,
 			},
-			ChatStream: genai.Functionality{
+			GenStream: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -81,14 +81,14 @@ var Scoreboard = genai.Scoreboard{
 				JSONSchema:         false,
 			},
 		},
-		/* ChatStream is particularly broken.
+		/* GenStream is particularly broken.
 		{
 			In:  []genai.Modality{genai.ModalityText},
 			Out: []genai.Modality{genai.ModalityText},
 			Models: []string{
 				"deepseek-reasoning",
 			},
-			Chat: genai.Functionality{
+			GenSync: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           true,
@@ -101,7 +101,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               false,
 				JSONSchema:         false,
 			},
-			ChatStream: genai.Functionality{
+			GenStream: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false, // Upstream parsing is broken
@@ -124,7 +124,7 @@ var Scoreboard = genai.Scoreboard{
 				"gptimage",
 				"turbo",
 			},
-			Chat: genai.Functionality{
+			GenSync: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -137,7 +137,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               false,
 				JSONSchema:         false,
 			},
-			ChatStream: genai.Functionality{
+			GenStream: genai.Functionality{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -158,7 +158,7 @@ var Scoreboard = genai.Scoreboard{
 				"openai",
 				"openai-large",
 			},
-			Chat: genai.Functionality{
+			GenSync: genai.Functionality{
 				Inline:             true,
 				URL:                true,
 				Thinking:           false,
@@ -171,7 +171,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         false,
 			},
-			ChatStream: genai.Functionality{
+			GenStream: genai.Functionality{
 				Inline:             true,
 				URL:                true,
 				Thinking:           false,
@@ -194,7 +194,7 @@ var Scoreboard = genai.Scoreboard{
 				Models: []string{
 					"openai-audio",
 				},
-				Chat: genai.Functionality{
+				GenSync: genai.Functionality{
 					Inline:             true,
 					URL:                false,
 					Thinking:           false,
@@ -207,7 +207,7 @@ var Scoreboard = genai.Scoreboard{
 					JSON:               true,
 					JSONSchema:         false,
 				},
-				ChatStream: genai.Functionality{
+				GenStream: genai.Functionality{
 					Inline:             true,
 					URL:                false,
 					Thinking:           false,
@@ -231,7 +231,7 @@ var Scoreboard = genai.Scoreboard{
 				Models: []string{
 					"openai-audio",
 				},
-				Chat: genai.Functionality{
+				GenSync: genai.Functionality{
 					Inline:             true,
 					URL:                false,
 					Thinking:           false,
@@ -244,7 +244,7 @@ var Scoreboard = genai.Scoreboard{
 					JSON:               true,
 					JSONSchema:         false,
 				},
-				ChatStream: genai.Functionality{
+				GenStream: genai.Functionality{
 					Inline:             true,
 					URL:                false,
 					Thinking:           false,
@@ -884,7 +884,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderModel.
 type Client struct {
-	provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Pollinations platform API.
@@ -908,9 +908,9 @@ func New(auth, model string, r http.RoundTripper) (*Client, error) {
 	}
 
 	return &Client{
-		BaseChat: provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		BaseGen: provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
-			ChatURL:              "https://text.pollinations.ai/openai",
+			GenSyncURL:           "https://text.pollinations.ai/openai",
 			ProcessStreamPackets: processStreamPackets,
 			LieToolCalls:         true,
 			Base: provider.Base[*ErrorResponse]{
@@ -942,7 +942,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Va
 		}
 		return c.GenImage(ctx, msgs[0], opts)
 	default:
-		return c.BaseChat.GenSync(ctx, msgs, opts)
+		return c.BaseGen.GenSync(ctx, msgs, opts)
 	}
 }
 
@@ -962,7 +962,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.
 		}
 		return res, err
 	default:
-		return c.BaseChat.GenStream(ctx, msgs, opts, chunks)
+		return c.BaseGen.GenStream(ctx, msgs, opts, chunks)
 	}
 }
 

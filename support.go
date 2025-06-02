@@ -15,7 +15,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-// ChatWithToolCallLoop runs a conversation with the LLM, handling tool calls in a loop until there are no
+// GenSyncWithToolCallLoop runs a conversation with the LLM, handling tool calls in a loop until there are no
 // more tool calls.
 //
 // It calls the provided ProviderGen.GenSync() method, processes any tool calls using Message.DoToolCalls(),
@@ -25,7 +25,7 @@ import (
 // tool call.
 //
 // It returns the messages to accumulate to the thread. The last message is the LLM's response.
-func ChatWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Messages, opts Validatable) (Messages, Usage, error) {
+func GenSyncWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Messages, opts Validatable) (Messages, Usage, error) {
 	usage := Usage{}
 	var out Messages
 	workMsgs := make(Messages, len(msgs))
@@ -64,7 +64,7 @@ func ChatWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Messag
 	}
 }
 
-// ChatStreamWithToolCallLoop runs a conversation loop with an LLM that handles tool calls via streaming
+// GenStreamWithToolCallLoop runs a conversation loop with an LLM that handles tool calls via streaming
 // until there are no more. It will repeatedly call GenStream(), collect fragments into a complete message,
 // process tool calls with DoToolCalls(), and continue the conversation until the LLM response
 // has no more tool calls.
@@ -77,7 +77,7 @@ func ChatWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Messag
 // tool call.
 //
 // No need to process the tool calls or accumulate the MessageFragment.
-func ChatStreamWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Messages, Usage, error) {
+func GenStreamWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Messages, Usage, error) {
 	usage := Usage{}
 	var out Messages
 	workMsgs := make(Messages, len(msgs))

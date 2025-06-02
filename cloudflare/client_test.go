@@ -25,17 +25,17 @@ func TestClient_Scoreboard(t *testing.T) {
 func TestClient_ProviderGen_errors(t *testing.T) {
 	data := []internaltest.ProviderGenError{
 		{
-			Name:          "bad apiKey",
-			ApiKey:        "bad apiKey",
-			Model:         "@hf/nousresearch/hermes-2-pro-mistral-7b",
-			ErrChat:       "http 401: error Authentication error. You can get a new API key at https://dash.cloudflare.com/profile/api-tokens",
-			ErrChatStream: "http 401: error Authentication error. You can get a new API key at https://dash.cloudflare.com/profile/api-tokens",
+			Name:         "bad apiKey",
+			ApiKey:       "bad apiKey",
+			Model:        "@hf/nousresearch/hermes-2-pro-mistral-7b",
+			ErrGenSync:   "http 401: error Authentication error. You can get a new API key at https://dash.cloudflare.com/profile/api-tokens",
+			ErrSynStream: "http 401: error Authentication error. You can get a new API key at https://dash.cloudflare.com/profile/api-tokens",
 		},
 		{
-			Name:          "bad model",
-			Model:         "bad model",
-			ErrChat:       "http 400: error No route for that URI",
-			ErrChatStream: "http 400: error No route for that URI",
+			Name:         "bad model",
+			Model:        "bad model",
+			ErrGenSync:   "http 400: error No route for that URI",
+			ErrSynStream: "http 400: error No route for that URI",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {

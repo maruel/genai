@@ -57,17 +57,17 @@ func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, opts 
 func TestClient_ProviderGen_errors(t *testing.T) {
 	data := []internaltest.ProviderGenError{
 		{
-			Name:          "bad apiKey",
-			ApiKey:        "bad apiKey",
-			Model:         "gpt-4.1-nano",
-			ErrChat:       "http 401: error invalid_api_key (): Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
-			ErrChatStream: "http 401: error invalid_api_key (): Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
+			Name:         "bad apiKey",
+			ApiKey:       "bad apiKey",
+			Model:        "gpt-4.1-nano",
+			ErrGenSync:   "http 401: error invalid_api_key (): Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
+			ErrSynStream: "http 401: error invalid_api_key (): Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 		},
 		{
-			Name:          "bad model",
-			Model:         "bad model",
-			ErrChat:       "http 400: error invalid_request_error: invalid model ID",
-			ErrChatStream: "http 400: error invalid_request_error: invalid model ID",
+			Name:         "bad model",
+			Model:        "bad model",
+			ErrGenSync:   "http 400: error invalid_request_error: invalid model ID",
+			ErrSynStream: "http 400: error invalid_request_error: invalid model ID",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {

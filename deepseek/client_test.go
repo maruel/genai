@@ -21,17 +21,17 @@ func TestClient_Scoreboard(t *testing.T) {
 func TestClient_ProviderGen_errors(t *testing.T) {
 	data := []internaltest.ProviderGenError{
 		{
-			Name:          "bad apiKey",
-			ApiKey:        "bad apiKey",
-			Model:         "deepseek-chat",
-			ErrChat:       "http 401: error authentication_error: Authentication Fails, Your api key: ****iKey is invalid. You can get a new API key at https://platform.deepseek.com/api_keys",
-			ErrChatStream: "http 401: error authentication_error: Authentication Fails, Your api key: ****iKey is invalid. You can get a new API key at https://platform.deepseek.com/api_keys",
+			Name:         "bad apiKey",
+			ApiKey:       "bad apiKey",
+			Model:        "deepseek-chat",
+			ErrGenSync:   "http 401: error authentication_error: Authentication Fails, Your api key: ****iKey is invalid. You can get a new API key at https://platform.deepseek.com/api_keys",
+			ErrSynStream: "http 401: error authentication_error: Authentication Fails, Your api key: ****iKey is invalid. You can get a new API key at https://platform.deepseek.com/api_keys",
 		},
 		{
-			Name:          "bad model",
-			Model:         "bad model",
-			ErrChat:       "http 400: error invalid_request_error: Model Not Exist",
-			ErrChatStream: "http 400: error invalid_request_error: Model Not Exist",
+			Name:         "bad model",
+			Model:        "bad model",
+			ErrGenSync:   "http 400: error invalid_request_error: Model Not Exist",
+			ErrSynStream: "http 400: error invalid_request_error: Model Not Exist",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {

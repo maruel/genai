@@ -28,17 +28,17 @@ func TestClient_Scoreboard(t *testing.T) {
 func TestClient_ProviderGen_errors(t *testing.T) {
 	data := []internaltest.ProviderGenError{
 		{
-			Name:          "bad apiKey",
-			ApiKey:        "bad apiKey",
-			Model:         "Qwen/Qwen3-4B",
-			ErrChat:       "http 401: Unauthorized. You can get a new API key at https://huggingface.co/settings/tokens",
-			ErrChatStream: "http 401: Unauthorized. You can get a new API key at https://huggingface.co/settings/tokens",
+			Name:         "bad apiKey",
+			ApiKey:       "bad apiKey",
+			Model:        "Qwen/Qwen3-4B",
+			ErrGenSync:   "http 401: Unauthorized. You can get a new API key at https://huggingface.co/settings/tokens",
+			ErrSynStream: "http 401: Unauthorized. You can get a new API key at https://huggingface.co/settings/tokens",
 		},
 		{
-			Name:          "bad model",
-			Model:         "bad model",
-			ErrChat:       "http 404: Not Found",
-			ErrChatStream: "http 404: Not Found",
+			Name:         "bad model",
+			Model:        "bad model",
+			ErrGenSync:   "http 404: Not Found",
+			ErrSynStream: "http 404: Not Found",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {

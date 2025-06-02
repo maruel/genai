@@ -394,7 +394,7 @@ func TestAccumulateMessageFragment(t *testing.T) {
 			got := make(Messages, len(tt.msgs))
 			copy(got, tt.msgs)
 
-			// Similar logic to ChatStreamWithToolCallLoop
+			// Similar logic to GenStreamWithToolCallLoop
 			var assistantMsg *Message
 			if len(got) == 0 || got[len(got)-1].Role != Assistant {
 				got = append(got, Message{Role: Assistant})
@@ -766,8 +766,8 @@ func TestUnsupportedContinuableError(t *testing.T) {
 	}
 }
 
-// TestChatStreamWithToolCallLoop tests the ChatStreamWithToolCallLoop function.
-func TestChatStreamWithToolCallLoop(t *testing.T) {
+// TestGenStreamWithToolCallLoop tests the GenStreamWithToolCallLoop function.
+func TestGenStreamWithToolCallLoop(t *testing.T) {
 	// Define a mock ProviderGen
 	provider := &mockProviderGen{
 		streamResponses: []streamResponse{
@@ -838,10 +838,10 @@ func TestChatStreamWithToolCallLoop(t *testing.T) {
 		}
 	}()
 
-	// Call ChatStreamWithToolCallLoop
-	responseMessages, usage, err := ChatStreamWithToolCallLoop(ctx, provider, msgs, opts, chunks)
+	// Call GenStreamWithToolCallLoop
+	responseMessages, usage, err := GenStreamWithToolCallLoop(ctx, provider, msgs, opts, chunks)
 	if err != nil {
-		t.Fatalf("ChatStreamWithToolCallLoop returned an error: %v", err)
+		t.Fatalf("GenStreamWithToolCallLoop returned an error: %v", err)
 	}
 
 	// Verify we got the expected number of messages

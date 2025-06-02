@@ -111,7 +111,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *genai.ChatOptions:
+			case *genai.TextOptions:
 				c.Options.NumPredict = v.MaxTokens
 				c.Options.Temperature = v.Temperature
 				c.Options.TopP = v.TopP

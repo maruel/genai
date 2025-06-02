@@ -22,7 +22,7 @@ func TestClient_Chat_simple(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			c := getClient(t, name)
 			msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
-			opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
+			opts := genai.TextOptions{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
 			ctx := t.Context()
 			resp, err := c.Chat(ctx, msgs, &opts)
 			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
@@ -44,7 +44,7 @@ func TestClient_ChatStream_simple(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			c := getClient(t, name)
 			msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
-			opts := genai.ChatOptions{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
+			opts := genai.TextOptions{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
 			ctx := t.Context()
 			chunks := make(chan genai.MessageFragment)
 			eg := errgroup.Group{}

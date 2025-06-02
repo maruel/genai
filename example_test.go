@@ -150,7 +150,7 @@ func ExampleProviderChat_all() {
 			genai.NewTextMessage(genai.User, "Tell a story in 10 words."),
 		}
 		// Include options with some unsupported features to demonstrate UnsupportedContinuableError
-		opts := &genai.ChatOptions{
+		opts := &genai.TextOptions{
 			TopK:      50, // Not all providers support this
 			MaxTokens: 512,
 		}
@@ -209,7 +209,7 @@ func ExampleClient_Chat_jSON() {
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Is a circle round? Reply as JSON with the form {\"round\": false} or {\"round\": true}."),
 	}
-	opts := genai.ChatOptions{ReplyAsJSON: true}
+	opts := genai.TextOptions{ReplyAsJSON: true}
 	resp, err := c.Chat(context.Background(), msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
@@ -237,7 +237,7 @@ func ExampleClient_Chat_jSON_schema() {
 	var got struct {
 		Round bool `json:"round"`
 	}
-	opts := genai.ChatOptions{DecodeAs: got}
+	opts := genai.TextOptions{DecodeAs: got}
 	resp, err := c.Chat(context.Background(), msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
@@ -351,7 +351,7 @@ func ExampleChatWithToolCallLoop() {
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "What is 3214 + 5632? Leverage the tool available to you to tell me the answer. Do not explain. Be terse. Include only the answer."),
 	}
-	opts := genai.ChatOptions{
+	opts := genai.TextOptions{
 		Tools: []genai.ToolDef{genaitools.Arithmetic},
 		// Force the LLM to do a tool call first.
 		ToolCallRequest: genai.ToolCallRequired,
@@ -379,7 +379,7 @@ func ExampleChatStreamWithToolCallLoop() {
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "What is 3214 + 5632? Leverage the tool available to you to tell me the answer. Do not explain. Be terse. Include only the answer."),
 	}
-	opts := genai.ChatOptions{
+	opts := genai.TextOptions{
 		Tools: []genai.ToolDef{genaitools.Arithmetic},
 		// Force the LLM to do a tool call first.
 		ToolCallRequest: genai.ToolCallRequired,
@@ -422,7 +422,7 @@ func ExampleProviderChat_ChatStream() {
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
 	}
-	opts := genai.ChatOptions{
+	opts := genai.TextOptions{
 		Seed:      1,
 		MaxTokens: 50,
 	}

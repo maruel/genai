@@ -144,9 +144,9 @@ var Scoreboard = genai.Scoreboard{
 	},
 }
 
-// ChatOptions includes Gemini specific options.
-type ChatOptions struct {
-	genai.ChatOptions
+// TextOptions includes Gemini specific options.
+type TextOptions struct {
+	genai.TextOptions
 
 	// ThinkingBudget is the maximum number of tokens the LLM can use to think about the answer. When 0,
 	// thinking is disabled. It generally must be above 1024 and below MaxTokens and 24576.
@@ -383,7 +383,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 			// This doesn't seem to be well supported yet:
 			//    in.GenerationConfig.ResponseLogprobs = true
 			switch v := opts.(type) {
-			case *ChatOptions:
+			case *TextOptions:
 				if v.ThinkingBudget > 0 {
 					// https://ai.google.dev/gemini-api/docs/thinking
 					c.GenerationConfig.ThinkingConfig = &ThinkingConfig{
@@ -394,8 +394,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 				if len(v.ResponseModalities) != 0 {
 					c.GenerationConfig.ResponseModalities = v.ResponseModalities
 				}
-				unsupported = c.initOptions(&v.ChatOptions, model)
-			case *genai.ChatOptions:
+				unsupported = c.initOptions(&v.TextOptions, model)
+			case *genai.TextOptions:
 				unsupported = c.initOptions(v, model)
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
@@ -432,7 +432,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	// There's no field to set, the URL is different.
 }
 
-func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) []string {
+func (c *ChatRequest) initOptions(v *genai.TextOptions, model string) []string {
 	var unsupported []string
 	c.GenerationConfig.MaxOutputTokens = v.MaxTokens
 	c.GenerationConfig.Temperature = v.Temperature
@@ -1102,7 +1102,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 //
 // At certain volumes, using cached tokens is lower cost than passing in the same corpus of tokens repeatedly.
 // The cost for caching depends on the input token size and how long you want the tokens to persist.
-func (c *Client) CacheAdd(ctx context.Context, msgs genai.Messages, opts *genai.ChatOptions, name, displayName string, ttl time.Duration) (string, error) {
+func (c *Client) CacheAdd(ctx context.Context, msgs genai.Messages, opts *genai.TextOptions, name, displayName string, ttl time.Duration) (string, error) {
 	// See https://ai.google.dev/gemini-api/docs/caching?hl=en&lang=rest#considerations
 	// Useful when reusing the same large data multiple times to reduce token usage.
 	// This requires a pinned model, with trailing -001.

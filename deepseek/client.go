@@ -141,7 +141,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 		} else {
 			// https://api-docs.deepseek.com/guides/reasoning_model Soon "reasoning_effort"
 			switch v := opts.(type) {
-			case *genai.ChatOptions:
+			case *genai.TextOptions:
 				c.MaxToks = v.MaxTokens
 				c.Temperature = v.Temperature
 				c.TopP = v.TopP

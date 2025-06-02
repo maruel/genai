@@ -79,12 +79,12 @@ type ProviderChat interface {
 	Provider
 	// Chat runs completion synchronously.
 	//
-	// opts must be either nil, *ChatOptions or a provider-specialized
+	// opts must be either nil, *TextOptions or a provider-specialized
 	// option struct.
 	Chat(ctx context.Context, msgs Messages, opts Validatable) (Result, error)
 	// ChatStream runs completion synchronously, streaming the results to channel replies.
 	//
-	// opts must be either nil, *ChatOptions or a provider-specialized
+	// opts must be either nil, *TextOptions or a provider-specialized
 	// option struct.
 	//
 	// No need to accumulate the replies into the result, the ChatResult contains the accumulated message.
@@ -93,7 +93,7 @@ type ProviderChat interface {
 	ModelID() string
 }
 
-// ChatOptions is a list of frequent options supported by most ProviderChat.
+// TextOptions is a list of frequent options supported by most ProviderChat with text output modality.
 // Each provider is free to support more options through a specialized struct.
 //
 // The first group are options supported by (nearly) all providers.
@@ -103,7 +103,7 @@ type ProviderChat interface {
 //
 // The third group are options supported by a few providers and a few models on each, that will slow down
 // generation (increase latency) and will increase token use (cost).
-type ChatOptions struct {
+type TextOptions struct {
 	// Temperature adjust the creativity of the sampling. Generally between 0 and 2.
 	Temperature float64
 	// TopP adjusts correctness sampling between 0 and 1. The higher the more diverse the output.
@@ -137,7 +137,7 @@ type ChatOptions struct {
 }
 
 // Validate ensures the completion options are valid.
-func (c *ChatOptions) Validate() error {
+func (c *TextOptions) Validate() error {
 	if c.Seed < 0 {
 		return errors.New("field Seed: must be non-negative")
 	}
@@ -219,11 +219,11 @@ const (
 	// FinishedStopSequence.
 	FinishedStop FinishReason = "stop"
 	// FinishedLength means the model reached the maximum number of tokens allowed as set in
-	// ChatOptions.MaxTokens or as limited by the provider.
+	// TextOptions.MaxTokens or as limited by the provider.
 	FinishedLength FinishReason = "length"
 	// FinishedToolCalls means the model called one or multiple tools and needs the replies to continue the turn.
 	FinishedToolCalls FinishReason = "tool_calls"
-	// FinishedStopSequence means the model stopped because it saw a stop word as listed in ChatOptions.Stop.
+	// FinishedStopSequence means the model stopped because it saw a stop word as listed in TextOptions.Stop.
 	FinishedStopSequence FinishReason = "stop"
 	// FinishedContentFilter means the model stopped because the reply got caught by a content filter.
 	FinishedContentFilter FinishReason = "content_filter"
@@ -369,10 +369,10 @@ func (m *Message) AsText() string {
 
 // Decode decodes the JSON message into the struct.
 //
-// Requires using either ReplyAsJSON or DecodeAs in the ChatOptions.
+// Requires using either ReplyAsJSON or DecodeAs in the TextOptions.
 //
 // Note: this doesn't verify the type is the same as specified in
-// ChatOptions.DecodeAs.
+// TextOptions.DecodeAs.
 func (m *Message) Decode(x any) error {
 	s := m.AsText()
 	if s == "" {
@@ -1012,7 +1012,7 @@ type Functionality struct {
 	// URL means that the data can be provided as a URL that the provider will fetch from.
 	URL bool
 	// Thinking means that the model does either explicit chain-of-thought or hidden thinking. For some
-	// providers, this is controlled via a ChatOptions. For some models (like Qwen3), a token "/nothink" or
+	// providers, this is controlled via a TextOptions. For some models (like Qwen3), a token "/nothink" or
 	// "/think" is used to control.
 	Thinking bool
 
@@ -1030,10 +1030,9 @@ type Functionality struct {
 	ReportTokenUsage bool
 	// ReportFinishReason means that the finish reason (FinishStop, FinishLength, etc) is correctly reported.
 	ReportFinishReason bool
-	// MaxTokens means that the provider supports limiting text output.
+	// MaxTokens means that the provider supports limiting text output. Only relevant on text output.
 	MaxTokens bool
-	// StopSequence means that the provider supports stop words. This is generally only supported in text-in
-	// modalities.
+	// StopSequence means that the provider supports stop words. Only relevant on text output.
 	StopSequence bool
 	// UnbiasedTool is true when the LLM supports tools and when asking for a biased question, it will not
 	// always reply with the first readily available answer.
@@ -1104,7 +1103,7 @@ func isErrorType(t reflect.Type) bool {
 }
 
 var (
-	_ Validatable = (*ChatOptions)(nil)
+	_ Validatable = (*TextOptions)(nil)
 	_ Validatable = (*Role)(nil)
 	_ Validatable = (*Messages)(nil)
 	_ Validatable = (*Message)(nil)

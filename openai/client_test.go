@@ -20,7 +20,7 @@ func TestClient_Scoreboard(t *testing.T) {
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat {
 		c := getClient(t, m)
 		if m == "o4-mini" {
-			return &injectOption{Client: c, t: t, opts: openai.ChatOptions{
+			return &injectOption{Client: c, t: t, opts: openai.TextOptions{
 				// This will lead to spurious HTTP 500 but it is 25% of the cost.
 				ServiceTier:     openai.ServiceTierFlex,
 				ReasoningEffort: openai.ReasoningEffortHigh,
@@ -33,13 +33,13 @@ func TestClient_Scoreboard(t *testing.T) {
 type injectOption struct {
 	*openai.Client
 	t    *testing.T
-	opts openai.ChatOptions
+	opts openai.TextOptions
 }
 
 func (i *injectOption) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
-		n.ChatOptions = *opts.(*genai.ChatOptions)
+		n.TextOptions = *opts.(*genai.TextOptions)
 	}
 	opts = &n
 	return i.Client.Chat(ctx, msgs, opts)
@@ -48,7 +48,7 @@ func (i *injectOption) Chat(ctx context.Context, msgs genai.Messages, opts genai
 func (i *injectOption) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
-		n.ChatOptions = *opts.(*genai.ChatOptions)
+		n.TextOptions = *opts.(*genai.TextOptions)
 	}
 	opts = &n
 	return i.Client.ChatStream(ctx, msgs, opts, replies)
@@ -126,7 +126,7 @@ func TestUnsupportedContinuableError(t *testing.T) {
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "Hello"),
 	}
-	opts := &genai.ChatOptions{
+	opts := &genai.TextOptions{
 		TopK: 50, // OpenAI doesn't support TopK
 	}
 

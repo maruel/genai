@@ -244,9 +244,9 @@ var Scoreboard = genai.Scoreboard{
 	},
 }
 
-// ChatOptions includes OpenAI specific options.
-type ChatOptions struct {
-	genai.ChatOptions
+// TextOptions includes OpenAI specific options.
+type TextOptions struct {
+	genai.TextOptions
 
 	// ReasoningEffort is the amount of effort (number of tokens) the LLM can use to think about the answer.
 	//
@@ -358,12 +358,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *ChatOptions:
+			case *TextOptions:
 				c.ReasoningEffort = v.ReasoningEffort
 				c.ServiceTier = v.ServiceTier
-				unsupported = c.initOptions(&v.ChatOptions, model)
+				unsupported = c.initOptions(&v.TextOptions, model)
 				sp = v.SystemPrompt
-			case *genai.ChatOptions:
+			case *genai.TextOptions:
 				c.ServiceTier = ServiceTierAuto
 				unsupported = c.initOptions(v, model)
 				sp = v.SystemPrompt
@@ -408,7 +408,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.StreamOptions.IncludeUsage = stream
 }
 
-func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) []string {
+func (c *ChatRequest) initOptions(v *genai.TextOptions, model string) []string {
 	var unsupported []string
 	c.MaxChatTokens = v.MaxTokens
 	// TODO: This is not great.

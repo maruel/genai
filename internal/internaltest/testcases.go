@@ -25,7 +25,7 @@ func TestClient_ProviderChat_errors(t *testing.T, getClient func(t *testing.T, a
 			if line.ErrChat != "" {
 				t.Run("Chat", func(t *testing.T) {
 					c := getClient(t, line.ApiKey, line.Model)
-					_, err := c.Chat(t.Context(), msgs, &genai.ChatOptions{})
+					_, err := c.Chat(t.Context(), msgs, &genai.TextOptions{})
 					if err == nil {
 						t.Fatal("expected error")
 					} else if _, ok := err.(*genai.UnsupportedContinuableError); ok {
@@ -39,7 +39,7 @@ func TestClient_ProviderChat_errors(t *testing.T, getClient func(t *testing.T, a
 				t.Run("ChatStream", func(t *testing.T) {
 					c := getClient(t, line.ApiKey, line.Model)
 					ch := make(chan genai.MessageFragment, 1)
-					_, err := c.ChatStream(t.Context(), msgs, &genai.ChatOptions{}, ch)
+					_, err := c.ChatStream(t.Context(), msgs, &genai.TextOptions{}, ch)
 					if err == nil {
 						t.Fatal("expected error")
 					} else if _, ok := err.(*genai.UnsupportedContinuableError); ok {

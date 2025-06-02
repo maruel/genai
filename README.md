@@ -127,7 +127,7 @@ func main() {
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "What is 3214 + 5632? Leverage the tool available to you to tell me the answer. Do not explain. Be terse. Include only the answer."),
 	}
-	opts := genai.ChatOptions{
+	opts := genai.TextOptions{
 		Tools: []genai.ToolDef{genaitools.Arithmetic},
 		// Force the LLM to do a tool call first.
 		ToolCallRequest: genai.ToolCallRequired,
@@ -172,7 +172,7 @@ func main() {
 	msgs := genai.Messages{
 		genai.NewTextMessage(genai.User, "What is 3214 + 5632? Call the tool \"add\" to tell me the answer. Do not explain. Be terse. Include only the answer."),
 	}
-	opts := genai.ChatOptions{
+	opts := genai.TextOptions{
 		Tools: []genai.ToolDef{
 			{
 				Name:        "add",
@@ -247,7 +247,7 @@ func main() {
 	var circle struct {
 		Round bool `json:"round"`
 	}
-	opts := genai.ChatOptions{DecodeAs: &circle}
+	opts := genai.TextOptions{DecodeAs: &circle}
 	resp, err := c.Chat(context.Background(), msgs, &opts)
 	if err != nil {
 		log.Fatal(err)

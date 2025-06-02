@@ -30,7 +30,7 @@ func ChatWithToolCallLoop(ctx context.Context, provider ProviderChat, msgs Messa
 	var out Messages
 	workMsgs := make(Messages, len(msgs))
 	copy(workMsgs, msgs)
-	chatOpts, ok := opts.(*ChatOptions)
+	chatOpts, ok := opts.(*TextOptions)
 	if !ok || len(chatOpts.Tools) == 0 {
 		return out, usage, errors.New("no tools found")
 	}
@@ -82,7 +82,7 @@ func ChatStreamWithToolCallLoop(ctx context.Context, provider ProviderChat, msgs
 	var out Messages
 	workMsgs := make(Messages, len(msgs))
 	copy(workMsgs, msgs)
-	chatOpts, ok := opts.(*ChatOptions)
+	chatOpts, ok := opts.(*TextOptions)
 	if !ok || len(chatOpts.Tools) == 0 {
 		return out, usage, errors.New("no tools found")
 	}
@@ -205,7 +205,7 @@ type ProviderChatThinking struct {
 func (c *ProviderChatThinking) Chat(ctx context.Context, msgs Messages, opts Validatable) (Result, error) {
 	result, err := c.ProviderChat.Chat(ctx, msgs, opts)
 	// When replying in JSON, the thinking tokens are "denied" by the engine.
-	if o, ok := opts.(*ChatOptions); !ok || !c.SkipJSON || (!o.ReplyAsJSON && o.DecodeAs == nil) {
+	if o, ok := opts.(*TextOptions); !ok || !c.SkipJSON || (!o.ReplyAsJSON && o.DecodeAs == nil) {
 		if err2 := c.processThinkingMessage(&result.Message); err == nil {
 			err = err2
 		}
@@ -218,7 +218,7 @@ func (c *ProviderChatThinking) Chat(ctx context.Context, msgs Messages, opts Val
 // If no thinking tags are present, the first part of the message is assumed to be thinking.
 func (c *ProviderChatThinking) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Result, error) {
 	if c.SkipJSON {
-		if o, ok := opts.(*ChatOptions); ok && (o.ReplyAsJSON || o.DecodeAs != nil) {
+		if o, ok := opts.(*TextOptions); ok && (o.ReplyAsJSON || o.DecodeAs != nil) {
 			// When replying in JSON, the thinking tokens are "denied" by the engine.
 			return c.ProviderChat.ChatStream(ctx, msgs, opts, replies)
 		}

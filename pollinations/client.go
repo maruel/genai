@@ -307,7 +307,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *genai.ChatOptions:
+			case *genai.TextOptions:
 				unsupported, errs = c.initOptions(v, model)
 				sp = v.SystemPrompt
 			default:
@@ -350,7 +350,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.StreamOptions.IncludeUsage = true
 }
 
-func (c *ChatRequest) initOptions(v *genai.ChatOptions, model string) ([]string, []error) {
+func (c *ChatRequest) initOptions(v *genai.TextOptions, model string) ([]string, []error) {
 	var errs []error
 	var unsupported []string
 	c.MaxTokens = v.MaxTokens
@@ -991,7 +991,7 @@ func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Val
 		if v.Height != 0 {
 			qp.Add("height", strconv.Itoa(v.Height))
 		}
-	case *genai.ChatOptions:
+	case *genai.TextOptions:
 		// TODO: Deny most flags.
 		if v.Seed != 0 {
 			// Defaults to 42 otherwise.

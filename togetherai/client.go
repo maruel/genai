@@ -212,7 +212,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *genai.ChatOptions:
+			case *genai.TextOptions:
 				c.MaxTokens = v.MaxTokens
 				c.Temperature = v.Temperature
 				c.TopP = v.TopP
@@ -825,7 +825,7 @@ func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Val
 			req.Height = int64(v.Height)
 			req.Width = int64(v.Width)
 			req.Seed = v.Seed
-		case *genai.ChatOptions:
+		case *genai.TextOptions:
 			req.Seed = v.Seed
 		}
 	}

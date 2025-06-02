@@ -138,7 +138,7 @@ func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Validatable, mo
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *genai.ChatOptions:
+			case *genai.TextOptions:
 				c.NPredict = v.MaxTokens
 				c.Seed = v.Seed
 				c.Temperature = v.Temperature
@@ -313,7 +313,7 @@ type applyTemplateRequest struct {
 
 func (a *applyTemplateRequest) Init(opts genai.Validatable, msgs genai.Messages) error {
 	sp := ""
-	if v, ok := opts.(*genai.ChatOptions); ok {
+	if v, ok := opts.(*genai.TextOptions); ok {
 		sp = v.SystemPrompt
 	}
 	if err := msgs.Validate(); err != nil {

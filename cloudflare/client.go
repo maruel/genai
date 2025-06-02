@@ -10,12 +10,15 @@ package cloudflare
 // See official client at https://github.com/cloudflare/cloudflare-go
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"os"
+	"slices"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -483,13 +486,40 @@ func (m *Model) GetID() string {
 	return m.Name
 }
 
+type ModelPricing struct {
+	Currency string  `json:"currency"`
+	Price    float64 `json:"price"`
+	Unit     string  `json:"unit"` // "per M input tokens", "per M output tokens"
+}
+
 func (m *Model) String() string {
 	var suffixes []string
-	for _, p := range m.Properties {
+	pp := slices.Clone(m.Properties)
+	sort.Slice(pp, func(i, j int) bool {
+		return pp[i].PropertyID < pp[j].PropertyID
+	})
+	for _, p := range pp {
 		if p.PropertyID == "info" || p.PropertyID == "terms" {
 			continue
 		}
-		suffixes = append(suffixes, fmt.Sprintf("%s=%v", p.PropertyID, p.Value))
+		switch p.Value.(type) {
+		case json.Number, string, int:
+			suffixes = append(suffixes, fmt.Sprintf("%s=%v", p.PropertyID, p.Value))
+		default:
+			b, _ := json.Marshal(p.Value)
+			d := json.NewDecoder(bytes.NewReader(b))
+			d.DisallowUnknownFields()
+			var mp []ModelPricing
+			if err := d.Decode(&mp); err == nil {
+				var s []string
+				for _, l := range mp {
+					s = append(s, fmt.Sprintf("%g$%s %s", l.Price, l.Currency, l.Unit))
+				}
+				suffixes = append(suffixes, fmt.Sprintf("%s=[%s]", p.PropertyID, strings.Join(s, ", ")))
+			} else {
+				suffixes = append(suffixes, fmt.Sprintf("%s=%v", p.PropertyID, p.Value))
+			}
+		}
 	}
 	suffix := ""
 	if len(suffixes) != 0 {

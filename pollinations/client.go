@@ -982,6 +982,11 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Validatable) (genai.ChatResult, error) {
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#text-to-image-get-%EF%B8%8F
 	res := genai.ChatResult{}
+	for i := range msg.Contents {
+		if msg.Contents[i].Text == "" {
+			return res, errors.New("only text can be passed as input")
+		}
+	}
 	qp := url.Values{}
 	qp.Add("model", c.Model)
 	switch v := opts.(type) {

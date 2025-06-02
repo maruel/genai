@@ -26,6 +26,7 @@ import (
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -192,6 +193,41 @@ var Scoreboard = genai.Scoreboard{
 				UnbiasedTool:       false,
 				JSON:               true,
 				JSONSchema:         true,
+			},
+		},
+		{
+			In:  []genai.Modality{genai.ModalityText},
+			Out: []genai.Modality{genai.ModalityImage},
+			Models: []string{
+				"dall-e-2",
+				"dall-e-3",
+				"gpt-image-1",
+			},
+			Chat: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   false,
+				ReportFinishReason: false,
+				MaxTokens:          false,
+				StopSequence:       false,
+				Tools:              genai.False,
+				UnbiasedTool:       false,
+				JSON:               false,
+				JSONSchema:         false,
+			},
+			ChatStream: genai.Functionality{
+				Inline:             true,
+				URL:                false,
+				Thinking:           false,
+				ReportTokenUsage:   false,
+				ReportFinishReason: false,
+				MaxTokens:          false,
+				StopSequence:       false,
+				Tools:              genai.False,
+				UnbiasedTool:       false,
+				JSON:               false,
+				JSONSchema:         false,
 			},
 		},
 		// Audio only output:
@@ -788,6 +824,46 @@ func (t *Time) AsTime() time.Time {
 	return time.Unix(int64(*t), 0)
 }
 
+//
+
+// https://platform.openai.com/docs/api-reference/images
+type ImageRequest struct {
+	Prompt            string  `json:"prompt"`
+	Model             string  `json:"model,omitzero"`              // Default to dall-e-2, unless a gpt-image-1 specific parameter is used.
+	Background        string  `json:"background,omitzero"`         // "auto", "transparent", "opaque". Default "auto", only supported on gpt-image-1.
+	Moderation        string  `json:"moderation,omitzero"`         // gpt-image-1: "low" or "auto"
+	N                 int64   `json:"n,omitzero"`                  // Number of images to return
+	OutputCompression float64 `json:"output_compression,omitzero"` // Defaults to 100. Only supported on gpt-image-1 with webp or jpeg
+	OutputFormat      string  `json:"output_format,omitzero"`      // "png", "jpeg" or "webp". Defaults to png. Only supported on gpt-image-1.
+	Quality           string  `json:"quality,omitzero"`            // "auto", gpt-image-1: "high", "medium", "low". dall-e-3: "hd", "standard". dall-e-2: "standard".
+	ResponseFormat    string  `json:"response_format,omitzero"`    // "url" or "b64_json"; url is valid for 60 minutes; gpt-image-1 only returns b64_json
+	Size              string  `json:"size,omitzero"`               // "auto", gpt-image-1: "1024x1024", "1536x1024", "1024x1536". dall-e-3: "1024x1024", "1792x1024", "1024x1792". dall-e-2: "256x256", "512x512", "1024x1024".
+	Style             string  `json:"style,omitzero"`              // dall-e-3: "vivid", "natural"
+	User              string  `json:"user,omitzero"`               // End-user to help monitor and detect abuse
+}
+
+type ImageResponse struct {
+	Created Time              `json:"created"`
+	Data    []ImageChoiceData `json:"data"`
+	Usage   struct {
+		InputTokens        int64 `json:"input_tokens"`
+		OutputTokens       int64 `json:"output_tokens"`
+		TotalTokens        int64 `json:"total_tokens"`
+		InputTokensDetails struct {
+			TextTokens  int64 `json:"text_tokens"`
+			ImageTokens int64 `json:"image_tokens"`
+		} `json:"input_tokens_details"`
+	} `json:"usage"`
+}
+
+type ImageChoiceData struct {
+	B64JSON       []byte `json:"b64_json"`
+	RevisedPrompt string `json:"revised_prompt"` // dall-e-3 only
+	URL           string `json:"url"`            // Unsupported for gpt-image-1
+}
+
+//
+
 // https://platform.openai.com/docs/api-reference/models/object
 //
 // Sadly the modalities aren't reported. The only way I can think of to find it at run time is to fetch
@@ -905,6 +981,115 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 	}, nil
 }
 
+func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+	// TODO: Use Scoreboard list.
+	switch c.Model {
+	case "dall-e-2", "dall-e-3", "gpt-image-1":
+		if len(msgs) != 1 {
+			return genai.ChatResult{}, errors.New("must pass exactly one Message")
+		}
+		return c.GenImage(ctx, msgs[0], opts)
+	default:
+		return c.ClientChat.Chat(ctx, msgs, opts)
+	}
+}
+
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
+	// TODO: Use Scoreboard list.
+	switch c.Model {
+	case "dall-e-2", "dall-e-3", "gpt-image-1":
+		if len(msgs) != 1 {
+			return genai.ChatResult{}, errors.New("must pass exactly one Message")
+		}
+		res, err := c.GenImage(ctx, msgs[0], opts)
+		if err == nil {
+			for i := range res.Contents {
+				if url := res.Contents[i].URL; url != "" {
+					chunks <- genai.MessageFragment{
+						Filename: res.Contents[i].Filename,
+						URL:      res.Contents[i].URL,
+					}
+				} else if d := res.Contents[i].Document; d != nil {
+					chunks <- genai.MessageFragment{
+						Filename:         res.Contents[i].Filename,
+						DocumentFragment: res.Contents[i].Document.(*bb.BytesBuffer).D,
+					}
+				} else {
+					return res, errors.New("internal error")
+				}
+			}
+		}
+		return res, err
+	default:
+		return c.ClientChat.ChatStream(ctx, msgs, opts, chunks)
+	}
+}
+
+func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Validatable) (genai.ChatResult, error) {
+	// https://platform.openai.com/docs/api-reference/images/create
+	res := genai.ChatResult{}
+	for i := range msg.Contents {
+		if msg.Contents[i].Text == "" {
+			return res, errors.New("only text can be passed as input")
+		}
+	}
+	req := ImageRequest{
+		Prompt:         msg.AsText(),
+		Model:          c.Model,
+		ResponseFormat: "b64_json",
+	}
+	// This is unfortunate.
+	switch c.Model {
+	case "gpt-image-1":
+		req.Moderation = "low"
+		// req.Background = "transparent"
+		// req.OutputFormat = "webp"
+		// req.OutputCompression = 90
+		// req.Quality = "high"
+		// req.Size = "1536x1024"
+	case "dall-e-3":
+		// req.Size = "1792x1024"
+	case "dall-e-2":
+		// We assume dall-e-2 is only used for smoke testing, so use the smallest image.
+		req.Size = "256x256"
+		// Maximum prompt length is 1000 characters.
+		// Since we assume this is only for testing, just cut it off.
+		if len(req.Prompt) > 1000 {
+			req.Prompt = req.Prompt[:1000]
+		}
+	default:
+		// Silently pass.
+	}
+	url := "https://api.openai.com/v1/images/generations"
+
+	// It is very different because it requires a multi-part upload.
+	// https://platform.openai.com/docs/api-reference/images/createEdit
+	// url = "https://api.openai.com/v1/images/edits"
+
+	resp := ImageResponse{}
+	if err := c.DoRequest(ctx, "POST", url, &req, &resp); err != nil {
+		return res, err
+	}
+	res.Role = genai.Assistant
+	res.Contents = make([]genai.Content, len(resp.Data))
+	for i := range resp.Data {
+		n := "content.jpg"
+		if len(resp.Data) > 1 {
+			n = fmt.Sprintf("content%d.jpg", i+1)
+		}
+		if url := resp.Data[i].URL; url != "" {
+			res.Contents[i].Filename = n
+			res.Contents[i].URL = url
+		} else if d := resp.Data[i].B64JSON; len(d) != 0 {
+			res.Contents[i].Filename = n
+			res.Contents[i].Document = &bb.BytesBuffer{D: resp.Data[i].B64JSON}
+		} else {
+			return res, errors.New("internal error")
+		}
+	}
+	return res, nil
+}
+
 func (c *Client) Name() string {
 	return "openai"
 }
@@ -987,6 +1172,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 
 var (
 	_ genai.ProviderChat       = &Client{}
+	_ genai.ProviderImage      = &Client{}
 	_ genai.ProviderModel      = &Client{}
 	_ genai.ProviderScoreboard = &Client{}
 )

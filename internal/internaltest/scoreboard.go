@@ -111,9 +111,19 @@ func TestScoreboard(t *testing.T, g ProviderChatModalityFactory, filter func(mod
 							ran = true
 						}
 					}
-					if slices.Contains(out, genai.ModalityImage) {
+					if slices.Equal(out, genai.Modalities{genai.ModalityImage}) {
+						// Image only output, e.g. OpenAI, Pollinations, TogetherAI.
+						// Only run once, no need to run twice.
+						if !line.stream {
+							t.Run("imagegen", func(t *testing.T) {
+								testImageGenFunctionalities(t, g, s.Models[0], line.f)
+							})
+						}
+						ran = true
+					} else if slices.Contains(out, genai.ModalityImage) {
+						// Text+Image output, e.g. Gemini.
 						t.Run("imagegen", func(t *testing.T) {
-							testImageGenFunctionalities(t, g, s.Models[0], line.f, line.stream)
+							testChatImageGenFunctionalities(t, g, s.Models[0], line.f, line.stream)
 						})
 						ran = true
 					}
@@ -706,7 +716,7 @@ func testPDFFunctionalities(t *testing.T, g ProviderChatModalityFactory, model s
 	})
 }
 
-func testImageGenFunctionalities(t *testing.T, g ProviderChatModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testChatImageGenFunctionalities(t *testing.T, g ProviderChatModalityFactory, model string, f *genai.Functionality, stream bool) {
 	prompt := `A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
 	const style = `Simple, vibrant, varied-colored doodle/hand-drawn sketch`
 	contents := `Generate one square, white-background doodle with smooth, vibrantly colored image depicting ` + prompt + `.
@@ -739,6 +749,41 @@ func testImageGenFunctionalities(t *testing.T, g ProviderChatModalityFactory, mo
 		t.Fatalf("expected one image, got %#v", resp.Contents[0])
 	}
 	// It can have text, images or both.
+}
+
+func testImageGenFunctionalities(t *testing.T, g ProviderChatModalityFactory, model string, f *genai.Functionality) {
+	prompt := `A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
+	const style = `Simple, vibrant, varied-colored doodle/hand-drawn sketch`
+	contents := `Generate one square, white-background doodle with smooth, vibrantly colored image depicting ` + prompt + `.
+
+*Mandatory Requirements (Compacted):**
+
+**Style:** ` + style + `.
+**Background:** Plain solid white (no background colors/elements). Absolutely no black background.
+**Content & Motion:** Clearly depict **` + prompt + `** action with colored, moving subject (no static images). If there's an action specified, it should be the main difference between frames.
+**Format:** Square image (1:1 aspect ratio).
+**Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.
+**Output:** Actual image file for a smooth, colorful doodle-style image on a white background.`
+	defaultFR := genai.FinishedStop
+	if !f.ReportFinishReason {
+		defaultFR = ""
+	}
+	msg := genai.NewTextMessage(genai.User, contents)
+	c := g(t, model).(genai.ProviderImage)
+	resp, err := c.GenImage(t.Context(), msg, nil)
+	if !basicCheck(t, err, f.Inline) {
+		return
+	}
+	testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
+	if len(resp.Contents) == 0 {
+		t.Fatal("expected content")
+	}
+	if len(resp.Contents) != 1 {
+		t.Fatalf("expected one content, got %d", len(resp.Contents))
+	}
+	if resp.Contents[0].Filename != "content.png" && resp.Contents[0].Filename != "content.jpg" {
+		t.Fatalf("expected one image, got %#v", resp.Contents[0])
+	}
 }
 
 func testAudioGenFunctionalities(t *testing.T, g ProviderChatModalityFactory, model string, f *genai.Functionality, stream bool) {

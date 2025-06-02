@@ -685,7 +685,7 @@ type ImageResponse struct {
 
 type ImageChoiceData struct {
 	Index   int64  `json:"index"`
-	Data    []byte `json:"b64_json"`
+	B64JSON []byte `json:"b64_json"`
 	URL     string `json:"url"`
 	Timings struct {
 		Inference float64 `json:"inference"`
@@ -812,6 +812,11 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 
 func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Validatable) (genai.ChatResult, error) {
 	res := genai.ChatResult{}
+	for i := range msg.Contents {
+		if msg.Contents[i].Text == "" {
+			return res, errors.New("only text can be passed as input")
+		}
+	}
 	req := ImageRequest{
 		Prompt: msg.AsText(),
 		Model:  c.Model,
@@ -840,9 +845,9 @@ func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Val
 		if url := resp.Data[i].URL; url != "" {
 			res.Contents[i].Filename = n
 			res.Contents[i].URL = url
-		} else if d := resp.Data[i].Data; len(d) != 0 {
+		} else if d := resp.Data[i].B64JSON; len(d) != 0 {
 			res.Contents[i].Filename = n
-			res.Contents[i].Document = &bb.BytesBuffer{D: resp.Data[i].Data}
+			res.Contents[i].Document = &bb.BytesBuffer{D: resp.Data[i].B64JSON}
 		} else {
 			return res, errors.New("internal error")
 		}

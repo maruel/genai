@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1197
+        content_length: 1172
         transfer_encoding: []
         trailer: {}
         host: api.together.xyz
         remote_addr: ""
         request_uri: ""
         body: |
-            {"prompt":"Generate one square, white-background doodle with smooth, vibrantly colored image depicting A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves..\n\n*Mandatory Requirements (Compacted):**\n\n**Style:** Simple, vibrant, varied-colored doodle/hand-drawn sketch.\n**Background:** Plain solid white (no background colors/elements). Absolutely no black background.\n**Content & Motion:** Clearly depict **A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.** action with colored, moving subject (no static images). If there's an action specified, it should be the main difference between frames.\n**Format:** Square image (1:1 aspect ratio).\n**Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.\n**Output:** Actual image file for a smooth, colorful doodle-style image on a white background.","model":"black-forest-labs/FLUX.1-schnell-Free","height":512,"width":512}
+            {"prompt":"Generate one square, white-background doodle with smooth, vibrantly colored image depicting A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves..\n\n*Mandatory Requirements (Compacted):**\n\n**Style:** Simple, vibrant, varied-colored doodle/hand-drawn sketch.\n**Background:** Plain solid white (no background colors/elements). Absolutely no black background.\n**Content & Motion:** Clearly depict **A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.** action with colored, moving subject (no static images). If there's an action specified, it should be the main difference between frames.\n**Format:** Square image (1:1 aspect ratio).\n**Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.\n**Output:** Actual image file for a smooth, colorful doodle-style image on a white background.","model":"black-forest-labs/FLUX.1-schnell-Free"}
         form: {}
         headers:
             Content-Type:
@@ -30,15 +30,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "nwSGvip-4yUbBN-94927b629f7aa2ae-YUL",
+              "id": "nwSmJAv-4yUbBN-949302863edc33fb-PDX",
               "model": "black-forest-labs/FLUX.1-schnell-Free",
               "object": "list",
               "data": [
                 {
                   "index": 0,
-                  "url": "https://api.together.ai/imgproxy/bs0FHdf-vG5UOjvqQXRCalAPw7GMgkbEawKL6r0W3Ek/format:jpeg/aHR0cHM6Ly90b2dldGhlci1haS1iZmwtaW1hZ2VzLXByb2QuczMudXMtd2VzdC0yLmFtYXpvbmF3cy5jb20vaW1hZ2VzLzNhYmExZjkyNDdjZjFlZWU5YTk3ODY2MDM3MDI5ZjlmOTkzZDFlNjFiZmM3Y2Q5ODMwYmExYWM5YjY5NTZkNjM_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ29udGVudC1TaGEyNTY9VU5TSUdORUQtUEFZTE9BRCZYLUFtei1DcmVkZW50aWFsPUFTSUFZV1pXNEhWQ0xSTlFJS0MzJTJGMjAyNTA2MDElMkZ1cy13ZXN0LTIlMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjUwNjAxVDIzMjc0MVomWC1BbXotRXhwaXJlcz0zNjAwJlgtQW16LVNlY3VyaXR5LVRva2VuPUlRb0piM0pwWjJsdVgyVmpFQmdhQ1hWekxYZGxjM1F0TWlKR01FUUNJQVhLc05hdjViaGtESyUyQkFPY3cwR0VjaXdNdEM1SVRvSG5wcjJvS242eHFwQWlBOXFwY3A1UU1ySmoxTjFrNmdJWk1BZDliUklmcllXV0Z2eE9HaFhkQ3pBeXFaQlFqaCUyRiUyRiUyRiUyRiUyRiUyRiUyRiUyRiUyRiUyRjhCRUFBYUREVTVPRGN5TmpFMk16YzRNQ0lNa0tTJTJGY2hkUmclMkJhMnRwUG1LdTBFb1hKNVdSUWFjaGZaWWszaHdYTnU5TEh1Ym5lY3R1d0VQM05RcXUlMkZKTG9iZktPWm1aUm5lT1h5bDJ6MWRMRUFJVHVia2ZsZTFvSkpCViUyRkVmN0pZdzNBb1lybmc4MkVTczhVQnNyZFpNSDVhcnNVTndzSld0Rjh5JTJCRVpneElqZ3FLdGtYZzNEb3d1OUFyb3RGeE9nZzZPJTJCeGNFVGJUJTJCUlNaJTJCaUlkQjBLbkYzOUdxb0phdSUyQjZCMGNFSTBTZzlvYzQlMkZQQ21sQTdxSGdQaFIlMkJuSWg1azBadEY0NXl4SW5UVmhJbnFXUXVWR2N6ck8za0F4RklzazhQa2J6T2VEeE1VSjU2bzRpJTJCU05FUHV1MThkMDZLZGM2USUyRjU5Sm92SEglMkJEdnclMkJ6eGVzSlNTRVBObGxDUnFNOTRYdGZYbHBOZ0ZxMEZZNHRpdG9IRlVHbU11ViUyRlVrRVM1WkF3OXNmRFZ3RWoyWnM4emRlV0h2bXBYb1ZyODFQZHJmcXE3ZmZDakElMkJBRzB1MFZ6d0x2MnpKQjdmSSUyQkR5TDhveEZPQjdyM3VRaUdwR1JpRk9oaVVWNWJTRlRhaDAwRFNrNjlSeCUyRkpMOWVhNU9HcXRIOVVKUyUyQmZKMW9FNG5GaXNRV2JUTlhVN0JHT0pBM2xRaFVWTW9IR1RMMnlkVzNONnBxbzMlMkJyaFMzUmFrRmpkdjlrQyUyQllTd1A2M0wzV1R4Yk5wSVBWVUpSZW43djYzdXlQZGFKbnZMMFBxMnVJMiUyRjVXUlhoWXpnOGtxeUpmUDg2dENEbmozY2slMkY1ZlM3OVBYU0g3UHA0NVZFY0h0ZlhUVDVseFJMMXpGMldnNmpSOTAzbmlISFZaV001cDN5bERleGRSa1RpcDZSUUJwTjU4UmFJYzhHSWhRb25USnZOT3plOHdpUkZaVmV4WTk3ZHNJSmdBeHhwdTVvbUo0RGQlMkZtNjFaSmh2WVBNNW5McDZvYTJEUnlVSWdWT1lWVlBZOEtPOU1xdHJnR3dqNGJyaTlQTE9YbHdzeTQ1JTJCWWJlZXlQNnBsaWROczI3ajhIYlJRZXJLazVVcDM3MnJIOVJhalMya28lMkJkSzhCNk44NkNiR0tjQ1doWWJNTzNEODhFR09wd0JvRTJQbkZUSmVSJTJGJTJCMGk4ODFFTFdXTTBta01vd2xUTURGaSUyQnVZWWxLWlZRbHVvOG1GcnNLNkMyZ1RsNEwxN0tJUVVpT2pVQ2YzRVE3M2NablVDbVglMkJmZHhiZ3praUp2aVhrY3gyUGZDMEh6S0YlMkYzOCUyQlJRcG1RZ2JMaSUyRmJ2Qk9BODdsTE9RYlNQQTlISFpTJTJCMzV5JTJCRmQyUSUyRkphNlBzUUFPTlY2QlFXQzFSRDFHOU9jNmZnQ0NKJTJGaldrZzVPbkFaZ0RqYmdQVElKOHcxR0p3cCZYLUFtei1TaWduYXR1cmU9MDQ0OTMyM2NjM2M2OGJkZTQyYjkxM2RmNmE2MTFlMTUwODU4Zjk3ZjYyNDI1MTZjMTEwM2E0MWFlMThjYTMxOSZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmeC1pZD1HZXRPYmplY3Q",
+                  "url": "https://api.together.ai/imgproxy/R2DZBNTcwAAXTy_rOGLFmw5NdUJ4GXT_hsErH4rv8cw/format:jpeg/aHR0cHM6Ly90b2dldGhlci1haS1iZmwtaW1hZ2VzLXByb2QuczMudXMtd2VzdC0yLmFtYXpvbmF3cy5jb20vaW1hZ2VzLzIyYTc3NDI3ODI2OGQzZTk2YjVkNThmNjkzM2ZiMTUwY2Q0YzUxY2E3YmMwZGU4NDkxMDYyNTg5MzZkOTJkNzg_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ29udGVudC1TaGEyNTY9VU5TSUdORUQtUEFZTE9BRCZYLUFtei1DcmVkZW50aWFsPUFTSUFZV1pXNEhWQ0hZR1c3M0RIJTJGMjAyNTA2MDIlMkZ1cy13ZXN0LTIlMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjUwNjAyVDAwNTk0NlomWC1BbXotRXhwaXJlcz0zNjAwJlgtQW16LVNlY3VyaXR5LVRva2VuPUlRb0piM0pwWjJsdVgyVmpFQmthQ1hWekxYZGxjM1F0TWlKSU1FWUNJUUNIcTZ5UExZWkVNeWd2ME5WR1U3bFVWTTBiY3Roc2FyM2hPandRUW1FcGJ3SWhBT2ZjWWklMkZ2R3k5WUNnN24yTll5U0dPNHhYZVVYV2RDMCUyRmIlMkZwcmZta2xIaUtwa0ZDT0wlMkYlMkYlMkYlMkYlMkYlMkYlMkYlMkYlMkYlMkZ3RVFBQm9NTlRrNE56STJNVFl6Tnpnd0lneTJnVEZBWkIxekEzTVc4TklxN1FUeFZ5OElZckxHZ3RWbkgwcEJDY2xNRzBTNmFmWFM5RmZSbTY3VklkUWVRYUpVekhBU1I4VjMlMkJ6eEpTSGhpME5HNEJtaHV6NEx3TnJjSzJSOGNCcFIlMkJHa0Q1eU9Oc1pTQ2lLQnolMkJpNFV4djNnd2MzeVJlWFBqRmU1TnVMM2hBdSUyRlolMkJob3B5U2pYRmxhaW5DNG44YzJoNEhlcTV2ZXZ2QTZIVFBKd3VpYWVkOG5tSk5PM1Rvall1Q2czT3BpbzJGOTRtYm9HZ0RxcEtCM25XSVBqZHBWQlFvZEdReVY4RmdzJTJGSmZJWmxPMDZRNUhvRWdoYUhDViUyRnRiTnhyazB2bU9QZFglMkZmSzVodXRSOUZhNGE4NSUyQmpmcEdEcCUyQmJENzVoOVAzWUtLZiUyRlhhR0I3WFIyNXZpZkJFd2JnYVhQcUxFMXgxUjJweEZvTkx3M0cyJTJCMno0c0ttVEJOMHZTJTJCZXZaJTJGZzB1b0t1MGJENkVtR04yVzh3Y2RSaHdxbnBGSGFkSEduc2c4cjBRWnd5bjV0YkpxRmxUUVphaEtkTUFJdW1UWnhOV1ZxS3RSaUNoekdZRmNrMUNFcks0U0RicFRndTdsOWslMkJyQXdqVVB5d3B0eFFUMDJGJTJCZmswaVZFSUNHaTZLV3Jud0Y3aFBRZ3VmSmcyeThQTjVSZWlOVmMlMkZPRGppcEo4TlZyM3o2c3p6dTBRVGFVbzM5a1AxRUE3WUVMdGZ6NXdZdGZmZGVDWndNM3VJQTl2WXJSMnpXbDR2enNXTlE3eFl2b1p3SGRCOXdQZzhZMk1STTh0M0FTQ1FXUUlrRTNIOU1nd00xT0dtNmF5T0N3RUNJNFMlMkJ4QWt6aGFWWTJnbG1zZFg2WSUyRkFUeERjQnFNQm5SRzIlMkZBSlFQR2FLVEZCNDZsbHVLJTJCRk05eG9rd3I4b0dwUERUUTRpbGglMkZLa3Jlanh3REpmM1I4ZkFoNk1tTDhPJTJCWHl5cyUyQlUzeEM2ckZxVVdsWDZsUnE1dWJQRlNhajVDWGlJbXBrU3kwNjdDQktndE9zemlBZGwxSm9GMkRCQ3R6SzRadTlZcWRFN0c4NVJXNjhzUlNPOFplUXRDQXhXMjNnOVpLd0ZVd1Fvd2d1JTJGendRWTZtZ0dndDZ4aUlpY3glMkZOYzhrY2lxZUhxTFNNQloyR2JGeUFJdEFYcXNjWnhUcUZaYlpvSXh0SG85enhzYnllaUlqeHdJVUpJVnlQSU1rcVQ0U2dJVXhYVWp4SGZvd0NxV3NadExXblR1VUVmTkFvVGpiUGVnUWxoOTJsU2pFMUJxV0RKSlpYSXpXVEF0UndvcDQzMXNISjdYcWVCMVU3MXNRTll4eXlCR2hxYnlDcVF0UjRZJTJGcGFrSFhEelhUU3clMkIzcGhjSERHeWNJSk1qelQ3JlgtQW16LVNpZ25hdHVyZT1lODcwYjI5ZjYwMjY1MjQxYTk2ZDVjZTdiNDM1NWM5NTI4YmI1MzI3ZGJkZjVlYjczM2IxZWMxMGExNGYxY2IwJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZ4LWlkPUdldE9iamVjdA",
                   "timings": {
-                    "inference": 0.426906518638134
+                    "inference": 0.9909285232424736
                   }
                 }
               ]
@@ -51,11 +51,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94927b629f7aa2ae-YUL
+                - 949302863edc33fb-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"ac7-0KdnKCA9HH4/Y7lDztpA7v1LUy4"
+                - W/"ab3-NI3yVxxxPn7O15hS9zQv4yh+Oz0"
             Retry-After:
                 - "6"
             Server:
@@ -63,13 +63,11 @@ interactions:
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains
             X-Api-Call-End:
-                - "2025-06-01T23:27:41.716Z"
+                - "2025-06-02T00:59:46.556Z"
             X-Api-Call-Start:
-                - "2025-06-01T23:27:29.844Z"
+                - "2025-06-02T00:59:45.055Z"
             X-Api-Received:
-                - "2025-06-01T23:27:29.749Z"
-            X-Api-Retries:
-                - "1"
+                - "2025-06-02T00:59:45.043Z"
             X-Image-Version:
                 - v2
             X-Ratelimit:
@@ -85,7 +83,7 @@ interactions:
             X-Ratelimit-Reset:
                 - "6"
             X-Request-Id:
-                - nwSGvip-4yUbBN-94927b629f7aa2ae-YUL
+                - nwSmJAv-4yUbBN-949302863edc33fb-PDX
         status: 200 OK
         code: 200
-        duration: 12.236s
+        duration: 1.768s

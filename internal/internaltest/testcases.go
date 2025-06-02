@@ -23,7 +23,7 @@ func TestClient_ProviderGen_errors(t *testing.T, getClient func(t *testing.T, ap
 		t.Run(line.Name, func(t *testing.T) {
 			msgs := genai.Messages{genai.NewTextMessage(genai.User, "Tell a short joke.")}
 			if line.ErrGenSync != "" {
-				t.Run("Chat", func(t *testing.T) {
+				t.Run("GenSync", func(t *testing.T) {
 					c := getClient(t, line.ApiKey, line.Model)
 					_, err := c.GenSync(t.Context(), msgs, &genai.TextOptions{})
 					if err == nil {
@@ -36,7 +36,7 @@ func TestClient_ProviderGen_errors(t *testing.T, getClient func(t *testing.T, ap
 				})
 			}
 			if line.ErrSynStream != "" {
-				t.Run("ChatStream", func(t *testing.T) {
+				t.Run("GenStream", func(t *testing.T) {
 					c := getClient(t, line.ApiKey, line.Model)
 					ch := make(chan genai.MessageFragment, 1)
 					_, err := c.GenStream(t.Context(), msgs, &genai.TextOptions{}, ch)

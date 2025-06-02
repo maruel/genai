@@ -63,8 +63,8 @@ func TestScoreboard(t *testing.T, g ProviderGenModalityFactory, filter func(mode
 				name   string
 				f      *genai.Functionality
 			}{
-				{false, "Chat", &s.GenSync},
-				{true, "ChatStream", &s.GenStream},
+				{false, "GenSync", &s.GenSync},
+				{true, "GenStream", &s.GenStream},
 			}
 			for _, line := range data {
 				t.Run(line.name, func(t *testing.T) {

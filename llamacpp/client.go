@@ -24,6 +24,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/sse"
+	"github.com/maruel/genai/provider"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
@@ -444,7 +445,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderChat.
 type Client struct {
-	internal.Base[*ErrorResponse]
+	provider.Base[*ErrorResponse]
 
 	baseURL  string
 	chatURL  string
@@ -464,7 +465,7 @@ func New(baseURL string, encoding *PromptEncoding, r http.RoundTripper) (*Client
 		r = http.DefaultTransport
 	}
 	return &Client{
-		Base: internal.Base[*ErrorResponse]{
+		Base: provider.Base[*ErrorResponse]{
 			ClientJSON: httpjson.Client{
 				Client: &http.Client{
 					Transport: &roundtrippers.Retry{

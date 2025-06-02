@@ -23,6 +23,7 @@ import (
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/provider"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
@@ -418,7 +419,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderChat.
 type Client struct {
-	internal.Base[*ErrorResponse]
+	provider.Base[*ErrorResponse]
 
 	model   string
 	baseURL string
@@ -441,7 +442,7 @@ func New(baseURL, model string, r http.RoundTripper) (*Client, error) {
 		baseURL = "http://localhost:11434"
 	}
 	return &Client{
-		Base: internal.Base[*ErrorResponse]{
+		Base: provider.Base[*ErrorResponse]{
 			ClientJSON: httpjson.Client{
 				Client: &http.Client{
 					Transport: &roundtrippers.Retry{
@@ -586,7 +587,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://github.com/ollama/ollama/blob/main/docs/api.md#list-local-models
-	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, c.baseURL+"/api/tags")
+	return provider.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, c.baseURL+"/api/tags")
 }
 
 func (c *Client) ModelID() string {

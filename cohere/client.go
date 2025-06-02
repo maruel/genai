@@ -23,6 +23,7 @@ import (
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/provider"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -625,7 +626,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderChat and genai.ProviderModel.
 type Client struct {
-	internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Cohere platform API.
@@ -656,11 +657,11 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 		r = http.DefaultTransport
 	}
 	return &Client{
-		BaseChat: internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		BaseChat: provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              "https://api.cohere.com/v2/chat",
 			ProcessStreamPackets: processStreamPackets,
-			Base: internal.Base[*ErrorResponse]{
+			Base: provider.Base[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Transport: &roundtrippers.Retry{
@@ -688,7 +689,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.cohere.com/reference/list-models
-	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, "https://api.cohere.com/v1/models?page_size=1000")
+	return provider.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, "https://api.cohere.com/v1/models?page_size=1000")
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {

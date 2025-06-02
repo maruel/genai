@@ -14,7 +14,7 @@ import (
 	"net/http"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/provider"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -308,7 +308,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderChat.
 type Client struct {
-	internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 func (c *Client) Name() string {
@@ -325,12 +325,12 @@ func New(chatURL string, h http.Header, model string, r http.RoundTripper) (*Cli
 		r = http.DefaultTransport
 	}
 	return &Client{
-		BaseChat: internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		BaseChat: provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              chatURL,
 			ModelOptional:        true,
 			ProcessStreamPackets: processStreamPackets,
-			Base: internal.Base[*ErrorResponse]{
+			Base: provider.Base[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Transport: &roundtrippers.Retry{

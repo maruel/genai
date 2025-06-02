@@ -26,6 +26,7 @@ import (
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/provider"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -578,7 +579,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderChat and genai.ProviderModel.
 type Client struct {
-	internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 
 	accountID string
 }
@@ -613,11 +614,11 @@ func New(accountID, apiKey, model string, r http.RoundTripper) (*Client, error) 
 	// https://blog.cloudflare.com/workers-ai-streaming/ and
 	// https://developers.cloudflare.com/workers/examples/websockets/
 	return &Client{
-		BaseChat: internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		BaseChat: provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              "https://api.cloudflare.com/client/v4/accounts/" + accountID + "/ai/run/" + model,
 			ProcessStreamPackets: processStreamPackets,
-			Base: internal.Base[*ErrorResponse]{
+			Base: provider.Base[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Transport: &roundtrippers.Retry{

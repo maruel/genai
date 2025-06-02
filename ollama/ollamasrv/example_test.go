@@ -33,7 +33,7 @@ func Example() {
 		return
 	}
 	defer srv.Close()
-	// Connect the client.
+	// Connect the provider.
 	c, err := ollama.New(srv.URL(), model, nil)
 	if err != nil {
 		log.Print(err)

@@ -29,6 +29,7 @@ import (
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/provider"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -977,7 +978,7 @@ type ErrorResponseError struct {
 
 // Client implements genai.ProviderChat and genai.ProviderModel.
 type Client struct {
-	internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 
 	apiKey string
 }
@@ -1058,13 +1059,13 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 	}
 	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
 	return &Client{
-		BaseChat: internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		BaseChat: provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey,
 			ChatStreamURL:        "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":streamGenerateContent?alt=sse&key=" + apiKey,
 			ProcessStreamPackets: processStreamPackets,
 			LieToolCalls:         true,
-			Base: internal.Base[*ErrorResponse]{
+			Base: provider.Base[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{Transport: &roundtrippers.PostCompressed{
 						Transport: &roundtrippers.Retry{
@@ -1201,7 +1202,7 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://ai.google.dev/api/models?hl=en#method:-models.list
-	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.apiKey)
+	return provider.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.apiKey)
 }
 
 // processStreamPackets is the function used to convert the chunks sent by Gemini's SSE data into

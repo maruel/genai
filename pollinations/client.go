@@ -27,6 +27,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
+	"github.com/maruel/genai/provider"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -895,7 +896,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderModel.
 type Client struct {
-	internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Pollinations platform API.
@@ -919,12 +920,12 @@ func New(auth, model string, r http.RoundTripper) (*Client, error) {
 	}
 
 	return &Client{
-		BaseChat: internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		BaseChat: provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              "https://text.pollinations.ai/openai",
 			ProcessStreamPackets: processStreamPackets,
 			LieToolCalls:         true,
-			Base: internal.Base[*ErrorResponse]{
+			Base: provider.Base[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{
 						Transport: &roundtrippers.Header{
@@ -1067,10 +1068,10 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#list-available-image-models-
 	var out []genai.Model
 	url := "https://image.pollinations.ai/models"
-	img, err1 := internal.ListModels[*ErrorResponse, *ImageModelsResponse](ctx, &c.Base, url)
+	img, err1 := provider.ListModels[*ErrorResponse, *ImageModelsResponse](ctx, &c.Base, url)
 	out = append(out, img...)
 	url = "https://text.pollinations.ai/models"
-	txt, err2 := internal.ListModels[*ErrorResponse, *TextModelsResponse](ctx, &c.Base, url)
+	txt, err2 := provider.ListModels[*ErrorResponse, *TextModelsResponse](ctx, &c.Base, url)
 	out = append(out, txt...)
 	if err1 == nil {
 		err1 = err2

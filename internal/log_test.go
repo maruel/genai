@@ -45,7 +45,7 @@ func TestLogTransport(t *testing.T) {
 	defer server.Close()
 
 	// Create a client with the LogTransport
-	client := &http.Client{
+	c := &http.Client{
 		Transport: LogTransport(http.DefaultTransport),
 	}
 
@@ -62,7 +62,7 @@ func TestLogTransport(t *testing.T) {
 	}
 
 	// Send the request
-	res, err := client.Do(req)
+	res, err := c.Do(req)
 	if err != nil {
 		t.Fatalf("Request failed: %v", err)
 	}

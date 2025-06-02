@@ -29,7 +29,7 @@ func ExampleClient_Chat() {
 		return
 	}
 	defer srv.Close()
-	// Connect the client.
+	// Connect the provider.
 	c, err := llamacpp.New(srv.URL(), nil, nil)
 	if err != nil {
 		log.Print(err)

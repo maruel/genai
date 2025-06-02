@@ -171,14 +171,6 @@ var Scoreboard = genai.Scoreboard{
 	},
 }
 
-type ChatOptions struct {
-	genai.ChatOptions
-
-	// Width and Height control the image width and height. Both default to 1024.
-	Width  int
-	Height int
-}
-
 // https://docs.together.ai/reference/chat-completions-1
 //
 // https://docs.together.ai/docs/chat-overview
@@ -829,7 +821,7 @@ func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Val
 	}
 	if opts != nil {
 		switch v := opts.(type) {
-		case *ChatOptions:
+		case *genai.ImageOptions:
 			req.Height = int64(v.Height)
 			req.Width = int64(v.Width)
 			req.Seed = v.Seed

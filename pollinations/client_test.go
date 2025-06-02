@@ -7,6 +7,7 @@ package pollinations_test
 import (
 	"context"
 	_ "embed"
+	"errors"
 	"os"
 	"testing"
 
@@ -20,7 +21,7 @@ func TestClient_Scoreboard(t *testing.T) {
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderChat {
 		c := getClient(t, m)
 		if m == "flux" || m == "gptimage" || m == "turbo" {
-			return &injectOption{Client: c, t: t, opts: pollinations.ChatOptions{Width: 512, Height: 512}}
+			return &injectOption{Client: c, t: t, opts: genai.ImageOptions{Width: 256, Height: 256}}
 		}
 		return c
 	}, nil)
@@ -29,13 +30,13 @@ func TestClient_Scoreboard(t *testing.T) {
 type injectOption struct {
 	*pollinations.Client
 	t    *testing.T
-	opts pollinations.ChatOptions
+	opts genai.ImageOptions
 }
 
 func (i *injectOption) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
-		n.ChatOptions = *opts.(*genai.ChatOptions)
+		return genai.Result{}, errors.New("implement me")
 	}
 	opts = &n
 	return i.Client.Chat(ctx, msgs, opts)
@@ -44,10 +45,19 @@ func (i *injectOption) Chat(ctx context.Context, msgs genai.Messages, opts genai
 func (i *injectOption) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
-		n.ChatOptions = *opts.(*genai.ChatOptions)
+		return genai.Result{}, errors.New("implement me")
 	}
 	opts = &n
 	return i.Client.ChatStream(ctx, msgs, opts, replies)
+}
+
+func (i *injectOption) GenImage(ctx context.Context, msg genai.Message, opts genai.Validatable) (genai.Result, error) {
+	n := i.opts
+	if opts != nil {
+		return genai.Result{}, errors.New("implement me")
+	}
+	opts = &n
+	return i.Client.GenImage(ctx, msg, opts)
 }
 
 func TestClient_ProviderChat_errors(t *testing.T) {

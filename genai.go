@@ -894,6 +894,32 @@ func (t *ToolCallResult) UnmarshalJSON(b []byte) error {
 
 // Images
 
+// ImageOptions is a list of frequent options supported by most ProviderImage.
+// Each provider is free to support more options through a specialized struct.
+type ImageOptions struct {
+	// Seed for the random number generator. Default is 0 which means
+	// non-deterministic.
+	Seed   int64
+	Width  int
+	Height int
+
+	_ struct{}
+}
+
+// Validate ensures the completion options are valid.
+func (c *ImageOptions) Validate() error {
+	if c.Seed < 0 {
+		return errors.New("field Seed: must be non-negative")
+	}
+	if c.Height < 0 {
+		return errors.New("field Height: must be non-negative")
+	}
+	if c.Width < 0 {
+		return errors.New("field Width: must be non-negative")
+	}
+	return nil
+}
+
 // ProviderImage is the interface to interact with an image generator.
 type ProviderImage interface {
 	GenImage(ctx context.Context, msg Message, opts Validatable) (Result, error)

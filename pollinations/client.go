@@ -262,15 +262,6 @@ var Scoreboard = genai.Scoreboard{
 	},
 }
 
-// ChatOptions is the Groq-specific options.
-type ChatOptions struct {
-	genai.ChatOptions
-
-	// Width and Height control the image width and height. Both default to 1024.
-	Width  int
-	Height int
-}
-
 // https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#text--multimodal-openai-compatible-post-%EF%B8%8F%EF%B8%8F
 //
 // The structure is severely underdocumented.
@@ -316,9 +307,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model st
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *ChatOptions:
-				unsupported, errs = c.initOptions(&v.ChatOptions, model)
-				sp = v.SystemPrompt
 			case *genai.ChatOptions:
 				unsupported, errs = c.initOptions(v, model)
 				sp = v.SystemPrompt
@@ -992,8 +980,7 @@ func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Val
 	qp := url.Values{}
 	qp.Add("model", c.Model)
 	switch v := opts.(type) {
-	case *ChatOptions:
-		// TODO: Deny most flags.
+	case *genai.ImageOptions:
 		if v.Seed != 0 {
 			// Defaults to 42 otherwise.
 			qp.Add("seed", strconv.FormatInt(v.Seed, 10))

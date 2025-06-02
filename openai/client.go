@@ -277,6 +277,14 @@ const (
 	ServiceTierFlex ServiceTier = "flex"
 )
 
+// ImageOptions includes OpenAI specific options.
+type ImageOptions struct {
+	genai.ImageOptions
+
+	// Background is only supported on gpt-image-1.
+	Background Background
+}
+
 // https://platform.openai.com/docs/api-reference/chat/create
 type ChatRequest struct {
 	Model            string             `json:"model"`
@@ -832,19 +840,28 @@ func (t *Time) AsTime() time.Time {
 
 // https://platform.openai.com/docs/api-reference/images
 type ImageRequest struct {
-	Prompt            string  `json:"prompt"`
-	Model             string  `json:"model,omitzero"`              // Default to dall-e-2, unless a gpt-image-1 specific parameter is used.
-	Background        string  `json:"background,omitzero"`         // "auto", "transparent", "opaque". Default "auto", only supported on gpt-image-1.
-	Moderation        string  `json:"moderation,omitzero"`         // gpt-image-1: "low" or "auto"
-	N                 int64   `json:"n,omitzero"`                  // Number of images to return
-	OutputCompression float64 `json:"output_compression,omitzero"` // Defaults to 100. Only supported on gpt-image-1 with webp or jpeg
-	OutputFormat      string  `json:"output_format,omitzero"`      // "png", "jpeg" or "webp". Defaults to png. Only supported on gpt-image-1.
-	Quality           string  `json:"quality,omitzero"`            // "auto", gpt-image-1: "high", "medium", "low". dall-e-3: "hd", "standard". dall-e-2: "standard".
-	ResponseFormat    string  `json:"response_format,omitzero"`    // "url" or "b64_json"; url is valid for 60 minutes; gpt-image-1 only returns b64_json
-	Size              string  `json:"size,omitzero"`               // "auto", gpt-image-1: "1024x1024", "1536x1024", "1024x1536". dall-e-3: "1024x1024", "1792x1024", "1024x1792". dall-e-2: "256x256", "512x512", "1024x1024".
-	Style             string  `json:"style,omitzero"`              // dall-e-3: "vivid", "natural"
-	User              string  `json:"user,omitzero"`               // End-user to help monitor and detect abuse
+	Prompt            string     `json:"prompt"`
+	Model             string     `json:"model,omitzero"`              // Default to dall-e-2, unless a gpt-image-1 specific parameter is used.
+	Background        Background `json:"background,omitzero"`         // Default "auto"
+	Moderation        string     `json:"moderation,omitzero"`         // gpt-image-1: "low" or "auto"
+	N                 int64      `json:"n,omitzero"`                  // Number of images to return
+	OutputCompression float64    `json:"output_compression,omitzero"` // Defaults to 100. Only supported on gpt-image-1 with webp or jpeg
+	OutputFormat      string     `json:"output_format,omitzero"`      // "png", "jpeg" or "webp". Defaults to png. Only supported on gpt-image-1.
+	Quality           string     `json:"quality,omitzero"`            // "auto", gpt-image-1: "high", "medium", "low". dall-e-3: "hd", "standard". dall-e-2: "standard".
+	ResponseFormat    string     `json:"response_format,omitzero"`    // "url" or "b64_json"; url is valid for 60 minutes; gpt-image-1 only returns b64_json
+	Size              string     `json:"size,omitzero"`               // "auto", gpt-image-1: "1024x1024", "1536x1024", "1024x1536". dall-e-3: "1024x1024", "1792x1024", "1024x1792". dall-e-2: "256x256", "512x512", "1024x1024".
+	Style             string     `json:"style,omitzero"`              // dall-e-3: "vivid", "natural"
+	User              string     `json:"user,omitzero"`               // End-user to help monitor and detect abuse
 }
+
+// Background is only supported on gpt-image-1.
+type Background string
+
+const (
+	BackgroundAuto        Background = "auto"
+	BackgroundTransparent Background = "transparent"
+	BackgroundOpaque      Background = "opaque"
+)
 
 type ImageResponse struct {
 	Created Time              `json:"created"`
@@ -1058,12 +1075,27 @@ func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Val
 		// We assume dall-e-2 is only used for smoke testing, so use the smallest image.
 		req.Size = "256x256"
 		// Maximum prompt length is 1000 characters.
-		// Since we assume this is only for testing, just cut it off.
+		// Since we assume this is only for testing, silently cut it off.
 		if len(req.Prompt) > 1000 {
 			req.Prompt = req.Prompt[:1000]
 		}
 	default:
 		// Silently pass.
+	}
+	if opts != nil {
+		switch v := opts.(type) {
+		case *ImageOptions:
+			if v.Height != 0 && v.Width != 0 {
+				req.Size = fmt.Sprintf("%dx%d", v.Width, v.Height)
+			}
+			req.Background = v.Background
+		case *genai.ImageOptions:
+			if v.Height != 0 && v.Width != 0 {
+				req.Size = fmt.Sprintf("%dx%d", v.Width, v.Height)
+			}
+		default:
+			return res, fmt.Errorf("unsupported options type %T", opts)
+		}
 	}
 	url := "https://api.openai.com/v1/images/generations"
 

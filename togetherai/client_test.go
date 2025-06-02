@@ -7,6 +7,7 @@ package togetherai_test
 import (
 	"context"
 	_ "embed"
+	"errors"
 	"os"
 	"strings"
 	"testing"
@@ -38,7 +39,7 @@ func TestClient_Scoreboard(t *testing.T) {
 		c := getClient(t, m)
 		// TODO: Use Scoreboard list.
 		if strings.HasPrefix(c.Model, "black-forest-labs/") {
-			return &injectOption{Client: c, t: t, opts: togetherai.ChatOptions{Width: 512, Height: 512}}
+			return &injectOption{Client: c, t: t, opts: genai.ImageOptions{Width: 256, Height: 256}}
 		}
 		return c
 	}, f)
@@ -47,13 +48,13 @@ func TestClient_Scoreboard(t *testing.T) {
 type injectOption struct {
 	*togetherai.Client
 	t    *testing.T
-	opts togetherai.ChatOptions
+	opts genai.ImageOptions
 }
 
 func (i *injectOption) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
-		n.ChatOptions = *opts.(*genai.ChatOptions)
+		return genai.Result{}, errors.New("implement me")
 	}
 	opts = &n
 	return i.Client.Chat(ctx, msgs, opts)
@@ -62,10 +63,19 @@ func (i *injectOption) Chat(ctx context.Context, msgs genai.Messages, opts genai
 func (i *injectOption) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
-		n.ChatOptions = *opts.(*genai.ChatOptions)
+		return genai.Result{}, errors.New("implement me")
 	}
 	opts = &n
 	return i.Client.ChatStream(ctx, msgs, opts, replies)
+}
+
+func (i *injectOption) GenImage(ctx context.Context, msg genai.Message, opts genai.Validatable) (genai.Result, error) {
+	n := i.opts
+	if opts != nil {
+		return genai.Result{}, errors.New("implement me")
+	}
+	opts = &n
+	return i.Client.GenImage(ctx, msg, opts)
 }
 
 func TestClient_ProviderChat_errors(t *testing.T) {

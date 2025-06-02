@@ -1066,27 +1066,22 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 			ProcessStreamPackets: processStreamPackets,
 			LieToolCalls:         true,
 			Base: provider.Base[*ErrorResponse]{
+				ProviderName: "gemini",
+				APIKeyURL:    apiKeyURL,
 				ClientJSON: httpjson.Client{
-					Client: &http.Client{Transport: &roundtrippers.PostCompressed{
-						Transport: &roundtrippers.Retry{
-							Transport: &roundtrippers.RequestID{
-								Transport: r,
-							},
-						},
-						// Google supports HTTP POST gzip compression!
-						Encoding: "gzip",
-					}},
 					Lenient: internal.BeLenient,
+					Client: &http.Client{
+						Transport: &roundtrippers.PostCompressed{
+							Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
+							// Google supports HTTP POST gzip compression!
+							Encoding: "gzip",
+						},
+					},
 				},
-				APIKeyURL: apiKeyURL,
 			},
 		},
 		apiKey: apiKey,
 	}, nil
-}
-
-func (c *Client) Name() string {
-	return "gemini"
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

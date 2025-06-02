@@ -749,26 +749,31 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 			ChatURL:              "https://api.together.xyz/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
 			Base: provider.Base[*ErrorResponse]{
+				ProviderName: "togetherai",
+				APIKeyURL:    apiKeyURL,
 				ClientJSON: httpjson.Client{
-					Client: &http.Client{Transport: &roundtrippers.Header{
-						Transport: &roundtrippers.Retry{
-							Transport: &roundtrippers.RequestID{
-								Transport: r,
-							},
-							Policy: &roundtrippers.ExponentialBackoff{
-								MaxTryCount: 10,
-								MaxDuration: 60 * time.Second,
-								Exp:         1.5,
+					Lenient: internal.BeLenient,
+					Client: &http.Client{
+						Transport: &roundtrippers.Header{
+							Header: http.Header{"Authorization": {"Bearer " + apiKey}},
+							Transport: &roundtrippers.Retry{
+								Transport: &roundtrippers.RequestID{Transport: r},
+								Policy: &roundtrippers.ExponentialBackoff{
+									MaxTryCount: 10,
+									MaxDuration: 60 * time.Second,
+									Exp:         1.5,
+								},
 							},
 						},
-						Header: http.Header{"Authorization": {"Bearer " + apiKey}},
-					}},
-					Lenient: internal.BeLenient,
+					},
 				},
-				APIKeyURL: apiKeyURL,
 			},
 		},
 	}, nil
+}
+
+func (c *Client) Scoreboard() genai.Scoreboard {
+	return Scoreboard
 }
 
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
@@ -854,14 +859,6 @@ func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Val
 		}
 	}
 	return res, nil
-}
-
-func (c *Client) Name() string {
-	return "togetherai"
-}
-
-func (c *Client) Scoreboard() genai.Scoreboard {
-	return Scoreboard
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

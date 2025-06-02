@@ -467,14 +467,10 @@ func New(baseURL string, encoding *PromptEncoding, r http.RoundTripper) (*Client
 	return &Client{
 		Base: provider.Base[*ErrorResponse]{
 			ClientJSON: httpjson.Client{
-				Client: &http.Client{
-					Transport: &roundtrippers.Retry{
-						Transport: &roundtrippers.RequestID{
-							Transport: r,
-						},
-					},
-				},
 				Lenient: internal.BeLenient,
+				Client: &http.Client{
+					Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
+				},
 			},
 		},
 		baseURL:  baseURL,

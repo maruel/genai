@@ -619,26 +619,21 @@ func New(accountID, apiKey, model string, r http.RoundTripper) (*Client, error) 
 			ChatURL:              "https://api.cloudflare.com/client/v4/accounts/" + accountID + "/ai/run/" + model,
 			ProcessStreamPackets: processStreamPackets,
 			Base: provider.Base[*ErrorResponse]{
+				ProviderName: "cloudflare",
+				APIKeyURL:    apiKeyURL,
 				ClientJSON: httpjson.Client{
-					Client: &http.Client{Transport: &roundtrippers.Header{
-						Transport: &roundtrippers.Retry{
-							Transport: &roundtrippers.RequestID{
-								Transport: r,
-							},
-						},
-						Header: http.Header{"Authorization": {"Bearer " + apiKey}},
-					}},
 					Lenient: internal.BeLenient,
+					Client: &http.Client{
+						Transport: &roundtrippers.Header{
+							Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+							Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
+						},
+					},
 				},
-				APIKeyURL: apiKeyURL,
 			},
 		},
 		accountID: accountID,
 	}, nil
-}
-
-func (c *Client) Name() string {
-	return "cloudflare"
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

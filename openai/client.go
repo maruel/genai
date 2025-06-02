@@ -965,24 +965,25 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 			ChatURL:              "https://api.openai.com/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
 			Base: provider.Base[*ErrorResponse]{
-				ClientJSON: httpjson.Client{
-					Client: &http.Client{
-						Transport: &roundtrippers.Header{
-							Transport: &roundtrippers.Retry{
-								Transport: &roundtrippers.RequestID{
-									Transport: r,
-								},
-							},
-							Header: http.Header{"Authorization": {"Bearer " + apiKey}},
-						},
-					},
-					Lenient: internal.BeLenient,
-				},
+				ProviderName: "openai",
 				// OpenAI error message prints the api key URL already.
 				APIKeyURL: "",
+				ClientJSON: httpjson.Client{
+					Lenient: internal.BeLenient,
+					Client: &http.Client{
+						Transport: &roundtrippers.Header{
+							Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+							Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
+						},
+					},
+				},
 			},
 		},
 	}, nil
+}
+
+func (c *Client) Scoreboard() genai.Scoreboard {
+	return Scoreboard
 }
 
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
@@ -1092,14 +1093,6 @@ func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Val
 		}
 	}
 	return res, nil
-}
-
-func (c *Client) Name() string {
-	return "openai"
-}
-
-func (c *Client) Scoreboard() genai.Scoreboard {
-	return Scoreboard
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

@@ -638,25 +638,20 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 			ChatURL:              "https://router.huggingface.co/hf-inference/models/" + model + "/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
 			Base: provider.Base[*ErrorResponse]{
+				ProviderName: "huggingface",
+				APIKeyURL:    apiKeyURL,
 				ClientJSON: httpjson.Client{
-					Client: &http.Client{Transport: &roundtrippers.Header{
-						Header: http.Header{"Authorization": {"Bearer " + apiKey}},
-						Transport: &roundtrippers.Retry{
-							Transport: &roundtrippers.RequestID{
-								Transport: r,
-							},
-						},
-					}},
 					Lenient: internal.BeLenient,
+					Client: &http.Client{
+						Transport: &roundtrippers.Header{
+							Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+							Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
+						},
+					},
 				},
-				APIKeyURL: apiKeyURL,
 			},
 		},
 	}, nil
-}
-
-func (c *Client) Name() string {
-	return "huggingface"
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

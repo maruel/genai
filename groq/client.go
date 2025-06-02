@@ -713,25 +713,20 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 			ChatURL:              "https://api.groq.com/openai/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
 			Base: provider.Base[*ErrorResponse]{
+				ProviderName: "groq",
+				APIKeyURL:    apiKeyURL,
 				ClientJSON: httpjson.Client{
-					Client: &http.Client{Transport: &roundtrippers.Header{
-						Transport: &roundtrippers.Retry{
-							Transport: &roundtrippers.RequestID{
-								Transport: r,
-							},
-						},
-						Header: http.Header{"Authorization": {"Bearer " + apiKey}},
-					}},
 					Lenient: internal.BeLenient,
+					Client: &http.Client{
+						Transport: &roundtrippers.Header{
+							Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
+							Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+						},
+					},
 				},
-				APIKeyURL: apiKeyURL,
 			},
 		},
 	}, nil
-}
-
-func (c *Client) Name() string {
-	return "groq"
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

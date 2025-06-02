@@ -311,10 +311,6 @@ type Client struct {
 	provider.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
-func (c *Client) Name() string {
-	return "openaicompatible"
-}
-
 // New creates a new client to talk to an "OpenAI-compatible" platform API.
 //
 // It only support text exchanges (no multi-modal) and no tool calls.
@@ -331,17 +327,16 @@ func New(chatURL string, h http.Header, model string, r http.RoundTripper) (*Cli
 			ModelOptional:        true,
 			ProcessStreamPackets: processStreamPackets,
 			Base: provider.Base[*ErrorResponse]{
+				ProviderName: "openaicompatible",
 				ClientJSON: httpjson.Client{
-					Client: &http.Client{Transport: &roundtrippers.Header{
-						Transport: &roundtrippers.Retry{
-							Transport: &roundtrippers.RequestID{
-								Transport: r,
-							},
-						},
-						Header: h,
-					}},
 					// It is always lenient by definition.
 					Lenient: true,
+					Client: &http.Client{
+						Transport: &roundtrippers.Header{
+							Header:    h,
+							Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
+						},
+					},
 				},
 			},
 		},

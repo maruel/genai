@@ -926,22 +926,23 @@ func New(auth, model string, r http.RoundTripper) (*Client, error) {
 			ProcessStreamPackets: processStreamPackets,
 			LieToolCalls:         true,
 			Base: provider.Base[*ErrorResponse]{
+				ProviderName: "pollinations",
 				ClientJSON: httpjson.Client{
+					Lenient: internal.BeLenient,
 					Client: &http.Client{
 						Transport: &roundtrippers.Header{
-							Transport: &roundtrippers.Retry{
-								Transport: &roundtrippers.RequestID{
-									Transport: r,
-								},
-							},
-							Header: h,
+							Header:    h,
+							Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
 						},
 					},
-					Lenient: internal.BeLenient,
 				},
 			},
 		},
 	}, nil
+}
+
+func (c *Client) Scoreboard() genai.Scoreboard {
+	return Scoreboard
 }
 
 func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
@@ -1054,14 +1055,6 @@ func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Val
 		return res, fmt.Errorf("unknown Content-Type: %s", ct)
 	}
 	return res, nil
-}
-
-func (c *Client) Name() string {
-	return "pollinations"
-}
-
-func (c *Client) Scoreboard() genai.Scoreboard {
-	return Scoreboard
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

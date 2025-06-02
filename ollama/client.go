@@ -444,14 +444,10 @@ func New(baseURL, model string, r http.RoundTripper) (*Client, error) {
 	return &Client{
 		Base: provider.Base[*ErrorResponse]{
 			ClientJSON: httpjson.Client{
-				Client: &http.Client{
-					Transport: &roundtrippers.Retry{
-						Transport: &roundtrippers.RequestID{
-							Transport: r,
-						},
-					},
-				},
 				Lenient: internal.BeLenient,
+				Client: &http.Client{
+					Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
+				},
 			},
 		},
 		baseURL: baseURL,

@@ -28,10 +28,15 @@ type Base[PErrorResponse fmt.Stringer] struct {
 	// ClientJSON is exported for testing replay purposes.
 	ClientJSON httpjson.Client
 	// APIKeyURL is the URL to present to the user upon authentication error.
-	APIKeyURL string
+	APIKeyURL    string
+	ProviderName string
 
 	mu            sync.Mutex
 	errorResponse reflect.Type
+}
+
+func (c *Base[PErrorResponse]) Name() string {
+	return c.ProviderName
 }
 
 // DoRequest performs an HTTP request and handles error responses.

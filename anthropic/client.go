@@ -881,25 +881,20 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 			AllowOpaqueFields:    true,
 			ProcessStreamPackets: processStreamPackets,
 			Base: provider.Base[*ErrorResponse]{
+				ProviderName: "anthropic",
+				APIKeyURL:    apiKeyURL,
 				ClientJSON: httpjson.Client{
-					Client: &http.Client{Transport: &roundtrippers.Header{
-						Transport: &roundtrippers.Retry{
-							Transport: &roundtrippers.RequestID{
-								Transport: r,
-							},
-						},
-						Header: http.Header{"x-api-key": {apiKey}, "anthropic-version": {"2023-06-01"}},
-					}},
 					Lenient: internal.BeLenient,
+					Client: &http.Client{
+						Transport: &roundtrippers.Header{
+							Header:    http.Header{"x-api-key": {apiKey}, "anthropic-version": {"2023-06-01"}},
+							Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
+						},
+					},
 				},
-				APIKeyURL: apiKeyURL,
 			},
 		},
 	}, nil
-}
-
-func (c *Client) Name() string {
-	return "anthropic"
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

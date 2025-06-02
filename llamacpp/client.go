@@ -733,4 +733,7 @@ func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<-
 	return nil
 }
 
-var _ genai.ProviderChat = &Client{}
+var (
+	_ genai.ProviderChat       = &Client{}
+	_ genai.ProviderScoreboard = &Client{}
+)

@@ -303,8 +303,10 @@ type ChatRequest struct {
 		} `json:"content,omitzero"`
 	} `json:"prediction,omitzero"`
 	Audio struct {
-		Voice  string `json:"voice,omitzero"`  // "ash", "ballad", "coral", "sage", "verse", "alloy", "echo", "shimmer"
-		Format string `json:"format,omitzero"` // "mp3", "wav", "flac", "opus", "pcm16"
+		// https://platform.openai.com/docs/guides/text-to-speech#voice-options
+		Voice string `json:"voice,omitzero"` // "alloy", "ash", "ballad", "coral", "echo", "fable", "nova", "onyx", "sage", "shimmer"
+		// https://platform.openai.com/docs/guides/text-to-speech#supported-output-formats
+		Format string `json:"format,omitzero"` // "mp3", "wav", "flac", "opus", "pcm16", "aac"
 	} `json:"audio,omitzero"`
 	PresencePenalty float64 `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
 	ResponseFormat  struct {
@@ -580,8 +582,9 @@ type Content struct {
 
 	// Type == "input_audio"
 	InputAudio struct {
-		Data   []byte `json:"data,omitzero"`
-		Format string `json:"format,omitzero"` // "mp3", "wav"
+		Data []byte `json:"data,omitzero"`
+		// https://platform.openai.com/docs/guides/speech-to-text
+		Format string `json:"format,omitzero"` // "mp3", "mp4", "mpeg", "mpga", "m4a", "wav", "webm"
 	} `json:"input_audio,omitzero"`
 
 	// Type == "file"

@@ -40,6 +40,9 @@ func NewRecords() *Records {
 		}
 		return err
 	})
+	if os.IsNotExist(err) {
+		return r
+	}
 	if err != nil {
 		panic(err)
 	}

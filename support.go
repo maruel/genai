@@ -149,7 +149,7 @@ type ProviderChatUsage struct {
 }
 
 // Chat implements the ProviderChat interface and accumulates usage statistics.
-func (c *ProviderChatUsage) Chat(ctx context.Context, msgs Messages, opts Validatable) (ChatResult, error) {
+func (c *ProviderChatUsage) Chat(ctx context.Context, msgs Messages, opts Validatable) (Result, error) {
 	result, err := c.ProviderChat.Chat(ctx, msgs, opts)
 	c.mu.Lock()
 	c.accumUsage.InputTokens += result.InputTokens
@@ -160,7 +160,7 @@ func (c *ProviderChatUsage) Chat(ctx context.Context, msgs Messages, opts Valida
 }
 
 // ChatStream implements the ProviderChat interface and accumulates usage statistics.
-func (c *ProviderChatUsage) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (ChatResult, error) {
+func (c *ProviderChatUsage) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Result, error) {
 	// Call the wrapped provider and accumulate usage statistics
 	result, err := c.ProviderChat.ChatStream(ctx, msgs, opts, replies)
 	c.mu.Lock()
@@ -202,7 +202,7 @@ type ProviderChatThinking struct {
 
 // Chat implements the ProviderChat interface by delegating to the wrapped provider
 // and processing the result to extract thinking blocks.
-func (c *ProviderChatThinking) Chat(ctx context.Context, msgs Messages, opts Validatable) (ChatResult, error) {
+func (c *ProviderChatThinking) Chat(ctx context.Context, msgs Messages, opts Validatable) (Result, error) {
 	result, err := c.ProviderChat.Chat(ctx, msgs, opts)
 	// When replying in JSON, the thinking tokens are "denied" by the engine.
 	if o, ok := opts.(*ChatOptions); !ok || !c.SkipJSON || (!o.ReplyAsJSON && o.DecodeAs == nil) {
@@ -216,7 +216,7 @@ func (c *ProviderChatThinking) Chat(ctx context.Context, msgs Messages, opts Val
 // ChatStream implements the ProviderChat interface for streaming by delegating to the wrapped provider
 // and processing each fragment to extract thinking blocks.
 // If no thinking tags are present, the first part of the message is assumed to be thinking.
-func (c *ProviderChatThinking) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (ChatResult, error) {
+func (c *ProviderChatThinking) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Result, error) {
 	if c.SkipJSON {
 		if o, ok := opts.(*ChatOptions); ok && (o.ReplyAsJSON || o.DecodeAs != nil) {
 			// When replying in JSON, the thinking tokens are "denied" by the engine.

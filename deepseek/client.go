@@ -337,8 +337,8 @@ type ChatResponse struct {
 	Usage             Usage  `json:"usage"`
 }
 
-func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
-	out := genai.ChatResult{
+func (c *ChatResponse) ToResult() (genai.Result, error) {
+	out := genai.Result{
 		Usage: genai.Usage{
 			InputTokens:       c.Usage.PromptTokens,
 			InputCachedTokens: c.Usage.PromptCacheHitTokens,
@@ -532,7 +532,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 
 // TODO: Caching: https://api-docs.deepseek.com/guides/kv_cache
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {

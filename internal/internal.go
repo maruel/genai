@@ -197,7 +197,7 @@ type InitializableRequest interface {
 
 // ResultConverter converts a provider-specific result to a genai.ChatResult.
 type ResultConverter interface {
-	ToResult() (genai.ChatResult, error)
+	ToResult() (genai.Result, error)
 }
 
 //
@@ -217,7 +217,7 @@ type ClientChat[PErrorResponse fmt.Stringer, PChatRequest InitializableRequest, 
 	// AllowOpaqueFields is true if the client allows the Opaque field in messages.
 	AllowOpaqueFields bool
 	// ProcessStreamPackets is the function that processes stream packets used by ChatStream.
-	ProcessStreamPackets func(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error
+	ProcessStreamPackets func(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error
 	// LieToolCalls lie the FinishReason on tool calls.
 	LieToolCalls bool
 
@@ -226,8 +226,8 @@ type ClientChat[PErrorResponse fmt.Stringer, PChatRequest InitializableRequest, 
 	chatResponse reflect.Type
 }
 
-func (c *ClientChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
-	result := genai.ChatResult{}
+func (c *ClientChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+	result := genai.Result{}
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
 		for i, msg := range msgs {
@@ -260,8 +260,8 @@ func (c *ClientChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunk
 	return result, continuableErr
 }
 
-func (c *ClientChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
-	result := genai.ChatResult{}
+func (c *ClientChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
+	result := genai.Result{}
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
 		for i, msg := range msgs {

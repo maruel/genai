@@ -579,9 +579,9 @@ type ChatResponse struct {
 	PromptLogprobs      struct{}             `json:"prompt_logprobs"`
 }
 
-func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
+func (c *ChatResponse) ToResult() (genai.Result, error) {
 	// There's a "X-Cache" HTTP response header that says when the whole request was cached.
-	out := genai.ChatResult{
+	out := genai.Result{
 		Usage: genai.Usage{
 			InputTokens:  c.Usage.PromptTokens,
 			OutputTokens: c.Usage.CompletionTokens,
@@ -943,12 +943,12 @@ func New(auth, model string, r http.RoundTripper) (*Client, error) {
 	}, nil
 }
 
-func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	// TODO: Use Scoreboard list.
 	switch c.Model {
 	case "flux", "gptimage", "turbo":
 		if len(msgs) != 1 {
-			return genai.ChatResult{}, errors.New("must pass exactly one Message")
+			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
 		return c.GenImage(ctx, msgs[0], opts)
 	default:
@@ -956,12 +956,12 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 	}
 }
 
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
 	// TODO: Use Scoreboard list.
 	switch c.Model {
 	case "flux", "gptimage", "turbo":
 		if len(msgs) != 1 {
-			return genai.ChatResult{}, errors.New("must pass exactly one Message")
+			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
 		res, err := c.GenImage(ctx, msgs[0], opts)
 		if err == nil {
@@ -979,9 +979,9 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 // GenImage uses the text-to-image API to generate an image.
 //
 // Default rate limit is 0.2 QPS / IP.
-func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Validatable) (genai.ChatResult, error) {
+func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Validatable) (genai.Result, error) {
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#text-to-image-get-%EF%B8%8F
-	res := genai.ChatResult{}
+	res := genai.Result{}
 	for i := range msg.Contents {
 		if msg.Contents[i].Text == "" {
 			return res, errors.New("only text can be passed as input")
@@ -1078,7 +1078,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return out, err1
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {

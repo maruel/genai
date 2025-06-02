@@ -373,8 +373,8 @@ type ChatResponse struct {
 	} `json:"logprobs"`
 }
 
-func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
-	out := genai.ChatResult{
+func (c *ChatResponse) ToResult() (genai.Result, error) {
+	out := genai.Result{
 		// At the moment, Cohere doesn't support cached tokens.
 		Usage: genai.Usage{
 			// What about BilledUnits, especially for SearchUnits and Classifications?
@@ -691,7 +691,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.cohere.com/v1/models?page_size=1000")
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {

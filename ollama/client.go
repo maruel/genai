@@ -317,8 +317,8 @@ type ChatResponse struct {
 	EvalDuration       time.Duration `json:"eval_duration"`
 }
 
-func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
-	out := genai.ChatResult{
+func (c *ChatResponse) ToResult() (genai.Result, error) {
+	out := genai.Result{
 		// TODO: llama-server supports caching and we should report it.
 		Usage: genai.Usage{
 			InputTokens:  c.PromptEvalCount,
@@ -467,8 +467,8 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard
 }
 
-func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
-	result := genai.ChatResult{}
+func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+	result := genai.Result{}
 	for i, msg := range msgs {
 		for j, content := range msg.Contents {
 			if len(content.Opaque) != 0 {
@@ -516,8 +516,8 @@ func (c *Client) ChatRaw(ctx context.Context, in *ChatRequest, out *ChatResponse
 	return err
 }
 
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
-	result := genai.ChatResult{}
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
+	result := genai.Result{}
 	for i, msg := range msgs {
 		for j, content := range msg.Contents {
 			if len(content.Opaque) != 0 {
@@ -652,7 +652,7 @@ func processJSONStream(body io.Reader, out chan<- ChatStreamChunkResponse, lenie
 	}
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {

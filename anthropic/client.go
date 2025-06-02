@@ -663,8 +663,8 @@ type ChatResponse struct {
 	Usage        Usage      `json:"usage"`
 }
 
-func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
-	out := genai.ChatResult{
+func (c *ChatResponse) ToResult() (genai.Result, error) {
+	out := genai.Result{
 		Usage: genai.Usage{
 			InputTokens:       c.Usage.InputTokens,
 			InputCachedTokens: c.Usage.CacheReadInputTokens,
@@ -910,7 +910,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.anthropic.com/v1/models?limit=1000")
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {

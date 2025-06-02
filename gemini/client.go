@@ -753,8 +753,8 @@ type ChatResponse struct {
 	ResponseID     string        `json:"responseId"`
 }
 
-func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
-	out := genai.ChatResult{
+func (c *ChatResponse) ToResult() (genai.Result, error) {
+	out := genai.Result{
 		Usage: genai.Usage{
 			InputTokens:       c.UsageMetadata.PromptTokenCount,
 			InputCachedTokens: c.UsageMetadata.CachedContentTokenCount,
@@ -1206,7 +1206,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 
 // processStreamPackets is the function used to convert the chunks sent by Gemini's SSE data into
 // MessageFragment.
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {

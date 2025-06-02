@@ -235,8 +235,8 @@ type CompletionResponse struct {
 	Timings      Timings  `json:"timings"`
 }
 
-func (c *CompletionResponse) ToResult() (genai.ChatResult, error) {
-	out := genai.ChatResult{
+func (c *CompletionResponse) ToResult() (genai.Result, error) {
+	out := genai.Result{
 		Message: genai.Message{
 			Role: genai.Assistant,
 			// Mistral Nemo really likes "▁".
@@ -490,7 +490,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard
 }
 
-func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	// https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 	// TODO: return internal.Chat(ctx, msgs, opts, "", c.CompletionRaw, false)
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
@@ -498,20 +498,20 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 	for i, msg := range msgs {
 		for j, content := range msg.Contents {
 			if len(content.Opaque) != 0 {
-				return genai.ChatResult{}, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
+				return genai.Result{}, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
 			}
 		}
 	}
 	rpcin := CompletionRequest{CachePrompt: true}
 	if err := rpcin.Init(msgs, opts, ""); err != nil {
-		return genai.ChatResult{}, err
+		return genai.Result{}, err
 	}
 	if err := c.initPrompt(ctx, &rpcin, opts, msgs); err != nil {
-		return genai.ChatResult{}, err
+		return genai.Result{}, err
 	}
 	rpcout := CompletionResponse{}
 	if err := c.CompletionRaw(ctx, &rpcin, &rpcout); err != nil {
-		return genai.ChatResult{}, fmt.Errorf("failed to get llama server response: %w", err)
+		return genai.Result{}, fmt.Errorf("failed to get llama server response: %w", err)
 	}
 	return rpcout.ToResult()
 }
@@ -522,9 +522,9 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.DoRequest(ctx, "POST", c.chatURL, in, out)
 }
 
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
 	// TODO: return internal.ChatStream(ctx, msgs, opts, chunks, "", c.CompletionStreamRaw, processStreamPackets, false)
-	result := genai.ChatResult{}
+	result := genai.Result{}
 
 	// Check for non-empty Opaque field
 	for i, msg := range msgs {
@@ -715,7 +715,7 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 	return nil
 }
 
-func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {
+func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {
 	for msg := range ch {
 		if msg.Timings.PredictedN != 0 {
 			result.InputTokens = msg.Timings.PromptN

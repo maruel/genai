@@ -81,14 +81,14 @@ type ProviderChat interface {
 	//
 	// opts must be either nil, *ChatOptions or a provider-specialized
 	// option struct.
-	Chat(ctx context.Context, msgs Messages, opts Validatable) (ChatResult, error)
+	Chat(ctx context.Context, msgs Messages, opts Validatable) (Result, error)
 	// ChatStream runs completion synchronously, streaming the results to channel replies.
 	//
 	// opts must be either nil, *ChatOptions or a provider-specialized
 	// option struct.
 	//
 	// No need to accumulate the replies into the result, the ChatResult contains the accumulated message.
-	ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (ChatResult, error)
+	ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Result, error)
 	// ModelID returns the model currently used by the provider. It can be an empty string.
 	ModelID() string
 }
@@ -189,8 +189,8 @@ const (
 	ToolCallNone
 )
 
-// ChatResult is the result of a completion.
-type ChatResult struct {
+// Result is the result of a completion.
+type Result struct {
 	Message
 	Usage
 }
@@ -896,7 +896,7 @@ func (t *ToolCallResult) UnmarshalJSON(b []byte) error {
 
 // ProviderImage is the interface to interact with an image generator.
 type ProviderImage interface {
-	GenImage(ctx context.Context, msg Message, opts Validatable) (ChatResult, error)
+	GenImage(ctx context.Context, msg Message, opts Validatable) (Result, error)
 }
 
 // Models

@@ -518,8 +518,8 @@ type ChatResponse struct {
 	} `json:"warnings"`
 }
 
-func (c *ChatResponse) ToResult() (genai.ChatResult, error) {
-	out := genai.ChatResult{
+func (c *ChatResponse) ToResult() (genai.Result, error) {
+	out := genai.Result{
 		Usage: genai.Usage{
 			InputTokens:       c.Usage.PromptTokens,
 			InputCachedTokens: c.Usage.CachedTokens,
@@ -770,22 +770,22 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 	}, nil
 }
 
-func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	// TODO: Use Scoreboard list.
 	if strings.HasPrefix(c.Model, "black-forest-labs/") {
 		if len(msgs) != 1 {
-			return genai.ChatResult{}, errors.New("must pass exactly one Message")
+			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
 		return c.GenImage(ctx, msgs[0], opts)
 	}
 	return c.ClientChat.Chat(ctx, msgs, opts)
 }
 
-func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.ChatResult, error) {
+func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
 	// TODO: Use Scoreboard list.
 	if strings.HasPrefix(c.Model, "black-forest-labs/") {
 		if len(msgs) != 1 {
-			return genai.ChatResult{}, errors.New("must pass exactly one Message")
+			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
 		res, err := c.GenImage(ctx, msgs[0], opts)
 		if err == nil {
@@ -810,8 +810,8 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 	return c.ClientChat.ChatStream(ctx, msgs, opts, chunks)
 }
 
-func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Validatable) (genai.ChatResult, error) {
-	res := genai.ChatResult{}
+func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Validatable) (genai.Result, error) {
+	res := genai.Result{}
 	for i := range msg.Contents {
 		if msg.Contents[i].Text == "" {
 			return res, errors.New("only text can be passed as input")
@@ -868,7 +868,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.together.xyz/v1/models")
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.ChatResult) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {

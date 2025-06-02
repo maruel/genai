@@ -67,7 +67,7 @@ func TestProviderChatThinking_Chat(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			mp := &mockProviderChat{response: genai.ChatResult{
+			mp := &mockProviderChat{response: genai.Result{
 				Message: genai.Message{
 					Role:     genai.Assistant,
 					Contents: []genai.Content{{Text: tc.in}},
@@ -253,19 +253,19 @@ func TestProviderChatThinking_ChatStream(t *testing.T) {
 // It returns a predefined ChatResult for the Chat method and returns an error
 // for the ChatStream method.
 type mockProviderChat struct {
-	response genai.ChatResult
+	response genai.Result
 }
 
 func (m *mockProviderChat) Name() string {
 	return "mock"
 }
 
-func (m *mockProviderChat) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+func (m *mockProviderChat) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	return m.response, nil
 }
 
-func (m *mockProviderChat) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.ChatResult, error) {
-	return genai.ChatResult{}, errors.New("unexpected")
+func (m *mockProviderChat) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
+	return genai.Result{}, errors.New("unexpected")
 }
 
 func (m *mockProviderChat) ModelID() string {
@@ -283,12 +283,12 @@ func (m *mockChatStreamProvider) Name() string {
 	return "mockstream"
 }
 
-func (m *mockChatStreamProvider) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
-	return genai.ChatResult{}, errors.New("unexpected")
+func (m *mockChatStreamProvider) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+	return genai.Result{}, errors.New("unexpected")
 }
 
-func (m *mockChatStreamProvider) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.ChatResult, error) {
-	result := genai.ChatResult{
+func (m *mockChatStreamProvider) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
+	result := genai.Result{
 		Usage:   genai.Usage{},
 		Message: genai.Message{Role: genai.Assistant},
 	}

@@ -32,7 +32,7 @@ type injectOption struct {
 	opts pollinations.ChatOptions
 }
 
-func (i *injectOption) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+func (i *injectOption) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
 		n.ChatOptions = *opts.(*genai.ChatOptions)
@@ -41,7 +41,7 @@ func (i *injectOption) Chat(ctx context.Context, msgs genai.Messages, opts genai
 	return i.Client.Chat(ctx, msgs, opts)
 }
 
-func (i *injectOption) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.ChatResult, error) {
+func (i *injectOption) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
 		n.ChatOptions = *opts.(*genai.ChatOptions)

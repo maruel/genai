@@ -808,7 +808,7 @@ func testAudioGenFunctionalities(t *testing.T, g ProviderChatModalityFactory, mo
 	}
 }
 
-func run(t *testing.T, c genai.ProviderChat, msgs genai.Messages, opts genai.Validatable, stream bool) (genai.ChatResult, error) {
+func run(t *testing.T, c genai.ProviderChat, msgs genai.Messages, opts genai.Validatable, stream bool) (genai.Result, error) {
 	ctx := t.Context()
 	if !stream {
 		resp, err := c.Chat(ctx, msgs, opts)
@@ -947,7 +947,7 @@ func testUsage(t *testing.T, u *genai.Usage, usageIsBroken bool, f genai.FinishR
 }
 
 // ValidateWordResponse validates that the response contains exactly one of the expected words.
-func ValidateWordResponse(t *testing.T, resp genai.ChatResult, want ...string) {
+func ValidateWordResponse(t *testing.T, resp genai.Result, want ...string) {
 	got := resp.AsText()
 	cleaned := strings.TrimRight(strings.TrimSpace(strings.ToLower(got)), ".!")
 	if !slices.Contains(want, cleaned) {

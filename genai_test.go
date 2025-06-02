@@ -880,19 +880,19 @@ func (m *mockProviderChat) Name() string {
 	return "mock"
 }
 
-func (m *mockProviderChat) Chat(ctx context.Context, msgs Messages, opts Validatable) (ChatResult, error) {
-	return ChatResult{}, fmt.Errorf("Chat not implemented in mock")
+func (m *mockProviderChat) Chat(ctx context.Context, msgs Messages, opts Validatable) (Result, error) {
+	return Result{}, fmt.Errorf("Chat not implemented in mock")
 }
 
-func (m *mockProviderChat) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (ChatResult, error) {
+func (m *mockProviderChat) ChatStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Result, error) {
 	if m.callIndex >= len(m.streamResponses) {
-		return ChatResult{}, fmt.Errorf("no more mock responses")
+		return Result{}, fmt.Errorf("no more mock responses")
 	}
 
 	resp := m.streamResponses[m.callIndex]
 	m.callIndex++
 
-	result := ChatResult{
+	result := Result{
 		Usage:   resp.usage,
 		Message: Message{Role: Assistant},
 	}

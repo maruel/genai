@@ -31,7 +31,7 @@ type handleReasoning struct {
 	t *testing.T
 }
 
-func (h *handleReasoning) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.ChatResult, error) {
+func (h *handleReasoning) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	if opts != nil {
 		if o := opts.(*genai.ChatOptions); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
 			opts = &groq.ChatOptions{ReasoningFormat: groq.ReasoningFormatParsed, ChatOptions: *o}
@@ -42,7 +42,7 @@ func (h *handleReasoning) Chat(ctx context.Context, msgs genai.Messages, opts ge
 	return c.Chat(ctx, msgs, opts)
 }
 
-func (h *handleReasoning) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.ChatResult, error) {
+func (h *handleReasoning) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
 	if opts != nil {
 		if o := opts.(*genai.ChatOptions); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
 			opts = &groq.ChatOptions{ReasoningFormat: groq.ReasoningFormatParsed, ChatOptions: *o}

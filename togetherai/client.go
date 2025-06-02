@@ -713,7 +713,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderChat and genai.ProviderModel.
 type Client struct {
-	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Together.AI platform API.
@@ -743,11 +743,11 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 		r = http.DefaultTransport
 	}
 	return &Client{
-		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		BaseChat: internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              "https://api.together.xyz/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
-			ClientBase: internal.ClientBase[*ErrorResponse]{
+			Base: internal.Base[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Transport: &roundtrippers.Retry{
@@ -778,7 +778,7 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 		}
 		return c.GenImage(ctx, msgs[0], opts)
 	}
-	return c.ClientChat.Chat(ctx, msgs, opts)
+	return c.BaseChat.Chat(ctx, msgs, opts)
 }
 
 func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
@@ -807,7 +807,7 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 		}
 		return res, err
 	}
-	return c.ClientChat.ChatStream(ctx, msgs, opts, chunks)
+	return c.BaseChat.ChatStream(ctx, msgs, opts, chunks)
 }
 
 func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Validatable) (genai.Result, error) {
@@ -865,7 +865,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.together.ai/reference/models-1
-	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.together.xyz/v1/models")
+	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, "https://api.together.xyz/v1/models")
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {

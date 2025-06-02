@@ -931,7 +931,7 @@ type ErrorResponseError struct {
 
 // Client implements genai.ProviderChat and genai.ProviderModel.
 type Client struct {
-	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // TODO: Upload files
@@ -959,11 +959,11 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 		r = http.DefaultTransport
 	}
 	return &Client{
-		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		BaseChat: internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              "https://api.openai.com/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
-			ClientBase: internal.ClientBase[*ErrorResponse]{
+			Base: internal.Base[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{
 						Transport: &roundtrippers.Header{
@@ -993,7 +993,7 @@ func (c *Client) Chat(ctx context.Context, msgs genai.Messages, opts genai.Valid
 		}
 		return c.GenImage(ctx, msgs[0], opts)
 	default:
-		return c.ClientChat.Chat(ctx, msgs, opts)
+		return c.BaseChat.Chat(ctx, msgs, opts)
 	}
 }
 
@@ -1024,7 +1024,7 @@ func (c *Client) ChatStream(ctx context.Context, msgs genai.Messages, opts genai
 		}
 		return res, err
 	default:
-		return c.ClientChat.ChatStream(ctx, msgs, opts, chunks)
+		return c.BaseChat.ChatStream(ctx, msgs, opts, chunks)
 	}
 }
 
@@ -1103,7 +1103,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://platform.openai.com/docs/api-reference/models/list
-	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.openai.com/v1/models")
+	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, "https://api.openai.com/v1/models")
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {

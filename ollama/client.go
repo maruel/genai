@@ -418,7 +418,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderChat.
 type Client struct {
-	internal.ClientBase[*ErrorResponse]
+	internal.Base[*ErrorResponse]
 
 	model   string
 	baseURL string
@@ -441,7 +441,7 @@ func New(baseURL, model string, r http.RoundTripper) (*Client, error) {
 		baseURL = "http://localhost:11434"
 	}
 	return &Client{
-		ClientBase: internal.ClientBase[*ErrorResponse]{
+		Base: internal.Base[*ErrorResponse]{
 			ClientJSON: httpjson.Client{
 				Client: &http.Client{
 					Transport: &roundtrippers.Retry{
@@ -586,7 +586,7 @@ func (c *Client) ChatStreamRaw(ctx context.Context, in *ChatRequest, out chan<- 
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://github.com/ollama/ollama/blob/main/docs/api.md#list-local-models
-	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.ClientBase, c.baseURL+"/api/tags")
+	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, c.baseURL+"/api/tags")
 }
 
 func (c *Client) ModelID() string {

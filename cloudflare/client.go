@@ -578,7 +578,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderChat and genai.ProviderModel.
 type Client struct {
-	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 
 	accountID string
 }
@@ -613,11 +613,11 @@ func New(accountID, apiKey, model string, r http.RoundTripper) (*Client, error) 
 	// https://blog.cloudflare.com/workers-ai-streaming/ and
 	// https://developers.cloudflare.com/workers/examples/websockets/
 	return &Client{
-		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		BaseChat: internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              "https://api.cloudflare.com/client/v4/accounts/" + accountID + "/ai/run/" + model,
 			ProcessStreamPackets: processStreamPackets,
-			ClientBase: internal.ClientBase[*ErrorResponse]{
+			Base: internal.Base[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Transport: &roundtrippers.Retry{

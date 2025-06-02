@@ -591,7 +591,7 @@ func (ee *ErrorError) UnmarshalJSON(d []byte) error {
 
 // Client implements genai.ProviderChat and genai.ProviderModel.
 type Client struct {
-	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // TODO: Investigate https://huggingface.co/blog/inference-providers and https://huggingface.co/docs/inference-endpoints/
@@ -632,11 +632,11 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 		r = http.DefaultTransport
 	}
 	return &Client{
-		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		BaseChat: internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              "https://router.huggingface.co/hf-inference/models/" + model + "/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
-			ClientBase: internal.ClientBase[*ErrorResponse]{
+			Base: internal.Base[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Header: http.Header{"Authorization": {"Bearer " + apiKey}},
@@ -666,7 +666,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://huggingface.co/docs/hub/api
 	// There's 20k models warm as of March 2025. There's no way to sort by
 	// trending. Sorting by download is not useful. There's no pagination.
-	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://huggingface.co/api/models?inference=warm")
+	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, "https://huggingface.co/api/models?inference=warm")
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {

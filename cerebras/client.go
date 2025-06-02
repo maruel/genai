@@ -602,7 +602,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderChat and genai.ProviderModel.
 type Client struct {
-	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Cerebras platform API.
@@ -626,12 +626,12 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 		r = http.DefaultTransport
 	}
 	return &Client{
-		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		BaseChat: internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              "https://api.cerebras.ai/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
 			LieToolCalls:         true,
-			ClientBase: internal.ClientBase[*ErrorResponse]{
+			Base: internal.Base[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Transport: &roundtrippers.Retry{
@@ -659,7 +659,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://inference-docs.cerebras.ai/api-reference/models
-	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.cerebras.ai/v1/models")
+	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, "https://api.cerebras.ai/v1/models")
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {

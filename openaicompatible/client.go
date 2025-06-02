@@ -308,7 +308,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderChat.
 type Client struct {
-	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 func (c *Client) Name() string {
@@ -325,12 +325,12 @@ func New(chatURL string, h http.Header, model string, r http.RoundTripper) (*Cli
 		r = http.DefaultTransport
 	}
 	return &Client{
-		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		BaseChat: internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              chatURL,
 			ModelOptional:        true,
 			ProcessStreamPackets: processStreamPackets,
-			ClientBase: internal.ClientBase[*ErrorResponse]{
+			Base: internal.Base[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Transport: &roundtrippers.Retry{

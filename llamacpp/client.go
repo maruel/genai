@@ -444,7 +444,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderChat.
 type Client struct {
-	internal.ClientBase[*ErrorResponse]
+	internal.Base[*ErrorResponse]
 
 	baseURL  string
 	chatURL  string
@@ -464,7 +464,7 @@ func New(baseURL string, encoding *PromptEncoding, r http.RoundTripper) (*Client
 		r = http.DefaultTransport
 	}
 	return &Client{
-		ClientBase: internal.ClientBase[*ErrorResponse]{
+		Base: internal.Base[*ErrorResponse]{
 			ClientJSON: httpjson.Client{
 				Client: &http.Client{
 					Transport: &roundtrippers.Retry{

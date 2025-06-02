@@ -30,8 +30,8 @@ var BeLenient = true
 
 //
 
-// ClientBase implements the shared HTTP client functionality used across all API clients.
-type ClientBase[PErrorResponse fmt.Stringer] struct {
+// Base implements the shared HTTP client functionality used across all API clients.
+type Base[PErrorResponse fmt.Stringer] struct {
 	// ClientJSON is exported for testing replay purposes.
 	ClientJSON httpjson.Client
 	// APIKeyURL is the URL to present to the user upon authentication error.
@@ -45,7 +45,7 @@ type ClientBase[PErrorResponse fmt.Stringer] struct {
 //
 // It takes care of sending the request, decoding the response, and handling errors.
 // All API clients should use this method for their HTTP communication needs.
-func (c *ClientBase[PErrorResponse]) DoRequest(ctx context.Context, method, url string, in, out any) error {
+func (c *Base[PErrorResponse]) DoRequest(ctx context.Context, method, url string, in, out any) error {
 	c.lateInit()
 	resp, err := c.ClientJSON.Request(ctx, method, url, nil, in)
 	if err != nil {
@@ -106,7 +106,7 @@ func (c *ClientBase[PErrorResponse]) DoRequest(ctx context.Context, method, url 
 //
 // It handles JSON decoding of error responses and provides appropriate error messages
 // with context such as API key URLs for unauthorized errors.
-func (c *ClientBase[PErrorResponse]) DecodeError(ctx context.Context, url string, resp *http.Response) error {
+func (c *Base[PErrorResponse]) DecodeError(ctx context.Context, url string, resp *http.Response) error {
 	c.lateInit()
 	// When we are in lenient mode, we do not want to buffer the result. When in strict mode, we want to buffer
 	// to give more details.
@@ -142,7 +142,7 @@ func (c *ClientBase[PErrorResponse]) DecodeError(ctx context.Context, url string
 	return fmt.Errorf("http %d: %s", resp.StatusCode, http.StatusText(resp.StatusCode))
 }
 
-func (c *ClientBase[PErrorResponse]) lateInit() {
+func (c *Base[PErrorResponse]) lateInit() {
 	// TODO: Figure out how to not use reflection.
 	c.mu.Lock()
 	if c.errorResponse == nil {
@@ -202,10 +202,10 @@ type ResultConverter interface {
 
 //
 
-// ClientChat implements common functionality for clients that provide chat capabilities.
+// BaseChat implements common functionality for clients that provide chat capabilities.
 // It embeds ClientBase and adds a Model field and common chat methods.
-type ClientChat[PErrorResponse fmt.Stringer, PChatRequest InitializableRequest, PChatResponse ResultConverter, ChatStreamChunkResponse Obj] struct {
-	ClientBase[PErrorResponse]
+type BaseChat[PErrorResponse fmt.Stringer, PChatRequest InitializableRequest, PChatResponse ResultConverter, ChatStreamChunkResponse Obj] struct {
+	Base[PErrorResponse]
 	// Model is the default model used for chat requests
 	Model string
 	// ChatURL is the endpoint URL for chat API requests
@@ -226,7 +226,7 @@ type ClientChat[PErrorResponse fmt.Stringer, PChatRequest InitializableRequest, 
 	chatResponse reflect.Type
 }
 
-func (c *ClientChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) Chat(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
 	result := genai.Result{}
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
@@ -260,7 +260,7 @@ func (c *ClientChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunk
 	return result, continuableErr
 }
 
-func (c *ClientChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
+func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) ChatStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
 	result := genai.Result{}
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
@@ -305,7 +305,7 @@ func (c *ClientChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunk
 
 // ChatRaw is the generic raw implementation for the Chat API endpoint.
 // It sets Stream to false and sends a request to the chat URL.
-func (c *ClientChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) ChatRaw(ctx context.Context, in PChatRequest, out PChatResponse) error {
+func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) ChatRaw(ctx context.Context, in PChatRequest, out PChatResponse) error {
 	if err := c.Validate(); err != nil {
 		return err
 	}
@@ -315,7 +315,7 @@ func (c *ClientChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunk
 
 // ChatStreamRaw is the generic raw implementation for streaming Chat API endpoints.
 // It sets Stream to true, enables stream options if available, and handles the SSE response.
-func (c *ClientChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) ChatStreamRaw(ctx context.Context, in PChatRequest, out chan<- ChatStreamChunkResponse) error {
+func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) ChatStreamRaw(ctx context.Context, in PChatRequest, out chan<- ChatStreamChunkResponse) error {
 	if err := c.Validate(); err != nil {
 		return err
 	}
@@ -336,20 +336,20 @@ func (c *ClientChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunk
 	return sse.Process(resp.Body, out, er, c.ClientJSON.Lenient)
 }
 
-func (c *ClientChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) ModelID() string {
+func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) ModelID() string {
 	return c.Model
 }
 
-func (c *ClientChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) Validate() error {
+func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) Validate() error {
 	if !c.ModelOptional && c.Model == "" {
 		return errors.New("a model is required")
 	}
 	return nil
 }
 
-func (c *ClientChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) lateInit() {
+func (c *BaseChat[PErrorResponse, PChatRequest, PChatResponse, ChatStreamChunkResponse]) lateInit() {
 	// TODO: Figure out how to not use reflection.
-	c.ClientBase.lateInit()
+	c.Base.lateInit()
 	c.mu.Lock()
 	if c.chatRequest == nil {
 		var in PChatRequest
@@ -370,7 +370,7 @@ type ListModelsResponse interface {
 
 // ListModels is a generic function that implements the common pattern for listing models across providers.
 // It makes an HTTP GET request to the specified URL and converts the response to a slice of genai.Model.
-func ListModels[PErrorResponse fmt.Stringer, R ListModelsResponse](ctx context.Context, c *ClientBase[PErrorResponse], url string) ([]genai.Model, error) {
+func ListModels[PErrorResponse fmt.Stringer, R ListModelsResponse](ctx context.Context, c *Base[PErrorResponse], url string) ([]genai.Model, error) {
 	var resp R
 	if err := c.DoRequest(ctx, "GET", url, nil, &resp); err != nil {
 		return nil, err

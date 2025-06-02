@@ -848,7 +848,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderChat and genai.ProviderModel.
 type Client struct {
-	internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Anthropic platform API.
@@ -874,12 +874,12 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 	}
 	// Anthropic allows Opaque fields for thinking signatures
 	return &Client{
-		ClientChat: internal.ClientChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		BaseChat: internal.BaseChat[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			ChatURL:              "https://api.anthropic.com/v1/messages",
 			AllowOpaqueFields:    true,
 			ProcessStreamPackets: processStreamPackets,
-			ClientBase: internal.ClientBase[*ErrorResponse]{
+			Base: internal.Base[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Client: &http.Client{Transport: &roundtrippers.Header{
 						Transport: &roundtrippers.Retry{
@@ -907,7 +907,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.anthropic.com/en/api/models-list
-	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.ClientBase, "https://api.anthropic.com/v1/models?limit=1000")
+	return internal.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, "https://api.anthropic.com/v1/models?limit=1000")
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {

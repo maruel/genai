@@ -691,9 +691,18 @@ func (t *ToolCallResult) UnmarshalJSON(b []byte) error {
 	return t.Validate()
 }
 
-// ProviderImage is the interface to interact with an image generator.
-type ProviderImage interface {
-	GenImage(ctx context.Context, msg Message, opts Options) (Result, error)
+// ProviderDoc is the interface to interact with an image generator.
+type ProviderDoc interface {
+	// GenDoc generates a document (audio, image, video).
+	//
+	// The modality of the document generated is based on the provider, the model and
+	// the options provided.
+	//
+	// For example some providers (e.g. bfl) only generate images. Some models
+	// (openai-audio) only generate audio. For fully multimodal models (e.g. some of Gemini's models), the
+	// modality can be specified by passing the relevant Options type (*AudioOptions, *ImageOptions,
+	// *VideoOptions).
+	GenDoc(ctx context.Context, msg Message, opts Options) (Result, error)
 }
 
 // Models

@@ -69,13 +69,13 @@ func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, repli
 	return i.Client.GenStream(ctx, msgs, replies, opts)
 }
 
-func (i *injectOption) GenImage(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
+func (i *injectOption) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
 		return genai.Result{}, errors.New("implement me")
 	}
 	opts = &n
-	return i.Client.GenImage(ctx, msg, opts)
+	return i.Client.GenDoc(ctx, msg, opts)
 }
 
 func TestClient_ProviderGen_errors(t *testing.T) {

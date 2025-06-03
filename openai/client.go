@@ -1008,7 +1008,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
-		return c.GenImage(ctx, msgs[0], opts)
+		return c.GenDoc(ctx, msgs[0], opts)
 	}
 	return c.BaseGen.GenSync(ctx, msgs, opts)
 }
@@ -1023,7 +1023,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	return c.BaseGen.GenStream(ctx, msgs, chunks, opts)
 }
 
-func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
+func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
 	// https://platform.openai.com/docs/api-reference/images/create
 	res := genai.Result{}
 	for i := range msg.Contents {
@@ -1188,7 +1188,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 
 var (
 	_ genai.ProviderGen        = &Client{}
-	_ genai.ProviderImage      = &Client{}
+	_ genai.ProviderDoc        = &Client{}
 	_ genai.ProviderModel      = &Client{}
 	_ genai.ProviderScoreboard = &Client{}
 )

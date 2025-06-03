@@ -769,8 +769,8 @@ func testImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 		defaultFR = ""
 	}
 	msg := genai.NewTextMessage(genai.User, contents)
-	c := g(t, model).(genai.ProviderImage)
-	resp, err := c.GenImage(t.Context(), msg, nil)
+	c := g(t, model).(genai.ProviderDoc)
+	resp, err := c.GenDoc(t.Context(), msg, nil)
 	if !basicCheck(t, err, f.Inline) {
 		return
 	}

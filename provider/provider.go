@@ -378,8 +378,8 @@ func ListModels[PErrorResponse fmt.Stringer, R ListModelsResponse](ctx context.C
 }
 
 // SimulateStream simulates GenStream for APIs that do not support streaming.
-func SimulateStream(ctx context.Context, c genai.ProviderImage, msg genai.Message, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
-	res, err := c.GenImage(ctx, msg, opts)
+func SimulateStream(ctx context.Context, c genai.ProviderDoc, msg genai.Message, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+	res, err := c.GenDoc(ctx, msg, opts)
 	if err == nil {
 		for i := range res.Contents {
 			if url := res.Contents[i].URL; url != "" {

@@ -280,7 +280,7 @@ func (a *AudioOptions) Modality() Modality {
 	return ModalityAudio
 }
 
-// ImageOptions is a list of frequent options supported by most ProviderImage.
+// ImageOptions is a list of frequent options supported by most ProviderDoc.
 // Each provider is free to support more options through a specialized struct.
 type ImageOptions struct {
 	// Seed for the random number generator. Default is 0 which means

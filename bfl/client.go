@@ -218,7 +218,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 	if len(msgs) != 1 {
 		return genai.Result{}, errors.New("must pass exactly one Message")
 	}
-	return c.GenImage(ctx, msgs[0], opts)
+	return c.GenDoc(ctx, msgs[0], opts)
 }
 
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
@@ -228,7 +228,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	return provider.SimulateStream(ctx, c, msgs[0], chunks, opts)
 }
 
-func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
+func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
 	res := genai.Result{}
 	for i := range msg.Contents {
 		if msg.Contents[i].Text == "" {
@@ -288,6 +288,6 @@ func (c *Client) GetResult(ctx context.Context, id string) (ImageResult, error) 
 var waitForPoll = 500 * time.Millisecond
 
 var (
-	_ genai.ProviderImage      = &Client{}
+	_ genai.ProviderDoc        = &Client{}
 	_ genai.ProviderScoreboard = &Client{}
 )

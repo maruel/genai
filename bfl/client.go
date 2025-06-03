@@ -17,7 +17,6 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
-	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/genai/provider"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
@@ -226,25 +225,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	if len(msgs) != 1 {
 		return genai.Result{}, errors.New("must pass exactly one Message")
 	}
-	res, err := c.GenImage(ctx, msgs[0], opts)
-	if err == nil {
-		for i := range res.Contents {
-			if url := res.Contents[i].URL; url != "" {
-				chunks <- genai.ContentFragment{
-					Filename: res.Contents[i].Filename,
-					URL:      res.Contents[i].URL,
-				}
-			} else if d := res.Contents[i].Document; d != nil {
-				chunks <- genai.ContentFragment{
-					Filename:         res.Contents[i].Filename,
-					DocumentFragment: res.Contents[i].Document.(*bb.BytesBuffer).D,
-				}
-			} else {
-				return res, errors.New("internal error")
-			}
-		}
-	}
-	return res, err
+	return provider.SimulateStream(ctx, c, msgs[0], chunks, opts)
 }
 
 func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {

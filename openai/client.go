@@ -1004,47 +1004,23 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 }
 
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	// TODO: Use Scoreboard list.
-	switch c.Model {
-	case "dall-e-2", "dall-e-3", "gpt-image-1":
+	if c.isImage(opts) {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
 		return c.GenImage(ctx, msgs[0], opts)
-	default:
-		return c.BaseGen.GenSync(ctx, msgs, opts)
 	}
+	return c.BaseGen.GenSync(ctx, msgs, opts)
 }
 
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
-	// TODO: Use Scoreboard list.
-	switch c.Model {
-	case "dall-e-2", "dall-e-3", "gpt-image-1":
+	if c.isImage(opts) {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
-		res, err := c.GenImage(ctx, msgs[0], opts)
-		if err == nil {
-			for i := range res.Contents {
-				if url := res.Contents[i].URL; url != "" {
-					chunks <- genai.ContentFragment{
-						Filename: res.Contents[i].Filename,
-						URL:      res.Contents[i].URL,
-					}
-				} else if d := res.Contents[i].Document; d != nil {
-					chunks <- genai.ContentFragment{
-						Filename:         res.Contents[i].Filename,
-						DocumentFragment: res.Contents[i].Document.(*bb.BytesBuffer).D,
-					}
-				} else {
-					return res, errors.New("internal error")
-				}
-			}
-		}
-		return res, err
-	default:
-		return c.BaseGen.GenStream(ctx, msgs, chunks, opts)
+		return provider.SimulateStream(ctx, c, msgs[0], chunks, opts)
 	}
+	return c.BaseGen.GenStream(ctx, msgs, chunks, opts)
 }
 
 func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
@@ -1130,6 +1106,17 @@ func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Opt
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://platform.openai.com/docs/api-reference/models/list
 	return provider.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, "https://api.openai.com/v1/models")
+}
+
+func (c *Client) isImage(opts genai.Options) bool {
+	switch c.Model {
+	// TODO: Use Scoreboard list.
+	case "dall-e-2", "dall-e-3", "gpt-image-1":
+		return true
+	default:
+		_, ok := opts.(*genai.ImageOptions)
+		return ok
+	}
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {

@@ -769,8 +769,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 }
 
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	// TODO: Use Scoreboard list.
-	if strings.HasPrefix(c.Model, "black-forest-labs/") {
+	if c.isImage(opts) {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
@@ -780,8 +779,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 }
 
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
-	// TODO: Use Scoreboard list.
-	if strings.HasPrefix(c.Model, "black-forest-labs/") {
+	if c.isImage(opts) {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
@@ -856,6 +854,15 @@ func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Opt
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.together.ai/reference/models-1
 	return provider.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, "https://api.together.xyz/v1/models")
+}
+
+func (c *Client) isImage(opts genai.Options) bool {
+	// TODO: Use Scoreboard list.
+	if strings.HasPrefix(c.Model, "black-forest-labs/") {
+		return true
+	}
+	_, ok := opts.(*genai.ImageOptions)
+	return ok
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {

@@ -18,6 +18,7 @@ import (
 	"sync"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/httpjson"
 	"golang.org/x/sync/errgroup"
@@ -374,4 +375,27 @@ func ListModels[PErrorResponse fmt.Stringer, R ListModelsResponse](ctx context.C
 		return nil, err
 	}
 	return resp.ToModels(), nil
+}
+
+// SimulateStream simulates GenStream for APIs that do not support streaming.
+func SimulateStream(ctx context.Context, c genai.ProviderImage, msg genai.Message, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+	res, err := c.GenImage(ctx, msg, opts)
+	if err == nil {
+		for i := range res.Contents {
+			if url := res.Contents[i].URL; url != "" {
+				chunks <- genai.ContentFragment{
+					Filename: res.Contents[i].Filename,
+					URL:      res.Contents[i].URL,
+				}
+			} else if d := res.Contents[i].Document; d != nil {
+				chunks <- genai.ContentFragment{
+					Filename:         res.Contents[i].Filename,
+					DocumentFragment: res.Contents[i].Document.(*bb.BytesBuffer).D,
+				}
+			} else {
+				return res, fmt.Errorf("expected ContentFragment with URL or Document, got %#v", res.Contents)
+			}
+		}
+	}
+	return res, err
 }

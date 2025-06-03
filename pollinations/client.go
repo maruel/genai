@@ -934,36 +934,23 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 }
 
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	// TODO: Use Scoreboard list.
-	switch c.Model {
-	case "flux", "gptimage", "turbo":
+	if c.isImage(opts) {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
 		return c.GenImage(ctx, msgs[0], opts)
-	default:
-		return c.BaseGen.GenSync(ctx, msgs, opts)
 	}
+	return c.BaseGen.GenSync(ctx, msgs, opts)
 }
 
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
-	// TODO: Use Scoreboard list.
-	switch c.Model {
-	case "flux", "gptimage", "turbo":
+	if c.isImage(opts) {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
-		res, err := c.GenImage(ctx, msgs[0], opts)
-		if err == nil {
-			chunks <- genai.ContentFragment{
-				Filename:         res.Contents[0].Filename,
-				DocumentFragment: res.Contents[0].Document.(*bb.BytesBuffer).D,
-			}
-		}
-		return res, err
-	default:
-		return c.BaseGen.GenStream(ctx, msgs, chunks, opts)
+		return provider.SimulateStream(ctx, c, msgs[0], chunks, opts)
 	}
+	return c.BaseGen.GenStream(ctx, msgs, chunks, opts)
 }
 
 // GenImage uses the text-to-image API to generate an image.
@@ -1057,6 +1044,17 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		err1 = err2
 	}
 	return out, err1
+}
+
+func (c *Client) isImage(opts genai.Options) bool {
+	// TODO: Use Scoreboard list.
+	switch c.Model {
+	case "flux", "gptimage", "turbo":
+		return true
+	default:
+		_, ok := opts.(*genai.ImageOptions)
+		return ok
+	}
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {

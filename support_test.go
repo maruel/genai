@@ -260,11 +260,11 @@ func (m *mockProviderGen) Name() string {
 	return "mock"
 }
 
-func (m *mockProviderGen) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (m *mockProviderGen) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	return m.response, nil
 }
 
-func (m *mockProviderGen) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.ContentFragment) (genai.Result, error) {
+func (m *mockProviderGen) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Options, replies chan<- genai.ContentFragment) (genai.Result, error) {
 	return genai.Result{}, errors.New("unexpected")
 }
 
@@ -283,11 +283,11 @@ func (m *mockGenStreamProvider) Name() string {
 	return "mockstream"
 }
 
-func (m *mockGenStreamProvider) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (m *mockGenStreamProvider) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	return genai.Result{}, errors.New("unexpected")
 }
 
-func (m *mockGenStreamProvider) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.ContentFragment) (genai.Result, error) {
+func (m *mockGenStreamProvider) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Options, replies chan<- genai.ContentFragment) (genai.Result, error) {
 	result := genai.Result{
 		Usage:   genai.Usage{},
 		Message: genai.Message{Role: genai.Assistant},

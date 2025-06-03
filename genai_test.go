@@ -879,11 +879,11 @@ func (m *mockProviderGen) Name() string {
 	return "mock"
 }
 
-func (m *mockProviderGen) GenSync(ctx context.Context, msgs Messages, opts Validatable) (Result, error) {
+func (m *mockProviderGen) GenSync(ctx context.Context, msgs Messages, opts Options) (Result, error) {
 	return Result{}, fmt.Errorf("GenSync not implemented in mock")
 }
 
-func (m *mockProviderGen) GenStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- ContentFragment) (Result, error) {
+func (m *mockProviderGen) GenStream(ctx context.Context, msgs Messages, opts Options, replies chan<- ContentFragment) (Result, error) {
 	if m.callIndex >= len(m.streamResponses) {
 		return Result{}, fmt.Errorf("no more mock responses")
 	}

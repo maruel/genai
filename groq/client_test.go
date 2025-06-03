@@ -31,7 +31,7 @@ type handleReasoning struct {
 	t *testing.T
 }
 
-func (h *handleReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (h *handleReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	if opts != nil {
 		if o := opts.(*genai.TextOptions); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
 			opts = &groq.TextOptions{ReasoningFormat: groq.ReasoningFormatParsed, TextOptions: *o}
@@ -42,7 +42,7 @@ func (h *handleReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts
 	return c.GenSync(ctx, msgs, opts)
 }
 
-func (h *handleReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.ContentFragment) (genai.Result, error) {
+func (h *handleReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Options, replies chan<- genai.ContentFragment) (genai.Result, error) {
 	if opts != nil {
 		if o := opts.(*genai.TextOptions); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
 			opts = &groq.TextOptions{ReasoningFormat: groq.ReasoningFormatParsed, TextOptions: *o}

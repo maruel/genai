@@ -58,12 +58,20 @@ type Validatable interface {
 	Validate() error
 }
 
+// Options is options that can be provided to a ProviderGen interface.
+type Options interface {
+	Validatable
+	Modality() Modality
+}
+
 // Provider
 
 // Provider is the base interface that all provider interfaces embed.
 type Provider interface {
 	// Name returns the name of the provider.
 	Name() string
+	// ModelID returns the model currently used by the provider. It can be an empty string.
+	ModelID() string
 }
 
 // ProviderUnwrap is exposed when the Provider is actually a wrapper around another one, like
@@ -79,18 +87,13 @@ type ProviderGen interface {
 	Provider
 	// GenSync runs generation synchronously.
 	//
-	// opts must be either nil, *ImageOptions, *TextOptions or a provider-specialized
-	// option struct.
-	GenSync(ctx context.Context, msgs Messages, opts Validatable) (Result, error)
+	// opts can be nil, in this case TextOptions is assumed. It can also be other modalities like *ImageOptions,
+	// *TextOptions or a provider-specialized option struct.
+	GenSync(ctx context.Context, msgs Messages, opts Options) (Result, error)
 	// GenStream runs generation synchronously, streaming the results to channel replies.
 	//
-	// opts must be either nil, *ImageOptions, *TextOptions or a provider-specialized
-	// option struct.
-	//
 	// No need to accumulate the replies into the result, the Result contains the accumulated message.
-	GenStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- ContentFragment) (Result, error)
-	// ModelID returns the model currently used by the provider. It can be an empty string.
-	ModelID() string
+	GenStream(ctx context.Context, msgs Messages, opts Options, replies chan<- ContentFragment) (Result, error)
 }
 
 // TextOptions is a list of frequent options supported by most ProviderGen with text output modality.
@@ -134,6 +137,10 @@ type TextOptions struct {
 	ToolCallRequest ToolCallRequest
 
 	_ struct{}
+}
+
+func (v *TextOptions) Modality() Modality {
+	return ModalityText
 }
 
 // Validate ensures the completion options are valid.
@@ -924,9 +931,25 @@ func (c *ImageOptions) Validate() error {
 	return nil
 }
 
+func (v *ImageOptions) Modality() Modality {
+	return ModalityImage
+}
+
+type VideoOptions struct{}
+
+func (v *VideoOptions) Modality() Modality {
+	return ModalityVideo
+}
+
+type AudioOptions struct{}
+
+func (a *AudioOptions) Modality() Modality {
+	return ModalityAudio
+}
+
 // ProviderImage is the interface to interact with an image generator.
 type ProviderImage interface {
-	GenImage(ctx context.Context, msg Message, opts Validatable) (Result, error)
+	GenImage(ctx context.Context, msg Message, opts Options) (Result, error)
 }
 
 // Models

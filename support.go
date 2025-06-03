@@ -25,7 +25,7 @@ import (
 // tool call.
 //
 // It returns the messages to accumulate to the thread. The last message is the LLM's response.
-func GenSyncWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Messages, opts Validatable) (Messages, Usage, error) {
+func GenSyncWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Messages, opts Options) (Messages, Usage, error) {
 	usage := Usage{}
 	var out Messages
 	workMsgs := make(Messages, len(msgs))
@@ -77,7 +77,7 @@ func GenSyncWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Mes
 // tool call.
 //
 // No need to process the tool calls or accumulate the ContentFragment.
-func GenStreamWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Messages, opts Validatable, replies chan<- ContentFragment) (Messages, Usage, error) {
+func GenStreamWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Messages, opts Options, replies chan<- ContentFragment) (Messages, Usage, error) {
 	usage := Usage{}
 	var out Messages
 	workMsgs := make(Messages, len(msgs))
@@ -149,7 +149,7 @@ type ProviderGenUsage struct {
 }
 
 // GenSync implements the ProviderGen interface and accumulates usage statistics.
-func (c *ProviderGenUsage) GenSync(ctx context.Context, msgs Messages, opts Validatable) (Result, error) {
+func (c *ProviderGenUsage) GenSync(ctx context.Context, msgs Messages, opts Options) (Result, error) {
 	result, err := c.ProviderGen.GenSync(ctx, msgs, opts)
 	c.mu.Lock()
 	c.accumUsage.InputTokens += result.InputTokens
@@ -160,7 +160,7 @@ func (c *ProviderGenUsage) GenSync(ctx context.Context, msgs Messages, opts Vali
 }
 
 // GenStream implements the ProviderGen interface and accumulates usage statistics.
-func (c *ProviderGenUsage) GenStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- ContentFragment) (Result, error) {
+func (c *ProviderGenUsage) GenStream(ctx context.Context, msgs Messages, opts Options, replies chan<- ContentFragment) (Result, error) {
 	// Call the wrapped provider and accumulate usage statistics
 	result, err := c.ProviderGen.GenStream(ctx, msgs, opts, replies)
 	c.mu.Lock()
@@ -202,7 +202,7 @@ type ProviderGenThinking struct {
 
 // GenSync implements the ProviderGen interface by delegating to the wrapped provider
 // and processing the result to extract thinking blocks.
-func (c *ProviderGenThinking) GenSync(ctx context.Context, msgs Messages, opts Validatable) (Result, error) {
+func (c *ProviderGenThinking) GenSync(ctx context.Context, msgs Messages, opts Options) (Result, error) {
 	result, err := c.ProviderGen.GenSync(ctx, msgs, opts)
 	// When replying in JSON, the thinking tokens are "denied" by the engine.
 	if o, ok := opts.(*TextOptions); !ok || !c.SkipJSON || (!o.ReplyAsJSON && o.DecodeAs == nil) {
@@ -216,7 +216,7 @@ func (c *ProviderGenThinking) GenSync(ctx context.Context, msgs Messages, opts V
 // GenStream implements the ProviderGen interface for streaming by delegating to the wrapped provider
 // and processing each fragment to extract thinking blocks.
 // If no thinking tags are present, the first part of the message is assumed to be thinking.
-func (c *ProviderGenThinking) GenStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- ContentFragment) (Result, error) {
+func (c *ProviderGenThinking) GenStream(ctx context.Context, msgs Messages, opts Options, replies chan<- ContentFragment) (Result, error) {
 	if c.SkipJSON {
 		if o, ok := opts.(*TextOptions); ok && (o.ReplyAsJSON || o.DecodeAs != nil) {
 			// When replying in JSON, the thinking tokens are "denied" by the engine.

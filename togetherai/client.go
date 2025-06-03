@@ -202,7 +202,7 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model string) error {
+func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
 	c.Model = model
 	var errs []error
 	var unsupported []string
@@ -768,7 +768,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard
 }
 
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	// TODO: Use Scoreboard list.
 	if strings.HasPrefix(c.Model, "black-forest-labs/") {
 		if len(msgs) != 1 {
@@ -779,7 +779,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Va
 	return c.BaseGen.GenSync(ctx, msgs, opts)
 }
 
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.ContentFragment) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Options, chunks chan<- genai.ContentFragment) (genai.Result, error) {
 	// TODO: Use Scoreboard list.
 	if strings.HasPrefix(c.Model, "black-forest-labs/") {
 		if len(msgs) != 1 {
@@ -808,7 +808,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.
 	return c.BaseGen.GenStream(ctx, msgs, opts, chunks)
 }
 
-func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Validatable) (genai.Result, error) {
+func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
 	res := genai.Result{}
 	for i := range msg.Contents {
 		if msg.Contents[i].Text == "" {

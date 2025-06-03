@@ -188,7 +188,7 @@ type Obj interface{ any }
 // InitializableRequest is an interface for request types that can be initialized.
 type InitializableRequest interface {
 	// Init initializes the request with messages, options, and model.
-	Init(msgs genai.Messages, opts genai.Validatable, model string) error
+	Init(msgs genai.Messages, opts genai.Options, model string) error
 	// SetStream set the stream mode.
 	SetStream(bool)
 }
@@ -224,7 +224,7 @@ type BaseGen[PErrorResponse fmt.Stringer, PGenRequest InitializableRequest, PGen
 	chatResponse reflect.Type
 }
 
-func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
@@ -258,7 +258,7 @@ func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespon
 	return result, continuableErr
 }
 
-func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.ContentFragment) (genai.Result, error) {
+func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Options, chunks chan<- genai.ContentFragment) (genai.Result, error) {
 	result := genai.Result{}
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {

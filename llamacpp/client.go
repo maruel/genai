@@ -129,7 +129,7 @@ type CompletionRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Validatable, model string) error {
+func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
 	var errs []error
 	var unsupported []string
 	c.CachePrompt = true
@@ -311,7 +311,7 @@ type applyTemplateRequest struct {
 	Messages []Message `json:"messages"`
 }
 
-func (a *applyTemplateRequest) Init(opts genai.Validatable, msgs genai.Messages) error {
+func (a *applyTemplateRequest) Init(opts genai.Options, msgs genai.Messages) error {
 	sp := ""
 	if v, ok := opts.(*genai.TextOptions); ok {
 		sp = v.SystemPrompt
@@ -487,7 +487,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard
 }
 
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	// https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
@@ -518,7 +518,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.DoRequest(ctx, "POST", c.chatURL, in, out)
 }
 
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.ContentFragment) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Options, chunks chan<- genai.ContentFragment) (genai.Result, error) {
 	result := genai.Result{}
 
 	// Check for non-empty Opaque field
@@ -655,7 +655,7 @@ func (c *Client) ModelID() string {
 	return ""
 }
 
-func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts genai.Validatable, msgs genai.Messages) error {
+func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts genai.Options, msgs genai.Messages) error {
 	if c.encoding == nil {
 		// Use the server to convert the OpenAI style format into a templated form.
 		in2 := applyTemplateRequest{}

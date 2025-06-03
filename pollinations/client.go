@@ -296,7 +296,7 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Validatable, model string) error {
+func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
 	c.Model = model
 	c.Private = true // Not sure why we'd want to broadcast?
 	var errs []error
@@ -933,7 +933,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard
 }
 
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	// TODO: Use Scoreboard list.
 	switch c.Model {
 	case "flux", "gptimage", "turbo":
@@ -946,7 +946,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Va
 	}
 }
 
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.ContentFragment) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Options, chunks chan<- genai.ContentFragment) (genai.Result, error) {
 	// TODO: Use Scoreboard list.
 	switch c.Model {
 	case "flux", "gptimage", "turbo":
@@ -969,7 +969,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.
 // GenImage uses the text-to-image API to generate an image.
 //
 // Default rate limit is 0.2 QPS / IP.
-func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Validatable) (genai.Result, error) {
+func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#text-to-image-get-%EF%B8%8F
 	res := genai.Result{}
 	for i := range msg.Contents {

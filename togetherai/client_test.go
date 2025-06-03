@@ -51,7 +51,7 @@ type injectOption struct {
 	opts genai.ImageOptions
 }
 
-func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Validatable) (genai.Result, error) {
+func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
 		return genai.Result{}, errors.New("implement me")
@@ -60,7 +60,7 @@ func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts ge
 	return i.Client.GenSync(ctx, msgs, opts)
 }
 
-func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.ContentFragment) (genai.Result, error) {
+func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Options, replies chan<- genai.ContentFragment) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
 		return genai.Result{}, errors.New("implement me")
@@ -69,7 +69,7 @@ func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, opts 
 	return i.Client.GenStream(ctx, msgs, opts, replies)
 }
 
-func (i *injectOption) GenImage(ctx context.Context, msg genai.Message, opts genai.Validatable) (genai.Result, error) {
+func (i *injectOption) GenImage(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
 		return genai.Result{}, errors.New("implement me")

@@ -808,7 +808,7 @@ func testAudioGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 	}
 }
 
-func run(t *testing.T, c genai.ProviderGen, msgs genai.Messages, opts genai.Validatable, stream bool) (genai.Result, error) {
+func run(t *testing.T, c genai.ProviderGen, msgs genai.Messages, opts genai.Options, stream bool) (genai.Result, error) {
 	ctx := t.Context()
 	if !stream {
 		resp, err := c.GenSync(ctx, msgs, opts)

@@ -39,7 +39,7 @@ func TestClient_Scoreboard(t *testing.T) {
 		c := getClient(t, m)
 		// TODO: Use Scoreboard list.
 		if strings.HasPrefix(c.Model, "black-forest-labs/") {
-			return &injectOption{Client: c, t: t, opts: genai.ImageOptions{Width: 256, Height: 256}}
+			return &injectOption{Client: c, t: t, opts: genai.OptionsImage{Width: 256, Height: 256}}
 		}
 		return c
 	}, f)
@@ -48,7 +48,7 @@ func TestClient_Scoreboard(t *testing.T) {
 type injectOption struct {
 	*togetherai.Client
 	t    *testing.T
-	opts genai.ImageOptions
+	opts genai.OptionsImage
 }
 
 func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {

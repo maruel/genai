@@ -136,9 +136,9 @@ var Scoreboard = genai.Scoreboard{
 	},
 }
 
-// TextOptions includes Anthropic specific options.
-type TextOptions struct {
-	genai.TextOptions
+// OptionsText includes Anthropic specific options.
+type OptionsText struct {
+	genai.OptionsText
 
 	// ThinkingBudget is the maximum number of tokens the LLM can use to think about the answer. When 0,
 	// thinking is disabled. It generally must be above 1024 and below MaxTokens.
@@ -183,8 +183,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *TextOptions:
-				unsupported, errs = c.initOptions(&v.TextOptions)
+			case *OptionsText:
+				unsupported, errs = c.initOptions(&v.OptionsText)
 				msgToCache = v.MessagesToCache
 				if v.ThinkingBudget > 0 {
 					if v.ThinkingBudget >= v.MaxTokens {
@@ -195,7 +195,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 					c.Thinking.BudgetTokens = v.ThinkingBudget
 					c.Thinking.Type = "enabled"
 				}
-			case *genai.TextOptions:
+			case *genai.OptionsText:
 				unsupported, errs = c.initOptions(v)
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
@@ -255,7 +255,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-func (c *ChatRequest) initOptions(v *genai.TextOptions) ([]string, []error) {
+func (c *ChatRequest) initOptions(v *genai.OptionsText) ([]string, []error) {
 	var unsupported []string
 	var errs []error
 	c.MaxToks = v.MaxTokens

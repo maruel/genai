@@ -244,9 +244,9 @@ var Scoreboard = genai.Scoreboard{
 	},
 }
 
-// TextOptions includes OpenAI specific options.
-type TextOptions struct {
-	genai.TextOptions
+// OptionsText includes OpenAI specific options.
+type OptionsText struct {
+	genai.OptionsText
 
 	// ReasoningEffort is the amount of effort (number of tokens) the LLM can use to think about the answer.
 	//
@@ -277,9 +277,9 @@ const (
 	ServiceTierFlex ServiceTier = "flex"
 )
 
-// ImageOptions includes OpenAI specific options.
-type ImageOptions struct {
-	genai.ImageOptions
+// OptionsImage includes OpenAI specific options.
+type OptionsImage struct {
+	genai.OptionsImage
 
 	// Background is only supported on gpt-image-1.
 	Background Background
@@ -358,12 +358,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *TextOptions:
+			case *OptionsText:
 				c.ReasoningEffort = v.ReasoningEffort
 				c.ServiceTier = v.ServiceTier
-				unsupported = c.initOptions(&v.TextOptions, model)
+				unsupported = c.initOptions(&v.OptionsText, model)
 				sp = v.SystemPrompt
-			case *genai.TextOptions:
+			case *genai.OptionsText:
 				c.ServiceTier = ServiceTierAuto
 				unsupported = c.initOptions(v, model)
 				sp = v.SystemPrompt
@@ -408,7 +408,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.StreamOptions.IncludeUsage = stream
 }
 
-func (c *ChatRequest) initOptions(v *genai.TextOptions, model string) []string {
+func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) []string {
 	var unsupported []string
 	c.MaxChatTokens = v.MaxTokens
 	// TODO: This is not great.
@@ -1060,12 +1060,12 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	}
 	if opts != nil {
 		switch v := opts.(type) {
-		case *ImageOptions:
+		case *OptionsImage:
 			if v.Height != 0 && v.Width != 0 {
 				req.Size = fmt.Sprintf("%dx%d", v.Width, v.Height)
 			}
 			req.Background = v.Background
-		case *genai.ImageOptions:
+		case *genai.OptionsImage:
 			if v.Height != 0 && v.Width != 0 {
 				req.Size = fmt.Sprintf("%dx%d", v.Width, v.Height)
 			}
@@ -1114,7 +1114,7 @@ func (c *Client) isImage(opts genai.Options) bool {
 	case "dall-e-2", "dall-e-3", "gpt-image-1":
 		return true
 	default:
-		_, ok := opts.(*genai.ImageOptions)
+		_, ok := opts.(*genai.OptionsImage)
 		return ok
 	}
 }

@@ -84,7 +84,7 @@ func (m Modalities) String() string {
 	}
 }
 
-// TextOptions is a list of frequent options supported by most ProviderGen with text output modality.
+// OptionsText is a list of frequent options supported by most ProviderGen with text output modality.
 // Each provider is free to support more options through a specialized struct.
 //
 // The first group are options supported by (nearly) all providers.
@@ -94,7 +94,7 @@ func (m Modalities) String() string {
 //
 // The third group are options supported by a few providers and a few models on each, that will slow down
 // generation (increase latency) and will increase token use (cost).
-type TextOptions struct {
+type OptionsText struct {
 	// Temperature adjust the creativity of the sampling. Generally between 0 and 2.
 	Temperature float64
 	// TopP adjusts correctness sampling between 0 and 1. The higher the more diverse the output.
@@ -127,34 +127,34 @@ type TextOptions struct {
 	_ struct{}
 }
 
-func (v *TextOptions) Modality() Modality {
+func (o *OptionsText) Modality() Modality {
 	return ModalityText
 }
 
 // Validate ensures the completion options are valid.
-func (c *TextOptions) Validate() error {
-	if c.Seed < 0 {
+func (o *OptionsText) Validate() error {
+	if o.Seed < 0 {
 		return errors.New("field Seed: must be non-negative")
 	}
-	if c.Temperature < 0 || c.Temperature > 100 {
+	if o.Temperature < 0 || o.Temperature > 100 {
 		return errors.New("field Temperature: must be [0, 100]")
 	}
-	if c.MaxTokens < 0 || c.MaxTokens > 1024*1024*1024 {
+	if o.MaxTokens < 0 || o.MaxTokens > 1024*1024*1024 {
 		return errors.New("field MaxTokens: must be [0, 1 GiB]")
 	}
-	if c.TopP < 0 || c.TopP > 1 {
+	if o.TopP < 0 || o.TopP > 1 {
 		return errors.New("field TopP: must be [0, 1]")
 	}
-	if c.TopK < 0 || c.TopK > 1024 {
+	if o.TopK < 0 || o.TopK > 1024 {
 		return errors.New("field TopK: must be [0, 1024]")
 	}
-	if c.DecodeAs != nil {
-		if err := validateReflectedToJSON(c.DecodeAs); err != nil {
+	if o.DecodeAs != nil {
+		if err := validateReflectedToJSON(o.DecodeAs); err != nil {
 			return fmt.Errorf("field DecodeAs: %w", err)
 		}
 	}
 	names := map[string]int{}
-	for i, t := range c.Tools {
+	for i, t := range o.Tools {
 		if err := t.Validate(); err != nil {
 			return fmt.Errorf("tool %d: %w", i, err)
 		}
@@ -163,7 +163,7 @@ func (c *TextOptions) Validate() error {
 		}
 		names[t.Name] = i
 	}
-	if len(c.Tools) == 0 && c.ToolCallRequest == ToolCallRequired {
+	if len(o.Tools) == 0 && o.ToolCallRequest == ToolCallRequired {
 		return fmt.Errorf("field ToolCallRequest is ToolCallRequired: Tools are required")
 	}
 	return nil
@@ -270,19 +270,19 @@ const (
 
 // Other modalities
 
-type AudioOptions struct{}
+type OptionsAudio struct{}
 
-func (a *AudioOptions) Validate() error {
+func (o *OptionsAudio) Validate() error {
 	return nil
 }
 
-func (a *AudioOptions) Modality() Modality {
+func (o *OptionsAudio) Modality() Modality {
 	return ModalityAudio
 }
 
-// ImageOptions is a list of frequent options supported by most ProviderDoc.
+// OptionsImage is a list of frequent options supported by most ProviderDoc.
 // Each provider is free to support more options through a specialized struct.
-type ImageOptions struct {
+type OptionsImage struct {
 	// Seed for the random number generator. Default is 0 which means
 	// non-deterministic.
 	Seed   int64
@@ -293,30 +293,30 @@ type ImageOptions struct {
 }
 
 // Validate ensures the completion options are valid.
-func (i *ImageOptions) Validate() error {
-	if i.Seed < 0 {
+func (o *OptionsImage) Validate() error {
+	if o.Seed < 0 {
 		return errors.New("field Seed: must be non-negative")
 	}
-	if i.Height < 0 {
+	if o.Height < 0 {
 		return errors.New("field Height: must be non-negative")
 	}
-	if i.Width < 0 {
+	if o.Width < 0 {
 		return errors.New("field Width: must be non-negative")
 	}
 	return nil
 }
 
-func (i *ImageOptions) Modality() Modality {
+func (o *OptionsImage) Modality() Modality {
 	return ModalityImage
 }
 
-type VideoOptions struct{}
+type OptionsVideo struct{}
 
-func (v *VideoOptions) Validate() error {
+func (o *OptionsVideo) Validate() error {
 	return nil
 }
 
-func (v *VideoOptions) Modality() Modality {
+func (o *OptionsVideo) Modality() Modality {
 	return ModalityVideo
 }
 
@@ -342,9 +342,9 @@ func isErrorType(t reflect.Type) bool {
 }
 
 var (
-	_ Options     = (*AudioOptions)(nil)
-	_ Options     = (*ImageOptions)(nil)
-	_ Options     = (*VideoOptions)(nil)
-	_ Options     = (*TextOptions)(nil)
+	_ Options     = (*OptionsAudio)(nil)
+	_ Options     = (*OptionsImage)(nil)
+	_ Options     = (*OptionsVideo)(nil)
+	_ Options     = (*OptionsText)(nil)
 	_ Validatable = (*ToolDef)(nil)
 )

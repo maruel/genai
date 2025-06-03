@@ -241,11 +241,11 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	}
 	if opts != nil {
 		switch v := opts.(type) {
-		case *genai.ImageOptions:
+		case *genai.OptionsImage:
 			req.Height = int64(v.Height)
 			req.Width = int64(v.Width)
 			req.Seed = v.Seed
-		case *genai.TextOptions:
+		case *genai.OptionsText:
 			req.Seed = v.Seed
 		}
 	}
@@ -256,7 +256,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	}
 	// Two options:
 	// - poll every 0.5s as shows on their documentation.
-	// - expose a webhook with a custom ImageOptions.
+	// - expose a webhook with a custom OptionsImage.
 	// - implement a batching API and have the caller loop. We need to return the job ID.
 	for {
 		select {

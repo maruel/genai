@@ -184,7 +184,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *genai.TextOptions:
+			case *genai.OptionsText:
 				c.MaxCompletionTokens = v.MaxTokens
 				c.Temperature = v.Temperature
 				c.TopP = v.TopP

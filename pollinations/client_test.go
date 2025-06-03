@@ -21,7 +21,7 @@ func TestClient_Scoreboard(t *testing.T) {
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
 		c := getClient(t, m)
 		if m == "flux" || m == "gptimage" || m == "turbo" {
-			return &injectOption{Client: c, t: t, opts: genai.ImageOptions{Width: 256, Height: 256}}
+			return &injectOption{Client: c, t: t, opts: genai.OptionsImage{Width: 256, Height: 256}}
 		}
 		return c
 	}, nil)
@@ -30,7 +30,7 @@ func TestClient_Scoreboard(t *testing.T) {
 type injectOption struct {
 	*pollinations.Client
 	t    *testing.T
-	opts genai.ImageOptions
+	opts genai.OptionsImage
 }
 
 func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {

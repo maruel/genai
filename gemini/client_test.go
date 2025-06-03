@@ -28,11 +28,11 @@ func TestClient_Scoreboard(t *testing.T) {
 		// https://ai.google.dev/gemini-api/docs/thinking?hl=en
 		if strings.Contains(m, "thinking") {
 			// e.g. "gemini-2.0-flash-thinking-exp" or "gemini-2.5-flash-preview-04-17-thinking"
-			return &injectOption{Client: c, t: t, opts: gemini.TextOptions{ThinkingBudget: 4096}}
+			return &injectOption{Client: c, t: t, opts: gemini.OptionsText{ThinkingBudget: 4096}}
 		}
 		if strings.Contains(m, "image-generation") {
 			// e.g. "gemini-2.0-flash-preview-image-generation"
-			return &injectOption{Client: c, t: t, opts: gemini.TextOptions{ResponseModalities: []gemini.Modality{gemini.ModalityText, gemini.ModalityImage}}}
+			return &injectOption{Client: c, t: t, opts: gemini.OptionsText{ResponseModalities: []gemini.Modality{gemini.ModalityText, gemini.ModalityImage}}}
 		}
 		return c
 	}, nil)
@@ -41,13 +41,13 @@ func TestClient_Scoreboard(t *testing.T) {
 type injectOption struct {
 	*gemini.Client
 	t    *testing.T
-	opts gemini.TextOptions
+	opts gemini.OptionsText
 }
 
 func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
-		n.TextOptions = *opts.(*genai.TextOptions)
+		n.OptionsText = *opts.(*genai.OptionsText)
 	}
 	opts = &n
 	return i.Client.GenSync(ctx, msgs, opts)
@@ -56,7 +56,7 @@ func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts ge
 func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
-		n.TextOptions = *opts.(*genai.TextOptions)
+		n.OptionsText = *opts.(*genai.OptionsText)
 	}
 	opts = &n
 	return i.Client.GenStream(ctx, msgs, replies, opts)
@@ -92,7 +92,7 @@ func TestClient_Cache(t *testing.T) {
 	type got struct {
 		Word string `json:"word" jsonschema:"enum=Orange,enum=Banana,enum=Apple"`
 	}
-	opts := genai.TextOptions{
+	opts := genai.OptionsText{
 		// Burn tokens to add up to 4k.
 		SystemPrompt: "You are a sarcastic assistant. Here's a long prompt to make sure we are over 4k tokens that you should ignore." + `
 Okay, this is a significant amount of text. To make it coherent and somewhat engaging, I'll choose a broad theme and explore various facets of it. I'll aim for something related to the evolution of knowledge, technology, and human understanding.

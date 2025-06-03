@@ -145,9 +145,9 @@ var Scoreboard = genai.Scoreboard{
 	},
 }
 
-// TextOptions is the Groq-specific options.
-type TextOptions struct {
-	genai.TextOptions
+// OptionsText is the Groq-specific options.
+type OptionsText struct {
+	genai.OptionsText
 
 	// ReasoningFormat requests Groq to process the stream on our behalf. It must only be used on thinking
 	// models. It is required for thinking models to enable JSON structured output or tool calling.
@@ -225,12 +225,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *TextOptions:
-				unsupported, errs = c.initOptions(&v.TextOptions, model)
+			case *OptionsText:
+				unsupported, errs = c.initOptions(&v.OptionsText, model)
 				sp = v.SystemPrompt
 				c.ServiceTier = v.ServiceTier
 				c.ReasoningFormat = v.ReasoningFormat
-			case *genai.TextOptions:
+			case *genai.OptionsText:
 				unsupported, errs = c.initOptions(v, model)
 				sp = v.SystemPrompt
 			default:
@@ -272,7 +272,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-func (c *ChatRequest) initOptions(v *genai.TextOptions, model string) ([]string, []error) {
+func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) ([]string, []error) {
 	var errs []error
 	var unsupported []string
 	c.MaxChatTokens = v.MaxTokens

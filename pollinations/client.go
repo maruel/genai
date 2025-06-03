@@ -307,7 +307,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *genai.TextOptions:
+			case *genai.OptionsText:
 				unsupported, errs = c.initOptions(v, model)
 				sp = v.SystemPrompt
 			default:
@@ -350,7 +350,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.StreamOptions.IncludeUsage = true
 }
 
-func (c *ChatRequest) initOptions(v *genai.TextOptions, model string) ([]string, []error) {
+func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) ([]string, []error) {
 	var errs []error
 	var unsupported []string
 	c.MaxTokens = v.MaxTokens
@@ -967,7 +967,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	qp := url.Values{}
 	qp.Add("model", c.Model)
 	switch v := opts.(type) {
-	case *genai.ImageOptions:
+	case *genai.OptionsImage:
 		if v.Seed != 0 {
 			// Defaults to 42 otherwise.
 			qp.Add("seed", strconv.FormatInt(v.Seed, 10))
@@ -978,7 +978,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		if v.Height != 0 {
 			qp.Add("height", strconv.Itoa(v.Height))
 		}
-	case *genai.TextOptions:
+	case *genai.OptionsText:
 		// TODO: Deny most flags.
 		if v.Seed != 0 {
 			// Defaults to 42 otherwise.
@@ -1052,7 +1052,7 @@ func (c *Client) isImage(opts genai.Options) bool {
 	case "flux", "gptimage", "turbo":
 		return true
 	default:
-		_, ok := opts.(*genai.ImageOptions)
+		_, ok := opts.(*genai.OptionsImage)
 		return ok
 	}
 }

@@ -22,7 +22,7 @@ func TestClient_GenSync_simple(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			c := getClient(t, name)
 			msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
-			opts := genai.TextOptions{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
+			opts := genai.OptionsText{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
 			ctx := t.Context()
 			resp, err := c.GenSync(ctx, msgs, &opts)
 			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
@@ -44,7 +44,7 @@ func TestClient_GenStream_simple(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			c := getClient(t, name)
 			msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
-			opts := genai.TextOptions{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
+			opts := genai.OptionsText{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
 			ctx := t.Context()
 			chunks := make(chan genai.ContentFragment)
 			eg := errgroup.Group{}

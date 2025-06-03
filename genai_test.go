@@ -17,9 +17,9 @@ import (
 	"github.com/maruel/genai/internal/bb"
 )
 
-func TestTextOptions_Validate(t *testing.T) {
+func TestOptionsText_Validate(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
-		o := TextOptions{
+		o := OptionsText{
 			Seed:        1,
 			Temperature: 0.5,
 			TopP:        0.5,
@@ -38,7 +38,7 @@ func TestTextOptions_Validate(t *testing.T) {
 		if err := o.Validate(); err != nil {
 			t.Fatalf("unexpected error: %q", err)
 		}
-		o = TextOptions{
+		o = OptionsText{
 			DecodeAs: &struct{}{},
 		}
 		if err := o.Validate(); err != nil {
@@ -48,54 +48,54 @@ func TestTextOptions_Validate(t *testing.T) {
 	t.Run("error", func(t *testing.T) {
 		tests := []struct {
 			name    string
-			options TextOptions
+			options OptionsText
 			errMsg  string
 		}{
 			{
 				name: "Invalid Seed",
-				options: TextOptions{
+				options: OptionsText{
 					Seed: -1,
 				},
 				errMsg: "field Seed: must be non-negative",
 			},
 			{
 				name: "Invalid Temperature",
-				options: TextOptions{
+				options: OptionsText{
 					Temperature: -1,
 				},
 				errMsg: "field Temperature: must be [0, 100]",
 			},
 			{
 				name: "Invalid MaxTokens",
-				options: TextOptions{
+				options: OptionsText{
 					MaxTokens: 1024*1024*1024 + 1,
 				},
 				errMsg: "field MaxTokens: must be [0, 1 GiB]",
 			},
 			{
 				name: "Invalid TopP",
-				options: TextOptions{
+				options: OptionsText{
 					TopP: -1,
 				},
 				errMsg: "field TopP: must be [0, 1]",
 			},
 			{
 				name: "Invalid TopK",
-				options: TextOptions{
+				options: OptionsText{
 					TopK: 1025,
 				},
 				errMsg: "field TopK: must be [0, 1024]",
 			},
 			{
 				name: "Invalid DecodeAs jsonschema.Schema",
-				options: TextOptions{
+				options: OptionsText{
 					DecodeAs: &jsonschema.Schema{},
 				},
 				errMsg: "field DecodeAs: must be an actual struct serializable as JSON, not a *jsonschema.Schema",
 			},
 			{
 				name: "Invalid DecodeAs string",
-				options: TextOptions{
+				options: OptionsText{
 					DecodeAs: "string",
 				},
 				errMsg: "field DecodeAs: must be a struct, not string",
@@ -800,7 +800,7 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 	}
 
 	// Create chat options with tools
-	opts := &TextOptions{
+	opts := &OptionsText{
 		Tools: []ToolDef{
 			{
 				Name:        "calculator",

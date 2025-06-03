@@ -30,7 +30,7 @@ func GenSyncWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Mes
 	var out Messages
 	workMsgs := make(Messages, len(msgs))
 	copy(workMsgs, msgs)
-	chatOpts, ok := opts.(*TextOptions)
+	chatOpts, ok := opts.(*OptionsText)
 	if !ok || len(chatOpts.Tools) == 0 {
 		return out, usage, errors.New("no tools found")
 	}
@@ -82,7 +82,7 @@ func GenStreamWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs M
 	var out Messages
 	workMsgs := make(Messages, len(msgs))
 	copy(workMsgs, msgs)
-	chatOpts, ok := opts.(*TextOptions)
+	chatOpts, ok := opts.(*OptionsText)
 	if !ok || len(chatOpts.Tools) == 0 {
 		return out, usage, errors.New("no tools found")
 	}
@@ -205,7 +205,7 @@ type ProviderGenThinking struct {
 func (c *ProviderGenThinking) GenSync(ctx context.Context, msgs Messages, opts Options) (Result, error) {
 	result, err := c.ProviderGen.GenSync(ctx, msgs, opts)
 	// When replying in JSON, the thinking tokens are "denied" by the engine.
-	if o, ok := opts.(*TextOptions); !ok || !c.SkipJSON || (!o.ReplyAsJSON && o.DecodeAs == nil) {
+	if o, ok := opts.(*OptionsText); !ok || !c.SkipJSON || (!o.ReplyAsJSON && o.DecodeAs == nil) {
 		if err2 := c.processThinkingMessage(&result.Message); err == nil {
 			err = err2
 		}
@@ -218,7 +218,7 @@ func (c *ProviderGenThinking) GenSync(ctx context.Context, msgs Messages, opts O
 // If no thinking tags are present, the first part of the message is assumed to be thinking.
 func (c *ProviderGenThinking) GenStream(ctx context.Context, msgs Messages, replies chan<- ContentFragment, opts Options) (Result, error) {
 	if c.SkipJSON {
-		if o, ok := opts.(*TextOptions); ok && (o.ReplyAsJSON || o.DecodeAs != nil) {
+		if o, ok := opts.(*OptionsText); ok && (o.ReplyAsJSON || o.DecodeAs != nil) {
 			// When replying in JSON, the thinking tokens are "denied" by the engine.
 			return c.ProviderGen.GenStream(ctx, msgs, replies, opts)
 		}

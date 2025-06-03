@@ -236,7 +236,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		msgs := genai.Messages{genai.NewTextMessage(genai.User, "Tell a joke in 10 words")}
 		// Give enough token so the <think> token can be emitted plus another word. MaxTokens:2 could cause
 		// problems and it's not a value that is expected to be used in practice for this use case.
-		resp, err := run(t, g(t, model), msgs, &genai.TextOptions{MaxTokens: 3}, stream)
+		resp, err := run(t, g(t, model), msgs, &genai.OptionsText{MaxTokens: 3}, stream)
 		// MaxTokens can fail in two ways:
 		// - GenSync() or GenStream() return an irrecoverable error.
 		// - The length is not enforced.
@@ -263,7 +263,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 
 	t.Run("Stop", func(t *testing.T) {
 		msgs := genai.Messages{genai.NewTextMessage(genai.User, "Talk about Canada in 10 words. Start with: Canada is")}
-		resp, err := run(t, g(t, model), msgs, &genai.TextOptions{Stop: []string{"is"}}, stream)
+		resp, err := run(t, g(t, model), msgs, &genai.OptionsText{Stop: []string{"is"}}, stream)
 		// Stop can fail in two ways:
 		// - GenSync() or GenStream() return an irrecoverable error.
 		// - The Stop words to not stop generation.
@@ -294,7 +294,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, `Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {"is_fruit": bool}.`),
 		}
-		resp, err := run(t, g(t, model), msgs, &genai.TextOptions{ReplyAsJSON: true}, stream)
+		resp, err := run(t, g(t, model), msgs, &genai.OptionsText{ReplyAsJSON: true}, stream)
 		if !basicCheckAcceptUnexpectedSuccess(t, err, f.JSON) {
 			return
 		}
@@ -341,7 +341,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 			IsFruit bool `json:"is_fruit" jsonschema_description:"True if the answer is that it is a fruit, false otherwise"`
 		}
 		msgs := genai.Messages{genai.NewTextMessage(genai.User, "Is a banana a fruit? Reply as JSON according to the provided schema.")}
-		resp, err := run(t, g(t, model), msgs, &genai.TextOptions{DecodeAs: &got}, stream)
+		resp, err := run(t, g(t, model), msgs, &genai.OptionsText{DecodeAs: &got}, stream)
 		if !basicCheck(t, err, f.JSONSchema) {
 			return
 		}
@@ -364,7 +364,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		type got struct {
 			Number json.Number `json:"number"`
 		}
-		opts := genai.TextOptions{
+		opts := genai.OptionsText{
 			SystemPrompt: "You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is.",
 			Tools: []genai.ToolDef{
 				{
@@ -480,7 +480,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 				msgs := genai.Messages{
 					genai.NewTextMessage(genai.User, fmt.Sprintf("I wonder if %s is a better country than %s? Call the tool best_country to tell me which country is the best one.", line.country1, line.country2)),
 				}
-				opts := genai.TextOptions{
+				opts := genai.OptionsText{
 					Tools: []genai.ToolDef{
 						{
 							Name:        "best_country",

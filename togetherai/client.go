@@ -212,7 +212,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			errs = append(errs, err)
 		} else {
 			switch v := opts.(type) {
-			case *genai.TextOptions:
+			case *genai.OptionsText:
 				c.MaxTokens = v.MaxTokens
 				c.Temperature = v.Temperature
 				c.TopP = v.TopP
@@ -819,11 +819,11 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	}
 	if opts != nil {
 		switch v := opts.(type) {
-		case *genai.ImageOptions:
+		case *genai.OptionsImage:
 			req.Height = int64(v.Height)
 			req.Width = int64(v.Width)
 			req.Seed = v.Seed
-		case *genai.TextOptions:
+		case *genai.OptionsText:
 			req.Seed = v.Seed
 		}
 	}
@@ -861,7 +861,7 @@ func (c *Client) isImage(opts genai.Options) bool {
 	if strings.HasPrefix(c.Model, "black-forest-labs/") {
 		return true
 	}
-	_, ok := opts.(*genai.ImageOptions)
+	_, ok := opts.(*genai.OptionsImage)
 	return ok
 }
 

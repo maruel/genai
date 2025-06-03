@@ -33,8 +33,8 @@ type handleReasoning struct {
 
 func (h *handleReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	if opts != nil {
-		if o := opts.(*genai.TextOptions); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
-			opts = &groq.TextOptions{ReasoningFormat: groq.ReasoningFormatParsed, TextOptions: *o}
+		if o := opts.(*genai.OptionsText); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
+			opts = &groq.OptionsText{ReasoningFormat: groq.ReasoningFormatParsed, OptionsText: *o}
 			return h.Client.GenSync(ctx, msgs, opts)
 		}
 	}
@@ -44,8 +44,8 @@ func (h *handleReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts
 
 func (h *handleReasoning) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	if opts != nil {
-		if o := opts.(*genai.TextOptions); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
-			opts = &groq.TextOptions{ReasoningFormat: groq.ReasoningFormatParsed, TextOptions: *o}
+		if o := opts.(*genai.OptionsText); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
+			opts = &groq.OptionsText{ReasoningFormat: groq.ReasoningFormatParsed, OptionsText: *o}
 			return h.Client.GenStream(ctx, msgs, replies, opts)
 		}
 	}

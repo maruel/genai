@@ -518,7 +518,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.DoRequest(ctx, "POST", c.chatURL, in, out)
 }
 
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Options, chunks chan<- genai.ContentFragment) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
 
 	// Check for non-empty Opaque field

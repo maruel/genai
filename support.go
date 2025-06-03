@@ -77,7 +77,7 @@ func GenSyncWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Mes
 // tool call.
 //
 // No need to process the tool calls or accumulate the ContentFragment.
-func GenStreamWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Messages, opts Options, replies chan<- ContentFragment) (Messages, Usage, error) {
+func GenStreamWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Messages, replies chan<- ContentFragment, opts Options) (Messages, Usage, error) {
 	usage := Usage{}
 	var out Messages
 	workMsgs := make(Messages, len(msgs))
@@ -104,7 +104,7 @@ func GenStreamWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs M
 			}
 			return nil
 		})
-		result, err := provider.GenStream(ctx, workMsgs, opts, internalReplies)
+		result, err := provider.GenStream(ctx, workMsgs, internalReplies, opts)
 		usage.InputTokens += result.InputTokens
 		usage.InputCachedTokens += result.InputCachedTokens
 		usage.OutputTokens += result.OutputTokens
@@ -160,9 +160,9 @@ func (c *ProviderGenUsage) GenSync(ctx context.Context, msgs Messages, opts Opti
 }
 
 // GenStream implements the ProviderGen interface and accumulates usage statistics.
-func (c *ProviderGenUsage) GenStream(ctx context.Context, msgs Messages, opts Options, replies chan<- ContentFragment) (Result, error) {
+func (c *ProviderGenUsage) GenStream(ctx context.Context, msgs Messages, replies chan<- ContentFragment, opts Options) (Result, error) {
 	// Call the wrapped provider and accumulate usage statistics
-	result, err := c.ProviderGen.GenStream(ctx, msgs, opts, replies)
+	result, err := c.ProviderGen.GenStream(ctx, msgs, replies, opts)
 	c.mu.Lock()
 	c.accumUsage.InputTokens += result.InputTokens
 	c.accumUsage.InputCachedTokens += result.InputCachedTokens
@@ -216,11 +216,11 @@ func (c *ProviderGenThinking) GenSync(ctx context.Context, msgs Messages, opts O
 // GenStream implements the ProviderGen interface for streaming by delegating to the wrapped provider
 // and processing each fragment to extract thinking blocks.
 // If no thinking tags are present, the first part of the message is assumed to be thinking.
-func (c *ProviderGenThinking) GenStream(ctx context.Context, msgs Messages, opts Options, replies chan<- ContentFragment) (Result, error) {
+func (c *ProviderGenThinking) GenStream(ctx context.Context, msgs Messages, replies chan<- ContentFragment, opts Options) (Result, error) {
 	if c.SkipJSON {
 		if o, ok := opts.(*TextOptions); ok && (o.ReplyAsJSON || o.DecodeAs != nil) {
 			// When replying in JSON, the thinking tokens are "denied" by the engine.
-			return c.ProviderGen.GenStream(ctx, msgs, opts, replies)
+			return c.ProviderGen.GenStream(ctx, msgs, replies, opts)
 		}
 	}
 
@@ -301,7 +301,7 @@ func (c *ProviderGenThinking) GenStream(ctx context.Context, msgs Messages, opts
 		}
 		return nil
 	})
-	result, err := c.ProviderGen.GenStream(ctx, msgs, opts, internalReplies)
+	result, err := c.ProviderGen.GenStream(ctx, msgs, internalReplies, opts)
 	close(internalReplies)
 	if err3 := eg.Wait(); err == nil {
 		err = err3

@@ -65,7 +65,7 @@ func TestClient_GenStream_simple(t *testing.T) {
 					}
 				}
 			})
-			resp, err := c.GenStream(ctx, msgs, &opts, chunks)
+			resp, err := c.GenStream(ctx, msgs, chunks, &opts)
 			close(chunks)
 			if err3 := eg.Wait(); err3 != nil {
 				t.Fatal(err3)

@@ -258,7 +258,7 @@ func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespon
 	return result, continuableErr
 }
 
-func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Options, chunks chan<- genai.ContentFragment) (genai.Result, error) {
+func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {

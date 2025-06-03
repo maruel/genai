@@ -838,7 +838,7 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 	}()
 
 	// Call GenStreamWithToolCallLoop
-	responseMessages, usage, err := GenStreamWithToolCallLoop(ctx, provider, msgs, opts, chunks)
+	responseMessages, usage, err := GenStreamWithToolCallLoop(ctx, provider, msgs, chunks, opts)
 	if err != nil {
 		t.Fatalf("GenStreamWithToolCallLoop returned an error: %v", err)
 	}
@@ -883,7 +883,7 @@ func (m *mockProviderGen) GenSync(ctx context.Context, msgs Messages, opts Optio
 	return Result{}, fmt.Errorf("GenSync not implemented in mock")
 }
 
-func (m *mockProviderGen) GenStream(ctx context.Context, msgs Messages, opts Options, replies chan<- ContentFragment) (Result, error) {
+func (m *mockProviderGen) GenStream(ctx context.Context, msgs Messages, replies chan<- ContentFragment, opts Options) (Result, error) {
 	if m.callIndex >= len(m.streamResponses) {
 		return Result{}, fmt.Errorf("no more mock responses")
 	}

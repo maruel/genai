@@ -400,7 +400,7 @@ func ExampleGenStreamWithToolCallLoop() {
 			}
 		}
 	}()
-	_, _, err = genai.GenStreamWithToolCallLoop(ctx, c, msgs, &opts, chunks)
+	_, _, err = genai.GenStreamWithToolCallLoop(ctx, c, msgs, chunks, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -443,7 +443,7 @@ func ExampleProviderGen_GenStream() {
 			}
 		}
 	})
-	_, err = c.GenStream(ctx, msgs, &opts, chunks)
+	_, err = c.GenStream(ctx, msgs, chunks, &opts)
 	close(chunks)
 	_ = eg.Wait()
 	if err != nil {

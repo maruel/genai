@@ -42,15 +42,15 @@ func (h *handleReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts
 	return c.GenSync(ctx, msgs, opts)
 }
 
-func (h *handleReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Options, replies chan<- genai.ContentFragment) (genai.Result, error) {
+func (h *handleReasoning) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	if opts != nil {
 		if o := opts.(*genai.TextOptions); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
 			opts = &groq.TextOptions{ReasoningFormat: groq.ReasoningFormatParsed, TextOptions: *o}
-			return h.Client.GenStream(ctx, msgs, opts, replies)
+			return h.Client.GenStream(ctx, msgs, replies, opts)
 		}
 	}
 	c := genai.ProviderGenThinking{ProviderGen: h.Client, TagName: "think"}
-	return c.GenStream(ctx, msgs, opts, replies)
+	return c.GenStream(ctx, msgs, replies, opts)
 }
 
 func TestClient_ProviderGen_errors(t *testing.T) {

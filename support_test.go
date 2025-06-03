@@ -221,7 +221,7 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 				}
 			}()
 
-			result, err := tp.GenStream(ctx, genai.Messages{}, nil, ch)
+			result, err := tp.GenStream(ctx, genai.Messages{}, ch, nil)
 			close(ch)
 			wg.Wait()
 			select {
@@ -264,7 +264,7 @@ func (m *mockProviderGen) GenSync(ctx context.Context, msgs genai.Messages, opts
 	return m.response, nil
 }
 
-func (m *mockProviderGen) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Options, replies chan<- genai.ContentFragment) (genai.Result, error) {
+func (m *mockProviderGen) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	return genai.Result{}, errors.New("unexpected")
 }
 
@@ -287,7 +287,7 @@ func (m *mockGenStreamProvider) GenSync(ctx context.Context, msgs genai.Messages
 	return genai.Result{}, errors.New("unexpected")
 }
 
-func (m *mockGenStreamProvider) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Options, replies chan<- genai.ContentFragment) (genai.Result, error) {
+func (m *mockGenStreamProvider) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{
 		Usage:   genai.Usage{},
 		Message: genai.Message{Role: genai.Assistant},

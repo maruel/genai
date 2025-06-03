@@ -45,13 +45,13 @@ func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts ge
 	return i.Client.GenSync(ctx, msgs, opts)
 }
 
-func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Options, replies chan<- genai.ContentFragment) (genai.Result, error) {
+func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
 		n.TextOptions = *opts.(*genai.TextOptions)
 	}
 	opts = &n
-	return i.Client.GenStream(ctx, msgs, opts, replies)
+	return i.Client.GenStream(ctx, msgs, replies, opts)
 }
 
 func TestClient_ProviderGen_errors(t *testing.T) {

@@ -93,7 +93,7 @@ type ProviderGen interface {
 	// GenStream runs generation synchronously, streaming the results to channel replies.
 	//
 	// No need to accumulate the replies into the result, the Result contains the accumulated message.
-	GenStream(ctx context.Context, msgs Messages, opts Options, replies chan<- ContentFragment) (Result, error)
+	GenStream(ctx context.Context, msgs Messages, replies chan<- ContentFragment, opts Options) (Result, error)
 }
 
 // TextOptions is a list of frequent options supported by most ProviderGen with text output modality.

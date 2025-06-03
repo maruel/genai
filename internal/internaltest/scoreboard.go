@@ -841,7 +841,7 @@ func run(t *testing.T, c genai.ProviderGen, msgs genai.Messages, opts genai.Opti
 			}
 		}
 	})
-	resp, err := c.GenStream(ctx, msgs, opts, chunks)
+	resp, err := c.GenStream(ctx, msgs, chunks, opts)
 	close(chunks)
 	if err3 := eg.Wait(); err3 != nil {
 		t.Fatal(err3)

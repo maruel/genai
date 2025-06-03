@@ -779,7 +779,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 	return c.BaseGen.GenSync(ctx, msgs, opts)
 }
 
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Options, chunks chan<- genai.ContentFragment) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	// TODO: Use Scoreboard list.
 	if strings.HasPrefix(c.Model, "black-forest-labs/") {
 		if len(msgs) != 1 {
@@ -805,7 +805,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.
 		}
 		return res, err
 	}
-	return c.BaseGen.GenStream(ctx, msgs, opts, chunks)
+	return c.BaseGen.GenStream(ctx, msgs, chunks, opts)
 }
 
 func (c *Client) GenImage(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {

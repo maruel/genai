@@ -946,7 +946,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 	}
 }
 
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Options, chunks chan<- genai.ContentFragment) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	// TODO: Use Scoreboard list.
 	switch c.Model {
 	case "flux", "gptimage", "turbo":
@@ -962,7 +962,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.
 		}
 		return res, err
 	default:
-		return c.BaseGen.GenStream(ctx, msgs, opts, chunks)
+		return c.BaseGen.GenStream(ctx, msgs, chunks, opts)
 	}
 }
 

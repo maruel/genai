@@ -513,7 +513,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 	return err
 }
 
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Options, chunks chan<- genai.ContentFragment) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
 	for i, msg := range msgs {
 		for j, content := range msg.Contents {

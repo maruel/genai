@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 53
+        transfer_encoding: []
+        trailer: {}
+        host: api.bfl.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"prompt":"Tell a short joke.","safety_tolerance":0}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.bfl.ai/v1/bad%20model
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 22
+        uncompressed: false
+        body: '{"detail":"Not Found"}'
+        headers:
+            Content-Length:
+                - "22"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            X-Azure-Ref:
+                - 20250603T141544Z-16c4c6b95d9mfkgnhC1YMQn928000000192g000000000ttr
+            X-Cache:
+                - CONFIG_NOCACHE
+        status: 404 Not Found
+        code: 404
+        duration: 67ms

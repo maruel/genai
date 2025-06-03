@@ -1,0 +1,317 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1170
+        transfer_encoding: []
+        trailer: {}
+        host: api.bfl.ai
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"prompt":"Generate one square, white-background doodle with smooth, vibrantly colored image depicting A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves..\n\n*Mandatory Requirements (Compacted):**\n\n**Style:** Simple, vibrant, varied-colored doodle/hand-drawn sketch.\n**Background:** Plain solid white (no background colors/elements). Absolutely no black background.\n**Content & Motion:** Clearly depict **A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.** action with colored, moving subject (no static images). If there's an action specified, it should be the main difference between frames.\n**Format:** Square image (1:1 aspect ratio).\n**Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.\n**Output:** Actual image file for a smooth, colorful doodle-style image on a white background.","width":256,"height":256,"safety_tolerance":0}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.bfl.ai/v1/flux-dev
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 138
+        uncompressed: false
+        body: '{"id":"ce8fe20c-547c-4475-8cf1-cc7adf74a779","polling_url":"https://api.us1.bfl.ai/v1/get_result?id=ce8fe20c-547c-4475-8cf1-cc7adf74a779"}'
+        headers:
+            Accept-Ranges:
+                - bytes
+            Content-Length:
+                - "138"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            X-Azure-Ref:
+                - 20250603T132711Z-16c4c6b95d9mfkgnhC1YMQn92800000018y0000000004pc2
+            X-Cache:
+                - CONFIG_NOCACHE
+        status: 200 OK
+        code: 200
+        duration: 259ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.us1.bfl.ai
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.us1.bfl.ai/v1/get_result?id=ce8fe20c-547c-4475-8cf1-cc7adf74a779
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 108
+        uncompressed: false
+        body: '{"id":"ce8fe20c-547c-4475-8cf1-cc7adf74a779","status":"Pending","result":null,"progress":0.2,"details":null}'
+        headers:
+            Content-Length:
+                - "108"
+            Content-Type:
+                - application/json
+            Retry-After:
+                - "1"
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            X-Ratelimit-Limit:
+                - "1200"
+            X-Ratelimit-Remaining:
+                - "1199"
+            X-Ratelimit-Reset:
+                - "1748957234.1498647"
+        status: 200 OK
+        code: 200
+        duration: 257ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.us1.bfl.ai
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.us1.bfl.ai/v1/get_result?id=ce8fe20c-547c-4475-8cf1-cc7adf74a779
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 108
+        uncompressed: false
+        body: '{"id":"ce8fe20c-547c-4475-8cf1-cc7adf74a779","status":"Pending","result":null,"progress":0.5,"details":null}'
+        headers:
+            Content-Length:
+                - "108"
+            Content-Type:
+                - application/json
+            Retry-After:
+                - "0"
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            X-Ratelimit-Limit:
+                - "1200"
+            X-Ratelimit-Remaining:
+                - "1198"
+            X-Ratelimit-Reset:
+                - "1748957233.737479"
+        status: 200 OK
+        code: 200
+        duration: 87ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.us1.bfl.ai
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.us1.bfl.ai/v1/get_result?id=ce8fe20c-547c-4475-8cf1-cc7adf74a779
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 108
+        uncompressed: false
+        body: '{"id":"ce8fe20c-547c-4475-8cf1-cc7adf74a779","status":"Pending","result":null,"progress":0.7,"details":null}'
+        headers:
+            Content-Length:
+                - "108"
+            Content-Type:
+                - application/json
+            Retry-After:
+                - "1"
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            X-Ratelimit-Limit:
+                - "1200"
+            X-Ratelimit-Remaining:
+                - "1199"
+            X-Ratelimit-Reset:
+                - "1748957235.3243349"
+        status: 200 OK
+        code: 200
+        duration: 85ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.us1.bfl.ai
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.us1.bfl.ai/v1/get_result?id=ce8fe20c-547c-4475-8cf1-cc7adf74a779
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 108
+        uncompressed: false
+        body: '{"id":"ce8fe20c-547c-4475-8cf1-cc7adf74a779","status":"Pending","result":null,"progress":0.9,"details":null}'
+        headers:
+            Content-Length:
+                - "108"
+            Content-Type:
+                - application/json
+            Retry-After:
+                - "0"
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            X-Ratelimit-Limit:
+                - "1200"
+            X-Ratelimit-Remaining:
+                - "1198"
+            X-Ratelimit-Reset:
+                - "1748957234.911255"
+        status: 200 OK
+        code: 200
+        duration: 87ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.us1.bfl.ai
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.us1.bfl.ai/v1/get_result?id=ce8fe20c-547c-4475-8cf1-cc7adf74a779
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 108
+        uncompressed: false
+        body: '{"id":"ce8fe20c-547c-4475-8cf1-cc7adf74a779","status":"Pending","result":null,"progress":1.0,"details":null}'
+        headers:
+            Content-Length:
+                - "108"
+            Content-Type:
+                - application/json
+            Retry-After:
+                - "1"
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            X-Ratelimit-Limit:
+                - "1200"
+            X-Ratelimit-Remaining:
+                - "1199"
+            X-Ratelimit-Reset:
+                - "1748957236.4985406"
+        status: 200 OK
+        code: 200
+        duration: 85ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.us1.bfl.ai
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.us1.bfl.ai/v1/get_result?id=ce8fe20c-547c-4475-8cf1-cc7adf74a779
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 1564
+        uncompressed: false
+        body: '{"id":"ce8fe20c-547c-4475-8cf1-cc7adf74a779","status":"Ready","result":{"sample":"https://delivery-us1.bfl.ai/results/91/233988c3149e14/c3149e1447e54f558b11ec1530a4c9d5/sample.jpeg?se=2025-06-03T13%3A37%3A14Z&sp=r&sv=2024-11-04&sr=b&rsct=image/jpeg&sig=EZiTG85PPNRi7it0CvPW7bbC235cQxVBPpnooBJipCw%3D","prompt":"Generate one square, white-background doodle with smooth, vibrantly colored image depicting A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves..\n\n*Mandatory Requirements (Compacted):**\n\n**Style:** Simple, vibrant, varied-colored doodle/hand-drawn sketch.\n**Background:** Plain solid white (no background colors/elements). Absolutely no black background.\n**Content & Motion:** Clearly depict **A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.** action with colored, moving subject (no static images). If there''s an action specified, it should be the main difference between frames.\n**Format:** Square image (1:1 aspect ratio).\n**Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.\n**Output:** Actual image file for a smooth, colorful doodle-style image on a white background.","seed":1452879202,"start_time":1748957231.4007654,"end_time":1748957234.5561488,"duration":3.155383348464966},"progress":null,"details":null}'
+        headers:
+            Content-Length:
+                - "1564"
+            Content-Type:
+                - application/json
+            Retry-After:
+                - "0"
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            X-Ratelimit-Limit:
+                - "1200"
+            X-Ratelimit-Remaining:
+                - "1198"
+            X-Ratelimit-Reset:
+                - "1748957236.0845397"
+        status: 200 OK
+        code: 200
+        duration: 88ms

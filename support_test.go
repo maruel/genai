@@ -203,7 +203,7 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			mp := &mockGenStreamProvider{in: tc.in}
 			tp := &genai.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
-			ch := make(chan genai.MessageFragment)
+			ch := make(chan genai.ContentFragment)
 			ctx, cancel := context.WithTimeout(t.Context(), 1*time.Second)
 			defer cancel()
 			wg := sync.WaitGroup{}
@@ -264,7 +264,7 @@ func (m *mockProviderGen) GenSync(ctx context.Context, msgs genai.Messages, opts
 	return m.response, nil
 }
 
-func (m *mockProviderGen) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
+func (m *mockProviderGen) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.ContentFragment) (genai.Result, error) {
 	return genai.Result{}, errors.New("unexpected")
 }
 
@@ -287,14 +287,14 @@ func (m *mockGenStreamProvider) GenSync(ctx context.Context, msgs genai.Messages
 	return genai.Result{}, errors.New("unexpected")
 }
 
-func (m *mockGenStreamProvider) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.MessageFragment) (genai.Result, error) {
+func (m *mockGenStreamProvider) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, replies chan<- genai.ContentFragment) (genai.Result, error) {
 	result := genai.Result{
 		Usage:   genai.Usage{},
 		Message: genai.Message{Role: genai.Assistant},
 	}
 
 	for _, f := range m.in {
-		fragment := genai.MessageFragment{TextFragment: f}
+		fragment := genai.ContentFragment{TextFragment: f}
 		select {
 		case <-ctx.Done():
 			return result, ctx.Err()

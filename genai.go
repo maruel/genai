@@ -88,7 +88,7 @@ type ProviderGen interface {
 	// option struct.
 	//
 	// No need to accumulate the replies into the result, the Result contains the accumulated message.
-	GenStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Result, error)
+	GenStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- ContentFragment) (Result, error)
 	// ModelID returns the model currently used by the provider. It can be an empty string.
 	ModelID() string
 }
@@ -606,11 +606,9 @@ func (c *Content) UnmarshalJSON(b []byte) error {
 	return c.Validate()
 }
 
-// MessageFragment is a fragment of a message the LLM is sending back as part
+// ContentFragment is a fragment of a content the LLM is sending back as part
 // of the GenStream().
-//
-// The role is always implicitly the assistant.
-type MessageFragment struct {
+type ContentFragment struct {
 	TextFragment string `json:"text,omitzero"`
 
 	ThinkingFragment string         `json:"thinking,omitzero"`
@@ -626,17 +624,19 @@ type MessageFragment struct {
 	_ struct{}
 }
 
-func (m *MessageFragment) IsZero() bool {
+func (m *ContentFragment) IsZero() bool {
 	return m.TextFragment == "" && m.ThinkingFragment == "" && len(m.Opaque) == 0 && m.Filename == "" && len(m.DocumentFragment) == 0 && m.URL == "" && m.ToolCall.IsZero()
 }
 
-func (m *MessageFragment) GoString() string {
+func (m *ContentFragment) GoString() string {
 	b, _ := json.Marshal(m)
 	return string(b)
 }
 
-// Accumulate adds a MessageFragment to the message being streamed.
-func (m *Message) Accumulate(mf MessageFragment) error {
+// Accumulate adds a ContentFragment to the message being streamed.
+//
+// The role is always implicitly the assistant.
+func (m *Message) Accumulate(mf ContentFragment) error {
 	if m.Role == "" {
 		m.Role = Assistant
 	}
@@ -694,6 +694,10 @@ func (m *Message) Accumulate(mf MessageFragment) error {
 			if lastBlock := &m.Contents[len(m.Contents)-1]; lastBlock.Filename != "" || lastBlock.Document != nil {
 				if lastBlock.Document == nil {
 					lastBlock.Document = &bb.BytesBuffer{}
+				}
+				if lastBlock.Filename == "" {
+					// Unlikely.
+					lastBlock.Filename = mf.Filename
 				}
 				_, _ = lastBlock.Document.(*bb.BytesBuffer).Write(mf.DocumentFragment)
 				return nil

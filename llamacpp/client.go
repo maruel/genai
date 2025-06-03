@@ -518,7 +518,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.DoRequest(ctx, "POST", c.chatURL, in, out)
 }
 
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.ContentFragment) (genai.Result, error) {
 	result := genai.Result{}
 
 	// Check for non-empty Opaque field
@@ -710,14 +710,14 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 	return nil
 }
 
-func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {
+func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
 	for msg := range ch {
 		if msg.Timings.PredictedN != 0 {
 			result.InputTokens = msg.Timings.PromptN
 			result.OutputTokens = msg.Timings.PredictedN
 			result.FinishReason = msg.StopType.ToFinishReason()
 		}
-		f := genai.MessageFragment{TextFragment: msg.Content}
+		f := genai.ContentFragment{TextFragment: msg.Content}
 		if !f.IsZero() {
 			if err := result.Accumulate(f); err != nil {
 				return err

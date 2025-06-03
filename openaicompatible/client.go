@@ -343,7 +343,7 @@ func New(chatURL string, h http.Header, model string, r http.RoundTripper) (*Cli
 	}, nil
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -366,7 +366,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			for _, content := range pkt.Choices[0].Delta.Content {
 				switch content.Type {
 				case ContentText:
-					f := genai.MessageFragment{TextFragment: content.Text}
+					f := genai.ContentFragment{TextFragment: content.Text}
 					if !f.IsZero() {
 						if err := result.Accumulate(f); err != nil {
 							return err
@@ -393,7 +393,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			return fmt.Errorf("unexpected role %q", role)
 		}
 		if m.IsZero() {
-			f := genai.MessageFragment{TextFragment: pkt.Delta.Text}
+			f := genai.ContentFragment{TextFragment: pkt.Delta.Text}
 			if !f.IsZero() {
 				if err := result.Accumulate(f); err != nil {
 					return err
@@ -403,7 +403,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			continue
 		}
 		for _, content := range c {
-			f := genai.MessageFragment{TextFragment: content.Text}
+			f := genai.ContentFragment{TextFragment: content.Text}
 			if !f.IsZero() {
 				if err := result.Accumulate(f); err != nil {
 					return err

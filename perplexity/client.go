@@ -351,7 +351,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -374,7 +374,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			return fmt.Errorf("unexpected role %q", role)
 		}
 		// TODO: Citations!!
-		f := genai.MessageFragment{TextFragment: pkt.Choices[0].Delta.Content}
+		f := genai.ContentFragment{TextFragment: pkt.Choices[0].Delta.Content}
 		/* ??
 		if pkt.Choices[0].Message.Content != "" {
 			f.TextFragment = pkt.Choices[0].Message.Content

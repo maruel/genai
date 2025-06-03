@@ -46,7 +46,7 @@ func TestClient_GenStream_simple(t *testing.T) {
 			msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
 			opts := genai.TextOptions{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
 			ctx := t.Context()
-			chunks := make(chan genai.MessageFragment)
+			chunks := make(chan genai.ContentFragment)
 			eg := errgroup.Group{}
 			eg.Go(func() error {
 				defer func() {

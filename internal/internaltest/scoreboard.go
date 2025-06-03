@@ -816,7 +816,7 @@ func run(t *testing.T, c genai.ProviderGen, msgs genai.Messages, opts genai.Vali
 		// t.Logf("Response: %v", resp.Message)
 		return resp, err
 	}
-	chunks := make(chan genai.MessageFragment)
+	chunks := make(chan genai.ContentFragment)
 	// Assert that the message returned is the same as the one we accumulated.
 	accumulated := genai.Message{}
 	eg := errgroup.Group{}

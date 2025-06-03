@@ -779,7 +779,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Va
 	return c.BaseGen.GenSync(ctx, msgs, opts)
 }
 
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.ContentFragment) (genai.Result, error) {
 	// TODO: Use Scoreboard list.
 	if strings.HasPrefix(c.Model, "black-forest-labs/") {
 		if len(msgs) != 1 {
@@ -789,12 +789,12 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.
 		if err == nil {
 			for i := range res.Contents {
 				if url := res.Contents[i].URL; url != "" {
-					chunks <- genai.MessageFragment{
+					chunks <- genai.ContentFragment{
 						Filename: res.Contents[i].Filename,
 						URL:      res.Contents[i].URL,
 					}
 				} else if d := res.Contents[i].Document; d != nil {
-					chunks <- genai.MessageFragment{
+					chunks <- genai.ContentFragment{
 						Filename:         res.Contents[i].Filename,
 						DocumentFragment: res.Contents[i].Document.(*bb.BytesBuffer).D,
 					}
@@ -858,7 +858,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return provider.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, "https://api.together.xyz/v1/models")
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -894,7 +894,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				// A new call.
 				if pendingCall.ID != "" {
 					// Flush.
-					f := genai.MessageFragment{ToolCall: genai.ToolCall{
+					f := genai.ContentFragment{ToolCall: genai.ToolCall{
 						ID:        pendingCall.ID,
 						Name:      pendingCall.Function.Name,
 						Arguments: pendingCall.Function.Arguments,
@@ -915,7 +915,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		} else {
 			if pendingCall.ID != "" {
 				// Flush.
-				f := genai.MessageFragment{ToolCall: genai.ToolCall{
+				f := genai.ContentFragment{ToolCall: genai.ToolCall{
 					ID:        pendingCall.ID,
 					Name:      pendingCall.Function.Name,
 					Arguments: pendingCall.Function.Arguments,
@@ -926,7 +926,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				chunks <- f
 			}
 		}
-		f := genai.MessageFragment{TextFragment: pkt.Choices[0].Delta.Content}
+		f := genai.ContentFragment{TextFragment: pkt.Choices[0].Delta.Content}
 		if !f.IsZero() {
 			if err := result.Accumulate(f); err != nil {
 				return err

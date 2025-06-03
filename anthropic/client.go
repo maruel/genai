@@ -906,7 +906,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return provider.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, "https://api.anthropic.com/v1/models?limit=1000")
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -914,7 +914,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	}()
 	pendingCall := genai.ToolCall{}
 	for pkt := range ch {
-		f := genai.MessageFragment{}
+		f := genai.ContentFragment{}
 		// See testdata/TestClient_Chat_thinking/ChatStream.yaml as a great example.
 		// TODO: pkt.Index matters here, as the LLM may fill multiple content blocks simultaneously.
 		switch pkt.Type {

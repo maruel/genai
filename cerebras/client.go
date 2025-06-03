@@ -658,7 +658,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return provider.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, "https://api.cerebras.ai/v1/models")
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -680,7 +680,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 
 		for _, nt := range pkt.Choices[0].Delta.ToolCalls {
-			f := genai.MessageFragment{ToolCall: genai.ToolCall{
+			f := genai.ContentFragment{ToolCall: genai.ToolCall{
 				ID:        nt.ID,
 				Name:      nt.Function.Name,
 				Arguments: nt.Function.Arguments,
@@ -693,7 +693,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		for _, content := range pkt.Choices[0].Delta.Content {
 			switch content.Type {
 			case ContentText:
-				f := genai.MessageFragment{TextFragment: content.Text}
+				f := genai.ContentFragment{TextFragment: content.Text}
 				if !f.IsZero() {
 					if err := result.Accumulate(f); err != nil {
 						return err

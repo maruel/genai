@@ -76,8 +76,8 @@ func GenSyncWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Mes
 // Warning: If opts.ToolCallRequest == ToolCallRequired, it will be mutated to ToolCallAny after the first
 // tool call.
 //
-// No need to process the tool calls or accumulate the MessageFragment.
-func GenStreamWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Messages, Usage, error) {
+// No need to process the tool calls or accumulate the ContentFragment.
+func GenStreamWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Messages, opts Validatable, replies chan<- ContentFragment) (Messages, Usage, error) {
 	usage := Usage{}
 	var out Messages
 	workMsgs := make(Messages, len(msgs))
@@ -88,7 +88,7 @@ func GenStreamWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs M
 	}
 	tools := chatOpts.Tools
 	for {
-		internalReplies := make(chan MessageFragment)
+		internalReplies := make(chan ContentFragment)
 		reply := Message{}
 		eg := errgroup.Group{}
 		eg.Go(func() error {
@@ -160,7 +160,7 @@ func (c *ProviderGenUsage) GenSync(ctx context.Context, msgs Messages, opts Vali
 }
 
 // GenStream implements the ProviderGen interface and accumulates usage statistics.
-func (c *ProviderGenUsage) GenStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Result, error) {
+func (c *ProviderGenUsage) GenStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- ContentFragment) (Result, error) {
 	// Call the wrapped provider and accumulate usage statistics
 	result, err := c.ProviderGen.GenStream(ctx, msgs, opts, replies)
 	c.mu.Lock()
@@ -216,7 +216,7 @@ func (c *ProviderGenThinking) GenSync(ctx context.Context, msgs Messages, opts V
 // GenStream implements the ProviderGen interface for streaming by delegating to the wrapped provider
 // and processing each fragment to extract thinking blocks.
 // If no thinking tags are present, the first part of the message is assumed to be thinking.
-func (c *ProviderGenThinking) GenStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Result, error) {
+func (c *ProviderGenThinking) GenStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- ContentFragment) (Result, error) {
 	if c.SkipJSON {
 		if o, ok := opts.(*TextOptions); ok && (o.ReplyAsJSON || o.DecodeAs != nil) {
 			// When replying in JSON, the thinking tokens are "denied" by the engine.
@@ -224,7 +224,7 @@ func (c *ProviderGenThinking) GenStream(ctx context.Context, msgs Messages, opts
 		}
 	}
 
-	internalReplies := make(chan MessageFragment)
+	internalReplies := make(chan ContentFragment)
 	// The tokens always have a trailing "\n". When streaming, the trailing "\n" will likely be sent as a
 	// separate event. This requires a small state machine to keep track of that.
 	tagStart := "<" + c.TagName + ">"

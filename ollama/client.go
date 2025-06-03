@@ -513,7 +513,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 	return err
 }
 
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.ContentFragment) (genai.Result, error) {
 	result := genai.Result{}
 	for i, msg := range msgs {
 		for j, content := range msg.Contents {
@@ -649,7 +649,7 @@ func processJSONStream(body io.Reader, out chan<- ChatStreamChunkResponse, lenie
 	}
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -667,7 +667,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			return fmt.Errorf("unexpected role %q", role)
 		}
 		for i := range pkt.Message.ToolCalls {
-			f := genai.MessageFragment{}
+			f := genai.ContentFragment{}
 			if err := pkt.Message.ToolCalls[i].To(&f.ToolCall); err != nil {
 				return err
 			}
@@ -676,7 +676,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			}
 			chunks <- f
 		}
-		f := genai.MessageFragment{TextFragment: pkt.Message.Content}
+		f := genai.ContentFragment{TextFragment: pkt.Message.Content}
 		if !f.IsZero() {
 			if err := result.Accumulate(f); err != nil {
 				return err

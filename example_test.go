@@ -384,7 +384,7 @@ func ExampleGenStreamWithToolCallLoop() {
 		// Force the LLM to do a tool call first.
 		ToolCallRequest: genai.ToolCallRequired,
 	}
-	chunks := make(chan genai.MessageFragment)
+	chunks := make(chan genai.ContentFragment)
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	go func() {
@@ -426,7 +426,7 @@ func ExampleProviderGen_GenStream() {
 		Seed:      1,
 		MaxTokens: 50,
 	}
-	chunks := make(chan genai.MessageFragment)
+	chunks := make(chan genai.ContentFragment)
 	eg := errgroup.Group{}
 	eg.Go(func() error {
 		for {

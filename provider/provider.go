@@ -215,7 +215,7 @@ type BaseGen[PErrorResponse fmt.Stringer, PGenRequest InitializableRequest, PGen
 	// AllowOpaqueFields is true if the client allows the Opaque field in messages.
 	AllowOpaqueFields bool
 	// ProcessStreamPackets is the function that processes stream packets used by GenStream.
-	ProcessStreamPackets func(ch <-chan GenStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error
+	ProcessStreamPackets func(ch <-chan GenStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error
 	// LieToolCalls lie the FinishReason on tool calls.
 	LieToolCalls bool
 
@@ -258,7 +258,7 @@ func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespon
 	return result, continuableErr
 }
 
-func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
+func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.ContentFragment) (genai.Result, error) {
 	result := genai.Result{}
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {

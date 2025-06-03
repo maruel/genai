@@ -38,7 +38,7 @@ func TestClient_ProviderGen_errors(t *testing.T, getClient func(t *testing.T, ap
 			if line.ErrSynStream != "" {
 				t.Run("GenStream", func(t *testing.T) {
 					c := getClient(t, line.ApiKey, line.Model)
-					ch := make(chan genai.MessageFragment, 1)
+					ch := make(chan genai.ContentFragment, 1)
 					_, err := c.GenStream(t.Context(), msgs, &genai.TextOptions{}, ch)
 					if err == nil {
 						t.Fatal("expected error")

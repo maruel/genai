@@ -661,7 +661,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return models, nil
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -675,7 +675,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 		// TODO: Tools.
 		if word := pkt.Response; word != "" {
-			f := genai.MessageFragment{TextFragment: word}
+			f := genai.ContentFragment{TextFragment: word}
 			if err := result.Accumulate(f); err != nil {
 				return err
 			}

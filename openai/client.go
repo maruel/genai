@@ -1016,7 +1016,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Va
 	}
 }
 
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.ContentFragment) (genai.Result, error) {
 	// TODO: Use Scoreboard list.
 	switch c.Model {
 	case "dall-e-2", "dall-e-3", "gpt-image-1":
@@ -1027,12 +1027,12 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.
 		if err == nil {
 			for i := range res.Contents {
 				if url := res.Contents[i].URL; url != "" {
-					chunks <- genai.MessageFragment{
+					chunks <- genai.ContentFragment{
 						Filename: res.Contents[i].Filename,
 						URL:      res.Contents[i].URL,
 					}
 				} else if d := res.Contents[i].Document; d != nil {
-					chunks <- genai.MessageFragment{
+					chunks <- genai.ContentFragment{
 						Filename:         res.Contents[i].Filename,
 						DocumentFragment: res.Contents[i].Document.(*bb.BytesBuffer).D,
 					}
@@ -1132,7 +1132,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return provider.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, "https://api.openai.com/v1/models")
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -1161,7 +1161,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		if r := pkt.Choices[0].Delta.Refusal; r != "" {
 			return fmt.Errorf("refused: %q", r)
 		}
-		f := genai.MessageFragment{TextFragment: pkt.Choices[0].Delta.Content}
+		f := genai.ContentFragment{TextFragment: pkt.Choices[0].Delta.Content}
 		// OpenAI streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
 		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
 			if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {

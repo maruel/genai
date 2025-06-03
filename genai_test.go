@@ -14,6 +14,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/invopop/jsonschema"
+	"github.com/maruel/genai/internal/bb"
 )
 
 func TestTextOptions_Validate(t *testing.T) {
@@ -317,23 +318,23 @@ func TestMessage_Decode(t *testing.T) {
 	})
 }
 
-func TestAccumulateMessageFragment(t *testing.T) {
+func TestAccumulateContentFragment(t *testing.T) {
 	tests := []struct {
 		name string
 		msgs Messages
-		f    MessageFragment
+		f    ContentFragment
 		want Messages
 	}{
 		{
 			name: "Join assistant text",
 			msgs: Messages{NewTextMessage(Assistant, "Hello")},
-			f:    MessageFragment{TextFragment: " world"},
+			f:    ContentFragment{TextFragment: " world"},
 			want: Messages{NewTextMessage(Assistant, "Hello world")},
 		},
 		{
 			name: "User then assistant",
 			msgs: Messages{NewTextMessage(User, "Make me a sandwich")},
-			f:    MessageFragment{TextFragment: "No"},
+			f:    ContentFragment{TextFragment: "No"},
 			want: Messages{
 				NewTextMessage(User, "Make me a sandwich"),
 				NewTextMessage(Assistant, "No"),
@@ -347,7 +348,7 @@ func TestAccumulateMessageFragment(t *testing.T) {
 					Contents: []Content{{Filename: "document.txt", Document: &buffer{"document content"}}},
 				},
 			},
-			f: MessageFragment{TextFragment: "No"},
+			f: ContentFragment{TextFragment: "No"},
 			want: Messages{
 				{
 					Role: Assistant,
@@ -366,7 +367,7 @@ func TestAccumulateMessageFragment(t *testing.T) {
 		{
 			name: "Tool then text",
 			msgs: Messages{{Role: Assistant, ToolCalls: []ToolCall{{Name: "tool"}}}},
-			f:    MessageFragment{TextFragment: "No"},
+			f:    ContentFragment{TextFragment: "No"},
 			want: Messages{
 				{
 					Role: Assistant,
@@ -379,7 +380,7 @@ func TestAccumulateMessageFragment(t *testing.T) {
 		{
 			name: "Tool then tool",
 			msgs: Messages{{Role: Assistant, ToolCalls: []ToolCall{{Name: "tool"}}}},
-			f:    MessageFragment{ToolCall: ToolCall{Name: "tool2"}},
+			f:    ContentFragment{ToolCall: ToolCall{Name: "tool2"}},
 			want: Messages{
 				{
 					Role: Assistant,
@@ -419,33 +420,31 @@ func TestMessage_Accumulate(t *testing.T) {
 	tests := []struct {
 		name     string
 		message  Message
-		fragment MessageFragment
+		fragment ContentFragment
 		want     Message
 	}{
 		{
 			name:     "Text",
 			message:  Message{Role: Assistant},
-			fragment: MessageFragment{TextFragment: "Hello"},
+			fragment: ContentFragment{TextFragment: "Hello"},
 			want:     NewTextMessage(Assistant, "Hello"),
 		},
-		/* TODO: Implement document while streaming.
 		{
-			name: "Document",
+			name:    "Document",
 			message: Message{Role: Assistant},
-			fragment: MessageFragment{
+			fragment: ContentFragment{
 				Filename:         "document.txt",
 				DocumentFragment: []byte("document content"),
 			},
 			want: Message{
 				Role:     Assistant,
-				Contents: []Content{{Document: &buffer{"document content"}}},
+				Contents: []Content{{Filename: "document.txt", Document: &bb.BytesBuffer{D: []byte("document content")}}},
 			},
 		},
-		*/
 		{
 			name:     "Tool",
 			message:  Message{Role: Assistant},
-			fragment: MessageFragment{ToolCall: ToolCall{Name: "tool"}},
+			fragment: ContentFragment{ToolCall: ToolCall{Name: "tool"}},
 			want: Message{
 				Role:      Assistant,
 				ToolCalls: []ToolCall{{Name: "tool"}},
@@ -454,13 +453,13 @@ func TestMessage_Accumulate(t *testing.T) {
 		{
 			name:     "Add text to existing text",
 			message:  NewTextMessage(Assistant, "Hello"),
-			fragment: MessageFragment{TextFragment: " world"},
+			fragment: ContentFragment{TextFragment: " world"},
 			want:     NewTextMessage(Assistant, "Hello world"),
 		},
 		{
 			name:     "Add thinking to existing thinking",
 			message:  Message{Role: Assistant, Contents: []Content{{Thinking: "I think "}}},
-			fragment: MessageFragment{ThinkingFragment: "therefore I am"},
+			fragment: ContentFragment{ThinkingFragment: "therefore I am"},
 			want:     Message{Role: Assistant, Contents: []Content{{Thinking: "I think therefore I am"}}},
 		},
 	}
@@ -772,7 +771,7 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 	provider := &mockProviderGen{
 		streamResponses: []streamResponse{
 			{
-				fragments: []MessageFragment{
+				fragments: []ContentFragment{
 					{TextFragment: "I'll help you calculate that. "},
 					{TextFragment: "Let me use the calculator tool."},
 					{ToolCall: ToolCall{ID: "1", Name: "calculator", Arguments: `{"a": 5, "b": 3, "operation": "add"}`}},
@@ -780,7 +779,7 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 				usage: Usage{InputTokens: 10, OutputTokens: 20},
 			},
 			{
-				fragments: []MessageFragment{
+				fragments: []ContentFragment{
 					{TextFragment: "The result of 5 + 3 is 8."},
 				},
 				usage: Usage{InputTokens: 15, OutputTokens: 10},
@@ -819,10 +818,10 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 	}
 
 	// Create a channel to receive fragments
-	chunks := make(chan MessageFragment)
+	chunks := make(chan ContentFragment)
 
 	// Collect fragments in a goroutine
-	var collectedFragments []MessageFragment
+	var collectedFragments []ContentFragment
 	ctx := t.Context()
 	go func() {
 		for {
@@ -867,7 +866,7 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 
 // Mock types for testing
 type streamResponse struct {
-	fragments []MessageFragment
+	fragments []ContentFragment
 	usage     Usage
 }
 
@@ -884,7 +883,7 @@ func (m *mockProviderGen) GenSync(ctx context.Context, msgs Messages, opts Valid
 	return Result{}, fmt.Errorf("GenSync not implemented in mock")
 }
 
-func (m *mockProviderGen) GenStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- MessageFragment) (Result, error) {
+func (m *mockProviderGen) GenStream(ctx context.Context, msgs Messages, opts Validatable, replies chan<- ContentFragment) (Result, error) {
 	if m.callIndex >= len(m.streamResponses) {
 		return Result{}, fmt.Errorf("no more mock responses")
 	}

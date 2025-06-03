@@ -665,7 +665,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return provider.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, "https://huggingface.co/api/models?inference=warm")
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -692,7 +692,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
 			return fmt.Errorf("implement multiple tool calls: %#v", pkt.Choices[0].Delta.ToolCalls)
 		}
-		f := genai.MessageFragment{TextFragment: pkt.Choices[0].Delta.Content}
+		f := genai.ContentFragment{TextFragment: pkt.Choices[0].Delta.Content}
 		// Huggingface streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
 		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
 			if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID == pendingCall.ID {
@@ -730,7 +730,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	// Hugginface doesn't send an "ending" packet, FinishReason isn't even set on the last packet.
 	if pendingCall.ID != "" {
 		// Flush.
-		f := genai.MessageFragment{}
+		f := genai.ContentFragment{}
 		pendingCall.To(&f.ToolCall)
 		if err := result.Accumulate(f); err != nil {
 			return err

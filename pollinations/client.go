@@ -946,7 +946,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Va
 	}
 }
 
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.MessageFragment) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.Validatable, chunks chan<- genai.ContentFragment) (genai.Result, error) {
 	// TODO: Use Scoreboard list.
 	switch c.Model {
 	case "flux", "gptimage", "turbo":
@@ -955,7 +955,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts genai.
 		}
 		res, err := c.GenImage(ctx, msgs[0], opts)
 		if err == nil {
-			chunks <- genai.MessageFragment{
+			chunks <- genai.ContentFragment{
 				Filename:         res.Contents[0].Filename,
 				DocumentFragment: res.Contents[0].Document.(*bb.BytesBuffer).D,
 			}
@@ -1059,7 +1059,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return out, err1
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.MessageFragment, result *genai.Result) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -1085,7 +1085,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
 			return fmt.Errorf("implement multiple tool calls: %#v", pkt)
 		}
-		f := genai.MessageFragment{
+		f := genai.ContentFragment{
 			TextFragment:     pkt.Choices[0].Delta.Content,
 			ThinkingFragment: pkt.Choices[0].Delta.ReasoningContent,
 		}

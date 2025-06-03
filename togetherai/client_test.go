@@ -85,13 +85,13 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 			ApiKey:       "bad apiKey",
 			Model:        "meta-llama/Llama-3.2-3B-Instruct-Turbo",
 			ErrGenSync:   "http 401: error invalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
-			ErrSynStream: "http 401: error invalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
+			ErrGenStream: "http 401: error invalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
 		},
 		{
 			Name:         "bad model",
 			Model:        "bad model",
 			ErrGenSync:   "http 404: error model_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
-			ErrSynStream: "http 404: error model_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
+			ErrGenStream: "http 404: error model_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {

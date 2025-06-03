@@ -32,13 +32,13 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 			ApiKey:       "bad apiKey",
 			Model:        "Qwen/Qwen3-4B",
 			ErrGenSync:   "http 401: Unauthorized. You can get a new API key at https://huggingface.co/settings/tokens",
-			ErrSynStream: "http 401: Unauthorized. You can get a new API key at https://huggingface.co/settings/tokens",
+			ErrGenStream: "http 401: Unauthorized. You can get a new API key at https://huggingface.co/settings/tokens",
 		},
 		{
 			Name:         "bad model",
 			Model:        "bad model",
 			ErrGenSync:   "http 404: Not Found",
-			ErrSynStream: "http 404: Not Found",
+			ErrGenStream: "http 404: Not Found",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {

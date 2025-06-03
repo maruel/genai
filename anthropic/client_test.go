@@ -26,13 +26,13 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 			ApiKey:       "bad apiKey",
 			Model:        "claude-3-haiku-20240307",
 			ErrGenSync:   "http 401: error authentication_error: invalid x-api-key. You can get a new API key at https://console.anthropic.com/settings/keys",
-			ErrSynStream: "http 401: error authentication_error: invalid x-api-key. You can get a new API key at https://console.anthropic.com/settings/keys",
+			ErrGenStream: "http 401: error authentication_error: invalid x-api-key. You can get a new API key at https://console.anthropic.com/settings/keys",
 		},
 		{
 			Name:         "bad model",
 			Model:        "bad model",
 			ErrGenSync:   "http 404: error not_found_error: model: bad model",
-			ErrSynStream: "http 404: error not_found_error: model: bad model",
+			ErrGenStream: "http 404: error not_found_error: model: bad model",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {

@@ -61,13 +61,13 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 			ApiKey:       "bad apiKey",
 			Model:        "gpt-4.1-nano",
 			ErrGenSync:   "http 401: error invalid_api_key (): Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
-			ErrSynStream: "http 401: error invalid_api_key (): Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
+			ErrGenStream: "http 401: error invalid_api_key (): Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 		},
 		{
 			Name:         "bad model",
 			Model:        "bad model",
 			ErrGenSync:   "http 400: error invalid_request_error: invalid model ID",
-			ErrSynStream: "http 400: error invalid_request_error: invalid model ID",
+			ErrGenStream: "http 400: error invalid_request_error: invalid model ID",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {

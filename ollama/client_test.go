@@ -37,7 +37,7 @@ func TestClient(t *testing.T) {
 				Name:         "bad model",
 				Model:        "bad_model",
 				ErrGenSync:   "pull failed: http 500: error pull model manifest: file does not exist",
-				ErrSynStream: "pull failed: http 500: error pull model manifest: file does not exist",
+				ErrGenStream: "pull failed: http 500: error pull model manifest: file does not exist",
 			},
 		}
 		f := func(t *testing.T, apiKey, model string) genai.ProviderGen {

@@ -31,13 +31,13 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 			ApiKey:       "bad apiKey",
 			Model:        "sonar",
 			ErrGenSync:   "http 401: Unauthorized. You can get a new API key at https://www.perplexity.ai/settings/api",
-			ErrSynStream: "http 401: Unauthorized. You can get a new API key at https://www.perplexity.ai/settings/api",
+			ErrGenStream: "http 401: Unauthorized. You can get a new API key at https://www.perplexity.ai/settings/api",
 		},
 		{
 			Name:         "bad model",
 			Model:        "bad model",
 			ErrGenSync:   "http 400: error Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.",
-			ErrSynStream: "http 400: error Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.",
+			ErrGenStream: "http 400: error Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {

@@ -15,7 +15,7 @@ type ProviderGenError struct {
 	ApiKey       string
 	Model        string
 	ErrGenSync   string
-	ErrSynStream string
+	ErrGenStream string
 }
 
 func TestClient_ProviderGen_errors(t *testing.T, getClient func(t *testing.T, apiKey, model string) genai.ProviderGen, lines []ProviderGenError) {
@@ -35,7 +35,7 @@ func TestClient_ProviderGen_errors(t *testing.T, getClient func(t *testing.T, ap
 					}
 				})
 			}
-			if line.ErrSynStream != "" {
+			if line.ErrGenStream != "" {
 				t.Run("GenStream", func(t *testing.T) {
 					c := getClient(t, line.ApiKey, line.Model)
 					ch := make(chan genai.ContentFragment, 1)
@@ -44,8 +44,8 @@ func TestClient_ProviderGen_errors(t *testing.T, getClient func(t *testing.T, ap
 						t.Fatal("expected error")
 					} else if _, ok := err.(*genai.UnsupportedContinuableError); ok {
 						t.Fatal("should not be continuable")
-					} else if got := err.Error(); got != line.ErrSynStream {
-						t.Fatalf("Unexpected error.\nwant: %q\ngot : %q", line.ErrSynStream, got)
+					} else if got := err.Error(); got != line.ErrGenStream {
+						t.Fatalf("Unexpected error.\nwant: %q\ngot : %q", line.ErrGenStream, got)
 					}
 					select {
 					case pkt := <-ch:

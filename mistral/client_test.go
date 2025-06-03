@@ -26,13 +26,13 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 			ApiKey:       "bad apiKey",
 			Model:        "ministral-3b-2410",
 			ErrGenSync:   "http 401: error Unauthorized. You can get a new API key at https://console.mistral.ai/api-keys",
-			ErrSynStream: "http 401: error Unauthorized. You can get a new API key at https://console.mistral.ai/api-keys",
+			ErrGenStream: "http 401: error Unauthorized. You can get a new API key at https://console.mistral.ai/api-keys",
 		},
 		{
 			Name:         "bad model",
 			Model:        "bad model",
 			ErrGenSync:   "http 400: error invalid_model: Invalid model: bad model",
-			ErrSynStream: "http 400: error invalid_model: Invalid model: bad model",
+			ErrGenStream: "http 400: error invalid_model: Invalid model: bad model",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {

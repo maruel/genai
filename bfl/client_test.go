@@ -63,13 +63,13 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 			ApiKey:       "bad apiKey",
 			Model:        "flux-dev",
 			ErrGenSync:   "http 403: error Not authenticated - Invalid Authentication",
-			ErrSynStream: "http 403: error Not authenticated - Invalid Authentication",
+			ErrGenStream: "http 403: error Not authenticated - Invalid Authentication",
 		},
 		{
 			Name:         "bad model",
 			Model:        "bad model",
 			ErrGenSync:   "http 404: error Not Found",
-			ErrSynStream: "http 404: error Not Found",
+			ErrGenStream: "http 404: error Not Found",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {

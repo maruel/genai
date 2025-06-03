@@ -25,13 +25,13 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 			ApiKey:       "bad apiKey",
 			Model:        "command-r7b-12-2024",
 			ErrGenSync:   "http 401: error invalid api token. You can get a new API key at https://dashboard.cohere.com/api-keys",
-			ErrSynStream: "http 401: error invalid api token. You can get a new API key at https://dashboard.cohere.com/api-keys",
+			ErrGenStream: "http 401: error invalid api token. You can get a new API key at https://dashboard.cohere.com/api-keys",
 		},
 		{
 			Name:         "bad model",
 			Model:        "bad model",
 			ErrGenSync:   "http 404: error model 'bad model' not found, make sure the correct model ID was used and that you have access to the model.",
-			ErrSynStream: "http 404: error model 'bad model' not found, make sure the correct model ID was used and that you have access to the model.",
+			ErrGenStream: "http 404: error model 'bad model' not found, make sure the correct model ID was used and that you have access to the model.",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {

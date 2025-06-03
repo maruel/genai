@@ -32,47 +32,47 @@ import (
 )
 
 func ExampleProviderModel_all() {
-	modelProviders := map[string]genai.ProviderModel{}
+	providers := map[string]genai.ProviderModel{}
 	if c, err := anthropic.New("", "", nil); err == nil {
-		modelProviders["anthropic"] = c
+		providers["anthropic"] = c
 	}
 	if c, err := cerebras.New("", "", nil); err == nil {
-		modelProviders["cerebras"] = c
+		providers["cerebras"] = c
 	}
 	if c, err := cloudflare.New("", "", "", nil); err == nil {
-		modelProviders["cloudflare"] = c
+		providers["cloudflare"] = c
 	}
 	if c, err := cohere.New("", "", nil); err == nil {
-		modelProviders["cohere"] = c
+		providers["cohere"] = c
 	}
 	if c, err := deepseek.New("", "", nil); err == nil {
-		modelProviders["deepseek"] = c
+		providers["deepseek"] = c
 	}
 	if c, err := gemini.New("", "", nil); err == nil {
-		modelProviders["gemini"] = c
+		providers["gemini"] = c
 	}
 	if c, err := groq.New("", "", nil); err == nil {
-		modelProviders["groq"] = c
+		providers["groq"] = c
 	}
 	if c, err := huggingface.New("", "", nil); err == nil {
-		modelProviders["huggingface"] = c
+		providers["huggingface"] = c
 	}
 	// llamapcpp doesn't implement ProviderModel.
 	if c, err := mistral.New("", "", nil); err == nil {
-		modelProviders["mistral"] = c
+		providers["mistral"] = c
 	}
 	if c, err := openai.New("", "", nil); err == nil {
-		modelProviders["openai"] = c
+		providers["openai"] = c
 	}
 	if c, err := pollinations.New("", "", nil); err == nil {
-		modelProviders["pollinations"] = c
+		providers["pollinations"] = c
 	}
 	// perplexity doesn't implement ProviderModel.
 	if c, err := togetherai.New("", "", nil); err == nil {
-		modelProviders["togetherai"] = c
+		providers["togetherai"] = c
 	}
 
-	for name, p := range modelProviders {
+	for name, p := range providers {
 		models, err := p.ListModels(context.Background())
 		fmt.Printf("%s:\n", name)
 		if err != nil {
@@ -85,67 +85,67 @@ func ExampleProviderModel_all() {
 }
 
 func ExampleProviderGen_all() {
-	chatProviders := map[string]genai.ProviderGen{}
+	providers := map[string]genai.ProviderGen{}
 	// https://docs.anthropic.com/en/docs/about-claude/models/all-models
 	if c, err := anthropic.New("", "claude-3-7-sonnet-latest", nil); err == nil {
-		chatProviders["anthropic"] = c
+		providers["anthropic"] = c
 	}
 	// https://inference-docs.cerebras.ai/api-reference/models
 	if c, err := cerebras.New("", "llama-3.3-70b", nil); err == nil {
-		chatProviders["cerebras"] = c
+		providers["cerebras"] = c
 	}
 	// https://developers.cloudflare.com/workers-ai/models/
 	if c, err := cloudflare.New("", "", "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b", nil); err == nil {
-		chatProviders["cloudflare"] = c
+		providers["cloudflare"] = c
 	}
 	// https://docs.cohere.com/v2/docs/models
 	if c, err := cohere.New("", "command-r-plus", nil); err == nil {
-		chatProviders["cohere"] = c
+		providers["cohere"] = c
 	}
 	// https://api-docs.deepseek.com/quick_start/pricing
 	if c, err := deepseek.New("", "deepseek-reasoner", nil); err == nil {
-		chatProviders["deepseek"] = c
+		providers["deepseek"] = c
 	}
 	// https://ai.google.dev/gemini-api/docs/models/gemini
 	if c, err := gemini.New("", "gemini-2.0-flash", nil); err == nil {
-		chatProviders["gemini"] = c
+		providers["gemini"] = c
 	}
 	// https://console.groq.com/docs/models
 	if c, err := groq.New("", "qwen-qwq-32b", nil); err == nil {
-		chatProviders["groq"] = c
+		providers["groq"] = c
 	}
 	// https://huggingface.co/models?inference=warm&sort=trending
 	if c, err := huggingface.New("", "Qwen/QwQ-32B", nil); err == nil {
-		chatProviders["huggingface"] = c
+		providers["huggingface"] = c
 	}
 	if false {
 		// See llamacpp/llamacppsrv to see how to run a local server.
 		if c, err := llamacpp.New("http://localhost:8080", nil, nil); err == nil {
-			chatProviders["llamacpp"] = c
+			providers["llamacpp"] = c
 		}
 	}
 	// https://docs.mistral.ai/getting-started/models/models_overview/
 	if c, err := mistral.New("", "mistral-large-latest", nil); err == nil {
-		chatProviders["mistral"] = c
+		providers["mistral"] = c
 	}
 	// https://platform.openai.com/docs/api-reference/models
 	if c, err := openai.New("", "o3-mini", nil); err == nil {
-		chatProviders["openai"] = c
+		providers["openai"] = c
 	}
 	// https://docs.perplexity.ai/models/model-cards
 	if c, err := perplexity.New("", "sonar", nil); err == nil {
-		chatProviders["perplexity"] = c
+		providers["perplexity"] = c
 	}
 	// https://text.pollinations.ai/models
 	if c, err := pollinations.New("", "qwen-coder", nil); err == nil {
-		chatProviders["pollinations"] = c
+		providers["pollinations"] = c
 	}
 	// https://api.together.ai/models
 	if c, err := togetherai.New("", "deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free", nil); err == nil {
-		chatProviders["togetherai"] = c
+		providers["togetherai"] = c
 	}
 
-	for name, provider := range chatProviders {
+	for name, provider := range providers {
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "Tell a story in 10 words."),
 		}
@@ -167,7 +167,7 @@ func ExampleProviderGen_all() {
 	}
 }
 
-func ExampleProviderGen_chat_vision() {
+func ExampleProviderGen_genSync_vision() {
 	// Supported by Anthropic, Gemini, Groq, Mistral, Ollama, OpenAI, TogetherAI.
 
 	// Using a free small model for testing.
@@ -249,7 +249,7 @@ func ExampleClient_GenSync_jSON_schema() {
 	// This would Output: Round: true
 }
 
-func ExampleProviderGen_chat_pdf() {
+func ExampleProviderGen_genSync_pdf() {
 	// Supported by Anthropic, Gemini, Mistral, OpenAI.
 
 	// Using a free small model for testing.
@@ -280,7 +280,7 @@ func ExampleProviderGen_chat_pdf() {
 	// This would Output: Hidden word in PDF: orange
 }
 
-func ExampleProviderGen_chat_audio() {
+func ExampleProviderGen_genSync_audio() {
 	// Supported by Gemini, OpenAI.
 
 	// Using a free small model for testing.
@@ -311,7 +311,7 @@ func ExampleProviderGen_chat_audio() {
 	// This would Output: Heard: orange
 }
 
-func ExampleProviderGen_chat_video() {
+func ExampleProviderGen_genSync_video() {
 	// Supported by Gemini, TogetherAI.
 
 	// Using a free small model for testing.

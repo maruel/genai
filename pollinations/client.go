@@ -948,10 +948,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	if c.isImage(opts) {
-		if len(msgs) != 1 {
-			return genai.Result{}, errors.New("must pass exactly one Message")
-		}
-		return provider.SimulateStream(ctx, c, msgs[0], chunks, opts)
+		return provider.SimulateStream(ctx, c, msgs, chunks, opts)
 	}
 	return c.BaseGen.GenStream(ctx, msgs, chunks, opts)
 }
@@ -1055,8 +1052,7 @@ func (c *Client) isImage(opts genai.Options) bool {
 	case "flux", "gptimage", "turbo":
 		return true
 	default:
-		_, ok := opts.(*genai.OptionsImage)
-		return ok
+		return opts != nil && opts.Modality() == genai.ModalityImage
 	}
 }
 
@@ -1129,7 +1125,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 
 var (
 	_ genai.ProviderGen        = &Client{}
-	_ genai.ProviderDoc        = &Client{}
+	_ genai.ProviderGenDoc     = &Client{}
 	_ genai.ProviderModel      = &Client{}
 	_ genai.ProviderScoreboard = &Client{}
 )

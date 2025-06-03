@@ -783,28 +783,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	if c.isImage(opts) {
-		if len(msgs) != 1 {
-			return genai.Result{}, errors.New("must pass exactly one Message")
-		}
-		res, err := c.GenDoc(ctx, msgs[0], opts)
-		if err == nil {
-			for i := range res.Contents {
-				if url := res.Contents[i].URL; url != "" {
-					chunks <- genai.ContentFragment{
-						Filename: res.Contents[i].Filename,
-						URL:      res.Contents[i].URL,
-					}
-				} else if d := res.Contents[i].Document; d != nil {
-					chunks <- genai.ContentFragment{
-						Filename:         res.Contents[i].Filename,
-						DocumentFragment: res.Contents[i].Document.(*bb.BytesBuffer).D,
-					}
-				} else {
-					return res, errors.New("internal error")
-				}
-			}
-		}
-		return res, err
+		return provider.SimulateStream(ctx, c, msgs, chunks, opts)
 	}
 	return c.BaseGen.GenStream(ctx, msgs, chunks, opts)
 }
@@ -864,8 +843,7 @@ func (c *Client) isImage(opts genai.Options) bool {
 	if strings.HasPrefix(c.Model, "black-forest-labs/") {
 		return true
 	}
-	_, ok := opts.(*genai.OptionsImage)
-	return ok
+	return opts != nil && opts.Modality() == genai.ModalityImage
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
@@ -949,7 +927,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 
 var (
 	_ genai.ProviderGen        = &Client{}
-	_ genai.ProviderDoc        = &Client{}
+	_ genai.ProviderGenDoc     = &Client{}
 	_ genai.ProviderModel      = &Client{}
 	_ genai.ProviderScoreboard = &Client{}
 )

@@ -97,6 +97,8 @@ const (
 	FinishedStopSequence FinishReason = "stop"
 	// FinishedContentFilter means the model stopped because the reply got caught by a content filter.
 	FinishedContentFilter FinishReason = "content_filter"
+	// Pending means that it's not finished yet. For use with ProviderGenAsync.
+	Pending FinishReason = "pending"
 )
 
 // Messages
@@ -691,19 +693,23 @@ func (t *ToolCallResult) UnmarshalJSON(b []byte) error {
 	return t.Validate()
 }
 
-// ProviderDoc is the interface to interact with an image generator.
-type ProviderDoc interface {
-	// GenDoc generates a document (audio, image, video).
-	//
-	// The modality of the document generated is based on the provider, the model and
-	// the options provided.
-	//
-	// For example some providers (e.g. bfl) only generate images. Some models
-	// (openai-audio) only generate audio. For fully multimodal models (e.g. some of Gemini's models), the
-	// modality can be specified by passing the relevant Options type (*AudioOptions, *OptionsImage,
-	// *VideoOptions).
+// ProviderGenDoc is the interface to interact with a document (audio, image, video, etc) generator.
+type ProviderGenDoc interface {
 	GenDoc(ctx context.Context, msg Message, opts Options) (Result, error)
 }
+
+// ProviderGenAsync is the interface to interact with a batch generator.
+type ProviderGenAsync interface {
+	// GenAsync requests a generation and returns a pending job that can be polled.
+	GenAsync(ctx context.Context, msgs Messages, opts Options) (Job, error)
+	// PokeResult requests the state of the job.
+	//
+	// When the job is still pending, Result.Usage.FinishReason is Pending.
+	PokeResult(ctx context.Context, job Job) (Result, error)
+}
+
+// Job is a pending job.
+type Job string
 
 // Models
 

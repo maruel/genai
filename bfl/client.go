@@ -10,6 +10,7 @@ package bfl
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 	"os"
@@ -225,15 +226,39 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	if len(msgs) != 1 {
 		return genai.Result{}, errors.New("must pass exactly one Message")
 	}
-	return provider.SimulateStream(ctx, c, msgs[0], chunks, opts)
+	return provider.SimulateStream(ctx, c, msgs, chunks, opts)
 }
 
 func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
-	res := genai.Result{}
+	id, err := c.GenAsync(ctx, genai.Messages{msg}, opts)
+	if err != nil {
+		return genai.Result{}, err
+	}
+	// They recommend in their documentation to poll every 0.5s.
+	// TODO: Expose a webhook with a custom OptionsImage.
+	for {
+		select {
+		case <-ctx.Done():
+			return genai.Result{}, ctx.Err()
+		case <-time.After(waitForPoll):
+		}
+		res, err := c.PokeResult(ctx, id)
+		if res.FinishReason == genai.Pending {
+			continue
+		}
+		return res, err
+	}
+}
+
+func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
+	if len(msgs) != 1 {
+		return "", errors.New("must pass exactly one Message")
+	}
+	msg := msgs[0]
 	for i := range msg.Contents {
 		if msg.Contents[i].Text == "" {
 			// TODO: kontext
-			return res, errors.New("only text can be passed as input")
+			return "", errors.New("only text can be passed as input")
 		}
 	}
 	req := ImageRequest{
@@ -249,38 +274,36 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 			req.Seed = v.Seed
 		}
 	}
-	// TODO: Return the job ID to the user in genai.Result.
 	reqresp := ImageRequestResponse{}
 	if err := c.DoRequest(ctx, "POST", "https://api.bfl.ai/v1/"+c.Model, &req, &reqresp); err != nil {
+		return "", err
+	}
+	return genai.Job(reqresp.ID), nil
+}
+
+// PokeResult retrieves the result for a job ID.
+func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, error) {
+	res := genai.Result{}
+	imgres, err := c.GetResultRaw(ctx, id)
+	if err != nil {
 		return res, err
 	}
-	// Two options:
-	// - poll every 0.5s as shows on their documentation.
-	// - expose a webhook with a custom OptionsImage.
-	// - implement a batching API and have the caller loop. We need to return the job ID.
-	for {
-		select {
-		case <-ctx.Done():
-			return res, ctx.Err()
-		case <-time.After(waitForPoll):
-		}
-		imgres, err := c.GetResult(ctx, reqresp.ID)
-		if err != nil {
-			return res, err
-		}
-		if imgres.Status != "Ready" {
-			continue
-		}
-		res.Role = genai.Assistant
-		res.Contents = []genai.Content{{Filename: "content.jpg", URL: imgres.Result.Sample}}
+	if imgres.Status == "Pending" {
+		res.FinishReason = genai.Pending
 		return res, nil
 	}
+	if imgres.Status != "Ready" {
+		return res, fmt.Errorf("unexpected status: %#v", imgres)
+	}
+	res.Role = genai.Assistant
+	res.Contents = []genai.Content{{Filename: "content.jpg", URL: imgres.Result.Sample}}
+	return res, nil
 }
 
 // GetResult retrieves the result for a job ID.
-func (c *Client) GetResult(ctx context.Context, id string) (ImageResult, error) {
+func (c *Client) GetResultRaw(ctx context.Context, id genai.Job) (ImageResult, error) {
 	res := ImageResult{}
-	u := "https://api.us1.bfl.ai/v1/get_result?id=" + url.QueryEscape(id)
+	u := "https://api.us1.bfl.ai/v1/get_result?id=" + url.QueryEscape(string(id))
 	err := c.DoRequest(ctx, "GET", u, nil, &res)
 	return res, err
 }
@@ -288,6 +311,8 @@ func (c *Client) GetResult(ctx context.Context, id string) (ImageResult, error) 
 var waitForPoll = 500 * time.Millisecond
 
 var (
-	_ genai.ProviderDoc        = &Client{}
+	_ genai.ProviderGen        = &Client{}
+	_ genai.ProviderGenAsync   = &Client{}
+	_ genai.ProviderGenDoc     = &Client{}
 	_ genai.ProviderScoreboard = &Client{}
 )

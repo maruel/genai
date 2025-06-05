@@ -124,21 +124,22 @@ func (c *Base[PErrorResponse]) DecodeError(ctx context.Context, url string, resp
 		d.DisallowUnknownFields()
 		r2 = r
 	}
+	herr := &httpjson.Error{StatusCode: resp.StatusCode, ResponseBody: b}
 	if foundExtraKeys, err := decodeJSON(d, er, r2); err == nil {
 		if c.APIKeyURL != "" && resp.StatusCode == http.StatusUnauthorized {
 			if s := er.String(); !strings.Contains(s, c.APIKeyURL) {
-				return fmt.Errorf("http %d: %s. You can get a new API key at %s", resp.StatusCode, s, c.APIKeyURL)
+				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, s, c.APIKeyURL)
 			}
 		}
-		return fmt.Errorf("http %d: %s", resp.StatusCode, er)
+		return fmt.Errorf("%w: %s", herr, er)
 	} else if foundExtraKeys {
 		// In strict mode, return the decoding error instead.
-		return fmt.Errorf("http %d: %w", resp.StatusCode, err)
+		return fmt.Errorf("%w: %w", herr, err)
 	}
 	if c.APIKeyURL != "" && resp.StatusCode == http.StatusUnauthorized {
-		return fmt.Errorf("http %d: %s. You can get a new API key at %s", resp.StatusCode, http.StatusText(resp.StatusCode), c.APIKeyURL)
+		return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, http.StatusText(resp.StatusCode), c.APIKeyURL)
 	}
-	return fmt.Errorf("http %d: %s", resp.StatusCode, http.StatusText(resp.StatusCode))
+	return fmt.Errorf("%w: %s", herr, http.StatusText(resp.StatusCode))
 }
 
 func (c *Base[PErrorResponse]) lateInit() {

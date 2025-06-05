@@ -54,7 +54,7 @@ var Scoreboard = genai.Scoreboard{
 				"openai-fast",
 				"qwen-coder",
 			},
-			GenSync: genai.Functionality{
+			GenSync: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -67,7 +67,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         false,
 			},
-			GenStream: genai.Functionality{
+			GenStream: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -124,7 +124,7 @@ var Scoreboard = genai.Scoreboard{
 				"gptimage",
 				"turbo",
 			},
-			GenSync: genai.Functionality{
+			GenSync: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -137,7 +137,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               false,
 				JSONSchema:         false,
 			},
-			GenStream: genai.Functionality{
+			GenStream: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -158,7 +158,7 @@ var Scoreboard = genai.Scoreboard{
 				"openai",
 				"openai-large",
 			},
-			GenSync: genai.Functionality{
+			GenSync: genai.FunctionalityText{
 				Inline:             true,
 				URL:                true,
 				Thinking:           false,
@@ -171,7 +171,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         false,
 			},
-			GenStream: genai.Functionality{
+			GenStream: genai.FunctionalityText{
 				Inline:             true,
 				URL:                true,
 				Thinking:           false,

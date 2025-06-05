@@ -52,7 +52,7 @@ var Scoreboard = genai.Scoreboard{
 				"@cf/meta/llama-4-scout-17b-16e-instruct",
 				"@cf/meta/llama-3.2-3b-instruct",
 			},
-			GenSync: genai.Functionality{
+			GenSync: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -65,7 +65,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         true,
 			},
-			GenStream: genai.Functionality{
+			GenStream: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,

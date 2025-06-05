@@ -52,7 +52,7 @@ var Scoreboard = genai.Scoreboard{
 			In:     []genai.Modality{genai.ModalityText},
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"gemini-2.0-flash-lite"},
-			GenSync: genai.Functionality{
+			GenSync: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -65,7 +65,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         true,
 			},
-			GenStream: genai.Functionality{
+			GenStream: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -83,7 +83,7 @@ var Scoreboard = genai.Scoreboard{
 			In:     []genai.Modality{genai.ModalityImage, genai.ModalityPDF, genai.ModalityAudio, genai.ModalityVideo, genai.ModalityText},
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"gemini-2.0-flash"},
-			GenSync: genai.Functionality{
+			GenSync: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -96,7 +96,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         true,
 			},
-			GenStream: genai.Functionality{
+			GenStream: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -114,7 +114,7 @@ var Scoreboard = genai.Scoreboard{
 			In:     []genai.Modality{genai.ModalityText},
 			Out:    []genai.Modality{genai.ModalityText, genai.ModalityImage},
 			Models: []string{"gemini-2.0-flash-preview-image-generation"},
-			GenSync: genai.Functionality{
+			GenSync: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           true,
@@ -127,7 +127,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         true,
 			},
-			GenStream: genai.Functionality{
+			GenStream: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           true,

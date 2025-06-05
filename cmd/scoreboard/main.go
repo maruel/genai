@@ -371,7 +371,7 @@ func printList() error {
 
 var textOnly = genai.Modalities{genai.ModalityText}
 
-func functionality(f *genai.Functionality) string {
+func functionality(f *genai.FunctionalityText) string {
 	var items []string
 	if f.JSON {
 		items = append(items, "✅json")

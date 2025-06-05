@@ -42,7 +42,7 @@ var Scoreboard = genai.Scoreboard{
 			Out: []genai.Modality{genai.ModalityText},
 			// "llama-3.1-8b" works too but the ListModels() API returns the malformed string.
 			Models: []string{"llama3.1-8b", "llama-3.3-70b"},
-			GenSync: genai.Functionality{
+			GenSync: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -55,7 +55,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         true,
 			},
-			GenStream: genai.Functionality{
+			GenStream: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -73,7 +73,7 @@ var Scoreboard = genai.Scoreboard{
 			In:     []genai.Modality{genai.ModalityText},
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"qwen-3-32b"},
-			GenSync: genai.Functionality{
+			GenSync: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           true,
@@ -86,7 +86,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         true,
 			},
-			GenStream: genai.Functionality{
+			GenStream: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           true,
@@ -104,7 +104,7 @@ var Scoreboard = genai.Scoreboard{
 			In:     []genai.Modality{genai.ModalityText},
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"llama-4-scout-17b-16e-instruct"},
-			GenSync: genai.Functionality{
+			GenSync: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				ReportTokenUsage:   true,
@@ -116,7 +116,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         true,
 			},
-			GenStream: genai.Functionality{
+			GenStream: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				ReportTokenUsage:   true,

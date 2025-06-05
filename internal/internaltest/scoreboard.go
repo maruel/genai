@@ -61,7 +61,7 @@ func TestScoreboard(t *testing.T, g ProviderGenModalityFactory, filter func(mode
 			data := []struct {
 				stream bool
 				name   string
-				f      *genai.Functionality
+				f      *genai.FunctionalityText
 			}{
 				{false, "GenSync", &s.GenSync},
 				{true, "GenStream", &s.GenStream},
@@ -200,7 +200,7 @@ func TestScoreboard(t *testing.T, g ProviderGenModalityFactory, filter func(mode
 	})
 }
 
-func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText, stream bool) {
 	defaultFR := genai.FinishedStop
 	if !f.ReportFinishReason {
 		defaultFR = ""
@@ -545,7 +545,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 	})
 }
 
-func testVisionFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testVisionFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText, stream bool) {
 	defaultFR := genai.FinishedStop
 	if !f.ReportFinishReason {
 		defaultFR = ""
@@ -589,7 +589,7 @@ func testVisionFunctionalities(t *testing.T, g ProviderGenModalityFactory, model
 	})
 }
 
-func testAudioFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testAudioFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText, stream bool) {
 	defaultFR := genai.FinishedStop
 	if !f.ReportFinishReason {
 		defaultFR = ""
@@ -632,7 +632,7 @@ func testAudioFunctionalities(t *testing.T, g ProviderGenModalityFactory, model 
 	})
 }
 
-func testVideoFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testVideoFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText, stream bool) {
 	defaultFR := genai.FinishedStop
 	if !f.ReportFinishReason {
 		defaultFR = ""
@@ -674,7 +674,7 @@ func testVideoFunctionalities(t *testing.T, g ProviderGenModalityFactory, model 
 	})
 }
 
-func testPDFFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testPDFFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText, stream bool) {
 	defaultFR := genai.FinishedStop
 	if !f.ReportFinishReason {
 		defaultFR = ""
@@ -716,7 +716,7 @@ func testPDFFunctionalities(t *testing.T, g ProviderGenModalityFactory, model st
 	})
 }
 
-func testChatImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testChatImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText, stream bool) {
 	prompt := `A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
 	const style = `Simple, vibrant, varied-colored doodle/hand-drawn sketch`
 	contents := `Generate one square, white-background doodle with smooth, vibrantly colored image depicting ` + prompt + `.
@@ -751,7 +751,7 @@ func testChatImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory,
 	// It can have text, images or both.
 }
 
-func testImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.Functionality) {
+func testImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText) {
 	prompt := `A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
 	const style = `Simple, vibrant, varied-colored doodle/hand-drawn sketch`
 	contents := `Generate one square, white-background doodle with smooth, vibrantly colored image depicting ` + prompt + `.
@@ -786,7 +786,7 @@ func testImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 	}
 }
 
-func testAudioGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.Functionality, stream bool) {
+func testAudioGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText, stream bool) {
 	defaultFR := genai.FinishedStop
 	if !f.ReportFinishReason {
 		defaultFR = ""

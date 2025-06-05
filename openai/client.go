@@ -84,7 +84,7 @@ var Scoreboard = genai.Scoreboard{
 				"gpt-4o-search-preview",
 				"gpt-4o-search-preview-2025-03-11",
 			},
-			GenSync: genai.Functionality{
+			GenSync: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -97,7 +97,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         true,
 			},
-			GenStream: genai.Functionality{
+			GenStream: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -125,7 +125,7 @@ var Scoreboard = genai.Scoreboard{
 				"gpt-4o-mini-audio-preview",
 				"gpt-4o-mini-audio-preview-2024-12-17",
 			},
-			GenSync: genai.Functionality{
+			GenSync: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -138,7 +138,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         true,
 			},
-			GenStream: genai.Functionality{
+			GenStream: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -169,7 +169,7 @@ var Scoreboard = genai.Scoreboard{
 				"o3-mini-2025-01-31",
 				"o4-mini-2025-04-16",
 			},
-			GenSync: genai.Functionality{
+			GenSync: genai.FunctionalityText{
 				Inline:             true,
 				URL:                true,
 				Thinking:           false,
@@ -182,7 +182,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         true,
 			},
-			GenStream: genai.Functionality{
+			GenStream: genai.FunctionalityText{
 				Inline:             true,
 				URL:                true,
 				Thinking:           false,
@@ -204,7 +204,7 @@ var Scoreboard = genai.Scoreboard{
 				"dall-e-3",
 				"gpt-image-1",
 			},
-			GenSync: genai.Functionality{
+			GenSync: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -217,7 +217,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               false,
 				JSONSchema:         false,
 			},
-			GenStream: genai.Functionality{
+			GenStream: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,

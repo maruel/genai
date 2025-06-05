@@ -742,13 +742,13 @@ type ProviderScoreboard interface {
 	Scoreboard() Scoreboard
 }
 
-// Functionality defines which functionalites are supported in a scenario.
+// FunctionalityText defines which functionalites are supported in a scenario.
 //
 // The second group are supported features.
 //
 // The third group is to identify bugged providers. A provider is considered to be bugged if any of the field
 // is false.
-type Functionality struct {
+type FunctionalityText struct {
 	// Inline means the input modality can be provided inline. For non-textual data, it's generally as base64 encoded
 	// string.
 	Inline bool
@@ -805,9 +805,9 @@ type Scenario struct {
 	Models []string
 
 	// GenSync declares features supported when using ProviderGen.GenSync
-	GenSync Functionality
+	GenSync FunctionalityText
 	// GenStream declares features supported when using ProviderGen.GenStream
-	GenStream Functionality
+	GenStream FunctionalityText
 
 	_ struct{}
 }

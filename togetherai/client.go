@@ -97,7 +97,7 @@ var Scoreboard = genai.Scoreboard{
 				"scb10x/scb10x-llama3-1-typhoon2-8b-instruct",
 				"togethercomputer/Refuel-Llm-V2",
 			},
-			GenSync: genai.Functionality{
+			GenSync: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -110,7 +110,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               true,
 				JSONSchema:         true,
 			},
-			GenStream: genai.Functionality{
+			GenStream: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -141,7 +141,7 @@ var Scoreboard = genai.Scoreboard{
 				"black-forest-labs/FLUX.1-pro",
 				"black-forest-labs/FLUX.1-dev-lora",
 			},
-			GenSync: genai.Functionality{
+			GenSync: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,
@@ -154,7 +154,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:               false,
 				JSONSchema:         false,
 			},
-			GenStream: genai.Functionality{
+			GenStream: genai.FunctionalityText{
 				Inline:             true,
 				URL:                false,
 				Thinking:           false,

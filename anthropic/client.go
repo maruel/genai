@@ -153,10 +153,10 @@ type OptionsText struct {
 
 // https://docs.anthropic.com/en/api/messages
 type ChatRequest struct {
-	Model    string    `json:"model,omitzero"`
-	MaxToks  int64     `json:"max_tokens"`
-	Messages []Message `json:"messages"`
-	Metadata struct {
+	Model     string    `json:"model,omitzero"`
+	MaxTokens int64     `json:"max_tokens,omitzero"`
+	Messages  []Message `json:"messages"`
+	Metadata  struct {
 		UserID string `json:"user_id,omitzero"`
 	} `json:"metadata,omitzero"`
 	StopSequences []string        `json:"stop_sequences,omitzero"`
@@ -202,21 +202,21 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			}
 		}
 	}
-	if c.MaxToks == 0 {
+	if c.MaxTokens == 0 {
 		// TODO: Query the model. Anthropic requires a value! This is quite annoying.
 		if strings.HasPrefix(model, "claude-3-opus-") || strings.HasPrefix(model, "claude-3-haiku-") {
-			c.MaxToks = 4096
+			c.MaxTokens = 4096
 		} else if strings.HasPrefix(model, "claude-3-5-") {
-			c.MaxToks = 8192
+			c.MaxTokens = 8192
 		} else if strings.HasPrefix(model, "claude-3-7-") {
-			c.MaxToks = 64000
+			c.MaxTokens = 64000
 		} else if strings.HasPrefix(model, "claude-4-sonnet-") {
-			c.MaxToks = 64000
+			c.MaxTokens = 64000
 		} else if strings.HasPrefix(model, "claude-4-opus-") {
-			c.MaxToks = 32000
+			c.MaxTokens = 32000
 		} else {
 			// Default value for new models.
-			c.MaxToks = 32000
+			c.MaxTokens = 32000
 		}
 	}
 
@@ -258,7 +258,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 func (c *ChatRequest) initOptions(v *genai.OptionsText) ([]string, []error) {
 	var unsupported []string
 	var errs []error
-	c.MaxToks = v.MaxTokens
+	c.MaxTokens = v.MaxTokens
 	c.Temperature = v.Temperature
 	if v.SystemPrompt != "" {
 		c.System = []SystemMessage{
@@ -899,6 +899,76 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 		},
 	}, nil
 }
+
+type BatchRequest []BatchRequestMessage
+
+// https://docs.anthropic.com/en/api/creating-message-batches
+type BatchRequestMessage struct {
+	CustomID string `json:"custom_id,omitzero"`
+	Params   struct {
+		Model      string    `json:"model"`
+		Messages   []Message `json:"messages"`
+		MaxTokens  int64     `json:"max_tokens,omitzero"`
+		Container  string    `json:"container,omitzero"`
+		MCPServers []struct {
+			Name               string `json:"name,omitzero"`
+			Type               string `json:"type,omitzero"` // "url"
+			URL                string `json:"url,omitzero"`
+			AuthorizationToken string `json:"authorization_token,omitzero"`
+			ToolConfiguration  struct {
+				AllowedTools []string `json:"allowed_tools,omitzero"`
+				Enabled      bool     `json:"enabled,omitzero"`
+			} `json:"tool_configuration,omitzero"`
+		} `json:"mcp_servers,omitzero"`
+		Metadata struct {
+			UserID        string          `json:"user_id,omitzero"`      // Should be a hash or UUID, opaque, to detect abuse, no PII
+			ServiceTier   string          `json:"service_tier,omitzero"` // "auto", "standard_only"
+			StopSequences []string        `json:"stop_sequences,omitzero"`
+			Stream        bool            `json:"stream,omitzero"`
+			System        []SystemMessage `json:"system,omitzero"`      // Must be type "text"
+			Temperature   float64         `json:"temperature,omitzero"` // [0, 1]
+			Thinking      Thinking        `json:"thinking,omitzero"`
+			ToolChoice    ToolChoice      `json:"tool_choice,omitzero"`
+			Tools         []Tool          `json:"tools,omitzero"`
+			TopK          int64           `json:"top_k,omitzero"` // [1, ]
+			TopP          float64         `json:"top_p,omitzero"` // [0, 1]
+		} `json:"metadata"`
+	} `json:"params"`
+}
+
+// https://docs.anthropic.com/en/api/creating-message-batches
+type BatchResponse struct {
+	ArchivedAt        time.Time `json:"archived_at"`
+	CancelInitiatedAt time.Time `json:"cancel_initiated_at"`
+	CreatedAt         time.Time `json:"created_at"`
+	EndedAt           time.Time `json:"ended_at"`
+	ExpiresAt         time.Time `json:"expires_at"`
+	ID                string    `json:"id"`
+	ProcessingStatus  string    `json:"processing_status"` // "in_progress", "canceling", "ended"
+	RequestCounts     struct {
+		Canceled   int64 `json:"canceled"`
+		Errored    int64 `json:"errored"`
+		Expired    int64 `json:"expired"`
+		Processing int64 `json:"processing"`
+		Succeeded  int64 `json:"succeeded"`
+	} `json:"request_counts"`
+	ResultURL string `json:"result_url"`
+	Type      string `json:"type"` // "message_batch"
+}
+
+/* SOON
+func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
+	// https://docs.anthropic.com/en/docs/build-with-claude/batch-processing
+	// https://docs.anthropic.com/en/api/creating-message-batches
+	return "", errors.New("implement me")
+}
+
+func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, error) {
+	res := genai.Result{}
+	// https://api.anthropic.com/v1/messages/batches/{message_batch_id}/results
+	return res, errors.New("implement me")
+}
+*/
 
 func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard

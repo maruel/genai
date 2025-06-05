@@ -412,6 +412,9 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	case FinishStopSequence:
 		return genai.FinishedStopSequence
 	default:
+		if !internal.BeLenient {
+			panic(f)
+		}
 		return genai.FinishReason(f)
 	}
 }

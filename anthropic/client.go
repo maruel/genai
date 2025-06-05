@@ -697,6 +697,9 @@ func (s StopReason) ToFinishReason() genai.FinishReason {
 	case StopMaxTokens:
 		return genai.FinishedLength
 	default:
+		if !internal.BeLenient {
+			panic(s)
+		}
 		return genai.FinishReason(s)
 	}
 }

@@ -14,6 +14,7 @@ import (
 	"net/http"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/provider"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
@@ -272,6 +273,9 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	case FinishLength:
 		return genai.FinishedLength
 	default:
+		if !internal.BeLenient {
+			panic(f)
+		}
 		return genai.FinishReason(f)
 	}
 }

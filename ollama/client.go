@@ -338,11 +338,22 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 type DoneReason string
 
 const (
-	DoneStop DoneReason = "stop"
+	DoneStop   DoneReason = "stop"
+	DoneLength DoneReason = "length"
 )
 
 func (d DoneReason) ToFinishReason() genai.FinishReason {
-	return genai.FinishReason(d)
+	switch d {
+	case DoneStop:
+		return genai.FinishedStop
+	case DoneLength:
+		return genai.FinishedLength
+	default:
+		if !internal.BeLenient {
+			panic(d)
+		}
+		return genai.FinishReason(d)
+	}
 }
 
 type ChatStreamChunkResponse ChatResponse

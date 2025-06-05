@@ -605,6 +605,9 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	case FinishToolCalls:
 		return genai.FinishedToolCalls
 	default:
+		if !internal.BeLenient {
+			panic(f)
+		}
 		return genai.FinishReason(f)
 	}
 }

@@ -813,6 +813,9 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 		// TODO: Confirm. We lose on nuance here but does it matter?
 		return genai.FinishedContentFilter
 	default:
+		if !internal.BeLenient {
+			panic(f)
+		}
 		return genai.FinishReason(strings.ToLower(string(f)))
 	}
 }
@@ -1215,6 +1218,8 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		if pkt.UsageMetadata.TotalTokenCount != 0 {
 			result.InputTokens = pkt.UsageMetadata.PromptTokenCount
 			result.OutputTokens = pkt.UsageMetadata.TotalTokenCount
+		}
+		if pkt.Candidates[0].FinishReason != "" {
 			result.FinishReason = pkt.Candidates[0].FinishReason.ToFinishReason()
 		}
 		switch role := pkt.Candidates[0].Content.Role; role {

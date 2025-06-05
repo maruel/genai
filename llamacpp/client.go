@@ -270,6 +270,9 @@ func (s StopType) ToFinishReason() genai.FinishReason {
 	case StopWord:
 		return genai.FinishedStopSequence
 	default:
+		if !internal.BeLenient {
+			panic(s)
+		}
 		return genai.FinishReason(s)
 	}
 }
@@ -715,6 +718,8 @@ func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<-
 		if msg.Timings.PredictedN != 0 {
 			result.InputTokens = msg.Timings.PromptN
 			result.OutputTokens = msg.Timings.PredictedN
+		}
+		if msg.StopType != "" {
 			result.FinishReason = msg.StopType.ToFinishReason()
 		}
 		f := genai.ContentFragment{TextFragment: msg.Content}

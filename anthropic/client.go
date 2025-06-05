@@ -1192,6 +1192,9 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 }
 
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
+	if err := c.Validate(); err != nil {
+		return "", err
+	}
 	// https://docs.anthropic.com/en/docs/build-with-claude/batch-processing
 	// https://docs.anthropic.com/en/api/creating-message-batches
 	// Anthropic supports creating multiple processing requests as part on one HTTP post. I'm not sure the value

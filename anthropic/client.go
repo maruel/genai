@@ -154,7 +154,7 @@ type OptionsText struct {
 // https://docs.anthropic.com/en/api/messages
 type ChatRequest struct {
 	Model      string    `json:"model,omitzero"`
-	MaxTokens  int64     `json:"max_tokens,omitzero"`
+	MaxTokens  int64     `json:"max_tokens"`
 	Messages   []Message `json:"messages"`
 	Container  string    `json:"container,omitzero"` // identifier for reuse across requests
 	MCPServers []struct {
@@ -929,7 +929,7 @@ type BatchRequestMessage struct {
 	Params   struct {
 		Model      string    `json:"model"`
 		Messages   []Message `json:"messages"`
-		MaxTokens  int64     `json:"max_tokens,omitzero"`
+		MaxTokens  int64     `json:"max_tokens"`
 		Container  string    `json:"container,omitzero"`
 		MCPServers []struct {
 			Name               string `json:"name,omitzero"`

@@ -153,12 +153,24 @@ type OptionsText struct {
 
 // https://docs.anthropic.com/en/api/messages
 type ChatRequest struct {
-	Model     string    `json:"model,omitzero"`
-	MaxTokens int64     `json:"max_tokens,omitzero"`
-	Messages  []Message `json:"messages"`
-	Metadata  struct {
-		UserID string `json:"user_id,omitzero"`
+	Model      string    `json:"model,omitzero"`
+	MaxTokens  int64     `json:"max_tokens,omitzero"`
+	Messages   []Message `json:"messages"`
+	Container  string    `json:"container,omitzero"` // identifier for reuse across requests
+	MCPServers []struct {
+		Name               string `json:"name,omitzero"`
+		Type               string `json:"type,omitzero"` // "url"
+		URL                string `json:"url,omitzero"`
+		AuthorizationToken string `json:"authorization_token,omitzero"`
+		ToolConfiguration  struct {
+			AllowedTools []string `json:"allowed_tools,omitzero"`
+			Enabled      bool     `json:"enabled,omitzero"`
+		} `json:"tool_configuration,omitzero"`
+	} `json:"mcp_servers,omitzero"`
+	Metadata struct {
+		UserID string `json:"user_id,omitzero"` // Should be a hash or UUID, opaque, to detect abuse, no PII
 	} `json:"metadata,omitzero"`
+	ServiceTier   string          `json:"service_tier,omitzero"` // "auto", "standard_only"
 	StopSequences []string        `json:"stop_sequences,omitzero"`
 	Stream        bool            `json:"stream,omitzero"`
 	System        []SystemMessage `json:"system,omitzero"`      // Must be type "text"
@@ -662,6 +674,10 @@ type ChatResponse struct {
 	StopSequence string     `json:"stop_sequence"`
 	Type         string     `json:"type"` // "message"
 	Usage        Usage      `json:"usage"`
+	Container    struct {
+		ExpiresAt time.Time `json:"expires_at"`
+		ID        string    `json:"id"`
+	} `json:"container"`
 }
 
 func (c *ChatResponse) ToResult() (genai.Result, error) {
@@ -677,6 +693,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	return out, err
 }
 
+// https://docs.anthropic.com/en/api/messages#response-stop-reason
 type StopReason string
 
 const (
@@ -684,6 +701,8 @@ const (
 	StopToolUse   StopReason = "tool_use"
 	StopSequence  StopReason = "stop_sequence"
 	StopMaxTokens StopReason = "max_tokens"
+	StopPauseTurn StopReason = "pause_turn" //  We paused a long-running turn. You may provide the response back as-is in a subsequent request to let the model continue.
+	StopRefusal   StopReason = "refusal"
 )
 
 func (s StopReason) ToFinishReason() genai.FinishReason {
@@ -838,10 +857,12 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 //
 
+// https://docs.anthropic.com/en/api/messages#response-error
 type ErrorResponse struct {
 	Type  string `json:"type"` // "error"
 	Error struct {
-		Type    string `json:"type"` // e.g. "invalid_request_error"
+		// Type is one of "invalid_request_error", "authentication_error", "billing_error", "permission_error", "not_found_error", "rate_limit_error", "timeout_error", "api_error", "overloaded_error"
+		Type    string `json:"type"`
 		Message string `json:"message"`
 	} `json:"error"`
 }

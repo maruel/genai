@@ -16,6 +16,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -190,6 +191,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	msgToCache := 0
 	// Default to disabled thinking.
 	c.Thinking.Type = "disabled"
+	// Anthropic requires a value! And their models listing API doesn't provide the model's acceptable values! This is quite annoying.
+	c.MaxTokens = modelsMaxTokens(model)
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
 			errs = append(errs, err)
@@ -212,23 +215,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			default:
 				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}
-		}
-	}
-	if c.MaxTokens == 0 {
-		// TODO: Query the model. Anthropic requires a value! This is quite annoying.
-		if strings.HasPrefix(model, "claude-3-opus-") || strings.HasPrefix(model, "claude-3-haiku-") {
-			c.MaxTokens = 4096
-		} else if strings.HasPrefix(model, "claude-3-5-") {
-			c.MaxTokens = 8192
-		} else if strings.HasPrefix(model, "claude-3-7-") {
-			c.MaxTokens = 64000
-		} else if strings.HasPrefix(model, "claude-4-sonnet-") {
-			c.MaxTokens = 64000
-		} else if strings.HasPrefix(model, "claude-4-opus-") {
-			c.MaxTokens = 32000
-		} else {
-			// Default value for new models.
-			c.MaxTokens = 32000
 		}
 	}
 
@@ -270,7 +256,9 @@ func (c *ChatRequest) SetStream(stream bool) {
 func (c *ChatRequest) initOptions(v *genai.OptionsText) ([]string, []error) {
 	var unsupported []string
 	var errs []error
-	c.MaxTokens = v.MaxTokens
+	if v.MaxTokens != 0 {
+		c.MaxTokens = v.MaxTokens
+	}
 	c.Temperature = v.Temperature
 	if v.SystemPrompt != "" {
 		c.System = []SystemMessage{
@@ -323,6 +311,23 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText) ([]string, []error) {
 	return unsupported, errs
 }
 
+func modelsMaxTokens(model string) int64 {
+	// Anthropic requires a value! And their models listing API doesn't provide the model's acceptable values! This is quite annoying.
+	if strings.HasPrefix(model, "claude-3-opus-") || strings.HasPrefix(model, "claude-3-haiku-") {
+		return 4096
+	} else if strings.HasPrefix(model, "claude-3-5-") {
+		return 8192
+	} else if strings.HasPrefix(model, "claude-3-7-") {
+		return 64000
+	} else if strings.HasPrefix(model, "claude-4-sonnet-") {
+		return 64000
+	} else if strings.HasPrefix(model, "claude-4-opus-") {
+		return 32000
+	}
+	// Default value for new models.
+	return 32000
+}
+
 // SystemMessage is used in the system prompt.
 type SystemMessage struct {
 	Type         string `json:"type,omitzero"` // "text"
@@ -349,6 +354,8 @@ func (m *Message) From(in *genai.Message) error {
 	switch role := in.Role; role {
 	case genai.Assistant, genai.User:
 		m.Role = string(in.Role)
+	case "":
+		return errors.New("message doesn't have role defined")
 	default:
 		return fmt.Errorf("unsupported role %q", role)
 	}
@@ -377,6 +384,8 @@ func (m *Message) To(out *genai.Message) error {
 	switch role := m.Role; role {
 	case "assistant", "user":
 		out.Role = genai.Role(role)
+	case "":
+		return errors.New("message doesn't have role defined")
 	default:
 		return fmt.Errorf("unsupported role %q", role)
 	}
@@ -816,8 +825,269 @@ type Usage struct {
 	OutputTokens             int64  `json:"output_tokens"`
 	CacheCreationInputTokens int64  `json:"cache_creation_input_tokens"`
 	CacheReadInputTokens     int64  `json:"cache_read_input_tokens"`
-	ServiceTier              string `json:"service_tier"` // "standard"
+	ServiceTier              string `json:"service_tier"` // "standard", "batch"
 }
+
+//
+
+// https://docs.anthropic.com/en/api/creating-message-batches
+type BatchRequest struct {
+	Requests []BatchRequestItem `json:"requests"`
+}
+
+// https://docs.anthropic.com/en/api/creating-message-batches
+type BatchRequestItem struct {
+	CustomID string             `json:"custom_id"`
+	Params   BatchRequestParams `json:"params"`
+}
+
+func (b *BatchRequestItem) Init(msgs genai.Messages, opts genai.Options, model string) error {
+	// TODO: We need to make this unique, the field is required. The problem is that this breaks HTTP recording.
+	// var bytes [12]byte
+	// _, _ = rand.Read(bytes[:])
+	// b.CustomID = base64.RawURLEncoding.EncodeToString(bytes[:])
+	b.CustomID = "TODO"
+	return b.Params.Init(msgs, opts, model)
+}
+
+type BatchRequestParams struct {
+	Model      string    `json:"model"`
+	Messages   []Message `json:"messages"`
+	MaxTokens  int64     `json:"max_tokens"`
+	Container  string    `json:"container,omitzero"`
+	MCPServers []struct {
+		Name               string `json:"name,omitzero"`
+		Type               string `json:"type,omitzero"` // "url"
+		URL                string `json:"url,omitzero"`
+		AuthorizationToken string `json:"authorization_token,omitzero"`
+		ToolConfiguration  struct {
+			AllowedTools []string `json:"allowed_tools,omitzero"`
+			Enabled      bool     `json:"enabled,omitzero"`
+		} `json:"tool_configuration,omitzero"`
+	} `json:"mcp_servers,omitzero"`
+	Metadata struct {
+		UserID string `json:"user_id,omitzero"` // Should be a hash or UUID, opaque, to detect abuse, no PII
+	} `json:"metadata"`
+	ServiceTier   string          `json:"service_tier,omitzero"` // "auto", "standard_only"
+	StopSequences []string        `json:"stop_sequences,omitzero"`
+	Stream        bool            `json:"stream,omitzero"`
+	System        []SystemMessage `json:"system,omitzero"`      // Must be type "text"
+	Temperature   float64         `json:"temperature,omitzero"` // [0, 1]
+	Thinking      Thinking        `json:"thinking,omitzero"`
+	ToolChoice    ToolChoice      `json:"tool_choice,omitzero"`
+	Tools         []Tool          `json:"tools,omitzero"`
+	TopK          int64           `json:"top_k,omitzero"` // [1, ]
+	TopP          float64         `json:"top_p,omitzero"` // [0, 1]
+}
+
+// Init is very similar to ChatRequest.Init() with a few kinks because the API is not exactly the same.
+func (b *BatchRequestParams) Init(msgs genai.Messages, opts genai.Options, model string) error {
+	b.Model = model
+	var errs []error
+	var unsupported []string
+	// Default to disabled thinking.
+	b.Thinking.Type = "disabled"
+	// Anthropic requires a value! And their models listing API doesn't provide the model's acceptable values! This is quite annoying.
+	b.MaxTokens = modelsMaxTokens(model)
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			errs = append(errs, err)
+		} else {
+			switch v := opts.(type) {
+			case *OptionsText:
+				unsupported, errs = b.initOptions(&v.OptionsText)
+				if v.MessagesToCache != 0 {
+					unsupported = append(unsupported, "MessagesToCache")
+				}
+				if v.ThinkingBudget > 0 {
+					if v.ThinkingBudget >= v.MaxTokens {
+						errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, v.MaxTokens))
+					}
+					// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
+					// Thinking isn’t compatible with temperature, top_p, or top_k modifications as well as forced tool use.
+					b.Thinking.BudgetTokens = v.ThinkingBudget
+					b.Thinking.Type = "enabled"
+				}
+			case *genai.OptionsText:
+				unsupported, errs = b.initOptions(v)
+			default:
+				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+			}
+		}
+	}
+
+	if err := msgs.Validate(); err != nil {
+		errs = append(errs, err)
+	} else {
+		b.Messages = make([]Message, 0, len(msgs))
+		for i := range msgs {
+			switch msgs[i].Role {
+			case genai.User, genai.Assistant:
+				b.Messages = append(b.Messages, Message{})
+				if err := b.Messages[len(b.Messages)-1].From(&msgs[i]); err != nil {
+					errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+				}
+				// Do not set cache here since it's irrelevant when batching.
+			default:
+				errs = append(errs, fmt.Errorf("message %d: unsupported role %q", i, msgs[i].Role))
+				continue
+			}
+		}
+	}
+	if len(unsupported) > 0 {
+		// If we have unsupported features but no other errors, return a continuable error
+		if len(errs) == 0 {
+			return &genai.UnsupportedContinuableError{Unsupported: unsupported}
+		}
+		// Otherwise, add the unsupported features to the error list
+		errs = append(errs, &genai.UnsupportedContinuableError{Unsupported: unsupported})
+	}
+	return errors.Join(errs...)
+}
+
+// initOptions is very similar to ChatRequest.initOptions() with a few kinks because the API is not exactly the same.
+func (b *BatchRequestParams) initOptions(v *genai.OptionsText) ([]string, []error) {
+	var unsupported []string
+	var errs []error
+	if v.MaxTokens != 0 {
+		b.MaxTokens = v.MaxTokens
+	}
+	b.Temperature = v.Temperature
+	if v.SystemPrompt != "" {
+		b.System = []SystemMessage{
+			{
+				Type: "text",
+				Text: v.SystemPrompt,
+			},
+		}
+		// TODO: Add automatic caching.
+		// c.System[0].CacheControl.Type = "ephemeral"
+	}
+	b.TopP = v.TopP
+	if v.Seed != 0 {
+		unsupported = append(unsupported, "Seed")
+	}
+	b.TopK = v.TopK
+	b.StopSequences = v.Stop
+	if v.ReplyAsJSON {
+		errs = append(errs, errors.New("unsupported option ReplyAsJSON"))
+	}
+	if v.DecodeAs != nil {
+		errs = append(errs, errors.New("unsupported option DecodeAs"))
+	}
+	if len(v.Tools) != 0 {
+		// We need to discard claude 2 and 3. This is a bit annoying to have to hardcode this.
+		if strings.HasPrefix(b.Model, "claude-2") || strings.HasPrefix(b.Model, "claude-3-haiku") ||
+			strings.HasPrefix(b.Model, "claude-3-sonnet") || strings.HasPrefix(b.Model, "claude-3-opus") {
+			errs = append(errs, errors.New("unsupported option Tools"))
+		}
+		switch v.ToolCallRequest {
+		case genai.ToolCallAny:
+			b.ToolChoice.Type = ToolChoiceAuto
+		case genai.ToolCallRequired:
+			b.ToolChoice.Type = ToolChoiceAny
+		case genai.ToolCallNone:
+			b.ToolChoice.Type = ToolChoiceNone
+		}
+		b.Tools = make([]Tool, len(v.Tools))
+		for i, t := range v.Tools {
+			// Weirdly enough, we must not set the type. See example at
+			// https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview
+			// c.Tools[i].Type = "custom"
+			b.Tools[i].Name = t.Name
+			b.Tools[i].Description = t.Description
+			if b.Tools[i].InputSchema = t.InputSchemaOverride; b.Tools[i].InputSchema == nil {
+				b.Tools[i].InputSchema = t.GetInputSchema()
+			}
+		}
+	}
+	return unsupported, errs
+}
+
+// https://docs.anthropic.com/en/api/creating-message-batches
+type BatchResponse struct {
+	ID                string `json:"id"`   // Starts with "msgbatch_"
+	Type              string `json:"type"` // "message_batch"
+	ArchivedAt        Time   `json:"archived_at"`
+	CancelInitiatedAt Time   `json:"cancel_initiated_at"`
+	CreatedAt         Time   `json:"created_at"`
+	EndedAt           Time   `json:"ended_at"`
+	ExpiresAt         Time   `json:"expires_at"`
+	ProcessingStatus  string `json:"processing_status"` // "in_progress", "canceling", "ended"
+	RequestCounts     struct {
+		Canceled   int64 `json:"canceled"`
+		Errored    int64 `json:"errored"`
+		Expired    int64 `json:"expired"`
+		Processing int64 `json:"processing"`
+		Succeeded  int64 `json:"succeeded"`
+	} `json:"request_counts"`
+	ResultsURL string `json:"results_url"`
+}
+
+// https://docs.anthropic.com/en/api/retrieving-message-batch-results
+type BatchQueryResponse struct {
+	CustomID string `json:"custom_id"`
+	Result   struct {
+		Type string `json:"type"` // "succeeded", "canceled", "expired", "errored"
+
+		// Type == "succeeded"
+		// Message is not a standard message, it's closer to streaming's version.
+		Message struct {
+			Type         string     `json:"type"` // "message"
+			Role         string     `json:"role"` // "assistant"
+			Content      []Content  `json:"content"`
+			ID           string     `json:"id"`
+			Model        string     `json:"model"`
+			StopReason   StopReason `json:"stop_reason"`
+			StopSequence string     `json:"stop_sequence"`
+			Usage        Usage      `json:"usage"`
+		} `json:"message"`
+
+		// Type == "errored"
+		Error struct {
+			Type  string `json:"type"` // "error"
+			Error struct {
+				Type    string   `json:"type"`    // "invalid_request_error"
+				Message string   `json:"message"` // e.g. "metadata.thinking: Extra inputs are not permitted"
+				Details struct{} `json:"details"`
+			} `json:"error"`
+		} `json:"error"`
+	} `json:"result"`
+}
+
+func (b *BatchQueryResponse) To(out *genai.Message) error {
+	switch role := b.Result.Message.Role; role {
+	case "assistant":
+		out.Role = genai.Role(role)
+	case "":
+		return errors.New("message doesn't have role defined")
+	default:
+		return fmt.Errorf("unsupported role %q", role)
+	}
+	// We need to split actual content and tool calls.
+	for i := range b.Result.Message.Content {
+		switch b.Result.Message.Content[i].Type {
+		case ContentText, ContentThinking, ContentRedactedThinking:
+			out.Contents = append(out.Contents, genai.Content{})
+			if err := b.Result.Message.Content[i].ToContent(&out.Contents[len(out.Contents)-1]); err != nil {
+				return fmt.Errorf("block %d: %w", i, err)
+			}
+		case ContentToolUse:
+			out.ToolCalls = append(out.ToolCalls, genai.ToolCall{})
+			if err := b.Result.Message.Content[i].ToToolCall(&out.ToolCalls[len(out.ToolCalls)-1]); err != nil {
+				return fmt.Errorf("block %d: %w", i, err)
+			}
+			// ContentImage, ContentDocument, ContentToolResult
+		default:
+			return fmt.Errorf("unsupported content type %q", b.Result.Message.Content[i].Type)
+		}
+	}
+	return nil
+}
+
+type Time string
+
+//
 
 type Model struct {
 	CreatedAt   time.Time `json:"created_at"`
@@ -921,75 +1191,53 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 	}, nil
 }
 
-type BatchRequest []BatchRequestMessage
-
-// https://docs.anthropic.com/en/api/creating-message-batches
-type BatchRequestMessage struct {
-	CustomID string `json:"custom_id,omitzero"`
-	Params   struct {
-		Model      string    `json:"model"`
-		Messages   []Message `json:"messages"`
-		MaxTokens  int64     `json:"max_tokens"`
-		Container  string    `json:"container,omitzero"`
-		MCPServers []struct {
-			Name               string `json:"name,omitzero"`
-			Type               string `json:"type,omitzero"` // "url"
-			URL                string `json:"url,omitzero"`
-			AuthorizationToken string `json:"authorization_token,omitzero"`
-			ToolConfiguration  struct {
-				AllowedTools []string `json:"allowed_tools,omitzero"`
-				Enabled      bool     `json:"enabled,omitzero"`
-			} `json:"tool_configuration,omitzero"`
-		} `json:"mcp_servers,omitzero"`
-		Metadata struct {
-			UserID        string          `json:"user_id,omitzero"`      // Should be a hash or UUID, opaque, to detect abuse, no PII
-			ServiceTier   string          `json:"service_tier,omitzero"` // "auto", "standard_only"
-			StopSequences []string        `json:"stop_sequences,omitzero"`
-			Stream        bool            `json:"stream,omitzero"`
-			System        []SystemMessage `json:"system,omitzero"`      // Must be type "text"
-			Temperature   float64         `json:"temperature,omitzero"` // [0, 1]
-			Thinking      Thinking        `json:"thinking,omitzero"`
-			ToolChoice    ToolChoice      `json:"tool_choice,omitzero"`
-			Tools         []Tool          `json:"tools,omitzero"`
-			TopK          int64           `json:"top_k,omitzero"` // [1, ]
-			TopP          float64         `json:"top_p,omitzero"` // [0, 1]
-		} `json:"metadata"`
-	} `json:"params"`
-}
-
-// https://docs.anthropic.com/en/api/creating-message-batches
-type BatchResponse struct {
-	ArchivedAt        time.Time `json:"archived_at"`
-	CancelInitiatedAt time.Time `json:"cancel_initiated_at"`
-	CreatedAt         time.Time `json:"created_at"`
-	EndedAt           time.Time `json:"ended_at"`
-	ExpiresAt         time.Time `json:"expires_at"`
-	ID                string    `json:"id"`
-	ProcessingStatus  string    `json:"processing_status"` // "in_progress", "canceling", "ended"
-	RequestCounts     struct {
-		Canceled   int64 `json:"canceled"`
-		Errored    int64 `json:"errored"`
-		Expired    int64 `json:"expired"`
-		Processing int64 `json:"processing"`
-		Succeeded  int64 `json:"succeeded"`
-	} `json:"request_counts"`
-	ResultURL string `json:"result_url"`
-	Type      string `json:"type"` // "message_batch"
-}
-
-/* SOON
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
 	// https://docs.anthropic.com/en/docs/build-with-claude/batch-processing
 	// https://docs.anthropic.com/en/api/creating-message-batches
-	return "", errors.New("implement me")
+	// Anthropic supports creating multiple processing requests as part on one HTTP post. I'm not sure the value
+	// of doing that, as it increases the risks of partial failure. So for now do not expose the functionality
+	// of creating multiple requests at once unless we realize there's a specific use case.
+	b := BatchRequest{Requests: []BatchRequestItem{{}}}
+	if err := b.Requests[0].Init(msgs, opts, c.Model); err != nil {
+		return "", err
+	}
+	resp := BatchResponse{}
+	u := "https://api.anthropic.com/v1/messages/batches"
+	err := c.DoRequest(ctx, "POST", u, &b, &resp)
+	// Warning: The documentation at https://docs.anthropic.com/en/api/retrieving-message-batch-results states
+	// that the URL may change in the future.
+	return genai.Job(resp.ID), err
 }
 
 func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, error) {
 	res := genai.Result{}
-	// https://api.anthropic.com/v1/messages/batches/{message_batch_id}/results
-	return res, errors.New("implement me")
+	resp := BatchQueryResponse{}
+	// Warning: The documentation at https://docs.anthropic.com/en/api/retrieving-message-batch-results states
+	// that the URL may change in the future.
+	u := "https://api.anthropic.com/v1/messages/batches/" + url.PathEscape(string(id)) + "/results"
+	if err := c.DoRequest(ctx, "GET", u, nil, &resp); err != nil {
+		var herr *httpjson.Error
+		if errors.As(err, &herr) && herr.StatusCode == 404 {
+			er := ErrorResponse{}
+			if json.Unmarshal(herr.ResponseBody, &er) == nil {
+				if er.Error.Type == "not_found_error" {
+					res.FinishReason = genai.Pending
+					return res, nil
+				}
+			}
+		}
+		return res, err
+	}
+	if resp.Result.Type == "errored" {
+		return res, fmt.Errorf("error %s: %s", resp.Result.Error.Error.Type, resp.Result.Error.Error.Message)
+	}
+	err := resp.To(&res.Message)
+	res.InputTokens = resp.Result.Message.Usage.InputTokens
+	res.InputCachedTokens = resp.Result.Message.Usage.CacheReadInputTokens
+	res.OutputTokens = resp.Result.Message.Usage.OutputTokens
+	res.FinishReason = resp.Result.Message.StopReason.ToFinishReason()
+	return res, err
 }
-*/
 
 func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard

@@ -8,6 +8,7 @@ import (
 	_ "embed"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/anthropic"
@@ -17,6 +18,42 @@ import (
 
 func TestClient_Scoreboard(t *testing.T) {
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen { return getClient(t, m) }, nil)
+}
+
+// This is a tricky test since batch operations can take up to 24h to complete.
+func TestClient_Batch(t *testing.T) {
+	ctx := t.Context()
+	c := getClient(t, "claude-3-haiku-20240307")
+	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Tell a joke in 10 words")}
+	job, err := c.GenAsync(ctx, msgs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// TODO: Detect when recording and sleep only in this case.
+	is_recording := false
+	for {
+		res, err := c.PokeResult(ctx, job)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if res.FinishReason == genai.Pending {
+			if is_recording {
+				t.Logf("Waiting...")
+				time.Sleep(time.Second)
+			}
+			continue
+		}
+		if res.InputTokens == 0 || res.OutputTokens == 0 {
+			t.Error("expected usage")
+		}
+		if res.FinishReason != genai.FinishedStop {
+			t.Errorf("finish reason: %s", res.FinishReason)
+		}
+		if s := res.AsText(); len(s) < 15 {
+			t.Errorf("not enough text: %q", s)
+		}
+		break
+	}
 }
 
 func TestClient_ProviderGen_errors(t *testing.T) {

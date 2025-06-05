@@ -1,0 +1,2754 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 234
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"requests":[{"custom_id":"TODO","params":{"model":"claude-3-haiku-20240307","messages":[{"role":"user","content":[{"type":"text","text":"Tell a joke in 10 words"}]}],"max_tokens":4096,"metadata":{},"thinking":{"type":"disabled"}}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"msgbatch_01UNjoMqYnDU3gf8B1dQhnF8","type":"message_batch","processing_status":"in_progress","request_counts":{"processing":1,"succeeded":0,"errored":0,"canceled":0,"expired":0},"ended_at":null,"created_at":"2025-06-05T19:17:00.395634+00:00","expires_at":"2025-06-06T19:17:00.395634+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":null}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b201f4fb166e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcR8PXWkAgRLr4Da7KN
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 208ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b201f5fc306e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcR94D2tu7iNaRwVX8u
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 104ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b201fcebbd6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcRDmjDYPg4A5UZYCX7
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 101ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b20203cc336e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcRJUkFHLMHBpNL6MXo
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 103ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b2020aacb46e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcRPGj4wp4Z1RfQRwiU
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 132ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b20211cd3b6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcRU4D4XmgZCeaS5MAY
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 102ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b20218ae726e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcRYqwe99dXG3kHwtqY
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 123ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b2021fbe5b6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcRdahc6oUgxXLiFDJx
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 107ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b202269dc36e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcRiGynaRCHwTVSUTNK
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 89ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b2022d6da26e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcRnxGFJXTFyrgZAfKc
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 96ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b202344d176e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcRsdnnT9AQKnt468Yp
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 92ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b2023b1c496e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcRxKaD2HahFbDkLLN6
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 109ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b202420ba66e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcS36K6mbA1DLC6UXxZ
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 100ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b20248ea9a6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcS7mMRq7GSAANZLcpN
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 95ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b2024fca536e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcSCT8f4ZKyAWfsxN6A
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 99ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b20256aa2a6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcSHAthCzHbGuJ7srUs
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 101ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b2025d8a166e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcSMsfjGzzEgNS3Pi1o
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 89ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b202645ae26e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcSSXTkvWXSPE8AM6Fd
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 110ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b2026b4cc36e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcSXGxpR5g5EZMvsXwA
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 92ms
+    - id: 19
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b202722cde6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcSbyEwNos9oKsH5aTL
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 93ms
+    - id: 20
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b20278fd126e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcSgeHDbxNpaUSDPwps
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 101ms
+    - id: 21
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b2027fddaf6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcSmQ2LHxHjyP3Aohr7
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 115ms
+    - id: 22
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b20286de486e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcSr8Xumh7AaCVsSsR7
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 97ms
+    - id: 23
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b2028dbebc6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcSvq4GNyJkfFU6RfwW
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 96ms
+    - id: 24
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b202949e216e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcT1Ya9VndBJq44geKF
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 105ms
+    - id: 25
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b2029b7dfb6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcT6F6p7iuB9BZBx1j2
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 111ms
+    - id: 26
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b202a26dd66e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcTB3KsJNfWeTjQDGQ5
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 121ms
+    - id: 27
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b202a97d6a6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcTFopdpPPMKBB16A4E
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 103ms
+    - id: 28
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b202b05d346e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcTLWLo8tEZe5y2BBea
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 101ms
+    - id: 29
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b202b73d0e6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcTRErETFXeBtf9z1sC
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 94ms
+    - id: 30
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b202be1f0c6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcTVutR7rZhf9o2b4Em
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 105ms
+    - id: 31
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b202c4ffab6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcTaePnUkcVGpUXTGfP
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 96ms
+    - id: 32
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b202cbd85c6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcTfW6fdUWnnSyvGVEF
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 160ms
+    - id: 33
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b202d319d56e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcTkJpT7dLSbRfS1vje
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 109ms
+    - id: 34
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b202da0b706e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcTq8HQ139P5F92vRU8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 121ms
+    - id: 35
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b202e10bb36e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcTupp8evvxtzKxPxyP
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 149ms
+    - id: 36
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b202e83c946e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcTzkj5Znyeok38t2PY
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 91ms
+    - id: 37
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b202ef0c3f6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcU5SG6Yisej2eFby3D
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 102ms
+    - id: 38
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b202f5fc646e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcUA8HgorEERQ6h5Z4L
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 89ms
+    - id: 39
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b202fccd146e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcUEo5E3fyKkVzERZin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 115ms
+    - id: 40
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b20303bdc26e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcUKYaDctmxyvSiEHzy
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 108ms
+    - id: 41
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b2030aaeba6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcUQJpY4g2NMaS5bmYz
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 88ms
+    - id: 42
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b2031178326e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcUUycHavgEujixwEmQ
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 91ms
+    - id: 43
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b2031859dd6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcUZdf4gJQ8C7V61zpp
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 96ms
+    - id: 44
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b2031f39ef6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcUeLvSQParFNkwCMDe
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 85ms
+    - id: 45
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b20325fa646e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcUizUD1CRJRjMMpk6a
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 103ms
+    - id: 46
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b2032cea496e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcUojUWUYBXqaDQ6x3F
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 103ms
+    - id: 47
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b20333ca316e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcUtSkCVYjTS3SXSvzX
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 110ms
+    - id: 48
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b2033abbea6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcUyBW4rRSHoQm4z1ra
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 101ms
+    - id: 49
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b203419d8c6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcV3tXDWtx235sf8wnb
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 114ms
+    - id: 50
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b203489ca96e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcV8emNN2DeqrFYXBy5
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 84ms
+    - id: 51
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b2034f5cec6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcVDJ4sKYopAYwbFitF
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 99ms
+    - id: 52
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"Message Batch msgbatch_01UNjoMqYnDU3gf8B1dQhnF8 has no available results."}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b203563cef6e02-YUL
+            Content-Type:
+                - application/json
+            Request-Id:
+                - req_011CPqcVHzqaFz65D6Mp7Beo
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 94ms
+    - id: 53
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.anthropic.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01UNjoMqYnDU3gf8B1dQhnF8/results
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: '{"custom_id":"TODO","result":{"type":"succeeded","message":{"id":"msg_019XWSVCgX8ub14MLuWtCmdr","type":"message","role":"assistant","model":"claude-3-haiku-20240307","content":[{"type":"text","text":"Knock, knock. Who''s there? Banana. Banana who? Banana split!"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":15,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":23,"service_tier":"batch"}}}}'
+        headers:
+            Anthropic-Organization-Id:
+                - b0607a1c-e615-400e-9924-e7a556d22e9f
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b2035d1da16e02-YUL
+            Content-Disposition:
+                - attachment; filename*=utf-8''msgbatch_01UNjoMqYnDU3gf8B1dQhnF8_results.jsonl
+            Request-Id:
+                - req_011CPqcVNhc5yu1oz1MUrqY3
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 187ms

@@ -45,20 +45,20 @@ var Scoreboard = genai.Scoreboard{
 			In:        []genai.Modality{genai.ModalityText},
 			Out:       []genai.Modality{genai.ModalityText},
 			Models:    []string{"claude-3-haiku-20240307", "claude-2.0", "claude-2.1", "claude-3-opus-20240229", "claude-3-sonnet-20240229"},
-			GenSync:   genai.FunctionalityText{},
-			GenStream: genai.FunctionalityText{},
+			GenSync:   &genai.FunctionalityText{},
+			GenStream: &genai.FunctionalityText{},
 		},
 		{
 			In:     []genai.Modality{genai.ModalityText, genai.ModalityImage, genai.ModalityPDF},
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"claude-3-5-haiku-20241022", "claude-3-5-sonnet-20240620", "claude-3-5-sonnet-20241022"},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				InputInline: true,
 				InputURL:    true,
 				Tools:       genai.True,
 				BiasedTool:  genai.True,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				InputInline: true,
 				InputURL:    true,
 				Tools:       genai.True,
@@ -69,13 +69,13 @@ var Scoreboard = genai.Scoreboard{
 			In:     []genai.Modality{genai.ModalityText, genai.ModalityImage, genai.ModalityPDF},
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"claude-3-7-sonnet-20250219", "claude-opus-4-20250514", "claude-sonnet-4-20250514"},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				InputInline: true,
 				InputURL:    true,
 				Tools:       genai.True,
 				BiasedTool:  genai.True,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				InputInline: true,
 				InputURL:    true,
 				Tools:       genai.True,

@@ -90,13 +90,13 @@ var Scoreboard = genai.Scoreboard{
 				"Qwen/Qwen2.5-VL-72B-Instruct",
 				"togethercomputer/Refuel-Llm-V2",
 			},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				JSON:       true,
 				JSONSchema: true,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				JSON:       true,
@@ -120,19 +120,10 @@ var Scoreboard = genai.Scoreboard{
 				"black-forest-labs/FLUX.1-pro",
 				"black-forest-labs/FLUX.1-dev-lora",
 			},
-			GenSync: genai.FunctionalityText{
+			GenDoc: &genai.FunctionalityDoc{
 				OutputURL:          true,
 				BrokenTokenUsage:   true,
 				BrokenFinishReason: true,
-				NoMaxTokens:        true,
-				NoStopSequence:     true,
-			},
-			GenStream: genai.FunctionalityText{
-				OutputURL:          true,
-				BrokenTokenUsage:   true,
-				BrokenFinishReason: true,
-				NoMaxTokens:        true,
-				NoStopSequence:     true,
 			},
 		},
 	},

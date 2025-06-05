@@ -42,8 +42,8 @@ var Scoreboard = genai.Scoreboard{
 			In:        []genai.Modality{genai.ModalityText},
 			Out:       []genai.Modality{genai.ModalityText},
 			Models:    []string{"unsloth/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q5_K_M.gguf"},
-			GenSync:   genai.FunctionalityText{},
-			GenStream: genai.FunctionalityText{},
+			GenSync:   &genai.FunctionalityText{},
+			GenStream: &genai.FunctionalityText{},
 		},
 	},
 }

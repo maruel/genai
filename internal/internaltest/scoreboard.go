@@ -52,97 +52,19 @@ func TestScoreboard(t *testing.T, g ProviderGenModalityFactory, filter func(mode
 		// Only test the first model but acknowledge them all.
 		modelsSeen = append(modelsSeen, s.Models...)
 		t.Run(fmt.Sprintf("%s_%s_%s", in, out, s.Models[0]), func(t *testing.T) {
-			data := []struct {
-				stream bool
-				name   string
-				f      *genai.FunctionalityText
-			}{
-				{false, "GenSync", &s.GenSync},
-				{true, "GenStream", &s.GenStream},
+			if s.GenSync != nil {
+				t.Run("GenSync", func(t *testing.T) {
+					testGenText(t, g, s.Models[0], in, out, s.GenSync, false)
+				})
 			}
-			for _, line := range data {
-				t.Run(line.name, func(t *testing.T) {
-					// General verifications
-					// Text only mode.
-					if slices.Equal(in, genai.Modalities{genai.ModalityText}) {
-						if line.f.InputInline {
-							t.Fatalf("Do not set InputInline for a text-only model")
-						}
-						if line.f.InputURL {
-							t.Fatalf("Do not set InputURL for a text-only model")
-						}
-					}
-					if slices.Equal(out, genai.Modalities{genai.ModalityText}) {
-						if line.f.OutputInline {
-							t.Fatalf("Do not set OutputInline for a text-only model")
-						}
-						if line.f.OutputURL {
-							t.Fatalf("Do not set OutputURL for a text-only model")
-						}
-					}
-
-					ran := false
-					// Do not run text only output cases when output modality includes non-text. Most model fails in
-					// this case.
-					// TODO: Some models are fine with this, we need to improve genai.Functionality.
-					if slices.Equal(out, genai.Modalities{genai.ModalityText}) {
-						// Hack: audio input models tend to not work well with text-only input.
-						if slices.Contains(in, genai.ModalityText) && !slices.Contains(in, genai.ModalityAudio) {
-							t.Run("text", func(t *testing.T) {
-								testTextFunctionalities(t, g, s.Models[0], line.f, line.stream)
-							})
-							ran = true
-						}
-						if slices.Contains(in, genai.ModalityImage) {
-							t.Run("vision", func(t *testing.T) {
-								testVisionFunctionalities(t, g, s.Models[0], line.f, line.stream)
-							})
-							ran = true
-						}
-						if slices.Contains(in, genai.ModalityPDF) {
-							t.Run("pdf", func(t *testing.T) {
-								testPDFFunctionalities(t, g, s.Models[0], line.f, line.stream)
-							})
-							ran = true
-						}
-						if slices.Contains(in, genai.ModalityAudio) {
-							t.Run("audio", func(t *testing.T) {
-								testAudioSTTFunctionalities(t, g, s.Models[0], line.f, line.stream)
-							})
-							ran = true
-						}
-						if slices.Contains(in, genai.ModalityVideo) {
-							t.Run("video", func(t *testing.T) {
-								testVideoFunctionalities(t, g, s.Models[0], line.f, line.stream)
-							})
-							ran = true
-						}
-					}
-					if slices.Equal(out, genai.Modalities{genai.ModalityImage}) {
-						// Image only output, e.g. OpenAI, Pollinations, TogetherAI.
-						// Only run once, no need to run twice.
-						if !line.stream {
-							t.Run("imagegen", func(t *testing.T) {
-								testImageGenFunctionalities(t, g, s.Models[0], line.f)
-							})
-						}
-						ran = true
-					} else if slices.Contains(out, genai.ModalityImage) {
-						// Text+Image output, e.g. Gemini.
-						t.Run("imagegen", func(t *testing.T) {
-							testChatImageGenFunctionalities(t, g, s.Models[0], line.f, line.stream)
-						})
-						ran = true
-					}
-					if slices.Contains(out, genai.ModalityAudio) {
-						t.Run("audiogen", func(t *testing.T) {
-							testAudioGenFunctionalities(t, g, s.Models[0], line.f, line.stream)
-						})
-						ran = true
-					}
-					if !ran {
-						t.Fatal("implement test case for this modalities combination")
-					}
+			if s.GenStream != nil {
+				t.Run("GenStream", func(t *testing.T) {
+					testGenText(t, g, s.Models[0], in, out, s.GenStream, true)
+				})
+			}
+			if s.GenDoc != nil {
+				t.Run("GenDoc", func(t *testing.T) {
+					testGenDoc(t, g, s.Models[0], in, out, s.GenDoc)
 				})
 			}
 		})
@@ -207,6 +129,87 @@ func TestScoreboard(t *testing.T, g ProviderGenModalityFactory, filter func(mode
 	})
 }
 
+func testGenText(t *testing.T, g ProviderGenModalityFactory, model string, in, out genai.Modalities, f *genai.FunctionalityText, stream bool) {
+	// General verifications
+	// Text only mode.
+	textInOnly := slices.Equal(in, genai.Modalities{genai.ModalityText})
+	textOutOnly := slices.Equal(out, genai.Modalities{genai.ModalityText})
+	if textInOnly {
+		if f.InputInline {
+			t.Fatalf("Do not set InputInline for a text-only model")
+		}
+		if f.InputURL {
+			t.Fatalf("Do not set InputURL for a text-only model")
+		}
+	}
+	if textOutOnly {
+		if f.OutputInline {
+			t.Fatalf("Do not set OutputInline for a text-only model")
+		}
+		if f.OutputURL {
+			t.Fatalf("Do not set OutputURL for a text-only model")
+		}
+	}
+
+	ran := false
+	// Do not run text only output cases when output modality includes non-text. Most model fails in
+	// this case.
+	// TODO: Some models are fine with this, we need to improve genai.Functionality.
+	if textOutOnly {
+		// Hack: audio input models tend to not work well with text-only input.
+		if slices.Contains(in, genai.ModalityText) && !slices.Contains(in, genai.ModalityAudio) {
+			t.Run("text", func(t *testing.T) {
+				testTextFunctionalities(t, g, model, f, stream)
+			})
+			ran = true
+		}
+		if slices.Contains(in, genai.ModalityImage) {
+			t.Run("vision", func(t *testing.T) {
+				testVisionFunctionalities(t, g, model, f, stream)
+			})
+			ran = true
+		}
+		if slices.Contains(in, genai.ModalityPDF) {
+			t.Run("pdf", func(t *testing.T) {
+				testPDFFunctionalities(t, g, model, f, stream)
+			})
+			ran = true
+		}
+		if slices.Contains(in, genai.ModalityAudio) {
+			t.Run("audio", func(t *testing.T) {
+				testAudioSTTFunctionalities(t, g, model, f, stream)
+			})
+			ran = true
+		}
+		if slices.Contains(in, genai.ModalityVideo) {
+			t.Run("video", func(t *testing.T) {
+				testVideoFunctionalities(t, g, model, f, stream)
+			})
+			ran = true
+		}
+	}
+
+	// Multi-modal
+	if slices.Contains(out, genai.ModalityImage) {
+		// Text+Image output, e.g. Gemini.
+		t.Run("imagegen", func(t *testing.T) {
+			testChatImageGenFunctionalities(t, g, model, f, stream)
+		})
+		ran = true
+	}
+	if slices.Contains(out, genai.ModalityAudio) {
+		/*
+			t.Run("audiogen", func(t *testing.T) {
+				// TODO: testAudioGenFunctionalities(t, g, model, f, stream)
+			})
+			ran = true
+		*/
+	}
+	if !ran {
+		t.Fatal("implement test case for this modalities combination")
+	}
+}
+
 func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText, stream bool) {
 	defaultFR := genai.FinishedStop
 	if f.BrokenFinishReason {
@@ -214,7 +217,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 	}
 	t.Run("Simple", func(t *testing.T) {
 		msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
-		resp, err := run(t, g(t, model), msgs, nil, stream)
+		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
 		if !basicCheck(t, err, true) {
 			return
 		}
@@ -243,7 +246,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		msgs := genai.Messages{genai.NewTextMessage(genai.User, "Tell a joke in 10 words")}
 		// Give enough token so the <think> token can be emitted plus another word. MaxTokens:2 could cause
 		// problems and it's not a value that is expected to be used in practice for this use case.
-		resp, err := run(t, g(t, model), msgs, &genai.OptionsText{MaxTokens: 3}, stream)
+		resp, err := runGenText(t, g(t, model), msgs, &genai.OptionsText{MaxTokens: 3}, stream)
 		// MaxTokens can fail in two ways:
 		// - GenSync() or GenStream() return an irrecoverable error.
 		// - The length is not enforced.
@@ -270,7 +273,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 
 	t.Run("Stop", func(t *testing.T) {
 		msgs := genai.Messages{genai.NewTextMessage(genai.User, "Talk about Canada in 10 words. Start with: Canada is")}
-		resp, err := run(t, g(t, model), msgs, &genai.OptionsText{Stop: []string{"is"}}, stream)
+		resp, err := runGenText(t, g(t, model), msgs, &genai.OptionsText{Stop: []string{"is"}}, stream)
 		// Stop can fail in two ways:
 		// - GenSync() or GenStream() return an irrecoverable error.
 		// - The Stop words to not stop generation.
@@ -301,7 +304,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, `Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {"is_fruit": bool}.`),
 		}
-		resp, err := run(t, g(t, model), msgs, &genai.OptionsText{ReplyAsJSON: true}, stream)
+		resp, err := runGenText(t, g(t, model), msgs, &genai.OptionsText{ReplyAsJSON: true}, stream)
 		if !basicCheckAcceptUnexpectedSuccess(t, err, f.JSON) {
 			return
 		}
@@ -348,7 +351,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 			IsFruit bool `json:"is_fruit" jsonschema_description:"True if the answer is that it is a fruit, false otherwise"`
 		}
 		msgs := genai.Messages{genai.NewTextMessage(genai.User, "Is a banana a fruit? Reply as JSON according to the provided schema.")}
-		resp, err := run(t, g(t, model), msgs, &genai.OptionsText{DecodeAs: &got}, stream)
+		resp, err := runGenText(t, g(t, model), msgs, &genai.OptionsText{DecodeAs: &got}, stream)
 		if !basicCheck(t, err, f.JSONSchema) {
 			return
 		}
@@ -398,7 +401,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		if f.BrokenFinishReason {
 			fr = ""
 		}
-		resp, err := run(t, c, msgs, &opts, stream)
+		resp, err := runGenText(t, c, msgs, &opts, stream)
 		if !basicCheckAcceptUnexpectedSuccess(t, err, f.Tools == genai.True) {
 			return
 		}
@@ -434,7 +437,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		if !f.BrokenFinishReason {
 			fr = genai.FinishedStop
 		}
-		resp, err = run(t, c, msgs, &opts, stream)
+		resp, err = runGenText(t, c, msgs, &opts, stream)
 		if !basicCheck(t, err, f.Tools != genai.False) {
 			return
 		}
@@ -505,7 +508,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 				if f.BrokenFinishReason {
 					fr = ""
 				}
-				resp, err := run(t, c, msgs, &opts, stream)
+				resp, err := runGenText(t, c, msgs, &opts, stream)
 				if !basicCheckAcceptUnexpectedSuccess(t, err, f.Tools == genai.True) {
 					return
 				}
@@ -600,7 +603,7 @@ func testVisionFunctionalities(t *testing.T, g ProviderGenModalityFactory, model
 				},
 			},
 		}
-		resp, err := run(t, g(t, model), msgs, nil, stream)
+		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
 		if !basicCheck(t, err, f.InputInline) {
 			return
 		}
@@ -618,7 +621,7 @@ func testVisionFunctionalities(t *testing.T, g ProviderGenModalityFactory, model
 				},
 			},
 		}
-		resp, err := run(t, g(t, model), msgs, nil, stream)
+		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
 		if !basicCheck(t, err, f.InputURL) {
 			return
 		}
@@ -643,7 +646,7 @@ func testAudioSTTFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 		}
 		defer ff.Close()
 		msgs := genai.Messages{{Role: genai.User, Contents: []genai.Content{{Text: prompt}, {Document: ff}}}}
-		resp, err := run(t, g(t, model), msgs, nil, stream)
+		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
 		if !basicCheck(t, err, f.InputInline) {
 			return
 		}
@@ -661,7 +664,7 @@ func testAudioSTTFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 				},
 			},
 		}
-		resp, err := run(t, g(t, model), msgs, nil, stream)
+		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
 		if !basicCheck(t, err, f.InputURL) {
 			return
 		}
@@ -685,7 +688,7 @@ func testVideoFunctionalities(t *testing.T, g ProviderGenModalityFactory, model 
 		}
 		defer ff.Close()
 		msgs := genai.Messages{{Role: genai.User, Contents: []genai.Content{{Text: prompt}, {Document: ff}}}}
-		resp, err := run(t, g(t, model), msgs, nil, stream)
+		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
 		if !basicCheck(t, err, f.InputInline) {
 			return
 		}
@@ -703,7 +706,7 @@ func testVideoFunctionalities(t *testing.T, g ProviderGenModalityFactory, model 
 				},
 			},
 		}
-		resp, err := run(t, g(t, model), msgs, nil, stream)
+		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
 		if !basicCheck(t, err, f.InputURL) {
 			return
 		}
@@ -727,7 +730,7 @@ func testPDFFunctionalities(t *testing.T, g ProviderGenModalityFactory, model st
 		}
 		defer ff.Close()
 		msgs := genai.Messages{{Role: genai.User, Contents: []genai.Content{{Text: prompt}, {Document: ff}}}}
-		resp, err := run(t, g(t, model), msgs, nil, stream)
+		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
 		if !basicCheck(t, err, f.InputInline) {
 			return
 		}
@@ -745,7 +748,7 @@ func testPDFFunctionalities(t *testing.T, g ProviderGenModalityFactory, model st
 				},
 			},
 		}
-		resp, err := run(t, g(t, model), msgs, nil, stream)
+		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
 		if !basicCheck(t, err, f.InputURL) {
 			return
 		}
@@ -772,7 +775,7 @@ func testChatImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory,
 		defaultFR = ""
 	}
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, contents)}
-	resp, err := run(t, g(t, model), msgs, nil, stream)
+	resp, err := runGenText(t, g(t, model), msgs, nil, stream)
 	if !basicCheck(t, err, f.OutputInline || f.OutputURL) {
 		return
 	}
@@ -800,7 +803,34 @@ func testChatImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory,
 	}
 }
 
-func testImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText) {
+//
+
+func testGenDoc(t *testing.T, g ProviderGenModalityFactory, model string, in, out genai.Modalities, f *genai.FunctionalityDoc) {
+	ran := false
+	if slices.Equal(out, genai.Modalities{genai.ModalityImage}) {
+		// Image only output, e.g. OpenAI, Pollinations, TogetherAI.
+		// Only run once, no need to run twice.
+		t.Run("imagegen", func(t *testing.T) {
+			testImageGenFunctionalities(t, g, model, f)
+		})
+		ran = true
+	}
+	if slices.Contains(out, genai.ModalityAudio) {
+		t.Run("audiogen", func(t *testing.T) {
+			testAudioGenFunctionalities(t, g, model, f)
+		})
+		ran = true
+	}
+	if !ran {
+		t.Fatal("implement test case for this modalities combination")
+	}
+}
+
+func testImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityDoc) {
+	defaultFR := genai.FinishedStop
+	if f.BrokenFinishReason {
+		defaultFR = ""
+	}
 	prompt := `A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
 	const style = `Simple, vibrant, varied-colored doodle/hand-drawn sketch`
 	contents := `Generate one square, white-background doodle with smooth, vibrantly colored image depicting ` + prompt + `.
@@ -813,10 +843,6 @@ func testImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 **Format:** Square image (1:1 aspect ratio).
 **Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.
 **Output:** Actual image file for a smooth, colorful doodle-style image on a white background.`
-	defaultFR := genai.FinishedStop
-	if f.BrokenFinishReason {
-		defaultFR = ""
-	}
 	msg := genai.NewTextMessage(genai.User, contents)
 	c := g(t, model).(genai.ProviderGenDoc)
 	resp, err := c.GenDoc(t.Context(), msg, nil)
@@ -845,13 +871,14 @@ func testImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 	}
 }
 
-func testAudioGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText, stream bool) {
+func testAudioGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityDoc) {
 	defaultFR := genai.FinishedStop
 	if f.BrokenFinishReason {
 		defaultFR = ""
 	}
-	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hi. Just say this word, nothing else.")}
-	resp, err := run(t, g(t, model), msgs, nil, stream)
+	msg := genai.NewTextMessage(genai.User, "Say hi. Just say this word, nothing else.")
+	c := g(t, model).(genai.ProviderGenDoc)
+	resp, err := c.GenDoc(t.Context(), msg, nil)
 	if !basicCheck(t, err, f.OutputInline || f.OutputURL) {
 		return
 	}
@@ -877,7 +904,9 @@ func testAudioGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 	}
 }
 
-func run(t *testing.T, c genai.ProviderGen, msgs genai.Messages, opts genai.Options, stream bool) (genai.Result, error) {
+//
+
+func runGenText(t *testing.T, c genai.ProviderGen, msgs genai.Messages, opts genai.Options, stream bool) (genai.Result, error) {
 	ctx := t.Context()
 	if !stream {
 		resp, err := c.GenSync(ctx, msgs, opts)

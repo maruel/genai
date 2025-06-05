@@ -812,6 +812,24 @@ const (
 	Flaky TriState = -1
 )
 
+// FunctionalityDoc defines which functionalites are supported in a scenario for non-text output modality.
+type FunctionalityDoc struct {
+	// These should only be set for models that support non-text input modalities. Inline means base64 encoded
+	// inside the JSON request. URL means the provider will fetch the file via an URL.
+	InputInline bool
+	InputURL    bool
+	// These should only be set for models that support non-text output modalities.
+	OutputInline bool
+	OutputURL    bool
+
+	// BrokenTokenUsage means that the usage is not correctly reported.
+	BrokenTokenUsage bool
+	// BrokenFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.
+	BrokenFinishReason bool
+
+	_ struct{}
+}
+
 // Scenario defines one way to use the provider.
 type Scenario struct {
 	In  Modalities
@@ -821,9 +839,11 @@ type Scenario struct {
 	Models []string
 
 	// GenSync declares features supported when using ProviderGen.GenSync
-	GenSync FunctionalityText
+	GenSync *FunctionalityText
 	// GenStream declares features supported when using ProviderGen.GenStream
-	GenStream FunctionalityText
+	GenStream *FunctionalityText
+	// GenDoc declares features supported when using a ProviderGenDoc
+	GenDoc *FunctionalityDoc
 
 	_ struct{}
 }

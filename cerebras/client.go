@@ -42,13 +42,13 @@ var Scoreboard = genai.Scoreboard{
 			Out: []genai.Modality{genai.ModalityText},
 			// "llama-3.1-8b" works too but the ListModels() API returns the malformed string.
 			Models: []string{"llama3.1-8b", "llama-3.3-70b"},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				Tools:      genai.Flaky,
 				BiasedTool: genai.True,
 				JSON:       true,
 				JSONSchema: true,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				Tools:      genai.Flaky,
 				BiasedTool: genai.True,
 				JSON:       true,
@@ -59,14 +59,14 @@ var Scoreboard = genai.Scoreboard{
 			In:     []genai.Modality{genai.ModalityText},
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"qwen-3-32b"},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				Thinking:   true,
 				Tools:      genai.Flaky,
 				BiasedTool: genai.True,
 				JSON:       true,
 				JSONSchema: true,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				Thinking:           true,
 				BrokenFinishReason: true,
 			},
@@ -77,13 +77,13 @@ var Scoreboard = genai.Scoreboard{
 			In:     []genai.Modality{genai.ModalityText},
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"llama-4-scout-17b-16e-instruct"},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				Tools:      genai.Flaky,
 				BiasedTool: genai.True,
 				JSON:       true,
 				JSONSchema: true,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				Tools:      genai.Flaky,
 				BiasedTool: genai.True,
 				JSON:       true,

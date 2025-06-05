@@ -45,19 +45,10 @@ var Scoreboard = genai.Scoreboard{
 				"flux-pro-1.1",
 				"flux-pro",
 			},
-			GenSync: genai.FunctionalityText{
+			GenDoc: &genai.FunctionalityDoc{
 				OutputURL:          true,
 				BrokenTokenUsage:   true,
 				BrokenFinishReason: true,
-				NoMaxTokens:        true,
-				NoStopSequence:     true,
-			},
-			GenStream: genai.FunctionalityText{
-				OutputURL:          true,
-				BrokenTokenUsage:   true,
-				BrokenFinishReason: true,
-				NoMaxTokens:        true,
-				NoStopSequence:     true,
 			},
 		},
 	},

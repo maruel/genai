@@ -84,13 +84,13 @@ var Scoreboard = genai.Scoreboard{
 				"gpt-4o-search-preview",
 				"gpt-4o-search-preview-2025-03-11",
 			},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
 				JSONSchema:     true,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
@@ -111,14 +111,14 @@ var Scoreboard = genai.Scoreboard{
 				"gpt-4o-mini-audio-preview",
 				"gpt-4o-mini-audio-preview-2024-12-17",
 			},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				InputInline: true,
 				Tools:       genai.True,
 				BiasedTool:  genai.True,
 				JSON:        true,
 				JSONSchema:  true,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				InputInline: true,
 				Tools:       genai.True,
 				BiasedTool:  genai.True,
@@ -143,7 +143,7 @@ var Scoreboard = genai.Scoreboard{
 				"o3-mini-2025-01-31",
 				"o4-mini-2025-04-16",
 			},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				InputInline:    true,
 				InputURL:       true,
 				NoStopSequence: true,
@@ -152,7 +152,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:           true,
 				JSONSchema:     true,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				InputInline:    true,
 				InputURL:       true,
 				NoStopSequence: true,
@@ -170,19 +170,10 @@ var Scoreboard = genai.Scoreboard{
 				"dall-e-3",
 				"gpt-image-1",
 			},
-			GenSync: genai.FunctionalityText{
+			GenDoc: &genai.FunctionalityDoc{
 				OutputInline:       true,
 				BrokenTokenUsage:   true,
 				BrokenFinishReason: true,
-				NoMaxTokens:        true,
-				NoStopSequence:     true,
-			},
-			GenStream: genai.FunctionalityText{
-				OutputInline:       true,
-				BrokenTokenUsage:   true,
-				BrokenFinishReason: true,
-				NoMaxTokens:        true,
-				NoStopSequence:     true,
 			},
 		},
 		// Audio only output:

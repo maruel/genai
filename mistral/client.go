@@ -61,13 +61,13 @@ var Scoreboard = genai.Scoreboard{
 				"open-mixtral-8x22b-2404",
 				"open-mixtral-8x7b",
 			},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				JSON:       true,
 				JSONSchema: true,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				JSON:       true,
@@ -93,7 +93,7 @@ var Scoreboard = genai.Scoreboard{
 				"pixtral-large-2411",
 				"pixtral-large-latest",
 			},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				InputInline:    true,
 				InputURL:       true,
 				Tools:          genai.True,
@@ -101,7 +101,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:           true,
 				JSONSchema:     true,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				InputInline:    true,
 				InputURL:       true,
 				Tools:          genai.True,
@@ -129,14 +129,14 @@ var Scoreboard = genai.Scoreboard{
 				"mistral-ocr-2505",
 				"mistral-ocr-latest",
 			},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				InputURL:       true,
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
 				JSONSchema:     true,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				InputURL:       true,
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,

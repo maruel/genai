@@ -17,6 +17,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/anthropic"
+	"github.com/maruel/genai/bfl"
 	"github.com/maruel/genai/cerebras"
 	"github.com/maruel/genai/cloudflare"
 	"github.com/maruel/genai/cohere"
@@ -32,41 +33,44 @@ import (
 
 // providers is the list of known providers. We only look at their scoreboard, so no need for an API key or
 // model name.
-var providers = map[string]func() (genai.ProviderGen, error){
-	"anthropic": func() (genai.ProviderGen, error) {
+var providers = map[string]func() (genai.Provider, error){
+	"anthropic": func() (genai.Provider, error) {
 		return anthropic.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
-	"cerebras": func() (genai.ProviderGen, error) {
+	"bfl": func() (genai.Provider, error) {
+		return bfl.New("FAKE_API_KEY", "FAKE_MODEL", nil)
+	},
+	"cerebras": func() (genai.Provider, error) {
 		return cerebras.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
-	"cloudflare": func() (genai.ProviderGen, error) {
+	"cloudflare": func() (genai.Provider, error) {
 		return cloudflare.New("FAKE_API_KEY", "", "FAKE_MODEL", nil)
 	},
-	"cohere": func() (genai.ProviderGen, error) {
+	"cohere": func() (genai.Provider, error) {
 		return cohere.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
-	"deepseek": func() (genai.ProviderGen, error) {
+	"deepseek": func() (genai.Provider, error) {
 		return deepseek.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
-	"gemini": func() (genai.ProviderGen, error) {
+	"gemini": func() (genai.Provider, error) {
 		return gemini.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
-	"groq": func() (genai.ProviderGen, error) {
+	"groq": func() (genai.Provider, error) {
 		return groq.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
-	"huggingface": func() (genai.ProviderGen, error) {
+	"huggingface": func() (genai.Provider, error) {
 		return huggingface.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
-	"mistral": func() (genai.ProviderGen, error) {
+	"mistral": func() (genai.Provider, error) {
 		return mistral.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
-	"openai": func() (genai.ProviderGen, error) {
+	"openai": func() (genai.Provider, error) {
 		return openai.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
-	"perplexity": func() (genai.ProviderGen, error) {
+	"perplexity": func() (genai.Provider, error) {
 		return perplexity.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
-	"togetherai": func() (genai.ProviderGen, error) {
+	"togetherai": func() (genai.Provider, error) {
 		return togetherai.New("FAKE_API_KEY", "FAKE_MODEL", nil)
 	},
 }
@@ -84,6 +88,8 @@ type column struct {
 	AudioGen   string
 	Chat       string
 	Streaming  string
+	Doc        string
+	Batch      string
 	Seed       string
 	Tools      string
 	Caching    string
@@ -102,6 +108,8 @@ type columni struct {
 	AudioGen   int
 	Chat       int
 	Streaming  int
+	Doc        int
+	Batch      int
 	Seed       int
 	Tools      int
 	Caching    int
@@ -115,6 +123,9 @@ func printTable() error {
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: %v\n", name, err)
 			continue
 		}
+		_, isText := c.(genai.ProviderGen)
+		_, isDoc := c.(genai.ProviderGenDoc)
+		_, isAsync := c.(genai.ProviderGenAsync)
 		ps, ok := c.(genai.ProviderScoreboard)
 		if !ok {
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: doesn't support scoreboard\n", name)
@@ -146,12 +157,12 @@ func printTable() error {
 			} else {
 				col.Video = "❌"
 			}
-			if s.GenSync.JSON && s.GenStream.JSON {
+			if s.GenSync != nil && s.GenSync.JSON && s.GenStream.JSON {
 				col.JSON = "✅"
 			} else {
 				col.JSON = "❌"
 			}
-			if s.GenSync.JSONSchema && s.GenStream.JSONSchema {
+			if s.GenSync != nil && s.GenSync.JSONSchema && s.GenStream.JSONSchema {
 				col.JSONSchema = "✅"
 			} else {
 				col.JSONSchema = "❌"
@@ -161,14 +172,24 @@ func printTable() error {
 			} else {
 				col.ImageGen = "❌"
 			}
-			if slices.Contains(s.In, genai.ModalityText) && slices.Contains(s.Out, genai.ModalityText) {
+			if slices.Contains(s.In, genai.ModalityText) && slices.Contains(s.Out, genai.ModalityText) && isText {
 				col.Chat = "✅"
 				col.Streaming = "✅"
 			} else {
 				col.Chat = "❌"
 				col.Streaming = "❌"
 			}
-			if s.GenSync.Tools == genai.True && s.GenStream.Tools == genai.True {
+			if isDoc {
+				col.Doc = "✅"
+			} else {
+				col.Doc = "❌"
+			}
+			if isAsync {
+				col.Batch = "✅"
+			} else {
+				col.Batch = "❌"
+			}
+			if s.GenSync != nil && s.GenSync.Tools == genai.True && s.GenStream.Tools == genai.True {
 				col.Tools = "✅"
 			} else {
 				col.Tools = "❌"
@@ -196,6 +217,8 @@ func printTable() error {
 			AudioGen:   "Audio➛",
 			Chat:       "Chat",
 			Streaming:  "Streaming",
+			Doc:        "Doc",
+			Batch:      "Batch",
 			Seed:       "Seed",
 			Tools:      "Tools",
 			Caching:    "Caching",
@@ -236,6 +259,12 @@ func printTable() error {
 		if i := countCharsWithEmoji(c.Streaming); i > coli.Streaming {
 			coli.Streaming = i
 		}
+		if i := countCharsWithEmoji(c.Doc); i > coli.Doc {
+			coli.Doc = i
+		}
+		if i := countCharsWithEmoji(c.Batch); i > coli.Batch {
+			coli.Batch = i
+		}
 		if i := countCharsWithEmoji(c.Seed); i > coli.Seed {
 			coli.Seed = i
 		}
@@ -250,7 +279,7 @@ func printTable() error {
 	// | Country
 	{
 		c := columns[0]
-		fmt.Printf("| %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s |\n",
+		fmt.Printf("| %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s |\n",
 			coli.Provider, c.Provider,
 			coli.Vision, c.Vision,
 			coli.PDF, c.PDF,
@@ -262,10 +291,12 @@ func printTable() error {
 			coli.AudioGen, c.AudioGen,
 			coli.Chat, c.Chat,
 			coli.Streaming, c.Streaming,
+			coli.Doc, c.Doc,
+			coli.Batch, c.Batch,
 			coli.Seed, c.Seed,
 			coli.Tools, c.Tools,
 			coli.Caching, c.Caching)
-		fmt.Printf("| %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s |\n",
+		fmt.Printf("| %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s |\n",
 			strings.Repeat("-", coli.Provider),
 			strings.Repeat("-", coli.Vision),
 			strings.Repeat("-", coli.PDF),
@@ -277,12 +308,14 @@ func printTable() error {
 			strings.Repeat("-", coli.AudioGen),
 			strings.Repeat("-", coli.Chat),
 			strings.Repeat("-", coli.Streaming),
+			strings.Repeat("-", coli.Doc),
+			strings.Repeat("-", coli.Batch),
 			strings.Repeat("-", coli.Seed),
 			strings.Repeat("-", coli.Tools),
 			strings.Repeat("-", coli.Caching))
 	}
 	for _, c := range columns[1:] {
-		fmt.Printf("| %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s |\n",
+		fmt.Printf("| %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s |\n",
 			coli.Provider, c.Provider,
 			coli.Vision-1, c.Vision,
 			coli.PDF-1, c.PDF,
@@ -294,6 +327,8 @@ func printTable() error {
 			coli.AudioGen-1, c.AudioGen,
 			coli.Chat-1, c.Chat,
 			coli.Streaming-1, c.Streaming,
+			coli.Doc-1, c.Doc,
+			coli.Batch-1, c.Batch,
 			coli.Seed-1, c.Seed,
 			coli.Tools-1, c.Tools,
 			coli.Caching-1, c.Caching)
@@ -332,6 +367,10 @@ func printList() error {
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: doesn't support scoreboard\n", name)
 			continue
 		}
+		async := ""
+		if _, isAsync := c.(genai.ProviderGenAsync); isAsync {
+			async = "✅batch "
+		}
 		for _, scenario := range ps.Scoreboard().Scenarios {
 			m := scenario.Models
 			if len(m) > 3 {
@@ -341,27 +380,49 @@ func printList() error {
 			if slices.Equal(scenario.In, textOnly) && slices.Equal(scenario.Out, textOnly) {
 				fmt.Printf("    in/out:   text only\n")
 			} else {
-				v := ""
-				if scenario.GenSync.InputInline && !scenario.GenSync.InputURL {
-					v = " (inline only)"
+				in := ""
+				out := ""
+				if scenario.GenSync != nil {
+					if scenario.GenSync.InputInline && !scenario.GenSync.InputURL {
+						in = " (inline only)"
+					}
+					if scenario.GenSync.InputURL && !scenario.GenSync.InputInline {
+						in = " (url only)"
+					}
 				}
-				if scenario.GenSync.InputURL && !scenario.GenSync.InputInline {
-					v = " (url only)"
+				if scenario.GenDoc != nil {
+					if scenario.GenDoc.OutputInline && !scenario.GenDoc.OutputURL {
+						out = " (inline only)"
+					}
+					if scenario.GenDoc.OutputURL && !scenario.GenDoc.OutputInline {
+						out = " (url only)"
+					}
 				}
-				fmt.Printf("    in/out:   ⇒ %s%s / %s ⇒\n", scenario.In, v, scenario.Out)
+				fmt.Printf("    in/out:   ⇒ %s%s / %s%s ⇒\n", scenario.In, in, scenario.Out, out)
 			}
-			chat := functionality(&scenario.GenSync)
-			stream := functionality(&scenario.GenStream)
+			chat := ""
+			stream := ""
+			if scenario.GenSync != nil {
+				chat = functionalityText(scenario.GenSync)
+			}
+			if scenario.GenStream != nil {
+				stream = functionalityText(scenario.GenStream)
+			}
 			if chat == stream {
 				if chat != "" {
-					fmt.Printf("    features: %s\n", chat)
+					fmt.Printf("    features: %s%s\n", async, chat)
 				}
 			} else {
 				if chat != "" {
-					fmt.Printf("    buffered: %s\n", chat)
+					fmt.Printf("    buffered: %s%s\n", async, chat)
 				}
 				if stream != "" {
-					fmt.Printf("    streamed: %s\n", stream)
+					fmt.Printf("    streamed: %s%s\n", async, stream)
+				}
+			}
+			if scenario.GenDoc != nil {
+				if s := functionalityDoc(scenario.GenDoc); s != "" {
+					fmt.Printf("    doc:      %s\n", s)
 				}
 			}
 		}
@@ -371,7 +432,7 @@ func printList() error {
 
 var textOnly = genai.Modalities{genai.ModalityText}
 
-func functionality(f *genai.FunctionalityText) string {
+func functionalityText(f *genai.FunctionalityText) string {
 	var items []string
 	if f.JSON {
 		items = append(items, "✅json")
@@ -390,7 +451,7 @@ func functionality(f *genai.FunctionalityText) string {
 
 	if flakyTool {
 		items = append(items, "💔flaky tool")
-	} else if f.BiasedTool == genai.True {
+	} else if f.BiasedTool == genai.True && f.IndecisiveTool == genai.False {
 		// Flaky is okay.
 		items = append(items, "💔biased tool")
 	}
@@ -403,7 +464,18 @@ func functionality(f *genai.FunctionalityText) string {
 	if f.NoStopSequence {
 		items = append(items, "💔stopsequence")
 	}
-	return strings.Join(items, ", ")
+	return strings.Join(items, " ")
+}
+
+func functionalityDoc(f *genai.FunctionalityDoc) string {
+	var items []string
+	if f.BrokenTokenUsage {
+		items = append(items, "💔usage")
+	}
+	if f.BrokenFinishReason {
+		items = append(items, "💔finishreason")
+	}
+	return strings.Join(items, " ")
 }
 
 func mainImpl() error {

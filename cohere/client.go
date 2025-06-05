@@ -43,13 +43,13 @@ var Scoreboard = genai.Scoreboard{
 			In:     []genai.Modality{genai.ModalityText},
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"command-r7b-12-2024"},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
 				JSONSchema:     true,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,

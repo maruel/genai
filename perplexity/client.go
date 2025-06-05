@@ -43,12 +43,12 @@ var Scoreboard = genai.Scoreboard{
 				"sonar-reasoning-pro",
 				"sonar-reasoning",
 			},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				Thinking:       true,
 				NoStopSequence: true,
 				JSONSchema:     true,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				Thinking:       true,
 				NoStopSequence: true,
 				JSONSchema:     true,

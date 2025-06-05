@@ -50,12 +50,12 @@ var Scoreboard = genai.Scoreboard{
 			In:     []genai.Modality{genai.ModalityText},
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"meta-llama/Llama-3.3-70B-Instruct"},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				JSONSchema: true,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				BrokenFinishReason: true,
 				Tools:              genai.True,
 				BiasedTool:         genai.True,
@@ -66,13 +66,13 @@ var Scoreboard = genai.Scoreboard{
 			In:     []genai.Modality{genai.ModalityText},
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"Qwen/QwQ-32B"},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				Thinking:   true,
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				JSONSchema: true,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				Thinking:           true,
 				BrokenFinishReason: true,
 				Tools:              genai.True,

@@ -52,14 +52,14 @@ var Scoreboard = genai.Scoreboard{
 			In:     []genai.Modality{genai.ModalityText},
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"gemini-2.0-flash-lite"},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				Tools:          genai.True,
 				BiasedTool:     genai.Flaky,
 				IndecisiveTool: genai.Flaky,
 				JSON:           true,
 				JSONSchema:     true,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				Tools:          genai.True,
 				BiasedTool:     genai.Flaky,
 				IndecisiveTool: genai.Flaky,
@@ -71,14 +71,14 @@ var Scoreboard = genai.Scoreboard{
 			In:     []genai.Modality{genai.ModalityImage, genai.ModalityPDF, genai.ModalityAudio, genai.ModalityVideo, genai.ModalityText},
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"gemini-2.0-flash"},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				// It supports URL but only when uploaded to its own storage.
 				InputInline: true,
 				Tools:       genai.True,
 				JSON:        true,
 				JSONSchema:  true,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				InputInline: true,
 				Tools:       genai.True,
 				JSON:        true,
@@ -89,14 +89,14 @@ var Scoreboard = genai.Scoreboard{
 			In:     []genai.Modality{genai.ModalityText},
 			Out:    []genai.Modality{genai.ModalityText, genai.ModalityImage},
 			Models: []string{"gemini-2.0-flash-preview-image-generation"},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				OutputInline: true,
 				Thinking:     true,
 				Tools:        genai.True,
 				JSON:         true,
 				JSONSchema:   true,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				OutputInline: true,
 				Thinking:     true,
 				Tools:        genai.True,

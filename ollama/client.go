@@ -41,12 +41,12 @@ var Scoreboard = genai.Scoreboard{
 			In:     []genai.Modality{genai.ModalityImage, genai.ModalityText},
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"gemma3:4b"},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				InputInline: true,
 				JSON:        true,
 				JSONSchema:  true,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				InputInline: true,
 				JSON:        true,
 				JSONSchema:  true,

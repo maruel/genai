@@ -54,14 +54,14 @@ var Scoreboard = genai.Scoreboard{
 				"openai-fast",
 				"qwen-coder",
 			},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				NoMaxTokens:    true,
 				NoStopSequence: true,
 				Tools:          genai.Flaky,
 				IndecisiveTool: genai.True,
 				JSON:           true,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				BrokenTokenUsage: true,
 				NoMaxTokens:      true,
 				NoStopSequence:   true,
@@ -95,18 +95,10 @@ var Scoreboard = genai.Scoreboard{
 				"gptimage",
 				"turbo",
 			},
-			GenSync: genai.FunctionalityText{
+			GenDoc: &genai.FunctionalityDoc{
 				OutputInline:       true,
 				BrokenTokenUsage:   true,
 				BrokenFinishReason: true,
-				NoMaxTokens:        true,
-				NoStopSequence:     true,
-			},
-			GenStream: genai.FunctionalityText{
-				BrokenTokenUsage:   true,
-				BrokenFinishReason: true,
-				NoMaxTokens:        true,
-				NoStopSequence:     true,
 			},
 		},
 		{
@@ -116,7 +108,7 @@ var Scoreboard = genai.Scoreboard{
 				"openai",
 				"openai-large",
 			},
-			GenSync: genai.FunctionalityText{
+			GenSync: &genai.FunctionalityText{
 				InputInline:    true,
 				InputURL:       true,
 				NoMaxTokens:    true,
@@ -125,7 +117,7 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:     genai.True,
 				JSON:           true,
 			},
-			GenStream: genai.FunctionalityText{
+			GenStream: &genai.FunctionalityText{
 				InputInline:      true,
 				InputURL:         true,
 				BrokenTokenUsage: true,

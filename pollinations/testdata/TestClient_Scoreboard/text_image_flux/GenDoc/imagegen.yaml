@@ -23,7 +23,7 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: -1
+        content_length: 13795
         uncompressed: false
         body: !!binary |
             /9j/4Qy4RXhpZgAASUkqAAgAAAAIAA8BAgAFAAAAfgAAABIBAwABAAAAAQAAABoBBQABAA
@@ -296,32 +296,22 @@ interactions:
                 - GET, POST, OPTIONS
             Access-Control-Allow-Origin:
                 - '*'
-            Access-Control-Expose-Headers:
-                - X-Auth-Status, X-Auth-Reason, X-Debug-Token, X-Debug-Token-Source, X-Debug-Referrer, X-Debug-Legacy-Token-Match, X-Debug-Allowlist-Match, X-Debug-User-Id
             Cache-Control:
                 - public, max-age=31536000, immutable
-            Cf-Cache-Status:
-                - DYNAMIC
             Cf-Ray:
-                - 9498005f1f0ba2e0-YUL
+                - 94b91dd4e9ada2a6-YUL
             Content-Disposition:
                 - inline; filename="generateonesquarewhite-backgrounddoodlewithsmoothvibrantlycoloredimagedepictingadoodle.jpg"
+            Content-Length:
+                - "13795"
             Content-Type:
                 - image/jpeg
             Server:
                 - cloudflare
             Vary:
                 - Accept-Encoding
-            X-Auth-Result:
-                - NONE
-            X-Auth-Status:
-                - unauthenticated
             X-Cache:
-                - MISS
-            X-Debug-Token:
-                - gena...ests
-            X-Debug-Token-Source:
-                - header:authorization
+                - HIT
         status: 200 OK
         code: 200
-        duration: 7.396s
+        duration: 603ms

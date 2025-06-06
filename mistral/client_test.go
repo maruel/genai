@@ -24,7 +24,7 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 		{
 			Name:         "bad apiKey",
 			ApiKey:       "bad apiKey",
-			Model:        "ministral-3b-2410",
+			Model:        "ministral-3b-latest",
 			ErrGenSync:   "http 401: error Unauthorized. You can get a new API key at https://console.mistral.ai/api-keys",
 			ErrGenStream: "http 401: error Unauthorized. You can get a new API key at https://console.mistral.ai/api-keys",
 		},

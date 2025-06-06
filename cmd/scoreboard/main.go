@@ -396,7 +396,7 @@ func functionality(f *genai.FunctionalityText) string {
 	if f.BrokenTokenUsage {
 		items = append(items, "💔usage")
 	}
-	if !f.ReportFinishReason {
+	if f.BrokenFinishReason {
 		items = append(items, "💔finishreason")
 	}
 	if !f.StopSequence {

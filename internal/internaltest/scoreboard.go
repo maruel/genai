@@ -202,7 +202,7 @@ func TestScoreboard(t *testing.T, g ProviderGenModalityFactory, filter func(mode
 
 func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText, stream bool) {
 	defaultFR := genai.FinishedStop
-	if !f.ReportFinishReason {
+	if f.BrokenFinishReason {
 		defaultFR = ""
 	}
 	t.Run("Simple", func(t *testing.T) {
@@ -247,7 +247,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		if !f.MaxTokens {
 			fr = genai.FinishedStop
 		}
-		if !f.ReportFinishReason {
+		if f.BrokenFinishReason {
 			fr = ""
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, fr)
@@ -274,7 +274,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		if !f.StopSequence {
 			fr = genai.FinishedStop
 		}
-		if !f.ReportFinishReason {
+		if f.BrokenFinishReason {
 			fr = ""
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, fr)
@@ -391,7 +391,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		}
 		c := g(t, model)
 		fr := genai.FinishedToolCalls
-		if !f.ReportFinishReason {
+		if f.BrokenFinishReason {
 			fr = ""
 		}
 		resp, err := run(t, c, msgs, &opts, stream)
@@ -427,7 +427,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		msgs = append(msgs, msg)
 		// Important! We do not any any follow up tool call.
 		opts.ToolCallRequest = genai.ToolCallNone
-		if f.ReportFinishReason {
+		if !f.BrokenFinishReason {
 			fr = genai.FinishedStop
 		}
 		resp, err = run(t, c, msgs, &opts, stream)
@@ -492,7 +492,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 				}
 				c := g(t, model)
 				fr := genai.FinishedToolCalls
-				if !f.ReportFinishReason {
+				if f.BrokenFinishReason {
 					fr = ""
 				}
 				resp, err := run(t, c, msgs, &opts, stream)
@@ -547,7 +547,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 
 func testVisionFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText, stream bool) {
 	defaultFR := genai.FinishedStop
-	if !f.ReportFinishReason {
+	if f.BrokenFinishReason {
 		defaultFR = ""
 	}
 	filename := "banana.jpg"
@@ -591,7 +591,7 @@ func testVisionFunctionalities(t *testing.T, g ProviderGenModalityFactory, model
 
 func testAudioFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText, stream bool) {
 	defaultFR := genai.FinishedStop
-	if !f.ReportFinishReason {
+	if f.BrokenFinishReason {
 		defaultFR = ""
 	}
 	// Gemini supports Opus too.
@@ -634,7 +634,7 @@ func testAudioFunctionalities(t *testing.T, g ProviderGenModalityFactory, model 
 
 func testVideoFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText, stream bool) {
 	defaultFR := genai.FinishedStop
-	if !f.ReportFinishReason {
+	if f.BrokenFinishReason {
 		defaultFR = ""
 	}
 	filename := "animation.mp4"
@@ -676,7 +676,7 @@ func testVideoFunctionalities(t *testing.T, g ProviderGenModalityFactory, model 
 
 func testPDFFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText, stream bool) {
 	defaultFR := genai.FinishedStop
-	if !f.ReportFinishReason {
+	if f.BrokenFinishReason {
 		defaultFR = ""
 	}
 	filename := "hidden_word.pdf"
@@ -730,7 +730,7 @@ func testChatImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory,
 **Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.
 **Output:** Actual image file for a smooth, colorful doodle-style image on a white background.`
 	defaultFR := genai.FinishedStop
-	if !f.ReportFinishReason {
+	if f.BrokenFinishReason {
 		defaultFR = ""
 	}
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, contents)}
@@ -765,7 +765,7 @@ func testImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 **Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.
 **Output:** Actual image file for a smooth, colorful doodle-style image on a white background.`
 	defaultFR := genai.FinishedStop
-	if !f.ReportFinishReason {
+	if f.BrokenFinishReason {
 		defaultFR = ""
 	}
 	msg := genai.NewTextMessage(genai.User, contents)
@@ -788,7 +788,7 @@ func testImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 
 func testAudioGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText, stream bool) {
 	defaultFR := genai.FinishedStop
-	if !f.ReportFinishReason {
+	if f.BrokenFinishReason {
 		defaultFR = ""
 	}
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hi. Just say this word, nothing else.")}

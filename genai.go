@@ -772,8 +772,8 @@ type FunctionalityText struct {
 
 	// BrokenTokenUsage means that the usage is not correctly reported.
 	BrokenTokenUsage bool
-	// ReportFinishReason means that the finish reason (FinishStop, FinishLength, etc) is correctly reported.
-	ReportFinishReason bool
+	// BrokenFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.
+	BrokenFinishReason bool
 	// MaxTokens means that the provider supports limiting text output. Only relevant on text output.
 	MaxTokens bool
 	// StopSequence means that the provider supports stop words. Only relevant on text output.

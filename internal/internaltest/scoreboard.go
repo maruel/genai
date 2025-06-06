@@ -211,7 +211,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		if !basicCheck(t, err, true) {
 			return
 		}
-		testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
+		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
 		hasThinking := false
 		for i := range resp.Contents {
 			if resp.Contents[i].Thinking != "" {
@@ -250,7 +250,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		if !f.ReportFinishReason {
 			fr = ""
 		}
-		testUsage(t, &resp.Usage, !f.ReportTokenUsage, fr)
+		testUsage(t, &resp.Usage, f.BrokenTokenUsage, fr)
 		if len(resp.AsText()) > 15 {
 			if f.MaxTokens {
 				// Deepseek counts "\"Parallel lines" as 3 tokens (!)
@@ -277,7 +277,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		if !f.ReportFinishReason {
 			fr = ""
 		}
-		testUsage(t, &resp.Usage, !f.ReportTokenUsage, fr)
+		testUsage(t, &resp.Usage, f.BrokenTokenUsage, fr)
 		// Special case the thinking token because explicit CoT models like Qwen3 will always restart the user's
 		// question.
 		if s := resp.AsText(); len(s) > 12 && !strings.HasPrefix(s, "<think") {
@@ -298,7 +298,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		if !basicCheckAcceptUnexpectedSuccess(t, err, f.JSON) {
 			return
 		}
-		testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
+		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
 		got := map[string]any{}
 		if err := resp.Decode(&got); err != nil {
 			if !f.JSON {
@@ -345,7 +345,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		if !basicCheck(t, err, f.JSONSchema) {
 			return
 		}
-		testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
+		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
 		if err := resp.Decode(&got); err != nil {
 			t.Fatal(err)
 		}
@@ -406,7 +406,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 				t.Fatalf("unexpected success: %s", resp.FinishReason)
 			}
 		}
-		testUsage(t, &resp.Usage, !f.ReportTokenUsage, fr)
+		testUsage(t, &resp.Usage, f.BrokenTokenUsage, fr)
 		want := opts.Tools[0].Name
 		if len(resp.ToolCalls) == 0 || resp.ToolCalls[0].Name != want {
 			if f.Tools == genai.Flaky {
@@ -434,7 +434,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		if !basicCheck(t, err, f.Tools != genai.False) {
 			return
 		}
-		testUsage(t, &resp.Usage, !f.ReportTokenUsage, fr)
+		testUsage(t, &resp.Usage, f.BrokenTokenUsage, fr)
 		s := resp.AsText()
 		want = "363.89"
 		if got := strings.TrimRight(strings.TrimSpace(strings.ToLower(s)), ".!"); want != got {
@@ -507,7 +507,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 						t.Fatalf("unexpected success: %s", resp.FinishReason)
 					}
 				}
-				testUsage(t, &resp.Usage, !f.ReportTokenUsage, fr)
+				testUsage(t, &resp.Usage, f.BrokenTokenUsage, fr)
 				if len(resp.ToolCalls) == 0 {
 					if f.Tools != genai.True {
 						return
@@ -566,7 +566,7 @@ func testVisionFunctionalities(t *testing.T, g ProviderGenModalityFactory, model
 		if !basicCheck(t, err, f.Inline) {
 			return
 		}
-		testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
+		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
 		ValidateWordResponse(t, resp, "yes")
 	})
 
@@ -584,7 +584,7 @@ func testVisionFunctionalities(t *testing.T, g ProviderGenModalityFactory, model
 		if !basicCheck(t, err, f.URL) {
 			return
 		}
-		testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
+		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
 		ValidateWordResponse(t, resp, "yes")
 	})
 }
@@ -609,7 +609,7 @@ func testAudioFunctionalities(t *testing.T, g ProviderGenModalityFactory, model 
 		if !basicCheck(t, err, f.Inline) {
 			return
 		}
-		testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
+		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
 		ValidateWordResponse(t, resp, "orange")
 	})
 
@@ -627,7 +627,7 @@ func testAudioFunctionalities(t *testing.T, g ProviderGenModalityFactory, model 
 		if !basicCheck(t, err, f.URL) {
 			return
 		}
-		testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
+		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
 		ValidateWordResponse(t, resp, "orange")
 	})
 }
@@ -651,7 +651,7 @@ func testVideoFunctionalities(t *testing.T, g ProviderGenModalityFactory, model 
 		if !basicCheck(t, err, f.Inline) {
 			return
 		}
-		testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
+		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
 		ValidateWordResponse(t, resp, "banana")
 	})
 
@@ -669,7 +669,7 @@ func testVideoFunctionalities(t *testing.T, g ProviderGenModalityFactory, model 
 		if !basicCheck(t, err, f.URL) {
 			return
 		}
-		testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
+		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
 		ValidateWordResponse(t, resp, "banana")
 	})
 }
@@ -693,7 +693,7 @@ func testPDFFunctionalities(t *testing.T, g ProviderGenModalityFactory, model st
 		if !basicCheck(t, err, f.Inline) {
 			return
 		}
-		testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
+		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
 		ValidateWordResponse(t, resp, "orange")
 	})
 
@@ -711,7 +711,7 @@ func testPDFFunctionalities(t *testing.T, g ProviderGenModalityFactory, model st
 		if !basicCheck(t, err, f.URL) {
 			return
 		}
-		testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
+		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
 		ValidateWordResponse(t, resp, "orange")
 	})
 }
@@ -738,7 +738,7 @@ func testChatImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory,
 	if !basicCheck(t, err, f.Inline) {
 		return
 	}
-	testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
+	testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
 	if len(resp.Contents) == 0 {
 		t.Fatal("expected content")
 	}
@@ -774,7 +774,7 @@ func testImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 	if !basicCheck(t, err, f.Inline) {
 		return
 	}
-	testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
+	testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
 	if len(resp.Contents) == 0 {
 		t.Fatal("expected content")
 	}
@@ -796,7 +796,7 @@ func testAudioGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 	if !basicCheck(t, err, f.Inline) {
 		return
 	}
-	testUsage(t, &resp.Usage, !f.ReportTokenUsage, defaultFR)
+	testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
 	if len(resp.Contents) == 0 {
 		t.Fatal("expected content")
 	}

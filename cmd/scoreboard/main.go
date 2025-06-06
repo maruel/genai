@@ -393,7 +393,7 @@ func functionality(f *genai.FunctionalityText) string {
 	} else if !f.UnbiasedTool {
 		items = append(items, "💔biased tool")
 	}
-	if !f.ReportTokenUsage {
+	if f.BrokenTokenUsage {
 		items = append(items, "💔usage")
 	}
 	if !f.ReportFinishReason {

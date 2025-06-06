@@ -770,8 +770,8 @@ type FunctionalityText struct {
 	// JSONSchema means that the model supports enforcing that the response is a specific JSON schema.
 	JSONSchema bool
 
-	// ReportTokenUsage means that the usage is correctly reported.
-	ReportTokenUsage bool
+	// BrokenTokenUsage means that the usage is not correctly reported.
+	BrokenTokenUsage bool
 	// ReportFinishReason means that the finish reason (FinishStop, FinishLength, etc) is correctly reported.
 	ReportFinishReason bool
 	// MaxTokens means that the provider supports limiting text output. Only relevant on text output.

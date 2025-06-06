@@ -17,8 +17,8 @@ import (
 	"time"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
-	"github.com/maruel/genai/provider"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -144,7 +144,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderGen and genai.ProviderModel.
 type Client struct {
-	provider.Base[*ErrorResponse]
+	base.Provider[*ErrorResponse]
 	Model string
 }
 
@@ -170,7 +170,7 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 	}
 	return &Client{
 		Model: model,
-		Base: provider.Base[*ErrorResponse]{
+		Provider: base.Provider[*ErrorResponse]{
 			ProviderName: "bfl",
 			APIKeyURL:    apiKeyURL,
 			ClientJSON: httpjson.Client{

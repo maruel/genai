@@ -23,8 +23,8 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
-	"github.com/maruel/genai/provider"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -1091,7 +1091,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderGen and genai.ProviderModel.
 type Client struct {
-	provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Anthropic platform API.
@@ -1117,12 +1117,12 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 	}
 	// Anthropic allows Opaque fields for thinking signatures
 	return &Client{
-		BaseGen: provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.anthropic.com/v1/messages",
 			AllowOpaqueFields:    true,
 			ProcessStreamPackets: processStreamPackets,
-			Base: provider.Base[*ErrorResponse]{
+			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "anthropic",
 				APIKeyURL:    apiKeyURL,
 				ClientJSON: httpjson.Client{
@@ -1196,7 +1196,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.anthropic.com/en/api/models-list
-	return provider.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, "https://api.anthropic.com/v1/models?limit=1000")
+	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, "https://api.anthropic.com/v1/models?limit=1000")
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {

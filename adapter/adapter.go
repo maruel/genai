@@ -10,7 +10,7 @@ import (
 	"errors"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/provider"
+	"github.com/maruel/genai/base"
 )
 
 // GenDocToGen converts a ProviderGenDoc, e.g. a provider only generating audio, images, or videos into a ProviderGen.
@@ -29,5 +29,5 @@ func (c *GenDocToGen) GenStream(ctx context.Context, msgs genai.Messages, chunks
 	if len(msgs) != 1 {
 		return genai.Result{}, errors.New("must pass exactly one Message")
 	}
-	return provider.SimulateStream(ctx, c, msgs, chunks, opts)
+	return base.SimulateStream(ctx, c, msgs, chunks, opts)
 }

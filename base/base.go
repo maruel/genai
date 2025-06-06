@@ -2,7 +2,8 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-package provider
+// Package base is awesome sauce to reduce code duplication across most providers.
+package base
 
 import (
 	"bytes"
@@ -17,13 +18,16 @@ import (
 	"sync"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/httpjson"
 	"golang.org/x/sync/errgroup"
 )
 
-// Base implements the shared HTTP client functionality used across all API clients.
-type Base[PErrorResponse fmt.Stringer] struct {
+// Provider implements genai.Provider (except for ModelID()).
+//
+// It contains the shared HTTP client functionality used across all API clients.
+type Provider[PErrorResponse fmt.Stringer] struct {
 	// ClientJSON is exported for testing replay purposes.
 	ClientJSON httpjson.Client
 	// APIKeyURL is the URL to present to the user upon authentication error.
@@ -34,7 +38,7 @@ type Base[PErrorResponse fmt.Stringer] struct {
 	errorResponse reflect.Type
 }
 
-func (c *Base[PErrorResponse]) Name() string {
+func (c *Provider[PErrorResponse]) Name() string {
 	return c.ProviderName
 }
 
@@ -42,7 +46,7 @@ func (c *Base[PErrorResponse]) Name() string {
 //
 // It takes care of sending the request, decoding the response, and handling errors.
 // All API clients should use this method for their HTTP communication needs.
-func (c *Base[PErrorResponse]) DoRequest(ctx context.Context, method, url string, in, out any) error {
+func (c *Provider[PErrorResponse]) DoRequest(ctx context.Context, method, url string, in, out any) error {
 	c.lateInit()
 	resp, err := c.ClientJSON.Request(ctx, method, url, nil, in)
 	if err != nil {
@@ -103,7 +107,7 @@ func (c *Base[PErrorResponse]) DoRequest(ctx context.Context, method, url string
 //
 // It handles JSON decoding of error responses and provides appropriate error messages
 // with context such as API key URLs for unauthorized errors.
-func (c *Base[PErrorResponse]) DecodeError(ctx context.Context, url string, resp *http.Response) error {
+func (c *Provider[PErrorResponse]) DecodeError(ctx context.Context, url string, resp *http.Response) error {
 	c.lateInit()
 	// When we are in lenient mode, we do not want to buffer the result. When in strict mode, we want to buffer
 	// to give more details.
@@ -140,7 +144,7 @@ func (c *Base[PErrorResponse]) DecodeError(ctx context.Context, url string, resp
 	return fmt.Errorf("%w: %s", herr, http.StatusText(resp.StatusCode))
 }
 
-func (c *Base[PErrorResponse]) lateInit() {
+func (c *Provider[PErrorResponse]) lateInit() {
 	// TODO: Figure out how to not use reflection.
 	c.mu.Lock()
 	if c.errorResponse == nil {
@@ -200,10 +204,12 @@ type ResultConverter interface {
 
 //
 
-// BaseGen implements common functionality for clients that provide chat capabilities.
-// It embeds Base and adds a Model field and common chat methods.
-type BaseGen[PErrorResponse fmt.Stringer, PGenRequest InitializableRequest, PGenResponse ResultConverter, GenStreamChunkResponse Obj] struct {
-	Base[PErrorResponse]
+// ProviderGen implements genai.ProviderGen.
+//
+// It includes common functionality for clients that provide chat capabilities.
+// It embeds Provider and adds the missing ModelID() method and implement genai.Validatable.
+type ProviderGen[PErrorResponse fmt.Stringer, PGenRequest InitializableRequest, PGenResponse ResultConverter, GenStreamChunkResponse Obj] struct {
+	Provider[PErrorResponse]
 	// Model is the default model used for chat requests
 	Model string
 	// GenSyncURL is the endpoint URL for chat API requests
@@ -224,7 +230,7 @@ type BaseGen[PErrorResponse fmt.Stringer, PGenRequest InitializableRequest, PGen
 	chatResponse reflect.Type
 }
 
-func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
@@ -258,7 +264,7 @@ func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespon
 	return result, continuableErr
 }
 
-func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
@@ -303,7 +309,7 @@ func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespon
 
 // GenSyncRaw is the generic raw implementation for the generation API endpoint.
 // It sets Stream to false and sends a request to the chat URL.
-func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSyncRaw(ctx context.Context, in PGenRequest, out PGenResponse) error {
+func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSyncRaw(ctx context.Context, in PGenRequest, out PGenResponse) error {
 	if err := c.Validate(); err != nil {
 		return err
 	}
@@ -313,7 +319,7 @@ func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespon
 
 // GenStreamRaw is the generic raw implementation for streaming Gen API endpoints.
 // It sets Stream to true, enables stream options if available, and handles the SSE response.
-func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStreamRaw(ctx context.Context, in PGenRequest, out chan<- GenStreamChunkResponse) error {
+func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStreamRaw(ctx context.Context, in PGenRequest, out chan<- GenStreamChunkResponse) error {
 	if err := c.Validate(); err != nil {
 		return err
 	}
@@ -334,20 +340,20 @@ func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespon
 	return sse.Process(resp.Body, out, er, c.ClientJSON.Lenient)
 }
 
-func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) ModelID() string {
+func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) ModelID() string {
 	return c.Model
 }
 
-func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) Validate() error {
+func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) Validate() error {
 	if !c.ModelOptional && c.Model == "" {
 		return errors.New("a model is required")
 	}
 	return nil
 }
 
-func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) lateInit() {
+func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) lateInit() {
 	// TODO: Figure out how to not use reflection.
-	c.Base.lateInit()
+	c.Provider.lateInit()
 	c.mu.Lock()
 	if c.chatRequest == nil {
 		var in PGenRequest
@@ -356,4 +362,45 @@ func (c *BaseGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespon
 		c.chatResponse = reflect.TypeOf(out).Elem()
 	}
 	c.mu.Unlock()
+}
+
+//
+
+// ListModelsResponse is an interface for responses that contain model data.
+type ListModelsResponse interface {
+	// ToModels converts the provider-specific models to a slice of genai.Model
+	ToModels() []genai.Model
+}
+
+// ListModels is a generic function that implements the common pattern for listing models across providers.
+// It makes an HTTP GET request to the specified URL and converts the response to a slice of genai.Model.
+func ListModels[PErrorResponse fmt.Stringer, R ListModelsResponse](ctx context.Context, c *Provider[PErrorResponse], url string) ([]genai.Model, error) {
+	var resp R
+	if err := c.DoRequest(ctx, "GET", url, nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp.ToModels(), nil
+}
+
+// SimulateStream simulates GenStream for APIs that do not support streaming.
+func SimulateStream(ctx context.Context, c genai.ProviderGen, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+	res, err := c.GenSync(ctx, msgs, opts)
+	if err == nil {
+		for i := range res.Contents {
+			if url := res.Contents[i].URL; url != "" {
+				chunks <- genai.ContentFragment{
+					Filename: res.Contents[i].Filename,
+					URL:      res.Contents[i].URL,
+				}
+			} else if d := res.Contents[i].Document; d != nil {
+				chunks <- genai.ContentFragment{
+					Filename:         res.Contents[i].Filename,
+					DocumentFragment: res.Contents[i].Document.(*bb.BytesBuffer).D,
+				}
+			} else {
+				return res, fmt.Errorf("expected ContentFragment with URL or Document, got %#v", res.Contents)
+			}
+		}
+	}
+	return res, err
 }

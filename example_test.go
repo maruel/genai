@@ -145,7 +145,7 @@ func ExampleProviderGen_all() {
 		providers["togetherai"] = c
 	}
 
-	for name, provider := range providers {
+	for name, p := range providers {
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "Tell a story in 10 words."),
 		}
@@ -154,7 +154,7 @@ func ExampleProviderGen_all() {
 			TopK:      50, // Not all providers support this
 			MaxTokens: 512,
 		}
-		response, err := provider.GenSync(context.Background(), msgs, opts)
+		response, err := p.GenSync(context.Background(), msgs, opts)
 		if err != nil {
 			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 				fmt.Printf("- %s (ignored args: %s): %v\n", name, strings.Join(uce.Unsupported, ","), response)

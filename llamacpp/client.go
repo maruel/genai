@@ -22,9 +22,9 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/sse"
-	"github.com/maruel/genai/provider"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
@@ -425,7 +425,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderGen.
 type Client struct {
-	provider.Base[*ErrorResponse]
+	base.Provider[*ErrorResponse]
 
 	baseURL  string
 	chatURL  string
@@ -445,7 +445,7 @@ func New(baseURL string, encoding *PromptEncoding, r http.RoundTripper) (*Client
 		r = http.DefaultTransport
 	}
 	return &Client{
-		Base: provider.Base[*ErrorResponse]{
+		Provider: base.Provider[*ErrorResponse]{
 			ClientJSON: httpjson.Client{
 				Lenient: internal.BeLenient,
 				Client: &http.Client{

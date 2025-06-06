@@ -16,8 +16,8 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
-	"github.com/maruel/genai/provider"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -441,7 +441,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderGen and genai.ProviderModel.
 type Client struct {
-	provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the DeepSeek platform API in China.
@@ -465,11 +465,11 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 		r = http.DefaultTransport
 	}
 	return &Client{
-		BaseGen: provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.deepseek.com/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
-			Base: provider.Base[*ErrorResponse]{
+			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "deepseek",
 				APIKeyURL:    apiKeyURL,
 				ClientJSON: httpjson.Client{
@@ -492,7 +492,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://api-docs.deepseek.com/api/list-models
-	return provider.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, "https://api.deepseek.com/models")
+	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, "https://api.deepseek.com/models")
 }
 
 // TODO: Caching: https://api-docs.deepseek.com/guides/kv_cache

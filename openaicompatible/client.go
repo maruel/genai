@@ -14,8 +14,8 @@ import (
 	"net/http"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
-	"github.com/maruel/genai/provider"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -312,7 +312,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderGen.
 type Client struct {
-	provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to an "OpenAI-compatible" platform API.
@@ -325,12 +325,12 @@ func New(chatURL string, h http.Header, model string, r http.RoundTripper) (*Cli
 		r = http.DefaultTransport
 	}
 	return &Client{
-		BaseGen: provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           chatURL,
 			ModelOptional:        true,
 			ProcessStreamPackets: processStreamPackets,
-			Base: provider.Base[*ErrorResponse]{
+			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "openaicompatible",
 				ClientJSON: httpjson.Client{
 					// It is always lenient by definition.

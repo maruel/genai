@@ -25,9 +25,9 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
-	"github.com/maruel/genai/provider"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -800,7 +800,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderModel.
 type Client struct {
-	provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Pollinations platform API.
@@ -824,12 +824,12 @@ func New(auth, model string, r http.RoundTripper) (*Client, error) {
 	}
 
 	return &Client{
-		BaseGen: provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://text.pollinations.ai/openai",
 			ProcessStreamPackets: processStreamPackets,
 			LieToolCalls:         true,
-			Base: provider.Base[*ErrorResponse]{
+			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "pollinations",
 				ClientJSON: httpjson.Client{
 					Lenient: internal.BeLenient,
@@ -856,14 +856,14 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 		}
 		return c.GenDoc(ctx, msgs[0], opts)
 	}
-	return c.BaseGen.GenSync(ctx, msgs, opts)
+	return c.ProviderGen.GenSync(ctx, msgs, opts)
 }
 
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	if c.isImage(opts) {
-		return provider.SimulateStream(ctx, c, msgs, chunks, opts)
+		return base.SimulateStream(ctx, c, msgs, chunks, opts)
 	}
-	return c.BaseGen.GenStream(ctx, msgs, chunks, opts)
+	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
 }
 
 // GenDoc uses the text-to-image API to generate an image.
@@ -948,10 +948,10 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#list-available-image-models-
 	var out []genai.Model
 	url := "https://image.pollinations.ai/models"
-	img, err1 := provider.ListModels[*ErrorResponse, *ImageModelsResponse](ctx, &c.Base, url)
+	img, err1 := base.ListModels[*ErrorResponse, *ImageModelsResponse](ctx, &c.Provider, url)
 	out = append(out, img...)
 	url = "https://text.pollinations.ai/models"
-	txt, err2 := provider.ListModels[*ErrorResponse, *TextModelsResponse](ctx, &c.Base, url)
+	txt, err2 := base.ListModels[*ErrorResponse, *TextModelsResponse](ctx, &c.Provider, url)
 	out = append(out, txt...)
 	if err1 == nil {
 		err1 = err2

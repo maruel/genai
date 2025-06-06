@@ -21,9 +21,9 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
-	"github.com/maruel/genai/provider"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -667,7 +667,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderGen and genai.ProviderModel.
 type Client struct {
-	provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Together.AI platform API.
@@ -697,11 +697,11 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 		r = http.DefaultTransport
 	}
 	return &Client{
-		BaseGen: provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.together.xyz/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
-			Base: provider.Base[*ErrorResponse]{
+			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "togetherai",
 				APIKeyURL:    apiKeyURL,
 				ClientJSON: httpjson.Client{
@@ -736,14 +736,14 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 		}
 		return c.GenDoc(ctx, msgs[0], opts)
 	}
-	return c.BaseGen.GenSync(ctx, msgs, opts)
+	return c.ProviderGen.GenSync(ctx, msgs, opts)
 }
 
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	if c.isImage(opts) {
-		return provider.SimulateStream(ctx, c, msgs, chunks, opts)
+		return base.SimulateStream(ctx, c, msgs, chunks, opts)
 	}
-	return c.BaseGen.GenStream(ctx, msgs, chunks, opts)
+	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
 }
 
 func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
@@ -793,7 +793,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.together.ai/reference/models-1
-	return provider.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Base, "https://api.together.xyz/v1/models")
+	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, "https://api.together.xyz/v1/models")
 }
 
 func (c *Client) isImage(opts genai.Options) bool {

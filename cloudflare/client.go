@@ -25,8 +25,8 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
-	"github.com/maruel/genai/provider"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -571,7 +571,7 @@ func (er *ErrorResponse) String() string {
 
 // Client implements genai.ProviderGen and genai.ProviderModel.
 type Client struct {
-	provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 
 	accountID string
 }
@@ -606,11 +606,11 @@ func New(accountID, apiKey, model string, r http.RoundTripper) (*Client, error) 
 	// https://blog.cloudflare.com/workers-ai-streaming/ and
 	// https://developers.cloudflare.com/workers/examples/websockets/
 	return &Client{
-		BaseGen: provider.BaseGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.cloudflare.com/client/v4/accounts/" + accountID + "/ai/run/" + model,
 			ProcessStreamPackets: processStreamPackets,
-			Base: provider.Base[*ErrorResponse]{
+			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "cloudflare",
 				APIKeyURL:    apiKeyURL,
 				ClientJSON: httpjson.Client{

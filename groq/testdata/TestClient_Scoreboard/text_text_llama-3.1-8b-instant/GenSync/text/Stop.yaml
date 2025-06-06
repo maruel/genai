@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 133
+        content_length: 156
         transfer_encoding: []
         trailer: {}
         host: api.groq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"max_completion_tokens":3,"messages":[{"role":"user","content":"Tell a joke in 10 words"}],"model":"llama3-8b-8192","stream":false}
+            {"messages":[{"role":"user","content":"Talk about Canada in 10 words. Start with: Canada is"}],"model":"llama-3.1-8b-instant","stop":["is"],"stream":false}
         form: {}
         headers:
             Content-Type:
@@ -29,7 +29,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-9f86b1fa-299f-477f-8c0e-644365d81cd0","object":"chat.completion","created":1748716152,"model":"llama3-8b-8192","choices":[{"index":0,"message":{"role":"assistant","content":"Why don't"},"logprobs":null,"finish_reason":"length"}],"usage":{"queue_time":0.06791351999999999,"prompt_tokens":17,"prompt_time":0.002592831,"completion_tokens":3,"completion_time":0.0025,"total_tokens":20,"total_time":0.005092831},"usage_breakdown":{"models":null},"system_fingerprint":"fp_dadc9d6142","x_groq":{"id":"req_01jwksnsevffn8zx9rtqabtwyg"}}
+            {"id":"chatcmpl-d1050326-faef-4c4e-980d-1b7a7216fd93","object":"chat.completion","created":1749212598,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Canada "},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.020831351999999997,"prompt_tokens":48,"prompt_time":0.002493864,"completion_tokens":12,"completion_time":0.016,"total_tokens":60,"total_time":0.018493864},"usage_breakdown":{"models":null},"system_fingerprint":"fp_2c73875546","x_groq":{"id":"req_01jx2k44h3e6dbse7sp9njqbhc"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,29 +38,31 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9488890f8b72a2a0-YUL
+                - 94b7e156592ba2d2-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Vary:
                 - Origin
+            Via:
+                - 1.1 google
             X-Groq-Region:
-                - us-central-1
+                - us-west-1
             X-Ratelimit-Limit-Requests:
-                - "50000"
+                - "500000"
             X-Ratelimit-Limit-Tokens:
-                - "100000"
+                - "250000"
             X-Ratelimit-Remaining-Requests:
-                - "49991"
+                - "499997"
             X-Ratelimit-Remaining-Tokens:
-                - "97968"
+                - "249829"
             X-Ratelimit-Reset-Requests:
-                - 15.549999999s
+                - 516.399999ms
             X-Ratelimit-Reset-Tokens:
-                - 1.219s
+                - 40.88ms
             X-Request-Id:
-                - req_01jwksnsevffn8zx9rtqabtwyg
+                - req_01jx2k44h3e6dbse7sp9njqbhc
         status: 200 OK
         code: 200
-        duration: 141ms
+        duration: 138ms

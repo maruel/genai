@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 251
+        content_length: 119
         transfer_encoding: []
         trailer: {}
         host: api.groq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"model":"llama3-8b-8192","response_format":{"type":"json_object"},"stream":false}
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"llama-3.1-8b-instant","stream":false}
         form: {}
         headers:
             Content-Type:
@@ -29,7 +29,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-3d9aae70-ebd0-4675-b8d8-cd1e8f5d0460","object":"chat.completion","created":1748716152,"model":"llama3-8b-8192","choices":[{"index":0,"message":{"role":"assistant","content":"{\n   \"is_fruit\": true\n}"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.067888968,"prompt_tokens":60,"prompt_time":0.007932035,"completion_tokens":9,"completion_time":0.0075,"total_tokens":69,"total_time":0.015432035},"usage_breakdown":{"models":null},"system_fingerprint":"fp_179b0f92c9","x_groq":{"id":"req_01jwksnsemfsc98msw9m37q99n"}}
+            {"id":"chatcmpl-c3cf2193-8d7b-4d89-a373-d70dd9c43c2d","object":"chat.completion","created":1749212598,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"Hello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.01925198,"prompt_tokens":43,"prompt_time":0.002296867,"completion_tokens":3,"completion_time":0.004,"total_tokens":46,"total_time":0.006296867},"usage_breakdown":{"models":null},"system_fingerprint":"fp_2c73875546","x_groq":{"id":"req_01jx2k44j5e6d841729dpjxvk3"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,29 +38,31 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9488890f8b6da2a0-YUL
+                - 94b7e1564922a2d2-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Vary:
                 - Origin
+            Via:
+                - 1.1 google
             X-Groq-Region:
-                - us-central-1
+                - us-west-1
             X-Ratelimit-Limit-Requests:
-                - "50000"
+                - "500000"
             X-Ratelimit-Limit-Tokens:
-                - "100000"
+                - "250000"
             X-Ratelimit-Remaining-Requests:
-                - "49995"
+                - "499996"
             X-Ratelimit-Remaining-Tokens:
-                - "97932"
+                - "249969"
             X-Ratelimit-Reset-Requests:
-                - 7.709s
+                - 660.2ms
             X-Ratelimit-Reset-Tokens:
-                - 1.2406s
+                - 7.44ms
             X-Request-Id:
-                - req_01jwksnsemfsc98msw9m37q99n
+                - req_01jx2k44j5e6d841729dpjxvk3
         status: 200 OK
         code: 200
-        duration: 145ms
+        duration: 150ms

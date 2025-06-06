@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 102
+        content_length: 108
         transfer_encoding: []
         trailer: {}
         host: api.groq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"messages":[{"role":"user","content":"Tell a short joke."}],"model":"llama3-8b-8192","stream":false}
+            {"messages":[{"role":"user","content":"Tell a short joke."}],"model":"llama-3.1-8b-instant","stream":false}
         form: {}
         headers:
             Content-Type:
@@ -38,7 +38,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94986b6a4db2a2fc-YUL
+                - 94b7e446b99da2f6-YUL
             Content-Length:
                 - "96"
             Content-Type:
@@ -52,7 +52,7 @@ interactions:
             X-Groq-Region:
                 - us-west-1
             X-Request-Id:
-                - req_01jwrrgqpdfc6rrdqy5yy2cvr1
+                - req_01jx2k7t35f5arvw67bev99wmb
         status: 401 Unauthorized
         code: 401
-        duration: 162ms
+        duration: 144ms

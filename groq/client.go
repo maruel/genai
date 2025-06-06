@@ -40,11 +40,9 @@ var Scoreboard = genai.Scoreboard{
 			Out: []genai.Modality{genai.ModalityText},
 
 			Models: []string{
-				"llama3-8b-8192",
-				"gemma2-9b-it",
 				"llama-3.1-8b-instant",
+				"gemma2-9b-it",
 				"llama-3.3-70b-versatile",
-				"llama3-70b-8192",
 				"mistral-saba-24b",
 			},
 			GenSync: genai.FunctionalityText{

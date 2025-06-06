@@ -58,7 +58,7 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 		{
 			Name:         "bad apiKey",
 			ApiKey:       "bad apiKey",
-			Model:        "llama3-8b-8192",
+			Model:        "llama-3.1-8b-instant",
 			ErrGenSync:   "http 401: error invalid_api_key (invalid_request_error): Invalid API Key. You can get a new API key at https://console.groq.com/keys",
 			ErrGenStream: "http 401: error invalid_api_key (invalid_request_error): Invalid API Key. You can get a new API key at https://console.groq.com/keys",
 		},

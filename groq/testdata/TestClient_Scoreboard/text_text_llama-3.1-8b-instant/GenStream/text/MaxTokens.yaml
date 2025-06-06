@@ -1,0 +1,79 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 138
+        transfer_encoding: []
+        trailer: {}
+        host: api.groq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"max_completion_tokens":3,"messages":[{"role":"user","content":"Tell a joke in 10 words"}],"model":"llama-3.1-8b-instant","stream":true}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: |+
+            data: {"id":"chatcmpl-6b8d6a3a-a266-4587-8692-864f190480e4","object":"chat.completion.chunk","created":1749212599,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_2c73875546","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jx2k45axeeqsxewpqx1tcv7g"}}
+
+            data: {"id":"chatcmpl-6b8d6a3a-a266-4587-8692-864f190480e4","object":"chat.completion.chunk","created":1749212599,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_2c73875546","choices":[{"index":0,"delta":{"content":"Why"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-6b8d6a3a-a266-4587-8692-864f190480e4","object":"chat.completion.chunk","created":1749212599,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_2c73875546","choices":[{"index":0,"delta":{"content":" did"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-6b8d6a3a-a266-4587-8692-864f190480e4","object":"chat.completion.chunk","created":1749212599,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_2c73875546","choices":[{"index":0,"delta":{"content":" the"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-6b8d6a3a-a266-4587-8692-864f190480e4","object":"chat.completion.chunk","created":1749212599,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_2c73875546","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"length"}],"x_groq":{"id":"req_01jx2k45axeeqsxewpqx1tcv7g","usage":{"queue_time":0.021177234,"prompt_tokens":42,"prompt_time":0.002723532,"completion_tokens":3,"completion_time":0.004,"total_tokens":45,"total_time":0.006723532}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94b7e15b7f76a2d2-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - us-west-1
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499991"
+            X-Ratelimit-Remaining-Tokens:
+                - "249990"
+            X-Ratelimit-Reset-Requests:
+                - 1.5512s
+            X-Ratelimit-Reset-Tokens:
+                - 2.4ms
+            X-Request-Id:
+                - req_01jx2k45axeeqsxewpqx1tcv7g
+        status: 200 OK
+        code: 200
+        duration: 112ms

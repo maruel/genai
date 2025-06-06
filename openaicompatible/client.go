@@ -419,4 +419,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	return nil
 }
 
-var _ genai.ProviderGen = &Client{}
+var (
+	_ genai.Provider    = &Client{}
+	_ genai.ProviderGen = &Client{}
+)

@@ -12,8 +12,8 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapter"
-	"github.com/maruel/genai/gemini"
 	"github.com/maruel/genai/genaitools"
+	"github.com/maruel/genai/providers/gemini"
 )
 
 func ExampleGenSyncWithToolCallLoop() {

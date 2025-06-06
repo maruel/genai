@@ -18,59 +18,10 @@ import (
 	"syscall"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/anthropic"
-	"github.com/maruel/genai/cerebras"
-	"github.com/maruel/genai/cloudflare"
-	"github.com/maruel/genai/cohere"
-	"github.com/maruel/genai/deepseek"
-	"github.com/maruel/genai/gemini"
-	"github.com/maruel/genai/groq"
-	"github.com/maruel/genai/huggingface"
 	"github.com/maruel/genai/internal"
-	"github.com/maruel/genai/mistral"
-	"github.com/maruel/genai/openai"
-	"github.com/maruel/genai/pollinations"
-	"github.com/maruel/genai/togetherai"
+	"github.com/maruel/genai/providers"
+	"github.com/maruel/genai/providers/huggingface"
 )
-
-var providers = map[string]func() (genai.ProviderModel, error){
-	"anthropic": func() (genai.ProviderModel, error) {
-		return anthropic.New("", "", nil)
-	},
-	"cerebras": func() (genai.ProviderModel, error) {
-		return cerebras.New("", "", nil)
-	},
-	"cloudflare": func() (genai.ProviderModel, error) {
-		return cloudflare.New("", "", "", nil)
-	},
-	"cohere": func() (genai.ProviderModel, error) {
-		return cohere.New("", "", nil)
-	},
-	"deepseek": func() (genai.ProviderModel, error) {
-		return deepseek.New("", "", nil)
-	},
-	"gemini": func() (genai.ProviderModel, error) {
-		return gemini.New("", "", nil)
-	},
-	"groq": func() (genai.ProviderModel, error) {
-		return groq.New("", "", nil)
-	},
-	"huggingface": func() (genai.ProviderModel, error) {
-		return huggingface.New("", "", nil)
-	},
-	"mistral": func() (genai.ProviderModel, error) {
-		return mistral.New("", "", nil)
-	},
-	"openai": func() (genai.ProviderModel, error) {
-		return openai.New("", "", nil)
-	},
-	"pollinations": func() (genai.ProviderModel, error) {
-		return pollinations.New("", "", nil)
-	},
-	"togetherai": func() (genai.ProviderModel, error) {
-		return togetherai.New("", "", nil)
-	},
-}
 
 func printStructDense(v any, indent string) string {
 	val := reflect.ValueOf(v)
@@ -128,8 +79,8 @@ func mainImpl() error {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	defer stop()
 
-	names := make([]string, 0, len(providers))
-	for name := range providers {
+	names := make([]string, 0, len(providers.All))
+	for name := range providers.All {
 		names = append(names, name)
 	}
 	sort.Strings(names)
@@ -143,15 +94,19 @@ func mainImpl() error {
 	if *strict {
 		internal.BeLenient = false
 	}
-	fn := providers[*provider]
+	fn := providers.All[*provider]
 	if fn == nil {
 		return fmt.Errorf("unknown backend %q", *provider)
 	}
-	b, err := fn()
+	c, err := fn("")
 	if err != nil {
 		return err
 	}
-	models, err := b.ListModels(ctx)
+	l, ok := c.(genai.ProviderModel)
+	if !ok {
+		return fmt.Errorf("provider %s doesn't support listing models", *provider)
+	}
+	models, err := l.ListModels(ctx)
 	if err != nil {
 		return err
 	}

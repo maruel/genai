@@ -12,17 +12,18 @@ import (
 	"strings"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/providers"
 )
 
 func printList() error {
-	names := make([]string, 0, len(providers))
-	for name := range providers {
+	names := make([]string, 0, len(providers.All))
+	for name := range providers.All {
 		names = append(names, name)
 	}
 	sort.Strings(names)
 	for _, name := range names {
 		fmt.Printf("- %s\n", name)
-		c, err := providers[name]()
+		c, err := providers.All[name]("")
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: %v\n", name, err)
 			continue

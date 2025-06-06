@@ -16,7 +16,7 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/maruel/genai/llamacpp/llamacppsrv"
+	"github.com/maruel/genai/providers/llamacpp/llamacppsrv"
 	"github.com/maruel/huggingface"
 )
 

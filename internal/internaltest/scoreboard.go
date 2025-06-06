@@ -639,8 +639,8 @@ func testAudioSTTFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 	filename := "mystery_word.mp3"
 	prompt := "What is the word said? Reply with only the word."
 	t.Run("Inline", func(t *testing.T) {
-		// Path with the assumption it's run from "//<provider>/".
-		ff, err := os.Open(filepath.Join("..", "internal", "internaltest", "testdata", filename))
+		// Path with the assumption it's run from "//providers/<provider>/".
+		ff, err := os.Open(filepath.Join("..", "..", "internal", "internaltest", "testdata", filename))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -681,8 +681,8 @@ func testVideoFunctionalities(t *testing.T, g ProviderGenModalityFactory, model 
 	filename := "animation.mp4"
 	prompt := "What is the word? Reply with only the word."
 	t.Run("Inline", func(t *testing.T) {
-		// Path with the assumption it's run from "//<provider>/".
-		ff, err := os.Open(filepath.Join("..", "internal", "internaltest", "testdata", filename))
+		// Path with the assumption it's run from "//providers/<provider>/".
+		ff, err := os.Open(filepath.Join("..", "..", "internal", "internaltest", "testdata", filename))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -723,8 +723,8 @@ func testPDFFunctionalities(t *testing.T, g ProviderGenModalityFactory, model st
 	filename := "hidden_word.pdf"
 	prompt := "What is the word? Reply with only the word."
 	t.Run("Inline", func(t *testing.T) {
-		// Path with the assumption it's run from "//<provider>/".
-		ff, err := os.Open(filepath.Join("..", "internal", "internaltest", "testdata", filename))
+		// Path with the assumption it's run from "//providers/<provider>/".
+		ff, err := os.Open(filepath.Join("..", "..", "internal", "internaltest", "testdata", filename))
 		if err != nil {
 			t.Fatal(err)
 		}

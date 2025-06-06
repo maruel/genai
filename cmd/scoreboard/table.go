@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/providers"
 )
 
 type column struct {
@@ -55,8 +56,8 @@ type columni struct {
 
 func printTable() error {
 	var columns []column
-	for name, f := range providers {
-		c, err := f()
+	for name, f := range providers.All {
+		c, err := f("")
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: %v\n", name, err)
 			continue

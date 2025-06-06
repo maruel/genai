@@ -120,10 +120,23 @@ func printTable() error {
 				col.Batch = "✅"
 			}
 			if s.GenSync != nil {
+				// TODO: Keep the best out of all the options. This is "✅⚖️"
 				if s.GenSync.Tools == genai.True && s.GenStream.Tools == genai.True {
 					col.Tools = "✅"
-				} else if s.GenSync.Tools == genai.Flaky && s.GenStream.Tools == genai.Flaky && col.Tools == "❌" {
+					if s.GenSync.BiasedTool == genai.False {
+						col.Tools += "⚖️"
+					}
+					if s.GenSync.IndecisiveTool == genai.True {
+						col.Tools += " 🤷"
+					}
+				} else if s.GenSync.Tools == genai.Flaky || s.GenStream.Tools == genai.Flaky && col.Tools == "❌" {
 					col.Tools = "💨"
+					if s.GenSync.BiasedTool == genai.False {
+						col.Tools += "⚖️"
+					}
+					if s.GenSync.IndecisiveTool == genai.True {
+						col.Tools += " 🤷"
+					}
 				}
 			}
 			if slices.Contains(s.Out, genai.ModalityAudio) {
@@ -274,8 +287,8 @@ func countCharsWithEmoji(s string) int {
 	count := 0
 	for _, r := range s {
 		switch r {
-		// case '✅', '💔', '❌':
-		//	count += 3
+		case '✅', '💔', '❌', '💨', '🤷': // '⚖️':
+			count += 2
 		default:
 			count += 1
 		}

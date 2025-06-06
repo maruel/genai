@@ -46,14 +46,12 @@ var Scoreboard = genai.Scoreboard{
 				"mistral-saba-24b",
 			},
 			GenSync: genai.FunctionalityText{
-				Inline:         true,
 				Tools:          genai.Flaky,
 				BiasedTool:     genai.Flaky,
 				IndecisiveTool: genai.Flaky,
 				JSON:           true,
 			},
 			GenStream: genai.FunctionalityText{
-				Inline:         true,
 				Tools:          genai.Flaky,
 				BiasedTool:     genai.Flaky,
 				IndecisiveTool: genai.Flaky,
@@ -68,7 +66,6 @@ var Scoreboard = genai.Scoreboard{
 				"deepseek-r1-distill-llama-70b",
 			},
 			GenSync: genai.FunctionalityText{
-				Inline:         true,
 				Thinking:       true,
 				Tools:          genai.Flaky,
 				BiasedTool:     genai.True,
@@ -76,7 +73,6 @@ var Scoreboard = genai.Scoreboard{
 				JSON:           true,
 			},
 			GenStream: genai.FunctionalityText{
-				Inline:         true,
 				Thinking:       true,
 				Tools:          genai.Flaky,
 				BiasedTool:     genai.True,
@@ -92,15 +88,15 @@ var Scoreboard = genai.Scoreboard{
 				"meta-llama/llama-4-maverick-17b-128e-instruct",
 			},
 			GenSync: genai.FunctionalityText{
-				Inline:         true,
-				URL:            true,
+				InputInline:    true,
+				InputURL:       true,
 				Tools:          genai.Flaky,
 				IndecisiveTool: genai.True,
 				JSON:           true,
 			},
 			GenStream: genai.FunctionalityText{
-				Inline:         true,
-				URL:            true,
+				InputInline:    true,
+				InputURL:       true,
 				Tools:          genai.Flaky,
 				IndecisiveTool: genai.True,
 				JSON:           true,

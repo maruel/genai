@@ -51,13 +51,11 @@ var Scoreboard = genai.Scoreboard{
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"meta-llama/Llama-3.3-70B-Instruct"},
 			GenSync: genai.FunctionalityText{
-				Inline:     true,
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				JSONSchema: true,
 			},
 			GenStream: genai.FunctionalityText{
-				Inline:             true,
 				BrokenFinishReason: true,
 				Tools:              genai.True,
 				BiasedTool:         genai.True,
@@ -69,14 +67,12 @@ var Scoreboard = genai.Scoreboard{
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"Qwen/QwQ-32B"},
 			GenSync: genai.FunctionalityText{
-				Inline:     true,
 				Thinking:   true,
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				JSONSchema: true,
 			},
 			GenStream: genai.FunctionalityText{
-				Inline:             true,
 				Thinking:           true,
 				BrokenFinishReason: true,
 				Tools:              genai.True,

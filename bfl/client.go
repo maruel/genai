@@ -46,14 +46,14 @@ var Scoreboard = genai.Scoreboard{
 				"flux-pro",
 			},
 			GenSync: genai.FunctionalityText{
-				Inline:             true,
+				OutputURL:          true,
 				BrokenTokenUsage:   true,
 				BrokenFinishReason: true,
 				NoMaxTokens:        true,
 				NoStopSequence:     true,
 			},
 			GenStream: genai.FunctionalityText{
-				Inline:             true,
+				OutputURL:          true,
 				BrokenTokenUsage:   true,
 				BrokenFinishReason: true,
 				NoMaxTokens:        true,

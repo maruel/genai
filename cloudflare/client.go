@@ -46,6 +46,8 @@ import (
 var Scoreboard = genai.Scoreboard{
 	Scenarios: []genai.Scenario{
 		{
+			// Llama-4 scout supports genai.ModalityImage but I'm not sure if cloudflare supports this modality.
+			// This may change in the future.
 			In:  []genai.Modality{genai.ModalityText},
 			Out: []genai.Modality{genai.ModalityText},
 			Models: []string{
@@ -53,7 +55,6 @@ var Scoreboard = genai.Scoreboard{
 				"@cf/meta/llama-3.2-3b-instruct",
 			},
 			GenSync: genai.FunctionalityText{
-				Inline:             true,
 				BrokenFinishReason: true,
 				NoStopSequence:     true,
 				Tools:              genai.Flaky,
@@ -62,7 +63,6 @@ var Scoreboard = genai.Scoreboard{
 				JSONSchema:         true,
 			},
 			GenStream: genai.FunctionalityText{
-				Inline:             true,
 				BrokenFinishReason: true,
 				NoStopSequence:     true,
 				Tools:              genai.Flaky,

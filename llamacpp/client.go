@@ -38,15 +38,12 @@ import (
 var Scoreboard = genai.Scoreboard{
 	Scenarios: []genai.Scenario{
 		{
-			In:     []genai.Modality{genai.ModalityText},
-			Out:    []genai.Modality{genai.ModalityText},
-			Models: []string{"unsloth/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q5_K_M.gguf"},
-			GenSync: genai.FunctionalityText{
-				Inline: true,
-			},
-			GenStream: genai.FunctionalityText{
-				Inline: true,
-			},
+			// TODO: It supports genai.ModalityImage
+			In:        []genai.Modality{genai.ModalityText},
+			Out:       []genai.Modality{genai.ModalityText},
+			Models:    []string{"unsloth/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q5_K_M.gguf"},
+			GenSync:   genai.FunctionalityText{},
+			GenStream: genai.FunctionalityText{},
 		},
 	},
 }

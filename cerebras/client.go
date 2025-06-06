@@ -43,14 +43,12 @@ var Scoreboard = genai.Scoreboard{
 			// "llama-3.1-8b" works too but the ListModels() API returns the malformed string.
 			Models: []string{"llama3.1-8b", "llama-3.3-70b"},
 			GenSync: genai.FunctionalityText{
-				Inline:     true,
 				Tools:      genai.Flaky,
 				BiasedTool: genai.True,
 				JSON:       true,
 				JSONSchema: true,
 			},
 			GenStream: genai.FunctionalityText{
-				Inline:     true,
 				Tools:      genai.Flaky,
 				BiasedTool: genai.True,
 				JSON:       true,
@@ -62,7 +60,6 @@ var Scoreboard = genai.Scoreboard{
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"qwen-3-32b"},
 			GenSync: genai.FunctionalityText{
-				Inline:     true,
 				Thinking:   true,
 				Tools:      genai.Flaky,
 				BiasedTool: genai.True,
@@ -70,24 +67,23 @@ var Scoreboard = genai.Scoreboard{
 				JSONSchema: true,
 			},
 			GenStream: genai.FunctionalityText{
-				Inline:             true,
 				Thinking:           true,
 				BrokenFinishReason: true,
 			},
 		},
 		{
+			// Llama-4 scout supports genai.ModalityImage but Cerebras doesn't support this yet.
+			// This may change in the future.
 			In:     []genai.Modality{genai.ModalityText},
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"llama-4-scout-17b-16e-instruct"},
 			GenSync: genai.FunctionalityText{
-				Inline:     true,
 				Tools:      genai.Flaky,
 				BiasedTool: genai.True,
 				JSON:       true,
 				JSONSchema: true,
 			},
 			GenStream: genai.FunctionalityText{
-				Inline:     true,
 				Tools:      genai.Flaky,
 				BiasedTool: genai.True,
 				JSON:       true,

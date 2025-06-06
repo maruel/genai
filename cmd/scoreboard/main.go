@@ -342,10 +342,10 @@ func printList() error {
 				fmt.Printf("    in/out:   text only\n")
 			} else {
 				v := ""
-				if scenario.GenSync.Inline && !scenario.GenSync.URL {
+				if scenario.GenSync.InputInline && !scenario.GenSync.InputURL {
 					v = " (inline only)"
 				}
-				if scenario.GenSync.URL && !scenario.GenSync.Inline {
+				if scenario.GenSync.InputURL && !scenario.GenSync.InputInline {
 					v = " (url only)"
 				}
 				fmt.Printf("    in/out:   ⇒ %s%s / %s ⇒\n", scenario.In, v, scenario.Out)

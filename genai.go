@@ -743,23 +743,29 @@ type ProviderScoreboard interface {
 	Scoreboard() Scoreboard
 }
 
-// FunctionalityText defines which functionalites are supported in a scenario.
+// FunctionalityText defines which functionalites are supported in a scenario for models that support text
+// output modality.
 //
-// The second group are supported features.
+// The first group is for multi-modal models, either with non-text inputs (e.g. vision, STT) or outputs
+// (combined text and image generation).
+//
+// The second group are supported functional features for agency.
 //
 // The third group is to identify bugged providers. A provider is considered to be bugged if any of the field
 // is false.
 type FunctionalityText struct {
-	// Inline means the input modality can be provided inline. For non-textual data, it's generally as base64 encoded
-	// string.
-	Inline bool
-	// URL means that the data can be provided as a URL that the provider will fetch from.
-	URL bool
+	// These should only be set for models that support non-text input modalities. Inline means base64 encoded
+	// inside the JSON request. URL means the provider will fetch the file via an URL.
+	InputInline bool
+	InputURL    bool
+	// These should only be set for models that support non-text output modalities.
+	OutputInline bool
+	OutputURL    bool
+
 	// Thinking means that the model does either explicit chain-of-thought or hidden thinking. For some
 	// providers, this is controlled via a OptionsText. For some models (like Qwen3), a token "/nothink" or
 	// "/think" is used to control.
 	Thinking bool
-
 	// Tools means that tool call is supported. This is a requirement for MCP. Some provider support tool
 	// calling but the model is very flaky at actually requesting the calls. This is more frequent on highly
 	// quantized models, small models or MoE models.

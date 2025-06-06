@@ -44,13 +44,11 @@ var Scoreboard = genai.Scoreboard{
 				"sonar-reasoning",
 			},
 			GenSync: genai.FunctionalityText{
-				Inline:         true,
 				Thinking:       true,
 				NoStopSequence: true,
 				JSONSchema:     true,
 			},
 			GenStream: genai.FunctionalityText{
-				Inline:         true,
 				Thinking:       true,
 				NoStopSequence: true,
 				JSONSchema:     true,

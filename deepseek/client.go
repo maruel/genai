@@ -38,13 +38,11 @@ var Scoreboard = genai.Scoreboard{
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"deepseek-chat"},
 			GenSync: genai.FunctionalityText{
-				Inline:         true,
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
 			},
 			GenStream: genai.FunctionalityText{
-				Inline:         true,
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
@@ -55,12 +53,10 @@ var Scoreboard = genai.Scoreboard{
 			Out:    []genai.Modality{genai.ModalityText},
 			Models: []string{"deepseek-reasoner"},
 			GenSync: genai.FunctionalityText{
-				Inline:   true,
 				Thinking: true,
 				JSON:     true,
 			},
 			GenStream: genai.FunctionalityText{
-				Inline:   true,
 				Thinking: true,
 				JSON:     true,
 			},

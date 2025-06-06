@@ -55,7 +55,6 @@ var Scoreboard = genai.Scoreboard{
 				"qwen-coder",
 			},
 			GenSync: genai.FunctionalityText{
-				Inline:         true,
 				NoMaxTokens:    true,
 				NoStopSequence: true,
 				Tools:          genai.Flaky,
@@ -63,7 +62,6 @@ var Scoreboard = genai.Scoreboard{
 				JSON:           true,
 			},
 			GenStream: genai.FunctionalityText{
-				Inline:           true,
 				BrokenTokenUsage: true,
 				NoMaxTokens:      true,
 				NoStopSequence:   true,
@@ -80,12 +78,10 @@ var Scoreboard = genai.Scoreboard{
 				"deepseek-reasoning",
 			},
 			GenSync: genai.Functionality{
-				Inline:             true,
 				Thinking:           true,
 				NoStopSequence: true,
 			},
 			GenStream: genai.Functionality{
-				Inline:             true,
 				Thinking:           false, // Upstream parsing is broken
 				NoStopSequence: true,
 			},
@@ -100,14 +96,13 @@ var Scoreboard = genai.Scoreboard{
 				"turbo",
 			},
 			GenSync: genai.FunctionalityText{
-				Inline:             true,
+				OutputInline:       true,
 				BrokenTokenUsage:   true,
 				BrokenFinishReason: true,
 				NoMaxTokens:        true,
 				NoStopSequence:     true,
 			},
 			GenStream: genai.FunctionalityText{
-				Inline:             true,
 				BrokenTokenUsage:   true,
 				BrokenFinishReason: true,
 				NoMaxTokens:        true,
@@ -122,8 +117,8 @@ var Scoreboard = genai.Scoreboard{
 				"openai-large",
 			},
 			GenSync: genai.FunctionalityText{
-				Inline:         true,
-				URL:            true,
+				InputInline:    true,
+				InputURL:       true,
 				NoMaxTokens:    true,
 				NoStopSequence: true,
 				Tools:          genai.True,
@@ -131,8 +126,8 @@ var Scoreboard = genai.Scoreboard{
 				JSON:           true,
 			},
 			GenStream: genai.FunctionalityText{
-				Inline:           true,
-				URL:              true,
+				InputInline:      true,
+				InputURL:         true,
 				BrokenTokenUsage: true,
 				NoMaxTokens:      true,
 				NoStopSequence:   true,
@@ -151,12 +146,12 @@ var Scoreboard = genai.Scoreboard{
 					"openai-audio",
 				},
 				GenSync: genai.Functionality{
-					Inline:             true,
+					InputInline:             true,
 					NoMaxTokens:        true,
 					JSON:               true,
 				},
 				GenStream: genai.Functionality{
-					Inline:             true,
+					InputInline:             true,
 					BrokenTokenUsage:   true,
 					NoMaxTokens:        true,
 					JSON:               true,
@@ -173,12 +168,12 @@ var Scoreboard = genai.Scoreboard{
 					"openai-audio",
 				},
 				GenSync: genai.Functionality{
-					Inline:             true,
+					InputInline:             true,
 					NoMaxTokens:        true,
 					JSON:               true,
 				},
 				GenStream: genai.Functionality{
-					Inline:             true,
+					InputInline:             true,
 					BrokenTokenUsage:   true,
 					NoMaxTokens:        true,
 					JSON:               true,

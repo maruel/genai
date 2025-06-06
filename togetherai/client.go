@@ -55,6 +55,8 @@ var Scoreboard = genai.Scoreboard{
 				"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
 				"meta-llama/Llama-4-Scout-17B-16E-Instruct",
 
+				// TODO: Many are vision models.
+
 				// Old or fringe models
 				"arcee-ai/arcee-blitz",
 				"arcee-ai/caller",
@@ -89,14 +91,12 @@ var Scoreboard = genai.Scoreboard{
 				"togethercomputer/Refuel-Llm-V2",
 			},
 			GenSync: genai.FunctionalityText{
-				Inline:     true,
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				JSON:       true,
 				JSONSchema: true,
 			},
 			GenStream: genai.FunctionalityText{
-				Inline:     true,
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				JSON:       true,
@@ -121,14 +121,14 @@ var Scoreboard = genai.Scoreboard{
 				"black-forest-labs/FLUX.1-dev-lora",
 			},
 			GenSync: genai.FunctionalityText{
-				Inline:             true,
+				OutputURL:          true,
 				BrokenTokenUsage:   true,
 				BrokenFinishReason: true,
 				NoMaxTokens:        true,
 				NoStopSequence:     true,
 			},
 			GenStream: genai.FunctionalityText{
-				Inline:             true,
+				OutputURL:          true,
 				BrokenTokenUsage:   true,
 				BrokenFinishReason: true,
 				NoMaxTokens:        true,

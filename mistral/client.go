@@ -63,8 +63,6 @@ var Scoreboard = genai.Scoreboard{
 			},
 			GenSync: genai.FunctionalityText{
 				Inline:     true,
-				URL:        false,
-				Thinking:   false,
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				JSON:       true,
@@ -72,8 +70,6 @@ var Scoreboard = genai.Scoreboard{
 			},
 			GenStream: genai.FunctionalityText{
 				Inline:     true,
-				URL:        false,
-				Thinking:   false,
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				JSON:       true,
@@ -102,7 +98,6 @@ var Scoreboard = genai.Scoreboard{
 			GenSync: genai.FunctionalityText{
 				Inline:         true,
 				URL:            true,
-				Thinking:       false,
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
@@ -111,7 +106,6 @@ var Scoreboard = genai.Scoreboard{
 			GenStream: genai.FunctionalityText{
 				Inline:         true,
 				URL:            true,
-				Thinking:       false,
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
@@ -138,18 +132,14 @@ var Scoreboard = genai.Scoreboard{
 				"mistral-ocr-latest",
 			},
 			GenSync: genai.FunctionalityText{
-				Inline:         false,
 				URL:            true,
-				Thinking:       false,
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
 				JSONSchema:     true,
 			},
 			GenStream: genai.FunctionalityText{
-				Inline:         false,
 				URL:            true,
-				Thinking:       false,
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,

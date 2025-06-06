@@ -54,8 +54,6 @@ var Scoreboard = genai.Scoreboard{
 			},
 			GenSync: genai.FunctionalityText{
 				Inline:             true,
-				URL:                false,
-				Thinking:           false,
 				BrokenFinishReason: true,
 				NoStopSequence:     true,
 				Tools:              genai.Flaky,
@@ -65,8 +63,6 @@ var Scoreboard = genai.Scoreboard{
 			},
 			GenStream: genai.FunctionalityText{
 				Inline:             true,
-				URL:                false,
-				Thinking:           false,
 				BrokenFinishReason: true,
 				NoStopSequence:     true,
 				Tools:              genai.Flaky,

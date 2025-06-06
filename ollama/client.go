@@ -43,17 +43,11 @@ var Scoreboard = genai.Scoreboard{
 			Models: []string{"gemma3:4b"},
 			GenSync: genai.FunctionalityText{
 				Inline:     true,
-				URL:        false,
-				Thinking:   false,
-				Tools:      genai.False,
 				JSON:       true,
 				JSONSchema: true,
 			},
 			GenStream: genai.FunctionalityText{
 				Inline:     true,
-				URL:        false,
-				Thinking:   false,
-				Tools:      genai.False,
 				JSON:       true,
 				JSONSchema: true,
 			},

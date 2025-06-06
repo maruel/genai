@@ -54,8 +54,6 @@ var Scoreboard = genai.Scoreboard{
 			Models: []string{"gemini-2.0-flash-lite"},
 			GenSync: genai.FunctionalityText{
 				Inline:         true,
-				URL:            false,
-				Thinking:       false,
 				Tools:          genai.True,
 				BiasedTool:     genai.Flaky,
 				IndecisiveTool: genai.Flaky,
@@ -64,8 +62,6 @@ var Scoreboard = genai.Scoreboard{
 			},
 			GenStream: genai.FunctionalityText{
 				Inline:         true,
-				URL:            false,
-				Thinking:       false,
 				Tools:          genai.True,
 				BiasedTool:     genai.Flaky,
 				IndecisiveTool: genai.Flaky,
@@ -79,16 +75,12 @@ var Scoreboard = genai.Scoreboard{
 			Models: []string{"gemini-2.0-flash"},
 			GenSync: genai.FunctionalityText{
 				Inline:     true,
-				URL:        false,
-				Thinking:   false,
 				Tools:      genai.True,
 				JSON:       true,
 				JSONSchema: true,
 			},
 			GenStream: genai.FunctionalityText{
 				Inline:     true,
-				URL:        false,
-				Thinking:   false,
 				Tools:      genai.True,
 				JSON:       true,
 				JSONSchema: true,
@@ -100,7 +92,6 @@ var Scoreboard = genai.Scoreboard{
 			Models: []string{"gemini-2.0-flash-preview-image-generation"},
 			GenSync: genai.FunctionalityText{
 				Inline:     true,
-				URL:        false,
 				Thinking:   true,
 				Tools:      genai.True,
 				JSON:       true,
@@ -108,7 +99,6 @@ var Scoreboard = genai.Scoreboard{
 			},
 			GenStream: genai.FunctionalityText{
 				Inline:     true,
-				URL:        false,
 				Thinking:   true,
 				Tools:      genai.True,
 				JSON:       true,

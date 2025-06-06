@@ -45,8 +45,6 @@ var Scoreboard = genai.Scoreboard{
 			Models: []string{"command-r7b-12-2024"},
 			GenSync: genai.FunctionalityText{
 				Inline:         true,
-				URL:            false,
-				Thinking:       false,
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
@@ -54,8 +52,6 @@ var Scoreboard = genai.Scoreboard{
 			},
 			GenStream: genai.FunctionalityText{
 				Inline:         true,
-				URL:            false,
-				Thinking:       false,
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,

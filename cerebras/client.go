@@ -44,8 +44,6 @@ var Scoreboard = genai.Scoreboard{
 			Models: []string{"llama3.1-8b", "llama-3.3-70b"},
 			GenSync: genai.FunctionalityText{
 				Inline:     true,
-				URL:        false,
-				Thinking:   false,
 				Tools:      genai.Flaky,
 				BiasedTool: genai.True,
 				JSON:       true,
@@ -53,8 +51,6 @@ var Scoreboard = genai.Scoreboard{
 			},
 			GenStream: genai.FunctionalityText{
 				Inline:     true,
-				URL:        false,
-				Thinking:   false,
 				Tools:      genai.Flaky,
 				BiasedTool: genai.True,
 				JSON:       true,
@@ -67,7 +63,6 @@ var Scoreboard = genai.Scoreboard{
 			Models: []string{"qwen-3-32b"},
 			GenSync: genai.FunctionalityText{
 				Inline:     true,
-				URL:        false,
 				Thinking:   true,
 				Tools:      genai.Flaky,
 				BiasedTool: genai.True,
@@ -76,12 +71,8 @@ var Scoreboard = genai.Scoreboard{
 			},
 			GenStream: genai.FunctionalityText{
 				Inline:             true,
-				URL:                false,
 				Thinking:           true,
 				BrokenFinishReason: true,
-				Tools:              genai.False,
-				JSON:               false,
-				JSONSchema:         false,
 			},
 		},
 		{
@@ -90,7 +81,6 @@ var Scoreboard = genai.Scoreboard{
 			Models: []string{"llama-4-scout-17b-16e-instruct"},
 			GenSync: genai.FunctionalityText{
 				Inline:     true,
-				URL:        false,
 				Tools:      genai.Flaky,
 				BiasedTool: genai.True,
 				JSON:       true,
@@ -98,7 +88,6 @@ var Scoreboard = genai.Scoreboard{
 			},
 			GenStream: genai.FunctionalityText{
 				Inline:     true,
-				URL:        false,
 				Tools:      genai.Flaky,
 				BiasedTool: genai.True,
 				JSON:       true,

@@ -86,8 +86,6 @@ var Scoreboard = genai.Scoreboard{
 			},
 			GenSync: genai.FunctionalityText{
 				Inline:         true,
-				URL:            false,
-				Thinking:       false,
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
@@ -95,8 +93,6 @@ var Scoreboard = genai.Scoreboard{
 			},
 			GenStream: genai.FunctionalityText{
 				Inline:         true,
-				URL:            false,
-				Thinking:       false,
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
@@ -119,8 +115,6 @@ var Scoreboard = genai.Scoreboard{
 			},
 			GenSync: genai.FunctionalityText{
 				Inline:     true,
-				URL:        false,
-				Thinking:   false,
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				JSON:       true,
@@ -128,8 +122,6 @@ var Scoreboard = genai.Scoreboard{
 			},
 			GenStream: genai.FunctionalityText{
 				Inline:     true,
-				URL:        false,
-				Thinking:   false,
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				JSON:       true,
@@ -156,7 +148,6 @@ var Scoreboard = genai.Scoreboard{
 			GenSync: genai.FunctionalityText{
 				Inline:         true,
 				URL:            true,
-				Thinking:       false,
 				NoStopSequence: true,
 				Tools:          genai.True,
 				BiasedTool:     genai.True,
@@ -166,7 +157,6 @@ var Scoreboard = genai.Scoreboard{
 			GenStream: genai.FunctionalityText{
 				Inline:         true,
 				URL:            true,
-				Thinking:       false,
 				NoStopSequence: true,
 				Tools:          genai.True,
 				BiasedTool:     genai.True,
@@ -184,29 +174,17 @@ var Scoreboard = genai.Scoreboard{
 			},
 			GenSync: genai.FunctionalityText{
 				Inline:             true,
-				URL:                false,
-				Thinking:           false,
 				BrokenTokenUsage:   true,
 				BrokenFinishReason: true,
 				NoMaxTokens:        true,
 				NoStopSequence:     true,
-				Tools:              genai.False,
-				BiasedTool:         genai.True,
-				JSON:               false,
-				JSONSchema:         false,
 			},
 			GenStream: genai.FunctionalityText{
 				Inline:             true,
-				URL:                false,
-				Thinking:           false,
 				BrokenTokenUsage:   true,
 				BrokenFinishReason: true,
 				NoMaxTokens:        true,
 				NoStopSequence:     true,
-				Tools:              genai.False,
-				BiasedTool:         genai.True,
-				JSON:               false,
-				JSONSchema:         false,
 			},
 		},
 		// Audio only output:

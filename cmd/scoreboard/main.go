@@ -390,7 +390,8 @@ func functionality(f *genai.FunctionalityText) string {
 
 	if flakyTool {
 		items = append(items, "💔flaky tool")
-	} else if !f.UnbiasedTool {
+	} else if f.BiasedTool == genai.True {
+		// Flaky is okay.
 		items = append(items, "💔biased tool")
 	}
 	if f.BrokenTokenUsage {

@@ -14,6 +14,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"sort"
 	"strings"
 	"testing"
 
@@ -355,9 +356,6 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 	})
 
 	t.Run("Tools", func(t *testing.T) {
-		if f.UnbiasedTool && f.Tools != genai.True {
-			t.Fatal("UnbiasedTool required Tools to be True")
-		}
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."),
 		}
@@ -449,6 +447,12 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 	})
 
 	t.Run("ToolsBiased", func(t *testing.T) {
+		if f.BiasedTool != genai.False && f.Tools == genai.False {
+			t.Fatal("BiasedTool required Tools to be True or Flaky")
+		}
+		if f.IndecisiveTool != genai.False && f.Tools == genai.False {
+			t.Fatal("IndecisiveTool required Tools to be True or Flaky")
+		}
 		type gotCanadaFirst struct {
 			Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`
 		}
@@ -523,22 +527,50 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 						t.Fatalf("Expected tool call to %s, got: %v", want, resp.ToolCalls)
 					}
 				}
-				if len(resp.ToolCalls) > 1 {
-					if f.UnbiasedTool {
-						return
+				switch len(resp.ToolCalls) {
+				case 0:
+					t.Fatal("expected at least one tool call")
+				case 1:
+					if f.IndecisiveTool == genai.True {
+						t.Fatal("scenario marked as indecisive but it's not")
 					}
-				} else {
-					if f.UnbiasedTool {
-						t.Fatal("expected multiple tool calls")
+					res, err := resp.ToolCalls[0].Call(t.Context(), opts.Tools)
+					if err != nil {
+						t.Fatal(err)
 					}
-				}
-				// Call the first.
-				res, err := resp.ToolCalls[0].Call(t.Context(), opts.Tools)
-				if err != nil {
-					t.Fatal(err)
-				}
-				if f.UnbiasedTool && res != line.countrySelected {
-					t.Fatalf("Expected %q, got %q", line.countrySelected, res)
+					switch f.BiasedTool {
+					case genai.True:
+						// It must be the first.
+						if res != line.countrySelected {
+							t.Fatalf("Expected bias towards the first proposed item %q, got %q", line.countrySelected, res)
+						}
+					case genai.Flaky:
+						// A good example is "gemini-2.0-flash-lite", it's slightly biased but not consistently.
+					case genai.False:
+						// It must be the other.
+						if res == line.countrySelected {
+							t.Fatalf("Expected not %q, got %q", line.countrySelected, res)
+						}
+					default:
+					}
+				case 2:
+					if f.IndecisiveTool == genai.False {
+						t.Fatal("got indecisive result but it's not marked as indecisive")
+					}
+					var countries []string
+					for _, tc := range resp.ToolCalls {
+						res, err := tc.Call(t.Context(), opts.Tools)
+						if err != nil {
+							t.Fatal(err)
+						}
+						countries = append(countries, res)
+					}
+					sort.Strings(countries)
+					if !slices.Equal(countries, []string{"Canada", "USA"}) {
+						t.Fatalf("while indecisive, unexpected countries: %s", countries)
+					}
+				default:
+					t.Fatalf("had too many tool calls: %#v", resp.ToolCalls)
 				}
 			})
 		}

@@ -778,11 +778,20 @@ type FunctionalityText struct {
 	NoMaxTokens bool
 	// NoStopSequence means that the provider doesn't support stop words. Only relevant on text output.
 	NoStopSequence bool
-	// UnbiasedTool is true when the LLM supports tools and when asking for a biased question, it will not
-	// always reply with the first readily available answer.
+	// BiasedTool is true when we ask the LLM to use a tool in an ambiguous biased question, it will always
+	// reply with the first readily available answer.
+	//
+	// This means that when using enum, it is important to understand that the LLM will put heavy weight on the
+	// first option.
 	//
 	// This is affected by two factors: model size and quantization. Quantization affects this dramatically.
-	UnbiasedTool bool
+	BiasedTool TriState
+	// IndecisiveTool is True when we ask the LLM to use a tool in an ambiguous biased question, it'll call both
+	// options. It is Flaky when both can happen.
+	//
+	// This is actually fine, it means that the LLM will be less opinionated in some cases. The test into which
+	// a LLM is indecisive is likely model-specific too.
+	IndecisiveTool TriState
 
 	_ struct{}
 }

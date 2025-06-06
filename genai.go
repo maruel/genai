@@ -774,10 +774,10 @@ type FunctionalityText struct {
 	BrokenTokenUsage bool
 	// BrokenFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.
 	BrokenFinishReason bool
-	// NoMaxTokens means that the provider supports limiting text output. Only relevant on text output.
+	// NoMaxTokens means that the provider doesn't support limiting text output. Only relevant on text output.
 	NoMaxTokens bool
-	// StopSequence means that the provider supports stop words. Only relevant on text output.
-	StopSequence bool
+	// NoStopSequence means that the provider doesn't support stop words. Only relevant on text output.
+	NoStopSequence bool
 	// UnbiasedTool is true when the LLM supports tools and when asking for a biased question, it will not
 	// always reply with the first readily available answer.
 	//

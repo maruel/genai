@@ -399,7 +399,7 @@ func functionality(f *genai.FunctionalityText) string {
 	if f.BrokenFinishReason {
 		items = append(items, "💔finishreason")
 	}
-	if !f.StopSequence {
+	if f.NoStopSequence {
 		items = append(items, "💔stopsequence")
 	}
 	return strings.Join(items, ", ")

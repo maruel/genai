@@ -267,11 +267,11 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		// Stop can fail in two ways:
 		// - GenSync() or GenStream() return an irrecoverable error.
 		// - The Stop words to not stop generation.
-		if !basicCheckAcceptUnexpectedSuccess(t, err, f.StopSequence) {
+		if !basicCheckAcceptUnexpectedSuccess(t, err, !f.NoStopSequence) {
 			return
 		}
 		fr := genai.FinishedStopSequence
-		if !f.StopSequence {
+		if f.NoStopSequence {
 			fr = genai.FinishedStop
 		}
 		if f.BrokenFinishReason {
@@ -282,10 +282,10 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		// question.
 		if s := resp.AsText(); len(s) > 12 && !strings.HasPrefix(s, "<think") {
 			// This is very unfortunate: Huggingface serves a version of the model that never prefixes with <think>.
-			if !strings.Contains(strings.ToLower(model), "qwq") && f.StopSequence {
+			if !strings.Contains(strings.ToLower(model), "qwq") && !f.NoStopSequence {
 				t.Fatalf("Expected less than 12 letters, got %q", resp.AsText())
 			}
-		} else if !f.StopSequence {
+		} else if f.NoStopSequence {
 			t.Fatal("unexpected short answer")
 		}
 	})

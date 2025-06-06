@@ -74,66 +74,62 @@ func printTable() error {
 			Provider: ps.Name(),
 			// Country:    sb.Country,
 		}
+		col.Vision = "❌"
+		col.PDF = "❌"
+		col.Audio = "❌"
+		col.Video = "❌"
+		col.JSON = "❌"
+		col.JSONSchema = "❌"
+		col.ImageGen = "❌"
+		col.Chat = "❌"
+		col.Streaming = "❌"
+		col.Doc = "❌"
+		col.Batch = "❌"
+		col.Tools = "❌"
+		col.AudioGen = "❌"
 		for _, s := range sb.Scenarios {
 			if slices.Contains(s.In, genai.ModalityImage) {
 				col.Vision = "✅"
-			} else {
-				col.Vision = "❌"
 			}
 			if slices.Contains(s.In, genai.ModalityPDF) {
 				col.PDF = "✅"
-			} else {
-				col.PDF = "❌"
 			}
 			if slices.Contains(s.In, genai.ModalityAudio) {
 				col.Audio = "✅"
-			} else {
-				col.Audio = "❌"
 			}
 			if slices.Contains(s.In, genai.ModalityVideo) {
 				col.Video = "✅"
-			} else {
-				col.Video = "❌"
 			}
 			if s.GenSync != nil && s.GenSync.JSON && s.GenStream.JSON {
 				col.JSON = "✅"
-			} else {
-				col.JSON = "❌"
 			}
 			if s.GenSync != nil && s.GenSync.JSONSchema && s.GenStream.JSONSchema {
 				col.JSONSchema = "✅"
-			} else {
-				col.JSONSchema = "❌"
 			}
 			if slices.Contains(s.In, genai.ModalityText) && slices.Contains(s.Out, genai.ModalityImage) {
 				col.ImageGen = "✅"
-			} else {
-				col.ImageGen = "❌"
 			}
 			if slices.Contains(s.In, genai.ModalityText) && slices.Contains(s.Out, genai.ModalityText) && isText {
 				col.Chat = "✅"
 				col.Streaming = "✅"
-			} else {
-				col.Chat = "❌"
-				col.Streaming = "❌"
 			}
 			if isDoc {
 				col.Doc = "✅"
-			} else {
-				col.Doc = "❌"
 			}
 			if isAsync {
 				col.Batch = "✅"
-			} else {
-				col.Batch = "❌"
 			}
-			if s.GenSync != nil && s.GenSync.Tools == genai.True && s.GenStream.Tools == genai.True {
-				col.Tools = "✅"
-			} else {
-				col.Tools = "❌"
+			if s.GenSync != nil {
+				if s.GenSync.Tools == genai.True && s.GenStream.Tools == genai.True {
+					col.Tools = "✅"
+				} else if s.GenSync.Tools == genai.Flaky && s.GenStream.Tools == genai.Flaky && col.Tools == "❌" {
+					col.Tools = "💨"
+				}
+			}
+			if slices.Contains(s.Out, genai.ModalityAudio) {
+				col.AudioGen = "✅"
 			}
 			// TODO: Add these.
-			col.AudioGen = "❌"
 			col.Seed = "❌"
 			col.Caching = "❌"
 		}

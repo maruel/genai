@@ -63,7 +63,6 @@ var Scoreboard = genai.Scoreboard{
 				"arcee-ai/virtuoso-medium-v2",
 				"arcee_ai/arcee-spotlight",
 				"deepseek-ai/DeepSeek-V3",
-				"google/gemma-2-27b-it",
 				"Gryphe/MythoMax-L2-13b",
 				"Gryphe/MythoMax-L2-13b-Lite",
 				"lgai/exaone-3-5-32b-instruct",

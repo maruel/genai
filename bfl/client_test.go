@@ -15,6 +15,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
+	"github.com/maruel/genai/provider"
 )
 
 func TestClient_Scoreboard(t *testing.T) {
@@ -35,7 +36,8 @@ func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts ge
 		return genai.Result{}, errors.New("implement me")
 	}
 	opts = &n
-	return i.Client.GenSync(ctx, msgs, opts)
+	p := provider.GenDocToGen{ProviderGenDoc: i.Client}
+	return p.GenSync(ctx, msgs, opts)
 }
 
 func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
@@ -44,7 +46,8 @@ func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, repli
 		return genai.Result{}, errors.New("implement me")
 	}
 	opts = &n
-	return i.Client.GenStream(ctx, msgs, replies, opts)
+	p := provider.GenDocToGen{ProviderGenDoc: i.Client}
+	return p.GenStream(ctx, msgs, replies, opts)
 }
 
 func (i *injectOption) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
@@ -73,7 +76,7 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {
-		return getClientInner(t, apiKey, model)
+		return &provider.GenDocToGen{ProviderGenDoc: getClientInner(t, apiKey, model)}
 	}
 	internaltest.TestClient_ProviderGen_errors(t, f, data)
 }

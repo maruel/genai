@@ -695,6 +695,7 @@ func (t *ToolCallResult) UnmarshalJSON(b []byte) error {
 
 // ProviderGenDoc is the interface to interact with a document (audio, image, video, etc) generator.
 type ProviderGenDoc interface {
+	Provider
 	GenDoc(ctx context.Context, msg Message, opts Options) (Result, error)
 }
 

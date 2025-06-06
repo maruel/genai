@@ -215,20 +215,6 @@ func (c *Client) ModelID() string {
 	return c.Model
 }
 
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	if len(msgs) != 1 {
-		return genai.Result{}, errors.New("must pass exactly one Message")
-	}
-	return c.GenDoc(ctx, msgs[0], opts)
-}
-
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
-	if len(msgs) != 1 {
-		return genai.Result{}, errors.New("must pass exactly one Message")
-	}
-	return provider.SimulateStream(ctx, c, msgs, chunks, opts)
-}
-
 func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
 	id, err := c.GenAsync(ctx, genai.Messages{msg}, opts)
 	if err != nil {
@@ -311,7 +297,7 @@ func (c *Client) GetResultRaw(ctx context.Context, id genai.Job) (ImageResult, e
 var waitForPoll = 500 * time.Millisecond
 
 var (
-	_ genai.ProviderGen        = &Client{}
+	_ genai.Provider           = &Client{}
 	_ genai.ProviderGenAsync   = &Client{}
 	_ genai.ProviderGenDoc     = &Client{}
 	_ genai.ProviderScoreboard = &Client{}

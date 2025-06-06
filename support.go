@@ -25,7 +25,7 @@ import (
 // tool call.
 //
 // It returns the messages to accumulate to the thread. The last message is the LLM's response.
-func GenSyncWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Messages, opts Options) (Messages, Usage, error) {
+func GenSyncWithToolCallLoop(ctx context.Context, p ProviderGen, msgs Messages, opts Options) (Messages, Usage, error) {
 	usage := Usage{}
 	var out Messages
 	workMsgs := make(Messages, len(msgs))
@@ -36,7 +36,7 @@ func GenSyncWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Mes
 	}
 	tools := chatOpts.Tools
 	for {
-		result, err := provider.GenSync(ctx, workMsgs, opts)
+		result, err := p.GenSync(ctx, workMsgs, opts)
 		usage.InputTokens += result.InputTokens
 		usage.InputCachedTokens += result.InputCachedTokens
 		usage.OutputTokens += result.OutputTokens
@@ -77,7 +77,7 @@ func GenSyncWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Mes
 // tool call.
 //
 // No need to process the tool calls or accumulate the ContentFragment.
-func GenStreamWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs Messages, replies chan<- ContentFragment, opts Options) (Messages, Usage, error) {
+func GenStreamWithToolCallLoop(ctx context.Context, p ProviderGen, msgs Messages, replies chan<- ContentFragment, opts Options) (Messages, Usage, error) {
 	usage := Usage{}
 	var out Messages
 	workMsgs := make(Messages, len(msgs))
@@ -104,7 +104,7 @@ func GenStreamWithToolCallLoop(ctx context.Context, provider ProviderGen, msgs M
 			}
 			return nil
 		})
-		result, err := provider.GenStream(ctx, workMsgs, internalReplies, opts)
+		result, err := p.GenStream(ctx, workMsgs, internalReplies, opts)
 		usage.InputTokens += result.InputTokens
 		usage.InputCachedTokens += result.InputCachedTokens
 		usage.OutputTokens += result.OutputTokens

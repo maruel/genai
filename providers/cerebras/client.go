@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/invopop/jsonschema"
@@ -575,9 +576,14 @@ type Client struct {
 // If apiKey is not provided, it tries to load it from the CEREBRAS_API_KEY environment variable.
 // If none is found, it returns an error.
 // Get an API key at http://cloud.cerebras.ai/
+//
 // If no model is provided, only functions that do not require a model, like ListModels, will work.
 // To use multiple models, create multiple clients.
 // Use one of the model from https://cerebras.ai/inference
+//
+// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
+// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
+// possible the model is not available anymore.
 //
 // wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
 func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
@@ -591,7 +597,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 	if wrapper != nil {
 		t = wrapper(t)
 	}
-	return &Client{
+	c := &Client{
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.cerebras.ai/v1/chat/completions",
@@ -611,7 +617,44 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 				},
 			},
 		},
-	}, nil
+	}
+	if model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA {
+		mdls, err := c.ListModels(context.Background())
+		if err != nil {
+			return nil, err
+		}
+		cheap := model == base.PreferredCheap
+		good := model == base.PreferredGood
+		c.Model = ""
+		var date Time
+		for _, mdl := range mdls {
+			// WARNING: This is fragile and will break in the future.
+			m := mdl.(*Model)
+			if cheap {
+				if strings.HasPrefix(m.ID, "llama3") && (date == 0 || m.Created < date) {
+					// For the cheapest, we want the oldest model as it is generally cheaper.
+					date = m.Created
+					c.Model = m.ID
+				}
+			} else if good {
+				if strings.HasPrefix(m.ID, "llama-4") && (date == 0 || m.Created > date) {
+					// For the greatest, we want the newest model as it is generally better.
+					date = m.Created
+					c.Model = m.ID
+				}
+			} else {
+				if strings.HasPrefix(m.ID, "qwen-") && (date == 0 || m.Created > date) {
+					// For the greatest, we want the newest model as it is generally better.
+					date = m.Created
+					c.Model = m.ID
+				}
+			}
+		}
+		if c.Model == "" {
+			return nil, errors.New("failed to find a model automatically")
+		}
+	}
+	return c, nil
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

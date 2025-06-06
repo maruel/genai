@@ -13,6 +13,7 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/ollama"
@@ -101,6 +102,29 @@ func (l *lazyServer) getClient(t *testing.T, model string) genai.ProviderGen {
 		t.Fatal(err)
 	}
 	return c
+}
+
+// This test doesn't require the server to start.
+func TestClient_Preferred(t *testing.T) {
+	data := []struct {
+		name string
+		want string
+	}{
+		{base.PreferredCheap, "gemma3:1b"},
+		{base.PreferredGood, "qwen3:30b"},
+		{base.PreferredSOTA, "qwen3:32b"},
+	}
+	for _, line := range data {
+		t.Run(line.name, func(t *testing.T) {
+			c, err := ollama.New("", line.name, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got := c.ModelID(); got != line.want {
+				t.Fatalf("got model %q, want %q", got, line.want)
+			}
+		})
+	}
 }
 
 var testRecorder *internaltest.Records

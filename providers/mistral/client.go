@@ -718,9 +718,14 @@ type Client struct {
 // If apiKey is not provided, it tries to load it from the MISTRAL_API_KEY environment variable.
 // If none is found, it returns an error.
 // Get your API key at https://console.mistral.ai/api-keys or https://console.mistral.ai/codestral
+//
 // If no model is provided, only functions that do not require a model, like ListModels, will work.
 // To use multiple models, create multiple clients.
 // Use one of the model from https://docs.mistral.ai/getting-started/models/models_overview/
+//
+// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
+// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
+// possible the model is not available anymore.
 //
 // wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
 //
@@ -748,7 +753,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 	if wrapper != nil {
 		t = wrapper(t)
 	}
-	return &Client{
+	c := &Client{
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.mistral.ai/v1/chat/completions",
@@ -767,7 +772,40 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 				},
 			},
 		},
-	}, nil
+	}
+	if model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA {
+		mdls, err := c.ListModels(context.Background())
+		if err != nil {
+			return nil, err
+		}
+		cheap := model == base.PreferredCheap
+		good := model == base.PreferredGood
+		c.Model = ""
+		for _, mdl := range mdls {
+			m := mdl.(*Model)
+			if !strings.HasSuffix(m.ID, "latest") || strings.HasPrefix(m.ID, "pixtral") {
+				continue
+			}
+			// This is not great. To improve.
+			if cheap {
+				if strings.Contains(m.ID, "tiny") {
+					c.Model = m.ID
+				}
+			} else if good {
+				if strings.Contains(m.ID, "medium") {
+					c.Model = m.ID
+				}
+			} else {
+				if strings.Contains(m.ID, "large") {
+					c.Model = m.ID
+				}
+			}
+		}
+		if c.Model == "" {
+			return nil, errors.New("failed to find a model automatically")
+		}
+	}
+	return c, nil
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

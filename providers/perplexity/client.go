@@ -301,6 +301,10 @@ type Client struct {
 //
 // Models are listed at https://docs.perplexity.ai/guides/model-cards
 //
+// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
+// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
+// possible the model is not available anymore.
+//
 // wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
 func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://www.perplexity.ai/settings/api"
@@ -308,6 +312,15 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 		if apiKey = os.Getenv("PERPLEXITY_API_KEY"); apiKey == "" {
 			return nil, errors.New("perplexity API key is required; get one at " + apiKeyURL)
 		}
+	}
+	switch model {
+	case base.PreferredCheap:
+		model = "sonar"
+	case base.PreferredGood:
+		model = "sonar-pro"
+	case base.PreferredSOTA:
+		model = "sonar-reasoning-pro"
+	default:
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {

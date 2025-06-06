@@ -11,12 +11,27 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/openaicompatible"
 	"golang.org/x/sync/errgroup"
 )
 
 // Testing is very different here as we test various providers to see if they work with this generic provider.
+
+func TestClient_Preferred(t *testing.T) {
+	for _, line := range []string{base.PreferredCheap, base.PreferredGood, base.PreferredSOTA} {
+		t.Run(line, func(t *testing.T) {
+			_, err := openaicompatible.New("http://localhost", nil, line, nil)
+			if err == nil {
+				t.Fatal("expected error")
+			}
+			if s := err.Error(); s != "default models are not supported" {
+				t.Fatalf("unexpected error %q", s)
+			}
+		})
+	}
+}
 
 func TestClient_GenSync_simple(t *testing.T) {
 	for name := range providers {

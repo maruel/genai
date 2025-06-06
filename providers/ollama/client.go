@@ -425,12 +425,30 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the model from https://ollama.com/library
 //
-// baseURL defaults to http://localhost:11434.
+// baseURL defaults to "http://localhost:11434". Ollama doesn't have any mean of authentication so there's no
+// API key.
+//
+// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
+// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
+// possible the model is not available anymore.
 //
 // wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
 func New(baseURL, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	if baseURL == "" {
 		baseURL = "http://localhost:11434"
+	}
+	// There's no way to list what's the current best models and no way to list the models in the library:
+	// https://github.com/ollama/ollama/issues/8241
+	// Hard code some popular models, it's more useful than failing hard. The model is not immediately pulled,
+	// it will be pulled upon first use.
+	switch model {
+	case base.PreferredCheap:
+		model = "gemma3:1b"
+	case base.PreferredGood:
+		model = "qwen3:30b"
+	case base.PreferredSOTA:
+		model = "qwen3:32b"
+	default:
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {

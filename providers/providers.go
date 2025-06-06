@@ -18,6 +18,7 @@ import (
 	"github.com/maruel/genai/providers/huggingface"
 	"github.com/maruel/genai/providers/llamacpp"
 	"github.com/maruel/genai/providers/mistral"
+	"github.com/maruel/genai/providers/ollama"
 	"github.com/maruel/genai/providers/openai"
 	"github.com/maruel/genai/providers/perplexity"
 	"github.com/maruel/genai/providers/pollinations"
@@ -41,6 +42,7 @@ var All = map[string]func(model string) (genai.Provider, error){
 	"huggingface":  func(model string) (genai.Provider, error) { return huggingface.New("", model, nil) },
 	"llamacpp":     func(model string) (genai.Provider, error) { return llamacpp.New(model, nil, nil) },
 	"mistral":      func(model string) (genai.Provider, error) { return mistral.New("", model, nil) },
+	"ollama":       func(model string) (genai.Provider, error) { return ollama.New("", model, nil) },
 	"openai":       func(model string) (genai.Provider, error) { return openai.New("", model, nil) },
 	"perplexity":   func(model string) (genai.Provider, error) { return perplexity.New("", model, nil) },
 	"pollinations": func(model string) (genai.Provider, error) { return pollinations.New("", model, nil) },

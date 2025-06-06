@@ -17,6 +17,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -578,9 +580,14 @@ type Client struct {
 // Otherwise, it tries to load it from the huggingface python client's cache.
 // If none is found, it returns an error.
 // Get your API key at https://huggingface.co/settings/tokens
+//
 // If no model is provided, only functions that do not require a model, like ListModels, will work.
 // To use multiple models, create multiple clients.
 // Use one of the tens of thousands of models to chose from at https://huggingface.co/models?inference=warm&sort=trending
+//
+// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
+// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
+// possible the model is not available anymore.
 //
 // wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
 // wrapper can also be used to add the HTTP header "X-HF-Bill-To" via roundtrippers.Header. See
@@ -608,7 +615,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 	if wrapper != nil {
 		t = wrapper(t)
 	}
-	return &Client{
+	c := &Client{
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://router.huggingface.co/hf-inference/models/" + model + "/v1/chat/completions",
@@ -627,7 +634,65 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 				},
 			},
 		},
-	}, nil
+	}
+	if model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA {
+		// Warning: listing models from Huggingface takes a while.
+		mdls, err := c.ListModels(context.Background())
+		if err != nil {
+			return nil, err
+		}
+		cheap := model == base.PreferredCheap
+		good := model == base.PreferredGood
+		c.Model = ""
+		trending := 0.
+		weights := 0
+		re := regexp.MustCompile(`(\d+)B`)
+		for _, mdl := range mdls {
+			m := mdl.(*Model)
+			if m.TrendingScore < 2 {
+				continue
+			}
+			if cheap {
+				// HF doesn't report the number of weights in the model. Try to guess it.
+				matches := re.FindAllStringSubmatch(m.ID, 1)
+				if len(matches) != 1 {
+					continue
+				}
+				w, err := strconv.Atoi(matches[0][1])
+				if err != nil {
+					continue
+				}
+				if strings.HasPrefix(m.ID, "meta-llama/Llama") && (weights == 0 || w < weights) {
+					weights = w
+					c.Model = m.ID
+				}
+			} else if good {
+				// HF doesn't report the number of weights in the model. Try to guess it.
+				matches := re.FindAllStringSubmatch(m.ID, 1)
+				if len(matches) != 1 {
+					continue
+				}
+				w, err := strconv.Atoi(matches[0][1])
+				if err != nil {
+					continue
+				}
+				if strings.HasPrefix(m.ID, "Qwen/Qwen") && (weights == 0 || w > weights) {
+					weights = w
+					c.Model = m.ID
+				}
+			} else {
+				if strings.HasPrefix(m.ID, "deepseek-ai/") && !strings.Contains(m.ID, "Qwen") && !strings.Contains(m.ID, "Prover") && !strings.Contains(m.ID, "Distill") && (trending == 0 || trending < m.TrendingScore) {
+					// Make it a popularity contest.
+					trending = m.TrendingScore
+					c.Model = m.ID
+				}
+			}
+		}
+		if c.Model == "" {
+			return nil, errors.New("failed to find a model automatically")
+		}
+	}
+	return c, nil
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

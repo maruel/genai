@@ -1104,6 +1104,10 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the model from https://docs.anthropic.com/en/docs/about-claude/models/all-models
 //
+// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
+// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
+// possible the model is not available anymore.
+//
 // wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
 func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://console.anthropic.com/settings/keys"
@@ -1117,7 +1121,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 		t = wrapper(t)
 	}
 	// Anthropic allows Opaque fields for thinking signatures
-	return &Client{
+	c := &Client{
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.anthropic.com/v1/messages",
@@ -1137,7 +1141,43 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 				},
 			},
 		},
-	}, nil
+	}
+	if model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA {
+		mdls, err := c.ListModels(context.Background())
+		if err != nil {
+			return nil, err
+		}
+		cheap := model == base.PreferredCheap
+		good := model == base.PreferredGood
+		c.Model = ""
+		var date time.Time
+		for _, mdl := range mdls {
+			m := mdl.(*Model)
+			if cheap {
+				if strings.Contains(m.ID, "-haiku-") && (date.IsZero() || m.CreatedAt.Before(date)) {
+					// For the cheapest, we want the oldest model as it is generally cheaper.
+					date = m.CreatedAt
+					c.Model = m.ID
+				}
+			} else if good {
+				if strings.Contains(m.ID, "-sonnet-") && (date.IsZero() || m.CreatedAt.After(date)) {
+					// For the greatest, we want the newest model as it is generally better.
+					date = m.CreatedAt
+					c.Model = m.ID
+				}
+			} else {
+				if strings.Contains(m.ID, "-opus-") && (date.IsZero() || m.CreatedAt.After(date)) {
+					// For the greatest, we want the newest model as it is generally better.
+					date = m.CreatedAt
+					c.Model = m.ID
+				}
+			}
+		}
+		if c.Model == "" {
+			return nil, errors.New("failed to find a model automatically")
+		}
+	}
+	return c, nil
 }
 
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {

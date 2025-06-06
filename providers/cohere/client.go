@@ -17,6 +17,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"slices"
 	"sort"
 	"strings"
 
@@ -626,8 +627,11 @@ type Client struct {
 //
 // If no model is provided, only functions that do not require a model, like ListModels, will work.
 // Use one of the model from https://cohere.com/pricing and https://docs.cohere.com/v2/docs/models
-//
 // To use multiple models, create multiple clients.
+//
+// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
+// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
+// possible the model is not available anymore.
 //
 // wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
 //
@@ -646,7 +650,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 	if wrapper != nil {
 		t = wrapper(t)
 	}
-	return &Client{
+	c := &Client{
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.cohere.com/v2/chat",
@@ -665,7 +669,50 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 				},
 			},
 		},
-	}, nil
+	}
+	if model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA {
+		mdls, err := c.ListModels(context.Background())
+		if err != nil {
+			return nil, err
+		}
+		// https://cohere.com/pricing
+		// https://docs.cohere.com/v2/docs/models
+		cheap := model == base.PreferredCheap
+		good := model == base.PreferredGood
+		c.Model = ""
+		var context int64
+		for _, mdl := range mdls {
+			m := mdl.(*Model)
+			if !slices.Contains(m.Endpoints, "chat") || strings.Contains(m.Name, "nightly") {
+				continue
+			}
+			if cheap {
+				if strings.Contains(m.Name, "light") && (context == 0 || context > m.ContextLength) {
+					// For the cheapest, we want the smallest context.
+					context = m.ContextLength
+					c.Model = m.Name
+				}
+			} else if good {
+				if strings.Contains(m.Name, "r7b") && (context == 0 || context < m.ContextLength) {
+					// For the greatest, we want the largest context.
+					context = m.ContextLength
+					c.Model = m.Name
+				}
+			} else {
+				// We want to select Command-A. We go by elimination to increase the probability of being future
+				// proof.
+				if !strings.HasPrefix(m.Name, "command-r") && (context == 0 || context < m.ContextLength) {
+					// For the greatest, we want the largest context.
+					context = m.ContextLength
+					c.Model = m.Name
+				}
+			}
+		}
+		if c.Model == "" {
+			return nil, errors.New("failed to find a model automatically")
+		}
+	}
+	return c, nil
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

@@ -652,9 +652,14 @@ type Client struct {
 // If apiKey is not provided, it tries to load it from the GROQ_API_KEY environment variable.
 // If none is found, it returns an error.
 // Get your API key at https://console.groq.com/keys
+//
 // If no model is provided, only functions that do not require a model, like ListModels, will work.
 // To use multiple models, create multiple clients.
 // Use one of the model from https://console.groq.com/dashboard/limits or https://console.groq.com/docs/models
+//
+// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
+// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
+// possible the model is not available anymore.
 //
 // wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
 //
@@ -671,7 +676,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 	if wrapper != nil {
 		t = wrapper(t)
 	}
-	return &Client{
+	c := &Client{
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.groq.com/openai/v1/chat/completions",
@@ -690,7 +695,37 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 				},
 			},
 		},
-	}, nil
+	}
+	if model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA {
+		mdls, err := c.ListModels(context.Background())
+		if err != nil {
+			return nil, err
+		}
+		cheap := model == base.PreferredCheap
+		good := model == base.PreferredGood
+		c.Model = ""
+		for _, mdl := range mdls {
+			m := mdl.(*Model)
+			// This is meh.
+			if cheap {
+				if strings.HasSuffix(m.ID, "instant") {
+					c.Model = m.ID
+				}
+			} else if good {
+				if strings.Contains(m.ID, "maverick") {
+					c.Model = m.ID
+				}
+			} else {
+				if strings.HasPrefix(m.ID, "qwen") {
+					c.Model = m.ID
+				}
+			}
+		}
+		if c.Model == "" {
+			return nil, errors.New("failed to find a model automatically")
+		}
+	}
+	return c, nil
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

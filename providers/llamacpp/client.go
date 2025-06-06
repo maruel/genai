@@ -435,10 +435,14 @@ type Client struct {
 //
 // encoding is optional.
 //
+// baseURL defaults to "http://localhost:8080". It is not a model, so automatic model values
+// base.PreferredCheap, base.PreferredGood and base.PreferredSOTA also default to "http://localhost:8080".
+// llama-server doesn't have any mean of authentication so there's no API key.
+//
 // wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
 func New(baseURL string, encoding *PromptEncoding, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
-	if baseURL == "" {
-		return nil, errors.New("baseURL is required")
+	if baseURL == "" || baseURL == base.PreferredCheap || baseURL == base.PreferredGood || baseURL == base.PreferredSOTA {
+		baseURL = "http://localhost:8080"
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {

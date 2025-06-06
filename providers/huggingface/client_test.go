@@ -12,6 +12,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/huggingface"
@@ -25,6 +26,24 @@ func TestClient_Scoreboard(t *testing.T) {
 		}
 		return c
 	}, nil)
+}
+
+func TestClient_Preferred(t *testing.T) {
+	data := []struct {
+		name string
+		want string
+	}{
+		{base.PreferredCheap, "meta-llama/Llama-3.2-1B-Instruct"},
+		{base.PreferredGood, "Qwen/Qwen3-235B-A22B"},
+		{base.PreferredSOTA, "deepseek-ai/DeepSeek-R1-0528"},
+	}
+	for _, line := range data {
+		t.Run(line.name, func(t *testing.T) {
+			if got := getClient(t, line.name).ModelID(); got != line.want {
+				t.Fatalf("got model %q, want %q", got, line.want)
+			}
+		})
+	}
 }
 
 func TestClient_ProviderGen_errors(t *testing.T) {

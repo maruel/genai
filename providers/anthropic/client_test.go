@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/anthropic"
@@ -56,6 +57,24 @@ func TestClient_Batch(t *testing.T) {
 			t.Errorf("not enough text: %q", s)
 		}
 		break
+	}
+}
+
+func TestClient_Preferred(t *testing.T) {
+	data := []struct {
+		name string
+		want string
+	}{
+		{base.PreferredCheap, "claude-3-haiku-20240307"},
+		{base.PreferredGood, "claude-sonnet-4-20250514"},
+		{base.PreferredSOTA, "claude-opus-4-20250514"},
+	}
+	for _, line := range data {
+		t.Run(line.name, func(t *testing.T) {
+			if got := getClient(t, line.name).ModelID(); got != line.want {
+				t.Fatalf("got model %q, want %q", got, line.want)
+			}
+		})
 	}
 }
 

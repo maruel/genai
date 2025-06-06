@@ -804,9 +804,12 @@ type Client struct {
 }
 
 // New creates a new client to talk to the Pollinations platform API.
-//
 // The value for auth can be either an API key retrieved from https://auth.pollinations.ai/ or a referrer.
 // https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#referrer-
+//
+// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
+// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
+// possible the model is not available anymore.
 //
 // wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
 func New(auth, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
@@ -825,7 +828,7 @@ func New(auth, model string, wrapper func(http.RoundTripper) http.RoundTripper) 
 	if wrapper != nil {
 		t = wrapper(t)
 	}
-	return &Client{
+	c := &Client{
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://text.pollinations.ai/openai",
@@ -844,7 +847,40 @@ func New(auth, model string, wrapper func(http.RoundTripper) http.RoundTripper) 
 				},
 			},
 		},
-	}, nil
+	}
+	if model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA {
+		mdls, err := c.ListTextModels(context.Background())
+		if err != nil {
+			return nil, err
+		}
+		cheap := model == base.PreferredCheap
+		good := model == base.PreferredGood
+		c.Model = ""
+		for _, mdl := range mdls {
+			m := mdl.(*TextModel)
+			if m.Audio || strings.HasSuffix(m.Name, "roblox") {
+				continue
+			}
+			// This is meh.
+			if cheap {
+				if strings.HasPrefix(m.Name, "llama") {
+					c.Model = m.Name
+				}
+			} else if good {
+				if strings.HasPrefix(m.Name, "openai") {
+					c.Model = m.Name
+				}
+			} else {
+				if m.Reasoning {
+					c.Model = m.Name
+				}
+			}
+		}
+		if c.Model == "" {
+			return nil, errors.New("failed to find a model automatically")
+		}
+	}
+	return c, nil
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {
@@ -949,16 +985,22 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#list-available-image-models-
 	var out []genai.Model
-	url := "https://image.pollinations.ai/models"
-	img, err1 := base.ListModels[*ErrorResponse, *ImageModelsResponse](ctx, &c.Provider, url)
+	img, err1 := c.ListImageGenModels(ctx)
 	out = append(out, img...)
-	url = "https://text.pollinations.ai/models"
-	txt, err2 := base.ListModels[*ErrorResponse, *TextModelsResponse](ctx, &c.Provider, url)
+	txt, err2 := c.ListTextModels(ctx)
 	out = append(out, txt...)
 	if err1 == nil {
 		err1 = err2
 	}
 	return out, err1
+}
+
+func (c *Client) ListImageGenModels(ctx context.Context) ([]genai.Model, error) {
+	return base.ListModels[*ErrorResponse, *ImageModelsResponse](ctx, &c.Provider, "https://image.pollinations.ai/models")
+}
+
+func (c *Client) ListTextModels(ctx context.Context) ([]genai.Model, error) {
+	return base.ListModels[*ErrorResponse, *TextModelsResponse](ctx, &c.Provider, "https://text.pollinations.ai/models")
 }
 
 func (c *Client) isImage(opts genai.Options) bool {

@@ -42,6 +42,18 @@ var DefaultTransport http.RoundTripper = &roundtrippers.Retry{
 	},
 }
 
+const (
+	// PreferredCheap is a marker for providers' New() function to tell it to use the cheapest model it can find.
+	PreferredCheap = "PREFERRED_CHEAP"
+
+	// PreferredGood is a marker for providers' New() function to tell it to use a good every day model.
+	PreferredGood = "PREFERRED_GOOD"
+
+	// PreferredSOTA is a marker for providers' New() function to tell it to use the best state-of-the-art model
+	// is can find.
+	PreferredSOTA = "PREFERRED_SOTA"
+)
+
 // Provider implements genai.Provider (except for ModelID()).
 //
 // It contains the shared HTTP client functionality used across all API clients.

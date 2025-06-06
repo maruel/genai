@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/gemini"
@@ -63,6 +64,24 @@ func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, repli
 }
 
 //
+
+func TestClient_Preferred(t *testing.T) {
+	data := []struct {
+		name string
+		want string
+	}{
+		{base.PreferredCheap, "gemma-3-4b-it"},
+		{base.PreferredGood, "gemini-2.5-flash-preview-05-20"},
+		{base.PreferredSOTA, "gemini-2.5-pro-preview-06-05"},
+	}
+	for _, line := range data {
+		t.Run(line.name, func(t *testing.T) {
+			if got := getClient(t, line.name).ModelID(); got != line.want {
+				t.Fatalf("got model %q, want %q", got, line.want)
+			}
+		})
+	}
+}
 
 func TestClient_Cache(t *testing.T) {
 	slow := os.Getenv("GEMINI_SLOW") != ""

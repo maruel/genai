@@ -319,8 +319,13 @@ type Client struct {
 //
 // It only support text exchanges (no multi-modal) and no tool calls.
 //
+// Automatic model values base.PreferredCheap, base.PreferredGood and base.PreferredSOTA are not supported.
+//
 // wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
 func New(chatURL string, h http.Header, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+	if model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA {
+		return nil, errors.New("default models are not supported")
+	}
 	t := base.DefaultTransport
 	if wrapper != nil {
 		t = wrapper(t)

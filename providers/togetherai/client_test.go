@@ -14,6 +14,7 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/togetherai"
@@ -77,6 +78,24 @@ func (i *injectOption) GenDoc(ctx context.Context, msg genai.Message, opts genai
 	}
 	opts = &n
 	return i.Client.GenDoc(ctx, msg, opts)
+}
+
+func TestClient_Preferred(t *testing.T) {
+	data := []struct {
+		name string
+		want string
+	}{
+		{base.PreferredCheap, "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"},
+		{base.PreferredGood, "Qwen/Qwen2.5-72B-Instruct-Turbo"},
+		{base.PreferredSOTA, "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo"},
+	}
+	for _, line := range data {
+		t.Run(line.name, func(t *testing.T) {
+			if got := getClient(t, line.name).ModelID(); got != line.want {
+				t.Fatalf("got model %q, want %q", got, line.want)
+			}
+		})
+	}
 }
 
 func TestClient_ProviderGen_errors(t *testing.T) {

@@ -535,6 +535,32 @@ func (m *Model) Context() int64 {
 	return 0
 }
 
+func (m *Model) Price() (float64, float64) {
+	var mp []ModelPricing
+	in := 0.
+	out := 0.
+	for _, p := range m.Properties {
+		if p.PropertyID != "price" {
+			continue
+		}
+		b, _ := json.Marshal(p.Value)
+		d := json.NewDecoder(bytes.NewReader(b))
+		d.DisallowUnknownFields()
+		if err := d.Decode(&mp); err != nil {
+			return in, out
+		}
+		for _, l := range mp {
+			if l.Unit == "per M output tokens" {
+				out = l.Price
+			} else if l.Unit == "per M input tokens" {
+				in = l.Price
+			}
+		}
+		return in, out
+	}
+	return in, out
+}
+
 // ModelsResponse represents the response structure for Cloudflare models listing
 type ModelsResponse struct {
 	Result     []Model `json:"result"`
@@ -582,9 +608,14 @@ type Client struct {
 // If apiKey is not provided, it tries to load it from the CLOUDFLARE_API_KEY environment variable.
 // If none is found, it returns an error.
 // Get your account ID and API key at https://dash.cloudflare.com/profile/api-tokens
+//
 // If no model is provided, only functions that do not require a model, like ListModels, will work.
 // To use multiple models, create multiple clients.
 // Use one of the model from https://developers.cloudflare.com/workers-ai/models/
+//
+// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
+// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
+// possible the model is not available anymore.
 //
 // wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
 func New(accountID, apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
@@ -606,7 +637,7 @@ func New(accountID, apiKey, model string, wrapper func(http.RoundTripper) http.R
 	// Investigate websockets?
 	// https://blog.cloudflare.com/workers-ai-streaming/ and
 	// https://developers.cloudflare.com/workers/examples/websockets/
-	return &Client{
+	c := &Client{
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.cloudflare.com/client/v4/accounts/" + accountID + "/ai/run/" + model,
@@ -626,7 +657,52 @@ func New(accountID, apiKey, model string, wrapper func(http.RoundTripper) http.R
 			},
 		},
 		accountID: accountID,
-	}, nil
+	}
+	if model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA {
+		mdls, err := c.ListModels(context.Background())
+		if err != nil {
+			return nil, err
+		}
+		cheap := model == base.PreferredCheap
+		good := model == base.PreferredGood
+		c.Model = ""
+		price := 100000.
+		if !cheap {
+			price = 0.
+		}
+		for _, mdl := range mdls {
+			m := mdl.(*Model)
+			if strings.Contains(m.Name, "guard") || strings.HasPrefix(m.Name, "@cf/meta/llama-2") {
+				// llama-guard is not a generation model.
+				// @cf/meta/llama-2-7b-chat-fp16 is super expensive.
+				continue
+			}
+			_, out := m.Price()
+			if out == 0 {
+				continue
+			}
+			if cheap {
+				if strings.HasPrefix(m.Name, "@cf/meta/") && out < price {
+					price = out
+					c.Model = m.Name
+				}
+			} else if good {
+				if strings.HasPrefix(m.Name, "@cf/meta/") && out > price {
+					price = out
+					c.Model = m.Name
+				}
+			} else {
+				if strings.HasPrefix(m.Name, "@cf/deepseek-ai/") && out > price {
+					price = out
+					c.Model = m.Name
+				}
+			}
+		}
+		if c.Model == "" {
+			return nil, errors.New("failed to find a model automatically")
+		}
+	}
+	return c, nil
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

@@ -157,6 +157,10 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the model from https://docs.bfl.ml/quick_start/generating_images
 //
+// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
+// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
+// possible the model is not available anymore.
+//
 // wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
 func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://dashboard.bfl.ai/keys"
@@ -164,6 +168,16 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 		if apiKey = os.Getenv("BFL_API_KEY"); apiKey == "" {
 			return nil, errors.New("bfl.ai API key is required; get one at " + apiKeyURL)
 		}
+	}
+	// If Black Forest Labs ever implement model listing, add this.
+	switch model {
+	case base.PreferredCheap:
+		model = "flux-dev"
+	case base.PreferredGood:
+		model = "flux-pro-1.1"
+	case base.PreferredSOTA:
+		model = "flux-pro-1.1-ultra"
+	default:
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {

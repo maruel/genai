@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/cohere"
@@ -17,6 +18,24 @@ import (
 
 func TestClient_Scoreboard(t *testing.T) {
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen { return getClient(t, m) }, nil)
+}
+
+func TestClient_Preferred(t *testing.T) {
+	data := []struct {
+		name string
+		want string
+	}{
+		{base.PreferredCheap, "command-light"},
+		{base.PreferredGood, "command-r7b-12-2024"},
+		{base.PreferredSOTA, "command-a-03-2025"},
+	}
+	for _, line := range data {
+		t.Run(line.name, func(t *testing.T) {
+			if got := getClient(t, line.name).ModelID(); got != line.want {
+				t.Fatalf("got model %q, want %q", got, line.want)
+			}
+		})
+	}
 }
 
 func TestClient_ProviderGen_errors(t *testing.T) {

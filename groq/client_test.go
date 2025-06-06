@@ -11,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/adapter"
 	"github.com/maruel/genai/groq"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
@@ -38,7 +39,7 @@ func (h *handleReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts
 			return h.Client.GenSync(ctx, msgs, opts)
 		}
 	}
-	c := genai.ProviderGenThinking{ProviderGen: h.Client, TagName: "think"}
+	c := adapter.ProviderGenThinking{ProviderGen: h.Client, TagName: "think"}
 	return c.GenSync(ctx, msgs, opts)
 }
 
@@ -49,7 +50,7 @@ func (h *handleReasoning) GenStream(ctx context.Context, msgs genai.Messages, re
 			return h.Client.GenStream(ctx, msgs, replies, opts)
 		}
 	}
-	c := genai.ProviderGenThinking{ProviderGen: h.Client, TagName: "think"}
+	c := adapter.ProviderGenThinking{ProviderGen: h.Client, TagName: "think"}
 	return c.GenStream(ctx, msgs, replies, opts)
 }
 

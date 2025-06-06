@@ -2,17 +2,18 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-package genai_test
+package adapter_test
 
 import (
 	"context"
 	"errors"
-	"sync"
+	"fmt"
 	"testing"
-	"time"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/adapter"
+	"golang.org/x/sync/errgroup"
 )
 
 func TestProviderGenThinking_GenSync(t *testing.T) {
@@ -67,14 +68,14 @@ func TestProviderGenThinking_GenSync(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			mp := &mockProviderGen{response: genai.Result{
+			mp := &mockProviderGenSync{response: genai.Result{
 				Message: genai.Message{
 					Role:     genai.Assistant,
 					Contents: []genai.Content{{Text: tc.in}},
 				},
 			}}
 
-			tp := &genai.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
+			tp := &adapter.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
 			got, err := tp.GenSync(t.Context(), genai.Messages{}, nil)
 			if tc.expectError {
 				if err == nil {
@@ -201,34 +202,26 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			mp := &mockGenStreamProvider{in: tc.in}
-			tp := &genai.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
-			ch := make(chan genai.ContentFragment)
-			ctx, cancel := context.WithTimeout(t.Context(), 1*time.Second)
-			defer cancel()
-			wg := sync.WaitGroup{}
-			wg.Add(1)
-			accumErrCh := make(chan error, 1)
+			mp := &mockProviderGenStream{streamResponses: []streamResponse{{}}}
+			for _, i := range tc.in {
+				mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.ContentFragment{TextFragment: i})
+			}
+			tp := &adapter.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
+			ch := make(chan genai.ContentFragment, 100)
+			eg, ctx := errgroup.WithContext(t.Context())
 			accumulated := genai.Message{}
-			go func() {
-				defer wg.Done()
+			eg.Go(func() error {
 				for pkt := range ch {
-					var err2 error
-					if err2 = accumulated.Accumulate(pkt); err2 != nil {
-						accumErrCh <- err2
-						return
+					if err2 := accumulated.Accumulate(pkt); err2 != nil {
+						t.Error(err2)
+						return err2
 					}
 				}
-			}()
-
+				return nil
+			})
 			result, err := tp.GenStream(ctx, genai.Messages{}, ch, nil)
 			close(ch)
-			wg.Wait()
-			select {
-			case accErr := <-accumErrCh:
-				t.Fatalf("error accumulating messages: %v", accErr)
-			default:
-			}
+			_ = eg.Wait()
 			if tc.expectError {
 				if err == nil {
 					t.Fatal("expected error but got none")
@@ -249,64 +242,148 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 
 //
 
-// mockProviderGen is a mock implementation of genai.ProviderGen for testing.
-// It returns a predefined Result for the GenSync method and returns an error
-// for the GenStream method.
-type mockProviderGen struct {
+// TestGenStreamWithToolCallLoop tests the GenStreamWithToolCallLoop function.
+func TestGenStreamWithToolCallLoop(t *testing.T) {
+	provider := &mockProviderGenStream{
+		streamResponses: []streamResponse{
+			{
+				fragments: []genai.ContentFragment{
+					{TextFragment: "I'll help you calculate that. "},
+					{TextFragment: "Let me use the calculator tool."},
+					{ToolCall: genai.ToolCall{ID: "1", Name: "calculator", Arguments: `{"a": 5, "b": 3, "operation": "add"}`}},
+				},
+				usage: genai.Usage{InputTokens: 10, OutputTokens: 20},
+			},
+			{
+				fragments: []genai.ContentFragment{
+					{TextFragment: "The result of 5 + 3 is 8."},
+				},
+				usage: genai.Usage{InputTokens: 15, OutputTokens: 10},
+			},
+		},
+	}
+	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Calculate 5 + 3")}
+	type CalculatorArgs struct {
+		A         int    `json:"a"`
+		B         int    `json:"b"`
+		Operation string `json:"operation"`
+	}
+	opts := &genai.OptionsText{
+		Tools: []genai.ToolDef{
+			{
+				Name:        "calculator",
+				Description: "A simple calculator",
+				Callback: func(ctx context.Context, args *CalculatorArgs) (string, error) {
+					switch args.Operation {
+					case "add":
+						return fmt.Sprintf("%d", args.A+args.B), nil
+					default:
+						return "", fmt.Errorf("unsupported operation: %s", args.Operation)
+					}
+				},
+			},
+		},
+	}
+	chunks := make(chan genai.ContentFragment)
+	var frags []genai.ContentFragment
+	ctx := t.Context()
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case fragment, ok := <-chunks:
+				if !ok {
+					return
+				}
+				frags = append(frags, fragment)
+			}
+		}
+	}()
+
+	respMsgs, usage, err := adapter.GenStreamWithToolCallLoop(ctx, provider, msgs, chunks, opts)
+	close(chunks)
+	if err != nil {
+		t.Fatalf("GenStreamWithToolCallLoop returned an error: %v", err)
+	}
+	// Verify we got the expected number of messages
+	if len(respMsgs) != 3 { // original + 1 LLM response + 1 tool result
+		t.Fatalf("Expected 3 messages, got %d", len(respMsgs))
+	}
+	t.Logf("Messages: %+v", respMsgs)
+	expectedUsage := genai.Usage{InputTokens: 25, OutputTokens: 30}
+	if usage.InputTokens != expectedUsage.InputTokens || usage.OutputTokens != expectedUsage.OutputTokens {
+		t.Fatalf("Expected usage %+v, got %+v", expectedUsage, usage)
+	}
+	// Verify we received all fragments
+	if len(frags) != 4 { // 2 text fragments + 1 tool call + 1 text fragment
+		t.Fatalf("Expected 4 fragments, got %d", len(frags))
+	}
+}
+
+// Mock types for testing
+
+type mockProviderGenSync struct {
 	response genai.Result
 }
 
-func (m *mockProviderGen) Name() string {
+func (m *mockProviderGenSync) Name() string {
 	return "mock"
 }
 
-func (m *mockProviderGen) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+func (m *mockProviderGenSync) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	return m.response, nil
 }
 
-func (m *mockProviderGen) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (m *mockProviderGenSync) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	return genai.Result{}, errors.New("unexpected")
 }
 
-func (m *mockProviderGen) ModelID() string {
+func (m *mockProviderGenSync) ModelID() string {
 	return "llm-sota"
 }
 
-// mockGenStreamProvider is a mock implementation of genai.ProviderGen for testing.
-// It sends the predefined fragments to the replies channel for the GenStream method
-// and returns an error for the GenSync method.
-type mockGenStreamProvider struct {
-	in []string
+type streamResponse struct {
+	fragments []genai.ContentFragment
+	usage     genai.Usage
 }
 
-func (m *mockGenStreamProvider) Name() string {
-	return "mockstream"
+type mockProviderGenStream struct {
+	streamResponses []streamResponse
+	callIndex       int
 }
 
-func (m *mockGenStreamProvider) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+func (m *mockProviderGenStream) Name() string {
+	return "mock"
+}
+
+func (m *mockProviderGenStream) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	return genai.Result{}, errors.New("unexpected")
 }
 
-func (m *mockGenStreamProvider) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (m *mockProviderGenStream) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+	if m.callIndex >= len(m.streamResponses) {
+		return genai.Result{}, fmt.Errorf("no more mock responses")
+	}
+	resp := m.streamResponses[m.callIndex]
+	m.callIndex++
 	result := genai.Result{
-		Usage:   genai.Usage{},
+		Usage:   resp.usage,
 		Message: genai.Message{Role: genai.Assistant},
 	}
-
-	for _, f := range m.in {
-		fragment := genai.ContentFragment{TextFragment: f}
+	for _, fragment := range resp.fragments {
 		select {
 		case <-ctx.Done():
 			return result, ctx.Err()
 		case replies <- fragment:
-			// We don't accumulate in the result.Message since the wrapper will transform TextFragment to ThinkingFragment
-			// and the actual accumulation happens in the test code. The final message will be constructed properly
-			// by the ProviderGenThinking wrapper.
+			if err := result.Accumulate(fragment); err != nil {
+				return result, err
+			}
 		}
 	}
 	return result, nil
 }
 
-func (m *mockGenStreamProvider) ModelID() string {
+func (m *mockProviderGenStream) ModelID() string {
 	return "llm-sota"
 }

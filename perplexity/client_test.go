@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/adapter"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/perplexity"
@@ -18,7 +19,7 @@ func TestClient_Scoreboard(t *testing.T) {
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
 		c := getClient(t, m)
 		if m == "r1-1776" {
-			return &genai.ProviderGenThinking{ProviderGen: c, TagName: "think"}
+			return &adapter.ProviderGenThinking{ProviderGen: c, TagName: "think"}
 		}
 		return c
 	}, nil)

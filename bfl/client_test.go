@@ -36,7 +36,7 @@ func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts ge
 		return genai.Result{}, errors.New("implement me")
 	}
 	opts = &n
-	p := adapter.GenDocToGen{ProviderGenDoc: i.Client}
+	p := adapter.ProviderGenDocToGen{ProviderGenDoc: i.Client}
 	return p.GenSync(ctx, msgs, opts)
 }
 
@@ -46,7 +46,7 @@ func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, repli
 		return genai.Result{}, errors.New("implement me")
 	}
 	opts = &n
-	p := adapter.GenDocToGen{ProviderGenDoc: i.Client}
+	p := adapter.ProviderGenDocToGen{ProviderGenDoc: i.Client}
 	return p.GenStream(ctx, msgs, replies, opts)
 }
 
@@ -76,7 +76,7 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {
-		return &adapter.GenDocToGen{ProviderGenDoc: getClientInner(t, apiKey, model)}
+		return &adapter.ProviderGenDocToGen{ProviderGenDoc: getClientInner(t, apiKey, model)}
 	}
 	internaltest.TestClient_ProviderGen_errors(t, f, data)
 }

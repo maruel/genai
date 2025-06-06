@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/adapter"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/openaicompatible"
 	"golang.org/x/sync/errgroup"
@@ -200,7 +201,7 @@ func getClient(t *testing.T, provider string) genai.ProviderGen {
 	}
 	c.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientJSON.Client.Transport)
 	if p.thinking != "" {
-		return &genai.ProviderGenThinking{ProviderGen: c, TagName: p.thinking}
+		return &adapter.ProviderGenThinking{ProviderGen: c, TagName: p.thinking}
 	}
 	return c
 }

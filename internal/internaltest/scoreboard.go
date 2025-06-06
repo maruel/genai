@@ -244,7 +244,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 			return
 		}
 		fr := genai.FinishedLength
-		if !f.MaxTokens {
+		if f.NoMaxTokens {
 			fr = genai.FinishedStop
 		}
 		if f.BrokenFinishReason {
@@ -252,11 +252,11 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, fr)
 		if len(resp.AsText()) > 15 {
-			if f.MaxTokens {
+			if !f.NoMaxTokens {
 				// Deepseek counts "\"Parallel lines" as 3 tokens (!)
 				t.Fatalf("Expected less than 15 letters, got %q", resp.AsText())
 			}
-		} else if !f.MaxTokens {
+		} else if f.NoMaxTokens {
 			t.Fatal("unexpected short answer")
 		}
 	})

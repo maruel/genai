@@ -39,8 +39,7 @@ jobs:
         PERPLEXITY_API_KEY    : ${{ secrets.PERPLEXITY_API_KEY    }}
         TOGETHER_API_KEY      : ${{ secrets.TOGETHER_API_KEY      }}
       run: |
-        chmod +x ./regen_models.sh
-        ./regen_models.sh
+        ./cmd/regen_models.sh
     - name: Check for changes
       id: git-check
       run: |

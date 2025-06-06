@@ -5,6 +5,9 @@
 
 set -eu
 
+cd "$(dirname $0)"
+cd ..
+
 go install ./cmd/list-models
 PROVIDERS=(anthropic cerebras cloudflare cohere deepseek gemini groq huggingface mistral openai pollinations togetherai)
 

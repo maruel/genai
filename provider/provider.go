@@ -7,33 +7,11 @@ package provider
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal/bb"
 )
-
-//
-
-// GenDocToGen converts a ProviderGenDoc, e.g. a provider only generating audio, images, or videos into a ProviderGen.
-type GenDocToGen struct {
-	genai.ProviderGenDoc
-}
-
-func (c *GenDocToGen) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	if len(msgs) != 1 {
-		return genai.Result{}, errors.New("must pass exactly one Message")
-	}
-	return c.GenDoc(ctx, msgs[0], opts)
-}
-
-func (c *GenDocToGen) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
-	if len(msgs) != 1 {
-		return genai.Result{}, errors.New("must pass exactly one Message")
-	}
-	return SimulateStream(ctx, c, msgs, chunks, opts)
-}
 
 //
 

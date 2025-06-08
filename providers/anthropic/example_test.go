@@ -51,7 +51,12 @@ func ExampleNew_hTTP_record() {
 		}
 		return rr
 	}
-	c, err := anthropic.New("", "", wrapper)
+	// When playing back the smoke test, no API key is needed. Insert a fake API key.
+	apiKey := ""
+	if os.Getenv("ANTHROPIC_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := anthropic.New(apiKey, "", wrapper)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -51,7 +51,12 @@ func ExampleNew_hTTP_record() {
 		}
 		return rr
 	}
-	c, err := mistral.New("", "", wrapper)
+	// When playing back the smoke test, no API key is needed. Insert a fake API key.
+	apiKey := ""
+	if os.Getenv("MISTRAL_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := mistral.New(apiKey, "", wrapper)
 	if err != nil {
 		log.Fatal(err)
 	}

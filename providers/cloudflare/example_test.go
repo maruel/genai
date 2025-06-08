@@ -52,7 +52,16 @@ func ExampleNew_hTTP_record() {
 		}
 		return rr
 	}
-	c, err := cloudflare.New("", "", "", wrapper)
+	// When playing back the smoke test, no API key is needed. Insert a fake API key.
+	accountID := ""
+	if os.Getenv("CLOUDFLARE_ACCOUNT_ID") == "" {
+		accountID = "<insert_account_id_here>"
+	}
+	apiKey := ""
+	if os.Getenv("CLOUDFLARE_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := cloudflare.New(accountID, apiKey, "", wrapper)
 	if err != nil {
 		log.Fatal(err)
 	}

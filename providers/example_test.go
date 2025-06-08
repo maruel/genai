@@ -41,8 +41,11 @@ func Example_all_ProvidersModel() {
 func GetProvidersModel() []string {
 	var names []string
 	for name, f := range providers.All {
-		c, err := f("", nil)
-		if err != nil {
+		// Test c if you want to determine if the functionality is potentially available, even if there's no known
+		// API key available at the moment.
+		// Test err if you want to determine if the functionality is available in the current context.
+		c, _ := f("", nil)
+		if c == nil {
 			continue
 		}
 		if _, ok := c.(genai.ProviderModel); ok {
@@ -89,8 +92,11 @@ func Example_all_ProviderGen() {
 func GetProvidersGen() []string {
 	var names []string
 	for name, f := range providers.All {
-		c, err := f("", nil)
-		if err != nil {
+		// Test c if you want to determine if the functionality is potentially available, even if there's no known
+		// API key available at the moment.
+		// Test err if you want to determine if the functionality is available in the current context.
+		c, _ := f("", nil)
+		if c == nil {
 			continue
 		}
 		if _, ok := c.(genai.ProviderGen); ok {
@@ -117,8 +123,11 @@ func Example_all_GetProvidersGenAsync() {
 func GetProvidersGenAsync() []string {
 	var names []string
 	for name, f := range providers.All {
-		c, err := f("", nil)
-		if err != nil {
+		// Test c if you want to determine if the functionality is potentially available, even if there's no known
+		// API key available at the moment.
+		// Test err if you want to determine if the functionality is available in the current context.
+		c, _ := f("", nil)
+		if c == nil {
 			continue
 		}
 		if _, ok := c.(genai.ProviderGenAsync); ok {

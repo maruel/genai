@@ -55,7 +55,7 @@ func ExampleNew_hTTP_record() {
 	// When playing back the smoke test, no API key is needed. Insert a fake API key.
 	accountID := ""
 	if os.Getenv("CLOUDFLARE_ACCOUNT_ID") == "" {
-		accountID = "<insert_account_id_here>"
+		accountID = "ACCOUNT_ID"
 	}
 	apiKey := ""
 	if os.Getenv("CLOUDFLARE_API_KEY") == "" {

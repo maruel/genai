@@ -98,7 +98,7 @@ func mainImpl() error {
 	if fn == nil {
 		return fmt.Errorf("unknown backend %q", *provider)
 	}
-	c, err := fn("")
+	c, err := fn("", nil)
 	if err != nil {
 		return err
 	}

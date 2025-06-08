@@ -11,12 +11,13 @@ import (
 	"strings"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/providers"
 )
 
 func ExampleAll_providerModel() {
 	for name, factory := range providers.All {
-		c, err := factory("")
+		c, err := factory("", nil)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -37,7 +38,7 @@ func ExampleAll_providerModel() {
 
 func ExampleAll_providerGen() {
 	for name, factory := range providers.All {
-		c, err := factory("")
+		c, err := factory(base.PreferredCheap, nil)
 		if err != nil {
 			log.Fatal(err)
 		}

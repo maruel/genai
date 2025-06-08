@@ -6,6 +6,8 @@
 package providers
 
 import (
+	"net/http"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/providers/anthropic"
 	"github.com/maruel/genai/providers/bfl"
@@ -30,21 +32,53 @@ import (
 // It assumes the user has set the API key as an environment variable.
 //
 // The caveat for llamaccp is that the model is in fact the base URL.
-var All = map[string]func(model string) (genai.Provider, error){
-	"anthropic":    func(model string) (genai.Provider, error) { return anthropic.New("", model, nil) },
-	"bfl":          func(model string) (genai.Provider, error) { return bfl.New("", model, nil) },
-	"cerebras":     func(model string) (genai.Provider, error) { return cerebras.New("", model, nil) },
-	"cloudflare":   func(model string) (genai.Provider, error) { return cloudflare.New("", "", model, nil) },
-	"cohere":       func(model string) (genai.Provider, error) { return cohere.New("", model, nil) },
-	"deepseek":     func(model string) (genai.Provider, error) { return deepseek.New("", model, nil) },
-	"gemini":       func(model string) (genai.Provider, error) { return gemini.New("", model, nil) },
-	"groq":         func(model string) (genai.Provider, error) { return groq.New("", model, nil) },
-	"huggingface":  func(model string) (genai.Provider, error) { return huggingface.New("", model, nil) },
-	"llamacpp":     func(model string) (genai.Provider, error) { return llamacpp.New(model, nil, nil) },
-	"mistral":      func(model string) (genai.Provider, error) { return mistral.New("", model, nil) },
-	"ollama":       func(model string) (genai.Provider, error) { return ollama.New("", model, nil) },
-	"openai":       func(model string) (genai.Provider, error) { return openai.New("", model, nil) },
-	"perplexity":   func(model string) (genai.Provider, error) { return perplexity.New("", model, nil) },
-	"pollinations": func(model string) (genai.Provider, error) { return pollinations.New("", model, nil) },
-	"togetherai":   func(model string) (genai.Provider, error) { return togetherai.New("", model, nil) },
+var All = map[string]func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error){
+	"anthropic": func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+		return anthropic.New("", model, wrapper)
+	},
+	"bfl": func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+		return bfl.New("", model, wrapper)
+	},
+	"cerebras": func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+		return cerebras.New("", model, wrapper)
+	},
+	"cloudflare": func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+		return cloudflare.New("", "", model, wrapper)
+	},
+	"cohere": func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+		return cohere.New("", model, wrapper)
+	},
+	"deepseek": func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+		return deepseek.New("", model, wrapper)
+	},
+	"gemini": func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+		return gemini.New("", model, wrapper)
+	},
+	"groq": func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+		return groq.New("", model, wrapper)
+	},
+	"huggingface": func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+		return huggingface.New("", model, wrapper)
+	},
+	"llamacpp": func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+		return llamacpp.New(model, nil, wrapper)
+	},
+	"mistral": func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+		return mistral.New("", model, wrapper)
+	},
+	"ollama": func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+		return ollama.New("", model, wrapper)
+	},
+	"openai": func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+		return openai.New("", model, wrapper)
+	},
+	"perplexity": func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+		return perplexity.New("", model, wrapper)
+	},
+	"pollinations": func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+		return pollinations.New("", model, wrapper)
+	},
+	"togetherai": func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+		return togetherai.New("", model, wrapper)
+	},
 }

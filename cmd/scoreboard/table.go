@@ -57,7 +57,7 @@ type columni struct {
 func printTable() error {
 	var columns []column
 	for name, f := range providers.All {
-		c, err := f("")
+		c, err := f("", nil)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: %v\n", name, err)
 			continue

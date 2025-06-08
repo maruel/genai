@@ -23,7 +23,7 @@ func printList() error {
 	sort.Strings(names)
 	for _, name := range names {
 		fmt.Printf("- %s\n", name)
-		c, err := providers.All[name]("")
+		c, err := providers.All[name]("", nil)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: %v\n", name, err)
 			continue

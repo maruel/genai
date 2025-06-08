@@ -7,7 +7,6 @@ package cloudflare_test
 import (
 	"net/http"
 	"os"
-	"regexp"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -81,8 +80,6 @@ func getClientInner(t *testing.T, apiKey, m string) *cloudflare.Client {
 	}
 	return c
 }
-
-var reAccount = regexp.MustCompile(`/accounts/[0-9a-fA-F]{32}/`)
 
 // trimRecording trims API key and noise from the recording.
 func trimRecordingInternal(i *cassette.Interaction) error {

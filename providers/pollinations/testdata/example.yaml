@@ -1,0 +1,105 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: image.pollinations.ai
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://image.pollinations.ai/models
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '["flux","turbo","gptimage"]'
+        headers:
+            Access-Control-Allow-Headers:
+                - Content-Type
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Auth-Status, X-Auth-Reason, X-Debug-Token, X-Debug-Token-Source, X-Debug-Referrer, X-Debug-Legacy-Token-Match, X-Debug-Allowlist-Match, X-Debug-User-Id
+            Cache-Control:
+                - no-store, no-cache, must-revalidate, proxy-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94c0f448ac73714a-YUL
+            Content-Type:
+                - application/json
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 255ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: text.pollinations.ai
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://text.pollinations.ai/models
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"name":"openai","description":"OpenAI GPT-4.1-mini","provider":"Azure","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"openai-fast","description":"OpenAI GPT-4.1-nano","provider":"Azure","input_modalities":["text","image"],"output_modalities":["text"],"aliases":"openai-small","tools":true,"vision":true,"audio":false},{"name":"openai-large","description":"OpenAI GPT-4.1","provider":"Azure","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"openai-roblox","description":"OpenAI GPT-4.1-mini for Roblox","provider":"Azure","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"qwen-coder","description":"Qwen 2.5 Coder 32B","provider":"Scaleway","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"llamascout","description":"Llama 4 Scout 17B","provider":"Cloudflare","input_modalities":["text"],"output_modalities":["text"],"aliases":"llama","tools":false,"vision":false,"audio":false},{"name":"mistral","description":"Mistral Small 3.1 24B","provider":"Cloudflare","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"unity","description":"Unity Unrestricted Agent (Mistral Small 3.1)","provider":"Scaleway","uncensored":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"mirexa","description":"Mirexa AI Companion (GPT-4.1)","provider":"Azure","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"midijourney","description":"Midijourney","provider":"Azure","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"rtist","description":"Rtist","provider":"Azure","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"searchgpt","description":"SearchGPT","provider":"Azure","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"evil","description":"Evil","provider":"Scaleway","uncensored":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"deepseek-reasoning","description":"DeepSeek R1 - DeepSeek-R1-0528","reasoning":true,"provider":"Azure","aliases":"deepseek-r1-0528","input_modalities":["text"],"output_modalities":["text"],"tools":false,"vision":false,"audio":false},{"name":"elixposearch","description":"ElixpoSearch - Custom search-enhanced AI model","provider":"Elixpo/Pollinations","input_modalities":["text"],"output_modalities":["text"],"tools":false,"vision":false,"audio":false},{"name":"phi","description":"Phi-4 Instruct","provider":"Azure","input_modalities":["text","image","audio"],"output_modalities":["text"],"tools":false,"vision":true,"audio":true},{"name":"hormoz","description":"Hormoz 8b","provider":"Modal","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"hypnosis-tracy","description":"Hypnosis Tracy 7B","provider":"Azure","input_modalities":["text","audio"],"output_modalities":["audio","text"],"tools":true,"vision":false,"audio":true},{"name":"deepseek","description":"DeepSeek-V3","provider":"DeepSeek","input_modalities":["text"],"output_modalities":["text"],"tools":false,"vision":false,"audio":false},{"name":"grok","description":"xAi Grok-3 Mini","provider":"Azure","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"sur","description":"Sur AI Assistant (Mistral)","provider":"Scaleway","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"bidara","description":"BIDARA - Biomimetic Designer and Research Assistant by NASA","provider":"Azure","input_modalities":["text","image"],"output_modalities":["text"],"vision":true,"audio":false},{"name":"openai-audio","description":"OpenAI GPT-4o-audio-preview","voices":["alloy","echo","fable","onyx","nova","shimmer","coral","verse","ballad","ash","sage","amuch","dan"],"provider":"Azure","input_modalities":["text","image","audio"],"output_modalities":["audio","text"],"tools":true,"vision":true,"audio":true}]'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94c0f44a0b93a293-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"1171-I8UP4nOvnLyD34hU+RHJMHEhSyE"
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+            X-Powered-By:
+                - Express
+        status: 200 OK
+        code: 200
+        duration: 435ms

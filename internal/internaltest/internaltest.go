@@ -30,13 +30,13 @@ type Records struct {
 }
 
 func NewRecords() *Records {
-	r := &Records{
-		preexisting: make(map[string]struct{}),
-	}
+	r := &Records{preexisting: make(map[string]struct{})}
 	const root = "testdata" + string(os.PathSeparator)
 	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
 		if err == nil && !d.IsDir() && strings.HasSuffix(path, ".yaml") {
-			r.preexisting[path[len(root):]] = struct{}{}
+			if p := path[len(root):]; p != "example.yaml" {
+				r.preexisting[p] = struct{}{}
+			}
 		}
 		return err
 	})

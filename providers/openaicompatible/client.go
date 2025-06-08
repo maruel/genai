@@ -39,56 +39,48 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	var unsupported []string
 	sp := ""
 	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			errs = append(errs, err)
-		} else {
-			switch v := opts.(type) {
-			case *genai.OptionsText:
-				c.MaxTokens = v.MaxTokens
-				c.Temperature = v.Temperature
-				c.TopP = v.TopP
-				sp = v.SystemPrompt
-				if v.Seed != 0 {
-					unsupported = append(unsupported, "Seed")
-				}
-				if v.TopK != 0 {
-					unsupported = append(unsupported, "TopK")
-				}
-				c.Stop = v.Stop
-				if v.ReplyAsJSON {
-					errs = append(errs, errors.New("unsupported option ReplyAsJSON"))
-				}
-				if v.DecodeAs != nil {
-					errs = append(errs, errors.New("unsupported option DecodeAs"))
-				}
-				if len(v.Tools) != 0 {
-					errs = append(errs, errors.New("unsupported option Tools"))
-				}
-			default:
-				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+		switch v := opts.(type) {
+		case *genai.OptionsText:
+			c.MaxTokens = v.MaxTokens
+			c.Temperature = v.Temperature
+			c.TopP = v.TopP
+			sp = v.SystemPrompt
+			if v.Seed != 0 {
+				unsupported = append(unsupported, "Seed")
 			}
+			if v.TopK != 0 {
+				unsupported = append(unsupported, "TopK")
+			}
+			c.Stop = v.Stop
+			if v.ReplyAsJSON {
+				errs = append(errs, errors.New("unsupported option ReplyAsJSON"))
+			}
+			if v.DecodeAs != nil {
+				errs = append(errs, errors.New("unsupported option DecodeAs"))
+			}
+			if len(v.Tools) != 0 {
+				errs = append(errs, errors.New("unsupported option Tools"))
+			}
+		default:
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 		}
 	}
 
-	if err := msgs.Validate(); err != nil {
-		errs = append(errs, err)
-	} else {
-		offset := 0
-		if sp != "" {
-			offset = 1
-		}
-		c.Messages = make([]Message, len(msgs)+offset)
-		if sp != "" {
-			c.Messages[0].Role = "system"
-			c.Messages[0].Content = []Content{{
-				Type: ContentText,
-				Text: sp,
-			}}
-		}
-		for i := range msgs {
-			if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
-				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-			}
+	offset := 0
+	if sp != "" {
+		offset = 1
+	}
+	c.Messages = make([]Message, len(msgs)+offset)
+	if sp != "" {
+		c.Messages[0].Role = "system"
+		c.Messages[0].Content = []Content{{
+			Type: ContentText,
+			Text: sp,
+		}}
+	}
+	for i := range msgs {
+		if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
+			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 		}
 	}
 	if len(unsupported) > 0 {

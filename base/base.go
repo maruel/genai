@@ -273,6 +273,14 @@ type ProviderGen[PErrorResponse fmt.Stringer, PGenRequest InitializableRequest, 
 
 func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
+	if err := msgs.Validate(); err != nil {
+		return result, err
+	}
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return result, err
+		}
+	}
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
 		for i, msg := range msgs {
@@ -307,6 +315,14 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 
 func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
+	if err := msgs.Validate(); err != nil {
+		return result, err
+	}
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return result, err
+		}
+	}
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
 		for i, msg := range msgs {

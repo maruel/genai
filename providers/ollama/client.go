@@ -91,64 +91,56 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	var unsupported []string
 	sp := ""
 	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			errs = append(errs, err)
-		} else {
-			switch v := opts.(type) {
-			case *genai.OptionsText:
-				c.Options.NumPredict = v.MaxTokens
-				c.Options.Temperature = v.Temperature
-				c.Options.TopP = v.TopP
-				sp = v.SystemPrompt
-				c.Options.Seed = v.Seed
-				c.Options.TopK = v.TopK
-				c.Options.Stop = v.Stop
-				if v.DecodeAs != nil {
-					c.Format = jsonschema.Reflect(v.DecodeAs)
-				} else if v.ReplyAsJSON {
-					c.Format = "json"
-				}
-				if len(v.Tools) != 0 {
-					switch v.ToolCallRequest {
-					case genai.ToolCallAny:
-					case genai.ToolCallRequired:
-						// Don't fail.
-						unsupported = append(unsupported, "ToolCallRequest")
-					case genai.ToolCallNone:
-						unsupported = append(unsupported, "ToolCallRequest")
-					}
-					c.Tools = make([]Tool, len(v.Tools))
-					for i, t := range v.Tools {
-						c.Tools[i].Type = "function"
-						c.Tools[i].Function.Name = t.Name
-						c.Tools[i].Function.Description = t.Description
-						if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
-							c.Tools[i].Function.Parameters = t.GetInputSchema()
-						}
-					}
-				}
-			default:
-				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+		switch v := opts.(type) {
+		case *genai.OptionsText:
+			c.Options.NumPredict = v.MaxTokens
+			c.Options.Temperature = v.Temperature
+			c.Options.TopP = v.TopP
+			sp = v.SystemPrompt
+			c.Options.Seed = v.Seed
+			c.Options.TopK = v.TopK
+			c.Options.Stop = v.Stop
+			if v.DecodeAs != nil {
+				c.Format = jsonschema.Reflect(v.DecodeAs)
+			} else if v.ReplyAsJSON {
+				c.Format = "json"
 			}
+			if len(v.Tools) != 0 {
+				switch v.ToolCallRequest {
+				case genai.ToolCallAny:
+				case genai.ToolCallRequired:
+					// Don't fail.
+					unsupported = append(unsupported, "ToolCallRequest")
+				case genai.ToolCallNone:
+					unsupported = append(unsupported, "ToolCallRequest")
+				}
+				c.Tools = make([]Tool, len(v.Tools))
+				for i, t := range v.Tools {
+					c.Tools[i].Type = "function"
+					c.Tools[i].Function.Name = t.Name
+					c.Tools[i].Function.Description = t.Description
+					if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
+						c.Tools[i].Function.Parameters = t.GetInputSchema()
+					}
+				}
+			}
+		default:
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 		}
 	}
 
-	if err := msgs.Validate(); err != nil {
-		errs = append(errs, err)
-	} else {
-		offset := 0
-		if sp != "" {
-			offset = 1
-		}
-		c.Messages = make([]Message, len(msgs)+offset)
-		if sp != "" {
-			c.Messages[0].Role = "system"
-			c.Messages[0].Content = sp
-		}
-		for i := range msgs {
-			if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
-				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-			}
+	offset := 0
+	if sp != "" {
+		offset = 1
+	}
+	c.Messages = make([]Message, len(msgs)+offset)
+	if sp != "" {
+		c.Messages[0].Role = "system"
+		c.Messages[0].Content = sp
+	}
+	for i := range msgs {
+		if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
+			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 		}
 	}
 	if len(unsupported) > 0 {
@@ -478,6 +470,14 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
+	if err := msgs.Validate(); err != nil {
+		return result, err
+	}
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return result, err
+		}
+	}
 	for i, msg := range msgs {
 		for j, content := range msg.Contents {
 			if len(content.Opaque) != 0 {
@@ -507,7 +507,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 }
 
 func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
-	if err := c.validate(); err != nil {
+	if err := c.Validate(); err != nil {
 		return err
 	}
 	in.Stream = false
@@ -527,6 +527,14 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
+	if err := msgs.Validate(); err != nil {
+		return result, err
+	}
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return result, err
+		}
+	}
 	for i, msg := range msgs {
 		for j, content := range msg.Contents {
 			if len(content.Opaque) != 0 {
@@ -565,7 +573,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 }
 
 func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
-	if err := c.validate(); err != nil {
+	if err := c.Validate(); err != nil {
 		return err
 	}
 	in.Stream = true
@@ -617,7 +625,7 @@ func (c *Client) PullModel(ctx context.Context, model string) error {
 	return nil
 }
 
-func (c *Client) validate() error {
+func (c *Client) Validate() error {
 	if c.model == "" {
 		return errors.New("a model is required")
 	}

@@ -103,70 +103,62 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	var unsupported []string
 	sp := ""
 	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			errs = append(errs, err)
-		} else {
-			// https://api-docs.deepseek.com/guides/reasoning_model Soon "reasoning_effort"
-			switch v := opts.(type) {
-			case *genai.OptionsText:
-				c.MaxToks = v.MaxTokens
-				c.Temperature = v.Temperature
-				c.TopP = v.TopP
-				sp = v.SystemPrompt
-				if v.Seed != 0 {
-					unsupported = append(unsupported, "Seed")
-				}
-				if v.TopK != 0 {
-					unsupported = append(unsupported, "TopK")
-				}
-				c.Stop = v.Stop
-				if v.ReplyAsJSON {
-					c.ResponseFormat.Type = "json_object"
-				}
-				if v.DecodeAs != nil {
-					errs = append(errs, errors.New("unsupported option DecodeAs"))
-				}
-				if len(v.Tools) != 0 {
-					switch v.ToolCallRequest {
-					case genai.ToolCallAny:
-						c.ToolChoice = "auto"
-					case genai.ToolCallRequired:
-						c.ToolChoice = "required"
-					case genai.ToolCallNone:
-						c.ToolChoice = "none"
-					}
-					c.Tools = make([]Tool, len(v.Tools))
-					for i, t := range v.Tools {
-						c.Tools[i].Type = "function"
-						c.Tools[i].Function.Name = t.Name
-						c.Tools[i].Function.Description = t.Description
-						if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
-							c.Tools[i].Function.Parameters = t.GetInputSchema()
-						}
-					}
-				}
-			default:
-				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+		// https://api-docs.deepseek.com/guides/reasoning_model Soon "reasoning_effort"
+		switch v := opts.(type) {
+		case *genai.OptionsText:
+			c.MaxToks = v.MaxTokens
+			c.Temperature = v.Temperature
+			c.TopP = v.TopP
+			sp = v.SystemPrompt
+			if v.Seed != 0 {
+				unsupported = append(unsupported, "Seed")
 			}
+			if v.TopK != 0 {
+				unsupported = append(unsupported, "TopK")
+			}
+			c.Stop = v.Stop
+			if v.ReplyAsJSON {
+				c.ResponseFormat.Type = "json_object"
+			}
+			if v.DecodeAs != nil {
+				errs = append(errs, errors.New("unsupported option DecodeAs"))
+			}
+			if len(v.Tools) != 0 {
+				switch v.ToolCallRequest {
+				case genai.ToolCallAny:
+					c.ToolChoice = "auto"
+				case genai.ToolCallRequired:
+					c.ToolChoice = "required"
+				case genai.ToolCallNone:
+					c.ToolChoice = "none"
+				}
+				c.Tools = make([]Tool, len(v.Tools))
+				for i, t := range v.Tools {
+					c.Tools[i].Type = "function"
+					c.Tools[i].Function.Name = t.Name
+					c.Tools[i].Function.Description = t.Description
+					if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
+						c.Tools[i].Function.Parameters = t.GetInputSchema()
+					}
+				}
+			}
+		default:
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 		}
 	}
 
-	if err := msgs.Validate(); err != nil {
-		errs = append(errs, err)
-	} else {
-		offset := 0
-		if sp != "" {
-			offset = 1
-		}
-		c.Messages = make([]Message, len(msgs)+offset)
-		if sp != "" {
-			c.Messages[0].Role = "system"
-			c.Messages[0].Content = sp
-		}
-		for i := range msgs {
-			if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
-				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-			}
+	offset := 0
+	if sp != "" {
+		offset = 1
+	}
+	c.Messages = make([]Message, len(msgs)+offset)
+	if sp != "" {
+		c.Messages[0].Role = "system"
+		c.Messages[0].Content = sp
+	}
+	for i := range msgs {
+		if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
+			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 		}
 	}
 	if len(unsupported) > 0 {

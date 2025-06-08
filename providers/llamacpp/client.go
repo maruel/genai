@@ -111,30 +111,26 @@ func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Options, model 
 	var unsupported []string
 	c.CachePrompt = true
 	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			errs = append(errs, err)
-		} else {
-			switch v := opts.(type) {
-			case *genai.OptionsText:
-				c.NPredict = v.MaxTokens
-				c.Seed = v.Seed
-				c.Temperature = v.Temperature
-				c.TopP = v.TopP
-				c.TopK = v.TopK
-				c.Stop = v.Stop
-				if v.ReplyAsJSON {
-					errs = append(errs, errors.New("unsupported option ReplyAsJSON"))
-				}
-				if v.DecodeAs != nil {
-					errs = append(errs, errors.New("unsupported option DecodeAs"))
-				}
-				if len(v.Tools) != 0 {
-					// TODO: June 2025, support was added recently for streaming.
-					errs = append(errs, errors.New("unsupported option Tools"))
-				}
-			default:
-				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+		switch v := opts.(type) {
+		case *genai.OptionsText:
+			c.NPredict = v.MaxTokens
+			c.Seed = v.Seed
+			c.Temperature = v.Temperature
+			c.TopP = v.TopP
+			c.TopK = v.TopK
+			c.Stop = v.Stop
+			if v.ReplyAsJSON {
+				errs = append(errs, errors.New("unsupported option ReplyAsJSON"))
 			}
+			if v.DecodeAs != nil {
+				errs = append(errs, errors.New("unsupported option DecodeAs"))
+			}
+			if len(v.Tools) != 0 {
+				// TODO: June 2025, support was added recently for streaming.
+				errs = append(errs, errors.New("unsupported option Tools"))
+			}
+		default:
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 		}
 	}
 	if len(unsupported) > 0 {
@@ -295,9 +291,6 @@ func (a *applyTemplateRequest) Init(opts genai.Options, msgs genai.Messages) err
 	sp := ""
 	if v, ok := opts.(*genai.OptionsText); ok {
 		sp = v.SystemPrompt
-	}
-	if err := msgs.Validate(); err != nil {
-		return err
 	}
 	var errs []error
 	unsupported := []string{}
@@ -474,6 +467,14 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 	// https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
+	if err := msgs.Validate(); err != nil {
+		return genai.Result{}, err
+	}
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return genai.Result{}, err
+		}
+	}
 	for i, msg := range msgs {
 		for j, content := range msg.Contents {
 			if len(content.Opaque) != 0 {
@@ -503,6 +504,14 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
+	if err := msgs.Validate(); err != nil {
+		return result, err
+	}
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return result, err
+		}
+	}
 
 	// Check for non-empty Opaque field
 	for i, msg := range msgs {

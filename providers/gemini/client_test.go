@@ -174,8 +174,8 @@ Ultimately, the human endeavor is a quest for understanding, not just of the ext
 			{
 				Name:        "hidden_word",
 				Description: "A tool to state what word was seen in the video.",
-				Callback: func(ctx context.Context, g *got) string {
-					return ""
+				Callback: func(ctx context.Context, g *got) (string, error) {
+					return "", nil
 				},
 			},
 		},

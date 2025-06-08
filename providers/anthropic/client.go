@@ -142,48 +142,40 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	// Anthropic requires a value! And their models listing API doesn't provide the model's acceptable values! This is quite annoying.
 	c.MaxTokens = modelsMaxTokens(model)
 	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			errs = append(errs, err)
-		} else {
-			switch v := opts.(type) {
-			case *OptionsText:
-				unsupported, errs = c.initOptions(&v.OptionsText)
-				msgToCache = v.MessagesToCache
-				if v.ThinkingBudget > 0 {
-					if v.ThinkingBudget >= v.MaxTokens {
-						errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, v.MaxTokens))
-					}
-					// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
-					// Thinking isn’t compatible with temperature, top_p, or top_k modifications as well as forced tool use.
-					c.Thinking.BudgetTokens = v.ThinkingBudget
-					c.Thinking.Type = "enabled"
+		switch v := opts.(type) {
+		case *OptionsText:
+			unsupported, errs = c.initOptions(&v.OptionsText)
+			msgToCache = v.MessagesToCache
+			if v.ThinkingBudget > 0 {
+				if v.ThinkingBudget >= v.MaxTokens {
+					errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, v.MaxTokens))
 				}
-			case *genai.OptionsText:
-				unsupported, errs = c.initOptions(v)
-			default:
-				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+				// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
+				// Thinking isn’t compatible with temperature, top_p, or top_k modifications as well as forced tool use.
+				c.Thinking.BudgetTokens = v.ThinkingBudget
+				c.Thinking.Type = "enabled"
 			}
+		case *genai.OptionsText:
+			unsupported, errs = c.initOptions(v)
+		default:
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 		}
 	}
 
-	if err := msgs.Validate(); err != nil {
-		errs = append(errs, err)
-	} else {
-		c.Messages = make([]Message, 0, len(msgs))
-		for i := range msgs {
-			switch msgs[i].Role {
-			case genai.User, genai.Assistant:
-				c.Messages = append(c.Messages, Message{})
-				if err := c.Messages[len(c.Messages)-1].From(&msgs[i]); err != nil {
-					errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-				}
-				if i == msgToCache-1 {
-					c.Messages[i].CacheControl.Type = "ephemeral"
-				}
-			default:
-				errs = append(errs, fmt.Errorf("message %d: unsupported role %q", i, msgs[i].Role))
-				continue
+	c.Messages = make([]Message, 0, len(msgs))
+	for i := range msgs {
+		switch msgs[i].Role {
+		case genai.User, genai.Assistant:
+			c.Messages = append(c.Messages, Message{})
+			if err := c.Messages[len(c.Messages)-1].From(&msgs[i]); err != nil {
+				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 			}
+			if i == msgToCache-1 {
+				c.Messages[i].CacheControl.Type = "ephemeral"
+			}
+		default:
+			errs = append(errs, fmt.Errorf("message %d: unsupported role %q", i, msgs[i].Role))
+			continue
 		}
 	}
 	if len(unsupported) > 0 {
@@ -838,48 +830,40 @@ func (b *BatchRequestParams) Init(msgs genai.Messages, opts genai.Options, model
 	// Anthropic requires a value! And their models listing API doesn't provide the model's acceptable values! This is quite annoying.
 	b.MaxTokens = modelsMaxTokens(model)
 	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			errs = append(errs, err)
-		} else {
-			switch v := opts.(type) {
-			case *OptionsText:
-				unsupported, errs = b.initOptions(&v.OptionsText)
-				if v.MessagesToCache != 0 {
-					unsupported = append(unsupported, "MessagesToCache")
-				}
-				if v.ThinkingBudget > 0 {
-					if v.ThinkingBudget >= v.MaxTokens {
-						errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, v.MaxTokens))
-					}
-					// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
-					// Thinking isn’t compatible with temperature, top_p, or top_k modifications as well as forced tool use.
-					b.Thinking.BudgetTokens = v.ThinkingBudget
-					b.Thinking.Type = "enabled"
-				}
-			case *genai.OptionsText:
-				unsupported, errs = b.initOptions(v)
-			default:
-				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+		switch v := opts.(type) {
+		case *OptionsText:
+			unsupported, errs = b.initOptions(&v.OptionsText)
+			if v.MessagesToCache != 0 {
+				unsupported = append(unsupported, "MessagesToCache")
 			}
+			if v.ThinkingBudget > 0 {
+				if v.ThinkingBudget >= v.MaxTokens {
+					errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, v.MaxTokens))
+				}
+				// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
+				// Thinking isn’t compatible with temperature, top_p, or top_k modifications as well as forced tool use.
+				b.Thinking.BudgetTokens = v.ThinkingBudget
+				b.Thinking.Type = "enabled"
+			}
+		case *genai.OptionsText:
+			unsupported, errs = b.initOptions(v)
+		default:
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 		}
 	}
 
-	if err := msgs.Validate(); err != nil {
-		errs = append(errs, err)
-	} else {
-		b.Messages = make([]Message, 0, len(msgs))
-		for i := range msgs {
-			switch msgs[i].Role {
-			case genai.User, genai.Assistant:
-				b.Messages = append(b.Messages, Message{})
-				if err := b.Messages[len(b.Messages)-1].From(&msgs[i]); err != nil {
-					errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-				}
-				// Do not set cache here since it's irrelevant when batching.
-			default:
-				errs = append(errs, fmt.Errorf("message %d: unsupported role %q", i, msgs[i].Role))
-				continue
+	b.Messages = make([]Message, 0, len(msgs))
+	for i := range msgs {
+		switch msgs[i].Role {
+		case genai.User, genai.Assistant:
+			b.Messages = append(b.Messages, Message{})
+			if err := b.Messages[len(b.Messages)-1].From(&msgs[i]); err != nil {
+				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 			}
+			// Do not set cache here since it's irrelevant when batching.
+		default:
+			errs = append(errs, fmt.Errorf("message %d: unsupported role %q", i, msgs[i].Role))
+			continue
 		}
 	}
 	if len(unsupported) > 0 {
@@ -1184,6 +1168,14 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
 	if err := c.Validate(); err != nil {
 		return "", err
+	}
+	if err := msgs.Validate(); err != nil {
+		return "", err
+	}
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return "", err
+		}
 	}
 	// https://docs.anthropic.com/en/docs/build-with-claude/batch-processing
 	// https://docs.anthropic.com/en/api/creating-message-batches

@@ -340,44 +340,36 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	}
 
 	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			errs = append(errs, err)
-		} else {
-			// This doesn't seem to be well supported yet:
-			//    in.GenerationConfig.ResponseLogprobs = true
-			switch v := opts.(type) {
-			case *OptionsText:
-				if v.ThinkingBudget > 0 {
-					// https://ai.google.dev/gemini-api/docs/thinking
-					c.GenerationConfig.ThinkingConfig = &ThinkingConfig{
-						IncludeThoughts: true,
-						ThinkingBudget:  v.ThinkingBudget,
-					}
+		// This doesn't seem to be well supported yet:
+		//    in.GenerationConfig.ResponseLogprobs = true
+		switch v := opts.(type) {
+		case *OptionsText:
+			if v.ThinkingBudget > 0 {
+				// https://ai.google.dev/gemini-api/docs/thinking
+				c.GenerationConfig.ThinkingConfig = &ThinkingConfig{
+					IncludeThoughts: true,
+					ThinkingBudget:  v.ThinkingBudget,
 				}
-				if len(v.ResponseModalities) != 0 {
-					c.GenerationConfig.ResponseModalities = v.ResponseModalities
-				}
-				unsupported = c.initOptions(&v.OptionsText, model)
-			case *genai.OptionsText:
-				unsupported = c.initOptions(v, model)
-			default:
-				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 			}
-			// Default to text generation.
-			if len(c.GenerationConfig.ResponseModalities) == 0 {
-				c.GenerationConfig.ResponseModalities = []Modality{ModalityText}
+			if len(v.ResponseModalities) != 0 {
+				c.GenerationConfig.ResponseModalities = v.ResponseModalities
 			}
+			unsupported = c.initOptions(&v.OptionsText, model)
+		case *genai.OptionsText:
+			unsupported = c.initOptions(v, model)
+		default:
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+		}
+		// Default to text generation.
+		if len(c.GenerationConfig.ResponseModalities) == 0 {
+			c.GenerationConfig.ResponseModalities = []Modality{ModalityText}
 		}
 	}
 
-	if err := msgs.Validate(); err != nil {
-		errs = append(errs, err)
-	} else {
-		c.Contents = make([]Content, len(msgs))
-		for i := range msgs {
-			if err := c.Contents[i].From(&msgs[i]); err != nil {
-				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-			}
+	c.Contents = make([]Content, len(msgs))
+	for i := range msgs {
+		if err := c.Contents[i].From(&msgs[i]); err != nil {
+			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 		}
 	}
 	if len(unsupported) > 0 {
@@ -1126,6 +1118,17 @@ func (c *Client) CacheAdd(ctx context.Context, msgs genai.Messages, opts *genai.
 	// See https://ai.google.dev/gemini-api/docs/caching?hl=en&lang=rest#considerations
 	// Useful when reusing the same large data multiple times to reduce token usage.
 	// This requires a pinned model, with trailing -001.
+	if err := c.Validate(); err != nil {
+		return "", err
+	}
+	if err := msgs.Validate(); err != nil {
+		return "", err
+	}
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return "", err
+		}
+	}
 	in := CachedContent{
 		Model:       "models/" + c.Model,
 		DisplayName: displayName,

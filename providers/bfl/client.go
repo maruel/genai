@@ -232,6 +232,14 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 }
 
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
+	if err := msgs.Validate(); err != nil {
+		return "", err
+	}
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return "", err
+		}
+	}
 	if len(msgs) != 1 {
 		return "", errors.New("must pass exactly one Message")
 	}

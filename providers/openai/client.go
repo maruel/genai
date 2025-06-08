@@ -299,42 +299,34 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	var unsupported []string
 	sp := ""
 	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			errs = append(errs, err)
-		} else {
-			switch v := opts.(type) {
-			case *OptionsText:
-				c.ReasoningEffort = v.ReasoningEffort
-				c.ServiceTier = v.ServiceTier
-				unsupported = c.initOptions(&v.OptionsText, model)
-				sp = v.SystemPrompt
-			case *genai.OptionsText:
-				c.ServiceTier = ServiceTierAuto
-				unsupported = c.initOptions(v, model)
-				sp = v.SystemPrompt
-			default:
-				errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
-			}
+		switch v := opts.(type) {
+		case *OptionsText:
+			c.ReasoningEffort = v.ReasoningEffort
+			c.ServiceTier = v.ServiceTier
+			unsupported = c.initOptions(&v.OptionsText, model)
+			sp = v.SystemPrompt
+		case *genai.OptionsText:
+			c.ServiceTier = ServiceTierAuto
+			unsupported = c.initOptions(v, model)
+			sp = v.SystemPrompt
+		default:
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 		}
 	}
 
-	if err := msgs.Validate(); err != nil {
-		errs = append(errs, err)
-	} else {
-		offset := 0
-		if sp != "" {
-			offset = 1
-		}
-		c.Messages = make([]Message, len(msgs)+offset)
-		if sp != "" {
-			// Starting with o1.
-			c.Messages[0].Role = "developer"
-			c.Messages[0].Content = Contents{{Type: "text", Text: sp}}
-		}
-		for i := range msgs {
-			if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
-				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-			}
+	offset := 0
+	if sp != "" {
+		offset = 1
+	}
+	c.Messages = make([]Message, len(msgs)+offset)
+	if sp != "" {
+		// Starting with o1.
+		c.Messages[0].Role = "developer"
+		c.Messages[0].Content = Contents{{Type: "text", Text: sp}}
+	}
+	for i := range msgs {
+		if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
+			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 		}
 	}
 	if len(unsupported) > 0 {
@@ -1014,6 +1006,17 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
 	// https://platform.openai.com/docs/api-reference/images/create
 	res := genai.Result{}
+	if err := c.Validate(); err != nil {
+		return res, err
+	}
+	if err := msg.Validate(); err != nil {
+		return res, err
+	}
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return res, err
+		}
+	}
 	for i := range msg.Contents {
 		if msg.Contents[i].Text == "" {
 			return res, errors.New("only text can be passed as input")

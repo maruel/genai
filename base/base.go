@@ -52,6 +52,19 @@ const (
 	PreferredSOTA = "PREFERRED_SOTA"
 )
 
+// ErrAPIKeyRequired is returned by the providers New() function when no key was found.
+type ErrAPIKeyRequired struct {
+	EnvVar string
+	URL    string
+}
+
+func (e *ErrAPIKeyRequired) Error() string {
+	if e.URL != "" {
+		return fmt.Sprintf("api key is required; set environment variable %s to it, and get a key at %s", e.EnvVar, e.URL)
+	}
+	return fmt.Sprintf("api key is required; set environment variable %s to it", e.EnvVar)
+}
+
 // Provider implements genai.Provider (except for ModelID()).
 //
 // It contains the shared HTTP client functionality used across all API clients.

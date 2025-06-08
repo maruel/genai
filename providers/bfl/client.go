@@ -151,7 +151,7 @@ type Client struct {
 // New creates a new client to talk to the Black Forest Labs platform API.
 //
 // If apiKey is not provided, it tries to load it from the BFL_API_KEY environment variable.
-// If none is found, it returns an error.
+// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your API key at https://dashboard.bfl.ai/keys
 //
 // To use multiple models, create multiple clients.
@@ -164,9 +164,10 @@ type Client struct {
 // wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
 func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://dashboard.bfl.ai/keys"
+	var err error
 	if apiKey == "" {
 		if apiKey = os.Getenv("BFL_API_KEY"); apiKey == "" {
-			return nil, errors.New("bfl.ai API key is required; get one at " + apiKeyURL)
+			err = &base.ErrAPIKeyRequired{EnvVar: "BFL_API_KEY", URL: apiKeyURL}
 		}
 	}
 	// If Black Forest Labs ever implement model listing, add this.
@@ -198,7 +199,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 				},
 			},
 		},
-	}, nil
+	}, err
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

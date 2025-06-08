@@ -606,7 +606,7 @@ type Client struct {
 //
 // If accountID is not provided, it tries to load it from the CLOUDFLARE_ACCOUNT_ID environment variable.
 // If apiKey is not provided, it tries to load it from the CLOUDFLARE_API_KEY environment variable.
-// If none is found, it returns an error.
+// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your account ID and API key at https://dash.cloudflare.com/profile/api-tokens
 //
 // If no model is provided, only functions that do not require a model, like ListModels, will work.
@@ -620,14 +620,15 @@ type Client struct {
 // wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
 func New(accountID, apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://dash.cloudflare.com/profile/api-tokens"
+	var err error
 	if accountID == "" {
 		if accountID = os.Getenv("CLOUDFLARE_ACCOUNT_ID"); accountID == "" {
-			return nil, errors.New("cloudflare account ID is required; get one at " + apiKeyURL)
+			err = &base.ErrAPIKeyRequired{EnvVar: "CLOUDFLARE_ACCOUNT_ID", URL: apiKeyURL}
 		}
 	}
 	if apiKey == "" {
 		if apiKey = os.Getenv("CLOUDFLARE_API_KEY"); apiKey == "" {
-			return nil, errors.New("cloudflare API key is required; get one at " + apiKeyURL)
+			err = &base.ErrAPIKeyRequired{EnvVar: "CLOUDFLARE_API_KEY", URL: apiKeyURL}
 		}
 	}
 	t := base.DefaultTransport
@@ -658,7 +659,7 @@ func New(accountID, apiKey, model string, wrapper func(http.RoundTripper) http.R
 		},
 		accountID: accountID,
 	}
-	if model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA {
+	if err == nil && (model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA) {
 		mdls, err := c.ListModels(context.Background())
 		if err != nil {
 			return nil, err
@@ -702,7 +703,7 @@ func New(accountID, apiKey, model string, wrapper func(http.RoundTripper) http.R
 			return nil, errors.New("failed to find a model automatically")
 		}
 	}
-	return c, nil
+	return c, err
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/adapter"
+	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/openaicompatible"
 	"golang.org/x/sync/errgroup"
@@ -201,7 +201,7 @@ func getClient(t *testing.T, provider string) genai.ProviderGen {
 		t.Fatal(err)
 	}
 	if p.thinking != "" {
-		return &adapter.ProviderGenThinking{ProviderGen: c, TagName: p.thinking}
+		return &adapters.ProviderGenThinking{ProviderGen: c, TagName: p.thinking}
 	}
 	return c
 }

@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/adapter"
+	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 )
@@ -37,7 +37,7 @@ func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts ge
 		return genai.Result{}, errors.New("implement me")
 	}
 	opts = &n
-	p := adapter.ProviderGenDocToGen{ProviderGenDoc: i.Client}
+	p := adapters.ProviderGenDocToGen{ProviderGenDoc: i.Client}
 	return p.GenSync(ctx, msgs, opts)
 }
 
@@ -47,7 +47,7 @@ func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, repli
 		return genai.Result{}, errors.New("implement me")
 	}
 	opts = &n
-	p := adapter.ProviderGenDocToGen{ProviderGenDoc: i.Client}
+	p := adapters.ProviderGenDocToGen{ProviderGenDoc: i.Client}
 	return p.GenStream(ctx, msgs, replies, opts)
 }
 
@@ -77,7 +77,7 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {
-		return &adapter.ProviderGenDocToGen{ProviderGenDoc: getClientInner(t, apiKey, model)}
+		return &adapters.ProviderGenDocToGen{ProviderGenDoc: getClientInner(t, apiKey, model)}
 	}
 	internaltest.TestClient_ProviderGen_errors(t, f, data)
 }

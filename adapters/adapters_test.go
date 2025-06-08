@@ -2,7 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-package adapter_test
+package adapters_test
 
 import (
 	"context"
@@ -12,7 +12,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/adapter"
+	"github.com/maruel/genai/adapters"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -75,7 +75,7 @@ func TestProviderGenThinking_GenSync(t *testing.T) {
 				},
 			}}
 
-			tp := &adapter.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
+			tp := &adapters.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
 			got, err := tp.GenSync(t.Context(), genai.Messages{}, nil)
 			if tc.expectError {
 				if err == nil {
@@ -206,7 +206,7 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 			for _, i := range tc.in {
 				mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.ContentFragment{TextFragment: i})
 			}
-			tp := &adapter.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
+			tp := &adapters.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
 			ch := make(chan genai.ContentFragment, 100)
 			eg, ctx := errgroup.WithContext(t.Context())
 			accumulated := genai.Message{}
@@ -301,7 +301,7 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 		}
 	}()
 
-	respMsgs, usage, err := adapter.GenStreamWithToolCallLoop(ctx, provider, msgs, chunks, opts)
+	respMsgs, usage, err := adapters.GenStreamWithToolCallLoop(ctx, provider, msgs, chunks, opts)
 	close(chunks)
 	if err != nil {
 		t.Fatalf("GenStreamWithToolCallLoop returned an error: %v", err)

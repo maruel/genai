@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/adapter"
+	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/huggingface"
@@ -21,7 +21,7 @@ func TestClient_Scoreboard(t *testing.T) {
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
 		c := getClient(t, m)
 		if m == "Qwen/QwQ-32B" {
-			return &adapter.ProviderGenThinking{ProviderGen: c, TagName: "think", SkipJSON: true}
+			return &adapters.ProviderGenThinking{ProviderGen: c, TagName: "think", SkipJSON: true}
 		}
 		return c
 	}, nil)

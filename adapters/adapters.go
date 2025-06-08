@@ -2,8 +2,8 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Package adapter includes multiple adapters to convert one ProviderFoo interface into another one.
-package adapter
+// Package adapters includes multiple adapters to convert one ProviderFoo interface into another one.
+package adapters
 
 import (
 	"context"

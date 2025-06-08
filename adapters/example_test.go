@@ -2,7 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-package adapter_test
+package adapters_test
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"os"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/adapter"
+	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/genaitools"
 	"github.com/maruel/genai/providers/gemini"
 )
@@ -34,7 +34,7 @@ func ExampleGenSyncWithToolCallLoop() {
 		// Force the LLM to do a tool call first.
 		ToolCallRequest: genai.ToolCallRequired,
 	}
-	newMsgs, _, err := adapter.GenSyncWithToolCallLoop(context.Background(), c, msgs, &opts)
+	newMsgs, _, err := adapters.GenSyncWithToolCallLoop(context.Background(), c, msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -78,7 +78,7 @@ func ExampleGenStreamWithToolCallLoop() {
 			}
 		}
 	}()
-	_, _, err = adapter.GenStreamWithToolCallLoop(ctx, c, msgs, chunks, &opts)
+	_, _, err = adapters.GenStreamWithToolCallLoop(ctx, c, msgs, chunks, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}

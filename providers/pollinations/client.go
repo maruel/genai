@@ -841,7 +841,7 @@ func New(auth, model string, wrapper func(http.RoundTripper) http.RoundTripper) 
 					Client: &http.Client{
 						Transport: &roundtrippers.Header{
 							Header:    h,
-							Transport: t,
+							Transport: &roundtrippers.RequestID{Transport: t},
 						},
 					},
 				},

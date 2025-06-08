@@ -75,6 +75,7 @@ func trimRecording(i *cassette.Interaction) error {
 	// Gemini pass the API key as a query argument (!) so zap it before recording.
 	i.Request.URL = i.Request.URL[:strings.Index(i.Request.URL, "?")]
 	// Reduce noise.
+	i.Request.Headers.Del("X-Request-Id")
 	i.Response.Headers.Del("Date")
 	i.Response.Duration = i.Response.Duration.Round(time.Millisecond)
 	return nil
@@ -88,4 +89,4 @@ func matchCassette(r *http.Request, i cassette.Request) bool {
 	return defaultMatcher(r, i)
 }
 
-var defaultMatcher = cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization"))
+var defaultMatcher = cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Request-Id"))

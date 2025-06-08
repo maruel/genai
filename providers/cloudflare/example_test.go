@@ -82,6 +82,7 @@ func trimRecording(i *cassette.Interaction) error {
 	i.Request.URL = reAccount.ReplaceAllString(i.Request.URL, "/accounts/ACCOUNT_ID/")
 	// Do not save the API key in the recording.
 	i.Request.Headers.Del("Authorization")
+	i.Request.Headers.Del("X-Request-Id")
 	i.Response.Headers.Del("Set-Cookie")
 	// Reduce noise.
 	i.Response.Headers.Del("Date")
@@ -96,4 +97,4 @@ func matchCassette(r *http.Request, i cassette.Request) bool {
 	return defaultMatcher(r, i)
 }
 
-var defaultMatcher = cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization"))
+var defaultMatcher = cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Request-Id"))

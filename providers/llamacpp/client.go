@@ -26,6 +26,7 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/httpjson"
+	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -452,7 +453,7 @@ func New(baseURL string, encoding *PromptEncoding, wrapper func(http.RoundTrippe
 		Provider: base.Provider[*ErrorResponse]{
 			ClientJSON: httpjson.Client{
 				Lenient: internal.BeLenient,
-				Client:  &http.Client{Transport: t},
+				Client:  &http.Client{Transport: &roundtrippers.RequestID{Transport: t}},
 			},
 		},
 		baseURL:  baseURL,

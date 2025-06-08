@@ -26,15 +26,13 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-// DefaultTransport integrates HTTP retries and X-Request-Id tags.
+// DefaultTransport integrates HTTP retries.
 //
 // It uses a quite long retry count. If latency matters for you, you may want to use a shorter retry policy.
 // Do this by passing the `wrapper` argument in the `New()` function and ignore the `http.RoundTripper` passed
 // in.
 var DefaultTransport http.RoundTripper = &roundtrippers.Retry{
-	Transport: &roundtrippers.RequestID{
-		Transport: http.DefaultTransport,
-	},
+	Transport: http.DefaultTransport,
 	Policy: &roundtrippers.ExponentialBackoff{
 		MaxTryCount: 10,
 		MaxDuration: 60 * time.Second,

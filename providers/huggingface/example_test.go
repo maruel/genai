@@ -37,7 +37,7 @@ func ExampleNew_hTTP_record() {
 			mode = recorder.ModeRecordOnly
 		}
 		// Remove API key when matching the request, so the playback doesn't need to have access to the API key.
-		m := cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization"))
+		m := cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Request-Id"))
 		var err error
 		rr, err = recorder.New("testdata/example",
 			recorder.WithHook(trimResponseHeaders, recorder.AfterCaptureHook),
@@ -73,6 +73,7 @@ func ExampleNew_hTTP_record() {
 func trimResponseHeaders(i *cassette.Interaction) error {
 	// Do not save the API key in the recording.
 	i.Request.Headers.Del("Authorization")
+	i.Request.Headers.Del("X-Request-Id")
 	// Reduce noise.
 	i.Response.Headers.Del("Date")
 	i.Response.Headers.Del("X-Request-Id")

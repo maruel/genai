@@ -1046,7 +1046,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 				APIKeyURL:    apiKeyURL,
 				ClientJSON: httpjson.Client{
 					Lenient: internal.BeLenient,
-					Client:  &http.Client{Transport: t},
+					Client:  &http.Client{Transport: &roundtrippers.RequestID{Transport: t}},
 				},
 			},
 		},

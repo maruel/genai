@@ -128,7 +128,7 @@ func getClientInner(t *testing.T, apiKey, m string) *anthropic.Client {
 		// The Anthropic-Version header was not historically saved in the recordings. So instead of re-creating all the recordings,
 		// I'm removing it from the matcher.
 		// TODO: Redo all recordings then stop skipping this header.
-		m := cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("X-Api-Key", "Anthropic-Version"))
+		m := cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("X-Api-Key", "Anthropic-Version", "X-Request-Id"))
 		return testRecorder.Record(t, h, recorder.WithMatcher(m))
 	}
 	c, err := anthropic.New(apiKey, m, wrapper)

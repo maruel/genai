@@ -146,7 +146,7 @@ func MatchIgnorePort(r *http.Request, i cassette.Request) bool {
 }
 
 // DefaultMatcher ignores authentication via API keys.
-var DefaultMatcher = cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Api-Key", "X-Key"))
+var DefaultMatcher = cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Api-Key", "X-Key", "X-Request-Id"))
 
 func trimResponseHeaders(i *cassette.Interaction) error {
 	// Authentication via API keys.

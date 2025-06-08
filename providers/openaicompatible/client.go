@@ -344,7 +344,7 @@ func New(chatURL string, h http.Header, model string, wrapper func(http.RoundTri
 					Client: &http.Client{
 						Transport: &roundtrippers.Header{
 							Header:    h,
-							Transport: t,
+							Transport: &roundtrippers.RequestID{Transport: t},
 						},
 					},
 				},

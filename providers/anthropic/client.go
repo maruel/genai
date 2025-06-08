@@ -1135,7 +1135,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 					Client: &http.Client{
 						Transport: &roundtrippers.Header{
 							Header:    http.Header{"x-api-key": {apiKey}, "anthropic-version": {"2023-06-01"}},
-							Transport: t,
+							Transport: &roundtrippers.RequestID{Transport: t},
 						},
 					},
 				},

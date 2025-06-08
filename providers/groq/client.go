@@ -650,7 +650,7 @@ type Client struct {
 // New creates a new client to talk to the Groq platform API.
 //
 // If apiKey is not provided, it tries to load it from the GROQ_API_KEY environment variable.
-// If none is found, it returns an error.
+// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your API key at https://console.groq.com/keys
 //
 // If no model is provided, only functions that do not require a model, like ListModels, will work.
@@ -667,9 +667,10 @@ type Client struct {
 // https://console.groq.com/docs/tool-use
 func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://console.groq.com/keys"
+	var err error
 	if apiKey == "" {
 		if apiKey = os.Getenv("GROQ_API_KEY"); apiKey == "" {
-			return nil, errors.New("groq API key is required; get one at " + apiKeyURL)
+			err = &base.ErrAPIKeyRequired{EnvVar: "GROQ_API_KEY", URL: apiKeyURL}
 		}
 	}
 	t := base.DefaultTransport
@@ -696,7 +697,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 			},
 		},
 	}
-	if model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA {
+	if err == nil && (model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA) {
 		mdls, err := c.ListModels(context.Background())
 		if err != nil {
 			return nil, err
@@ -725,7 +726,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 			return nil, errors.New("failed to find a model automatically")
 		}
 	}
-	return c, nil
+	return c, err
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

@@ -578,7 +578,7 @@ type Client struct {
 //
 // If apiKey is not provided, it tries to load it from the HUGGINGFACE_API_KEY environment variable.
 // Otherwise, it tries to load it from the huggingface python client's cache.
-// If none is found, it returns an error.
+// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your API key at https://huggingface.co/settings/tokens
 //
 // If no model is provided, only functions that do not require a model, like ListModels, will work.
@@ -594,20 +594,23 @@ type Client struct {
 // https://huggingface.co/docs/inference-providers/pricing#organization-billing
 func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://huggingface.co/settings/tokens"
+	var err error
 	if apiKey == "" {
 		if apiKey = os.Getenv("HUGGINGFACE_API_KEY"); apiKey == "" {
 			// Fallback to loading from the python client's cache.
-			h, err := os.UserHomeDir()
-			if err != nil {
-				return nil, fmt.Errorf("can't find home directory; failed to load hugginface key; get one at %s: %w", apiKeyURL, err)
-			}
-			// TODO: Windows.
-			b, err := os.ReadFile(filepath.Join(h, ".cache", "huggingface", "token"))
-			if err != nil {
-				return nil, fmt.Errorf("no cached token file; failed to load hugginface key; get one at %s: %w", apiKeyURL, err)
-			}
-			if apiKey = strings.TrimSpace(string(b)); apiKey == "" {
-				return nil, errors.New("token file exist but is empty; huggingface API key is required; get one at " + apiKeyURL)
+			h, errHome := os.UserHomeDir()
+			if errHome != nil {
+				err = &base.ErrAPIKeyRequired{EnvVar: "HUGGINGFACE_API_KEY", URL: apiKeyURL}
+			} else {
+				// TODO: Windows.
+				b, errRead := os.ReadFile(filepath.Join(h, ".cache", "huggingface", "token"))
+				if errRead != nil {
+					err = &base.ErrAPIKeyRequired{EnvVar: "HUGGINGFACE_API_KEY", URL: apiKeyURL}
+				} else {
+					if apiKey = strings.TrimSpace(string(b)); apiKey == "" {
+						err = &base.ErrAPIKeyRequired{EnvVar: "HUGGINGFACE_API_KEY", URL: apiKeyURL}
+					}
+				}
 			}
 		}
 	}
@@ -635,7 +638,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 			},
 		},
 	}
-	if model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA {
+	if err == nil && (model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA) {
 		// Warning: listing models from Huggingface takes a while.
 		mdls, err := c.ListModels(context.Background())
 		if err != nil {
@@ -692,7 +695,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 			return nil, errors.New("failed to find a model automatically")
 		}
 	}
-	return c, nil
+	return c, err
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

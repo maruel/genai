@@ -807,6 +807,8 @@ type Client struct {
 // The value for auth can be either an API key retrieved from https://auth.pollinations.ai/ or a referrer.
 // https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#referrer-
 //
+// auth is optional. Providing one, either via environment variable POLLINATIONS_API_KEY, will increase quota.
+//
 // Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
 // base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
 // possible the model is not available anymore.

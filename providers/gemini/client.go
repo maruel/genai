@@ -952,7 +952,7 @@ type Client struct {
 // New creates a new client to talk to Google's Gemini platform API.
 //
 // If apiKey is not provided, it tries to load it from the GEMINI_API_KEY environment variable.
-// If none is found, it returns an error.
+// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your API key at https://ai.google.dev/gemini-api/docs/getting-started
 //
 // If no model is provided, only functions that do not require a model, like ListModels, will work.
@@ -1020,9 +1020,10 @@ type Client struct {
 // Cached input tokens are 25% of the price of new tokens.
 func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://ai.google.dev/gemini-api/docs/getting-started"
+	var err error
 	if apiKey == "" {
 		if apiKey = os.Getenv("GEMINI_API_KEY"); apiKey == "" {
-			return nil, errors.New("gemini API key is required; get one at " + apiKeyURL)
+			err = &base.ErrAPIKeyRequired{EnvVar: "GEMINI_API_KEY", URL: apiKeyURL}
 		}
 	}
 	// Google supports HTTP POST gzip compression!
@@ -1052,7 +1053,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 		},
 		apiKey: apiKey,
 	}
-	if model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA {
+	if err == nil && (model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA) {
 		mdls, err := c.ListModels(context.Background())
 		if err != nil {
 			return nil, err
@@ -1092,7 +1093,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 			return nil, errors.New("failed to find a model automatically")
 		}
 	}
-	return c, nil
+	return c, err
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

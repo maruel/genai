@@ -296,7 +296,7 @@ type Client struct {
 // New creates a new client to talk to the Perplexity platform API.
 //
 // If apiKey is not provided, it tries to load it from the PERPLEXITY_API_KEY environment variable.
-// If none is found, it returns an error.
+// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your API key at https://www.perplexity.ai/settings/api
 //
 // Models are listed at https://docs.perplexity.ai/guides/model-cards
@@ -308,9 +308,10 @@ type Client struct {
 // wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
 func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://www.perplexity.ai/settings/api"
+	var err error
 	if apiKey == "" {
 		if apiKey = os.Getenv("PERPLEXITY_API_KEY"); apiKey == "" {
-			return nil, errors.New("perplexity API key is required; get one at " + apiKeyURL)
+			err = &base.ErrAPIKeyRequired{EnvVar: "PERPLEXITY_API_KEY", URL: apiKeyURL}
 		}
 	}
 	switch model {
@@ -345,7 +346,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 				},
 			},
 		},
-	}, nil
+	}, err
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

@@ -667,6 +667,7 @@ func New(accountID, apiKey, model string, wrapper func(http.RoundTripper) http.R
 		cheap := model == base.PreferredCheap
 		good := model == base.PreferredGood
 		c.Model = ""
+		c.GenSyncURL = ""
 		price := 100000.
 		if !cheap {
 			price = 0.
@@ -686,16 +687,19 @@ func New(accountID, apiKey, model string, wrapper func(http.RoundTripper) http.R
 				if strings.HasPrefix(m.Name, "@cf/meta/") && out < price {
 					price = out
 					c.Model = m.Name
+					c.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + accountID + "/ai/run/" + c.Model
 				}
 			} else if good {
 				if strings.HasPrefix(m.Name, "@cf/meta/") && out > price {
 					price = out
 					c.Model = m.Name
+					c.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + accountID + "/ai/run/" + c.Model
 				}
 			} else {
 				if strings.HasPrefix(m.Name, "@cf/deepseek-ai/") && out > price {
 					price = out
 					c.Model = m.Name
+					c.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + accountID + "/ai/run/" + c.Model
 				}
 			}
 		}

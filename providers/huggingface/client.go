@@ -647,6 +647,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 		cheap := model == base.PreferredCheap
 		good := model == base.PreferredGood
 		c.Model = ""
+		c.GenSyncURL = ""
 		trending := 0.
 		weights := 0
 		re := regexp.MustCompile(`(\d+)B`)
@@ -668,6 +669,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 				if strings.HasPrefix(m.ID, "meta-llama/Llama") && (weights == 0 || w < weights) {
 					weights = w
 					c.Model = m.ID
+					c.GenSyncURL = "https://router.huggingface.co/hf-inference/models/" + c.Model + "/v1/chat/completions"
 				}
 			} else if good {
 				// HF doesn't report the number of weights in the model. Try to guess it.
@@ -682,12 +684,14 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 				if strings.HasPrefix(m.ID, "Qwen/Qwen") && (weights == 0 || w > weights) {
 					weights = w
 					c.Model = m.ID
+					c.GenSyncURL = "https://router.huggingface.co/hf-inference/models/" + c.Model + "/v1/chat/completions"
 				}
 			} else {
 				if strings.HasPrefix(m.ID, "deepseek-ai/") && !strings.Contains(m.ID, "Qwen") && !strings.Contains(m.ID, "Prover") && !strings.Contains(m.ID, "Distill") && (trending == 0 || trending < m.TrendingScore) {
 					// Make it a popularity contest.
 					trending = m.TrendingScore
 					c.Model = m.ID
+					c.GenSyncURL = "https://router.huggingface.co/hf-inference/models/" + c.Model + "/v1/chat/completions"
 				}
 			}
 		}

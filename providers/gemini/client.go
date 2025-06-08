@@ -1061,6 +1061,8 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 		cheap := model == base.PreferredCheap
 		good := model == base.PreferredGood
 		c.Model = ""
+		c.GenSyncURL = ""
+		c.GenStreamURL = ""
 		var tokens int64
 		version := ""
 		for _, mdl := range mdls {
@@ -1074,18 +1076,24 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 					tokens = m.OutputTokenLimit
 					version = m.Version
 					c.Model = name
+					c.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":generateContent?key=" + apiKey
+					c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":streamGenerateContent?alt=sse&key=" + apiKey
 				}
 			} else if good {
 				if strings.HasPrefix(name, "gemini") && strings.Contains(m.Name, "flash") && (tokens == 0 || tokens <= m.OutputTokenLimit) && (version == "" || version <= m.Version) {
 					tokens = m.OutputTokenLimit
 					version = m.Version
 					c.Model = name
+					c.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":generateContent?key=" + apiKey
+					c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":streamGenerateContent?alt=sse&key=" + apiKey
 				}
 			} else {
 				if strings.HasPrefix(name, "gemini") && strings.Contains(m.Name, "pro") && (tokens == 0 || tokens <= m.OutputTokenLimit) && (version == "" || version <= m.Version) {
 					tokens = m.OutputTokenLimit
 					version = m.Version
 					c.Model = name
+					c.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":generateContent?key=" + apiKey
+					c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":streamGenerateContent?alt=sse&key=" + apiKey
 				}
 			}
 		}

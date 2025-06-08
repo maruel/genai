@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"sort"
 	"strings"
 
 	"github.com/maruel/genai"
@@ -15,17 +16,14 @@ import (
 	"github.com/maruel/genai/providers"
 )
 
-func ExampleAll_providerModel() {
-	for name, factory := range providers.All {
-		c, err := factory("", nil)
+func Example_all_ProvidersModel() {
+	for _, name := range GetProvidersModel() {
+		c, err := providers.All[name]("", nil)
 		if err != nil {
 			log.Fatal(err)
 		}
-		p, ok := c.(genai.ProviderModel)
-		if !ok {
-			continue
-		}
-		models, err := p.ListModels(context.Background())
+		// c is guaranteed to implement ProviderModel.
+		models, err := c.(genai.ProviderModel).ListModels(context.Background())
 		fmt.Printf("%s:\n", name)
 		if err != nil {
 			fmt.Printf("  Failed to get models: %v\n", err)
@@ -36,16 +34,33 @@ func ExampleAll_providerModel() {
 	}
 }
 
-func ExampleAll_providerGen() {
-	for name, factory := range providers.All {
-		c, err := factory(base.PreferredCheap, nil)
+// GetProvidersModel returns all the providers that support listing models.
+//
+// It's really just a simple loop that iterates over each item in All and checks if it implements
+// genai.ProviderModel.
+func GetProvidersModel() []string {
+	var names []string
+	for name, f := range providers.All {
+		c, err := f("", nil)
+		if err != nil {
+			continue
+		}
+		if _, ok := c.(genai.ProviderModel); ok {
+			names = append(names, name)
+		}
+	}
+	sort.Strings(names)
+	return names
+}
+
+func Example_all_ProviderGen() {
+	for _, name := range GetProvidersGen() {
+		c, err := providers.All[name](base.PreferredCheap, nil)
 		if err != nil {
 			log.Fatal(err)
 		}
-		p, ok := c.(genai.ProviderGen)
-		if !ok {
-			continue
-		}
+		// c is guaranteed to implement ProviderGen.
+		p := c.(genai.ProviderGen)
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "Tell a story in 10 words."),
 		}
@@ -65,4 +80,51 @@ func ExampleAll_providerGen() {
 			fmt.Printf("- %s: %v\n", name, response)
 		}
 	}
+}
+
+// GetProvidersGen returns all the providers that support generating messages.
+//
+// It's really just a simple loop that iterates over each item in All and checks if it implements
+// genai.ProviderGen.
+func GetProvidersGen() []string {
+	var names []string
+	for name, f := range providers.All {
+		c, err := f("", nil)
+		if err != nil {
+			continue
+		}
+		if _, ok := c.(genai.ProviderGen); ok {
+			names = append(names, name)
+		}
+	}
+	sort.Strings(names)
+	return names
+}
+
+func Example_all_GetProvidersGenAsync() {
+	for _, name := range GetProvidersGenAsync() {
+		fmt.Printf("%s\n", name)
+	}
+	// Output:
+	// anthropic
+	// bfl
+}
+
+// GetProvidersGenAsync returns all the providers that support asynchronous (batch) operations.
+//
+// It's really just a simple loop that iterates over each item in All and checks if it implements
+// genai.ProviderGenAsync.
+func GetProvidersGenAsync() []string {
+	var names []string
+	for name, f := range providers.All {
+		c, err := f("", nil)
+		if err != nil {
+			continue
+		}
+		if _, ok := c.(genai.ProviderGenAsync); ok {
+			names = append(names, name)
+		}
+	}
+	sort.Strings(names)
+	return names
 }

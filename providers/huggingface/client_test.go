@@ -5,6 +5,7 @@
 package huggingface_test
 
 import (
+	"net/http"
 	"os"
 	"path/filepath"
 	"testing"
@@ -79,11 +80,10 @@ func getClientInner(t *testing.T, apiKey, m string) *huggingface.Client {
 			apiKey = "<insert_api_key_here>"
 		}
 	}
-	c, err := huggingface.New(apiKey, m, nil)
+	c, err := huggingface.New(apiKey, m, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientJSON.Client.Transport)
 	return c
 }
 

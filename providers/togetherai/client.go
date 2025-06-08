@@ -680,21 +680,22 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the model from https://docs.together.ai/docs/serverless-models
 //
-// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport.
+// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
 //
 // # Vision
 //
 // We must select a model that supports video.
 // https://docs.together.ai/docs/serverless-models#vision-models
-func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
+func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://api.together.xyz/settings/api-keys"
 	if apiKey == "" {
 		if apiKey = os.Getenv("TOGETHER_API_KEY"); apiKey == "" {
 			return nil, errors.New("together.ai API key is required; get one at " + apiKeyURL)
 		}
 	}
-	if r == nil {
-		r = http.DefaultTransport
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
 	}
 	return &Client{
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
@@ -708,15 +709,8 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 					Lenient: internal.BeLenient,
 					Client: &http.Client{
 						Transport: &roundtrippers.Header{
-							Header: http.Header{"Authorization": {"Bearer " + apiKey}},
-							Transport: &roundtrippers.Retry{
-								Transport: &roundtrippers.RequestID{Transport: r},
-								Policy: &roundtrippers.ExponentialBackoff{
-									MaxTryCount: 10,
-									MaxDuration: 60 * time.Second,
-									Exp:         1.5,
-								},
-							},
+							Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+							Transport: t,
 						},
 					},
 				},

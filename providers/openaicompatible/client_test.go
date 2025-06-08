@@ -195,11 +195,11 @@ func getClient(t *testing.T, provider string) genai.ProviderGen {
 	if apiKey == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := openaicompatible.New(p.chatURL, p.header(apiKey), p.model, nil)
+	wrapper := func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) }
+	c, err := openaicompatible.New(p.chatURL, p.header(apiKey), p.model, wrapper)
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientJSON.Client.Transport)
 	if p.thinking != "" {
 		return &adapter.ProviderGenThinking{ProviderGen: c, TagName: p.thinking}
 	}

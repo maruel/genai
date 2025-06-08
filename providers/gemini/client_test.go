@@ -265,25 +265,28 @@ func getClientInner(t *testing.T, apiKey, m string) *gemini.Client {
 	if apiKey == "" && os.Getenv("GEMINI_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := gemini.New(apiKey, m, nil)
+	wrapper := func(h http.RoundTripper) http.RoundTripper {
+		return testRecorder.Record(t, h, recorder.WithHook(trimRecordingInternal, recorder.AfterCaptureHook), recorder.WithMatcher(matchCassetteInternal))
+	}
+	c, err := gemini.New(apiKey, m, wrapper)
 	if err != nil {
 		t.Fatal(err)
 	}
-	fnMatch := func(r *http.Request, i cassette.Request) bool {
-		r = r.Clone(r.Context())
-		r.URL.RawQuery = ""
-		return defaultMatcher(r, i)
-	}
-	fnSave := func(i *cassette.Interaction) error {
-		j := strings.Index(i.Request.URL, "?")
-		i.Request.URL = i.Request.URL[:j]
-		return nil
-	}
-	c.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientJSON.Client.Transport, recorder.WithHook(fnSave, recorder.AfterCaptureHook), recorder.WithMatcher(fnMatch))
 	return c
 }
 
-var defaultMatcher = cassette.NewDefaultMatcher()
+func trimRecordingInternal(i *cassette.Interaction) error {
+	// Gemini pass the API key as a query argument (!) so zap it before recording.
+	i.Request.URL = i.Request.URL[:strings.Index(i.Request.URL, "?")]
+	return nil
+}
+
+func matchCassetteInternal(r *http.Request, i cassette.Request) bool {
+	r = r.Clone(r.Context())
+	// Gemini pass the API key as a query argument (!) so zap it before matching.
+	r.URL.RawQuery = ""
+	return internaltest.DefaultMatcher(r, i)
+}
 
 var testRecorder *internaltest.Records
 

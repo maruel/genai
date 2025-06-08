@@ -807,7 +807,9 @@ type Client struct {
 //
 // The value for auth can be either an API key retrieved from https://auth.pollinations.ai/ or a referrer.
 // https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#referrer-
-func New(auth, model string, r http.RoundTripper) (*Client, error) {
+//
+// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
+func New(auth, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	var h http.Header
 	if auth == "" {
 		auth = os.Getenv("POLLINATIONS_API_KEY")
@@ -819,10 +821,10 @@ func New(auth, model string, r http.RoundTripper) (*Client, error) {
 			h = http.Header{"Authorization": {"Bearer " + auth}}
 		}
 	}
-	if r == nil {
-		r = http.DefaultTransport
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
 	}
-
 	return &Client{
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
@@ -836,7 +838,7 @@ func New(auth, model string, r http.RoundTripper) (*Client, error) {
 					Client: &http.Client{
 						Transport: &roundtrippers.Header{
 							Header:    h,
-							Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
+							Transport: t,
 						},
 					},
 				},

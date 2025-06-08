@@ -8,6 +8,7 @@ import (
 	"context"
 	_ "embed"
 	"errors"
+	"net/http"
 	"os"
 	"strings"
 	"testing"
@@ -124,11 +125,10 @@ func getClientInner(t *testing.T, apiKey, m string) *togetherai.Client {
 	if apiKey == "" && os.Getenv("TOGETHER_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := togetherai.New(apiKey, m, nil)
+	c, err := togetherai.New(apiKey, m, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientJSON.Client.Transport)
 	return c
 }
 

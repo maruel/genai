@@ -8,6 +8,7 @@ import (
 	"context"
 	_ "embed"
 	"errors"
+	"net/http"
 	"os"
 	"testing"
 
@@ -90,11 +91,10 @@ func getClient(t *testing.T, m string) *pollinations.Client {
 }
 
 func getClientInner(t *testing.T, m string) *pollinations.Client {
-	c, err := pollinations.New("genai-unittests", m, nil)
+	c, err := pollinations.New("genai-unittests", m, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientJSON.Client.Transport)
 	return c
 }
 

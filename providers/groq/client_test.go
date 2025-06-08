@@ -7,6 +7,7 @@ package groq_test
 import (
 	"context"
 	_ "embed"
+	"net/http"
 	"os"
 	"testing"
 
@@ -100,11 +101,10 @@ func getClientInner(t *testing.T, apiKey, m string) *groq.Client {
 	if apiKey == "" && os.Getenv("GROQ_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := groq.New(apiKey, m, nil)
+	c, err := groq.New(apiKey, m, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientJSON.Client.Transport)
 	return c
 }
 

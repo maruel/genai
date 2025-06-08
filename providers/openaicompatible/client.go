@@ -319,10 +319,11 @@ type Client struct {
 //
 // It only support text exchanges (no multi-modal) and no tool calls.
 //
-// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport.
-func New(chatURL string, h http.Header, model string, r http.RoundTripper) (*Client, error) {
-	if r == nil {
-		r = http.DefaultTransport
+// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
+func New(chatURL string, h http.Header, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
 	}
 	return &Client{
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
@@ -338,7 +339,7 @@ func New(chatURL string, h http.Header, model string, r http.RoundTripper) (*Cli
 					Client: &http.Client{
 						Transport: &roundtrippers.Header{
 							Header:    h,
-							Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
+							Transport: t,
 						},
 					},
 				},

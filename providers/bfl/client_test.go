@@ -8,6 +8,7 @@ import (
 	"context"
 	_ "embed"
 	"errors"
+	"net/http"
 	"os"
 	"testing"
 	"time"
@@ -91,11 +92,10 @@ func getClientInner(t *testing.T, apiKey, m string) *Client {
 	if apiKey == "" && os.Getenv("BFL_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := New(apiKey, m, nil)
+	c, err := New(apiKey, m, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientJSON.Client.Transport)
 	return c
 }
 

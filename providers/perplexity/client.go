@@ -301,16 +301,17 @@ type Client struct {
 //
 // Models are listed at https://docs.perplexity.ai/guides/model-cards
 //
-// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport.
-func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
+// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
+func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://www.perplexity.ai/settings/api"
 	if apiKey == "" {
 		if apiKey = os.Getenv("PERPLEXITY_API_KEY"); apiKey == "" {
 			return nil, errors.New("perplexity API key is required; get one at " + apiKeyURL)
 		}
 	}
-	if r == nil {
-		r = http.DefaultTransport
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
 	}
 	return &Client{
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
@@ -325,7 +326,7 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 					Client: &http.Client{
 						Transport: &roundtrippers.Header{
 							Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-							Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
+							Transport: t,
 						},
 					},
 				},

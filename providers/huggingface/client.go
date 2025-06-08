@@ -582,10 +582,10 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the tens of thousands of models to chose from at https://huggingface.co/models?inference=warm&sort=trending
 //
-// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport. r can
-// also be used to add the HTTP header "X-HF-Bill-To" via roundtrippers.Header. See
+// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
+// wrapper can also be used to add the HTTP header "X-HF-Bill-To" via roundtrippers.Header. See
 // https://huggingface.co/docs/inference-providers/pricing#organization-billing
-func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
+func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://huggingface.co/settings/tokens"
 	if apiKey == "" {
 		if apiKey = os.Getenv("HUGGINGFACE_API_KEY"); apiKey == "" {
@@ -604,8 +604,9 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 			}
 		}
 	}
-	if r == nil {
-		r = http.DefaultTransport
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
 	}
 	return &Client{
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
@@ -620,7 +621,7 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 					Client: &http.Client{
 						Transport: &roundtrippers.Header{
 							Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-							Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
+							Transport: t,
 						},
 					},
 				},

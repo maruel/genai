@@ -25,7 +25,6 @@ import (
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
-	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -428,21 +427,20 @@ type Client struct {
 //
 // baseURL defaults to http://localhost:11434.
 //
-// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport.
-func New(baseURL, model string, r http.RoundTripper) (*Client, error) {
-	if r == nil {
-		r = http.DefaultTransport
-	}
+// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
+func New(baseURL, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	if baseURL == "" {
 		baseURL = "http://localhost:11434"
+	}
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
 	}
 	return &Client{
 		Provider: base.Provider[*ErrorResponse]{
 			ClientJSON: httpjson.Client{
 				Lenient: internal.BeLenient,
-				Client: &http.Client{
-					Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
-				},
+				Client:  &http.Client{Transport: t},
 			},
 		},
 		baseURL: baseURL,

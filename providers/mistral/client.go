@@ -722,7 +722,7 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the model from https://docs.mistral.ai/getting-started/models/models_overview/
 //
-// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport.
+// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
 //
 // # PDF understanding
 //
@@ -737,15 +737,16 @@ type Client struct {
 //
 // Tool use requires a model which has the tool capability. See
 // https://docs.mistral.ai/capabilities/function_calling/
-func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
+func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://console.mistral.ai/api-keys"
 	if apiKey == "" {
 		if apiKey = os.Getenv("MISTRAL_API_KEY"); apiKey == "" {
 			return nil, errors.New("mistral API key is required; get one at " + apiKeyURL)
 		}
 	}
-	if r == nil {
-		r = http.DefaultTransport
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
 	}
 	return &Client{
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
@@ -759,8 +760,8 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 					Lenient: internal.BeLenient,
 					Client: &http.Client{
 						Transport: &roundtrippers.Header{
-							Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
 							Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+							Transport: t,
 						},
 					},
 				},

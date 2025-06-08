@@ -16,13 +16,31 @@ import (
 	"reflect"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/httpjson"
+	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
 )
+
+// DefaultTransport integrates HTTP retries and X-Request-Id tags.
+//
+// It uses a quite long retry count. If latency matters for you, you may want to use a shorter retry policy.
+// Do this by passing the `wrapper` argument in the `New()` function and ignore the `http.RoundTripper` passed
+// in.
+var DefaultTransport http.RoundTripper = &roundtrippers.Retry{
+	Transport: &roundtrippers.RequestID{
+		Transport: http.DefaultTransport,
+	},
+	Policy: &roundtrippers.ExponentialBackoff{
+		MaxTryCount: 10,
+		MaxDuration: 60 * time.Second,
+		Exp:         1.5,
+	},
+}
 
 // Provider implements genai.Provider (except for ModelID()).
 //

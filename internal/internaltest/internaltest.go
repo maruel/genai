@@ -106,10 +106,11 @@ func (r *Records) Record(t *testing.T, h http.RoundTripper, opts ...recorder.Opt
 		mode = recorder.ModeRecordOnly
 	}
 	args := []recorder.Option{
-		recorder.WithHook(func(i *cassette.Interaction) error { return cleanup(t, i) }, recorder.AfterCaptureHook),
+		recorder.WithHook(trimResponseHeaders, recorder.AfterCaptureHook),
 		recorder.WithMode(mode),
 		recorder.WithSkipRequestLatency(true),
 		recorder.WithRealTransport(h),
+		recorder.WithMatcher(DefaultMatcher),
 	}
 	rr, err := recorder.New("testdata/"+r.Signal(t), append(args, opts...)...)
 	if err != nil {
@@ -135,27 +136,31 @@ func SaveIgnorePort(t *testing.T, i *cassette.Interaction) error {
 	return nil
 }
 
-// MatchIgnorePort is a recorder.MatcherFunc.
+// MatchIgnorePort is a recorder.MatcherFunc that ignore the host port number. This is useful for locally
+// hosted LLM providers like llamacpp and ollama.
 func MatchIgnorePort(r *http.Request, i cassette.Request) bool {
 	r = r.Clone(r.Context())
 	r.URL.Host = strings.Split(r.URL.Host, ":")[0]
 	r.Host = strings.Split(r.Host, ":")[0]
-	return defaultMatcher(r, i)
+	return DefaultMatcher(r, i)
 }
 
-//
+// DefaultMatcher ignores authentication via API keys.
+var DefaultMatcher = cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Api-Key", "X-Key"))
 
-func cleanup(t *testing.T, i *cassette.Interaction) error {
-	if i.Request.Headers.Get("Authorization") != "" || i.Request.Headers.Get("X-Api-Key") != "" {
-		t.Fatal("got unexpected token; get roundtrippers ordering")
-	}
+func trimResponseHeaders(i *cassette.Interaction) error {
+	// Authentication via API keys.
+	i.Request.Headers.Del("Authorization")
+	i.Request.Headers.Del("X-Api-Key")
+	i.Request.Headers.Del("X-Key")
 	// Noise.
 	i.Response.Headers.Del("Date")
+	i.Response.Headers.Del("Request-Id")
+	// Remove this here since it also happens in openaicompatible.
+	i.Response.Headers.Del("Anthropic-Organization-Id")
 	// The cookie may be used for authentication?
 	i.Response.Headers.Del("Set-Cookie")
 	// Noise.
 	i.Response.Duration = i.Response.Duration.Round(time.Millisecond)
 	return nil
 }
-
-var defaultMatcher = cassette.NewDefaultMatcher()

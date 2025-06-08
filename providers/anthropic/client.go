@@ -1104,16 +1104,17 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the model from https://docs.anthropic.com/en/docs/about-claude/models/all-models
 //
-// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport.
-func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
+// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
+func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://console.anthropic.com/settings/keys"
 	if apiKey == "" {
 		if apiKey = os.Getenv("ANTHROPIC_API_KEY"); apiKey == "" {
 			return nil, errors.New("anthropic API key is required; get one at " + apiKeyURL)
 		}
 	}
-	if r == nil {
-		r = http.DefaultTransport
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
 	}
 	// Anthropic allows Opaque fields for thinking signatures
 	return &Client{
@@ -1130,7 +1131,7 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 					Client: &http.Client{
 						Transport: &roundtrippers.Header{
 							Header:    http.Header{"x-api-key": {apiKey}, "anthropic-version": {"2023-06-01"}},
-							Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
+							Transport: t,
 						},
 					},
 				},

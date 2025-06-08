@@ -53,13 +53,14 @@ type lazyServer struct {
 	url string
 }
 
-func (l *lazyServer) shouldStart(t *testing.T) (string, http.RoundTripper) {
+func (l *lazyServer) shouldStart(t *testing.T) (string, func(http.RoundTripper) http.RoundTripper) {
 	transport := testRecorder.Record(t, http.DefaultTransport,
 		recorder.WithHook(func(i *cassette.Interaction) error { return internaltest.SaveIgnorePort(t, i) }, recorder.AfterCaptureHook),
 		recorder.WithMatcher(internaltest.MatchIgnorePort),
 	)
+	wrapper := func(http.RoundTripper) http.RoundTripper { return transport }
 	if !transport.IsNewCassette() {
-		return "http://localhost:0", transport
+		return "http://localhost:0", wrapper
 	}
 	name := "testdata/" + strings.ReplaceAll(t.Name(), "/", "_") + ".yaml"
 	suffix := " (forced)"
@@ -90,16 +91,15 @@ func (l *lazyServer) shouldStart(t *testing.T) (string, http.RoundTripper) {
 	} else {
 		t.Log("Recording " + suffix)
 	}
-	return l.url, transport
+	return l.url, wrapper
 }
 
 func (l *lazyServer) getClient(t *testing.T, model string) genai.ProviderGen {
-	serverURL, transport := l.shouldStart(t)
-	c, err := ollama.New(serverURL, model, nil)
+	serverURL, wrapper := l.shouldStart(t)
+	c, err := ollama.New(serverURL, model, wrapper)
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.ClientJSON.Client = &http.Client{Transport: transport}
 	return c
 }
 

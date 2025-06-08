@@ -586,8 +586,8 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the model from https://developers.cloudflare.com/workers-ai/models/
 //
-// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport.
-func New(accountID, apiKey, model string, r http.RoundTripper) (*Client, error) {
+// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
+func New(accountID, apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://dash.cloudflare.com/profile/api-tokens"
 	if accountID == "" {
 		if accountID = os.Getenv("CLOUDFLARE_ACCOUNT_ID"); accountID == "" {
@@ -599,8 +599,9 @@ func New(accountID, apiKey, model string, r http.RoundTripper) (*Client, error) 
 			return nil, errors.New("cloudflare API key is required; get one at " + apiKeyURL)
 		}
 	}
-	if r == nil {
-		r = http.DefaultTransport
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
 	}
 	// Investigate websockets?
 	// https://blog.cloudflare.com/workers-ai-streaming/ and
@@ -618,7 +619,7 @@ func New(accountID, apiKey, model string, r http.RoundTripper) (*Client, error) 
 					Client: &http.Client{
 						Transport: &roundtrippers.Header{
 							Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-							Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
+							Transport: t,
 						},
 					},
 				},

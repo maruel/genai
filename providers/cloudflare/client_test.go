@@ -7,7 +7,7 @@ package cloudflare_test
 import (
 	"net/http"
 	"os"
-	"strings"
+	"regexp"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -68,30 +68,35 @@ func getClientInner(t *testing.T, apiKey, m string) *cloudflare.Client {
 	if apiKey == "" && os.Getenv("CLOUDFLARE_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	realAccountID := os.Getenv("CLOUDFLARE_ACCOUNT_ID")
-	accountID := ""
-	if realAccountID == "" {
-		accountID = "INSERT_ACCOUNTID_KEY_HERE"
-		realAccountID = accountID
+	accountID := os.Getenv("CLOUDFLARE_ACCOUNT_ID")
+	if accountID == "" {
+		accountID = "ACCOUNT_ID"
 	}
-	c, err := cloudflare.New(accountID, apiKey, m, nil)
+	wrapper := func(h http.RoundTripper) http.RoundTripper {
+		return testRecorder.Record(t, h, recorder.WithHook(trimRecordingInternal, recorder.AfterCaptureHook), recorder.WithMatcher(matchCassetteInternal))
+	}
+	c, err := cloudflare.New(accountID, apiKey, m, wrapper)
 	if err != nil {
 		t.Fatal(err)
 	}
-	fnMatch := func(r *http.Request, i cassette.Request) bool {
-		r = r.Clone(r.Context())
-		r.URL.Path = strings.Replace(r.URL.Path, realAccountID, "ACCOUNT_ID", 1)
-		return defaultMatcher(r, i)
-	}
-	fnSave := func(i *cassette.Interaction) error {
-		i.Request.URL = strings.Replace(i.Request.URL, realAccountID, "ACCOUNT_ID", 1)
-		return nil
-	}
-	c.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientJSON.Client.Transport, recorder.WithHook(fnSave, recorder.AfterCaptureHook), recorder.WithMatcher(fnMatch))
 	return c
 }
 
-var defaultMatcher = cassette.NewDefaultMatcher()
+var reAccount = regexp.MustCompile(`/accounts/[0-9a-fA-F]{32}/`)
+
+// trimRecording trims API key and noise from the recording.
+func trimRecordingInternal(i *cassette.Interaction) error {
+	// Zap the account ID from the URL path before saving.
+	i.Request.URL = reAccount.ReplaceAllString(i.Request.URL, "/accounts/ACCOUNT_ID/")
+	return nil
+}
+
+func matchCassetteInternal(r *http.Request, i cassette.Request) bool {
+	r = r.Clone(r.Context())
+	// When matching, ignore the account ID from the URL path.
+	r.URL.Path = reAccount.ReplaceAllString(r.URL.Path, "/accounts/ACCOUNT_ID/")
+	return internaltest.DefaultMatcher(r, i)
+}
 
 var testRecorder *internaltest.Records
 

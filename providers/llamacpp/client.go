@@ -26,7 +26,6 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/httpjson"
-	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -436,21 +435,20 @@ type Client struct {
 //
 // encoding is optional.
 //
-// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport.
-func New(baseURL string, encoding *PromptEncoding, r http.RoundTripper) (*Client, error) {
+// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
+func New(baseURL string, encoding *PromptEncoding, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	if baseURL == "" {
 		return nil, errors.New("baseURL is required")
 	}
-	if r == nil {
-		r = http.DefaultTransport
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
 	}
 	return &Client{
 		Provider: base.Provider[*ErrorResponse]{
 			ClientJSON: httpjson.Client{
 				Lenient: internal.BeLenient,
-				Client: &http.Client{
-					Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
-				},
+				Client:  &http.Client{Transport: t},
 			},
 		},
 		baseURL:  baseURL,

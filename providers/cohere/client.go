@@ -629,21 +629,22 @@ type Client struct {
 //
 // To use multiple models, create multiple clients.
 //
-// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport.
+// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
 //
 // # Tool use
 //
 // Tool use requires the use a model that supports structured output.
 // https://docs.cohere.com/v2/docs/structured-outputs
-func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
+func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://dashboard.cohere.com/api-keys"
 	if apiKey == "" {
 		if apiKey = os.Getenv("COHERE_API_KEY"); apiKey == "" {
 			return nil, errors.New("cohere API key is required; get one at " + apiKeyURL)
 		}
 	}
-	if r == nil {
-		r = http.DefaultTransport
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
 	}
 	return &Client{
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
@@ -658,7 +659,7 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 					Client: &http.Client{
 						Transport: &roundtrippers.Header{
 							Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-							Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
+							Transport: t,
 						},
 					},
 				},

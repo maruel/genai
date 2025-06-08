@@ -6,6 +6,7 @@ package anthropic_test
 
 import (
 	_ "embed"
+	"net/http"
 	"os"
 	"testing"
 	"time"
@@ -14,6 +15,8 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/anthropic"
+	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
+	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
 func TestClient_Scoreboard(t *testing.T) {
@@ -102,11 +105,17 @@ func getClientInner(t *testing.T, apiKey, m string) *anthropic.Client {
 	if apiKey == "" && os.Getenv("ANTHROPIC_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := anthropic.New(apiKey, m, nil)
+	wrapper := func(h http.RoundTripper) http.RoundTripper {
+		// The Anthropic-Version header was not historically saved in the recordings. So instead of re-creating all the recordings,
+		// I'm removing it from the matcher.
+		// TODO: Redo all recordings then stop skipping this header.
+		m := cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("X-Api-Key", "Anthropic-Version"))
+		return testRecorder.Record(t, h, recorder.WithMatcher(m))
+	}
+	c, err := anthropic.New(apiKey, m, wrapper)
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientJSON.Client.Transport)
 	return c
 }
 

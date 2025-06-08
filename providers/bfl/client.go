@@ -157,16 +157,17 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the model from https://docs.bfl.ml/quick_start/generating_images
 //
-// r can be used to throttle outgoing requests, record calls, etc. It defaults to http.DefaultTransport.
-func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
+// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
+func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://dashboard.bfl.ai/keys"
 	if apiKey == "" {
 		if apiKey = os.Getenv("BFL_API_KEY"); apiKey == "" {
 			return nil, errors.New("bfl.ai API key is required; get one at " + apiKeyURL)
 		}
 	}
-	if r == nil {
-		r = http.DefaultTransport
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
 	}
 	return &Client{
 		Model: model,
@@ -178,7 +179,7 @@ func New(apiKey, model string, r http.RoundTripper) (*Client, error) {
 				Client: &http.Client{
 					Transport: &roundtrippers.Header{
 						Header:    http.Header{"x-key": {apiKey}},
-						Transport: &roundtrippers.Retry{Transport: &roundtrippers.RequestID{Transport: r}},
+						Transport: t,
 					},
 				},
 			},

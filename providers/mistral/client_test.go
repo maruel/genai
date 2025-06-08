@@ -6,6 +6,7 @@ package mistral_test
 
 import (
 	_ "embed"
+	"net/http"
 	"os"
 	"testing"
 
@@ -65,11 +66,10 @@ func getClientInner(t *testing.T, apiKey, m string) *mistral.Client {
 	if apiKey == "" && os.Getenv("MISTRAL_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := mistral.New(apiKey, m, nil)
+	c, err := mistral.New(apiKey, m, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.ClientJSON.Client.Transport = testRecorder.Record(t, c.ClientJSON.Client.Transport)
 	return c
 }
 

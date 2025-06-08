@@ -38,12 +38,13 @@ func Example_all_ProvidersModel() {
 //
 // It's really just a simple loop that iterates over each item in All and checks if it implements
 // genai.ProviderModel.
+//
+// Test c if you want to determine if the functionality is potentially available, even if there's no known
+// API key available at the moment.
+// Test err if you want to determine if the functionality is available in the current context.
 func GetProvidersModel() []string {
 	var names []string
 	for name, f := range providers.All {
-		// Test c if you want to determine if the functionality is potentially available, even if there's no known
-		// API key available at the moment.
-		// Test err if you want to determine if the functionality is available in the current context.
 		c, _ := f("", nil)
 		if c == nil {
 			continue
@@ -89,12 +90,13 @@ func Example_all_ProviderGen() {
 //
 // It's really just a simple loop that iterates over each item in All and checks if it implements
 // genai.ProviderGen.
+//
+// Test c if you want to determine if the functionality is potentially available, even if there's no known
+// API key available at the moment.
+// Test err if you want to determine if the functionality is available in the current context.
 func GetProvidersGen() []string {
 	var names []string
 	for name, f := range providers.All {
-		// Test c if you want to determine if the functionality is potentially available, even if there's no known
-		// API key available at the moment.
-		// Test err if you want to determine if the functionality is available in the current context.
 		c, _ := f("", nil)
 		if c == nil {
 			continue
@@ -120,12 +122,13 @@ func Example_all_GetProvidersGenAsync() {
 //
 // It's really just a simple loop that iterates over each item in All and checks if it implements
 // genai.ProviderGenAsync.
+//
+// Test c if you want to determine if the functionality is potentially available, even if there's no known
+// API key available at the moment.
+// Test err if you want to determine if the functionality is available in the current context.
 func GetProvidersGenAsync() []string {
 	var names []string
 	for name, f := range providers.All {
-		// Test c if you want to determine if the functionality is potentially available, even if there's no known
-		// API key available at the moment.
-		// Test err if you want to determine if the functionality is available in the current context.
 		c, _ := f("", nil)
 		if c == nil {
 			continue

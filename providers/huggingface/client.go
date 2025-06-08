@@ -640,9 +640,9 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 	}
 	if err == nil && (model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA) {
 		// Warning: listing models from Huggingface takes a while.
-		mdls, err := c.ListModels(context.Background())
-		if err != nil {
-			return nil, err
+		mdls, err2 := c.ListModels(context.Background())
+		if err2 != nil {
+			return nil, err2
 		}
 		cheap := model == base.PreferredCheap
 		good := model == base.PreferredGood
@@ -661,8 +661,8 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 				if len(matches) != 1 {
 					continue
 				}
-				w, err := strconv.Atoi(matches[0][1])
-				if err != nil {
+				w, err2 := strconv.Atoi(matches[0][1])
+				if err2 != nil {
 					continue
 				}
 				if strings.HasPrefix(m.ID, "meta-llama/Llama") && (weights == 0 || w < weights) {
@@ -675,8 +675,8 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 				if len(matches) != 1 {
 					continue
 				}
-				w, err := strconv.Atoi(matches[0][1])
-				if err != nil {
+				w, err2 := strconv.Atoi(matches[0][1])
+				if err2 != nil {
 					continue
 				}
 				if strings.HasPrefix(m.ID, "Qwen/Qwen") && (weights == 0 || w > weights) {

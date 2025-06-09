@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/providers"
 )
@@ -39,9 +40,11 @@ func Example_all_ProvidersModel() {
 // It's really just a simple loop that iterates over each item in All and checks if it implements
 // genai.ProviderModel.
 //
-// Test c if you want to determine if the functionality is potentially available, even if there's no known
-// API key available at the moment.
-// Test err if you want to determine if the functionality is available in the current context.
+// Test:
+//   - `c` if you want to determine if the functionality is potentially available, even if there's no known
+//     API key available at the moment.
+//   - `err` if you want to determine if the functionality is available in the current context, i.e.
+//     environment variables FOO_API_KEY are set.
 func GetProvidersModel() []string {
 	var names []string
 	for name, f := range providers.All {
@@ -63,8 +66,11 @@ func Example_all_ProviderGen() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		// c is guaranteed to implement ProviderGen.
-		p := c.(genai.ProviderGen)
+		p, ok := c.(genai.ProviderGen)
+		if !ok {
+			// Use an adapter to make the document generator behave in a generic way.
+			p = &adapters.ProviderGenDocToGen{ProviderGenDoc: c.(genai.ProviderGenDoc)}
+		}
 		msgs := genai.Messages{
 			genai.NewTextMessage(genai.User, "Tell a story in 10 words."),
 		}
@@ -89,11 +95,13 @@ func Example_all_ProviderGen() {
 // GetProvidersGen returns all the providers that support generating messages.
 //
 // It's really just a simple loop that iterates over each item in All and checks if it implements
-// genai.ProviderGen.
+// genai.ProviderGen (general) or genai.ProviderGenDoc (specialized for non-text generation).
 //
-// Test c if you want to determine if the functionality is potentially available, even if there's no known
-// API key available at the moment.
-// Test err if you want to determine if the functionality is available in the current context.
+// Test:
+//   - `c` if you want to determine if the functionality is potentially available, even if there's no known
+//     API key available at the moment.
+//   - `err` if you want to determine if the functionality is available in the current context, i.e.
+//     environment variables FOO_API_KEY are set.
 func GetProvidersGen() []string {
 	var names []string
 	for name, f := range providers.All {
@@ -102,6 +110,8 @@ func GetProvidersGen() []string {
 			continue
 		}
 		if _, ok := c.(genai.ProviderGen); ok {
+			names = append(names, name)
+		} else if _, ok := c.(genai.ProviderGenDoc); ok {
 			names = append(names, name)
 		}
 	}
@@ -123,9 +133,11 @@ func Example_all_GetProvidersGenAsync() {
 // It's really just a simple loop that iterates over each item in All and checks if it implements
 // genai.ProviderGenAsync.
 //
-// Test c if you want to determine if the functionality is potentially available, even if there's no known
-// API key available at the moment.
-// Test err if you want to determine if the functionality is available in the current context.
+// Test:
+//   - `c` if you want to determine if the functionality is potentially available, even if there's no known
+//     API key available at the moment.
+//   - `err` if you want to determine if the functionality is available in the current context, i.e.
+//     environment variables FOO_API_KEY are set.
 func GetProvidersGenAsync() []string {
 	var names []string
 	for name, f := range providers.All {

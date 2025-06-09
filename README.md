@@ -46,31 +46,33 @@ The _high performance_ low level native Go client for LLMs.
 
 - **Full functionality**: Full access to each backend-specific functionality.
   Access the raw API if needed with full message schema as Go structs.
-- **Native tool calling**: Tell the LLM to call a tool directly, described a Go
+- **Tool calling via reflection**: Tell the LLM to call a tool directly, described a Go
   struct. No need to manually fiddle with JSON.
 - **Native JSON struct serialization**: Pass a struct to tell the LLM what to
   generate, decode the reply into your struct. No need to manually fiddle with
   JSON. Supports required fields, enums, descriptions, etc.
 - **Streaming**: Streams completion reply as the output is being generated, including thinking and tool
   calling.
-- **Vision**: Process images, PDFs and videos (!) as input.
+- **Multi-modal**: Process images, PDFs and videos (!) as input or output.
 - **Unit testing friendly**: record and play back API calls at HTTP level to save 💰 and keep tests fast and
-  reproducible, via the exposed HTTP transport.
+  reproducible, via the exposed HTTP transport. See [example](https://pkg.go.dev/github.com/maruel/genai#example-Provider-HTTP_record).
 
 Implementation is in flux. :)
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/maruel/genai/.svg)](https://pkg.go.dev/github.com/maruel/genai/)
 [![codecov](https://codecov.io/gh/maruel/genai/graph/badge.svg?token=VLBH363B6N)](https://codecov.io/gh/maruel/genai)
 
+
 ## Design
 
 - **Safe and strict API implementation**. All you love from a statically typed
-  language. Immediately fails on unknown RPC fields. Error code paths are
-  properly implemented.
+  language. The library's smoke tests immediately fails on unknown RPC fields. Error code paths are properly
+  implemented.
 - **Stateless**: no global state, clients are safe to use concurrently lock-less.
-- **Professional grade**: unit tested on live services.
+- **Professional grade**: smokte tested on live services with recorded traces located in `testdata/` directories.
 - **Optimized for speed**: minimize memory allocations, compress data at the
-  transport layer when possible. Groq, Mistral and OpenAI use brotli for HTTP compression instead of gzip.
+  transport layer when possible. Groq, Mistral and OpenAI use brotli for HTTP compression instead of gzip,
+  and POST's body to Google are gzip compressed.
 - **Lean**: Few dependencies. No unnecessary abstraction layer.
 - Easy to add new providers.
 
@@ -278,10 +280,4 @@ list-models -provider hugginface
 
 ## TODO
 
-- Audio out
-- Video out
-- Batch
-- Tuning
-- Embeddings
-- Moderation
 - Citations

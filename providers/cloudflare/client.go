@@ -60,6 +60,7 @@ var Scoreboard = genai.Scoreboard{
 				NoStopSequence:     true,
 				Tools:              genai.Flaky,
 				BiasedTool:         genai.True,
+				IndecisiveTool:     genai.Flaky,
 				JSON:               true,
 				JSONSchema:         true,
 			},
@@ -631,10 +632,11 @@ func New(accountID, apiKey, model string, wrapper func(http.RoundTripper) http.R
 	// Investigate websockets?
 	// https://blog.cloudflare.com/workers-ai-streaming/ and
 	// https://developers.cloudflare.com/workers/examples/websockets/
+	// Important: the model must not be path escaped!
 	c := &Client{
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
-			GenSyncURL:           "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + url.PathEscape(model),
+			GenSyncURL:           "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + model,
 			ProcessStreamPackets: processStreamPackets,
 			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "cloudflare",
@@ -680,19 +682,19 @@ func New(accountID, apiKey, model string, wrapper func(http.RoundTripper) http.R
 				if strings.HasPrefix(m.Name, "@cf/meta/") && out < price {
 					price = out
 					c.Model = m.Name
-					c.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + url.PathEscape(c.Model)
+					c.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + c.Model
 				}
 			} else if good {
 				if strings.HasPrefix(m.Name, "@cf/meta/") && out > price {
 					price = out
 					c.Model = m.Name
-					c.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + url.PathEscape(c.Model)
+					c.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + c.Model
 				}
 			} else {
 				if strings.HasPrefix(m.Name, "@cf/deepseek-ai/") && out > price {
 					price = out
 					c.Model = m.Name
-					c.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + url.PathEscape(c.Model)
+					c.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + c.Model
 				}
 			}
 		}
@@ -713,7 +715,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	for page := 1; ; page++ {
 		out := ModelsResponse{}
 		// Cloudflare's pagination is surprisingly brittle.
-		url := fmt.Sprintf("https://api.cloudflare.com/client/v4/accounts/%s/ai/models/search?page=%d&per_page=100&hide_experimental=false", c.accountID, page)
+		url := fmt.Sprintf("https://api.cloudflare.com/client/v4/accounts/%s/ai/models/search?page=%d&per_page=100&hide_experimental=false", url.PathEscape(c.accountID), page)
 		err := c.DoRequest(ctx, "GET", url, nil, &out)
 		if err != nil {
 			return nil, err

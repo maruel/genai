@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/Qwen/QwQ-32B/v1/chat/completions
+        url: https://router.huggingface.co/hf-inference/models/Qwen%2FQwQ-32B/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: 421
         uncompressed: false
-        body: '{"object":"chat.completion","id":"","created":1748538346,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":285,"completion_tokens":23,"total_tokens":308}}'
+        body: '{"object":"chat.completion","id":"","created":1749485569,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":285,"completion_tokens":23,"total_tokens":308}}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
@@ -47,9 +47,9 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 875d50fae2ec2fc798461398e3cf2a5a.cloudfront.net (CloudFront)
+                - 1.1 101faeb149b23d8a2ab2e8bae2efec18.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - 3JpzZme3jYGMCLNwU9B9nygwqxW82ZJe0L_onup1oJCtbiGdWmoFyg==
+                - Eo_MJw6yBKX_KiBM_wbgqSDCS5L6VPXLcB5uwhLD1sEalAj3Bwxuog==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
@@ -57,40 +57,40 @@ interactions:
             X-Compute-Characters:
                 - "1357"
             X-Compute-Time:
-                - "2.764511527"
+                - "1.930301722"
             X-Compute-Type:
                 - 4-nvida-l4
             X-Generated-Tokens:
                 - "23"
             X-Inference-Id:
-                - cc3881ce-1b3e-42b0-8986-b6350e3c3d77
+                - 5379c807-3776-41c3-a40f-20cc86fa2e8a
             X-Inference-Time:
-                - "2763"
+                - "1894"
             X-Powered-By:
                 - huggingface-moon
             X-Prompt-Tokens:
                 - "285"
             X-Proxied-Host:
-                - http://10.101.12.185
+                - http://10.101.118.137
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - cvzt8xzc-9u4na
+                - cvzt8xzc-y9lwe
             X-Queue-Time:
-                - "0"
+                - "34"
             X-Request-Id:
-                - oSgz5bZ34fd8Gois
+                - Pq5da3WJbgHZLn6i
             X-Robots-Tag:
                 - none
             X-Time-Per-Token:
-                - "120"
+                - "82"
             X-Total-Time:
-                - "2764"
+                - "1930"
             X-Validation-Time:
                 - "1"
         status: 200 OK
         code: 200
-        duration: 3.696s
+        duration: 2.049s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -108,7 +108,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/Qwen/QwQ-32B/v1/chat/completions
+        url: https://router.huggingface.co/hf-inference/models/Qwen%2FQwQ-32B/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
@@ -116,9 +116,9 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 730
+        content_length: 1178
         uncompressed: false
-        body: '{"object":"chat.completion","id":"","created":1748538354,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"Alright, the user asked for the square root of 132413 using the square_root tool. I called the function with the number 132413 as specified. The tool returned 363.89. Since the user wants only the result without any explanation, I just need to present that number. Let me double-check if there''s any extra info needed, but the instructions were clear. Just the result. So I''ll make sure to output exactly that.\n</think>\n\n363.89"},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":145,"completion_tokens":111,"total_tokens":256}}'
+        body: '{"object":"chat.completion","id":"","created":1749485588,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"Alright, let''s see. The user wants the square root of 132413. They mentioned using the square_root tool and just wanting the result.\n\nFirst, I need to ensure I use the correct tool. The function name is square_root, and the argument should be a JSON object with the number. The previous example shows the arguments as \"{\\\"number\\\":\\\"132413\\\"}\".\n\nSo I''ll structure the tool call properly. Let me double-check the number to make sure it''s 132413 and not a typo. \n\nOnce the tool is called, the response came back as 363.89. The user doesn''t want any explanation, just the number. \n\nI should present the result exactly as the tool provided it, without any extra text. Just the value, probably formatted as a number. Since the example shows \"363.89\", I''ll keep it consistent. \n\nNo need for units or anything else. Keep it simple and precise.\n</think>\n\n363.89"},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":145,"completion_tokens":218,"total_tokens":363}}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
@@ -127,7 +127,7 @@ interactions:
             Access-Control-Expose-Headers:
                 - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
             Content-Length:
-                - "730"
+                - "1178"
             Content-Type:
                 - application/json
             Cross-Origin-Opener-Policy:
@@ -137,9 +137,9 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 875d50fae2ec2fc798461398e3cf2a5a.cloudfront.net (CloudFront)
+                - 1.1 101faeb149b23d8a2ab2e8bae2efec18.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - _jaHJ1zrM_Vwqqu64RtgvwR-N24wXW5BG5HwpYubGKiELN7zIOVynQ==
+                - RbK5QV4UX7gDBmjzL2SRuQ2-HJHA__rkpLZWFCorVgaXASsLYxUrKA==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
@@ -147,37 +147,37 @@ interactions:
             X-Compute-Characters:
                 - "626"
             X-Compute-Time:
-                - "7.860347066"
+                - "18.401637867"
             X-Compute-Type:
                 - 4-nvida-l4
             X-Generated-Tokens:
-                - "111"
+                - "218"
             X-Inference-Id:
-                - 85baec40-e673-4c6a-97a6-59b048fa94d6
+                - adfb092a-f729-4146-8794-f9463611e582
             X-Inference-Time:
-                - "7859"
+                - "18368"
             X-Powered-By:
                 - huggingface-moon
             X-Prompt-Tokens:
                 - "145"
             X-Proxied-Host:
-                - http://10.101.12.185
+                - http://10.101.118.137
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - cvzt8xzc-9u4na
+                - cvzt8xzc-y9lwe
             X-Queue-Time:
-                - "0"
+                - "32"
             X-Request-Id:
-                - OvcCF5OK6Z3gI29e
+                - 0yYGt69OfIjw6QCE
             X-Robots-Tag:
                 - none
             X-Time-Per-Token:
-                - "70"
+                - "84"
             X-Total-Time:
-                - "7860"
+                - "18401"
             X-Validation-Time:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 7.936s
+        duration: 18.526s

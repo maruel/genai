@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/Qwen/QwQ-32B/v1/chat/completions
+        url: https://router.huggingface.co/hf-inference/models/Qwen%2FQwQ-32B/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
@@ -47,9 +47,9 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 f54d987d89964f5484454d3374620b06.cloudfront.net (CloudFront)
+                - 1.1 101faeb149b23d8a2ab2e8bae2efec18.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - Y7kr1YIGcCC8iqq3o6pen-S74hyzk4jb6Rx4f9YRvJGh8pqwhPFv0A==
+                - hB2qZUOx5CGdNxT9EeLyGYnc09t8SqGxWWdi1uvOi1QuTd6vJA8A-A==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
@@ -57,15 +57,15 @@ interactions:
             X-Powered-By:
                 - huggingface-moon
             X-Proxied-Host:
-                - http://10.101.112.57
+                - http://10.101.118.137
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - cvzt8xzc-c7t54
+                - cvzt8xzc-y9lwe
             X-Request-Id:
-                - ddaj3L_1KkwaDbP5
+                - nQTjuOcd1HAg5TbQ
             X-Robots-Tag:
                 - none
         status: 422 Unprocessable Entity
         code: 422
-        duration: 171ms
+        duration: 86ms

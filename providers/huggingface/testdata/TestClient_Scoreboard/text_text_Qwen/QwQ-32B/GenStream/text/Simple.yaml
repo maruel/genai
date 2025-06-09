@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/Qwen/QwQ-32B/v1/chat/completions
+        url: https://router.huggingface.co/hf-inference/models/Qwen%2FQwQ-32B/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
@@ -29,259 +29,323 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"object":"chat.completion.chunk","id":"","created":1748538357,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Okay"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Okay"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538357,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":","},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":","},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538357,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" the"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" the"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538357,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" user"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" user"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538357,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" wants"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" says"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538358,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" me"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" \""},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538358,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" to"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Say"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538358,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" say"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" hello"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538358,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" hello"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538358,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" with"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485591,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" Use"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538358,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" just"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485591,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" only"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538358,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" one"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485591,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" one"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538358,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" word"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485591,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" word"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538358,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485591,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":".\""},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538358,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" Let"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485591,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" So"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538358,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" me"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485591,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" I"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538358,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" think"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485591,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" need"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538358,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"..."},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485591,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" to"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538358,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" The"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485591,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" respond"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538359,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" obvious"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485591,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" with"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538359,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" answer"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485591,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" just"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538359,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" is"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485592,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" one"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538359,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" \""},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485592,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" word"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538359,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485592,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538359,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"\"."},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485592,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" The"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538359,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" But"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485592,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" main"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538359,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" wait"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485592,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" instruction"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538359,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":","},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485592,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" is"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538359,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" maybe"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485592,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" to"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538359,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" they"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485592,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" say"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538359,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" want"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485592,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" hello"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538359,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" a"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485592,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":","},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538359,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" different"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485592,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" so"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538359,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" version"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485593,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" the"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538360,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"?"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485593,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" obvious"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538360,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" Like"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485593,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" answer"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538360,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" \""},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485593,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" is"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538360,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Hi"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485593,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" \""},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538360,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"\""},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485593,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538360,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" or"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485593,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":".\""},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538360,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" \""},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485593,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" But"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538360,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Hey"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485593,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" wait"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538360,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"\"?"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485593,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":","},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538360,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" Let"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485593,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" maybe"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538360,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" me"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485593,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" they"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538360,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" check"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485594,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" want"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538360,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" the"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485594,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" it"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538360,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" instructions"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485594,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" in"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538361,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" again"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485594,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" a"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538361,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485594,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" different"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538361,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" It"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485594,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" language"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538361,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" says"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485594,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"?"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538361,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" \""},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485594,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" But"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538361,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"use"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485594,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" the"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538361,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" only"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485594,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" instruction"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538361,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" one"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485594,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" is"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538361,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" word"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485594,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" in"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538361,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"\"."},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485595,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" English"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538361,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" So"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485595,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":","},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538361,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" \""},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485595,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" so"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538361,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485595,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" probably"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538361,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"\""},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485595,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" not"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538362,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" is"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485595,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538362,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" four"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485595,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" Let"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538362,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" letters"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485595,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" me"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538362,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":","},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485595,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" check"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538362,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" but"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485595,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" again"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538362,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" so"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485595,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538362,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" are"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485595,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" The"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538362,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" the"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485596,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" user"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538362,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" others"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485596,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" specified"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538362,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485596,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" \""},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538362,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" Hmm"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485596,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Use"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538362,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":","},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485596,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" only"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538362,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" maybe"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485596,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" one"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538362,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" \""},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485596,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" word"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538363,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Hi"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485596,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":",\""},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538363,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"\""},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485596,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" so"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538363,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" is"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485596,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" \""},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538363,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" shorter"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485596,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538363,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" in"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485596,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"\""},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538363,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" some"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485596,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" is"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538363,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" contexts"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485597,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" four"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538363,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485597,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" letters"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538363,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" But"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485597,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":","},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538363,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" the"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485597,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" but"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538363,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" simplest"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485597,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" that"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538363,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" and"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485597,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"'s"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538363,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" most"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485597,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" one"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538363,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" direct"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485597,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" word"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538363,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" is"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485597,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538364,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" \""},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485597,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" Yeah"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538364,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485597,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":","},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538364,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"\"."},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485597,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" that"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538364,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" I"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485598,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"'s"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538364,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" should"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485598,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" it"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538364,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" confirm"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485598,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538364,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" there"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485598,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" I"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538364,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"'s"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485598,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" should"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538364,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" no"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485598,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" just"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538364,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" trick"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485598,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" reply"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538364,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" here"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485598,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" with"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538364,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485598,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" \""},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538364,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" No"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485598,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538364,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" emojis"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485598,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":".\""},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538365,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" or"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485598,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" No"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538365,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" anything"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485599,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" need"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538365,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" else"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485599,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" for"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538365,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485599,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" anything"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538365,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" Just"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485599,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" else"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538365,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" one"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485599,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538365,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" word"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485599,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" Let"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538365,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485599,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" me"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538365,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" Yeah"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485599,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" make"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538365,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":","},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485599,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" sure"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538365,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" \""},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485599,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" there"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538365,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485599,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"'s"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538365,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"\""},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485599,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" no"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538365,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" fits"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485599,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" trick"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538366,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" perfectly"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485600,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" here"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538366,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":".\n"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485600,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538366,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"</think>"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485600,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" Sometimes"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538366,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"\n\n"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485600,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" people"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538366,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485600,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" ask"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538366,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485600,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" for"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538366,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":"stop"}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485600,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" a"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538366,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[],"usage":{"prompt_tokens":18,"completion_tokens":126,"total_tokens":144}}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485600,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" single"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485600,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" word"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485600,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" but"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485600,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" expect"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485600,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" a"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485601,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" different"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485601,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" form"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485601,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":","},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485601,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" but"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485601,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" \""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485601,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"hello"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485601,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"\""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485601,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" is"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485601,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" the"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485601,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" standard"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485601,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" greeting"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485601,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485602,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" Alright"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485602,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":","},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485602,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" I"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485602,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" think"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485602,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" that"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485602,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"'s"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485602,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" the"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485602,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" correct"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485602,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" response"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485602,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":".\n"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485602,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"</think>"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485602,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"\n\n"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485603,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485603,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485603,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":"stop"}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485603,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[],"usage":{"prompt_tokens":18,"completion_tokens":158,"total_tokens":176}}
 
             data: [DONE]
 
@@ -303,9 +367,9 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 875d50fae2ec2fc798461398e3cf2a5a.cloudfront.net (CloudFront)
+                - 1.1 101faeb149b23d8a2ab2e8bae2efec18.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - rcBmL_d_LXFQQTMQl8QCd2u1UWFOp2RR9sCMl5t9frtQ1tWFN3vWQQ==
+                - J_46GTuuJ8KQMHUxpOEkpSYo2Cj6du_9_6CQKLmtRINq3uk9Saxdcw==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
@@ -315,19 +379,19 @@ interactions:
             X-Compute-Type:
                 - 4-nvida-l4
             X-Inference-Id:
-                - f4a9834d-230c-4c8e-a952-3098f1fcd4cc
+                - e4f95d8f-da4d-4fac-b110-1fb35c6a9cb5
             X-Powered-By:
                 - huggingface-moon
             X-Proxied-Host:
-                - http://10.101.12.185
+                - http://10.101.118.137
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - cvzt8xzc-9u4na
+                - cvzt8xzc-y9lwe
             X-Request-Id:
-                - jH58bPiuWJJ4ELZ0
+                - oVmYCssli7gn6IZT
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 142ms
+        duration: 214ms

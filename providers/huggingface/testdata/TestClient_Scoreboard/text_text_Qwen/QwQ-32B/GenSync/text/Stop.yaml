@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/Qwen/QwQ-32B/v1/chat/completions
+        url: https://router.huggingface.co/hf-inference/models/Qwen%2FQwQ-32B/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: 389
         uncompressed: false
-        body: '{"object":"chat.completion","id":"","created":1748538357,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"Okay, the user wants me to talk about Canada in 10 words, starting with \"Canada is"},"logprobs":null,"finish_reason":"stop_sequence"}],"usage":{"prompt_tokens":24,"completion_tokens":21,"total_tokens":45}}'
+        body: '{"object":"chat.completion","id":"","created":1749485569,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"Okay, the user wants me to talk about Canada in 10 words, starting with \"Canada is"},"logprobs":null,"finish_reason":"stop_sequence"}],"usage":{"prompt_tokens":24,"completion_tokens":21,"total_tokens":45}}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
@@ -47,9 +47,9 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 875d50fae2ec2fc798461398e3cf2a5a.cloudfront.net (CloudFront)
+                - 1.1 101faeb149b23d8a2ab2e8bae2efec18.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - odWNHASiSAZmt_PVr-WnxhyDR4dafa1Mo4bCltt-vbX9eSWqBMBwyw==
+                - LVZmkBYffzGXNSNke_7uGU35jecNBRFSpeJScrOWR5ZCyK4W3xYlwg==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
@@ -57,37 +57,37 @@ interactions:
             X-Compute-Characters:
                 - "110"
             X-Compute-Time:
-                - "1.4955981139999999"
+                - "1.767974298"
             X-Compute-Type:
                 - 4-nvida-l4
             X-Generated-Tokens:
                 - "21"
             X-Inference-Id:
-                - cd0483b0-456b-4e57-ac99-bfed98597590
+                - 5db196fe-65d8-4453-b128-1dbe892128d3
             X-Inference-Time:
-                - "1495"
+                - "1731"
             X-Powered-By:
                 - huggingface-moon
             X-Prompt-Tokens:
                 - "24"
             X-Proxied-Host:
-                - http://10.101.12.185
+                - http://10.101.118.137
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - cvzt8xzc-9u4na
+                - cvzt8xzc-y9lwe
             X-Queue-Time:
-                - "0"
+                - "36"
             X-Request-Id:
-                - W_4w3b1mF7geie0q
+                - 6H8JQLnnX37YkgN-
             X-Robots-Tag:
                 - none
             X-Time-Per-Token:
-                - "71"
+                - "82"
             X-Total-Time:
-                - "1495"
+                - "1767"
             X-Validation-Time:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.57s
+        duration: 1.95s

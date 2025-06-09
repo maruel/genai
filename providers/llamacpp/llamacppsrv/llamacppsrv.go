@@ -16,6 +16,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -189,7 +190,7 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 	}
 
 	build := "b" + strconv.Itoa(version)
-	url := "https://github.com/ggml-org/llama.cpp/releases/download/" + build + "/"
+	url := "https://github.com/ggml-org/llama.cpp/releases/download/" + url.PathEscape(build) + "/"
 	zipname := ""
 	wantedFiles := []string{filepath.Base(llamaserver)}
 	switch runtime.GOOS {

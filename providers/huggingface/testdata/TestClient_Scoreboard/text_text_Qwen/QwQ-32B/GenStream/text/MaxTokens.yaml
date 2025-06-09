@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/Qwen/QwQ-32B/v1/chat/completions
+        url: https://router.huggingface.co/hf-inference/models/Qwen%2FQwQ-32B/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
@@ -29,13 +29,13 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"object":"chat.completion.chunk","id":"","created":1748538378,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Okay"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Okay"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538378,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":","},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":","},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538378,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" the"},"logprobs":null,"finish_reason":"length"}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" the"},"logprobs":null,"finish_reason":"length"}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538378,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[],"usage":{"prompt_tokens":18,"completion_tokens":3,"total_tokens":21}}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[],"usage":{"prompt_tokens":18,"completion_tokens":3,"total_tokens":21}}
 
             data: [DONE]
 
@@ -57,9 +57,9 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 875d50fae2ec2fc798461398e3cf2a5a.cloudfront.net (CloudFront)
+                - 1.1 101faeb149b23d8a2ab2e8bae2efec18.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - CsDK8oE5hjgVzYQ9fPbnh2vwlORqUR3ddX5msy6PvI7MLKJquHkRMw==
+                - q7VCISFF-gX5dexFNrRBkFJ3qxqcD1mzP3WTHgZ4l4KkpXM0V_uDZg==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
@@ -69,19 +69,19 @@ interactions:
             X-Compute-Type:
                 - 4-nvida-l4
             X-Inference-Id:
-                - 4b20032b-2386-4bc7-8ea2-5bc42d8456c1
+                - 93ab4913-a94f-455b-87a6-40bdc8bbd0ba
             X-Powered-By:
                 - huggingface-moon
             X-Proxied-Host:
-                - http://10.101.12.185
+                - http://10.101.93.105
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - cvzt8xzc-9u4na
+                - cvzt8xzc-vyl05
             X-Request-Id:
-                - c-EodhmYRnqW3v70
+                - 3xCuhAUpBrJYCBMh
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 262ms
+        duration: 717ms

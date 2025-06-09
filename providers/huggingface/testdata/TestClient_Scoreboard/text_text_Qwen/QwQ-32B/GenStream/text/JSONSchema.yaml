@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/Qwen/QwQ-32B/v1/chat/completions
+        url: https://router.huggingface.co/hf-inference/models/Qwen%2FQwQ-32B/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
@@ -29,23 +29,25 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"object":"chat.completion.chunk","id":"","created":1748538376,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"{\""},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"{"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538376,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"is"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" \""},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538376,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"_f"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"is"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538376,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"ruit"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"_f"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538376,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"\":"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"ruit"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538376,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"true"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"\":"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538376,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"}"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" true"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538376,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":"stop"}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485591,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" }"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538376,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[],"usage":{"prompt_tokens":25,"completion_tokens":8,"total_tokens":33}}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485591,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":"stop"}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485591,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[],"usage":{"prompt_tokens":25,"completion_tokens":9,"total_tokens":34}}
 
             data: [DONE]
 
@@ -67,9 +69,9 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 875d50fae2ec2fc798461398e3cf2a5a.cloudfront.net (CloudFront)
+                - 1.1 101faeb149b23d8a2ab2e8bae2efec18.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - g5uahNs88vIjyDtc48kM8PoNMSIt_j5Ip8v5ev_kksTWXtxRDrNOZA==
+                - XN0dMKCJWco087qX8IUT8jIA4K2_-1uCi9TIVmgLuXKvuiwHdRROpg==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
@@ -79,19 +81,19 @@ interactions:
             X-Compute-Type:
                 - 4-nvida-l4
             X-Inference-Id:
-                - ea1df6a5-41e9-48a8-bed0-6299615a7e76
+                - edcba1c0-e2fe-4b3d-9dd6-059c4eae4856
             X-Powered-By:
                 - huggingface-moon
             X-Proxied-Host:
-                - http://10.101.12.185
+                - http://10.101.118.137
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - cvzt8xzc-9u4na
+                - cvzt8xzc-y9lwe
             X-Request-Id:
-                - dpiQ1vT3m26yp5Z6
+                - lgDNTwhoX02zlAaE
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 209ms
+        duration: 378ms

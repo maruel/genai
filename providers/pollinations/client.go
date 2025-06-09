@@ -959,7 +959,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	}
 
 	prompt := url.QueryEscape(msg.AsText())
-	url := "https://image.pollinations.ai/prompt/" + prompt + "?" + qp.Encode()
+	url := "https://image.pollinations.ai/prompt/" + url.PathEscape(prompt) + "?" + qp.Encode()
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return res, err
@@ -970,7 +970,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	}
 	if resp.StatusCode != 200 {
 		_ = resp.Body.Close()
-		return res, c.DecodeError(ctx, url, resp)
+		return res, c.DecodeError(url, resp)
 	}
 	b, err := io.ReadAll(resp.Body)
 	_ = resp.Body.Close()

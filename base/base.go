@@ -93,8 +93,12 @@ func (c *Provider[PErrorResponse]) DoRequest(ctx context.Context, method, url st
 	if err != nil {
 		return err
 	}
+	return c.DecodeResponse(resp, url, out)
+}
+
+func (c *Provider[PErrorResponse]) DecodeResponse(resp *http.Response, url string, out any) error {
 	if resp.StatusCode != 200 {
-		return c.DecodeError(ctx, url, resp)
+		return c.DecodeError(url, resp)
 	}
 	b, err := io.ReadAll(resp.Body)
 	if err2 := resp.Body.Close(); err == nil {
@@ -148,7 +152,7 @@ func (c *Provider[PErrorResponse]) DoRequest(ctx context.Context, method, url st
 //
 // It handles JSON decoding of error responses and provides appropriate error messages
 // with context such as API key URLs for unauthorized errors.
-func (c *Provider[PErrorResponse]) DecodeError(ctx context.Context, url string, resp *http.Response) error {
+func (c *Provider[PErrorResponse]) DecodeError(url string, resp *http.Response) error {
 	c.lateInit()
 	// When we are in lenient mode, we do not want to buffer the result. When in strict mode, we want to buffer
 	// to give more details.
@@ -391,7 +395,7 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return c.DecodeError(ctx, url, resp)
+		return c.DecodeError(url, resp)
 	}
 	er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
 	return sse.Process(resp.Body, out, er, c.ClientJSON.Lenient)

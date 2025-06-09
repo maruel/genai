@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/meta-llama/Llama-3.3-70B-Instruct/v1/chat/completions
+        url: https://router.huggingface.co/hf-inference/models/meta-llama%2FLlama-3.3-70B-Instruct/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
@@ -47,9 +47,9 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 60c77d7f2a0954d991174a909a828016.cloudfront.net (CloudFront)
+                - 1.1 df34ce5bf73c140dc63a22fa17a4dcda.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - MV_Wunb5wwJtty-dNkrF45DMpsqiff3dI7lUwN_IDaET7BgUL3qvzA==
+                - rtW6xsv-tVWvfj_p4zM3ywwumCv4Xy-rXqJbJvXOsKiebY9YIW_M7g==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
@@ -57,15 +57,15 @@ interactions:
             X-Powered-By:
                 - huggingface-moon
             X-Proxied-Host:
-                - http://10.102.95.233
+                - http://10.102.93.186
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - fyj5qcci-4u6oc
+                - vewwpasy-ljrvn
             X-Request-Id:
-                - XuMn-EAlITFD1q9B
+                - 472xjyPBu9bXV9xc
             X-Robots-Tag:
                 - none
         status: 422 Unprocessable Entity
         code: 422
-        duration: 166ms
+        duration: 112ms

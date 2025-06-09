@@ -15,6 +15,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -163,7 +164,7 @@ func DownloadRelease(ctx context.Context, cache string, version string) (string,
 		}
 	}
 
-	url := "https://github.com/ollama/ollama/releases/download/" + version + "/"
+	url := "https://github.com/ollama/ollama/releases/download/" + url.PathEscape(version) + "/"
 	archiveName := ""
 	wantedFiles := []string{filepath.Base(ollamaexe)}
 	switch runtime.GOOS {

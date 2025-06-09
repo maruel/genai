@@ -892,9 +892,11 @@ type Client struct {
 	base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
-// TODO: Upload files
-// https://platform.openai.com/docs/api-reference/uploads/create
-// TTL 1h
+// In May 2025, OpenAI started pushing for Response API. They say it's the only way to keep reasoning items.
+// It's interesting because Anthropic did that with the old API but OpenAI can't. Shrug.
+// https://cookbook.openai.com/examples/responses_api/reasoning_items
+// https://platform.openai.com/docs/api-reference/responses/create
+// TODO: Switch over.
 
 // New creates a new client to talk to the OpenAI platform API.
 //
@@ -911,6 +913,11 @@ type Client struct {
 // possible the model is not available anymore.
 //
 // wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
+//
+// # Documents
+//
+// OpenAI supports many types of documents, listed at
+// https://platform.openai.com/docs/assistants/tools/file-search#supported-files
 func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://platform.openai.com/settings/organization/api-keys"
 	var err error

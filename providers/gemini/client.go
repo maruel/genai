@@ -20,6 +20,7 @@ import (
 	"log/slog"
 	"mime"
 	"net/http"
+	"net/url"
 	"os"
 	"path"
 	"reflect"
@@ -1030,8 +1031,8 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 	c := &Client{
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
-			GenSyncURL:           "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey,
-			GenStreamURL:         "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":streamGenerateContent?alt=sse&key=" + apiKey,
+			GenSyncURL:           "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(model) + ":generateContent?key=" + url.QueryEscape(apiKey),
+			GenStreamURL:         "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(model) + ":streamGenerateContent?alt=sse&key=" + url.QueryEscape(apiKey),
 			ProcessStreamPackets: processStreamPackets,
 			LieToolCalls:         true,
 			Provider: base.Provider[*ErrorResponse]{
@@ -1068,24 +1069,24 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 					tokens = m.OutputTokenLimit
 					version = m.Version
 					c.Model = name
-					c.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":generateContent?key=" + apiKey
-					c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":streamGenerateContent?alt=sse&key=" + apiKey
+					c.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Model) + ":generateContent?key=" + url.QueryEscape(apiKey)
+					c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Model) + ":streamGenerateContent?alt=sse&key=" + url.QueryEscape(apiKey)
 				}
 			} else if good {
 				if strings.HasPrefix(name, "gemini") && strings.Contains(m.Name, "flash") && (tokens == 0 || tokens <= m.OutputTokenLimit) && (version == "" || version <= m.Version) {
 					tokens = m.OutputTokenLimit
 					version = m.Version
 					c.Model = name
-					c.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":generateContent?key=" + apiKey
-					c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":streamGenerateContent?alt=sse&key=" + apiKey
+					c.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Model) + ":generateContent?key=" + url.QueryEscape(apiKey)
+					c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Model) + ":streamGenerateContent?alt=sse&key=" + url.QueryEscape(apiKey)
 				}
 			} else {
 				if strings.HasPrefix(name, "gemini") && strings.Contains(m.Name, "pro") && (tokens == 0 || tokens <= m.OutputTokenLimit) && (version == "" || version <= m.Version) {
 					tokens = m.OutputTokenLimit
 					version = m.Version
 					c.Model = name
-					c.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":generateContent?key=" + apiKey
-					c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + c.Model + ":streamGenerateContent?alt=sse&key=" + apiKey
+					c.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Model) + ":generateContent?key=" + url.QueryEscape(apiKey)
+					c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Model) + ":streamGenerateContent?alt=sse&key=" + url.QueryEscape(apiKey)
 				}
 			}
 		}
@@ -1151,7 +1152,7 @@ func (c *Client) CacheAdd(ctx context.Context, msgs genai.Messages, opts *genai.
 	}
 	// TODO: ToolConfig
 	out := CachedContent{}
-	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents?key=" + c.apiKey
+	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents?key=" + url.QueryEscape(c.apiKey)
 	if err := c.DoRequest(ctx, "POST", url, &in, &out); err != nil {
 		return "", err
 	}
@@ -1162,7 +1163,7 @@ func (c *Client) CacheAdd(ctx context.Context, msgs genai.Messages, opts *genai.
 
 func (c *Client) CacheExtend(ctx context.Context, name string, ttl time.Duration) error {
 	// https://ai.google.dev/api/caching#method:-cachedcontents.patch
-	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + name + "?key=" + c.apiKey
+	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + url.PathEscape(name) + "?key=" + url.QueryEscape(c.apiKey)
 	// Model is required.
 	in := CachedContent{Model: "models/" + c.Model, Expiration: Expiration{TTL: Duration(ttl)}}
 	out := CachedContent{}
@@ -1177,7 +1178,7 @@ func (c *Client) CacheList(ctx context.Context) ([]CachedContent, error) {
 		CachedContents []CachedContent `json:"cachedContents"`
 		NextPageToken  string          `json:"nextPageToken"`
 	}
-	baseURL := "https://generativelanguage.googleapis.com/v1beta/cachedContents?key=" + c.apiKey + "&pageSize=100"
+	baseURL := "https://generativelanguage.googleapis.com/v1beta/cachedContents?key=" + url.QueryEscape(c.apiKey) + "&pageSize=100"
 	var out []CachedContent
 	for ctx.Err() == nil {
 		url := baseURL
@@ -1204,7 +1205,7 @@ func (c *Client) CacheList(ctx context.Context) ([]CachedContent, error) {
 
 func (c *Client) CacheGet(ctx context.Context, name string) (CachedContent, error) {
 	// https://ai.google.dev/api/caching#method:-cachedcontents.get
-	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + name + "?key=" + c.apiKey
+	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + url.PathEscape(name) + "?key=" + url.QueryEscape(c.apiKey)
 	out := CachedContent{}
 	err := c.DoRequest(ctx, "GET", url, nil, &out)
 	return out, err
@@ -1213,14 +1214,14 @@ func (c *Client) CacheGet(ctx context.Context, name string) (CachedContent, erro
 // CacheDelete deletes a cached file.
 func (c *Client) CacheDelete(ctx context.Context, name string) error {
 	// https://ai.google.dev/api/caching#method:-cachedcontents.delete
-	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + name + "?key=" + c.apiKey
+	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + url.PathEscape(name) + "?key=" + url.QueryEscape(c.apiKey)
 	var out struct{}
 	return c.DoRequest(ctx, "DELETE", url, nil, &out)
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://ai.google.dev/api/models?hl=en#method:-models.list
-	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.apiKey)
+	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+url.QueryEscape(c.apiKey))
 }
 
 // TODO: To implement ProviderGenAsync, we need to use the Vertex API, not the API key based Gemini one.

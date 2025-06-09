@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/Qwen/QwQ-32B/v1/chat/completions
+        url: https://router.huggingface.co/hf-inference/models/Qwen%2FQwQ-32B/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: 420
         uncompressed: false
-        body: '{"object":"chat.completion","id":"","created":1748701857,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":250,"completion_tokens":19,"total_tokens":269}}'
+        body: '{"object":"chat.completion","id":"","created":1749485567,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":250,"completion_tokens":21,"total_tokens":271}}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
@@ -47,47 +47,47 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 764453ad26f42978656c5c159a3b32ce.cloudfront.net (CloudFront)
+                - 1.1 101faeb149b23d8a2ab2e8bae2efec18.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - UdUnZ68Y9RJnTeIOszjPbgP6rpwZegdVF6EkLuSOpvxvkj1HOjQBNQ==
+                - EZS5xpCsjrGxapzleS50f2nhyFIHLUA3KAJqB8dL-fkx6QCKv6w0Mw==
             X-Amz-Cf-Pop:
-                - YUL62-P2
+                - YTO50-P1
             X-Cache:
                 - Miss from cloudfront
             X-Compute-Characters:
                 - "1193"
             X-Compute-Time:
-                - "2.5029716"
+                - "1.7641498960000002"
             X-Compute-Type:
                 - 4-nvida-l4
             X-Generated-Tokens:
-                - "19"
+                - "21"
             X-Inference-Id:
-                - c85320a0-02d4-406c-96ed-1a672374d60f
+                - b1b596ca-bde0-4630-9d18-df027308e644
             X-Inference-Time:
-                - "2478"
+                - "1703"
             X-Powered-By:
                 - huggingface-moon
             X-Prompt-Tokens:
                 - "250"
             X-Proxied-Host:
-                - http://10.101.12.185
+                - http://10.101.118.137
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - cvzt8xzc-9u4na
+                - cvzt8xzc-y9lwe
             X-Queue-Time:
-                - "22"
+                - "59"
             X-Request-Id:
-                - KJxl-jiWg6QRb5qt
+                - 7JR-cv9HE2B9BPCv
             X-Robots-Tag:
                 - none
             X-Time-Per-Token:
-                - "130"
+                - "81"
             X-Total-Time:
-                - "2502"
+                - "1764"
             X-Validation-Time:
                 - "1"
         status: 200 OK
         code: 200
-        duration: 2.608s
+        duration: 1.903s

@@ -596,7 +596,7 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return c.DecodeError(ctx, c.chatURL, resp)
+		return c.DecodeError(c.chatURL, resp)
 	}
 	return processJSONStream(resp.Body, out, c.ClientJSON.Lenient)
 }

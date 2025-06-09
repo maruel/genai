@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/Qwen/QwQ-32B/v1/chat/completions
+        url: https://router.huggingface.co/hf-inference/models/Qwen%2FQwQ-32B/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
@@ -26,9 +26,9 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 310
+        content_length: 307
         uncompressed: false
-        body: '{"object":"chat.completion","id":"","created":1748538357,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"Alright, the"},"logprobs":null,"finish_reason":"length"}],"usage":{"prompt_tokens":18,"completion_tokens":3,"total_tokens":21}}'
+        body: '{"object":"chat.completion","id":"","created":1749485568,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"Okay, the"},"logprobs":null,"finish_reason":"length"}],"usage":{"prompt_tokens":18,"completion_tokens":3,"total_tokens":21}}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
@@ -37,7 +37,7 @@ interactions:
             Access-Control-Expose-Headers:
                 - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
             Content-Length:
-                - "310"
+                - "307"
             Content-Type:
                 - application/json
             Cross-Origin-Opener-Policy:
@@ -47,9 +47,9 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 875d50fae2ec2fc798461398e3cf2a5a.cloudfront.net (CloudFront)
+                - 1.1 101faeb149b23d8a2ab2e8bae2efec18.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - -iu4CsqQ5YiLP23fKtmNQxaED2vlfUJ5H4vD5SKa6g477HapXTSL0A==
+                - sOQof6erHlJUocsggUygKuaTenLicVeLvUTJWZG_qi922GKGH8rb0g==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
@@ -57,37 +57,37 @@ interactions:
             X-Compute-Characters:
                 - "81"
             X-Compute-Time:
-                - "0.223720451"
+                - "0.835413015"
             X-Compute-Type:
                 - 4-nvida-l4
             X-Generated-Tokens:
                 - "3"
             X-Inference-Id:
-                - 12ba9bd4-fed1-4acd-b33c-5a157d911704
+                - 409f5f75-51bf-41de-b219-0c9adb69fc6a
             X-Inference-Time:
-                - "223"
+                - "242"
             X-Powered-By:
                 - huggingface-moon
             X-Prompt-Tokens:
                 - "18"
             X-Proxied-Host:
-                - http://10.101.12.185
+                - http://10.101.93.105
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - cvzt8xzc-9u4na
+                - cvzt8xzc-vyl05
             X-Queue-Time:
-                - "0"
+                - "592"
             X-Request-Id:
-                - tDYA3R8w2AY8aD49
+                - GaZYSuf60KwPPPt8
             X-Robots-Tag:
                 - none
             X-Time-Per-Token:
-                - "74"
+                - "80"
             X-Total-Time:
-                - "223"
+                - "835"
             X-Validation-Time:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 333ms
+        duration: 951ms

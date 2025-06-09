@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/Qwen/QwQ-32B/v1/chat/completions
+        url: https://router.huggingface.co/hf-inference/models/Qwen%2FQwQ-32B/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
@@ -26,9 +26,9 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 885
+        content_length: 961
         uncompressed: false
-        body: '{"object":"chat.completion","id":"","created":1748538342,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"Okay, the user wants me to say hello using only one word. Let me think. The obvious answer is \"Hello.\" But maybe they want something else? Wait, the instruction says \"use only one word,\" so \"Hello\" is a single word. But sometimes people might say \"Hi\" which is also one word. However, \"Hello\" is more formal and directly matches the request. I should check if there''s any trick here. Maybe a different language? But the user probably expects the answer in English. So the safest and correct answer is \"Hello.\" Yeah, that''s it. Just \"Hello\" as one word.\n</think>\n\nHello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":18,"completion_tokens":134,"total_tokens":152}}'
+        body: '{"object":"chat.completion","id":"","created":1749485580,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"Okay, the user wants me to say hello but only using one word. Let me think. \"Hello\" itself is one word, so maybe that''s the simplest answer. But maybe they want something different? Let me check the instructions again. The user specified \"Say hello. Use only one word.\" So the key is to use a single word that means hello. Other options could be \"Hi\", \"Hiya\", \"Hey\", but \"Hello\" is the most straightforward and directly matches the request. I should go with \"Hello\" since it''s exactly one word and clearly a greeting. I don''t need to complicate it further. Just make sure there''s no extra text or formatting. Alright, that''s it.\n</think>\n\nHello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":18,"completion_tokens":152,"total_tokens":170}}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
@@ -37,7 +37,7 @@ interactions:
             Access-Control-Expose-Headers:
                 - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
             Content-Length:
-                - "885"
+                - "961"
             Content-Type:
                 - application/json
             Cross-Origin-Opener-Policy:
@@ -47,9 +47,9 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 875d50fae2ec2fc798461398e3cf2a5a.cloudfront.net (CloudFront)
+                - 1.1 101faeb149b23d8a2ab2e8bae2efec18.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - crCk9ng_HkHEURXRBk1QtuqZ5xMaZYrbYNgMEmlPr94JK6PVFW8x6g==
+                - qlVFFfEb_Y9nRUll7UBzrphnrDSr18HaHv9uJFJKU1vp9qz6VlRTTA==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
@@ -57,37 +57,37 @@ interactions:
             X-Compute-Characters:
                 - "87"
             X-Compute-Time:
-                - "9.424061251"
+                - "12.347815597"
             X-Compute-Type:
                 - 4-nvida-l4
             X-Generated-Tokens:
-                - "134"
+                - "152"
             X-Inference-Id:
-                - d9c7e807-8e38-4b3b-931e-eb8d1be5544f
+                - 6885b3b7-185a-4346-8e7d-2b3bcbe4efef
             X-Inference-Time:
-                - "9423"
+                - "12346"
             X-Powered-By:
                 - huggingface-moon
             X-Prompt-Tokens:
                 - "18"
             X-Proxied-Host:
-                - http://10.101.12.185
+                - http://10.101.93.105
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - cvzt8xzc-9u4na
+                - cvzt8xzc-vyl05
             X-Queue-Time:
-                - "0"
+                - "1"
             X-Request-Id:
-                - sWiSc8ofQMgs_RCw
+                - 9yt7uO_xDGPxKvdR
             X-Robots-Tag:
                 - none
             X-Time-Per-Token:
-                - "70"
+                - "81"
             X-Total-Time:
-                - "9424"
+                - "12347"
             X-Validation-Time:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 9.559s
+        duration: 12.445s

@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/meta-llama/Llama-3.3-70B-Instruct/v1/chat/completions
+        url: https://router.huggingface.co/hf-inference/models/meta-llama%2FLlama-3.3-70B-Instruct/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
@@ -28,7 +28,7 @@ interactions:
         trailer: {}
         content_length: 316
         uncompressed: false
-        body: '{"object":"chat.completion","id":"","created":1748538004,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}"},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":50,"completion_tokens":8,"total_tokens":58}}'
+        body: '{"object":"chat.completion","id":"","created":1749485738,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}"},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":50,"completion_tokens":8,"total_tokens":58}}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
@@ -47,9 +47,9 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 60c77d7f2a0954d991174a909a828016.cloudfront.net (CloudFront)
+                - 1.1 df34ce5bf73c140dc63a22fa17a4dcda.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - JGoh9YkobrjnAbD5KsPRGQC9xljAQExawOdtYtBIowx5YI0wFXTLgQ==
+                - mYjA8NZ6pd-qbMWx6s4Io5kNz33ccfAXKU6pWaReIyl2lDIw8AJc4w==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
@@ -57,37 +57,37 @@ interactions:
             X-Compute-Characters:
                 - "301"
             X-Compute-Time:
-                - "4.096243927"
+                - "1.162610484"
             X-Compute-Type:
                 - 4-nvida-a100-sxm4-80gb
             X-Generated-Tokens:
                 - "8"
             X-Inference-Id:
-                - 39363494-c16e-4a28-98b9-0dd7337b9ab7
+                - 8afe1ed8-d50f-4357-b465-3bd7faaa6d19
             X-Inference-Time:
-                - "4088"
+                - "1139"
             X-Powered-By:
                 - huggingface-moon
             X-Prompt-Tokens:
                 - "50"
             X-Proxied-Host:
-                - http://10.102.44.56
+                - http://10.102.95.187
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - fyj5qcci-iqtyp
+                - vewwpasy-76l93
             X-Queue-Time:
-                - "7"
+                - "19"
             X-Request-Id:
-                - kT1-vUmZbQ-hZoSz
+                - oxCppPfoYhULjkzm
             X-Robots-Tag:
                 - none
             X-Time-Per-Token:
-                - "511"
+                - "142"
             X-Total-Time:
-                - "4096"
+                - "1162"
             X-Validation-Time:
-                - "0"
+                - "3"
         status: 200 OK
         code: 200
-        duration: 4.26s
+        duration: 1.239s

@@ -154,6 +154,7 @@ func trimResponseHeaders(i *cassette.Interaction) error {
 	i.Request.Headers.Del("X-Api-Key")
 	i.Request.Headers.Del("X-Key")
 	// Noise.
+	i.Request.Headers.Del("X-Request-Id")
 	i.Response.Headers.Del("Date")
 	i.Response.Headers.Del("Request-Id")
 	// Remove this here since it also happens in openaicompatible.

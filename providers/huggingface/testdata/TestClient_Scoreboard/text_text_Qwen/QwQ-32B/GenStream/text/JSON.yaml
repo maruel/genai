@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/Qwen/QwQ-32B/v1/chat/completions
+        url: https://router.huggingface.co/hf-inference/models/Qwen%2FQwQ-32B/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
@@ -51,9 +51,9 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 875d50fae2ec2fc798461398e3cf2a5a.cloudfront.net (CloudFront)
+                - 1.1 101faeb149b23d8a2ab2e8bae2efec18.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - 20ookK_BzTMAph5VYCL69LX8NJPYwzGMytxAeWJISyy1K5CrasfDog==
+                - F6jNaTAQBqhnfn7d8rhlWeRC0_aw5-aai7v2hpqufkSwBmvEzxEJfg==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
@@ -63,19 +63,19 @@ interactions:
             X-Compute-Type:
                 - 4-nvida-l4
             X-Inference-Id:
-                - 025385a1-9de6-4c4a-badd-3bc57903e279
+                - a86c2e6d-a136-477d-b423-70468e3df492
             X-Powered-By:
                 - huggingface-moon
             X-Proxied-Host:
-                - http://10.101.12.185
+                - http://10.101.118.137
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - cvzt8xzc-9u4na
+                - cvzt8xzc-y9lwe
             X-Request-Id:
-                - 7ZOnb5D7hjoxvK3m
+                - WPuMZI0jtac8Of6y
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 65ms
+        duration: 122ms

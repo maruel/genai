@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/meta-llama/Llama-3.3-70B-Instruct/v1/chat/completions
+        url: https://router.huggingface.co/hf-inference/models/meta-llama%2FLlama-3.3-70B-Instruct/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
@@ -29,23 +29,23 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"object":"chat.completion.chunk","id":"","created":1748538217,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":"square_root","arguments":"{"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":"square_root","arguments":"{"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538217,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":" \""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":" \""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538217,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"number"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"number"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538217,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"\":"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"\":"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538217,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":" \""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":" \""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538217,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"132"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"132"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538217,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"413"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"413"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538217,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"\"}"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"\"}"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538217,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[],"usage":{"prompt_tokens":293,"completion_tokens":18,"total_tokens":311}}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[],"usage":{"prompt_tokens":293,"completion_tokens":18,"total_tokens":311}}
 
             data: [DONE]
 
@@ -67,11 +67,11 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 7d7c52d1848969f2077d9502aa06f40e.cloudfront.net (CloudFront)
+                - 1.1 df34ce5bf73c140dc63a22fa17a4dcda.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - 1xAWPvDnMXy0vfKsvJjrAwOU5DQ4VDNMLEu7qiY_19DHZxW0ZFBLSQ==
+                - Q_KzA371XNwBTGra2p98hHZVbRpZjrQIr54LzSsluYr490ky1IwaPw==
             X-Amz-Cf-Pop:
-                - YUL62-P2
+                - YTO50-P1
             X-Cache:
                 - Miss from cloudfront
             X-Compute-Characters:
@@ -79,22 +79,22 @@ interactions:
             X-Compute-Type:
                 - 4-nvida-a100-sxm4-80gb
             X-Inference-Id:
-                - 17fc1e64-89d1-4628-a1f6-af84fb8cfcd4
+                - 12ce0fd5-9a9a-4ff8-bfa5-9dfe4a5a1afa
             X-Powered-By:
                 - huggingface-moon
             X-Proxied-Host:
-                - http://10.102.32.65
+                - http://10.102.84.74
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - fyj5qcci-p8lev
+                - vewwpasy-jz9oh
             X-Request-Id:
-                - 7IwouTDEr0YvbPAp
+                - m9cKi0wmlRtEN2VY
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 2.385s
+        duration: 2.457s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -112,7 +112,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/meta-llama/Llama-3.3-70B-Instruct/v1/chat/completions
+        url: https://router.huggingface.co/hf-inference/models/meta-llama%2FLlama-3.3-70B-Instruct/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
@@ -123,15 +123,15 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"object":"chat.completion.chunk","id":"","created":1748538217,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"363"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"363"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538217,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538217,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"89"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"89"},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538217,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":"stop"}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":"stop"}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748538217,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[],"usage":{"prompt_tokens":153,"completion_tokens":4,"total_tokens":157}}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[],"usage":{"prompt_tokens":153,"completion_tokens":4,"total_tokens":157}}
 
             data: [DONE]
 
@@ -153,11 +153,11 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 7d7c52d1848969f2077d9502aa06f40e.cloudfront.net (CloudFront)
+                - 1.1 df34ce5bf73c140dc63a22fa17a4dcda.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - YV021WcZ9z-RE8Ald4ADNJVHVytiJ4jO1Vfi2o1C-ZnEelpq9nM8Fw==
+                - kPjr5nYJwEOmnDWTO7Aprvbmy5IsS6nu9Du2KthqWyrPlSGAGhiH3g==
             X-Amz-Cf-Pop:
-                - YUL62-P2
+                - YTO50-P1
             X-Cache:
                 - Miss from cloudfront
             X-Compute-Characters:
@@ -165,19 +165,19 @@ interactions:
             X-Compute-Type:
                 - 4-nvida-a100-sxm4-80gb
             X-Inference-Id:
-                - 76202698-7ab2-4a0b-80d6-9786b056b9f8
+                - d7f92ee7-b8da-49bc-8b96-4b7c8c5629d5
             X-Powered-By:
                 - huggingface-moon
             X-Proxied-Host:
-                - http://10.102.90.33
+                - http://10.102.95.187
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - fyj5qcci-6f65q
+                - vewwpasy-76l93
             X-Request-Id:
-                - 5lWHGfmro7MqInr-
+                - iNwy9wRsEWvK_kO8
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 163ms
+        duration: 177ms

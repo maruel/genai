@@ -16,6 +16,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"slices"
 	"sort"
@@ -633,7 +634,7 @@ func New(accountID, apiKey, model string, wrapper func(http.RoundTripper) http.R
 	c := &Client{
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
-			GenSyncURL:           "https://api.cloudflare.com/client/v4/accounts/" + accountID + "/ai/run/" + model,
+			GenSyncURL:           "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + url.PathEscape(model),
 			ProcessStreamPackets: processStreamPackets,
 			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "cloudflare",
@@ -679,19 +680,19 @@ func New(accountID, apiKey, model string, wrapper func(http.RoundTripper) http.R
 				if strings.HasPrefix(m.Name, "@cf/meta/") && out < price {
 					price = out
 					c.Model = m.Name
-					c.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + accountID + "/ai/run/" + c.Model
+					c.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + url.PathEscape(c.Model)
 				}
 			} else if good {
 				if strings.HasPrefix(m.Name, "@cf/meta/") && out > price {
 					price = out
 					c.Model = m.Name
-					c.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + accountID + "/ai/run/" + c.Model
+					c.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + url.PathEscape(c.Model)
 				}
 			} else {
 				if strings.HasPrefix(m.Name, "@cf/deepseek-ai/") && out > price {
 					price = out
 					c.Model = m.Name
-					c.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + accountID + "/ai/run/" + c.Model
+					c.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + url.PathEscape(c.Model)
 				}
 			}
 		}

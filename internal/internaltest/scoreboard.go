@@ -11,6 +11,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
+	"net/url"
 	"os"
 	"path/filepath"
 	"slices"
@@ -617,7 +618,7 @@ func testVisionFunctionalities(t *testing.T, g ProviderGenModalityFactory, model
 				Role: genai.User,
 				Contents: []genai.Content{
 					{Text: prompt},
-					{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/" + filename},
+					{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/" + url.PathEscape(filename)},
 				},
 			},
 		}
@@ -660,7 +661,7 @@ func testAudioSTTFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 				Role: genai.User,
 				Contents: []genai.Content{
 					{Text: prompt},
-					{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/" + filename},
+					{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/" + url.PathEscape(filename)},
 				},
 			},
 		}
@@ -702,7 +703,7 @@ func testVideoFunctionalities(t *testing.T, g ProviderGenModalityFactory, model 
 				Role: genai.User,
 				Contents: []genai.Content{
 					{Text: prompt},
-					{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/" + filename},
+					{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/" + url.PathEscape(filename)},
 				},
 			},
 		}
@@ -744,7 +745,7 @@ func testPDFFunctionalities(t *testing.T, g ProviderGenModalityFactory, model st
 				Role: genai.User,
 				Contents: []genai.Content{
 					{Text: prompt},
-					{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/" + filename},
+					{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/" + url.PathEscape(filename)},
 				},
 			},
 		}

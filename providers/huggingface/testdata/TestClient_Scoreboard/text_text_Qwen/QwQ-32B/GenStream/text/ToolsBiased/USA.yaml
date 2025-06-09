@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/Qwen/QwQ-32B/v1/chat/completions
+        url: https://router.huggingface.co/hf-inference/models/Qwen%2FQwQ-32B/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
@@ -29,23 +29,25 @@ interactions:
         content_length: -1
         uncompressed: false
         body: |+
-            data: {"object":"chat.completion.chunk","id":"","created":1748701859,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":"best_country","arguments":"{"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485697,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":"best_country","arguments":"{"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748701859,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":" \""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485697,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":" \""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748701859,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"country"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485697,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"country"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748701859,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"\":"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485697,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"\":"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748701859,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":" \""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485697,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":" \""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748701859,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"USA"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485697,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"USA"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748701859,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"\"}"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485697,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"\""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748701859,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":" "}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485697,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":" }"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1748701860,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[],"usage":{"prompt_tokens":250,"completion_tokens":19,"total_tokens":269}}
+            data: {"object":"chat.completion.chunk","id":"","created":1749485697,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":" "}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"object":"chat.completion.chunk","id":"","created":1749485697,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[],"usage":{"prompt_tokens":250,"completion_tokens":22,"total_tokens":272}}
 
             data: [DONE]
 
@@ -67,11 +69,11 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 764453ad26f42978656c5c159a3b32ce.cloudfront.net (CloudFront)
+                - 1.1 a44cf9ed8a499212c53e0b8f57aa31f4.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - _ohzyFCyCIsKxKH0v-AtDYfs6Mos4n_5Z0t5MmZb670hLqocTv7M6w==
+                - -gb417PgKDWawGYDIiZ4tsdASK2WBM5mAmC976Pm20t2PwisPu8gvQ==
             X-Amz-Cf-Pop:
-                - YUL62-P2
+                - YTO50-P1
             X-Cache:
                 - Miss from cloudfront
             X-Compute-Characters:
@@ -79,19 +81,19 @@ interactions:
             X-Compute-Type:
                 - 4-nvida-l4
             X-Inference-Id:
-                - c4a3e3f0-772c-40a9-ad5a-7181531ed7a8
+                - ad3feab5-7d11-4c98-bd06-114bc489242e
             X-Powered-By:
                 - huggingface-moon
             X-Proxied-Host:
-                - http://10.101.12.185
+                - http://10.101.93.105
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - cvzt8xzc-9u4na
+                - cvzt8xzc-vyl05
             X-Request-Id:
-                - su0kT_YmXEkJtRZk
+                - P-ny4UMjLCNpf2BK
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 1.923s
+        duration: 1.164s

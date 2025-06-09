@@ -263,17 +263,21 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 			req.Seed = v.Seed
 		}
 	}
+	reqresp, err := c.GenAsyncRaw(ctx, req)
+	return genai.Job(reqresp.ID), err
+}
+
+func (c *Client) GenAsyncRaw(ctx context.Context, req ImageRequest) (ImageRequestResponse, error) {
+	// https://docs.bfl.ml/quick_start/generating_images
 	reqresp := ImageRequestResponse{}
-	if err := c.DoRequest(ctx, "POST", "https://api.bfl.ai/v1/"+c.Model, &req, &reqresp); err != nil {
-		return "", err
-	}
-	return genai.Job(reqresp.ID), nil
+	err := c.DoRequest(ctx, "POST", "https://api.bfl.ai/v1/"+c.Model, &req, &reqresp)
+	return reqresp, err
 }
 
 // PokeResult retrieves the result for a job ID.
 func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, error) {
 	res := genai.Result{}
-	imgres, err := c.GetResultRaw(ctx, id)
+	imgres, err := c.PokeResultRaw(ctx, id)
 	if err != nil {
 		return res, err
 	}
@@ -290,7 +294,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 }
 
 // GetResult retrieves the result for a job ID.
-func (c *Client) GetResultRaw(ctx context.Context, id genai.Job) (ImageResult, error) {
+func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (ImageResult, error) {
 	res := ImageResult{}
 	u := "https://api.us1.bfl.ai/v1/get_result?id=" + url.QueryEscape(string(id))
 	err := c.DoRequest(ctx, "GET", u, nil, &res)

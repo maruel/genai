@@ -1328,7 +1328,7 @@ func (c *Client) FileAdd(ctx context.Context, filename string, r io.ReadSeeker, 
 	buf := bytes.Buffer{}
 	w := multipart.NewWriter(&buf)
 	// We don't need this to be random, and setting it to be deterministic makes HTTP playback possible.
-	w.SetBoundary("80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1")
+	_ = w.SetBoundary("80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1")
 	if err := w.WriteField("purpose", "batch"); err != nil {
 		return "", err
 	}

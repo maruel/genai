@@ -1223,6 +1223,10 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key="+c.apiKey)
 }
 
+// TODO: To implement ProviderGenAsync, we need to use the Vertex API, not the API key based Gemini one.
+// https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/batch-prediction-api
+// This may require creating a whole new provider with Vertex AI API surface.
+
 // processStreamPackets is the function used to convert the chunks sent by Gemini's SSE data into
 // contentfragment.
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {

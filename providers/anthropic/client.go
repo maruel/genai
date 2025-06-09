@@ -960,6 +960,7 @@ type BatchResponse struct {
 type BatchQueryResponse struct {
 	CustomID string `json:"custom_id"`
 	Result   struct {
+		// Adding synthetic "not_found" result.
 		Type string `json:"type"` // "succeeded", "canceled", "expired", "errored"
 
 		// Type == "succeeded"
@@ -1186,42 +1187,65 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 	if err := b.Requests[0].Init(msgs, opts, c.Model); err != nil {
 		return "", err
 	}
+	resp, err := c.GenAsyncRaw(ctx, b)
+	return genai.Job(resp.ID), err
+}
+
+func (c *Client) GenAsyncRaw(ctx context.Context, b BatchRequest) (BatchResponse, error) {
 	resp := BatchResponse{}
 	u := "https://api.anthropic.com/v1/messages/batches"
 	err := c.DoRequest(ctx, "POST", u, &b, &resp)
-	// Warning: The documentation at https://docs.anthropic.com/en/api/retrieving-message-batch-results states
-	// that the URL may change in the future.
-	return genai.Job(resp.ID), err
+	return resp, err
 }
 
 func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, error) {
 	res := genai.Result{}
-	resp := BatchQueryResponse{}
-	// Warning: The documentation at https://docs.anthropic.com/en/api/retrieving-message-batch-results states
-	// that the URL may change in the future.
-	u := "https://api.anthropic.com/v1/messages/batches/" + url.PathEscape(string(id)) + "/results"
-	if err := c.DoRequest(ctx, "GET", u, nil, &resp); err != nil {
-		var herr *httpjson.Error
-		if errors.As(err, &herr) && herr.StatusCode == 404 {
-			er := ErrorResponse{}
-			if json.Unmarshal(herr.ResponseBody, &er) == nil {
-				if er.Error.Type == "not_found_error" {
-					res.FinishReason = genai.Pending
-					return res, nil
-				}
-			}
-		}
-		return res, err
+	resp, err := c.PokeResultRaw(ctx, id)
+	if err != nil && resp.Result.Type == "not_found_error" {
+		res.FinishReason = genai.Pending
+		return res, nil
 	}
 	if resp.Result.Type == "errored" {
 		return res, fmt.Errorf("error %s: %s", resp.Result.Error.Error.Type, resp.Result.Error.Error.Message)
 	}
-	err := resp.To(&res.Message)
+	err = resp.To(&res.Message)
 	res.InputTokens = resp.Result.Message.Usage.InputTokens
 	res.InputCachedTokens = resp.Result.Message.Usage.CacheReadInputTokens
 	res.OutputTokens = resp.Result.Message.Usage.OutputTokens
 	res.FinishReason = resp.Result.Message.StopReason.ToFinishReason()
 	return res, err
+}
+
+func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (BatchQueryResponse, error) {
+	resp := BatchQueryResponse{}
+	// Warning: The documentation at https://docs.anthropic.com/en/api/retrieving-message-batch-results states
+	// that the URL may change in the future.
+	u := "https://api.anthropic.com/v1/messages/batches/" + url.PathEscape(string(id)) + "/results"
+	err := c.DoRequest(ctx, "GET", u, nil, &resp)
+	if err != nil {
+		var herr *httpjson.Error
+		if errors.As(err, &herr) && herr.StatusCode == 404 {
+			er := ErrorResponse{}
+			if json.Unmarshal(herr.ResponseBody, &er) == nil {
+				if er.Error.Type == "not_found_error" {
+					resp.Result.Type = er.Error.Type
+				}
+			}
+		}
+	}
+	return resp, err
+}
+
+func (c *Client) Cancel(ctx context.Context, id genai.Job) error {
+	_, err := c.CancelRaw(ctx, id)
+	return err
+}
+
+func (c *Client) CancelRaw(ctx context.Context, id genai.Job) (BatchResponse, error) {
+	u := "https://api.anthropic.com/v1/messages/batches/" + url.PathEscape(string(id)) + "/cancel"
+	resp := BatchResponse{}
+	err := c.DoRequest(ctx, "POST", u, &struct{}{}, &resp)
+	return resp, err
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

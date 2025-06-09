@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
@@ -54,6 +55,44 @@ func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, repli
 	}
 	opts = &n
 	return i.Client.GenStream(ctx, msgs, replies, opts)
+}
+
+// This is a tricky test since batch operations can take up to 24h to complete.
+func TestClient_Batch(t *testing.T) {
+	ctx := t.Context()
+	c := getClient(t, "gpt-3.5-turbo")
+	// Using an extremely old cheap model that nobody uses helps a lot on reducing the latency, I got it to work
+	// within a few minutes.
+	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Tell a joke in 10 words")}
+	job, err := c.GenAsync(ctx, msgs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// TODO: Detect when recording and sleep only in this case.
+	is_recording := os.Getenv("RECORD") == "1"
+	for {
+		res, err := c.PokeResult(ctx, job)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if res.FinishReason == genai.Pending {
+			if is_recording {
+				t.Logf("Waiting...")
+				time.Sleep(time.Second)
+			}
+			continue
+		}
+		if res.InputTokens == 0 || res.OutputTokens == 0 {
+			t.Error("expected usage")
+		}
+		if res.FinishReason != genai.FinishedStop {
+			t.Errorf("finish reason: %s", res.FinishReason)
+		}
+		if s := res.AsText(); len(s) < 15 {
+			t.Errorf("not enough text: %q", s)
+		}
+		break
+	}
 }
 
 func TestClient_Preferred(t *testing.T) {

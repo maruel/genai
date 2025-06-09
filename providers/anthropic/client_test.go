@@ -27,6 +27,8 @@ func TestClient_Scoreboard(t *testing.T) {
 // This is a tricky test since batch operations can take up to 24h to complete.
 func TestClient_Batch(t *testing.T) {
 	ctx := t.Context()
+	// Using an extremely old cheap model that nobody uses helps a lot on reducing the latency, I got it to work
+	// within a few minutes.
 	c := getClient(t, "claude-3-haiku-20240307")
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Tell a joke in 10 words")}
 	job, err := c.GenAsync(ctx, msgs, nil)
@@ -34,7 +36,7 @@ func TestClient_Batch(t *testing.T) {
 		t.Fatal(err)
 	}
 	// TODO: Detect when recording and sleep only in this case.
-	is_recording := false
+	is_recording := os.Getenv("RECORD") == "1"
 	for {
 		res, err := c.PokeResult(ctx, job)
 		if err != nil {

@@ -12,13 +12,17 @@ package openai
 // TODO: Investigate https://platform.openai.com/docs/api-reference/responses/create
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"mime"
+	"mime/multipart"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -825,6 +829,102 @@ type ImageChoiceData struct {
 
 //
 
+// https://platform.openai.com/docs/api-reference/files/object
+type File struct {
+	Bytes         int64  `json:"bytes"` // File size
+	CreatedAt     Time   `json:"created_at"`
+	ExpiresAt     Time   `json:"expires_at"`
+	Filename      string `json:"filename"`
+	ID            string `json:"id"`
+	Object        string `json:"object"`         // "file"
+	Purpose       string `json:"purpose"`        // One of: assistants, assistants_output, batch, batch_output, fine-tune, fine-tune-results and vision
+	Status        string `json:"status"`         // Deprecated
+	StatusDetails string `json:"status_details"` // Deprecated
+}
+
+// https://platform.openai.com/docs/api-reference/files/delete
+type FileDeleteResponse struct {
+	ID      string `json:"id"`
+	Object  string `json:"object"` // "file"
+	Deleted bool   `json:"deleted"`
+}
+
+// https://platform.openai.com/docs/api-reference/files/list
+type FileListResponse struct {
+	Data   []File `json:"data"`
+	Object string `json:"object"` // "list"
+}
+
+//
+
+// https://platform.openai.com/docs/api-reference/batch/request-input
+type BatchRequestInput struct {
+	CustomID string      `json:"custom_id"`
+	Method   string      `json:"method"` // "POST"
+	URL      string      `json:"url"`    // "/v1/chat/completions", "/v1/embeddings", "/v1/completions", "/v1/responses"
+	Body     ChatRequest `json:"body"`
+}
+
+// https://platform.openai.com/docs/api-reference/batch/request-output
+type BatchRequestOutput struct {
+	CustomID string `json:"custom_id"`
+	ID       string `json:"id"`
+	Error    struct {
+		Code    string `json:"code"`
+		Message string `json:"message"`
+	} `json:"error"`
+	Response struct {
+		StatusCode int          `json:"status_code"`
+		RequestID  string       `json:"request_id"` // To use when contacting support
+		Body       ChatResponse `json:"body"`
+	} `json:"response"`
+}
+
+// https://platform.openai.com/docs/api-reference/batch/create
+type BatchRequest struct {
+	CompletionWindow string            `json:"completion_window"` // Must be "24h"
+	Endpoint         string            `json:"endpoint"`          // One of /v1/responses, /v1/chat/completions, /v1/embeddings, /v1/completions
+	InputFileID      string            `json:"input_file_id"`     // File must be JSONL
+	Metadata         map[string]string `json:"metadata,omitzero"` // Maximum 16 keys of 64 chars, values max 512 chars
+}
+
+// https://platform.openai.com/docs/api-reference/batch/object
+type Batch struct {
+	CancelledAt      Time   `json:"cancelled_at"`
+	CancellingAt     Time   `json:"cancelling_at"`
+	CompletedAt      Time   `json:"completed_at"`
+	CompletionWindow string `json:"completion_window"` // "24h"
+	CreatedAt        Time   `json:"created_at"`
+	Endpoint         string `json:"endpoint"`      // Same as BatchRequest.Endpoint
+	ErrorFileID      string `json:"error_file_id"` // File ID containing the outputs of requests with errors.
+	Errors           struct {
+		Data []struct {
+			Code    string `json:"code"`
+			Line    int64  `json:"line"`
+			Message string `json:"message"`
+			Param   string `json:"param"`
+		} `json:"data"`
+	} `json:"errors"`
+	ExpiredAt     Time              `json:"expired_at"`
+	ExpiresAt     Time              `json:"expires_at"`
+	FailedAt      Time              `json:"failed_at"`
+	FinalizingAt  Time              `json:"finalizing_at"`
+	ID            string            `json:"id"`
+	InProgressAt  Time              `json:"in_progress_at"`
+	InputFileID   string            `json:"input_file_id"` // Input data
+	Metadata      map[string]string `json:"metadata"`
+	Object        string            `json:"object"`         // "batch"
+	OutputFileID  string            `json:"output_file_id"` // Output data
+	RequestCounts struct {
+		Completed int64 `json:"completed"`
+		Failed    int64 `json:"failed"`
+		Total     int64 `json:"total"`
+	} `json:"request_counts"`
+	Status string `json:"status"` // "completed", "in_progress", "validating", "finalizing"
+}
+
+//
+
 // https://platform.openai.com/docs/api-reference/models/object
 //
 // Sadly the modalities aren't reported. The only way I can think of to find it at run time is to fetch
@@ -1114,6 +1214,178 @@ func (c *Client) isImage(opts genai.Options) bool {
 	default:
 		return opts != nil && opts.Modality() == genai.ModalityImage
 	}
+}
+
+func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
+	if err := c.Validate(); err != nil {
+		return "", err
+	}
+	if err := msgs.Validate(); err != nil {
+		return "", err
+	}
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return "", err
+		}
+	}
+	// Upload the messages and options as a file.
+	b2 := BatchRequestInput{CustomID: "TODO", Method: "POST", URL: "/v1/chat/completions"}
+	if err := b2.Body.Init(msgs, opts, c.Model); err != nil {
+		return "", err
+	}
+	raw, err := json.Marshal(b2)
+	if err != nil {
+		return "", err
+	}
+	fileID, err := c.FileAdd(ctx, "batch.json", bytes.NewReader(raw), 24*time.Hour)
+	if err != nil {
+		return "", err
+	}
+	b := BatchRequest{CompletionWindow: "24h", Endpoint: "/v1/chat/completions", InputFileID: fileID}
+	resp, err := c.GenAsyncRaw(ctx, b)
+	if len(resp.Errors.Data) != 0 {
+		errs := []error{err}
+		for _, d := range resp.Errors.Data {
+			errs = append(errs, fmt.Errorf("batch error on line %d: %s (%s)", d.Line, d.Message, d.Code))
+		}
+		err = errors.Join(errs...)
+	}
+	return genai.Job(resp.ID), err
+}
+
+func (c *Client) GenAsyncRaw(ctx context.Context, b BatchRequest) (Batch, error) {
+	resp := Batch{}
+	err := c.DoRequest(ctx, "POST", "https://api.openai.com/v1/batches", &b, &resp)
+	return resp, err
+}
+
+func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, error) {
+	res := genai.Result{}
+	resp, err := c.PokeResultRaw(ctx, id)
+	if len(resp.Errors.Data) != 0 {
+		errs := []error{err}
+		for _, d := range resp.Errors.Data {
+			errs = append(errs, fmt.Errorf("batch error on line %d: %s (%s)", d.Line, d.Message, d.Code))
+		}
+		err = errors.Join(errs...)
+	}
+	if resp.Status == "validating" || resp.Status == "in_progress" || resp.Status == "finalizing" {
+		res.FinishReason = genai.Pending
+	}
+	if resp.OutputFileID != "" {
+		f, err2 := c.FileGet(ctx, resp.OutputFileID)
+		if err == nil {
+			err = err2
+		}
+		if f != nil {
+			defer f.Close()
+			out := BatchRequestOutput{}
+			d := json.NewDecoder(f)
+			d.UseNumber()
+			if !c.ClientJSON.Lenient {
+				d.DisallowUnknownFields()
+			}
+			if err = d.Decode(&out); err != nil {
+				return res, err
+			}
+			res, err2 = out.Response.Body.ToResult()
+			if err2 == nil && out.Error.Message != "" {
+				err2 = fmt.Errorf("error %s: %s", out.Error.Code, out.Error.Message)
+			}
+		}
+		if err == nil {
+			err = err2
+		}
+	}
+	// TODO: Delete the input and output files.
+	return res, err
+}
+
+func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (Batch, error) {
+	out := Batch{}
+	u := "https://api.openai.com/v1/batches/" + url.PathEscape(string(id))
+	err := c.DoRequest(ctx, "GET", u, nil, &out)
+	return out, err
+}
+
+// Cancel cancels an in-progress batch. The batch will be in status cancelling for up to 10 minutes, before
+// changing to cancelled, where it will have partial results (if any) available in the output file.
+func (c *Client) Cancel(ctx context.Context, id genai.Job) error {
+	_, err := c.CancelRaw(ctx, id)
+	return err
+}
+
+func (c *Client) CancelRaw(ctx context.Context, id genai.Job) (Batch, error) {
+	u := "https://api.openai.com/v1/batches/" + url.PathEscape(string(id)) + "/cancel"
+	resp := Batch{}
+	err := c.DoRequest(ctx, "POST", u, nil, &resp)
+	// TODO: Delete the file too.
+	return resp, err
+}
+
+func (c *Client) FileAdd(ctx context.Context, filename string, r io.ReadSeeker, ttl time.Duration) (string, error) {
+	// https://platform.openai.com/docs/api-reference/files/create
+	buf := bytes.Buffer{}
+	w := multipart.NewWriter(&buf)
+	// We don't need this to be random, and setting it to be deterministic makes HTTP playback possible.
+	w.SetBoundary("80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1")
+	if err := w.WriteField("purpose", "batch"); err != nil {
+		return "", err
+	}
+	part, err := w.CreateFormFile("file", filename)
+	if err != nil {
+		return "", err
+	}
+	if _, err = io.Copy(part, r); err != nil {
+		return "", err
+	}
+	if err = w.Close(); err != nil {
+		return "", err
+	}
+	u := "https://api.openai.com/v1/files"
+	req, err := http.NewRequestWithContext(ctx, "POST", u, &buf)
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("Content-Type", w.FormDataContentType())
+	resp, err := c.ClientJSON.Client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	f := File{}
+	err = c.DecodeResponse(resp, u, &f)
+	return f.ID, err
+}
+
+func (c *Client) FileGet(ctx context.Context, id string) (io.ReadCloser, error) {
+	// https://platform.openai.com/docs/api-reference/files/retrieve-contents
+	u := "https://api.openai.com/v1/files/" + url.PathEscape(string(id)) + "/content"
+	req, err := http.NewRequestWithContext(ctx, "GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := c.ClientJSON.Client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 200 {
+		return nil, c.DecodeError(u, resp)
+	}
+	return resp.Body, nil
+}
+
+func (c *Client) FileDel(ctx context.Context, id string) error {
+	// https://platform.openai.com/docs/api-reference/files/delete
+	url := "https://api.openai.com/v1/files/" + url.PathEscape(string(id))
+	out := FileDeleteResponse{}
+	return c.DoRequest(ctx, "DELETE", url, nil, &out)
+}
+
+func (c *Client) FileList(ctx context.Context) ([]File, error) {
+	// TODO: Pagination. It defaults at 10000 items per page.
+	resp := FileListResponse{}
+	err := c.DoRequest(ctx, "GET", "https://api.openai.com/v1/files", nil, &resp)
+	return resp.Data, err
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {

@@ -126,6 +126,7 @@ func Example_all_GetProvidersGenAsync() {
 	// Output:
 	// anthropic
 	// bfl
+	// openai
 }
 
 // GetProvidersGenAsync returns all the providers that support asynchronous (batch) operations.

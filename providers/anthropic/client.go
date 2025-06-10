@@ -12,6 +12,7 @@ package anthropic
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -383,58 +384,59 @@ func (m *Message) To(out *genai.Message) error {
 
 type Content struct {
 	Type ContentType `json:"type"`
-	// Type == "text"
+	// Valid with Type == ContentText.
 	Text string `json:"text,omitzero"`
 
-	// Type == "thinking"
+	// Valid with Type == ContentThinking.
 	Thinking  string `json:"thinking,omitzero"`
 	Signature []byte `json:"signature,omitzero"`
 
-	// Type == "redacted_thinking"
+	// Valid with Type == ContentRedactedThinking.
 	Data string `json:"data,omitzero"`
 
-	// Type == "text", "image", "tool_use", "tool_result", "document"
+	// Valid with Type == ContentText, ContentImage, ContentDocument, ContentToolUse, ContentToolResult.
 	CacheControl struct {
 		Type string `json:"type,omitzero"` // "ephemeral"
 	} `json:"cache_control,omitzero"`
 
-	// Type == "text", "document"
+	// Valid with Type == ContentText, ContentDocument.
 	Citations Citations `json:"citations,omitzero"`
 
-	// Type == "image", "document"
+	// Valid with Type == ContentImage, ContentDocument.
 	Source struct {
-		// Content.Type == "image": "base64", "url"
-		// Content.Type == "document": "base64, "url", "text", "content"
-		Type string `json:"type,omitzero"`
+		Type SourceType `json:"type,omitzero"`
 
-		// Type == "base64", "url", "text"
-		// Content.Type == "image": "image/jpeg", "image/png", "image/gif", "image/webp"
-		// Content.Type == "document": "application/pdf", "text/plain"
+		// Valid with Source.Type == SourceBase64, SourceURL, SourceText
+		// Content.Type == ContentImage: "image/jpeg", "image/png", "image/gif", "image/webp"
+		// Content.Type == ContentDocument: "application/pdf", "text/plain"
 		MediaType string `json:"media_type,omitzero"`
 
-		// Type == "base64", "text"
-		Data []byte `json:"data,omitzero"` // base64 encoded if base64, else as is, e.g. text plain data.
+		// Valid with Source.Type == SourceBase64, SourceURL, SourceText
+		Data string `json:"data,omitzero"` // base64 encoded if base64, else as is, e.g. text plain data.
 
-		// Type == "url"
+		// Valid with Source.Type == SourceURL
 		URL string `json:"url,omitzero"`
 
-		// Type == "content"
-		// Only "text" and "image" are allowed.
+		// Valid with Source.Type == SourceContent
+		// Only ContentText and ContentImage are allowed.
 		Content []Content `json:"content,omitzero"`
+
+		// Valid with Source.Type == SourceFileID
+		FileID string `json:"file_id,omitzero"` // File ID for the content, used for file uploads.
 	} `json:"source,omitzero"`
 
-	// Type == "tool_use"
+	// Valid with Type == ContentToolUse
 	ID    string `json:"id,omitzero"`
 	Input any    `json:"input,omitzero"`
 	Name  string `json:"name,omitzero"`
 
-	// Type == "tool_result"
+	// Valid with Type == ContentToolResult
 	ToolUseID string `json:"tool_use_id,omitzero"`
 	IsError   bool   `json:"is_error,omitzero"`
-	// Only "text" and "image" are allowed.
+	// Only ContentText and ContentImage are allowed.
 	Content []Content `json:"content,omitzero"`
 
-	// "document"
+	// Valid with Type == ContentDocument
 	Context string `json:"context,omitzero"` // Context about the document that will not be cited from
 	Title   string `json:"title,omitzero"`   // Document title when using Source
 }
@@ -466,7 +468,7 @@ func (c *Content) Validate() error {
 			return errors.New("ContentRedactedThinking: unexpected fields set")
 		}
 	case ContentImage, ContentDocument:
-		if c.Source.Type == "" && c.Source.URL == "" && len(c.Source.Data) == 0 {
+		if c.Source.Type == "" && c.Source.URL == "" && c.Source.Data == "" {
 			return fmt.Errorf("%s: Source must be set", c.Type)
 		}
 		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || c.ID != "" || c.Name != "" || c.Input != nil ||
@@ -533,23 +535,34 @@ func (c *Content) FromContent(in *genai.Content) error {
 	case strings.HasPrefix(mimeType, "image/"):
 		c.Type = ContentImage
 		if in.URL != "" {
-			c.Source.Type = "url"
+			c.Source.Type = SourceURL
 			c.Source.URL = in.URL
 		} else {
 			c.Source.MediaType = mimeType
-			c.Source.Type = "base64"
-			c.Source.Data = data
+			c.Source.Type = SourceBase64
+			c.Source.Data = base64.StdEncoding.EncodeToString(data)
 		}
 	case mimeType == "application/pdf":
 		c.Type = ContentDocument
 		if in.URL != "" {
-			c.Source.Type = "url"
+			c.Source.Type = SourceURL
 			c.Source.URL = in.URL
 		} else {
 			c.Source.MediaType = mimeType
-			c.Source.Type = "base64"
-			c.Source.Data = data
+			c.Source.Type = SourceBase64
+			c.Source.Data = base64.StdEncoding.EncodeToString(data)
 		}
+	case strings.HasPrefix(mimeType, "text/plain"):
+		c.Type = ContentDocument
+		if in.URL != "" {
+			return errors.New("text/plain documents must be provided inline, not as a URL")
+		}
+		// In particular, the API refuses "text/plain; charset=utf-8". WTF.
+		c.Source.MediaType = "text/plain"
+		c.Source.Type = SourceText
+		c.Source.Data = string(data)
+		// Enable citations for text/plain documents
+		c.Citations = Citations{Enabled: true}
 	default:
 		return fmt.Errorf("unsupported content mime-type %s", mimeType)
 	}
@@ -614,14 +627,26 @@ func (c *Content) ToToolCall(out *genai.ToolCall) error {
 //
 // It can be actual citations. It is described in messages.content object[], type Text, citations []object.
 // https://docs.anthropic.com/en/api/messages#body-messages-content-citations
+//
+// https://docs.anthropic.com/en/docs/build-with-claude/citations
 type Citations struct {
 	Citations []Citations
 	Enabled   bool
 }
 
 type citationsObject struct {
-	Enabled bool `json:"Enabled"`
+	Enabled bool `json:"enabled"`
 }
+
+// SourceType is described at https://docs.anthropic.com/en/api/messages#body-messages-content-source
+type SourceType string
+
+const (
+	SourceBase64  SourceType = "base64"
+	SourceURL     SourceType = "url"
+	SourceText    SourceType = "text"
+	SourceContent SourceType = "content"
+)
 
 // UnmarshalJSON implements json.Unmarshaler for Citations.
 // It attempts to unmarshal the input as either a slice of Citations or a struct with an Enabled field.

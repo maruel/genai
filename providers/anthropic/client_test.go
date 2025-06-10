@@ -8,6 +8,7 @@ import (
 	_ "embed"
 	"net/http"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -22,6 +23,37 @@ import (
 
 func TestClient_Scoreboard(t *testing.T) {
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen { return getClient(t, m) }, nil)
+}
+
+func TestClient_Citations(t *testing.T) {
+	c := getClient(t, "claude-3-5-haiku-20241022")
+	msgs := genai.Messages{
+		genai.Message{
+			Role: genai.User,
+			Contents: []genai.Content{
+				{
+					Document: strings.NewReader("The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."),
+					Filename: "capital_info.txt",
+				},
+				{
+					Text: "What is the capital of Quackiland?",
+				},
+			},
+		},
+	}
+	res, err := c.GenSync(t.Context(), msgs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res.FinishReason != genai.FinishedStop {
+		t.Errorf("finish reason: %s", res.FinishReason)
+	}
+	t.Logf("Usage: %d input tokens, %d output tokens", res.InputTokens, res.OutputTokens)
+	t.Logf("Text: %q", res.AsText())
+	if s := res.AsText(); !strings.Contains(s, "Quackiland") {
+		t.Errorf("expected Quackiland, got: %q", s)
+	}
+	// TODO: Check for citations.
 }
 
 // This is a tricky test since batch operations can take up to 24h to complete.

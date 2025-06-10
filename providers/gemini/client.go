@@ -536,6 +536,9 @@ func (c *Content) To(out *genai.Message) error {
 //
 // https://ai.google.dev/api/caching?hl=en#Part
 type Part struct {
+	Thought bool `json:"thought,omitzero"` // TODO
+
+	// Union:
 	Text                string              `json:"text,omitzero"`
 	InlineData          Blob                `json:"inlineData,omitzero"` // Uploaded with /v1beta/cachedContents. Content is deleted after 1 hour.
 	FunctionCall        FunctionCall        `json:"functionCall,omitzero"`
@@ -543,6 +546,9 @@ type Part struct {
 	FileData            FileData            `json:"fileData,omitzero"`            // Uploaded with /upload/v1beta/files. Files are deleted after 2 days.
 	ExecutableCode      ExecutableCode      `json:"executableCode,omitzero"`      // TODO
 	CodeExecutionResult CodeExecutionResult `json:"codeExecutionResult,omitzero"` // TODO
+
+	// Union:
+	VideoMetadata VideoMetadata `json:"videoMetadata,omitzero"`
 }
 
 func (p *Part) FromContent(in *genai.Content) error {
@@ -626,6 +632,13 @@ type ExecutableCode struct {
 type CodeExecutionResult struct {
 	Outcome string `json:"outcome,omitzero"` // One of OUTCOME_UNSPECIFIED, OUTCOME_OK, OUTCOME_FAILED, OUTCOME_DEADLINE_EXCEEDED
 	Output  string `json:"output,omitzero"`
+}
+
+// https://ai.google.dev/api/caching#VideoMetadata
+type VideoMetadata struct {
+	StartOffset Duration `json:"startOffset,omitzero"`
+	EndOffset   Duration `json:"endOffset,omitzero"`
+	FPS         int64    `json:"fps,omitzero"` // Default: 1.0, range ]0, 24]
 }
 
 // https://ai.google.dev/api/generate-content?hl=en#ThinkingConfig
@@ -728,6 +741,9 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		// Lie for the benefit of everyone.
 		out.FinishReason = genai.FinishedToolCalls
 	}
+	// It'd be nice to have citation support, but it's only filled with
+	// https://ai.google.dev/api/semantic-retrieval/question-answering and the likes and as of June 2025, it
+	// only works in English (!)
 	return out, err
 }
 

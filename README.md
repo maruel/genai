@@ -281,3 +281,6 @@ list-models -provider hugginface
 ## TODO
 
 - Citations
+- Real-time / Live
+- More comprehensive file/cache abstraction
+- Tokens counting

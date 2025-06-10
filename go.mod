@@ -9,7 +9,7 @@ require (
 	github.com/maruel/huggingface v0.0.0-20250313181651-d85dcc86b10e
 	github.com/maruel/roundtrippers v0.3.3
 	golang.org/x/sync v0.12.0
-	gopkg.in/dnaeon/go-vcr.v4 v4.0.2
+	gopkg.in/dnaeon/go-vcr.v4 v4.0.3
 )
 
 require (

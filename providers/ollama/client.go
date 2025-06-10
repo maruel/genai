@@ -189,11 +189,22 @@ func (m *Message) From(in *genai.Message) error {
 			if err != nil {
 				return err
 			}
-			// Only support images.
-			if !strings.HasPrefix(mimeType, "image/") {
+			switch {
+			case strings.HasPrefix(mimeType, "image/"):
+				m.Images = append(m.Images, data)
+			case strings.HasPrefix(mimeType, "text/plain"):
+				if in.Contents[i].URL != "" {
+					return errors.New("text/plain documents must be provided inline, not as a URL")
+				}
+				// Append text/plain document content to the message content
+				if m.Content != "" {
+					m.Content += "\n" + string(data)
+				} else {
+					m.Content = string(data)
+				}
+			default:
 				return fmt.Errorf("ollama unsupported content type %q", mimeType)
 			}
-			m.Images = append(m.Images, data)
 		}
 	}
 	if len(in.ToolCalls) != 0 {

@@ -510,11 +510,13 @@ type ContentFragment struct {
 	// ToolCall is a tool call that the LLM requested to make.
 	ToolCall ToolCall `json:"tool_call,omitzero"`
 
+	Citation Citation `json:"citation,omitzero"`
+
 	_ struct{}
 }
 
 func (m *ContentFragment) IsZero() bool {
-	return m.TextFragment == "" && m.ThinkingFragment == "" && len(m.Opaque) == 0 && m.Filename == "" && len(m.DocumentFragment) == 0 && m.URL == "" && m.ToolCall.IsZero()
+	return m.TextFragment == "" && m.ThinkingFragment == "" && len(m.Opaque) == 0 && m.Filename == "" && len(m.DocumentFragment) == 0 && m.URL == "" && m.ToolCall.IsZero() && m.Citation.IsZero()
 }
 
 func (m *ContentFragment) GoString() string {
@@ -602,6 +604,12 @@ func (m *Message) Accumulate(mf ContentFragment) error {
 
 	if mf.ToolCall.Name != "" {
 		m.ToolCalls = append(m.ToolCalls, mf.ToolCall)
+		return nil
+	}
+
+	if !mf.Citation.IsZero() {
+		// For now always add a new block.
+		m.Contents = append(m.Contents, Content{Citations: []Citation{mf.Citation}})
 		return nil
 	}
 
@@ -758,6 +766,10 @@ func (c *Citation) Validate() error {
 	return nil
 }
 
+func (c *Citation) IsZero() bool {
+	return c.Text == "" && c.StartIndex == 0 && c.EndIndex == 0 && len(c.Sources) == 0 && len(c.Location) == 0 && c.Type == ""
+}
+
 // CitationSource represents a source that supports a citation.
 type CitationSource struct {
 	// ID is a unique identifier for the source (e.g., document ID, tool call ID).
@@ -787,6 +799,10 @@ func (cs *CitationSource) Validate() error {
 		return fmt.Errorf("citation source must have either ID or URL")
 	}
 	return nil
+}
+
+func (cs *CitationSource) IsZero() bool {
+	return cs.ID == "" && cs.Type == "" && cs.Title == "" && cs.URL == "" && len(cs.Metadata) == 0
 }
 
 //
@@ -889,6 +905,8 @@ type FunctionalityText struct {
 	JSON bool
 	// JSONSchema means that the model supports enforcing that the response is a specific JSON schema.
 	JSONSchema bool
+	// Citations is set when the provider and model combination supports citations in the response.
+	Citations bool
 
 	// BrokenTokenUsage means that the usage is not correctly reported.
 	BrokenTokenUsage bool

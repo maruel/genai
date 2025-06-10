@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 248
+        host: api.cerebras.ai
+        body: |
+            {"model":"llama-4-scout-17b-16e-instruct","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-fc03832a-2b6f-4eb5-9293-6b1a77b7bb98","choices":[{"finish_reason":"stop","index":0,"message":{"content":"The information provided already states that the capital of Quackiland is Quack. Therefore, the answer to the question is Quack. The mention of the Big Canard Statue being located in Quack is additional information but does not change the fact that Quack is the capital.","role":"assistant"}}],"created":1749596110,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cbc10163c2c34afca015","object":"chat.completion","usage":{"prompt_tokens":40,"completion_tokens":58,"total_tokens":98,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.0002641,"prompt_time":0.003026126,"completion_time":0.029986631,"total_time":0.03481268882751465,"created":1749596110}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94dc746c7be2a306-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-fc03832a-2b6f-4eb5-9293-6b1a77b7bb98
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14400"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Reset-Requests-Day:
+                - "3889.0684852600098"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "49.068485260009766"
+            X-Request-Id:
+                - 94dc746c7be2a306-YUL
+        status: 200 OK
+        code: 200
+        duration: 195ms

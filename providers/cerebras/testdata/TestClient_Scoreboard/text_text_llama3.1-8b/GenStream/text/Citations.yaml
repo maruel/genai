@@ -1,0 +1,97 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 243
+        host: api.cerebras.ai
+        body: |
+            {"model":"llama3.1-8b","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-5a369647-1c7e-4539-a43b-bf689909f363","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1749596110,"model":"llama3.1-8b","system_fingerprint":"fp_aa9babaf3dbc9cafe0b5","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5a369647-1c7e-4539-a43b-bf689909f363","choices":[{"delta":{"content":"According"},"index":0}],"created":1749596110,"model":"llama3.1-8b","system_fingerprint":"fp_aa9babaf3dbc9cafe0b5","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5a369647-1c7e-4539-a43b-bf689909f363","choices":[{"delta":{"content":" to"},"index":0}],"created":1749596110,"model":"llama3.1-8b","system_fingerprint":"fp_aa9babaf3dbc9cafe0b5","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5a369647-1c7e-4539-a43b-bf689909f363","choices":[{"delta":{"content":" the"},"index":0}],"created":1749596110,"model":"llama3.1-8b","system_fingerprint":"fp_aa9babaf3dbc9cafe0b5","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5a369647-1c7e-4539-a43b-bf689909f363","choices":[{"delta":{"content":" provided"},"index":0}],"created":1749596110,"model":"llama3.1-8b","system_fingerprint":"fp_aa9babaf3dbc9cafe0b5","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5a369647-1c7e-4539-a43b-bf689909f363","choices":[{"delta":{"content":" information"},"index":0}],"created":1749596110,"model":"llama3.1-8b","system_fingerprint":"fp_aa9babaf3dbc9cafe0b5","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5a369647-1c7e-4539-a43b-bf689909f363","choices":[{"delta":{"content":","},"index":0}],"created":1749596110,"model":"llama3.1-8b","system_fingerprint":"fp_aa9babaf3dbc9cafe0b5","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5a369647-1c7e-4539-a43b-bf689909f363","choices":[{"delta":{"content":" the"},"index":0}],"created":1749596110,"model":"llama3.1-8b","system_fingerprint":"fp_aa9babaf3dbc9cafe0b5","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5a369647-1c7e-4539-a43b-bf689909f363","choices":[{"delta":{"content":" capital"},"index":0}],"created":1749596110,"model":"llama3.1-8b","system_fingerprint":"fp_aa9babaf3dbc9cafe0b5","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5a369647-1c7e-4539-a43b-bf689909f363","choices":[{"delta":{"content":" of"},"index":0}],"created":1749596110,"model":"llama3.1-8b","system_fingerprint":"fp_aa9babaf3dbc9cafe0b5","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5a369647-1c7e-4539-a43b-bf689909f363","choices":[{"delta":{"content":" Qu"},"index":0}],"created":1749596110,"model":"llama3.1-8b","system_fingerprint":"fp_aa9babaf3dbc9cafe0b5","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5a369647-1c7e-4539-a43b-bf689909f363","choices":[{"delta":{"content":"ack"},"index":0}],"created":1749596110,"model":"llama3.1-8b","system_fingerprint":"fp_aa9babaf3dbc9cafe0b5","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5a369647-1c7e-4539-a43b-bf689909f363","choices":[{"delta":{"content":"iland"},"index":0}],"created":1749596110,"model":"llama3.1-8b","system_fingerprint":"fp_aa9babaf3dbc9cafe0b5","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5a369647-1c7e-4539-a43b-bf689909f363","choices":[{"delta":{"content":" is"},"index":0}],"created":1749596110,"model":"llama3.1-8b","system_fingerprint":"fp_aa9babaf3dbc9cafe0b5","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5a369647-1c7e-4539-a43b-bf689909f363","choices":[{"delta":{"content":" Qu"},"index":0}],"created":1749596110,"model":"llama3.1-8b","system_fingerprint":"fp_aa9babaf3dbc9cafe0b5","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5a369647-1c7e-4539-a43b-bf689909f363","choices":[{"delta":{"content":"ack"},"index":0}],"created":1749596110,"model":"llama3.1-8b","system_fingerprint":"fp_aa9babaf3dbc9cafe0b5","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5a369647-1c7e-4539-a43b-bf689909f363","choices":[{"delta":{"content":"."},"index":0}],"created":1749596110,"model":"llama3.1-8b","system_fingerprint":"fp_aa9babaf3dbc9cafe0b5","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5a369647-1c7e-4539-a43b-bf689909f363","choices":[{"delta":{},"index":0}],"created":1749596110,"model":"llama3.1-8b","system_fingerprint":"fp_aa9babaf3dbc9cafe0b5","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5a369647-1c7e-4539-a43b-bf689909f363","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1749596110,"model":"llama3.1-8b","system_fingerprint":"fp_aa9babaf3dbc9cafe0b5","object":"chat.completion.chunk","usage":{"prompt_tokens":89,"completion_tokens":17,"total_tokens":106,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000485783,"prompt_time":0.004421483,"completion_time":0.007531904,"total_time":0.014133214950561523,"created":1749596110}}
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94dc74690f3aa306-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Inference-Id:
+                - chatcmpl-5a369647-1c7e-4539-a43b-bf689909f363
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14398"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "59894"
+            X-Ratelimit-Reset-Requests-Day:
+                - "3889.686382293701"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "49.68638229370117"
+            X-Request-Id:
+                - 94dc74690f3aa306-YUL
+        status: 200 OK
+        code: 200
+        duration: 118ms

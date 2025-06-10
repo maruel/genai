@@ -239,8 +239,10 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 				t.Errorf("unexpected thinking: %#v", resp.Message)
 			}
 		}
-		// Some models are really bad at instruction following.
-		ValidateWordResponse(t, resp, "hello", "hey", "hi")
+		// Some models are really bad at instruction following, and perplexity is not even trying.
+		if !strings.Contains(model, "sonar") {
+			ValidateWordResponse(t, resp, "hello", "hey", "hi")
+		}
 	})
 
 	t.Run("MaxTokens", func(t *testing.T) {
@@ -353,12 +355,17 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		}
 		msgs := genai.Messages{genai.NewTextMessage(genai.User, "Is a banana a fruit? Reply as JSON according to the provided schema.")}
 		resp, err := runGenText(t, g(t, model), msgs, &genai.OptionsText{DecodeAs: &got}, stream)
-		if !basicCheck(t, err, f.JSONSchema) {
+		if !basicCheckAcceptUnexpectedSuccess(t, err, f.JSONSchema) {
 			return
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
 		if err := resp.Decode(&got); err != nil {
+			if !f.JSONSchema {
+				return
+			}
 			t.Fatal(err)
+		} else if !f.JSONSchema {
+			t.Fatal("unexpected success")
 		}
 		if !got.IsFruit {
 			t.Fatal(got.IsFruit)
@@ -583,6 +590,61 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 					t.Fatalf("had too many tool calls: %#v", resp.ToolCalls)
 				}
 			})
+		}
+	})
+
+	t.Run("Citations", func(t *testing.T) {
+		msgs := genai.Messages{
+			genai.Message{
+				Role: genai.User,
+				Contents: []genai.Content{
+					{
+						Document: strings.NewReader("The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."),
+						Filename: "capital_info.txt",
+					},
+					{
+						Text: "What is the capital of Quackiland?",
+					},
+				},
+			},
+		}
+		want := "Quackiland"
+		// Do a one off for perplexity since it can only search on live web results.
+		isPerplexity := strings.Contains(model, "sonar")
+		if isPerplexity {
+			msgs = genai.Messages{genai.NewTextMessage(genai.User, "What is the capital of France?")}
+			want = "Paris"
+		}
+		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
+		if !basicCheckAcceptUnexpectedSuccess(t, err, f.Citations) {
+			return
+		}
+		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
+		if s := resp.AsText(); !strings.Contains(s, want) && f.Citations {
+			// Small models may not return the string as-is.
+			t.Errorf("expected %s, got: %q", want, s)
+		}
+		foundCitations := false
+		for _, content := range resp.Contents {
+			if len(content.Citations) > 0 {
+				foundCitations = true
+				t.Logf("Found %d citations in content", len(content.Citations))
+				for i, citation := range content.Citations {
+					t.Logf("Citation %d: text=%q, type=%q, start=%d, end=%d", i, citation.Text, citation.Type, citation.StartIndex, citation.EndIndex)
+					if len(citation.Sources) > 0 {
+						t.Logf("  Sources: %+v", citation.Sources)
+					}
+				}
+			}
+		}
+		if !foundCitations {
+			if f.Citations {
+				t.Fatalf("expected citations in response, but found none")
+			}
+		} else {
+			if !f.Citations {
+				t.Fatalf("unexpected citations in response")
+			}
 		}
 	})
 }
@@ -1050,6 +1112,7 @@ func ValidateWordResponse(t *testing.T, resp genai.Result, want ...string) {
 	got := resp.AsText()
 	cleaned := strings.TrimRight(strings.TrimSpace(strings.ToLower(got)), ".!")
 	if !slices.Contains(want, cleaned) {
+		t.Helper()
 		t.Fatalf("Expected %q, got %q", strings.Join(want, ", "), got)
 	}
 }

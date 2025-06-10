@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 509
+        host: api.perplexity.ai
+        body: |
+            {"model":"sonar","messages":[{"role":"user","content":"Is a banana a fruit? Reply as JSON according to the provided schema."}],"return_images":true,"return_related_questions":true,"stream":false,"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean","description":"True if the answer is that it is a fruit, false otherwise"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id": "ddf26a39-a3b4-4e98-b4f7-fe2f87a1e00f", "model": "sonar", "created": 1749593930, "usage": {"prompt_tokens": 15, "completion_tokens": 7, "total_tokens": 22, "search_context_size": "low"}, "citations": ["https://en.wikipedia.org/wiki/Banana", "https://www.healthline.com/nutrition/bananas-berries-or-fruits", "https://www.vinmec.com/eng/article/is-a-banana-a-berry-or-a-fruit-en", "https://www.medicinenet.com/are_bananas_classified_as_a_fruit_or_a_berry/article.htm", "https://www.britannica.com/plant/banana-plant"], "search_results": [{"title": "Banana - Wikipedia", "url": "https://en.wikipedia.org/wiki/Banana", "date": null}, {"title": "Is a Banana a Berry or Fruit? The Surprising Truth - Healthline", "url": "https://www.healthline.com/nutrition/bananas-berries-or-fruits", "date": "2018-12-14"}, {"title": "Are bananas berries or fruits? - Vinmec", "url": "https://www.vinmec.com/eng/article/is-a-banana-a-berry-or-a-fruit-en", "date": null}, {"title": "Are Bananas Classified as a Fruit or a Berry? - MedicineNet", "url": "https://www.medicinenet.com/are_bananas_classified_as_a_fruit_or_a_berry/article.htm", "date": null}, {"title": "Banana | Description, History, Cultivation, Nutrition, Benefits, & Facts", "url": "https://www.britannica.com/plant/banana-plant", "date": null}], "images": [{"image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Bananavarieties.jpg/250px-Bananavarieties.jpg", "origin_url": "https://en.wikipedia.org/wiki/Banana", "height": 143, "width": 250}, {"image_url": "https://www.freshpoint.com/wp-content/uploads/2019/04/freshpoint-produce-101-banana-ripening-chart-v3.jpg", "origin_url": "https://www.freshpoint.com/news/produce-101-banana-guide/", "height": 4583, "width": 2292}, {"image_url": "https://eximasian.com/wp-content/uploads/2022/06/Top-12-Banana-Variety4.jpg", "origin_url": "https://eximasian.com/blog/top-10-banana-varieties/", "height": 1040, "width": 1000}, {"image_url": "https://www.onlyfoods.net/wp-content/uploads/2020/08/Types-of-Banana.jpg", "origin_url": "https://www.onlyfoods.net/types-of-bananas.html", "height": 2144, "width": 1450}, {"image_url": "https://cdn.mos.cms.futurecdn.net/v2/t:0,l:0,cw:2120,ch:1193,q:80,w:2120/kzMYKaqQhtY2EzL7GABdah.jpg", "origin_url": "https://www.livescience.com/57477-why-are-bananas-considered-berries.html", "height": 1193, "width": 2120}], "related_questions": ["Why are bananas considered berries", "What are the main differences between fruits and berries", "How do bananas fit into the classification of fleshy fruits", "What are the characteristics of a botanical berry", "How do the seeds of bananas contribute to their classification"], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "{\"is_fruit\": true}"}, "delta": {"role": "assistant", "content": ""}}]}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94dc3f1f2fcf6e08-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 2.931s

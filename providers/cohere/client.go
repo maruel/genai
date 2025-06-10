@@ -49,12 +49,14 @@ var Scoreboard = genai.Scoreboard{
 				IndecisiveTool: genai.True,
 				JSON:           true,
 				JSONSchema:     true,
+				Citations:      true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
 				JSONSchema:     true,
+				Citations:      true,
 			},
 		},
 	},
@@ -838,8 +840,15 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		case ChunkToolCallEnd:
 			pendingCall.To(&f.ToolCall)
 			pendingCall = ToolCall{}
-		case ChunkCitationStart, ChunkCitationEnd:
-			// TODO:
+		case ChunkCitationStart:
+			if len(pkt.Delta.Message.Citations) == 1 {
+				if err := pkt.Delta.Message.Citations[0].To(&f.Citation); err != nil {
+					return fmt.Errorf("mapping citations: %w", err)
+				}
+			} else {
+				return fmt.Errorf("expected one citation, got %d", len(pkt.Delta.Message.Citations))
+			}
+		case ChunkCitationEnd:
 		default:
 			if !internal.BeLenient {
 				return fmt.Errorf("unknown packet %q", pkt.Type)

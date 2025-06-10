@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 245
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"model":"qwen-qwq-32b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-b1956449-93d7-44df-8532-da3964fea279","object":"chat.completion","created":1749596110,"model":"qwen-qwq-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\n\u003cthink\u003e\nOkay, let's see. The user is asking for the capital of Quackiland. Let me check the information they provided. The first sentence says, \"The capital of Quackiland is Quack.\" Then it mentions that the Big Canard Statue is located in Quack. So the question is straightforward, right?\n\nWait, sometimes people might get confused if there's any trick here. Maybe they're testing if I read the first sentence correctly. The answer is right there in the first statement. The capital is Quack. The second sentence about the statue is just additional info, but it reinforces that Quack is indeed the location, which is the capital. \n\nI should make sure there's no trick. Sometimes questions like this have a play on words. \"Quack\" sounds like the noise a duck makes, but in this context, it's the name of the capital. The country is Quackiland, so the capital being Quack makes sense. Maybe it's a fictional place, but according to the given data, the answer is clear. The user probably just wants confirmation. \n\nNo need to overcomplicate. The answer is Quack. I'll present it clearly.\n\u003c/think\u003e\n\nThe capital of Quackiland is **Quack**, as explicitly stated in the provided information. The mention of the Big Canard Statue being located there further confirms Quack as the capital. straightforward answer: **Quack**."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.049947232,"prompt_tokens":39,"prompt_time":0.005963114,"completion_tokens":290,"completion_time":0.674524137,"total_tokens":329,"total_time":0.680487251},"usage_breakdown":{"models":null},"system_fingerprint":"fp_a91d9c2cfb","x_groq":{"id":"req_01jxe0vzsxe0x8yggn192vgejd"}}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94dc746b6e46a251-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - us-central-1
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "249967"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 7.92ms
+            X-Request-Id:
+                - req_01jxe0vzsxe0x8yggn192vgejd
+        status: 200 OK
+        code: 200
+        duration: 798ms

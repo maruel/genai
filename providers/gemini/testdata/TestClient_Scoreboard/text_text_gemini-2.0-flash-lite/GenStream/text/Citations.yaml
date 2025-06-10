@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 257
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"inlineData":{"mimeType":"text/plain; charset=utf-8","data":"VGhlIGNhcGl0YWwgb2YgUXVhY2tpbGFuZCBpcyBRdWFjay4gVGhlIEJpZyBDYW5hcmQgU3RhdHVlIGlzIGxvY2F0ZWQgaW4gUXVhY2su"}},{"text":"What is the capital of Quackiland?"}]}]}
+        form:
+            alt:
+                - sse
+            key:
+                - AIzaSyCqpVIzmMbgVxSEB6gEJsggX6KWAXdTua8
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:streamGenerateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"The\"}],\"role\": \"model\"}}],\"usageMetadata\": {},\"modelVersion\": \"gemini-2.0-flash-lite\",\"responseId\": \"zrdIaLCbJJyp1dkP-LDluQQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" capital of Quackiland is Quack.\\n\"}],\"role\": \"model\"},\"finishReason\": \"STOP\"}],\"usageMetadata\": {\"promptTokenCount\": 30,\"candidatesTokenCount\": 11,\"totalTokenCount\": 41,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 30}],\"candidatesTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 11}]},\"modelVersion\": \"gemini-2.0-flash-lite\",\"responseId\": \"zrdIaLCbJJyp1dkP-LDluQQ\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=227
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 239ms

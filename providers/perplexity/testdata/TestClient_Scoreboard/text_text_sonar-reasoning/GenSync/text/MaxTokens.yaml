@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 176
+        host: api.perplexity.ai
+        body: |
+            {"model":"sonar-reasoning","messages":[{"role":"user","content":"Tell a joke in 10 words"}],"max_tokens":3,"return_images":true,"return_related_questions":true,"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id": "df9128e0-5900-4c4d-8888-2299c8b9453d", "model": "sonar-reasoning", "created": 1749593957, "usage": {"prompt_tokens": 7, "completion_tokens": 3, "total_tokens": 10, "search_context_size": "low"}, "citations": ["https://boards.straightdope.com/t/jokes-10-words-or-shorter/629165", "https://www.rd.com/list/short-jokes/", "https://parade.com/1287449/marynliles/short-jokes/", "https://boards.straightdope.com/t/funniest-jokes-in-10-words-or-less/941946", "https://www.countryliving.com/life/a27452412/best-dad-jokes/"], "search_results": [{"title": "Jokes: 10 words or shorter - Straight Dope Message Board", "url": "https://boards.straightdope.com/t/jokes-10-words-or-shorter/629165", "date": null}, {"title": "105 Short Jokes Anyone Can Remember | Reader''s Digest", "url": "https://www.rd.com/list/short-jokes/", "date": "2024-06-20"}, {"title": "200 Short Jokes for a Quick Laugh - Parade", "url": "https://parade.com/1287449/marynliles/short-jokes/", "date": "2024-12-26"}, {"title": "Funniest jokes in 10 words or less - Straight Dope Message Board", "url": "https://boards.straightdope.com/t/funniest-jokes-in-10-words-or-less/941946", "date": "2021-05-12"}, {"title": "300 Corny Dad Jokes that Will Make Anyone Laugh and Groan", "url": "https://www.countryliving.com/life/a27452412/best-dad-jokes/", "date": "2025-04-24"}], "images": [{"image_url": "https://hips.hearstapps.com/hmg-prod/images/jokes-for-kids-15-1631055116.png?crop=1.00xw:0.446xh;0,0.266xh&resize=980:*", "origin_url": "https://www.goodhousekeeping.com/life/parenting/g28581033/best-jokes-for-kids/", "height": 656, "width": 980}, {"image_url": "https://parade.com/.image/t_share/MjEyNTgyOTAyNjg3MzQ0MTM3/jokes-for-kids-toilet.jpg", "origin_url": "https://parade.com/968634/parade/jokes-for-kids/", "height": 675, "width": 1200}, {"image_url": "https://hips.hearstapps.com/hmg-prod/images/jokes-for-kids20-1626708865.jpg?crop=1xw:1xh;center,top&resize=980:*", "origin_url": "https://www.womansday.com/life/g37066433/jokes-for-kids/", "height": 1470, "width": 980}, {"image_url": "https://parade.com/.image/ar_16:9%2Cc_fill%2Ccs_srgb%2Cfl_progressive%2Cq_auto:good%2Cw_1200/MTkwNTc1ODgyMjAxMTQ2NDkz/knock-knock-joke-tank-you.jpg", "origin_url": "https://parade.com/944054/parade/knock-knock-jokes/", "height": 675, "width": 1200}, {"image_url": "https://www.weareteachers.com/wp-content/uploads/1-169-800x800.jpg", "origin_url": "https://www.weareteachers.com/knock-knock-jokes-kids/", "height": 800, "width": 800}], "related_questions": ["What''s the shortest joke you''ve ever heard", "Can you share a joke that''s only 5 words long", "What''s the funniest one-liner you know", "Do you have a joke that''s just one word", "What''s the shortest joke that still makes sense"], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "length", "message": {"role": "assistant", "content": "<think>\nOkay"}, "delta": {"role": "assistant", "content": ""}}]}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94dc3fd2ce0e6e08-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 1.427s

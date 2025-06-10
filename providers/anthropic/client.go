@@ -58,12 +58,14 @@ var Scoreboard = genai.Scoreboard{
 				InputURL:    true,
 				Tools:       genai.True,
 				BiasedTool:  genai.True,
+				Citations:   true,
 			},
 			GenStream: &genai.FunctionalityText{
 				InputInline: true,
 				InputURL:    true,
 				Tools:       genai.True,
 				BiasedTool:  genai.True,
+				Citations:   true,
 			},
 		},
 		{
@@ -75,12 +77,14 @@ var Scoreboard = genai.Scoreboard{
 				InputURL:    true,
 				Tools:       genai.True,
 				BiasedTool:  genai.True,
+				Citations:   true,
 			},
 			GenStream: &genai.FunctionalityText{
 				InputInline: true,
 				InputURL:    true,
 				Tools:       genai.True,
 				BiasedTool:  genai.True,
+				Citations:   true,
 			},
 		},
 	},
@@ -917,38 +921,43 @@ type ChatStreamChunkResponse struct {
 
 	Index int64 `json:"index"`
 
-	// Type == "content_block_start"
+	// Type == ChunkContentBlockStart
 	ContentBlock struct {
 		Type ContentType `json:"type"`
 
-		// Type == "text"
+		// Type == ContentText
 		Text string `json:"text"`
 
-		// Type == "thinking"
+		// Type == ContentThinking
 		Thinking  string `json:"thinking"`
 		Signature []byte `json:"signature"` // Never actually filed but present on content_block_start.
 
-		// Type == "tool_use"
+		// Type == ContentToolUse
 		ID    string `json:"id"`
 		Name  string `json:"name"`
 		Input any    `json:"input"`
+
+		Citations []struct{} `json:"citations"` // Empty, not used in the API.
 	} `json:"content_block"`
 
-	// Type == "content_block_delta"
+	// Type == ChunkContentBlockDelta
 	Delta struct {
 		Type DeltaType `json:"type"`
 
-		// Type == "text_delta"
+		// Type == DeltaText
 		Text string `json:"text"`
 
-		// Type == "input_json_delta"
+		// Type == DeltaInputJSON
 		PartialJSON string `json:"partial_json"`
 
-		// Type == "thinking_delta"
+		// Type == DeltaThinking
 		Thinking string `json:"thinking"`
 
-		// Type == "signature_delta"
+		// Type == DeltaSignature
 		Signature []byte `json:"signature"`
+
+		// Type == DeltaCitations
+		Citation Citation `json:"citation"`
 
 		// Type == ""
 		StopReason   StopReason `json:"stop_reason"`
@@ -976,6 +985,7 @@ const (
 	DeltaInputJSON DeltaType = "input_json_delta"
 	DeltaThinking  DeltaType = "thinking_delta"
 	DeltaSignature DeltaType = "signature_delta"
+	DeltaCitations DeltaType = "citations_delta"
 )
 
 type Usage struct {
@@ -1523,6 +1533,10 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				f.Opaque = map[string]any{"signature": pkt.Delta.Signature}
 			case DeltaInputJSON:
 				pendingCall.Arguments += pkt.Delta.PartialJSON
+			case DeltaCitations:
+				if err := pkt.Delta.Citation.To(&f.Citation); err != nil {
+					return fmt.Errorf("failed to parse citation: %w", err)
+				}
 			default:
 				return fmt.Errorf("missing implementation for content block delta %q", pkt.Delta.Type)
 			}

@@ -1,0 +1,85 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 222
+        host: router.huggingface.co
+        body: |
+            {"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/hf-inference/models/Qwen%2FQwQ-32B/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 2784
+        body: '{"object":"chat.completion","id":"","created":1749596167,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"Okay, so I need to figure out the capital of Quackiland based on the information given. Let''s start by reading the question again carefully. The user says, \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" \n\nHmm, the first sentence directly states that the capital is Quack. Then the second sentence mentions a statue located in Quack. The question is asking again for the capital of Quackiland. Since the first sentence already provides the answer, maybe this is a straightforward question to confirm understanding. But perhaps there''s a trick here? Let me think.\n\nWait, maybe the user is testing if I can recognize that the answer is given right in the premise. Sometimes in these questions, they repeat the answer in the question to see if you get confused. The key details here are that Quack is the capital, and the Big Canard Statue is in Quack. Since the question is asking for the capital, the answer is right there. The mention of the statue might be extra information to see if I focus on the relevant part. \n\nAlternatively, could there be a possibility that \"Quack\" is just the name of the statue or something else? But the first sentence clearly says \"The capital of Quackiland is Quack.\" So the capital''s name is Quack. The second sentence just adds that a specific statue is located there. Therefore, the answer should be Quack. \n\nI don''t see any hidden tricks here. The information is presented straightforwardly. The user is probably checking if I can extract the answer from the given text without overcomplicating it. Let me make sure there''s no alternative interpretation. For instance, maybe Quack is a city and the capital is another city? But the first sentence says the capital is Quack, so that''s not the case. \n\nAnother angle: \"Big Canard Statue\" – \"canard\" means a false story or a duck. Maybe there''s a play on words? Maybe \"Canard\" refers to a duck, so the statue is of a duck, but that''s likely irrelevant. The key point is the location of the statue is in Quack, reinforcing that Quack is the city where the capital is. \n\nTherefore, the answer is definitely Quack.\n</think>\n\nThe capital of Quackiland is **Quack**. The first sentence explicitly states this, and the mention of the Big Canard Statue being located there serves as additional context but does not change the answer. The information is straightforward and directly provided in the question itself."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":39,"completion_tokens":536,"total_tokens":575}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "2784"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 a44cf9ed8a499212c53e0b8f57aa31f4.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - YWsfvNRVKRu56EYCup9w-LI-PL3f8FGt0dswd0lwxBZFrcRcbntQfg==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Compute-Characters:
+                - "170"
+            X-Compute-Time:
+                - "38.005936646"
+            X-Compute-Type:
+                - 4-nvida-l4
+            X-Generated-Tokens:
+                - "536"
+            X-Inference-Id:
+                - 6617d31a-e939-4148-8f23-95c4d754e48d
+            X-Inference-Time:
+                - "38005"
+            X-Powered-By:
+                - huggingface-moon
+            X-Prompt-Tokens:
+                - "39"
+            X-Proxied-Host:
+                - http://10.101.118.137
+            X-Proxied-Path:
+                - /v1/chat/completions
+            X-Proxied-Replica:
+                - cvzt8xzc-y9lwe
+            X-Queue-Time:
+                - "0"
+            X-Request-Id:
+                - 7Nb59HOBeh_U_key
+            X-Robots-Tag:
+                - none
+            X-Time-Per-Token:
+                - "70"
+            X-Total-Time:
+                - "38005"
+            X-Validation-Time:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 38.306s

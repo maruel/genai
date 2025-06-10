@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 168
+        host: api.perplexity.ai
+        body: |
+            {"model":"sonar-reasoning","messages":[{"role":"user","content":"What is the capital of France?"}],"return_images":true,"return_related_questions":true,"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id": "bd28da92-1f6e-45f8-a1e7-fc3c742bf4bd", "model": "sonar-reasoning", "created": 1749593964, "usage": {"prompt_tokens": 7, "completion_tokens": 578, "total_tokens": 585, "search_context_size": "low"}, "citations": ["https://en.wikipedia.org/wiki/Paris", "https://www.coe.int/en/web/interculturalcities/paris", "https://en.wikipedia.org/wiki/List_of_capitals_of_France", "https://www.britannica.com/place/Paris", "https://home.adelphi.edu/~ca19535/page%204.html"], "search_results": [{"title": "Paris - Wikipedia", "url": "https://en.wikipedia.org/wiki/Paris", "date": null}, {"title": "Paris, France - Intercultural City - The Council of Europe", "url": "https://www.coe.int/en/web/interculturalcities/paris", "date": null}, {"title": "List of capitals of France - Wikipedia", "url": "https://en.wikipedia.org/wiki/List_of_capitals_of_France", "date": null}, {"title": "Paris | Definition, Map, Population, Facts, & History - Britannica", "url": "https://www.britannica.com/place/Paris", "date": null}, {"title": "Paris facts: the capital of France in history", "url": "https://home.adelphi.edu/~ca19535/page%204.html", "date": null}], "images": [{"image_url": "https://home.adelphi.edu/~ca19535/paris_pic.jpg", "origin_url": "https://home.adelphi.edu/~ca19535/page%204.html", "height": 900, "width": 1440}, {"image_url": "https://www.worldatlas.com/r/w1200/upload/71/61/3a/shutterstock-111362132.jpg", "origin_url": "https://www.worldatlas.com/articles/what-is-the-capital-of-france.html", "height": 710, "width": 1000}, {"image_url": "https://www.iroamly.com/images/article/france/what-is-the-capital-of-france.webp", "origin_url": "https://www.iroamly.com/france-travel/what-is-the-capital-of-france.html", "height": 450, "width": 800}, {"image_url": "https://www.cia-france.com/media/122/meteo_1100x700.jpg", "origin_url": "https://www.cia-france.com/french-kids-teenage-courses/paris-school/visit-paris", "height": 700, "width": 1100}, {"image_url": "https://i.ytimg.com/vi/3IZss5o3ECQ/sddefault.jpg", "origin_url": "https://www.youtube.com/watch?v=3IZss5o3ECQ", "height": 480, "width": 640}], "related_questions": ["What are some famous landmarks in Paris", "How did Paris become the capital of France", "What is the history behind the nickname \"City of Light\" for Paris", "How has the population of Paris changed over the years", "What are some popular tourist activities in Paris"], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "<think>\nOkay, the user is asking what the capital of France is. Let''s look through the search results provided.\n\nFirst, looking at result [1], which is from Wikipedia, it clearly states that Paris is the capital and largest city of France. The population figure mentioned is 2,048,472 as of January 2025. That''s a recent update, so that''s a good sign. \n\nResult [3] from the List of capitals of France on Wikipedia says the capital has been Paris since its liberation in 1944. That confirms the post-WWII context. \n\nResult [4] from Britannica also starts by stating Paris is the city and capital of France, reinforcing the information. \n\nResult [5] from Adelphi University''s page reiterates Paris as the capital, mentioning that before Paris, Lyon was under the Romans, but Paris became the capital again under King Philippe Auguste. It also notes the brief interruption during WWII when Vichy was the capital. \n\nLooking at result [2], the Council of Europe page on Paris as an intercultural city starts with stating Paris is the capital and most populous city. \n\nAll the sources consistently point to Paris as the capital. Some historical context is there, like during WWII the capital was temporarily moved to Vichy, but since the liberation in 1944, Paris has been the capital again. The population numbers vary slightly between sources, but they all agree on Paris being the capital. \n\nSo, the answer is clear: Paris is the capital of France. Need to mention the current status, historical context, and maybe population. Ensure citations are correctly placed after each relevant fact.\n</think>\n\nThe capital of France is **Paris**, as it has remained since 1944[3]. Located in the \u00cele-de-France region along the Seine River, Paris serves as the economic, cultural, and administrative center of the country. With a population of approximately 2.04 million as of January 2025[1], it is France''s largest city and a global hub for finance, fashion, and gastronomy. \n\n### Historical Context  \nParis first became the capital under King Clovis in 508 AD but temporarily lost this status during the German occupation (1940\u20131944), when Vichy served as the capital[5]. It regained its position after World War II, solidifying its role as France''s enduring capital[3].  \n\nAdditional details from sources include:  \n- The Paris Region (\u00cele-de-France) has an estimated population of over 12 million[1][2].  \n- Paris is recognized for landmarks like Notre-Dame Cathedral and the Louvre, reflecting its rich cultural heritage[5].  \n- It ranks among the most expensive cities worldwide[1] and is a central player in international diplomacy and commerce[4]."}, "delta": {"role": "assistant", "content": ""}}]}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94dc3fd2ce0b6e08-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 7.969s

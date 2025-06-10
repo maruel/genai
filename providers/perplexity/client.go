@@ -37,11 +37,7 @@ var Scoreboard = genai.Scoreboard{
 			Out: []genai.Modality{genai.ModalityText},
 			Models: []string{
 				"r1-1776",
-				"sonar",
-				"sonar-pro",
 				"sonar-deep-research",
-				"sonar-reasoning-pro",
-				"sonar-reasoning",
 			},
 			GenSync: &genai.FunctionalityText{
 				Thinking:       true,
@@ -52,6 +48,42 @@ var Scoreboard = genai.Scoreboard{
 				Thinking:       true,
 				NoStopSequence: true,
 				JSONSchema:     true,
+			},
+		},
+		{
+			In:  []genai.Modality{genai.ModalityText},
+			Out: []genai.Modality{genai.ModalityText},
+			Models: []string{
+				"sonar",
+				"sonar-pro",
+			},
+			GenSync: &genai.FunctionalityText{
+				NoStopSequence: true,
+				JSONSchema:     true,
+				Citations:      true,
+			},
+			GenStream: &genai.FunctionalityText{
+				NoStopSequence: true,
+				Citations:      true,
+			},
+		},
+		{
+			In:  []genai.Modality{genai.ModalityText},
+			Out: []genai.Modality{genai.ModalityText},
+			Models: []string{
+				"sonar-reasoning",
+				"sonar-reasoning-pro",
+			},
+			GenSync: &genai.FunctionalityText{
+				Thinking:       true,
+				NoStopSequence: true,
+				JSONSchema:     true,
+				Citations:      true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Thinking:       true,
+				NoStopSequence: true,
+				Citations:      true,
 			},
 		},
 	},
@@ -429,14 +461,40 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		// TODO: Citations!!
 		f := genai.ContentFragment{TextFragment: pkt.Choices[0].Delta.Content}
-		/* ??
-		if pkt.Choices[0].Message.Content != "" {
-			f.TextFragment = pkt.Choices[0].Message.Content
-		}
-		*/
 		if !f.IsZero() {
+			if err := result.Accumulate(f); err != nil {
+				return err
+			}
+			chunks <- f
+		}
+		// We need to do one packet per citation type.
+		if len(pkt.SearchResults) > 0 {
+			f := genai.ContentFragment{Citation: genai.Citation{Type: "web", Sources: make([]genai.CitationSource, len(pkt.SearchResults))}}
+			for i := range pkt.SearchResults {
+				f.Citation.Sources[i].Type = "web"
+				f.Citation.Sources[i].Title = pkt.SearchResults[i].Title
+				f.Citation.Sources[i].URL = pkt.SearchResults[i].URL
+				if pkt.SearchResults[i].Date != "" {
+					f.Citation.Sources[i].Metadata = map[string]any{"data": pkt.SearchResults[i].Date}
+				}
+			}
+			if err := result.Accumulate(f); err != nil {
+				return err
+			}
+			chunks <- f
+		}
+		if len(pkt.Images) > 0 {
+			f := genai.ContentFragment{Citation: genai.Citation{Type: "document", Sources: make([]genai.CitationSource, len(pkt.Images))}}
+			for i := range pkt.Images {
+				f.Citation.Sources[i].Type = "image"
+				f.Citation.Sources[i].Title = pkt.Images[i].OriginURL
+				f.Citation.Sources[i].URL = pkt.Images[i].ImageURL
+				f.Citation.Sources[i].Metadata = map[string]any{
+					"width":  pkt.Images[i].Width,
+					"height": pkt.Images[i].Height,
+				}
+			}
 			if err := result.Accumulate(f); err != nil {
 				return err
 			}

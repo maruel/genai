@@ -7,7 +7,6 @@ package cohere_test
 import (
 	"net/http"
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -19,53 +18,6 @@ import (
 
 func TestClient_Scoreboard(t *testing.T) {
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen { return getClient(t, m) }, nil)
-}
-
-func TestClient_Citations(t *testing.T) {
-	// https://docs.cohere.com/v2/docs/rag-citations
-	c := getClient(t, "command-r7b-12-2024")
-	msgs := genai.Messages{
-		genai.Message{
-			Role: genai.User,
-			Contents: []genai.Content{
-				{
-					Document: strings.NewReader("The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."),
-					Filename: "capital_info.txt",
-				},
-				{
-					Text: "What is the capital of Quackiland?",
-				},
-			},
-		},
-	}
-	res, err := c.GenSync(t.Context(), msgs, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if res.FinishReason != genai.FinishedStop {
-		t.Errorf("finish reason: %s", res.FinishReason)
-	}
-	t.Logf("Usage: %d input tokens, %d output tokens", res.InputTokens, res.OutputTokens)
-	t.Logf("Text: %q", res.AsText())
-	if s := res.AsText(); !strings.Contains(s, "Quackiland") {
-		t.Errorf("expected Quackiland, got: %q", s)
-	}
-	foundCitations := false
-	for _, content := range res.Contents {
-		if len(content.Citations) > 0 {
-			foundCitations = true
-			t.Logf("Found %d citations in content", len(content.Citations))
-			for i, citation := range content.Citations {
-				t.Logf("Citation %d: text=%q, type=%q, start=%d, end=%d", i, citation.Text, citation.Type, citation.StartIndex, citation.EndIndex)
-				if len(citation.Sources) > 0 {
-					t.Logf("  Sources: %+v", citation.Sources)
-				}
-			}
-		}
-	}
-	if !foundCitations {
-		t.Errorf("expected citations in response, but found none")
-	}
 }
 
 func TestClient_Preferred(t *testing.T) {

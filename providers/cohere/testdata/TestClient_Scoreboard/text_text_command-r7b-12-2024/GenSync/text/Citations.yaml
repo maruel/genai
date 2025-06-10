@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 315
+        host: api.cohere.com
+        body: |
+            {"stream":false,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"What is the capital of Quackiland?"}]}],"documents":[{"id":"capital_info.txt","data":{"snippet":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.","title":"capital_info.txt"}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cohere.com/v2/chat
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 575
+        body: '{"id":"c8fbe4fa-ed9d-4d2f-b229-72d78e622fc0","message":{"role":"assistant","content":[{"type":"text","text":"The capital of Quackiland is Quack."}],"citations":[{"start":29,"end":35,"text":"Quack.","sources":[{"type":"document","id":"capital_info.txt","document":{"id":"capital_info.txt","snippet":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.","title":"capital_info.txt"}}],"type":"TEXT_CONTENT"}]},"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":40,"output_tokens":10},"tokens":{"input_tokens":1683,"output_tokens":22}}}'
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Debug-Trace-ID
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+            Content-Length:
+                - "575"
+            Content-Type:
+                - application/json
+            Expires:
+                - Thu, 01 Jan 1970 00:00:00 UTC
+            Num_chars:
+                - "7888"
+            Num_tokens:
+                - "50"
+            Pragma:
+                - no-cache
+            Server:
+                - envoy
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Accel-Expires:
+                - "0"
+            X-Debug-Trace-Id:
+                - 83349f96242d48bc3bf21d5c7cfb0dcb
+            X-Envoy-Upstream-Service-Time:
+                - "82422"
+        status: 200 OK
+        code: 200
+        duration: 1m22.516s

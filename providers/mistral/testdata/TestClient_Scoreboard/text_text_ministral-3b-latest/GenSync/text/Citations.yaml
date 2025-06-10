@@ -1,0 +1,64 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 252
+        host: api.mistral.ai
+        body: |
+            {"model":"ministral-3b-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"ded34914df9a4abc8c3c066a5254f768","object":"chat.completion","created":1749596110,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"The capital of Quackiland is Quack."},"finish_reason":"stop"}],"usage":{"prompt_tokens":33,"total_tokens":44,"completion_tokens":11}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94dc74680c01a2ff-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Envoy-Upstream-Service-Time:
+                - "95"
+            X-Kong-Proxy-Latency:
+                - "5"
+            X-Kong-Request-Id:
+                - e3511a15b635d50e62e3f10f38dca804
+            X-Kong-Upstream-Latency:
+                - "96"
+            X-Ratelimit-Limit-Req-10-Second:
+                - "60"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "2000000"
+            X-Ratelimit-Limit-Tokens-Month:
+                - "10000000000"
+            X-Ratelimit-Remaining-Req-10-Second:
+                - "59"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "1999956"
+            X-Ratelimit-Remaining-Tokens-Month:
+                - "9999984122"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "44"
+        status: 200 OK
+        code: 200
+        duration: 257ms

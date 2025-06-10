@@ -291,8 +291,25 @@ func (m *Message) From(in *genai.Message) error {
 				})
 			} else if in.Contents[i].Thinking != "" {
 				// Ignore
+			} else if in.Contents[i].Document != nil {
+				// Check if this is a text/plain document
+				mimeType, data, err := in.Contents[i].ReadDocument(10 * 1024 * 1024)
+				if err != nil {
+					return fmt.Errorf("failed to read document: %w", err)
+				}
+				if strings.HasPrefix(mimeType, "text/plain") {
+					if in.Contents[i].URL != "" {
+						return errors.New("text/plain documents must be provided inline, not as a URL")
+					}
+					m.Content = append(m.Content, Content{
+						Type: ContentText,
+						Text: string(data),
+					})
+				} else {
+					return fmt.Errorf("cerebras only supports text/plain documents, got %s", mimeType)
+				}
 			} else {
-				// Cerebras doesn't support documents yet.
+				// Cerebras doesn't support other document types.
 				return fmt.Errorf("unsupported content type %#v", in.Contents[i])
 			}
 		}

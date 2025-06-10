@@ -583,6 +583,12 @@ func (c *Content) From(in *genai.Content) error {
 		c.Type = ContentInputAudio
 		c.InputAudio.Data = data
 		c.InputAudio.Format = "wav"
+	case strings.HasPrefix(mimeType, "text/plain"):
+		c.Type = ContentText
+		if in.URL != "" {
+			return errors.New("text/plain documents must be provided inline, not as a URL")
+		}
+		c.Text = string(data)
 	default:
 		if in.URL != "" {
 			return fmt.Errorf("URL to %s file not supported", mimeType)

@@ -173,6 +173,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			if i == msgToCache-1 {
 				c.Messages[i].CacheControl.Type = "ephemeral"
 			}
+			if err := c.Messages[len(c.Messages)-1].Validate(); err != nil {
+				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+			}
 		default:
 			errs = append(errs, fmt.Errorf("message %d: unsupported role %q", i, msgs[i].Role))
 			continue
@@ -290,6 +293,30 @@ type Message struct {
 	} `json:"cache_control,omitzero"`
 }
 
+func (m *Message) Validate() error {
+	if m.Type != "" && m.Type != "message" {
+		// Allow empty type, it is not required.
+		return fmt.Errorf("unsupported message type %q", m.Type)
+	}
+	switch m.Role {
+	case "assistant", "user":
+		// Valid.
+	case "":
+		return errors.New("message doesn't have role defined")
+	default:
+		return fmt.Errorf("unsupported role %q", m.Role)
+	}
+	if len(m.Content) == 0 {
+		return errors.New("message doesn't have content defined")
+	}
+	for i := range m.Content {
+		if err := m.Content[i].Validate(); err != nil {
+			return fmt.Errorf("content block %d: %w", i, err)
+		}
+	}
+	return nil
+}
+
 func (m *Message) From(in *genai.Message) error {
 	switch role := in.Role; role {
 	case genai.Assistant, genai.User:
@@ -321,6 +348,10 @@ func (m *Message) From(in *genai.Message) error {
 }
 
 func (m *Message) To(out *genai.Message) error {
+	// Make sure the message was initialized properly before converting.
+	if err := m.Validate(); err != nil {
+		return err
+	}
 	switch role := m.Role; role {
 	case "assistant", "user":
 		out.Role = genai.Role(role)
@@ -368,7 +399,7 @@ type Content struct {
 	} `json:"cache_control,omitzero"`
 
 	// Type == "text", "document"
-	Citations []Citation `json:"citations,omitzero"`
+	Citations Citations `json:"citations,omitzero"`
 
 	// Type == "image", "document"
 	Source struct {
@@ -378,11 +409,11 @@ type Content struct {
 
 		// Type == "base64", "url", "text"
 		// Content.Type == "image": "image/jpeg", "image/png", "image/gif", "image/webp"
-		// Content.Type == "document": "application/pdf"
+		// Content.Type == "document": "application/pdf", "text/plain"
 		MediaType string `json:"media_type,omitzero"`
 
 		// Type == "base64", "text"
-		Data []byte `json:"data,omitzero"` // base64 encoded if base64, else as is.
+		Data []byte `json:"data,omitzero"` // base64 encoded if base64, else as is, e.g. text plain data.
 
 		// Type == "url"
 		URL string `json:"url,omitzero"`
@@ -404,8 +435,64 @@ type Content struct {
 	Content []Content `json:"content,omitzero"`
 
 	// "document"
-	Context string `json:"context,omitzero"`
-	Title   string `json:"title,omitzero"`
+	Context string `json:"context,omitzero"` // Context about the document that will not be cited from
+	Title   string `json:"title,omitzero"`   // Document title when using Source
+}
+
+func (c *Content) Validate() error {
+	switch c.Type {
+	case ContentText:
+		if c.Text == "" {
+			return errors.New("ContentText: Text must be set")
+		}
+		if c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.Title != "" {
+			return errors.New("ContentText: unexpected fields set")
+		}
+	case ContentThinking:
+		if c.Thinking == "" {
+			return errors.New("ContentThinking: Thinking must be set")
+		}
+		if c.Text != "" || len(c.Signature) > 0 && c.Signature == nil || c.Data != "" || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.Title != "" {
+			return errors.New("ContentThinking: unexpected fields set")
+		}
+	case ContentRedactedThinking:
+		if c.Data == "" {
+			return errors.New("ContentRedactedThinking: Data must be set")
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.Title != "" {
+			return errors.New("ContentRedactedThinking: unexpected fields set")
+		}
+	case ContentImage, ContentDocument:
+		if c.Source.Type == "" && c.Source.URL == "" && len(c.Source.Data) == 0 {
+			return fmt.Errorf("%s: Source must be set", c.Type)
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 {
+			return fmt.Errorf("%s: unexpected fields set", c.Type)
+		}
+	case ContentToolUse:
+		if c.ID == "" || c.Name == "" {
+			return errors.New("ContentToolUse: ID and Name must be set")
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.Title != "" {
+			return errors.New("ContentToolUse: unexpected fields set")
+		}
+	case ContentToolResult:
+		if c.ToolUseID == "" {
+			return errors.New("ContentToolResult: ToolUseID must be set")
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.Context != "" || c.Title != "" {
+			return errors.New("ContentToolResult: unexpected fields set")
+		}
+	default:
+		return fmt.Errorf("unknown ContentType %q", c.Type)
+	}
+	return nil
 }
 
 func (c *Content) FromContent(in *genai.Content) error {
@@ -518,6 +605,55 @@ func (c *Content) ToToolCall(out *genai.ToolCall) error {
 		return fmt.Errorf("unsupported content type %q", c.Type)
 	}
 	return nil
+}
+
+// Citations is a mess.
+//
+// It can be a configuration. It is described in messages.content object[], type Document, citations.
+// It is explained at https://docs.anthropic.com/en/api/messages#body-messages-content-citations-enabled
+//
+// It can be actual citations. It is described in messages.content object[], type Text, citations []object.
+// https://docs.anthropic.com/en/api/messages#body-messages-content-citations
+type Citations struct {
+	Citations []Citations
+	Enabled   bool
+}
+
+type citationsObject struct {
+	Enabled bool `json:"Enabled"`
+}
+
+// UnmarshalJSON implements json.Unmarshaler for Citations.
+// It attempts to unmarshal the input as either a slice of Citations or a struct with an Enabled field.
+func (c *Citations) UnmarshalJSON(data []byte) error {
+	var s []Citations
+	// TODO: Unknown fields.
+	if err := json.Unmarshal(data, &s); err == nil {
+		c.Citations = s
+		c.Enabled = false
+		return nil
+	}
+	o := citationsObject{}
+	// TODO: Unknown fields.
+	if err := json.Unmarshal(data, &o); err == nil {
+		c.Enabled = o.Enabled
+		c.Citations = nil
+		return nil
+	}
+	return fmt.Errorf("failed to unmarshal Citations as array or object")
+}
+
+// MarshalJSON implements json.Marshaler for Citations.
+// It marshals the struct as a slice if Citations field is not empty, otherwise as a struct with the Enabled field.
+func (c Citations) MarshalJSON() ([]byte, error) {
+	if len(c.Citations) > 0 {
+		return json.Marshal(c.Citations)
+	}
+	if c.Enabled {
+		objectCitations := citationsObject{Enabled: c.Enabled}
+		return json.Marshal(objectCitations)
+	}
+	return []byte("null"), nil
 }
 
 type ContentType string
@@ -858,6 +994,9 @@ func (b *BatchRequestParams) Init(msgs genai.Messages, opts genai.Options, model
 		case genai.User, genai.Assistant:
 			b.Messages = append(b.Messages, Message{})
 			if err := b.Messages[len(b.Messages)-1].From(&msgs[i]); err != nil {
+				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+			}
+			if err := b.Messages[len(b.Messages)-1].Validate(); err != nil {
 				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 			}
 			// Do not set cache here since it's irrelevant when batching.
@@ -1335,6 +1474,8 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 }
 
 var (
+	_ genai.Validatable        = &Message{}
+	_ genai.Validatable        = &Content{}
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderModel      = &Client{}

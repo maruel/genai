@@ -220,6 +220,20 @@ func (m *Message) From(in *genai.Message) error {
 	}
 	if in.Contents[0].Text != "" {
 		m.Content = in.Contents[0].Text
+	} else if in.Contents[0].Document != nil {
+		// Check if this is a text/plain document
+		mimeType, data, err := in.Contents[0].ReadDocument(10 * 1024 * 1024)
+		if err != nil {
+			return fmt.Errorf("failed to read document: %w", err)
+		}
+		if strings.HasPrefix(mimeType, "text/plain") {
+			if in.Contents[0].URL != "" {
+				return errors.New("text/plain documents must be provided inline, not as a URL")
+			}
+			m.Content = string(data)
+		} else {
+			return fmt.Errorf("cloudflare only supports text/plain documents, got %s", mimeType)
+		}
 	} else {
 		return fmt.Errorf("unsupported content type %#v", in.Contents[0])
 	}

@@ -257,6 +257,12 @@ func (c *Content) From(in *genai.Content) error {
 		} else {
 			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 		}
+	case strings.HasPrefix(mimeType, "text/plain"):
+		c.Type = ContentText
+		if in.URL != "" {
+			return errors.New("text/plain documents must be provided inline, not as a URL")
+		}
+		c.Text = string(data)
 	default:
 		return fmt.Errorf("unsupported mime type %s", mimeType)
 	}

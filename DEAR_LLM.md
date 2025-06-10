@@ -4,7 +4,9 @@ This document provides guidance for AI assistants working on the `genai` project
 
 ## Project Overview
 
-`genai` is a high-performance, professional-grade Go client library for Large Language Models (LLMs). It provides a unified interface to interact with 15+ LLM providers while maintaining type safety, performance, and ease of use.
+`genai` is a high-performance, professional-grade Go client library for Large Language Models (LLMs). It
+provides a unified interface to interact with 15+ LLM providers while maintaining type safety, performance,
+and ease of use.
 
 ### Core Design Principles
 
@@ -62,9 +64,6 @@ Every package should have comprehensive documentation explaining:
 
 - Minimize memory allocations in hot paths
 - Use `bytes.Buffer` and similar for efficient string building
-- Prefer HTTP compression (brotli > gzip) when supported
-- Use streaming when possible to reduce latency
-- Profile and benchmark performance-critical code
 
 ## Architecture Patterns
 
@@ -77,14 +76,12 @@ When implementing a new provider:
    providers/newprovider/
    ├── client.go          # Main client implementation
    ├── client_test.go     # Unit tests
-   ├── testdata/          # Recorded HTTP interactions
-   └── doc.go             # Package documentation
+   └── testdata/          # Recorded HTTP interactions
    ```
 
-2. **Implement required interfaces**:
-   - `genai.Provider` for basic text generation
-   - `genai.ProviderImage` for image generation (if supported)
-   - `genai.ProviderAudio` for audio generation (if supported)
+2. **Implement required interfaces**: For a new `Client`, implement the relevant interfaces from the `genai`
+   package that start with `Provider`. Use go doc to get the up to date list. Ensure that the provider
+   implements all necessary methods for the interfaces it claims to support.
 
 3. **Follow naming conventions**:
    - Constructor: `New(apiKey, model string, opts *Options) (*Client, error)`
@@ -96,43 +93,23 @@ When implementing a new provider:
    - Implement proper error handling for rate limits, auth, etc.
    - Support streaming if the provider offers it
    - Handle provider-specific limitations gracefully
+   - Implement `Raw` suffix methods for raw API access
 
 ### Type Definitions
 
-- Use clear, descriptive names for types
-- Include JSON tags for serialization
-- Add validation methods for complex types
+- Use clear, short descriptive names for types
+- Include JSON tags for serialization, use `omitzero` for optional fields
+- Add Validate() method for complex types so it implements the `genai.Validatable` interface
 - Use enums (constants) for fixed value sets
 - Document field constraints in comments
 
 ### Testing Strategy
 
 - **Unit tests**: Test individual functions and methods
-- **Integration tests**: Test against recorded HTTP interactions
 - **Smoke tests**: Test against live services with recorded traces
 - **Functionality tests**: Test provider capabilities systematically
 
 ## Common Patterns
-
-### HTTP Client Configuration
-
-```go
-// Configure HTTP client with compression and reasonable timeouts
-client := &http.Client{
-    Timeout: 30 * time.Second,
-    Transport: &http.Transport{
-        // Configure compression, connection pooling, etc.
-    },
-}
-```
-
-### Error Handling
-
-```go
-if err != nil {
-    return fmt.Errorf("operation failed: %w", err)
-}
-```
 
 ### Validation
 
@@ -145,13 +122,6 @@ func (o *Options) Validate() error {
 }
 ```
 
-### JSON Schema Generation
-
-```go
-// Use jsonschema for automatic schema generation from Go structs
-schema := jsonschema.Reflect(myStruct)
-```
-
 ## Provider-Specific Notes
 
 ### Authentication
@@ -159,12 +129,6 @@ schema := jsonschema.Reflect(myStruct)
 - Support environment variables for API keys
 - Handle different auth mechanisms (API key, OAuth, etc.)
 - Provide clear error messages for auth failures
-
-### Rate Limiting
-
-- Implement proper backoff strategies
-- Handle rate limit responses gracefully
-- Provide meaningful error messages about limits
 
 ### Feature Support
 
@@ -188,52 +152,34 @@ schema := jsonschema.Reflect(myStruct)
 - Update recordings when API changes
 - Test both success and error scenarios
 
-### Performance Testing
-
-- Write benchmarks for performance-critical code
-- Test memory allocation patterns
-- Monitor performance regression
-- Use `go test -bench` and `go test -race`
-
 ## Documentation
 
 ### Code Comments
 
 - Document exported functions and types
 - Explain complex algorithms or business logic
-- Include usage examples for non-obvious APIs
-- Document error conditions and return values
+- Include usage examples in `example_test.go` for non-obvious APIs
+- Do not document inside the function body unless to explain why the behavior is important.
 
 ### README Updates
 
 - Update feature matrix when adding provider support
-- Add usage examples for new features
+- Add usage examples for new important features
 - Update installation and setup instructions
-- Keep the "I'm poor 💸" section current with free tiers
 
 ## Security Considerations
 
 - Never commit API keys or secrets
 - Sanitize test data and recordings
 - Validate all inputs to prevent injection attacks
-- Use secure HTTP transport (TLS)
 - Handle sensitive data appropriately
 
 ## Performance Optimization
 
 ### Memory Management
 
-- Use object pooling for frequently allocated objects
 - Prefer stack allocation over heap when possible
 - Use `bytes.Buffer` for efficient string concatenation
-- Profile memory usage with `go tool pprof`
-
-### Network Optimization
-
-- Enable HTTP compression when supported
-- Use connection pooling and keepalive
-- Implement request batching where possible
-- Stream responses to reduce memory usage
 
 ## Common Pitfalls to Avoid
 
@@ -242,7 +188,7 @@ schema := jsonschema.Reflect(myStruct)
 - Don't hardcode timeouts or limits without making them configurable
 - Don't assume all providers support the same features
 - Don't commit test recordings with real API keys
-- Don't break backward compatibility without major version bump
+- Ask before breaking backward compatibility
 
 ## Contributing Guidelines
 
@@ -250,7 +196,7 @@ schema := jsonschema.Reflect(myStruct)
 2. **Write tests first**: Test-driven development is preferred
 3. **Update documentation**: Keep README.md and code comments current
 4. **Run the full test suite**: Ensure all tests pass before submitting
-5. **Follow Go conventions**: Use `gofmt`, `golint`, and `go vet`
+5. **Follow Go conventions**: Use `gofmt`, `golint`, `go vet -vettool=shadow`, `staticcheck` and `gosec`
 6. **Add examples**: Include usage examples for new features
 
 ---

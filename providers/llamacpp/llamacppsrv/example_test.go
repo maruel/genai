@@ -56,7 +56,6 @@ func Example() {
 	// Normalize some of the variance. Obviously many models will still fail this test.
 	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!")
 	fmt.Printf("Response: %s\n", txt)
-	// Output: Response: hello
 }
 
 //

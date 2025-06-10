@@ -246,8 +246,24 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 	msg := msgs[0]
 	for i := range msg.Contents {
 		if msg.Contents[i].Text == "" {
+			// Check if this is a text/plain document that we can handle
+			if msg.Contents[i].Document != nil {
+				mimeType, data, err := msg.Contents[i].ReadDocument(10 * 1024 * 1024)
+				if err != nil {
+					return "", fmt.Errorf("failed to read document: %w", err)
+				}
+				if strings.HasPrefix(mimeType, "text/plain") {
+					if msg.Contents[i].URL != "" {
+						return "", errors.New("text/plain documents must be provided inline, not as a URL")
+					}
+					// Convert document content to text content
+					msg.Contents[i].Text = string(data)
+					msg.Contents[i].Document = nil
+					continue
+				}
+			}
 			// TODO: kontext
-			return "", errors.New("only text can be passed as input")
+			return "", errors.New("only text and text/plain documents can be passed as input")
 		}
 	}
 	req := ImageRequest{

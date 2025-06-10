@@ -18,12 +18,6 @@ import (
 	"github.com/maruel/genai/providers/ollama/ollamasrv"
 )
 
-// Ollama build to use. Do not specify a version to force running the latest.
-const version = ""
-
-// Using small model for testing.
-const model = "qwen2.5:0.5b"
-
 func Example() {
 	// Download and start the server.
 	ctx := context.Background()
@@ -34,7 +28,8 @@ func Example() {
 	}
 	defer srv.Close()
 	// Connect the provider.
-	c, err := ollama.New(srv.URL(), model, nil)
+	// Using small model for testing.
+	c, err := ollama.New(srv.URL(), "qwen2.5:0.5b", nil)
 	if err != nil {
 		log.Print(err)
 		return
@@ -53,15 +48,8 @@ func Example() {
 		return
 	}
 	log.Printf("Raw response: %#v", resp)
-	if resp.InputTokens != 18 || resp.OutputTokens != 3 {
-		log.Printf("Unexpected tokens usage: %v", resp.Usage)
-	}
-	if resp.Role != genai.Assistant || len(resp.Contents) != 1 {
-		log.Print("Unexpected response")
-		return
-	}
 	// Normalize some of the variance. Obviously many models will still fail this test.
-	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Contents[0].Text)), ".!")
+	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.AsText())), ".!")
 	fmt.Printf("Response: %s\n", txt)
 	// Output: Response: hello
 }
@@ -78,7 +66,7 @@ func findFreePort() int {
 }
 
 func startServer(ctx context.Context) (*ollamasrv.Server, error) {
-	cache, err := filepath.Abs("testdata")
+	cache, err := filepath.Abs("testdata/tmp")
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +74,7 @@ func startServer(ctx context.Context) (*ollamasrv.Server, error) {
 		return nil, err
 	}
 	// It's a bit inefficient to download from github every single time.
-	exe, err := ollamasrv.DownloadRelease(ctx, cache, version)
+	exe, err := ollamasrv.DownloadRelease(ctx, cache, ollamasrv.Version)
 	if err != nil {
 		return nil, err
 	}

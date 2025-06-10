@@ -18,9 +18,6 @@ import (
 	"github.com/maruel/genai/providers/ollama/ollamasrv"
 )
 
-// Ollama build to use.
-const version = "v0.7.0"
-
 func ExampleClient_GenSync() {
 	// Download and start the server.
 	ctx := context.Background()
@@ -66,7 +63,7 @@ func startServer(ctx context.Context) (*ollamasrv.Server, error) {
 		return nil, err
 	}
 	// It's a bit inefficient to download from github every single time.
-	exe, err := ollamasrv.DownloadRelease(ctx, cache, version)
+	exe, err := ollamasrv.DownloadRelease(ctx, cache, ollamasrv.Version)
 	if err != nil {
 		return nil, err
 	}

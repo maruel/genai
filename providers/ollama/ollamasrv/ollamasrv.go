@@ -29,6 +29,12 @@ import (
 	"github.com/maruel/genai/providers/ollama"
 )
 
+// Version is the version number that was last tried from
+// https://github.com/ollama/ollama/releases
+//
+// You are free to use the version number that works best for you.
+const Version = "v0.9.1-rc0"
+
 // Server is an "ollama serve" instance.
 type Server struct {
 	url  string
@@ -133,6 +139,8 @@ func (s *Server) Done() <-chan error {
 
 // DownloadRelease downloads a specific release from GitHub into the specified
 // directory and returns the file path to ollama executable.
+//
+// When unspecified, the latest release is downloaded.
 func DownloadRelease(ctx context.Context, cache string, version string) (string, error) {
 	execSuffix := ""
 	if runtime.GOOS == "windows" {
@@ -210,6 +218,9 @@ func DownloadRelease(ctx context.Context, cache string, version string) (string,
 		err = extractZip(archivePath, cache, wantedFiles)
 	} else {
 		err = extractTarGz(archivePath, cache, wantedFiles)
+	}
+	if err != nil {
+		err = fmt.Errorf("failed to extract %s: %w", filepath.Join(cache, archiveName), err)
 	}
 	return ollamaexe, err
 }

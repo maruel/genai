@@ -72,7 +72,7 @@ func findFreePort() int {
 
 // startServer starts a server with Qwen2 0.5B in Q2_K quantization.
 func startServer(ctx context.Context) (*llamacppsrv.Server, error) {
-	cache, err := filepath.Abs("testdata")
+	cache, err := filepath.Abs("testdata/tmp")
 	if err != nil {
 		return nil, err
 	}

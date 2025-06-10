@@ -842,6 +842,18 @@ type File struct {
 	StatusDetails string `json:"status_details"` // Deprecated
 }
 
+func (f *File) GetID() string {
+	return f.ID
+}
+
+func (f *File) GetDisplayName() string {
+	return f.Filename
+}
+
+func (f *File) GetExpiry() time.Time {
+	return f.ExpiresAt.AsTime()
+}
+
 // https://platform.openai.com/docs/api-reference/files/delete
 type FileDeleteResponse struct {
 	ID      string `json:"id"`
@@ -1217,27 +1229,7 @@ func (c *Client) isImage(opts genai.Options) bool {
 }
 
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
-	if err := c.Validate(); err != nil {
-		return "", err
-	}
-	if err := msgs.Validate(); err != nil {
-		return "", err
-	}
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			return "", err
-		}
-	}
-	// Upload the messages and options as a file.
-	b2 := BatchRequestInput{CustomID: "TODO", Method: "POST", URL: "/v1/chat/completions"}
-	if err := b2.Body.Init(msgs, opts, c.Model); err != nil {
-		return "", err
-	}
-	raw, err := json.Marshal(b2)
-	if err != nil {
-		return "", err
-	}
-	fileID, err := c.FileAdd(ctx, "batch.json", bytes.NewReader(raw), 24*time.Hour)
+	fileID, err := c.CacheAddRequest(ctx, msgs, opts, "TODO", "batch.json", 24*time.Hour)
 	if err != nil {
 		return "", err
 	}
@@ -1323,7 +1315,48 @@ func (c *Client) CancelRaw(ctx context.Context, id genai.Job) (Batch, error) {
 	return resp, err
 }
 
-func (c *Client) FileAdd(ctx context.Context, filename string, r io.ReadSeeker, ttl time.Duration) (string, error) {
+func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, opts genai.Options, name, displayName string, ttl time.Duration) (string, error) {
+	if err := c.Validate(); err != nil {
+		return "", err
+	}
+	if err := msgs.Validate(); err != nil {
+		return "", err
+	}
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return "", err
+		}
+	}
+	// Upload the messages and options as a file.
+	b := BatchRequestInput{CustomID: name, Method: "POST", URL: "/v1/chat/completions"}
+	if err := b.Body.Init(msgs, opts, c.Model); err != nil {
+		return "", err
+	}
+	raw, err := json.Marshal(b)
+	if err != nil {
+		return "", err
+	}
+	return c.FileAdd(ctx, displayName, bytes.NewReader(raw))
+}
+
+func (c *Client) CacheList(ctx context.Context) ([]genai.CacheEntry, error) {
+	l, err := c.FilesListRaw(ctx)
+	if err != nil {
+		return nil, err
+	}
+	out := make([]genai.CacheEntry, len(l))
+	for i := range l {
+		out[i] = &l[i]
+	}
+	return out, nil
+}
+
+func (c *Client) CacheDelete(ctx context.Context, name string) error {
+	return c.FileDel(ctx, name)
+}
+
+// FileAdd uploads a file. The TTL is one month.
+func (c *Client) FileAdd(ctx context.Context, filename string, r io.ReadSeeker) (string, error) {
 	// https://platform.openai.com/docs/api-reference/files/create
 	buf := bytes.Buffer{}
 	w := multipart.NewWriter(&buf)
@@ -1381,7 +1414,7 @@ func (c *Client) FileDel(ctx context.Context, id string) error {
 	return c.DoRequest(ctx, "DELETE", url, nil, &out)
 }
 
-func (c *Client) FileList(ctx context.Context) ([]File, error) {
+func (c *Client) FilesListRaw(ctx context.Context) ([]File, error) {
 	// TODO: Pagination. It defaults at 10000 items per page.
 	resp := FileListResponse{}
 	err := c.DoRequest(ctx, "GET", "https://api.openai.com/v1/files", nil, &resp)
@@ -1457,6 +1490,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 
 var (
 	_ genai.Provider           = &Client{}
+	_ genai.ProviderCache      = &Client{}
 	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderGenDoc     = &Client{}
 	_ genai.ProviderModel      = &Client{}

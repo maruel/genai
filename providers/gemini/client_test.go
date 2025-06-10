@@ -180,7 +180,7 @@ Ultimately, the human endeavor is a quest for understanding, not just of the ext
 			},
 		},
 	}
-	name, err := c.CacheAdd(ctx, msgs, &opts, "", "Show time", 10*time.Minute)
+	name, err := c.CacheAddRequest(ctx, msgs, &opts, "", "Show time", 10*time.Minute)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -192,7 +192,7 @@ Ultimately, the human endeavor is a quest for understanding, not just of the ext
 		time.Sleep(10 * time.Second)
 	}
 	t.Logf("Cache name: %q", name)
-	if _, err = c.CacheGet(ctx, name); err != nil {
+	if _, err = c.CacheGetRaw(ctx, name); err != nil {
 		t.Error(err)
 	}
 	// We need to sleep so UpdateTime is different than CreateTime.
@@ -202,7 +202,7 @@ Ultimately, the human endeavor is a quest for understanding, not just of the ext
 		t.Error(err)
 	}
 	t.Log("Listing")
-	items, err := c.CacheList(ctx)
+	items, err := c.CacheListRaw(ctx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -229,7 +229,7 @@ Ultimately, the human endeavor is a quest for understanding, not just of the ext
 		t.Fatal(err)
 	}
 	t.Log("Verifying deletion")
-	if _, err = c.CacheGet(ctx, name); err == nil {
+	if _, err = c.CacheGetRaw(ctx, name); err == nil {
 		t.Fatal("Expected an error")
 	} else {
 		t.Logf("Got an error as expected: %q", err)

@@ -13,6 +13,7 @@ import (
 	"os"
 	"os/signal"
 	"reflect"
+	"slices"
 	"sort"
 	"strings"
 	"syscall"
@@ -75,15 +76,24 @@ func printStructDense(v any, indent string) string {
 	return strings.Join(fields, "\n")
 }
 
+func getProvidersModel() []string {
+	var names []string
+	for name, f := range providers.All {
+		if c, _ := f("", nil); c != nil {
+			if _, ok := c.(genai.ProviderModel); ok {
+				names = append(names, name)
+			}
+		}
+	}
+	sort.Strings(names)
+	return names
+}
+
 func mainImpl() error {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	defer stop()
 
-	names := make([]string, 0, len(providers.All))
-	for name := range providers.All {
-		names = append(names, name)
-	}
-	sort.Strings(names)
+	names := getProvidersModel()
 	provider := flag.String("provider", "", "backend to use: "+strings.Join(names, ", "))
 	all := flag.Bool("all", false, "include all details")
 	strict := flag.Bool("strict", false, "assert no unknown fields in the APIs are found")
@@ -94,19 +104,17 @@ func mainImpl() error {
 	if *strict {
 		internal.BeLenient = false
 	}
-	fn := providers.All[*provider]
-	if fn == nil {
+	if *provider == "" {
+		return errors.New("-provider is required")
+	}
+	if !slices.Contains(names, *provider) {
 		return fmt.Errorf("unknown backend %q", *provider)
 	}
-	c, err := fn("", nil)
+	c, err := providers.All[*provider]("", nil)
 	if err != nil {
 		return err
 	}
-	l, ok := c.(genai.ProviderModel)
-	if !ok {
-		return fmt.Errorf("provider %s doesn't support listing models", *provider)
-	}
-	models, err := l.ListModels(ctx)
+	models, err := c.(genai.ProviderModel).ListModels(ctx)
 	if err != nil {
 		return err
 	}

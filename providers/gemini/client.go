@@ -827,10 +827,22 @@ type CachedContent struct {
 	UsageMetadata CachingUsageMetadata `json:"usageMetadata,omitzero"`
 }
 
+func (c *CachedContent) GetID() string {
+	return c.Name
+}
+
+func (c *CachedContent) GetDisplayName() string {
+	return c.DisplayName
+}
+
+func (c *CachedContent) GetExpiry() time.Time {
+	return c.ExpireTime
+}
+
 // Expiration must be embedded. Only one of the fields can be set.
 type Expiration struct {
 	ExpireTime time.Time `json:"expireTime,omitzero"` // ISO 8601
-	TTL        Duration  `json:"ttl,omitzero"`        // Duration
+	TTL        Duration  `json:"ttl,omitzero"`        // Duration; input only
 }
 
 type Duration time.Duration
@@ -1101,7 +1113,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard
 }
 
-// CacheAdd caches the content for later use.
+// CacheAddRequest caches the content for later use.
 //
 // Includes tools and systemprompt.
 //
@@ -1115,7 +1127,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 //
 // At certain volumes, using cached tokens is lower cost than passing in the same corpus of tokens repeatedly.
 // The cost for caching depends on the input token size and how long you want the tokens to persist.
-func (c *Client) CacheAdd(ctx context.Context, msgs genai.Messages, opts *genai.OptionsText, name, displayName string, ttl time.Duration) (string, error) {
+func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, opts genai.Options, name, displayName string, ttl time.Duration) (string, error) {
 	// See https://ai.google.dev/gemini-api/docs/caching?hl=en&lang=rest#considerations
 	// Useful when reusing the same large data multiple times to reduce token usage.
 	// This requires a pinned model, with trailing -001.
@@ -1140,8 +1152,8 @@ func (c *Client) CacheAdd(ctx context.Context, msgs genai.Messages, opts *genai.
 	if ttl > 0 {
 		in.TTL = Duration(ttl)
 	}
-	if opts.SystemPrompt != "" {
-		in.SystemInstruction.Parts = []Part{{Text: opts.SystemPrompt}}
+	if o, ok := opts.(*genai.OptionsText); ok && o.SystemPrompt != "" {
+		in.SystemInstruction.Parts = []Part{{Text: o.SystemPrompt}}
 	}
 	// For large files, use https://ai.google.dev/gemini-api/docs/caching?hl=en&lang=rest#pdfs_1
 	in.Contents = make([]Content, len(msgs))
@@ -1170,8 +1182,20 @@ func (c *Client) CacheExtend(ctx context.Context, name string, ttl time.Duration
 	return c.DoRequest(ctx, "PATCH", url, &in, &out)
 }
 
-// CacheList retrieves the list of cached items.
-func (c *Client) CacheList(ctx context.Context) ([]CachedContent, error) {
+func (c *Client) CacheList(ctx context.Context) ([]genai.CacheEntry, error) {
+	l, err := c.CacheListRaw(ctx)
+	if err != nil {
+		return nil, err
+	}
+	out := make([]genai.CacheEntry, len(l))
+	for i := range l {
+		out[i] = &l[i]
+	}
+	return out, nil
+}
+
+// CacheListRaw retrieves the list of cached items.
+func (c *Client) CacheListRaw(ctx context.Context) ([]CachedContent, error) {
 	// https://ai.google.dev/api/caching#method:-cachedcontents.list
 	// pageSize, pageToken
 	var data struct {
@@ -1203,7 +1227,7 @@ func (c *Client) CacheList(ctx context.Context) ([]CachedContent, error) {
 	return out, nil
 }
 
-func (c *Client) CacheGet(ctx context.Context, name string) (CachedContent, error) {
+func (c *Client) CacheGetRaw(ctx context.Context, name string) (CachedContent, error) {
 	// https://ai.google.dev/api/caching#method:-cachedcontents.get
 	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + url.PathEscape(name) + "?key=" + url.QueryEscape(c.apiKey)
 	out := CachedContent{}
@@ -1303,7 +1327,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 
 var (
 	_ genai.Provider           = &Client{}
+	_ genai.ProviderCache      = &Client{}
 	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderModel      = &Client{}
+	_ genai.ProviderCache      = &Client{}
 	_ genai.ProviderScoreboard = &Client{}
 )

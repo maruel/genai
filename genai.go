@@ -22,6 +22,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"strings"
+	"time"
 	"unicode"
 
 	"github.com/maruel/genai/internal/bb"
@@ -711,6 +712,22 @@ type ProviderGenAsync interface {
 
 // Job is a pending job.
 type Job string
+
+//
+
+// CacheEntry is one file (or GenSync request) cached on the provider for reuse.
+type CacheEntry interface {
+	GetID() string
+	GetDisplayName() string
+	GetExpiry() time.Time
+}
+
+// ProviderCache provides a high level way to manage files cached on the provider.
+type ProviderCache interface {
+	CacheAddRequest(ctx context.Context, msgs Messages, opts Options, name, displayName string, ttl time.Duration) (string, error)
+	CacheList(ctx context.Context) ([]CacheEntry, error)
+	CacheDelete(ctx context.Context, name string) error
+}
 
 // Models
 

@@ -57,18 +57,22 @@ var Scoreboard = genai.Scoreboard{
 	},
 }
 
-// https://docs.perplexity.ai/api-reference/chat-completions
+// https://docs.perplexity.ai/api-reference/chat-completions-post
 type ChatRequest struct {
 	Model                  string    `json:"model"`
 	Messages               []Message `json:"messages"`
+	SearchMode             string    `json:"search_mode,omitzero"`      // "web", "academic"
+	ReasoningEffort        string    `json:"reasoning_effort,omitzero"` // "low", "medium", "high" (model: sonar-deep-research)
 	MaxTokens              int64     `json:"max_tokens,omitzero"`
 	Temperature            float64   `json:"temperature,omitzero"`
 	TopP                   float64   `json:"top_p,omitzero"` // [0, 1.0]
 	SearchDomainFilter     []string  `json:"search_domain_filter,omitzero"`
 	ReturnImages           bool      `json:"return_images,omitzero"`
 	ReturnRelatedQuestions bool      `json:"return_related_questions,omitzero"`
-	SearchRecencyFilter    string    `json:"search_recency_filter,omitzero"` // month, week, day, hour
-	TopK                   int64     `json:"top_k,omitzero"`                 // [0, 2048^]
+	SearchRecencyFilter    string    `json:"search_recency_filter,omitzero"`     // "month", "week", "day", "hour"
+	SearchAfterDateFilter  string    `json:"search_after_date_filter,omitzero"`  // RFC3339 date
+	SearchBeforeDateFilter string    `json:"search_before_date_filter,omitzero"` // RFC3339 date
+	TopK                   int64     `json:"top_k,omitzero"`                     // [0, 2048^]
 	Stream                 bool      `json:"stream"`
 	PresencePenalty        float64   `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
 	FrequencyPenalty       float64   `json:"frequency_penalty,omitzero"`
@@ -84,11 +88,22 @@ type ChatRequest struct {
 			Regex string `json:"regex,omitzero"`
 		} `json:"regex,omitzero"`
 	} `json:"response_format,omitzero"`
+	WebSearchOptions struct {
+		SearchContextSize string `json:"search_context_size,omitzero"` // "low", "medium", "high"
+		UserLocation      struct {
+			Latitude    float64 `json:"latitude,omitzero"`     // e.g. 37.7749
+			Longitude   float64 `json:"longitude,omitzero"`    // e.g. -122.4194
+			CountryCode string  `json:"country_code,omitzero"` // e.g. "US", "CA", "FR"
+		} `json:"user_location,omitzero"`
+	} `json:"web_search_options,omitzero"`
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
 func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
 	c.Model = model
+	// Didn't seem to increase token usage, unclear if it increases costs.
+	c.ReturnImages = true
+	c.ReturnRelatedQuestions = true
 	var errs []error
 	var unsupported []string
 	sp := ""
@@ -194,6 +209,9 @@ func (m *Message) From(in *genai.Message) error {
 	return nil
 }
 
+// To converts the message to a genai.Message.
+//
+// Warning: it doesn't include the web search results, use ChatResponse.ToResult().
 func (m *Message) To(out *genai.Message) error {
 	switch role := m.Role; role {
 	case "assistant":
@@ -206,12 +224,18 @@ func (m *Message) To(out *genai.Message) error {
 }
 
 type ChatResponse struct {
-	ID        string    `json:"id"`
+	ID        string    `json:"id"` // UUID
 	Model     string    `json:"model"`
-	Object    string    `json:"object"`
+	Object    string    `json:"object"` // "chat.completion"
 	Created   base.Time `json:"created"`
-	Citations []string  `json:"citations"`
-	Choices   []struct {
+	Citations []string  `json:"citations"` // Same URLs from SearchResults in the same order.
+	Images    []struct {
+		Height    int64  `json:"height"`     // in pixels
+		ImageURL  string `json:"image_url"`  // URL to the image
+		OriginURL string `json:"origin_url"` // URL to the page that contains the image
+		Width     int64  `json:"width"`      // in pixels
+	} `json:"images"` // The images do not seem to have a direct relation with the citations.
+	Choices []struct {
 		Index        int64        `json:"index"`
 		FinishReason FinishReason `json:"finish_reason"`
 		Message      Message      `json:"message"`
@@ -220,6 +244,12 @@ type ChatResponse struct {
 			Role    string `json:"role"`
 		} `json:"delta"`
 	} `json:"choices"`
+	RelatedQuestions []string `json:"related_questions"` // Questions related to the query
+	SearchResults    []struct {
+		Date  string `json:"date"` // RFC3339 date, or null
+		Title string `json:"title"`
+		URL   string `json:"url"` // URL to the search result
+	} `json:"search_results"`
 	Usage Usage `json:"usage"`
 }
 
@@ -236,6 +266,31 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	}
 	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
+	if len(c.SearchResults) > 0 && len(out.Contents) > 0 {
+		ct := genai.Citation{Type: "web", Sources: make([]genai.CitationSource, len(c.SearchResults))}
+		for i := range c.SearchResults {
+			ct.Sources[i].Type = "web"
+			ct.Sources[i].Title = c.SearchResults[i].Title
+			ct.Sources[i].URL = c.SearchResults[i].URL
+			if c.SearchResults[i].Date != "" {
+				ct.Sources[i].Metadata = map[string]any{"data": c.SearchResults[i].Date}
+			}
+		}
+		out.Contents[0].Citations = append(out.Contents[0].Citations, ct)
+		if len(c.Images) > 0 {
+			ct := genai.Citation{Type: "document", Sources: make([]genai.CitationSource, len(c.Images))}
+			for i := range c.Images {
+				ct.Sources[i].Type = "image"
+				ct.Sources[i].Title = c.Images[i].OriginURL
+				ct.Sources[i].URL = c.Images[i].ImageURL
+				ct.Sources[i].Metadata = map[string]any{
+					"width":  c.Images[i].Width,
+					"height": c.Images[i].Height,
+				}
+			}
+			out.Contents[0].Citations = append(out.Contents[0].Citations, ct)
+		}
+	}
 	return out, err
 }
 

@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 106
-        transfer_encoding: []
-        trailer: {}
+        content_length: 159
         host: api.perplexity.ai
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"model":"r1-1776","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false}
-        form: {}
+            {"model":"r1-1776","messages":[{"role":"user","content":"Say hello. Use only one word."}],"return_images":true,"return_related_questions":true,"stream":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,16 +19,14 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id": "ce7f302f-2823-4368-9404-9701486d73a9", "model": "r1-1776", "created": 1748551521, "usage": {"prompt_tokens": 8, "completion_tokens": 133, "total_tokens": 141}, "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "<think>\nOkay, the user wants me to say hello but using only one word. Let me think.\n\nFirst, the usual response would be \"Hello!\" but that''s a single word. Wait, maybe they want something more creative? But the instruction says \"only one word\" so I need to stick to that.\n\nPossible options: \"Hi\", \"Hey\", \"Greetings\". All are one word. \"Howdy\" maybe? But \"Hello\" is straightforward and common. Let me check if \"Hello\" is acceptable. The user didn''t specify any other constraints. Yeah, \"Hello\" is the safest and correct answer here.\n</think>\n\nHello!"}, "delta": {"role": "assistant", "content": ""}}]}'
+        body: '{"id": "13f234cd-120d-4cd3-a54e-1f7ecc371964", "model": "r1-1776", "created": 1749591114, "usage": {"prompt_tokens": 8, "completion_tokens": 145, "total_tokens": 153}, "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "<think>\nOkay, the user wants me to say hello but only using one word. Let''s see. The typical response would be \"Hello,\" but maybe they want something more casual. Alternatives like \"Hi\" or \"Hey\" come to mind. \"Hi\" is shorter and maybe more concise. Let me check if there''s a one-word requirement. The user specified \"only one word,\" so \"Hello\" or \"Hi\" both fit. \"Hey\" is also an option but might be too informal. Considering simplicity and the instruction, \"Hello\" is straightforward and standard. I think that''s the best choice here. No need to overcomplicate it. Let''s go with \"Hello.\"\n</think>\n\nHello."}, "delta": {"role": "assistant", "content": ""}}]}'
         headers:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9478d5b20ff57148-YUL
+                - 94dbfa6529ce4bc5-YUL
             Content-Type:
                 - application/json
             Server:
@@ -42,4 +35,4 @@ interactions:
                 - max-age=15552000; includeSubDomains; preload
         status: 200 OK
         code: 200
-        duration: 2.595s
+        duration: 2.43s

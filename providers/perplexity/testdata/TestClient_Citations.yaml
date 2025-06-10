@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 158
+        host: api.perplexity.ai
+        body: |
+            {"model":"sonar","messages":[{"role":"user","content":"What is the capital of France?"}],"return_images":true,"return_related_questions":true,"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id": "e6b04916-9c60-4360-8278-cf7b0f46fd4a", "model": "sonar", "created": 1749590370, "usage": {"prompt_tokens": 7, "completion_tokens": 55, "total_tokens": 62, "search_context_size": "low"}, "citations": ["https://en.wikipedia.org/wiki/Paris", "https://www.coe.int/en/web/interculturalcities/paris", "https://home.adelphi.edu/~ca19535/page%204.html", "https://www.britannica.com/place/Paris", "https://en.wikipedia.org/wiki/List_of_capitals_of_France"], "search_results": [{"title": "Paris - Wikipedia", "url": "https://en.wikipedia.org/wiki/Paris", "date": null}, {"title": "Paris, France - Intercultural City - The Council of Europe", "url": "https://www.coe.int/en/web/interculturalcities/paris", "date": null}, {"title": "Paris facts: the capital of France in history", "url": "https://home.adelphi.edu/~ca19535/page%204.html", "date": null}, {"title": "Paris | Definition, Map, Population, Facts, & History - Britannica", "url": "https://www.britannica.com/place/Paris", "date": null}, {"title": "List of capitals of France - Wikipedia", "url": "https://en.wikipedia.org/wiki/List_of_capitals_of_France", "date": null}], "images": [{"image_url": "https://home.adelphi.edu/~ca19535/paris_pic.jpg", "origin_url": "https://home.adelphi.edu/~ca19535/page%204.html", "height": 900, "width": 1440}, {"image_url": "https://www.worldatlas.com/r/w1200/upload/71/61/3a/shutterstock-111362132.jpg", "origin_url": "https://www.worldatlas.com/articles/what-is-the-capital-of-france.html", "height": 710, "width": 1000}, {"image_url": "https://www.iroamly.com/images/article/france/what-is-the-capital-of-france.webp", "origin_url": "https://www.iroamly.com/france-travel/what-is-the-capital-of-france.html", "height": 450, "width": 800}, {"image_url": "https://www.cia-france.com/media/122/meteo_1100x700.jpg", "origin_url": "https://www.cia-france.com/french-kids-teenage-courses/paris-school/visit-paris", "height": 700, "width": 1100}, {"image_url": "https://i.ytimg.com/vi/3IZss5o3ECQ/sddefault.jpg", "origin_url": "https://www.youtube.com/watch?v=3IZss5o3ECQ", "height": 480, "width": 640}], "related_questions": ["What are some famous landmarks in Paris", "How did Paris become the capital of France", "What is the history behind the name \"City of Light\" for Paris", "How has the population of Paris changed over the years", "What are some unique cultural practices in Paris"], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "The capital of France is **Paris**. It is located in the north-central part of the country along the Seine River and is the largest city in France, serving as a major center for finance, culture, fashion, and gastronomy[1][2][4]."}, "delta": {"role": "assistant", "content": ""}}]}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94dbe83b1e51a2db-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 1.596s

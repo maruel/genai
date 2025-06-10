@@ -740,9 +740,7 @@ type Citation struct {
 
 // Validate ensures the citation is valid.
 func (c *Citation) Validate() error {
-	if c.Text == "" {
-		return fmt.Errorf("citation text cannot be empty")
-	}
+	// Text can be empty, e.g. Perplexity web search results.
 	if c.StartIndex < 0 {
 		return fmt.Errorf("start index must be non-negative, got %d", c.StartIndex)
 	}

@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 458
-        transfer_encoding: []
-        trailer: {}
+        content_length: 511
         host: api.perplexity.ai
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"model":"r1-1776","messages":[{"role":"user","content":"Is a banana a fruit? Reply as JSON according to the provided schema."}],"stream":false,"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean","description":"True if the answer is that it is a fruit, false otherwise"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}
-        form: {}
+            {"model":"r1-1776","messages":[{"role":"user","content":"Is a banana a fruit? Reply as JSON according to the provided schema."}],"return_images":true,"return_related_questions":true,"stream":false,"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean","description":"True if the answer is that it is a fruit, false otherwise"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,16 +19,14 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id": "c503050f-b883-441c-8bb8-1d1cac91b3ee", "model": "r1-1776", "created": 1748540640, "usage": {"prompt_tokens": 15, "completion_tokens": 178, "total_tokens": 193}, "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "<think>\nOkay, the user is asking if a banana is a fruit. Let me think. I know that in botanical terms, fruits develop from the flower''s ovary and contain seeds. Bananas do have tiny seeds inside them, although they''re usually very small in the commercial varieties we eat. So based on that, bananas should be classified as fruits. Let me confirm quickly. Yes, bananas are indeed fruits because they meet the botanical definition. The user might be confused because sometimes people think of fruits as something juicy like apples or oranges, but bananas fit the scientific category. I should make sure to structure the answer as JSON with the fields \"answer\" and \"explanation\". The answer is \"Yes\", and the explanation will mention the botanical definition involving the flower''s ovary and seeds. I need to keep it concise and accurate.\n</think>\n{\n\"is_fruit\": true\n}"}, "delta": {"role": "assistant", "content": ""}}]}'
+        body: '{"id": "9dc15c05-dba3-4257-99f4-38f456439c12", "model": "r1-1776", "created": 1749591146, "usage": {"prompt_tokens": 15, "completion_tokens": 362, "total_tokens": 377}, "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "<think>\nOkay, the user is asking if a banana is a fruit, and they want the response in JSON following a specific schema. Let me start by recalling the schema they provided earlier. The schema has fields like \"answer,\" \"certainty,\" \"evidence,\" and \"controversy.\" \n\nFirst, I need to confirm whether a banana is indeed a fruit. From my knowledge, in botanical terms, fruits develop from the ovary of a flowering plant and contain seeds. Bananas fit this because they develop from the banana flower and have those tiny black seeds inside, although commercially grown bananas are usually seedless due to selective breeding. So, yes, a banana is a fruit.\n\nNext, the certainty. Since this is a well-established fact in botany, I can set this to \"high.\" No controversy here, as there''s no significant debate about bananas being fruits. However, maybe some people confuse them with herbs. Wait, banana plants are technically herbs, but the banana itself is still a fruit. That''s a point to mention in the controversy section. Some might think it''s a herb or a vegetable, but botanically it''s a fruit.\n\nFor evidence, I should cite a reliable source. The USDA classification would work here. They categorize bananas under fruits. Also, botanical references support this. The controversy explanation should clarify the herb vs. fruit confusion. \n\nPutting it all together: answer is \"yes,\" certainty \"high,\" evidence from USDA and botany, controversy explaining the herb aspect. Check if the JSON structure is correct. Make sure the keys are as per the schema and the values are correctly formatted as strings. Avoid any markdown in the JSON. Double-check for typos. Looks good. Ready to respond.\n</think>\n{\n\"is_fruit\": true\n}"}, "delta": {"role": "assistant", "content": ""}}]}'
         headers:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9477cbfebf45a2c0-YUL
+                - 94dbfaed68f9a29c-YUL
             Content-Type:
                 - application/json
             Server:
@@ -42,4 +35,4 @@ interactions:
                 - max-age=15552000; includeSubDomains; preload
         status: 200 OK
         code: 200
-        duration: 4.398s
+        duration: 12.677s

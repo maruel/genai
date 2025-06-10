@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 96
-        transfer_encoding: []
-        trailer: {}
+        content_length: 149
         host: api.perplexity.ai
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"model":"bad model","messages":[{"role":"user","content":"Tell a short joke."}],"stream":true}
-        form: {}
+            {"model":"bad model","messages":[{"role":"user","content":"Tell a short joke."}],"return_images":true,"return_related_questions":true,"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,16 +19,13 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: 185
-        uncompressed: false
         body: '{"error":{"message":"Invalid model ''bad model''. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.","type":"invalid_model","code":400}}'
         headers:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94986b6c3c00a31e-YUL
+                - 94dbfd2f9c3ba316-YUL
             Content-Length:
                 - "185"
             Content-Type:
@@ -44,4 +36,4 @@ interactions:
                 - max-age=15552000; includeSubDomains; preload
         status: 400 Bad Request
         code: 400
-        duration: 44ms
+        duration: 48ms

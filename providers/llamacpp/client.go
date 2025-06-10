@@ -327,6 +327,20 @@ func (msg *Message) From(m *genai.Message) error {
 	}
 	if m.Contents[0].Text != "" {
 		msg.Content = m.Contents[0].Text
+	} else if m.Contents[0].Document != nil {
+		// Check if this is a text/plain document
+		mimeType, data, err := m.Contents[0].ReadDocument(10 * 1024 * 1024)
+		if err != nil {
+			return fmt.Errorf("failed to read document: %w", err)
+		}
+		if strings.HasPrefix(mimeType, "text/plain") {
+			if m.Contents[0].URL != "" {
+				return errors.New("text/plain documents must be provided inline, not as a URL")
+			}
+			msg.Content = string(data)
+		} else {
+			return fmt.Errorf("llamacpp only supports text/plain documents, got %s", mimeType)
+		}
 	} else {
 		return fmt.Errorf("unsupported content type %v", m.Contents[0])
 	}

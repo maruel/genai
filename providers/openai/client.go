@@ -668,13 +668,13 @@ type ChatResponse struct {
 		Message      Message      `json:"message"`
 		Logprobs     Logprobs     `json:"logprobs"`
 	} `json:"choices"`
-	Created           Time   `json:"created"`
-	ID                string `json:"id"`
-	Model             string `json:"model"`
-	Object            string `json:"object"`
-	Usage             Usage  `json:"usage"`
-	ServiceTier       string `json:"service_tier"`
-	SystemFingerprint string `json:"system_fingerprint"`
+	Created           base.Time `json:"created"`
+	ID                string    `json:"id"`
+	Model             string    `json:"model"`
+	Object            string    `json:"object"`
+	Usage             Usage     `json:"usage"`
+	ServiceTier       string    `json:"service_tier"`
+	SystemFingerprint string    `json:"system_fingerprint"`
 }
 
 func (c *ChatResponse) ToResult() (genai.Result, error) {
@@ -764,20 +764,13 @@ type ChatStreamChunkResponse struct {
 		Index        int64        `json:"index"`
 		Logprobs     Logprobs     `json:"logprobs"`
 	} `json:"choices"`
-	Created           Time   `json:"created"`
-	ID                string `json:"id"`
-	Model             string `json:"model"`
-	Object            string `json:"object"` // "chat.completion.chunk"
-	ServiceTier       string `json:"service_tier"`
-	SystemFingerprint string `json:"system_fingerprint"`
-	Usage             Usage  `json:"usage"`
-}
-
-// Time is a JSON encoded unix timestamp.
-type Time int64
-
-func (t *Time) AsTime() time.Time {
-	return time.Unix(int64(*t), 0)
+	Created           base.Time `json:"created"`
+	ID                string    `json:"id"`
+	Model             string    `json:"model"`
+	Object            string    `json:"object"` // "chat.completion.chunk"
+	ServiceTier       string    `json:"service_tier"`
+	SystemFingerprint string    `json:"system_fingerprint"`
+	Usage             Usage     `json:"usage"`
 }
 
 //
@@ -808,7 +801,7 @@ const (
 )
 
 type ImageResponse struct {
-	Created Time              `json:"created"`
+	Created base.Time         `json:"created"`
 	Data    []ImageChoiceData `json:"data"`
 	Usage   struct {
 		InputTokens        int64 `json:"input_tokens"`
@@ -831,15 +824,15 @@ type ImageChoiceData struct {
 
 // https://platform.openai.com/docs/api-reference/files/object
 type File struct {
-	Bytes         int64  `json:"bytes"` // File size
-	CreatedAt     Time   `json:"created_at"`
-	ExpiresAt     Time   `json:"expires_at"`
-	Filename      string `json:"filename"`
-	ID            string `json:"id"`
-	Object        string `json:"object"`         // "file"
-	Purpose       string `json:"purpose"`        // One of: assistants, assistants_output, batch, batch_output, fine-tune, fine-tune-results and vision
-	Status        string `json:"status"`         // Deprecated
-	StatusDetails string `json:"status_details"` // Deprecated
+	Bytes         int64     `json:"bytes"` // File size
+	CreatedAt     base.Time `json:"created_at"`
+	ExpiresAt     base.Time `json:"expires_at"`
+	Filename      string    `json:"filename"`
+	ID            string    `json:"id"`
+	Object        string    `json:"object"`         // "file"
+	Purpose       string    `json:"purpose"`        // One of: assistants, assistants_output, batch, batch_output, fine-tune, fine-tune-results and vision
+	Status        string    `json:"status"`         // Deprecated
+	StatusDetails string    `json:"status_details"` // Deprecated
 }
 
 func (f *File) GetID() string {
@@ -902,13 +895,13 @@ type BatchRequest struct {
 
 // https://platform.openai.com/docs/api-reference/batch/object
 type Batch struct {
-	CancelledAt      Time   `json:"cancelled_at"`
-	CancellingAt     Time   `json:"cancelling_at"`
-	CompletedAt      Time   `json:"completed_at"`
-	CompletionWindow string `json:"completion_window"` // "24h"
-	CreatedAt        Time   `json:"created_at"`
-	Endpoint         string `json:"endpoint"`      // Same as BatchRequest.Endpoint
-	ErrorFileID      string `json:"error_file_id"` // File ID containing the outputs of requests with errors.
+	CancelledAt      base.Time `json:"cancelled_at"`
+	CancellingAt     base.Time `json:"cancelling_at"`
+	CompletedAt      base.Time `json:"completed_at"`
+	CompletionWindow string    `json:"completion_window"` // "24h"
+	CreatedAt        base.Time `json:"created_at"`
+	Endpoint         string    `json:"endpoint"`      // Same as BatchRequest.Endpoint
+	ErrorFileID      string    `json:"error_file_id"` // File ID containing the outputs of requests with errors.
 	Errors           struct {
 		Data []struct {
 			Code    string `json:"code"`
@@ -917,12 +910,12 @@ type Batch struct {
 			Param   string `json:"param"`
 		} `json:"data"`
 	} `json:"errors"`
-	ExpiredAt     Time              `json:"expired_at"`
-	ExpiresAt     Time              `json:"expires_at"`
-	FailedAt      Time              `json:"failed_at"`
-	FinalizingAt  Time              `json:"finalizing_at"`
+	ExpiredAt     base.Time         `json:"expired_at"`
+	ExpiresAt     base.Time         `json:"expires_at"`
+	FailedAt      base.Time         `json:"failed_at"`
+	FinalizingAt  base.Time         `json:"finalizing_at"`
 	ID            string            `json:"id"`
-	InProgressAt  Time              `json:"in_progress_at"`
+	InProgressAt  base.Time         `json:"in_progress_at"`
 	InputFileID   string            `json:"input_file_id"` // Input data
 	Metadata      map[string]string `json:"metadata"`
 	Object        string            `json:"object"`         // "batch"
@@ -943,10 +936,10 @@ type Batch struct {
 // https://platform.openai.com/docs/models/gpt-4o-mini-realtime-preview, find the div containing
 // "Modalities:", then extract the modalities from the text
 type Model struct {
-	ID      string `json:"id"`
-	Object  string `json:"object"`
-	Created Time   `json:"created"`
-	OwnedBy string `json:"owned_by"`
+	ID      string    `json:"id"`
+	Object  string    `json:"object"`
+	Created base.Time `json:"created"`
+	OwnedBy string    `json:"owned_by"`
 }
 
 func (m *Model) GetID() string {
@@ -1071,25 +1064,25 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 		cheap := model == base.PreferredCheap
 		good := model == base.PreferredGood
 		c.Model = ""
-		var date Time
+		var created base.Time
 		for _, mdl := range mdls {
 			m := mdl.(*Model)
 			if cheap {
-				if strings.HasSuffix(m.ID, "-nano") && (date == 0 || m.Created < date) {
+				if strings.HasSuffix(m.ID, "-nano") && (created == 0 || m.Created < created) {
 					// For the cheapest, we want the oldest model as it is generally cheaper.
-					date = m.Created
+					created = m.Created
 					c.Model = m.ID
 				}
 			} else if good {
-				if strings.HasSuffix(m.ID, "-mini") && (date == 0 || m.Created > date) {
+				if strings.HasSuffix(m.ID, "-mini") && (created == 0 || m.Created > created) {
 					// For the greatest, we want the newest model as it is generally better.
-					date = m.Created
+					created = m.Created
 					c.Model = m.ID
 				}
 			} else {
-				if strings.HasSuffix(m.ID, "-pro") && (date == 0 || m.Created > date) {
+				if strings.HasSuffix(m.ID, "-pro") && (created == 0 || m.Created > created) {
 					// For the greatest, we want the newest model as it is generally better.
-					date = m.Created
+					created = m.Created
 					c.Model = m.ID
 				}
 			}

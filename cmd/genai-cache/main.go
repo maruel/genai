@@ -76,10 +76,10 @@ func mainImpl() error {
 		if len(files) == 0 {
 			return errors.New("delete <ids...>")
 		}
-		eg, ctx := errgroup.WithContext(ctx)
+		eg, ctx2 := errgroup.WithContext(ctx)
 		for _, id := range files {
 			eg.Go(func() error {
-				return l.CacheDelete(ctx, id)
+				return l.CacheDelete(ctx2, id)
 			})
 		}
 		return eg.Wait()

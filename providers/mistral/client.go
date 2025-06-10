@@ -16,7 +16,6 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
@@ -398,10 +397,10 @@ type Tool struct {
 }
 
 type ChatResponse struct {
-	ID      string `json:"id"`
-	Object  string `json:"object"` // "chat.completion"
-	Model   string `json:"model"`
-	Created Time   `json:"created"`
+	ID      string    `json:"id"`
+	Object  string    `json:"object"` // "chat.completion"
+	Model   string    `json:"model"`
+	Created base.Time `json:"created"`
 	Choices []struct {
 		FinishReason FinishReason    `json:"finish_reason"`
 		Index        int64           `json:"index"`
@@ -510,10 +509,10 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 }
 
 type ChatStreamChunkResponse struct {
-	ID      string `json:"id"`
-	Object  string `json:"object"` // "chat.completion.chunk"
-	Created Time   `json:"created"`
-	Model   string `json:"model"`
+	ID      string    `json:"id"`
+	Object  string    `json:"object"` // "chat.completion.chunk"
+	Created base.Time `json:"created"`
+	Model   string    `json:"model"`
 	Choices []struct {
 		Index int64 `json:"index"`
 		Delta struct {
@@ -527,19 +526,12 @@ type ChatStreamChunkResponse struct {
 	Usage Usage `json:"usage"`
 }
 
-// Time is a JSON encoded unix timestamp.
-type Time int64
-
-func (t *Time) AsTime() time.Time {
-	return time.Unix(int64(*t), 0)
-}
-
 // https://docs.mistral.ai/api/#tag/models/operation/retrieve_model_v1_models__model_id__get
 type Model struct {
-	ID           string `json:"id"`
-	Object       string `json:"object"`
-	Created      Time   `json:"created"`
-	OwnedBy      string `json:"owned_by"`
+	ID           string    `json:"id"`
+	Object       string    `json:"object"`
+	Created      base.Time `json:"created"`
+	OwnedBy      string    `json:"owned_by"`
 	Capabilities struct {
 		CompletionChat  bool `json:"completion_chat"`
 		CompletionFim   bool `json:"completion_fim"`

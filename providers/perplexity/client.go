@@ -12,7 +12,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
@@ -192,11 +191,11 @@ func (m *Message) To(out *genai.Message) error {
 }
 
 type ChatResponse struct {
-	ID        string   `json:"id"`
-	Model     string   `json:"model"`
-	Object    string   `json:"object"`
-	Created   Time     `json:"created"`
-	Citations []string `json:"citations"`
+	ID        string    `json:"id"`
+	Model     string    `json:"model"`
+	Object    string    `json:"object"`
+	Created   base.Time `json:"created"`
+	Citations []string  `json:"citations"`
 	Choices   []struct {
 		Index        int64        `json:"index"`
 		FinishReason FinishReason `json:"finish_reason"`
@@ -254,13 +253,6 @@ type Usage struct {
 }
 
 type ChatStreamChunkResponse = ChatResponse
-
-// Time is a JSON encoded unix timestamp.
-type Time int64
-
-func (t *Time) AsTime() time.Time {
-	return time.Unix(int64(*t), 0)
-}
 
 //
 

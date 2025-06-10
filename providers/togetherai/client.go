@@ -452,10 +452,10 @@ type ChatResponse struct {
 			TokenLogprobs []float64 `json:"token_logprobs"`
 		} `json:"logprobs"`
 	} `json:"choices"`
-	Usage    Usage  `json:"usage"`
-	Created  Time   `json:"created"`
-	Model    string `json:"model"`
-	Object   string `json:"object"` // "chat.completion"
+	Usage    Usage     `json:"usage"`
+	Created  base.Time `json:"created"`
+	Model    string    `json:"model"`
+	Object   string    `json:"object"` // "chat.completion"
 	Warnings []struct {
 		Message string `json:"message"`
 	} `json:"warnings"`
@@ -513,10 +513,10 @@ type Usage struct {
 }
 
 type ChatStreamChunkResponse struct {
-	ID      string `json:"id"`
-	Object  string `json:"object"` // "chat.completion.chunk"
-	Created Time   `json:"created"`
-	Model   string `json:"model"`
+	ID      string    `json:"id"`
+	Object  string    `json:"object"` // "chat.completion.chunk"
+	Created base.Time `json:"created"`
+	Model   string    `json:"model"`
 	Choices []struct {
 		Index int64   `json:"index"`
 		Text  string  `json:"text"` // Duplicated to Delta.Text
@@ -537,24 +537,17 @@ type ChatStreamChunkResponse struct {
 	} `json:"warnings"`
 }
 
-// Time is a JSON encoded unix timestamp.
-type Time int64
-
-func (t *Time) AsTime() time.Time {
-	return time.Unix(int64(*t), 0)
-}
-
 type Model struct {
-	ID            string `json:"id"`
-	Object        string `json:"object"`
-	Created       Time   `json:"created"`
-	Type          string `json:"type"` // "chat", "moderation", "image"
-	Running       bool   `json:"running"`
-	DisplayName   string `json:"display_name"`
-	Organization  string `json:"organization"`
-	Link          string `json:"link"`
-	License       string `json:"license"`
-	ContextLength int64  `json:"context_length"`
+	ID            string    `json:"id"`
+	Object        string    `json:"object"`
+	Created       base.Time `json:"created"`
+	Type          string    `json:"type"` // "chat", "moderation", "image"
+	Running       bool      `json:"running"`
+	DisplayName   string    `json:"display_name"`
+	Organization  string    `json:"organization"`
+	Link          string    `json:"link"`
+	License       string    `json:"license"`
+	ContextLength int64     `json:"context_length"`
 	Config        struct {
 		ChatTemplate    string   `json:"chat_template"`
 		Stop            []string `json:"stop"`

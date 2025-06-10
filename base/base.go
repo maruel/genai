@@ -427,6 +427,13 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 
 //
 
+// Time is a JSON encoded unix timestamp. This is used by many providers.
+type Time int64
+
+func (t *Time) AsTime() time.Time {
+	return time.Unix(int64(*t), 0)
+}
+
 // ListModelsResponse is an interface for responses that contain model data.
 type ListModelsResponse interface {
 	// ToModels converts the provider-specific models to a slice of genai.Model

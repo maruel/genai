@@ -15,7 +15,6 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
@@ -379,11 +378,11 @@ func (t *ToolCall) To(out *genai.ToolCall) {
 }
 
 type ChatResponse struct {
-	ID                string `json:"id"`
-	Model             string `json:"model"`
-	Object            string `json:"object"` // "chat.completion"
-	SystemFingerprint string `json:"system_fingerprint"`
-	Created           Time   `json:"created"`
+	ID                string    `json:"id"`
+	Model             string    `json:"model"`
+	Object            string    `json:"object"` // "chat.completion"
+	SystemFingerprint string    `json:"system_fingerprint"`
+	Created           base.Time `json:"created"`
 	Choices           []struct {
 		Index        int64        `json:"index"`
 		FinishReason FinishReason `json:"finish_reason"`
@@ -391,11 +390,11 @@ type ChatResponse struct {
 	} `json:"choices"`
 	Usage    Usage `json:"usage"`
 	TimeInfo struct {
-		QueueTime  float64 `json:"queue_time"`      // In seconds
-		PromptTime float64 `json:"prompt_time"`     // In seconds
-		ChatTime   float64 `json:"completion_time"` // In seconds
-		TotalTime  float64 `json:"total_time"`      // In seconds
-		Created    Time    `json:"created"`
+		QueueTime  float64   `json:"queue_time"`      // In seconds
+		PromptTime float64   `json:"prompt_time"`     // In seconds
+		ChatTime   float64   `json:"completion_time"` // In seconds
+		TotalTime  float64   `json:"total_time"`      // In seconds
+		Created    base.Time `json:"created"`
 	} `json:"time_info"`
 }
 
@@ -447,11 +446,11 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 }
 
 type ChatStreamChunkResponse struct {
-	ID                string `json:"id"`
-	Model             string `json:"model"`
-	Object            string `json:"object"`
-	SystemFingerprint string `json:"system_fingerprint"`
-	Created           Time   `json:"created"`
+	ID                string    `json:"id"`
+	Model             string    `json:"model"`
+	Object            string    `json:"object"`
+	SystemFingerprint string    `json:"system_fingerprint"`
+	Created           base.Time `json:"created"`
 	Choices           []struct {
 		Delta struct {
 			Role      string     `json:"role"`
@@ -463,11 +462,11 @@ type ChatStreamChunkResponse struct {
 	} `json:"choices"`
 	Usage    Usage `json:"usage"`
 	TimeInfo struct {
-		QueueTime  float64 `json:"queue_time"`
-		PromptTime float64 `json:"prompt_time"`
-		ChatTime   float64 `json:"completion_time"`
-		TotalTime  float64 `json:"total_time"`
-		Created    Time    `json:"created"`
+		QueueTime  float64   `json:"queue_time"`
+		PromptTime float64   `json:"prompt_time"`
+		ChatTime   float64   `json:"completion_time"`
+		TotalTime  float64   `json:"total_time"`
+		Created    base.Time `json:"created"`
 	} `json:"time_info"`
 }
 
@@ -480,18 +479,11 @@ type Usage struct {
 	} `json:"prompt_tokens_details"`
 }
 
-// Time is a JSON encoded unix timestamp.
-type Time int64
-
-func (t *Time) AsTime() time.Time {
-	return time.Unix(int64(*t), 0)
-}
-
 type Model struct {
-	ID      string `json:"id"`
-	Object  string `json:"object"`
-	Created Time   `json:"created"`
-	OwnedBy string `json:"owned_by"`
+	ID      string    `json:"id"`
+	Object  string    `json:"object"`
+	Created base.Time `json:"created"`
+	OwnedBy string    `json:"owned_by"`
 }
 
 func (m *Model) GetID() string {
@@ -619,26 +611,26 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 		cheap := model == base.PreferredCheap
 		good := model == base.PreferredGood
 		c.Model = ""
-		var date Time
+		var created base.Time
 		for _, mdl := range mdls {
 			// WARNING: This is fragile and will break in the future.
 			m := mdl.(*Model)
 			if cheap {
-				if strings.HasPrefix(m.ID, "llama3") && (date == 0 || m.Created < date) {
+				if strings.HasPrefix(m.ID, "llama3") && (created == 0 || m.Created < created) {
 					// For the cheapest, we want the oldest model as it is generally cheaper.
-					date = m.Created
+					created = m.Created
 					c.Model = m.ID
 				}
 			} else if good {
-				if strings.HasPrefix(m.ID, "llama-4") && (date == 0 || m.Created > date) {
+				if strings.HasPrefix(m.ID, "llama-4") && (created == 0 || m.Created > created) {
 					// For the greatest, we want the newest model as it is generally better.
-					date = m.Created
+					created = m.Created
 					c.Model = m.ID
 				}
 			} else {
-				if strings.HasPrefix(m.ID, "qwen-") && (date == 0 || m.Created > date) {
+				if strings.HasPrefix(m.ID, "qwen-") && (created == 0 || m.Created > created) {
 					// For the greatest, we want the newest model as it is generally better.
-					date = m.Created
+					created = m.Created
 					c.Model = m.ID
 				}
 			}

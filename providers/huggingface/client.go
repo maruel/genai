@@ -338,11 +338,11 @@ type Tool struct {
 }
 
 type ChatResponse struct {
-	Object            string `json:"object"`
-	ID                string `json:"id"`
-	Created           Time   `json:"created"`
-	Model             string `json:"model"`
-	SystemFingerprint string `json:"system_fingerprint"`
+	Object            string    `json:"object"`
+	ID                string    `json:"id"`
+	Created           base.Time `json:"created"`
+	Model             string    `json:"model"`
+	SystemFingerprint string    `json:"system_fingerprint"`
 
 	Choices []struct {
 		FinishReason FinishReason    `json:"finish_reason"`
@@ -441,11 +441,11 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 }
 
 type ChatStreamChunkResponse struct {
-	Object            string `json:"object"`
-	Created           Time   `json:"created"`
-	ID                string `json:"id"`
-	Model             string `json:"model"`
-	SystemFingerprint string `json:"system_fingerprint"`
+	Object            string    `json:"object"`
+	Created           base.Time `json:"created"`
+	ID                string    `json:"id"`
+	Model             string    `json:"model"`
+	SystemFingerprint string    `json:"system_fingerprint"`
 	Choices           []struct {
 		Index        int64        `json:"index"`
 		FinishReason FinishReason `json:"finish_reason"`
@@ -467,13 +467,6 @@ type ChatStreamChunkResponse struct {
 		} `json:"logprobs"`
 	} `json:"choices"`
 	Usage Usage `json:"usage"`
-}
-
-// Time is a JSON encoded unix timestamp.
-type Time int64
-
-func (t *Time) AsTime() time.Time {
-	return time.Unix(int64(*t), 0)
 }
 
 type Model struct {

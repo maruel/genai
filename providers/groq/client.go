@@ -16,7 +16,6 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
@@ -435,11 +434,11 @@ type ChatResponse struct {
 		Message      MessageResponse `json:"message"`
 		Logprobs     struct{}        `json:"logprobs"`
 	} `json:"choices"`
-	Created        Time   `json:"created"`
-	ID             string `json:"id"`
-	Model          string `json:"model"`
-	Object         string `json:"object"` // "chat.completion"
-	Usage          Usage  `json:"usage"`
+	Created        base.Time `json:"created"`
+	ID             string    `json:"id"`
+	Model          string    `json:"model"`
+	Object         string    `json:"object"` // "chat.completion"
+	Usage          Usage     `json:"usage"`
 	UsageBreakdown struct {
 		Models []struct {
 			Model string `json:"model"`
@@ -543,11 +542,11 @@ func (m *MessageResponse) To(out *genai.Message) error {
 }
 
 type ChatStreamChunkResponse struct {
-	ID                string `json:"id"`
-	Object            string `json:"object"`
-	Created           Time   `json:"created"`
-	Model             string `json:"model"`
-	SystemFingerprint string `json:"system_fingerprint"`
+	ID                string    `json:"id"`
+	Object            string    `json:"object"`
+	Created           base.Time `json:"created"`
+	Model             string    `json:"model"`
+	SystemFingerprint string    `json:"system_fingerprint"`
 	Choices           []struct {
 		Index int64 `json:"index"`
 		Delta struct {
@@ -565,22 +564,15 @@ type ChatStreamChunkResponse struct {
 	} `json:"x_groq"`
 }
 
-// Time is a JSON encoded unix timestamp.
-type Time int64
-
-func (t *Time) AsTime() time.Time {
-	return time.Unix(int64(*t), 0)
-}
-
 type Model struct {
-	ID                  string   `json:"id"`
-	Object              string   `json:"object"`
-	Created             Time     `json:"created"`
-	OwnedBy             string   `json:"owned_by"`
-	Active              bool     `json:"active"`
-	ContextWindow       int64    `json:"context_window"`
-	PublicApps          []string `json:"public_apps"`
-	MaxCompletionTokens int64    `json:"max_completion_tokens"`
+	ID                  string    `json:"id"`
+	Object              string    `json:"object"`
+	Created             base.Time `json:"created"`
+	OwnedBy             string    `json:"owned_by"`
+	Active              bool      `json:"active"`
+	ContextWindow       int64     `json:"context_window"`
+	PublicApps          []string  `json:"public_apps"`
+	MaxCompletionTokens int64     `json:"max_completion_tokens"`
 }
 
 func (m *Model) GetID() string {

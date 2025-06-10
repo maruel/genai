@@ -21,7 +21,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
@@ -455,10 +454,10 @@ func (t *ToolCall) To(out *genai.ToolCall) {
 }
 
 type ChatResponse struct {
-	ID      string `json:"id"`
-	Object  string `json:"object"` // "chat.completion"
-	Created Time   `json:"created"`
-	Model   string `json:"model"` // The actual model name, which is likely different fro the alias.
+	ID      string    `json:"id"`
+	Object  string    `json:"object"` // "chat.completion"
+	Created base.Time `json:"created"`
+	Model   string    `json:"model"` // The actual model name, which is likely different fro the alias.
 	Choices []struct {
 		Index                int64               `json:"index"`
 		Message              MessageResponse     `json:"message"`
@@ -487,13 +486,6 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
 	return out, err
-}
-
-// Time is a JSON encoded unix timestamp.
-type Time int64
-
-func (t *Time) AsTime() time.Time {
-	return time.Unix(int64(*t), 0)
 }
 
 type FinishReason string
@@ -586,10 +578,10 @@ func (m *MessageResponse) To(out *genai.Message) error {
 }
 
 type ChatStreamChunkResponse struct {
-	ID      string `json:"id"`      //
-	Object  string `json:"object"`  // "chat.completion.chunk"
-	Created Time   `json:"created"` //
-	Model   string `json:"model"`   // Original model full name
+	ID      string    `json:"id"`      //
+	Object  string    `json:"object"`  // "chat.completion.chunk"
+	Created base.Time `json:"created"` //
+	Model   string    `json:"model"`   // Original model full name
 	Choices []struct {
 		ContentFilterResults ContentFilterResult `json:"content_filter_results"`
 		Index                int64               `json:"index"`

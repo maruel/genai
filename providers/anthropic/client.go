@@ -938,14 +938,14 @@ func (b *BatchRequestParams) initOptions(v *genai.OptionsText) ([]string, []erro
 
 // https://docs.anthropic.com/en/api/creating-message-batches
 type BatchResponse struct {
-	ID                string `json:"id"`   // Starts with "msgbatch_"
-	Type              string `json:"type"` // "message_batch"
-	ArchivedAt        Time   `json:"archived_at"`
-	CancelInitiatedAt Time   `json:"cancel_initiated_at"`
-	CreatedAt         Time   `json:"created_at"`
-	EndedAt           Time   `json:"ended_at"`
-	ExpiresAt         Time   `json:"expires_at"`
-	ProcessingStatus  string `json:"processing_status"` // "in_progress", "canceling", "ended"
+	ID                string    `json:"id"`   // Starts with "msgbatch_"
+	Type              string    `json:"type"` // "message_batch"
+	ArchivedAt        time.Time `json:"archived_at"`
+	CancelInitiatedAt time.Time `json:"cancel_initiated_at"`
+	CreatedAt         time.Time `json:"created_at"`
+	EndedAt           time.Time `json:"ended_at"`
+	ExpiresAt         time.Time `json:"expires_at"`
+	ProcessingStatus  string    `json:"processing_status"` // "in_progress", "canceling", "ended"
 	RequestCounts     struct {
 		Canceled   int64 `json:"canceled"`
 		Errored    int64 `json:"errored"`
@@ -1017,8 +1017,6 @@ func (b *BatchQueryResponse) To(out *genai.Message) error {
 	}
 	return nil
 }
-
-type Time string
 
 //
 

@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"

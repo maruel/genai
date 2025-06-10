@@ -26,6 +26,8 @@ func TestClient_Scoreboard(t *testing.T) {
 }
 
 func TestClient_Citations(t *testing.T) {
+	// https://docs.anthropic.com/en/docs/build-with-claude/citations
+	// Use the cheapest model that supports citations.
 	c := getClient(t, "claude-3-5-haiku-20241022")
 	msgs := genai.Messages{
 		genai.Message{

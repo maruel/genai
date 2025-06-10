@@ -67,7 +67,7 @@ type ChatRequest struct {
 	Messages        []Message  `json:"messages"`
 	Documents       []Document `json:"documents,omitzero"`
 	CitationOptions struct {
-		Mode string `json:"mode,omitzero"` // "fast", "accurate", "off"; default "fast"
+		Mode string `json:"mode,omitzero"` // "fast", "accurate", "off"; default "fast" for command-r7b-12-2024 and command-a-03-2025, else "accurate".
 	} `json:"citation_options,omitzero"`
 	ResponseFormat struct {
 		Type       string             `json:"type,omitzero"` // "text", "json_object"
@@ -146,8 +146,15 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 		c.Messages[0].Content = []Content{{Type: "text", Text: sp}}
 	}
 	for i := range msgs {
-		if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
+		d, err := c.Messages[i+offset].From(&msgs[i])
+		if err != nil {
 			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+		}
+		if len(d) != 0 {
+			c.Documents = append(c.Documents, d...)
+		}
+		if len(c.Messages[i+offset].Content) == 0 && len(c.Messages[i+offset].ToolCalls) == 0 {
+			errs = append(errs, fmt.Errorf("message %d: must have at least one content or tool call block", i))
 		}
 	}
 	if len(unsupported) > 0 {
@@ -167,7 +174,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 
 // https://docs.cohere.com/reference/chat
 type Message struct {
-	Role string `json:"role"` // "system", "assistant", "user"
+	Role string `json:"role"` // "system", "assistant", "user", "tool"
 	// Type == "system", "assistant", or "user".
 	Content []Content `json:"content,omitzero"`
 	// Type == "assistant"
@@ -178,22 +185,29 @@ type Message struct {
 	ToolPlan   string     `json:"tool_plan,omitzero"`
 }
 
-func (m *Message) From(in *genai.Message) error {
+func (m *Message) From(in *genai.Message) ([]Document, error) {
 	switch in.Role {
 	case genai.User, genai.Assistant:
 		m.Role = string(in.Role)
 	default:
-		return fmt.Errorf("unsupported role %q", in.Role)
+		return nil, fmt.Errorf("unsupported role %q", in.Role)
 	}
+	var out []Document
 	if len(in.Contents) != 0 {
 		for i := range in.Contents {
 			if in.Contents[i].Thinking != "" {
 				// Silently ignore thinking blocks.
 				continue
 			}
-			m.Content = append(m.Content, Content{})
-			if err := m.Content[len(m.Content)-1].From(&in.Contents[i]); err != nil {
-				return fmt.Errorf("block %d: %w", i, err)
+			c := Content{}
+			d, err := c.From(&in.Contents[i])
+			if err != nil {
+				return nil, fmt.Errorf("block %d: %w", i, err)
+			}
+			if d != nil {
+				out = append(out, *d)
+			} else {
+				m.Content = append(m.Content, c)
 			}
 		}
 	}
@@ -206,48 +220,47 @@ func (m *Message) From(in *genai.Message) error {
 	if len(in.ToolCallResults) != 0 {
 		if len(in.Contents) != 0 || len(in.ToolCalls) != 0 {
 			// This could be worked around.
-			return fmt.Errorf("can't have tool call result along content or tool calls")
+			return out, fmt.Errorf("can't have tool call result along content or tool calls")
 		}
 		if len(in.ToolCallResults) != 1 {
 			// This could be worked around.
-			return fmt.Errorf("can't have more than one tool call result at a time")
+			return out, fmt.Errorf("can't have more than one tool call result at a time")
 		}
-		// Cohere supports Document!
+		// Cohere supports Document, but only when using tools.
 		m.Role = "tool"
 		m.ToolCallID = in.ToolCallResults[0].ID
 		m.Content = []Content{{Type: ContentText, Text: in.ToolCallResults[0].Result}}
 	}
-	return nil
+	return out, nil
 }
 
 type Content struct {
-	Type     ContentType `json:"type,omitzero"`
-	Text     string      `json:"text,omitzero"`
+	Type ContentType `json:"type,omitzero"`
+	Text string      `json:"text,omitzero"`
+
+	// Only used when Type == ContentImageURL and Role == "user".
 	ImageURL struct {
 		URL string `json:"url,omitzero"`
 	} `json:"image_url,omitzero"`
-	Document struct {
-		Data map[string]any `json:"data,omitzero"` // TODO
-		ID   string         `json:"id,omitzero"`   // TODO
-	} `json:"document,omitzero"`
+
+	// Only used when Type == ContentDocument and Role == "tool" for tool results.
+	Document Document `json:"document,omitzero"`
 }
 
 func (c *Content) IsZero() bool {
 	return c.Type == "" && c.Text == "" && c.ImageURL.URL == "" && len(c.Document.Data) == 0 && c.Document.ID == ""
 }
 
-func (c *Content) From(in *genai.Content) error {
+func (c *Content) From(in *genai.Content) (*Document, error) {
 	if in.Text != "" {
 		c.Type = ContentText
 		c.Text = in.Text
-		return nil
+		return nil, nil
 	}
 
-	// Currently fails with: http 400: error: invalid request: all elements in history must have a message
-	// TODO: Investigate one day. Maybe because trial key.
 	mimeType, data, err := in.ReadDocument(10 * 1024 * 1024)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	switch {
 	case (in.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
@@ -257,16 +270,21 @@ func (c *Content) From(in *genai.Content) error {
 		} else {
 			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 		}
+		return nil, nil
 	case strings.HasPrefix(mimeType, "text/plain"):
-		c.Type = ContentText
 		if in.URL != "" {
-			return errors.New("text/plain documents must be provided inline, not as a URL")
+			return nil, errors.New("text/plain documents must be provided inline, not as a URL")
 		}
-		c.Text = string(data)
+		name := in.GetFilename()
+		d := &Document{
+			ID:   name,
+			Data: map[string]any{"title": name, "snippet": string(data)},
+		}
+		// This is handled as ChatRequest.Documents.
+		return d, nil
 	default:
-		return fmt.Errorf("unsupported mime type %s", mimeType)
+		return nil, fmt.Errorf("unsupported mime type %s", mimeType)
 	}
-	return nil
 }
 
 func (c *Content) To(in *genai.Content) error {
@@ -281,6 +299,7 @@ func (c *Content) To(in *genai.Content) error {
 	return nil
 }
 
+// https://docs.cohere.com/v2/reference/chat
 type ContentType string
 
 const (
@@ -309,15 +328,16 @@ func (c *Citations) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// Citation is only used with Role == "assistant"
 type Citation struct {
-	Start   int64    `json:"start,omitzero"`
-	End     int64    `json:"end,omitzero"`
-	Text    string   `json:"text,omitzero"`
-	Sources []Source `json:"sources,omitzero"`
-	Type    string   `json:"type,omitzero"` // "TEXT_CONTENT", "PLAN"
+	Start   int64            `json:"start,omitzero"`
+	End     int64            `json:"end,omitzero"`
+	Text    string           `json:"text,omitzero"`
+	Sources []CitationSource `json:"sources,omitzero"`
+	Type    string           `json:"type,omitzero"` // "TEXT_CONTENT", "PLAN"
 }
 
-type Source struct {
+type CitationSource struct {
 	Type string `json:"type,omitzero"` // "tool", "document"
 
 	// Type == "tool", "document"
@@ -339,12 +359,12 @@ type Tool struct {
 	} `json:"function,omitzero"`
 }
 
+// Document can be used in the ChatRequest.Documents field or as a tool result. It's annoying because genai
+// passes documents as Content inside a Message.
 type Document struct {
 	// Or a string.
-	Document struct {
-		ID   string         `json:"id,omitzero"`
-		Data map[string]any `json:"data,omitzero"`
-	} `json:"document,omitzero"`
+	ID   string         `json:"id,omitzero"`
+	Data map[string]any `json:"data,omitzero"`
 }
 
 type ChatResponse struct {

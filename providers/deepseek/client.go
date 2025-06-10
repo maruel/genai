@@ -198,8 +198,19 @@ func (m *Message) From(in *genai.Message) error {
 	for i := range in.Contents {
 		// Thinking content should not be returned to the model.
 		m.Content += in.Contents[i].Text
-		if in.Contents[i].Filename != "" || in.Contents[i].Document != nil || in.Contents[i].URL != "" {
-			return errors.New("deepseek doesn't support document content blocks")
+		if in.Contents[i].Filename != "" || in.Contents[i].URL != "" {
+			return errors.New("deepseek doesn't support document content blocks with filenames or URLs")
+		}
+		if in.Contents[i].Document != nil {
+			mimeType, data, err := in.Contents[i].ReadDocument(10 * 1024 * 1024)
+			if err != nil {
+				return fmt.Errorf("failed to read document: %w", err)
+			}
+			if strings.HasPrefix(mimeType, "text/plain") {
+				m.Content += string(data)
+			} else {
+				return fmt.Errorf("deepseek only supports text/plain documents, got %s", mimeType)
+			}
 		}
 	}
 	if len(in.ToolCalls) != 0 {

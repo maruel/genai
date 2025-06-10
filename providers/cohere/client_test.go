@@ -50,7 +50,22 @@ func TestClient_Citations(t *testing.T) {
 	if s := res.AsText(); !strings.Contains(s, "Quackiland") {
 		t.Errorf("expected Quackiland, got: %q", s)
 	}
-	// TODO: Check for citations.
+	foundCitations := false
+	for _, content := range res.Contents {
+		if len(content.Citations) > 0 {
+			foundCitations = true
+			t.Logf("Found %d citations in content", len(content.Citations))
+			for i, citation := range content.Citations {
+				t.Logf("Citation %d: text=%q, type=%q, start=%d, end=%d", i, citation.Text, citation.Type, citation.StartIndex, citation.EndIndex)
+				if len(citation.Sources) > 0 {
+					t.Logf("  Sources: %+v", citation.Sources)
+				}
+			}
+		}
+	}
+	if !foundCitations {
+		t.Errorf("expected citations in response, but found none")
+	}
 }
 
 func TestClient_Preferred(t *testing.T) {

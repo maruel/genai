@@ -1113,3 +1113,192 @@ func TestToolCallResult_UnmarshalJSON(t *testing.T) {
 		}
 	})
 }
+
+func TestCitation_Validate(t *testing.T) {
+	tests := []struct {
+		name     string
+		citation Citation
+		wantErr  bool
+	}{
+		{
+			name: "valid citation",
+			citation: Citation{
+				Text:       "example text",
+				StartIndex: 0,
+				EndIndex:   12,
+				Sources: []CitationSource{{
+					ID:   "doc1",
+					Type: "document",
+				}},
+			},
+			wantErr: false,
+		},
+		{
+			name: "empty text",
+			citation: Citation{
+				Text:       "",
+				StartIndex: 0,
+				EndIndex:   10,
+			},
+			wantErr: true,
+		},
+		{
+			name: "negative start index",
+			citation: Citation{
+				Text:       "example",
+				StartIndex: -1,
+				EndIndex:   10,
+			},
+			wantErr: true,
+		},
+		{
+			name: "end index before start",
+			citation: Citation{
+				Text:       "example",
+				StartIndex: 10,
+				EndIndex:   5,
+			},
+			wantErr: true,
+		},
+		{
+			name: "end index equal to start",
+			citation: Citation{
+				Text:       "example",
+				StartIndex: 10,
+				EndIndex:   10,
+			},
+			wantErr: true,
+		},
+		{
+			name: "zero end index is valid",
+			citation: Citation{
+				Text:       "example",
+				StartIndex: 0,
+				EndIndex:   0, // Zero is allowed as it may indicate position-only citation
+			},
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.citation.Validate()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Citation.Validate() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestCitationSource_Validate(t *testing.T) {
+	tests := []struct {
+		name    string
+		source  CitationSource
+		wantErr bool
+	}{
+		{
+			name: "valid with ID",
+			source: CitationSource{
+				ID:   "doc1",
+				Type: "document",
+			},
+			wantErr: false,
+		},
+		{
+			name: "valid with URL",
+			source: CitationSource{
+				URL:  "https://example.com",
+				Type: "web",
+			},
+			wantErr: false,
+		},
+		{
+			name: "valid with both ID and URL",
+			source: CitationSource{
+				ID:   "doc1",
+				URL:  "https://example.com",
+				Type: "document",
+			},
+			wantErr: false,
+		},
+		{
+			name: "invalid without ID or URL",
+			source: CitationSource{
+				Type: "document",
+			},
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.source.Validate()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("CitationSource.Validate() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestContent_ValidateWithCitations(t *testing.T) {
+	tests := []struct {
+		name    string
+		content Content
+		wantErr bool
+	}{
+		{
+			name: "valid text with citations",
+			content: Content{
+				Text: "The capital is Paris.",
+				Citations: []Citation{{
+					Text:       "Paris",
+					StartIndex: 15,
+					EndIndex:   20,
+					Sources: []CitationSource{{
+						ID:   "doc1",
+						Type: "document",
+					}},
+				}},
+			},
+			wantErr: false,
+		},
+		{
+			name: "citations without text",
+			content: Content{
+				Citations: []Citation{{
+					Text: "example",
+				}},
+			},
+			wantErr: true,
+		},
+		{
+			name: "citations with thinking",
+			content: Content{
+				Thinking: "reasoning",
+				Citations: []Citation{{
+					Text: "example",
+				}},
+			},
+			wantErr: true,
+		},
+		{
+			name: "invalid citation",
+			content: Content{
+				Text: "The capital is Paris.",
+				Citations: []Citation{{
+					Text: "", // Empty text
+				}},
+			},
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.content.Validate()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Content.Validate() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}

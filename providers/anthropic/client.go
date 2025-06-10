@@ -593,6 +593,14 @@ func (c *Content) ToContent(out *genai.Content) error {
 	switch c.Type {
 	case ContentText:
 		out.Text = c.Text
+		if len(c.Citations.Citations) > 0 {
+			out.Citations = make([]genai.Citation, len(c.Citations.Citations))
+			for i := range c.Citations.Citations {
+				if err := c.Citations.Citations[i].To(&out.Citations[i]); err != nil {
+					return fmt.Errorf("citation %d: %w", i, err)
+				}
+			}
+		}
 	case ContentThinking:
 		out.Thinking = c.Thinking
 		out.Opaque = map[string]any{"signature": c.Signature}
@@ -630,7 +638,7 @@ func (c *Content) ToToolCall(out *genai.ToolCall) error {
 //
 // https://docs.anthropic.com/en/docs/build-with-claude/citations
 type Citations struct {
-	Citations []Citations
+	Citations []Citation
 	Enabled   bool
 }
 
@@ -651,7 +659,7 @@ const (
 // UnmarshalJSON implements json.Unmarshaler for Citations.
 // It attempts to unmarshal the input as either a slice of Citations or a struct with an Enabled field.
 func (c *Citations) UnmarshalJSON(data []byte) error {
-	var s []Citations
+	var s []Citation
 	// TODO: Unknown fields.
 	if err := json.Unmarshal(data, &s); err == nil {
 		c.Citations = s
@@ -720,6 +728,55 @@ type Citation struct {
 
 	// Content.Type == "document"
 	Enabled bool `json:"enabled,omitzero"`
+}
+
+func (c *Citation) To(dst *genai.Citation) error {
+	dst.Text = c.CitedText
+	dst.Type = c.Type
+	switch c.Type {
+	case "char_location":
+		dst.StartIndex = c.StartCharIndex
+		dst.EndIndex = c.EndCharIndex
+	case "page_location":
+		// For page location, we'll store the page info in Location
+		dst.Location = map[string]any{
+			"start_page": c.StartPageNumber,
+			"end_page":   c.EndPageNumber,
+		}
+	case "content_block_location":
+		// For block location, we'll store the block info in Location
+		dst.Location = map[string]any{
+			"start_block": c.StartBlockIndex,
+			"end_block":   c.EndBlockIndex,
+		}
+	case "web_search_result_location":
+		// For web search results, create a source with URL and title
+		dst.Sources = []genai.CitationSource{{
+			Type:  "web",
+			URL:   c.URL,
+			Title: c.Title,
+			Metadata: map[string]any{
+				"encrypted_index": c.EncryptedIndex,
+			},
+		}}
+	}
+	// Add document information as a source if available
+	if c.DocumentIndex > 0 || c.DocumentTitle != "" {
+		docSource := genai.CitationSource{
+			Type:  "document",
+			Title: c.DocumentTitle,
+			Metadata: map[string]any{
+				"document_index": c.DocumentIndex,
+			},
+		}
+		// For web search results, we already have sources, so append
+		if c.Type == "web_search_result_location" {
+			dst.Sources = append(dst.Sources, docSource)
+		} else {
+			dst.Sources = []genai.CitationSource{docSource}
+		}
+	}
+	return nil
 }
 
 type Thinking struct {

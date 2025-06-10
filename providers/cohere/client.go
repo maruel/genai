@@ -328,6 +328,16 @@ func (c *Citations) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (c Citations) To(dst *genai.Content) error {
+	dst.Citations = make([]genai.Citation, len(c))
+	for i := range c {
+		if err := c[i].To(&dst.Citations[i]); err != nil {
+			return fmt.Errorf("citation %d: %w", i, err)
+		}
+	}
+	return nil
+}
+
 // Citation is only used with Role == "assistant"
 type Citation struct {
 	Start   int64            `json:"start,omitzero"`
@@ -335,6 +345,30 @@ type Citation struct {
 	Text    string           `json:"text,omitzero"`
 	Sources []CitationSource `json:"sources,omitzero"`
 	Type    string           `json:"type,omitzero"` // "TEXT_CONTENT", "PLAN"
+}
+
+func (c *Citation) To(dst *genai.Citation) error {
+	dst.Text = c.Text
+	dst.StartIndex = c.Start
+	dst.EndIndex = c.End
+	dst.Type = c.Type
+	dst.Sources = make([]genai.CitationSource, len(c.Sources))
+	for i, source := range c.Sources {
+		cs := &dst.Sources[i]
+		cs.ID = source.ID
+		cs.Type = source.Type
+		switch source.Type {
+		case "tool":
+			cs.Metadata = map[string]any{
+				"tool_output": source.ToolOutput,
+			}
+		case "document":
+			cs.Metadata = map[string]any{
+				"document": source.Document,
+			}
+		}
+	}
+	return nil
 }
 
 type CitationSource struct {
@@ -479,10 +513,17 @@ func (m *MessageResponse) To(out *genai.Message) error {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		}
-	}
-	if len(m.Citations) != 0 && !internal.BeLenient {
-		// It's already used!
-		// return fmt.Errorf("implement citations: %#v", m.Citations)
+		if len(m.Citations) != 0 {
+			for i := range out.Contents {
+				if out.Contents[i].Text != "" {
+					if err := m.Citations.To(&out.Contents[i]); err != nil {
+						return fmt.Errorf("mapping citations: %w", err)
+					}
+					// TODO: handle multiple citations.
+					break
+				}
+			}
+		}
 	}
 	return nil
 }

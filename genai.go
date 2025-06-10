@@ -314,6 +314,10 @@ type Content struct {
 	// Thinking is the reasoning done by the LLM.
 	Thinking string `json:"thinking,omitzero"`
 
+	// Citations contains references to source material that support the content.
+	// Only valid when Text is set and the provider supports citations.
+	Citations []Citation `json:"citations,omitzero"`
+
 	// Opaque is added to keep continuity on the processing. A good example is Anthropic's extended thinking. It
 	// must be kept during an exchange.
 	//
@@ -352,7 +356,16 @@ func (c *Content) Validate() error {
 		if c.URL != "" {
 			return errors.New("field URL can't be used along Text")
 		}
+		// Validate citations when text is present
+		for i, citation := range c.Citations {
+			if err := citation.Validate(); err != nil {
+				return fmt.Errorf("citation %d: %w", i, err)
+			}
+		}
 	} else if c.Thinking != "" || len(c.Opaque) != 0 {
+		if len(c.Citations) != 0 {
+			return errors.New("field Citations can only be used with Text")
+		}
 		if c.Filename != "" {
 			return errors.New("field Filename can't be used along Text")
 		}
@@ -363,6 +376,9 @@ func (c *Content) Validate() error {
 			return errors.New("field URL can't be used along Text")
 		}
 	} else {
+		if len(c.Citations) != 0 {
+			return errors.New("field Citations can only be used with Text")
+		}
 		if len(c.Opaque) != 0 {
 			return errors.New("field Opaque can't be used along a document")
 		}
@@ -694,6 +710,89 @@ func (t *ToolCallResult) UnmarshalJSON(b []byte) error {
 	return t.Validate()
 }
 
+// Citation represents a reference to source material that supports content.
+// It provides a unified interface for different provider citation formats.
+type Citation struct {
+	// Text is the exact text that is being cited.
+	Text string `json:"text,omitzero"`
+
+	// StartIndex is the starting character position of the citation in the content (0-based).
+	// For providers that support character-level citations.
+	StartIndex int64 `json:"start_index,omitzero"`
+
+	// EndIndex is the ending character position of the citation in the content (0-based, exclusive).
+	// For providers that support character-level citations.
+	EndIndex int64 `json:"end_index,omitzero"`
+
+	// Sources contains information about the source documents or tools that support this citation.
+	Sources []CitationSource `json:"sources,omitzero"`
+
+	// Location provides additional location information (page numbers, block indices, etc.)
+	// that varies by provider and source type.
+	Location map[string]any `json:"location,omitzero"`
+
+	// Type indicates the citation type (e.g., "text", "document", "tool", "web").
+	// This is provider-specific and may be empty for unified citations.
+	Type string `json:"type,omitzero"`
+
+	_ struct{}
+}
+
+// Validate ensures the citation is valid.
+func (c *Citation) Validate() error {
+	if c.Text == "" {
+		return fmt.Errorf("citation text cannot be empty")
+	}
+	if c.StartIndex < 0 {
+		return fmt.Errorf("start index must be non-negative, got %d", c.StartIndex)
+	}
+	if c.EndIndex < 0 {
+		return fmt.Errorf("end index must be non-negative, got %d", c.EndIndex)
+	}
+	if c.EndIndex > 0 && c.EndIndex <= c.StartIndex {
+		return fmt.Errorf("end index (%d) must be greater than start index (%d)", c.EndIndex, c.StartIndex)
+	}
+	for i, source := range c.Sources {
+		if err := source.Validate(); err != nil {
+			return fmt.Errorf("source %d: %w", i, err)
+		}
+	}
+	return nil
+}
+
+// CitationSource represents a source that supports a citation.
+type CitationSource struct {
+	// ID is a unique identifier for the source (e.g., document ID, tool call ID).
+	ID string `json:"id,omitzero"`
+
+	// Type indicates the source type (e.g., "document", "tool", "web").
+	Type string `json:"type,omitzero"`
+
+	// Title is the human-readable title of the source.
+	Title string `json:"title,omitzero"`
+
+	// URL is the web URL for the source, if applicable.
+	URL string `json:"url,omitzero"`
+
+	// Metadata contains additional source-specific information.
+	// For document sources: document index, page numbers, etc.
+	// For tool sources: tool output, function name, etc.
+	// For web sources: encrypted index, search result info, etc.
+	Metadata map[string]any `json:"metadata,omitzero"`
+
+	_ struct{}
+}
+
+// Validate ensures the citation source is valid.
+func (cs *CitationSource) Validate() error {
+	if cs.ID == "" && cs.URL == "" {
+		return fmt.Errorf("citation source must have either ID or URL")
+	}
+	return nil
+}
+
+//
+
 // ProviderGenDoc is the interface to interact with a document (audio, image, video, etc) generator.
 type ProviderGenDoc interface {
 	Provider
@@ -878,10 +977,12 @@ type Scoreboard struct {
 }
 
 var (
-	_ Validatable = (*Role)(nil)
-	_ Validatable = (*Messages)(nil)
-	_ Validatable = (*Message)(nil)
+	_ Validatable = (*Citation)(nil)
+	_ Validatable = (*CitationSource)(nil)
 	_ Validatable = (*Content)(nil)
+	_ Validatable = (*Message)(nil)
+	_ Validatable = (*Messages)(nil)
+	_ Validatable = (*Role)(nil)
 	_ Validatable = (*ToolCall)(nil)
 	_ Validatable = (*ToolCallResult)(nil)
 )

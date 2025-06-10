@@ -256,6 +256,7 @@ func ExampleProvider_hTTP_record() {
 			mode = recorder.ModeRecordOnly
 		}
 		// Remove API key when matching the request, so the playback doesn't need to have access to the API key.
+		// See the corresponding provider example as each provider has its own way to set the API key.
 		m := cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Request-Id"))
 		var err error
 		rr, err = recorder.New("testdata/example",

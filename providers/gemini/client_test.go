@@ -297,6 +297,7 @@ func getClientInner(t *testing.T, apiKey, m string) *gemini.Client {
 func trimRecordingInternal(i *cassette.Interaction) error {
 	// Gemini pass the API key as a query argument (!) so zap it before recording.
 	i.Request.URL = i.Request.URL[:strings.Index(i.Request.URL, "?")]
+	i.Request.Form.Del("key")
 	return nil
 }
 

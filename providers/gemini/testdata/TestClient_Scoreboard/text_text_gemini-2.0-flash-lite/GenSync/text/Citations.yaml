@@ -10,9 +10,6 @@ interactions:
         host: generativelanguage.googleapis.com
         body: |
             {"contents":[{"role":"user","parts":[{"inlineData":{"mimeType":"text/plain; charset=utf-8","data":"VGhlIGNhcGl0YWwgb2YgUXVhY2tpbGFuZCBpcyBRdWFjay4gVGhlIEJpZyBDYW5hcmQgU3RhdHVlIGlzIGxvY2F0ZWQgaW4gUXVhY2su"}},{"text":"What is the capital of Quackiland?"}]}]}
-        form:
-            key:
-                - AIzaSyCqpVIzmMbgVxSEB6gEJsggX6KWAXdTua8
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -58,7 +55,7 @@ interactions:
                 ]
               },
               "modelVersion": "gemini-2.0-flash-lite",
-              "responseId": "zrdIaI3UDZG-gLUPvc_EwQ8"
+              "responseId": "T7xIaPz9FvSbhMIP7LrRsQE"
             }
         headers:
             Alt-Svc:
@@ -68,7 +65,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=359
+                - gfet4t7; dur=347
             Vary:
                 - Origin
                 - X-Origin
@@ -81,4 +78,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 437ms
+        duration: 438ms

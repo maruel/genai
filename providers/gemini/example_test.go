@@ -74,6 +74,7 @@ func ExampleNew_hTTP_record() {
 func trimRecording(i *cassette.Interaction) error {
 	// Gemini pass the API key as a query argument (!) so zap it before recording.
 	i.Request.URL = i.Request.URL[:strings.Index(i.Request.URL, "?")]
+	i.Request.Form.Del("key")
 	// Reduce noise.
 	i.Request.Headers.Del("X-Request-Id")
 	i.Response.Headers.Del("Date")

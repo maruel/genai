@@ -2,7 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Command provider-files fetches and prints out the list of files stored on the selected provider.
+// Command cache-mgr fetches and prints out the list of files stored on the selected provider.
 package main
 
 import (
@@ -91,7 +91,7 @@ func mainImpl() error {
 func main() {
 	if err := mainImpl(); err != nil {
 		if err != context.Canceled {
-			fmt.Fprintf(os.Stderr, "provider-files: %s\n", err)
+			fmt.Fprintf(os.Stderr, "cache-mgr: %s\n", err)
 		}
 		os.Exit(1)
 	}

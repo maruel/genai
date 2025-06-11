@@ -1,0 +1,161 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 895
+        host: api.openai.com
+        body: |
+            {"model":"gpt-4.1-nano","stream":true,"messages":[{"role":"developer","content":[{"type":"text","text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}]},{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"service_tier":"auto","stream_options":{"include_usage":true},"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required","parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-BhPCf786AfLGHXXB2cSHL7vcWJR4y","object":"chat.completion.chunk","created":1749684685,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_f12167b370","choices":[{"index":0,"delta":{"role":"assistant","content":null,"tool_calls":[{"index":0,"id":"call_wEQLxDS1laZgl5Erndo2Qmhh","type":"function","function":{"name":"square_root","arguments":""}}],"refusal":null},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BhPCf786AfLGHXXB2cSHL7vcWJR4y","object":"chat.completion.chunk","created":1749684685,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_f12167b370","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BhPCf786AfLGHXXB2cSHL7vcWJR4y","object":"chat.completion.chunk","created":1749684685,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_f12167b370","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"number"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BhPCf786AfLGHXXB2cSHL7vcWJR4y","object":"chat.completion.chunk","created":1749684685,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_f12167b370","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\":\""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BhPCf786AfLGHXXB2cSHL7vcWJR4y","object":"chat.completion.chunk","created":1749684685,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_f12167b370","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"132"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BhPCf786AfLGHXXB2cSHL7vcWJR4y","object":"chat.completion.chunk","created":1749684685,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_f12167b370","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"413"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BhPCf786AfLGHXXB2cSHL7vcWJR4y","object":"chat.completion.chunk","created":1749684685,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_f12167b370","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\"}"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BhPCf786AfLGHXXB2cSHL7vcWJR4y","object":"chat.completion.chunk","created":1749684685,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_f12167b370","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"usage":null}
+
+            data: {"id":"chatcmpl-BhPCf786AfLGHXXB2cSHL7vcWJR4y","object":"chat.completion.chunk","created":1749684685,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_f12167b370","choices":[],"usage":{"prompt_tokens":109,"completion_tokens":15,"total_tokens":124,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94e4e6e3d8287148-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Organization:
+                - user-vtmtcvpbctksjfewktqdl2sw
+            Openai-Processing-Ms:
+                - "276"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "279"
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "497"
+            X-Ratelimit-Remaining-Tokens:
+                - "199920"
+            X-Ratelimit-Reset-Requests:
+                - 349ms
+            X-Ratelimit-Reset-Tokens:
+                - 24ms
+            X-Request-Id:
+                - req_694dfe39b4b37e95c2835ba5c6418d83
+        status: 200 OK
+        code: 200
+        duration: 351ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1163
+        host: api.openai.com
+        body: |
+            {"model":"gpt-4.1-nano","stream":true,"messages":[{"role":"developer","content":[{"type":"text","text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}]},{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"id":"call_wEQLxDS1laZgl5Erndo2Qmhh","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"call_wEQLxDS1laZgl5Erndo2Qmhh"}],"service_tier":"auto","stream_options":{"include_usage":true},"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-BhPCfrgmofc61g76ycyNSKhOOQd0m","object":"chat.completion.chunk","created":1749684685,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_f12167b370","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BhPCfrgmofc61g76ycyNSKhOOQd0m","object":"chat.completion.chunk","created":1749684685,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_f12167b370","choices":[{"index":0,"delta":{"content":"363"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BhPCfrgmofc61g76ycyNSKhOOQd0m","object":"chat.completion.chunk","created":1749684685,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_f12167b370","choices":[{"index":0,"delta":{"content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BhPCfrgmofc61g76ycyNSKhOOQd0m","object":"chat.completion.chunk","created":1749684685,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_f12167b370","choices":[{"index":0,"delta":{"content":"89"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BhPCfrgmofc61g76ycyNSKhOOQd0m","object":"chat.completion.chunk","created":1749684685,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_f12167b370","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"usage":null}
+
+            data: {"id":"chatcmpl-BhPCfrgmofc61g76ycyNSKhOOQd0m","object":"chat.completion.chunk","created":1749684685,"model":"gpt-4.1-nano-2025-04-14","service_tier":"default","system_fingerprint":"fp_f12167b370","choices":[],"usage":{"prompt_tokens":136,"completion_tokens":3,"total_tokens":139,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94e4e6e65a637148-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Organization:
+                - user-vtmtcvpbctksjfewktqdl2sw
+            Openai-Processing-Ms:
+                - "163"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "167"
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "495"
+            X-Ratelimit-Remaining-Tokens:
+                - "199917"
+            X-Ratelimit-Reset-Requests:
+                - 483ms
+            X-Ratelimit-Reset-Tokens:
+                - 24ms
+            X-Request-Id:
+                - req_10af1ca21a52b7f0423e58db848b5804
+        status: 200 OK
+        code: 200
+        duration: 313ms

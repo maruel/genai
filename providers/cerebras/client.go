@@ -42,12 +42,12 @@ var Scoreboard = genai.Scoreboard{
 		{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			// "llama-3.1-8b" works too but the ListModels() API returns the malformed string.
@@ -68,12 +68,12 @@ var Scoreboard = genai.Scoreboard{
 		{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Models: []string{"qwen-3-32b"},
@@ -94,12 +94,12 @@ var Scoreboard = genai.Scoreboard{
 			// This may change in the future.
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Models: []string{"llama-4-scout-17b-16e-instruct"},

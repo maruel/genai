@@ -63,23 +63,15 @@ type Modalities []Modality
 
 // ModalCapability describes how a modality is supported by a provider.
 type ModalCapability struct {
-	// DeliveryMethods specifies how content can be provided (inline, URL, etc.)
-	DeliveryMethods []DeliveryMethod
+	// Inline means content can be embedded directly (e.g., base64 encoded)
+	Inline bool
+	// URL means content can be referenced by URL
+	URL bool
 	// MaxSize specifies the maximum size in bytes, nil means unlimited
 	MaxSize *int64
 	// SupportedFormats lists supported MIME types for this modality
 	SupportedFormats []string
 }
-
-// DeliveryMethod specifies how content is delivered to/from the provider.
-type DeliveryMethod string
-
-const (
-	// DeliveryInline means content is embedded directly (e.g., base64 encoded)
-	DeliveryInline DeliveryMethod = "inline"
-	// DeliveryURL means content is referenced by URL
-	DeliveryURL DeliveryMethod = "url"
-)
 
 func (m Modalities) String() string {
 	switch len(m) {

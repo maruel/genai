@@ -46,24 +46,8 @@ func printList() error {
 			if isTextOnly(scenario.In) && isTextOnly(scenario.Out) {
 				fmt.Printf("    in/out:   text only\n")
 			} else {
-				in := ""
-				out := ""
-				if scenario.GenSync != nil {
-					if scenario.GenSync.InputInline && !scenario.GenSync.InputURL {
-						in = " (inline only)"
-					}
-					if scenario.GenSync.InputURL && !scenario.GenSync.InputInline {
-						in = " (url only)"
-					}
-				}
-				if scenario.GenDoc != nil {
-					if scenario.GenDoc.OutputInline && !scenario.GenDoc.OutputURL {
-						out = " (inline only)"
-					}
-					if scenario.GenDoc.OutputURL && !scenario.GenDoc.OutputInline {
-						out = " (url only)"
-					}
-				}
+				in := getDeliveryConstraints(scenario.In)
+				out := getDeliveryConstraints(scenario.Out)
 				fmt.Printf("    in/out:   ⇒ %s%s / %s%s ⇒\n", modalityMapToString(scenario.In), in, modalityMapToString(scenario.Out), out)
 			}
 			chat := ""
@@ -98,7 +82,7 @@ func printList() error {
 
 var textOnly = map[genai.Modality]genai.ModalCapability{
 	genai.ModalityText: {
-		DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+		Inline: true,
 	},
 }
 
@@ -117,7 +101,7 @@ func modalityMapToString(m map[genai.Modality]genai.ModalCapability) string {
 
 // isTextOnly checks if a modality map contains only text
 func isTextOnly(m map[genai.Modality]genai.ModalCapability) bool {
-	return len(m) == 1 && m[genai.ModalityText].DeliveryMethods != nil
+	return len(m) == 1 && m[genai.ModalityText].Inline
 }
 
 func functionalityText(f *genai.FunctionalityText) string {
@@ -164,4 +148,40 @@ func functionalityDoc(f *genai.FunctionalityDoc) string {
 		items = append(items, "💔finishreason")
 	}
 	return strings.Join(items, " ")
+}
+
+// getDeliveryConstraints analyzes modality capabilities to determine delivery constraints
+func getDeliveryConstraints(capabilities map[genai.Modality]genai.ModalCapability) string {
+	if len(capabilities) == 0 || isTextOnly(capabilities) {
+		return ""
+	}
+
+	// Check if all non-text modalities have the same delivery constraints
+	allInlineOnly := true
+	allURLOnly := true
+	hasBoth := false
+
+	for modality, cap := range capabilities {
+		if modality == genai.ModalityText {
+			continue
+		}
+		if cap.Inline && cap.URL {
+			hasBoth = true
+			allInlineOnly = false
+			allURLOnly = false
+		} else if cap.Inline {
+			allURLOnly = false
+		} else if cap.URL {
+			allInlineOnly = false
+		}
+	}
+
+	if hasBoth {
+		return ""
+	} else if allInlineOnly {
+		return " (inline only)"
+	} else if allURLOnly {
+		return " (url only)"
+	}
+	return ""
 }

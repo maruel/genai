@@ -45,12 +45,12 @@ var Scoreboard = genai.Scoreboard{
 		{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Models: []string{"command-r7b-12-2024"},

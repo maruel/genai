@@ -45,12 +45,12 @@ var Scoreboard = genai.Scoreboard{
 		{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Models: []string{
@@ -99,12 +99,12 @@ var Scoreboard = genai.Scoreboard{
 		{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityImage: {
-					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline:           true,
 					SupportedFormats: []string{"image/png", "image/jpeg", "image/webp"},
 				},
 			},
@@ -114,7 +114,6 @@ var Scoreboard = genai.Scoreboard{
 				"turbo",
 			},
 			GenDoc: &genai.FunctionalityDoc{
-				OutputInline:       true,
 				BrokenTokenUsage:   true,
 				BrokenFinishReason: true,
 			},
@@ -122,16 +121,16 @@ var Scoreboard = genai.Scoreboard{
 		{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityImage: {
-					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline:           true,
 					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
 				},
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Models: []string{
@@ -139,8 +138,6 @@ var Scoreboard = genai.Scoreboard{
 				"openai-large",
 			},
 			GenSync: &genai.FunctionalityText{
-				InputInline:    true,
-				InputURL:       true,
 				NoMaxTokens:    true,
 				NoStopSequence: true,
 				Tools:          genai.True,
@@ -148,8 +145,6 @@ var Scoreboard = genai.Scoreboard{
 				JSON:           true,
 			},
 			GenStream: &genai.FunctionalityText{
-				InputInline:      true,
-				InputURL:         true,
 				BrokenTokenUsage: true,
 				NoMaxTokens:      true,
 				NoStopSequence:   true,
@@ -168,12 +163,10 @@ var Scoreboard = genai.Scoreboard{
 					"openai-audio",
 				},
 				GenSync: genai.Functionality{
-					InputInline:             true,
 					NoMaxTokens:        true,
 					JSON:               true,
 				},
 				GenStream: genai.Functionality{
-					InputInline:             true,
 					BrokenTokenUsage:   true,
 					NoMaxTokens:        true,
 					JSON:               true,
@@ -190,12 +183,10 @@ var Scoreboard = genai.Scoreboard{
 					"openai-audio",
 				},
 				GenSync: genai.Functionality{
-					InputInline:             true,
 					NoMaxTokens:        true,
 					JSON:               true,
 				},
 				GenStream: genai.Functionality{
-					InputInline:             true,
 					BrokenTokenUsage:   true,
 					NoMaxTokens:        true,
 					JSON:               true,

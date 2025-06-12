@@ -52,12 +52,12 @@ var Scoreboard = genai.Scoreboard{
 		{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Models: []string{
@@ -114,16 +114,16 @@ var Scoreboard = genai.Scoreboard{
 		{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityAudio: {
-					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline:           true,
 					SupportedFormats: []string{"audio/mpeg", "audio/wav", "audio/mp4", "audio/x-m4a", "audio/webm"},
 				},
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Models: []string{
@@ -138,33 +138,32 @@ var Scoreboard = genai.Scoreboard{
 				"gpt-4o-mini-audio-preview-2024-12-17",
 			},
 			GenSync: &genai.FunctionalityText{
-				InputInline: true,
-				Tools:       genai.True,
-				BiasedTool:  genai.True,
-				JSON:        true,
-				JSONSchema:  true,
+				Tools:      genai.True,
+				BiasedTool: genai.True,
+				JSON:       true,
+				JSONSchema: true,
 			},
 			GenStream: &genai.FunctionalityText{
-				InputInline: true,
-				Tools:       genai.True,
-				BiasedTool:  genai.True,
-				JSON:        true,
-				JSONSchema:  true,
+				Tools:      genai.True,
+				BiasedTool: genai.True,
+				JSON:       true,
+				JSONSchema: true,
 			},
 		},
 		{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityImage: {
-					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline, genai.DeliveryURL},
+					Inline:           true,
+					URL:              true,
 					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
 				},
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Models: []string{
@@ -182,8 +181,6 @@ var Scoreboard = genai.Scoreboard{
 				"o4-mini-2025-04-16",
 			},
 			GenSync: &genai.FunctionalityText{
-				InputInline:    true,
-				InputURL:       true,
 				NoStopSequence: true,
 				Tools:          genai.True,
 				BiasedTool:     genai.True,
@@ -191,8 +188,6 @@ var Scoreboard = genai.Scoreboard{
 				JSONSchema:     true,
 			},
 			GenStream: &genai.FunctionalityText{
-				InputInline:    true,
-				InputURL:       true,
 				NoStopSequence: true,
 				Tools:          genai.True,
 				BiasedTool:     genai.True,
@@ -203,12 +198,12 @@ var Scoreboard = genai.Scoreboard{
 		{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityImage: {
-					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline:           true,
 					SupportedFormats: []string{"image/png", "image/jpeg", "image/webp"},
 				},
 			},
@@ -218,7 +213,6 @@ var Scoreboard = genai.Scoreboard{
 				"gpt-image-1",
 			},
 			GenDoc: &genai.FunctionalityDoc{
-				OutputInline:       true,
 				BrokenTokenUsage:   true,
 				BrokenFinishReason: true,
 			},

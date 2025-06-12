@@ -42,29 +42,27 @@ var Scoreboard = genai.Scoreboard{
 		{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityImage: {
-					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline:           true,
 					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
 				},
 				genai.ModalityText: {
-					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline:           true,
 					SupportedFormats: []string{"text/plain"},
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Models: []string{"gemma3:4b"},
 			GenSync: &genai.FunctionalityText{
-				InputInline: true,
-				JSON:        true,
-				JSONSchema:  true,
+				JSON:       true,
+				JSONSchema: true,
 			},
 			GenStream: &genai.FunctionalityText{
-				InputInline: true,
-				JSON:        true,
-				JSONSchema:  true,
+				JSON:       true,
+				JSONSchema: true,
 			},
 		},
 	},

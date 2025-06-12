@@ -40,12 +40,12 @@ var Scoreboard = genai.Scoreboard{
 		{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityImage: {
-					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline:           true,
 					SupportedFormats: []string{"image/png", "image/jpeg", "image/webp"},
 				},
 			},
@@ -58,7 +58,6 @@ var Scoreboard = genai.Scoreboard{
 				"flux-pro",
 			},
 			GenDoc: &genai.FunctionalityDoc{
-				OutputURL:          true,
 				BrokenTokenUsage:   true,
 				BrokenFinishReason: true,
 			},

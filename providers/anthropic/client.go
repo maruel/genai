@@ -47,12 +47,12 @@ var Scoreboard = genai.Scoreboard{
 		{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Models:    []string{"claude-3-haiku-20240307", "claude-2.0", "claude-2.1", "claude-3-opus-20240229", "claude-3-sonnet-20240229"},
@@ -62,71 +62,67 @@ var Scoreboard = genai.Scoreboard{
 		{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 				genai.ModalityImage: {
-					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline, genai.DeliveryURL},
+					Inline:           true,
+					URL:              true,
 					SupportedFormats: []string{"image/jpeg", "image/png", "image/gif", "image/webp"},
 				},
 				genai.ModalityPDF: {
-					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline, genai.DeliveryURL},
+					Inline:           true,
+					URL:              true,
 					SupportedFormats: []string{"application/pdf", "text/plain"},
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Models: []string{"claude-3-5-haiku-20241022", "claude-3-5-sonnet-20240620", "claude-3-5-sonnet-20241022"},
 			GenSync: &genai.FunctionalityText{
-				InputInline: true,
-				InputURL:    true,
-				Tools:       genai.True,
-				BiasedTool:  genai.True,
-				Citations:   true,
+				Tools:      genai.True,
+				BiasedTool: genai.True,
+				Citations:  true,
 			},
 			GenStream: &genai.FunctionalityText{
-				InputInline: true,
-				InputURL:    true,
-				Tools:       genai.True,
-				BiasedTool:  genai.True,
-				Citations:   true,
+				Tools:      genai.True,
+				BiasedTool: genai.True,
+				Citations:  true,
 			},
 		},
 		{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 				genai.ModalityImage: {
-					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline, genai.DeliveryURL},
+					Inline:           true,
+					URL:              true,
 					SupportedFormats: []string{"image/jpeg", "image/png", "image/gif", "image/webp"},
 				},
 				genai.ModalityPDF: {
-					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline, genai.DeliveryURL},
+					Inline:           true,
+					URL:              true,
 					SupportedFormats: []string{"application/pdf", "text/plain"},
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Models: []string{"claude-3-7-sonnet-20250219", "claude-opus-4-20250514", "claude-sonnet-4-20250514"},
 			GenSync: &genai.FunctionalityText{
-				InputInline: true,
-				InputURL:    true,
-				Tools:       genai.True,
-				BiasedTool:  genai.True,
-				Citations:   true,
+				Tools:      genai.True,
+				BiasedTool: genai.True,
+				Citations:  true,
 			},
 			GenStream: &genai.FunctionalityText{
-				InputInline: true,
-				InputURL:    true,
-				Tools:       genai.True,
-				BiasedTool:  genai.True,
-				Citations:   true,
+				Tools:      genai.True,
+				BiasedTool: genai.True,
+				Citations:  true,
 			},
 		},
 	},

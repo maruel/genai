@@ -40,12 +40,12 @@ var Scoreboard = genai.Scoreboard{
 		{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Models: []string{
@@ -86,16 +86,17 @@ var Scoreboard = genai.Scoreboard{
 		{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityImage: {
-					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline, genai.DeliveryURL},
+					Inline:           true,
+					URL:              true,
 					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
 				},
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Models: []string{
@@ -115,16 +116,12 @@ var Scoreboard = genai.Scoreboard{
 				"pixtral-large-latest",
 			},
 			GenSync: &genai.FunctionalityText{
-				InputInline:    true,
-				InputURL:       true,
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
 				JSONSchema:     true,
 			},
 			GenStream: &genai.FunctionalityText{
-				InputInline:    true,
-				InputURL:       true,
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
@@ -134,16 +131,17 @@ var Scoreboard = genai.Scoreboard{
 		{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityPDF: {
-					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline, genai.DeliveryURL},
+					Inline:           true,
+					URL:              true,
 					SupportedFormats: []string{"application/pdf"},
 				},
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {
-					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+					Inline: true,
 				},
 			},
 			Models: []string{
@@ -163,14 +161,12 @@ var Scoreboard = genai.Scoreboard{
 				"mistral-ocr-latest",
 			},
 			GenSync: &genai.FunctionalityText{
-				InputURL:       true,
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
 				JSONSchema:     true,
 			},
 			GenStream: &genai.FunctionalityText{
-				InputURL:       true,
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,

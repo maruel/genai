@@ -884,14 +884,6 @@ type ProviderScoreboard interface {
 // The third group is to identify bugged providers. A provider is considered to be bugged if any of the field
 // is false.
 type FunctionalityText struct {
-	// These should only be set for models that support non-text input modalities. Inline means base64 encoded
-	// inside the JSON request. URL means the provider will fetch the file via an URL.
-	InputInline bool
-	InputURL    bool
-	// These should only be set for models that support non-text output modalities.
-	OutputInline bool
-	OutputURL    bool
-
 	// Thinking means that the model does either explicit chain-of-thought or hidden thinking. For some
 	// providers, this is controlled via a OptionsText. For some models (like Qwen3), a token "/nothink" or
 	// "/think" is used to control.
@@ -946,14 +938,6 @@ const (
 
 // FunctionalityDoc defines which functionalites are supported in a scenario for non-text output modality.
 type FunctionalityDoc struct {
-	// These should only be set for models that support non-text input modalities. Inline means base64 encoded
-	// inside the JSON request. URL means the provider will fetch the file via an URL.
-	InputInline bool
-	InputURL    bool
-	// These should only be set for models that support non-text output modalities.
-	OutputInline bool
-	OutputURL    bool
-
 	// BrokenTokenUsage means that the usage is not correctly reported.
 	BrokenTokenUsage bool
 	// BrokenFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.

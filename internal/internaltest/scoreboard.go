@@ -62,17 +62,17 @@ func TestScoreboard(t *testing.T, g ProviderGenModalityFactory, filter func(mode
 		t.Run(fmt.Sprintf("%s_%s_%s", in, out, s.Models[0]), func(t *testing.T) {
 			if s.GenSync != nil {
 				t.Run("GenSync", func(t *testing.T) {
-					testGenText(t, g, s.Models[0], in, out, s.GenSync, false)
+					testGenText(t, g, s.Models[0], s.In, s.Out, s.GenSync, false)
 				})
 			}
 			if s.GenStream != nil {
 				t.Run("GenStream", func(t *testing.T) {
-					testGenText(t, g, s.Models[0], in, out, s.GenStream, true)
+					testGenText(t, g, s.Models[0], s.In, s.Out, s.GenStream, true)
 				})
 			}
 			if s.GenDoc != nil {
 				t.Run("GenDoc", func(t *testing.T) {
-					testGenDoc(t, g, s.Models[0], in, out, s.GenDoc)
+					testGenDoc(t, g, s.Models[0], s.In, s.Out, s.GenDoc)
 				})
 			}
 		})
@@ -137,25 +137,25 @@ func TestScoreboard(t *testing.T, g ProviderGenModalityFactory, filter func(mode
 	})
 }
 
-func testGenText(t *testing.T, g ProviderGenModalityFactory, model string, in, out genai.Modalities, f *genai.FunctionalityText, stream bool) {
+func testGenText(t *testing.T, g ProviderGenModalityFactory, model string, in, out map[genai.Modality]genai.ModalCapability, f *genai.FunctionalityText, stream bool) {
 	// General verifications
 	// Text only mode.
-	textInOnly := slices.Equal(in, genai.Modalities{genai.ModalityText})
-	textOutOnly := slices.Equal(out, genai.Modalities{genai.ModalityText})
+	textInOnly := len(in) == 1 && in[genai.ModalityText].Inline
+	textOutOnly := len(out) == 1 && out[genai.ModalityText].Inline
 	if textInOnly {
-		if f.InputInline {
-			t.Fatalf("Do not set InputInline for a text-only model")
-		}
-		if f.InputURL {
-			t.Fatalf("Do not set InputURL for a text-only model")
+		// For text-only input, ensure no non-text modalities have delivery methods set
+		for modality, cap := range in {
+			if modality != genai.ModalityText && (cap.Inline || cap.URL) {
+				t.Fatalf("Text-only model should not have delivery methods set for modality %v", modality)
+			}
 		}
 	}
 	if textOutOnly {
-		if f.OutputInline {
-			t.Fatalf("Do not set OutputInline for a text-only model")
-		}
-		if f.OutputURL {
-			t.Fatalf("Do not set OutputURL for a text-only model")
+		// For text-only output, ensure no non-text modalities have delivery methods set
+		for modality, cap := range out {
+			if modality != genai.ModalityText && (cap.Inline || cap.URL) {
+				t.Fatalf("Text-only model should not have delivery methods set for output modality %v", modality)
+			}
 		}
 	}
 
@@ -165,47 +165,49 @@ func testGenText(t *testing.T, g ProviderGenModalityFactory, model string, in, o
 	// TODO: Some models are fine with this, we need to improve genai.Functionality.
 	if textOutOnly {
 		// Hack: audio input models tend to not work well with text-only input.
-		if slices.Contains(in, genai.ModalityText) && !slices.Contains(in, genai.ModalityAudio) {
+		_, hasText := in[genai.ModalityText]
+		_, hasAudio := in[genai.ModalityAudio]
+		if hasText && !hasAudio {
 			t.Run("text", func(t *testing.T) {
 				testTextFunctionalities(t, g, model, f, stream)
 			})
 			ran = true
 		}
-		if slices.Contains(in, genai.ModalityImage) {
+		if _, hasImage := in[genai.ModalityImage]; hasImage {
 			t.Run("vision", func(t *testing.T) {
-				testVisionFunctionalities(t, g, model, f, stream)
+				testVisionFunctionalities(t, g, model, in, out, f, stream)
 			})
 			ran = true
 		}
-		if slices.Contains(in, genai.ModalityPDF) {
+		if _, hasPDF := in[genai.ModalityPDF]; hasPDF {
 			t.Run("pdf", func(t *testing.T) {
-				testPDFFunctionalities(t, g, model, f, stream)
+				testPDFFunctionalities(t, g, model, in, out, f, stream)
 			})
 			ran = true
 		}
-		if slices.Contains(in, genai.ModalityAudio) {
+		if _, hasAudio := in[genai.ModalityAudio]; hasAudio {
 			t.Run("audio", func(t *testing.T) {
-				testAudioSTTFunctionalities(t, g, model, f, stream)
+				testAudioSTTFunctionalities(t, g, model, in, out, f, stream)
 			})
 			ran = true
 		}
-		if slices.Contains(in, genai.ModalityVideo) {
+		if _, hasVideo := in[genai.ModalityVideo]; hasVideo {
 			t.Run("video", func(t *testing.T) {
-				testVideoFunctionalities(t, g, model, f, stream)
+				testVideoFunctionalities(t, g, model, in, out, f, stream)
 			})
 			ran = true
 		}
 	}
 
 	// Multi-modal
-	if slices.Contains(out, genai.ModalityImage) {
+	if _, hasImage := out[genai.ModalityImage]; hasImage {
 		// Text+Image output, e.g. Gemini.
 		t.Run("imagegen", func(t *testing.T) {
-			testChatImageGenFunctionalities(t, g, model, f, stream)
+			testChatImageGenFunctionalities(t, g, model, in, out, f, stream)
 		})
 		ran = true
 	}
-	if slices.Contains(out, genai.ModalityAudio) {
+	if _, hasAudio := out[genai.ModalityAudio]; hasAudio {
 		/*
 			t.Run("audiogen", func(t *testing.T) {
 				// TODO: testAudioGenFunctionalities(t, g, model, f, stream)
@@ -656,7 +658,7 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 	})
 }
 
-func testVisionFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText, stream bool) {
+func testVisionFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, in, out map[genai.Modality]genai.ModalCapability, f *genai.FunctionalityText, stream bool) {
 	defaultFR := genai.FinishedStop
 	if f.BrokenFinishReason {
 		defaultFR = ""
@@ -674,7 +676,7 @@ func testVisionFunctionalities(t *testing.T, g ProviderGenModalityFactory, model
 			},
 		}
 		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
-		if !basicCheck(t, err, f.InputInline) {
+		if !basicCheck(t, err, hasModalityWithInline(in, genai.ModalityImage)) {
 			return
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
@@ -692,7 +694,7 @@ func testVisionFunctionalities(t *testing.T, g ProviderGenModalityFactory, model
 			},
 		}
 		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
-		if !basicCheck(t, err, f.InputURL) {
+		if !basicCheck(t, err, hasModalityWithURL(in, genai.ModalityImage)) {
 			return
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
@@ -700,7 +702,7 @@ func testVisionFunctionalities(t *testing.T, g ProviderGenModalityFactory, model
 	})
 }
 
-func testAudioSTTFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText, stream bool) {
+func testAudioSTTFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, in, out map[genai.Modality]genai.ModalCapability, f *genai.FunctionalityText, stream bool) {
 	defaultFR := genai.FinishedStop
 	if f.BrokenFinishReason {
 		defaultFR = ""
@@ -717,7 +719,7 @@ func testAudioSTTFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 		defer ff.Close()
 		msgs := genai.Messages{{Role: genai.User, Contents: []genai.Content{{Text: prompt}, {Document: ff}}}}
 		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
-		if !basicCheck(t, err, f.InputInline) {
+		if !basicCheck(t, err, hasModalityWithInline(in, genai.ModalityAudio)) {
 			return
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
@@ -735,7 +737,7 @@ func testAudioSTTFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 			},
 		}
 		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
-		if !basicCheck(t, err, f.InputURL) {
+		if !basicCheck(t, err, hasModalityWithURL(in, genai.ModalityAudio)) {
 			return
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
@@ -743,7 +745,7 @@ func testAudioSTTFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 	})
 }
 
-func testVideoFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText, stream bool) {
+func testVideoFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, in, out map[genai.Modality]genai.ModalCapability, f *genai.FunctionalityText, stream bool) {
 	defaultFR := genai.FinishedStop
 	if f.BrokenFinishReason {
 		defaultFR = ""
@@ -759,7 +761,7 @@ func testVideoFunctionalities(t *testing.T, g ProviderGenModalityFactory, model 
 		defer ff.Close()
 		msgs := genai.Messages{{Role: genai.User, Contents: []genai.Content{{Text: prompt}, {Document: ff}}}}
 		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
-		if !basicCheck(t, err, f.InputInline) {
+		if !basicCheck(t, err, hasModalityWithInline(in, genai.ModalityVideo)) {
 			return
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
@@ -777,7 +779,7 @@ func testVideoFunctionalities(t *testing.T, g ProviderGenModalityFactory, model 
 			},
 		}
 		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
-		if !basicCheck(t, err, f.InputURL) {
+		if !basicCheck(t, err, hasModalityWithURL(in, genai.ModalityVideo)) {
 			return
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
@@ -785,7 +787,7 @@ func testVideoFunctionalities(t *testing.T, g ProviderGenModalityFactory, model 
 	})
 }
 
-func testPDFFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText, stream bool) {
+func testPDFFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, in, out map[genai.Modality]genai.ModalCapability, f *genai.FunctionalityText, stream bool) {
 	defaultFR := genai.FinishedStop
 	if f.BrokenFinishReason {
 		defaultFR = ""
@@ -801,7 +803,7 @@ func testPDFFunctionalities(t *testing.T, g ProviderGenModalityFactory, model st
 		defer ff.Close()
 		msgs := genai.Messages{{Role: genai.User, Contents: []genai.Content{{Text: prompt}, {Document: ff}}}}
 		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
-		if !basicCheck(t, err, f.InputInline) {
+		if !basicCheck(t, err, hasModalityWithInline(in, genai.ModalityAudio)) {
 			return
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
@@ -819,7 +821,7 @@ func testPDFFunctionalities(t *testing.T, g ProviderGenModalityFactory, model st
 			},
 		}
 		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
-		if !basicCheck(t, err, f.InputURL) {
+		if !basicCheck(t, err, hasModalityWithURL(in, genai.ModalityPDF)) {
 			return
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
@@ -827,7 +829,7 @@ func testPDFFunctionalities(t *testing.T, g ProviderGenModalityFactory, model st
 	})
 }
 
-func testChatImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityText, stream bool) {
+func testChatImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, in, out map[genai.Modality]genai.ModalCapability, f *genai.FunctionalityText, stream bool) {
 	prompt := `A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
 	const style = `Simple, vibrant, varied-colored doodle/hand-drawn sketch`
 	contents := `Generate one square, white-background doodle with smooth, vibrantly colored image depicting ` + prompt + `.
@@ -846,7 +848,7 @@ func testChatImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory,
 	}
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, contents)}
 	resp, err := runGenText(t, g(t, model), msgs, nil, stream)
-	if !basicCheck(t, err, f.OutputInline || f.OutputURL) {
+	if !basicCheck(t, err, hasAnyModalityWithInline(out) || hasAnyModalityWithURL(out)) {
 		return
 	}
 	testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
@@ -861,12 +863,12 @@ func testChatImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory,
 	}
 	// It can have text, images or both.
 	// TODO: This is brittle.
-	if f.OutputInline {
+	if hasAnyModalityWithInline(out) {
 		if resp.Contents[0].Document == nil {
 			t.Fatal("expected inline output")
 		}
 	}
-	if f.OutputURL {
+	if hasAnyModalityWithURL(out) {
 		if resp.Contents[0].URL == "" {
 			t.Fatal("expected URL output")
 		}
@@ -875,19 +877,21 @@ func testChatImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory,
 
 //
 
-func testGenDoc(t *testing.T, g ProviderGenModalityFactory, model string, in, out genai.Modalities, f *genai.FunctionalityDoc) {
+func testGenDoc(t *testing.T, g ProviderGenModalityFactory, model string, in, out map[genai.Modality]genai.ModalCapability, f *genai.FunctionalityDoc) {
 	ran := false
-	if slices.Equal(out, genai.Modalities{genai.ModalityImage}) {
-		// Image only output, e.g. OpenAI, Pollinations, TogetherAI.
-		// Only run once, no need to run twice.
-		t.Run("imagegen", func(t *testing.T) {
-			testImageGenFunctionalities(t, g, model, f)
-		})
-		ran = true
+	if len(out) == 1 {
+		if _, hasImage := out[genai.ModalityImage]; hasImage {
+			// Image only output, e.g. OpenAI, Pollinations, TogetherAI.
+			// Only run once, no need to run twice.
+			t.Run("imagegen", func(t *testing.T) {
+				testImageGenFunctionalities(t, g, model, in, out, f)
+			})
+			ran = true
+		}
 	}
-	if slices.Contains(out, genai.ModalityAudio) {
+	if _, hasAudio := out[genai.ModalityAudio]; hasAudio {
 		t.Run("audiogen", func(t *testing.T) {
-			testAudioGenFunctionalities(t, g, model, f)
+			testAudioGenFunctionalities(t, g, model, in, out, f)
 		})
 		ran = true
 	}
@@ -896,7 +900,7 @@ func testGenDoc(t *testing.T, g ProviderGenModalityFactory, model string, in, ou
 	}
 }
 
-func testImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityDoc) {
+func testImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, in, out map[genai.Modality]genai.ModalCapability, f *genai.FunctionalityDoc) {
 	defaultFR := genai.FinishedStop
 	if f.BrokenFinishReason {
 		defaultFR = ""
@@ -916,7 +920,7 @@ func testImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 	msg := genai.NewTextMessage(genai.User, contents)
 	c := g(t, model).(genai.ProviderGenDoc)
 	resp, err := c.GenDoc(t.Context(), msg, nil)
-	if !basicCheck(t, err, f.OutputInline || f.OutputURL) {
+	if !basicCheck(t, err, hasAnyModalityWithInline(out) || hasAnyModalityWithURL(out)) {
 		return
 	}
 	testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
@@ -929,19 +933,19 @@ func testImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 	if resp.Contents[0].Filename != "content.png" && resp.Contents[0].Filename != "content.jpg" {
 		t.Fatalf("expected one image, got %#v", resp.Contents[0])
 	}
-	if f.OutputInline {
+	if hasAnyModalityWithInline(out) {
 		if resp.Contents[0].Document == nil {
 			t.Fatal("expected inline output")
 		}
 	}
-	if f.OutputURL {
+	if hasAnyModalityWithURL(out) {
 		if resp.Contents[0].URL == "" {
 			t.Fatal("expected URL output")
 		}
 	}
 }
 
-func testAudioGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, f *genai.FunctionalityDoc) {
+func testAudioGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, model string, in, out map[genai.Modality]genai.ModalCapability, f *genai.FunctionalityDoc) {
 	defaultFR := genai.FinishedStop
 	if f.BrokenFinishReason {
 		defaultFR = ""
@@ -949,7 +953,7 @@ func testAudioGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 	msg := genai.NewTextMessage(genai.User, "Say hi. Just say this word, nothing else.")
 	c := g(t, model).(genai.ProviderGenDoc)
 	resp, err := c.GenDoc(t.Context(), msg, nil)
-	if !basicCheck(t, err, f.OutputInline || f.OutputURL) {
+	if !basicCheck(t, err, hasAnyModalityWithInline(out) || hasAnyModalityWithURL(out)) {
 		return
 	}
 	testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
@@ -962,12 +966,12 @@ func testAudioGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 	if resp.Contents[0].Filename != "sound.wav" {
 		t.Fatalf("expected one image, got %#v", resp.Contents[0])
 	}
-	if f.OutputInline {
+	if hasAnyModalityWithInline(out) {
 		if resp.Contents[0].Document == nil {
 			t.Fatal("expected inline output")
 		}
 	}
-	if f.OutputURL {
+	if hasAnyModalityWithURL(out) {
 		if resp.Contents[0].URL == "" {
 			t.Fatal("expected URL output")
 		}
@@ -1129,3 +1133,36 @@ func ValidateWordResponse(t *testing.T, resp genai.Result, want ...string) {
 //
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
+
+// Helper functions to extract delivery method information from ModalCapability maps
+func hasModalityWithInline(capabilities map[genai.Modality]genai.ModalCapability, modality genai.Modality) bool {
+	if cap, ok := capabilities[modality]; ok {
+		return cap.Inline
+	}
+	return false
+}
+
+func hasModalityWithURL(capabilities map[genai.Modality]genai.ModalCapability, modality genai.Modality) bool {
+	if cap, ok := capabilities[modality]; ok {
+		return cap.URL
+	}
+	return false
+}
+
+func hasAnyModalityWithInline(capabilities map[genai.Modality]genai.ModalCapability) bool {
+	for _, cap := range capabilities {
+		if cap.Inline {
+			return true
+		}
+	}
+	return false
+}
+
+func hasAnyModalityWithURL(capabilities map[genai.Modality]genai.ModalCapability) bool {
+	for _, cap := range capabilities {
+		if cap.URL {
+			return true
+		}
+	}
+	return false
+}

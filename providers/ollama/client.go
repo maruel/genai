@@ -50,11 +50,7 @@ var Scoreboard = genai.Scoreboard{
 					SupportedFormats: []string{"text/plain"},
 				},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
+			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Models: []string{"gemma3:4b"},
 			GenSync: &genai.FunctionalityText{
 				JSON:       true,

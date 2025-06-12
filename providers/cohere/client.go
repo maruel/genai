@@ -43,17 +43,9 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://dashboard.cohere.com/billing",
 	Scenarios: []genai.Scenario{
 		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
 			Models: []string{"command-r7b-12-2024"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,

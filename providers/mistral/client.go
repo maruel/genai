@@ -38,16 +38,6 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://console.mistral.ai/usage",
 	Scenarios: []genai.Scenario{
 		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
 			Models: []string{
 				"ministral-3b-latest",
 				"codestral-2501",
@@ -70,6 +60,8 @@ var Scoreboard = genai.Scoreboard{
 				"open-mixtral-8x22b-2404",
 				"open-mixtral-8x7b",
 			},
+			In:  map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Tools:      genai.True,
 				BiasedTool: genai.True,
@@ -84,26 +76,11 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityImage: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
-				},
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
 			Models: []string{
 				"mistral-small-latest",
 				"mistral-small",
 				"mistral-small-2501",
-				//"mistral-small-2503",
+				"mistral-small-2503",
 				"mistral-large-2411",
 				"mistral-large-latest",
 				"mistral-medium",
@@ -115,51 +92,19 @@ var Scoreboard = genai.Scoreboard{
 				"pixtral-large-2411",
 				"pixtral-large-latest",
 			},
-			GenSync: &genai.FunctionalityText{
-				Tools:          genai.True,
-				IndecisiveTool: genai.True,
-				JSON:           true,
-				JSONSchema:     true,
-			},
-			GenStream: &genai.FunctionalityText{
-				Tools:          genai.True,
-				IndecisiveTool: genai.True,
-				JSON:           true,
-				JSONSchema:     true,
-			},
-		},
-		{
 			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityPDF: {
+				genai.ModalityImage: {
 					Inline:           true,
+					URL:              true,
+					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
+				},
+				genai.ModalityPDF: {
 					URL:              true,
 					SupportedFormats: []string{"application/pdf"},
 				},
-				genai.ModalityText: {
-					Inline: true,
-				},
+				genai.ModalityText: {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Models: []string{
-				"mistral-small-2503",
-				/*
-					"mistral-small",
-					"mistral-small-2501",
-					"mistral-small-latest",
-					"mistral-large-2411",
-					"mistral-large-latest",
-					"mistral-medium",
-					"mistral-medium-2505",
-					"mistral-medium-latest",
-				*/
-				"mistral-ocr-2503",
-				"mistral-ocr-2505",
-				"mistral-ocr-latest",
-			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,

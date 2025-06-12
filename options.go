@@ -67,8 +67,8 @@ type ModalCapability struct {
 	Inline bool
 	// URL means content can be referenced by URL
 	URL bool
-	// MaxSize specifies the maximum size in bytes, nil means unlimited
-	MaxSize *int64
+	// MaxSize specifies the maximum size in bytes.
+	MaxSize int64
 	// SupportedFormats lists supported MIME types for this modality
 	SupportedFormats []string
 }

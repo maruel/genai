@@ -40,18 +40,10 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://cloud.cerebras.ai",
 	Scenarios: []genai.Scenario{
 		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
 			// "llama-3.1-8b" works too but the ListModels() API returns the malformed string.
 			Models: []string{"llama3.1-8b", "llama-3.3-70b"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Tools:      genai.Flaky,
 				BiasedTool: genai.True,
@@ -66,17 +58,9 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
 			Models: []string{"qwen-3-32b"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Thinking:   true,
 				Tools:      genai.Flaky,
@@ -92,17 +76,9 @@ var Scoreboard = genai.Scoreboard{
 		{
 			// Llama-4 scout supports genai.ModalityImage but Cerebras doesn't support this yet.
 			// This may change in the future.
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
 			Models: []string{"llama-4-scout-17b-16e-instruct"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Tools:      genai.Flaky,
 				BiasedTool: genai.True,

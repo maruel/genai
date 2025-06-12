@@ -51,20 +51,9 @@ var Scoreboard = genai.Scoreboard{
 		{
 			// Llama-4 scout supports genai.ModalityImage but I'm not sure if cloudflare supports this modality.
 			// This may change in the future.
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Models: []string{
-				"@cf/meta/llama-4-scout-17b-16e-instruct",
-				"@cf/meta/llama-3.2-3b-instruct",
-			},
+			Models: []string{"@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/meta/llama-3.2-3b-instruct"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				BrokenFinishReason: true,
 				NoStopSequence:     true,

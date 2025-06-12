@@ -35,20 +35,9 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://www.perplexity.ai/settings/api",
 	Scenarios: []genai.Scenario{
 		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Models: []string{
-				"r1-1776",
-				"sonar-deep-research",
-			},
+			Models: []string{"r1-1776", "sonar-deep-research"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Thinking:       true,
 				NoStopSequence: true,
@@ -61,20 +50,9 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Models: []string{
-				"sonar",
-				"sonar-pro",
-			},
+			Models: []string{"sonar", "sonar-pro"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				NoStopSequence: true,
 				JSONSchema:     true,
@@ -86,20 +64,9 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Models: []string{
-				"sonar-reasoning",
-				"sonar-reasoning-pro",
-			},
+			Models: []string{"sonar-reasoning", "sonar-reasoning-pro"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Thinking:       true,
 				NoStopSequence: true,

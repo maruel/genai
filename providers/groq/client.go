@@ -37,16 +37,6 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://console.groq.com/dashboard/usage",
 	Scenarios: []genai.Scenario{
 		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
 			Models: []string{
 				// llama-3.1-8b-instant will be both indecisive and biased given its size and quantization. 70b is a
 				// bit better but not perfect.
@@ -54,6 +44,8 @@ var Scoreboard = genai.Scoreboard{
 				"llama-3.3-70b-versatile",
 				"mistral-saba-24b",
 			},
+			In:  map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Tools:          genai.Flaky,
 				BiasedTool:     genai.Flaky,
@@ -68,55 +60,38 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
+			Models: []string{"qwen-qwq-32b", "deepseek-r1-distill-llama-70b"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Thinking:       true,
+				Tools:          genai.Flaky,
+				BiasedTool:     genai.True,
+				IndecisiveTool: genai.Flaky,
+				JSON:           true,
 			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
+			GenStream: &genai.FunctionalityText{
+				Thinking:       true,
+				Tools:          genai.Flaky,
+				BiasedTool:     genai.True,
+				IndecisiveTool: genai.Flaky,
+				JSON:           true,
 			},
+		},
+		{
 			Models: []string{
-				"qwen-qwq-32b",
-				"deepseek-r1-distill-llama-70b",
+				"meta-llama/llama-4-scout-17b-16e-instruct",
+				"meta-llama/llama-4-maverick-17b-128e-instruct",
 			},
-			GenSync: &genai.FunctionalityText{
-				Thinking:       true,
-				Tools:          genai.Flaky,
-				BiasedTool:     genai.True,
-				IndecisiveTool: genai.Flaky,
-				JSON:           true,
-			},
-			GenStream: &genai.FunctionalityText{
-				Thinking:       true,
-				Tools:          genai.Flaky,
-				BiasedTool:     genai.True,
-				IndecisiveTool: genai.Flaky,
-				JSON:           true,
-			},
-		},
-		{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
 					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
 				},
-				genai.ModalityText: {
-					Inline: true,
-				},
+				genai.ModalityText: {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Models: []string{
-				"meta-llama/llama-4-scout-17b-16e-instruct",
-				"meta-llama/llama-4-maverick-17b-128e-instruct",
-			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Tools:          genai.Flaky,
 				IndecisiveTool: genai.True,

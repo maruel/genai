@@ -43,16 +43,6 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://auth.pollinations.ai/",
 	Scenarios: []genai.Scenario{
 		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
 			Models: []string{
 				"llama-scout",
 				"deepseek",
@@ -63,6 +53,8 @@ var Scoreboard = genai.Scoreboard{
 				"openai-fast",
 				"qwen-coder",
 			},
+			In:  map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				NoMaxTokens:    true,
 				NoStopSequence: true,
@@ -97,21 +89,13 @@ var Scoreboard = genai.Scoreboard{
 		},
 		*/
 		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
+			Models: []string{"flux", "gptimage", "turbo"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
 					SupportedFormats: []string{"image/png", "image/jpeg", "image/webp"},
 				},
-			},
-			Models: []string{
-				"flux",
-				"gptimage",
-				"turbo",
 			},
 			GenDoc: &genai.FunctionalityDoc{
 				BrokenTokenUsage:   true,
@@ -119,24 +103,16 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
+			Models: []string{"openai", "openai-large"},
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
+					URL:              true,
 					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
 				},
-				genai.ModalityText: {
-					Inline: true,
-				},
+				genai.ModalityText: {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Models: []string{
-				"openai",
-				"openai-large",
-			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				NoMaxTokens:    true,
 				NoStopSequence: true,

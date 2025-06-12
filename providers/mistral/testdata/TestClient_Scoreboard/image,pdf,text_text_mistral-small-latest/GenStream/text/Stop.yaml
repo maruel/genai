@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 180
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-small-latest","stream":true,"stop":["is"],"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in 10 words. Start with: Canada is"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"f02d635cab5541178f9c7aa17e93d0d8","object":"chat.completion.chunk","created":1749823750,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}]}
+
+            data: {"id":"f02d635cab5541178f9c7aa17e93d0d8","object":"chat.completion.chunk","created":1749823750,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":"Canada"},"finish_reason":null,"logprobs":null}]}
+
+            data: {"id":"f02d635cab5541178f9c7aa17e93d0d8","object":"chat.completion.chunk","created":1749823750,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":" "},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":17,"total_tokens":19,"completion_tokens":2}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94f22a067c79a2cf-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Envoy-Upstream-Service-Time:
+                - "59"
+            X-Kong-Proxy-Latency:
+                - "5"
+            X-Kong-Request-Id:
+                - 89af380ac8717e588441bf50efea7a40
+            X-Kong-Upstream-Latency:
+                - "60"
+        status: 200 OK
+        code: 200
+        duration: 208ms

@@ -45,25 +45,16 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://console.anthropic.com/settings/billing",
 	Scenarios: []genai.Scenario{
 		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
 			Models:    []string{"claude-3-haiku-20240307", "claude-2.0", "claude-2.1", "claude-3-opus-20240229", "claude-3-sonnet-20240229"},
+			In:        map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync:   &genai.FunctionalityText{},
 			GenStream: &genai.FunctionalityText{},
 		},
 		{
+			Models: []string{"claude-3-5-haiku-20241022", "claude-3-5-sonnet-20240620", "claude-3-5-sonnet-20241022"},
 			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
+				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
@@ -75,12 +66,7 @@ var Scoreboard = genai.Scoreboard{
 					SupportedFormats: []string{"application/pdf", "text/plain"},
 				},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Models: []string{"claude-3-5-haiku-20241022", "claude-3-5-sonnet-20240620", "claude-3-5-sonnet-20241022"},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Tools:      genai.True,
 				BiasedTool: genai.True,
@@ -93,10 +79,9 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
+			Models: []string{"claude-3-7-sonnet-20250219", "claude-opus-4-20250514", "claude-sonnet-4-20250514"},
 			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
+				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
@@ -108,12 +93,7 @@ var Scoreboard = genai.Scoreboard{
 					SupportedFormats: []string{"application/pdf", "text/plain"},
 				},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Models: []string{"claude-3-7-sonnet-20250219", "claude-opus-4-20250514", "claude-sonnet-4-20250514"},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Tools:      genai.True,
 				BiasedTool: genai.True,

@@ -40,18 +40,10 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://github.com/ggml-org/llama.cpp",
 	Scenarios: []genai.Scenario{
 		{
+			Models: []string{"unsloth/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q5_K_M.gguf"},
 			// TODO: It supports genai.ModalityImage
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Models:    []string{"unsloth/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q5_K_M.gguf"},
+			In:        map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync:   &genai.FunctionalityText{},
 			GenStream: &genai.FunctionalityText{},
 		},

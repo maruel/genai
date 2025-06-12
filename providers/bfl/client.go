@@ -38,17 +38,6 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://dashboard.bfl.ai/",
 	Scenarios: []genai.Scenario{
 		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityImage: {
-					Inline:           true,
-					SupportedFormats: []string{"image/png", "image/jpeg", "image/webp"},
-				},
-			},
 			Models: []string{
 				"flux-dev",
 				"flux-kontext-pro",
@@ -56,6 +45,13 @@ var Scoreboard = genai.Scoreboard{
 				"flux-pro-1.1-ultra",
 				"flux-pro-1.1",
 				"flux-pro",
+			},
+			In: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityImage: {
+					URL:              true,
+					SupportedFormats: []string{"image/png", "image/jpeg", "image/webp"},
+				},
 			},
 			GenDoc: &genai.FunctionalityDoc{
 				BrokenTokenUsage:   true,

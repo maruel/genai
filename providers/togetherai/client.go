@@ -48,16 +48,6 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://api.together.ai/settings/billing",
 	Scenarios: []genai.Scenario{
 		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
 			// Note that many models do not in fact support tools.
 			Models: []string{
 				"meta-llama/Llama-3.3-70B-Instruct-Turbo", // Not reported by the endpoint as of May 2025
@@ -100,6 +90,8 @@ var Scoreboard = genai.Scoreboard{
 				"Qwen/Qwen2.5-VL-72B-Instruct",
 				"togethercomputer/Refuel-Llm-V2",
 			},
+			In:  map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Tools:      genai.True,
 				BiasedTool: genai.True,
@@ -114,17 +106,6 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityImage: {
-					Inline:           true,
-					SupportedFormats: []string{"image/png", "image/jpeg", "image/webp"},
-				},
-			},
 			Models: []string{
 				"black-forest-labs/FLUX.1-schnell-Free",
 				"black-forest-labs/FLUX.1-schnell",
@@ -138,6 +119,13 @@ var Scoreboard = genai.Scoreboard{
 				"black-forest-labs/FLUX.1-redux",
 				"black-forest-labs/FLUX.1-pro",
 				"black-forest-labs/FLUX.1-dev-lora",
+			},
+			In: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityImage: {
+					URL:              true,
+					SupportedFormats: []string{"image/png", "image/jpeg", "image/webp"},
+				},
 			},
 			GenDoc: &genai.FunctionalityDoc{
 				BrokenTokenUsage:   true,

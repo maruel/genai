@@ -52,17 +52,9 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "http://aistudio.google.com",
 	Scenarios: []genai.Scenario{
 		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
 			Models: []string{"gemini-2.0-flash-lite"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Tools:          genai.True,
 				BiasedTool:     genai.Flaky,
@@ -79,37 +71,27 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
+			Models: []string{"gemini-2.0-flash"},
 			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
+				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
 					Inline:           true,
-					URL:              true,
 					SupportedFormats: []string{"image/png", "image/jpeg", "image/webp", "image/heic", "image/heif"},
 				},
 				genai.ModalityPDF: {
 					Inline:           true,
-					URL:              true,
 					SupportedFormats: []string{"application/pdf", "application/x-javascript", "text/javascript", "application/x-python", "text/x-python", "text/plain", "text/html", "text/css", "text/markdown"},
 				},
 				genai.ModalityAudio: {
 					Inline:           true,
-					URL:              true,
 					SupportedFormats: []string{"audio/wav", "audio/mp3", "audio/aiff", "audio/aac", "audio/ogg", "audio/flac"},
 				},
 				genai.ModalityVideo: {
 					Inline:           true,
-					URL:              true,
 					SupportedFormats: []string{"video/mp4", "video/mpeg", "video/mov", "video/avi", "video/x-flv", "video/mpg", "video/webm", "video/wmv", "video/3gpp"},
 				},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Models: []string{"gemini-2.0-flash"},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				// It supports URL but only when uploaded to its own storage.
 				Tools:      genai.True,
@@ -123,21 +105,15 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
+			Models: []string{"gemini-2.0-flash-preview-image-generation"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
+				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
 					Inline:           true,
 					SupportedFormats: []string{"image/png", "image/jpeg", "image/webp"},
 				},
 			},
-			Models: []string{"gemini-2.0-flash-preview-image-generation"},
 			GenSync: &genai.FunctionalityText{
 				Thinking:   true,
 				Tools:      genai.True,

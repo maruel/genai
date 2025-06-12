@@ -47,19 +47,19 @@ func TestScoreboard(t *testing.T, g ProviderGenModalityFactory, filter func(mode
 	}
 	for _, s := range scenarios {
 		// Extract and sort modalities from capability maps
-		var in []genai.Modality
+		var in []string
 		for modality := range s.In {
-			in = append(in, modality)
+			in = append(in, string(modality))
 		}
 		slices.Sort(in)
-		var out []genai.Modality
+		var out []string
 		for modality := range s.Out {
-			out = append(out, modality)
+			out = append(out, string(modality))
 		}
 		slices.Sort(out)
 		// Only test the first model but acknowledge them all.
 		modelsSeen = append(modelsSeen, s.Models...)
-		t.Run(fmt.Sprintf("%s_%s_%s", in, out, s.Models[0]), func(t *testing.T) {
+		t.Run(fmt.Sprintf("%s_%s_%s", strings.Join(in, ","), strings.Join(out, ","), s.Models[0]), func(t *testing.T) {
 			if s.GenSync != nil {
 				t.Run("GenSync", func(t *testing.T) {
 					testGenText(t, g, s.Models[0], s.In, s.Out, s.GenSync, false)
@@ -803,7 +803,7 @@ func testPDFFunctionalities(t *testing.T, g ProviderGenModalityFactory, model st
 		defer ff.Close()
 		msgs := genai.Messages{{Role: genai.User, Contents: []genai.Content{{Text: prompt}, {Document: ff}}}}
 		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
-		if !basicCheck(t, err, hasModalityWithInline(in, genai.ModalityAudio)) {
+		if !basicCheck(t, err, hasModalityWithInline(in, genai.ModalityPDF)) {
 			return
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)

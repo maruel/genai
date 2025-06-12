@@ -1,0 +1,64 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 181
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-small-latest","stream":false,"stop":["is"],"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in 10 words. Start with: Canada is"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"34322ca6477c41a594e5c62bbd585522","object":"chat.completion","created":1749823745,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"Canada "},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":17,"total_tokens":19,"completion_tokens":2}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94f229e89b28a2cf-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Envoy-Upstream-Service-Time:
+                - "71"
+            X-Kong-Proxy-Latency:
+                - "4"
+            X-Kong-Request-Id:
+                - 2e7b673c11f1ad5ee9292d709f0ddc7d
+            X-Kong-Upstream-Latency:
+                - "72"
+            X-Ratelimit-Limit-Req-10-Second:
+                - "60"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "2000000"
+            X-Ratelimit-Limit-Tokens-Month:
+                - "10000000000"
+            X-Ratelimit-Remaining-Req-10-Second:
+                - "51"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "1999649"
+            X-Ratelimit-Remaining-Tokens-Month:
+                - "9999977116"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "19"
+        status: 200 OK
+        code: 200
+        duration: 205ms

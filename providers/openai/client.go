@@ -50,16 +50,8 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://platform.openai.com/usage",
 	Scenarios: []genai.Scenario{
 		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
+			In:  map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Models: []string{
 				"gpt-4.1-nano",
 				"gpt-3.5-turbo",
@@ -117,15 +109,9 @@ var Scoreboard = genai.Scoreboard{
 					Inline:           true,
 					SupportedFormats: []string{"audio/mpeg", "audio/wav", "audio/mp4", "audio/x-m4a", "audio/webm"},
 				},
-				genai.ModalityText: {
-					Inline: true,
-				},
+				genai.ModalityText: {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Models: []string{
 				"gpt-4o-audio-preview",
 				"gpt-4o-audio-preview-2024-10-01",
@@ -151,21 +137,6 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityImage: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
-				},
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
 			Models: []string{
 				"o4-mini",
 				"o1",
@@ -180,6 +151,15 @@ var Scoreboard = genai.Scoreboard{
 				"o3-mini-2025-01-31",
 				"o4-mini-2025-04-16",
 			},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityImage: {
+					Inline:           true,
+					URL:              true,
+					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
+				},
+				genai.ModalityText: {Inline: true},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				NoStopSequence: true,
 				Tools:          genai.True,

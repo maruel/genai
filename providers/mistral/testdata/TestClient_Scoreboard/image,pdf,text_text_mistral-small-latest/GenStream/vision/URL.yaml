@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 303
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-small-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/banana.jpg"}}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"2274f802833e462e81bd7b9f4cbe99ff","object":"chat.completion.chunk","created":1749823751,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}]}
+
+            data: {"id":"2274f802833e462e81bd7b9f4cbe99ff","object":"chat.completion.chunk","created":1749823751,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":"Yes"},"finish_reason":null,"logprobs":null}]}
+
+            data: {"id":"2274f802833e462e81bd7b9f4cbe99ff","object":"chat.completion.chunk","created":1749823751,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":242,"total_tokens":244,"completion_tokens":2}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94f22a0fb8a2a2cf-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Envoy-Upstream-Service-Time:
+                - "367"
+            X-Kong-Proxy-Latency:
+                - "7"
+            X-Kong-Request-Id:
+                - 7ac74d21828a4a6ffd5cb91f17cb8725
+            X-Kong-Upstream-Latency:
+                - "367"
+        status: 200 OK
+        code: 200
+        duration: 492ms

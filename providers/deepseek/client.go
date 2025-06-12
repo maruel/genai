@@ -37,8 +37,16 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://platform.deepseek.com",
 	Scenarios: []genai.Scenario{
 		{
-			In:     []genai.Modality{genai.ModalityText},
-			Out:    []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			Models: []string{"deepseek-chat"},
 			GenSync: &genai.FunctionalityText{
 				Tools:          genai.True,
@@ -52,8 +60,16 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In:     []genai.Modality{genai.ModalityText},
-			Out:    []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			Models: []string{"deepseek-reasoner"},
 			GenSync: &genai.FunctionalityText{
 				Thinking: true,

@@ -35,8 +35,16 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://www.perplexity.ai/settings/api",
 	Scenarios: []genai.Scenario{
 		{
-			In:  []genai.Modality{genai.ModalityText},
-			Out: []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			Models: []string{
 				"r1-1776",
 				"sonar-deep-research",
@@ -53,8 +61,16 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In:  []genai.Modality{genai.ModalityText},
-			Out: []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			Models: []string{
 				"sonar",
 				"sonar-pro",
@@ -70,8 +86,16 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In:  []genai.Modality{genai.ModalityText},
-			Out: []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			Models: []string{
 				"sonar-reasoning",
 				"sonar-reasoning-pro",

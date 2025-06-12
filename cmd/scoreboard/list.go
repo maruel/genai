@@ -43,7 +43,7 @@ func printList() error {
 				m = append(slices.Clone(m[:3]), "...")
 			}
 			fmt.Printf("  - %s\n", strings.Join(m, ", "))
-			if slices.Equal(scenario.In, textOnly) && slices.Equal(scenario.Out, textOnly) {
+			if isTextOnly(scenario.In) && isTextOnly(scenario.Out) {
 				fmt.Printf("    in/out:   text only\n")
 			} else {
 				in := ""
@@ -64,7 +64,7 @@ func printList() error {
 						out = " (url only)"
 					}
 				}
-				fmt.Printf("    in/out:   ⇒ %s%s / %s%s ⇒\n", scenario.In, in, scenario.Out, out)
+				fmt.Printf("    in/out:   ⇒ %s%s / %s%s ⇒\n", modalityMapToString(scenario.In), in, modalityMapToString(scenario.Out), out)
 			}
 			chat := ""
 			stream := ""
@@ -96,7 +96,29 @@ func printList() error {
 	return nil
 }
 
-var textOnly = genai.Modalities{genai.ModalityText}
+var textOnly = map[genai.Modality]genai.ModalCapability{
+	genai.ModalityText: {
+		DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+	},
+}
+
+// modalityMapToString converts a modality capability map to a readable string
+func modalityMapToString(m map[genai.Modality]genai.ModalCapability) string {
+	if len(m) == 0 {
+		return ""
+	}
+	var modalities []string
+	for modality := range m {
+		modalities = append(modalities, string(modality))
+	}
+	slices.Sort(modalities)
+	return strings.Join(modalities, ", ")
+}
+
+// isTextOnly checks if a modality map contains only text
+func isTextOnly(m map[genai.Modality]genai.ModalCapability) bool {
+	return len(m) == 1 && m[genai.ModalityText].DeliveryMethods != nil
+}
 
 func functionalityText(f *genai.FunctionalityText) string {
 	var items []string

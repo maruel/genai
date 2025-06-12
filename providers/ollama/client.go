@@ -40,8 +40,21 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://ollama.com/",
 	Scenarios: []genai.Scenario{
 		{
-			In:     []genai.Modality{genai.ModalityImage, genai.ModalityText},
-			Out:    []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityImage: {
+					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline},
+					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
+				},
+				genai.ModalityText: {
+					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline},
+					SupportedFormats: []string{"text/plain"},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			Models: []string{"gemma3:4b"},
 			GenSync: &genai.FunctionalityText{
 				InputInline: true,

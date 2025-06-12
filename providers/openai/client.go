@@ -50,8 +50,16 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://platform.openai.com/usage",
 	Scenarios: []genai.Scenario{
 		{
-			In:  []genai.Modality{genai.ModalityText},
-			Out: []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			Models: []string{
 				"gpt-4.1-nano",
 				"gpt-3.5-turbo",
@@ -104,8 +112,20 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In:  []genai.Modality{genai.ModalityAudio, genai.ModalityText},
-			Out: []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityAudio: {
+					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline},
+					SupportedFormats: []string{"audio/mpeg", "audio/wav", "audio/mp4", "audio/x-m4a", "audio/webm"},
+				},
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			Models: []string{
 				"gpt-4o-audio-preview",
 				"gpt-4o-audio-preview-2024-10-01",
@@ -133,8 +153,20 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In:  []genai.Modality{genai.ModalityImage, genai.ModalityText},
-			Out: []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityImage: {
+					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline, genai.DeliveryURL},
+					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
+				},
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			Models: []string{
 				"o4-mini",
 				"o1",
@@ -169,8 +201,17 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In:  []genai.Modality{genai.ModalityText},
-			Out: []genai.Modality{genai.ModalityImage},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityImage: {
+					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline},
+					SupportedFormats: []string{"image/png", "image/jpeg", "image/webp"},
+				},
+			},
 			Models: []string{
 				"dall-e-2",
 				"dall-e-3",

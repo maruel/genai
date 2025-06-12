@@ -964,8 +964,8 @@ type FunctionalityDoc struct {
 
 // Scenario defines one way to use the provider.
 type Scenario struct {
-	In  Modalities
-	Out Modalities
+	In  map[Modality]ModalCapability
+	Out map[Modality]ModalCapability
 	// Models is a *non exhaustive* list of models that support this scenario. It can't be exhaustive since
 	// providers continuouly release new models. It is still valuable to use the first value
 	Models []string

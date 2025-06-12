@@ -52,8 +52,16 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://huggingface.co/settings/billing",
 	Scenarios: []genai.Scenario{
 		{
-			In:     []genai.Modality{genai.ModalityText},
-			Out:    []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			Models: []string{"meta-llama/Llama-3.3-70B-Instruct"},
 			GenSync: &genai.FunctionalityText{
 				Tools:      genai.True,
@@ -68,8 +76,16 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In:     []genai.Modality{genai.ModalityText},
-			Out:    []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			Models: []string{"Qwen/QwQ-32B"},
 			GenSync: &genai.FunctionalityText{
 				Thinking:   true,

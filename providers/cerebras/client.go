@@ -40,8 +40,16 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://cloud.cerebras.ai",
 	Scenarios: []genai.Scenario{
 		{
-			In:  []genai.Modality{genai.ModalityText},
-			Out: []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			// "llama-3.1-8b" works too but the ListModels() API returns the malformed string.
 			Models: []string{"llama3.1-8b", "llama-3.3-70b"},
 			GenSync: &genai.FunctionalityText{
@@ -58,8 +66,16 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In:     []genai.Modality{genai.ModalityText},
-			Out:    []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			Models: []string{"qwen-3-32b"},
 			GenSync: &genai.FunctionalityText{
 				Thinking:   true,
@@ -76,8 +92,16 @@ var Scoreboard = genai.Scoreboard{
 		{
 			// Llama-4 scout supports genai.ModalityImage but Cerebras doesn't support this yet.
 			// This may change in the future.
-			In:     []genai.Modality{genai.ModalityText},
-			Out:    []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			Models: []string{"llama-4-scout-17b-16e-instruct"},
 			GenSync: &genai.FunctionalityText{
 				Tools:      genai.Flaky,

@@ -41,8 +41,16 @@ var Scoreboard = genai.Scoreboard{
 	Scenarios: []genai.Scenario{
 		{
 			// TODO: It supports genai.ModalityImage
-			In:        []genai.Modality{genai.ModalityText},
-			Out:       []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			Models:    []string{"unsloth/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q5_K_M.gguf"},
 			GenSync:   &genai.FunctionalityText{},
 			GenStream: &genai.FunctionalityText{},

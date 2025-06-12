@@ -57,16 +57,16 @@ func processOne(c genai.ProviderScoreboard) column {
 	_, isAsync := c.(genai.ProviderGenAsync)
 	_, isFiles := c.(genai.ProviderCache)
 	for _, s := range sb.Scenarios {
-		if slices.Contains(s.In, genai.ModalityImage) {
+		if _, hasImage := s.In[genai.ModalityImage]; hasImage {
 			col.Vision = "✅"
 		}
-		if slices.Contains(s.In, genai.ModalityPDF) {
+		if _, hasPDF := s.In[genai.ModalityPDF]; hasPDF {
 			col.PDF = "✅"
 		}
-		if slices.Contains(s.In, genai.ModalityAudio) {
+		if _, hasAudio := s.In[genai.ModalityAudio]; hasAudio {
 			col.Audio = "✅"
 		}
-		if slices.Contains(s.In, genai.ModalityVideo) {
+		if _, hasVideo := s.In[genai.ModalityVideo]; hasVideo {
 			col.Video = "✅"
 		}
 		if s.GenSync != nil && s.GenSync.JSON && s.GenStream.JSON {
@@ -75,12 +75,16 @@ func processOne(c genai.ProviderScoreboard) column {
 		if s.GenSync != nil && s.GenSync.JSONSchema && s.GenStream.JSONSchema {
 			col.JSONSchema = "✅"
 		}
-		if slices.Contains(s.In, genai.ModalityText) && slices.Contains(s.Out, genai.ModalityImage) {
-			col.ImageGen = "✅"
+		if _, hasTextIn := s.In[genai.ModalityText]; hasTextIn {
+			if _, hasImageOut := s.Out[genai.ModalityImage]; hasImageOut {
+				col.ImageGen = "✅"
+			}
 		}
-		if slices.Contains(s.In, genai.ModalityText) && slices.Contains(s.Out, genai.ModalityText) && isText {
-			col.Chat = "✅"
-			col.Streaming = "✅"
+		if _, hasTextIn := s.In[genai.ModalityText]; hasTextIn {
+			if _, hasTextOut := s.Out[genai.ModalityText]; hasTextOut && isText {
+				col.Chat = "✅"
+				col.Streaming = "✅"
+			}
 		}
 		if isDoc {
 			col.Doc = "✅"
@@ -117,7 +121,7 @@ func processOne(c genai.ProviderScoreboard) column {
 			//	col.Seed = "✅"
 			//}
 		}
-		if slices.Contains(s.Out, genai.ModalityAudio) {
+		if _, hasAudioOut := s.Out[genai.ModalityAudio]; hasAudioOut {
 			col.AudioGen = "✅"
 		}
 	}

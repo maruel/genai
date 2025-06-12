@@ -46,9 +46,16 @@ func TestScoreboard(t *testing.T, g ProviderGenModalityFactory, filter func(mode
 		t.Fatal("expected at least one scenario")
 	}
 	for _, s := range scenarios {
-		in := slices.Clone(s.In)
+		// Extract and sort modalities from capability maps
+		var in []genai.Modality
+		for modality := range s.In {
+			in = append(in, modality)
+		}
 		slices.Sort(in)
-		out := slices.Clone(s.Out)
+		var out []genai.Modality
+		for modality := range s.Out {
+			out = append(out, modality)
+		}
 		slices.Sort(out)
 		// Only test the first model but acknowledge them all.
 		modelsSeen = append(modelsSeen, s.Models...)

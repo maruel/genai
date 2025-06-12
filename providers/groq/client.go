@@ -37,8 +37,16 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://console.groq.com/dashboard/usage",
 	Scenarios: []genai.Scenario{
 		{
-			In:  []genai.Modality{genai.ModalityText},
-			Out: []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			Models: []string{
 				// llama-3.1-8b-instant will be both indecisive and biased given its size and quantization. 70b is a
 				// bit better but not perfect.
@@ -60,8 +68,16 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In:  []genai.Modality{genai.ModalityText},
-			Out: []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			Models: []string{
 				"qwen-qwq-32b",
 				"deepseek-r1-distill-llama-70b",
@@ -82,8 +98,20 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In:  []genai.Modality{genai.ModalityImage, genai.ModalityText},
-			Out: []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityImage: {
+					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline, genai.DeliveryURL},
+					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
+				},
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			Models: []string{
 				"meta-llama/llama-4-scout-17b-16e-instruct",
 				"meta-llama/llama-4-maverick-17b-128e-instruct",

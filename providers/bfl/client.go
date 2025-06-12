@@ -38,8 +38,17 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://dashboard.bfl.ai/",
 	Scenarios: []genai.Scenario{
 		{
-			In:  []genai.Modality{genai.ModalityText},
-			Out: []genai.Modality{genai.ModalityImage},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityImage: {
+					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline},
+					SupportedFormats: []string{"image/png", "image/jpeg", "image/webp"},
+				},
+			},
 			Models: []string{
 				"flux-dev",
 				"flux-kontext-pro",

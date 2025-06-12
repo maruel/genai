@@ -38,8 +38,16 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://console.mistral.ai/usage",
 	Scenarios: []genai.Scenario{
 		{
-			In:  []genai.Modality{genai.ModalityText},
-			Out: []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			Models: []string{
 				"ministral-3b-latest",
 				"codestral-2501",
@@ -76,8 +84,20 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In:  []genai.Modality{genai.ModalityImage, genai.ModalityText},
-			Out: []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityImage: {
+					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline, genai.DeliveryURL},
+					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
+				},
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			Models: []string{
 				"mistral-small-latest",
 				"mistral-small",
@@ -112,8 +132,20 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In:  []genai.Modality{genai.ModalityPDF, genai.ModalityText},
-			Out: []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityPDF: {
+					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline, genai.DeliveryURL},
+					SupportedFormats: []string{"application/pdf"},
+				},
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			Models: []string{
 				"mistral-small-2503",
 				/*

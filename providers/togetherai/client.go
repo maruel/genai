@@ -48,8 +48,16 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://api.together.ai/settings/billing",
 	Scenarios: []genai.Scenario{
 		{
-			In:  []genai.Modality{genai.ModalityText},
-			Out: []genai.Modality{genai.ModalityText},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
 			// Note that many models do not in fact support tools.
 			Models: []string{
 				"meta-llama/Llama-3.3-70B-Instruct-Turbo", // Not reported by the endpoint as of May 2025
@@ -106,8 +114,17 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			In:  []genai.Modality{genai.ModalityText},
-			Out: []genai.Modality{genai.ModalityImage},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					DeliveryMethods: []genai.DeliveryMethod{genai.DeliveryInline},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityImage: {
+					DeliveryMethods:  []genai.DeliveryMethod{genai.DeliveryInline},
+					SupportedFormats: []string{"image/png", "image/jpeg", "image/webp"},
+				},
+			},
 			Models: []string{
 				"black-forest-labs/FLUX.1-schnell-Free",
 				"black-forest-labs/FLUX.1-schnell",

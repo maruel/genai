@@ -33,6 +33,8 @@ import (
 //     client code.
 //   - No models has consistent tool calling.
 var Scoreboard = genai.Scoreboard{
+	Country:      "US",
+	DashboardURL: "https://console.groq.com/dashboard/usage",
 	Scenarios: []genai.Scenario{
 		{
 			In:  []genai.Modality{genai.ModalityText},

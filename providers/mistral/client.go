@@ -34,6 +34,8 @@ import (
 //   - PDF doesn't support inline document while images do.
 //   - Rate limit depends on your tier: https://docs.mistral.ai/deployment/laplateforme/tier/
 var Scoreboard = genai.Scoreboard{
+	Country:      "FR",
+	DashboardURL: "https://console.mistral.ai/usage",
 	Scenarios: []genai.Scenario{
 		{
 			In:  []genai.Modality{genai.ModalityText},

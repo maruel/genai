@@ -36,6 +36,8 @@ import (
 //   - qwen-3-32b is not quantized: https://discord.com/channels/1085960591052644463/1085960592050896937/1374399258890997830
 //   - Free tier has limited context: https://inference-docs.cerebras.ai/support/pricing
 var Scoreboard = genai.Scoreboard{
+	Country:      "US",
+	DashboardURL: "https://cloud.cerebras.ai",
 	Scenarios: []genai.Scenario{
 		{
 			In:  []genai.Modality{genai.ModalityText},

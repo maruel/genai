@@ -36,6 +36,8 @@ import (
 //
 //   - llama.cpp supports now more than what the client here has implemented, like vision and tool calling.
 var Scoreboard = genai.Scoreboard{
+	Country:      "Local",
+	DashboardURL: "https://github.com/ggml-org/llama.cpp",
 	Scenarios: []genai.Scenario{
 		{
 			// TODO: It supports genai.ModalityImage

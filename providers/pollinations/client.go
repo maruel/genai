@@ -39,6 +39,8 @@ import (
 //     provider with any private data.
 //   - Pollinations is a router to other backends, so it inherits the drawback of each sub-provider.
 var Scoreboard = genai.Scoreboard{
+	Country:      "DE",
+	DashboardURL: "https://auth.pollinations.ai/",
 	Scenarios: []genai.Scenario{
 		{
 			In:  []genai.Modality{genai.ModalityText},

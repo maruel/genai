@@ -46,6 +46,8 @@ import (
 //     tool's first argument.
 //   - Rate limit is based on how much you spend per month: https://platform.openai.com/docs/guides/rate-limits
 var Scoreboard = genai.Scoreboard{
+	Country:      "US",
+	DashboardURL: "https://platform.openai.com/usage",
 	Scenarios: []genai.Scenario{
 		{
 			In:  []genai.Modality{genai.ModalityText},

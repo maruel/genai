@@ -989,6 +989,12 @@ type Scoreboard struct {
 	// text-to-audio, audio-to-text, etc.
 	Scenarios []Scenario
 
+	// Country where the provider is based, e.g. "US", "CN", "EU". Two exceptions: "Local" for local and "N/A"
+	// for pure routers.
+	Country string
+	// DashboardURL is the URL to the provider's dashboard, if available.
+	DashboardURL string
+
 	_ struct{}
 }
 

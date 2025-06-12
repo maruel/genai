@@ -48,6 +48,8 @@ import (
 //   - Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the
 //     tool's first argument.
 var Scoreboard = genai.Scoreboard{
+	Country:      "US",
+	DashboardURL: "https://huggingface.co/settings/billing",
 	Scenarios: []genai.Scenario{
 		{
 			In:     []genai.Modality{genai.ModalityText},

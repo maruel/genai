@@ -45,6 +45,8 @@ import (
 // Given the fact that FinishReason, StopSequence and Usage are broken, I can't recommend this provider beside
 // toys.
 var Scoreboard = genai.Scoreboard{
+	Country:      "US",
+	DashboardURL: "https://dash.cloudflare.com",
 	Scenarios: []genai.Scenario{
 		{
 			// Llama-4 scout supports genai.ModalityImage but I'm not sure if cloudflare supports this modality.

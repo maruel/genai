@@ -33,6 +33,8 @@ import (
 //   - Tool calling is not supported with deepseek-reasoner.
 //   - DeepSeek doesn't do rate limiting: https://api-docs.deepseek.com/quick_start/rate_limit
 var Scoreboard = genai.Scoreboard{
+	Country:      "CN",
+	DashboardURL: "https://platform.deepseek.com",
 	Scenarios: []genai.Scenario{
 		{
 			In:     []genai.Modality{genai.ModalityText},

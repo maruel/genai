@@ -31,6 +31,8 @@ import (
 //   - Perplexity supports more than what the client supports.
 //   - No tool calling support.
 var Scoreboard = genai.Scoreboard{
+	Country:      "US",
+	DashboardURL: "https://www.perplexity.ai/settings/api",
 	Scenarios: []genai.Scenario{
 		{
 			In:  []genai.Modality{genai.ModalityText},

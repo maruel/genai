@@ -44,6 +44,8 @@ import (
 //
 // See https://docs.together.ai/docs/serverless-models and https://api.together.ai/models
 var Scoreboard = genai.Scoreboard{
+	Country:      "US",
+	DashboardURL: "https://api.together.ai/settings/billing",
 	Scenarios: []genai.Scenario{
 		{
 			In:  []genai.Modality{genai.ModalityText},

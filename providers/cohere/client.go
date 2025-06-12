@@ -39,6 +39,8 @@ import (
 //   - The API has good citations support but it's not well implemented yet.
 //   - Free tier rate limit is lower: https://docs.cohere.com/v2/docs/rate-limits
 var Scoreboard = genai.Scoreboard{
+	Country:      "CA",
+	DashboardURL: "https://dashboard.cohere.com/billing",
 	Scenarios: []genai.Scenario{
 		{
 			In:     []genai.Modality{genai.ModalityText},

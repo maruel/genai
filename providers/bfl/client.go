@@ -34,6 +34,8 @@ import (
 //
 // See https://docs.bfl.ml/quick_start/generating_images
 var Scoreboard = genai.Scoreboard{
+	Country:      "DE",
+	DashboardURL: "https://dashboard.bfl.ai/",
 	Scenarios: []genai.Scenario{
 		{
 			In:  []genai.Modality{genai.ModalityText},

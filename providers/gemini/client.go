@@ -48,6 +48,8 @@ import (
 //     implemented yet.
 //   - Rate limit is based on how much you spend per month: https://ai.google.dev/gemini-api/docs/rate-limits
 var Scoreboard = genai.Scoreboard{
+	Country:      "US",
+	DashboardURL: "http://aistudio.google.com",
 	Scenarios: []genai.Scenario{
 		{
 			In:     []genai.Modality{genai.ModalityText},

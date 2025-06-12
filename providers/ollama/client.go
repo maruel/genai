@@ -36,6 +36,8 @@ import (
 //   - Figure out tools as streaming support recently got added to llama.cpp.
 //   - Ollama supports more than what the client supports.
 var Scoreboard = genai.Scoreboard{
+	Country:      "Local",
+	DashboardURL: "https://ollama.com/",
 	Scenarios: []genai.Scenario{
 		{
 			In:     []genai.Modality{genai.ModalityImage, genai.ModalityText},

@@ -41,6 +41,8 @@ import (
 //     condition. This is a bug in the smoke test.
 //   - Rate limit is based on how much you spend per month: https://docs.anthropic.com/en/api/rate-limits#requirements-to-advance-tier
 var Scoreboard = genai.Scoreboard{
+	Country:      "US",
+	DashboardURL: "https://console.anthropic.com/settings/billing",
 	Scenarios: []genai.Scenario{
 		{
 			In:        []genai.Modality{genai.ModalityText},

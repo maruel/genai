@@ -51,12 +51,14 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:     genai.Flaky,
 				IndecisiveTool: genai.Flaky,
 				JSON:           true,
+				Seed:           true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.Flaky,
 				BiasedTool:     genai.Flaky,
 				IndecisiveTool: genai.Flaky,
 				JSON:           true,
+				Seed:           true,
 			},
 		},
 		{
@@ -69,6 +71,7 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:     genai.True,
 				IndecisiveTool: genai.Flaky,
 				JSON:           true,
+				Seed:           true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Thinking:       true,
@@ -76,6 +79,7 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:     genai.True,
 				IndecisiveTool: genai.Flaky,
 				JSON:           true,
+				Seed:           true,
 			},
 		},
 		{
@@ -96,11 +100,13 @@ var Scoreboard = genai.Scoreboard{
 				Tools:          genai.Flaky,
 				IndecisiveTool: genai.True,
 				JSON:           true,
+				Seed:           true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.Flaky,
 				IndecisiveTool: genai.True,
 				JSON:           true,
+				Seed:           true,
 			},
 		},
 	},

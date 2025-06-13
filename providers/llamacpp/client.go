@@ -44,8 +44,8 @@ var Scoreboard = genai.Scoreboard{
 			// TODO: It supports genai.ModalityImage
 			In:        map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync:   &genai.FunctionalityText{},
-			GenStream: &genai.FunctionalityText{},
+			GenSync:   &genai.FunctionalityText{Seed: true},
+			GenStream: &genai.FunctionalityText{Seed: true},
 		},
 	},
 }

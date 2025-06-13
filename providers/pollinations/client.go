@@ -61,6 +61,7 @@ var Scoreboard = genai.Scoreboard{
 				Tools:          genai.Flaky,
 				IndecisiveTool: genai.True,
 				JSON:           true,
+				Seed:           true,
 			},
 			GenStream: &genai.FunctionalityText{
 				BrokenTokenUsage: true,
@@ -69,6 +70,7 @@ var Scoreboard = genai.Scoreboard{
 				Tools:            genai.Flaky,
 				IndecisiveTool:   genai.True,
 				JSON:             true,
+				Seed:             true,
 			},
 		},
 		{
@@ -79,6 +81,7 @@ var Scoreboard = genai.Scoreboard{
 				Thinking:       true,
 				NoMaxTokens:    true,
 				NoStopSequence: true,
+				Seed:           true,
 			},
 			// Upstream parsing is broken, which means we can't recommend GenStream.
 		},
@@ -94,6 +97,7 @@ var Scoreboard = genai.Scoreboard{
 			GenDoc: &genai.FunctionalityDoc{
 				BrokenTokenUsage:   true,
 				BrokenFinishReason: true,
+				Seed:               true,
 			},
 		},
 		{
@@ -113,6 +117,7 @@ var Scoreboard = genai.Scoreboard{
 				Tools:          genai.True,
 				BiasedTool:     genai.True,
 				JSON:           true,
+				Seed:           true,
 			},
 			GenStream: &genai.FunctionalityText{
 				BrokenTokenUsage: true,
@@ -121,6 +126,7 @@ var Scoreboard = genai.Scoreboard{
 				Tools:            genai.True,
 				BiasedTool:       genai.True,
 				JSON:             true,
+				Seed:             true,
 			},
 		},
 		// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#speech-to-text-capabilities-audio-input-%EF%B8%8F
@@ -140,6 +146,7 @@ var Scoreboard = genai.Scoreboard{
 			GenSync: &genai.FunctionalityText{
 				NoMaxTokens: true,
 				JSON:        true,
+				Seed:        true,
 			},
 			// GenStream doesn't succeed in the smoke test, so consider it broken for now.
 		},

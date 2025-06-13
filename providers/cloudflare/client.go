@@ -62,6 +62,7 @@ var Scoreboard = genai.Scoreboard{
 				IndecisiveTool:     genai.Flaky,
 				JSON:               true,
 				JSONSchema:         true,
+				Seed:               true,
 			},
 			GenStream: &genai.FunctionalityText{
 				BrokenFinishReason: true,
@@ -70,6 +71,7 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:         genai.True,
 				JSON:               true,
 				JSONSchema:         true,
+				Seed:               true,
 			},
 		},
 	},

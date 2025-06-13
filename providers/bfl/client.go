@@ -56,6 +56,7 @@ var Scoreboard = genai.Scoreboard{
 			GenDoc: &genai.FunctionalityDoc{
 				BrokenTokenUsage:   true,
 				BrokenFinishReason: true,
+				Seed:               true,
 			},
 		},
 	},

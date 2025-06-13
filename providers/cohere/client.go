@@ -52,6 +52,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:           true,
 				JSONSchema:     true,
 				Citations:      true,
+				Seed:           true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.True,
@@ -59,6 +60,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:           true,
 				JSONSchema:     true,
 				Citations:      true,
+				Seed:           true,
 			},
 		},
 	},

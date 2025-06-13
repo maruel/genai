@@ -55,10 +55,12 @@ var Scoreboard = genai.Scoreboard{
 			GenSync: &genai.FunctionalityText{
 				JSON:       true,
 				JSONSchema: true,
+				Seed:       true,
 			},
 			GenStream: &genai.FunctionalityText{
 				JSON:       true,
 				JSONSchema: true,
+				Seed:       true,
 			},
 		},
 	},

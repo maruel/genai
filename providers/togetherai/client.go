@@ -89,12 +89,14 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool: genai.True,
 				JSON:       true,
 				JSONSchema: true,
+				Seed:       true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				JSON:       true,
 				JSONSchema: true,
+				Seed:       true,
 			},
 		},
 		{
@@ -122,12 +124,14 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool: genai.True,
 				JSON:       true,
 				JSONSchema: true,
+				Seed:       true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:      genai.Flaky,
 				BiasedTool: genai.True,
 				JSON:       true,
 				JSONSchema: true,
+				Seed:       true,
 			},
 		},
 		{
@@ -155,6 +159,7 @@ var Scoreboard = genai.Scoreboard{
 			GenDoc: &genai.FunctionalityDoc{
 				BrokenTokenUsage:   true,
 				BrokenFinishReason: true,
+				Seed:               true,
 			},
 		},
 	},

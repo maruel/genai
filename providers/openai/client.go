@@ -72,12 +72,14 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:     genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
+				Seed:           true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.True,
 				BiasedTool:     genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
+				Seed:           true,
 			},
 		},
 		{
@@ -124,12 +126,14 @@ var Scoreboard = genai.Scoreboard{
 				IndecisiveTool: genai.True,
 				JSON:           true,
 				JSONSchema:     true,
+				Seed:           true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
 				JSONSchema:     true,
+				Seed:           true,
 			},
 		},
 		{
@@ -157,12 +161,14 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool: genai.True,
 				JSON:       true,
 				JSONSchema: true,
+				Seed:       true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				JSON:       true,
 				JSONSchema: true,
+				Seed:       true,
 			},
 		},
 		{
@@ -195,6 +201,7 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:     genai.True,
 				JSON:           true,
 				JSONSchema:     true,
+				Seed:           true,
 			},
 			GenStream: &genai.FunctionalityText{
 				NoStopSequence: true,
@@ -202,6 +209,7 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:     genai.True,
 				JSON:           true,
 				JSONSchema:     true,
+				Seed:           true,
 			},
 		},
 		{
@@ -224,6 +232,7 @@ var Scoreboard = genai.Scoreboard{
 			GenDoc: &genai.FunctionalityDoc{
 				BrokenTokenUsage:   true,
 				BrokenFinishReason: true,
+				Seed:               true,
 			},
 		},
 		// Audio only output:

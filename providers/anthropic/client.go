@@ -71,11 +71,13 @@ var Scoreboard = genai.Scoreboard{
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				Citations:  true,
+				Seed:       false,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				Citations:  true,
+				Seed:       false,
 			},
 		},
 		{
@@ -98,11 +100,13 @@ var Scoreboard = genai.Scoreboard{
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				Citations:  true,
+				Seed:       false,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				Citations:  true,
+				Seed:       false,
 			},
 		},
 	},

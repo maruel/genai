@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 815
+        host: text.pollinations.ai
+        body: |
+            {"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"deepseek-reasoning","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required","private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://text.pollinations.ai/openai
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"pllns_001449c17283236381f55b09b45d5019","object":"chat.completion","created":1748629938,"model":"MAI-DS-R1","choices":[{"index":0,"message":{"role":"assistant","content":"function square_root\n```json\n{\"number\": \"132413\"}\n```","tool_calls":null,"reasoning_content":"Okay, let''s tackle this problem. The user wants the square root of 132413, and they want me to use the square_root tool. First, I need to check if the tool is available. Yes, there''s a square_root function that takes a number as a string. Wait, the parameters for the function require the number to be a string type. So even though 132413 is a number, I should pass it as a string. I''ll format the JSON correctly with \"number\": \"132413\". Then, call the function and return the result directly without any extra text. The user emphasized to reply with only the result, so I need to make sure there''s no explanation. Let me double-check the tool''s parameters to avoid any errors. All set, I''ll execute the tool call now.\n"},"finish_reason":"stop"}],"usage":{"prompt_tokens":239,"total_tokens":426,"completion_tokens":187,"prompt_tokens_details":null}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94f293cb4ed2a2bd-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"46d-1Bu/oM3z4gq6Fb9QphH3m84TVM4"
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2025-05-30T18:32:19.061Z"
+            X-Cache-Key:
+                - cf43cc11ac8d16cdae2cabe3872313578305aec1b72c7a1e40845c336ab0c19b
+            X-Powered-By:
+                - Express
+        status: 200 OK
+        code: 200
+        duration: 675ms

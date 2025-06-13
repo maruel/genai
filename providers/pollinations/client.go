@@ -71,23 +71,17 @@ var Scoreboard = genai.Scoreboard{
 				JSON:             true,
 			},
 		},
-		/* GenStream is particularly broken.
 		{
-			In:  []genai.Modality{genai.ModalityText},
-			Out: []genai.Modality{genai.ModalityText},
-			Models: []string{
-				"deepseek-reasoning",
-			},
-			GenSync: genai.Functionality{
-				Thinking:           true,
+			Models: []string{"deepseek-reasoning"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Thinking:       true,
+				NoMaxTokens:    true,
 				NoStopSequence: true,
 			},
-			GenStream: genai.Functionality{
-				Thinking:           false, // Upstream parsing is broken
-				NoStopSequence: true,
-			},
+			// Upstream parsing is broken, which means we can't recommend GenStream.
 		},
-		*/
 		{
 			Models: []string{"flux", "gptimage", "turbo"},
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
@@ -129,29 +123,27 @@ var Scoreboard = genai.Scoreboard{
 				JSON:             true,
 			},
 		},
-		/*
-			// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#speech-to-text-capabilities-audio-input-%EF%B8%8F
-			// Getting error: invalid_value: azure-openai error: This model does not support image_url content.; provider:azure-openai
-			{
-				In:  []genai.Modality{genai.ModalityAudio, genai.ModalityText},
-				Out: []genai.Modality{genai.ModalityText},
-				Models: []string{
-					"openai-audio",
+		// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#speech-to-text-capabilities-audio-input-%EF%B8%8F
+		// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#generate-audio-api-
+		// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#text-to-speech-post---openai-compatible-%EF%B8%8F%EF%B8%8F
+		// Getting error: invalid_value: azure-openai error: This model does not support image_url content.; provider:azure-openai
+		{
+			Models: []string{"openai-audio"},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityAudio: {
+					Inline:           true,
+					SupportedFormats: []string{"audio/mpeg", "audio/wav", "audio/mp4", "audio/x-m4a", "audio/webm"},
 				},
-				GenSync: genai.Functionality{
-					NoMaxTokens:        true,
-					JSON:               true,
-				},
-				GenStream: genai.Functionality{
-					BrokenTokenUsage:   true,
-					NoMaxTokens:        true,
-					JSON:               true,
-				},
+				genai.ModalityText: {Inline: true},
 			},
-		*/
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				NoMaxTokens: true,
+				JSON:        true,
+			},
+			// GenStream doesn't succeed in the smoke test, so consider it broken for now.
+		},
 		/*
-			// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#generate-audio-api-
-			// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#text-to-speech-post---openai-compatible-%EF%B8%8F%EF%B8%8F
 			{
 				In:  []genai.Modality{genai.ModalityText},
 				Out: []genai.Modality{genai.ModalityAudio},
@@ -390,7 +382,7 @@ func (c *Content) From(in *genai.Content) error {
 	switch {
 	case strings.HasPrefix(mimeType, "audio/"):
 		// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#speech-to-text-capabilities-audio-input-%EF%B8%8F
-		c.Type = ContentImageURL
+		c.Type = ContentAudio
 		c.InputAudio.Data = data
 		switch mimeType {
 		case "audio/mpeg":
@@ -461,7 +453,7 @@ type ChatResponse struct {
 	ID      string    `json:"id"`
 	Object  string    `json:"object"` // "chat.completion"
 	Created base.Time `json:"created"`
-	Model   string    `json:"model"` // The actual model name, which is likely different fro the alias.
+	Model   string    `json:"model"` // The actual model name, which is likely different from the alias.
 	Choices []struct {
 		Index                int64               `json:"index"`
 		Message              MessageResponse     `json:"message"`
@@ -496,6 +488,7 @@ type FinishReason string
 
 const (
 	FinishStop      FinishReason = "stop"
+	FinishLength    FinishReason = "length"
 	FinishToolCalls FinishReason = "tool_calls"
 )
 
@@ -503,6 +496,8 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
 	case FinishStop:
 		return genai.FinishedStop
+	case FinishLength:
+		return genai.FinishedLength
 	case FinishToolCalls:
 		return genai.FinishedToolCalls
 	default:
@@ -530,6 +525,7 @@ type Usage struct {
 		AudioTokens              int64 `json:"audio_tokens"`
 		ReasoningTokens          int64 `json:"reasoning_tokens"`
 		RejectedPredictionTokens int64 `json:"rejected_prediction_tokens"`
+		TextTokens               int64 `json:"text_tokens"`
 	} `json:"completion_tokens_details"`
 	PromptTokensDetails struct {
 		AudioTokens  int64 `json:"audio_tokens"`
@@ -615,7 +611,7 @@ type ContentFilterResult struct {
 	} `json:"custom_blocklists"`
 	Hate struct {
 		Filtered bool   `json:"filtered"`
-		Severity string `json:"severity"`
+		Severity string `json:"severity"` // "safe"
 	} `json:"hate"`
 	Jailbreak struct {
 		Filtered bool `json:"filtered"`

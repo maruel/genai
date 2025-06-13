@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 306
+        host: text.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"model":"deepseek-reasoning","stream":false,"private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://text.pollinations.ai/openai
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "{\"id\":\"pllns_e4c3a1adbcc24fe4f630263be01f7922\",\"object\":\"chat.completion\",\"created\":1749828100,\"model\":\"DeepSeek-r1-0528\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"<think>\\nHmm, the user is asking about the capital of Quackiland again, even though I just mentioned it in the previous exchange. Interesting. \\n\\nLet me quickly scan the context: I stated two clear facts - \\\"The capital of Quackiland is Quack\\\" and \\\"The Big Canard Statue is located in Quack.\\\" The question now is a direct repetition of the first fact. \\n\\nThe user might be testing my attention span or just enjoying the playful duck theme. Since they're revisiting immediately confirmed information, they probably want either: \\n- A simple confirmation (boring but safe) \\n- Or for me to lean into the absurdity of this duck-themed universe (more fun) \\n\\nGiven the system instruction about being companionable and switching tones, I'll choose the playful route. The duck puns practically write themselves here - \\\"Quack\\\" as both capital name and duck sound is too perfect. \\n\\nI recall the Big Canard Statue detail from before. Mentioning it again creates continuity and makes the world feel more real. Ending with an open question (\\\"anything else?\\\") keeps the conversation flowing naturally per the system's advice about encouraging dialogue. \\n\\nNo need to overthink this - it's clearly a lighthearted exchange. Just need to match their whimsical energy while staying accurate.\\n</think>\\nBased on the information provided:  \\n**The capital of Quackiland is Quack.**  \\n\\nIt's also home to the iconic **Big Canard Statue**—probably a must-see for all duck enthusiasts! \U0001F986\U0001F5FD  \\n\\nNeed directions? Or just here for the quack-tastic trivia? Let me know!\",\"tool_calls\":null},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":289,\"total_tokens\":627,\"audio_prompt_tokens\":0,\"completion_tokens\":338,\"prompt_tokens_details\":null}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94f293cb4ec8a2bd-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"784-lH/C+XngkRXK5h77P1Qeej5yYR8"
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+            X-Powered-By:
+                - Express
+        status: 200 OK
+        code: 200
+        duration: 20.373s

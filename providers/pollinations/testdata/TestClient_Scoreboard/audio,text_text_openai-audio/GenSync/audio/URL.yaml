@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 264
+        host: text.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What is the word said? Reply with only the word."},{"type":"input_audio","input_audio":{"format":"mp3"}}]}],"model":"openai-audio","stream":false,"private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://text.pollinations.ai/openai
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 308
+        body: '{"error":"400 Bad Request","status":400,"details":{"error":{"message":"azure-openai error: Missing required parameter: ''messages[0].content[1].input_audio.data''.","type":"invalid_request_error","param":"messages[0].content[1].input_audio.data","code":"missing_required_parameter"},"provider":"azure-openai"}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94f2a7d23bc5714a-YUL
+            Content-Length:
+                - "308"
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"134-4uE9DCouEmLJYgee4onVev5RcSk"
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+            X-Powered-By:
+                - Express
+        status: 400 Bad Request
+        code: 400
+        duration: 9.242s

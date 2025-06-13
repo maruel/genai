@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 209
+        host: text.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"Talk about Canada in 10 words. Start with: Canada is"}],"model":"deepseek-reasoning","stream":false,"private":true,"stop":["is"],"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://text.pollinations.ai/openai
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"pllns_7ce78e45e89adf0877cf194033b8ee84","object":"chat.completion","created":1748629925,"model":"MAI-DS-R1","choices":[{"index":0,"message":{"role":"assistant","content":"Canada is vast wilderness, hockey, maple syrup, diversity, and friendly apologies.","tool_calls":null,"reasoning_content":"Alright, the user wants me to talk about Canada in 10 words starting with \"Canada is...\" Let me break this down. First, I need to make sure I stick to exactly 10 words. Let me count as I go.\n\nCanada is... That''s two words. Now I have eight left. What are the key aspects of Canada? Vast landscapes, multicultural, bilingual, hockey, maple syrup, friendly people. Maybe include natural beauty and diversity. Let me try:\n\n\"Canada is vast wilderness, multicultural cities, hockey, maple syrup, and politeness.\" Let''s check the count: 12 words. Oops, too long. Need to trim. Replace \"cities\" with \"hubs\" maybe. \"Canada is vast wilderness, multicultural hubs, hockey, maple syrup, kindness.\" Still 12. Hmm. Maybe combine some terms. \"Canada is vast, multicultural, hockey-loving, maple-syrup-drenched, politely resilient wilderness.\" Now, that''s 10 words. Wait, \"maple-syrup-drenched\" might be too hyphen-heavy. Let me think. \"Canada is vast wilderness, hockey, maple syrup, diversity, and friendly apologies.\" That works. 10 words. Starts with \"Canada is\" and hits key elements. Checks the boxes: nature, culture, sports, iconic symbol (maple syrup), diversity, and the stereotype of politeness with \"friendly apologies.\" Yeah, that''s concise and captures the essence.\n"},"finish_reason":"stop"}],"usage":{"prompt_tokens":269,"total_tokens":591,"completion_tokens":322,"prompt_tokens_details":null}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94f293cb4ecba2bd-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"6b9-v9N8IjENfgI/F/q+dSVDZOFNZC0"
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2025-05-30T18:32:06.384Z"
+            X-Cache-Key:
+                - 7f4647630131a19ca842ee1b0ca179cd57fb4659730527f1431154ca631b510f
+            X-Powered-By:
+                - Express
+        status: 200 OK
+        code: 200
+        duration: 638ms

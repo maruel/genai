@@ -110,7 +110,7 @@ var Scoreboard = genai.Scoreboard{
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
-					SupportedFormats: []string{"audio/mpeg", "audio/wav", "audio/mp4", "audio/x-m4a", "audio/webm"},
+					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
 				},
 				genai.ModalityPDF: {
 					Inline:           true,

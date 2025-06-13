@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 310
+        host: text.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"model":"deepseek-reasoning","stream":false,"response_format":{"type":"json_object"},"private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://text.pollinations.ai/openai
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"pllns_ee59bb51e16c039141f826bd1ef93cfd","object":"chat.completion","created":1748629935,"model":"MAI-DS-R1","choices":[{"index":0,"message":{"role":"assistant","content":"```json\n{\"is_fruit\": true}\n```","tool_calls":null,"reasoning_content":"Okay, the user is asking if a banana is a fruit and wants a JSON response with a boolean in the \"is_fruit\" field. Let me think. I know that in botanical terms, fruits develop from the ovary of a flowering plant and contain seeds. Bananas fit that definition because they grow from the banana plant''s flowers and have tiny seeds inside, even though commercial bananas are usually seedless. So yes, a banana is a fruit. The user specified to reply only with the JSON schema provided, so I just need to set \"is_fruit\" to true without any extra explanation. Just make sure the JSON is valid and doesn''t include anything else.\n"},"finish_reason":"stop"}],"usage":{"prompt_tokens":44,"total_tokens":195,"completion_tokens":151,"prompt_tokens_details":null}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94f293cb4ec5a2bd-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"3f1-+QVkhAnrJbiIoxKux2WL7qoI3Iw"
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2025-05-30T18:32:16.169Z"
+            X-Cache-Key:
+                - 43cc246227cc3e1936f07615963639f44a7ad3844c1e7614dc141600ac036f06
+            X-Powered-By:
+                - Express
+        status: 200 OK
+        code: 200
+        duration: 582ms

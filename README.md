@@ -2,32 +2,32 @@
 
 The _high performance_ low level native Go client for LLMs.
 
-| Provider                                                    | Country | ➛Vision | ➛PDF | ➛Audio | ➛Video | JSON➛ | JSON+schema➛ | Image➛ | Audio➛ | Chat     | Streaming | Seed | Tools | Caching |
-| ----------------------------------------------------------- | ------- | ------- | ---- | ------ | ------ | ----- | ------------ | ------ | ------ | -------- | --------- | ---- | ----- | ------- |
-| [Anthropic](https://console.anthropic.com/settings/billing) | 🇺🇸      | ✅      | ✅   | ❌     | ❌     | ❌    | ❌           | ❌     | ❌     | ✅       | ✅        | ❌   | ✅    | ⏳      |
-| [Cerebras](https://cloud.cerebras.ai)                       | 🇺🇸      | ❌      | ❌   | ❌     | ❌     | ✅    | ✅           | ❌     | ❌     | ✅       | ✅        | ✅   | ✅    | ❌      |
-| [Cloudflare Workers AI](https://dash.cloudflare.com)        | 🇺🇸      | ⏳      | ❌   | ⏳     | ❌     | ✅    | ✅           | ⏳     | ❌     | ✅       | ✅        | ✅   | ✅    | ❌      |
-| [Cohere](https://dashboard.cohere.com/billing)              | 🇨🇦      | ⏳      | ❌   | ❌     | ❌     | ✅    | ✅           | ❌     | ❌     | ✅       | ✅        | ✅   | ✅    | ❌      |
-| [DeepSeek](https://platform.deepseek.com)                   | 🇨🇳      | ❌      | ❌   | ❌     | ❌     | ✅    | ❌           | ❌     | ❌     | ✅       | ✅        | ❌   | ✅    | ⏳      |
-| [Google's Gemini](http://aistudio.google.com)               | 🇺🇸      | ✅      | ✅   | ✅     | ✅     | ✅    | ✅           | ✅     | ⏳     | ✅       | ✅        | ✅   | ✅    | ✅      |
-| [Groq](https://console.groq.com/dashboard/usage)            | 🇺🇸      | ✅      | ❌   | ❌     | ❌     | ✅    | ❌           | ❌     | ❌     | ✅       | ✅        | ✅   | ✅    | ❌      |
-| [HuggingFace](https://huggingface.co/settings/billing)      | 🇺🇸      | ⏳      | ⏳   | ❌     | ❌     | ⏳    | ⏳           | ⏳     | ⏳     | ✅       | ✅        | ✅   | ✅    | ❌      |
-| [llama.cpp](https://github.com/ggml-org/llama.cpp)          | 🏠      | ⏳      | ⏳   | ⏳     | ⏳     | ⏳    | ⏳           | ⏳     | ⏳     | ✅       | ✅        | ✅   | ⏳    | 🔁      |
-| [Mistral](https://console.mistral.ai/usage)                 | 🇫🇷      | ✅      | ✅   | ❌     | ❌     | ✅    | ✅           | ❌     | ❌     | ✅       | ✅        | ✅   | ✅    | ❌      |
-| [Ollama](https://ollama.com/)                               | 🏠      | ✅      | ❌   | ❌     | ❌     | ❌    | ✅           | ❌     | ❌     | ✅       | ✅        | ✅   | ✅    | 🔁      |
-| [OpenAI](https://platform.openai.com/usage)                 | 🇺🇸      | ✅      | ✅   | ✅     | ❌     | ✅    | ✅           | ⏳     | ⏳     | ✅       | ✅        | ✅   | ✅    | [🔁](https://platform.openai.com/docs/guides/prompt-caching) |
-| OpenAI compatible (generic)                                 | N/A     | ❌      | ❌   | ❌     | ❌     | ❌    | ❌           | ❌     | ❌     | ✅       | ✅        | ✅   | ❌    | ❌      |
-| [Pollinations](https://auth.pollinations.ai/)               | 🇩🇪      | ✅      | ❌   | ⏳     | ❌     | ✅    | ❌           | ✅     | ✅     | ✅       | ✅        | ✅   | ✅    | 🔁      |
-| [Perplexity](https://www.perplexity.ai/settings/api)        | 🇺🇸      | ❌      | ❌   | ❌     | ❌     | ❌    | ⏳           | ❌     | ❌     | ✅       | ✅        | ❌   | ❌    | ❌      |
-| [TogetherAI](https://api.together.ai/settings/billing)      | 🇺🇸      | ✅      | ❌   | ❌     | ✅     | ✅    | ✅           | ⏳     | ⏳     | ✅       | ✅        | ✅   | ✅    | ❌      |
+| Provider                                                    | Country | ➛Vision   | ➛PDF   | ➛Audio   | ➛Video   | JSON➛   | JSON+Schema➛   | Image➛   | Audio➛   | Video➛   | Chat | Streaming | Doc | Batch | Seed | Tools | Files | Citations | 
+| ----------------------------------------------------------- | ------- | --------- | ------ | -------- | -------- | ------- | -------------- | -------- | -------- | -------- | ---- | --------- | --- | ----- | ---- | ----- | ----- | --------- |
+| [anthropic](https://console.anthropic.com/settings/billing) | 🇺🇸      | ✅         | ✅      | ❌        | ❌        | ❌       | ❌              | ❌        | ❌        | ❌        | ✅    | ✅         | ❌   | ✅     | ❌    | ✅     | ❌     | ✅         |
+| [bfl](https://dashboard.bfl.ai/)                            | 🇩🇪      | ❌         | ❌      | ❌        | ❌        | ❌       | ❌              | ✅        | ❌        | ❌        | ❌    | ❌         | ✅   | ✅     | ✅    | ❌     | ❌     | ❌         |
+| [cerebras](https://cloud.cerebras.ai)                       | 🇺🇸      | ❌         | ❌      | ❌        | ❌        | ✅       | ✅              | ❌        | ❌        | ❌        | ✅    | ✅         | ❌   | ❌     | ✅    | ❌     | ❌     | ❌         |
+| [cloudflare](https://dash.cloudflare.com)                   | 🇺🇸      | ❌         | ❌      | ❌        | ❌        | ✅       | ✅              | ❌        | ❌        | ❌        | ✅    | ✅         | ❌   | ❌     | ✅    | ❌     | ❌     | ❌         |
+| [cohere](https://dashboard.cohere.com/billing)              | 🇨🇦      | ❌         | ❌      | ❌        | ❌        | ✅       | ✅              | ❌        | ❌        | ❌        | ✅    | ✅         | ❌   | ❌     | ✅    | ✅⚖️ 🤷 | ❌     | ✅         |
+| [deepseek](https://platform.deepseek.com)                   | 🇨🇳      | ❌         | ❌      | ❌        | ❌        | ✅       | ❌              | ❌        | ❌        | ❌        | ✅    | ✅         | ❌   | ❌     | ❌    | ✅⚖️ 🤷 | ❌     | ❌         |
+| [gemini](http://aistudio.google.com)                        | 🇺🇸      | ✅         | ✅      | ✅        | ✅        | ✅       | ✅              | ✅        | ❌        | ❌        | ✅    | ✅         | ❌   | ❌     | ✅    | ✅     | ✅     | ❌         |
+| [groq](https://console.groq.com/dashboard/usage)            | 🇺🇸      | ✅         | ❌      | ❌        | ❌        | ✅       | ❌              | ❌        | ❌        | ❌        | ✅    | ✅         | ❌   | ❌     | ✅    | ❌     | ❌     | ❌         |
+| [huggingface](https://huggingface.co/settings/billing)      | 🇺🇸      | ❌         | ❌      | ❌        | ❌        | ❌       | ✅              | ❌        | ❌        | ❌        | ✅    | ✅         | ❌   | ❌     | ✅    | ✅     | ❌     | ❌         |
+| [llamacpp](https://github.com/ggml-org/llama.cpp)           | 🏠       | ❌         | ❌      | ❌        | ❌        | ❌       | ❌              | ❌        | ❌        | ❌        | ✅    | ✅         | ❌   | ❌     | ✅    | ❌     | ❌     | ❌         |
+| [mistral](https://console.mistral.ai/usage)                 | 🇫🇷      | ✅         | ✅      | ❌        | ❌        | ✅       | ✅              | ❌        | ❌        | ❌        | ✅    | ✅         | ❌   | ❌     | ✅    | ✅⚖️ 🤷 | ❌     | ❌         |
+| [ollama](https://ollama.com/)                               | 🏠       | ✅         | ❌      | ❌        | ❌        | ✅       | ✅              | ❌        | ❌        | ❌        | ✅    | ✅         | ❌   | ❌     | ✅    | ❌     | ❌     | ❌         |
+| [openai](https://platform.openai.com/usage)                 | 🇺🇸      | ✅         | ✅      | ✅        | ❌        | ✅       | ✅              | ✅        | ✅        | ❌        | ✅    | ✅         | ✅   | ✅     | ✅    | ✅     | ✅     | ❌         |
+| [perplexity](https://www.perplexity.ai/settings/api)        | 🇺🇸      | ❌         | ❌      | ❌        | ❌        | ❌       | ✅              | ❌        | ❌        | ❌        | ✅    | ✅         | ❌   | ❌     | ❌    | ❌     | ❌     | ✅         |
+| [pollinations](https://auth.pollinations.ai/)               | 🇩🇪      | ✅         | ❌      | ✅        | ❌        | ✅       | ❌              | ✅        | ✅        | ❌        | ✅    | ✅         | ✅   | ❌     | ✅    | ✅     | ❌     | ❌         |
+| [togetherai](https://api.together.ai/settings/billing)      | 🇺🇸      | ✅         | ❌      | ❌        | ❌        | ✅       | ✅              | ✅        | ❌        | ❌        | ✅    | ✅         | ✅   | ❌     | ✅    | ✅     | ❌     | ❌         |
+| openaicompatible                                            |         | ❌         | ❌      | ❌        | ❌        | ❌       | ❌              | ❌        | ❌        | ❌        | ✅    | ✅         | ❌   | ❌     | ❌    | ❌     | ❌     | ❌         |
 
 <details>
-  <summary>‼️ Click here for legend of ✅ ⏳ ❌ 🔁 and columns</summary>
+  <summary>‼️ Click here for legend of ✅ ❌ and columns</summary>
 
 - ✅ Implemented
-- ⏳ To be implemented
-- ❌ Not supported
-- 🔁 Implicitly supported
+- ❌ Not supported by genai. The provider may support it, but genai does not (yet). Please send a PR to add
+  it!
 - ➛Type: Input modality
 - Type➛: Output modality 
 - Streaming: chat streaming

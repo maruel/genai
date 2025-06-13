@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 94
-        transfer_encoding: []
-        trailer: {}
+        content_length: 104
         host: api.cerebras.ai
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Say hello. Use only one word."}]}
-        form: {}
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"seed":42}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,22 +19,20 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-a9c62721-c4e0-4dbd-9f18-bb7fc29f174c","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, the user wants me to say hello using only one word. Let''s see... The simplest way is just to use \"Hello\". Wait, but is \"Hello\" one word? Yes, it''s a single word. So that should work. I don''t need to add anything else. Let me make sure there are no other requirements. The user specified \"Use only one word,\" so \"Hello\" is perfect. I should check if there''s any alternative, like \"Hi,\" but \"Hi\" is also one word. However, the most standard and polite greeting is \"Hello.\" I''ll go with that.\n</think>\n\nHello.","role":"assistant"}}],"created":1748549476,"model":"qwen-3-32b","system_fingerprint":"fp_9c2a99947ce8120f4772","object":"chat.completion","usage":{"prompt_tokens":16,"completion_tokens":133,"total_tokens":149,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00011592,"prompt_time":0.001082562,"completion_time":0.094697118,"total_time":0.09718823432922363,"created":1748549476}}'
+        body: '{"id":"chatcmpl-197be3fe-910a-4323-8d2d-a85ff655c5c5","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, the user wants me to say hello using only one word. Let me think about the simplest way to do that. The most straightforward one-word greeting is \"Hello\" itself. But wait, maybe they want something more creative? Let me check if there are other one-word alternatives. Words like \"Hi\" or \"Hey\" come to mind, but those are still just variations. The user didn''t specify any restrictions beyond one word, so \"Hello\" should work. Let me make sure there''s no hidden requirement here. The instruction is clear: use only one word. So the best answer is just \"Hello.\"\n</think>\n\nHello.","role":"assistant"}}],"created":1749831590,"model":"qwen-3-32b","system_fingerprint":"fp_57e3e4fc90a58bf1211d","object":"chat.completion","usage":{"prompt_tokens":16,"completion_tokens":133,"total_tokens":149,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":9.2e-05,"prompt_time":0.001438823,"completion_time":0.080303542,"total_time":0.08307766914367676,"created":1749831590}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9478a3d56b98a28f-YUL
+                - 94f2e96e89f8a2f6-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-a9c62721-c4e0-4dbd-9f18-bb7fc29f174c
+                - chatcmpl-197be3fe-910a-4323-8d2d-a85ff655c5c5
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -53,15 +46,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14386"
+                - "14400"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "59043"
+                - "60000"
             X-Ratelimit-Reset-Requests-Day:
-                - "13723.067806243896"
+                - "27609.6478202343"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "43.067806243896484"
+                - "9.647820234298706"
             X-Request-Id:
-                - 9478a3d56b98a28f-YUL
+                - 94f2e96e89f8a2f6-YUL
         status: 200 OK
         code: 200
-        duration: 1.62s
+        duration: 227ms

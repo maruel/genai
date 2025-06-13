@@ -236,9 +236,17 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 	}
 	t.Run("Simple", func(t *testing.T) {
 		msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
-		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
+		opts := genai.OptionsText{Seed: 42}
+		resp, err := runGenText(t, g(t, model), msgs, &opts, stream)
 		if !basicCheck(t, err, true) {
 			return
+		}
+		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+			if f.Seed && slices.Contains(uce.Unsupported, "Seed") {
+				t.Fatal("unexpected error: scoreboard reports seed is supported but it's not")
+			}
+		} else if !f.Seed {
+			t.Fatal("unexpected success: scoreboard reports seed is not supported but it is")
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
 		hasThinking := false
@@ -268,10 +276,11 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		// Give enough token so the <think> token can be emitted plus another word. MaxTokens:2 could cause
 		// problems and it's not a value that is expected to be used in practice for this use case.
 		resp, err := runGenText(t, g(t, model), msgs, &genai.OptionsText{MaxTokens: 3}, stream)
-		// MaxTokens can fail in two ways:
+		// MaxTokens can fail:
 		// - GenSync() or GenStream() return an irrecoverable error.
 		// - The length is not enforced.
-		if !basicCheckAcceptUnexpectedSuccess(t, err, true) {
+		// - Pollations processes the thinking but only when MaxTokens is set.
+		if !basicCheckAcceptUnexpectedSuccess(t, err, !f.NoMaxTokens) {
 			return
 		}
 		fr := genai.FinishedLength
@@ -929,6 +938,7 @@ func testImageGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 **Output:** Actual image file for a smooth, colorful doodle-style image on a white background.`
 	msg := genai.NewTextMessage(genai.User, contents)
 	c := g(t, model).(genai.ProviderGenDoc)
+	// TODO: options for non-text to test Seed.
 	resp, err := c.GenDoc(t.Context(), msg, nil)
 	if !basicCheck(t, err, hasAnyModalityWithInline(out) || hasAnyModalityWithURL(out)) {
 		return
@@ -962,6 +972,7 @@ func testAudioGenFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 	}
 	msg := genai.NewTextMessage(genai.User, "Say hi. Just say this word, nothing else.")
 	c := g(t, model).(genai.ProviderGenDoc)
+	// TODO: options for non-text to test Seed.
 	resp, err := c.GenDoc(t.Context(), msg, nil)
 	if !basicCheck(t, err, hasAnyModalityWithInline(out) || hasAnyModalityWithURL(out)) {
 		return

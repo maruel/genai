@@ -193,6 +193,9 @@ type CompletionResponse struct {
 		GrammarTriggers     []string `json:"grammar_triggers"`
 		PreservedTokens     []string `json:"preserved_tokens"`
 		ChatFormat          string   `json:"chat_format"`
+		ReasoningFormat     string   `json:"reasoning_format"`
+		ReasoningInContent  bool     `json:"reasoning_in_content"`
+		ThinkingForcedOpen  bool     `json:"thinking_forced_open"`
 		Samplers            []string `json:"samplers"`
 		SpeculativeNMax     int64    `json:"speculative.n_max"`
 		SpeculativeNMin     int64    `json:"speculative.n_min"`

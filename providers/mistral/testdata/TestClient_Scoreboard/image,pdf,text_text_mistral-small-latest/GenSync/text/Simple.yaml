@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 144
+        content_length: 161
         host: api.mistral.ai
         body: |
-            {"model":"mistral-small-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
+            {"model":"mistral-small-latest","stream":false,"random_seed":42,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,7 +21,7 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"f126573a31304c918460ea704d936afa","object":"chat.completion","created":1749823745,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"Hello."},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":11,"total_tokens":14,"completion_tokens":3}}'
+        body: '{"id":"52958de61f3a46d58ceb15a43abc54c0","object":"chat.completion","created":1749831590,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"Hello."},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":11,"total_tokens":14,"completion_tokens":3}}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -30,7 +30,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94f229e89b25a2cf-YUL
+                - 94f2e96f2f9ea308-YUL
             Content-Type:
                 - application/json
             Server:
@@ -38,13 +38,13 @@ interactions:
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains
             X-Envoy-Upstream-Service-Time:
-                - "85"
+                - "82"
             X-Kong-Proxy-Latency:
-                - "6"
+                - "5"
             X-Kong-Request-Id:
-                - e5474c7e18c37443a3056d61b93ab362
+                - c4f3052f3c2d3f3c3d0e4c2d764bca03
             X-Kong-Upstream-Latency:
-                - "86"
+                - "83"
             X-Ratelimit-Limit-Req-10-Second:
                 - "60"
             X-Ratelimit-Limit-Tokens-Minute:
@@ -52,13 +52,13 @@ interactions:
             X-Ratelimit-Limit-Tokens-Month:
                 - "10000000000"
             X-Ratelimit-Remaining-Req-10-Second:
-                - "51"
+                - "57"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "1999654"
+                - "1999958"
             X-Ratelimit-Remaining-Tokens-Month:
-                - "9999977121"
+                - "9999974559"
             X-Ratelimit-Tokens-Query-Cost:
                 - "14"
         status: 200 OK
         code: 200
-        duration: 227ms
+        duration: 222ms

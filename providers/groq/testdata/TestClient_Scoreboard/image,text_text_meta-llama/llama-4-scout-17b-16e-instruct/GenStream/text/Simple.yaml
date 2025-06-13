@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 139
-        transfer_encoding: []
-        trailer: {}
+        content_length: 149
         host: api.groq.com
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","stream":true}
-        form: {}
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","seed":42,"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,18 +19,15 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |+
-            data: {"id":"chatcmpl-041edbee-8c28-4b67-9e25-956e2c486e3d","object":"chat.completion.chunk","created":1748716167,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jwksp81dfd9rnfdqvbday0qn"}}
+            data: {"id":"chatcmpl-bc3ee95c-f30d-4b00-9ecd-e4094dc40ef9","object":"chat.completion.chunk","created":1749831593,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_e71be06e93","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jxn1ebxceq88ag65h2fq2kzr"}}
 
-            data: {"id":"chatcmpl-041edbee-8c28-4b67-9e25-956e2c486e3d","object":"chat.completion.chunk","created":1748716167,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-bc3ee95c-f30d-4b00-9ecd-e4094dc40ef9","object":"chat.completion.chunk","created":1749831593,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_e71be06e93","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-041edbee-8c28-4b67-9e25-956e2c486e3d","object":"chat.completion.chunk","created":1748716167,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"content":"!"},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-bc3ee95c-f30d-4b00-9ecd-e4094dc40ef9","object":"chat.completion.chunk","created":1749831593,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_e71be06e93","choices":[{"index":0,"delta":{"content":"!"},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-041edbee-8c28-4b67-9e25-956e2c486e3d","object":"chat.completion.chunk","created":1748716167,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01jwksp81dfd9rnfdqvbday0qn","usage":{"queue_time":0.063705616,"prompt_tokens":18,"prompt_time":0.002359009,"completion_tokens":3,"completion_time":0.006213567,"total_tokens":21,"total_time":0.008572576}}}
+            data: {"id":"chatcmpl-bc3ee95c-f30d-4b00-9ecd-e4094dc40ef9","object":"chat.completion.chunk","created":1749831593,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_e71be06e93","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01jxn1ebxceq88ag65h2fq2kzr","usage":{"queue_time":0.06298189,"prompt_tokens":18,"prompt_time":0.002362003,"completion_tokens":3,"completion_time":0.006198469,"total_tokens":21,"total_time":0.008560472}}}
 
             data: [DONE]
 
@@ -47,7 +39,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9488896cb956a2a0-YUL
+                - 94f2e985ba8433ef-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -61,15 +53,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "300000"
             X-Ratelimit-Remaining-Requests:
-                - "499989"
+                - "499998"
             X-Ratelimit-Remaining-Tokens:
                 - "299988"
             X-Ratelimit-Reset-Requests:
-                - 1.8728s
+                - 214.599999ms
             X-Ratelimit-Reset-Tokens:
                 - 2.4ms
             X-Request-Id:
-                - req_01jwksp81dfd9rnfdqvbday0qn
+                - req_01jxn1ebxceq88ag65h2fq2kzr
         status: 200 OK
         code: 200
-        duration: 155ms
+        duration: 121ms

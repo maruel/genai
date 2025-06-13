@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 164
-        transfer_encoding: []
-        trailer: {}
+        content_length: 174
         host: text.pollinations.ai
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"llama-scout","stream":true,"private":true,"stream_options":{"include_usage":true}}
-        form: {}
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"llama-scout","seed":42,"stream":true,"private":true,"stream_options":{"include_usage":true}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,18 +19,15 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |+
-            data: {"choices":[],"created":0,"id":"","model":"","object":"","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"jailbreak":{"detected":false,"filtered":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}]}
+            data: {"choices":[],"created":0,"id":"","model":"","object":"","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"jailbreak":{"filtered":false,"detected":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}]}
 
-            data: {"choices":[{"content_filter_results":{},"delta":{"content":"","refusal":null,"role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"created":1748626143,"id":"chatcmpl-BcxpPNn00c2NJiW9pywhqaezTEXzl","model":"gpt-4.1-nano-2025-04-14","object":"chat.completion.chunk","system_fingerprint":"fp_68472df8fd"}
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":"","refusal":null,"role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"created":1749831599,"id":"chatcmpl-Bi1QFO2XURNWn8JOy7QI3M6BCWc9U","model":"gpt-4.1-nano-2025-04-14","object":"chat.completion.chunk","system_fingerprint":"fp_68472df8fd"}
 
-            data: {"choices":[{"content_filter_results":{"protected_material_text":{"detected":false,"filtered":false}},"delta":{"content":"Hello"},"finish_reason":null,"index":0,"logprobs":null}],"created":1748626143,"id":"chatcmpl-BcxpPNn00c2NJiW9pywhqaezTEXzl","model":"gpt-4.1-nano-2025-04-14","object":"chat.completion.chunk","system_fingerprint":"fp_68472df8fd"}
+            data: {"choices":[{"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}},"delta":{"content":"Hello"},"finish_reason":null,"index":0,"logprobs":null}],"created":1749831599,"id":"chatcmpl-Bi1QFO2XURNWn8JOy7QI3M6BCWc9U","model":"gpt-4.1-nano-2025-04-14","object":"chat.completion.chunk","system_fingerprint":"fp_68472df8fd"}
 
-            data: {"choices":[{"content_filter_results":{},"delta":{},"finish_reason":"stop","index":0,"logprobs":null}],"created":1748626143,"id":"chatcmpl-BcxpPNn00c2NJiW9pywhqaezTEXzl","model":"gpt-4.1-nano-2025-04-14","object":"chat.completion.chunk","system_fingerprint":"fp_68472df8fd"}
+            data: {"choices":[{"content_filter_results":{},"delta":{},"finish_reason":"stop","index":0,"logprobs":null}],"created":1749831599,"id":"chatcmpl-Bi1QFO2XURNWn8JOy7QI3M6BCWc9U","model":"gpt-4.1-nano-2025-04-14","object":"chat.completion.chunk","system_fingerprint":"fp_68472df8fd"}
 
             data: [DONE]
 
@@ -47,7 +39,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 947ff38dde94a30f-YUL
+                - 94f2e98b1fb633eb-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Server:
@@ -57,9 +49,9 @@ interactions:
             X-Cache:
                 - MISS
             X-Cache-Key:
-                - b821a548077dac7bc1459861abf5621b5bfe269d0a3456f67c78f40eb25b049d
+                - 2d5ca3431fefb03a06b54c57e13e2e4ce7d0d19e4c52f19e40b82c2f3fa8a4eb
             X-Powered-By:
                 - Express
         status: 200 OK
         code: 200
-        duration: 1.751s
+        duration: 4.768s

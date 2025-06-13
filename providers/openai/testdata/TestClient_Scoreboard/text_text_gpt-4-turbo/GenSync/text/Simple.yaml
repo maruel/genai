@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 135
+        content_length: 167
         host: api.openai.com
         body: |
-            {"model":"gpt-4-turbo","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
+            {"model":"gpt-4-turbo","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"seed":42,"service_tier":"auto"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BhPCX9Y70pbdxIfAFj7P9GzUNdcVL",
+              "id": "chatcmpl-Bi1Q6b1LZr1uZyjsipRt8drWOsFDZ",
               "object": "chat.completion",
-              "created": 1749684677,
+              "created": 1749831590,
               "model": "gpt-4-turbo-2024-04-09",
               "choices": [
                 {
@@ -66,13 +66,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94e4e6b3a8d77148-YUL
+                - 94f2e96c7dcca24e-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "334"
+                - "726"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -82,7 +82,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "339"
+                - "764"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -96,7 +96,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 20ms
             X-Request-Id:
-                - req_2f7bb60dcc99cd650dd27636246712e6
+                - req_6837957bca3718a3b3635475d2904d37
         status: 200 OK
         code: 200
-        duration: 399ms
+        duration: 1.421s

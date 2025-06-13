@@ -7,14 +7,9 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 112
-        transfer_encoding: []
-        trailer: {}
         host: api.deepseek.com
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"model":"deepseek-chat","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false}
-        form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,18 +19,16 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"a6a212f5-f6b1-4906-af11-8fafcbb4c825","object":"chat.completion","created":1748527976,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"completion_tokens":1,"total_tokens":12,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":11},"system_fingerprint":"fp_8802369eaa_prod0425fp8"}'
+        body: '{"id":"1c1dc915-335c-437d-a680-e9479239c3ca","object":"chat.completion","created":1749831589,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"completion_tokens":1,"total_tokens":12,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":11},"system_fingerprint":"fp_8802369eaa_prod0425fp8"}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 947696eb6a04a275-YUL
+                - 94f2e96c7b0fa2ee-YUL
             Content-Type:
                 - application/json
             Server:
@@ -47,7 +40,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - 70355bbdc1544c69343e38ac9eb864f9
+                - bd6c5eeb087f6221cf39997da716f5d7
         status: 200 OK
         code: 200
-        duration: 388ms
+        duration: 351ms

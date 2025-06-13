@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 111
-        transfer_encoding: []
-        trailer: {}
+        content_length: 121
         host: api.groq.com
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"qwen-qwq-32b","stream":false}
-        form: {}
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"qwen-qwq-32b","seed":42,"stream":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,12 +19,10 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-532de7bc-787d-42dc-b3be-1364dbb37a8c","object":"chat.completion","created":1748716153,"model":"qwen-qwq-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\n\u003cthink\u003e\nOkay, the user wants me to say \"hello\" using only one word. Let me think... The obvious answer is \"Hello.\" But wait, maybe they want something different? Like a variation or another language? The instructions specify to use one word in English, right? The query doesn't mention another language, so probably just \"Hello\". But the user might be testing if I follow the one-word rule strictly. Let me check the requirements again: \"Say hello. Use only one word.\" So \"Hello\" is exactly one word and does the job. No need to overcomplicate. Maybe they want it lowercase? But the example responses usually capitalize, and it's more polite. Yeah, I should just go with \"Hello\".\n\nWait, maybe \"Hi\" is shorter? But the question says \"say hello\", so \"Hi\" is a greeting but not exactly \"hello\". The exact word requested is \"hello\", so the answer must be \"Hello\". No other options fit better. Alright, I think that's it. Just \"Hello\".\n\u003c/think\u003e\n\nHello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.066814544,"prompt_tokens":18,"prompt_time":0.003260003,"completion_tokens":218,"completion_time":0.542081635,"total_tokens":236,"total_time":0.545341638},"usage_breakdown":{"models":null},"system_fingerprint":"fp_1e88ca32eb","x_groq":{"id":"req_01jwksntcxfp384jge5nz72qww"}}
+            {"id":"chatcmpl-63295c4a-8168-4aa4-be8a-e4834f274d0b","object":"chat.completion","created":1749831590,"model":"qwen-qwq-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\n\u003cthink\u003e\nOkay, the user wants me to say \"hello\" and only use one word. Let me start by understanding the query properly. They specified \"Say hello. Use only one word.\" So I need to respond with a single word that serves as a greeting. The most common response would be \"Hello\". But maybe they want something different? Let me think. The user could be testing if I follow instructions precisely. The key here is the instruction to use exactly one word. If I say \"Hello\", that's one word, so that should be fine. Are there other variations? Maybe \"Hi\" or \"Hey\"? Those are also single words. But \"Hello\" is the direct translation of the verb \"to say hello\". Let me check the requirements again. The user said \"use only one word,\" so any of those would work, but \"Hello\" is the most standard. I should make sure I don't use any extra words or punctuation. So the correct response here is \"Hello\". Wait, does it need to be exactly \"Hello\" or can another word suffice? The user didn't restrict the actual word, just the count. But since the instruction is to \"say hello\", the appropriate single-word greeting is \"Hello\". Alright, that's the answer. I'll go with \"Hello\".\n\u003c/think\u003e\n\nHello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.5154292,"prompt_tokens":18,"prompt_time":0.003401356,"completion_tokens":270,"completion_time":0.639649524,"total_tokens":288,"total_time":0.64305088},"usage_breakdown":null,"system_fingerprint":"fp_a91d9c2cfb","x_groq":{"id":"req_01jxn1e85rfn39gsh4d853zm3w"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,7 +31,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 948889159a40a2a0-YUL
+                - 94f2e96dcbb033ef-YUL
             Content-Type:
                 - application/json
             Server:
@@ -60,7 +53,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 2.879999ms
             X-Request-Id:
-                - req_01jwksntcxfp384jge5nz72qww
+                - req_01jxn1e85rfn39gsh4d853zm3w
         status: 200 OK
         code: 200
-        duration: 671ms
+        duration: 1.213s

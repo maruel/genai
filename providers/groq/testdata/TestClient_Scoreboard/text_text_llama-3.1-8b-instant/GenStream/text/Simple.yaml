@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 118
-        transfer_encoding: []
-        trailer: {}
+        content_length: 128
         host: api.groq.com
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"llama-3.1-8b-instant","stream":true}
-        form: {}
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"llama-3.1-8b-instant","seed":42,"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,18 +19,15 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |+
-            data: {"id":"chatcmpl-839d26b4-aac0-4c16-90d4-f40a4b35a4a9","object":"chat.completion.chunk","created":1749212599,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_2c73875546","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jx2k45atf8fstrs07aw1mvhj"}}
+            data: {"id":"chatcmpl-0311ae6b-465a-40a9-b52a-d81f0d881f6b","object":"chat.completion.chunk","created":1749831590,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_287b55dbbf","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jxn1e83nfn382v7ftg2h37sx"}}
 
-            data: {"id":"chatcmpl-839d26b4-aac0-4c16-90d4-f40a4b35a4a9","object":"chat.completion.chunk","created":1749212599,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_2c73875546","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-0311ae6b-465a-40a9-b52a-d81f0d881f6b","object":"chat.completion.chunk","created":1749831590,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_287b55dbbf","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-839d26b4-aac0-4c16-90d4-f40a4b35a4a9","object":"chat.completion.chunk","created":1749212599,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_2c73875546","choices":[{"index":0,"delta":{"content":"!"},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-0311ae6b-465a-40a9-b52a-d81f0d881f6b","object":"chat.completion.chunk","created":1749831590,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_287b55dbbf","choices":[{"index":0,"delta":{"content":"."},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-839d26b4-aac0-4c16-90d4-f40a4b35a4a9","object":"chat.completion.chunk","created":1749212599,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_2c73875546","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01jx2k45atf8fstrs07aw1mvhj","usage":{"queue_time":0.019040924,"prompt_tokens":43,"prompt_time":0.002559833,"completion_tokens":3,"completion_time":0.004,"total_tokens":46,"total_time":0.006559833}}}
+            data: {"id":"chatcmpl-0311ae6b-465a-40a9-b52a-d81f0d881f6b","object":"chat.completion.chunk","created":1749831590,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_287b55dbbf","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01jxn1e83nfn382v7ftg2h37sx","usage":{"queue_time":0.0028324569999999996,"prompt_tokens":43,"prompt_time":0.002400324,"completion_tokens":3,"completion_time":0.004,"total_tokens":46,"total_time":0.006400324}}}
 
             data: [DONE]
 
@@ -47,31 +39,29 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94b7e15b7f71a2d2-YUL
+                - 94f2e96d5b4133ef-YUL
             Content-Type:
                 - text/event-stream
             Server:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
-                - us-west-1
+                - us-central-1
             X-Ratelimit-Limit-Requests:
                 - "500000"
             X-Ratelimit-Limit-Tokens:
                 - "250000"
             X-Ratelimit-Remaining-Requests:
-                - "499992"
+                - "499998"
             X-Ratelimit-Remaining-Tokens:
                 - "249988"
             X-Ratelimit-Reset-Requests:
-                - 1.303999999s
+                - 274.6ms
             X-Ratelimit-Reset-Tokens:
                 - 2.879999ms
             X-Request-Id:
-                - req_01jx2k45atf8fstrs07aw1mvhj
+                - req_01jxn1e83nfn382v7ftg2h37sx
         status: 200 OK
         code: 200
-        duration: 104ms
+        duration: 60ms

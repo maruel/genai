@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 73
-        transfer_encoding: []
-        trailer: {}
+        content_length: 83
         host: api.cloudflare.com
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"messages":[{"role":"user","content":"Say hello. Use only one word."}]}
-        form: {}
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"seed":42}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,20 +19,18 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"result":{"response":"Hello!","tool_calls":[],"usage":{"prompt_tokens":18,"completion_tokens":3,"total_tokens":21}},"success":true,"errors":[],"messages":[]}'
+        body: '{"result":{"response":"Hello!","tool_calls":[],"usage":{"prompt_tokens":86,"completion_tokens":3,"total_tokens":89}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
-                - "2025-05-31"
+                - "2025-06-13"
             Cf-Ai-Req-Id:
-                - 4c8ff77e-e2d7-4f28-af99-b7d26f9751c1
+                - 7a4cd11e-b630-46d6-9962-064da29f0dfe
             Cf-Auditlog-Id:
-                - 0197275c-e533-74ff-9065-8776fdd0ad6a
+                - 01976a17-1fdc-7e27-9ddc-8dd9544a22a7
             Cf-Ray:
-                - 948825db68c5a305-YUL
+                - 94f2e96c7ef1a288-YUL
             Content-Type:
                 - application/json
             Server:
@@ -46,4 +39,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 889ms
+        duration: 823ms

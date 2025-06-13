@@ -13,6 +13,7 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
@@ -24,6 +25,9 @@ func TestClient_Scoreboard(t *testing.T) {
 		c := getClient(t, m)
 		if m == "flux" || m == "gptimage" || m == "turbo" {
 			return &injectOption{Client: c, t: t, opts: genai.OptionsImage{Width: 256, Height: 256}}
+		}
+		if m == "deepseek-reasoning" {
+			return &adapters.ProviderGenThinking{ProviderGen: c, TagName: "think"}
 		}
 		return c
 	}, nil)

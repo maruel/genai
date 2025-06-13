@@ -44,13 +44,11 @@ var Scoreboard = genai.Scoreboard{
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
-				Seed:           false,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
-				Seed:           false,
 			},
 		},
 		{
@@ -60,12 +58,10 @@ var Scoreboard = genai.Scoreboard{
 			GenSync: &genai.FunctionalityText{
 				Thinking: true,
 				JSON:     true,
-				Seed:     false,
 			},
 			GenStream: &genai.FunctionalityText{
 				Thinking: true,
 				JSON:     true,
-				Seed:     false,
 			},
 		},
 	},

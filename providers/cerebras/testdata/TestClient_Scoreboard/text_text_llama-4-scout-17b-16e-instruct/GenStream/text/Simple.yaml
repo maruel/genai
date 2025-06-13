@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 128
-        transfer_encoding: []
-        trailer: {}
+        content_length: 138
         host: api.cerebras.ai
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"model":"llama-4-scout-17b-16e-instruct","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true}
-        form: {}
+            {"model":"llama-4-scout-17b-16e-instruct","messages":[{"role":"user","content":"Say hello. Use only one word."}],"seed":42,"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,20 +19,17 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |+
-            data: {"id":"chatcmpl-9c9a83ca-b7bd-4467-bde5-746b58177775","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1748549481,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_dbfdda9d038d2b3a7e94","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-379356e9-b98f-4b50-bc88-f616122dc360","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1749831590,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cbc10163c2c34afca015","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-9c9a83ca-b7bd-4467-bde5-746b58177775","choices":[{"delta":{"content":"Hello"},"index":0}],"created":1748549481,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_dbfdda9d038d2b3a7e94","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-379356e9-b98f-4b50-bc88-f616122dc360","choices":[{"delta":{"content":"Hello"},"index":0}],"created":1749831590,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cbc10163c2c34afca015","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-9c9a83ca-b7bd-4467-bde5-746b58177775","choices":[{"delta":{"content":"!"},"index":0}],"created":1748549481,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_dbfdda9d038d2b3a7e94","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-379356e9-b98f-4b50-bc88-f616122dc360","choices":[{"delta":{"content":"!"},"index":0}],"created":1749831590,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cbc10163c2c34afca015","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-9c9a83ca-b7bd-4467-bde5-746b58177775","choices":[{"delta":{},"index":0}],"created":1748549481,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_dbfdda9d038d2b3a7e94","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-379356e9-b98f-4b50-bc88-f616122dc360","choices":[{"delta":{},"index":0}],"created":1749831590,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cbc10163c2c34afca015","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-9c9a83ca-b7bd-4467-bde5-746b58177775","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1748549481,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_dbfdda9d038d2b3a7e94","object":"chat.completion.chunk","usage":{"prompt_tokens":18,"completion_tokens":3,"total_tokens":21,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00009567,"prompt_time":0.001095016,"completion_time":0.002735874,"total_time":0.006061077117919922,"created":1748549481}}
+            data: {"id":"chatcmpl-379356e9-b98f-4b50-bc88-f616122dc360","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1749831590,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cbc10163c2c34afca015","object":"chat.completion.chunk","usage":{"prompt_tokens":18,"completion_tokens":3,"total_tokens":21,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.023573615,"prompt_time":0.000369336,"completion_time":0.003959451,"total_time":0.04103231430053711,"created":1749831590}}
 
         headers:
             Alt-Svc:
@@ -45,11 +37,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9478a3f4199da28f-YUL
+                - 94f2e972ceffa2f6-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Inference-Id:
-                - chatcmpl-9c9a83ca-b7bd-4467-bde5-746b58177775
+                - chatcmpl-379356e9-b98f-4b50-bc88-f616122dc360
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -63,15 +55,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14387"
+                - "14399"
             X-Ratelimit-Remaining-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Reset-Requests-Day:
-                - "13718.256851434708"
+                - "27609.04438185692"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "38.25685143470764"
+                - "9.044381856918335"
             X-Request-Id:
-                - 9478a3f4199da28f-YUL
+                - 94f2e972ceffa2f6-YUL
         status: 200 OK
         code: 200
-        duration: 174ms
+        duration: 164ms

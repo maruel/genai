@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 88
-        transfer_encoding: []
-        trailer: {}
+        content_length: 98
         host: router.huggingface.co
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."}]}
-        form: {}
+            {"stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"seed":42}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,11 +19,8 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: 302
-        uncompressed: false
-        body: '{"object":"chat.completion","id":"","created":1749485739,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"Hello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46}}'
+        body: '{"object":"chat.completion","id":"","created":1749831590,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"Hello!"},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46}}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
@@ -47,9 +39,9 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 df34ce5bf73c140dc63a22fa17a4dcda.cloudfront.net (CloudFront)
+                - 1.1 875d50fae2ec2fc798461398e3cf2a5a.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - jQx6RQPNWFb3EYluLxIE6BI0NC8WaM7jMByQmdTHLBi-KqjUGscgOA==
+                - bs9V0bY3zmlJEnbXLDS61S_NdrF9NhK__pZ1ilOiavmVAB3Ra5q0ZQ==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
@@ -57,37 +49,37 @@ interactions:
             X-Compute-Characters:
                 - "262"
             X-Compute-Time:
-                - "2.054011979"
+                - "0.431882914"
             X-Compute-Type:
                 - 4-nvida-a100-sxm4-80gb
             X-Generated-Tokens:
                 - "3"
             X-Inference-Id:
-                - 5b12dd89-e579-4332-8950-b56a3dffee98
+                - 507bc2ea-ef5c-4b99-9db7-605f94d07520
             X-Inference-Time:
-                - "164"
+                - "173"
             X-Powered-By:
                 - huggingface-moon
             X-Prompt-Tokens:
                 - "43"
             X-Proxied-Host:
-                - http://10.102.93.186
+                - http://10.102.91.104
             X-Proxied-Path:
                 - /v1/chat/completions
             X-Proxied-Replica:
-                - vewwpasy-ljrvn
+                - vewwpasy-dfea8
             X-Queue-Time:
-                - "1889"
+                - "257"
             X-Request-Id:
-                - Ua1qZ4b9YZVb494B
+                - U2PtM3sxupvTgVqb
             X-Robots-Tag:
                 - none
             X-Time-Per-Token:
-                - "54"
+                - "57"
             X-Total-Time:
-                - "2054"
+                - "431"
             X-Validation-Time:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 2.165s
+        duration: 663ms

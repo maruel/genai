@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 142
-        transfer_encoding: []
-        trailer: {}
+        content_length: 159
         host: api.mistral.ai
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"model":"ministral-3b-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
-        form: {}
+            {"model":"ministral-3b-latest","stream":true,"random_seed":42,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,18 +19,15 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |+
-            data: {"id":"28b5b79c17b043e68dcb704d90edae7c","object":"chat.completion.chunk","created":1748539057,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+            data: {"id":"dc9d13f58b2445cb80b1356f1b600396","object":"chat.completion.chunk","created":1749831590,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
 
-            data: {"id":"28b5b79c17b043e68dcb704d90edae7c","object":"chat.completion.chunk","created":1748539057,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
+            data: {"id":"dc9d13f58b2445cb80b1356f1b600396","object":"chat.completion.chunk","created":1749831590,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
 
-            data: {"id":"28b5b79c17b043e68dcb704d90edae7c","object":"chat.completion.chunk","created":1748539057,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"!"},"finish_reason":null}]}
+            data: {"id":"dc9d13f58b2445cb80b1356f1b600396","object":"chat.completion.chunk","created":1749831590,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"!"},"finish_reason":null}]}
 
-            data: {"id":"28b5b79c17b043e68dcb704d90edae7c","object":"chat.completion.chunk","created":1748539057,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"total_tokens":14,"completion_tokens":3}}
+            data: {"id":"dc9d13f58b2445cb80b1356f1b600396","object":"chat.completion.chunk","created":1749831590,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"total_tokens":14,"completion_tokens":3}}
 
             data: [DONE]
 
@@ -47,19 +39,21 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9477a5767b8a33f1-YUL
+                - 94f2e96dcdeea308-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Server:
                 - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
             X-Envoy-Upstream-Service-Time:
-                - "52"
+                - "72"
             X-Kong-Proxy-Latency:
-                - "14"
+                - "5"
             X-Kong-Request-Id:
-                - 7fc1477b57f66d548f6532494285fe1c
+                - c4e50c7909dd78432a9728032c811628
             X-Kong-Upstream-Latency:
-                - "52"
+                - "73"
         status: 200 OK
         code: 200
-        duration: 200ms
+        duration: 198ms

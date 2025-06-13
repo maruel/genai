@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 143
+        content_length: 160
         host: api.mistral.ai
         body: |
-            {"model":"mistral-small-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
+            {"model":"mistral-small-latest","stream":true,"random_seed":42,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,13 +21,13 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"ac83269102b442cdb4689f159c5b7a87","object":"chat.completion.chunk","created":1749823750,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}]}
+            data: {"id":"0b87cdf107854cd7a93c8b5528965620","object":"chat.completion.chunk","created":1749831590,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}]}
 
-            data: {"id":"ac83269102b442cdb4689f159c5b7a87","object":"chat.completion.chunk","created":1749823750,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null,"logprobs":null}]}
+            data: {"id":"0b87cdf107854cd7a93c8b5528965620","object":"chat.completion.chunk","created":1749831590,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null,"logprobs":null}]}
 
-            data: {"id":"ac83269102b442cdb4689f159c5b7a87","object":"chat.completion.chunk","created":1749823750,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":"."},"finish_reason":null,"logprobs":null}]}
+            data: {"id":"0b87cdf107854cd7a93c8b5528965620","object":"chat.completion.chunk","created":1749831590,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":"."},"finish_reason":null,"logprobs":null}]}
 
-            data: {"id":"ac83269102b442cdb4689f159c5b7a87","object":"chat.completion.chunk","created":1749823750,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":11,"total_tokens":14,"completion_tokens":3}}
+            data: {"id":"0b87cdf107854cd7a93c8b5528965620","object":"chat.completion.chunk","created":1749831590,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":11,"total_tokens":14,"completion_tokens":3}}
 
             data: [DONE]
 
@@ -39,7 +39,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94f22a067c6aa2cf-YUL
+                - 94f2e9709947a308-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Server:
@@ -47,13 +47,13 @@ interactions:
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains
             X-Envoy-Upstream-Service-Time:
-                - "58"
+                - "54"
             X-Kong-Proxy-Latency:
-                - "6"
+                - "5"
             X-Kong-Request-Id:
-                - 96d5486dc73d767820bf607475f4a470
+                - 310bd93ec016064fdbb0d17d5a54367d
             X-Kong-Upstream-Latency:
-                - "59"
+                - "54"
         status: 200 OK
         code: 200
-        duration: 191ms
+        duration: 184ms

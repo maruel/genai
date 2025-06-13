@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 136
+        content_length: 168
         host: api.openai.com
         body: |
-            {"model":"gpt-4.1-nano","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
+            {"model":"gpt-4.1-nano","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"seed":42,"service_tier":"auto"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BhPCdjqihfv5kP4MzJe815SNk5YwD",
+              "id": "chatcmpl-Bi1Q8OPsqVHcSfBkmh8enTsxp5KyW",
               "object": "chat.completion",
-              "created": 1749684683,
+              "created": 1749831592,
               "model": "gpt-4.1-nano-2025-04-14",
               "choices": [
                 {
@@ -66,13 +66,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94e4e6d57ae97148-YUL
+                - 94f2e9794eefa24e-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "112"
+                - "277"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -82,21 +82,21 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "119"
+                - "291"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
                 - "200000"
             X-Ratelimit-Remaining-Requests:
-                - "498"
+                - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "199966"
+                - "199990"
             X-Ratelimit-Reset-Requests:
-                - 237ms
+                - 120ms
             X-Ratelimit-Reset-Tokens:
-                - 10ms
+                - 3ms
             X-Request-Id:
-                - req_c6741c459256645f077bf62372820bd1
+                - req_09ca1fa5e4fc30236ce6545548ac3d72
         status: 200 OK
         code: 200
-        duration: 190ms
+        duration: 380ms

@@ -42,13 +42,11 @@ var Scoreboard = genai.Scoreboard{
 				Thinking:       true,
 				NoStopSequence: true,
 				JSONSchema:     true,
-				Seed:           false,
 			},
 			GenStream: &genai.FunctionalityText{
 				Thinking:       true,
 				NoStopSequence: true,
 				JSONSchema:     true,
-				Seed:           false,
 			},
 		},
 		{
@@ -59,12 +57,10 @@ var Scoreboard = genai.Scoreboard{
 				NoStopSequence: true,
 				JSONSchema:     true,
 				Citations:      true,
-				Seed:           false,
 			},
 			GenStream: &genai.FunctionalityText{
 				NoStopSequence: true,
 				Citations:      true,
-				Seed:           false,
 			},
 		},
 		{
@@ -76,13 +72,11 @@ var Scoreboard = genai.Scoreboard{
 				NoStopSequence: true,
 				JSONSchema:     true,
 				Citations:      true,
-				Seed:           false,
 			},
 			GenStream: &genai.FunctionalityText{
 				Thinking:       true,
 				NoStopSequence: true,
 				Citations:      true,
-				Seed:           false,
 			},
 		},
 	},

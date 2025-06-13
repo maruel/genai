@@ -29,6 +29,7 @@ type column struct {
 	JSONSchema string `title:"JSON+Schema➛"`
 	ImageGen   string `title:"Image➛"`
 	AudioGen   string `title:"Audio➛"`
+	VideoGen   string `title:"Video➛"`
 	Chat       string `title:"Chat"`
 	Streaming  string `title:"Streaming"`
 	Doc        string `title:"Doc"`
@@ -57,16 +58,16 @@ func processOne(c genai.ProviderScoreboard) column {
 	_, isAsync := c.(genai.ProviderGenAsync)
 	_, isFiles := c.(genai.ProviderCache)
 	for _, s := range sb.Scenarios {
-		if _, hasImage := s.In[genai.ModalityImage]; hasImage {
+		if _, hasImageIn := s.In[genai.ModalityImage]; hasImageIn {
 			col.Vision = "✅"
 		}
-		if _, hasPDF := s.In[genai.ModalityPDF]; hasPDF {
+		if _, hasPDFIn := s.In[genai.ModalityPDF]; hasPDFIn {
 			col.PDF = "✅"
 		}
-		if _, hasAudio := s.In[genai.ModalityAudio]; hasAudio {
+		if _, hasAudioIn := s.In[genai.ModalityAudio]; hasAudioIn {
 			col.Audio = "✅"
 		}
-		if _, hasVideo := s.In[genai.ModalityVideo]; hasVideo {
+		if _, hasVideoIn := s.In[genai.ModalityVideo]; hasVideoIn {
 			col.Video = "✅"
 		}
 		if s.GenSync != nil && s.GenSync.JSON && (s.GenStream != nil && s.GenStream.JSON) {
@@ -74,11 +75,6 @@ func processOne(c genai.ProviderScoreboard) column {
 		}
 		if s.GenSync != nil && s.GenSync.JSONSchema && (s.GenStream != nil && s.GenStream.JSONSchema) {
 			col.JSONSchema = "✅"
-		}
-		if _, hasTextIn := s.In[genai.ModalityText]; hasTextIn {
-			if _, hasImageOut := s.Out[genai.ModalityImage]; hasImageOut {
-				col.ImageGen = "✅"
-			}
 		}
 		if _, hasTextIn := s.In[genai.ModalityText]; hasTextIn {
 			if _, hasTextOut := s.Out[genai.ModalityText]; hasTextOut && isText {
@@ -117,12 +113,23 @@ func processOne(c genai.ProviderScoreboard) column {
 			if s.GenSync.Citations {
 				col.Citations = "✅"
 			}
-			//if s.GenSync.Seed {
-			//	col.Seed = "✅"
-			//}
+			if s.GenSync.Seed {
+				col.Seed = "✅"
+			}
+		}
+		if s.GenDoc != nil {
+			if s.GenDoc.Seed {
+				col.Seed = "✅"
+			}
+		}
+		if _, hasImageOut := s.Out[genai.ModalityImage]; hasImageOut {
+			col.ImageGen = "✅"
 		}
 		if _, hasAudioOut := s.Out[genai.ModalityAudio]; hasAudioOut {
 			col.AudioGen = "✅"
+		}
+		if _, hasVideoOut := s.Out[genai.ModalityVideo]; hasVideoOut {
+			col.VideoGen = "✅"
 		}
 	}
 	return col

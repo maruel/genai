@@ -7,6 +7,8 @@ package main
 import (
 	"fmt"
 	"io"
+	"maps"
+	"net/http"
 	"os"
 	"reflect"
 	"slices"
@@ -16,6 +18,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/providers"
+	"github.com/maruel/genai/providers/openaicompatible"
 )
 
 type column struct {
@@ -216,8 +219,12 @@ var countryMap = map[string]string{
 }
 
 func printTable() error {
+	all := maps.Clone(providers.All)
+	all["openaicompatible"] = func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+		return openaicompatible.New("http://localhost:8080/v1", nil, model, wrapper)
+	}
 	var columns []column
-	for name, f := range providers.All {
+	for name, f := range all {
 		c, err := f("", nil)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: %v\n", name, err)

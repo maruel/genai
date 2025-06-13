@@ -21,6 +21,18 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+// Scoreboard for generic OpenAI compatible API.
+var Scoreboard = genai.Scoreboard{
+	Scenarios: []genai.Scenario{
+		{
+			In:        map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync:   &genai.FunctionalityText{},
+			GenStream: &genai.FunctionalityText{},
+		},
+	},
+}
+
 type ChatRequest struct {
 	Model            string    `json:"model,omitzero"`
 	Messages         []Message `json:"messages"`
@@ -361,6 +373,10 @@ func New(chatURL string, h http.Header, model string, wrapper func(http.RoundTri
 			},
 		},
 	}, nil
+}
+
+func (c *Client) Scoreboard() genai.Scoreboard {
+	return Scoreboard
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {

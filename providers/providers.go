@@ -31,7 +31,11 @@ import (
 //
 // It assumes the user has set the API key as an environment variable.
 //
-// The caveat for llamaccp is that the model is in fact the base URL.
+// # Caveats
+//
+// - cloudflare: the account ID must be set as an environment variable.
+// - llamaccp: the model is in fact the base URL.
+// - openaicompatible: it is not included since it needs both the base URL and the model name.
 var All = map[string]func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error){
 	"anthropic": func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
 		return anthropic.New("", model, wrapper)

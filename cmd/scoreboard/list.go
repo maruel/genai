@@ -6,6 +6,8 @@ package main
 
 import (
 	"fmt"
+	"maps"
+	"net/http"
 	"os"
 	"slices"
 	"sort"
@@ -13,17 +15,22 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/providers"
+	"github.com/maruel/genai/providers/openaicompatible"
 )
 
 func printList() error {
-	names := make([]string, 0, len(providers.All))
-	for name := range providers.All {
+	all := maps.Clone(providers.All)
+	all["openaicompatible"] = func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+		return openaicompatible.New("http://localhost:8080/v1", nil, model, wrapper)
+	}
+	names := make([]string, 0, len(all))
+	for name := range all {
 		names = append(names, name)
 	}
 	sort.Strings(names)
 	for _, name := range names {
 		fmt.Printf("- %s\n", name)
-		c, err := providers.All[name]("", nil)
+		c, err := all[name]("", nil)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: %v\n", name, err)
 			continue

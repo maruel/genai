@@ -28,6 +28,9 @@ The _high performance_ low level native Go client for LLMs.
 - ✅ Implemented
 - ❌ Not supported by genai. The provider may support it, but genai does not (yet). Please send a PR to add
   it!
+- ⚖️ Tool calling is biased towards the first value in an enum. Be mindful of the order of the values!
+- 🤷 Tool calling is undecided when asked a question that has no clear answer and will call both options. This
+  is good.
 - ➛Type: Input modality
 - Type➛: Output modality 
 - Streaming: chat streaming
@@ -37,7 +40,6 @@ The _high performance_ low level native Go client for LLMs.
 - JSON and JSON+schema: ability to output JSON in free form, or with a forced schema specified as a Go struct
 - Seed: deterministic seed for reproducibility
 - Tools: tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef)
-- Caching: reusing previous processed tokens to reduce cost
 
 </details>
 

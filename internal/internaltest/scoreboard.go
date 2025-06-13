@@ -282,9 +282,10 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 			fr = ""
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, fr)
-		if len(resp.AsText()) > 15 {
+		// Deepseek counts "\"Parallel lines" as 3 tokens (!)
+		// Llama-4-Maverick counts ""Why couldn't the" as 3 tokens.
+		if len(resp.AsText()) > 16 {
 			if !f.NoMaxTokens {
-				// Deepseek counts "\"Parallel lines" as 3 tokens (!)
 				t.Fatalf("Expected less than 15 letters, got %q", resp.AsText())
 			}
 		} else if f.NoMaxTokens {

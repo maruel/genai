@@ -1,0 +1,91 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 483
+        host: api.together.xyz
+        body: |
+            {"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","stream":true,"messages":[{"role":"user","content":"Is a banana a fruit? Reply as JSON according to the provided schema."}],"response_format":{"type":"json_schema","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean","description":"True if the answer is that it is a fruit, false otherwise"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"nxyDegh-zqrih-94f278d7faf0a2bc","object":"chat.completion.chunk","created":1749826978,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
+
+            data: {"id":"nxyDegh-zqrih-94f278d7faf0a2bc","object":"chat.completion.chunk","created":1749826978,"choices":[{"index":0,"text":"{\"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"{\"","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
+
+            data: {"id":"nxyDegh-zqrih-94f278d7faf0a2bc","object":"chat.completion.chunk","created":1749826978,"choices":[{"index":0,"text":"is","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"is","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
+
+            data: {"id":"nxyDegh-zqrih-94f278d7faf0a2bc","object":"chat.completion.chunk","created":1749826978,"choices":[{"index":0,"text":"_f","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"_f","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
+
+            data: {"id":"nxyDegh-zqrih-94f278d7faf0a2bc","object":"chat.completion.chunk","created":1749826978,"choices":[{"index":0,"text":"ruit","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"ruit","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
+
+            data: {"id":"nxyDegh-zqrih-94f278d7faf0a2bc","object":"chat.completion.chunk","created":1749826978,"choices":[{"index":0,"text":"\":","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"\":","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
+
+            data: {"id":"nxyDegh-zqrih-94f278d7faf0a2bc","object":"chat.completion.chunk","created":1749826978,"choices":[{"index":0,"text":" true","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":" true","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
+
+            data: {"id":"nxyDegh-zqrih-94f278d7faf0a2bc","object":"chat.completion.chunk","created":1749826978,"choices":[{"index":0,"text":"}","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"}","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
+
+            data: {"id":"nxyDegh-zqrih-94f278d7faf0a2bc","object":"chat.completion.chunk","created":1749826978,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"stop","delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
+
+            data: {"id":"nxyDegh-zqrih-94f278d7faf0a2bc","object":"chat.completion.chunk","created":1749826978,"choices":[],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":{"prompt_tokens":25,"total_tokens":33,"completion_tokens":8}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache, no-transform
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94f278d7faf0a2bc-YUL
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - 7009e0b9-5da0-4fd9-be23-d1699885cca2-noamzn
+            X-Api-Call-Start:
+                - "2025-06-13T15:02:58.630Z"
+            X-Api-Received:
+                - "2025-06-13T15:02:58.610Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "1"
+            X-Ratelimit-Remaining-Tokens:
+                - "829"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - nxyDegh-zqrih-94f278d7faf0a2bc
+        status: 200 OK
+        code: 200
+        duration: 4.528s

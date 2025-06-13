@@ -52,10 +52,6 @@ var Scoreboard = genai.Scoreboard{
 			Models: []string{
 				"meta-llama/Llama-3.3-70B-Instruct-Turbo", // Not reported by the endpoint as of May 2025
 				"meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
-				"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
-				"meta-llama/Llama-4-Scout-17B-16E-Instruct",
-
-				// TODO: Many are vision models.
 
 				// Old or fringe models
 				"arcee-ai/arcee-blitz",
@@ -70,7 +66,6 @@ var Scoreboard = genai.Scoreboard{
 				"lgai/exaone-3-5-32b-instruct",
 				"lgai/exaone-deep-32b",
 				"marin-community/marin-8b-instruct",
-				"meta-llama/Llama-Vision-Free",
 				"meta-llama/Llama-3-70b-chat-hf",
 				"meta-llama/Llama-3.2-3B-Instruct-Turbo",
 				"meta-llama/Meta-Llama-3-70B-Instruct-Turbo",
@@ -79,15 +74,12 @@ var Scoreboard = genai.Scoreboard{
 				"meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo",
 				"meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
 				"mistralai/Mistral-7B-Instruct-v0.3",
-				"mistralai/Mistral-Small-24B-Instruct-2501",
 				"mistralai/Mixtral-8x7B-Instruct-v0.1",
 				"nvidia/Llama-3.1-Nemotron-70B-Instruct-HF",
 				"Qwen/Qwen2-72B-Instruct",
-				"Qwen/Qwen2-VL-72B-Instruct",
 				"Qwen/Qwen2.5-72B-Instruct-Turbo",
 				"Qwen/Qwen2.5-7B-Instruct-Turbo",
 				"Qwen/Qwen2.5-Coder-32B-Instruct",
-				"Qwen/Qwen2.5-VL-72B-Instruct",
 				"togethercomputer/Refuel-Llm-V2",
 			},
 			In:  map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
@@ -100,6 +92,39 @@ var Scoreboard = genai.Scoreboard{
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:      genai.True,
+				BiasedTool: genai.True,
+				JSON:       true,
+				JSONSchema: true,
+			},
+		},
+		{
+			// Tool calling is flaky on llama-4 because it only support tool_choice auto, not required.
+			Models: []string{
+				"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
+				"meta-llama/Llama-4-Scout-17B-16E-Instruct",
+				"meta-llama/Llama-Vision-Free",
+				"mistralai/Mistral-Small-24B-Instruct-2501",
+				"Qwen/Qwen2-VL-72B-Instruct",
+				"Qwen/Qwen2.5-VL-72B-Instruct",
+			},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {Inline: true},
+				// TODO: Video.
+				genai.ModalityImage: {
+					Inline:           true,
+					URL:              true,
+					SupportedFormats: []string{"image/png", "image/jpeg", "image/webp"},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Tools:      genai.Flaky,
+				BiasedTool: genai.True,
+				JSON:       true,
+				JSONSchema: true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Tools:      genai.Flaky,
 				BiasedTool: genai.True,
 				JSON:       true,
 				JSONSchema: true,
@@ -541,6 +566,7 @@ type ChatStreamChunkResponse struct {
 		} `json:"delta"`
 		Logprobs     struct{}     `json:"logprobs"`
 		FinishReason FinishReason `json:"finish_reason"`
+		StopReason   int64        `json:"stop_reason"` // Seems to be a token
 	} `json:"choices"`
 	// SystemFingerprint string `json:"system_fingerprint"`
 	Usage    Usage `json:"usage"`
@@ -858,13 +884,13 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	}()
 	pendingCall := ToolCall{}
 	for pkt := range ch {
-		if len(pkt.Choices) != 1 {
-			continue
-		}
 		if pkt.Usage.TotalTokens != 0 {
 			result.InputTokens = pkt.Usage.PromptTokens
 			result.InputCachedTokens = pkt.Usage.CachedTokens
 			result.OutputTokens = pkt.Usage.CompletionTokens
+		}
+		if len(pkt.Choices) != 1 {
+			continue
 		}
 		if pkt.Choices[0].FinishReason != "" {
 			result.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()

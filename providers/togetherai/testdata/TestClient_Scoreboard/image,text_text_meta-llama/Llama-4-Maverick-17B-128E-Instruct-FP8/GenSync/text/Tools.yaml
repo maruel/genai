@@ -1,0 +1,206 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 791
+        host: api.together.xyz
+        body: |
+            {"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","stream":false,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "nxyDbp6-zqrih-94f2789b8ff6a2e7",
+              "object": "chat.completion",
+              "created": 1749826968,
+              "model": "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "logprobs": null,
+                  "finish_reason": "tool_calls",
+                  "seed": null,
+                  "message": {
+                    "role": "assistant",
+                    "content": null,
+                    "tool_calls": [
+                      {
+                        "index": 0,
+                        "id": "call_1ct7pn5mphdcefph8ywhpvdh",
+                        "type": "function",
+                        "function": {
+                          "arguments": "{\"number\":\"132413\"}",
+                          "name": "square_root"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 246,
+                "total_tokens": 296,
+                "completion_tokens": 50
+              },
+              "warnings": [
+                {
+                  "message": "Model supports only tool_choice auto"
+                }
+              ]
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94f2789b8ff6a2e7-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"369-1Fp+RS2DFJlppG2zFqEbcPtWCQ8"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - 9e68d7fa-3e4e-445a-8279-a76e3e6c6671-noamzn
+            X-Api-Call-End:
+                - "2025-06-13T15:02:49.625Z"
+            X-Api-Call-Start:
+                - "2025-06-13T15:02:48.956Z"
+            X-Api-Received:
+                - "2025-06-13T15:02:48.947Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "1"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - nxyDbp6-zqrih-94f2789b8ff6a2e7
+        status: 200 OK
+        code: 200
+        duration: 6.581s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1044
+        host: api.together.xyz
+        body: |
+            {"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","stream":false,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"index":0,"id":"call_1ct7pn5mphdcefph8ywhpvdh","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_1ct7pn5mphdcefph8ywhpvdh"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "nxyDc3u-zqrih-94f278a09e5fa2e7",
+              "object": "chat.completion",
+              "created": 1749826969,
+              "model": "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "logprobs": null,
+                  "finish_reason": "stop",
+                  "seed": null,
+                  "message": {
+                    "role": "assistant",
+                    "content": "363.89",
+                    "tool_calls": []
+                  }
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 160,
+                "total_tokens": 164,
+                "completion_tokens": 4
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 94f278a09e5fa2e7-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"1ff-pheMCzbsFXYa2d3RanQJDvV+3+U"
+            Retry-After:
+                - "1"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - 33eb6d70-dc49-48be-bb18-822471bd698f-noamzn
+            X-Api-Call-End:
+                - "2025-06-13T15:02:49.818Z"
+            X-Api-Call-Start:
+                - "2025-06-13T15:02:49.756Z"
+            X-Api-Received:
+                - "2025-06-13T15:02:49.748Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "704"
+            X-Ratelimit-Reset:
+                - "1"
+            X-Request-Id:
+                - nxyDc3u-zqrih-94f278a09e5fa2e7
+        status: 200 OK
+        code: 200
+        duration: 164ms

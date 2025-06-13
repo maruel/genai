@@ -69,10 +69,10 @@ func processOne(c genai.ProviderScoreboard) column {
 		if _, hasVideo := s.In[genai.ModalityVideo]; hasVideo {
 			col.Video = "✅"
 		}
-		if s.GenSync != nil && s.GenSync.JSON && s.GenStream.JSON {
+		if s.GenSync != nil && s.GenSync.JSON && (s.GenStream != nil && s.GenStream.JSON) {
 			col.JSON = "✅"
 		}
-		if s.GenSync != nil && s.GenSync.JSONSchema && s.GenStream.JSONSchema {
+		if s.GenSync != nil && s.GenSync.JSONSchema && (s.GenStream != nil && s.GenStream.JSONSchema) {
 			col.JSONSchema = "✅"
 		}
 		if _, hasTextIn := s.In[genai.ModalityText]; hasTextIn {
@@ -97,7 +97,7 @@ func processOne(c genai.ProviderScoreboard) column {
 		}
 		if s.GenSync != nil {
 			// TODO: Keep the best out of all the options. This is "✅⚖️"
-			if s.GenSync.Tools == genai.True && s.GenStream.Tools == genai.True {
+			if s.GenSync.Tools == genai.True && (s.GenStream != nil && s.GenStream.Tools == genai.True) {
 				col.Tools = "✅"
 				if s.GenSync.BiasedTool == genai.False {
 					col.Tools += "⚖️"
@@ -105,7 +105,7 @@ func processOne(c genai.ProviderScoreboard) column {
 				if s.GenSync.IndecisiveTool == genai.True {
 					col.Tools += " 🤷"
 				}
-			} else if s.GenSync.Tools == genai.Flaky || s.GenStream.Tools == genai.Flaky && col.Tools == "" {
+			} else if col.Tools == "" && (s.GenSync.Tools == genai.Flaky || (s.GenStream != nil && s.GenStream.Tools == genai.Flaky)) {
 				col.Tools = "💨"
 				if s.GenSync.BiasedTool == genai.False {
 					col.Tools += "⚖️"

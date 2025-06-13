@@ -899,6 +899,8 @@ type FunctionalityText struct {
 	JSONSchema bool
 	// Citations is set when the provider and model combination supports citations in the response.
 	Citations bool
+	// Seed is set when the provider and model combination supports seed for reproducibility.
+	Seed bool
 
 	// BrokenTokenUsage means that the usage is not correctly reported.
 	BrokenTokenUsage bool
@@ -938,6 +940,9 @@ const (
 
 // FunctionalityDoc defines which functionalites are supported in a scenario for non-text output modality.
 type FunctionalityDoc struct {
+	// Seed is set when the provider and model combination supports seed for reproducibility.
+	Seed bool
+
 	// BrokenTokenUsage means that the usage is not correctly reported.
 	BrokenTokenUsage bool
 	// BrokenFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.

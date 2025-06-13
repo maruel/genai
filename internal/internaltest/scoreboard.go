@@ -686,7 +686,7 @@ func testVisionFunctionalities(t *testing.T, g ProviderGenModalityFactory, model
 			},
 		}
 		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
-		if !basicCheck(t, err, hasModalityWithInline(in, genai.ModalityImage)) {
+		if !basicCheck(t, err, in[genai.ModalityImage].Inline) {
 			return
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
@@ -704,7 +704,7 @@ func testVisionFunctionalities(t *testing.T, g ProviderGenModalityFactory, model
 			},
 		}
 		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
-		if !basicCheck(t, err, hasModalityWithURL(in, genai.ModalityImage)) {
+		if !basicCheck(t, err, in[genai.ModalityImage].URL) {
 			return
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
@@ -729,7 +729,7 @@ func testAudioSTTFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 		defer ff.Close()
 		msgs := genai.Messages{{Role: genai.User, Contents: []genai.Content{{Text: prompt}, {Document: ff}}}}
 		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
-		if !basicCheck(t, err, hasModalityWithInline(in, genai.ModalityAudio)) {
+		if !basicCheck(t, err, in[genai.ModalityAudio].Inline) {
 			return
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
@@ -747,7 +747,7 @@ func testAudioSTTFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 			},
 		}
 		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
-		if !basicCheck(t, err, hasModalityWithURL(in, genai.ModalityAudio)) {
+		if !basicCheck(t, err, in[genai.ModalityAudio].URL) {
 			return
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
@@ -771,7 +771,7 @@ func testVideoFunctionalities(t *testing.T, g ProviderGenModalityFactory, model 
 		defer ff.Close()
 		msgs := genai.Messages{{Role: genai.User, Contents: []genai.Content{{Text: prompt}, {Document: ff}}}}
 		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
-		if !basicCheck(t, err, hasModalityWithInline(in, genai.ModalityVideo)) {
+		if !basicCheck(t, err, in[genai.ModalityVideo].Inline) {
 			return
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
@@ -789,7 +789,7 @@ func testVideoFunctionalities(t *testing.T, g ProviderGenModalityFactory, model 
 			},
 		}
 		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
-		if !basicCheck(t, err, hasModalityWithURL(in, genai.ModalityVideo)) {
+		if !basicCheck(t, err, in[genai.ModalityVideo].URL) {
 			return
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
@@ -813,7 +813,7 @@ func testPDFFunctionalities(t *testing.T, g ProviderGenModalityFactory, model st
 		defer ff.Close()
 		msgs := genai.Messages{{Role: genai.User, Contents: []genai.Content{{Text: prompt}, {Document: ff}}}}
 		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
-		if !basicCheck(t, err, hasModalityWithInline(in, genai.ModalityPDF)) {
+		if !basicCheck(t, err, in[genai.ModalityPDF].Inline) {
 			return
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
@@ -831,7 +831,7 @@ func testPDFFunctionalities(t *testing.T, g ProviderGenModalityFactory, model st
 			},
 		}
 		resp, err := runGenText(t, g(t, model), msgs, nil, stream)
-		if !basicCheck(t, err, hasModalityWithURL(in, genai.ModalityPDF)) {
+		if !basicCheck(t, err, in[genai.ModalityPDF].URL) {
 			return
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, defaultFR)
@@ -1144,24 +1144,9 @@ func ValidateWordResponse(t *testing.T, resp genai.Result, want ...string) {
 //go:embed testdata/banana.jpg
 var bananaJpg []byte
 
-// Helper functions to extract delivery method information from ModalCapability maps
-func hasModalityWithInline(capabilities map[genai.Modality]genai.ModalCapability, modality genai.Modality) bool {
-	if cap, ok := capabilities[modality]; ok {
-		return cap.Inline
-	}
-	return false
-}
-
-func hasModalityWithURL(capabilities map[genai.Modality]genai.ModalCapability, modality genai.Modality) bool {
-	if cap, ok := capabilities[modality]; ok {
-		return cap.URL
-	}
-	return false
-}
-
 func hasAnyModalityWithInline(capabilities map[genai.Modality]genai.ModalCapability) bool {
-	for _, cap := range capabilities {
-		if cap.Inline {
+	for _, c := range capabilities {
+		if c.Inline {
 			return true
 		}
 	}
@@ -1169,8 +1154,8 @@ func hasAnyModalityWithInline(capabilities map[genai.Modality]genai.ModalCapabil
 }
 
 func hasAnyModalityWithURL(capabilities map[genai.Modality]genai.ModalCapability) bool {
-	for _, cap := range capabilities {
-		if cap.URL {
+	for _, c := range capabilities {
+		if c.URL {
 			return true
 		}
 	}

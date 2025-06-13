@@ -80,12 +80,6 @@ func printList() error {
 	return nil
 }
 
-var textOnly = map[genai.Modality]genai.ModalCapability{
-	genai.ModalityText: {
-		Inline: true,
-	},
-}
-
 // modalityMapToString converts a modality capability map to a readable string
 func modalityMapToString(m map[genai.Modality]genai.ModalCapability) string {
 	if len(m) == 0 {

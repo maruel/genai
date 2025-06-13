@@ -60,14 +60,15 @@ func TestScoreboard(t *testing.T, g ProviderGenModalityFactory, filter func(mode
 		// Only test the first model but acknowledge them all.
 		modelsSeen = append(modelsSeen, s.Models...)
 		t.Run(fmt.Sprintf("%s_%s_%s", strings.Join(in, ","), strings.Join(out, ","), s.Models[0]), func(t *testing.T) {
+			testModalities(t, s.In, s.Out)
 			if s.GenSync != nil {
 				t.Run("GenSync", func(t *testing.T) {
-					testGenText(t, g, s.Models[0], s.In, s.Out, s.GenSync, false)
+					testGen(t, g, s.Models[0], s.In, s.Out, s.GenSync, false)
 				})
 			}
 			if s.GenStream != nil {
 				t.Run("GenStream", func(t *testing.T) {
-					testGenText(t, g, s.Models[0], s.In, s.Out, s.GenStream, true)
+					testGen(t, g, s.Models[0], s.In, s.Out, s.GenStream, true)
 				})
 			}
 			if s.GenDoc != nil {
@@ -137,33 +138,42 @@ func TestScoreboard(t *testing.T, g ProviderGenModalityFactory, filter func(mode
 	})
 }
 
-func testGenText(t *testing.T, g ProviderGenModalityFactory, model string, in, out map[genai.Modality]genai.ModalCapability, f *genai.FunctionalityText, stream bool) {
-	// General verifications
-	// Text only mode.
-	textInOnly := len(in) == 1 && in[genai.ModalityText].Inline
-	textOutOnly := len(out) == 1 && out[genai.ModalityText].Inline
-	if textInOnly {
-		// For text-only input, ensure no non-text modalities have delivery methods set
-		for modality, cap := range in {
-			if modality != genai.ModalityText && (cap.Inline || cap.URL) {
-				t.Fatalf("Text-only model should not have delivery methods set for modality %v", modality)
-			}
+func testModalities(t *testing.T, in, out map[genai.Modality]genai.ModalCapability) {
+	if c, ok := in[genai.ModalityText]; ok {
+		if !c.Inline {
+			t.Fatalf("input text modality requires inline")
+		}
+		if c.URL {
+			t.Fatalf("input text modality doesn't support URL")
 		}
 	}
-	if textOutOnly {
-		// For text-only output, ensure no non-text modalities have delivery methods set
-		for modality, cap := range out {
-			if modality != genai.ModalityText && (cap.Inline || cap.URL) {
-				t.Fatalf("Text-only model should not have delivery methods set for output modality %v", modality)
-			}
+	if c, ok := out[genai.ModalityText]; ok {
+		if !c.Inline {
+			t.Fatalf("output text modality requires inline")
+		}
+		if c.URL {
+			t.Fatalf("output text modality doesn't support URL")
 		}
 	}
+	for modality, c := range in {
+		if !c.Inline && !c.URL {
+			t.Fatalf("input modality %s requires at least one of inline or URL", modality)
+		}
+	}
+	for modality, c := range out {
+		if !c.Inline && !c.URL {
+			t.Fatalf("output modality %s requires at least one of inline or URL", modality)
+		}
+	}
+}
 
+func testGen(t *testing.T, g ProviderGenModalityFactory, model string, in, out map[genai.Modality]genai.ModalCapability, f *genai.FunctionalityText, stream bool) {
 	ran := false
+	// Text only output.
 	// Do not run text only output cases when output modality includes non-text. Most model fails in
 	// this case.
 	// TODO: Some models are fine with this, we need to improve genai.Functionality.
-	if textOutOnly {
+	if len(out) == 1 && out[genai.ModalityText].Inline {
 		// Hack: audio input models tend to not work well with text-only input.
 		_, hasText := in[genai.ModalityText]
 		_, hasAudio := in[genai.ModalityAudio]
@@ -185,7 +195,7 @@ func testGenText(t *testing.T, g ProviderGenModalityFactory, model string, in, o
 			})
 			ran = true
 		}
-		if _, hasAudio := in[genai.ModalityAudio]; hasAudio {
+		if hasAudio {
 			t.Run("audio", func(t *testing.T) {
 				testAudioSTTFunctionalities(t, g, model, in, out, f, stream)
 			})
@@ -199,7 +209,7 @@ func testGenText(t *testing.T, g ProviderGenModalityFactory, model string, in, o
 		}
 	}
 
-	// Multi-modal
+	// Multi-modal output.
 	if _, hasImage := out[genai.ModalityImage]; hasImage {
 		// Text+Image output, e.g. Gemini.
 		t.Run("imagegen", func(t *testing.T) {
@@ -208,12 +218,11 @@ func testGenText(t *testing.T, g ProviderGenModalityFactory, model string, in, o
 		ran = true
 	}
 	if _, hasAudio := out[genai.ModalityAudio]; hasAudio {
-		/*
-			t.Run("audiogen", func(t *testing.T) {
-				// TODO: testAudioGenFunctionalities(t, g, model, f, stream)
-			})
-			ran = true
-		*/
+		t.Run("audiogen", func(t *testing.T) {
+			t.Skip("TODO: it currently assumes GenDoc.")
+			// testAudioGenFunctionalities(t, g, model, in, out, f, stream)
+		})
+		ran = true
 	}
 	if !ran {
 		t.Fatal("implement test case for this modalities combination")

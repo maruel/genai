@@ -7,24 +7,19 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 0
-        transfer_encoding: []
-        trailer: {}
         host: generativelanguage.googleapis.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
+        form:
+            pageSize:
+                - "1000"
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models
+        url: https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000
         method: GET
       response:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
         body: |
@@ -71,4 +66,4 @@ interactions:
                 - "0"
         status: 400 Bad Request
         code: 400
-        duration: 36ms
+        duration: 98ms

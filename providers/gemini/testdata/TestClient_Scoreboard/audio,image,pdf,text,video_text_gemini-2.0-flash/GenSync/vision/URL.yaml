@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 250
-        transfer_encoding: []
-        trailer: {}
+        content_length: 301
         host: generativelanguage.googleapis.com
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Is it a banana? Reply with only one word."},{"fileData":{"mimeType":"image/jpeg","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/banana.jpg"}}]}]}
-        form: {}
+            {"contents":[{"role":"user","parts":[{"text":"Is it a banana? Reply with only one word."},{"fileData":{"mimeType":"image/jpeg","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/banana.jpg"}}]}],"generationConfig":{"responseModalities":["TEXT"]}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,8 +19,6 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
         body: |
@@ -44,7 +37,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=91
+                - gfet4t7; dur=104
             Vary:
                 - Origin
                 - X-Origin
@@ -57,4 +50,4 @@ interactions:
                 - "0"
         status: 400 Bad Request
         code: 400
-        duration: 168ms
+        duration: 113ms

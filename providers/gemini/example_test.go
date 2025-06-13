@@ -9,8 +9,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/maruel/genai/providers/gemini"
@@ -67,13 +67,20 @@ func ExampleNew_hTTP_record() {
 	}
 	fmt.Printf("Found %d models\n", len(models))
 	// Output:
-	// Found 58 models
+	// Found 53 models
 }
 
 // trimRecording trims API key and noise from the recording.
 func trimRecording(i *cassette.Interaction) error {
 	// Gemini pass the API key as a query argument (!) so zap it before recording.
-	i.Request.URL = i.Request.URL[:strings.Index(i.Request.URL, "?")]
+	u, err := url.Parse(i.Request.URL)
+	if err != nil {
+		return err
+	}
+	q := u.Query()
+	q.Del("key")
+	u.RawQuery = q.Encode()
+	i.Request.URL = u.String()
 	i.Request.Form.Del("key")
 	// Reduce noise.
 	i.Request.Headers.Del("X-Request-Id")
@@ -84,9 +91,12 @@ func trimRecording(i *cassette.Interaction) error {
 
 // matchCassette matches the cassette ignoring the query argument
 func matchCassette(r *http.Request, i cassette.Request) bool {
-	r = r.Clone(r.Context())
 	// Gemini pass the API key as a query argument (!) so zap it before matching.
-	r.URL.RawQuery = ""
+	r = r.Clone(r.Context())
+	q := r.URL.Query()
+	q.Del("key")
+	r.URL.RawQuery = q.Encode()
+	r.ParseForm()
 	return defaultMatcher(r, i)
 }
 

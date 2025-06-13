@@ -7,14 +7,9 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 611
-        transfer_encoding: []
-        trailer: {}
         host: generativelanguage.googleapis.com
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to determine the best country","parameters":{"type":"object","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"required":["country"]},"response":{"type":"object","properties":{"response":{"type":"string"}},"required":["response"]}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"]}}
-        form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,8 +19,6 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
         body: |
@@ -54,7 +47,7 @@ interactions:
                     "role": "model"
                   },
                   "finishReason": "STOP",
-                  "avgLogprobs": -0.14871495962142944
+                  "avgLogprobs": -0.051121920347213745
                 }
               ],
               "usageMetadata": {
@@ -75,7 +68,7 @@ interactions:
                 ]
               },
               "modelVersion": "gemini-2.0-flash-lite",
-              "responseId": "SRo7aOj-HsqF1dkPq8eZ2As"
+              "responseId": "sHJMaOSxAfKtgLUPm53WoAE"
             }
         headers:
             Alt-Svc:
@@ -85,7 +78,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=563
+                - gfet4t7; dur=775
             Vary:
                 - Origin
                 - X-Origin
@@ -98,4 +91,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 633ms
+        duration: 850ms

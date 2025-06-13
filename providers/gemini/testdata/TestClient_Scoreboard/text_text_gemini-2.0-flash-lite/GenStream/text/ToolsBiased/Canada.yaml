@@ -7,28 +7,23 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 611
-        transfer_encoding: []
-        trailer: {}
         host: generativelanguage.googleapis.com
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to determine the best country","parameters":{"type":"object","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"required":["country"]},"response":{"type":"object","properties":{"response":{"type":"string"}},"required":["response"]}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"]}}
-        form: {}
+        form:
+            alt:
+                - sse
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:streamGenerateContent
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:streamGenerateContent?alt=sse
         method: POST
       response:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
-        uncompressed: false
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"Canada\"}}},{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"USA\"}}}],\"role\": \"model\"},\"finishReason\": \"STOP\"}],\"usageMetadata\": {\"promptTokenCount\": 48,\"candidatesTokenCount\": 10,\"totalTokenCount\": 58,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 48}],\"candidatesTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 10}]},\"modelVersion\": \"gemini-2.0-flash-lite\",\"responseId\": \"Sho7aOPnOJyV1dkPrKWakAc\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"Canada\"}}},{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"USA\"}}}],\"role\": \"model\"},\"finishReason\": \"STOP\"}],\"usageMetadata\": {\"promptTokenCount\": 48,\"candidatesTokenCount\": 10,\"totalTokenCount\": 58,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 48}],\"candidatesTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 10}]},\"modelVersion\": \"gemini-2.0-flash-lite\",\"responseId\": \"sXJMaNilMsCvgLUPgeGuqAU\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -39,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=486
+                - gfet4t7; dur=647
             Vary:
                 - Origin
                 - X-Origin
@@ -52,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 496ms
+        duration: 658ms

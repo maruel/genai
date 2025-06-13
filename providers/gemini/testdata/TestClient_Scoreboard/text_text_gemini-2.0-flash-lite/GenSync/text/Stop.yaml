@@ -7,14 +7,9 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 179
-        transfer_encoding: []
-        trailer: {}
         host: generativelanguage.googleapis.com
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"contents":[{"role":"user","parts":[{"text":"Talk about Canada in 10 words. Start with: Canada is"}]}],"generationConfig":{"stopSequences":["is"],"responseModalities":["TEXT"]}}
-        form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,8 +19,6 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
         body: |
@@ -41,7 +34,7 @@ interactions:
                     "role": "model"
                   },
                   "finishReason": "STOP",
-                  "avgLogprobs": -7.0938840508461e-06
+                  "avgLogprobs": -4.7984067350625992e-06
                 }
               ],
               "usageMetadata": {
@@ -62,7 +55,7 @@ interactions:
                 ]
               },
               "modelVersion": "gemini-2.0-flash-lite",
-              "responseId": "AYU4aIOFM-yU1dkPwcbKoQc"
+              "responseId": "sHJMaJPCMcCvgLUPgeGuqAU"
             }
         headers:
             Alt-Svc:
@@ -72,7 +65,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=340
+                - gfet4t7; dur=448
             Vary:
                 - Origin
                 - X-Origin
@@ -85,4 +78,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 420ms
+        duration: 459ms

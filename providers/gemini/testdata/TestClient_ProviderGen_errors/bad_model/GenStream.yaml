@@ -7,27 +7,22 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 122
-        transfer_encoding: []
-        trailer: {}
         host: generativelanguage.googleapis.com
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"contents":[{"role":"user","parts":[{"text":"Tell a short joke."}]}],"generationConfig":{"responseModalities":["TEXT"]}}
-        form: {}
+        form:
+            alt:
+                - sse
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/bad%20model:streamGenerateContent
+        url: https://generativelanguage.googleapis.com/v1beta/models/bad%20model:streamGenerateContent?alt=sse
         method: POST
       response:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: 152
-        uncompressed: false
         body: |
             {
               "error": {
@@ -46,7 +41,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=86
+                - gfet4t7; dur=95
             Vary:
                 - Origin
                 - X-Origin
@@ -59,4 +54,4 @@ interactions:
                 - "0"
         status: 400 Bad Request
         code: 400
-        duration: 91ms
+        duration: 106ms

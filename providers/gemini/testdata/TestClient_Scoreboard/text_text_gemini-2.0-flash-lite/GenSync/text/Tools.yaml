@@ -7,14 +7,9 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 825
-        transfer_encoding: []
-        trailer: {}
         host: generativelanguage.googleapis.com
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"type":"object","properties":{"number":{"type":"string"}},"required":["number"]},"response":{"type":"object","properties":{"response":{"type":"string"}},"required":["response"]}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"systemInstruction":{"parts":[{"text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}]},"generationConfig":{"responseModalities":["TEXT"]}}
-        form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,8 +19,6 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
         body: |
@@ -46,7 +39,7 @@ interactions:
                     "role": "model"
                   },
                   "finishReason": "STOP",
-                  "avgLogprobs": -0.00051377206109464173
+                  "avgLogprobs": -0.0004271626006811857
                 }
               ],
               "usageMetadata": {
@@ -67,7 +60,7 @@ interactions:
                 ]
               },
               "modelVersion": "gemini-2.0-flash-lite",
-              "responseId": "AYU4aL7KOMqF1dkPq8eZ2As"
+              "responseId": "sHJMaOWgMcivgLUP-oT5uAQ"
             }
         headers:
             Alt-Svc:
@@ -77,7 +70,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=565
+                - gfet4t7; dur=564
             Vary:
                 - Origin
                 - X-Origin
@@ -90,21 +83,16 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 644ms
+        duration: 580ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
         content_length: 1023
-        transfer_encoding: []
-        trailer: {}
         host: generativelanguage.googleapis.com
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"model","parts":[{"functionCall":{"name":"square_root","args":{"number":"132413"}}}]},{"role":"user","parts":[{"functionResponse":{"name":"square_root","response":{"response":"363.89"}}}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"type":"object","properties":{"number":{"type":"string"}},"required":["number"]},"response":{"type":"object","properties":{"response":{"type":"string"}},"required":["response"]}}]}],"toolConfig":{"functionCallingConfig":{"mode":"NONE"}},"systemInstruction":{"parts":[{"text":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."}]},"generationConfig":{"responseModalities":["TEXT"]}}
-        form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -114,8 +102,6 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
         body: |
@@ -131,7 +117,7 @@ interactions:
                     "role": "model"
                   },
                   "finishReason": "STOP",
-                  "avgLogprobs": -0.010311595031193324
+                  "avgLogprobs": -0.0017690755692975862
                 }
               ],
               "usageMetadata": {
@@ -152,7 +138,7 @@ interactions:
                 ]
               },
               "modelVersion": "gemini-2.0-flash-lite",
-              "responseId": "AoU4aOXYF-yU1dkPwcbKoQc"
+              "responseId": "sXJMaPiAE_KtgLUPm53WoAE"
             }
         headers:
             Alt-Svc:
@@ -162,7 +148,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=330
+                - gfet4t7; dur=427
             Vary:
                 - Origin
                 - X-Origin
@@ -175,4 +161,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 339ms
+        duration: 438ms

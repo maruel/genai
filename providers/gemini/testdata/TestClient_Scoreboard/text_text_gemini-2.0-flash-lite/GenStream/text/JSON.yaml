@@ -7,28 +7,23 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 268
-        transfer_encoding: []
-        trailer: {}
         host: generativelanguage.googleapis.com
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"generationConfig":{"responseMimeType":"application/json","responseModalities":["TEXT"]}}
-        form: {}
+        form:
+            alt:
+                - sse
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:streamGenerateContent
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:streamGenerateContent?alt=sse
         method: POST
       response:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
-        uncompressed: false
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"[\"}],\"role\": \"model\"}}],\"usageMetadata\": {\"promptTokenCount\": 30,\"totalTokenCount\": 30,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 30}]},\"modelVersion\": \"gemini-2.0-flash-lite\",\"responseId\": \"AoU4aMCDM47dgLUPtoHTgQY\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\\n  {\\\"is_fruit\\\": true}\\n]\"}],\"role\": \"model\"},\"finishReason\": \"STOP\"}],\"usageMetadata\": {\"promptTokenCount\": 29,\"candidatesTokenCount\": 12,\"totalTokenCount\": 41,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 29}],\"candidatesTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 12}]},\"modelVersion\": \"gemini-2.0-flash-lite\",\"responseId\": \"AoU4aMCDM47dgLUPtoHTgQY\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"[\"}],\"role\": \"model\"}}],\"usageMetadata\": {\"promptTokenCount\": 30,\"totalTokenCount\": 30,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 30}]},\"modelVersion\": \"gemini-2.0-flash-lite\",\"responseId\": \"snJMaLreHMCvgLUPgeGuqAU\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\\n  {\\n    \\\"is_fruit\\\": true\\n  }\\n]\"}],\"role\": \"model\"}}],\"usageMetadata\": {\"promptTokenCount\": 30,\"totalTokenCount\": 30,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 30}]},\"modelVersion\": \"gemini-2.0-flash-lite\",\"responseId\": \"snJMaLreHMCvgLUPgeGuqAU\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\"}],\"role\": \"model\"},\"finishReason\": \"STOP\"}],\"usageMetadata\": {\"promptTokenCount\": 29,\"candidatesTokenCount\": 17,\"totalTokenCount\": 46,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 29}],\"candidatesTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 17}]},\"modelVersion\": \"gemini-2.0-flash-lite\",\"responseId\": \"snJMaLreHMCvgLUPgeGuqAU\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -39,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=338
+                - gfet4t7; dur=329
             Vary:
                 - Origin
                 - X-Origin
@@ -52,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 350ms
+        duration: 340ms

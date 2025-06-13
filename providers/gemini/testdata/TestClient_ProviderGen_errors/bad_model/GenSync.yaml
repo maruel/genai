@@ -7,14 +7,9 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 122
-        transfer_encoding: []
-        trailer: {}
         host: generativelanguage.googleapis.com
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"contents":[{"role":"user","parts":[{"text":"Tell a short joke."}]}],"generationConfig":{"responseModalities":["TEXT"]}}
-        form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,8 +19,6 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
         body: |
@@ -44,7 +37,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=119
+                - gfet4t7; dur=55
             Vary:
                 - Origin
                 - X-Origin
@@ -57,4 +50,4 @@ interactions:
                 - "0"
         status: 400 Bad Request
         code: 400
-        duration: 124ms
+        duration: 66ms

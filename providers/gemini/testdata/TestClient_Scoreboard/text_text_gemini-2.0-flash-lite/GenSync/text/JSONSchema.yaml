@@ -7,14 +7,9 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 388
-        transfer_encoding: []
-        trailer: {}
         host: generativelanguage.googleapis.com
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Reply as JSON according to the provided schema."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"type":"object","properties":{"is_fruit":{"type":"boolean","description":"True if the answer is that it is a fruit, false otherwise"}},"required":["is_fruit"]},"responseModalities":["TEXT"]}}
-        form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,8 +19,6 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
         body: |
@@ -62,7 +55,7 @@ interactions:
                 ]
               },
               "modelVersion": "gemini-2.0-flash-lite",
-              "responseId": "AYU4aM2-OLSo1dkPwdyIiA0"
+              "responseId": "sHJMaO-XK8ivgLUP-oT5uAQ"
             }
         headers:
             Alt-Svc:
@@ -72,7 +65,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=482
+                - gfet4t7; dur=439
             Vary:
                 - Origin
                 - X-Origin
@@ -85,4 +78,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 561ms
+        duration: 450ms

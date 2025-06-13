@@ -27,7 +27,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94f2a7d23bc5714a-YUL
+                - 94f329100b7c715a-YUL
             Content-Length:
                 - "308"
             Content-Type:
@@ -38,8 +38,14 @@ interactions:
                 - cloudflare
             Vary:
                 - Accept-Encoding
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2025-06-13T15:35:11.713Z"
+            X-Cache-Key:
+                - f8980a8bab846f16f8ef27bec97f7f842d2adb3c880ca27fe425d8a6595154c5
             X-Powered-By:
                 - Express
         status: 400 Bad Request
         code: 400
-        duration: 9.242s
+        duration: 257ms

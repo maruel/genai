@@ -144,15 +144,22 @@ var Scoreboard = genai.Scoreboard{
 				},
 				genai.ModalityText: {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityAudio: {
+					Inline:           true,
+					SupportedFormats: []string{"audio/mpeg", "audio/wav", "audio/mp4", "audio/x-m4a", "audio/webm"},
+				},
+				genai.ModalityText: {Inline: true},
+			},
 			Models: []string{
 				"gpt-4o-audio-preview",
+				// "gpt-4o-audio-preview-2025-06-03", Listed on the web site but not listed in the API.
 				"gpt-4o-audio-preview-2024-10-01",
 				"gpt-4o-audio-preview-2024-12-17",
 				"gpt-4o-mini-transcribe",
 				"gpt-4o-transcribe",
 
-				// Supports audio output
+				// This model fails the smoke test.
 				"gpt-4o-mini-audio-preview",
 				"gpt-4o-mini-audio-preview-2024-12-17",
 			},

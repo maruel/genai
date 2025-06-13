@@ -170,54 +170,50 @@ func testModalities(t *testing.T, in, out map[genai.Modality]genai.ModalCapabili
 func testGen(t *testing.T, g ProviderGenModalityFactory, model string, in, out map[genai.Modality]genai.ModalCapability, f *genai.FunctionalityText, stream bool) {
 	ran := false
 	// Text only output.
-	// Do not run text only output cases when output modality includes non-text. Most model fails in
-	// this case.
-	// TODO: Some models are fine with this, we need to improve genai.Functionality.
-	if len(out) == 1 && out[genai.ModalityText].Inline {
-		// Hack: audio input models tend to not work well with text-only input.
-		_, hasText := in[genai.ModalityText]
-		_, hasAudio := in[genai.ModalityAudio]
-		if hasText && !hasAudio {
-			t.Run("text", func(t *testing.T) {
-				testTextFunctionalities(t, g, model, f, stream)
-			})
-			ran = true
-		}
-		if _, hasImage := in[genai.ModalityImage]; hasImage {
-			t.Run("vision", func(t *testing.T) {
-				testVisionFunctionalities(t, g, model, in, out, f, stream)
-			})
-			ran = true
-		}
-		if _, hasPDF := in[genai.ModalityPDF]; hasPDF {
-			t.Run("pdf", func(t *testing.T) {
-				testPDFFunctionalities(t, g, model, in, out, f, stream)
-			})
-			ran = true
-		}
-		if hasAudio {
-			t.Run("audio", func(t *testing.T) {
-				testAudioSTTFunctionalities(t, g, model, in, out, f, stream)
-			})
-			ran = true
-		}
-		if _, hasVideo := in[genai.ModalityVideo]; hasVideo {
-			t.Run("video", func(t *testing.T) {
-				testVideoFunctionalities(t, g, model, in, out, f, stream)
-			})
-			ran = true
-		}
+	// Hack: audio input+output models tend to not work well with text-only operations.
+	_, hasTextIn := in[genai.ModalityText]
+	_, hasAudioIn := in[genai.ModalityAudio]
+	_, hasAudioOut := out[genai.ModalityAudio]
+	if hasTextIn && !(hasAudioIn && hasAudioOut) {
+		t.Run("text", func(t *testing.T) {
+			testTextFunctionalities(t, g, model, f, stream)
+		})
+		ran = true
+	}
+	if _, hasImageIn := in[genai.ModalityImage]; hasImageIn {
+		t.Run("vision", func(t *testing.T) {
+			testVisionFunctionalities(t, g, model, in, out, f, stream)
+		})
+		ran = true
+	}
+	if _, hasPDFIn := in[genai.ModalityPDF]; hasPDFIn {
+		t.Run("pdf", func(t *testing.T) {
+			testPDFFunctionalities(t, g, model, in, out, f, stream)
+		})
+		ran = true
+	}
+	if hasAudioIn {
+		t.Run("audio", func(t *testing.T) {
+			testAudioSTTFunctionalities(t, g, model, in, out, f, stream)
+		})
+		ran = true
+	}
+	if _, hasVideoIn := in[genai.ModalityVideo]; hasVideoIn {
+		t.Run("video", func(t *testing.T) {
+			testVideoFunctionalities(t, g, model, in, out, f, stream)
+		})
+		ran = true
 	}
 
 	// Multi-modal output.
-	if _, hasImage := out[genai.ModalityImage]; hasImage {
+	if _, hasImageOut := out[genai.ModalityImage]; hasImageOut {
 		// Text+Image output, e.g. Gemini.
 		t.Run("imagegen", func(t *testing.T) {
 			testChatImageGenFunctionalities(t, g, model, in, out, f, stream)
 		})
 		ran = true
 	}
-	if _, hasAudio := out[genai.ModalityAudio]; hasAudio {
+	if hasAudioOut {
 		t.Run("audiogen", func(t *testing.T) {
 			t.Skip("TODO: it currently assumes GenDoc.")
 			// testAudioGenFunctionalities(t, g, model, in, out, f, stream)

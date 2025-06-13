@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 388
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Reply as JSON according to the provided schema."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"type":"object","properties":{"is_fruit":{"type":"boolean","description":"True if the answer is that it is a fruit, false otherwise"}},"required":["is_fruit"]},"responseModalities":["TEXT"]}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"{\"}],\"role\": \"model\"}}],\"usageMetadata\": {\"promptTokenCount\": 16,\"totalTokenCount\": 16,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 16}]},\"modelVersion\": \"gemini-2.0-flash\",\"responseId\": \"u3JMaM2PCPKtgLUPm53WoAE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\\n  \\\"\"}],\"role\": \"model\"}}],\"usageMetadata\": {\"promptTokenCount\": 16,\"totalTokenCount\": 16,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 16}]},\"modelVersion\": \"gemini-2.0-flash\",\"responseId\": \"u3JMaM2PCPKtgLUPm53WoAE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"is_fruit\\\": true\\n}\"}],\"role\": \"model\"},\"finishReason\": \"STOP\"}],\"usageMetadata\": {\"promptTokenCount\": 36,\"candidatesTokenCount\": 11,\"totalTokenCount\": 47,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"candidatesTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 11}]},\"modelVersion\": \"gemini-2.0-flash\",\"responseId\": \"u3JMaM2PCPKtgLUPm53WoAE\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=449
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 460ms

@@ -1,0 +1,53 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 619
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to determine the best country","parameters":{"type":"object","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"required":["country"]},"response":{"type":"object","properties":{"response":{"type":"string"}},"required":["response"]}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT","IMAGE"]}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "error": {
+                "code": 400,
+                "message": "Function calling is not enabled for models/gemini-2.0-flash-preview-image-generation",
+                "status": "INVALID_ARGUMENT"
+              }
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=94
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 400 Bad Request
+        code: 400
+        duration: 104ms

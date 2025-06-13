@@ -132,7 +132,6 @@ var Scoreboard = genai.Scoreboard{
 		// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#speech-to-text-capabilities-audio-input-%EF%B8%8F
 		// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#generate-audio-api-
 		// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#text-to-speech-post---openai-compatible-%EF%B8%8F%EF%B8%8F
-		// Getting error: invalid_value: azure-openai error: This model does not support image_url content.; provider:azure-openai
 		{
 			Models: []string{"openai-audio"},
 			In: map[genai.Modality]genai.ModalCapability{
@@ -142,7 +141,13 @@ var Scoreboard = genai.Scoreboard{
 				},
 				genai.ModalityText: {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityAudio: {
+					Inline:           true,
+					SupportedFormats: []string{"audio/mpeg", "audio/wav", "audio/mp4", "audio/x-m4a", "audio/webm"},
+				},
+				genai.ModalityText: {Inline: true},
+			},
 			GenSync: &genai.FunctionalityText{
 				NoMaxTokens: true,
 				JSON:        true,
@@ -150,24 +155,6 @@ var Scoreboard = genai.Scoreboard{
 			},
 			// GenStream doesn't succeed in the smoke test, so consider it broken for now.
 		},
-		/*
-			{
-				In:  []genai.Modality{genai.ModalityText},
-				Out: []genai.Modality{genai.ModalityAudio},
-				Models: []string{
-					"openai-audio",
-				},
-				GenSync: genai.Functionality{
-					NoMaxTokens:        true,
-					JSON:               true,
-				},
-				GenStream: genai.Functionality{
-					BrokenTokenUsage:   true,
-					NoMaxTokens:        true,
-					JSON:               true,
-				},
-			},
-			//*/
 	},
 }
 

@@ -97,12 +97,14 @@ var Scoreboard = genai.Scoreboard{
 			GenSync: &genai.FunctionalityText{
 				// It supports URL but only when uploaded to its own storage.
 				Tools:      genai.True,
+				BiasedTool: genai.True, // It's rare, but it happens.
 				JSON:       true,
 				JSONSchema: true,
 				Seed:       true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:      genai.True,
+				BiasedTool: genai.True, // It's rare, but it happens.
 				JSON:       true,
 				JSONSchema: true,
 				Seed:       true,
@@ -118,20 +120,8 @@ var Scoreboard = genai.Scoreboard{
 					SupportedFormats: []string{"image/png", "image/jpeg", "image/webp"},
 				},
 			},
-			GenSync: &genai.FunctionalityText{
-				Thinking:   true,
-				Tools:      genai.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
-			},
-			GenStream: &genai.FunctionalityText{
-				Thinking:   true,
-				Tools:      genai.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
-			},
+			GenSync:   &genai.FunctionalityText{Seed: true},
+			GenStream: &genai.FunctionalityText{Seed: true},
 		},
 	},
 }
@@ -367,6 +357,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 		// Disable thinking.
 		c.GenerationConfig.ThinkingConfig = &ThinkingConfig{}
 	}
+	// Default to text generation.
+	if len(c.GenerationConfig.ResponseModalities) == 0 {
+		c.GenerationConfig.ResponseModalities = []Modality{ModalityText}
+	}
 
 	if opts != nil {
 		// This doesn't seem to be well supported yet:
@@ -388,10 +382,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			unsupported = c.initOptions(v, model)
 		default:
 			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
-		}
-		// Default to text generation.
-		if len(c.GenerationConfig.ResponseModalities) == 0 {
-			c.GenerationConfig.ResponseModalities = []Modality{ModalityText}
 		}
 	}
 
@@ -596,8 +586,16 @@ func (p *Part) FromContent(in *genai.Content) error {
 		if mimeType, data, err = in.ReadDocument(10 * 1024 * 1024); err != nil {
 			return err
 		}
-		p.InlineData.MimeType = mimeType
-		p.InlineData.Data = data
+		if mimeType == "text/plain" {
+			// Gemini refuses text/plain as attachment.
+			if in.URL != "" {
+				return fmt.Errorf("text/plain is not supported as inline data for URL %q", in.URL)
+			}
+			p.Text = string(data)
+		} else {
+			p.InlineData.MimeType = mimeType
+			p.InlineData.Data = data
+		}
 	} else {
 		if mimeType = mime.TypeByExtension(path.Ext(in.URL)); mimeType == "" {
 			return fmt.Errorf("could not determine mime type for URL %q", in.URL)

@@ -28,7 +28,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94f2a7d23bc7714a-YUL
+                - 94f329100b79715a-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
@@ -37,8 +37,14 @@ interactions:
                 - cloudflare
             Vary:
                 - Accept-Encoding
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2025-06-13T15:35:07.174Z"
+            X-Cache-Key:
+                - 7db25a015aa75fb5913deda01be084911b538ad3ab71b9c5af04bd7af2346b07
             X-Powered-By:
                 - Express
         status: 200 OK
         code: 200
-        duration: 4.739s
+        duration: 619ms

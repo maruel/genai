@@ -7,14 +7,9 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 268
-        transfer_encoding: []
-        trailer: {}
         host: generativelanguage.googleapis.com
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"generationConfig":{"responseMimeType":"application/json","responseModalities":["TEXT"]}}
-        form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,8 +19,6 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
         body: |
@@ -35,19 +28,19 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "[\n  {\"is_fruit\": true}\n]"
+                        "text": "[\n  {\n    \"is_fruit\": true\n  }\n]"
                       }
                     ],
                     "role": "model"
                   },
                   "finishReason": "STOP",
-                  "avgLogprobs": -0.069008876880009964
+                  "avgLogprobs": -0.044626099221846634
                 }
               ],
               "usageMetadata": {
                 "promptTokenCount": 29,
-                "candidatesTokenCount": 12,
-                "totalTokenCount": 41,
+                "candidatesTokenCount": 17,
+                "totalTokenCount": 46,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
@@ -57,12 +50,12 @@ interactions:
                 "candidatesTokensDetails": [
                   {
                     "modality": "TEXT",
-                    "tokenCount": 12
+                    "tokenCount": 17
                   }
                 ]
               },
               "modelVersion": "gemini-2.0-flash-lite",
-              "responseId": "AYU4aOeKM4Op1dkPmffv0Aw"
+              "responseId": "sHJMaO2mMfKtgLUPm53WoAE"
             }
         headers:
             Alt-Svc:
@@ -72,7 +65,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=387
+                - gfet4t7; dur=521
             Vary:
                 - Origin
                 - X-Origin
@@ -85,4 +78,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 466ms
+        duration: 533ms

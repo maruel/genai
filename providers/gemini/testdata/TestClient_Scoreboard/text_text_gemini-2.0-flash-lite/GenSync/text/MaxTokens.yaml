@@ -7,14 +7,9 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 147
-        transfer_encoding: []
-        trailer: {}
         host: generativelanguage.googleapis.com
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"contents":[{"role":"user","parts":[{"text":"Tell a joke in 10 words"}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":3}}
-        form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,8 +19,6 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
         body: |
@@ -41,7 +34,7 @@ interactions:
                     "role": "model"
                   },
                   "finishReason": "MAX_TOKENS",
-                  "avgLogprobs": -0.025795221328735352
+                  "avgLogprobs": -0.034924748043219246
                 }
               ],
               "usageMetadata": {
@@ -62,7 +55,7 @@ interactions:
                 ]
               },
               "modelVersion": "gemini-2.0-flash-lite",
-              "responseId": "AYU4aKSWOOGqgLUPkLaL-AE"
+              "responseId": "sHJMaLXOMMivgLUP-oT5uAQ"
             }
         headers:
             Alt-Svc:
@@ -72,7 +65,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=414
+                - gfet4t7; dur=431
             Vary:
                 - Origin
                 - X-Origin
@@ -85,4 +78,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 493ms
+        duration: 447ms

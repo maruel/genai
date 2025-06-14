@@ -125,21 +125,12 @@ type OptionsText struct {
 
 // https://docs.anthropic.com/en/api/messages
 type ChatRequest struct {
-	Model      string    `json:"model,omitzero"`
-	MaxTokens  int64     `json:"max_tokens"`
-	Messages   []Message `json:"messages"`
-	Container  string    `json:"container,omitzero"` // identifier for reuse across requests
-	MCPServers []struct {
-		Name               string `json:"name,omitzero"`
-		Type               string `json:"type,omitzero"` // "url"
-		URL                string `json:"url,omitzero"`
-		AuthorizationToken string `json:"authorization_token,omitzero"`
-		ToolConfiguration  struct {
-			AllowedTools []string `json:"allowed_tools,omitzero"`
-			Enabled      bool     `json:"enabled,omitzero"`
-		} `json:"tool_configuration,omitzero"`
-	} `json:"mcp_servers,omitzero"`
-	Metadata struct {
+	Model      string      `json:"model,omitzero"`
+	MaxTokens  int64       `json:"max_tokens"`
+	Messages   []Message   `json:"messages"`
+	Container  string      `json:"container,omitzero"` // identifier for reuse across requests
+	MCPServers []MCPServer `json:"mcp_servers,omitzero"`
+	Metadata   struct {
 		UserID string `json:"user_id,omitzero"` // Should be a hash or UUID, opaque, to detect abuse, no PII
 	} `json:"metadata,omitzero"`
 	ServiceTier   string          `json:"service_tier,omitzero"` // "auto", "standard_only"
@@ -156,6 +147,10 @@ type ChatRequest struct {
 
 // Init initializes the provider specific completion request with the generic completion request.
 func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
+	return c.initImpl(msgs, opts, model, true)
+}
+
+func (c *ChatRequest) initImpl(msgs genai.Messages, opts genai.Options, model string, cache bool) error {
 	c.Model = model
 	var errs []error
 	var unsupported []string
@@ -168,7 +163,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 		switch v := opts.(type) {
 		case *OptionsText:
 			unsupported, errs = c.initOptions(&v.OptionsText)
-			msgToCache = v.MessagesToCache
+			if cache {
+				msgToCache = v.MessagesToCache
+			} else if v.MessagesToCache != 0 {
+				unsupported = append(unsupported, "MessagesToCache")
+			}
 			if v.ThinkingBudget > 0 {
 				if v.ThinkingBudget >= v.MaxTokens {
 					errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, v.MaxTokens))
@@ -292,6 +291,18 @@ func modelsMaxTokens(model string) int64 {
 	}
 	// Default value for new models.
 	return 32000
+}
+
+// https://docs.anthropic.com/en/api/messages#body-mcp-servers
+type MCPServer struct {
+	Name               string `json:"name"` //
+	Type               string `json:"type"` // "url"
+	URL                string `json:"url"`
+	AuthorizationToken string `json:"authorization_token,omitzero"`
+	ToolConfiguration  struct {
+		AllowedTools []string `json:"allowed_tools,omitzero"`
+		Enabled      bool     `json:"enabled,omitzero"`
+	} `json:"tool_configuration,omitzero"`
 }
 
 // SystemMessage is used in the system prompt.
@@ -1023,8 +1034,8 @@ type BatchRequest struct {
 
 // https://docs.anthropic.com/en/api/creating-message-batches
 type BatchRequestItem struct {
-	CustomID string             `json:"custom_id"`
-	Params   BatchRequestParams `json:"params"`
+	CustomID string      `json:"custom_id"`
+	Params   ChatRequest `json:"params"`
 }
 
 func (b *BatchRequestItem) Init(msgs genai.Messages, opts genai.Options, model string) error {
@@ -1033,156 +1044,7 @@ func (b *BatchRequestItem) Init(msgs genai.Messages, opts genai.Options, model s
 	// _, _ = rand.Read(bytes[:])
 	// b.CustomID = base64.RawURLEncoding.EncodeToString(bytes[:])
 	b.CustomID = "TODO"
-	return b.Params.Init(msgs, opts, model)
-}
-
-type BatchRequestParams struct {
-	Model      string    `json:"model"`
-	Messages   []Message `json:"messages"`
-	MaxTokens  int64     `json:"max_tokens"`
-	Container  string    `json:"container,omitzero"`
-	MCPServers []struct {
-		Name               string `json:"name,omitzero"`
-		Type               string `json:"type,omitzero"` // "url"
-		URL                string `json:"url,omitzero"`
-		AuthorizationToken string `json:"authorization_token,omitzero"`
-		ToolConfiguration  struct {
-			AllowedTools []string `json:"allowed_tools,omitzero"`
-			Enabled      bool     `json:"enabled,omitzero"`
-		} `json:"tool_configuration,omitzero"`
-	} `json:"mcp_servers,omitzero"`
-	Metadata struct {
-		UserID string `json:"user_id,omitzero"` // Should be a hash or UUID, opaque, to detect abuse, no PII
-	} `json:"metadata"`
-	ServiceTier   string          `json:"service_tier,omitzero"` // "auto", "standard_only"
-	StopSequences []string        `json:"stop_sequences,omitzero"`
-	Stream        bool            `json:"stream,omitzero"`
-	System        []SystemMessage `json:"system,omitzero"`      // Must be type "text"
-	Temperature   float64         `json:"temperature,omitzero"` // [0, 1]
-	Thinking      Thinking        `json:"thinking,omitzero"`
-	ToolChoice    ToolChoice      `json:"tool_choice,omitzero"`
-	Tools         []Tool          `json:"tools,omitzero"`
-	TopK          int64           `json:"top_k,omitzero"` // [1, ]
-	TopP          float64         `json:"top_p,omitzero"` // [0, 1]
-}
-
-// Init is very similar to ChatRequest.Init() with a few kinks because the API is not exactly the same.
-func (b *BatchRequestParams) Init(msgs genai.Messages, opts genai.Options, model string) error {
-	b.Model = model
-	var errs []error
-	var unsupported []string
-	// Default to disabled thinking.
-	b.Thinking.Type = "disabled"
-	// Anthropic requires a value! And their models listing API doesn't provide the model's acceptable values! This is quite annoying.
-	b.MaxTokens = modelsMaxTokens(model)
-	if opts != nil {
-		switch v := opts.(type) {
-		case *OptionsText:
-			unsupported, errs = b.initOptions(&v.OptionsText)
-			if v.MessagesToCache != 0 {
-				unsupported = append(unsupported, "MessagesToCache")
-			}
-			if v.ThinkingBudget > 0 {
-				if v.ThinkingBudget >= v.MaxTokens {
-					errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, v.MaxTokens))
-				}
-				// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
-				// Thinking isn’t compatible with temperature, top_p, or top_k modifications as well as forced tool use.
-				b.Thinking.BudgetTokens = v.ThinkingBudget
-				b.Thinking.Type = "enabled"
-			}
-		case *genai.OptionsText:
-			unsupported, errs = b.initOptions(v)
-		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
-		}
-	}
-
-	b.Messages = make([]Message, 0, len(msgs))
-	for i := range msgs {
-		switch msgs[i].Role {
-		case genai.User, genai.Assistant:
-			b.Messages = append(b.Messages, Message{})
-			if err := b.Messages[len(b.Messages)-1].From(&msgs[i]); err != nil {
-				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-			}
-			if err := b.Messages[len(b.Messages)-1].Validate(); err != nil {
-				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-			}
-			// Do not set cache here since it's irrelevant when batching.
-		default:
-			errs = append(errs, fmt.Errorf("message %d: unsupported role %q", i, msgs[i].Role))
-			continue
-		}
-	}
-	if len(unsupported) > 0 {
-		// If we have unsupported features but no other errors, return a continuable error
-		if len(errs) == 0 {
-			return &genai.UnsupportedContinuableError{Unsupported: unsupported}
-		}
-		// Otherwise, add the unsupported features to the error list
-		errs = append(errs, &genai.UnsupportedContinuableError{Unsupported: unsupported})
-	}
-	return errors.Join(errs...)
-}
-
-// initOptions is very similar to ChatRequest.initOptions() with a few kinks because the API is not exactly the same.
-func (b *BatchRequestParams) initOptions(v *genai.OptionsText) ([]string, []error) {
-	var unsupported []string
-	var errs []error
-	if v.MaxTokens != 0 {
-		b.MaxTokens = v.MaxTokens
-	}
-	b.Temperature = v.Temperature
-	if v.SystemPrompt != "" {
-		b.System = []SystemMessage{
-			{
-				Type: "text",
-				Text: v.SystemPrompt,
-			},
-		}
-		// TODO: Add automatic caching.
-		// c.System[0].CacheControl.Type = "ephemeral"
-	}
-	b.TopP = v.TopP
-	if v.Seed != 0 {
-		unsupported = append(unsupported, "Seed")
-	}
-	b.TopK = v.TopK
-	b.StopSequences = v.Stop
-	if v.ReplyAsJSON {
-		errs = append(errs, errors.New("unsupported option ReplyAsJSON"))
-	}
-	if v.DecodeAs != nil {
-		errs = append(errs, errors.New("unsupported option DecodeAs"))
-	}
-	if len(v.Tools) != 0 {
-		// We need to discard claude 2 and 3. This is a bit annoying to have to hardcode this.
-		if strings.HasPrefix(b.Model, "claude-2") || strings.HasPrefix(b.Model, "claude-3-haiku") ||
-			strings.HasPrefix(b.Model, "claude-3-sonnet") || strings.HasPrefix(b.Model, "claude-3-opus") {
-			errs = append(errs, errors.New("unsupported option Tools"))
-		}
-		switch v.ToolCallRequest {
-		case genai.ToolCallAny:
-			b.ToolChoice.Type = ToolChoiceAuto
-		case genai.ToolCallRequired:
-			b.ToolChoice.Type = ToolChoiceAny
-		case genai.ToolCallNone:
-			b.ToolChoice.Type = ToolChoiceNone
-		}
-		b.Tools = make([]Tool, len(v.Tools))
-		for i, t := range v.Tools {
-			// Weirdly enough, we must not set the type. See example at
-			// https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview
-			// c.Tools[i].Type = "custom"
-			b.Tools[i].Name = t.Name
-			b.Tools[i].Description = t.Description
-			if b.Tools[i].InputSchema = t.InputSchemaOverride; b.Tools[i].InputSchema == nil {
-				b.Tools[i].InputSchema = t.GetInputSchema()
-			}
-		}
-	}
-	return unsupported, errs
+	return b.Params.initImpl(msgs, opts, model, false)
 }
 
 // https://docs.anthropic.com/en/api/creating-message-batches

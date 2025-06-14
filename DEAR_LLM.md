@@ -39,6 +39,8 @@ and ease of use.
 ### Style
 
 - Always use the latest Go features. You can see the current version in go.mod.
+  - for i := range number
+  - any instead of interface{}
 
 ### File Headers
 

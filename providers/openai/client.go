@@ -2,14 +2,12 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Package openai implements a client for the OpenAI API.
+// Package openai implements a client for the OpenAI Chat Completion API.
 //
 // It is described at https://platform.openai.com/docs/api-reference/
 package openai
 
 // See official client at https://github.com/openai/openai-go
-
-// TODO: Investigate https://platform.openai.com/docs/api-reference/responses/create
 
 import (
 	"bytes"

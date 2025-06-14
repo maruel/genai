@@ -26,6 +26,7 @@ No need to use the web.
 1. Leverage openai_responses_get.txt and openai_responses_object.txt
 1. Stop there. The user will review the implementation, course correct and then the next steps will be taken.
 1. When the user asks you to continue work, implement GenStream using knowledge from openai_responses_streaming.txt
+1. Implement ProviderModel, it's the same as for provider/openai/client.go.
 
 ## Workflow
 

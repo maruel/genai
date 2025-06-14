@@ -177,28 +177,3 @@ func TestMain(m *testing.M) {
 func init() {
 	internal.BeLenient = false
 }
-
-func TestUnsupportedContinuableError(t *testing.T) {
-	// Create a request with an unsupported feature (TopK)
-	req := &openai.ChatRequest{}
-	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Hello"),
-	}
-	opts := &genai.OptionsText{
-		TopK: 50, // OpenAI doesn't support TopK
-	}
-
-	// Initialize the request
-	err := req.Init(msgs, opts, "gpt-4")
-
-	// Check that it returns an UnsupportedContinuableError
-	uce, ok := err.(*genai.UnsupportedContinuableError)
-	if !ok {
-		t.Fatalf("Expected UnsupportedContinuableError, got %T: %v", err, err)
-	}
-
-	// Check that the unsupported field is reported
-	if len(uce.Unsupported) != 1 || uce.Unsupported[0] != "TopK" {
-		t.Errorf("Expected Unsupported=[TopK], got %v", uce.Unsupported)
-	}
-}

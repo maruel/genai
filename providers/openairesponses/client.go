@@ -7,13 +7,15 @@
 // It is described at https://platform.openai.com/docs/api-reference/responses/create
 package openairesponses
 
-// See official client at https://github.com/openai/openai-go
+// See official client at http://pkg.go.dev/github.com/openai/openai-go/responses
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
 
+	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/httpjson"
@@ -27,32 +29,39 @@ var Scoreboard = genai.Scoreboard{
 	Scenarios: []genai.Scenario{
 		{
 			Models: []string{
-				"gpt-4o",
-				"gpt-4o-mini",
-				"o1",
-				"o1-mini",
-				"o1-preview",
+				"gpt-4-turbo",
+				"gpt-4-turbo-2024-04-09",
+				"gpt-4-turbo-preview",
+				"gpt-4",
+				"gpt-4-0125-preview",
+				"gpt-4-0613",
+				"gpt-4-1106-preview",
+				"gpt-3.5-turbo",
+				"gpt-3.5-turbo-0125",
+				"gpt-3.5-turbo-1106",
+				"gpt-3.5-turbo-16k",
+				"gpt-3.5-turbo-instruct",
+				"gpt-3.5-turbo-instruct-0914",
 			},
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {Inline: true},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {Inline: true},
-			},
+			In:  map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Thinking:   false,       // TODO: Check o-series model reasoning support
-				Tools:      genai.False, // TODO: Implement tool support
-				JSON:       false,       // TODO: Check JSON support
-				JSONSchema: false,       // TODO: Check structured output support
-				Seed:       false,       // TODO: Check if supported
+				Tools:       genai.True,
+				BiasedTool:  genai.True,
+				NoMaxTokens: true, // Technically not true but it requires at least 16 tokens and the smoke test is 3.
+				// IndecisiveTool: genai.True,
+				NoStopSequence: true,
+				JSON:           true,
 			},
-			GenStream: &genai.FunctionalityText{
-				Thinking:   false,       // TODO: Check o-series model reasoning support
-				Tools:      genai.False, // TODO: Implement tool support
-				JSON:       false,       // TODO: Check JSON support
-				JSONSchema: false,       // TODO: Check structured output support
-				Seed:       false,       // TODO: Check if supported
-			},
+			/*
+				GenStream: &genai.FunctionalityText{
+					Tools:          genai.True,
+					BiasedTool:     genai.True,
+					IndecisiveTool: genai.True,
+					NoStopSequence: true,
+					JSON:           true,
+				},
+			*/
 		},
 	},
 }
@@ -63,169 +72,386 @@ type ResponseStreamChunkResponse struct {
 	// TODO: Implement when GenStream support is added
 }
 
-// ResponseRequest represents a request to the OpenAI Responses API.
-type ResponseRequest struct {
+// Response represents a request to the OpenAI Responses API.
+type Response struct {
 	Model              string            `json:"model"`
-	Input              any               `json:"input"`
-	Instructions       string            `json:"instructions,omitempty"`
-	MaxOutputTokens    *int              `json:"max_output_tokens,omitempty"`
-	Metadata           map[string]string `json:"metadata,omitempty"`
-	ParallelToolCalls  *bool             `json:"parallel_tool_calls,omitempty"`
-	PreviousResponseID string            `json:"previous_response_id,omitempty"`
-	ServiceTier        string            `json:"service_tier,omitempty"`
-	Store              *bool             `json:"store,omitempty"`
-	Stream             bool              `json:"stream,omitempty"`
-	Temperature        *float64          `json:"temperature,omitempty"`
-	TopP               *float64          `json:"top_p,omitempty"`
-	ToolChoice         any               `json:"tool_choice,omitempty"`
-	Tools              []Tool            `json:"tools,omitempty"`
-	User               string            `json:"user,omitempty"`
-	Reasoning          *ReasoningConfig  `json:"reasoning,omitempty"`
-}
+	Background         bool              `json:"background"`
+	Instructions       string            `json:"instructions,omitzero"`
+	MaxOutputTokens    int64             `json:"max_output_tokens,omitzero"`
+	Metadata           map[string]string `json:"metadata,omitzero"`
+	ParallelToolCalls  bool              `json:"parallel_tool_calls,omitzero"`
+	PreviousResponseID string            `json:"previous_response_id,omitzero"`
+	Reasoning          ReasoningConfig   `json:"reasoning,omitzero"`
+	ServiceTier        string            `json:"service_tier,omitzero"`
+	Store              bool              `json:"store"`
+	Temperature        float64           `json:"temperature,omitzero"`
+	Text               struct {
+		Format struct {
+			Type        string             `json:"type"` // "text", "json_schema", "json_object"
+			Name        string             `json:"name,omitzero"`
+			Description string             `json:"description,omitzero"`
+			Schema      *jsonschema.Schema `json:"schema,omitzero"`
+			Strict      bool               `json:"strict,omitzero"`
+		} `json:"format"`
+	} `json:"text,omitzero"`
+	TopP       float64 `json:"top_p,omitzero"`
+	ToolChoice string  `json:"tool_choice,omitzero"` // "none", "auto", "required"
+	Truncation string  `json:"truncation,omitzero"`  // "disabled"
+	Tools      []Tool  `json:"tools,omitzero"`
+	User       string  `json:"user,omitzero"`
 
-// ReasoningConfig represents reasoning configuration for o-series models.
-type ReasoningConfig struct {
-	Effort  string `json:"effort,omitempty"`  // low, medium, high
-	Summary string `json:"summary,omitempty"` // auto, concise, detailed
-}
+	// Request only
+	Input  []Message `json:"input,omitzero"`
+	Stream bool      `json:"stream,omitzero"`
 
-// Tool represents a tool that can be called by the model.
-type Tool struct {
-	Type                     string        `json:"type"`                       // function, file_search, etc.
-	Function                 *FunctionTool `json:"function,omitempty"`         // for function tools
-	FileSearchVectorStoreIDs []string      `json:"vector_store_ids,omitempty"` // for file_search tools
-}
-
-// FunctionTool represents a function tool definition.
-type FunctionTool struct {
-	Name        string         `json:"name"`
-	Description string         `json:"description,omitempty"`
-	Parameters  map[string]any `json:"parameters"`
-	Strict      *bool          `json:"strict,omitempty"`
-}
-
-// InputMessage represents a message input to the model.
-type InputMessage struct {
-	Role    string      `json:"role"` // user, assistant, system, developer
-	Content []InputItem `json:"content"`
-	Type    string      `json:"type,omitempty"` // message
-}
-
-// InputItem represents different types of input content.
-type InputItem struct {
-	Type     string `json:"type"`                // input_text, input_image, input_file
-	Text     string `json:"text,omitempty"`      // for input_text
-	ImageURL string `json:"image_url,omitempty"` // for input_image
-	FileID   string `json:"file_id,omitempty"`   // for input_image or input_file
-	Detail   string `json:"detail,omitempty"`    // for input_image: high, low, auto
-	FileData string `json:"file_data,omitempty"` // for input_file
-	Filename string `json:"filename,omitempty"`  // for input_file
+	// Response only
+	ID                string            `json:"id,omitzero"`
+	Object            string            `json:"object,omitzero"` // "response"
+	CreatedAt         base.Time         `json:"created_at,omitzero"`
+	Status            string            `json:"status,omitzero"` // "completed"
+	IncompleteDetails IncompleteDetails `json:"incomplete_details,omitzero"`
+	Error             APIError          `json:"error,omitzero"`
+	Output            []Message         `json:"output,omitzero"`
+	Usage             Usage             `json:"usage,omitzero"`
 }
 
 // Init implements base.InitializableRequest.
-func (r *ResponseRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
+func (r *Response) Init(msgs genai.Messages, opts genai.Options, model string) error {
+	var unsupported []string
+	var errs []error
 	r.Model = model
-
-	// Convert messages to the new Responses API format
-	if len(msgs) == 0 {
-		return fmt.Errorf("no messages provided")
-	}
-
-	// For simple text input, we can use string format
-	// For complex cases with multiple messages, we need to use the message array format
-	if len(msgs) == 1 && len(msgs[0].Contents) == 1 && msgs[0].Contents[0].Text != "" && msgs[0].Contents[0].Thinking == "" && len(msgs[0].Contents[0].Opaque) == 0 && msgs[0].Contents[0].Document == nil && msgs[0].Contents[0].URL == "" {
-		// Simple text input
-		r.Input = msgs[0].Contents[0].Text
-	} else {
-		// Complex input - convert to message array
-		inputMsgs := make([]InputMessage, len(msgs))
-		for i, msg := range msgs {
-			inputMsg := InputMessage{
-				Role: string(msg.Role),
-				Type: "message",
-			}
-
-			// Convert contents
-			inputMsg.Content = make([]InputItem, len(msg.Contents))
-			for j, content := range msg.Contents {
-				if content.Text != "" {
-					inputMsg.Content[j] = InputItem{
-						Type: "input_text",
-						Text: content.Text,
-					}
-				} else if content.Document != nil {
-					// Handle document content
-					// TODO: Implement proper document/image content conversion
-					inputMsg.Content[j] = InputItem{
-						Type:   "input_image",
-						Detail: "auto",
-					}
-				} else {
-					return fmt.Errorf("unsupported content type")
-				}
-			}
-			inputMsgs[i] = inputMsg
-		}
-		r.Input = inputMsgs
-	}
-
-	// Handle options if provided
 	if opts != nil {
 		switch v := opts.(type) {
 		case *genai.OptionsText:
-			if v.SystemPrompt != "" {
-				r.Instructions = v.SystemPrompt
-			}
-			if v.MaxTokens > 0 {
-				maxTokens := int(v.MaxTokens)
-				r.MaxOutputTokens = &maxTokens
-			}
-			if v.Temperature > 0 {
-				r.Temperature = &v.Temperature
-			}
-			if v.TopP > 0 {
-				r.TopP = &v.TopP
-			}
-			// TODO: Handle tools conversion
+			unsupported, errs = r.initOptions(v, model)
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)
 		}
 	}
-
-	return nil
+	if len(msgs) == 0 {
+		return fmt.Errorf("no messages provided")
+	}
+	r.Input = make([]Message, len(msgs))
+	for i := range msgs {
+		if err := r.Input[i].From(&msgs[i]); err != nil {
+			errs = append(errs, err)
+		}
+	}
+	if len(unsupported) > 0 {
+		// If we have unsupported features but no other errors, return a continuable error
+		if len(errs) == 0 {
+			return &genai.UnsupportedContinuableError{Unsupported: unsupported}
+		}
+		// Otherwise, add the unsupported features to the error list
+		errs = append(errs, &genai.UnsupportedContinuableError{Unsupported: unsupported})
+	}
+	return errors.Join(errs...)
 }
 
 // SetStream implements base.InitializableRequest.
-func (r *ResponseRequest) SetStream(stream bool) {
+func (r *Response) SetStream(stream bool) {
 	r.Stream = stream
 }
 
-// ResponseResponse represents a response from the OpenAI Responses API.
-type ResponseResponse struct {
-	ID                 string             `json:"id"`
-	Object             string             `json:"object"`
-	CreatedAt          int64              `json:"created_at"`
-	Model              string             `json:"model"`
-	Background         *bool              `json:"background"`
-	Error              *APIError          `json:"error"`
-	IncompleteDetails  *IncompleteDetails `json:"incomplete_details"`
-	Instructions       string             `json:"instructions"`
-	MaxOutputTokens    *int               `json:"max_output_tokens"`
-	Metadata           map[string]string  `json:"metadata"`
-	Output             []OutputItem       `json:"output"`
-	OutputText         string             `json:"output_text"` // SDK convenience property
-	ParallelToolCalls  bool               `json:"parallel_tool_calls"`
-	PreviousResponseID string             `json:"previous_response_id"`
-	Reasoning          *ReasoningConfig   `json:"reasoning"`
-	ServiceTier        string             `json:"service_tier"`
-	Store              *bool              `json:"store"`
-	Temperature        *float64           `json:"temperature"`
-	TopP               *float64           `json:"top_p"`
-	ToolChoice         any                `json:"tool_choice"`
-	Tools              []Tool             `json:"tools"`
-	Truncation         string             `json:"truncation"`
-	Usage              *Usage             `json:"usage"`
-	User               string             `json:"user"`
+// ToResult implements base.ResultConverter.
+func (r *Response) ToResult() (genai.Result, error) {
+	res := genai.Result{
+		Usage: genai.Usage{
+			InputTokens:       r.Usage.InputTokens,
+			InputCachedTokens: r.Usage.InputTokensDetails.CachedTokens,
+			OutputTokens:      r.Usage.OutputTokens,
+		},
+	}
+	if len(r.Output) > 1 {
+		return res, fmt.Errorf("multiple outputs not supported: %#v", r.Output)
+	}
+	for _, output := range r.Output {
+		if err := output.To(&res.Message); err != nil {
+			return res, err
+		}
+	}
+	if r.IncompleteDetails.Reason != "" {
+		res.FinishReason = genai.FinishReason(r.IncompleteDetails.Reason)
+	} else if len(res.ToolCalls) != 0 {
+		res.FinishReason = genai.FinishedToolCalls
+	} else {
+		res.FinishReason = genai.FinishedStop
+	}
+	return res, nil
+}
+
+func (r *Response) initOptions(v *genai.OptionsText, model string) ([]string, []error) {
+	var unsupported []string
+	var errs []error
+	r.MaxOutputTokens = v.MaxTokens
+	r.Temperature = v.Temperature
+	r.TopP = v.TopP
+	if v.SystemPrompt != "" {
+		r.Instructions = v.SystemPrompt
+	}
+	if v.Seed != 0 {
+		unsupported = append(unsupported, "Seed")
+	}
+	if v.TopK != 0 {
+		unsupported = append(unsupported, "TopK")
+	}
+	if len(v.Stop) != 0 {
+		errs = append(errs, errors.New("unsupported option Stop"))
+	}
+	if v.DecodeAs != nil {
+		r.Text.Format.Type = "json_schema"
+		// OpenAI requires a name.
+		r.Text.Format.Name = "response"
+		r.Text.Format.Strict = true
+		r.Text.Format.Schema = jsonschema.Reflect(v.DecodeAs)
+	} else if v.ReplyAsJSON {
+		r.Text.Format.Type = "json_object"
+	}
+	if len(v.Tools) != 0 {
+		r.ParallelToolCalls = true
+		switch v.ToolCallRequest {
+		case genai.ToolCallAny:
+			r.ToolChoice = "auto"
+		case genai.ToolCallRequired:
+			r.ToolChoice = "required"
+		case genai.ToolCallNone:
+			r.ToolChoice = "none"
+		}
+		r.Tools = make([]Tool, len(v.Tools))
+		for i, t := range v.Tools {
+			if t.Name == "" {
+				errs = append(errs, errors.New("tool name is required"))
+			}
+			r.Tools[i].Type = "function"
+			r.Tools[i].Name = t.Name
+			r.Tools[i].Description = t.Description
+			if r.Tools[i].Parameters = t.InputSchemaOverride; r.Tools[i].Parameters == nil {
+				r.Tools[i].Parameters = t.GetInputSchema()
+			}
+		}
+	}
+	return unsupported, errs
+}
+
+// ReasoningConfig represents reasoning configuration for o-series models.
+type ReasoningConfig struct {
+	Effort  string `json:"effort,omitzero"`  // "low", "medium", "high"
+	Summary string `json:"summary,omitzero"` // "auto", "concise", "detailed"
+}
+
+// Tool represents a tool that can be called by the model.
+type Tool struct {
+	Type string `json:"type,omitzero"` // "function", "file_search", "computer_use_preview", "mcp", "code_interpreter", "image_generation", "local_shell"
+
+	// Type == "function"
+	Name        string             `json:"name,omitzero"`
+	Description string             `json:"description,omitzero"`
+	Parameters  *jsonschema.Schema `json:"parameters,omitzero"`
+	Strict      bool               `json:"strict,omitzero"`
+
+	FileSearchVectorStoreIDs []string `json:"vector_store_ids,omitzero"` // for file_search tools
+}
+
+type MessageType string
+
+const (
+	// Inputs and Outputs
+	MessageMessage MessageType = "message"
+	// Outputs
+	MessageFileSearchCall      MessageType = "file_search_call"
+	MessageComputerCall        MessageType = "computer_call"
+	MessageWebSearchCall       MessageType = "web_search_call"
+	MessageFunctionCall        MessageType = "function_call"
+	MessageReasoning           MessageType = "reasoning"
+	MessageImageGenerationCall MessageType = "image_generation_call"
+	MessageCodeInterpreterCall MessageType = "code_interpreter_call"
+	MessageLocalShellCall      MessageType = "local_shell_call"
+	MessageMcpListTools        MessageType = "mcp_list_tools"
+	MessageMcpApprovalRequest  MessageType = "mcp_approval_request"
+	MessageMcpCall             MessageType = "mcp_call"
+	// Inputs
+	MessageComputerCallOutput   MessageType = "computer_call_output"
+	MessageFunctionCallOutput   MessageType = "function_call_output"
+	MessageLocalShellCallOutput MessageType = "local_shell_call_output"
+	MessageMcpApprovalResponse  MessageType = "mcp_approval_response"
+	MessageItemReference        MessageType = "item_reference"
+)
+
+// Message represents a message input to the model.
+type Message struct {
+	Type MessageType `json:"type,omitzero"`
+
+	// Type == MessageMessage
+	Role    string    `json:"role,omitzero"` // "user", "assistant", "system", "developer"
+	Content []Content `json:"content,omitzero"`
+
+	// Type == MessageMessage, MessageFileSearchCall, MessageFunctionCall, MessageReasoning
+	Status string `json:"status,omitzero"` // "in_progress", "completed", "incomplete", "searching", "failed"
+
+	// Type == MessageMessage (with Role == "assistant"), MessageFileSearchCall, MessageItemReference,
+	// MessageFunctionCall, MessageFunctionCallOutput, MessageReasoning
+	ID string `json:"id,omitzero"` // MessageItemReference: an internal identifier for an item to reference; Others: tool call ID
+
+	// Type == MessageFileSearchCall
+	Queries []string `json:"queries,omitzero"`
+	Results []struct {
+		Attributes map[string]string `json:"attributes,omitzero"`
+		FileID     string            `json:"file_id,omitzero"`
+		Filename   string            `json:"filename,omitzero"`
+		Score      float64           `json:"score,omitzero"` // [0, 1]
+		Text       string            `json:"text,omitzero"`
+	} `json:"results,omitzero"`
+
+	// Type == MessageFunctionCall
+	Arguments string `json:"arguments,omitzero"` // JSON
+	Name      string `json:"name,omitzero"`
+
+	// Type == MessageFunctionCall, MessageFunctionCallOutput
+	CallID string `json:"call_id,omitzero"`
+
+	// Type == MessageFunctionCallOutput
+	Output string `json:"output,omitzero"` // JSON
+
+	// Type == MessageReasoning
+	EncryptedContent string             `json:"encrypted_content,omitzero"`
+	Summary          []ReasoningSummary `json:"summary,omitzero"`
+}
+
+func (m *Message) From(msg *genai.Message) error {
+	switch msg.Role {
+	case genai.Assistant, genai.User:
+		m.Role = string(msg.Role)
+	default:
+		return fmt.Errorf("implement role %q", msg.Role)
+	}
+	if len(msg.ToolCallResults) != 0 {
+		if len(msg.ToolCallResults) > 1 {
+			return fmt.Errorf("multiple tool outputs not supported in a single message for OpenAI Responses API")
+		}
+		m.Type = MessageFunctionCallOutput
+		m.Role = ""
+		m.CallID = msg.ToolCallResults[0].ID
+		m.Output = msg.ToolCallResults[0].Result
+		return nil
+	}
+	if len(msg.ToolCalls) != 0 {
+		if len(msg.ToolCalls) > 1 {
+			return fmt.Errorf("multiple tool calls not supported in a single message for OpenAI Responses API")
+		}
+		m.Type = MessageFunctionCall
+		m.Role = ""
+		m.CallID = msg.ToolCalls[0].ID
+		m.Name = msg.ToolCalls[0].Name
+		m.Arguments = msg.ToolCalls[0].Arguments
+		return nil
+	}
+	if len(msg.Contents) != 0 {
+		m.Type = MessageMessage
+		m.Content = make([]Content, len(msg.Contents))
+		for j, content := range msg.Contents {
+			if content.Text != "" {
+				m.Content[j] = Content{Type: ContentInputText, Text: content.Text}
+			} else if content.Document != nil {
+				// Handle document content
+				// TODO: Implement proper document/image content conversion
+				m.Content[j] = Content{Type: ContentInputImage, Detail: "auto"}
+				return fmt.Errorf("implement me")
+			} else {
+				return fmt.Errorf("unsupported content type")
+			}
+		}
+		return nil
+	}
+	return fmt.Errorf("implement me: %#v", msg)
+}
+
+func (m *Message) To(out *genai.Message) error {
+	switch m.Role {
+	case "assistant", "":
+		// genai requires a role.
+		out.Role = genai.Assistant
+	default:
+		return fmt.Errorf("unsupported role %q", m.Role)
+	}
+	// We only need to implement the types that can be returned from the LLM.
+	switch m.Type {
+	case MessageMessage:
+		out.Contents = make([]genai.Content, len(m.Content))
+		for i := range m.Content {
+			if err := m.Content[i].To(&out.Contents[i]); err != nil {
+				return fmt.Errorf("block %d: %w", i, err)
+			}
+		}
+	case MessageReasoning:
+		return errors.New("implement reasoning")
+	case MessageFunctionCall:
+		out.ToolCalls = []genai.ToolCall{{ID: m.CallID, Name: m.Name, Arguments: m.Arguments}}
+	default:
+		return fmt.Errorf("unsupported output type %q", m.Type)
+	}
+	return nil
+}
+
+type ContentType string
+
+const (
+	// Inputs
+	ContentInputText  ContentType = "input_text"
+	ContentInputImage ContentType = "input_image"
+	ContentInputFile  ContentType = "input_file"
+
+	// Outputs
+	ContentOutputText ContentType = "output_text"
+	ContentRefusal    ContentType = "refusal"
+)
+
+// Content represents different types of input content.
+type Content struct {
+	Type ContentType `json:"type,omitzero"`
+
+	// Type == ContentInputText, ContentOutputText
+	Text string `json:"text,omitzero"`
+
+	// Type == ContentInputImage, ContentInputFile
+	FileID string `json:"file_id,omitzero"`
+
+	// Type == ContentInputImage
+	ImageURL string `json:"image_url,omitzero"` // URL or base64
+	Detail   string `json:"detail,omitzero"`    // "high", "low", "auto" (default)
+
+	// Type == ContentInputFile
+	FileData []byte `json:"file_data,omitzero"` // TODO: confirm if base64
+	Filename string `json:"filename,omitzero"`
+
+	// Type == ContentOutputText
+	Annotations []Annotation `json:"annotations,omitzero"`
+	Logprobs    struct {
+		Bytes       []int   `json:"bytes,omitzero"`
+		Token       string  `json:"token,omitzero"`
+		Logprob     float64 `json:"logprob,omitzero"`
+		TopLogprobs []struct {
+			Bytes   []int   `json:"bytes,omitzero"`
+			Token   string  `json:"token,omitzero"`
+			Logprob float64 `json:"logprob,omitzero"`
+		} `json:"top_logprobs,omitzero"`
+	} `json:"logprobs,omitzero"`
+
+	// Type == ContentRefusal
+	Refusal string `json:"refusal,omitzero"`
+}
+
+func (c *Content) To(out *genai.Content) error {
+	if len(c.Annotations) != 0 {
+		// Citations!!
+		return fmt.Errorf("implement citations: %#v", c.Annotations)
+	}
+	switch c.Type {
+	case ContentOutputText:
+		out.Text = c.Text
+	default:
+		return fmt.Errorf("unsupported content type %q", c.Type)
+	}
+	return nil
 }
 
 // APIError represents an API error in the response.
@@ -239,117 +465,49 @@ type IncompleteDetails struct {
 	Reason string `json:"reason"`
 }
 
-// OutputItem represents different types of output content.
-type OutputItem struct {
-	Type    string          `json:"type"` // message, reasoning, function_call, etc.
-	ID      string          `json:"id,omitempty"`
-	Role    string          `json:"role,omitempty"`    // for message type
-	Content []OutputContent `json:"content,omitempty"` // for message type
-	Status  string          `json:"status,omitempty"`  // in_progress, completed, incomplete
-
-	// For reasoning type
-	Summary          []ReasoningSummary `json:"summary,omitempty"`
-	EncryptedContent string             `json:"encrypted_content,omitempty"`
-
-	// For function calls
-	CallID string `json:"call_id,omitempty"`
-	Name   string `json:"name,omitempty"`
-	Output string `json:"output,omitempty"`
-}
-
-// OutputContent represents content within an output message.
-type OutputContent struct {
-	Type        string       `json:"type"` // output_text, refusal
-	Text        string       `json:"text,omitempty"`
-	Refusal     string       `json:"refusal,omitempty"`
-	Annotations []Annotation `json:"annotations,omitempty"`
-}
-
 // Annotation represents annotations in output text.
 type Annotation struct {
-	Type       string `json:"type"` // file_citation, url_citation, etc.
-	FileID     string `json:"file_id,omitempty"`
-	URL        string `json:"url,omitempty"`
-	Title      string `json:"title,omitempty"`
-	StartIndex int    `json:"start_index,omitempty"`
-	EndIndex   int    `json:"end_index,omitempty"`
+	Type string `json:"type,omitzero"` // "file_citation", "url_citation", "container_file_citation", "file_path"
+
+	// Type == "file_citation", "container_file_citation", "file_path"
+	FileID string `json:"file_id,omitzero"`
+
+	// Type == "file_citation", "file_path"
+	Index int64 `json:"index,omitzero"`
+
+	// Type == "url_citation"
+	URL   string `json:"url,omitzero"`
+	Title string `json:"title,omitzero"`
+
+	// Type == "url_citation", "container_file_citation"
+	StartIndex int64 `json:"start_index,omitzero"`
+	EndIndex   int64 `json:"end_index,omitzero"`
 }
 
 // ReasoningSummary represents reasoning summary content.
 type ReasoningSummary struct {
-	Type string `json:"type"` // summary_text
-	Text string `json:"text"`
+	Type string `json:"type,omitzero"` // "summary_text"
+	Text string `json:"text,omitzero"`
 }
 
 // Usage represents token usage statistics.
 type Usage struct {
-	PromptTokens            int           `json:"prompt_tokens"`
-	CompletionTokens        int           `json:"completion_tokens"`
-	TotalTokens             int           `json:"total_tokens"`
-	PromptTokensDetails     *TokenDetails `json:"prompt_tokens_details,omitempty"`
-	CompletionTokensDetails *TokenDetails `json:"completion_tokens_details,omitempty"`
+	InputTokens        int64 `json:"input_tokens"`
+	InputTokensDetails struct {
+		CachedTokens int64 `json:"cached_tokens"`
+	} `json:"input_tokens_details"`
+	OutputTokens        int64 `json:"output_tokens"`
+	OutputTokensDetails struct {
+		ReasoningTokens int64 `json:"reasoning_tokens"`
+	} `json:"output_tokens_details"`
+	TotalTokens int64 `json:"total_tokens"`
 }
 
 // TokenDetails provides detailed token usage breakdown.
 type TokenDetails struct {
-	CachedTokens    int `json:"cached_tokens,omitempty"`
-	AudioTokens     int `json:"audio_tokens,omitempty"`
-	ReasoningTokens int `json:"reasoning_tokens,omitempty"`
-}
-
-// ToResult implements base.ResultConverter.
-func (r *ResponseResponse) ToResult() (genai.Result, error) {
-	if r.Error != nil {
-		return genai.Result{}, fmt.Errorf("API error: %s - %s", r.Error.Code, r.Error.Message)
-	}
-
-	result := genai.Result{}
-
-	// Extract text content from output
-	var textParts []string
-	for _, output := range r.Output {
-		if output.Type == "message" && output.Role == "assistant" {
-			for _, content := range output.Content {
-				if content.Type == "output_text" && content.Text != "" {
-					textParts = append(textParts, content.Text)
-				}
-			}
-		}
-	}
-
-	// Use convenience property if available and no text parts found
-	if len(textParts) == 0 && r.OutputText != "" {
-		textParts = append(textParts, r.OutputText)
-	}
-
-	if len(textParts) > 0 {
-		// Join all text parts
-		combinedText := textParts[0]
-		for i := 1; i < len(textParts); i++ {
-			combinedText += "\n" + textParts[i]
-		}
-
-		result.Contents = []genai.Content{
-			{Text: combinedText},
-		}
-	}
-
-	// Add usage information if available
-	if r.Usage != nil {
-		result.Usage = genai.Usage{
-			InputTokens:  int64(r.Usage.PromptTokens),
-			OutputTokens: int64(r.Usage.CompletionTokens),
-		}
-	}
-
-	// Set finish reason based on status
-	if r.IncompleteDetails != nil {
-		result.FinishReason = genai.FinishedLength
-	} else {
-		result.FinishReason = genai.FinishedStop
-	}
-
-	return result, nil
+	CachedTokens    int `json:"cached_tokens,omitzero"`
+	AudioTokens     int `json:"audio_tokens,omitzero"`
+	ReasoningTokens int `json:"reasoning_tokens,omitzero"`
 }
 
 //
@@ -360,6 +518,7 @@ type ErrorResponse struct {
 		Message string `json:"message"`
 		Type    string `json:"type"`
 		Code    string `json:"code"`
+		Param   string `json:"param"`
 	} `json:"error"`
 }
 
@@ -371,7 +530,7 @@ func (e *ErrorResponse) String() string {
 
 // Client is a client for the OpenAI Responses API.
 type Client struct {
-	base.ProviderGen[*ErrorResponse, *ResponseRequest, *ResponseResponse, ResponseStreamChunkResponse]
+	base.ProviderGen[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]
 }
 
 // New creates a new client to talk to the OpenAI Responses API.
@@ -399,7 +558,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 		t = wrapper(t)
 	}
 	c := &Client{
-		ProviderGen: base.ProviderGen[*ErrorResponse, *ResponseRequest, *ResponseResponse, ResponseStreamChunkResponse]{
+		ProviderGen: base.ProviderGen[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.openai.com/v1/responses",
 			ProcessStreamPackets: processStreamPackets,

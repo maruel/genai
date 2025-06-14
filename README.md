@@ -282,7 +282,6 @@ list-models -provider hugginface
 
 ## TODO
 
-- Citations
 - Server-side MCP
 - Real-time / Live
 - More comprehensive file/cache abstraction

@@ -20,75 +20,41 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
-// Client is a client for the OpenAI Responses API.
-type Client struct {
-	base.ProviderGen[*ErrorResponse, *ResponseRequest, *ResponseResponse, ResponseStreamChunkResponse]
-}
-
-// ErrorResponse represents an error response from the OpenAI API.
-type ErrorResponse struct {
-	Error struct {
-		Message string `json:"message"`
-		Type    string `json:"type"`
-		Code    string `json:"code"`
-	} `json:"error"`
-}
-
-func (e *ErrorResponse) String() string {
-	return fmt.Sprintf("openai responses error: %s (type: %s, code: %s)", e.Error.Message, e.Error.Type, e.Error.Code)
-}
-
-// New creates a new client to talk to the OpenAI Responses API.
-//
-// If apiKey is not provided, it tries to load it from the OPENAI_API_KEY environment variable.
-// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
-// Get your API key at https://platform.openai.com/settings/organization/api-keys
-//
-// If no model is provided, only functions that do not require a model, like ListModels, will work.
-// To use multiple models, create multiple clients.
-// Use one of the model from https://platform.openai.com/docs/models
-//
-// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
-// base.PreferredSOTA for a state-of-the-art model.
-func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
-	const apiKeyURL = "https://platform.openai.com/settings/organization/api-keys"
-	var err error
-	if apiKey == "" {
-		if apiKey = os.Getenv("OPENAI_API_KEY"); apiKey == "" {
-			err = &base.ErrAPIKeyRequired{EnvVar: "OPENAI_API_KEY", URL: apiKeyURL}
-		}
-	}
-	t := base.DefaultTransport
-	if wrapper != nil {
-		t = wrapper(t)
-	}
-	c := &Client{
-		ProviderGen: base.ProviderGen[*ErrorResponse, *ResponseRequest, *ResponseResponse, ResponseStreamChunkResponse]{
-			Model:                model,
-			GenSyncURL:           "https://api.openai.com/v1/responses",
-			ProcessStreamPackets: processStreamPackets,
-			Provider: base.Provider[*ErrorResponse]{
-				ProviderName: "openairesponses",
-				APIKeyURL:    "", // OpenAI error message prints the api key URL already.
-				ClientJSON: httpjson.Client{
-					Client: &http.Client{
-						Transport: &roundtrippers.Header{
-							Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-							Transport: &roundtrippers.RequestID{Transport: t},
-						},
-					},
-				},
+// Scoreboard for OpenAI Responses API.
+var Scoreboard = genai.Scoreboard{
+	Country:      "US",
+	DashboardURL: "https://platform.openai.com/usage",
+	Scenarios: []genai.Scenario{
+		{
+			Models: []string{
+				"gpt-4o",
+				"gpt-4o-mini",
+				"o1",
+				"o1-mini",
+				"o1-preview",
+			},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {Inline: true},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {Inline: true},
+			},
+			GenSync: &genai.FunctionalityText{
+				Thinking:   false,       // TODO: Check o-series model reasoning support
+				Tools:      genai.False, // TODO: Implement tool support
+				JSON:       false,       // TODO: Check JSON support
+				JSONSchema: false,       // TODO: Check structured output support
+				Seed:       false,       // TODO: Check if supported
+			},
+			GenStream: &genai.FunctionalityText{
+				Thinking:   false,       // TODO: Check o-series model reasoning support
+				Tools:      genai.False, // TODO: Implement tool support
+				JSON:       false,       // TODO: Check JSON support
+				JSONSchema: false,       // TODO: Check structured output support
+				Seed:       false,       // TODO: Check if supported
 			},
 		},
-	}
-	return c, err
-}
-
-// processStreamPackets processes stream packets for the OpenAI Responses API.
-// This is a placeholder - will be implemented when GenStream is added.
-func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
-	// TODO: Implement when GenStream support is added
-	return fmt.Errorf("streaming not yet implemented for OpenAI Responses API")
+	},
 }
 
 // ResponseStreamChunkResponse represents a streaming response chunk.
@@ -386,46 +352,84 @@ func (r *ResponseResponse) ToResult() (genai.Result, error) {
 	return result, nil
 }
 
-// Scoreboard for OpenAI Responses API.
-var Scoreboard = genai.Scoreboard{
-	Country:      "US",
-	DashboardURL: "https://platform.openai.com/usage",
-	Scenarios: []genai.Scenario{
-		{
-			Models: []string{
-				"gpt-4o",
-				"gpt-4o-mini",
-				"o1",
-				"o1-mini",
-				"o1-preview",
-			},
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {Inline: true},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {Inline: true},
-			},
-			GenSync: &genai.FunctionalityText{
-				Thinking:   false,       // TODO: Check o-series model reasoning support
-				Tools:      genai.False, // TODO: Implement tool support
-				JSON:       false,       // TODO: Check JSON support
-				JSONSchema: false,       // TODO: Check structured output support
-				Seed:       false,       // TODO: Check if supported
-			},
-			GenStream: &genai.FunctionalityText{
-				Thinking:   false,       // TODO: Check o-series model reasoning support
-				Tools:      genai.False, // TODO: Implement tool support
-				JSON:       false,       // TODO: Check JSON support
-				JSONSchema: false,       // TODO: Check structured output support
-				Seed:       false,       // TODO: Check if supported
+//
+
+// ErrorResponse represents an error response from the OpenAI API.
+type ErrorResponse struct {
+	Error struct {
+		Message string `json:"message"`
+		Type    string `json:"type"`
+		Code    string `json:"code"`
+	} `json:"error"`
+}
+
+func (e *ErrorResponse) String() string {
+	return fmt.Sprintf("openai responses error: %s (type: %s, code: %s)", e.Error.Message, e.Error.Type, e.Error.Code)
+}
+
+//
+
+// Client is a client for the OpenAI Responses API.
+type Client struct {
+	base.ProviderGen[*ErrorResponse, *ResponseRequest, *ResponseResponse, ResponseStreamChunkResponse]
+}
+
+// New creates a new client to talk to the OpenAI Responses API.
+//
+// If apiKey is not provided, it tries to load it from the OPENAI_API_KEY environment variable.
+// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
+// Get your API key at https://platform.openai.com/settings/organization/api-keys
+//
+// If no model is provided, only functions that do not require a model, like ListModels, will work.
+// To use multiple models, create multiple clients.
+// Use one of the model from https://platform.openai.com/docs/models
+//
+// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
+// base.PreferredSOTA for a state-of-the-art model.
+func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+	const apiKeyURL = "https://platform.openai.com/settings/organization/api-keys"
+	var err error
+	if apiKey == "" {
+		if apiKey = os.Getenv("OPENAI_API_KEY"); apiKey == "" {
+			err = &base.ErrAPIKeyRequired{EnvVar: "OPENAI_API_KEY", URL: apiKeyURL}
+		}
+	}
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
+	}
+	c := &Client{
+		ProviderGen: base.ProviderGen[*ErrorResponse, *ResponseRequest, *ResponseResponse, ResponseStreamChunkResponse]{
+			Model:                model,
+			GenSyncURL:           "https://api.openai.com/v1/responses",
+			ProcessStreamPackets: processStreamPackets,
+			Provider: base.Provider[*ErrorResponse]{
+				ProviderName: "openairesponses",
+				APIKeyURL:    "", // OpenAI error message prints the api key URL already.
+				ClientJSON: httpjson.Client{
+					Client: &http.Client{
+						Transport: &roundtrippers.Header{
+							Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+							Transport: &roundtrippers.RequestID{Transport: t},
+						},
+					},
+				},
 			},
 		},
-	},
+	}
+	return c, err
 }
 
 // Scoreboard implements genai.ProviderScoreboard.
 func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard
+}
+
+// processStreamPackets processes stream packets for the OpenAI Responses API.
+// This is a placeholder - will be implemented when GenStream is added.
+func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
+	// TODO: Implement when GenStream support is added
+	return fmt.Errorf("streaming not yet implemented for OpenAI Responses API")
 }
 
 // Interface compliance checks

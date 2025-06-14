@@ -100,7 +100,7 @@ type ResponseStreamChunkResponse struct {
 // ResponseRequest represents a request to the OpenAI Responses API.
 type ResponseRequest struct {
 	Model              string            `json:"model"`
-	Input              interface{}       `json:"input"`
+	Input              any               `json:"input"`
 	Instructions       string            `json:"instructions,omitempty"`
 	MaxOutputTokens    *int              `json:"max_output_tokens,omitempty"`
 	Metadata           map[string]string `json:"metadata,omitempty"`
@@ -111,7 +111,7 @@ type ResponseRequest struct {
 	Stream             bool              `json:"stream,omitempty"`
 	Temperature        *float64          `json:"temperature,omitempty"`
 	TopP               *float64          `json:"top_p,omitempty"`
-	ToolChoice         interface{}       `json:"tool_choice,omitempty"`
+	ToolChoice         any               `json:"tool_choice,omitempty"`
 	Tools              []Tool            `json:"tools,omitempty"`
 	User               string            `json:"user,omitempty"`
 	Reasoning          *ReasoningConfig  `json:"reasoning,omitempty"`
@@ -132,10 +132,10 @@ type Tool struct {
 
 // FunctionTool represents a function tool definition.
 type FunctionTool struct {
-	Name        string                 `json:"name"`
-	Description string                 `json:"description,omitempty"`
-	Parameters  map[string]interface{} `json:"parameters"`
-	Strict      *bool                  `json:"strict,omitempty"`
+	Name        string         `json:"name"`
+	Description string         `json:"description,omitempty"`
+	Parameters  map[string]any `json:"parameters"`
+	Strict      *bool          `json:"strict,omitempty"`
 }
 
 // InputMessage represents a message input to the model.
@@ -255,7 +255,7 @@ type ResponseResponse struct {
 	Store              *bool              `json:"store"`
 	Temperature        *float64           `json:"temperature"`
 	TopP               *float64           `json:"top_p"`
-	ToolChoice         interface{}        `json:"tool_choice"`
+	ToolChoice         any                `json:"tool_choice"`
 	Tools              []Tool             `json:"tools"`
 	Truncation         string             `json:"truncation"`
 	Usage              *Usage             `json:"usage"`
@@ -385,3 +385,52 @@ func (r *ResponseResponse) ToResult() (genai.Result, error) {
 
 	return result, nil
 }
+
+// Scoreboard for OpenAI Responses API.
+var Scoreboard = genai.Scoreboard{
+	Country:      "US",
+	DashboardURL: "https://platform.openai.com/usage",
+	Scenarios: []genai.Scenario{
+		{
+			Models: []string{
+				"gpt-4o",
+				"gpt-4o-mini",
+				"o1",
+				"o1-mini",
+				"o1-preview",
+			},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {Inline: true},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {Inline: true},
+			},
+			GenSync: &genai.FunctionalityText{
+				Thinking:   false,       // TODO: Check o-series model reasoning support
+				Tools:      genai.False, // TODO: Implement tool support
+				JSON:       false,       // TODO: Check JSON support
+				JSONSchema: false,       // TODO: Check structured output support
+				Seed:       false,       // TODO: Check if supported
+			},
+			GenStream: &genai.FunctionalityText{
+				Thinking:   false,       // TODO: Check o-series model reasoning support
+				Tools:      genai.False, // TODO: Implement tool support
+				JSON:       false,       // TODO: Check JSON support
+				JSONSchema: false,       // TODO: Check structured output support
+				Seed:       false,       // TODO: Check if supported
+			},
+		},
+	},
+}
+
+// Scoreboard implements genai.ProviderScoreboard.
+func (c *Client) Scoreboard() genai.Scoreboard {
+	return Scoreboard
+}
+
+// Interface compliance checks
+var (
+	_ genai.Provider           = &Client{}
+	_ genai.ProviderGen        = &Client{}
+	_ genai.ProviderScoreboard = &Client{}
+)

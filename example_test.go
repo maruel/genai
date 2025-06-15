@@ -15,8 +15,12 @@ import (
 	"time"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/adapters"
+	"github.com/maruel/genai/genaitools"
+	"github.com/maruel/genai/providers/anthropic"
 	"github.com/maruel/genai/providers/gemini"
 	"github.com/maruel/genai/providers/groq"
+	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
@@ -239,6 +243,10 @@ func ExampleProviderGen_GenStream() {
 func ExampleProvider_hTTP_record() {
 	// Example to do HTTP recording and playback for smoke testing.
 	// The example recording is in testdata/example.yaml.
+	//
+	// WARNING: Many providers use a slightly different way to send the tokens. Examples include Anthropic,
+	// Cloudflare and Gemini. Make sure to do a test recording first and confirm no key is saved. See the
+	// ExampleProvider_hTTP_record example for each provider to learn how to do a safe HTTP record.
 	var rr *recorder.Recorder
 	defer func() {
 		// In a smoke test, use t.Cleanup().
@@ -300,4 +308,37 @@ func trimResponseHeaders(i *cassette.Interaction) error {
 	i.Response.Headers.Del("X-Request-Id")
 	i.Response.Duration = i.Response.Duration.Round(time.Millisecond)
 	return nil
+}
+
+func Example_genSyncWithToolCallLoop_with_custom_HTTP_Header() {
+	// Modified version of the example in package adapters, with a custom header.
+	//
+	// As of June 2025, interleaved thinking can be enabled with a custom header.
+	// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking#interleaved-thinking
+	wrapper := func(h http.RoundTripper) http.RoundTripper {
+		return &roundtrippers.Header{
+			Transport: h,
+			Header:    http.Header{"anthropic-beta": []string{"interleaved-thinking-2025-05-14"}},
+		}
+	}
+	c, err := anthropic.New("", "claude-sonnet-4-20250514", wrapper)
+	if err != nil {
+		log.Fatal(err)
+	}
+	msgs := genai.Messages{
+		genai.NewTextMessage(genai.User, "What is 3214 + 5632? Leverage the tool available to you to tell me the answer. Do not explain. Be terse. Include only the answer."),
+	}
+	opts := genai.OptionsText{
+		Tools: []genai.ToolDef{genaitools.Arithmetic},
+		// Force the LLM to do a tool call first.
+		ToolCallRequest: genai.ToolCallRequired,
+	}
+	newMsgs, _, err := adapters.GenSyncWithToolCallLoop(context.Background(), c, msgs, &opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%s\n", newMsgs[len(newMsgs)-1].AsText())
+	// Remove this comment line to run the example.
+	// Output:
+	// 8846
 }

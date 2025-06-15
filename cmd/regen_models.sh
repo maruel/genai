@@ -16,6 +16,7 @@ echo "" >> MODELS.new.md
 echo "Snapshot of the models available on each provider as of $(date +%Y-%m-%d)" >> MODELS.new.md
 
 for i in "${PROVIDERS[@]}"; do
+	echo "- $i"
 	echo "" >> MODELS.new.md
     echo "## $i" >> MODELS.new.md
 	echo "" >> MODELS.new.md

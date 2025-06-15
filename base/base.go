@@ -430,8 +430,9 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 // Time is a JSON encoded unix timestamp. This is used by many providers.
 type Time int64
 
+// AsTime returns the time as UTC so its string value doesn't depend on the local time zone.
 func (t *Time) AsTime() time.Time {
-	return time.Unix(int64(*t), 0)
+	return time.Unix(int64(*t), 0).UTC()
 }
 
 // ListModelsResponse is an interface for responses that contain model data.

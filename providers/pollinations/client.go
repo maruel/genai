@@ -48,7 +48,6 @@ var Scoreboard = genai.Scoreboard{
 				"deepseek",
 				"evil",
 				"grok",
-				"llama",
 				"mistral",
 				"openai-fast",
 				"qwen-coder",
@@ -74,7 +73,7 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			Models: []string{"deepseek-reasoning"},
+			Models: []string{"deepseek-reasoning", "openai-reasoning"},
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
@@ -668,16 +667,23 @@ func (r *ImageModelsResponse) ToModels() []genai.Model {
 type TextModel struct {
 	Audio            bool     `json:"audio"`
 	Aliases          string   `json:"aliases"`
+	Community        bool     `json:"community"`
 	Description      string   `json:"description"`
 	InputModalities  []string `json:"input_modalities"`
 	Name             string   `json:"name"`
 	OutputModalities []string `json:"output_modalities"`
-	Provider         string   `json:"provider"`
-	Reasoning        bool     `json:"reasoning"`
-	Tools            bool     `json:"tools"`
-	Uncensored       bool     `json:"uncensored"`
-	Voices           []string `json:"voices"`
-	Vision           bool     `json:"vision"`
+	Pricing          struct {
+		PromptTokens     float64 `json:"prompt_tokens"`
+		CompletionTokens float64 `json:"completion_tokens"`
+	} `json:"pricing,omitzero"`
+	Provider   string   `json:"provider"`
+	Reasoning  bool     `json:"reasoning"`
+	Search     bool     `json:"search"`
+	Tier       string   `json:"tier"` // "seed", "flower"
+	Tools      bool     `json:"tools"`
+	Uncensored bool     `json:"uncensored"`
+	Voices     []string `json:"voices"`
+	Vision     bool     `json:"vision"`
 }
 
 func (t *TextModel) GetID() string {

@@ -10,10 +10,12 @@ package openairesponses
 // See official client at http://pkg.go.dev/github.com/openai/openai-go/responses
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
@@ -512,6 +514,47 @@ type TokenDetails struct {
 
 //
 
+// https://platform.openai.com/docs/api-reference/models/object
+//
+// Sadly the modalities aren't reported. The only way I can think of to find it at run time is to fetch
+// https://platform.openai.com/docs/models/gpt-4o-mini-realtime-preview, find the div containing
+// "Modalities:", then extract the modalities from the text
+type Model struct {
+	ID      string    `json:"id"`
+	Object  string    `json:"object"`
+	Created base.Time `json:"created"`
+	OwnedBy string    `json:"owned_by"`
+}
+
+func (m *Model) GetID() string {
+	return m.ID
+}
+
+func (m *Model) String() string {
+	return fmt.Sprintf("%s (%s)", m.ID, m.Created.AsTime().Format("2006-01-02"))
+}
+
+func (m *Model) Context() int64 {
+	return 0
+}
+
+// ModelsResponse represents the response structure for OpenAI models listing
+type ModelsResponse struct {
+	Object string  `json:"object"` // list
+	Data   []Model `json:"data"`
+}
+
+// ToModels converts OpenAI models to genai.Model interfaces
+func (r *ModelsResponse) ToModels() []genai.Model {
+	models := make([]genai.Model, len(r.Data))
+	for i := range r.Data {
+		models[i] = &r.Data[i]
+	}
+	return models
+}
+
+//
+
 // ErrorResponse represents an error response from the OpenAI API.
 type ErrorResponse struct {
 	Error struct {
@@ -544,7 +587,15 @@ type Client struct {
 // Use one of the model from https://platform.openai.com/docs/models
 //
 // Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
-// base.PreferredSOTA for a state-of-the-art model.
+// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
+// possible the model is not available anymore.
+//
+// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
+//
+// # Documents
+//
+// OpenAI supports many types of documents, listed at
+// https://platform.openai.com/docs/assistants/tools/file-search#supported-files
 func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	const apiKeyURL = "https://platform.openai.com/settings/organization/api-keys"
 	var err error
@@ -576,12 +627,52 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 			},
 		},
 	}
+	if err == nil && (model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA) {
+		mdls, err2 := c.ListModels(context.Background())
+		if err2 != nil {
+			return nil, err2
+		}
+		cheap := model == base.PreferredCheap
+		good := model == base.PreferredGood
+		c.Model = ""
+		var created base.Time
+		for _, mdl := range mdls {
+			m := mdl.(*Model)
+			if cheap {
+				if strings.HasSuffix(m.ID, "-nano") && (created == 0 || m.Created < created) {
+					// For the cheapest, we want the oldest model as it is generally cheaper.
+					created = m.Created
+					c.Model = m.ID
+				}
+			} else if good {
+				if strings.HasSuffix(m.ID, "-mini") && (created == 0 || m.Created > created) {
+					// For the greatest, we want the newest model as it is generally better.
+					created = m.Created
+					c.Model = m.ID
+				}
+			} else {
+				if strings.HasSuffix(m.ID, "-pro") && (created == 0 || m.Created > created) {
+					// For the greatest, we want the newest model as it is generally better.
+					created = m.Created
+					c.Model = m.ID
+				}
+			}
+		}
+		if c.Model == "" {
+			return nil, errors.New("failed to find a model automatically")
+		}
+	}
 	return c, err
 }
 
 // Scoreboard implements genai.ProviderScoreboard.
 func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard
+}
+
+func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	// https://platform.openai.com/docs/api-reference/models/list
+	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, "https://api.openai.com/v1/models")
 }
 
 // processStreamPackets processes stream packets for the OpenAI Responses API.
@@ -595,5 +686,6 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGen        = &Client{}
+	_ genai.ProviderModel      = &Client{}
 	_ genai.ProviderScoreboard = &Client{}
 )

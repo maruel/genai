@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/openairesponses"
@@ -95,6 +96,7 @@ func TestClient_Batch(t *testing.T) {
 		break
 	}
 }
+*/
 
 func TestClient_Preferred(t *testing.T) {
 	data := []struct {
@@ -103,7 +105,7 @@ func TestClient_Preferred(t *testing.T) {
 	}{
 		{base.PreferredCheap, "gpt-4.1-nano"},
 		{base.PreferredGood, "gpt-4.1-mini"},
-		{base.PreferredSOTA, "o1-pro"},
+		{base.PreferredSOTA, "o3-pro"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {
@@ -114,6 +116,7 @@ func TestClient_Preferred(t *testing.T) {
 	}
 }
 
+/*
 func TestClient_ProviderGen_errors(t *testing.T) {
 	data := []internaltest.ProviderGenError{
 		{
@@ -137,13 +140,12 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 }
 */
 
-/*
 func TestClient_ProviderModel_errors(t *testing.T) {
 	data := []internaltest.ProviderModelError{
 		{
 			Name:   "bad apiKey",
 			ApiKey: "badApiKey",
-			Err:    "http 401: error invalid_api_key (): Incorrect API key provided: badApiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
+			Err:    "http 401: openai responses error: Incorrect API key provided: badApiKey. You can find your API key at https://platform.openai.com/account/api-keys. (type: invalid_request_error, code: invalid_api_key)",
 		},
 	}
 	f := func(t *testing.T, apiKey string) genai.ProviderModel {
@@ -151,7 +153,6 @@ func TestClient_ProviderModel_errors(t *testing.T) {
 	}
 	internaltest.TestClient_ProviderModel_errors(t, f, data)
 }
-*/
 
 func getClient(t *testing.T, m string) *openairesponses.Client {
 	testRecorder.Signal(t)

@@ -1,0 +1,270 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 818
+        host: api.openai.com
+        body: |
+            {"model":"gpt-4.1-nano","background":false,"instructions":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is.","parallel_tool_calls":true,"store":false,"tool_choice":"required","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_68502c1288948199a6410d7c8615901c0c90dc3bf8e38173",
+              "object": "response",
+              "created_at": 1750084626,
+              "status": "completed",
+              "background": false,
+              "error": null,
+              "incomplete_details": null,
+              "instructions": "You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is.",
+              "max_output_tokens": null,
+              "model": "gpt-4.1-nano-2025-04-14",
+              "output": [
+                {
+                  "id": "fc_68502c12c158819985f597101e789f450c90dc3bf8e38173",
+                  "type": "function_call",
+                  "status": "completed",
+                  "arguments": "{\"number\":\"132413\"}",
+                  "call_id": "call_wBlNoToWCf5uweXJ7h1o79Fx",
+                  "name": "square_root"
+                }
+              ],
+              "parallel_tool_calls": true,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "service_tier": "default",
+              "store": false,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "required",
+              "tools": [
+                {
+                  "type": "function",
+                  "description": "Calculates and return the square root of a number",
+                  "name": "square_root",
+                  "parameters": {
+                    "properties": {
+                      "number": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": [
+                      "number"
+                    ]
+                  },
+                  "strict": true
+                }
+              ],
+              "top_p": 1.0,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 116,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens": 7,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 123
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 950b0b1358756e06-YUL
+            Content-Type:
+                - application/json
+            Openai-Organization:
+                - user-vtmtcvpbctksjfewktqdl2sw
+            Openai-Processing-Ms:
+                - "345"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "497"
+            X-Ratelimit-Remaining-Tokens:
+                - "199667"
+            X-Ratelimit-Reset-Requests:
+                - 314ms
+            X-Ratelimit-Reset-Tokens:
+                - 99ms
+            X-Request-Id:
+                - req_6055ee4d1674ce07f8eb36d47c9dbaf1
+        status: 200 OK
+        code: 200
+        duration: 481ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1032
+        host: api.openai.com
+        body: |
+            {"model":"gpt-4.1-nano","background":false,"instructions":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is.","parallel_tool_calls":true,"store":false,"tool_choice":"none","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"type":"function_call","arguments":"{\"number\":\"132413\"}","name":"square_root","call_id":"call_wBlNoToWCf5uweXJ7h1o79Fx"},{"type":"function_call_output","call_id":"call_wBlNoToWCf5uweXJ7h1o79Fx","output":"363.89"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_68502c1302b481989fe295660aa3e87f00a5c3ccbbc01395",
+              "object": "response",
+              "created_at": 1750084627,
+              "status": "completed",
+              "background": false,
+              "error": null,
+              "incomplete_details": null,
+              "instructions": "You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is.",
+              "max_output_tokens": null,
+              "model": "gpt-4.1-nano-2025-04-14",
+              "output": [
+                {
+                  "id": "msg_68502c13349481989310ae51dcf26d7000a5c3ccbbc01395",
+                  "type": "message",
+                  "status": "completed",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "annotations": [],
+                      "text": "363.89"
+                    }
+                  ],
+                  "role": "assistant"
+                }
+              ],
+              "parallel_tool_calls": true,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "service_tier": "default",
+              "store": false,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "none",
+              "tools": [
+                {
+                  "type": "function",
+                  "description": "Calculates and return the square root of a number",
+                  "name": "square_root",
+                  "parameters": {
+                    "properties": {
+                      "number": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": [
+                      "number"
+                    ]
+                  },
+                  "strict": true
+                }
+              ],
+              "top_p": 1.0,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 132,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens": 4,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 136
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 950b0b165add6e06-YUL
+            Content-Type:
+                - application/json
+            Openai-Organization:
+                - user-vtmtcvpbctksjfewktqdl2sw
+            Openai-Processing-Ms:
+                - "261"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "199651"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 104ms
+            X-Request-Id:
+                - req_fe5ceee1a1e21fbabad556edd03e830f
+        status: 200 OK
+        code: 200
+        duration: 380ms

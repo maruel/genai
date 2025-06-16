@@ -248,8 +248,6 @@ var Scoreboard = genai.Scoreboard{
 		// "tts-1-hd-1106",
 		// Audio only input:
 		// "whisper-1",
-		// Image only output
-		// "gpt-image-1",
 	},
 }
 

@@ -1,0 +1,94 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 326
+        host: api.openai.com
+        body: |
+            {"model":"gpt-4.1-nano","background":false,"store":false,"text":{"format":{"type":"json_object"}},"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: response.created
+            data: {"type":"response.created","sequence_number":0,"response":{"id":"resp_68502c14b628819aac16a37ff8faff9e06071e920496d7a8","object":"response","created_at":1750084628,"status":"in_progress","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"model":"gpt-4.1-nano-2025-04-14","output":[],"parallel_tool_calls":true,"previous_response_id":null,"reasoning":{"effort":null,"summary":null},"service_tier":"auto","store":false,"temperature":1.0,"text":{"format":{"type":"json_object"}},"tool_choice":"auto","tools":[],"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}}}
+
+            event: response.in_progress
+            data: {"type":"response.in_progress","sequence_number":1,"response":{"id":"resp_68502c14b628819aac16a37ff8faff9e06071e920496d7a8","object":"response","created_at":1750084628,"status":"in_progress","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"model":"gpt-4.1-nano-2025-04-14","output":[],"parallel_tool_calls":true,"previous_response_id":null,"reasoning":{"effort":null,"summary":null},"service_tier":"auto","store":false,"temperature":1.0,"text":{"format":{"type":"json_object"}},"tool_choice":"auto","tools":[],"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}}}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","sequence_number":2,"output_index":0,"item":{"id":"msg_68502c14fb8c819a825081284ab56c6c06071e920496d7a8","type":"message","status":"in_progress","content":[],"role":"assistant"}}
+
+            event: response.content_part.added
+            data: {"type":"response.content_part.added","sequence_number":3,"item_id":"msg_68502c14fb8c819a825081284ab56c6c06071e920496d7a8","output_index":0,"content_index":0,"part":{"type":"output_text","annotations":[],"text":""}}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":4,"item_id":"msg_68502c14fb8c819a825081284ab56c6c06071e920496d7a8","output_index":0,"content_index":0,"delta":"{\""}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":5,"item_id":"msg_68502c14fb8c819a825081284ab56c6c06071e920496d7a8","output_index":0,"content_index":0,"delta":"is"}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":6,"item_id":"msg_68502c14fb8c819a825081284ab56c6c06071e920496d7a8","output_index":0,"content_index":0,"delta":"_f"}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":7,"item_id":"msg_68502c14fb8c819a825081284ab56c6c06071e920496d7a8","output_index":0,"content_index":0,"delta":"ruit"}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":8,"item_id":"msg_68502c14fb8c819a825081284ab56c6c06071e920496d7a8","output_index":0,"content_index":0,"delta":"\":"}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":9,"item_id":"msg_68502c14fb8c819a825081284ab56c6c06071e920496d7a8","output_index":0,"content_index":0,"delta":" true"}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":10,"item_id":"msg_68502c14fb8c819a825081284ab56c6c06071e920496d7a8","output_index":0,"content_index":0,"delta":"}"}
+
+            event: response.output_text.done
+            data: {"type":"response.output_text.done","sequence_number":11,"item_id":"msg_68502c14fb8c819a825081284ab56c6c06071e920496d7a8","output_index":0,"content_index":0,"text":"{\"is_fruit\": true}"}
+
+            event: response.content_part.done
+            data: {"type":"response.content_part.done","sequence_number":12,"item_id":"msg_68502c14fb8c819a825081284ab56c6c06071e920496d7a8","output_index":0,"content_index":0,"part":{"type":"output_text","annotations":[],"text":"{\"is_fruit\": true}"}}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","sequence_number":13,"output_index":0,"item":{"id":"msg_68502c14fb8c819a825081284ab56c6c06071e920496d7a8","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"text":"{\"is_fruit\": true}"}],"role":"assistant"}}
+
+            event: response.completed
+            data: {"type":"response.completed","sequence_number":14,"response":{"id":"resp_68502c14b628819aac16a37ff8faff9e06071e920496d7a8","object":"response","created_at":1750084628,"status":"completed","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"model":"gpt-4.1-nano-2025-04-14","output":[{"id":"msg_68502c14fb8c819a825081284ab56c6c06071e920496d7a8","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"text":"{\"is_fruit\": true}"}],"role":"assistant"}],"parallel_tool_calls":true,"previous_response_id":null,"reasoning":{"effort":null,"summary":null},"service_tier":"default","store":false,"temperature":1.0,"text":{"format":{"type":"json_object"}},"tool_choice":"auto","tools":[],"top_p":1.0,"truncation":"disabled","usage":{"input_tokens":36,"input_tokens_details":{"cached_tokens":0},"output_tokens":8,"output_tokens_details":{"reasoning_tokens":0},"total_tokens":44},"user":null,"metadata":{}}}
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 950b0b210cfc6e06-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Organization:
+                - user-vtmtcvpbctksjfewktqdl2sw
+            Openai-Processing-Ms:
+                - "47"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - req_ef7eb42ea576ffdca0bae4b1049030ec
+        status: 200 OK
+        code: 200
+        duration: 156ms

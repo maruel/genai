@@ -1,0 +1,120 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 312
+        host: api.openai.com
+        body: |
+            {"model":"gpt-4.1-nano","background":false,"store":false,"text":{"format":{"type":"json_object"}},"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_68502c1284f48198b519e8e18800be540c43ca71c5e9e64a",
+              "object": "response",
+              "created_at": 1750084626,
+              "status": "completed",
+              "background": false,
+              "error": null,
+              "incomplete_details": null,
+              "instructions": null,
+              "max_output_tokens": null,
+              "model": "gpt-4.1-nano-2025-04-14",
+              "output": [
+                {
+                  "id": "msg_68502c1314e081988f279ccf4f663d100c43ca71c5e9e64a",
+                  "type": "message",
+                  "status": "completed",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "annotations": [],
+                      "text": "{\"is_fruit\": true}"
+                    }
+                  ],
+                  "role": "assistant"
+                }
+              ],
+              "parallel_tool_calls": true,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "service_tier": "default",
+              "store": false,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "json_object"
+                }
+              },
+              "tool_choice": "auto",
+              "tools": [],
+              "top_p": 1.0,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 36,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens": 8,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 44
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 950b0b1358726e06-YUL
+            Content-Type:
+                - application/json
+            Openai-Organization:
+                - user-vtmtcvpbctksjfewktqdl2sw
+            Openai-Processing-Ms:
+                - "665"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "199945"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 16ms
+            X-Request-Id:
+                - req_d06aecd69c2c2e8e963a4e5bca3ad6d1
+        status: 200 OK
+        code: 200
+        duration: 776ms

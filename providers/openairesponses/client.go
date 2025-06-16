@@ -11,21 +11,32 @@ package openairesponses
 
 import (
 	"context"
+	"encoding/base64"
 	"errors"
 	"fmt"
+	"mime"
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
 
-// Scoreboard for OpenAI Responses API.
+// Scoreboard for OpenAI.
+//
+// # Warnings
+//
+//   - OpenAI supports more than what the client supports.
+//   - Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the
+//     tool's first argument.
+//   - Rate limit is based on how much you spend per month: https://platform.openai.com/docs/guides/rate-limits
 var Scoreboard = genai.Scoreboard{
 	Country:      "US",
 	DashboardURL: "https://platform.openai.com/usage",
@@ -49,59 +60,238 @@ var Scoreboard = genai.Scoreboard{
 			In:  map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:       genai.True,
-				BiasedTool:  genai.True,
-				NoMaxTokens: true, // Technically not true but it requires at least 16 tokens and the smoke test is 3.
-				// IndecisiveTool: genai.True,
-				NoStopSequence: true,
+				Tools:          genai.True,
+				BiasedTool:     genai.True,
 				JSON:           true,
+				NoMaxTokens:    true, // Technically not true but it requires at least 16 tokens and the smoke test is 3.
+				NoStopSequence: true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.True,
 				BiasedTool:     genai.True,
-				IndecisiveTool: genai.True,
-				NoStopSequence: true,
 				JSON:           true,
+				NoMaxTokens:    true, // Technically not true but it requires at least 16 tokens and the smoke test is 3.
+				NoStopSequence: true,
 			},
 		},
+		{
+			Models: []string{
+				"gpt-4.1-nano",
+				"gpt-4.1",
+				"gpt-4.1-2025-04-14",
+				"gpt-4.1-mini",
+				"gpt-4.1-mini-2025-04-14",
+				"gpt-4.1-nano-2025-04-14",
+				"gpt-4.5-preview",
+				"gpt-4.5-preview-2025-02-27",
+				"gpt-4o",
+				"gpt-4o-2024-05-13",
+				"gpt-4o-2024-08-06",
+				"gpt-4o-2024-11-20",
+				"gpt-4o-mini",
+				"gpt-4o-mini-2024-07-18",
+				"gpt-4o-mini-realtime-preview",
+				"gpt-4o-mini-realtime-preview-2024-12-17",
+				"gpt-4o-mini-search-preview",
+				"gpt-4o-mini-search-preview-2025-03-11",
+				"gpt-4o-realtime-preview",
+				"gpt-4o-realtime-preview-2024-10-01",
+				"gpt-4o-realtime-preview-2024-12-17",
+				"gpt-4o-search-preview",
+				"gpt-4o-search-preview-2025-03-11",
+			},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityImage: {
+					Inline:           true,
+					URL:              true,
+					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
+				},
+				genai.ModalityPDF: {
+					Inline:           true,
+					SupportedFormats: []string{"application/pdf"},
+				},
+				genai.ModalityText: {Inline: true},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Tools:          genai.True,
+				BiasedTool:     genai.True,
+				JSON:           true,
+				JSONSchema:     true,
+				NoMaxTokens:    true, // Technically not true but it requires at least 16 tokens and the smoke test is 3.
+				NoStopSequence: true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Tools:          genai.True,
+				BiasedTool:     genai.True,
+				JSON:           true,
+				JSONSchema:     true,
+				NoMaxTokens:    true, // Technically not true but it requires at least 16 tokens and the smoke test is 3.
+				NoStopSequence: true,
+			},
+		},
+		// https://platform.openai.com/docs/guides/responses-vs-chat-completions
+		/*
+			{
+				In: map[genai.Modality]genai.ModalCapability{
+					genai.ModalityAudio: {
+						Inline:           true,
+						SupportedFormats: []string{"audio/mpeg", "audio/wav", "audio/mp4", "audio/x-m4a", "audio/webm"},
+					},
+					genai.ModalityText: {Inline: true},
+				},
+				Out: map[genai.Modality]genai.ModalCapability{
+					genai.ModalityAudio: {
+						Inline:           true,
+						SupportedFormats: []string{"audio/mpeg", "audio/wav", "audio/mp4", "audio/x-m4a", "audio/webm"},
+					},
+					genai.ModalityText: {Inline: true},
+				},
+				Models: []string{
+					"gpt-4o-audio-preview",
+					// "gpt-4o-audio-preview-2025-06-03", Listed on the web site but not listed in the API.
+					"gpt-4o-audio-preview-2024-10-01",
+					"gpt-4o-audio-preview-2024-12-17",
+					"gpt-4o-mini-transcribe",
+					"gpt-4o-transcribe",
+
+					// This model fails the smoke test.
+					"gpt-4o-mini-audio-preview",
+					"gpt-4o-mini-audio-preview-2024-12-17",
+				},
+				GenSync: &genai.FunctionalityText{
+					Tools:          genai.True,
+					BiasedTool:     genai.True,
+					JSON:           true,
+					JSONSchema:     true,
+					NoMaxTokens:    true, // Technically not true but it requires at least 16 tokens and the smoke test is 3.
+					NoStopSequence: true,
+				},
+				GenStream: &genai.FunctionalityText{
+					Tools:          genai.True,
+					BiasedTool:     genai.True,
+					JSON:           true,
+					JSONSchema:     true,
+					NoMaxTokens:    true, // Technically not true but it requires at least 16 tokens and the smoke test is 3.
+					NoStopSequence: true,
+				},
+			},
+		*/
+		{
+			Models: []string{
+				"o4-mini",
+				"o1-mini",
+				"o1-mini-2024-09-12",
+				"o3-mini",
+				"o3-mini-2025-01-31",
+				"o4-mini-2025-04-16",
+				"o3-pro",
+				"o1",
+				"o1-2024-12-17",
+				"o1-preview",
+				"o1-preview-2024-09-12",
+				"o1-pro",
+				"o1-pro-2025-03-19",
+			},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityImage: {
+					Inline:           true,
+					URL:              true,
+					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
+				},
+				genai.ModalityText: {Inline: true},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Tools:          genai.True,
+				BiasedTool:     genai.Flaky, // It prefers Canada!
+				JSON:           true,
+				JSONSchema:     true,
+				NoMaxTokens:    true, // Technically not true but it requires at least 16 tokens and the smoke test is 3.
+				NoStopSequence: true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Tools:          genai.True,
+				BiasedTool:     genai.Flaky, // It prefers Canada!
+				JSON:           true,
+				JSONSchema:     true,
+				NoMaxTokens:    true, // Technically not true but it requires at least 16 tokens and the smoke test is 3.
+				NoStopSequence: true,
+			},
+		},
+		{
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {
+					Inline: true,
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityImage: {
+					Inline:           true,
+					SupportedFormats: []string{"image/png", "image/jpeg", "image/webp"},
+				},
+			},
+			Models: []string{
+				"dall-e-2",
+				"dall-e-3",
+				"gpt-image-1",
+			},
+			GenDoc: &genai.FunctionalityDoc{
+				BrokenTokenUsage:   true,
+				BrokenFinishReason: true,
+				Seed:               true,
+			},
+		},
+		// Audio only output:
+		// "gpt-4o-mini-tts",
+		// "tts-1",
+		// "tts-1-1106",
+		// "tts-1-hd",
+		// "tts-1-hd-1106",
+		// Audio only input:
+		// "whisper-1",
 	},
 }
 
-// ResponseStreamChunkResponse represents a streaming response chunk.
-// It matches the server-sent events structure from the OpenAI Responses API.
-type ResponseStreamChunkResponse struct {
-	Type string `json:"type"`
+// OptionsText includes OpenAI specific options.
+type OptionsText struct {
+	genai.OptionsText
 
-	// Common fields
-	SequenceNumber int    `json:"sequence_number,omitzero"`
-	ItemID         string `json:"item_id,omitzero"`
-	OutputIndex    int    `json:"output_index,omitzero"`
-	ContentIndex   int    `json:"content_index,omitzero"`
+	// ReasoningEffort is the amount of effort (number of tokens) the LLM can use to think about the answer.
+	//
+	// When unspecified, defaults to medium.
+	ReasoningEffort ReasoningEffort
+	// ServiceTier specify the priority.
+	ServiceTier ServiceTier
+}
 
-	// For response.created, response.in_progress, response.completed, response.failed, response.incomplete
-	Response *ResponseResponse `json:"response,omitzero"`
+// ServiceTier is the quality of service to determine the request's priority.
+type ServiceTier string
 
-	// For response.output_text.delta
-	Delta string `json:"delta,omitzero"`
+const (
+	// ServiceTierAuto will utilize scale tier credits until they are exhausted if the Project is Scale tier
+	// enabled, else the request will be processed using the default service tier with a lower uptime SLA and no
+	// latency guarantee.
+	//
+	// https://openai.com/api-scale-tier/
+	ServiceTierAuto ServiceTier = "auto"
+	// ServiceTierDefault has the request be processed using the default service tier with a lower uptime SLA
+	// and no latency guarantee.
+	ServiceTierDefault ServiceTier = "default"
+	// ServiceTierFlex has the request be processed with the Flex Processing service tier.
+	//
+	// Flex processing is in beta, and currently only available for o3 and o4-mini models.
+	//
+	// https://platform.openai.com/docs/guides/flex-processing
+	ServiceTierFlex ServiceTier = "flex"
+)
 
-	// For response.output_text.done
-	Text string `json:"text,omitzero"`
+// OptionsImage includes OpenAI specific options.
+type OptionsImage struct {
+	genai.OptionsImage
 
-	// For response.refusal.delta and response.refusal.done
-	Refusal string `json:"refusal,omitzero"`
-
-	// For function call related events
-	Arguments string `json:"arguments,omitzero"`
-
-	// For reasoning events
-	SummaryIndex int            `json:"summary_index,omitzero"`
-	DeltaObj     map[string]any `json:"delta_obj,omitzero"` // For complex delta objects
-
-	// For error events
-	Error   *ErrorResponse `json:"error,omitzero"`
-	Code    string         `json:"code,omitzero"`
-	Message string         `json:"message,omitzero"`
-	Param   string         `json:"param,omitzero"`
+	// Background is only supported on gpt-image-1.
+	Background Background
 }
 
 // Response represents a request to the OpenAI Responses API.
@@ -195,7 +385,8 @@ func (r *Response) ToResult() (genai.Result, error) {
 		},
 	}
 	if len(r.Output) > 1 {
-		return res, fmt.Errorf("multiple outputs not supported: %#v", r.Output)
+		// OpenAI devs smoked crack. We need to merge the messages into one.
+		// return res, fmt.Errorf("multiple outputs not supported: %#v", r.Output)
 	}
 	for _, output := range r.Output {
 		if err := output.To(&res.Message); err != nil {
@@ -267,9 +458,21 @@ func (r *Response) initOptions(v *genai.OptionsText, model string) ([]string, []
 
 // ReasoningConfig represents reasoning configuration for o-series models.
 type ReasoningConfig struct {
-	Effort  string `json:"effort,omitzero"`  // "low", "medium", "high"
-	Summary string `json:"summary,omitzero"` // "auto", "concise", "detailed"
+	Effort  ReasoningEffort `json:"effort,omitzero"`
+	Summary string          `json:"summary,omitzero"` // "auto", "concise", "detailed"
 }
+
+// ReasoningEffort is the effort the model should put into reasoning. Default is Medium.
+//
+// https://platform.openai.com/docs/api-reference/assistants/createAssistant#assistants-createassistant-reasoning_effort
+// https://platform.openai.com/docs/guides/reasoning
+type ReasoningEffort string
+
+const (
+	ReasoningEffortLow    ReasoningEffort = "low"
+	ReasoningEffortMedium ReasoningEffort = "medium"
+	ReasoningEffortHigh   ReasoningEffort = "high"
+)
 
 // Tool represents a tool that can be called by the model.
 type Tool struct {
@@ -380,21 +583,14 @@ func (m *Message) From(msg *genai.Message) error {
 	if len(msg.Contents) != 0 {
 		m.Type = MessageMessage
 		m.Content = make([]Content, len(msg.Contents))
-		for j, content := range msg.Contents {
-			if content.Text != "" {
-				m.Content[j] = Content{Type: ContentInputText, Text: content.Text}
-			} else if content.Document != nil {
-				// Handle document content
-				// TODO: Implement proper document/image content conversion
-				m.Content[j] = Content{Type: ContentInputImage, Detail: "auto"}
-				return fmt.Errorf("implement me")
-			} else {
-				return fmt.Errorf("unsupported content type")
+		for j := range msg.Contents {
+			if err := m.Content[j].From(&msg.Contents[j]); err != nil {
+				return fmt.Errorf("block %d: %w", j, err)
 			}
 		}
 		return nil
 	}
-	return fmt.Errorf("implement me: %#v", msg)
+	return fmt.Errorf("implement message: %#v", msg)
 }
 
 func (m *Message) To(out *genai.Message) error {
@@ -408,16 +604,22 @@ func (m *Message) To(out *genai.Message) error {
 	// We only need to implement the types that can be returned from the LLM.
 	switch m.Type {
 	case MessageMessage:
-		out.Contents = make([]genai.Content, len(m.Content))
 		for i := range m.Content {
-			if err := m.Content[i].To(&out.Contents[i]); err != nil {
+			c := genai.Content{}
+			if err := m.Content[i].To(&c); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
+			out.Contents = append(out.Contents, c)
 		}
 	case MessageReasoning:
-		return errors.New("implement reasoning")
+		for i := range m.Summary {
+			if m.Summary[i].Type != "summary_text" {
+				return fmt.Errorf("unsupported summary type %q", m.Summary[i].Type)
+			}
+			out.Contents = append(out.Contents, genai.Content{Thinking: m.Summary[i].Text})
+		}
 	case MessageFunctionCall:
-		out.ToolCalls = []genai.ToolCall{{ID: m.CallID, Name: m.Name, Arguments: m.Arguments}}
+		out.ToolCalls = append(out.ToolCalls, genai.ToolCall{ID: m.CallID, Name: m.Name, Arguments: m.Arguments})
 	default:
 		return fmt.Errorf("unsupported output type %q", m.Type)
 	}
@@ -452,17 +654,17 @@ type Content struct {
 	Detail   string `json:"detail,omitzero"`    // "high", "low", "auto" (default)
 
 	// Type == ContentInputFile
-	FileData []byte `json:"file_data,omitzero"` // TODO: confirm if base64
+	FileData string `json:"file_data,omitzero"` // TODO: confirm if base64
 	Filename string `json:"filename,omitzero"`
 
 	// Type == ContentOutputText
 	Annotations []Annotation `json:"annotations,omitzero"`
 	Logprobs    struct {
-		Bytes       []int   `json:"bytes,omitzero"`
+		Bytes       []int64 `json:"bytes,omitzero"`
 		Token       string  `json:"token,omitzero"`
 		Logprob     float64 `json:"logprob,omitzero"`
 		TopLogprobs []struct {
-			Bytes   []int   `json:"bytes,omitzero"`
+			Bytes   []int64 `json:"bytes,omitzero"`
 			Token   string  `json:"token,omitzero"`
 			Logprob float64 `json:"logprob,omitzero"`
 		} `json:"top_logprobs,omitzero"`
@@ -482,6 +684,52 @@ func (c *Content) To(out *genai.Content) error {
 		out.Text = c.Text
 	default:
 		return fmt.Errorf("unsupported content type %q", c.Type)
+	}
+	return nil
+}
+
+func (c *Content) From(in *genai.Content) error {
+	if in.Text != "" {
+		c.Type = ContentInputText
+		c.Text = in.Text
+		return nil
+	}
+	// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
+	mimeType, data, err := in.ReadDocument(10 * 1024 * 1024)
+	if err != nil {
+		return err
+	}
+	// OpenAI require a mime-type to determine if image, sound or PDF.
+	if mimeType == "" {
+		return fmt.Errorf("unspecified mime type for URL %q", in.URL)
+	}
+	switch {
+	case strings.HasPrefix(mimeType, "image/"):
+		c.Type = ContentInputImage
+		c.Detail = "auto" // TODO: Make it configurable.
+		if in.URL == "" {
+			c.ImageURL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+		} else {
+			c.ImageURL = in.URL
+		}
+	default:
+		if in.URL != "" {
+			return fmt.Errorf("URL to %s file not supported", mimeType)
+		}
+		filename := in.GetFilename()
+		if filename == "" {
+			exts, err := mime.ExtensionsByType(mimeType)
+			if err != nil {
+				return err
+			}
+			if len(exts) == 0 {
+				return fmt.Errorf("unknown extension for mime type %s", mimeType)
+			}
+			filename = "content" + exts[0]
+		}
+		c.Type = ContentInputFile
+		c.Filename = filename
+		c.FileData = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 	}
 	return nil
 }
@@ -537,9 +785,304 @@ type Usage struct {
 
 // TokenDetails provides detailed token usage breakdown.
 type TokenDetails struct {
-	CachedTokens    int `json:"cached_tokens,omitzero"`
-	AudioTokens     int `json:"audio_tokens,omitzero"`
-	ReasoningTokens int `json:"reasoning_tokens,omitzero"`
+	CachedTokens    int64 `json:"cached_tokens,omitzero"`
+	AudioTokens     int64 `json:"audio_tokens,omitzero"`
+	ReasoningTokens int64 `json:"reasoning_tokens,omitzero"`
+}
+
+// ResponseType is one of the event at https://platform.openai.com/docs/api-reference/responses-streaming
+type ResponseType string
+
+const (
+	ResponseCompleted                       ResponseType = "response.completed"
+	ResponseContentPartAdded                ResponseType = "response.content_part.added"
+	ResponseContentPartDone                 ResponseType = "response.content_part.done"
+	ResponseCreated                         ResponseType = "response.created"
+	ResponseError                           ResponseType = "error"
+	ResponseFailed                          ResponseType = "response.failed"
+	ResponseFileSearchCallCompleted         ResponseType = "response.file_search_call.completed"
+	ResponseFileSearchCallInProgress        ResponseType = "response.file_search_call.in_progress"
+	ResponseFileSearchCallSearching         ResponseType = "response.file_search_call.searching"
+	ResponseFunctionCallArgumentsDelta      ResponseType = "response.function_call_arguments.delta"
+	ResponseFunctionCallArgumentsDone       ResponseType = "response.function_call_arguments.done"
+	ResponseImageGenerationCallCompleted    ResponseType = "response.image_generation_call.completed"
+	ResponseImageGenerationCallGenerating   ResponseType = "response.image_generation_call.generating"
+	ResponseImageGenerationCallInProgress   ResponseType = "response.image_generation_call.in_progress"
+	ResponseImageGenerationCallPartialImage ResponseType = "response.image_generation_call.partial_image"
+	ResponseInProgress                      ResponseType = "response.in_progress"
+	ResponseIncomplete                      ResponseType = "response.incomplete"
+	ResponseMCPCallArgumentsDelta           ResponseType = "response.mcp_call.arguments.delta"
+	ResponseMCPCallArgumentsDone            ResponseType = "response.mcp_call.arguments.done"
+	ResponseMCPCallCompleted                ResponseType = "response.mcp_call.completed"
+	ResponseMCPCallFailed                   ResponseType = "response.mcp_call.failed"
+	ResponseMCPCallInProgress               ResponseType = "response.mcp_call.in_progress"
+	ResponseMCPListToolsCompleted           ResponseType = "response.mcp_list_tools.completed"
+	ResponseMCPListToolsFailed              ResponseType = "response.mcp_list_tools.failed"
+	ResponseMCPListToolsInProgress          ResponseType = "response.mcp_list_tools.in_progress"
+	ResponseOutputItemAdded                 ResponseType = "response.output_item.added"
+	ResponseOutputItemDone                  ResponseType = "response.output_item.done"
+	ResponseOutputTextDelta                 ResponseType = "response.output_text.delta"
+	ResponseOutputTextDone                  ResponseType = "response.output_text.done"
+	ResponseOutputTextAnnotationAdded       ResponseType = "response.output_text_annotation.added"
+	ResponseQueued                          ResponseType = "response.queued"
+	ResponseReasoningDelta                  ResponseType = "response.reasoning.delta"
+	ResponseReasoningDone                   ResponseType = "response.reasoning.done"
+	ResponseReasoningSummaryDelta           ResponseType = "response.reasoning_summary.delta"
+	ResponseReasoningSummaryDone            ResponseType = "response.reasoning_summary.done"
+	ResponseReasoningSummaryPartAdded       ResponseType = "response.reasoning_summary_part.added"
+	ResponseReasoningSummaryPartDone        ResponseType = "response.reasoning_summary_part.done"
+	ResponseReasoningSummaryTextDelta       ResponseType = "response.reasoning_summary_text.delta"
+	ResponseReasoningSummaryTextDone        ResponseType = "response.reasoning_summary_text.done"
+	ResponseRefusalDelta                    ResponseType = "response.refusal.delta"
+	ResponseRefusalDone                     ResponseType = "response.refusal.done"
+	ResponseWebSearchCallCompleted          ResponseType = "response.web_search_call.completed"
+	ResponseWebSearchCallInProgress         ResponseType = "response.web_search_call.in_progress"
+	ResponseWebSearchCallSearching          ResponseType = "response.web_search_call.searching"
+)
+
+// ResponseStreamChunkResponse represents a streaming response chunk.
+//
+// https://platform.openai.com/docs/api-reference/responses-streaming
+type ResponseStreamChunkResponse struct {
+	Type           ResponseType `json:"type,omitzero"`
+	SequenceNumber int64        `json:"sequence_number,omitzero"`
+
+	// Type == ResponseCreated, ResponseInProgress, ResponseCompleted, ResponseFailed, ResponseIncomplete,
+	// ResponseQueued
+	Response Response `json:"response,omitzero"`
+
+	// Type == ResponseOutputItemAdded, ResponseOutputItemDone, ResponseContentPartAdded,
+	// ResponseContentPartDone, ResponseOutputTextDelta, ResponseOutputTextDone, ResponseRefusalDelta,
+	// ResponseRefusalDone, ResponseFunctionCallArgumentsDelta, ResponseFunctionCallArgumentsDone,
+	// ResponseReasoningSummaryPartAdded, ResponseReasoningSummaryPartDone, ResponseReasoningSummaryTextDelta,
+	// ResponseReasoningSummaryTextDone, ResponseReasoningDone, ResponseReasoningSummaryDelta,
+	// ResponseReasoningSummaryDone, ResponseOutputTextAnnotationAdded
+	OutputIndex int64 `json:"output_index,omitzero"`
+
+	// Type == ResponseOutputItemAdded, ResponseOutputItemDone
+	Item Message `json:"item,omitzero"`
+
+	// Type == ResponseContentPartAdded, ResponseContentPartDone, ResponseOutputTextDelta,
+	// ResponseOutputTextDone, ResponseRefusalDelta, ResponseRefusalDone, ResponseReasoningDelta,
+	// ResponseReasoningDone, ResponseOutputTextAnnotationAdded
+	ContentIndex int64 `json:"content_index,omitzero"`
+
+	// Type == ResponseContentPartAdded, ResponseContentPartDone, ResponseOutputTextDelta,
+	// ResponseOutputTextDone, ResponseRefusalDelta, ResponseRefusalDone, ResponseFunctionCallArgumentsDelta,
+	// ResponseFunctionCallArgumentsDone, ResponseReasoningSummaryPartAdded, ResponseReasoningSummaryPartDone,
+	// ResponseReasoningSummaryTextDelta, ResponseReasoningSummaryTextDone, ResponseReasoningDelta,
+	// ResponseReasoningDone, ResponseReasoningSummaryDelta, ResponseReasoningSummaryDone, ResponseOutputTextAnnotationAdded
+	ItemID string `json:"item_id,omitzero"`
+
+	// Type == ResponseContentPartAdded, ResponseContentPartDone, ResponseReasoningSummaryPartAdded,
+	// ResponseReasoningSummaryPartDone
+	Part Content `json:"part,omitzero"`
+
+	// Type == ResponseOutputTextDelta, ResponseRefusalDelta, ResponseFunctionCallArgumentsDelta,
+	// ResponseReasoningSummaryTextDelta, ResponseReasoningDelta, ResponseReasoningSummaryDelta
+	Delta string `json:"delta,omitzero"`
+
+	// Type == ResponseOutputTextDone, ResponseReasoningSummaryTextDone, ResponseReasoningDone,
+	// ResponseReasoningSummaryDone
+	Text string `json:"text,omitzero"`
+
+	// Type == ResponseRefusalDone
+	Refusal string `json:"refusal,omitzero"`
+
+	// Type == ResponseFunctionCallArgumentsDone
+	Arguments string `json:"arguments,omitzero"`
+
+	// Type == ResponseReasoningSummaryPartAdded, ResponseReasoningSummaryPartDone,
+	// ResponseReasoningSummaryTextDelta, ResponseReasoningSummaryTextDone, ResponseReasoningSummaryDelta,
+	// ResponseReasoningSummaryDone
+	SummaryIndex int64 `json:"summary_index,omitzero"`
+
+	// Type == ResponseOutputTextAnnotationAdded
+	Annotation      Annotation `json:"annotation,omitzero"`
+	AnnotationIndex int64      `json:"annotation_index,omitzero"`
+
+	// Type == ResponseError
+	Code    string `json:"code,omitzero"`
+	Message string `json:"message,omitzero"`
+	Param   string `json:"param,omitzero"`
+
+	/* TODO
+	ResponseFileSearchCallCompleted
+	ResponseFileSearchCallInProgress
+	ResponseFileSearchCallSearching
+	ResponseFunctionCallArgumentsDelta
+	ResponseFunctionCallArgumentsDone
+	ResponseImageGenerationCallCompleted
+	ResponseImageGenerationCallGenerating
+	ResponseImageGenerationCallInProgress
+	ResponseImageGenerationCallPartialImage
+	ResponseMCPCallArgumentsDelta
+	ResponseMCPCallArgumentsDone
+	ResponseMCPCallCompleted
+	ResponseMCPCallFailed
+	ResponseMCPCallInProgress
+	ResponseMCPListToolsCompleted
+	ResponseMCPListToolsFailed
+	ResponseMCPListToolsInProgress
+	ResponseWebSearchCallCompleted
+	ResponseWebSearchCallInProgress
+	ResponseWebSearchCallSearching
+	*/
+}
+
+//
+
+// https://platform.openai.com/docs/api-reference/images
+type ImageRequest struct {
+	Prompt            string     `json:"prompt"`
+	Model             string     `json:"model,omitzero"`              // Default to dall-e-2, unless a gpt-image-1 specific parameter is used.
+	Background        Background `json:"background,omitzero"`         // Default "auto"
+	Moderation        string     `json:"moderation,omitzero"`         // gpt-image-1: "low" or "auto"
+	N                 int64      `json:"n,omitzero"`                  // Number of images to return
+	OutputCompression float64    `json:"output_compression,omitzero"` // Defaults to 100. Only supported on gpt-image-1 with webp or jpeg
+	OutputFormat      string     `json:"output_format,omitzero"`      // "png", "jpeg" or "webp". Defaults to png. Only supported on gpt-image-1.
+	Quality           string     `json:"quality,omitzero"`            // "auto", gpt-image-1: "high", "medium", "low". dall-e-3: "hd", "standard". dall-e-2: "standard".
+	ResponseFormat    string     `json:"response_format,omitzero"`    // "url" or "b64_json"; url is valid for 60 minutes; gpt-image-1 only returns b64_json
+	Size              string     `json:"size,omitzero"`               // "auto", gpt-image-1: "1024x1024", "1536x1024", "1024x1536". dall-e-3: "1024x1024", "1792x1024", "1024x1792". dall-e-2: "256x256", "512x512", "1024x1024".
+	Style             string     `json:"style,omitzero"`              // dall-e-3: "vivid", "natural"
+	User              string     `json:"user,omitzero"`               // End-user to help monitor and detect abuse
+}
+
+// Background is only supported on gpt-image-1.
+type Background string
+
+const (
+	BackgroundAuto        Background = "auto"
+	BackgroundTransparent Background = "transparent"
+	BackgroundOpaque      Background = "opaque"
+)
+
+type ImageResponse struct {
+	Created base.Time         `json:"created"`
+	Data    []ImageChoiceData `json:"data"`
+	Usage   struct {
+		InputTokens        int64 `json:"input_tokens"`
+		OutputTokens       int64 `json:"output_tokens"`
+		TotalTokens        int64 `json:"total_tokens"`
+		InputTokensDetails struct {
+			TextTokens  int64 `json:"text_tokens"`
+			ImageTokens int64 `json:"image_tokens"`
+		} `json:"input_tokens_details"`
+	} `json:"usage"`
+}
+
+type ImageChoiceData struct {
+	B64JSON       []byte `json:"b64_json"`
+	RevisedPrompt string `json:"revised_prompt"` // dall-e-3 only
+	URL           string `json:"url"`            // Unsupported for gpt-image-1
+}
+
+//
+
+// https://platform.openai.com/docs/api-reference/files/object
+type File struct {
+	Bytes         int64     `json:"bytes"` // File size
+	CreatedAt     base.Time `json:"created_at"`
+	ExpiresAt     base.Time `json:"expires_at"`
+	Filename      string    `json:"filename"`
+	ID            string    `json:"id"`
+	Object        string    `json:"object"`         // "file"
+	Purpose       string    `json:"purpose"`        // One of: assistants, assistants_output, batch, batch_output, fine-tune, fine-tune-results and vision
+	Status        string    `json:"status"`         // Deprecated
+	StatusDetails string    `json:"status_details"` // Deprecated
+}
+
+func (f *File) GetID() string {
+	return f.ID
+}
+
+func (f *File) GetDisplayName() string {
+	return f.Filename
+}
+
+func (f *File) GetExpiry() time.Time {
+	return f.ExpiresAt.AsTime()
+}
+
+// https://platform.openai.com/docs/api-reference/files/delete
+type FileDeleteResponse struct {
+	ID      string `json:"id"`
+	Object  string `json:"object"` // "file"
+	Deleted bool   `json:"deleted"`
+}
+
+// https://platform.openai.com/docs/api-reference/files/list
+type FileListResponse struct {
+	Data   []File `json:"data"`
+	Object string `json:"object"` // "list"
+}
+
+//
+
+// https://platform.openai.com/docs/api-reference/batch/request-input
+type BatchRequestInput struct {
+	CustomID string   `json:"custom_id"`
+	Method   string   `json:"method"` // "POST"
+	URL      string   `json:"url"`    // "/v1/chat/completions", "/v1/embeddings", "/v1/completions", "/v1/responses"
+	Body     Response `json:"body"`
+}
+
+// https://platform.openai.com/docs/api-reference/batch/request-output
+type BatchRequestOutput struct {
+	CustomID string `json:"custom_id"`
+	ID       string `json:"id"`
+	Error    struct {
+		Code    string `json:"code"`
+		Message string `json:"message"`
+	} `json:"error"`
+	Response struct {
+		StatusCode int      `json:"status_code"`
+		RequestID  string   `json:"request_id"` // To use when contacting support
+		Body       Response `json:"body"`
+	} `json:"response"`
+}
+
+// https://platform.openai.com/docs/api-reference/batch/create
+type BatchRequest struct {
+	CompletionWindow string            `json:"completion_window"` // Must be "24h"
+	Endpoint         string            `json:"endpoint"`          // One of /v1/responses, /v1/chat/completions, /v1/embeddings, /v1/completions
+	InputFileID      string            `json:"input_file_id"`     // File must be JSONL
+	Metadata         map[string]string `json:"metadata,omitzero"` // Maximum 16 keys of 64 chars, values max 512 chars
+}
+
+// https://platform.openai.com/docs/api-reference/batch/object
+type Batch struct {
+	CancelledAt      base.Time `json:"cancelled_at"`
+	CancellingAt     base.Time `json:"cancelling_at"`
+	CompletedAt      base.Time `json:"completed_at"`
+	CompletionWindow string    `json:"completion_window"` // "24h"
+	CreatedAt        base.Time `json:"created_at"`
+	Endpoint         string    `json:"endpoint"`      // Same as BatchRequest.Endpoint
+	ErrorFileID      string    `json:"error_file_id"` // File ID containing the outputs of requests with errors.
+	Errors           struct {
+		Data []struct {
+			Code    string `json:"code"`
+			Line    int64  `json:"line"`
+			Message string `json:"message"`
+			Param   string `json:"param"`
+		} `json:"data"`
+	} `json:"errors"`
+	ExpiredAt     base.Time         `json:"expired_at"`
+	ExpiresAt     base.Time         `json:"expires_at"`
+	FailedAt      base.Time         `json:"failed_at"`
+	FinalizingAt  base.Time         `json:"finalizing_at"`
+	ID            string            `json:"id"`
+	InProgressAt  base.Time         `json:"in_progress_at"`
+	InputFileID   string            `json:"input_file_id"` // Input data
+	Metadata      map[string]string `json:"metadata"`
+	Object        string            `json:"object"`         // "batch"
+	OutputFileID  string            `json:"output_file_id"` // Output data
+	RequestCounts struct {
+		Completed int64 `json:"completed"`
+		Failed    int64 `json:"failed"`
+		Total     int64 `json:"total"`
+	} `json:"request_counts"`
+	Status string `json:"status"` // "completed", "in_progress", "validating", "finalizing"
 }
 
 //
@@ -601,13 +1144,9 @@ func (e *ErrorResponse) String() string {
 
 //
 
-// ResponseResponse represents the response from the OpenAI Responses API.
-// This is an alias for Response as the API returns the same structure.
-type ResponseResponse = Response
-
 // Client is a client for the OpenAI Responses API.
 type Client struct {
-	base.ProviderGen[*ErrorResponse, *Response, *ResponseResponse, ResponseStreamChunkResponse]
+	base.ProviderGen[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]
 }
 
 // New creates a new client to talk to the OpenAI Responses API.
@@ -643,7 +1182,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 		t = wrapper(t)
 	}
 	c := &Client{
-		ProviderGen: base.ProviderGen[*ErrorResponse, *Response, *ResponseResponse, ResponseStreamChunkResponse]{
+		ProviderGen: base.ProviderGen[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.openai.com/v1/responses",
 			GenStreamURL:         "https://api.openai.com/v1/responses",
@@ -670,7 +1209,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 		}
 		cheap := model == base.PreferredCheap
 		good := model == base.PreferredGood
-		c.ProviderGen.Model = ""
+		c.Model = ""
 		var created base.Time
 		for _, mdl := range mdls {
 			m := mdl.(*Model)
@@ -678,23 +1217,23 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 				if strings.HasSuffix(m.ID, "-nano") && (created == 0 || m.Created < created) {
 					// For the cheapest, we want the oldest model as it is generally cheaper.
 					created = m.Created
-					c.ProviderGen.Model = m.ID
+					c.Model = m.ID
 				}
 			} else if good {
 				if strings.HasSuffix(m.ID, "-mini") && (created == 0 || m.Created > created) {
 					// For the greatest, we want the newest model as it is generally better.
 					created = m.Created
-					c.ProviderGen.Model = m.ID
+					c.Model = m.ID
 				}
 			} else {
 				if strings.HasSuffix(m.ID, "-pro") && (created == 0 || m.Created > created) {
 					// For the greatest, we want the newest model as it is generally better.
 					created = m.Created
-					c.ProviderGen.Model = m.ID
+					c.Model = m.ID
 				}
 			}
 		}
-		if c.ProviderGen.Model == "" {
+		if c.Model == "" {
 			return nil, errors.New("failed to find a model automatically")
 		}
 	}
@@ -706,9 +1245,127 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard
 }
 
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	if c.isImage(opts) {
+		if len(msgs) != 1 {
+			return genai.Result{}, errors.New("must pass exactly one Message")
+		}
+		return c.GenDoc(ctx, msgs[0], opts)
+	}
+	return c.ProviderGen.GenSync(ctx, msgs, opts)
+}
+
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+	if c.isImage(opts) {
+		return base.SimulateStream(ctx, c, msgs, chunks, opts)
+	}
+	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
+}
+
+func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
+	// https://platform.openai.com/docs/api-reference/images/create
+	res := genai.Result{}
+	if err := c.Validate(); err != nil {
+		return res, err
+	}
+	if err := msg.Validate(); err != nil {
+		return res, err
+	}
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return res, err
+		}
+	}
+	for i := range msg.Contents {
+		if msg.Contents[i].Text == "" {
+			return res, errors.New("only text can be passed as input")
+		}
+	}
+	req := ImageRequest{
+		Prompt:         msg.AsText(),
+		Model:          c.Model,
+		ResponseFormat: "b64_json",
+	}
+	// This is unfortunate.
+	switch c.Model {
+	case "gpt-image-1":
+		req.Moderation = "low"
+		// req.Background = "transparent"
+		// req.OutputFormat = "webp"
+		// req.OutputCompression = 90
+		// req.Quality = "high"
+		// req.Size = "1536x1024"
+	case "dall-e-3":
+		// req.Size = "1792x1024"
+	case "dall-e-2":
+		// We assume dall-e-2 is only used for smoke testing, so use the smallest image.
+		req.Size = "256x256"
+		// Maximum prompt length is 1000 characters.
+		// Since we assume this is only for testing, silently cut it off.
+		if len(req.Prompt) > 1000 {
+			req.Prompt = req.Prompt[:1000]
+		}
+	default:
+		// Silently pass.
+	}
+	if opts != nil {
+		switch v := opts.(type) {
+		case *OptionsImage:
+			if v.Height != 0 && v.Width != 0 {
+				req.Size = fmt.Sprintf("%dx%d", v.Width, v.Height)
+			}
+			req.Background = v.Background
+		case *genai.OptionsImage:
+			if v.Height != 0 && v.Width != 0 {
+				req.Size = fmt.Sprintf("%dx%d", v.Width, v.Height)
+			}
+		default:
+			return res, fmt.Errorf("unsupported options type %T", opts)
+		}
+	}
+	url := "https://api.openai.com/v1/images/generations"
+
+	// It is very different because it requires a multi-part upload.
+	// https://platform.openai.com/docs/api-reference/images/createEdit
+	// url = "https://api.openai.com/v1/images/edits"
+
+	resp := ImageResponse{}
+	if err := c.DoRequest(ctx, "POST", url, &req, &resp); err != nil {
+		return res, err
+	}
+	res.Role = genai.Assistant
+	res.Contents = make([]genai.Content, len(resp.Data))
+	for i := range resp.Data {
+		n := "content.jpg"
+		if len(resp.Data) > 1 {
+			n = fmt.Sprintf("content%d.jpg", i+1)
+		}
+		if url := resp.Data[i].URL; url != "" {
+			res.Contents[i].Filename = n
+			res.Contents[i].URL = url
+		} else if d := resp.Data[i].B64JSON; len(d) != 0 {
+			res.Contents[i].Filename = n
+			res.Contents[i].Document = &bb.BytesBuffer{D: resp.Data[i].B64JSON}
+		} else {
+			return res, errors.New("internal error")
+		}
+	}
+	return res, nil
+}
+
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://platform.openai.com/docs/api-reference/models/list
-	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.ProviderGen.Provider, "https://api.openai.com/v1/models")
+	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, "https://api.openai.com/v1/models")
+}
+
+func (c *Client) isImage(opts genai.Options) bool {
+	switch c.Model {
+	// TODO: Use Scoreboard list.
+	case "dall-e-2", "dall-e-3", "gpt-image-1":
+		return true
+	default:
+		return opts != nil && opts.Modality() == genai.ModalityImage
+	}
 }
 
 // processStreamPackets processes stream packets for the OpenAI Responses API.
@@ -720,115 +1377,112 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 		}
 	}()
 
-	var pendingToolCall *genai.ToolCall
-
+	pendingToolCall := genai.ToolCall{}
 	for pkt := range ch {
+		f := genai.ContentFragment{}
 		switch pkt.Type {
-		case "response.created":
-			// Response started, no content yet
-			continue
-
-		case "response.in_progress":
-			// Response is being generated, no content yet
-			continue
-
-		case "response.completed":
-			// Response completed, extract final usage and finish reason
-			if pkt.Response != nil {
-				result.InputTokens = pkt.Response.Usage.InputTokens
-				result.OutputTokens = pkt.Response.Usage.OutputTokens
-				if len(pkt.Response.Output) > 0 {
-					// Convert status from the first output message
-					msg := pkt.Response.Output[0]
-					switch msg.Status {
-					case "completed":
-						result.FinishReason = genai.FinishedStop
-					case "incomplete":
-						result.FinishReason = genai.FinishedLength
-					case "failed":
-						result.FinishReason = genai.FinishedContentFilter
-					default:
-						result.FinishReason = genai.FinishedStop
+		case ResponseCreated, ResponseInProgress:
+		case ResponseCompleted:
+			result.InputTokens = pkt.Response.Usage.InputTokens
+			result.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
+			result.OutputTokens = pkt.Response.Usage.OutputTokens
+			if len(pkt.Response.Output) == 0 {
+				// TODO: Likely failed.
+				return fmt.Errorf("no output: %#v", pkt)
+			}
+			// TODO: OpenAI supports "multiple messages" as output.
+			result.FinishReason = genai.FinishedStop
+			for i := range pkt.Response.Output {
+				msg := pkt.Response.Output[i]
+				switch msg.Status {
+				case "":
+				case "completed":
+					if msg.Type == MessageFunctionCall {
+						result.FinishReason = genai.FinishedToolCalls
 					}
+				case "in_progress":
+				case "incomplete":
+					result.FinishReason = genai.FinishedLength
+				case "failed":
+					return fmt.Errorf("failed: %#v", pkt)
+				default:
+					return fmt.Errorf("unknown status %q: %#v", msg.Status, pkt)
 				}
 			}
-			continue
-
-		case "response.failed":
-			// Response failed
-			if pkt.Response != nil && pkt.Response.Error.Message != "" {
-				return fmt.Errorf("response failed: %s", pkt.Response.Error.Message)
+		case ResponseFailed:
+			return fmt.Errorf("response failed: %s", pkt.Response.Error.Message)
+		case ResponseIncomplete:
+			result.InputTokens = pkt.Response.Usage.InputTokens
+			result.OutputTokens = pkt.Response.Usage.OutputTokens
+			result.FinishReason = genai.FinishedLength // Likely reason for incomplete
+		case ResponseOutputTextDelta:
+			f.TextFragment = pkt.Delta
+		case ResponseOutputTextDone:
+			// Unnecessary, we captured the text via ResponseOutputTextDelta.
+		case ResponseOutputItemAdded:
+			switch pkt.Item.Type {
+			case MessageMessage:
+				// Unnecessary.
+			case MessageFunctionCall:
+				pendingToolCall.Name = pkt.Item.Name
+				pendingToolCall.ID = pkt.Item.CallID
+			case MessageReasoning:
+				var bits []string
+				for i := range pkt.Item.Summary {
+					bits = append(bits, pkt.Item.Summary[i].Text)
+				}
+				f.ThinkingFragment = strings.Join(bits, "")
+			default:
+				return fmt.Errorf("implement item: %q", pkt.Item.Type)
 			}
-			return fmt.Errorf("response failed: %s", pkt.Message)
-
-		case "response.incomplete":
-			// Response incomplete
-			if pkt.Response != nil {
-				result.InputTokens = pkt.Response.Usage.InputTokens
-				result.OutputTokens = pkt.Response.Usage.OutputTokens
-				result.FinishReason = genai.FinishedLength // Likely reason for incomplete
+		case ResponseOutputItemDone:
+			// Unnecessary.
+		case ResponseContentPartAdded:
+			switch pkt.Part.Type {
+			case ContentOutputText:
+				if len(pkt.Part.Annotations) > 0 {
+					return fmt.Errorf("implement citations: %#v", pkt.Part.Annotations)
+				}
+				if len(pkt.Part.Text) > 0 {
+					return fmt.Errorf("unexpected text: %q", pkt.Part.Text)
+				}
+			case ContentRefusal:
+				return fmt.Errorf("implement part: %q", pkt.Part.Type)
+			default:
+				return fmt.Errorf("implement part: %q", pkt.Part.Type)
 			}
-			continue
-
-		case "response.output_text.delta":
-			// Text delta - send immediately
-			if pkt.Delta != "" {
-				chunks <- genai.ContentFragment{TextFragment: pkt.Delta}
-			}
-
-		case "response.output_text.done":
-			// Text completion - no need to send again as we already sent deltas
-			continue
-
-		case "response.refusal.delta":
-			// Refusal delta - treat as error
-			if pkt.Delta != "" {
-				return fmt.Errorf("refused: %s", pkt.Delta)
-			}
-
-		case "response.refusal.done":
-			// Refusal complete
-			if pkt.Refusal != "" {
-				return fmt.Errorf("refused: %s", pkt.Refusal)
-			}
-
-		case "response.function_call_arguments.delta":
-			// Function call arguments delta - buffer until complete
-			if pendingToolCall == nil {
-				pendingToolCall = &genai.ToolCall{}
-			}
-			pendingToolCall.Arguments += pkt.Delta
-
-		case "response.function_call_arguments.done":
-			// Function call arguments complete - send the tool call
-			if pendingToolCall != nil {
-				pendingToolCall.Arguments = pkt.Arguments // Use final arguments
-				chunks <- genai.ContentFragment{ToolCall: *pendingToolCall}
-				pendingToolCall = nil
-			}
-
-		case "error":
-			// Error event
-			if pkt.Error != nil {
-				return fmt.Errorf("error: %s", pkt.Error.Error.Message)
-			}
+		case ResponseContentPartDone:
+			// Unnecessary, as we already streamed the content in ResponseContentPartAdded.
+		case ResponseRefusalDelta:
+			// TODO: It's not an error.
+			return fmt.Errorf("refused: %s", pkt.Delta)
+		case ResponseRefusalDone:
+			// TODO: It's not an error.
+			return fmt.Errorf("refused: %s", pkt.Refusal)
+		case ResponseFunctionCallArgumentsDelta:
+			// Unnecessary. The content is sent in ResponseFunctionCallArgumentsDone.
+		case ResponseFunctionCallArgumentsDone:
+			pendingToolCall.Arguments = pkt.Arguments
+			f.ToolCall = pendingToolCall
+			pendingToolCall = genai.ToolCall{}
+		case ResponseError:
 			return fmt.Errorf("error: %s", pkt.Message)
-
 		default:
-			// Other event types (reasoning, file_search, etc.) - ignore for now
-			continue
+			return fmt.Errorf("implement packet: %q", pkt.Type)
+		}
+		if !f.IsZero() {
+			if err := result.Accumulate(f); err != nil {
+				return err
+			}
+			chunks <- f
 		}
 	}
-
-	// Flush any pending tool call
-	if pendingToolCall != nil {
-		chunks <- genai.ContentFragment{ToolCall: *pendingToolCall}
+	if !pendingToolCall.IsZero() {
+		return errors.New("unexpected pending tool call")
 	}
-
 	return nil
 }
 
-// Interface compliance checks
 var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGen        = &Client{}

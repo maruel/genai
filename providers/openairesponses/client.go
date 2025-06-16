@@ -20,6 +20,7 @@ import (
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -55,23 +56,52 @@ var Scoreboard = genai.Scoreboard{
 				NoStopSequence: true,
 				JSON:           true,
 			},
-			/*
-				GenStream: &genai.FunctionalityText{
-					Tools:          genai.True,
-					BiasedTool:     genai.True,
-					IndecisiveTool: genai.True,
-					NoStopSequence: true,
-					JSON:           true,
-				},
-			*/
+			GenStream: &genai.FunctionalityText{
+				Tools:          genai.True,
+				BiasedTool:     genai.True,
+				IndecisiveTool: genai.True,
+				NoStopSequence: true,
+				JSON:           true,
+			},
 		},
 	},
 }
 
 // ResponseStreamChunkResponse represents a streaming response chunk.
-// This is a placeholder - will be implemented when GenStream is added.
+// It matches the server-sent events structure from the OpenAI Responses API.
 type ResponseStreamChunkResponse struct {
-	// TODO: Implement when GenStream support is added
+	Type string `json:"type"`
+
+	// Common fields
+	SequenceNumber int    `json:"sequence_number,omitzero"`
+	ItemID         string `json:"item_id,omitzero"`
+	OutputIndex    int    `json:"output_index,omitzero"`
+	ContentIndex   int    `json:"content_index,omitzero"`
+
+	// For response.created, response.in_progress, response.completed, response.failed, response.incomplete
+	Response *ResponseResponse `json:"response,omitzero"`
+
+	// For response.output_text.delta
+	Delta string `json:"delta,omitzero"`
+
+	// For response.output_text.done
+	Text string `json:"text,omitzero"`
+
+	// For response.refusal.delta and response.refusal.done
+	Refusal string `json:"refusal,omitzero"`
+
+	// For function call related events
+	Arguments string `json:"arguments,omitzero"`
+
+	// For reasoning events
+	SummaryIndex int            `json:"summary_index,omitzero"`
+	DeltaObj     map[string]any `json:"delta_obj,omitzero"` // For complex delta objects
+
+	// For error events
+	Error   *ErrorResponse `json:"error,omitzero"`
+	Code    string         `json:"code,omitzero"`
+	Message string         `json:"message,omitzero"`
+	Param   string         `json:"param,omitzero"`
 }
 
 // Response represents a request to the OpenAI Responses API.
@@ -571,9 +601,13 @@ func (e *ErrorResponse) String() string {
 
 //
 
+// ResponseResponse represents the response from the OpenAI Responses API.
+// This is an alias for Response as the API returns the same structure.
+type ResponseResponse = Response
+
 // Client is a client for the OpenAI Responses API.
 type Client struct {
-	base.ProviderGen[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]
+	base.ProviderGen[*ErrorResponse, *Response, *ResponseResponse, ResponseStreamChunkResponse]
 }
 
 // New creates a new client to talk to the OpenAI Responses API.
@@ -609,14 +643,16 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 		t = wrapper(t)
 	}
 	c := &Client{
-		ProviderGen: base.ProviderGen[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]{
+		ProviderGen: base.ProviderGen[*ErrorResponse, *Response, *ResponseResponse, ResponseStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.openai.com/v1/responses",
+			GenStreamURL:         "https://api.openai.com/v1/responses",
 			ProcessStreamPackets: processStreamPackets,
 			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "openairesponses",
 				APIKeyURL:    "", // OpenAI error message prints the api key URL already.
 				ClientJSON: httpjson.Client{
+					Lenient: internal.BeLenient,
 					Client: &http.Client{
 						Transport: &roundtrippers.Header{
 							Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
@@ -634,7 +670,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 		}
 		cheap := model == base.PreferredCheap
 		good := model == base.PreferredGood
-		c.Model = ""
+		c.ProviderGen.Model = ""
 		var created base.Time
 		for _, mdl := range mdls {
 			m := mdl.(*Model)
@@ -642,23 +678,23 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 				if strings.HasSuffix(m.ID, "-nano") && (created == 0 || m.Created < created) {
 					// For the cheapest, we want the oldest model as it is generally cheaper.
 					created = m.Created
-					c.Model = m.ID
+					c.ProviderGen.Model = m.ID
 				}
 			} else if good {
 				if strings.HasSuffix(m.ID, "-mini") && (created == 0 || m.Created > created) {
 					// For the greatest, we want the newest model as it is generally better.
 					created = m.Created
-					c.Model = m.ID
+					c.ProviderGen.Model = m.ID
 				}
 			} else {
 				if strings.HasSuffix(m.ID, "-pro") && (created == 0 || m.Created > created) {
 					// For the greatest, we want the newest model as it is generally better.
 					created = m.Created
-					c.Model = m.ID
+					c.ProviderGen.Model = m.ID
 				}
 			}
 		}
-		if c.Model == "" {
+		if c.ProviderGen.Model == "" {
 			return nil, errors.New("failed to find a model automatically")
 		}
 	}
@@ -672,14 +708,124 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://platform.openai.com/docs/api-reference/models/list
-	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, "https://api.openai.com/v1/models")
+	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.ProviderGen.Provider, "https://api.openai.com/v1/models")
 }
 
 // processStreamPackets processes stream packets for the OpenAI Responses API.
 // This is a placeholder - will be implemented when GenStream is added.
 func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
-	// TODO: Implement when GenStream support is added
-	return fmt.Errorf("streaming not yet implemented for OpenAI Responses API")
+	defer func() {
+		// We need to empty the channel to avoid blocking the goroutine.
+		for range ch {
+		}
+	}()
+
+	var pendingToolCall *genai.ToolCall
+
+	for pkt := range ch {
+		switch pkt.Type {
+		case "response.created":
+			// Response started, no content yet
+			continue
+
+		case "response.in_progress":
+			// Response is being generated, no content yet
+			continue
+
+		case "response.completed":
+			// Response completed, extract final usage and finish reason
+			if pkt.Response != nil {
+				result.InputTokens = pkt.Response.Usage.InputTokens
+				result.OutputTokens = pkt.Response.Usage.OutputTokens
+				if len(pkt.Response.Output) > 0 {
+					// Convert status from the first output message
+					msg := pkt.Response.Output[0]
+					switch msg.Status {
+					case "completed":
+						result.FinishReason = genai.FinishedStop
+					case "incomplete":
+						result.FinishReason = genai.FinishedLength
+					case "failed":
+						result.FinishReason = genai.FinishedContentFilter
+					default:
+						result.FinishReason = genai.FinishedStop
+					}
+				}
+			}
+			continue
+
+		case "response.failed":
+			// Response failed
+			if pkt.Response != nil && pkt.Response.Error.Message != "" {
+				return fmt.Errorf("response failed: %s", pkt.Response.Error.Message)
+			}
+			return fmt.Errorf("response failed: %s", pkt.Message)
+
+		case "response.incomplete":
+			// Response incomplete
+			if pkt.Response != nil {
+				result.InputTokens = pkt.Response.Usage.InputTokens
+				result.OutputTokens = pkt.Response.Usage.OutputTokens
+				result.FinishReason = genai.FinishedLength // Likely reason for incomplete
+			}
+			continue
+
+		case "response.output_text.delta":
+			// Text delta - send immediately
+			if pkt.Delta != "" {
+				chunks <- genai.ContentFragment{TextFragment: pkt.Delta}
+			}
+
+		case "response.output_text.done":
+			// Text completion - no need to send again as we already sent deltas
+			continue
+
+		case "response.refusal.delta":
+			// Refusal delta - treat as error
+			if pkt.Delta != "" {
+				return fmt.Errorf("refused: %s", pkt.Delta)
+			}
+
+		case "response.refusal.done":
+			// Refusal complete
+			if pkt.Refusal != "" {
+				return fmt.Errorf("refused: %s", pkt.Refusal)
+			}
+
+		case "response.function_call_arguments.delta":
+			// Function call arguments delta - buffer until complete
+			if pendingToolCall == nil {
+				pendingToolCall = &genai.ToolCall{}
+			}
+			pendingToolCall.Arguments += pkt.Delta
+
+		case "response.function_call_arguments.done":
+			// Function call arguments complete - send the tool call
+			if pendingToolCall != nil {
+				pendingToolCall.Arguments = pkt.Arguments // Use final arguments
+				chunks <- genai.ContentFragment{ToolCall: *pendingToolCall}
+				pendingToolCall = nil
+			}
+
+		case "error":
+			// Error event
+			if pkt.Error != nil {
+				return fmt.Errorf("error: %s", pkt.Error.Error.Message)
+			}
+			return fmt.Errorf("error: %s", pkt.Message)
+
+		default:
+			// Other event types (reasoning, file_search, etc.) - ignore for now
+			continue
+		}
+	}
+
+	// Flush any pending tool call
+	if pendingToolCall != nil {
+		chunks <- genai.ContentFragment{ToolCall: *pendingToolCall}
+	}
+
+	return nil
 }
 
 // Interface compliance checks

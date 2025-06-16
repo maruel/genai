@@ -406,7 +406,7 @@ func (c *Content) Validate() error {
 func (c *Content) GetFilename() string {
 	if c.Filename == "" {
 		if namer, ok := c.Document.(interface{ Name() string }); ok {
-			return namer.Name()
+			return filepath.Base(namer.Name())
 		}
 	}
 	return c.Filename

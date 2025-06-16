@@ -2,41 +2,41 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-package openairesponses_test
+package openaichat_test
 
 import (
+	"context"
+	_ "embed"
 	"net/http"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
-	"github.com/maruel/genai/providers/openairesponses"
+	"github.com/maruel/genai/providers/openai/openaichat"
 )
 
 func TestClient_Scoreboard(t *testing.T) {
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
 		c := getClient(t, m)
-		/*
-			if m == "o4-mini" {
-				return &injectOption{Client: c, t: t, opts: openairesponses.OptionsText{
-					// This will lead to spurious HTTP 500 but it is 25% of the cost.
-					ServiceTier:     openairesponses.ServiceTierFlex,
-					ReasoningEffort: openairesponses.ReasoningEffortHigh,
-				}}
-			}
-		*/
+		if m == "o4-mini" {
+			return &injectOption{Client: c, t: t, opts: openaichat.OptionsText{
+				// This will lead to spurious HTTP 500 but it is 25% of the cost.
+				ServiceTier:     openaichat.ServiceTierFlex,
+				ReasoningEffort: openaichat.ReasoningEffortHigh,
+			}}
+		}
 		return c
 	}, nil)
 }
 
-/*
 type injectOption struct {
-	*openairesponses.Client
+	*openaichat.Client
 	t    *testing.T
-	opts openairesponses.OptionsText
+	opts openaichat.OptionsText
 }
 
 func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
@@ -56,9 +56,7 @@ func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, repli
 	opts = &n
 	return i.Client.GenStream(ctx, msgs, replies, opts)
 }
-*/
 
-/*
 // This is a tricky test since batch operations can take up to 24h to complete.
 func TestClient_Batch(t *testing.T) {
 	ctx := t.Context()
@@ -96,7 +94,6 @@ func TestClient_Batch(t *testing.T) {
 		break
 	}
 }
-*/
 
 func TestClient_Preferred(t *testing.T) {
 	data := []struct {
@@ -105,7 +102,7 @@ func TestClient_Preferred(t *testing.T) {
 	}{
 		{base.PreferredCheap, "gpt-4.1-nano"},
 		{base.PreferredGood, "gpt-4.1-mini"},
-		{base.PreferredSOTA, "o3-pro"},
+		{base.PreferredSOTA, "o1-pro"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {
@@ -116,7 +113,6 @@ func TestClient_Preferred(t *testing.T) {
 	}
 }
 
-/*
 func TestClient_ProviderGen_errors(t *testing.T) {
 	data := []internaltest.ProviderGenError{
 		{
@@ -138,14 +134,13 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 	}
 	internaltest.TestClient_ProviderGen_errors(t, f, data)
 }
-*/
 
 func TestClient_ProviderModel_errors(t *testing.T) {
 	data := []internaltest.ProviderModelError{
 		{
 			Name:   "bad apiKey",
 			ApiKey: "badApiKey",
-			Err:    "http 401: openai responses error: Incorrect API key provided: badApiKey. You can find your API key at https://platform.openai.com/account/api-keys. (type: invalid_request_error, code: invalid_api_key)",
+			Err:    "http 401: error invalid_api_key (): Incorrect API key provided: badApiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 		},
 	}
 	f := func(t *testing.T, apiKey string) genai.ProviderModel {
@@ -154,17 +149,17 @@ func TestClient_ProviderModel_errors(t *testing.T) {
 	internaltest.TestClient_ProviderModel_errors(t, f, data)
 }
 
-func getClient(t *testing.T, m string) *openairesponses.Client {
+func getClient(t *testing.T, m string) *openaichat.Client {
 	testRecorder.Signal(t)
 	t.Parallel()
 	return getClientInner(t, "", m)
 }
 
-func getClientInner(t *testing.T, apiKey, m string) *openairesponses.Client {
+func getClientInner(t *testing.T, apiKey, m string) *openaichat.Client {
 	if apiKey == "" && os.Getenv("OPENAI_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := openairesponses.New(apiKey, m, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	c, err := openaichat.New(apiKey, m, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 	if err != nil {
 		t.Fatal(err)
 	}

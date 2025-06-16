@@ -2,7 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-package openai_test
+package openaichat_test
 
 import (
 	"context"
@@ -12,7 +12,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/maruel/genai/providers/openai"
+	"github.com/maruel/genai/providers/openai/openaichat"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
@@ -56,7 +56,7 @@ func ExampleNew_hTTP_record() {
 	if os.Getenv("OPENAI_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := openai.New(apiKey, "", wrapper)
+	c, err := openaichat.New(apiKey, "", wrapper)
 	if err != nil {
 		log.Fatal(err)
 	}

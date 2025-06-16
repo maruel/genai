@@ -13,10 +13,12 @@ import (
 	"math"
 	"net/url"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"slices"
 	"sort"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -726,8 +728,8 @@ func testAudioSTTFunctionalities(t *testing.T, g ProviderGenModalityFactory, mod
 	filename := "mystery_word.mp3"
 	prompt := "What is the word said? Reply with only the word."
 	t.Run("Inline", func(t *testing.T) {
-		// Path with the assumption it's run from "//providers/<provider>/".
-		ff, err := os.Open(filepath.Join("..", "..", "internal", "internaltest", "testdata", filename))
+		root := getGitRootPath(t)
+		ff, err := os.Open(filepath.Join(root, "internal", "internaltest", "testdata", filename))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -768,8 +770,8 @@ func testVideoFunctionalities(t *testing.T, g ProviderGenModalityFactory, model 
 	filename := "animation.mp4"
 	prompt := "What is the word? Reply with only the word."
 	t.Run("Inline", func(t *testing.T) {
-		// Path with the assumption it's run from "//providers/<provider>/".
-		ff, err := os.Open(filepath.Join("..", "..", "internal", "internaltest", "testdata", filename))
+		root := getGitRootPath(t)
+		ff, err := os.Open(filepath.Join(root, "internal", "internaltest", "testdata", filename))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -810,8 +812,8 @@ func testPDFFunctionalities(t *testing.T, g ProviderGenModalityFactory, model st
 	filename := "hidden_word.pdf"
 	prompt := "What is the word? Reply with only the word."
 	t.Run("Inline", func(t *testing.T) {
-		// Path with the assumption it's run from "//providers/<provider>/".
-		ff, err := os.Open(filepath.Join("..", "..", "internal", "internaltest", "testdata", filename))
+		root := getGitRootPath(t)
+		ff, err := os.Open(filepath.Join(root, "internal", "internaltest", "testdata", filename))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1167,4 +1169,29 @@ func hasAnyModalityWithURL(capabilities map[genai.Modality]genai.ModalCapability
 		}
 	}
 	return false
+}
+
+var (
+	gitRootOnce sync.Once
+	gitRootPath string
+)
+
+func getGitRootPath(t *testing.T) string {
+	gitRootOnce.Do(func() {
+		cmd := exec.Command("git", "rev-parse", "--show-toplevel")
+		output, err := cmd.Output()
+		if err != nil {
+			t.Fatal(err)
+			return
+		}
+		path := strings.TrimSpace(string(output))
+		// Ensure the path is absolute and clean
+		absPath, err := filepath.Abs(path)
+		if err != nil {
+			t.Fatal(err)
+			return
+		}
+		gitRootPath = absPath
+	})
+	return gitRootPath
 }

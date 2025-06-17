@@ -31,7 +31,6 @@ type column struct {
 	JSONSchema string `title:"JSON+Schema➛"`
 	Chat       string `title:"Chat"`
 	Streaming  string `title:"Streaming"`
-	Doc        string `title:"Doc"`
 	Batch      string `title:"Batch"`
 	Seed       string `title:"Seed"`
 	Tools      string `title:"Tools"`
@@ -52,12 +51,8 @@ func (c *column) initFromScoreboard(p genai.ProviderScoreboard) {
 		country = sb.Country
 	}
 	c.Country = country
-	_, isDoc := p.(genai.ProviderGenDoc)
 	_, isAsync := p.(genai.ProviderGenAsync)
 	_, isFiles := p.(genai.ProviderCache)
-	if isDoc {
-		c.Doc = "✅"
-	}
 	if isAsync {
 		c.Batch = "✅"
 	}

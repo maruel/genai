@@ -2,6 +2,8 @@
 
 The _high performance_ low level native Go client for LLMs.
 
+## Scoreboard
+
 | Provider                                                    | Country | ➛Inputs    | Outputs➛   | JSON➛   | JSON+Schema➛   | Chat   | Streaming | Tools  | Batch | Seed | Files | Citations | Thinking |
 | ----------------------------------------------------------- | ------- | ---------- | ---------- | ------- | -------------- | ------ | --------- | ------ | ----- | ---- | ----- | --------- | -------- |
 | [anthropic](https://console.anthropic.com/settings/billing) | 🇺🇸      | 💬📄📸     | 💬         | ❌      | ❌             | ✅     | ✅        | ✅🧐   | ✅    | ❌   | ❌    | ✅        | ❌       |
@@ -23,7 +25,7 @@ The _high performance_ low level native Go client for LLMs.
 | openaicompatible                                            | ❌      | 💬         | 💬         | ❌      | ❌             | ✅     | ✅        | 💨🧐   | ❌    | ❌   | ❌    | ❌        | ❌       |
 
 <details>
-  <summary>‼️ Click here for legend of ✅ ❌ 💬 📄 📸 🎤 🎥 🤪 💨 🧐 💥 and columns</summary>
+  <summary>‼️ Click here for legend of ✅ ❌ 💬 📄 📸 🎤 🎥 🤪 💸 🚩 💨 🧐 💥 and columns</summary>
 
 - ✅ Implemented and works great.
 - ❌ Not supported by genai. The provider may support it, but genai does not (yet). Please send a PR to add
@@ -35,7 +37,9 @@ The _high performance_ low level native Go client for LLMs.
     - Output: generate images
 - 🎤: Audio
 - 🎥: Video: process a video (e.g. MP4) as input.
-- 🤪: Partial support, potentially broken: for example finish reason is not reported, usage is not reported.
+- 🤪: Partial support: no MaxTokens or StopSequences.
+- 💸: Usage is not reported: we can't know how many tokens were used.
+- 🚩: Broken FinishReason: we can't know if the request was cut off.
 - 💨: Tool calling is flaky.
 - 🧐 Tool calling is **not** biased towards the first value in an enum. If the provider doesn't have this, be
   mindful of the order of the values!

@@ -2,25 +2,25 @@
 
 The _high performance_ low level native Go client for LLMs.
 
-| Provider                                                    | Country | ➛Inputs    | Outputs➛   | JSON➛   | JSON+Schema➛   | Chat   | Streaming | Batch | Seed | Tools  | Files | Citations | Thinking |
-| ----------------------------------------------------------- | ------- | ---------- | ---------- | ------- | -------------- | ------ | --------- | ----- | ---- | ------ | ----- | --------- | -------- |
-| [anthropic](https://console.anthropic.com/settings/billing) | 🇺🇸      | 💬📄📸     | 💬         | ❌      | ❌             | ✅     | ✅        | ✅    | ❌   | ✅🧐   | ❌    | ✅        | ❌       |
-| [bfl](https://dashboard.bfl.ai/)                            | 🇩🇪      | 💬         | 📸         | ❌      | ❌             | ❌     | ❌        | ✅    | ✅   | ❌     | ❌    | ❌        | ❌       |
-| [cerebras](https://cloud.cerebras.ai)                       | 🇺🇸      | 💬         | 💬         | 🤪      | 🤪             | ✅     | ✅🚩      | ❌    | ✅   | 💨     | ❌    | ❌        | ✅       |
-| [cloudflare](https://dash.cloudflare.com)                   | 🇺🇸      | 💬         | 💬         | ✅      | ✅             | ✅🚩🤪 | ✅🚩🤪    | ❌    | ✅   | 💨     | ❌    | ❌        | ❌       |
-| [cohere](https://dashboard.cohere.com/billing)              | 🇨🇦      | 💬         | 💬         | ✅      | ✅             | ✅     | ✅        | ❌    | ✅   | ✅💥🧐 | ❌    | ✅        | ❌       |
-| [deepseek](https://platform.deepseek.com)                   | 🇨🇳      | 💬         | 💬         | ✅      | ❌             | ✅     | ✅        | ❌    | ❌   | ✅💥🧐 | ❌    | ❌        | ✅       |
-| [gemini](http://aistudio.google.com)                        | 🇺🇸      | 🎤🎥💬📄📸 | 💬📸       | ✅      | ✅             | ✅     | ✅        | ❌    | ✅   | ✅🧐   | ✅    | ❌        | ❌       |
-| [groq](https://console.groq.com/dashboard/usage)            | 🇺🇸      | 💬📸       | 💬         | ✅      | ❌             | ✅     | ✅        | ❌    | ✅   | 💥💨🧐 | ❌    | ❌        | ✅       |
-| [huggingface](https://huggingface.co/settings/billing)      | 🇺🇸      | 💬         | 💬         | ❌      | ✅             | ✅     | ✅🚩      | ❌    | ✅   | ✅     | ❌    | ❌        | ✅       |
-| [llamacpp](https://github.com/ggml-org/llama.cpp)           | 🏠      | 💬         | 💬         | ❌      | ❌             | ✅     | ✅        | ❌    | ✅   | 💨🧐   | ❌    | ❌        | ❌       |
-| [mistral](https://console.mistral.ai/usage)                 | 🇫🇷      | 💬📄📸     | 💬         | ✅      | ✅             | ✅     | ✅        | ❌    | ✅   | ✅💥🧐 | ❌    | ❌        | ❌       |
-| [ollama](https://ollama.com/)                               | 🏠      | 💬📸       | 💬         | ✅      | ✅             | ✅     | ✅        | ❌    | ✅   | 💨🧐   | ❌    | ❌        | ❌       |
-| [openai](https://platform.openai.com/usage)                 | 🇺🇸      | 🎤💬📄📸   | 🎤💬📸     | ✅      | ✅             | ✅🤪   | ✅🤪      | ✅    | ✅   | ✅💥🧐 | ✅    | ❌        | ❌       |
-| [perplexity](https://www.perplexity.ai/settings/api)        | 🇺🇸      | 💬         | 💬         | ❌      | 🤪             | ✅🤪   | ✅🤪      | ❌    | ❌   | 💨🧐   | ❌    | ✅        | ✅       |
-| [pollinations](https://auth.pollinations.ai/)               | 🇩🇪      | 🎤💬📸     | 🎤💬📸     | 🤪      | ❌             | ✅🤪   | ✅💸🤪    | ❌    | ✅   | ✅💥🧐 | ❌    | ❌        | ✅       |
-| [togetherai](https://api.together.ai/settings/billing)      | 🇺🇸      | 💬📸       | 💬📸       | ✅      | ✅             | ✅     | ✅        | ❌    | ✅   | ✅     | ❌    | ❌        | ❌       |
-| openaicompatible                                            | ❌      | 💬         | 💬         | ❌      | ❌             | ✅     | ✅        | ❌    | ❌   | 💨🧐   | ❌    | ❌        | ❌       |
+| Provider                                                    | Country | ➛Inputs    | Outputs➛   | JSON➛   | JSON+Schema➛   | Chat   | Streaming | Tools  | Batch | Seed | Files | Citations | Thinking |
+| ----------------------------------------------------------- | ------- | ---------- | ---------- | ------- | -------------- | ------ | --------- | ------ | ----- | ---- | ----- | --------- | -------- |
+| [anthropic](https://console.anthropic.com/settings/billing) | 🇺🇸      | 💬📄📸     | 💬         | ❌      | ❌             | ✅     | ✅        | ✅🧐   | ✅    | ❌   | ❌    | ✅        | ❌       |
+| [bfl](https://dashboard.bfl.ai/)                            | 🇩🇪      | 💬         | 📸         | ❌      | ❌             | ❌     | ❌        | ❌     | ✅    | ✅   | ❌    | ❌        | ❌       |
+| [cerebras](https://cloud.cerebras.ai)                       | 🇺🇸      | 💬         | 💬         | 🤪      | 🤪             | ✅     | ✅🚩      | 💨     | ❌    | ✅   | ❌    | ❌        | ✅       |
+| [cloudflare](https://dash.cloudflare.com)                   | 🇺🇸      | 💬         | 💬         | ✅      | ✅             | ✅🚩🤪 | ✅🚩🤪    | 💨     | ❌    | ✅   | ❌    | ❌        | ❌       |
+| [cohere](https://dashboard.cohere.com/billing)              | 🇨🇦      | 💬         | 💬         | ✅      | ✅             | ✅     | ✅        | ✅💥🧐 | ❌    | ✅   | ❌    | ✅        | ❌       |
+| [deepseek](https://platform.deepseek.com)                   | 🇨🇳      | 💬         | 💬         | ✅      | ❌             | ✅     | ✅        | ✅💥🧐 | ❌    | ❌   | ❌    | ❌        | ✅       |
+| [gemini](http://aistudio.google.com)                        | 🇺🇸      | 🎤🎥💬📄📸 | 💬📸       | ✅      | ✅             | ✅     | ✅        | ✅🧐   | ❌    | ✅   | ✅    | ❌        | ❌       |
+| [groq](https://console.groq.com/dashboard/usage)            | 🇺🇸      | 💬📸       | 💬         | ✅      | ❌             | ✅     | ✅        | 💥💨🧐 | ❌    | ✅   | ❌    | ❌        | ✅       |
+| [huggingface](https://huggingface.co/settings/billing)      | 🇺🇸      | 💬         | 💬         | ❌      | ✅             | ✅     | ✅🚩      | ✅     | ❌    | ✅   | ❌    | ❌        | ✅       |
+| [llamacpp](https://github.com/ggml-org/llama.cpp)           | 🏠      | 💬         | 💬         | ❌      | ❌             | ✅     | ✅        | 💨🧐   | ❌    | ✅   | ❌    | ❌        | ❌       |
+| [mistral](https://console.mistral.ai/usage)                 | 🇫🇷      | 💬📄📸     | 💬         | ✅      | ✅             | ✅     | ✅        | ✅💥🧐 | ❌    | ✅   | ❌    | ❌        | ❌       |
+| [ollama](https://ollama.com/)                               | 🏠      | 💬📸       | 💬         | ✅      | ✅             | ✅     | ✅        | 💨🧐   | ❌    | ✅   | ❌    | ❌        | ❌       |
+| [openai](https://platform.openai.com/usage)                 | 🇺🇸      | 🎤💬📄📸   | 🎤💬📸     | ✅      | ✅             | ✅🤪   | ✅🤪      | ✅💥🧐 | ✅    | ✅   | ✅    | ❌        | ❌       |
+| [perplexity](https://www.perplexity.ai/settings/api)        | 🇺🇸      | 💬         | 💬         | ❌      | 🤪             | ✅🤪   | ✅🤪      | 💨🧐   | ❌    | ❌   | ❌    | ✅        | ✅       |
+| [pollinations](https://auth.pollinations.ai/)               | 🇩🇪      | 🎤💬📸     | 🎤💬📸     | 🤪      | ❌             | ✅🤪   | ✅💸🤪    | ✅💥🧐 | ❌    | ✅   | ❌    | ❌        | ✅       |
+| [togetherai](https://api.together.ai/settings/billing)      | 🇺🇸      | 💬📸       | 💬📸       | ✅      | ✅             | ✅     | ✅        | ✅     | ❌    | ✅   | ❌    | ❌        | ❌       |
+| openaicompatible                                            | ❌      | 💬         | 💬         | ❌      | ❌             | ✅     | ✅        | 💨🧐   | ❌    | ❌   | ❌    | ❌        | ❌       |
 
 <details>
   <summary>‼️ Click here for legend of ✅ ❌ 💬 📄 📸 🎤 🎥 🤪 💨 🧐 💥 and columns</summary>
@@ -29,25 +29,27 @@ The _high performance_ low level native Go client for LLMs.
 - ❌ Not supported by genai. The provider may support it, but genai does not (yet). Please send a PR to add
   it!
 - 💬: Text
-- 📄: PDF
+- 📄: PDF: process a PDF as input, possibly with OCR.
 - 📸: Image
+    - Input: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF
+    - Output: generate images
 - 🎤: Audio
-- 🎥: Video
+- 🎥: Video: process a video (e.g. MP4) as input.
 - 🤪: Partial support, potentially broken: for example finish reason is not reported, usage is not reported.
 - 💨: Tool calling is flaky.
 - 🧐 Tool calling is **not** biased towards the first value in an enum. If the provider doesn't have this, be
   mindful of the order of the values!
 - 💥 Tool calling is undecided when asked a question that has no clear answer and will call both options
   instead of calling ont at random. This is good.
-- ➛Type: Input modality
-- Type➛: Output modality 
-- Streaming: chat streaming
-- Vision: ability to process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF
-- Video: ability to process a video (e.g. MP4) as input.
-- PDF: ability to process a PDF as input, possibly with OCR
 - JSON and JSON+schema: ability to output JSON in free form, or with a forced schema specified as a Go struct
-- Seed: deterministic seed for reproducibility
-- Tools: tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef)
+- Chat: Buffered chat.
+- Streaming: Streaming chat.
+- Tools: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef)
+- Batch: Process asynchronously batches during off peak hours at a discounts.
+- Seed: Deterministic seed for reproducibility.
+- Files: Upload and store large files.
+- Citations: Citation generation. Especially useful for RAG.
+- Thinking: Supports chain-of-thought thinking process.
 
 </details>
 

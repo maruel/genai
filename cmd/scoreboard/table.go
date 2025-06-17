@@ -31,9 +31,9 @@ type column struct {
 	JSONSchema string `title:"JSON+Schema➛"`
 	Chat       string `title:"Chat"`
 	Streaming  string `title:"Streaming"`
+	Tools      string `title:"Tools"`
 	Batch      string `title:"Batch"`
 	Seed       string `title:"Seed"`
-	Tools      string `title:"Tools"`
 	Files      string `title:"Files"`
 	Citations  string `title:"Citations"`
 	Thinking   string `title:"Thinking"`

@@ -123,7 +123,7 @@ func (c *column) initFromScenario(s *genai.Scenario) {
 				c.Chat = sortString(c.Chat)
 			}
 		}
-		// TODO: Keep the best out of all the options. This is "✅⚖️"
+		// TODO: Keep the best out of all the options. This is "✅"
 		if s.GenSync.Tools == genai.True && (s.GenStream != nil && s.GenStream.Tools == genai.True) {
 			if c.Tools == "" {
 				c.Tools = "✅"
@@ -135,11 +135,11 @@ func (c *column) initFromScenario(s *genai.Scenario) {
 				c.Tools = "💨"
 			}
 		}
-		if s.GenSync.BiasedTool == genai.False && !strings.Contains(c.Tools, "⚖️") {
-			c.Tools += "⚖️"
+		if s.GenSync.BiasedTool == genai.False && !strings.Contains(c.Tools, "🧐") {
+			c.Tools += "🧐"
 		}
-		if s.GenSync.IndecisiveTool == genai.True && !strings.Contains(c.Tools, "🤷") {
-			c.Tools += "🤷"
+		if s.GenSync.IndecisiveTool == genai.True && !strings.Contains(c.Tools, "💥") {
+			c.Tools += "💥"
 		}
 		c.Tools = sortString(c.Tools)
 		if s.GenSync.Citations {
@@ -327,7 +327,7 @@ func visibleWidth(s string) int {
 
 func runeWidth(r rune) int {
 	switch r {
-	case '🏠', '❌', '💬', '✅', '📄', '🎤', '🤪', '🚩', '💨', '💸', '🤷', '📸', '🎥':
+	case '🏠', '❌', '💬', '✅', '📄', '🎤', '🤪', '🚩', '💨', '💸', '🤷', '📸', '🎥', '💥', '🤐', '🧐':
 		return 2
 	case '🖼', '🎞', '⚖':
 		return 0

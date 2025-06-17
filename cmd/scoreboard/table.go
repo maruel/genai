@@ -25,8 +25,8 @@ type column struct {
 	Country  string `title:"Country"`
 
 	// Model specific
-	Inputs     string `title:"➛In"`
-	Outputs    string `title:"Out➛"`
+	Inputs     string `title:"➛Inputs"` // Has to be large enough otherwise the emojis warp on github visualization
+	Outputs    string `title:"Outputs➛"`
 	JSON       string `title:"JSON➛"`
 	JSONSchema string `title:"JSON+Schema➛"`
 	Chat       string `title:"Chat"`

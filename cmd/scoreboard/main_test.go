@@ -13,5 +13,5 @@ func TestPrintList(t *testing.T) {
 
 func TestPrintTable(t *testing.T) {
 	t.Parallel()
-	printTable()
+	printSummaryTable()
 }

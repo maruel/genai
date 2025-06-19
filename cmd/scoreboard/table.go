@@ -19,14 +19,14 @@ import (
 	"github.com/maruel/genai/providers/openaicompatible"
 )
 
-type tableRow struct {
+type tableSummaryRow struct {
 	Provider string `title:"Provider"`
 	Country  string `title:"Country"`
 
-	tableRowData
+	tableDataRow
 }
 
-func (t *tableRow) initFromScoreboard(p genai.ProviderScoreboard) {
+func (t *tableSummaryRow) initFromScoreboard(p genai.ProviderScoreboard) {
 	sb := p.Scoreboard()
 	t.Provider = p.Name()
 	if sb.DashboardURL != "" {
@@ -50,7 +50,13 @@ func (t *tableRow) initFromScoreboard(p genai.ProviderScoreboard) {
 	addNopes(t)
 }
 
-type tableRowData struct {
+type tableModelRow struct {
+	Model string `title:"Model"`
+
+	tableDataRow
+}
+
+type tableDataRow struct {
 	// Model specific
 	Inputs     string `title:"➛Inputs"` // Has to be large enough otherwise the emojis warp on github visualization
 	Outputs    string `title:"Outputs➛"`
@@ -66,7 +72,7 @@ type tableRowData struct {
 	Thinking   string `title:"Thinking"`
 }
 
-func (t *tableRowData) initFromScenario(s *genai.Scenario) {
+func (t *tableDataRow) initFromScenario(s *genai.Scenario) {
 	for m := range s.In {
 		if v, ok := modalityMap[m]; !ok {
 			panic("unknown modality: " + m)
@@ -194,12 +200,12 @@ var modalityMap = map[genai.Modality]string{
 	genai.ModalityPDF:   "📄", // "📚",
 }
 
-func printTable() error {
+func printSummaryTable() error {
 	all := maps.Clone(providers.All)
 	all["openaicompatible"] = func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
 		return openaicompatible.New("http://localhost:8080/v1", nil, model, wrapper)
 	}
-	var columns []tableRow
+	var columns []tableSummaryRow
 	for name, f := range all {
 		p, err := f("", nil)
 		// The function can return an error and still return a client when no API key was found. It's okay here
@@ -213,11 +219,27 @@ func printTable() error {
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: doesn't support scoreboard\n", name)
 			continue
 		}
-		col := tableRow{}
+		col := tableSummaryRow{}
 		col.initFromScoreboard(ps)
 		columns = append(columns, col)
 	}
-	slices.SortFunc(columns, func(a, b tableRow) int {
+	slices.SortFunc(columns, func(a, b tableSummaryRow) int {
+		return strings.Compare(a.Provider, b.Provider)
+	})
+	printMarkdownTable(os.Stdout, columns)
+	return nil
+}
+
+func printProviderTable(p genai.Provider) error {
+	var columns []tableSummaryRow
+	ps, ok := p.(genai.ProviderScoreboard)
+	if !ok {
+		return fmt.Errorf("provider %s: doesn't support scoreboardn", p.Name())
+	}
+	col := tableModelRow{Model: v}
+	col.initFromScoreboard(ps)
+	columns = append(columns, col)
+	slices.SortFunc(columns, func(a, b tableSummaryRow) int {
 		return strings.Compare(a.Provider, b.Provider)
 	})
 	printMarkdownTable(os.Stdout, columns)

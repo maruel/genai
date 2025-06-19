@@ -20,7 +20,7 @@ func mainImpl() error {
 		return errors.New("unexpected arguments")
 	}
 	if *table {
-		return printTable()
+		return printSummaryTable()
 	}
 	return printList()
 }

@@ -937,6 +937,9 @@ func (m *Model) GetID() string {
 }
 
 func (m *Model) String() string {
+	if m.Description == "" {
+		return fmt.Sprintf("%s: %s Context: %d/%d", m.GetID(), m.DisplayName, m.InputTokenLimit, m.OutputTokenLimit)
+	}
 	return fmt.Sprintf("%s: %s (%s) Context: %d/%d", m.GetID(), m.DisplayName, m.Description, m.InputTokenLimit, m.OutputTokenLimit)
 }
 
@@ -1119,7 +1122,9 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 			}
 			name := strings.TrimPrefix(m.Name, "models/")
 			if cheap {
-				if strings.HasPrefix(name, "gemma") && (tokens == 0 || tokens <= m.OutputTokenLimit) && (c.Model == "" || c.Model <= name) {
+				// This would select gemma instead, which is much cheaper:
+				// if strings.HasPrefix(name, "gemma") && (tokens == 0 || tokens <= m.OutputTokenLimit) && (c.Model == "" || c.Model <= name) {
+				if strings.HasPrefix(name, "gemini") && strings.Contains(m.Name, "flash-lite") && (tokens == 0 || tokens <= m.OutputTokenLimit) && (version == "" || version <= m.Version) {
 					tokens = m.OutputTokenLimit
 					version = m.Version
 					c.Model = name
@@ -1127,7 +1132,8 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 					c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Model) + ":streamGenerateContent?alt=sse&key=" + url.QueryEscape(apiKey)
 				}
 			} else if good {
-				if strings.HasPrefix(name, "gemini") && strings.Contains(m.Name, "flash") && (tokens == 0 || tokens <= m.OutputTokenLimit) && (version == "" || version <= m.Version) {
+				// We want flash and not flash-lite.
+				if strings.HasPrefix(name, "gemini") && strings.Contains(m.Name, "flash") && !strings.Contains(m.Name, "flash-lite") && (tokens == 0 || tokens <= m.OutputTokenLimit) && (version == "" || version <= m.Version) {
 					tokens = m.OutputTokenLimit
 					version = m.Version
 					c.Model = name

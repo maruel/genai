@@ -71,7 +71,7 @@ func TestClient_Preferred(t *testing.T) {
 		name string
 		want string
 	}{
-		{base.PreferredCheap, "gemma-3-4b-it"},
+		{base.PreferredCheap, "gemini-2.5-flash-lite-preview-06-17"},
 		{base.PreferredGood, "gemini-2.5-flash-preview-05-20"},
 		{base.PreferredSOTA, "gemini-2.5-pro-preview-06-05"},
 	}

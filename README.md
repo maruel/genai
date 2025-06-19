@@ -292,7 +292,7 @@ Try it:
 ```bash
 go install github.com/maruel/genai/cmd/...@latest
 
-list-models -provider hugginface
+list-models -provider huggingface
 ```
 
 

@@ -289,10 +289,46 @@ interactions:
                   "maxTemperature": 2
                 },
                 {
+                  "name": "models/gemini-2.5-flash",
+                  "version": "001",
+                  "displayName": "Gemini 2.5 Flash",
+                  "description": "Stable version of Gemini 2.5 Flash, our mid-size multimodal model that supports up to 1 million tokens, released in June of 2025.",
+                  "inputTokenLimit": 1048576,
+                  "outputTokenLimit": 65536,
+                  "supportedGenerationMethods": [
+                    "generateContent",
+                    "countTokens",
+                    "createCachedContent",
+                    "batchGenerateContent"
+                  ],
+                  "temperature": 1,
+                  "topP": 0.95,
+                  "topK": 64,
+                  "maxTemperature": 2
+                },
+                {
                   "name": "models/gemini-2.5-flash-preview-04-17-thinking",
                   "version": "2.5-preview-04-17",
                   "displayName": "Gemini 2.5 Flash Preview 04-17 for cursor testing",
                   "description": "Preview release (April 17th, 2025) of Gemini 2.5 Flash",
+                  "inputTokenLimit": 1048576,
+                  "outputTokenLimit": 65536,
+                  "supportedGenerationMethods": [
+                    "generateContent",
+                    "countTokens",
+                    "createCachedContent",
+                    "batchGenerateContent"
+                  ],
+                  "temperature": 1,
+                  "topP": 0.95,
+                  "topK": 64,
+                  "maxTemperature": 2
+                },
+                {
+                  "name": "models/gemini-2.5-flash-lite-preview-06-17",
+                  "version": "2.5-preview-06-17",
+                  "displayName": "Gemini 2.5 Flash Lite Preview 06-17",
+                  "description": "Preview release (June 11th, 2025) of Gemini 2.5 Flash Lite",
                   "inputTokenLimit": 1048576,
                   "outputTokenLimit": 65536,
                   "supportedGenerationMethods": [
@@ -329,6 +365,24 @@ interactions:
                   "version": "2.5-preview-06-05",
                   "displayName": "Gemini 2.5 Pro Preview",
                   "description": "Preview release (June 5th, 2025) of Gemini 2.5 Pro",
+                  "inputTokenLimit": 1048576,
+                  "outputTokenLimit": 65536,
+                  "supportedGenerationMethods": [
+                    "generateContent",
+                    "countTokens",
+                    "createCachedContent",
+                    "batchGenerateContent"
+                  ],
+                  "temperature": 1,
+                  "topP": 0.95,
+                  "topK": 64,
+                  "maxTemperature": 2
+                },
+                {
+                  "name": "models/gemini-2.5-pro",
+                  "version": "2.5",
+                  "displayName": "Gemini 2.5 Pro",
+                  "description": "Stable release (June 17th, 2025) of Gemini 2.5 Pro",
                   "inputTokenLimit": 1048576,
                   "outputTokenLimit": 65536,
                   "supportedGenerationMethods": [
@@ -613,8 +667,8 @@ interactions:
                   "version": "gemini-2.5-flash-exp-tts-2025-05-19",
                   "displayName": "Gemini 2.5 Flash Preview TTS",
                   "description": "Gemini 2.5 Flash Preview TTS",
-                  "inputTokenLimit": 32768,
-                  "outputTokenLimit": 8192,
+                  "inputTokenLimit": 8192,
+                  "outputTokenLimit": 16384,
                   "supportedGenerationMethods": [
                     "countTokens",
                     "generateContent"
@@ -629,8 +683,8 @@ interactions:
                   "version": "gemini-2.5-pro-preview-tts-2025-05-19",
                   "displayName": "Gemini 2.5 Pro Preview TTS",
                   "description": "Gemini 2.5 Pro Preview TTS",
-                  "inputTokenLimit": 65536,
-                  "outputTokenLimit": 65536,
+                  "inputTokenLimit": 8192,
+                  "outputTokenLimit": 16384,
                   "supportedGenerationMethods": [
                     "countTokens",
                     "generateContent"
@@ -884,7 +938,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=53
+                - gfet4t7; dur=197
             Vary:
                 - Origin
                 - X-Origin
@@ -897,4 +951,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 118ms
+        duration: 267ms

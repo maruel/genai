@@ -25,10 +25,11 @@ The _high performance_ low level native Go client for LLMs.
 | openaicompatible                                            | ❌      | 💬         | 💬         | ❌      | ❌             | ✅     | ✅        | 💨🧐   | ❌    | ❌   | ❌    | ❌        | ❌       |
 
 <details>
-  <summary>‼️ Click here for legend of ✅ ❌ 💬 📄 📸 🎤 🎥 🤪 💸 🚩 💨 🧐 💥 and columns</summary>
+  <summary>‼️ Click here for legend of 🏠 ✅ ❌ 💬 📄 📸 🎤 🎥 🤪 💸 🚩 💨 🧐 💥 and columns</summary>
 
-- ✅ Implemented and works great.
-- ❌ Not supported by genai. The provider may support it, but genai does not (yet). Please send a PR to add
+- 🏠: Runs locally.
+- ✅: Implemented and works great.
+- ❌: Not supported by genai. The provider may support it, but genai does not (yet). Please send a PR to add
   it!
 - 💬: Text
 - 📄: PDF: process a PDF as input, possibly with OCR.

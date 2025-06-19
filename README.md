@@ -22,7 +22,7 @@ The _high performance_ low level native Go client for LLMs.
 | [perplexity](https://www.perplexity.ai/settings/api)        | 🇺🇸      | 💬         | 💬         | ❌      | 🤪             | ✅🤪   | ✅🤪      | 💨🧐   | ❌    | ❌   | ❌    | ✅        | ✅       |
 | [pollinations](https://auth.pollinations.ai/)               | 🇩🇪      | 🎤💬📸     | 🎤💬📸     | 🤪      | ❌             | ✅🤪   | ✅💸🤪    | ✅💥🧐 | ❌    | ✅   | ❌    | ❌        | ✅       |
 | [togetherai](https://api.together.ai/settings/billing)      | 🇺🇸      | 💬📸       | 💬📸       | ✅      | ✅             | ✅     | ✅        | ✅     | ❌    | ✅   | ❌    | ❌        | ❌       |
-| openaicompatible                                            | ❌      | 💬         | 💬         | ❌      | ❌             | ✅     | ✅        | 💨🧐   | ❌    | ❌   | ❌    | ❌        | ❌       |
+| openaicompatible                                            | N/A     | 💬         | 💬         | ❌      | ❌             | ✅     | ✅        | 💨🧐   | ❌    | ❌   | ❌    | ❌        | ❌       |
 
 <details>
   <summary>‼️ Click here for legend of 🏠 ✅ ❌ 💬 📄 📸 🎤 🎥 🤪 💸 🚩 💨 🧐 💥 and columns</summary>

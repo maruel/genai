@@ -19,11 +19,38 @@ import (
 	"github.com/maruel/genai/providers/openaicompatible"
 )
 
-type column struct {
-	// General
+type tableRow struct {
 	Provider string `title:"Provider"`
 	Country  string `title:"Country"`
 
+	tableRowData
+}
+
+func (t *tableRow) initFromScoreboard(p genai.ProviderScoreboard) {
+	sb := p.Scoreboard()
+	t.Provider = p.Name()
+	if sb.DashboardURL != "" {
+		t.Provider = "[" + p.Name() + "](" + sb.DashboardURL + ")"
+	}
+	t.Country = countryMap[strings.ToLower(sb.Country)]
+	if t.Country == "" {
+		if t.Country = sb.Country; t.Country == "" {
+			t.Country = "N/A"
+		}
+	}
+	if _, isAsync := p.(genai.ProviderGenAsync); isAsync {
+		t.Batch = "✅"
+	}
+	if _, isFiles := p.(genai.ProviderCache); isFiles {
+		t.Files = "✅"
+	}
+	for i := range sb.Scenarios {
+		t.initFromScenario(&sb.Scenarios[i])
+	}
+	addNopes(t)
+}
+
+type tableRowData struct {
 	// Model specific
 	Inputs     string `title:"➛Inputs"` // Has to be large enough otherwise the emojis warp on github visualization
 	Outputs    string `title:"Outputs➛"`
@@ -39,215 +66,114 @@ type column struct {
 	Thinking   string `title:"Thinking"`
 }
 
-func (c *column) initFromScoreboard(p genai.ProviderScoreboard) {
-	sb := p.Scoreboard()
-	// resetToNope(c)
-	c.Provider = p.Name()
-	if sb.DashboardURL != "" {
-		c.Provider = "[" + p.Name() + "](" + sb.DashboardURL + ")"
-	}
-	country := countryMap[strings.ToLower(sb.Country)]
-	if country == "" {
-		country = sb.Country
-	}
-	c.Country = country
-	_, isAsync := p.(genai.ProviderGenAsync)
-	_, isFiles := p.(genai.ProviderCache)
-	if isAsync {
-		c.Batch = "✅"
-	}
-	if isFiles {
-		c.Files = "✅"
-	}
-	for i := range sb.Scenarios {
-		c.initFromScenario(&sb.Scenarios[i])
-	}
-	addNopes(c)
-}
-
-func (c *column) initFromScenario(s *genai.Scenario) {
+func (t *tableRowData) initFromScenario(s *genai.Scenario) {
 	for m := range s.In {
 		if v, ok := modalityMap[m]; !ok {
 			panic("unknown modality: " + m)
-		} else if !strings.Contains(c.Inputs, v) {
-			c.Inputs += v
+		} else if !strings.Contains(t.Inputs, v) {
+			t.Inputs += v
 		}
 	}
-	c.Inputs = sortString(c.Inputs)
+	t.Inputs = sortString(t.Inputs)
 	for m := range s.Out {
 		if v, ok := modalityMap[m]; !ok {
 			panic("unknown modality: " + m)
-		} else if !strings.Contains(c.Outputs, v) {
-			c.Outputs += v
+		} else if !strings.Contains(t.Outputs, v) {
+			t.Outputs += v
 		}
 	}
-	c.Outputs = sortString(c.Outputs)
+	t.Outputs = sortString(t.Outputs)
 	if s.GenSync != nil {
 		if s.GenSync.JSON {
 			if s.GenStream != nil && s.GenStream.JSON {
-				if c.JSON == "" {
-					c.JSON = "✅"
+				if t.JSON == "" {
+					t.JSON = "✅"
 				}
 			} else {
-				c.JSON = "🤪"
+				t.JSON = "🤪"
 			}
 		}
 		if s.GenSync.JSONSchema {
 			if s.GenStream != nil && s.GenStream.JSONSchema {
-				if c.JSONSchema == "" {
-					c.JSONSchema = "✅"
+				if t.JSONSchema == "" {
+					t.JSONSchema = "✅"
 				}
 			} else {
-				c.JSONSchema = "🤪"
+				t.JSONSchema = "🤪"
 			}
 		}
 		if _, hasTextIn := s.In[genai.ModalityText]; hasTextIn {
 			if _, hasTextOut := s.Out[genai.ModalityText]; hasTextOut {
-				if c.Chat == "" {
-					c.Chat = "✅"
+				if t.Chat == "" {
+					t.Chat = "✅"
 				}
-				if s.GenSync.BrokenTokenUsage && !strings.Contains(c.Chat, "💸") {
-					c.Chat += "💸"
+				if s.GenSync.BrokenTokenUsage && !strings.Contains(t.Chat, "💸") {
+					t.Chat += "💸"
 				}
-				if s.GenSync.BrokenFinishReason && !strings.Contains(c.Chat, "🚩") {
-					c.Chat += "🚩"
+				if s.GenSync.BrokenFinishReason && !strings.Contains(t.Chat, "🚩") {
+					t.Chat += "🚩"
 				}
-				if (s.GenSync.NoMaxTokens || s.GenSync.NoStopSequence) && !strings.Contains(c.Chat, "🤪") {
-					c.Chat += "🤪"
+				if (s.GenSync.NoMaxTokens || s.GenSync.NoStopSequence) && !strings.Contains(t.Chat, "🤪") {
+					t.Chat += "🤪"
 				}
-				c.Chat = sortString(c.Chat)
+				t.Chat = sortString(t.Chat)
 			}
 		}
 		// TODO: Keep the best out of all the options. This is "✅"
 		if s.GenSync.Tools == genai.True && (s.GenStream != nil && s.GenStream.Tools == genai.True) {
-			if c.Tools == "" {
-				c.Tools = "✅"
-			} else if strings.Contains(c.Tools, "💨") {
-				c.Tools = strings.Replace(c.Tools, "💨", "✅", 1)
+			if t.Tools == "" {
+				t.Tools = "✅"
+			} else if strings.Contains(t.Tools, "💨") {
+				t.Tools = strings.Replace(t.Tools, "💨", "✅", 1)
 			}
 		} else {
-			if c.Tools == "" {
-				c.Tools = "💨"
+			if t.Tools == "" {
+				t.Tools = "💨"
 			}
 		}
-		if s.GenSync.BiasedTool == genai.False && !strings.Contains(c.Tools, "🧐") {
-			c.Tools += "🧐"
+		if s.GenSync.BiasedTool == genai.False && !strings.Contains(t.Tools, "🧐") {
+			t.Tools += "🧐"
 		}
-		if s.GenSync.IndecisiveTool == genai.True && !strings.Contains(c.Tools, "💥") {
-			c.Tools += "💥"
+		if s.GenSync.IndecisiveTool == genai.True && !strings.Contains(t.Tools, "💥") {
+			t.Tools += "💥"
 		}
-		c.Tools = sortString(c.Tools)
+		t.Tools = sortString(t.Tools)
 		if s.GenSync.Citations {
-			c.Citations = "✅"
+			t.Citations = "✅"
 		}
 		if s.GenSync.Thinking {
-			c.Thinking = "✅"
+			t.Thinking = "✅"
 		}
 		if s.GenSync.Seed {
-			c.Seed = "✅"
+			t.Seed = "✅"
 		}
 	}
 	if s.GenStream != nil {
 		if _, hasTextIn := s.In[genai.ModalityText]; hasTextIn {
 			if _, hasTextOut := s.Out[genai.ModalityText]; hasTextOut {
-				if c.Streaming == "" {
-					c.Streaming = "✅"
+				if t.Streaming == "" {
+					t.Streaming = "✅"
 				}
-				if s.GenStream.BrokenTokenUsage && !strings.Contains(c.Streaming, "💸") {
-					c.Streaming += "💸"
+				if s.GenStream.BrokenTokenUsage && !strings.Contains(t.Streaming, "💸") {
+					t.Streaming += "💸"
 				}
-				if s.GenStream.BrokenFinishReason && !strings.Contains(c.Streaming, "🚩") {
-					c.Streaming += "🚩"
+				if s.GenStream.BrokenFinishReason && !strings.Contains(t.Streaming, "🚩") {
+					t.Streaming += "🚩"
 				}
-				if (s.GenStream.NoMaxTokens || s.GenStream.NoStopSequence) && !strings.Contains(c.Streaming, "🤪") {
-					c.Streaming += "🤪"
+				if (s.GenStream.NoMaxTokens || s.GenStream.NoStopSequence) && !strings.Contains(t.Streaming, "🤪") {
+					t.Streaming += "🤪"
 				}
-				c.Streaming = sortString(c.Streaming)
+				t.Streaming = sortString(t.Streaming)
 			}
 		}
 	}
 	if s.GenDoc != nil {
 		if s.GenDoc.Seed {
-			c.Seed = "✅"
+			t.Seed = "✅"
 		}
 		if s.GenDoc.BrokenTokenUsage || s.GenDoc.BrokenFinishReason {
 			// TODO.
 		}
-	}
-}
-
-// Magical markdown table generator.
-
-func getTitles[T any]() []string {
-	var titles []string
-	t := reflect.TypeOf((*T)(nil)).Elem()
-	for i := range t.NumField() {
-		if title := t.Field(i).Tag.Get("title"); title != "" {
-			titles = append(titles, title)
-		}
-	}
-	return titles
-}
-
-// addNopes adds "❌" to all empty string fields.
-func addNopes[T any](c *T) {
-	val := reflect.ValueOf(c).Elem()
-	for j := range val.NumField() {
-		if l := len(val.Field(j).String()); l == 0 {
-			val.Field(j).SetString("❌")
-		}
-	}
-}
-
-func getMaxFieldLengths[T any](cols []T) []int {
-	fields := reflect.TypeOf((*T)(nil)).Elem()
-	lengths := make([]int, fields.NumField())
-	for i := range cols {
-		val := reflect.ValueOf(cols[i])
-		for j := range lengths {
-			if l := visibleWidth(val.Field(j).String()); l > lengths[j] {
-				lengths[j] = l
-			}
-		}
-	}
-	return lengths
-}
-
-func printMarkdownTable[T any](w io.Writer, cols []T) {
-	titles := getTitles[T]()
-	lengths := getMaxFieldLengths(cols)
-	// Ensure the title row is at least as wide as the field name
-	for i, t := range titles {
-		if len(t) > lengths[i] {
-			lengths[i] = len(t)
-		}
-	}
-	fmt.Fprint(w, "| ")
-	for i, t := range titles {
-		fmt.Fprintf(w, "%s |", extendString(t, lengths[i]))
-		if i != len(titles)-1 {
-			fmt.Fprint(w, " ")
-		}
-	}
-	fmt.Fprintln(w)
-	fmt.Fprint(w, "| ")
-	for i, l := range lengths {
-		fmt.Fprintf(w, "%s |", strings.Repeat("-", l))
-		if i != len(lengths)-1 {
-			fmt.Fprint(w, " ")
-		}
-	}
-	fmt.Fprintln(w)
-	for _, c := range cols {
-		fmt.Fprint(w, "| ")
-		v := reflect.ValueOf(c)
-		for i := range lengths {
-			fmt.Fprintf(w, "%s |", extendString(v.Field(i).String(), lengths[i]))
-			if i != len(lengths)-1 {
-				fmt.Fprint(w, " ")
-			}
-		}
-		fmt.Fprintln(w)
 	}
 }
 
@@ -273,7 +199,7 @@ func printTable() error {
 	all["openaicompatible"] = func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
 		return openaicompatible.New("http://localhost:8080/v1", nil, model, wrapper)
 	}
-	var columns []column
+	var columns []tableRow
 	for name, f := range all {
 		p, err := f("", nil)
 		if err != nil {
@@ -285,16 +211,114 @@ func printTable() error {
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: doesn't support scoreboard\n", name)
 			continue
 		}
-		col := column{}
+		col := tableRow{}
 		col.initFromScoreboard(ps)
 		columns = append(columns, col)
 	}
-	slices.SortFunc(columns, func(a, b column) int {
+	slices.SortFunc(columns, func(a, b tableRow) int {
 		return strings.Compare(a.Provider, b.Provider)
 	})
-
 	printMarkdownTable(os.Stdout, columns)
 	return nil
+}
+
+// Magical markdown table generator.
+
+func visitFieldsType(t reflect.Type, fn func(f reflect.StructField)) {
+	if t.Kind() == reflect.Ptr {
+		t = t.Elem()
+	}
+	for i := range t.NumField() {
+		if f := t.Field(i); f.Anonymous {
+			visitFieldsType(f.Type, fn)
+		} else {
+			fn(f)
+		}
+	}
+}
+
+func visitFields(v reflect.Value, fn func(v reflect.Value)) {
+	t := v.Elem().Type()
+	for i := range t.NumField() {
+		if fv := v.Elem().Field(i); t.Field(i).Anonymous {
+			visitFields(fv.Addr(), fn)
+		} else {
+			fn(fv.Addr())
+		}
+	}
+}
+
+func getTitles[T any]() []string {
+	var titles []string
+	visitFieldsType(reflect.TypeOf((*T)(nil)), func(f reflect.StructField) {
+		if title := f.Tag.Get("title"); title != "" {
+			titles = append(titles, title)
+		}
+	})
+	return titles
+}
+
+// addNopes adds "❌" to all empty string fields.
+func addNopes(c any) {
+	visitFields(reflect.ValueOf(c), func(v reflect.Value) {
+		v = v.Elem()
+		if l := len(v.String()); l == 0 {
+			if v.Kind() == reflect.String {
+				v.SetString("❌")
+			}
+		}
+	})
+}
+
+func getMaxFieldLengths[T any](cols []T) []int {
+	titles := getTitles[T]()
+	lengths := make([]int, len(titles))
+	for i, t := range titles {
+		lengths[i] = visibleWidth(t)
+	}
+	for i := range cols {
+		j := 0
+		visitFields(reflect.ValueOf(&cols[i]), func(v reflect.Value) {
+			if l := visibleWidth(v.Elem().String()); l > lengths[j] {
+				lengths[j] = l
+			}
+			j++
+		})
+	}
+	return lengths
+}
+
+func printMarkdownTable[T any](w io.Writer, cols []T) {
+	titles := getTitles[T]()
+	lengths := getMaxFieldLengths(cols)
+	if len(titles) != len(lengths) {
+		panic(fmt.Sprintf("title length mismatch: %d vs %d", len(titles), len(lengths)))
+	}
+
+	// Ensure the title row is at least as wide as the field name
+	for i, t := range titles {
+		if len(t) > lengths[i] {
+			lengths[i] = len(t)
+		}
+	}
+	fmt.Fprint(w, "|")
+	for i, t := range titles {
+		fmt.Fprintf(w, " %s |", extendString(t, lengths[i]))
+	}
+	fmt.Fprint(w, "\n|")
+	for _, l := range lengths {
+		fmt.Fprintf(w, " %s |", strings.Repeat("-", l))
+	}
+	fmt.Fprintln(w)
+	for i := range cols {
+		fmt.Fprint(w, "|")
+		j := 0
+		visitFields(reflect.ValueOf(&cols[i]), func(v reflect.Value) {
+			fmt.Fprintf(w, " %s |", extendString(v.Elem().String(), lengths[j]))
+			j++
+		})
+		fmt.Fprintf(w, "\n")
+	}
 }
 
 // sortString sorts the characters in a string.
@@ -333,5 +357,8 @@ func runeWidth(r rune) int {
 
 func extendString(s string, l int) string {
 	w := visibleWidth(s)
+	if w >= l {
+		return s
+	}
 	return s + strings.Repeat(" ", l-w)
 }

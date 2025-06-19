@@ -15,12 +15,17 @@ import (
 
 func mainImpl() error {
 	table := flag.Bool("table", false, "output a markdown table")
+	provider := flag.String("provider", "", "output a table only for one provider")
 	flag.Parse()
 	if flag.NArg() != 0 {
 		return errors.New("unexpected arguments")
 	}
 	if *table {
-		return printSummaryTable()
+		return printTable(*provider)
+	}
+	if *provider != "" {
+		// TODO: Add it to list too.
+		return errors.New("-provider requires -table")
 	}
 	return printList()
 }

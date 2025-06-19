@@ -200,12 +200,27 @@ var modalityMap = map[genai.Modality]string{
 	genai.ModalityPDF:   "📄", // "📚",
 }
 
-func printSummaryTable() error {
+func printTable(provider string) error {
 	all := maps.Clone(providers.All)
 	all["openaicompatible"] = func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
 		return openaicompatible.New("http://localhost:8080/v1", nil, model, wrapper)
 	}
-	var columns []tableSummaryRow
+	if provider == "" {
+		return printSummaryTable(all)
+	}
+	f := all[provider]
+	if f == nil {
+		return fmt.Errorf("provider %s: not found", provider)
+	}
+	c, err := f("", nil)
+	if c == nil {
+		return fmt.Errorf("provider %s: %w", provider, err)
+	}
+	return printProviderTable(c)
+}
+
+func printSummaryTable(all map[string]func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error)) error {
+	var rows []tableSummaryRow
 	for name, f := range all {
 		p, err := f("", nil)
 		// The function can return an error and still return a client when no API key was found. It's okay here
@@ -219,30 +234,40 @@ func printSummaryTable() error {
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: doesn't support scoreboard\n", name)
 			continue
 		}
-		col := tableSummaryRow{}
-		col.initFromScoreboard(ps)
-		columns = append(columns, col)
+		row := tableSummaryRow{}
+		row.initFromScoreboard(ps)
+		rows = append(rows, row)
 	}
-	slices.SortFunc(columns, func(a, b tableSummaryRow) int {
+	slices.SortFunc(rows, func(a, b tableSummaryRow) int {
 		return strings.Compare(a.Provider, b.Provider)
 	})
-	printMarkdownTable(os.Stdout, columns)
+	printMarkdownTable(os.Stdout, rows)
 	return nil
 }
 
 func printProviderTable(p genai.Provider) error {
-	var columns []tableSummaryRow
+	var rows []tableModelRow
 	ps, ok := p.(genai.ProviderScoreboard)
 	if !ok {
 		return fmt.Errorf("provider %s: doesn't support scoreboardn", p.Name())
 	}
-	col := tableModelRow{Model: v}
-	col.initFromScoreboard(ps)
-	columns = append(columns, col)
-	slices.SortFunc(columns, func(a, b tableSummaryRow) int {
-		return strings.Compare(a.Provider, b.Provider)
-	})
-	printMarkdownTable(os.Stdout, columns)
+	sb := ps.Scoreboard()
+	for i := range sb.Scenarios {
+		row := tableModelRow{}
+		row.initFromScenario(&sb.Scenarios[i])
+		if _, isAsync := p.(genai.ProviderGenAsync); isAsync {
+			row.Batch = "✅"
+		}
+		if _, isFiles := p.(genai.ProviderCache); isFiles {
+			row.Files = "✅"
+		}
+		addNopes(&row)
+		for j := range sb.Scenarios[i].Models {
+			row.Model = sb.Scenarios[i].Models[j]
+			rows = append(rows, row)
+		}
+	}
+	printMarkdownTable(os.Stdout, rows)
 	return nil
 }
 
@@ -294,15 +319,15 @@ func addNopes(c any) {
 	})
 }
 
-func getMaxFieldLengths[T any](cols []T) []int {
+func getMaxFieldLengths[T any](rows []T) []int {
 	titles := getTitles[T]()
 	lengths := make([]int, len(titles))
 	for i, t := range titles {
 		lengths[i] = visibleWidth(t)
 	}
-	for i := range cols {
+	for i := range rows {
 		j := 0
-		visitFields(reflect.ValueOf(&cols[i]), func(v reflect.Value) {
+		visitFields(reflect.ValueOf(&rows[i]), func(v reflect.Value) {
 			if l := visibleWidth(v.Elem().String()); l > lengths[j] {
 				lengths[j] = l
 			}
@@ -312,9 +337,9 @@ func getMaxFieldLengths[T any](cols []T) []int {
 	return lengths
 }
 
-func printMarkdownTable[T any](w io.Writer, cols []T) {
+func printMarkdownTable[T any](w io.Writer, rows []T) {
 	titles := getTitles[T]()
-	lengths := getMaxFieldLengths(cols)
+	lengths := getMaxFieldLengths(rows)
 	if len(titles) != len(lengths) {
 		panic(fmt.Sprintf("title length mismatch: %d vs %d", len(titles), len(lengths)))
 	}
@@ -334,10 +359,10 @@ func printMarkdownTable[T any](w io.Writer, cols []T) {
 		fmt.Fprintf(w, " %s |", strings.Repeat("-", l))
 	}
 	fmt.Fprintln(w)
-	for i := range cols {
+	for i := range rows {
 		fmt.Fprint(w, "|")
 		j := 0
-		visitFields(reflect.ValueOf(&cols[i]), func(v reflect.Value) {
+		visitFields(reflect.ValueOf(&rows[i]), func(v reflect.Value) {
 			fmt.Fprintf(w, " %s |", extendString(v.Elem().String(), lengths[j]))
 			j++
 		})

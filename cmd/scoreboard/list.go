@@ -31,7 +31,9 @@ func printList() error {
 	for _, name := range names {
 		fmt.Printf("- %s\n", name)
 		c, err := all[name]("", nil)
-		if err != nil {
+		// The function can return an error and still return a client when no API key was found. It's okay here
+		// because we won't use the service provider.
+		if c == nil {
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: %v\n", name, err)
 			continue
 		}

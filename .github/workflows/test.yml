@@ -160,7 +160,7 @@ jobs:
     - name: "Check: misspelling; code doesn't contain misspelling (ubuntu)"
       if: always() && matrix.os == 'ubuntu-latest'
       run: |
-        FILES=$(git ls-files | grep -v ^MODELS\.md$ | grep -v \.yaml$)
+        FILES=$(git ls-files | grep -v ^docs/MODELS\.md$ | grep -v \.yaml$)
         ERR=$(misspell $FILES)
         if ! test -z "$ERR"; then
           echo "$ERR"

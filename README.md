@@ -285,7 +285,7 @@ func main() {
 
 ## Models
 
-Snapshot of all the supported models: [MODELS.md](MODELS.md).
+Snapshot of all the supported models: [docs/MODELS.md](docs/MODELS.md).
 
 Try it:
 

@@ -11,16 +11,16 @@ cd ..
 go install ./cmd/list-models
 PROVIDERS=(anthropic cerebras cloudflare cohere deepseek gemini groq huggingface mistral openai pollinations togetherai)
 
-echo "# List of models available on each provider" > MODELS.new.md
-echo "" >> MODELS.new.md
-echo "Snapshot of the models available on each provider as of $(date +%Y-%m-%d)" >> MODELS.new.md
+echo "# List of models available on each provider" > docs/MODELS.new.md
+echo "" >> docs/MODELS.new.md
+echo "Snapshot of the models available on each provider as of $(date +%Y-%m-%d)" >> docs/MODELS.new.md
 
 for i in "${PROVIDERS[@]}"; do
 	echo "- $i"
-	echo "" >> MODELS.new.md
-    echo "## $i" >> MODELS.new.md
-	echo "" >> MODELS.new.md
-    list-models -strict -provider $i | sed 's/^/- /' >> MODELS.new.md
+	echo "" >> docs/MODELS.new.md
+    echo "## $i" >> docs/MODELS.new.md
+	echo "" >> docs/MODELS.new.md
+    list-models -strict -provider $i | sed 's/^/- /' >> docs/MODELS.new.md
 done
 
-mv MODELS.new.md MODELS.md
+mv docs/MODELS.new.md docs/MODELS.md

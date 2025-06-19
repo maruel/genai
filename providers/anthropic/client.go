@@ -178,8 +178,8 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, opts genai.Options, model st
 				unsupported = append(unsupported, "MessagesToCache")
 			}
 			if v.ThinkingBudget > 0 {
-				if v.ThinkingBudget >= v.MaxTokens {
-					errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, v.MaxTokens))
+				if v.ThinkingBudget >= c.MaxTokens {
+					errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, c.MaxTokens))
 				}
 				// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
 				// Thinking isn’t compatible with temperature, top_p, or top_k modifications as well as forced tool use.

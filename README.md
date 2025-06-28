@@ -122,7 +122,7 @@ apply):
 
 ### Tool calling using predefined tool
 
-Tool calling is the idea that a LLM can't know it call, so we provide ways for the LLM to get more knowledge
+Tool calling is the idea that a LLM can't know it all, so we provide ways for the LLM to get more knowledge
 on the fly or to have side-effects. It unblocks a whole realm of possibilities. Our design enables dense
 strongly typed code that favorably compares to python.
 

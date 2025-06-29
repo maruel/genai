@@ -525,13 +525,14 @@ type Model struct {
 		Vision          bool `json:"vision"`
 		Classification  bool `json:"classification"`
 	} `json:"capabilities"`
-	Name                    string   `json:"name"`
-	Description             string   `json:"description"`
-	MaxContextLength        int64    `json:"max_context_length"`
-	Aliases                 []string `json:"aliases"`
-	Deprecation             string   `json:"deprecation"`
-	DefaultModelTemperature float64  `json:"default_model_temperature"`
-	Type                    string   `json:"type"`
+	Name                        string   `json:"name"`
+	Description                 string   `json:"description"`
+	MaxContextLength            int64    `json:"max_context_length"`
+	Aliases                     []string `json:"aliases"`
+	Deprecation                 string   `json:"deprecation"`
+	DeprecationReplacementModel struct{} `json:"deprecation_replacement_model"`
+	DefaultModelTemperature     float64  `json:"default_model_temperature"`
+	Type                        string   `json:"type"`
 }
 
 func (m *Model) GetID() string {

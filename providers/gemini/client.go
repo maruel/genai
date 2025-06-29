@@ -930,6 +930,7 @@ type Model struct {
 	MaxTemperature             float64  `json:"maxTemperature"`
 	TopP                       float64  `json:"topP"`
 	TopK                       int64    `json:"topK"`
+	Thinking                   bool     `json:"thinking"`
 }
 
 func (m *Model) GetID() string {

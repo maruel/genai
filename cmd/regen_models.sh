@@ -3,7 +3,7 @@
 # Use of this source code is governed under the Apache License, Version 2.0
 # that can be found in the LICENSE file.
 
-set -eu
+set -euo pipefail
 
 cd "$(dirname $0)"
 cd ..
@@ -21,7 +21,7 @@ for i in "${PROVIDERS[@]}"; do
     echo "## $i" >> docs/MODELS.new.md
 	echo "" >> docs/MODELS.new.md
     list-models -strict -provider $i | sed 's/^/- /' >> docs/MODELS.new.md
-    echo "# Scoreboard" >> docs/$i.md
+    echo "# Scoreboard" > docs/$i.md
 	echo "" >> docs/$i.md
 	scoreboard -table -provider $i >> docs/$i.md
 done

@@ -1,13 +1,14 @@
 # Goal
 
-Implement exerciseGen and exerciseGenDoc in scoreboard/scoreboard.go.
+Implement exerciseGen and exerciseGenDoc in scoreboard/scoreboard.go to exercise the provider and dynamically
+discover the supported functionalities of the provider.
 
 # Plan
 
 - Read the file DEAR_LLM.md to understand the project
-- Take inspiration from tests in internal/internaltest/scoreboard.go
-- Instead of testing a predefined hard-coded scenario, exercise the provider and supported models to figure
-  out what is supported.
+- Take inspiration from tests in internal/internaltest/scoreboard.go. The goal here is NOT to write tests in
+  scoreboard.go. Instead of testing a predefined hard-coded scenario, exercise the provider and supported
+  models to figure out what is supported at runtime and populate a fresh new Scenario instance.
 - Important: you only have access to the provider cerebras, no other provider is accessible. You only can use
   cerebras to implement a test. Do not use any other provider.
 - Look at the current scoreboard in providers/cerebras/client.go for inspiration of what should be expected.

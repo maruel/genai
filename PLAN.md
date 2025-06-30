@@ -14,7 +14,8 @@ Implement exerciseGen and exerciseGenDoc in scoreboard/scoreboard.go.
 - Take your time.
 - Plan and take notes in a file PROGRESS.md.
 - Do one small logical task at a time and update PROGRESS.md.
-- Do a git commit after each logical step.
+- MODIFY ONLY the following files: PROGRESS.md, scoreboard/scoreboard.go, and scoreboard/scoreboard_test.go
+- Run the command "git add . && git commit -a -m Checkpoint" after each logical step.
 - Continue until you are done. If you are stuck, ask for help.
-- When the test fails due to an HTTP recording, you can run the program with RECORD=1 to update the recordings
-  in scoreboard/testdata/.
+- When the test fails due to an HTTP recording, you can run the program with the environment variable RECORD=1
+  set to update the recordings in scoreboard/testdata/.

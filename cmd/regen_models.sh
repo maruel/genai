@@ -20,7 +20,12 @@ for i in "${PROVIDERS[@]}"; do
 	echo "" >> docs/MODELS.new.md
     echo "## $i" >> docs/MODELS.new.md
 	echo "" >> docs/MODELS.new.md
-    list-models -strict -provider $i | sed 's/^/- /' >> docs/MODELS.new.md
+	if ! (list-models -strict -provider $i | sed 's/^/- /' >> docs/MODELS.new.md); then
+		rm providers/$i/testdata/TestClient_Scoreboard/ListModels.yaml
+		rm providers/$i/testdata/TestClient_Preferred/*.yaml
+		go test ./providers/$i/...
+		exit 1
+	fi
     echo "# Scoreboard" > docs/$i.md
 	echo "" >> docs/$i.md
 	scoreboard -table -provider $i >> docs/$i.md

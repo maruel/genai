@@ -670,6 +670,7 @@ type TextModel struct {
 	Community        bool     `json:"community"`
 	Description      string   `json:"description"`
 	InputModalities  []string `json:"input_modalities"`
+	MaxInputChars    int64    `json:"maxInputChars"`
 	Name             string   `json:"name"`
 	OutputModalities []string `json:"output_modalities"`
 	Pricing          struct {
@@ -853,11 +854,11 @@ func New(auth, model string, wrapper func(http.RoundTripper) http.RoundTripper) 
 					c.Model = m.Name
 				}
 			} else if good {
-				if strings.HasPrefix(m.Name, "openai") {
+				if strings.HasPrefix(m.Name, "openai") && !m.Reasoning {
 					c.Model = m.Name
 				}
 			} else {
-				if m.Reasoning {
+				if !strings.HasPrefix(m.Name, "openai") && m.Reasoning {
 					c.Model = m.Name
 				}
 			}

@@ -1237,6 +1237,43 @@ func TestCitationSource_Validate(t *testing.T) {
 	}
 }
 
+func TestTriState_String(t *testing.T) {
+	tests := []struct {
+		name string
+		ts   TriState
+		want string
+	}{
+		{
+			name: "False",
+			ts:   False,
+			want: "false",
+		},
+		{
+			name: "True",
+			ts:   True,
+			want: "true",
+		},
+		{
+			name: "Flaky",
+			ts:   Flaky,
+			want: "flaky",
+		},
+		{
+			name: "Unknown value",
+			ts:   TriState(99),
+			want: "TriState(99)",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.ts.String(); got != tt.want {
+				t.Errorf("TriState.String() got = %q, want %q", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestContent_ValidateWithCitations(t *testing.T) {
 	tests := []struct {
 		name    string

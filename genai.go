@@ -21,6 +21,7 @@ import (
 	"path"
 	"path/filepath"
 	"reflect"
+	"strconv"
 	"strings"
 	"time"
 	"unicode"
@@ -937,6 +938,22 @@ const (
 	True  TriState = 1
 	Flaky TriState = -1
 )
+
+const triStateName = "flakyfalsetrue"
+
+var triStateIndex = [...]uint8{0, 5, 10, 14}
+
+func (i TriState) String() string {
+	i -= -1
+	if i < 0 || i >= TriState(len(triStateIndex)-1) {
+		return "TriState(" + strconv.FormatInt(int64(i+-1), 10) + ")"
+	}
+	return triStateName[triStateIndex[i]:triStateIndex[i+1]]
+}
+
+func (i TriState) GoString() string {
+	return i.String()
+}
 
 // FunctionalityDoc defines which functionalites are supported in a scenario for non-text output modality.
 type FunctionalityDoc struct {

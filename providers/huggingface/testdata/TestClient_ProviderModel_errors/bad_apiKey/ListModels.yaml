@@ -7,13 +7,10 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 0
-        transfer_encoding: []
-        trailer: {}
         host: huggingface.co
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
+        form:
+            inference:
+                - warm
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,10 +20,7 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: 55
-        uncompressed: false
         body: '{"error":"Invalid credentials in Authorization header"}'
         headers:
             Access-Control-Allow-Origin:
@@ -46,11 +40,11 @@ interactions:
             Vary:
                 - Origin
             Via:
-                - 1.1 6589108eb8812ce79de8a8eef3f72bee.cloudfront.net (CloudFront)
+                - 1.1 50d743941b822ae5fa30db69233863a6.cloudfront.net (CloudFront)
             Www-Authenticate:
                 - Bearer realm="Authentication required", charset="UTF-8"
             X-Amz-Cf-Id:
-                - kgTQxeRS3wo7khtADr2GxHQjQBScZxzfCbthwqxJ6mE8Ox66tyYqbg==
+                - Xq7ggWXl1YYrtWgoTI4oeQ3c08hAQZ7Spf4uPzhpoFVf8IAjm9jyuQ==
             X-Amz-Cf-Pop:
                 - YTO50-P2
             X-Cache:
@@ -60,7 +54,7 @@ interactions:
             X-Powered-By:
                 - huggingface-moon
             X-Request-Id:
-                - h-swd_uK8nVulrzn
+                - ta_sYvygG1_Q3b9S
         status: 401 Unauthorized
         code: 401
-        duration: 1.122s
+        duration: 73ms

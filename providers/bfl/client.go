@@ -132,6 +132,7 @@ type ImageResult struct {
 	} `json:"result"`
 	Progress float64  `json:"progress"` // [0, 1]
 	Details  struct{} `json:"details"`
+	Preview  struct{} `json:"preview"`
 }
 
 type ImageWebhookResponse struct {

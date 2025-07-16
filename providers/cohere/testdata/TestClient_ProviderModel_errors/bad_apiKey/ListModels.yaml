@@ -7,13 +7,10 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 0
-        transfer_encoding: []
-        trailer: {}
         host: api.cohere.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
+        form:
+            page_size:
+                - "1000"
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,22 +20,19 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 31
-        uncompressed: false
-        body: '{"message":"invalid api token"}'
+        content_length: 75
+        body: '{"id":"30012d9a-816d-4391-95cb-64cdcc59712e","message":"invalid api token"}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
             Cache-Control:
                 - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
             Content-Length:
-                - "31"
+                - "75"
             Content-Type:
                 - application/json
             Expires:
-                - Thu, 01 Jan 1970 00:00:00 UTC
+                - Thu, 01 Jan 1970 00:00:00 GMT
             Pragma:
                 - no-cache
             Server:
@@ -50,7 +44,7 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Envoy-Upstream-Service-Time:
-                - "6"
+                - "9"
         status: 401 Unauthorized
         code: 401
-        duration: 51ms
+        duration: 100ms

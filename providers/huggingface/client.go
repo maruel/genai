@@ -665,7 +665,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 				if err2 != nil {
 					continue
 				}
-				if strings.HasPrefix(m.ID, "meta-llama/Llama") && (weights == 0 || w < weights) {
+				if strings.HasPrefix(m.ID, "meta-llama/Llama") && strings.HasSuffix(m.ID, "-Instruct") && (weights == 0 || w < weights) {
 					weights = w
 					c.Model = m.ID
 					c.GenSyncURL = "https://router.huggingface.co/hf-inference/models/" + url.PathEscape(c.Model) + "/v1/chat/completions"

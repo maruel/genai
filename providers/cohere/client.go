@@ -622,6 +622,7 @@ type Model struct {
 	TokenizerURL     string   `json:"tokenizer_url"`
 	SupportsVision   bool     `json:"supports_vision"`
 	DefaultEndpoints []string `json:"default_endpoints"`
+	IsDeprecated     bool     `json:"is_deprecated"`
 }
 
 func (m *Model) GetID() string {
@@ -671,6 +672,7 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 //
 
 type ErrorResponse struct {
+	ID        string `json:"id"`
 	Message   string `json:"message"`
 	RequestID string `json:"request_id"`
 }

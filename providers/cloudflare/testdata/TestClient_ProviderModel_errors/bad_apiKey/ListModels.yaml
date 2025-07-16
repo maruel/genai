@@ -7,13 +7,14 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 0
-        transfer_encoding: []
-        trailer: {}
         host: api.cloudflare.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
+        form:
+            hide_experimental:
+                - "false"
+            page:
+                - "1"
+            per_page:
+                - "100"
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,21 +24,18 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |
             {"success":false,"errors":[{"code":10001,"message":"Unable to authenticate request"}]}
         headers:
             Api-Version:
-                - "2025-05-31"
+                - "2025-07-16"
             Cf-Auditlog-Id:
-                - 01972687-abc0-714f-8845-a6d7c1e559dd
+                - 019813ab-4727-7fc4-adea-179caa2914ef
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9486d0b2bdc3a314-YUL
+                - 96023cde8e6ca2a6-YUL
             Content-Type:
                 - application/json
             Server:
@@ -46,4 +44,4 @@ interactions:
                 - Accept-Encoding
         status: 400 Bad Request
         code: 400
-        duration: 106ms
+        duration: 151ms

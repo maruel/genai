@@ -30,12 +30,12 @@ func ExampleNew_hTTP_record() {
 		}
 	}()
 
+	// Simple trick to force recording via an environment variable.
+	mode := recorder.ModeRecordOnce
+	if os.Getenv("RECORD") == "1" {
+		mode = recorder.ModeRecordOnly
+	}
 	wrapper := func(h http.RoundTripper) http.RoundTripper {
-		// Simple trick to force recording via an environment variable.
-		mode := recorder.ModeRecordOnce
-		if os.Getenv("RECORD") == "1" {
-			mode = recorder.ModeRecordOnly
-		}
 		// Remove API key when matching the request, so the playback doesn't need to have access to the API key.
 		m := cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Request-Id"))
 		var err error
@@ -53,7 +53,7 @@ func ExampleNew_hTTP_record() {
 	}
 	// When playing back the smoke test, no API key is needed. Insert a fake API key.
 	apiKey := ""
-	if os.Getenv("HUGGINGFACE_API_KEY") == "" {
+	if os.Getenv("HUGGINGFACE_API_KEY") == "" && mode != recorder.ModeRecordOnly {
 		apiKey = "<insert_api_key_here>"
 	}
 	c, err := huggingface.New(apiKey, "", wrapper)

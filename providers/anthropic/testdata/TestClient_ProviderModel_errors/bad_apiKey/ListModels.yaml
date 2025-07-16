@@ -7,14 +7,13 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 0
-        transfer_encoding: []
-        trailer: {}
         host: api.anthropic.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
+        form:
+            limit:
+                - "1000"
         headers:
+            Anthropic-Version:
+                - "2023-06-01"
             Content-Type:
                 - application/json; charset=utf-8
         url: https://api.anthropic.com/v1/models?limit=1000
@@ -23,22 +22,17 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: 86
-        uncompressed: false
         body: '{"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"}}'
         headers:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9486d0b37d81a267-YUL
+                - 96023eea4a4ea31e-YUL
             Content-Length:
                 - "86"
             Content-Type:
                 - application/json
-            Request-Id:
-                - req_011CPfgoY6LfzTLdd3DXV6nK
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -51,4 +45,4 @@ interactions:
                 - "false"
         status: 401 Unauthorized
         code: 401
-        duration: 116ms
+        duration: 105ms

@@ -11,7 +11,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 
@@ -58,13 +57,7 @@ func (r *Records) Close() int {
 // It ignores the port number in the URL both for recording and playback so it
 // works with local services like ollama and llama-server.
 func (r *Records) Record(t *testing.T, h http.RoundTripper, opts ...recorder.Option) *recorder.Recorder {
-	name := strings.ReplaceAll(strings.ReplaceAll(t.Name(), "/", string(os.PathSeparator)), ":", "-")
-	if d := filepath.Dir(name); d != "." {
-		if err := os.MkdirAll(filepath.Join("testdata", d), 0o755); err != nil {
-			t.Fatal(err)
-		}
-	}
-	rr, err := r.r.Record(name, h, opts...)
+	rr, err := r.r.Record(t.Name(), h, opts...)
 	if err != nil {
 		t.Fatal(err)
 	}

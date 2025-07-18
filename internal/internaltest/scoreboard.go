@@ -9,6 +9,7 @@ import (
 	"context"
 	_ "embed"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math"
 	"net/url"
@@ -24,6 +25,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
 	"golang.org/x/sync/errgroup"
+	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 )
 
 // ProviderGenModalityFactory is what a Java developer would write.
@@ -1052,7 +1054,7 @@ func basicCheck(t *testing.T, err error, expectedSuccess bool) bool {
 		err = nil
 	}
 	if err != nil {
-		if !expectedSuccess {
+		if !errors.Is(err, cassette.ErrInteractionNotFound) && !expectedSuccess {
 			// Skip the remainder.
 			return false
 		}
@@ -1073,7 +1075,7 @@ func basicCheckAcceptUnexpectedSuccess(t *testing.T, err error, expectedSuccess 
 		err = nil
 	}
 	if err != nil {
-		if !expectedSuccess {
+		if !errors.Is(err, cassette.ErrInteractionNotFound) && !expectedSuccess {
 			// Skip the remainder.
 			return false
 		}

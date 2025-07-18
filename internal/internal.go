@@ -6,8 +6,10 @@
 package internal
 
 import (
+	"context"
 	"fmt"
 	"io/fs"
+	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -71,8 +73,12 @@ func (r *Records) Close() error {
 
 func (r *Records) Signal(name string) {
 	r.mu.Lock()
+	_, ok := r.recorded[name+".yaml"]
 	r.recorded[name+".yaml"] = struct{}{}
 	r.mu.Unlock()
+	if ok {
+		panic(fmt.Sprintf("refusing duplicate %q", name))
+	}
 }
 
 // Record records and replays HTTP requests.
@@ -83,6 +89,12 @@ func (r *Records) Signal(name string) {
 // It ignores the port number in the URL both for recording and playback so it
 // works with local services like ollama and llama-server.
 func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Option) (*recorder.Recorder, error) {
+	name = strings.ReplaceAll(strings.ReplaceAll(name, "/", string(os.PathSeparator)), ":", "-")
+	if d := filepath.Dir(name); d != "." {
+		if err := os.MkdirAll(filepath.Join(r.root, d), 0o755); err != nil {
+			return nil, err
+		}
+	}
 	mode := recorder.ModeRecordOnce
 	if os.Getenv("RECORD") == "1" {
 		mode = recorder.ModeRecordOnly
@@ -97,6 +109,22 @@ func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Opti
 	r.Signal(name)
 	// Don't forget to call Stop()!
 	return recorder.New(filepath.Join(r.root, name), append(args, opts...)...)
+}
+
+type contextKey struct{}
+
+func Logger(ctx context.Context) *slog.Logger {
+	v := ctx.Value(contextKey{})
+	switch v := v.(type) {
+	case *slog.Logger:
+		return v
+	default:
+		return slog.Default()
+	}
+}
+
+func WithLogger(ctx context.Context, logger *slog.Logger) context.Context {
+	return context.WithValue(ctx, contextKey{}, logger)
 }
 
 //

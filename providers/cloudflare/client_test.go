@@ -111,7 +111,7 @@ func matchCassetteInternal(r *http.Request, i cassette.Request) bool {
 	r = r.Clone(r.Context())
 	// When matching, ignore the account ID from the URL path.
 	r.URL.Path = reAccount.ReplaceAllString(r.URL.Path, "/accounts/ACCOUNT_ID/")
-	return internaltest.DefaultMatcher(r, i)
+	return internal.DefaultMatcher(r, i)
 }
 
 var testRecorder *internaltest.Records

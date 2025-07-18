@@ -293,7 +293,7 @@ func getClientInner(t *testing.T, apiKey, m string) *gemini.Client {
 		q.Del("key")
 		r.URL.RawQuery = q.Encode()
 		r.ParseForm()
-		res := internaltest.DefaultMatcher(r, i)
+		res := internal.DefaultMatcher(r, i)
 		if !res {
 			// Useful for debugging.
 			// t.Logf("Failed to match request\nReq: %v\nInt: %v", r, i)

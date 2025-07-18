@@ -66,7 +66,7 @@ func (r *Records) Close() error {
 			names = append(names, f)
 		}
 		sort.Strings(names)
-		return &orphanedError{name: names}
+		return &orphanedError{root: r.root, name: names}
 	}
 	return nil
 }
@@ -130,11 +130,12 @@ func WithLogger(ctx context.Context, logger *slog.Logger) context.Context {
 //
 
 type orphanedError struct {
+	root string
 	name []string
 }
 
 func (e *orphanedError) Error() string {
-	return fmt.Sprintf("Found orphaned recordings:\n- %s", strings.Join(e.name, "\n- "))
+	return fmt.Sprintf("Found orphaned recordings in %s:\n- %s", e.root, strings.Join(e.name, "\n- "))
 }
 
 func trimResponseHeaders(i *cassette.Interaction) error {

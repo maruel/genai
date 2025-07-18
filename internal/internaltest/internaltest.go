@@ -44,23 +44,10 @@ func (r *Records) Close() int {
 		return 0
 	}
 	if err := r.r.Close(); err != nil {
-		fmt.Fprintln(os.Stderr, err.Error())
+		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return 1
 	}
 	return 0
-}
-
-// Signal signals that a test is being recorded. It is a separate call to ensure that even skipped tests are
-// known as having a record. This ensures Records.Close() doesn't signal skipped tests as orphaned recordings.
-func (r *Records) Signal(t *testing.T) string {
-	name := strings.ReplaceAll(strings.ReplaceAll(t.Name(), "/", string(os.PathSeparator)), ":", "-")
-	if d := filepath.Dir(name); d != "." {
-		if err := os.MkdirAll(filepath.Join("testdata", d), 0o755); err != nil {
-			t.Fatal(err)
-		}
-	}
-	r.r.Signal(name)
-	return name
 }
 
 // Record records and replays HTTP requests for unit testing.
@@ -71,7 +58,12 @@ func (r *Records) Signal(t *testing.T) string {
 // It ignores the port number in the URL both for recording and playback so it
 // works with local services like ollama and llama-server.
 func (r *Records) Record(t *testing.T, h http.RoundTripper, opts ...recorder.Option) *recorder.Recorder {
-	name := r.Signal(t)
+	name := strings.ReplaceAll(strings.ReplaceAll(t.Name(), "/", string(os.PathSeparator)), ":", "-")
+	if d := filepath.Dir(name); d != "." {
+		if err := os.MkdirAll(filepath.Join("testdata", d), 0o755); err != nil {
+			t.Fatal(err)
+		}
+	}
 	rr, err := r.r.Record(name, h, opts...)
 	if err != nil {
 		t.Fatal(err)

@@ -76,7 +76,6 @@ func TestClient_ProviderModel_errors(t *testing.T) {
 }
 
 func getClient(t *testing.T, m string) *mistral.Client {
-	testRecorder.Signal(t)
 	t.Parallel()
 	return getClientInner(t, "", m)
 }

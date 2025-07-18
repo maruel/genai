@@ -203,7 +203,6 @@ var providers = map[string]provider{
 }
 
 func getClient(t *testing.T, provider string) genai.ProviderGen {
-	testRecorder.Signal(t)
 	t.Parallel()
 	p := providers[provider]
 	apiKey := os.Getenv(p.envAPIKey)

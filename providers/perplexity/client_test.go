@@ -68,7 +68,6 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 }
 
 func getClient(t *testing.T, m string) *perplexity.Client {
-	testRecorder.Signal(t)
 	t.Parallel()
 	return getClientInner(t, "", m)
 }

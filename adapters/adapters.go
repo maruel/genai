@@ -9,6 +9,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slices"
 	"strings"
 	"sync"
 	"unicode"
@@ -206,6 +207,25 @@ func (c *ProviderGenUsage) Unwrap() genai.Provider {
 }
 
 //
+
+// ProviderGenAppend wraps a ProviderGen and appends a Message before processing.
+//
+// Useful to inject a "/think" for Qwen3 models.
+type ProviderGenAppend struct {
+	genai.ProviderGen
+
+	Append genai.Message
+}
+
+func (c *ProviderGenAppend) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	msgs = append(slices.Clone(msgs), c.Append)
+	return c.ProviderGen.GenSync(ctx, msgs, opts)
+}
+
+func (c *ProviderGenAppend) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+	msgs = append(slices.Clone(msgs), c.Append)
+	return c.ProviderGen.GenStream(ctx, msgs, replies, opts)
+}
 
 // ProviderGenThinking wraps a ProviderGen and processes its output to extract thinking blocks.
 //

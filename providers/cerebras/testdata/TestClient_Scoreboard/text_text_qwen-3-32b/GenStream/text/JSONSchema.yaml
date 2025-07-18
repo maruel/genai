@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 484
-        transfer_encoding: []
-        trailer: {}
+        content_length: 519
         host: api.cerebras.ai
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Is a banana a fruit? Reply as JSON according to the provided schema."}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean","description":"True if the answer is that it is a fruit, false otherwise"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"stream":true}
-        form: {}
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Is a banana a fruit? Reply as JSON according to the provided schema."},{"role":"user","content":"/think"}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean","description":"True if the answer is that it is a fruit, false otherwise"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,10 +19,7 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: 186
-        uncompressed: false
         body: '{"message":"\"stream=true\" with structured outputs is currently not supported for reasoning models.","type":"invalid_request_error","param":"json_schema_mode","code":"wrong_api_format"}'
         headers:
             Alt-Svc:
@@ -35,7 +27,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9478a3eb3e04a28f-YUL
+                - 961431bcabeca2c7-YUL
             Content-Length:
                 - "186"
             Content-Type:
@@ -50,4 +42,4 @@ interactions:
                 - nosniff
         status: 400 Bad Request
         code: 400
-        duration: 195ms
+        duration: 2.381s

@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 563
-        transfer_encoding: []
-        trailer: {}
+        content_length: 598
         host: api.cerebras.ai
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"model":"qwen-3-32b","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
-        form: {}
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."},{"role":"user","content":"/think"}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,22 +19,20 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-b538cc84-3467-4f11-a3fb-f7412f778f9c","choices":[{"finish_reason":"stop","index":0,"message":{"tool_calls":[{"id":"5b5eabd53","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}],"role":"assistant"}}],"created":1748708242,"model":"qwen-3-32b","system_fingerprint":"fp_d7c70c58dd52e0143bae","object":"chat.completion","usage":{"prompt_tokens":230,"completion_tokens":1324,"total_tokens":1554,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.001924417,"prompt_time":0.005402848,"completion_time":1.038567127,"total_time":1.0474886894226074,"created":1748708242}}'
+        body: '{"id":"chatcmpl-c9044ae5-ce0a-4bef-9d39-fb11ed978959","choices":[{"finish_reason":"tool_calls","index":0,"message":{"tool_calls":[{"id":"92d4f7117","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}],"role":"assistant"}}],"created":1752864928,"model":"qwen-3-32b","system_fingerprint":"fp_1504a02d96fb4f08d4e7","object":"chat.completion","usage":{"prompt_tokens":237,"completion_tokens":113,"total_tokens":350,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.316469175,"prompt_time":0.006656111,"completion_time":0.092460731,"total_time":0.41724228858947754,"created":1752864928}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9487c7f27db2a2f4-YUL
+                - 961431874d4ea2c7-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-b538cc84-3467-4f11-a3fb-f7412f778f9c
+                - chatcmpl-c9044ae5-ce0a-4bef-9d39-fb11ed978959
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -51,17 +44,17 @@ interactions:
             X-Ratelimit-Limit-Requests-Day:
                 - "14400"
             X-Ratelimit-Limit-Tokens-Minute:
-                - "60000"
+                - "64000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14354"
+                - "14359"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "59134"
+                - "64000"
             X-Ratelimit-Reset-Requests-Day:
-                - "27756.50497984886"
+                - "18271.539975643158"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "36.504979848861694"
+                - "31.53997564315796"
             X-Request-Id:
-                - 9487c7f27db2a2f4-YUL
+                - 961431874d4ea2c7-YUL
         status: 200 OK
         code: 200
-        duration: 1.24s
+        duration: 738ms

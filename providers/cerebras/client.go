@@ -251,9 +251,27 @@ const (
 type Contents []Content
 
 func (c *Contents) MarshalJSON() ([]byte, error) {
+	// If there's only one content and it's a string, marshal as a string.
 	if len(*c) == 1 && (*c)[0].Type == ContentText {
 		return json.Marshal((*c)[0].Text)
 	}
+	onlyText := true
+	for i := range *c {
+		if (*c)[i].Type != ContentText {
+			onlyText = false
+		}
+	}
+	if onlyText {
+		// Merge everything together as a string. This is only needed for a few models like qwen-3-32b and
+		// qwen-3-235b-a22b.
+		b := strings.Builder{}
+		for i := range *c {
+			b.WriteString((*c)[i].Text)
+			b.WriteString("\n")
+		}
+		return json.Marshal(b.String())
+	}
+	// If there's many contents, marshal as an array of Content.
 	return json.Marshal(([]Content)(*c))
 }
 

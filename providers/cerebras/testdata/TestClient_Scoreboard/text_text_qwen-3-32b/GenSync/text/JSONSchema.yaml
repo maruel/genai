@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 470
-        transfer_encoding: []
-        trailer: {}
+        content_length: 505
         host: api.cerebras.ai
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Is a banana a fruit? Reply as JSON according to the provided schema."}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean","description":"True if the answer is that it is a fruit, false otherwise"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}}}
-        form: {}
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Is a banana a fruit? Reply as JSON according to the provided schema."},{"role":"user","content":"/think"}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean","description":"True if the answer is that it is a fruit, false otherwise"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,22 +19,20 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-b08f3ea9-3b23-4a99-8e7f-d55831b76d0d","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"is_fruit\": true}","role":"assistant"}}],"created":1748549476,"model":"qwen-3-32b","system_fingerprint":"fp_9c2a99947ce8120f4772","object":"chat.completion","usage":{"prompt_tokens":183,"completion_tokens":364,"total_tokens":547,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.255113483,"prompt_time":0.004453081,"completion_time":0.298634621,"total_time":0.5593504905700684,"created":1748549476}}'
+        body: '{"id":"chatcmpl-b63cd65e-2f12-4090-ad4f-fb9ea35ee6a5","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"is_fruit\": true}","role":"assistant"}}],"created":1752864930,"model":"qwen-3-32b","system_fingerprint":"fp_1504a02d96fb4f08d4e7","object":"chat.completion","usage":{"prompt_tokens":190,"completion_tokens":419,"total_tokens":609,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.233945345,"prompt_time":0.004922384,"completion_time":0.310370441,"total_time":0.550468921661377,"created":1752864930}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9478a3d58bc0a28f-YUL
+                - 96143195ec7ba2c7-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-b08f3ea9-3b23-4a99-8e7f-d55831b76d0d
+                - chatcmpl-b63cd65e-2f12-4090-ad4f-fb9ea35ee6a5
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -51,17 +44,17 @@ interactions:
             X-Ratelimit-Limit-Requests-Day:
                 - "14400"
             X-Ratelimit-Limit-Tokens-Minute:
-                - "60000"
+                - "64000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14385"
+                - "14355"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "58894"
+                - "60956"
             X-Ratelimit-Reset-Requests-Day:
-                - "13722.602973222733"
+                - "18269.11757183075"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "42.602973222732544"
+                - "29.11757183074951"
             X-Request-Id:
-                - 9478a3d58bc0a28f-YUL
+                - 96143195ec7ba2c7-YUL
         status: 200 OK
         code: 200
-        duration: 2.078s
+        duration: 753ms

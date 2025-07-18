@@ -21,7 +21,13 @@ func TestClient_Scoreboard(t *testing.T) {
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
 		c := getClient(t, m)
 		if m == "qwen-3-32b" {
-			return &adapters.ProviderGenThinking{ProviderGen: c, TagName: "think"}
+			return &adapters.ProviderGenThinking{
+				ProviderGen: &adapters.ProviderGenAppend{
+					ProviderGen: c,
+					Append:      genai.NewTextMessage(genai.User, "/think"),
+				},
+				TagName: "think",
+			}
 		}
 		return c
 	}, nil)

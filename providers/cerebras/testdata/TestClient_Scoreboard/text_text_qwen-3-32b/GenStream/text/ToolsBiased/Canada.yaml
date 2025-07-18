@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 577
-        transfer_encoding: []
-        trailer: {}
+        content_length: 612
         host: api.cerebras.ai
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"model":"qwen-3-32b","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":true,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
-        form: {}
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."},{"role":"user","content":"/think"}],"stream":true,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,10 +19,7 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: 180
-        uncompressed: false
         body: '{"message":"\"stream=true\" with structured outputs is currently not supported for reasoning models.","type":"invalid_request_error","param":"tools_mode","code":"wrong_api_format"}'
         headers:
             Alt-Svc:
@@ -35,7 +27,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9487c7ff9c3fa2f4-YUL
+                - 961431a6d950a2c7-YUL
             Content-Length:
                 - "180"
             Content-Type:
@@ -50,4 +42,4 @@ interactions:
                 - nosniff
         status: 400 Bad Request
         code: 400
-        duration: 178ms
+        duration: 160ms

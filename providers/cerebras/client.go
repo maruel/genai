@@ -46,21 +46,21 @@ var Scoreboard = genai.Scoreboard{
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Tools:      genai.Flaky,
-				BiasedTool: genai.True,
+				BiasedTool: genai.Flaky,
 				JSON:       true,
 				JSONSchema: true,
 				Seed:       true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:      genai.Flaky,
-				BiasedTool: genai.True,
+				BiasedTool: genai.Flaky,
 				JSON:       true,
 				JSONSchema: true,
 				Seed:       true,
 			},
 		},
 		{
-			Models: []string{"qwen-3-32b"},
+			Models: []string{"qwen-3-32b", "qwen-3-235b-a22b"},
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
@@ -72,9 +72,8 @@ var Scoreboard = genai.Scoreboard{
 				Seed:       true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Thinking:           true,
-				BrokenFinishReason: true,
-				Seed:               true,
+				Thinking: true,
+				Seed:     true,
 			},
 		},
 		{

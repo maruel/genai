@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 167
+        host: api.groq.com
+        body: |
+            {"max_completion_tokens":3,"messages":[{"role":"user","content":"Tell a joke in 10 words"},{"role":"user","content":"/think"}],"model":"qwen/qwen3-32b","stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-9937d4cc-2ab3-4cd1-91a2-95443716599c","object":"chat.completion.chunk","created":1752869133,"model":"qwen/qwen3-32b","system_fingerprint":"fp_80fea1a458","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01k0fj8pz8ek8860jd4xr4p2yv"}}
+
+            data: {"id":"chatcmpl-9937d4cc-2ab3-4cd1-91a2-95443716599c","object":"chat.completion.chunk","created":1752869133,"model":"qwen/qwen3-32b","system_fingerprint":"fp_80fea1a458","choices":[{"index":0,"delta":{"content":"\u003cthink\u003e"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-9937d4cc-2ab3-4cd1-91a2-95443716599c","object":"chat.completion.chunk","created":1752869133,"model":"qwen/qwen3-32b","system_fingerprint":"fp_80fea1a458","choices":[{"index":0,"delta":{"content":"\n"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-9937d4cc-2ab3-4cd1-91a2-95443716599c","object":"chat.completion.chunk","created":1752869133,"model":"qwen/qwen3-32b","system_fingerprint":"fp_80fea1a458","choices":[{"index":0,"delta":{"content":"Okay"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-9937d4cc-2ab3-4cd1-91a2-95443716599c","object":"chat.completion.chunk","created":1752869133,"model":"qwen/qwen3-32b","system_fingerprint":"fp_80fea1a458","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"length"}],"x_groq":{"id":"req_01k0fj8pz8ek8860jd4xr4p2yv","usage":{"queue_time":0.006433382,"prompt_tokens":28,"prompt_time":0.005313936,"completion_tokens":3,"completion_time":0.00503044,"total_tokens":31,"total_time":0.010344376}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96149832b895a255-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499995"
+            X-Ratelimit-Remaining-Tokens:
+                - "299937"
+            X-Ratelimit-Reset-Requests:
+                - 860.999999ms
+            X-Ratelimit-Reset-Tokens:
+                - 12.6ms
+            X-Request-Id:
+                - req_01k0fj8pz8ek8860jd4xr4p2yv
+        status: 200 OK
+        code: 200
+        duration: 105ms

@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 282
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]},{"role":"user","content":"/think"}],"model":"qwen/qwen3-32b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-d49a3297-01ed-40f4-9d63-c72e1705096c","object":"chat.completion","created":1752869129,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, let's see. The user asked, \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" Then the assistant just responded with \"Quack.\" Now the user is looking at the example, maybe trying to understand how to approach this kind of question.\n\nFirst, I need to process the user's input step by step. The question is straightforward, but maybe the user wants a more detailed explanation. Let me break down the information given. The first statement says that the capital of Quackiland is Quack. That seems like a direct answer, but the second part mentions the Big Canard Statue being in Quack. However, the question specifically asks about the capital again, so the key info is the first statement.\n\nWait, but maybe the user is testing if I can extract the correct information from the given text. There's a possibility of trick or red herring with the Big Canard Statue mention, but the question is clear about the capital. So the answer is definitely Quack. However, in case the user is looking for a deeper answer or if there's a trick, maybe they expect me to elaborate more on why the answer is Quack despite the extra information.\n\nI should check if there's any hidden context. Quackiland and Quack sound like they might be fictional places, maybe from a joke or a meme. The name \"Canard\" could be a play on words since \"canard\" in French means \"rubbish\" or \"duck\" in English, but since it's part of the statue's name, it's probably just a name. Still, the answer is in the first part. To make sure, maybe the user provided the first part as a premise and the second as a fact but wants confirmation of the capital. \n\nI should make sure that the response is clear and confirms that the answer is indeed Quack, as the first statement explicitly states that. The part about the Big Canard Statue might be a distractor, but the question is straightforward. Also, since the user's example shows the assistant just repeating \"Quack,\" perhaps they want a similar direct answer without extra info. So, the correct approach is to state the answer directly but concisely.\n\u003c/think\u003e\n\nQuack."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.012072031,"prompt_tokens":49,"prompt_time":0.002911694,"completion_tokens":477,"completion_time":1.33765454,"total_tokens":526,"total_time":1.340566234},"usage_breakdown":null,"system_fingerprint":"fp_80fea1a458","x_groq":{"id":"req_01k0fj8kfaek8avdgk8dy8z5z2"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9614981c798fa255-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "297461"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 507.8ms
+            X-Request-Id:
+                - req_01k0fj8kfaek8avdgk8dy8z5z2
+        status: 200 OK
+        code: 200
+        duration: 1.414s

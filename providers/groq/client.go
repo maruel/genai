@@ -29,8 +29,8 @@ import (
 //
 // # Warnings
 //
-//   - qwen-qwq-32b fails with tool calling when streaming. Currently disabled even not streaming in the
-//     client code.
+//   - Thinking models like qwen/qwen3-32b fails with tool calling when streaming. Currently disabled even not
+//     streaming in the client code.
 //   - No models has consistent tool calling.
 var Scoreboard = genai.Scoreboard{
 	Country:      "US",
@@ -62,7 +62,7 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			Models: []string{"qwen-qwq-32b", "deepseek-r1-distill-llama-70b"},
+			Models: []string{"deepseek-r1-distill-llama-70b"},
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
@@ -107,6 +107,68 @@ var Scoreboard = genai.Scoreboard{
 				IndecisiveTool: genai.True,
 				JSON:           true,
 				Seed:           true,
+			},
+		},
+		{
+			Models: []string{"qwen/qwen3-32b"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Thinking:       true,
+				Tools:          genai.True,
+				IndecisiveTool: genai.Flaky,
+				BiasedTool:     genai.True,
+				JSON:           true,
+				Seed:           true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Thinking:       true,
+				Tools:          genai.True,
+				IndecisiveTool: genai.Flaky,
+				BiasedTool:     genai.True,
+				JSON:           true,
+				Seed:           true,
+			},
+		},
+		{
+			Models: []string{"moonshotai/kimi-k2-instruct"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Tools:      genai.Flaky,
+				BiasedTool: genai.True,
+				JSON:       true,
+				Seed:       true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Tools:      genai.Flaky,
+				BiasedTool: genai.True,
+				JSON:       true,
+				Seed:       true,
+			},
+		},
+		// Deprecated models.
+		{
+			Models: []string{
+				"gemma2-9b-it",
+				"llama3-70b-8192",
+				"llama3-8b-8192",
+			},
+		},
+		// Unsupported models.
+		{
+			Models: []string{
+				"allam-2-7b",
+				"compound-beta-mini",
+				"compound-beta",
+				"distil-whisper-large-v3-en",
+				"meta-llama/llama-guard-4-12b",
+				"meta-llama/llama-prompt-guard-2-22m",
+				"meta-llama/llama-prompt-guard-2-86m",
+				"playai-tts-arabic",
+				"playai-tts",
+				"whisper-large-v3-turbo",
+				"whisper-large-v3",
 			},
 		},
 	},

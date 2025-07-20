@@ -1,0 +1,107 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 164
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Talk about Canada in 10 words. Start with: Canada is"}],"model":"deepseek-r1-distill-llama-70b","stop":["is"],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01k0n0f64menjry4gs9vzf326s"}}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":"\u003cthink\u003e"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":"\n"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":"Okay"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":","},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":" so"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":" I"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":" need"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":" to"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":" talk"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":" about"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":" Canada"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":" in"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":" "},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":"10"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":" words"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":","},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":" starting"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":" with"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":" \""},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":"Canada"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051797,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{"content":" "},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-de7b4410-ccdc-4487-bc74-8fc324aea893","object":"chat.completion.chunk","created":1753051799,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_e98d30d035","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01k0n0f64menjry4gs9vzf326s","usage":{"queue_time":0.009603842,"prompt_tokens":16,"prompt_time":0.00051618,"completion_tokens":474,"completion_time":1.995218617,"total_tokens":490,"total_time":1.995734797}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962603c71cfba2e6-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299864"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 27.2ms
+            X-Request-Id:
+                - req_01k0n0f64menjry4gs9vzf326s
+        status: 200 OK
+        code: 200
+        duration: 73ms

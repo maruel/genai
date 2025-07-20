@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 598
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"model":"deepseek-r1-distill-llama-70b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-a1ad1635-6911-4667-b04e-dfeaefe3f327","object":"chat.completion","created":1753051793,"model":"deepseek-r1-distill-llama-70b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Okay, so I need to figure out whether the USA or Canada is the best country. I'm going to use the best_country tool provided. First, I should understand what the tool does. It probably compares the two countries based on certain criteria like economy, quality of life, education, etc. \n\nI remember the tool requires the country parameter, which can be either \"USA\" or \"Canada\". So, I'll pass \"USA\" to the tool. I'm curious to see what factors it considers and how it weighs them. Maybe it looks at GDP, HDI, crime rates, or environmental policies.\n\nAfter calling the tool with \"USA\", I should get a response indicating whether the USA is better than Canada according to the tool's criteria. I'm also thinking about whether the tool provides a detailed comparison or just a simple best country result. It might give some insights into why one is better than the other.\n\nI should also consider calling the tool with \"Canada\" to see the other perspective. That way, I can compare both results and get a more balanced view. But for now, I'll start with the USA to see what the tool says.\n","tool_calls":[{"id":"bkzgmypj7","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.009504733000000001,"prompt_tokens":184,"prompt_time":0.011735058,"completion_tokens":259,"completion_time":1.009152768,"total_tokens":443,"total_time":1.020887826},"usage_breakdown":null,"system_fingerprint":"fp_e98d30d035","x_groq":{"id":"req_01k0n0f1t4ene9rf9g7kkzqqa5"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962603ab4b78a2e6-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499998"
+            X-Ratelimit-Remaining-Tokens:
+                - "299964"
+            X-Ratelimit-Reset-Requests:
+                - 343.599999ms
+            X-Ratelimit-Reset-Tokens:
+                - 7.2ms
+            X-Request-Id:
+                - req_01k0n0f1t4ene9rf9g7kkzqqa5
+        status: 200 OK
+        code: 200
+        duration: 1.161s

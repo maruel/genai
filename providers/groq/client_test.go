@@ -22,6 +22,15 @@ import (
 func TestClient_Scoreboard(t *testing.T) {
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
 		c := getClient(t, m)
+		if m == "qwen/qwen3-32b" {
+			return &handleReasoning{
+				Client: &adapters.ProviderGenAppend{
+					ProviderGen: c,
+					Append:      genai.NewTextMessage(genai.User, "/think"),
+				},
+				t: t,
+			}
+		}
 		if m == "qwen-qwq-32b" || m == "deepseek-r1-distill-llama-70b" {
 			return &handleReasoning{Client: c, t: t}
 		}
@@ -30,8 +39,16 @@ func TestClient_Scoreboard(t *testing.T) {
 }
 
 type handleReasoning struct {
-	*groq.Client
-	t *testing.T
+	Client genai.ProviderGen
+	t      *testing.T
+}
+
+func (h *handleReasoning) Name() string {
+	return h.Client.Name()
+}
+
+func (h *handleReasoning) ModelID() string {
+	return h.Client.ModelID()
 }
 
 func (h *handleReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
@@ -63,7 +80,7 @@ func TestClient_Preferred(t *testing.T) {
 	}{
 		{base.PreferredCheap, "llama-3.1-8b-instant"},
 		{base.PreferredGood, "meta-llama/llama-4-maverick-17b-128e-instruct"},
-		{base.PreferredSOTA, "qwen-qwq-32b"},
+		{base.PreferredSOTA, "qwen/qwen3-32b"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {

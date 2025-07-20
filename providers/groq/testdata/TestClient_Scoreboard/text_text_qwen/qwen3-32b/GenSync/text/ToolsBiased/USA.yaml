@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 618
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."},{"role":"user","content":"/think"}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-431c2147-7aee-4297-96a9-ec74d5a77cb1","object":"chat.completion","created":1752869538,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Okay, the user is asking if the USA is better than Canada and wants me to use the best_country tool to determine which is the best. Let me check the available functions. The tool has a function called best_country that takes a country parameter, which can be either USA or Canada. Since the user mentioned both countries, but the function only allows one at a time, I need to call the function for each country. Wait, but the user specifically asked to call the tool to tell which is best. Maybe the function is designed to compare them internally? Let me check the function's parameters again. The function's parameters only accept a single country from the enum. So, perhaps the intended use is to call the function for each country and then compare the results. Alternatively, maybe the function's logic already compares the two. But according to the schema provided, the function requires a single country. Hmm. The user might expect that passing one country would return its ranking. But the user's question is about comparing the two. Since the function can only take one country at a time, I need to make two separate calls. Wait, but the user said \"call the tool best_country to tell me which country is the best one.\" So maybe the tool is supposed to handle both in one call. But the parameter is only for one country. Maybe there's a misunderstanding in the tool's design. Alternatively, perhaps the function's implementation (even though not visible here) might have a default or hidden way to compare both. But according to the given schema, the function requires a country parameter with enum values USA or Canada. So the correct approach is to call the function twice, once for each country, and then compare the returned results. But the user hasn't specified that they want both to be evaluated. Wait, the user's message says \"which country is the best one,\" so they want a comparison. But the tool's function only accepts one country. Therefore, I need to call the function for each country and then determine which is better based on the responses. So first, I should call best_country with USA, then with Canada, and then decide based on the results. However, the user might not know that, so perhaps the assistant should handle that automatically. Since the user instructed to call the tool, and the tool's function is set up to take one country each time, the correct steps would be to make both calls. But according to the current setup, the assistant can only call one function at a time. Wait, the system message says \"You may call one or more functions to assist with the user query.\" So, I can call both functions. But the user's instruction is to call the tool to tell me which is best. So maybe the tool is supposed to handle the comparison internally. But given the parameters, it's not possible. Therefore, the assistant needs to make two separate calls. So first, call best_country for USA, then for Canada, get both results, and then compare them. So the next step is to call the function for one of the countries. Let me start with USA.\n","tool_calls":[{"id":"6hzv5sa3a","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.008288739000000002,"prompt_tokens":211,"prompt_time":0.008028882,"completion_tokens":655,"completion_time":1.503032125,"total_tokens":866,"total_time":1.511061007},"usage_breakdown":null,"system_fingerprint":"fp_80fea1a458","x_groq":{"id":"req_01k0fjn2gpeqk93mds3brbz2nk"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9614a2163f79a315-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299958"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 8.4ms
+            X-Request-Id:
+                - req_01k0fjn2gpeqk93mds3brbz2nk
+        status: 200 OK
+        code: 200
+        duration: 1.666s

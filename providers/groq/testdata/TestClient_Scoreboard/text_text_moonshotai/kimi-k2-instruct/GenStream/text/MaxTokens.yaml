@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 145
+        host: api.groq.com
+        body: |
+            {"max_completion_tokens":3,"messages":[{"role":"user","content":"Tell a joke in 10 words"}],"model":"moonshotai/kimi-k2-instruct","stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-7bd1c156-e396-4ade-8490-4eb3f678977f","object":"chat.completion.chunk","created":1752867892,"model":"moonshotai/kimi-k2-instruct","system_fingerprint":"fp_6e6ff3688b","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01k0fh2tp0exqtp14n68ayrqxe"}}
+
+            data: {"id":"chatcmpl-7bd1c156-e396-4ade-8490-4eb3f678977f","object":"chat.completion.chunk","created":1752867892,"model":"moonshotai/kimi-k2-instruct","system_fingerprint":"fp_6e6ff3688b","choices":[{"index":0,"delta":{"content":"Quantum"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-7bd1c156-e396-4ade-8490-4eb3f678977f","object":"chat.completion.chunk","created":1752867892,"model":"moonshotai/kimi-k2-instruct","system_fingerprint":"fp_6e6ff3688b","choices":[{"index":0,"delta":{"content":" computers"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-7bd1c156-e396-4ade-8490-4eb3f678977f","object":"chat.completion.chunk","created":1752867892,"model":"moonshotai/kimi-k2-instruct","system_fingerprint":"fp_6e6ff3688b","choices":[{"index":0,"delta":{"content":":"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-7bd1c156-e396-4ade-8490-4eb3f678977f","object":"chat.completion.chunk","created":1752867892,"model":"moonshotai/kimi-k2-instruct","system_fingerprint":"fp_6e6ff3688b","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"length"}],"x_groq":{"id":"req_01k0fh2tp0exqtp14n68ayrqxe","usage":{"queue_time":0.171108692,"prompt_tokens":32,"prompt_time":0.001194341,"completion_tokens":3,"completion_time":0.018915421,"total_tokens":35,"total_time":0.020109762}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 961479e43c33715a-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499990"
+            X-Ratelimit-Remaining-Tokens:
+                - "249989"
+            X-Ratelimit-Reset-Requests:
+                - 1.728s
+            X-Ratelimit-Reset-Tokens:
+                - 2.64ms
+            X-Request-Id:
+                - req_01k0fh2tp0exqtp14n68ayrqxe
+        status: 200 OK
+        code: 200
+        duration: 235ms

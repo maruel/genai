@@ -293,7 +293,8 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, fr)
 		// Deepseek counts "\"Parallel lines" as 3 tokens (!)
 		// Llama-4-Maverick counts ""Why couldn't the" as 3 tokens.
-		if len(resp.AsText()) > 16 {
+		// Kimi K2 counts ""Why don't scientists" and "Quantum computers:" as 3 tokens.
+		if len(resp.AsText()) > 20 {
 			if !f.NoMaxTokens {
 				t.Fatalf("Expected less than 15 letters, got %q", resp.AsText())
 			}

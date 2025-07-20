@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 262
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"model":"deepseek-r1-distill-llama-70b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-9c01ad08-4d49-4cbb-8d3b-c9e70caf735b","object":"chat.completion","created":1753051794,"model":"deepseek-r1-distill-llama-70b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, so I need to figure out the capital of Quackiland. Let me start by reading the information given carefully. The question says, \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" \n\nHmm, that seems pretty straightforward, but I want to make sure I'm not missing anything. Sometimes these questions can be tricky, maybe trying to test if I'm paying attention or if I can handle redundant information. Let me break it down.\n\nFirst, the question directly states that the capital of Quackiland is Quack. That's the first sentence. Then it adds another fact: the Big Canard Statue is in Quack. So, the second part might be extra information, but it's also reinforcing that Quack is a significant place in Quackiland. \n\nWait, maybe I should think about whether \"Quack\" refers to the same place in both sentences. The first sentence says it's the capital, and the second says it's where the statue is. So, Quack is both the capital and the location of the statue. That makes sense because capitals often have major landmarks. So, the statue being there doesn't change the capital; it just adds more info about Quack.\n\nI don't think there's any trick here. It's not like the question is trying to say that the statue is in a different city or anything. Both sentences are about Quack. So, the answer should just be Quack. \n\nI guess the key here is to recognize that the question is giving two facts about Quack: one about it being the capital and another about the statue. But the question is only asking for the capital, which is clearly stated in the first part. The second part is just additional information, maybe to distract or to provide context, but it doesn't affect the answer.\n\nSo, putting it all together, the capital of Quackiland is Quack. The mention of the Big Canard Statue is just extra detail, but it doesn't change the fact that Quack is the capital.\n\u003c/think\u003e\n\nThe capital of Quackiland is Quack. The additional information about the Big Canard Statue being located there serves to reinforce the significance of Quack but does not alter the answer.\n\n**Answer:** The capital of Quackiland is Quack."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.009481563,"prompt_tokens":32,"prompt_time":0.001557057,"completion_tokens":486,"completion_time":1.9610385049999999,"total_tokens":518,"total_time":1.962595562},"usage_breakdown":null,"system_fingerprint":"fp_87eae35036","x_groq":{"id":"req_01k0n0f2weeneb646z7sxr8exx"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962603b23defa2e6-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499996"
+            X-Ratelimit-Remaining-Tokens:
+                - "299893"
+            X-Ratelimit-Reset-Requests:
+                - 689.199999ms
+            X-Ratelimit-Reset-Tokens:
+                - 21.4ms
+            X-Request-Id:
+                - req_01k0n0f2weeneb646z7sxr8exx
+        status: 200 OK
+        code: 200
+        duration: 2.037s

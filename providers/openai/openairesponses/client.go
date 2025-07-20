@@ -60,18 +60,18 @@ var Scoreboard = genai.Scoreboard{
 			In:  map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:          genai.True,
-				BiasedTool:     genai.True,
-				JSON:           true,
-				NoMaxTokens:    true, // Technically not true but it requires at least 16 tokens and the smoke test is 3.
-				NoStopSequence: true,
+				Tools:            genai.True,
+				BiasedTool:       genai.True,
+				JSON:             true,
+				BrokenTokenUsage: genai.Flaky, // When MaxTokens.
+				NoStopSequence:   true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:          genai.True,
-				BiasedTool:     genai.True,
-				JSON:           true,
-				NoMaxTokens:    true, // Technically not true but it requires at least 16 tokens and the smoke test is 3.
-				NoStopSequence: true,
+				Tools:            genai.True,
+				BiasedTool:       genai.True,
+				JSON:             true,
+				BrokenTokenUsage: genai.Flaky, // When MaxTokens.
+				NoStopSequence:   true,
 			},
 		},
 		{
@@ -114,20 +114,20 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:          genai.True,
-				BiasedTool:     genai.True,
-				JSON:           true,
-				JSONSchema:     true,
-				NoMaxTokens:    true, // Technically not true but it requires at least 16 tokens and the smoke test is 3.
-				NoStopSequence: true,
+				Tools:            genai.True,
+				BiasedTool:       genai.True,
+				JSON:             true,
+				JSONSchema:       true,
+				BrokenTokenUsage: genai.Flaky, // When MaxTokens.
+				NoStopSequence:   true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:          genai.True,
-				BiasedTool:     genai.True,
-				JSON:           true,
-				JSONSchema:     true,
-				NoMaxTokens:    true, // Technically not true but it requires at least 16 tokens and the smoke test is 3.
-				NoStopSequence: true,
+				Tools:            genai.True,
+				BiasedTool:       genai.True,
+				JSON:             true,
+				JSONSchema:       true,
+				BrokenTokenUsage: genai.Flaky, // When MaxTokens.
+				NoStopSequence:   true,
 			},
 		},
 		// https://platform.openai.com/docs/guides/responses-vs-chat-completions
@@ -164,7 +164,6 @@ var Scoreboard = genai.Scoreboard{
 					BiasedTool:     genai.True,
 					JSON:           true,
 					JSONSchema:     true,
-					NoMaxTokens:    true, // Technically not true but it requires at least 16 tokens and the smoke test is 3.
 					NoStopSequence: true,
 				},
 				GenStream: &genai.FunctionalityText{
@@ -172,7 +171,6 @@ var Scoreboard = genai.Scoreboard{
 					BiasedTool:     genai.True,
 					JSON:           true,
 					JSONSchema:     true,
-					NoMaxTokens:    true, // Technically not true but it requires at least 16 tokens and the smoke test is 3.
 					NoStopSequence: true,
 				},
 			},
@@ -203,20 +201,20 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:          genai.True,
-				BiasedTool:     genai.Flaky, // It prefers Canada!
-				JSON:           true,
-				JSONSchema:     true,
-				NoMaxTokens:    true, // Technically not true but it requires at least 16 tokens and the smoke test is 3.
-				NoStopSequence: true,
+				Tools:            genai.True,
+				BiasedTool:       genai.Flaky, // It prefers Canada!
+				JSON:             true,
+				JSONSchema:       true,
+				BrokenTokenUsage: genai.Flaky, // When MaxTokens.
+				NoStopSequence:   true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:          genai.True,
-				BiasedTool:     genai.Flaky, // It prefers Canada!
-				JSON:           true,
-				JSONSchema:     true,
-				NoMaxTokens:    true, // Technically not true but it requires at least 16 tokens and the smoke test is 3.
-				NoStopSequence: true,
+				Tools:            genai.True,
+				BiasedTool:       genai.Flaky, // It prefers Canada!
+				JSON:             true,
+				JSONSchema:       true,
+				BrokenTokenUsage: genai.Flaky, // When MaxTokens.
+				NoStopSequence:   true,
 			},
 		},
 		{
@@ -400,7 +398,11 @@ func (r *Response) ToResult() (genai.Result, error) {
 		}
 	}
 	if r.IncompleteDetails.Reason != "" {
-		res.FinishReason = genai.FinishReason(r.IncompleteDetails.Reason)
+		if r.IncompleteDetails.Reason == "max_output_tokens" {
+			res.FinishReason = genai.FinishedLength
+		} else {
+			res.FinishReason = genai.FinishReason(r.IncompleteDetails.Reason)
+		}
 	} else if len(res.ToolCalls) != 0 {
 		res.FinishReason = genai.FinishedToolCalls
 	} else {

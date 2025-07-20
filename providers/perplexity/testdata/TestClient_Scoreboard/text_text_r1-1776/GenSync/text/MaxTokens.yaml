@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 168
+        content_length: 196
         host: api.perplexity.ai
         body: |
-            {"model":"r1-1776","messages":[{"role":"user","content":"Tell a joke in 10 words"}],"max_tokens":3,"return_images":true,"return_related_questions":true,"stream":false}
+            {"model":"r1-1776","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_tokens":16,"return_images":true,"return_related_questions":true,"stream":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,12 +21,12 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id": "652ed307-3745-4e3f-814c-78e60be2c33b", "model": "r1-1776", "created": 1749591134, "usage": {"prompt_tokens": 7, "completion_tokens": 3, "total_tokens": 10}, "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "length", "message": {"role": "assistant", "content": "<think>\nOkay"}, "delta": {"role": "assistant", "content": ""}}]}'
+        body: '{"id": "7c5a03a1-b49f-4692-83d9-8e2de69d820c", "model": "r1-1776", "created": 1753061930, "usage": {"prompt_tokens": 9, "completion_tokens": 14, "total_tokens": 23}, "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "length", "message": {"role": "assistant", "content": "<think>\nOkay, the user asked for a detailed explanation of the theory"}, "delta": {"role": "assistant", "content": ""}}]}'
         headers:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94dbfaed68fba29c-YUL
+                - 9626fb225e47a2c6-YUL
             Content-Type:
                 - application/json
             Server:
@@ -35,4 +35,4 @@ interactions:
                 - max-age=15552000; includeSubDomains; preload
         status: 200 OK
         code: 200
-        duration: 574ms
+        duration: 722ms

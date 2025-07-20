@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 134
-        transfer_encoding: []
-        trailer: {}
+        content_length: 162
         host: api.cerebras.ai
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"model":"llama-4-scout-17b-16e-instruct","messages":[{"role":"user","content":"Tell a joke in 10 words"}],"max_completion_tokens":3}
-        form: {}
+            {"model":"llama-4-scout-17b-16e-instruct","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_completion_tokens":16}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,22 +19,20 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-baa7148c-7731-487e-b0a9-b1d7683e37ea","choices":[{"finish_reason":"length","index":0,"message":{"content":"Why was the","role":"assistant"}}],"created":1748477598,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_dbfdda9d038d2b3a7e94","object":"chat.completion","usage":{"prompt_tokens":17,"completion_tokens":3,"total_tokens":20,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.0001182,"prompt_time":0.000763212,"completion_time":0.002998776,"total_time":0.0059223175048828125,"created":1748477598}}'
+        body: '{"id":"chatcmpl-7103ab31-8795-44f9-a6bf-22635e5779d5","choices":[{"finish_reason":"length","index":0,"message":{"content":"The theory of relativity, developed by Albert Einstein, is a fundamental concept in modern","role":"assistant"}}],"created":1753061930,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion","usage":{"prompt_tokens":19,"completion_tokens":16,"total_tokens":35,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000921828,"prompt_time":0.001085882,"completion_time":0.01086423,"total_time":0.026534557342529297,"created":1753061930}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9471c8ff99bea2c9-YUL
+                - 9626fb2bc8a233ef-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-baa7148c-7731-487e-b0a9-b1d7683e37ea
+                - chatcmpl-7103ab31-8795-44f9-a6bf-22635e5779d5
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -53,15 +46,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14397"
+                - "14398"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "59904"
+                - "60000"
             X-Ratelimit-Reset-Requests-Day:
-                - "85601.21413397789"
+                - "80469.02129435539"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "41.214133977890015"
+                - "9.021294355392456"
             X-Request-Id:
-                - 9471c8ff99bea2c9-YUL
+                - 9626fb2bc8a233ef-YUL
         status: 200 OK
         code: 200
-        duration: 1.297s
+        duration: 182ms

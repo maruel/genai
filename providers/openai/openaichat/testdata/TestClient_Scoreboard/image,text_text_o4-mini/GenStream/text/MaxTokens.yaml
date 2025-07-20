@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 238
-        transfer_encoding: []
-        trailer: {}
+        content_length: 266
         host: api.openai.com
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"model":"o4-mini","max_completion_tokens":3,"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Tell a joke in 10 words"}]}],"reasoning_effort":"high","service_tier":"flex","stream_options":{"include_usage":true}}
-        form: {}
+            {"model":"o4-mini","max_completion_tokens":16,"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}],"reasoning_effort":"high","service_tier":"flex","stream_options":{"include_usage":true}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,16 +19,13 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |+
-            data: {"id":"chatcmpl-BcbU1sZStZhcLz4yNI1GTN8DSnBan","object":"chat.completion.chunk","created":1748540249,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null}
+            data: {"id":"chatcmpl-BvZmR7nUoRLrcPTugG9kAkcZtRXDb","object":"chat.completion.chunk","created":1753061935,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null}
 
-            data: {"id":"chatcmpl-BcbU1sZStZhcLz4yNI1GTN8DSnBan","object":"chat.completion.chunk","created":1748540249,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"length"}],"usage":null}
+            data: {"id":"chatcmpl-BvZmR7nUoRLrcPTugG9kAkcZtRXDb","object":"chat.completion.chunk","created":1753061935,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"length"}],"usage":null}
 
-            data: {"id":"chatcmpl-BcbU1sZStZhcLz4yNI1GTN8DSnBan","object":"chat.completion.chunk","created":1748540249,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":13,"completion_tokens":3,"total_tokens":16,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":3,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}
+            data: {"id":"chatcmpl-BvZmR7nUoRLrcPTugG9kAkcZtRXDb","object":"chat.completion.chunk","created":1753061935,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":16,"completion_tokens":16,"total_tokens":32,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":16,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}
 
             data: [DONE]
 
@@ -45,13 +37,15 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9477c28c0c11a284-YUL
+                - 9626fb3b8fa5a2c7-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "356"
+                - "486"
+            Openai-Project:
+                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -61,21 +55,21 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "360"
+                - "494"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
                 - "200000"
             X-Ratelimit-Remaining-Requests:
-                - "498"
+                - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "199975"
+                - "199985"
             X-Ratelimit-Reset-Requests:
-                - 239ms
+                - 120ms
             X-Ratelimit-Reset-Tokens:
-                - 7ms
+                - 4ms
             X-Request-Id:
-                - req_444264d1a2ee5bcc18cf7a68e691ccaa
+                - req_d66dfbdb1d72c41659165af2763381f4
         status: 200 OK
         code: 200
-        duration: 695ms
+        duration: 2.418s

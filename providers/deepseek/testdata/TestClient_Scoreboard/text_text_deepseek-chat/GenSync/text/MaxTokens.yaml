@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 121
-        transfer_encoding: []
-        trailer: {}
+        content_length: 149
         host: api.deepseek.com
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"model":"deepseek-chat","messages":[{"role":"user","content":"Tell a joke in 10 words"}],"stream":false,"max_tokens":3}
-        form: {}
+            {"model":"deepseek-chat","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":false,"max_tokens":16}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,18 +19,16 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"eb142da3-6215-4d33-a86b-deb20d479632","object":"chat.completion","created":1748527976,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"\"Parallel lines"},"logprobs":null,"finish_reason":"length"}],"usage":{"prompt_tokens":10,"completion_tokens":3,"total_tokens":13,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":10},"system_fingerprint":"fp_8802369eaa_prod0425fp8"}'
+        body: '{"id":"007fdf0d-5567-48e6-bd7d-4c9667950693","object":"chat.completion","created":1753061929,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"The **Theory of Relativity**, developed by **Albert Einstein**, revolutionized our understanding"},"logprobs":null,"finish_reason":"length"}],"usage":{"prompt_tokens":12,"completion_tokens":16,"total_tokens":28,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":12},"system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache"}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 947696eb6a02a275-YUL
+                - 9626fb21fdefa2ee-YUL
             Content-Type:
                 - application/json
             Server:
@@ -47,7 +40,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - a24584e49ef7f3b2655a9597969b8a6f
+                - 0ab838cd2ed13fedd4356e19c13dac4c
         status: 200 OK
         code: 200
-        duration: 325ms
+        duration: 383ms

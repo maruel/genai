@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 155
+        content_length: 183
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Tell a joke in 10 words"}]}],"generationConfig":{"responseModalities":["TEXT","IMAGE"],"maxOutputTokens":3}}
+            {"contents":[{"role":"user","parts":[{"text":"Explain the theory of relativity in great details."}]}],"generationConfig":{"responseModalities":["TEXT","IMAGE"],"maxOutputTokens":16}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,7 +28,7 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "Why don'"
+                        "text": "The theory of relativity, formulated by Albert Einstein, is one of the most revolutionary"
                       }
                     ],
                     "role": "model"
@@ -38,18 +38,18 @@ interactions:
                 }
               ],
               "usageMetadata": {
-                "promptTokenCount": 9,
-                "candidatesTokenCount": 3,
-                "totalTokenCount": 12,
+                "promptTokenCount": 10,
+                "candidatesTokenCount": 16,
+                "totalTokenCount": 26,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
-                    "tokenCount": 9
+                    "tokenCount": 10
                   }
                 ]
               },
               "modelVersion": "gemini-2.0-flash-preview-image-generation",
-              "responseId": "wHJMaI6cIdCWjMcP1q6giQg"
+              "responseId": "K5p9aOisFciMjMcP3ZHMyQ4"
             }
         headers:
             Alt-Svc:
@@ -59,7 +59,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=454
+                - gfet4t7; dur=330
             Vary:
                 - Origin
                 - X-Origin
@@ -72,4 +72,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 464ms
+        duration: 345ms

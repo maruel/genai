@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 96
-        transfer_encoding: []
-        trailer: {}
+        content_length: 124
         host: api.cloudflare.com
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"messages":[{"role":"user","content":"Tell a joke in 10 words"}],"max_tokens":3,"stream":true}
-        form: {}
+            {"messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_tokens":16,"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,34 +19,57 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |+
-            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstuvxy"}
+            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abde"}
 
-            data: {"response":"Why","tool_calls":[],"p":"abdefghijklmnoprstuvxyz12345678"}
+            data: {"response":"The","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghij"}
 
-            data: {"response":" did","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefgh"}
+            data: {"response":" theory","tool_calls":[],"p":"abdefghijklmnoprstuvxyz12345678"}
 
-            data: {"response":" the","tool_calls":[],"p":"abdefghijklmnoprstuvxyz123456789"}
+            data: {"response":" of","tool_calls":[],"p":"abdefghijklmnoprstuvxyz12345678"}
 
-            data: {"tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefg"}
+            data: {"response":" relativity","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmnopr"}
 
-            data: {"response":"","usage":{"prompt_tokens":17,"completion_tokens":3,"total_tokens":20}}
+            data: {"response":",","tool_calls":[],"p":"abdefgh"}
+
+            data: {"response":" developed","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890"}
+
+            data: {"response":" by","tool_calls":[],"p":"abdef"}
+
+            data: {"response":" Albert","tool_calls":[],"p":"abdefghijk"}
+
+            data: {"response":" Einstein","tool_calls":[],"p":"abdefghij"}
+
+            data: {"response":",","tool_calls":[],"p":"abdefghijklmno"}
+
+            data: {"response":" is","tool_calls":[],"p":"abdefghijklm"}
+
+            data: {"response":" a","tool_calls":[],"p":"abdefghijklmn"}
+
+            data: {"response":" fundamental","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghij"}
+
+            data: {"response":" concept","tool_calls":[],"p":"abdefghijklmnoprstuvxyz123456"}
+
+            data: {"response":" in","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmnopr"}
+
+            data: {"response":" modern","tool_calls":[],"p":"abdefghijklmnoprs"}
+
+            data: {"tool_calls":[],"p":"abdefghijklmnoprstuvxy"}
+
+            data: {"response":"","usage":{"prompt_tokens":87,"completion_tokens":16,"total_tokens":103}}
 
             data: [DONE]
 
         headers:
             Api-Version:
-                - "2025-05-31"
+                - "2025-07-21"
             Cf-Ai-Req-Id:
-                - 3ed66bbb-cfc7-4eaf-826c-572469dbde7a
+                - 1f122acf-9c58-437d-a9ef-132d7eabad6c
             Cf-Auditlog-Id:
-                - 0197275c-ebdd-7075-b4dd-b3edc6377d5c
+                - 01982aa2-3588-7f7d-a47a-f7ef6e7a2bbc
             Cf-Ray:
-                - 948825e61d58a305-YUL
+                - 9626fb28c82ea269-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -60,4 +78,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 284ms
+        duration: 254ms

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 204
+        content_length: 232
         host: api.openai.com
         body: |
-            {"model":"gpt-4.1-nano","background":false,"max_output_tokens":3,"store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Tell a joke in 10 words"}]}],"stream":true}
+            {"model":"gpt-4.1-nano","background":false,"max_output_tokens":16,"store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Explain the theory of relativity in great details."}]}],"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,31 +19,95 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 248
-        body: |-
-            {
-              "error": {
-                "message": "Invalid 'max_output_tokens': integer below minimum value. Expected a value >= 16, but got 3 instead.",
-                "type": "invalid_request_error",
-                "param": "max_output_tokens",
-                "code": "integer_below_min_value"
-              }
-            }
+        content_length: -1
+        body: |+
+            event: response.created
+            data: {"type":"response.created","sequence_number":0,"response":{"id":"resp_687d9a2c1d2c819bbdcc8e978f5de4bc0cade7f88cc835c4","object":"response","created_at":1753061932,"status":"in_progress","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":16,"max_tool_calls":null,"model":"gpt-4.1-nano-2025-04-14","output":[],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":null,"summary":null},"safety_identifier":null,"service_tier":"auto","store":false,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}}}
+
+            event: response.in_progress
+            data: {"type":"response.in_progress","sequence_number":1,"response":{"id":"resp_687d9a2c1d2c819bbdcc8e978f5de4bc0cade7f88cc835c4","object":"response","created_at":1753061932,"status":"in_progress","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":16,"max_tool_calls":null,"model":"gpt-4.1-nano-2025-04-14","output":[],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":null,"summary":null},"safety_identifier":null,"service_tier":"auto","store":false,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}}}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","sequence_number":2,"output_index":0,"item":{"id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","type":"message","status":"in_progress","content":[],"role":"assistant"}}
+
+            event: response.content_part.added
+            data: {"type":"response.content_part.added","sequence_number":3,"item_id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","output_index":0,"content_index":0,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":""}}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":4,"item_id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","output_index":0,"content_index":0,"delta":"Certainly","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":5,"item_id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","output_index":0,"content_index":0,"delta":"!","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":6,"item_id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","output_index":0,"content_index":0,"delta":" The","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":7,"item_id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","output_index":0,"content_index":0,"delta":" theory","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":8,"item_id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","output_index":0,"content_index":0,"delta":" of","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":9,"item_id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","output_index":0,"content_index":0,"delta":" relat","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":10,"item_id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","output_index":0,"content_index":0,"delta":"ivity","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":11,"item_id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","output_index":0,"content_index":0,"delta":" is","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":12,"item_id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","output_index":0,"content_index":0,"delta":" a","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":13,"item_id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","output_index":0,"content_index":0,"delta":" fundamental","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":14,"item_id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","output_index":0,"content_index":0,"delta":" framework","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":15,"item_id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","output_index":0,"content_index":0,"delta":" in","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":16,"item_id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","output_index":0,"content_index":0,"delta":" modern","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":17,"item_id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","output_index":0,"content_index":0,"delta":" physics","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":18,"item_id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","output_index":0,"content_index":0,"delta":" formulated","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":19,"item_id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","output_index":0,"content_index":0,"delta":" by","logprobs":[]}
+
+            event: response.output_text.done
+            data: {"type":"response.output_text.done","sequence_number":20,"item_id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","output_index":0,"content_index":0,"text":"Certainly! The theory of relativity is a fundamental framework in modern physics formulated by","logprobs":[]}
+
+            event: response.content_part.done
+            data: {"type":"response.content_part.done","sequence_number":21,"item_id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","output_index":0,"content_index":0,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":"Certainly! The theory of relativity is a fundamental framework in modern physics formulated by"}}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","sequence_number":22,"output_index":0,"item":{"id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","type":"message","status":"incomplete","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"Certainly! The theory of relativity is a fundamental framework in modern physics formulated by"}],"role":"assistant"}}
+
+            event: response.incomplete
+            data: {"type":"response.incomplete","sequence_number":23,"response":{"id":"resp_687d9a2c1d2c819bbdcc8e978f5de4bc0cade7f88cc835c4","object":"response","created_at":1753061932,"status":"incomplete","background":false,"error":null,"incomplete_details":{"reason":"max_output_tokens"},"instructions":null,"max_output_tokens":16,"max_tool_calls":null,"model":"gpt-4.1-nano-2025-04-14","output":[{"id":"msg_687d9a2c72ac819b8d7d8972c46b64110cade7f88cc835c4","type":"message","status":"incomplete","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"Certainly! The theory of relativity is a fundamental framework in modern physics formulated by"}],"role":"assistant"}],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":null,"summary":null},"safety_identifier":null,"service_tier":"default","store":false,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":{"input_tokens":0,"input_tokens_details":{"cached_tokens":0},"output_tokens":0,"output_tokens_details":{"reasoning_tokens":0},"total_tokens":0},"user":null,"metadata":{}}}
+
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 950b0b210cf66e06-YUL
-            Content-Length:
-                - "248"
+                - 9626fb3308b6a2d6-YUL
             Content-Type:
-                - application/json
+                - text/event-stream; charset=utf-8
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "13"
+                - "141"
+            Openai-Project:
+                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -53,7 +117,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Request-Id:
-                - req_778b44409a5cfe953d92ba9c225285cb
-        status: 400 Bad Request
-        code: 400
-        duration: 122ms
+                - req_f6febc3593daeb87fbdb08a44711ae96
+        status: 200 OK
+        code: 200
+        duration: 275ms

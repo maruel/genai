@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 141
+        content_length: 169
         host: router.huggingface.co
         body: |
-            {"model":"meta-llama/Llama-3.3-70B-Instruct","stream":false,"messages":[{"role":"user","content":"Tell a joke in 10 words"}],"max_tokens":3}
+            {"model":"meta-llama/Llama-3.3-70B-Instruct","stream":false,"messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_tokens":16}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,30 +19,30 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 635
+        content_length: 708
         body: |
-            {"id":"1390e478-f4af-4752-aafc-98417382388a","object":"chat.completion","created":1753054272,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"Why was the"},"finish_reason":"length","content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"usage":{"prompt_tokens":42,"completion_tokens":3,"total_tokens":45,"prompt_tokens_details":null,"completion_tokens_details":null},"system_fingerprint":""}
+            {"id":"c7221819-70bf-4d84-a710-e2ae71c604c1","object":"chat.completion","created":1753061929,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"The theory of relativity, developed by Albert Einstein, is a fundamental concept in"},"finish_reason":"length","content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"usage":{"prompt_tokens":46,"completion_tokens":16,"total_tokens":62,"prompt_tokens_details":null,"completion_tokens_details":null},"system_fingerprint":""}
         headers:
             Access-Control-Allow-Origin:
                 - '*'
             Access-Control-Expose-Headers:
                 - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
             Content-Length:
-                - "635"
+                - "708"
             Content-Type:
                 - application/json
             Cross-Origin-Opener-Policy:
                 - same-origin
             Inference-Id:
-                - 0-4c8bc729-2a92-4278-a7ee-a2081c4f0ae0
+                - 0-3db7dc76-ecd9-4a29-9e5c-0f66b23ed1be
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Vary:
                 - Origin
             Via:
-                - 1.1 60c77d7f2a0954d991174a909a828016.cloudfront.net (CloudFront)
+                - 1.1 c5670948bece41c6bb9df947cb650b7e.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - 5PSmkZdQxamcz7Rl6h8o6IkWS-YplVr6h6Mncn84tjkhMiF8q7NZnQ==
+                - 19zIP3PvrWDCBbJREod1aDbUzul0D0aayBjVTGP3ECs4nxW370WGtw==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
@@ -50,11 +50,11 @@ interactions:
             X-Powered-By:
                 - huggingface-moon
             X-Request-Id:
-                - h2194Kf0a9mYdfjP
+                - t8fRUqYW6KATi79x
             X-Robots-Tag:
                 - none
             X-Trace-Id:
-                - aba0bc9184015184a52ef1c3111e09b4
+                - 470909eeee9f5f8ac258e342a2cf6932
         status: 200 OK
         code: 200
-        duration: 604ms
+        duration: 774ms

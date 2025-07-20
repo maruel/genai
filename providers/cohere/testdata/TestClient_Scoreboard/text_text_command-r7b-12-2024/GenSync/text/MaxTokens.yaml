@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 152
-        transfer_encoding: []
-        trailer: {}
+        content_length: 180
         host: api.cohere.com
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"stream":false,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"Tell a joke in 10 words"}]}],"max_tokens":3}
-        form: {}
+            {"stream":false,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}],"max_tokens":16}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,11 +19,8 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 260
-        uncompressed: false
-        body: '{"id":"d3fcbaa6-a8b8-41b1-a737-81259abd9095","message":{"role":"assistant","content":[{"type":"text","text":"Why don"}]},"finish_reason":"MAX_TOKENS","usage":{"billed_units":{"input_tokens":8,"output_tokens":2},"tokens":{"input_tokens":503,"output_tokens":3}}}'
+        content_length: 338
+        body: '{"id":"2c627f9b-dc4b-46fa-b335-e877178431c6","message":{"role":"assistant","content":[{"type":"text","text":"The Theory of Relativity, developed by Albert Einstein, is a fundamental concept in"}]},"finish_reason":"MAX_TOKENS","usage":{"billed_units":{"input_tokens":9,"output_tokens":15},"tokens":{"input_tokens":504,"output_tokens":16}}}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -37,15 +29,15 @@ interactions:
             Cache-Control:
                 - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
             Content-Length:
-                - "260"
+                - "338"
             Content-Type:
                 - application/json
             Expires:
-                - Thu, 01 Jan 1970 00:00:00 UTC
+                - Thu, 01 Jan 1970 00:00:00 GMT
             Num_chars:
-                - "2601"
+                - "2628"
             Num_tokens:
-                - "10"
+                - "24"
             Pragma:
                 - no-cache
             Server:
@@ -57,9 +49,9 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - eb909e1b5f965aa1a30331f1443a1271
+                - 15ec051514595463d02b72b759833267
             X-Envoy-Upstream-Service-Time:
-                - "12229"
+                - "212"
         status: 200 OK
         code: 200
-        duration: 12.321s
+        duration: 278ms

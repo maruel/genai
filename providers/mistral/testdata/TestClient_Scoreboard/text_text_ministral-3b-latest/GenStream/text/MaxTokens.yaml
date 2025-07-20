@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 151
-        transfer_encoding: []
-        trailer: {}
+        content_length: 179
         host: api.mistral.ai
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"model":"ministral-3b-latest","max_tokens":3,"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Tell a joke in 10 words"}]}]}
-        form: {}
+            {"model":"ministral-3b-latest","max_tokens":16,"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,18 +19,23 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |+
-            data: {"id":"260fc8a6605541a2b433f3913b5c32af","object":"chat.completion.chunk","created":1748539057,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+            data: {"id":"08c3879f0e0a47e8bc15066cd6689e28","object":"chat.completion.chunk","created":1753061929,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
 
-            data: {"id":"260fc8a6605541a2b433f3913b5c32af","object":"chat.completion.chunk","created":1748539057,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"What"},"finish_reason":null}]}
+            data: {"id":"08c3879f0e0a47e8bc15066cd6689e28","object":"chat.completion.chunk","created":1753061929,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"The"},"finish_reason":null}]}
 
-            data: {"id":"260fc8a6605541a2b433f3913b5c32af","object":"chat.completion.chunk","created":1748539057,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":" do"},"finish_reason":null}]}
+            data: {"id":"08c3879f0e0a47e8bc15066cd6689e28","object":"chat.completion.chunk","created":1753061929,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":" theory of relativity is"},"finish_reason":null}]}
 
-            data: {"id":"260fc8a6605541a2b433f3913b5c32af","object":"chat.completion.chunk","created":1748539057,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":" you"},"finish_reason":"length"}],"usage":{"prompt_tokens":11,"total_tokens":14,"completion_tokens":3}}
+            data: {"id":"08c3879f0e0a47e8bc15066cd6689e28","object":"chat.completion.chunk","created":1753061929,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":" a fundamental theory"},"finish_reason":null}]}
+
+            data: {"id":"08c3879f0e0a47e8bc15066cd6689e28","object":"chat.completion.chunk","created":1753061929,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":" in"},"finish_reason":null}]}
+
+            data: {"id":"08c3879f0e0a47e8bc15066cd6689e28","object":"chat.completion.chunk","created":1753061929,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":" physics that describes the"},"finish_reason":null}]}
+
+            data: {"id":"08c3879f0e0a47e8bc15066cd6689e28","object":"chat.completion.chunk","created":1753061929,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":" relationship"},"finish_reason":null}]}
+
+            data: {"id":"08c3879f0e0a47e8bc15066cd6689e28","object":"chat.completion.chunk","created":1753061929,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":" between space"},"finish_reason":"length"}],"usage":{"prompt_tokens":13,"total_tokens":29,"completion_tokens":16}}
 
             data: [DONE]
 
@@ -47,19 +47,23 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9477a5767b9333f1-YUL
+                - 9626fb2438b033f1-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
+            Mistral-Correlation-Id:
+                - 01982aa2-32e9-7a2c-8345-23296749580b
             Server:
                 - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
             X-Envoy-Upstream-Service-Time:
-                - "109"
+                - "72"
             X-Kong-Proxy-Latency:
-                - "12"
+                - "6"
             X-Kong-Request-Id:
-                - bcd9de0d56223e0c90166f0be978543e
+                - 01982aa2-32e9-7a2c-8345-23296749580b
             X-Kong-Upstream-Latency:
-                - "110"
+                - "73"
         status: 200 OK
         code: 200
-        duration: 279ms
+        duration: 237ms

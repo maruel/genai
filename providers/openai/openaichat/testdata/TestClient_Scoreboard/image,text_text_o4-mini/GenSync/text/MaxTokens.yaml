@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 199
-        transfer_encoding: []
-        trailer: {}
+        content_length: 227
         host: api.openai.com
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"model":"o4-mini","max_completion_tokens":3,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Tell a joke in 10 words"}]}],"reasoning_effort":"high","service_tier":"flex"}
-        form: {}
+            {"model":"o4-mini","max_completion_tokens":16,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}],"reasoning_effort":"high","service_tier":"flex"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,15 +19,13 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BcbTxZZvm8w0PxkWnSR4PeJhGqaiE",
+              "id": "chatcmpl-BvZmOup6rm11iAF4FaX7OqO3ZJtws",
               "object": "chat.completion",
-              "created": 1748540245,
+              "created": 1753061932,
               "model": "o4-mini-2025-04-16",
               "choices": [
                 {
@@ -47,15 +40,15 @@ interactions:
                 }
               ],
               "usage": {
-                "prompt_tokens": 13,
-                "completion_tokens": 3,
-                "total_tokens": 16,
+                "prompt_tokens": 16,
+                "completion_tokens": 16,
+                "total_tokens": 32,
                 "prompt_tokens_details": {
                   "cached_tokens": 0,
                   "audio_tokens": 0
                 },
                 "completion_tokens_details": {
-                  "reasoning_tokens": 3,
+                  "reasoning_tokens": 16,
                   "audio_tokens": 0,
                   "accepted_prediction_tokens": 0,
                   "rejected_prediction_tokens": 0
@@ -72,13 +65,15 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9477c270aa3ea284-YUL
+                - 9626fb34cce8a2c7-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "851"
+                - "907"
+            Openai-Project:
+                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -88,7 +83,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "858"
+                - "910"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -96,13 +91,13 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "199991"
+                - "199985"
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
-                - 2ms
+                - 4ms
             X-Request-Id:
-                - req_49afb3093c5e0053061170ffe8014176
+                - req_5478a8dcc9374a138f71dc0d1578044b
         status: 200 OK
         code: 200
-        duration: 1.321s
+        duration: 1.076s

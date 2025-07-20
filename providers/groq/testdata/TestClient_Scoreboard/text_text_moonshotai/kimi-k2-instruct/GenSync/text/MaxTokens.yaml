@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 146
+        content_length: 174
         host: api.groq.com
         body: |
-            {"max_completion_tokens":3,"messages":[{"role":"user","content":"Tell a joke in 10 words"}],"model":"moonshotai/kimi-k2-instruct","stream":false}
+            {"max_completion_tokens":16,"messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"model":"moonshotai/kimi-k2-instruct","stream":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-c86bb6a2-d29f-4749-a4cb-bc7bb5d16992","object":"chat.completion","created":1752867891,"model":"moonshotai/kimi-k2-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"Why don't scientists"},"logprobs":null,"finish_reason":"length"}],"usage":{"queue_time":0.150059331,"prompt_tokens":32,"prompt_time":0.002198065,"completion_tokens":3,"completion_time":0.01260854,"total_tokens":35,"total_time":0.014806605},"usage_breakdown":null,"system_fingerprint":"fp_6e6ff3688b","x_groq":{"id":"req_01k0fh2t2aexqtqagd0e4s505h"},"service_tier":"on_demand"}
+            {"id":"chatcmpl-3e8e70be-7868-4c26-911a-2d23740200ea","object":"chat.completion","created":1753061931,"model":"moonshotai/kimi-k2-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"THE THEORY OF RELATIVITY  \n(Everything you ever wanted to know, and"},"logprobs":null,"finish_reason":"length"}],"usage":{"queue_time":0.076092379,"prompt_tokens":35,"prompt_time":0.0014575,"completion_tokens":16,"completion_time":0.059783115,"total_tokens":51,"total_time":0.061240615},"usage_breakdown":null,"system_fingerprint":"fp_b8565bb333","x_groq":{"id":"req_01k0na4e06e5brxq4ms3hyfmd8"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,7 +31,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 961479e02857715a-YUL
+                - 9626fb2cac89a26d-YUL
             Content-Type:
                 - application/json
             Server:
@@ -47,15 +47,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "250000"
             X-Ratelimit-Remaining-Requests:
-                - "499994"
+                - "499999"
             X-Ratelimit-Remaining-Tokens:
-                - "249989"
+                - "249982"
             X-Ratelimit-Reset-Requests:
-                - 1.0328s
+                - 172.799999ms
             X-Ratelimit-Reset-Tokens:
-                - 2.64ms
+                - 4.32ms
             X-Request-Id:
-                - req_01k0fh2t2aexqtqagd0e4s505h
+                - req_01k0na4e06e5brxq4ms3hyfmd8
         status: 200 OK
         code: 200
-        duration: 234ms
+        duration: 200ms

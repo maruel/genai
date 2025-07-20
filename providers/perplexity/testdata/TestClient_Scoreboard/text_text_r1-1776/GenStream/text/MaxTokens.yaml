@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 167
+        content_length: 195
         host: api.perplexity.ai
         body: |
-            {"model":"r1-1776","messages":[{"role":"user","content":"Tell a joke in 10 words"}],"max_tokens":3,"return_images":true,"return_related_questions":true,"stream":true}
+            {"model":"r1-1776","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_tokens":16,"return_images":true,"return_related_questions":true,"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -20,14 +20,14 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"id\": \"60784b48-dd3d-44b9-926c-4b76e046b447\", \"model\": \"r1-1776\", \"created\": 1749591182, \"usage\": {\"prompt_tokens\": 7, \"completion_tokens\": 3, \"total_tokens\": 10}, \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nOkay\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"<think>\\nOkay\"}}]}\r\n\r\ndata: {\"id\": \"60784b48-dd3d-44b9-926c-4b76e046b447\", \"model\": \"r1-1776\", \"created\": 1749591182, \"usage\": {\"prompt_tokens\": 7, \"completion_tokens\": 3, \"total_tokens\": 10}, \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"length\", \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nOkay\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}\r\n\r\n"
+        body: "data: {\"id\": \"e37185a2-39d0-4313-ab1e-06fffebd7ae0\", \"model\": \"r1-1776\", \"created\": 1753061930, \"usage\": {\"prompt_tokens\": 9, \"completion_tokens\": 2, \"total_tokens\": 11}, \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\n\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"<think>\\n\"}}]}\r\n\r\ndata: {\"id\": \"e37185a2-39d0-4313-ab1e-06fffebd7ae0\", \"model\": \"r1-1776\", \"created\": 1753061930, \"usage\": {\"prompt_tokens\": 9, \"completion_tokens\": 9, \"total_tokens\": 18}, \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nOkay, the user wants a detailed\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"Okay, the user wants a detailed\"}}]}\r\n\r\ndata: {\"id\": \"e37185a2-39d0-4313-ab1e-06fffebd7ae0\", \"model\": \"r1-1776\", \"created\": 1753061930, \"usage\": {\"prompt_tokens\": 9, \"completion_tokens\": 14, \"total_tokens\": 23}, \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nOkay, the user wants a detailed explanation of the theory of\"}, \"delta\": {\"role\": \"assistant\", \"content\": \" explanation of the theory of\"}}]}\r\n\r\ndata: {\"id\": \"e37185a2-39d0-4313-ab1e-06fffebd7ae0\", \"model\": \"r1-1776\", \"created\": 1753061930, \"usage\": {\"prompt_tokens\": 9, \"completion_tokens\": 14, \"total_tokens\": 23}, \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"length\", \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nOkay, the user wants a detailed explanation of the theory of\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}\r\n\r\n"
         headers:
             Cache-Control:
                 - no-cache
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94dbfc196fb9a2be-YUL
+                - 9626fb26be38a2c6-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Server:
@@ -36,4 +36,4 @@ interactions:
                 - max-age=15552000; includeSubDomains; preload
         status: 200 OK
         code: 200
-        duration: 608ms
+        duration: 718ms

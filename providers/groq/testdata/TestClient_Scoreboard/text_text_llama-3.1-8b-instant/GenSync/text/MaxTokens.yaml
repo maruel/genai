@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 139
-        transfer_encoding: []
-        trailer: {}
+        content_length: 167
         host: api.groq.com
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"max_completion_tokens":3,"messages":[{"role":"user","content":"Tell a joke in 10 words"}],"model":"llama-3.1-8b-instant","stream":false}
-        form: {}
+            {"max_completion_tokens":16,"messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"model":"llama-3.1-8b-instant","stream":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,12 +19,10 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-1ded0858-23cf-4d0e-b8a6-606e401a2b03","object":"chat.completion","created":1749212598,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"A man walked"},"logprobs":null,"finish_reason":"length"}],"usage":{"queue_time":0.02606209,"prompt_tokens":42,"prompt_time":0.002102258,"completion_tokens":3,"completion_time":0.004,"total_tokens":45,"total_time":0.006102258},"usage_breakdown":{"models":null},"system_fingerprint":"fp_2c73875546","x_groq":{"id":"req_01jx2k44h0f3svcy4r559t7b6b"}}
+            {"id":"chatcmpl-2c76224a-01ae-4979-a0e1-57e0bf3515e7","object":"chat.completion","created":1753061929,"model":"llama-3.1-8b-instant","choices":[{"index":0,"message":{"role":"assistant","content":"The theory of relativity, developed by Albert Einstein, is a fundamental concept in"},"logprobs":null,"finish_reason":"length"}],"usage":{"queue_time":0.06826187099999999,"prompt_tokens":46,"prompt_time":0.002465216,"completion_tokens":16,"completion_time":0.021333333,"total_tokens":62,"total_time":0.023798549},"usage_breakdown":null,"system_fingerprint":"fp_2c73875546","x_groq":{"id":"req_01k0na4cbrf3htm1jn45x7wd4m"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -38,7 +31,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94b7e1564924a2d2-YUL
+                - 9626fb220d40a26d-YUL
             Content-Type:
                 - application/json
             Server:
@@ -48,21 +41,21 @@ interactions:
             Via:
                 - 1.1 google
             X-Groq-Region:
-                - us-west-1
+                - msp
             X-Ratelimit-Limit-Requests:
                 - "500000"
             X-Ratelimit-Limit-Tokens:
                 - "250000"
             X-Ratelimit-Remaining-Requests:
-                - "499995"
+                - "499999"
             X-Ratelimit-Remaining-Tokens:
-                - "249887"
+                - "249982"
             X-Ratelimit-Reset-Requests:
-                - 848.999999ms
+                - 172.799999ms
             X-Ratelimit-Reset-Tokens:
-                - 27.12ms
+                - 4.32ms
             X-Request-Id:
-                - req_01jx2k44h0f3svcy4r559t7b6b
+                - req_01k0na4cbrf3htm1jn45x7wd4m
         status: 200 OK
         code: 200
-        duration: 177ms
+        duration: 214ms

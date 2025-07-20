@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 82
-        transfer_encoding: []
-        trailer: {}
+        content_length: 110
         host: api.cloudflare.com
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"messages":[{"role":"user","content":"Tell a joke in 10 words"}],"max_tokens":3}
-        form: {}
+            {"messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_tokens":16}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,20 +19,18 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"result":{"response":"Why did the","tool_calls":[],"usage":{"prompt_tokens":17,"completion_tokens":3,"total_tokens":20}},"success":true,"errors":[],"messages":[]}'
+        body: '{"result":{"response":"The theory of relativity, developed by Albert Einstein, is a fundamental concept in modern","tool_calls":[],"usage":{"prompt_tokens":87,"completion_tokens":16,"total_tokens":103}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
-                - "2025-05-31"
+                - "2025-07-21"
             Cf-Ai-Req-Id:
-                - 27990769-353f-4925-b0b8-ea3033fa81b9
+                - 88a73de6-9e6b-4df6-94f0-22f6c8de7b55
             Cf-Auditlog-Id:
-                - 0197275c-e535-7449-883e-6b439fab1b9d
+                - 01982aa2-3164-78cd-8425-45d46f7a7979
             Cf-Ray:
-                - 948825db68c4a305-YUL
+                - 9626fb220c49a269-YUL
             Content-Type:
                 - application/json
             Server:
@@ -46,4 +39,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 840ms
+        duration: 1.101s

@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 151
-        transfer_encoding: []
-        trailer: {}
+        content_length: 179
         host: api.cohere.com
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"stream":true,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"Tell a joke in 10 words"}]}],"max_tokens":3}
-        form: {}
+            {"stream":true,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}],"max_tokens":16}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,28 +19,64 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |+
             event: message-start
-            data: {"id":"e7095b67-dfa6-4b82-86a1-945f5ee8c93b","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
+            data: {"id":"420e5e31-b0d0-4c3e-b46e-7e7dfa723412","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
 
             event: content-start
             data: {"type":"content-start","index":0,"delta":{"message":{"content":{"type":"text","text":""}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"Why"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"The"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" don"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" Theory"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" of"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" Relativity"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":","}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" developed"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" by"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" Albert"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" Einstein"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":","}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" is"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" a"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" fundamental"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" concept"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" in"}}}}
 
             event: content-end
             data: {"type":"content-end","index":0}
 
             event: message-end
-            data: {"type":"message-end","delta":{"finish_reason":"MAX_TOKENS","usage":{"billed_units":{"input_tokens":8,"output_tokens":2},"tokens":{"input_tokens":503,"output_tokens":3}}}}
+            data: {"type":"message-end","delta":{"finish_reason":"MAX_TOKENS","usage":{"billed_units":{"input_tokens":9,"output_tokens":15},"tokens":{"input_tokens":504,"output_tokens":16}}}}
 
             data: [DONE]
 
@@ -59,7 +90,7 @@ interactions:
             Content-Type:
                 - text/event-stream
             Expires:
-                - Thu, 01 Jan 1970 00:00:00 UTC
+                - Thu, 01 Jan 1970 00:00:00 GMT
             Pragma:
                 - no-cache
             Server:
@@ -71,9 +102,9 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - bcfe596365439dc39363140da4a38d4c
+                - 223c0489b754805fa2aa3190fdc27aea
             X-Envoy-Upstream-Service-Time:
-                - "7655"
+                - "79"
         status: 200 OK
         code: 200
-        duration: 7.695s
+        duration: 120ms

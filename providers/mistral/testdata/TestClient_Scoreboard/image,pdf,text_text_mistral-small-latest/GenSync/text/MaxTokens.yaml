@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 153
+        content_length: 181
         host: api.mistral.ai
         body: |
-            {"model":"mistral-small-latest","max_tokens":3,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Tell a joke in 10 words"}]}]}
+            {"model":"mistral-small-latest","max_tokens":16,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,7 +21,7 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"f951dc61182c4c5d98c95b5b38162669","object":"chat.completion","created":1749823745,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"What do you"},"finish_reason":"length","logprobs":null}],"usage":{"prompt_tokens":11,"total_tokens":14,"completion_tokens":3}}'
+        body: '{"id":"908673a358d34ea089731be844417b2c","object":"chat.completion","created":1753061930,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"The **Theory of Relativity** is one of the most profound and revolutionary"},"finish_reason":"length"}],"usage":{"prompt_tokens":13,"total_tokens":29,"completion_tokens":16}}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -30,21 +30,23 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94f229e89b33a2cf-YUL
+                - 9626fb267b8733f1-YUL
             Content-Type:
                 - application/json
+            Mistral-Correlation-Id:
+                - 01982aa2-345b-7b79-9062-88b450cbde21
             Server:
                 - cloudflare
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains
             X-Envoy-Upstream-Service-Time:
-                - "96"
+                - "391"
             X-Kong-Proxy-Latency:
-                - "4"
+                - "7"
             X-Kong-Request-Id:
-                - 6dac1b5a129423579b2a60680a76302e
+                - 01982aa2-345b-7b79-9062-88b450cbde21
             X-Kong-Upstream-Latency:
-                - "98"
+                - "392"
             X-Ratelimit-Limit-Req-10-Second:
                 - "60"
             X-Ratelimit-Limit-Tokens-Minute:
@@ -52,13 +54,13 @@ interactions:
             X-Ratelimit-Limit-Tokens-Month:
                 - "10000000000"
             X-Ratelimit-Remaining-Req-10-Second:
-                - "51"
+                - "57"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "1999635"
+                - "1999913"
             X-Ratelimit-Remaining-Tokens-Month:
-                - "9999977102"
+                - "9999999713"
             X-Ratelimit-Tokens-Query-Cost:
-                - "14"
+                - "29"
         status: 200 OK
         code: 200
-        duration: 225ms
+        duration: 577ms

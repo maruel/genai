@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 147
-        transfer_encoding: []
-        trailer: {}
+        content_length: 175
         host: api.together.xyz
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","stream":false,"messages":[{"role":"user","content":"Tell a joke in 10 words"}],"max_tokens":3}
-        form: {}
+            {"model":"meta-llama/Llama-3.3-70B-Instruct-Turbo","stream":false,"messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_tokens":16}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,34 +19,32 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
         uncompressed: true
         body: |-
             {
-              "id": "nw8VjF2-2j9zxn-947f4b4c28b3a2a6",
+              "id": "o3u5ctN-4YNCb4-9626fb2279eaa2e0",
               "object": "chat.completion",
-              "created": 1748619250,
+              "created": 1753061929,
               "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
               "prompt": [],
               "choices": [
                 {
                   "finish_reason": "length",
-                  "seed": 14372698396223185000,
+                  "seed": 10398453870444943000,
                   "logprobs": null,
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "Why was the",
+                    "content": "The theory of relativity, developed by Albert Einstein, is a fundamental concept in",
                     "tool_calls": []
                   }
                 }
               ],
               "usage": {
-                "prompt_tokens": 42,
-                "completion_tokens": 3,
-                "total_tokens": 45,
+                "prompt_tokens": 46,
+                "completion_tokens": 16,
+                "total_tokens": 62,
                 "cached_tokens": 0
               }
             }
@@ -63,11 +56,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 947f4b4c28b3a2a6-YUL
+                - 9626fb2279eaa2e0-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"223-yA8HDsLcUkOh3HDaix9Jt238hpo"
+                - W/"26c-35XRZIs404TgocGQCTAsUi26G9g"
             Retry-After:
                 - "2"
             Server:
@@ -77,13 +70,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 23a568e0-4f67-4b61-9e6d-c5d33872ad3a-noamzn
+                - 97e56d7c-96bf-4547-a5fe-f5a5a13027e0-noamzn
             X-Api-Call-End:
-                - "2025-05-30T15:34:10.894Z"
+                - "2025-07-21T01:38:49.733Z"
             X-Api-Call-Start:
-                - "2025-05-30T15:34:10.669Z"
+                - "2025-07-21T01:38:49.538Z"
             X-Api-Received:
-                - "2025-05-30T15:34:10.661Z"
+                - "2025-07-21T01:38:49.519Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -93,13 +86,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "0"
+                - "1"
             X-Ratelimit-Remaining-Tokens:
                 - "1000"
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - nw8VjF2-2j9zxn-947f4b4c28b3a2a6
+                - o3u5ctN-4YNCb4-9626fb2279eaa2e0
         status: 200 OK
         code: 200
-        duration: 2.786s
+        duration: 437ms

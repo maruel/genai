@@ -272,10 +272,12 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 	})
 
 	t.Run("MaxTokens", func(t *testing.T) {
-		msgs := genai.Messages{genai.NewTextMessage(genai.User, "Tell a joke in 10 words")}
-		// Give enough token so the <think> token can be emitted plus another word. MaxTokens:2 could cause
-		// problems and it's not a value that is expected to be used in practice for this use case.
-		resp, err := runGenText(t, g(t, model), msgs, &genai.OptionsText{MaxTokens: 3}, stream)
+		msgs := genai.Messages{genai.NewTextMessage(genai.User, "Explain the theory of relativity in great details.")}
+		// - With explicit thinking models, e.g. Deepseek and Qwen3, we want the <think> token and another word be
+		//   emitted. Using 2 would cause problems on some providers.
+		// - OpenAI using Responses API requires a minimum value of 16.
+		// So for simplicity, we use 16.
+		resp, err := runGenText(t, g(t, model), msgs, &genai.OptionsText{MaxTokens: 16}, stream)
 		// MaxTokens can fail:
 		// - GenSync() or GenStream() return an irrecoverable error.
 		// - The length is not enforced.
@@ -291,12 +293,11 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 			fr = ""
 		}
 		testUsage(t, &resp.Usage, f.BrokenTokenUsage, fr)
-		// Deepseek counts "\"Parallel lines" as 3 tokens (!)
-		// Llama-4-Maverick counts ""Why couldn't the" as 3 tokens.
-		// Kimi K2 counts ""Why don't scientists" and "Quantum computers:" as 3 tokens.
-		if len(resp.AsText()) > 20 {
+		// The text length for 16 tokens can be surprisingly large. Models like Llama-4-Maverick and Kimi K2 have
+		// really long words as whole tokens. Count the number of words instead.
+		if got := resp.AsText(); strings.Count(got, " ")+1 > 20 {
 			if !f.NoMaxTokens {
-				t.Fatalf("Expected less than 15 letters, got %q", resp.AsText())
+				t.Fatalf("Expected less than 20 words, got %q", got)
 			}
 		} else if f.NoMaxTokens {
 			t.Fatal("unexpected short answer")

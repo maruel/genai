@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 152
+        content_length: 180
         host: api.mistral.ai
         body: |
-            {"model":"mistral-small-latest","max_tokens":3,"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Tell a joke in 10 words"}]}]}
+            {"model":"mistral-small-latest","max_tokens":16,"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,13 +21,21 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"c124623d665042e68e61991c49a083ed","object":"chat.completion.chunk","created":1749823750,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}]}
+            data: {"id":"21e62c0387fb439fa7de3434cddca319","object":"chat.completion.chunk","created":1753061930,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
 
-            data: {"id":"c124623d665042e68e61991c49a083ed","object":"chat.completion.chunk","created":1749823750,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":"What"},"finish_reason":null,"logprobs":null}]}
+            data: {"id":"21e62c0387fb439fa7de3434cddca319","object":"chat.completion.chunk","created":1753061930,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":"The"},"finish_reason":null}]}
 
-            data: {"id":"c124623d665042e68e61991c49a083ed","object":"chat.completion.chunk","created":1749823750,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":" do"},"finish_reason":null,"logprobs":null}]}
+            data: {"id":"21e62c0387fb439fa7de3434cddca319","object":"chat.completion.chunk","created":1753061930,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":" **"},"finish_reason":null}]}
 
-            data: {"id":"c124623d665042e68e61991c49a083ed","object":"chat.completion.chunk","created":1749823750,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":" you"},"finish_reason":"length","logprobs":null}],"usage":{"prompt_tokens":11,"total_tokens":14,"completion_tokens":3}}
+            data: {"id":"21e62c0387fb439fa7de3434cddca319","object":"chat.completion.chunk","created":1753061930,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":"The"},"finish_reason":null}]}
+
+            data: {"id":"21e62c0387fb439fa7de3434cddca319","object":"chat.completion.chunk","created":1753061930,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":"ory of Relativity"},"finish_reason":null}]}
+
+            data: {"id":"21e62c0387fb439fa7de3434cddca319","object":"chat.completion.chunk","created":1753061930,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":"** is one"},"finish_reason":null}]}
+
+            data: {"id":"21e62c0387fb439fa7de3434cddca319","object":"chat.completion.chunk","created":1753061930,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":" of the most profound"},"finish_reason":null}]}
+
+            data: {"id":"21e62c0387fb439fa7de3434cddca319","object":"chat.completion.chunk","created":1753061930,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":" and revolutionary"},"finish_reason":"length"}],"usage":{"prompt_tokens":13,"total_tokens":29,"completion_tokens":16}}
 
             data: [DONE]
 
@@ -39,21 +47,23 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94f22a067c81a2cf-YUL
+                - 9626fb2a381633f1-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
+            Mistral-Correlation-Id:
+                - 01982aa2-36b3-772e-8e06-f7ed7e6defed
             Server:
                 - cloudflare
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains
             X-Envoy-Upstream-Service-Time:
-                - "51"
+                - "48"
             X-Kong-Proxy-Latency:
-                - "5"
+                - "7"
             X-Kong-Request-Id:
-                - c6a1a436774e4758fd0f0b4bacd62b2b
+                - 01982aa2-36b3-772e-8e06-f7ed7e6defed
             X-Kong-Upstream-Latency:
-                - "51"
+                - "49"
         status: 200 OK
         code: 200
-        duration: 178ms
+        duration: 229ms

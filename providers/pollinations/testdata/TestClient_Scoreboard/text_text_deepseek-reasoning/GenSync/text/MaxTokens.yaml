@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 181
+        content_length: 209
         host: text.pollinations.ai
         body: |
-            {"messages":[{"role":"user","content":"Tell a joke in 10 words"}],"max_tokens":3,"model":"deepseek-reasoning","stream":false,"private":true,"stream_options":{"include_usage":true}}
+            {"messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_tokens":16,"model":"deepseek-reasoning","stream":false,"private":true,"stream_options":{"include_usage":true}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,32 +19,27 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: '{"id":"pllns_2b4e953b217a5f13edb32ffc64bfb4b1","object":"chat.completion","created":1748629931,"model":"MAI-DS-R1","choices":[{"index":0,"message":{"role":"assistant","content":"\"Why don''t skeletons fight? They don’t have the guts.\"","tool_calls":null,"reasoning_content":"Okay, so the user asked for a joke in 10 words. Let me start by thinking about the structure. A 10-word joke needs to be concise, so likely a setup and punchline. Maybe a pun or a play on words. Let me brainstorm a few ideas.\n\nFirst, think of common joke formats. Knock-knock jokes are too long. Maybe a one-liner. For example, something with a pun. Like a play on \"lettuce\" and \"let us\" in a salad context. Let me check the word count: \"Why did the salad blush? The dressing was too romaine-tic!\" Wait, that''s 10 words. Let me count again. \"Why did the salad blush? The dressing was too romaine-tic!\" That''s 11 words. Hmm, need to trim one. Maybe \"dressing was romaine-tic\" instead. So, \"Why salad blush? Dressing was too romaine-tic!\" That''s 10. But maybe it''s too forced. Let me think of another.\n\nAlternatively, \"I told my computer I needed a break. It replied, ''Ctrl-Alt-Delete.''\" That''s 14 words. Too long. Maybe shorten: \"Computer said ''Ctrl-Alt-Delete'' when I needed a break.\" Still not 10. How about \"Why don''t skeletons fight? They don''t have the guts.\" That''s 10 words. Perfect. Classic, concise, and the pun works. Let me verify: \"Why don''t skeletons fight? They don''t have the guts.\" Yes, exactly 10 words. It''s a solid joke. Checks the boxes: humor, pun, meets word count. Good to go.\n"},"finish_reason":"stop"}],"usage":{"prompt_tokens":263,"total_tokens":636,"completion_tokens":373,"prompt_tokens_details":null}}'
+        content_length: 177
+        body: '{"error":"Model not found or tier not high enough. Your tier: anonymous, required tier: seed. To get a token or add a referrer, visit https://auth.pollinations.ai","status":402}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94f2ef561e24a2b8-YUL
+                - 9626fb3698a9a2cc-YUL
+            Content-Length:
+                - "177"
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"6c3-znywtE3NZ9SyWgMMp3mGFPVtFvM"
+                - W/"b1-LrVYRP6gUcNCcTJTW6vp2dExsUw"
             Server:
                 - cloudflare
             Vary:
                 - Accept-Encoding
-            X-Cache:
-                - HIT
-            X-Cache-Date:
-                - "2025-05-30T18:32:12.043Z"
-            X-Cache-Key:
-                - f48d19d4d7d712919ca30fdc52b1a15adaccf54964c6a7a1507c1788b0441c42
             X-Powered-By:
                 - Express
-        status: 200 OK
-        code: 200
-        duration: 625ms
+        status: 402 Payment Required
+        code: 402
+        duration: 1.456s

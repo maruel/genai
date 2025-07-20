@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 67
-        transfer_encoding: []
-        trailer: {}
+        content_length: 94
         host: localhost
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"messages":[{"role":"user","content":"Tell a joke in 10 words"}]}
-        form: {}
+            {"messages":[{"role":"user","content":"Explain the theory of relativity in great details."}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,16 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 94
-        uncompressed: false
-        body: '{"prompt":"<start_of_turn>user\nTell a joke in 10 words<end_of_turn>\n<start_of_turn>model\n"}'
+        content_length: 121
+        body: '{"prompt":"<start_of_turn>user\nExplain the theory of relativity in great details.<end_of_turn>\n<start_of_turn>model\n"}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "94"
+                - "121"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -42,21 +34,16 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 3ms
+        duration: 0s
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 143
-        transfer_encoding: []
-        trailer: {}
+        content_length: 171
         host: localhost
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"prompt":"<start_of_turn>user\nTell a joke in 10 words<end_of_turn>\n<start_of_turn>model\n","n_predict":3,"stream":true,"cache_prompt":true}
-        form: {}
+            {"prompt":"<start_of_turn>user\nExplain the theory of relativity in great details.<end_of_turn>\n<start_of_turn>model\n","n_predict":16,"stream":true,"cache_prompt":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -68,17 +55,41 @@ interactions:
         proto_minor: 1
         transfer_encoding:
             - chunked
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |+
-            data: {"index":0,"content":"Why","tokens":[11355],"stop":false,"id_slot":-1,"tokens_predicted":1,"tokens_evaluated":17}
+            data: {"index":0,"content":"Okay","tokens":[19058],"stop":false,"id_slot":-1,"tokens_predicted":1,"tokens_evaluated":18}
 
-            data: {"index":0,"content":" did","tokens":[1602],"stop":false,"id_slot":-1,"tokens_predicted":2,"tokens_evaluated":17}
+            data: {"index":0,"content":",","tokens":[236764],"stop":false,"id_slot":-1,"tokens_predicted":2,"tokens_evaluated":18}
 
-            data: {"index":0,"content":" the","tokens":[506],"stop":false,"id_slot":-1,"tokens_predicted":3,"tokens_evaluated":17}
+            data: {"index":0,"content":" let","tokens":[1531],"stop":false,"id_slot":-1,"tokens_predicted":3,"tokens_evaluated":18}
 
-            data: {"index":0,"content":"","tokens":[],"id_slot":0,"stop":true,"model":"gpt-3.5-turbo","tokens_predicted":3,"tokens_evaluated":17,"generation_settings":{"n_predict":3,"seed":4294967295,"temperature":0.800000011920929,"dynatemp_range":0.0,"dynatemp_exponent":1.0,"top_k":40,"top_p":0.949999988079071,"min_p":0.05000000074505806,"top_n_sigma":-1.0,"xtc_probability":0.0,"xtc_threshold":0.10000000149011612,"typical_p":1.0,"repeat_last_n":64,"repeat_penalty":1.0,"presence_penalty":0.0,"frequency_penalty":0.0,"dry_multiplier":0.0,"dry_base":1.75,"dry_allowed_length":2,"dry_penalty_last_n":4096,"dry_sequence_breakers":["\n",":","\"","*"],"mirostat":0,"mirostat_tau":5.0,"mirostat_eta":0.10000000149011612,"stop":[],"max_tokens":3,"n_keep":0,"n_discard":0,"ignore_eos":false,"stream":true,"logit_bias":[],"n_probs":0,"min_keep":0,"grammar":"","grammar_lazy":false,"grammar_triggers":[],"preserved_tokens":[],"chat_format":"Content-only","samplers":["penalties","dry","top_n_sigma","top_k","typ_p","top_p","min_p","xtc","temperature"],"speculative.n_max":16,"speculative.n_min":0,"speculative.p_min":0.75,"timings_per_token":false,"post_sampling_probs":false,"lora":[]},"prompt":"<bos><start_of_turn>user\nTell a joke in 10 words<end_of_turn>\n<start_of_turn>model\n","has_new_line":false,"truncated":false,"stop_type":"limit","stopping_word":"","tokens_cached":19,"timings":{"prompt_n":13,"prompt_ms":147.285,"prompt_per_token_ms":11.329615384615384,"prompt_per_second":88.26424958413959,"predicted_n":3,"predicted_ms":100.295,"predicted_per_token_ms":33.431666666666665,"predicted_per_second":29.91176030709407}}
+            data: {"index":0,"content":"'","tokens":[236789],"stop":false,"id_slot":-1,"tokens_predicted":4,"tokens_evaluated":18}
+
+            data: {"index":0,"content":"s","tokens":[236751],"stop":false,"id_slot":-1,"tokens_predicted":5,"tokens_evaluated":18}
+
+            data: {"index":0,"content":" dive","tokens":[30386],"stop":false,"id_slot":-1,"tokens_predicted":6,"tokens_evaluated":18}
+
+            data: {"index":0,"content":" into","tokens":[1131],"stop":false,"id_slot":-1,"tokens_predicted":7,"tokens_evaluated":18}
+
+            data: {"index":0,"content":" the","tokens":[506],"stop":false,"id_slot":-1,"tokens_predicted":8,"tokens_evaluated":18}
+
+            data: {"index":0,"content":" theory","tokens":[6073],"stop":false,"id_slot":-1,"tokens_predicted":9,"tokens_evaluated":18}
+
+            data: {"index":0,"content":" of","tokens":[529],"stop":false,"id_slot":-1,"tokens_predicted":10,"tokens_evaluated":18}
+
+            data: {"index":0,"content":" relativity","tokens":[74413],"stop":false,"id_slot":-1,"tokens_predicted":11,"tokens_evaluated":18}
+
+            data: {"index":0,"content":" –","tokens":[1271],"stop":false,"id_slot":-1,"tokens_predicted":12,"tokens_evaluated":18}
+
+            data: {"index":0,"content":" it","tokens":[625],"stop":false,"id_slot":-1,"tokens_predicted":13,"tokens_evaluated":18}
+
+            data: {"index":0,"content":"'","tokens":[236789],"stop":false,"id_slot":-1,"tokens_predicted":14,"tokens_evaluated":18}
+
+            data: {"index":0,"content":"s","tokens":[236751],"stop":false,"id_slot":-1,"tokens_predicted":15,"tokens_evaluated":18}
+
+            data: {"index":0,"content":" a","tokens":[496],"stop":false,"id_slot":-1,"tokens_predicted":16,"tokens_evaluated":18}
+
+            data: {"index":0,"content":"","tokens":[],"id_slot":0,"stop":true,"model":"gpt-3.5-turbo","tokens_predicted":16,"tokens_evaluated":18,"generation_settings":{"n_predict":16,"seed":4294967295,"temperature":0.800000011920929,"dynatemp_range":0.0,"dynatemp_exponent":1.0,"top_k":40,"top_p":0.949999988079071,"min_p":0.05000000074505806,"top_n_sigma":-1.0,"xtc_probability":0.0,"xtc_threshold":0.10000000149011612,"typical_p":1.0,"repeat_last_n":64,"repeat_penalty":1.0,"presence_penalty":0.0,"frequency_penalty":0.0,"dry_multiplier":0.0,"dry_base":1.75,"dry_allowed_length":2,"dry_penalty_last_n":4096,"dry_sequence_breakers":["\n",":","\"","*"],"mirostat":0,"mirostat_tau":5.0,"mirostat_eta":0.10000000149011612,"stop":[],"max_tokens":16,"n_keep":0,"n_discard":0,"ignore_eos":false,"stream":true,"logit_bias":[],"n_probs":0,"min_keep":0,"grammar":"","grammar_lazy":false,"grammar_triggers":[],"preserved_tokens":[],"chat_format":"Content-only","reasoning_format":"deepseek","reasoning_in_content":false,"thinking_forced_open":false,"samplers":["penalties","dry","top_n_sigma","top_k","typ_p","top_p","min_p","xtc","temperature"],"speculative.n_max":16,"speculative.n_min":0,"speculative.p_min":0.75,"timings_per_token":false,"post_sampling_probs":false,"lora":[]},"prompt":"<bos><start_of_turn>user\nExplain the theory of relativity in great details.<end_of_turn>\n<start_of_turn>model\n","has_new_line":false,"truncated":false,"stop_type":"limit","stopping_word":"","tokens_cached":33,"timings":{"prompt_n":18,"prompt_ms":192.681,"prompt_per_token_ms":10.704500000000001,"prompt_per_second":93.4186557055444,"predicted_n":16,"predicted_ms":726.086,"predicted_per_token_ms":45.380375,"predicted_per_second":22.035957173117232}}
 
         headers:
             Access-Control-Allow-Origin:

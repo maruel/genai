@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 168
+        content_length: 196
         host: api.groq.com
         body: |
-            {"max_completion_tokens":3,"messages":[{"role":"user","content":"Tell a joke in 10 words"},{"role":"user","content":"/think"}],"model":"qwen/qwen3-32b","stream":false}
+            {"max_completion_tokens":16,"messages":[{"role":"user","content":"Explain the theory of relativity in great details."},{"role":"user","content":"/think"}],"model":"qwen/qwen3-32b","stream":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-8d621b2a-e19d-48e4-8a51-570a85fec8d9","object":"chat.completion","created":1752869129,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay"},"logprobs":null,"finish_reason":"length"}],"usage":{"queue_time":0.011677468,"prompt_tokens":28,"prompt_time":0.00191239,"completion_tokens":3,"completion_time":0.010580192,"total_tokens":31,"total_time":0.012492582},"usage_breakdown":null,"system_fingerprint":"fp_80fea1a458","x_groq":{"id":"req_01k0fj8kfbfrer058nwvdegsrc"},"service_tier":"on_demand"}
+            {"id":"chatcmpl-2666ba7a-72ed-4870-a7b6-971ea2eccb60","object":"chat.completion","created":1753061930,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, the user has asked for an explanation of the theory of rel"},"logprobs":null,"finish_reason":"length"}],"usage":{"queue_time":0.006216504,"prompt_tokens":31,"prompt_time":0.001019094,"completion_tokens":16,"completion_time":0.024067229,"total_tokens":47,"total_time":0.025086323},"usage_breakdown":null,"system_fingerprint":"fp_80fea1a458","x_groq":{"id":"req_01k0na4ds6f06rxd0r3xvcjnzr"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,7 +31,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9614981c698ea255-YUL
+                - 9626fb2b3a95a26d-YUL
             Content-Type:
                 - application/json
             Server:
@@ -47,15 +47,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "300000"
             X-Ratelimit-Remaining-Requests:
-                - "499998"
+                - "499999"
             X-Ratelimit-Remaining-Tokens:
-                - "297484"
+                - "299976"
             X-Ratelimit-Reset-Requests:
-                - 345.599999ms
+                - 172.799999ms
             X-Ratelimit-Reset-Tokens:
-                - 503.2ms
+                - 4.8ms
             X-Request-Id:
-                - req_01k0fj8kfbfrer058nwvdegsrc
+                - req_01k0na4ds6f06rxd0r3xvcjnzr
         status: 200 OK
         code: 200
-        duration: 82ms
+        duration: 120ms

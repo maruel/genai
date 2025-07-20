@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 189
+        content_length: 217
         host: api.openai.com
         body: |
-            {"model":"gpt-4-turbo","background":false,"max_output_tokens":3,"store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Tell a joke in 10 words"}]}]}
+            {"model":"gpt-4-turbo","background":false,"max_output_tokens":16,"store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Explain the theory of relativity in great details."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,15 +19,73 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 248
+        content_length: -1
+        uncompressed: true
         body: |-
             {
-              "error": {
-                "message": "Invalid 'max_output_tokens': integer below minimum value. Expected a value >= 16, but got 3 instead.",
-                "type": "invalid_request_error",
-                "param": "max_output_tokens",
-                "code": "integer_below_min_value"
-              }
+              "id": "resp_687d9a296b64819bb03720bec80b54c10c7a5234ac8eca2a",
+              "object": "response",
+              "created_at": 1753061929,
+              "status": "incomplete",
+              "background": false,
+              "error": null,
+              "incomplete_details": {
+                "reason": "max_output_tokens"
+              },
+              "instructions": null,
+              "max_output_tokens": 16,
+              "max_tool_calls": null,
+              "model": "gpt-4-turbo-2024-04-09",
+              "output": [
+                {
+                  "id": "msg_687d9a29ee90819bbf2a1730c234e4d10c7a5234ac8eca2a",
+                  "type": "message",
+                  "status": "incomplete",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "annotations": [],
+                      "logprobs": [],
+                      "text": "The theory of relativity is a cornerstone of modern physics developed by Albert Einstein in"
+                    }
+                  ],
+                  "role": "assistant"
+                }
+              ],
+              "parallel_tool_calls": true,
+              "previous_response_id": null,
+              "prompt_cache_key": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "safety_identifier": null,
+              "service_tier": "default",
+              "store": false,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "auto",
+              "tools": [],
+              "top_logprobs": 0,
+              "top_p": 1.0,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 0,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens": 0,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 0
+              },
+              "user": null,
+              "metadata": {}
             }
         headers:
             Alt-Svc:
@@ -35,15 +93,15 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 95067b93eb2aa279-YUL
-            Content-Length:
-                - "248"
+                - 9626fb226c48a2d6-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "17"
+                - "876"
+            Openai-Project:
+                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -52,8 +110,20 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload
             X-Content-Type-Options:
                 - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "30000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "29963"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 74ms
             X-Request-Id:
-                - req_067c8dcbbadeb3012d28d5f9baf92f67
-        status: 400 Bad Request
-        code: 400
-        duration: 180ms
+                - req_d606af525b8447dbd83fd6bb512f0abf
+        status: 200 OK
+        code: 200
+        duration: 1.042s

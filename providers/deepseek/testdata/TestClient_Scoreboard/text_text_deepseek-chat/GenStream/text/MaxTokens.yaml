@@ -6,15 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 120
-        transfer_encoding: []
-        trailer: {}
+        content_length: 148
         host: api.deepseek.com
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"model":"deepseek-chat","messages":[{"role":"user","content":"Tell a joke in 10 words"}],"stream":true,"max_tokens":3}
-        form: {}
+            {"model":"deepseek-chat","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":true,"max_tokens":16}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,20 +19,43 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |+
-            data: {"id":"08fee06e-ebf6-4a9d-94e7-c2397523ae58","object":"chat.completion.chunk","created":1748527985,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"3af5fd60-547a-480a-9c10-11bba50a5381","object":"chat.completion.chunk","created":1753061934,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"08fee06e-ebf6-4a9d-94e7-c2397523ae58","object":"chat.completion.chunk","created":1748527985,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"content":"\""},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"3af5fd60-547a-480a-9c10-11bba50a5381","object":"chat.completion.chunk","created":1753061934,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache","choices":[{"index":0,"delta":{"content":"The"},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"08fee06e-ebf6-4a9d-94e7-c2397523ae58","object":"chat.completion.chunk","created":1748527985,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"content":"Parallel"},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"3af5fd60-547a-480a-9c10-11bba50a5381","object":"chat.completion.chunk","created":1753061934,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache","choices":[{"index":0,"delta":{"content":" **"},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"08fee06e-ebf6-4a9d-94e7-c2397523ae58","object":"chat.completion.chunk","created":1748527985,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"content":" lines"},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"3af5fd60-547a-480a-9c10-11bba50a5381","object":"chat.completion.chunk","created":1753061934,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache","choices":[{"index":0,"delta":{"content":"Theory"},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"08fee06e-ebf6-4a9d-94e7-c2397523ae58","object":"chat.completion.chunk","created":1748527985,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"content":""},"logprobs":null,"finish_reason":"length"}],"usage":{"prompt_tokens":10,"completion_tokens":3,"total_tokens":13,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":10}}
+            data: {"id":"3af5fd60-547a-480a-9c10-11bba50a5381","object":"chat.completion.chunk","created":1753061934,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache","choices":[{"index":0,"delta":{"content":" of"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"3af5fd60-547a-480a-9c10-11bba50a5381","object":"chat.completion.chunk","created":1753061934,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache","choices":[{"index":0,"delta":{"content":" Rel"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"3af5fd60-547a-480a-9c10-11bba50a5381","object":"chat.completion.chunk","created":1753061934,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache","choices":[{"index":0,"delta":{"content":"ativity"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"3af5fd60-547a-480a-9c10-11bba50a5381","object":"chat.completion.chunk","created":1753061934,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache","choices":[{"index":0,"delta":{"content":"**,"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"3af5fd60-547a-480a-9c10-11bba50a5381","object":"chat.completion.chunk","created":1753061934,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache","choices":[{"index":0,"delta":{"content":" developed"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"3af5fd60-547a-480a-9c10-11bba50a5381","object":"chat.completion.chunk","created":1753061934,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache","choices":[{"index":0,"delta":{"content":" by"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"3af5fd60-547a-480a-9c10-11bba50a5381","object":"chat.completion.chunk","created":1753061934,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache","choices":[{"index":0,"delta":{"content":" **"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"3af5fd60-547a-480a-9c10-11bba50a5381","object":"chat.completion.chunk","created":1753061934,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache","choices":[{"index":0,"delta":{"content":"Albert"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"3af5fd60-547a-480a-9c10-11bba50a5381","object":"chat.completion.chunk","created":1753061934,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache","choices":[{"index":0,"delta":{"content":" Einstein"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"3af5fd60-547a-480a-9c10-11bba50a5381","object":"chat.completion.chunk","created":1753061934,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache","choices":[{"index":0,"delta":{"content":"**,"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"3af5fd60-547a-480a-9c10-11bba50a5381","object":"chat.completion.chunk","created":1753061934,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache","choices":[{"index":0,"delta":{"content":" revolutionized"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"3af5fd60-547a-480a-9c10-11bba50a5381","object":"chat.completion.chunk","created":1753061934,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache","choices":[{"index":0,"delta":{"content":" our"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"3af5fd60-547a-480a-9c10-11bba50a5381","object":"chat.completion.chunk","created":1753061934,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache","choices":[{"index":0,"delta":{"content":" understanding"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"3af5fd60-547a-480a-9c10-11bba50a5381","object":"chat.completion.chunk","created":1753061934,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache","choices":[{"index":0,"delta":{"content":""},"logprobs":null,"finish_reason":"length"}],"usage":{"prompt_tokens":12,"completion_tokens":16,"total_tokens":28,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":12}}
 
             data: [DONE]
 
@@ -49,7 +67,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94769721ef11a275-YUL
+                - 9626fb3ed950a2ee-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Server:
@@ -61,7 +79,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - 13f13916b566583737c075fb8f5c0372
+                - 4cd1a49debe587641fdd25d06f90fe78
         status: 200 OK
         code: 200
-        duration: 291ms
+        duration: 283ms

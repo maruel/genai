@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 177
+        content_length: 205
         host: api.openai.com
         body: |
-            {"model":"gpt-4-turbo","max_completion_tokens":3,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Tell a joke in 10 words"}]}],"service_tier":"auto"}
+            {"model":"gpt-4-turbo","max_completion_tokens":16,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}],"service_tier":"auto"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,16 +23,16 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BhPCXBd7tTAYApeGzU2AQGUTNMx9f",
+              "id": "chatcmpl-BvZmLcCFHBQEMLFYsWOK5FcEaTyh4",
               "object": "chat.completion",
-              "created": 1749684677,
+              "created": 1753061929,
               "model": "gpt-4-turbo-2024-04-09",
               "choices": [
                 {
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "Why don't",
+                    "content": "The theory of relativity, primarily established by Albert Einstein, comprises two main theories",
                     "refusal": null,
                     "annotations": []
                   },
@@ -41,9 +41,9 @@ interactions:
                 }
               ],
               "usage": {
-                "prompt_tokens": 14,
-                "completion_tokens": 3,
-                "total_tokens": 17,
+                "prompt_tokens": 18,
+                "completion_tokens": 16,
+                "total_tokens": 34,
                 "prompt_tokens_details": {
                   "cached_tokens": 0,
                   "audio_tokens": 0
@@ -66,13 +66,15 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94e4e6b3a8da7148-YUL
+                - 9626fb2258c5a2c7-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "332"
+                - "475"
+            Openai-Project:
+                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -82,7 +84,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "336"
+                - "479"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -90,13 +92,13 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "29992"
+                - "29985"
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
-                - 16ms
+                - 30ms
             X-Request-Id:
-                - req_cf32721048e5b0b52fee9952c18aac32
+                - req_a5098207dc9da3e485828440a1fe26a5
         status: 200 OK
         code: 200
-        duration: 403ms
+        duration: 609ms

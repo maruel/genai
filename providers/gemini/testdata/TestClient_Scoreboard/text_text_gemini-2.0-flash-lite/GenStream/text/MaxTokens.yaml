@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 147
+        content_length: 175
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Tell a joke in 10 words"}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":3}}
+            {"contents":[{"role":"user","parts":[{"text":"Explain the theory of relativity in great details."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":16}}
         form:
             alt:
                 - sse
@@ -23,7 +23,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Why\"}],\"role\": \"model\"}}],\"usageMetadata\": {\"promptTokenCount\": 9,\"totalTokenCount\": 9,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}]},\"modelVersion\": \"gemini-2.0-flash-lite\",\"responseId\": \"snJMaKazHsivgLUP-oT5uAQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" don'\"}],\"role\": \"model\"},\"finishReason\": \"MAX_TOKENS\"}],\"usageMetadata\": {\"promptTokenCount\": 8,\"candidatesTokenCount\": 3,\"totalTokenCount\": 11,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 8}],\"candidatesTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 3}]},\"modelVersion\": \"gemini-2.0-flash-lite\",\"responseId\": \"snJMaKazHsivgLUP-oT5uAQ\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"##\"}],\"role\": \"model\"}}],\"usageMetadata\": {\"promptTokenCount\": 10,\"totalTokenCount\": 10,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 10}]},\"modelVersion\": \"gemini-2.0-flash-lite\",\"responseId\": \"KZp9aK3ONM2tgLUPlsWV6A8\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" The Theory of Relativity: Unveiling the Fabric of Space and Time\\n\\n\"}],\"role\": \"model\"},\"finishReason\": \"MAX_TOKENS\"}],\"usageMetadata\": {\"promptTokenCount\": 9,\"candidatesTokenCount\": 15,\"totalTokenCount\": 24,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"candidatesTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 15}]},\"modelVersion\": \"gemini-2.0-flash-lite\",\"responseId\": \"KZp9aK3ONM2tgLUPlsWV6A8\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -34,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=333
+                - gfet4t7; dur=176
             Vary:
                 - Origin
                 - X-Origin
@@ -47,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 348ms
+        duration: 186ms

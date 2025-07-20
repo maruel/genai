@@ -572,6 +572,7 @@ type ChatStreamChunkResponse struct {
 		Logprobs     struct{}     `json:"logprobs"`
 		FinishReason FinishReason `json:"finish_reason"`
 		StopReason   int64        `json:"stop_reason"` // Seems to be a token
+		ToolCalls    []ToolCall   `json:"tool_calls"`  // TODO: Implement.
 	} `json:"choices"`
 	// SystemFingerprint string `json:"system_fingerprint"`
 	Usage    Usage `json:"usage"`
@@ -908,6 +909,10 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		// There's only one at a time ever.
 		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
 			return fmt.Errorf("implement multiple tool calls: %#v", pkt.Choices[0].Delta.ToolCalls)
+		}
+		// TODO: It's new, I'm not sure it's used.
+		if len(pkt.Choices[0].ToolCalls) > 0 {
+			return fmt.Errorf("implement tool calls: %#v", pkt.Choices[0].ToolCalls)
 		}
 		// TogetherAI streams the arguments. Buffer the arguments to send the fragment as a
 		// whole tool call.

@@ -31,7 +31,7 @@ func TestClient_Scoreboard(t *testing.T) {
 				t: t,
 			}
 		}
-		if m == "qwen-qwq-32b" || m == "deepseek-r1-distill-llama-70b" {
+		if m == "deepseek-r1-distill-llama-70b" {
 			return &handleReasoning{Client: c, t: t}
 		}
 		return c

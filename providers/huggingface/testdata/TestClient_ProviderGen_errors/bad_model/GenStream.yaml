@@ -7,14 +7,9 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 116
-        transfer_encoding: []
-        trailer: {}
         host: router.huggingface.co
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"stream":true,"messages":[{"role":"user","content":"Tell a short joke."}],"stream_options":{"include_usage":true}}
-        form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,10 +19,7 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: 9
-        uncompressed: false
         body: Not Found
         headers:
             Access-Control-Allow-Credentials:
@@ -47,19 +39,19 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 b17b94cbc6db5cb82e8f8d6e55e1e85a.cloudfront.net (CloudFront)
+                - 1.1 3c503941ffd955a9223590c80d8af4c2.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - omB1LRUrpXoLoGTWAE8WUSyoenCjZu46Q10Mf4mBAte1Dc13qsA6dA==
+                - Tz9WQ0q5FeYfIrIiNpLrx_yacW8-ibD0i9JyQy-bvnInR7KD7UD-nw==
             X-Amz-Cf-Pop:
-                - YTO50-P1
+                - YUL62-P2
             X-Cache:
                 - Error from cloudfront
             X-Powered-By:
                 - huggingface-moon
             X-Request-Id:
-                - r552cnXSA8bYwMmW
+                - gj1mYrXgX4NUPIQj
             X-Robots-Tag:
                 - none
         status: 404 Not Found
         code: 404
-        duration: 59ms
+        duration: 57ms

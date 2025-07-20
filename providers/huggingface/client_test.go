@@ -52,8 +52,8 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 			Name:         "bad apiKey",
 			ApiKey:       "bad apiKey",
 			Model:        "Qwen/Qwen3-4B",
-			ErrGenSync:   "http 401: Unauthorized. You can get a new API key at https://huggingface.co/settings/tokens",
-			ErrGenStream: "http 401: Unauthorized. You can get a new API key at https://huggingface.co/settings/tokens",
+			ErrGenSync:   "http 401: error Invalid credentials in Authorization header. You can get a new API key at https://huggingface.co/settings/tokens",
+			ErrGenStream: "http 401: error Invalid credentials in Authorization header. You can get a new API key at https://huggingface.co/settings/tokens",
 		},
 		{
 			Name:         "bad model",

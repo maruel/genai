@@ -271,9 +271,10 @@ type ChatResponse struct {
 	} `json:"choices"`
 	RelatedQuestions []string `json:"related_questions"` // Questions related to the query
 	SearchResults    []struct {
-		Date  string `json:"date"` // RFC3339 date, or null
-		Title string `json:"title"`
-		URL   string `json:"url"` // URL to the search result
+		Date        string `json:"date"` // RFC3339 date, or null
+		Title       string `json:"title"`
+		URL         string `json:"url"`          // URL to the search result
+		LastUpdated string `json:"last_updated"` // YYYY-MM-DD
 	} `json:"search_results"`
 	Usage Usage `json:"usage"`
 }

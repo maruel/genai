@@ -295,15 +295,20 @@ type OptionsImage struct {
 }
 
 // Response represents a request to the OpenAI Responses API.
+//
+// https://platform.openai.com/docs/api-reference/responses/object
 type Response struct {
 	Model              string            `json:"model"`
 	Background         bool              `json:"background"`
 	Instructions       string            `json:"instructions,omitzero"`
 	MaxOutputTokens    int64             `json:"max_output_tokens,omitzero"`
+	MaxToolCalls       int64             `json:"max_tool_calls,omitzero"`
 	Metadata           map[string]string `json:"metadata,omitzero"`
 	ParallelToolCalls  bool              `json:"parallel_tool_calls,omitzero"`
 	PreviousResponseID string            `json:"previous_response_id,omitzero"`
+	PromptCacheKey     struct{}          `json:"prompt_cache_key,omitzero"`
 	Reasoning          ReasoningConfig   `json:"reasoning,omitzero"`
+	SafetyIdentifier   struct{}          `json:"safety_identifier,omitzero"`
 	ServiceTier        string            `json:"service_tier,omitzero"`
 	Store              bool              `json:"store"`
 	Temperature        float64           `json:"temperature,omitzero"`
@@ -316,11 +321,12 @@ type Response struct {
 			Strict      bool               `json:"strict,omitzero"`
 		} `json:"format"`
 	} `json:"text,omitzero"`
-	TopP       float64 `json:"top_p,omitzero"`
-	ToolChoice string  `json:"tool_choice,omitzero"` // "none", "auto", "required"
-	Truncation string  `json:"truncation,omitzero"`  // "disabled"
-	Tools      []Tool  `json:"tools,omitzero"`
-	User       string  `json:"user,omitzero"`
+	TopLogprobs float64 `json:"top_logprobs,omitzero"`
+	TopP        float64 `json:"top_p,omitzero"`
+	ToolChoice  string  `json:"tool_choice,omitzero"` // "none", "auto", "required"
+	Truncation  string  `json:"truncation,omitzero"`  // "disabled"
+	Tools       []Tool  `json:"tools,omitzero"`
+	User        string  `json:"user,omitzero"`
 
 	// Request only
 	Input  []Message `json:"input,omitzero"`
@@ -659,16 +665,7 @@ type Content struct {
 
 	// Type == ContentOutputText
 	Annotations []Annotation `json:"annotations,omitzero"`
-	Logprobs    struct {
-		Bytes       []int64 `json:"bytes,omitzero"`
-		Token       string  `json:"token,omitzero"`
-		Logprob     float64 `json:"logprob,omitzero"`
-		TopLogprobs []struct {
-			Bytes   []int64 `json:"bytes,omitzero"`
-			Token   string  `json:"token,omitzero"`
-			Logprob float64 `json:"logprob,omitzero"`
-		} `json:"top_logprobs,omitzero"`
-	} `json:"logprobs,omitzero"`
+	Logprobs    []Logprobs   `json:"logprobs,omitzero"` // TODO: I believe this is incorrect.
 
 	// Type == ContentRefusal
 	Refusal string `json:"refusal,omitzero"`
@@ -762,6 +759,17 @@ type Annotation struct {
 	// Type == "url_citation", "container_file_citation"
 	StartIndex int64 `json:"start_index,omitzero"`
 	EndIndex   int64 `json:"end_index,omitzero"`
+}
+
+type Logprobs struct {
+	Bytes       []int64 `json:"bytes,omitzero"`
+	Token       string  `json:"token,omitzero"`
+	Logprob     float64 `json:"logprob,omitzero"`
+	TopLogprobs []struct {
+		Bytes   []int64 `json:"bytes,omitzero"`
+		Token   string  `json:"token,omitzero"`
+		Logprob float64 `json:"logprob,omitzero"`
+	} `json:"top_logprobs,omitzero"`
 }
 
 // ReasoningSummary represents reasoning summary content.
@@ -905,6 +913,8 @@ type ResponseStreamChunkResponse struct {
 	Code    string `json:"code,omitzero"`
 	Message string `json:"message,omitzero"`
 	Param   string `json:"param,omitzero"`
+
+	Logprobs []Logprobs `json:"logprobs,omitzero"` // TODO: I believe this is incorrect.
 
 	/* TODO
 	ResponseFileSearchCallCompleted

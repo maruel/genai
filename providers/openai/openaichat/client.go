@@ -809,7 +809,9 @@ type Logprobs struct {
 		Logprob     float64 `json:"logprob"`
 		Bytes       []int   `json:"bytes"`
 		TopLogprobs []struct {
-			TODO string `json:"todo"`
+			Token   string  `json:"token"`
+			Logprob float64 `json:"logprob"`
+			Bytes   []int   `json:"bytes"`
 		} `json:"top_logprobs"`
 	} `json:"content"`
 	Refusal string `json:"refusal"`

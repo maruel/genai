@@ -7,14 +7,9 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 156
-        transfer_encoding: []
-        trailer: {}
         host: localhost
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"model":"gemma3:4b","stream":true,"messages":[{"role":"user","content":"Talk about Canada in 10 words. Start with: Canada is"}],"options":{"stop":["is"]}}
-        form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -26,16 +21,14 @@ interactions:
         proto_minor: 1
         transfer_encoding:
             - chunked
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |
-            {"model":"gemma3:4b","created_at":"2025-05-31T13:31:06.50003193Z","message":{"role":"assistant","content":"Canada"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-05-31T13:31:06.545000901Z","message":{"role":"assistant","content":" "},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-05-31T13:31:06.545005145Z","message":{"role":"assistant","content":""},"done_reason":"stop","done":true,"total_duration":325646925,"load_duration":20966965,"prompt_eval_count":23,"prompt_eval_duration":257860844,"eval_count":2,"eval_duration":46389258}
+            {"model":"gemma3:4b","created_at":"2025-07-20T23:13:44.738560174Z","message":{"role":"assistant","content":"Canada"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-07-20T23:13:44.792613388Z","message":{"role":"assistant","content":" "},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-07-20T23:13:44.792638875Z","message":{"role":"assistant","content":""},"done_reason":"stop","done":true,"total_duration":363637581,"load_duration":47015653,"prompt_eval_count":23,"prompt_eval_duration":254986636,"eval_count":2,"eval_duration":61220599}
         headers:
             Content-Type:
                 - application/x-ndjson
         status: 200 OK
         code: 200
-        duration: 281ms
+        duration: 310ms

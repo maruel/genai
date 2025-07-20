@@ -7,14 +7,9 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 129
-        transfer_encoding: []
-        trailer: {}
         host: localhost
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"model":"gemma3:4b","stream":true,"messages":[{"role":"user","content":"Tell a joke in 10 words"}],"options":{"num_predict":3}}
-        form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -26,17 +21,15 @@ interactions:
         proto_minor: 1
         transfer_encoding:
             - chunked
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |
-            {"model":"gemma3:4b","created_at":"2025-05-31T13:31:06.119560817Z","message":{"role":"assistant","content":"Why"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-05-31T13:31:06.170367857Z","message":{"role":"assistant","content":" did"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-05-31T13:31:06.218680504Z","message":{"role":"assistant","content":" the"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-05-31T13:31:06.218684297Z","message":{"role":"assistant","content":""},"done_reason":"length","done":true,"total_duration":303607592,"load_duration":21182214,"prompt_eval_count":17,"prompt_eval_duration":182200859,"eval_count":3,"eval_duration":99791242}
+            {"model":"gemma3:4b","created_at":"2025-07-20T23:15:27.431717911Z","message":{"role":"assistant","content":"Why"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-07-20T23:15:27.516749926Z","message":{"role":"assistant","content":" did"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-07-20T23:15:27.604991645Z","message":{"role":"assistant","content":" the"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-07-20T23:15:27.604995072Z","message":{"role":"assistant","content":""},"done_reason":"length","done":true,"total_duration":310983643,"load_duration":45453137,"prompt_eval_count":17,"prompt_eval_duration":90714461,"eval_count":3,"eval_duration":174155101}
         headers:
             Content-Type:
                 - application/x-ndjson
         status: 200 OK
         code: 200
-        duration: 205ms
+        duration: 138ms

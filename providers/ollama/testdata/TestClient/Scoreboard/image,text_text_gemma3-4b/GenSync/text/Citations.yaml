@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 466
-        body: "{\"model\":\"gemma3:4b\",\"created_at\":\"2025-06-10T22:56:02.882062792Z\",\"message\":{\"role\":\"assistant\",\"content\":\"This is a trick question! Quackiland doesn't actually exist. It's a made-up country. \\n\\nTherefore, it has no capital. \U0001F604 \\n\\nIt's a fun example of a fictional place!\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":4415033126,\"load_duration\":1383071536,\"prompt_eval_count\":18,\"prompt_eval_duration\":227140510,\"eval_count\":48,\"eval_duration\":2803891061}"
+        content_length: 472
+        body: "{\"model\":\"gemma3:4b\",\"created_at\":\"2025-07-20T23:13:21.457685669Z\",\"message\":{\"role\":\"assistant\",\"content\":\"This is a trick question! Quackiland doesn't actually exist. It's a made-up country. \U0001F60A \\n\\nTherefore, it has no capital. \\n\\nLet me know if you'd like to try another riddle!\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":2895917037,\"load_duration\":42416778,\"prompt_eval_count\":18,\"prompt_eval_duration\":163464727,\"eval_count\":50,\"eval_duration\":2689610941}"
         headers:
             Content-Length:
-                - "466"
+                - "472"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 4.415s
+        duration: 2.896s

@@ -7,14 +7,9 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 221
-        transfer_encoding: []
-        trailer: {}
         host: localhost
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"model":"gemma3:4b","stream":false,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"format":"json"}
-        form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,11 +19,8 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
         content_length: 313
-        uncompressed: false
-        body: '{"model":"gemma3:4b","created_at":"2025-05-31T13:30:44.756625109Z","message":{"role":"assistant","content":"{\"is_fruit\": true}"},"done_reason":"stop","done":true,"total_duration":860512270,"load_duration":20728798,"prompt_eval_count":38,"prompt_eval_duration":337465956,"eval_count":8,"eval_duration":422616212}'
+        body: '{"model":"gemma3:4b","created_at":"2025-07-20T23:13:17.620921329Z","message":{"role":"assistant","content":"{\"is_fruit\": true}"},"done_reason":"stop","done":true,"total_duration":944480838,"load_duration":44060439,"prompt_eval_count":38,"prompt_eval_duration":344059848,"eval_count":8,"eval_duration":464063914}'
         headers:
             Content-Length:
                 - "313"
@@ -36,4 +28,4 @@ interactions:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 861ms
+        duration: 945ms

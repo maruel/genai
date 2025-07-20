@@ -352,6 +352,11 @@ func (m *Message) From(in *genai.Message) error {
 type Contents []Content
 
 func (c *Contents) MarshalJSON() ([]byte, error) {
+	if len(*c) == 0 {
+		// It's important otherwise Qwen3 fails with:
+		// ('messages.2.content' : value must be a string) OR ('messages.2.content' : minimum number of items is 1)
+		return []byte("null"), nil
+	}
 	if len(*c) == 1 && (*c)[0].Type == ContentText {
 		return json.Marshal((*c)[0].Text)
 	}
@@ -467,7 +472,8 @@ type ChatResponse struct {
 			} `json:"usage"`
 		} `json:"models"`
 	} `json:"usage_breakdown"`
-	SystemFingerprint string `json:"system_fingerprint"`
+	SystemFingerprint string      `json:"system_fingerprint"`
+	ServiceTier       ServiceTier `json:"service_tier"`
 	Xgroq             struct {
 		ID string `json:"id"`
 	} `json:"x_groq"`

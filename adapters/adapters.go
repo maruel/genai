@@ -218,12 +218,16 @@ type ProviderGenAppend struct {
 }
 
 func (c *ProviderGenAppend) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	msgs = append(slices.Clone(msgs), c.Append)
+	if len(msgs[len(msgs)-1].ToolCallResults) == 0 {
+		msgs = append(slices.Clone(msgs), c.Append)
+	}
 	return c.ProviderGen.GenSync(ctx, msgs, opts)
 }
 
 func (c *ProviderGenAppend) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
-	msgs = append(slices.Clone(msgs), c.Append)
+	if len(msgs[len(msgs)-1].ToolCallResults) == 0 {
+		msgs = append(slices.Clone(msgs), c.Append)
+	}
 	return c.ProviderGen.GenStream(ctx, msgs, replies, opts)
 }
 

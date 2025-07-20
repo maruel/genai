@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-9598da62-3db2-49bf-a7f3-c6a24d8eeed1","choices":[{"finish_reason":"tool_calls","index":0,"message":{"tool_calls":[{"id":"89b443294","type":"function","function":{"name":"square_root","arguments":"{\"number\": \"132413\"}"}}],"role":"assistant"}}],"created":1752864931,"model":"qwen-3-32b","system_fingerprint":"fp_1504a02d96fb4f08d4e7","object":"chat.completion","usage":{"prompt_tokens":271,"completion_tokens":132,"total_tokens":403,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.290329826,"prompt_time":0.006279769,"completion_time":0.069997894,"total_time":0.36814403533935547,"created":1752864931}}'
+        body: '{"id":"chatcmpl-3e6a148d-1b9f-4326-bdc1-f1edd701e8df","choices":[{"finish_reason":"tool_calls","index":0,"message":{"tool_calls":[{"id":"b3f8df5d0","type":"function","function":{"name":"square_root","arguments":"{\"number\": \"132413\"}"}}],"role":"assistant"}}],"created":1753049388,"model":"qwen-3-32b","system_fingerprint":"fp_1504a02d96fb4f08d4e7","object":"chat.completion","usage":{"prompt_tokens":271,"completion_tokens":116,"total_tokens":387,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.290843919,"prompt_time":0.006193429,"completion_time":0.071001144,"total_time":0.3699989318847656,"created":1753049388}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9614319dc9aba2c7-YUL
+                - 9625c8f42daca29a-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-9598da62-3db2-49bf-a7f3-c6a24d8eeed1
+                - chatcmpl-3e6a148d-1b9f-4326-bdc1-f1edd701e8df
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -46,27 +46,27 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "64000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14353"
+                - "14398"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "60000"
+                - "64000"
             X-Ratelimit-Reset-Requests-Day:
-                - "18268.03399348259"
+                - "6611.348023414612"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "28.03399348258972"
+                - "11.348023414611816"
             X-Request-Id:
-                - 9614319dc9aba2c7-YUL
+                - 9625c8f42daca29a-YUL
         status: 200 OK
         code: 200
-        duration: 1.795s
+        duration: 558ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1024
+        content_length: 989
         host: api.cerebras.ai
         body: |
-            {"model":"qwen-3-32b","messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"89b443294","function":{"name":"square_root","arguments":"{\"number\": \"132413\"}"}}]},{"role":"tool","content":"363.89","tool_call_id":"89b443294","name":"square_root"},{"role":"user","content":"/think"}],"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+            {"model":"qwen-3-32b","messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"b3f8df5d0","function":{"name":"square_root","arguments":"{\"number\": \"132413\"}"}}]},{"role":"tool","content":"363.89","tool_call_id":"b3f8df5d0","name":"square_root"}],"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -78,18 +78,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-6e2dffe4-4e57-4190-9c9a-6ccefac629f5","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, the user asked me to calculate the square root of 132413 using the square_root tool. I called the tool with the number 132413, and the response came back as 363.89. Now, I need to check if this answer makes sense.\n\nFirst, let me verify the calculation. The square of 363.89 should be approximately 132413. Let''s compute 363.89 squared. 360 squared is 129,600. Adding 3.89 to 360 gives 363.89. The difference between 363.89 and 360 is about 3.89, so the exact square would be (360 + 3.89)^2. That''s 360^2 + 2*360*3.89 + 3.89^2. \n\nCalculating each term:\n- 360² = 129,600\n- 2*360*3.89 = 720*3.89 = 2,800.8 (I think; let me check that again. 720*3 is 2160, 720*0.8 is 576, so total 2160 + 576 = 2736. Wait, that''s not right. 3.89 is 3 + 0.89. So 2*360*3 = 2160, and 2*360*0.89 = 652.8. Adding those gives 2160 + 652.8 = 2812.8. Then 3.89² is around 15.13. So total is 129,600 + 2,812.8 + 15.13 = 132,427.93. Hmm, that''s a bit higher than 132,413. Maybe the tool''s result is slightly off? Or perhaps my estimation is rough.\n\nAlternatively, maybe the tool provides a rounded value. Let''s see, 363.89 squared is approximately 132,427.93 as above, which is about 14.93 more than 132,413. So the actual square root should be a little less than 363.89. Maybe the tool rounded to two decimal places. The real value would be closer to 363.89 minus a small amount. For example, 363.89^2 = 132,427.93, so subtract 14.93 from that. To find the exact value, we''d need to do a more precise calculation, but since the user wants me to reply with the tool''s result as-is, I should just present 363.89.\n\nWait, the user''s instruction was to use the tool and reply with only the result. They didn''t ask for verification or correction. So even if the square of 363.89 is 132,427.93, which is a bit more than 132,413, the tool''s output is 363.89. I need to follow the user''s command strictly. They want the result from the tool, not my corrected version. So the correct response here is to just state 363.89 without any explanation. \n\nAlso, the user mentioned to be very succinct and only reply with the result. So, no additional text, just the number. I should make sure the number is formatted as given by the tool. The tool''s response was in a JSON object with the value as a string, so maybe the user expects the same format. But the tools'' actual response was {\"name\": \"square_root\", \"arguments\": {\"number\": \"132413\"}, \"content\": {\"result\": \"363.89\"}}. The user wants the result as-is, so the answer is 363.89. \n\nTherefore, I''ll just output the number 363.89 as the final answer without any explanations or corrections.\n</think>\n\n363.89","role":"assistant"}}],"created":1752864932,"model":"qwen-3-32b","system_fingerprint":"fp_1504a02d96fb4f08d4e7","object":"chat.completion","usage":{"prompt_tokens":131,"completion_tokens":968,"total_tokens":1099,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000329641,"prompt_time":0.005009973,"completion_time":0.673691284,"total_time":0.6805715560913086,"created":1752864932}}'
+        body: '{"id":"chatcmpl-76125b68-9e5a-4a4f-8c39-c197e7c5e74b","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, the user asked for the square root of 132413 using the square_root tool. The tool returned 363.89. I need to check if this is accurate.\n\nFirst, let me square 363.89 to see if it gets close to 132413. 363.89 squared is 363.89 * 363.89. Let me calculate that.\n\n363.89 * 363.89. Let''s do 364 * 364 first as an approximation. 364 squared is 132,496. The tool''s result is 363.89, which should be slightly less. Let me compute 363.89^2 precisely.\n\nBreaking it down: 363^2 is 131,769. Then, the decimal part. 0.89^2 is 0.7921. The cross term is 2 * 363 * 0.89 = 647.34. So total is 131,769 + 647.34 + 0.7921 = 132,417.1321. That''s pretty close to 132,413. The tool''s answer might be rounded. Since the user just wants the result, I can confirm that the square_root tool''s answer is correct to two decimal places. So the response should be 363.89.\n</think>\n\n363.89","role":"assistant"}}],"created":1753049388,"model":"qwen-3-32b","system_fingerprint":"fp_1504a02d96fb4f08d4e7","object":"chat.completion","usage":{"prompt_tokens":124,"completion_tokens":361,"total_tokens":485,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00014146,"prompt_time":0.004156663,"completion_time":0.217929822,"total_time":0.2237248420715332,"created":1753049388}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 961431a12f82a2c7-YUL
+                - 9625c8f78b68a29a-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-6e2dffe4-4e57-4190-9c9a-6ccefac629f5
+                - chatcmpl-76125b68-9e5a-4a4f-8c39-c197e7c5e74b
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -103,15 +103,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "64000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14352"
+                - "14397"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "59597"
+                - "63613"
             X-Ratelimit-Reset-Requests-Day:
-                - "18267.17968249321"
+                - "6610.98419547081"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "27.17968249320984"
+                - "10.984195470809937"
             X-Request-Id:
-                - 961431a12f82a2c7-YUL
+                - 9625c8f78b68a29a-YUL
         status: 200 OK
         code: 200
-        duration: 908ms
+        duration: 356ms

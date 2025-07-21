@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 294
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"model":"deepseek-r1-distill-llama-70b","reasoning_format":"parsed","response_format":{"type":"json_object"},"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-7ec91df1-fcd8-46c9-bc3e-7ac7f96bfb62","object":"chat.completion","created":1753109205,"model":"deepseek-r1-distill-llama-70b","choices":[{"index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}","reasoning":"Alright, I need to figure out whether a banana is a fruit. Let me start by recalling what defines a fruit. From what I remember, a fruit is the mature ovary of a flowering plant, usually containing seeds. So, does a banana fit this description?\n\nI know that bananas grow on banana plants, which are large plants that produce flowers. After the flowers are pollinated, they develop into bananas. Each banana is essentially a berry, containing many tiny seeds, although in the common varieties we eat, the seeds are very small and not noticeable.\n\nWait, but sometimes people think of fruits and vegetables differently based on how they're used in cooking. For example, tomatoes are technically fruits but are often considered vegetables in culinary contexts. However, in botanical terms, the classification is based on the plant structure, not how we use them.\n\nSo, applying that to bananas, they develop from the flower's ovary and contain seeds, even if they're tiny. Therefore, botanically speaking, bananas are fruits. I don't think there's any debate about that among botanists. Maybe some people might confuse it because of how it's used, but the classification is clear.\n\nI should also consider if there's any conflicting information. I've heard that some sources might refer to bananas as berries, which is a type of fruit. That reinforces the idea that bananas are indeed fruits.\n\nIn conclusion, based on the botanical definition, bananas are fruits because they develop from the flower's ovary and contain seeds, even if they're not easily visible in the varieties we commonly eat.\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.016180263,"prompt_tokens":43,"prompt_time":0.002127954,"completion_tokens":331,"completion_time":1.635572461,"total_tokens":374,"total_time":1.6377004149999999},"usage_breakdown":null,"system_fingerprint":"fp_87eae35036","x_groq":{"id":"req_01k0pq7436ehwv15bfp8e1k34z"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962b7d53ad677151-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299330"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 134ms
+            X-Request-Id:
+                - req_01k0pq7436ehwv15bfp8e1k34z
+        status: 200 OK
+        code: 200
+        duration: 1.702s

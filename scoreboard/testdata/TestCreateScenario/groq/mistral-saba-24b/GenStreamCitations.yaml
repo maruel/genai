@@ -1,0 +1,85 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 248
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"model":"mistral-saba-24b","stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-6214c261-a6a9-41d6-ac4c-2fa7f8242e2a","object":"chat.completion.chunk","created":1752867889,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01k0fh2rm4fv9s2qsba25n33w1"}}
+
+            data: {"id":"chatcmpl-6214c261-a6a9-41d6-ac4c-2fa7f8242e2a","object":"chat.completion.chunk","created":1752867889,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":"The"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-6214c261-a6a9-41d6-ac4c-2fa7f8242e2a","object":"chat.completion.chunk","created":1752867889,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":" capital"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-6214c261-a6a9-41d6-ac4c-2fa7f8242e2a","object":"chat.completion.chunk","created":1752867889,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":" of"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-6214c261-a6a9-41d6-ac4c-2fa7f8242e2a","object":"chat.completion.chunk","created":1752867889,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":" Qu"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-6214c261-a6a9-41d6-ac4c-2fa7f8242e2a","object":"chat.completion.chunk","created":1752867890,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":"ack"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-6214c261-a6a9-41d6-ac4c-2fa7f8242e2a","object":"chat.completion.chunk","created":1752867890,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":"iland"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-6214c261-a6a9-41d6-ac4c-2fa7f8242e2a","object":"chat.completion.chunk","created":1752867890,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":" is"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-6214c261-a6a9-41d6-ac4c-2fa7f8242e2a","object":"chat.completion.chunk","created":1752867890,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":" Qu"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-6214c261-a6a9-41d6-ac4c-2fa7f8242e2a","object":"chat.completion.chunk","created":1752867890,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":"ack"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-6214c261-a6a9-41d6-ac4c-2fa7f8242e2a","object":"chat.completion.chunk","created":1752867890,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":"."},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-6214c261-a6a9-41d6-ac4c-2fa7f8242e2a","object":"chat.completion.chunk","created":1752867890,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01k0fh2rm4fv9s2qsba25n33w1","usage":{"queue_time":0.19540269000000002,"prompt_tokens":34,"prompt_time":0.00275446,"completion_tokens":11,"completion_time":0.033333333,"total_tokens":45,"total_time":0.036087793}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 961479d70c87a308-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "199279"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 216.3ms
+            X-Request-Id:
+                - req_01k0fh2rm4fv9s2qsba25n33w1
+        status: 200 OK
+        code: 200
+        duration: 255ms

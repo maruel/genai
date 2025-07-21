@@ -5,6 +5,7 @@
 package scoreboard_test
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log/slog"
@@ -13,6 +14,7 @@ import (
 	"slices"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
@@ -26,7 +28,7 @@ import (
 func TestCreateScenario(t *testing.T) {
 	t.Parallel()
 	// Eventually use providers.All?
-	for _, provider := range []string{"cerebras"} {
+	for _, provider := range []string{"cerebras", "groq"} {
 		t.Run(provider, func(t *testing.T) {
 			t.Parallel()
 			cc := getClient(t, provider, t.Name()+"/ListModels", "")
@@ -69,6 +71,8 @@ func TestCreateScenario(t *testing.T) {
 						},
 					}))
 					ctx := internal.WithLogger(t.Context(), logger)
+					ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+					defer cancel()
 					got, err := scoreboard.CreateScenario(ctx, providerFactory)
 					if err != nil {
 						t.Fatalf("CreateScenario failed: %v", err)
@@ -135,27 +139,58 @@ func getClient(t *testing.T, provider, name, m string) genai.Provider {
 			t.Fatal(err)
 		}
 		if strings.HasPrefix(m, "qwen/") {
-			return &adapters.ProviderGenThinking{
-				ProviderGen: &adapters.ProviderGenAppend{
+			return &handleGroqReasoning{
+				Client: &adapters.ProviderGenAppend{
 					ProviderGen: c,
 					Append:      genai.NewTextMessage(genai.User, "/think"),
 				},
-				TagName: "think",
+				t: t,
 			}
 		}
-		/*
-			if m == "deepseek-r1-distill-llama-70b" {
-				return &adapters.ProviderGenThinking{
-					ProviderGen: c,
-					TagName:     "think",
-				}
-			}
-		*/
+		if m == "deepseek-r1-distill-llama-70b" {
+			return &handleGroqReasoning{Client: c, t: t}
+		}
 		return c
 	default:
 		t.Fatal("implement me")
 		return nil
 	}
+}
+
+// handleGroqReasoning automatically enables the reasoning parsing feature of Groq.
+type handleGroqReasoning struct {
+	Client genai.ProviderGen
+	t      *testing.T
+}
+
+func (h *handleGroqReasoning) Name() string {
+	return h.Client.Name()
+}
+
+func (h *handleGroqReasoning) ModelID() string {
+	return h.Client.ModelID()
+}
+
+func (h *handleGroqReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	if opts != nil {
+		if o := opts.(*genai.OptionsText); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
+			opts = &groq.OptionsText{ReasoningFormat: groq.ReasoningFormatParsed, OptionsText: *o}
+			return h.Client.GenSync(ctx, msgs, opts)
+		}
+	}
+	c := adapters.ProviderGenThinking{ProviderGen: h.Client, TagName: "think"}
+	return c.GenSync(ctx, msgs, opts)
+}
+
+func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+	if opts != nil {
+		if o := opts.(*genai.OptionsText); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
+			opts = &groq.OptionsText{ReasoningFormat: groq.ReasoningFormatParsed, OptionsText: *o}
+			return h.Client.GenStream(ctx, msgs, replies, opts)
+		}
+	}
+	c := adapters.ProviderGenThinking{ProviderGen: h.Client, TagName: "think"}
+	return c.GenStream(ctx, msgs, replies, opts)
 }
 
 var (

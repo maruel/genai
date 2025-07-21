@@ -34,17 +34,25 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, er
 	if m == "" {
 		return genai.Scenario{}, errors.New("provider must have a model")
 	}
-	// TODO: We may still want the caller to tell which modalities are supported?
 	out := genai.Scenario{
 		Models: []string{m},
 		In:     map[genai.Modality]genai.ModalCapability{},
 		Out:    map[genai.Modality]genai.ModalCapability{},
 	}
-	if err := exerciseGen(ctx, pf, &out); err != nil {
-		return out, err
+	if _, ok := c.(genai.ProviderGen); ok {
+		if err := exerciseGen(ctx, pf, &out); err != nil {
+			return out, err
+		}
+	} else {
+		out.GenSync = nil
+		out.GenStream = nil
 	}
-	if err := exerciseGenDoc(ctx, pf, &out); err != nil {
-		return out, err
+	if _, ok := c.(genai.ProviderGenDoc); ok {
+		if err := exerciseGenDoc(ctx, pf, &out); err != nil {
+			return out, err
+		}
+	} else {
+		out.GenDoc = nil
 	}
 	return out, nil
 }
@@ -53,20 +61,18 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, er
 
 // exerciseGen exercises the ProviderGen interface if available.
 func exerciseGen(ctx context.Context, pf ProviderFactory, out *genai.Scenario) error {
-	if _, ok := pf("Gen").(genai.ProviderGen); !ok {
-		return nil
-	}
-	// TODO: Probe other modalities to detect if supported.
-	// Test text-in, text-out.
-	out.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
-	out.Out[genai.ModalityText] = genai.ModalCapability{Inline: true}
-
 	// Test GenSync.
 	fSync := genai.FunctionalityText{}
 	ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenSync"))
 	if err := exerciseGenCommon(ctx2, pf, &fSync, false, "GenSync", out); err != nil {
 		return fmt.Errorf("failed with GenSync: %s", err)
 	}
+	v := out.In[genai.ModalityText]
+	v.Inline = true
+	out.In[genai.ModalityText] = v
+	v = out.Out[genai.ModalityText]
+	v.Inline = true
+	out.Out[genai.ModalityText] = v
 	out.GenSync = &fSync
 
 	// Test GenStream.
@@ -263,10 +269,10 @@ func exerciseGenPDFInput(ctx context.Context, root string, pf ProviderFactory, f
 		},
 	}
 	if resp, err := callGen(ctx, pf, name+"Inline", msgs, nil, isStream); err == nil {
-		out.In[genai.ModalityPDF] = genai.ModalCapability{
-			Inline:           true,
-			SupportedFormats: []string{"application/pdf", "application/x-javascript", "text/javascript", "application/x-python", "text/x-python", "text/plain", "text/html", "text/css", "text/markdown"},
-		}
+		v := out.In[genai.ModalityPDF]
+		v.Inline = true
+		v.SupportedFormats = []string{"application/pdf", "application/x-javascript", "text/javascript", "application/x-python", "text/x-python", "text/plain", "text/html", "text/css", "text/markdown"}
+		out.In[genai.ModalityPDF] = v
 		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 			f.BrokenTokenUsage = genai.True
 		}
@@ -325,10 +331,10 @@ func exerciseGenImageInput(ctx context.Context, root string, pf ProviderFactory,
 	}
 	if resp, err := callGen(ctx, pf, name+"Inline", msgs, nil, isStream); err == nil {
 		// TODO: Test each of the image format. We need to generate the files first.
-		out.In[genai.ModalityImage] = genai.ModalCapability{
-			Inline:           true,
-			SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
-		}
+		v := out.In[genai.ModalityImage]
+		v.Inline = true
+		v.SupportedFormats = []string{"image/png", "image/jpeg", "image/gif", "image/webp"}
+		out.In[genai.ModalityImage] = v
 		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 			f.BrokenTokenUsage = genai.True
 		}
@@ -387,10 +393,10 @@ func exerciseGenAudioInput(ctx context.Context, root string, pf ProviderFactory,
 	}
 	if resp, err := callGen(ctx, pf, name+"Inline", msgs, nil, isStream); err == nil {
 		// TODO: Test each of the audio format. We need to generate the files first.
-		out.In[genai.ModalityAudio] = genai.ModalCapability{
-			Inline:           true,
-			SupportedFormats: []string{"audio/wav", "audio/mp3", "audio/aiff", "audio/aac", "audio/ogg", "audio/flac"},
-		}
+		v := out.In[genai.ModalityAudio]
+		v.Inline = true
+		v.SupportedFormats = []string{"audio/wav", "audio/mp3", "audio/aiff", "audio/aac", "audio/ogg", "audio/flac"}
+		out.In[genai.ModalityAudio] = v
 		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 			f.BrokenTokenUsage = genai.True
 		}
@@ -449,10 +455,10 @@ func exerciseGenVideoInput(ctx context.Context, root string, pf ProviderFactory,
 	}
 	if resp, err := callGen(ctx, pf, name+"Inline", msgs, nil, isStream); err == nil {
 		// TODO: Verify each video format.
-		out.In[genai.ModalityVideo] = genai.ModalCapability{
-			Inline:           true,
-			SupportedFormats: []string{"video/mp4", "video/mpeg", "video/mov", "video/avi", "video/x-flv", "video/mpg", "video/webm", "video/wmv", "video/3gpp"},
-		}
+		v := out.In[genai.ModalityVideo]
+		v.Inline = true
+		v.SupportedFormats = []string{"video/mp4", "video/mpeg", "video/mov", "video/avi", "video/x-flv", "video/mpg", "video/webm", "video/wmv", "video/3gpp"}
+		out.In[genai.ModalityVideo] = v
 		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 			f.BrokenTokenUsage = genai.True
 		}
@@ -685,11 +691,6 @@ func callGen(ctx context.Context, pf ProviderFactory, name string, msgs genai.Me
 // exerciseGenDoc exercises the ProviderGenDoc interface if available.
 func exerciseGenDoc(ctx context.Context, pf ProviderFactory, out *genai.Scenario) error {
 	name := "GenDoc"
-	_, ok := pf(name).(genai.ProviderGenDoc)
-	if !ok {
-		out.GenDoc = nil
-		return nil
-	}
 	out.GenDoc = &genai.FunctionalityDoc{}
 	if err := exerciseGenDocImage(ctx, pf, name+"Image", out); err != nil {
 		return err
@@ -717,8 +718,13 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 	resp, err := c.GenDoc(ctx, msg, nil)
 	if err == nil {
 		if len(resp.Contents) > 0 && (resp.Contents[0].Filename == "content.png" || resp.Contents[0].Filename == "content.jpg") {
-			out.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
-			out.Out[genai.ModalityImage] = genai.ModalCapability{Inline: true} // Assuming inline for now
+			v := out.In[genai.ModalityText]
+			v.Inline = true
+			out.In[genai.ModalityText] = v
+			v = out.Out[genai.ModalityImage]
+			// TODO: Detect if image generation is inline or URL.
+			v.Inline = true
+			out.Out[genai.ModalityImage] = v
 			if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 				out.GenDoc.BrokenTokenUsage = genai.True
 			}
@@ -740,8 +746,13 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 	resp, err := c.GenDoc(ctx, msg, nil)
 	if err == nil {
 		if len(resp.Contents) > 0 && resp.Contents[0].Filename == "sound.wav" {
-			out.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
-			out.Out[genai.ModalityAudio] = genai.ModalCapability{Inline: true} // Assuming inline for now
+			v := out.In[genai.ModalityText]
+			v.Inline = true
+			out.In[genai.ModalityText] = v
+			v = out.Out[genai.ModalityAudio]
+			// TODO: Detect if audio generation is inline or URL.
+			v.Inline = true
+			out.Out[genai.ModalityAudio] = v
 			if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 				out.GenDoc.BrokenTokenUsage = genai.True
 			}

@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 196
+        host: api.groq.com
+        body: |
+            {"max_completion_tokens":16,"messages":[{"role":"user","content":"Explain the theory of relativity in great details."},{"role":"user","content":"/think"}],"model":"qwen/qwen3-32b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-50e5b173-4d7f-4b94-a977-22c7ada7bff0","object":"chat.completion","created":1753109202,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, the user asked for an explanation of the theory of relativity"},"logprobs":null,"finish_reason":"length"}],"usage":{"queue_time":0.08703281,"prompt_tokens":31,"prompt_time":0.001956977,"completion_tokens":16,"completion_time":0.03504454,"total_tokens":47,"total_time":0.037001517},"usage_breakdown":null,"system_fingerprint":"fp_228bd8fb0d","x_groq":{"id":"req_01k0pq71d2e38vcx3act6k70f5"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962b7d426bf07151-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299913"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 17.4ms
+            X-Request-Id:
+                - req_01k0pq71d2e38vcx3act6k70f5
+        status: 200 OK
+        code: 200
+        duration: 181ms

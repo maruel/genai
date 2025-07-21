@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 282
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]},{"role":"user","content":"/think"}],"model":"qwen/qwen3-32b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-13e6390a-2c2c-405e-9ed2-2c6d61c3e015","object":"chat.completion","created":1753109420,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, let's see. The user asked, \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" \n\nHmm, the first sentence says that Quack is the capital. Then it mentions a statue in Quack. The question is just asking for the capital again. So maybe they want to confirm if the answer is Quack? But why mention the statue? Is that a trick or just extra info?\n\nWait, maybe \"Quackiland\" and \"Quack\" are the same thing? Like, the country is Quackiland, the city is Quack. So the capital city is Quack. The statue location is in the capital. But the question is just asking for the capital, so the answer should still be Quack. Maybe the user is testing if I can ignore extra information and just answer the straightforward question. The mention of the statue might be a distractor. Let me make sure there's no play on words. \"Canard\" in French means \"duck,\" but the country is called Quackiland, which already has \"Quack.\" Maybe \"Big Canard Statue\" is another way of referring to the capital, but that seems unlikely. The answer is straightforward: Quack.\n\u003c/think\u003e\n\nThe capital of Quackiland is **Quack**. The mention of the Big Canard Statue is supplementary context and does not affect the answer. \n\n**Answer:** Quack."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.008786461,"prompt_tokens":49,"prompt_time":0.002010517,"completion_tokens":307,"completion_time":0.742229442,"total_tokens":356,"total_time":0.744239959},"usage_breakdown":null,"system_fingerprint":"fp_80fea1a458","x_groq":{"id":"req_01k0pqdp16fc28q1wkx029ryx2"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962b82933cd2a284-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299960"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 8ms
+            X-Request-Id:
+                - req_01k0pqdp16fc28q1wkx029ryx2
+        status: 200 OK
+        code: 200
+        duration: 861ms

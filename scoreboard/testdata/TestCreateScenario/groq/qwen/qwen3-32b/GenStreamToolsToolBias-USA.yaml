@@ -1,0 +1,67 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 615
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."},{"role":"user","content":"/think"}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":true,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-cae8acff-fa6f-4300-9ad9-877053fa80c1","object":"chat.completion.chunk","created":1753109496,"model":"qwen/qwen3-32b","system_fingerprint":"fp_80fea1a458","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01k0pqg0j0ej4s3c262gdcvq9y"}}
+
+            data: {"id":"chatcmpl-cae8acff-fa6f-4300-9ad9-877053fa80c1","object":"chat.completion.chunk","created":1753109498,"model":"qwen/qwen3-32b","system_fingerprint":"fp_80fea1a458","choices":[{"index":0,"delta":{"tool_calls":[{"id":"n841zgnt0","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-cae8acff-fa6f-4300-9ad9-877053fa80c1","object":"chat.completion.chunk","created":1753109498,"model":"qwen/qwen3-32b","system_fingerprint":"fp_80fea1a458","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01k0pqg0j0ej4s3c262gdcvq9y","usage":{"queue_time":0.008207243000000001,"prompt_tokens":211,"prompt_time":0.0086074,"completion_tokens":966,"completion_time":2.404649158,"total_tokens":1177,"total_time":2.413256558}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962b847029f6a2ab-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299918"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 16.4ms
+            X-Request-Id:
+                - req_01k0pqg0j0ej4s3c262gdcvq9y
+        status: 200 OK
+        code: 200
+        duration: 2.497s

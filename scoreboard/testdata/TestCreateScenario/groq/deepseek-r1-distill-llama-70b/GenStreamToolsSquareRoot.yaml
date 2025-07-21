@@ -1,0 +1,67 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 585
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"deepseek-r1-distill-llama-70b","reasoning_format":"parsed","stream":true,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-0662fed6-36a6-46c8-8415-e0daf8d3b008","object":"chat.completion.chunk","created":1753109360,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01k0pqbw5qe5ptcka07vxwc7c0"}}
+
+            data: {"id":"chatcmpl-0662fed6-36a6-46c8-8415-e0daf8d3b008","object":"chat.completion.chunk","created":1753109361,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"tool_calls":[{"id":"sk0ehe9zt","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-0662fed6-36a6-46c8-8415-e0daf8d3b008","object":"chat.completion.chunk","created":1753109361,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01k0pqbw5qe5ptcka07vxwc7c0","usage":{"queue_time":0.026435549000000003,"prompt_tokens":181,"prompt_time":0.011335708,"completion_tokens":228,"completion_time":1.068090711,"total_tokens":409,"total_time":1.079426419}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962b8120e9c7a2d4-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299964"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 7.2ms
+            X-Request-Id:
+                - req_01k0pqbw5qe5ptcka07vxwc7c0
+        status: 200 OK
+        code: 200
+        duration: 1.179s

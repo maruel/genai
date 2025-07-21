@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 148
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."},{"role":"user","content":"/think"}],"model":"qwen/qwen3-32b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-a3291854-1cb9-4d85-bd50-7f8dd1598820","object":"chat.completion","created":1753109198,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, the user wants me to say hello using only one word. Let me think. The most straightforward one-word greeting is \"Hello\" itself. I should check if there are any other single words that could work, like \"Hi\" or \"Hey,\" but \"Hello\" is the most direct. The user specified to use only one word, so I need to make sure there's no additional text or punctuation beyond that. Also, since the previous interaction had the user ask for a one-word hello and the assistant respond with \"Hello,\" I should confirm if repeating \"Hello\" is acceptable. Since the user is asking again, maybe they just want the same response. I'll stick with \"Hello\" to comply with the one-word requirement.\n\u003c/think\u003e\n\nHello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.006644432,"prompt_tokens":28,"prompt_time":0.001069223,"completion_tokens":157,"completion_time":0.347041566,"total_tokens":185,"total_time":0.348110789},"usage_breakdown":null,"system_fingerprint":"fp_80fea1a458","x_groq":{"id":"req_01k0pq6xtae34vz4gd8v4gp1tv"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962b7d2b6c1f7151-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299981"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 3.8ms
+            X-Request-Id:
+                - req_01k0pq6xtae34vz4gd8v4gp1tv
+        status: 200 OK
+        code: 200
+        duration: 474ms

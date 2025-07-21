@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 274
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-d8671964-2e9a-42e8-aae5-999f78d3f480","object":"chat.completion","created":1752867886,"model":"meta-llama/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"The answer is... Quack!\n\nThe question even tells us that \"The capital of Quackiland is Quack.\" So, there's no need to think too hard about it. The capital of Quackiland is indeed Quack, where the Big Canard Statue is located."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.234057618,"prompt_tokens":40,"prompt_time":0.003490238,"completion_tokens":58,"completion_time":0.144574759,"total_tokens":98,"total_time":0.148064997},"usage_breakdown":null,"system_fingerprint":"fp_37da608fc1","x_groq":{"id":"req_01k0fh2n5hetrbs1frvjbtnmf5"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 961479c0dd7ea308-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299551"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 89.8ms
+            X-Request-Id:
+                - req_01k0fh2n5hetrbs1frvjbtnmf5
+        status: 200 OK
+        code: 200
+        duration: 452ms

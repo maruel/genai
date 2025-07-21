@@ -1,0 +1,67 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 156
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"model":"mistral-saba-24b","stop":["is"],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-ebf58b39-d04a-4dab-933e-ccfd738dc1dd","object":"chat.completion.chunk","created":1753065190,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01k0nd7x94eb38esya6v0ccccw"}}
+
+            data: {"id":"chatcmpl-ebf58b39-d04a-4dab-933e-ccfd738dc1dd","object":"chat.completion.chunk","created":1753065190,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":"Canada"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-ebf58b39-d04a-4dab-933e-ccfd738dc1dd","object":"chat.completion.chunk","created":1753065190,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":" "},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-ebf58b39-d04a-4dab-933e-ccfd738dc1dd","object":"chat.completion.chunk","created":1753065194,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01k0nd7x94eb38esya6v0ccccw","usage":{"queue_time":0.195417295,"prompt_tokens":16,"prompt_time":0.002236438,"completion_tokens":1042,"completion_time":3.157575758,"total_tokens":1058,"total_time":3.159812196}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96274ac19971a300-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "198941"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 317.599999ms
+            X-Request-Id:
+                - req_01k0nd7x94eb38esya6v0ccccw
+        status: 200 OK
+        code: 200
+        duration: 256ms

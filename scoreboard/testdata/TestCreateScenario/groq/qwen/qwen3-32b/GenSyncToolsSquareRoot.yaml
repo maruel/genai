@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 606
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"user","content":"/think"}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-060402d0-90e7-4373-ad4e-6c9d5b9d553d","object":"chat.completion","created":1753109409,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Okay, the user wants me to use the square_root tool to calculate the square root of 132413 and just give the result without any explanation. Alright, first, I need to check if the tool is available. Looking back at the provided tools, there's a function called square_root that takes a number as a string parameter. So I should call that function with the number 132413. I need to make sure the input is correctly formatted as a string. Then, once I get the result from the tool, I'll just present it as is, without any additional text. Let me verify the parameters again to ensure I'm not making a mistake. The function requires \"number\" of type string. So the JSON should have \"number\": \"132413\". Yep, that looks right. Alright, time to make the tool call.\n","tool_calls":[{"id":"8yse9htg7","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.007900983,"prompt_tokens":206,"prompt_time":0.008140148,"completion_tokens":211,"completion_time":0.397263221,"total_tokens":417,"total_time":0.405403369},"usage_breakdown":null,"system_fingerprint":"fp_80fea1a458","x_groq":{"id":"req_01k0pqdb7zfzhty6mm8a7mzrqk"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962b824e2e91a257-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299958"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 8.4ms
+            X-Request-Id:
+                - req_01k0pqdb7zfzhty6mm8a7mzrqk
+        status: 200 OK
+        code: 200
+        duration: 538ms

@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 596
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"model":"deepseek-r1-distill-llama-70b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-19534421-6f17-403c-8fc8-5b5c2ed210e3","object":"chat.completion","created":1753109265,"model":"deepseek-r1-distill-llama-70b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Okay, so I need to figure out whether Canada or the USA is the best country. Hmm, where do I even start? I guess I should think about different factors like quality of life, economy, education, healthcare, and maybe even cultural aspects.\n\nFirst, quality of life. I've heard that Canada has a reputation for being very livable, with clean cities and friendly people. The US, on the other hand, is a bit more diverse in terms of lifestyle, with some areas being super urban and others more rural. I'm not sure which one is better overall, though.\n\nEconomically, the US has a massive economy, which probably offers more opportunities in terms of jobs and innovation. Canada's economy is also strong, but maybe not as vast. I wonder how that affects the average person's life.\n\nEducation is another important factor. Both countries have good education systems, but I think the US has some of the top universities in the world. Canada's education system is also solid, but maybe not as prestigious. However, I've heard that education in Canada is more affordable compared to the US, especially for international students.\n\nHealthcare is a big one. Canada has universal healthcare, which means most medical services are covered by the government. In the US, healthcare is more privatized, which can be expensive and not everyone has access to it. That might make Canada more appealing in terms of healthcare security.\n\nCulturally, both countries have a lot to offer. The US is known for its entertainment industry, music, movies, and cultural exports. Canada has a vibrant arts scene too, but maybe not as globally influential. However, Canada is often seen as more multicultural and welcoming to immigrants.\n\nI also think about natural beauty. Both countries have stunning landscapes. Canada has vast wilderness areas, mountains, and lakes, while the US has diverse geography from coast to coast, including beaches, deserts, and mountains. It's hard to say which one is more beautiful.\n\nAnother aspect is politics and social policies. Canada is often seen as more progressive on issues like same-sex marriage and gun control, which might be appealing to some people. The US has a more varied political landscape, which can be both a pro and a con depending on your views.\n\nCost of living is something to consider too. The US has a wide range of living costs depending on where you live, with some cities being extremely expensive. Canada's cost of living is generally high, especially in cities like Toronto and Vancouver, but maybe more consistent across the country.\n\nI should also think about personal freedoms and opportunities. The US is known for the \"American Dream,\" where anyone can succeed with hard work. Canada might offer more social safety nets, which can provide a sense of security.\n\nWait, but I'm supposed to use the best_country tool to help with this. Maybe I should just call that function to get an expert opinion instead of trying to decide on my own.\n","tool_calls":[{"id":"qc7dwxwfg","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.009655517000000002,"prompt_tokens":184,"prompt_time":0.019343837,"completion_tokens":630,"completion_time":2.769525624,"total_tokens":814,"total_time":2.788869461},"usage_breakdown":null,"system_fingerprint":"fp_87eae35036","x_groq":{"id":"req_01k0pq8zffe1daspyyxhc44hhr"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962b7ecf8c4c33fb-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299964"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 7.2ms
+            X-Request-Id:
+                - req_01k0pq8zffe1daspyyxhc44hhr
+        status: 200 OK
+        code: 200
+        duration: 2.921s

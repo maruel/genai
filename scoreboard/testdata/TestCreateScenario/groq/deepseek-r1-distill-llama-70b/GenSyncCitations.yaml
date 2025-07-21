@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 262
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"model":"deepseek-r1-distill-llama-70b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-bae3c97b-35eb-4462-b793-9d11dcb35cdf","object":"chat.completion","created":1753109289,"model":"deepseek-r1-distill-llama-70b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, so I have this question here: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" Hmm, let me try to figure this out step by step.\n\nFirst, I'll read the question again to make sure I understand it correctly. It's telling me that the capital of Quackiland is Quack, and then it mentions that the Big Canard Statue is in Quack. Then it asks me what the capital of Quackiland is. Wait, that seems a bit straightforward, but maybe there's a trick here.\n\nLet me break it down. The first sentence clearly states that the capital of Quackiland is Quack. So that's a direct statement. Then the second sentence says the Big Canard Statue is located in Quack. I know that sometimes in riddles or tricky questions, they might give extra information that's not necessary, so I need to determine if the second part is just additional info or if it's trying to distract me.\n\nI think the key here is to focus on what's being asked. The question is asking for the capital of Quackiland, which was already given in the first sentence. So even though the second sentence talks about the statue, it's probably just extra information and doesn't change the answer.\n\nWait, but maybe I'm missing something. Sometimes in these questions, the name of the statue or the location might hint at a different answer. For example, if the statue was in a different city, but in this case, it's in Quack, which is the same as the capital. So that doesn't change anything.\n\nI should also consider if there's any wordplay or puns involved. The names \"Quack\" and \"Canard\" both relate to ducks, since \"quack\" is the sound a duck makes and \"canard\" is French for duck. But I don't think that affects the answer here. It's just thematic.\n\nAnother angle could be to check if \"Quack\" refers to both the capital and the statue's location, but since the question is only asking for the capital, the answer remains Quack. There's no conflicting information that suggests otherwise.\n\nI guess I'm overcomplicating it. The first sentence gives the answer directly, so the answer should just be Quack. The second sentence is just additional info about a statue in the same city, which doesn't impact the capital.\n\nWait, but maybe I should think about whether \"Quack\" is a city or a country. The question says Quackiland is the country, so Quack is the capital city. That makes sense. So the answer is Quack.\n\nI don't see any other possible answers here. The question is pretty straightforward once I break it down. The second sentence about the statue is just there to add context but doesn't change the fact that Quack is the capital.\n\u003c/think\u003e\n\nThe capital of Quackiland is Quack. The additional information about the Big Canard Statue being located in Quack does not affect the answer, as it is simply extra context. Therefore, the answer remains clear.\n\n**Answer:** The capital of Quackiland is Quack."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.009539099,"prompt_tokens":32,"prompt_time":0.00148382,"completion_tokens":664,"completion_time":2.783566933,"total_tokens":696,"total_time":2.785050753},"usage_breakdown":null,"system_fingerprint":"fp_e98d30d035","x_groq":{"id":"req_01k0pq9pjvejpbacykqh1vgj6v"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962b7f633efca2d6-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299966"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 6.8ms
+            X-Request-Id:
+                - req_01k0pq9pjvejpbacykqh1vgj6v
+        status: 200 OK
+        code: 200
+        duration: 2.94s

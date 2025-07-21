@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 171
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"},{"role":"user","content":"/think"}],"stop":["is"]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-f4627eef-9333-4b9b-873e-6f05f4f0bea4","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, so the user wants me to talk about Canada in great detail, and the prompt starts with \"Canada ","role":"assistant"}}],"created":1753125063,"model":"qwen-3-32b","system_fingerprint":"fp_1504a02d96fb4f08d4e7","object":"chat.completion","usage":{"prompt_tokens":27,"completion_tokens":38,"total_tokens":65,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":7.01628452,"prompt_time":0.002235448,"completion_time":0.027273558,"total_time":7.059929847717285,"created":1753125063}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962d007f78a7f4cc-YYZ
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-f4627eef-9333-4b9b-873e-6f05f4f0bea4
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14383"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Reset-Requests-Day:
+                - "17329.289496660233"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "49.289496660232544"
+            X-Request-Id:
+                - 962d007f78a7f4cc-YYZ
+        status: 200 OK
+        code: 200
+        duration: 7.157s

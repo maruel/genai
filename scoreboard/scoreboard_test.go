@@ -24,7 +24,7 @@ import (
 
 func TestCreateScenario(t *testing.T) {
 	totalUsage := genai.Usage{}
-	for _, provider := range []string{"cerebras", "deepseek", "groq"} {
+	for _, provider := range []string{"deepseek", "groq"} {
 		t.Run(provider, func(t *testing.T) {
 			providerUsage := genai.Usage{}
 			cc := getClient(t, provider, t.Name()+"/ListModels", "")

@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 252
+        host: api.cerebras.ai
+        body: |
+            {"model":"llama-4-scout-17b-16e-instruct","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"response_format":{"type":"json_object"}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-fddd7a9b-d9cf-49d6-968e-523f5c1f7bd9","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"is_fruit\": true}","role":"assistant"}}],"created":1753125013,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion","usage":{"prompt_tokens":39,"completion_tokens":8,"total_tokens":47,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.545892691,"prompt_time":0.003398894,"completion_time":0.000244708,"total_time":0.5521652698516846,"created":1753125013}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962cff44bb34a2f9-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-fddd7a9b-d9cf-49d6-968e-523f5c1f7bd9
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14382"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "59893"
+            X-Ratelimit-Reset-Requests-Day:
+                - "17386.11251282692"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "46.112512826919556"
+            X-Request-Id:
+                - 962cff44bb34a2f9-YUL
+        status: 200 OK
+        code: 200
+        duration: 714ms

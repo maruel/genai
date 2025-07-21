@@ -1,0 +1,95 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 176
+        host: api.cerebras.ai
+        body: |
+            {"model":"llama-4-scout-17b-16e-instruct","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_completion_tokens":16,"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-2cb05b31-2814-4e16-9a6a-76db6ed27ed2","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1753125017,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2cb05b31-2814-4e16-9a6a-76db6ed27ed2","choices":[{"delta":{"content":"The"},"index":0}],"created":1753125017,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2cb05b31-2814-4e16-9a6a-76db6ed27ed2","choices":[{"delta":{"content":" theory"},"index":0}],"created":1753125017,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2cb05b31-2814-4e16-9a6a-76db6ed27ed2","choices":[{"delta":{"content":" of"},"index":0}],"created":1753125017,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2cb05b31-2814-4e16-9a6a-76db6ed27ed2","choices":[{"delta":{"content":" relativity"},"index":0}],"created":1753125017,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2cb05b31-2814-4e16-9a6a-76db6ed27ed2","choices":[{"delta":{"content":","},"index":0}],"created":1753125017,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2cb05b31-2814-4e16-9a6a-76db6ed27ed2","choices":[{"delta":{"content":" developed"},"index":0}],"created":1753125017,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2cb05b31-2814-4e16-9a6a-76db6ed27ed2","choices":[{"delta":{"content":" by"},"index":0}],"created":1753125017,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2cb05b31-2814-4e16-9a6a-76db6ed27ed2","choices":[{"delta":{"content":" Albert"},"index":0}],"created":1753125017,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2cb05b31-2814-4e16-9a6a-76db6ed27ed2","choices":[{"delta":{"content":" Einstein"},"index":0}],"created":1753125017,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2cb05b31-2814-4e16-9a6a-76db6ed27ed2","choices":[{"delta":{"content":","},"index":0}],"created":1753125017,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2cb05b31-2814-4e16-9a6a-76db6ed27ed2","choices":[{"delta":{"content":" is"},"index":0}],"created":1753125017,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2cb05b31-2814-4e16-9a6a-76db6ed27ed2","choices":[{"delta":{"content":" a"},"index":0}],"created":1753125017,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2cb05b31-2814-4e16-9a6a-76db6ed27ed2","choices":[{"delta":{"content":" fundamental"},"index":0}],"created":1753125017,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2cb05b31-2814-4e16-9a6a-76db6ed27ed2","choices":[{"delta":{"content":" concept"},"index":0}],"created":1753125017,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2cb05b31-2814-4e16-9a6a-76db6ed27ed2","choices":[{"delta":{"content":" in"},"index":0}],"created":1753125017,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2cb05b31-2814-4e16-9a6a-76db6ed27ed2","choices":[{"delta":{"content":" modern"},"index":0}],"created":1753125017,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2cb05b31-2814-4e16-9a6a-76db6ed27ed2","choices":[{"delta":{},"finish_reason":"length","index":0}],"created":1753125017,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk","usage":{"prompt_tokens":19,"completion_tokens":16,"total_tokens":35,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000268989,"prompt_time":0.001085167,"completion_time":0.010921909,"total_time":0.013714790344238281,"created":1753125017}}
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962cff5c0e00a2f9-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Inference-Id:
+                - chatcmpl-2cb05b31-2814-4e16-9a6a-76db6ed27ed2
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14374"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "58328"
+            X-Ratelimit-Reset-Requests-Day:
+                - "17382.934022665024"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "42.934022665023804"
+            X-Request-Id:
+                - 962cff5c0e00a2f9-YUL
+        status: 200 OK
+        code: 200
+        duration: 161ms

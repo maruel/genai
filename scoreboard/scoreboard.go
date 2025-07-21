@@ -11,8 +11,12 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"os"
+	"os/exec"
+	"path/filepath"
 	"slices"
 	"strings"
+	"sync"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
@@ -60,7 +64,7 @@ func exerciseGen(ctx context.Context, pf ProviderFactory, out *genai.Scenario) e
 	// Test GenSync.
 	fSync := genai.FunctionalityText{}
 	ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenSync"))
-	if err := exerciseGenCommon(ctx2, pf, &fSync, false, "GenSync"); err != nil {
+	if err := exerciseGenCommon(ctx2, pf, &fSync, false, "GenSync", out); err != nil {
 		return fmt.Errorf("failed with GenSync: %s", err)
 	}
 	out.GenSync = &fSync
@@ -68,7 +72,7 @@ func exerciseGen(ctx context.Context, pf ProviderFactory, out *genai.Scenario) e
 	// Test GenStream.
 	fStream := genai.FunctionalityText{}
 	ctx2 = internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenStream"))
-	if err := exerciseGenCommon(ctx2, pf, &fStream, true, "GenStream"); err != nil {
+	if err := exerciseGenCommon(ctx2, pf, &fStream, true, "GenStream", out); err != nil {
 		// It's ok for streaming to not be supported.
 		out.GenStream = nil
 		return fmt.Errorf("failed with GenAsync: %s", err)
@@ -78,7 +82,7 @@ func exerciseGen(ctx context.Context, pf ProviderFactory, out *genai.Scenario) e
 	return nil
 }
 
-func exerciseGenCommon(ctx context.Context, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, name string) error {
+func exerciseGenCommon(ctx context.Context, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, name string, out *genai.Scenario) error {
 	// Make sure simple text generation works, otherwise there's no point.
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
 	resp, err := callGen(ctx, pf, name+"Text", msgs, nil, isStream)
@@ -126,12 +130,12 @@ func exerciseGenCommon(ctx context.Context, pf ProviderFactory, f *genai.Functio
 	}
 
 	// Stop
-	msgs = genai.Messages{genai.NewTextMessage(genai.User, "Talk about Canada in 10 words. Start with: Canada is")}
+	msgs = genai.Messages{genai.NewTextMessage(genai.User, "Talk about Canada in great details. Start with: Canada is")}
 	resp, err = callGen(ctx, pf, name+"Stop", msgs, &genai.OptionsText{Stop: []string{"is"}}, isStream)
 	if errors.Is(err, cassette.ErrInteractionNotFound) {
 		return err
 	}
-	f.NoStopSequence = err != nil || len(resp.AsText()) > 12
+	f.NoStopSequence = err != nil || strings.Count(resp.AsText(), " ")+1 > 20
 	if !f.NoStopSequence && (resp.InputTokens == 0 || resp.OutputTokens == 0) {
 		f.BrokenTokenUsage = genai.True
 	}
@@ -221,6 +225,270 @@ func exerciseGenCommon(ctx context.Context, pf ProviderFactory, f *genai.Functio
 	if expectedFR = genai.FinishedStop; f.Citations && resp.FinishReason != expectedFR {
 		internal.Logger(ctx).DebugContext(ctx, "Citations", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
 		f.BrokenFinishReason = true
+	}
+
+	root, err := getGitRootPath()
+	if err != nil {
+		return err
+	}
+	if err = exerciseGenPDFInput(ctx, root, pf, f, isStream, name+"PDF", out); err != nil {
+		return err
+	}
+	if err = exerciseGenImageInput(ctx, root, pf, f, isStream, name+"Image", out); err != nil {
+		return err
+	}
+	if err = exerciseGenAudioInput(ctx, root, pf, f, isStream, name+"Audio", out); err != nil {
+		return err
+	}
+	if err = exerciseGenVideoInput(ctx, root, pf, f, isStream, name+"Video", out); err != nil {
+		return err
+	}
+	return nil
+}
+
+func exerciseGenPDFInput(ctx context.Context, root string, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, name string, out *genai.Scenario) error {
+	pdfFile, err := os.Open(filepath.Join(root, "internal", "internaltest", "testdata", "hidden_word.pdf"))
+	if err != nil {
+		return fmt.Errorf("failed to open PDF file: %w", err)
+	}
+	defer pdfFile.Close()
+
+	msgs := genai.Messages{
+		genai.Message{
+			Role: genai.User,
+			Contents: []genai.Content{
+				{Text: "What is the word? Reply with only the word."},
+				{Document: pdfFile, Filename: "hidden_word.pdf"},
+			},
+		},
+	}
+	if resp, err := callGen(ctx, pf, name+"Inline", msgs, nil, isStream); err == nil {
+		out.In[genai.ModalityPDF] = genai.ModalCapability{
+			Inline:           true,
+			SupportedFormats: []string{"application/pdf", "application/x-javascript", "text/javascript", "application/x-python", "text/x-python", "text/plain", "text/html", "text/css", "text/markdown"},
+		}
+		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
+			f.BrokenTokenUsage = genai.True
+		}
+		if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
+			internal.Logger(ctx).DebugContext(ctx, "PDFInline", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+			f.BrokenFinishReason = true
+		}
+	} else if errors.Is(err, cassette.ErrInteractionNotFound) {
+		return err
+	}
+	msgs = genai.Messages{
+		genai.Message{
+			Role: genai.User,
+			Contents: []genai.Content{
+				{Text: "What is the word? Reply with only the word."},
+				{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/hidden_word.pdf"},
+			},
+		},
+	}
+	if resp, err := callGen(ctx, pf, name+"URL", msgs, nil, isStream); err == nil {
+		v := out.In[genai.ModalityPDF]
+		if len(v.SupportedFormats) == 0 {
+			// TODO Same as above for PDFs. Make sure they match.
+			v.SupportedFormats = []string{"application/pdf", "application/x-javascript", "text/javascript", "application/x-python", "text/x-python", "text/plain", "text/html", "text/css", "text/markdown"}
+		}
+		v.URL = true
+		out.In[genai.ModalityPDF] = v
+		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
+			f.BrokenTokenUsage = genai.True
+		}
+		if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
+			internal.Logger(ctx).DebugContext(ctx, "PDFURL", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+			f.BrokenFinishReason = true
+		}
+	} else if errors.Is(err, cassette.ErrInteractionNotFound) {
+		return err
+	}
+	return nil
+}
+
+func exerciseGenImageInput(ctx context.Context, root string, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, name string, out *genai.Scenario) error {
+	imgFile, err := os.Open(filepath.Join(root, "internal", "internaltest", "testdata", "banana.jpg"))
+	if err != nil {
+		return fmt.Errorf("failed to open image file: %w", err)
+	}
+	defer imgFile.Close()
+
+	msgs := genai.Messages{
+		genai.Message{
+			Role: genai.User,
+			Contents: []genai.Content{
+				{Text: "Is it a banana? Reply with only one word."},
+				{Document: imgFile, Filename: "banana.jpg"},
+			},
+		},
+	}
+	if resp, err := callGen(ctx, pf, name+"Inline", msgs, nil, isStream); err == nil {
+		// TODO: Test each of the image format. We need to generate the files first.
+		out.In[genai.ModalityImage] = genai.ModalCapability{
+			Inline:           true,
+			SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
+		}
+		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
+			f.BrokenTokenUsage = genai.True
+		}
+		if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
+			internal.Logger(ctx).DebugContext(ctx, "ImageInline", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+			f.BrokenFinishReason = true
+		}
+	} else if errors.Is(err, cassette.ErrInteractionNotFound) {
+		return err
+	}
+	msgs = genai.Messages{
+		genai.Message{
+			Role: genai.User,
+			Contents: []genai.Content{
+				{Text: "Is it a banana? Reply with only one word."},
+				{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/banana.jpg"},
+			},
+		},
+	}
+	if resp, err := callGen(ctx, pf, name+"URL", msgs, nil, isStream); err == nil {
+		v := out.In[genai.ModalityImage]
+		if len(v.SupportedFormats) == 0 {
+			// TODO Same as above for images. Make sure they match.
+			v.SupportedFormats = []string{"image/png", "image/jpeg", "image/gif", "image/webp"}
+		}
+		v.URL = true
+		out.In[genai.ModalityImage] = v
+		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
+			f.BrokenTokenUsage = genai.True
+		}
+		if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
+			internal.Logger(ctx).DebugContext(ctx, "ImageURL", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+			f.BrokenFinishReason = true
+		}
+	} else if errors.Is(err, cassette.ErrInteractionNotFound) {
+		return err
+	}
+	return nil
+}
+
+func exerciseGenAudioInput(ctx context.Context, root string, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, name string, out *genai.Scenario) error {
+	audioFile, err := os.Open(filepath.Join(root, "internal", "internaltest", "testdata", "mystery_word.mp3"))
+	if err != nil {
+		return fmt.Errorf("failed to open audio file: %w", err)
+	}
+	defer audioFile.Close()
+
+	msgs := genai.Messages{
+		genai.Message{
+			Role: genai.User,
+			Contents: []genai.Content{
+				{Text: "What is the word said? Reply with only the word."},
+				{Document: audioFile, Filename: "mystery_word.mp3"},
+			},
+		},
+	}
+	if resp, err := callGen(ctx, pf, name+"Inline", msgs, nil, isStream); err == nil {
+		// TODO: Test each of the audio format. We need to generate the files first.
+		out.In[genai.ModalityAudio] = genai.ModalCapability{
+			Inline:           true,
+			SupportedFormats: []string{"audio/wav", "audio/mp3", "audio/aiff", "audio/aac", "audio/ogg", "audio/flac"},
+		}
+		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
+			f.BrokenTokenUsage = genai.True
+		}
+		if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
+			internal.Logger(ctx).DebugContext(ctx, "AudioInline", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+			f.BrokenFinishReason = true
+		}
+	} else if errors.Is(err, cassette.ErrInteractionNotFound) {
+		return err
+	}
+	msgs = genai.Messages{
+		genai.Message{
+			Role: genai.User,
+			Contents: []genai.Content{
+				{Text: "What is the word said? Reply with only the word."},
+				{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/mystery_word.mp3"},
+			},
+		},
+	}
+	if resp, err := callGen(ctx, pf, name+"URL", msgs, nil, isStream); err == nil {
+		v := out.In[genai.ModalityAudio]
+		if len(v.SupportedFormats) == 0 {
+			// TODO: Confirm audio format.
+			v.SupportedFormats = []string{"audio/wav", "audio/mp3", "audio/aiff", "audio/aac", "audio/ogg", "audio/flac"}
+		}
+		v.URL = true
+		out.In[genai.ModalityAudio] = v
+		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
+			f.BrokenTokenUsage = genai.True
+		}
+		if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
+			internal.Logger(ctx).DebugContext(ctx, "AudioURL", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+			f.BrokenFinishReason = true
+		}
+	} else if errors.Is(err, cassette.ErrInteractionNotFound) {
+		return err
+	}
+	return nil
+}
+
+func exerciseGenVideoInput(ctx context.Context, root string, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, name string, out *genai.Scenario) error {
+	videoFile, err := os.Open(filepath.Join(root, "internal", "internaltest", "testdata", "animation.mp4"))
+	if err != nil {
+		return fmt.Errorf("failed to open video file: %w", err)
+	}
+	defer videoFile.Close()
+
+	msgs := genai.Messages{
+		genai.Message{
+			Role: genai.User,
+			Contents: []genai.Content{
+				{Text: "What is the word? Reply with only the word."},
+				{Document: videoFile, Filename: "animation.mp4"},
+			},
+		},
+	}
+	if resp, err := callGen(ctx, pf, name+"Inline", msgs, nil, isStream); err == nil {
+		// TODO: Verify each video format.
+		out.In[genai.ModalityVideo] = genai.ModalCapability{
+			Inline:           true,
+			SupportedFormats: []string{"video/mp4", "video/mpeg", "video/mov", "video/avi", "video/x-flv", "video/mpg", "video/webm", "video/wmv", "video/3gpp"},
+		}
+		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
+			f.BrokenTokenUsage = genai.True
+		}
+		if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
+			internal.Logger(ctx).DebugContext(ctx, "VideoInline", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+			f.BrokenFinishReason = true
+		}
+	} else if errors.Is(err, cassette.ErrInteractionNotFound) {
+		return err
+	}
+	msgs = genai.Messages{
+		genai.Message{
+			Role: genai.User,
+			Contents: []genai.Content{
+				{Text: "What is the word? Reply with only the word."},
+				{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/animation.mp4"},
+			},
+		},
+	}
+	if resp, err := callGen(ctx, pf, name+"URL", msgs, nil, isStream); err == nil {
+		v := out.In[genai.ModalityVideo]
+		if len(v.SupportedFormats) == 0 {
+			// TODO: Confirm video format.
+			v.SupportedFormats = []string{"video/mp4", "video/mpeg", "video/mov", "video/avi", "video/x-flv", "video/mpg", "video/webm", "video/wmv", "video/3gpp"}
+		}
+		v.URL = true
+		out.In[genai.ModalityVideo] = v
+		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
+			f.BrokenTokenUsage = genai.True
+		}
+		if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
+			internal.Logger(ctx).DebugContext(ctx, "VideoURL", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+			f.BrokenFinishReason = true
+		}
+	} else if errors.Is(err, cassette.ErrInteractionNotFound) {
+		return err
 	}
 	return nil
 }
@@ -416,12 +684,101 @@ func callGen(ctx context.Context, pf ProviderFactory, name string, msgs genai.Me
 
 // exerciseGenDoc exercises the ProviderGenDoc interface if available.
 func exerciseGenDoc(ctx context.Context, pf ProviderFactory, out *genai.Scenario) error {
-	if _, ok := pf("GenDoc").(genai.ProviderGenDoc); !ok {
-		// Cerebras does not implement ProviderGenDoc, so we set GenDoc to nil.
+	name := "GenDoc"
+	_, ok := pf(name).(genai.ProviderGenDoc)
+	if !ok {
 		out.GenDoc = nil
 		return nil
 	}
-	// TODO: implement actual GenDoc exercise
-	out.GenDoc = nil
+	out.GenDoc = &genai.FunctionalityDoc{}
+	if err := exerciseGenDocImage(ctx, pf, name+"Image", out); err != nil {
+		return err
+	}
+	if err := exerciseGenDocAudio(ctx, pf, name+"Audio", out); err != nil {
+		return err
+	}
 	return nil
+}
+
+func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, out *genai.Scenario) error {
+	c := pf(name).(genai.ProviderGenDoc)
+	promptImage := `A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
+	contentsImage := `Generate one square, white-background doodle with smooth, vibrantly colored image depicting ` + promptImage + `.
+
+*Mandatory Requirements (Compacted):**
+
+**Style:** Simple, vibrant, varied-colored doodle/hand-drawn sketch.
+**Background:** Plain solid white (no background colors/elements). Absolutely no black background.
+**Content & Motion:** Clearly depict **` + promptImage + `** action with colored, moving subject (no static images). If there's an action specified, it should be the main difference between frames.
+**Format:** Square image (1:1 aspect ratio).
+**Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.
+**Output:** Actual image file for a smooth, colorful doodle-style image on a white background.`
+	msg := genai.NewTextMessage(genai.User, contentsImage)
+	resp, err := c.GenDoc(ctx, msg, nil)
+	if err == nil {
+		if len(resp.Contents) > 0 && (resp.Contents[0].Filename == "content.png" || resp.Contents[0].Filename == "content.jpg") {
+			out.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
+			out.Out[genai.ModalityImage] = genai.ModalCapability{Inline: true} // Assuming inline for now
+			if resp.InputTokens == 0 || resp.OutputTokens == 0 {
+				out.GenDoc.BrokenTokenUsage = genai.True
+			}
+			if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
+				internal.Logger(ctx).DebugContext(ctx, "GenDocImage", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+				out.GenDoc.BrokenFinishReason = true
+			}
+		}
+	}
+	if errors.Is(err, cassette.ErrInteractionNotFound) {
+		return err
+	}
+	return nil
+}
+
+func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, out *genai.Scenario) error {
+	c := pf(name).(genai.ProviderGenDoc)
+	msg := genai.NewTextMessage(genai.User, "Say hi. Just say this word, nothing else.")
+	resp, err := c.GenDoc(ctx, msg, nil)
+	if err == nil {
+		if len(resp.Contents) > 0 && resp.Contents[0].Filename == "sound.wav" {
+			out.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
+			out.Out[genai.ModalityAudio] = genai.ModalCapability{Inline: true} // Assuming inline for now
+			if resp.InputTokens == 0 || resp.OutputTokens == 0 {
+				out.GenDoc.BrokenTokenUsage = genai.True
+			}
+			if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
+				internal.Logger(ctx).DebugContext(ctx, "GenDocAudio", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+				out.GenDoc.BrokenFinishReason = true
+			}
+		}
+	}
+	if errors.Is(err, cassette.ErrInteractionNotFound) {
+		return err
+	}
+	return nil
+}
+
+var (
+	gitRootOnce sync.Once
+	gitRootPath string
+)
+
+func getGitRootPath() (string, error) {
+	var err error
+	gitRootOnce.Do(func() {
+		cmd := exec.Command("git", "rev-parse", "--show-toplevel")
+		output, err2 := cmd.Output()
+		if err2 != nil {
+			err = err2
+			return
+		}
+		path := strings.TrimSpace(string(output))
+		// Ensure the path is absolute and clean
+		absPath, err2 := filepath.Abs(path)
+		if err2 != nil {
+			err = err2
+			return
+		}
+		gitRootPath = absPath
+	})
+	return gitRootPath, err
 }

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 134
+        content_length: 139
         host: api.cerebras.ai
         body: |
-            {"model":"llama-3.3-70b","messages":[{"role":"user","content":"Talk about Canada in 10 words. Start with: Canada is"}],"stop":["is"]}
+            {"model":"llama-3.3-70b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stop":["is"]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-7fea170e-4474-48e3-a767-5363ee4886a1","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Canada ","role":"assistant"}}],"created":1752852473,"model":"llama-3.3-70b","system_fingerprint":"fp_d9197bd9bfb96c41ef64","object":"chat.completion","usage":{"prompt_tokens":48,"completion_tokens":6,"total_tokens":54,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00024877,"prompt_time":0.002399745,"completion_time":0.001570284,"total_time":0.006376028060913086,"created":1752852473}}'
+        body: '{"id":"chatcmpl-bd0535f4-fedb-498f-834d-acc2f19cb594","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Canada ","role":"assistant"}}],"created":1753114256,"model":"llama-3.3-70b","system_fingerprint":"fp_d9197bd9bfb96c41ef64","object":"chat.completion","usage":{"prompt_tokens":47,"completion_tokens":4,"total_tokens":51,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00012678,"prompt_time":0.003036891,"completion_time":0.000720624,"total_time":0.0058939456939697266,"created":1753114256}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 961301784a4ba2df-YUL
+                - 962bf8a39b24a2e7-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-7fea170e-4474-48e3-a767-5363ee4886a1
+                - chatcmpl-bd0535f4-fedb-498f-834d-acc2f19cb594
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -46,15 +46,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "64000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14377"
+                - "14392"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "63862"
+                - "64000"
             X-Ratelimit-Reset-Requests-Day:
-                - "30726.207430124283"
+                - "28143.721606969833"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "6.207430124282837"
+                - "3.721606969833374"
             X-Request-Id:
-                - 961301784a4ba2df-YUL
+                - 962bf8a39b24a2e7-YUL
         status: 200 OK
         code: 200
-        duration: 1.333s
+        duration: 475ms

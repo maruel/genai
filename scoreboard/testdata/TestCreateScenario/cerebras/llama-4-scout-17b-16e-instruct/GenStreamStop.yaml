@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 165
+        content_length: 170
         host: api.cerebras.ai
         body: |
-            {"model":"llama-4-scout-17b-16e-instruct","messages":[{"role":"user","content":"Talk about Canada in 10 words. Start with: Canada is"}],"stop":["is"],"stream":true}
+            {"model":"llama-4-scout-17b-16e-instruct","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stop":["is"],"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,11 +21,11 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-9ec0f63b-06f1-4e33-8d70-82233bd26399","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1752855225,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-ae6373b4-017c-408e-b5bc-a494edf4eb5d","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1753114256,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-9ec0f63b-06f1-4e33-8d70-82233bd26399","choices":[{"delta":{"content":"Canada "},"index":0}],"created":1752855225,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-ae6373b4-017c-408e-b5bc-a494edf4eb5d","choices":[{"delta":{"content":"Canada "},"index":0}],"created":1753114256,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-9ec0f63b-06f1-4e33-8d70-82233bd26399","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1752855225,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk","usage":{"prompt_tokens":23,"completion_tokens":9,"total_tokens":32,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00010537,"prompt_time":0.00178497,"completion_time":0.001737658,"total_time":0.006063222885131836,"created":1752855225}}
+            data: {"id":"chatcmpl-ae6373b4-017c-408e-b5bc-a494edf4eb5d","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1753114256,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk","usage":{"prompt_tokens":22,"completion_tokens":8,"total_tokens":30,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00009188,"prompt_time":0.001724807,"completion_time":0.001497596,"total_time":0.006964445114135742,"created":1753114256}}
 
         headers:
             Alt-Svc:
@@ -33,11 +33,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 961344a74f50a2ac-YUL
+                - 962bf8a51d07a2e7-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Inference-Id:
-                - chatcmpl-9ec0f63b-06f1-4e33-8d70-82233bd26399
+                - chatcmpl-ae6373b4-017c-408e-b5bc-a494edf4eb5d
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -53,13 +53,13 @@ interactions:
             X-Ratelimit-Remaining-Requests-Day:
                 - "14387"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "58287"
+                - "60000"
             X-Ratelimit-Reset-Requests-Day:
-                - "27974.387991905212"
+                - "28143.717167139053"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "14.387991905212402"
+                - "3.7171671390533447"
             X-Request-Id:
-                - 961344a74f50a2ac-YUL
+                - 962bf8a51d07a2e7-YUL
         status: 200 OK
         code: 200
-        duration: 177ms
+        duration: 198ms

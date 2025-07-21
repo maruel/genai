@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 254
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-reasoner","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"response_format":{"type":"json_object"}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"fc43e314-5b27-4fd2-8af2-7805a202e2c4","object":"chat.completion","created":1753117069,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}","reasoning_content":"First, the user asks: \"Is a banana a fruit?\" I need to answer this without any explanation, as per the instruction: \"Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\nThe schema is a JSON object with one key: \"is_fruit\", and its value should be a boolean (true or false).\n\nNow, recalling basic knowledge: A banana is indeed a fruit. Fruits are the mature ovaries of flowering plants, and bananas fit this definition. They contain seeds and develop from the flowers of the banana plant.\n\nSo, the answer should be true.\n\nI must respond ONLY as JSON. No additional text, just the JSON object.\n\nThe JSON should look like: {\"is_fruit\": true}\n\nI need to ensure it''s properly formatted JSON. In JSON, keys and string values are in double quotes, and booleans are written as true or false without quotes.\n\nFinally, since the instruction is clear, I should not add any extra information or explanations.\n\nMy response should be solely: {\"is_fruit\": true}"},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":50,"completion_tokens":232,"total_tokens":282,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":223},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":50},"system_fingerprint":"fp_393bca965e_prod0623_fp8_kvcache"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962c3d52aeeca278-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            X-Content-Type-Options:
+                - nosniff
+            X-Ds-Trace-Id:
+                - 5f3a764f3acee7280977436abe4e8fcc
+        status: 200 OK
+        code: 200
+        duration: 289ms

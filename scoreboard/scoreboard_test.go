@@ -14,13 +14,13 @@ import (
 	"slices"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/providers/cerebras"
+	"github.com/maruel/genai/providers/deepseek"
 	"github.com/maruel/genai/providers/groq"
 	"github.com/maruel/genai/scoreboard"
 )
@@ -28,7 +28,7 @@ import (
 func TestCreateScenario(t *testing.T) {
 	t.Parallel()
 	// Eventually use providers.All?
-	for _, provider := range []string{"cerebras", "groq"} {
+	for _, provider := range []string{"cerebras", "deepseek", "groq"} {
 		t.Run(provider, func(t *testing.T) {
 			t.Parallel()
 			cc := getClient(t, provider, t.Name()+"/ListModels", "")
@@ -71,8 +71,6 @@ func TestCreateScenario(t *testing.T) {
 						},
 					}))
 					ctx := internal.WithLogger(t.Context(), logger)
-					ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
-					defer cancel()
 					got, err := scoreboard.CreateScenario(ctx, providerFactory)
 					if err != nil {
 						t.Fatalf("CreateScenario failed: %v", err)
@@ -127,6 +125,16 @@ func getClient(t *testing.T, provider, name, m string) genai.Provider {
 				},
 				TagName: "think",
 			}
+		}
+		return c
+	case "deepseek":
+		apiKey := ""
+		if os.Getenv("DEEPSEEK_API_KEY") == "" {
+			apiKey = "<insert_api_key_here>"
+		}
+		c, err := deepseek.New(apiKey, m, fn)
+		if err != nil {
+			t.Fatal(err)
 		}
 		return c
 	case "groq":

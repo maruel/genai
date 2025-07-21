@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 149
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-chat","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":false,"max_tokens":16}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"078d7e5c-5f2f-4ca3-931a-f5427bed9f79","object":"chat.completion","created":1753117017,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"The **Theory of Relativity** is one of the most profound and well-t"},"logprobs":null,"finish_reason":"length"}],"usage":{"prompt_tokens":12,"completion_tokens":16,"total_tokens":28,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":12},"system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962c3c0d6fbfa278-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            X-Content-Type-Options:
+                - nosniff
+            X-Ds-Trace-Id:
+                - a27899452fc223dd1621cb826ed03c1a
+        status: 200 OK
+        code: 200
+        duration: 333ms

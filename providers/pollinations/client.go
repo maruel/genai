@@ -63,7 +63,7 @@ var Scoreboard = genai.Scoreboard{
 				Seed:           true,
 			},
 			GenStream: &genai.FunctionalityText{
-				BrokenTokenUsage: true,
+				BrokenTokenUsage: genai.True,
 				NoMaxTokens:      true,
 				NoStopSequence:   true,
 				Tools:            genai.Flaky,
@@ -94,7 +94,7 @@ var Scoreboard = genai.Scoreboard{
 				},
 			},
 			GenDoc: &genai.FunctionalityDoc{
-				BrokenTokenUsage:   true,
+				BrokenTokenUsage:   genai.True,
 				BrokenFinishReason: true,
 				Seed:               true,
 			},
@@ -119,7 +119,7 @@ var Scoreboard = genai.Scoreboard{
 				Seed:           true,
 			},
 			GenStream: &genai.FunctionalityText{
-				BrokenTokenUsage: true,
+				BrokenTokenUsage: genai.True,
 				NoMaxTokens:      true,
 				NoStopSequence:   true,
 				Tools:            genai.True,

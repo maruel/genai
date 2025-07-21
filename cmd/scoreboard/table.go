@@ -113,7 +113,7 @@ func (t *tableDataRow) initFromScenario(s *genai.Scenario) {
 				if t.Chat == "" {
 					t.Chat = "✅"
 				}
-				if s.GenSync.BrokenTokenUsage && !strings.Contains(t.Chat, "💸") {
+				if s.GenSync.BrokenTokenUsage != genai.False && !strings.Contains(t.Chat, "💸") {
 					t.Chat += "💸"
 				}
 				if s.GenSync.BrokenFinishReason && !strings.Contains(t.Chat, "🚩") {
@@ -160,7 +160,7 @@ func (t *tableDataRow) initFromScenario(s *genai.Scenario) {
 				if t.Streaming == "" {
 					t.Streaming = "✅"
 				}
-				if s.GenStream.BrokenTokenUsage && !strings.Contains(t.Streaming, "💸") {
+				if s.GenStream.BrokenTokenUsage != genai.False && !strings.Contains(t.Streaming, "💸") {
 					t.Streaming += "💸"
 				}
 				if s.GenStream.BrokenFinishReason && !strings.Contains(t.Streaming, "🚩") {
@@ -177,7 +177,7 @@ func (t *tableDataRow) initFromScenario(s *genai.Scenario) {
 		if s.GenDoc.Seed {
 			t.Seed = "✅"
 		}
-		if s.GenDoc.BrokenTokenUsage || s.GenDoc.BrokenFinishReason {
+		if s.GenDoc.BrokenTokenUsage != genai.False || s.GenDoc.BrokenFinishReason {
 			// TODO.
 		}
 	}

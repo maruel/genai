@@ -1118,8 +1118,9 @@ func findMissing(want, got []string) []string {
 	return result
 }
 
-func testUsage(t *testing.T, u *genai.Usage, usageIsBroken bool, f genai.FinishReason) {
-	if usageIsBroken {
+func testUsage(t *testing.T, u *genai.Usage, usageIsBroken genai.TriState, f genai.FinishReason) {
+	switch usageIsBroken {
+	case genai.True:
 		if u.InputTokens != 0 {
 			t.Error("expected Usage.InputTokens to be zero")
 		}
@@ -1129,13 +1130,15 @@ func testUsage(t *testing.T, u *genai.Usage, usageIsBroken bool, f genai.FinishR
 		if u.OutputTokens != 0 {
 			t.Error("expected Usage.OutputTokens to be zero")
 		}
-	} else {
+	case genai.False:
 		if u.InputTokens == 0 {
 			t.Error("expected Usage.InputTokens to be set")
 		}
 		if u.OutputTokens == 0 {
 			t.Error("expected Usage.OutputTokens to be set")
 		}
+	case genai.Flaky:
+		// 🤷
 	}
 	if u.FinishReason != f {
 		// TODO: llamacpp returns "eos" instead of "stop" when ending a stream. I need to find a way to improve

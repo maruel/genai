@@ -237,7 +237,7 @@ var Scoreboard = genai.Scoreboard{
 				"gpt-image-1",
 			},
 			GenDoc: &genai.FunctionalityDoc{
-				BrokenTokenUsage:   true,
+				BrokenTokenUsage:   genai.True,
 				BrokenFinishReason: true,
 				Seed:               true,
 			},

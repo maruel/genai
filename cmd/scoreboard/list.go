@@ -130,7 +130,7 @@ func functionalityText(f *genai.FunctionalityText) string {
 		// Flaky is okay.
 		items = append(items, "💔biased tool")
 	}
-	if f.BrokenTokenUsage {
+	if f.BrokenTokenUsage != genai.False {
 		items = append(items, "💔usage")
 	}
 	if f.BrokenFinishReason {
@@ -144,7 +144,7 @@ func functionalityText(f *genai.FunctionalityText) string {
 
 func functionalityDoc(f *genai.FunctionalityDoc) string {
 	var items []string
-	if f.BrokenTokenUsage {
+	if f.BrokenTokenUsage != genai.False {
 		items = append(items, "💔usage")
 	}
 	if f.BrokenFinishReason {

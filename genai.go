@@ -904,7 +904,7 @@ type FunctionalityText struct {
 	Seed bool
 
 	// BrokenTokenUsage means that the usage is not correctly reported.
-	BrokenTokenUsage bool
+	BrokenTokenUsage TriState
 	// BrokenFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.
 	BrokenFinishReason bool
 	// NoMaxTokens means that the provider doesn't support limiting text output. Only relevant on text output.
@@ -961,7 +961,7 @@ type FunctionalityDoc struct {
 	Seed bool
 
 	// BrokenTokenUsage means that the usage is not correctly reported.
-	BrokenTokenUsage bool
+	BrokenTokenUsage TriState
 	// BrokenFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.
 	BrokenFinishReason bool
 

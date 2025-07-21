@@ -18,18 +18,16 @@ import (
 
 func TestProviderGenThinking_GenSync(t *testing.T) {
 	tests := []struct {
-		name        string
-		tagName     string
-		in          string
-		want        []genai.Content
-		expectError bool
+		name    string
+		tagName string
+		in      string
+		opts    genai.Options
+		want    []genai.Content
 	}{
 		{
 			name: "No thinking tags",
 			in:   "Just regular text without thinking tags",
-			want: []genai.Content{
-				{Text: "Just regular text without thinking tags"},
-			},
+			want: []genai.Content{{Text: "Just regular text without thinking tags"}},
 		},
 		{
 			name: "With thinking tags at the beginning",
@@ -38,11 +36,6 @@ func TestProviderGenThinking_GenSync(t *testing.T) {
 				{Thinking: "This is my thinking process"},
 				{Text: "This is the response"},
 			},
-		},
-		{
-			name:        "With non-empty content before tag",
-			in:          "Text before <thinking>\nThis is thinking</thinking>\nThis is response",
-			expectError: true,
 		},
 		{
 			name: "With only whitespace before tag",
@@ -55,34 +48,32 @@ func TestProviderGenThinking_GenSync(t *testing.T) {
 		{
 			name: "With only whitespace before tag and cut off",
 			in:   "  \n\t<thinking>\nThinking with whitespace",
-			want: []genai.Content{
-				{Thinking: "Thinking with whitespace"},
-			},
+			want: []genai.Content{{Thinking: "Thinking with whitespace"}},
 		},
 		{
 			name: "With empty text content",
-			in:   "",
 			want: []genai.Content{{}},
+		},
+		{
+			name: "SkipJSON with ReplyAsJSON",
+			in:   "<thinking>This is thinking</thinking>Response",
+			opts: &genai.OptionsText{ReplyAsJSON: true},
+			want: []genai.Content{{Text: "<thinking>This is thinking</thinking>Response"}},
+		},
+		{
+			name: "SkipJSON with DecodeAs",
+			in:   "<thinking>This is thinking</thinking>Response",
+			opts: &genai.OptionsText{DecodeAs: &struct{ A string }{}},
+			want: []genai.Content{{Text: "<thinking>This is thinking</thinking>Response"}},
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			mp := &mockProviderGenSync{response: genai.Result{
-				Message: genai.Message{
-					Role:     genai.Assistant,
-					Contents: []genai.Content{{Text: tc.in}},
-				},
-			}}
-
-			tp := &adapters.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
-			got, err := tp.GenSync(t.Context(), genai.Messages{}, nil)
-			if tc.expectError {
-				if err == nil {
-					t.Fatal("expected error but got none")
-				}
-				return
-			} else if err != nil {
+			mp := &mockProviderGenSync{response: genai.Result{Message: genai.NewTextMessage(genai.Assistant, tc.in)}}
+			tp := &adapters.ProviderGenThinking{ProviderGen: mp, TagName: "thinking", SkipJSON: true}
+			got, err := tp.GenSync(t.Context(), genai.Messages{}, tc.opts)
+			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
 			if diff := cmp.Diff(tc.want, got.Contents); diff != "" {
@@ -92,19 +83,62 @@ func TestProviderGenThinking_GenSync(t *testing.T) {
 	}
 }
 
+func TestProviderGenThinking_GenSync_errors(t *testing.T) {
+	tests := []struct {
+		name    string
+		tagName string
+		in      []genai.Content
+		err     error
+		want    string
+	}{
+		{
+			name: "With non-empty content before tag",
+			in:   []genai.Content{{Text: "Text before <thinking>\nThis is thinking</thinking>\nThis is response"}},
+			want: "failed to parse thinking tokens",
+		},
+		{
+			name: "Error from underlying GenSync",
+			err:  errors.New("mock error"),
+			want: "mock error",
+		},
+		{
+			name: "Multiple content blocks",
+			in:   []genai.Content{{Text: "First part. "}, {Text: "<thinking>Thinking part</thinking>"}, {Text: " Second part."}},
+			want: "failed to parse thinking tokens",
+		},
+		{
+			name: "Message with existing thinking content",
+			in:   []genai.Content{{Thinking: "Existing thinking"}, {Text: "Some text"}},
+			want: `got unexpected thinking content: "Existing thinking"; do not use ProviderGenThinking with an explicit thinking CoT model`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			mp := &mockProviderGenSync{response: genai.Result{Message: genai.Message{Role: genai.Assistant, Contents: tc.in}}, err: tc.err}
+			tp := &adapters.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
+			_, err := tp.GenSync(t.Context(), genai.Messages{}, nil)
+			if err == nil {
+				t.Fatal("expected error but got none")
+			}
+			if got := err.Error(); got != tc.want {
+				t.Fatalf("expected %q but got %q", tc.want, got)
+			}
+		})
+	}
+}
+
 func TestProviderGenThinking_GenStream(t *testing.T) {
 	tests := []struct {
-		name        string
-		in          []string
-		want        []genai.Content
-		expectError bool
+		name string
+		in   []string
+		opts genai.Options
+		want []genai.Content
 	}{
 		{
 			name: "No thinking tags - assumed to be thinking content",
 			in:   []string{"Just ", "regular", " text", " without ", "thinking ", "tags"},
-			want: []genai.Content{
-				{Thinking: "Just regular text without thinking tags"},
-			},
+			want: []genai.Content{{Thinking: "Just regular text without thinking tags"}},
 		},
 		{
 			name: "With thinking tags in separate fragments",
@@ -113,11 +147,6 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 				{Thinking: "This is my thinking process"},
 				{Text: "This is the response"},
 			},
-		},
-		{
-			name:        "With text before tag in same fragment - error case",
-			in:          []string{"Text before <thinking>", "This is thinking", "</thinking>", "This is response"},
-			expectError: true,
 		},
 		{
 			name: "With whitespace before tag",
@@ -138,16 +167,12 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 		{
 			name: "Handling fragmented content with regular text only",
 			in:   []string{"Fragment1", "Fragment2", "Fragment3"},
-			want: []genai.Content{
-				{Thinking: "Fragment1Fragment2Fragment3"},
-			},
+			want: []genai.Content{{Thinking: "Fragment1Fragment2Fragment3"}},
 		},
 		{
 			name: "With thinking tag at the end",
 			in:   []string{"<thinking>", "This is thinking only"},
-			want: []genai.Content{
-				{Thinking: "This is thinking only"},
-			},
+			want: []genai.Content{{Thinking: "This is thinking only"}},
 		},
 		{
 			name: "With start tag and text in same fragment",
@@ -157,7 +182,6 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 				{Text: "Response"},
 			},
 		},
-
 		{
 			name: "With end tag and response in same fragment",
 			in:   []string{"<thinking>", "Thinking", "</thinking>Response"},
@@ -198,6 +222,18 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 				{Text: "Response"},
 			},
 		},
+		{
+			name: "SkipJSON with ReplyAsJSON",
+			in:   []string{"<thinking>This is thinking</thinking>Response"},
+			opts: &genai.OptionsText{ReplyAsJSON: true},
+			want: []genai.Content{{Text: "<thinking>This is thinking</thinking>Response"}},
+		},
+		{
+			name: "SkipJSON with DecodeAs",
+			in:   []string{"<thinking>This is thinking</thinking>Response"},
+			opts: &genai.OptionsText{DecodeAs: &struct{ A string }{}},
+			want: []genai.Content{{Text: "<thinking>This is thinking</thinking>Response"}},
+		},
 	}
 
 	for _, tc := range tests {
@@ -206,7 +242,7 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 			for _, i := range tc.in {
 				mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.ContentFragment{TextFragment: i})
 			}
-			tp := &adapters.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
+			tp := &adapters.ProviderGenThinking{ProviderGen: mp, TagName: "thinking", SkipJSON: true}
 			ch := make(chan genai.ContentFragment, 100)
 			eg, ctx := errgroup.WithContext(t.Context())
 			accumulated := genai.Message{}
@@ -219,15 +255,10 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 				}
 				return nil
 			})
-			result, err := tp.GenStream(ctx, genai.Messages{}, ch, nil)
+			result, err := tp.GenStream(ctx, genai.Messages{}, ch, tc.opts)
 			close(ch)
 			_ = eg.Wait()
-			if tc.expectError {
-				if err == nil {
-					t.Fatal("expected error but got none")
-				}
-				return
-			} else if err != nil {
+			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
 			if diff := cmp.Diff(tc.want, accumulated.Contents); diff != "" {
@@ -235,6 +266,66 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 			}
 			if diff := cmp.Diff(result.Message, accumulated); diff != "" {
 				t.Fatalf("diff:\n%s", diff)
+			}
+		})
+	}
+}
+
+func TestProviderGenThinking_GenStream_errors(t *testing.T) {
+	tests := []struct {
+		name      string
+		in        []string
+		fragments []genai.ContentFragment
+		err       error
+		want      string
+	}{
+		{
+			name: "With text before tag in same fragment - error case",
+			in:   []string{"Text before <thinking>", "This is thinking", "</thinking>", "This is response"},
+			want: "unexpected prefix before thinking tag: \"\"",
+		},
+		{
+			name: "Error from underlying GenStream",
+			in:   []string{},
+			err:  errors.New("mock stream error"),
+			want: "mock stream error",
+		},
+		{
+			name: "Unexpected thinking fragment in stream",
+			in:   []string{},
+			fragments: []genai.ContentFragment{
+				{ThinkingFragment: "This is an unexpected thinking fragment"},
+			},
+			want: `got unexpected thinking fragment: "This is an unexpected thinking fragment"; do not use ProviderGenThinking with an explicit thinking CoT model`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			mp := &mockProviderGenStream{streamResponses: []streamResponse{{}}, err: tc.err}
+			if len(tc.fragments) > 0 {
+				mp.streamResponses[0].fragments = tc.fragments
+			} else {
+				for _, i := range tc.in {
+					mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.ContentFragment{TextFragment: i})
+				}
+			}
+			tp := &adapters.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
+			ch := make(chan genai.ContentFragment, 100)
+			eg := errgroup.Group{}
+			eg.Go(func() error {
+				for range ch {
+				}
+				return nil
+			})
+			_, err := tp.GenStream(t.Context(), genai.Messages{}, ch, nil)
+			close(ch)
+			_ = eg.Wait()
+			if err == nil {
+				t.Fatal("expected error but got none")
+			}
+			if got := err.Error(); got != tc.want {
+				t.Fatalf("expected %q but got %q", tc.want, got)
 			}
 		})
 	}
@@ -287,14 +378,14 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 	chunks := make(chan genai.ContentFragment)
 	var frags []genai.ContentFragment
 	ctx := t.Context()
-	go func() {
+	go func() error {
 		for {
 			select {
 			case <-ctx.Done():
-				return
+				return ctx.Err()
 			case fragment, ok := <-chunks:
 				if !ok {
-					return
+					return nil
 				}
 				frags = append(frags, fragment)
 			}
@@ -325,6 +416,7 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 
 type mockProviderGenSync struct {
 	response genai.Result
+	err      error
 }
 
 func (m *mockProviderGenSync) Name() string {
@@ -332,7 +424,7 @@ func (m *mockProviderGenSync) Name() string {
 }
 
 func (m *mockProviderGenSync) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	return m.response, nil
+	return m.response, m.err
 }
 
 func (m *mockProviderGenSync) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
@@ -351,6 +443,7 @@ type streamResponse struct {
 type mockProviderGenStream struct {
 	streamResponses []streamResponse
 	callIndex       int
+	err             error
 }
 
 func (m *mockProviderGenStream) Name() string {
@@ -362,6 +455,9 @@ func (m *mockProviderGenStream) GenSync(ctx context.Context, msgs genai.Messages
 }
 
 func (m *mockProviderGenStream) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+	if m.err != nil {
+		return genai.Result{}, m.err
+	}
 	if m.callIndex >= len(m.streamResponses) {
 		return genai.Result{}, fmt.Errorf("no more mock responses")
 	}

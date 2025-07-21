@@ -272,78 +272,18 @@ func (c *ProviderGenThinking) GenStream(ctx context.Context, msgs genai.Messages
 	}
 
 	internalReplies := make(chan genai.ContentFragment)
-	// The tokens always have a trailing "\n". When streaming, the trailing "\n" will likely be sent as a
-	// separate event. This requires a small state machine to keep track of that.
-	tagStart := "<" + c.TagName + ">"
-	tagEnd := "</" + c.TagName + ">"
-
 	accumulated := genai.Message{}
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		state := start
 		for f := range internalReplies {
-			if f.ThinkingFragment != "" {
-				return fmt.Errorf("got unexpected thinking fragment: %q; do not use ProviderGenThinking with an explicit thinking CoT model", f.ThinkingFragment)
-			}
-			// Mutate the fragment then send it.
-			switch state {
-			case start:
-				// Ignore whitespace until text or thinking tag is seen.
-				f.ThinkingFragment = strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace)
-				f.TextFragment = ""
-				if tStart := strings.Index(f.ThinkingFragment, tagStart); tStart != -1 {
-					if tStart != 0 {
-						return fmt.Errorf("unexpected prefix before thinking tag: %q", f.TextFragment)
-					}
-					f.ThinkingFragment = strings.TrimLeftFunc(f.ThinkingFragment[len(tagStart):], unicode.IsSpace)
+			var err2 error
+			state, err2 = c.processPacket(state, replies, &accumulated, f)
+			if err2 != nil {
+				for range internalReplies {
+					// Drain channel
 				}
-				if f.ThinkingFragment != "" {
-					// Some model do not always send tagStart.
-					state = thinkingTextSeen
-				}
-			case startTagSeen:
-				// Ignore whitespace until text is seen.
-				f.ThinkingFragment = f.TextFragment
-				f.TextFragment = ""
-				if buf := strings.TrimLeftFunc(f.ThinkingFragment, unicode.IsSpace); buf != "" {
-					state = thinkingTextSeen
-					f.ThinkingFragment = buf
-				}
-			case thinkingTextSeen:
-				f.ThinkingFragment = f.TextFragment
-				f.TextFragment = ""
-				if tEnd := strings.Index(f.ThinkingFragment, tagEnd); tEnd != -1 {
-					state = endTagSeen
-					after := f.ThinkingFragment[tEnd+len(tagEnd):]
-					if tEnd != 0 {
-						// Unlikely case where we need to flush out the remainder.
-						f.ThinkingFragment = f.ThinkingFragment[:tEnd]
-						f.TextFragment = ""
-						replies <- f
-						if err := accumulated.Accumulate(f); err != nil {
-							return err
-						}
-					}
-					f.TextFragment = after
-					f.ThinkingFragment = ""
-					if buf := strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace); buf != "" {
-						state = textSeen
-						f.TextFragment = buf
-					}
-				}
-			case endTagSeen:
-				// Ignore whitespace until text is seen.
-				if buf := strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace); buf != "" {
-					state = textSeen
-					f.TextFragment = buf
-				}
-			case textSeen:
-			default:
-				panic("internal error")
-			}
-			replies <- f
-			if err := accumulated.Accumulate(f); err != nil {
-				return err
+				return err2
 			}
 		}
 		return nil
@@ -364,6 +304,75 @@ func (c *ProviderGenThinking) GenStream(ctx context.Context, msgs genai.Messages
 	return result, nil
 }
 
+func (c *ProviderGenThinking) processPacket(state tagProcessingState, replies chan<- genai.ContentFragment, accumulated *genai.Message, f genai.ContentFragment) (tagProcessingState, error) {
+	if f.ThinkingFragment != "" {
+		return state, fmt.Errorf("got unexpected thinking fragment: %q; do not use ProviderGenThinking with an explicit thinking CoT model", f.ThinkingFragment)
+	}
+	// Mutate the fragment then send it.
+	switch state {
+	case start:
+		// Ignore whitespace until text or thinking tag is seen.
+		f.ThinkingFragment = strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace)
+		f.TextFragment = ""
+		// The tokens always have a trailing "\n". When streaming, the trailing "\n" will likely be sent as a
+		// separate event. This requires a small state machine to keep track of that.
+		tagStart := "<" + c.TagName + ">"
+		if tStart := strings.Index(f.ThinkingFragment, tagStart); tStart != -1 {
+			if tStart != 0 {
+				return state, fmt.Errorf("unexpected prefix before thinking tag: %q", f.TextFragment)
+			}
+			f.ThinkingFragment = strings.TrimLeftFunc(f.ThinkingFragment[len(tagStart):], unicode.IsSpace)
+		}
+		if f.ThinkingFragment != "" {
+			// Some model do not always send tagStart.
+			state = thinkingTextSeen
+		}
+	case startTagSeen:
+		// Ignore whitespace until text is seen.
+		f.ThinkingFragment = f.TextFragment
+		f.TextFragment = ""
+		if buf := strings.TrimLeftFunc(f.ThinkingFragment, unicode.IsSpace); buf != "" {
+			state = thinkingTextSeen
+			f.ThinkingFragment = buf
+		}
+	case thinkingTextSeen:
+		f.ThinkingFragment = f.TextFragment
+		f.TextFragment = ""
+		tagEnd := "</" + c.TagName + ">"
+		if tEnd := strings.Index(f.ThinkingFragment, tagEnd); tEnd != -1 {
+			state = endTagSeen
+			after := f.ThinkingFragment[tEnd+len(tagEnd):]
+			if tEnd != 0 {
+				// Unlikely case where we need to flush out the remainder.
+				f.ThinkingFragment = f.ThinkingFragment[:tEnd]
+				f.TextFragment = ""
+				replies <- f
+				if err := accumulated.Accumulate(f); err != nil {
+					return state, err
+				}
+			}
+			f.TextFragment = after
+			f.ThinkingFragment = ""
+			if buf := strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace); buf != "" {
+				state = textSeen
+				f.TextFragment = buf
+			}
+		}
+	case endTagSeen:
+		// Ignore whitespace until text is seen.
+		if buf := strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace); buf != "" {
+			state = textSeen
+			f.TextFragment = buf
+		}
+	case textSeen:
+	default:
+		return state, errors.New("internal error in ProviderGenThinking.GenStream()")
+	}
+	replies <- f
+	err := accumulated.Accumulate(f)
+	return state, err
+}
+
 func (c *ProviderGenThinking) processThinkingMessage(m *genai.Message) error {
 	if len(m.Contents) == 0 {
 		// It can be a function call.
@@ -376,9 +385,6 @@ func (c *ProviderGenThinking) processThinkingMessage(m *genai.Message) error {
 			return fmt.Errorf("got unexpected thinking content: %q; do not use ProviderGenThinking with an explicit thinking CoT model", c.Thinking)
 		}
 	}
-	if len(m.Contents) > 1 {
-		return fmt.Errorf("got multiple content blocks; to be implemented; %#v", m)
-	}
 
 	text := m.AsText()
 	if text == "" {
@@ -389,22 +395,31 @@ func (c *ProviderGenThinking) processThinkingMessage(m *genai.Message) error {
 	tagStart := "<" + c.TagName + ">"
 	tagEnd := "</" + c.TagName + ">"
 	tStart := strings.Index(text, tagStart)
-	if tStart != -1 {
-		if prefix := text[:tStart]; strings.TrimSpace(prefix) != "" {
-			return fmt.Errorf("failed to parse thinking tokens")
-		}
-		// Remove whitespace after the starting tag.
-		text = strings.TrimLeftFunc(text[tStart+len(tagStart):], unicode.IsSpace)
+	if tStart == -1 {
+		return nil // No thinking tag found, nothing to do
 	}
-	if tEnd := strings.Index(text, tagEnd); tEnd != -1 {
-		// Remove whitespace after the ending tag.
-		m.Contents[0].Text = strings.TrimLeftFunc(text[tEnd+len(tagEnd):], unicode.IsSpace)
-		m.Contents = append([]genai.Content{{Thinking: text[:tEnd]}}, m.Contents...)
-	} else if tStart != -1 {
+	if prefix := text[:tStart]; strings.TrimSpace(prefix) != "" {
+		return fmt.Errorf("failed to parse thinking tokens")
+	}
+	// Zap the text.
+	for i := range m.Contents {
+		m.Contents[i].Text = ""
+	}
+	// Remove whitespace after the starting tag.
+	textAfterStartTag := strings.TrimLeftFunc(text[tStart+len(tagStart):], unicode.IsSpace)
+	if tEnd := strings.Index(textAfterStartTag, tagEnd); tEnd != -1 {
+		thinkingContent := textAfterStartTag[:tEnd]
+		remainingText := strings.TrimLeftFunc(textAfterStartTag[tEnd+len(tagEnd):], unicode.IsSpace)
+		m.Contents[0].Thinking = thinkingContent
+		if len(m.Contents) == 1 {
+			m.Contents = append(m.Contents, genai.Content{})
+		}
+		m.Contents[len(m.Contents)-1].Text = remainingText
+	} else {
 		// This happens when MaxTokens is used or another reason which cut the stream off before the end tag is seen.
 		// Consider everything thinking.
-		m.Contents[0].Thinking = text
-		m.Contents[0].Text = ""
+		// We do not return an error so the user can process the data.
+		m.Contents[0].Thinking = textAfterStartTag
 	}
 	return nil
 }

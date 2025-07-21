@@ -417,14 +417,10 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 					Callback: func(ctx context.Context, g *got) (string, error) {
 						i, err := g.Number.Int64()
 						if err != nil {
-							err = fmt.Errorf("wanted 132413 as an int, got %q: %w", g.Number, err)
-							t.Error(err)
-							return "", err
+							return "", fmt.Errorf("wanted 132413 as an int, got %q: %w", g.Number, err)
 						}
 						if i != 132413 {
-							err = fmt.Errorf("wanted 132413 as an int, got %s", g.Number)
-							t.Error(err)
-							return "", err
+							return "", fmt.Errorf("wanted 132413 as an int, got %s", g.Number)
 						}
 						return fmt.Sprintf("%.2f", math.Sqrt(float64(i))), nil
 					},
@@ -462,6 +458,11 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 		msgs = append(msgs, resp.Message)
 		msg, err := resp.DoToolCalls(t.Context(), opts.Tools)
 		if err != nil {
+			if f.Tools == genai.Flaky {
+				// Qwen3-4B on Huggingface does this; it does the call but doesn't populate the arguments even if
+				// required.
+				return
+			}
 			t.Fatal(err)
 		}
 		if msg.IsZero() {
@@ -588,6 +589,11 @@ func testTextFunctionalities(t *testing.T, g ProviderGenModalityFactory, model s
 					case genai.True:
 						// It must be the first.
 						if res != line.countrySelected {
+							if f.Tools == genai.Flaky {
+								// Qwen3-4B on Huggingface does this; it does the call but doesn't populate the arguments even if
+								// required.
+								return
+							}
 							t.Fatalf("Expected bias towards the first proposed item %q, got %q", line.countrySelected, res)
 						}
 					case genai.Flaky:

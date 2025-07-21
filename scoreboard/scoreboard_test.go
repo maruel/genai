@@ -26,11 +26,10 @@ import (
 )
 
 func TestCreateScenario(t *testing.T) {
-	t.Parallel()
-	// Eventually use providers.All?
+	totalUsage := genai.Usage{}
 	for _, provider := range []string{"cerebras", "deepseek", "groq"} {
 		t.Run(provider, func(t *testing.T) {
-			t.Parallel()
+			providerUsage := genai.Usage{}
 			cc := getClient(t, provider, t.Name()+"/ListModels", "")
 			models, err2 := cc.(genai.ProviderModel).ListModels(t.Context())
 			if err2 != nil {
@@ -40,50 +39,62 @@ func TestCreateScenario(t *testing.T) {
 			for _, m := range models {
 				id := m.GetID()
 				t.Run(id, func(t *testing.T) {
-					t.Parallel()
-					// Find the reference.
-					var want genai.Scenario
-					for i := range refs.Scenarios {
-						if slices.Contains(refs.Scenarios[i].Models, id) {
-							want = refs.Scenarios[i]
-							want.Models = []string{id}
-							break
-						}
-					}
-					if len(want.Models) == 0 {
-						t.Fatalf("no scenario for model %q", id)
-					}
-					if want.In == nil && want.Out == nil {
-						t.Skip("Explicitly unsupported model")
-					}
-
-					// Calculate the scenario.
-					providerFactory := func(name string) genai.Provider {
-						return getClient(t, provider, t.Name()+"/"+name, id)
-					}
-					logger := slog.New(slog.NewTextHandler(&testWriter{t: t}, &slog.HandlerOptions{
-						Level: programLevel,
-						ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
-							if a.Key == "time" {
-								return slog.Attr{}
-							}
-							return a
-						},
-					}))
-					ctx := internal.WithLogger(t.Context(), logger)
-					got, err := scoreboard.CreateScenario(ctx, providerFactory)
-					if err != nil {
-						t.Fatalf("CreateScenario failed: %v", err)
-					}
-
-					// Check if valid.
-					if diff := cmp.Diff(want, got, opt); diff != "" {
-						t.Errorf("mismatch (-want +got):\n%s", diff)
-					}
+					usage := runOneModel(t, provider, id, refs)
+					providerUsage.Add(usage)
 				})
 			}
+			t.Logf("Usage: %#v", providerUsage)
+			totalUsage.Add(providerUsage)
 		})
 	}
+	t.Logf("Usage: %#v", totalUsage)
+}
+
+func runOneModel(t *testing.T, provider, id string, refs genai.Scoreboard) genai.Usage {
+	// Find the reference.
+	var want genai.Scenario
+	for i := range refs.Scenarios {
+		if slices.Contains(refs.Scenarios[i].Models, id) {
+			want = refs.Scenarios[i]
+			want.Models = []string{id}
+			break
+		}
+	}
+	if len(want.Models) == 0 {
+		t.Fatalf("no scenario for model %q", id)
+	}
+	if want.In == nil && want.Out == nil {
+		t.Skip("Explicitly unsupported model")
+	}
+
+	// Calculate the scenario.
+	providerFactory := func(name string) genai.Provider {
+		if name == "" {
+			return getClient(t, provider, name, id)
+		}
+		return getClient(t, provider, t.Name()+"/"+name, id)
+	}
+	logger := slog.New(slog.NewTextHandler(&testWriter{t: t}, &slog.HandlerOptions{
+		Level: programLevel,
+		ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+			if a.Key == "time" {
+				return slog.Attr{}
+			}
+			return a
+		},
+	}))
+	ctx := internal.WithLogger(t.Context(), logger)
+	got, usage, err := scoreboard.CreateScenario(ctx, providerFactory)
+	t.Logf("Usage: %#v", usage)
+	if err != nil {
+		t.Fatalf("CreateScenario failed: %v", err)
+	}
+
+	// Check if valid.
+	if diff := cmp.Diff(want, got, opt); diff != "" {
+		t.Errorf("mismatch (-want +got):\n%s", diff)
+	}
+	return usage
 }
 
 var opt = cmp.Comparer(func(x, y genai.TriState) bool {
@@ -96,6 +107,9 @@ var opt = cmp.Comparer(func(x, y genai.TriState) bool {
 
 func getClient(t *testing.T, provider, name, m string) genai.Provider {
 	fn := func(h http.RoundTripper) http.RoundTripper {
+		if name == "" {
+			return h
+		}
 		r, err2 := recorder.Record(name, h)
 		if err2 != nil {
 			t.Fatal(err2)

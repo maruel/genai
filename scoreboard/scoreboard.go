@@ -28,11 +28,12 @@ import (
 type ProviderFactory func(name string) genai.Provider
 
 // CreateScenario calculates the supported Scenario for the given provider and its current model.
-func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, error) {
-	c := pf("CreateScenario")
+func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, genai.Usage, error) {
+	usage := genai.Usage{}
+	c := pf("")
 	m := c.ModelID()
 	if m == "" {
-		return genai.Scenario{}, errors.New("provider must have a model")
+		return genai.Scenario{}, usage, errors.New("provider must have a model")
 	}
 	out := genai.Scenario{
 		Models: []string{m},
@@ -40,31 +41,31 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, er
 		Out:    map[genai.Modality]genai.ModalCapability{},
 	}
 	if _, ok := c.(genai.ProviderGen); ok {
-		if err := exerciseGen(ctx, pf, &out); err != nil {
-			return out, err
+		if err := exerciseGen(ctx, pf, &out, &usage); err != nil {
+			return out, usage, err
 		}
 	} else {
 		out.GenSync = nil
 		out.GenStream = nil
 	}
 	if _, ok := c.(genai.ProviderGenDoc); ok {
-		if err := exerciseGenDoc(ctx, pf, &out); err != nil {
-			return out, err
+		if err := exerciseGenDoc(ctx, pf, &out, &usage); err != nil {
+			return out, usage, err
 		}
 	} else {
 		out.GenDoc = nil
 	}
-	return out, nil
+	return out, usage, nil
 }
 
 // genai.ProviderGen
 
 // exerciseGen exercises the ProviderGen interface if available.
-func exerciseGen(ctx context.Context, pf ProviderFactory, out *genai.Scenario) error {
+func exerciseGen(ctx context.Context, pf ProviderFactory, out *genai.Scenario, usage *genai.Usage) error {
 	// Test GenSync.
 	fSync := genai.FunctionalityText{}
 	ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenSync"))
-	if err := exerciseGenCommon(ctx2, pf, &fSync, false, "GenSync", out); err != nil {
+	if err := exerciseGenCommon(ctx2, pf, &fSync, false, "GenSync", out, usage); err != nil {
 		return fmt.Errorf("failed with GenSync: %s", err)
 	}
 	v := out.In[genai.ModalityText]
@@ -78,7 +79,7 @@ func exerciseGen(ctx context.Context, pf ProviderFactory, out *genai.Scenario) e
 	// Test GenStream.
 	fStream := genai.FunctionalityText{}
 	ctx2 = internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenStream"))
-	if err := exerciseGenCommon(ctx2, pf, &fStream, true, "GenStream", out); err != nil {
+	if err := exerciseGenCommon(ctx2, pf, &fStream, true, "GenStream", out, usage); err != nil {
 		// It's ok for streaming to not be supported.
 		out.GenStream = nil
 		return fmt.Errorf("failed with GenAsync: %s", err)
@@ -88,10 +89,10 @@ func exerciseGen(ctx context.Context, pf ProviderFactory, out *genai.Scenario) e
 	return nil
 }
 
-func exerciseGenCommon(ctx context.Context, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, name string, out *genai.Scenario) error {
+func exerciseGenCommon(ctx context.Context, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, name string, out *genai.Scenario, usage *genai.Usage) error {
 	// Make sure simple text generation works, otherwise there's no point.
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
-	resp, err := callGen(ctx, pf, name+"Text", msgs, nil, isStream)
+	resp, err := callGen(ctx, pf, name+"Text", msgs, nil, isStream, usage)
 	if err != nil {
 		return fmt.Errorf("basic check failed: %w", err)
 	}
@@ -110,7 +111,7 @@ func exerciseGenCommon(ctx context.Context, pf ProviderFactory, f *genai.Functio
 
 	// Seed
 	msgs = genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
-	_, err = callGen(ctx, pf, name+"Seed", msgs, &genai.OptionsText{Seed: 42}, isStream)
+	resp, err = callGen(ctx, pf, name+"Seed", msgs, &genai.OptionsText{Seed: 42}, isStream, usage)
 	if errors.Is(err, cassette.ErrInteractionNotFound) {
 		return err
 	}
@@ -118,7 +119,7 @@ func exerciseGenCommon(ctx context.Context, pf ProviderFactory, f *genai.Functio
 
 	// MaxTokens
 	msgs = genai.Messages{genai.NewTextMessage(genai.User, "Explain the theory of relativity in great details.")}
-	resp, err = callGen(ctx, pf, name+"MaxTokens", msgs, &genai.OptionsText{MaxTokens: 16}, isStream)
+	resp, err = callGen(ctx, pf, name+"MaxTokens", msgs, &genai.OptionsText{MaxTokens: 16}, isStream, usage)
 	if errors.Is(err, cassette.ErrInteractionNotFound) {
 		return err
 	}
@@ -137,7 +138,7 @@ func exerciseGenCommon(ctx context.Context, pf ProviderFactory, f *genai.Functio
 
 	// Stop
 	msgs = genai.Messages{genai.NewTextMessage(genai.User, "Talk about Canada in great details. Start with: Canada is")}
-	resp, err = callGen(ctx, pf, name+"Stop", msgs, &genai.OptionsText{Stop: []string{"is"}}, isStream)
+	resp, err = callGen(ctx, pf, name+"Stop", msgs, &genai.OptionsText{Stop: []string{"is"}}, isStream, usage)
 	if errors.Is(err, cassette.ErrInteractionNotFound) {
 		return err
 	}
@@ -156,7 +157,7 @@ func exerciseGenCommon(ctx context.Context, pf ProviderFactory, f *genai.Functio
 
 	// JSON
 	msgs = genai.Messages{genai.NewTextMessage(genai.User, `Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {"is_fruit": bool}.`)}
-	resp, err = callGen(ctx, pf, name+"JSON", msgs, &genai.OptionsText{ReplyAsJSON: true}, isStream)
+	resp, err = callGen(ctx, pf, name+"JSON", msgs, &genai.OptionsText{ReplyAsJSON: true}, isStream, usage)
 	if errors.Is(err, cassette.ErrInteractionNotFound) {
 		return err
 	}
@@ -178,7 +179,7 @@ func exerciseGenCommon(ctx context.Context, pf ProviderFactory, f *genai.Functio
 		Number  float64 `json:"number"`
 		IsFruit bool    `json:"is_fruit"`
 	}
-	resp, err = callGen(ctx, pf, name+"JSONSchema", msgs, &genai.OptionsText{DecodeAs: &schema{}}, isStream)
+	resp, err = callGen(ctx, pf, name+"JSONSchema", msgs, &genai.OptionsText{DecodeAs: &schema{}}, isStream, usage)
 	if errors.Is(err, cassette.ErrInteractionNotFound) {
 		return err
 	}
@@ -194,7 +195,7 @@ func exerciseGenCommon(ctx context.Context, pf ProviderFactory, f *genai.Functio
 		f.BrokenFinishReason = true
 	}
 
-	if err = exerciseGenTools(ctx, pf, f, isStream, name+"Tools"); err != nil {
+	if err = exerciseGenTools(ctx, pf, f, isStream, name+"Tools", usage); err != nil {
 		return err
 	}
 
@@ -213,7 +214,7 @@ func exerciseGenCommon(ctx context.Context, pf ProviderFactory, f *genai.Functio
 			},
 		},
 	}
-	resp, err = callGen(ctx, pf, name+"Citations", msgs, nil, isStream)
+	resp, err = callGen(ctx, pf, name+"Citations", msgs, nil, isStream, usage)
 	if errors.Is(err, cassette.ErrInteractionNotFound) {
 		return err
 	}
@@ -237,22 +238,22 @@ func exerciseGenCommon(ctx context.Context, pf ProviderFactory, f *genai.Functio
 	if err != nil {
 		return err
 	}
-	if err = exerciseGenPDFInput(ctx, root, pf, f, isStream, name+"PDF", out); err != nil {
+	if err = exerciseGenPDFInput(ctx, root, pf, f, isStream, name+"PDF", out, usage); err != nil {
 		return err
 	}
-	if err = exerciseGenImageInput(ctx, root, pf, f, isStream, name+"Image", out); err != nil {
+	if err = exerciseGenImageInput(ctx, root, pf, f, isStream, name+"Image", out, usage); err != nil {
 		return err
 	}
-	if err = exerciseGenAudioInput(ctx, root, pf, f, isStream, name+"Audio", out); err != nil {
+	if err = exerciseGenAudioInput(ctx, root, pf, f, isStream, name+"Audio", out, usage); err != nil {
 		return err
 	}
-	if err = exerciseGenVideoInput(ctx, root, pf, f, isStream, name+"Video", out); err != nil {
+	if err = exerciseGenVideoInput(ctx, root, pf, f, isStream, name+"Video", out, usage); err != nil {
 		return err
 	}
 	return nil
 }
 
-func exerciseGenPDFInput(ctx context.Context, root string, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, name string, out *genai.Scenario) error {
+func exerciseGenPDFInput(ctx context.Context, root string, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, name string, out *genai.Scenario, usage *genai.Usage) error {
 	pdfFile, err := os.Open(filepath.Join(root, "internal", "internaltest", "testdata", "hidden_word.pdf"))
 	if err != nil {
 		return fmt.Errorf("failed to open PDF file: %w", err)
@@ -268,7 +269,7 @@ func exerciseGenPDFInput(ctx context.Context, root string, pf ProviderFactory, f
 			},
 		},
 	}
-	if resp, err := callGen(ctx, pf, name+"Inline", msgs, nil, isStream); err == nil {
+	if resp, err := callGen(ctx, pf, name+"Inline", msgs, nil, isStream, usage); err == nil {
 		v := out.In[genai.ModalityPDF]
 		v.Inline = true
 		v.SupportedFormats = []string{"application/pdf", "application/x-javascript", "text/javascript", "application/x-python", "text/x-python", "text/plain", "text/html", "text/css", "text/markdown"}
@@ -292,7 +293,7 @@ func exerciseGenPDFInput(ctx context.Context, root string, pf ProviderFactory, f
 			},
 		},
 	}
-	if resp, err := callGen(ctx, pf, name+"URL", msgs, nil, isStream); err == nil {
+	if resp, err := callGen(ctx, pf, name+"URL", msgs, nil, isStream, usage); err == nil {
 		v := out.In[genai.ModalityPDF]
 		if len(v.SupportedFormats) == 0 {
 			// TODO Same as above for PDFs. Make sure they match.
@@ -313,7 +314,7 @@ func exerciseGenPDFInput(ctx context.Context, root string, pf ProviderFactory, f
 	return nil
 }
 
-func exerciseGenImageInput(ctx context.Context, root string, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, name string, out *genai.Scenario) error {
+func exerciseGenImageInput(ctx context.Context, root string, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, name string, out *genai.Scenario, usage *genai.Usage) error {
 	imgFile, err := os.Open(filepath.Join(root, "internal", "internaltest", "testdata", "banana.jpg"))
 	if err != nil {
 		return fmt.Errorf("failed to open image file: %w", err)
@@ -329,7 +330,7 @@ func exerciseGenImageInput(ctx context.Context, root string, pf ProviderFactory,
 			},
 		},
 	}
-	if resp, err := callGen(ctx, pf, name+"Inline", msgs, nil, isStream); err == nil {
+	if resp, err := callGen(ctx, pf, name+"Inline", msgs, nil, isStream, usage); err == nil {
 		// TODO: Test each of the image format. We need to generate the files first.
 		v := out.In[genai.ModalityImage]
 		v.Inline = true
@@ -354,7 +355,7 @@ func exerciseGenImageInput(ctx context.Context, root string, pf ProviderFactory,
 			},
 		},
 	}
-	if resp, err := callGen(ctx, pf, name+"URL", msgs, nil, isStream); err == nil {
+	if resp, err := callGen(ctx, pf, name+"URL", msgs, nil, isStream, usage); err == nil {
 		v := out.In[genai.ModalityImage]
 		if len(v.SupportedFormats) == 0 {
 			// TODO Same as above for images. Make sure they match.
@@ -375,7 +376,7 @@ func exerciseGenImageInput(ctx context.Context, root string, pf ProviderFactory,
 	return nil
 }
 
-func exerciseGenAudioInput(ctx context.Context, root string, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, name string, out *genai.Scenario) error {
+func exerciseGenAudioInput(ctx context.Context, root string, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, name string, out *genai.Scenario, usage *genai.Usage) error {
 	audioFile, err := os.Open(filepath.Join(root, "internal", "internaltest", "testdata", "mystery_word.mp3"))
 	if err != nil {
 		return fmt.Errorf("failed to open audio file: %w", err)
@@ -391,7 +392,10 @@ func exerciseGenAudioInput(ctx context.Context, root string, pf ProviderFactory,
 			},
 		},
 	}
-	if resp, err := callGen(ctx, pf, name+"Inline", msgs, nil, isStream); err == nil {
+	if resp, err := callGen(ctx, pf, name+"Inline", msgs, nil, isStream, usage); err == nil {
+		usage.InputTokens += resp.InputTokens
+		usage.InputCachedTokens += resp.InputCachedTokens
+		usage.OutputTokens += resp.OutputTokens
 		// TODO: Test each of the audio format. We need to generate the files first.
 		v := out.In[genai.ModalityAudio]
 		v.Inline = true
@@ -416,7 +420,7 @@ func exerciseGenAudioInput(ctx context.Context, root string, pf ProviderFactory,
 			},
 		},
 	}
-	if resp, err := callGen(ctx, pf, name+"URL", msgs, nil, isStream); err == nil {
+	if resp, err := callGen(ctx, pf, name+"URL", msgs, nil, isStream, usage); err == nil {
 		v := out.In[genai.ModalityAudio]
 		if len(v.SupportedFormats) == 0 {
 			// TODO: Confirm audio format.
@@ -437,7 +441,7 @@ func exerciseGenAudioInput(ctx context.Context, root string, pf ProviderFactory,
 	return nil
 }
 
-func exerciseGenVideoInput(ctx context.Context, root string, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, name string, out *genai.Scenario) error {
+func exerciseGenVideoInput(ctx context.Context, root string, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, name string, out *genai.Scenario, usage *genai.Usage) error {
 	videoFile, err := os.Open(filepath.Join(root, "internal", "internaltest", "testdata", "animation.mp4"))
 	if err != nil {
 		return fmt.Errorf("failed to open video file: %w", err)
@@ -453,7 +457,7 @@ func exerciseGenVideoInput(ctx context.Context, root string, pf ProviderFactory,
 			},
 		},
 	}
-	if resp, err := callGen(ctx, pf, name+"Inline", msgs, nil, isStream); err == nil {
+	if resp, err := callGen(ctx, pf, name+"Inline", msgs, nil, isStream, usage); err == nil {
 		// TODO: Verify each video format.
 		v := out.In[genai.ModalityVideo]
 		v.Inline = true
@@ -478,7 +482,7 @@ func exerciseGenVideoInput(ctx context.Context, root string, pf ProviderFactory,
 			},
 		},
 	}
-	if resp, err := callGen(ctx, pf, name+"URL", msgs, nil, isStream); err == nil {
+	if resp, err := callGen(ctx, pf, name+"URL", msgs, nil, isStream, usage); err == nil {
 		v := out.In[genai.ModalityVideo]
 		if len(v.SupportedFormats) == 0 {
 			// TODO: Confirm video format.
@@ -499,7 +503,7 @@ func exerciseGenVideoInput(ctx context.Context, root string, pf ProviderFactory,
 	return nil
 }
 
-func exerciseGenTools(ctx context.Context, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, name string) error {
+func exerciseGenTools(ctx context.Context, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, name string, usage *genai.Usage) error {
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.")}
 	type got struct {
 		Number json.Number `json:"number"`
@@ -523,7 +527,7 @@ func exerciseGenTools(ctx context.Context, pf ProviderFactory, f *genai.Function
 		},
 		ToolCallRequest: genai.ToolCallRequired,
 	}
-	resp, err := callGen(ctx, pf, name+"SquareRoot", msgs, &optsTools, isStream)
+	resp, err := callGen(ctx, pf, name+"SquareRoot", msgs, &optsTools, isStream, usage)
 	if errors.Is(err, cassette.ErrInteractionNotFound) {
 		return err
 	}
@@ -582,7 +586,7 @@ func exerciseGenTools(ctx context.Context, pf ProviderFactory, f *genai.Function
 		}
 
 		check := name + fmt.Sprintf("ToolBias-%s", line.countrySelected)
-		resp, err := callGen(ctx, pf, check, genai.Messages{genai.NewTextMessage(genai.User, line.prompt)}, &opts, isStream)
+		resp, err := callGen(ctx, pf, check, genai.Messages{genai.NewTextMessage(genai.User, line.prompt)}, &opts, isStream, usage)
 		if errors.Is(err, cassette.ErrInteractionNotFound) {
 			return err
 		}
@@ -654,7 +658,7 @@ func exerciseGenTools(ctx context.Context, pf ProviderFactory, f *genai.Function
 	return nil
 }
 
-func callGen(ctx context.Context, pf ProviderFactory, name string, msgs genai.Messages, opts genai.Options, isStream bool) (genai.Result, error) {
+func callGen(ctx context.Context, pf ProviderFactory, name string, msgs genai.Messages, opts genai.Options, isStream bool, usage *genai.Usage) (genai.Result, error) {
 	c := pf(name).(genai.ProviderGen)
 	var err error
 	var resp genai.Result
@@ -683,25 +687,28 @@ func callGen(ctx context.Context, pf ProviderFactory, name string, msgs genai.Me
 	if err != nil {
 		return resp, fmt.Errorf("%s: %w", name, err)
 	}
+	usage.InputTokens += resp.InputTokens
+	usage.InputCachedTokens += resp.InputCachedTokens
+	usage.OutputTokens += resp.OutputTokens
 	return resp, err
 }
 
 // genai.ProviderGenDoc
 
 // exerciseGenDoc exercises the ProviderGenDoc interface if available.
-func exerciseGenDoc(ctx context.Context, pf ProviderFactory, out *genai.Scenario) error {
+func exerciseGenDoc(ctx context.Context, pf ProviderFactory, out *genai.Scenario, usage *genai.Usage) error {
 	name := "GenDoc"
 	out.GenDoc = &genai.FunctionalityDoc{}
-	if err := exerciseGenDocImage(ctx, pf, name+"Image", out); err != nil {
+	if err := exerciseGenDocImage(ctx, pf, name+"Image", out, usage); err != nil {
 		return err
 	}
-	if err := exerciseGenDocAudio(ctx, pf, name+"Audio", out); err != nil {
+	if err := exerciseGenDocAudio(ctx, pf, name+"Audio", out, usage); err != nil {
 		return err
 	}
 	return nil
 }
 
-func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, out *genai.Scenario) error {
+func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, out *genai.Scenario, usage *genai.Usage) error {
 	c := pf(name).(genai.ProviderGenDoc)
 	promptImage := `A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
 	contentsImage := `Generate one square, white-background doodle with smooth, vibrantly colored image depicting ` + promptImage + `.
@@ -716,6 +723,9 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 **Output:** Actual image file for a smooth, colorful doodle-style image on a white background.`
 	msg := genai.NewTextMessage(genai.User, contentsImage)
 	resp, err := c.GenDoc(ctx, msg, nil)
+	usage.InputTokens += resp.InputTokens
+	usage.InputCachedTokens += resp.InputCachedTokens
+	usage.OutputTokens += resp.OutputTokens
 	if err == nil {
 		if len(resp.Contents) > 0 && (resp.Contents[0].Filename == "content.png" || resp.Contents[0].Filename == "content.jpg") {
 			v := out.In[genai.ModalityText]
@@ -740,10 +750,13 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 	return nil
 }
 
-func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, out *genai.Scenario) error {
+func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, out *genai.Scenario, usage *genai.Usage) error {
 	c := pf(name).(genai.ProviderGenDoc)
 	msg := genai.NewTextMessage(genai.User, "Say hi. Just say this word, nothing else.")
 	resp, err := c.GenDoc(ctx, msg, nil)
+	usage.InputTokens += resp.InputTokens
+	usage.InputCachedTokens += resp.InputCachedTokens
+	usage.OutputTokens += resp.OutputTokens
 	if err == nil {
 		if len(resp.Contents) > 0 && resp.Contents[0].Filename == "sound.wav" {
 			v := out.In[genai.ModalityText]

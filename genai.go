@@ -81,6 +81,13 @@ func (u *Usage) String() string {
 	return fmt.Sprintf("in: %d (cached %d), out: %d", u.InputTokens, u.InputCachedTokens, u.OutputTokens)
 }
 
+// Add adds the usage from another result.
+func (u *Usage) Add(r Usage) {
+	u.InputTokens += r.InputTokens
+	u.InputCachedTokens += r.InputCachedTokens
+	u.OutputTokens += r.OutputTokens
+}
+
 // FinishReason is the reason why the model stopped generating tokens.
 //
 // It can be one of the well known below or a custom value.

@@ -10,19 +10,16 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"slices"
 	"strings"
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/internal"
-	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/cerebras"
 	"github.com/maruel/genai/providers/deepseek"
 	"github.com/maruel/genai/providers/groq"
-	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/scoreboard/scoreboardtest"
 )
 
 func TestCreateScenario(t *testing.T) {
@@ -35,12 +32,12 @@ func TestCreateScenario(t *testing.T) {
 			if err2 != nil {
 				t.Fatal(err2)
 			}
-			refs := cc.(genai.ProviderScoreboard).Scoreboard()
 			for _, m := range models {
 				id := m.GetID()
 				t.Run(id, func(t *testing.T) {
-					usage := runOneModel(t, provider, id, refs)
-					providerUsage.Add(usage)
+					providerUsage.Add(scoreboardtest.RunOneModel(t, func(t testing.TB, sn string) genai.Provider {
+						return getClient(t, provider, sn, id)
+					}))
 				})
 			}
 			t.Logf("Usage: %#v", providerUsage)
@@ -50,53 +47,7 @@ func TestCreateScenario(t *testing.T) {
 	t.Logf("Usage: %#v", totalUsage)
 }
 
-func runOneModel(t *testing.T, provider, id string, refs genai.Scoreboard) genai.Usage {
-	// Find the reference.
-	var want genai.Scenario
-	for i := range refs.Scenarios {
-		if slices.Contains(refs.Scenarios[i].Models, id) {
-			want = refs.Scenarios[i]
-			want.Models = []string{id}
-			break
-		}
-	}
-	if len(want.Models) == 0 {
-		t.Fatalf("no scenario for model %q", id)
-	}
-	if want.In == nil && want.Out == nil {
-		t.Skip("Explicitly unsupported model")
-	}
-
-	// Calculate the scenario.
-	providerFactory := func(name string) genai.Provider {
-		if name == "" {
-			return getClient(t, provider, name, id)
-		}
-		return getClient(t, provider, t.Name()+"/"+name, id)
-	}
-	ctx, _ := internaltest.Log(t)
-	got, usage, err := scoreboard.CreateScenario(ctx, providerFactory)
-	t.Logf("Usage: %#v", usage)
-	if err != nil {
-		t.Fatalf("CreateScenario failed: %v", err)
-	}
-
-	// Check if valid.
-	if diff := cmp.Diff(want, got, opt); diff != "" {
-		t.Errorf("mismatch (-want +got):\n%s", diff)
-	}
-	return usage
-}
-
-var opt = cmp.Comparer(func(x, y genai.TriState) bool {
-	// TODO: Make this more solid. This requires a better assessment of what "Flaky" is.
-	if x == genai.Flaky || y == genai.Flaky {
-		return true
-	}
-	return x == y
-})
-
-func getClient(t *testing.T, provider, name, m string) genai.Provider {
+func getClient(t testing.TB, provider, name, m string) genai.Provider {
 	fn := func(h http.RoundTripper) http.RoundTripper {
 		if name == "" {
 			return h
@@ -173,7 +124,7 @@ func getClient(t *testing.T, provider, name, m string) genai.Provider {
 // handleGroqReasoning automatically enables the reasoning parsing feature of Groq.
 type handleGroqReasoning struct {
 	Client genai.ProviderGen
-	t      *testing.T
+	t      testing.TB
 }
 
 func (h *handleGroqReasoning) Name() string {
@@ -204,6 +155,10 @@ func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages
 	}
 	c := adapters.ProviderGenThinking{ProviderGen: h.Client, TagName: "think"}
 	return c.GenStream(ctx, msgs, replies, opts)
+}
+
+func (h *handleGroqReasoning) Unwrap() genai.Provider {
+	return h.Client
 }
 
 var recorder *internal.Records

@@ -2,7 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Package internaltest is awesome sauce for unit testign.
+// Package internaltest is awesome sauce for unit testing.
 package internaltest
 
 import (
@@ -118,6 +118,8 @@ func Log(tb testing.TB) (context.Context, *slog.Logger) {
 	ctx := internal.WithLogger(tb.Context(), l)
 	return ctx, l
 }
+
+//
 
 // testWriter wraps t.Log() to implement io.Writer
 type testWriter struct {

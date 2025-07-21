@@ -74,6 +74,10 @@ func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages
 	return c.GenStream(ctx, msgs, replies, opts)
 }
 
+func (h *handleGroqReasoning) Unwrap() genai.Provider {
+	return h.Client
+}
+
 func TestClient_Preferred(t *testing.T) {
 	data := []struct {
 		name string

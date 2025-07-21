@@ -231,6 +231,10 @@ func (c *ProviderGenAppend) GenStream(ctx context.Context, msgs genai.Messages, 
 	return c.ProviderGen.GenStream(ctx, msgs, replies, opts)
 }
 
+func (c *ProviderGenAppend) Unwrap() genai.Provider {
+	return c.ProviderGen
+}
+
 // ProviderGenThinking wraps a ProviderGen and processes its output to extract thinking blocks.
 //
 // It looks for content within tags ("<TagName>" and "</TagName>") and places it in Thinking Content blocks

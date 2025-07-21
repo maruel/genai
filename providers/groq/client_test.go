@@ -9,6 +9,7 @@ import (
 	_ "embed"
 	"net/http"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -22,8 +23,8 @@ import (
 func TestClient_Scoreboard(t *testing.T) {
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
 		c := getClient(t, m)
-		if m == "qwen/qwen3-32b" {
-			return &handleReasoning{
+		if strings.HasPrefix(m, "qwen/") {
+			return &handleGroqReasoning{
 				Client: &adapters.ProviderGenAppend{
 					ProviderGen: c,
 					Append:      genai.NewTextMessage(genai.User, "/think"),
@@ -32,26 +33,26 @@ func TestClient_Scoreboard(t *testing.T) {
 			}
 		}
 		if m == "deepseek-r1-distill-llama-70b" {
-			return &handleReasoning{Client: c, t: t}
+			return &handleGroqReasoning{Client: c, t: t}
 		}
 		return c
 	}, nil)
 }
 
-type handleReasoning struct {
+type handleGroqReasoning struct {
 	Client genai.ProviderGen
 	t      *testing.T
 }
 
-func (h *handleReasoning) Name() string {
+func (h *handleGroqReasoning) Name() string {
 	return h.Client.Name()
 }
 
-func (h *handleReasoning) ModelID() string {
+func (h *handleGroqReasoning) ModelID() string {
 	return h.Client.ModelID()
 }
 
-func (h *handleReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+func (h *handleGroqReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	if opts != nil {
 		if o := opts.(*genai.OptionsText); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
 			opts = &groq.OptionsText{ReasoningFormat: groq.ReasoningFormatParsed, OptionsText: *o}
@@ -62,7 +63,7 @@ func (h *handleReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts
 	return c.GenSync(ctx, msgs, opts)
 }
 
-func (h *handleReasoning) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	if opts != nil {
 		if o := opts.(*genai.OptionsText); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
 			opts = &groq.OptionsText{ReasoningFormat: groq.ReasoningFormatParsed, OptionsText: *o}

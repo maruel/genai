@@ -6,88 +6,55 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 125
-        transfer_encoding: []
-        trailer: {}
+        content_length: 169
         host: router.huggingface.co
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"stream":false,"messages":[{"role":"user","content":"Talk about Canada in 10 words. Start with: Canada is"}],"stop":["is"]}
-        form: {}
+            {"model":"meta-llama/Llama-3.3-70B-Instruct","stream":false,"messages":[{"role":"user","content":"Talk about Canada in 10 words. Start with: Canada is"}],"stop":["is"]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/meta-llama%2FLlama-3.3-70B-Instruct/v1/chat/completions
+        url: https://router.huggingface.co/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 314
-        uncompressed: false
-        body: '{"object":"chat.completion","id":"","created":1749485737,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"Canada is"},"logprobs":null,"finish_reason":"stop_sequence"}],"usage":{"prompt_tokens":48,"completion_tokens":2,"total_tokens":50}}'
+        content_length: 629
+        body: |
+            {"id":"5c81d42e-c8db-4a62-aae5-b82b5db2902e","object":"chat.completion","created":1753054272,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"Canada "},"finish_reason":"stop","content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"usage":{"prompt_tokens":48,"completion_tokens":2,"total_tokens":50,"prompt_tokens_details":null,"completion_tokens_details":null},"system_fingerprint":""}
         headers:
-            Access-Control-Allow-Credentials:
-                - "true"
             Access-Control-Allow-Origin:
                 - '*'
             Access-Control-Expose-Headers:
                 - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
             Content-Length:
-                - "314"
+                - "629"
             Content-Type:
                 - application/json
             Cross-Origin-Opener-Policy:
                 - same-origin
+            Inference-Id:
+                - 0-f94bd70c-17d4-4328-93ae-f29fbe5df7e3
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Vary:
-                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
+                - Origin
             Via:
-                - 1.1 df34ce5bf73c140dc63a22fa17a4dcda.cloudfront.net (CloudFront)
+                - 1.1 60c77d7f2a0954d991174a909a828016.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - WgoQ3r8KM_QQDD8lVGnPmckkWj5Uq05nuUTI9OFN5GWWPYklyeVBiw==
+                - Bstm0_eY4kLgYSAjoWtbACzQ_Gn4QTw3QpjBhFEn08a8Oo3GFiHi-A==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
                 - Miss from cloudfront
-            X-Compute-Characters:
-                - "285"
-            X-Compute-Time:
-                - "0.983398558"
-            X-Compute-Type:
-                - 4-nvida-a100-sxm4-80gb
-            X-Generated-Tokens:
-                - "2"
-            X-Inference-Id:
-                - fa1e3e60-9900-432e-8e6e-090050fa32b3
-            X-Inference-Time:
-                - "133"
             X-Powered-By:
                 - huggingface-moon
-            X-Prompt-Tokens:
-                - "48"
-            X-Proxied-Host:
-                - http://10.102.95.187
-            X-Proxied-Path:
-                - /v1/chat/completions
-            X-Proxied-Replica:
-                - vewwpasy-76l93
-            X-Queue-Time:
-                - "849"
             X-Request-Id:
-                - KYPijrncgE9XXpkP
+                - 7uicQAiMnMO80TZg
             X-Robots-Tag:
                 - none
-            X-Time-Per-Token:
-                - "66"
-            X-Total-Time:
-                - "983"
-            X-Validation-Time:
-                - "0"
+            X-Trace-Id:
+                - 90cb06a648493d9792cd28864a5d923c
         status: 200 OK
         code: 200
-        duration: 1.088s
+        duration: 450ms

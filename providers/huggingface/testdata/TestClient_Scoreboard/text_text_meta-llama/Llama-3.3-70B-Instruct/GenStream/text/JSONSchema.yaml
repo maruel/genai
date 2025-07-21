@@ -6,92 +6,54 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 455
-        transfer_encoding: []
-        trailer: {}
+        content_length: 530
         host: router.huggingface.co
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"stream":true,"messages":[{"role":"user","content":"Is a banana a fruit? Reply as JSON according to the provided schema."}],"response_format":{"type":"json","value":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean","description":"True if the answer is that it is a fruit, false otherwise"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}},"stream_options":{"include_usage":true}}
-        form: {}
+            {"model":"meta-llama/Llama-3.3-70B-Instruct","stream":true,"messages":[{"role":"user","content":"Is a banana a fruit? Reply as JSON according to the provided schema."}],"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean","description":"True if the answer is that it is a fruit, false otherwise"}},"additionalProperties":false,"type":"object","required":["is_fruit"],"name":"response"}},"stream_options":{"include_usage":true}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/meta-llama%2FLlama-3.3-70B-Instruct/v1/chat/completions
+        url: https://router.huggingface.co/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: -1
-        uncompressed: false
-        body: |+
-            data: {"object":"chat.completion.chunk","id":"","created":1749485743,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"{\""},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"object":"chat.completion.chunk","id":"","created":1749485743,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"is"},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"object":"chat.completion.chunk","id":"","created":1749485743,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"_f"},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"object":"chat.completion.chunk","id":"","created":1749485743,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"ruit"},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"object":"chat.completion.chunk","id":"","created":1749485743,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"\":"},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"object":"chat.completion.chunk","id":"","created":1749485743,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" true"},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"object":"chat.completion.chunk","id":"","created":1749485743,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"}"},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"object":"chat.completion.chunk","id":"","created":1749485743,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":"stop"}],"usage":null}
-
-            data: {"object":"chat.completion.chunk","id":"","created":1749485743,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[],"usage":{"prompt_tokens":50,"completion_tokens":8,"total_tokens":58}}
-
-            data: [DONE]
-
+        content_length: 116
+        body: '{"code":400,"reason":"INVALID_REQUEST_BODY","message":"model features structured outputs not support","metadata":{}}'
         headers:
-            Access-Control-Allow-Credentials:
-                - "true"
             Access-Control-Allow-Origin:
                 - '*'
             Access-Control-Expose-Headers:
                 - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
-            Cache-Control:
-                - no-cache
+            Content-Length:
+                - "116"
             Content-Type:
-                - text/event-stream
+                - application/json
             Cross-Origin-Opener-Policy:
                 - same-origin
+            Inference-Id:
+                - 0-7c9d674e-950b-457f-b8e3-f938a799e998
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Vary:
-                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
+                - Origin
             Via:
-                - 1.1 df34ce5bf73c140dc63a22fa17a4dcda.cloudfront.net (CloudFront)
+                - 1.1 008b0ed6cc4c9f79c79b5aa34472a884.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - 6vpTqWYJUHP_HYQpjGjGgdodutai_o1CExBBhw_G46SYKVQg-Vp97g==
+                - 9Zu8dnppAvzzKJLQaZrmu0Ru7nN0s_sHL3BrlVm5eoIUmtdLsW7XCg==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
-                - Miss from cloudfront
-            X-Compute-Characters:
-                - "301"
-            X-Compute-Type:
-                - 4-nvida-a100-sxm4-80gb
-            X-Inference-Id:
-                - 151ec4a0-9eb9-468a-af3c-59191af21926
+                - Error from cloudfront
             X-Powered-By:
                 - huggingface-moon
-            X-Proxied-Host:
-                - http://10.102.93.186
-            X-Proxied-Path:
-                - /v1/chat/completions
-            X-Proxied-Replica:
-                - vewwpasy-ljrvn
             X-Request-Id:
-                - Y4li-Phl09nz8r2e
+                - -uX2AN77FcafK7EH
             X-Robots-Tag:
                 - none
-        status: 200 OK
-        code: 200
-        duration: 922ms
+            X-Trace-Id:
+                - d283187ef2ea34f5c5c58f9f12937b69
+        status: 400 Bad Request
+        code: 400
+        duration: 128ms

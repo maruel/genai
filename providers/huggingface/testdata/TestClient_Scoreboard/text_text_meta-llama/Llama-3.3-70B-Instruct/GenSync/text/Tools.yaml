@@ -6,178 +6,55 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 730
-        transfer_encoding: []
-        trailer: {}
+        content_length: 774
         host: router.huggingface.co
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"stream":false,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
-        form: {}
+            {"model":"meta-llama/Llama-3.3-70B-Instruct","stream":false,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/meta-llama%2FLlama-3.3-70B-Instruct/v1/chat/completions
+        url: https://router.huggingface.co/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 421
-        uncompressed: false
-        body: '{"object":"chat.completion","id":"","created":1749485739,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":293,"completion_tokens":18,"total_tokens":311}}'
-        headers:
-            Access-Control-Allow-Credentials:
-                - "true"
-            Access-Control-Allow-Origin:
-                - '*'
-            Access-Control-Expose-Headers:
-                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
-            Content-Length:
-                - "421"
-            Content-Type:
-                - application/json
-            Cross-Origin-Opener-Policy:
-                - same-origin
-            Referrer-Policy:
-                - strict-origin-when-cross-origin
-            Vary:
-                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
-            Via:
-                - 1.1 df34ce5bf73c140dc63a22fa17a4dcda.cloudfront.net (CloudFront)
-            X-Amz-Cf-Id:
-                - KQrpv0_McetPuo21EjjkFtDAseDyYOdP6B-xlF8gdaqTOLwMjxd1jA==
-            X-Amz-Cf-Pop:
-                - YTO50-P1
-            X-Cache:
-                - Miss from cloudfront
-            X-Compute-Characters:
-                - "1465"
-            X-Compute-Time:
-                - "2.643468835"
-            X-Compute-Type:
-                - 4-nvida-a100-sxm4-80gb
-            X-Generated-Tokens:
-                - "18"
-            X-Inference-Id:
-                - 21fc4747-8172-4e8b-8b15-50e296bc7f4b
-            X-Inference-Time:
-                - "2642"
-            X-Powered-By:
-                - huggingface-moon
-            X-Prompt-Tokens:
-                - "293"
-            X-Proxied-Host:
-                - http://10.102.93.186
-            X-Proxied-Path:
-                - /v1/chat/completions
-            X-Proxied-Replica:
-                - vewwpasy-ljrvn
-            X-Queue-Time:
-                - "0"
-            X-Request-Id:
-                - eCFd-blhiJ89yyZ6
-            X-Robots-Tag:
-                - none
-            X-Time-Per-Token:
-                - "146"
-            X-Total-Time:
-                - "2643"
-            X-Validation-Time:
-                - "1"
-        status: 200 OK
-        code: 200
-        duration: 2.72s
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 919
-        transfer_encoding: []
-        trailer: {}
-        host: router.huggingface.co
-        remote_addr: ""
-        request_uri: ""
+        content_length: 627
         body: |
-            {"stream":false,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},{"role":"tool","content":"363.89","name":"square_root"}],"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
-        form: {}
+            {"id":"3ff01068-0e9f-4b72-bafd-86228edeacdb","object":"chat.completion","created":1753054272,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"364.0"},"finish_reason":"stop","content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"usage":{"prompt_tokens":79,"completion_tokens":4,"total_tokens":83,"prompt_tokens_details":null,"completion_tokens_details":null},"system_fingerprint":""}
         headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/meta-llama%2FLlama-3.3-70B-Instruct/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 304
-        uncompressed: false
-        body: '{"object":"chat.completion","id":"","created":1749485739,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"363.89"},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":153,"completion_tokens":4,"total_tokens":157}}'
-        headers:
-            Access-Control-Allow-Credentials:
-                - "true"
             Access-Control-Allow-Origin:
                 - '*'
             Access-Control-Expose-Headers:
                 - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
             Content-Length:
-                - "304"
+                - "627"
             Content-Type:
                 - application/json
             Cross-Origin-Opener-Policy:
                 - same-origin
+            Inference-Id:
+                - 0-a71b4a51-45b6-4417-851a-ce049bb05097
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Vary:
-                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
+                - Origin
             Via:
-                - 1.1 df34ce5bf73c140dc63a22fa17a4dcda.cloudfront.net (CloudFront)
+                - 1.1 60c77d7f2a0954d991174a909a828016.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - HE_FjRSTJfTwK6_csKbp3Wucbz6y9i0zEO3HZRAM6GObWlwTNA49vQ==
+                - fsUmWejkD1Vbozv8dYkZnp3pR2AyVrlHlaRIksT6kQebbCPh5i7rxA==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
                 - Miss from cloudfront
-            X-Compute-Characters:
-                - "791"
-            X-Compute-Time:
-                - "0.212442681"
-            X-Compute-Type:
-                - 4-nvida-a100-sxm4-80gb
-            X-Generated-Tokens:
-                - "4"
-            X-Inference-Id:
-                - 809629d1-4065-443d-ba03-e54a95d9753e
-            X-Inference-Time:
-                - "205"
             X-Powered-By:
                 - huggingface-moon
-            X-Prompt-Tokens:
-                - "153"
-            X-Proxied-Host:
-                - http://10.102.91.105
-            X-Proxied-Path:
-                - /v1/chat/completions
-            X-Proxied-Replica:
-                - vewwpasy-3n3dh
-            X-Queue-Time:
-                - "6"
             X-Request-Id:
-                - EsnemML-3AR8Jz2i
+                - VwnqtYyTwylU4bMB
             X-Robots-Tag:
                 - none
-            X-Time-Per-Token:
-                - "51"
-            X-Total-Time:
-                - "212"
-            X-Validation-Time:
-                - "0"
+            X-Trace-Id:
+                - 690fa44822e00e3fb285bdbed8a4f0fe
         status: 200 OK
         code: 200
-        duration: 290ms
+        duration: 657ms

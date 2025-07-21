@@ -6,80 +6,55 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 222
+        content_length: 266
         host: router.huggingface.co
         body: |
-            {"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+            {"model":"meta-llama/Llama-3.3-70B-Instruct","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/meta-llama%2FLlama-3.3-70B-Instruct/v1/chat/completions
+        url: https://router.huggingface.co/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 423
-        body: '{"object":"chat.completion","id":"","created":1749596126,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","content":"The capital of Quackiland is Quack. The location of the Big Canard Statue doesn''t change that fact. The answer is still Quack."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":64,"completion_tokens":32,"total_tokens":96}}'
+        content_length: 658
+        body: |
+            {"id":"cf86aa10-a2ef-438a-b16a-050ed9cd1cc2","object":"chat.completion","created":1753054272,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"The capital of Quackiland is Quack."},"finish_reason":"stop","content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"usage":{"prompt_tokens":65,"completion_tokens":11,"total_tokens":76,"prompt_tokens_details":null,"completion_tokens_details":null},"system_fingerprint":""}
         headers:
-            Access-Control-Allow-Credentials:
-                - "true"
             Access-Control-Allow-Origin:
                 - '*'
             Access-Control-Expose-Headers:
                 - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
             Content-Length:
-                - "423"
+                - "658"
             Content-Type:
                 - application/json
             Cross-Origin-Opener-Policy:
                 - same-origin
+            Inference-Id:
+                - 0-21fe5eb6-0eb7-49d7-8727-0433a3764d2d
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Vary:
-                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
+                - Origin
             Via:
-                - 1.1 a44cf9ed8a499212c53e0b8f57aa31f4.cloudfront.net (CloudFront)
+                - 1.1 60c77d7f2a0954d991174a909a828016.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - aLFbhPKp573pc5xgD4s8TbOvTACAHDGcrMnjkDPJborKY8BVX6OEzw==
+                - 8wa_XPHatPzseOafwa-x8LF1e1bWjcGNnez-DMh5YiRClqumoxCLLQ==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
                 - Miss from cloudfront
-            X-Compute-Characters:
-                - "345"
-            X-Compute-Time:
-                - "16.037167501"
-            X-Compute-Type:
-                - 4-nvida-a100-sxm4-80gb
-            X-Generated-Tokens:
-                - "32"
-            X-Inference-Id:
-                - 618559a9-ec0a-42aa-8af5-ab6ad5402be3
-            X-Inference-Time:
-                - "12353"
             X-Powered-By:
                 - huggingface-moon
-            X-Prompt-Tokens:
-                - "64"
-            X-Proxied-Host:
-                - http://10.102.49.75
-            X-Proxied-Path:
-                - /v1/chat/completions
-            X-Proxied-Replica:
-                - vewwpasy-qfhi7
-            X-Queue-Time:
-                - "3683"
             X-Request-Id:
-                - nCpPyCd6D-09LwLh
+                - 1XM6msYlVcXsraSv
             X-Robots-Tag:
                 - none
-            X-Time-Per-Token:
-                - "386"
-            X-Total-Time:
-                - "16037"
-            X-Validation-Time:
-                - "0"
+            X-Trace-Id:
+                - 644240a89382318e84a21716f554a7c3
         status: 200 OK
         code: 200
-        duration: 16.172s
+        duration: 661ms

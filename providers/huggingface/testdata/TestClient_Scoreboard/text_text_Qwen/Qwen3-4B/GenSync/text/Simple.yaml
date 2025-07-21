@@ -1,0 +1,79 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 157
+        host: router.huggingface.co
+        body: |
+            {"model":"Qwen/Qwen3-4B","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."},{"role":"user","content":"/think"}],"seed":42}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1248
+        body: '{"id":"chatcmpl-b839d6ee8aaf4faa9602aacba1f4dfa7","choices":[{"finish_reason":"stop","index":0,"logprobs":null,"message":{"content":"<think>\nOkay, the user said, \"Say hello. Use only one word.\" So I need to respond with a single word that means hello. The most common English word for hello is \"Hi,\" but maybe they want something else. Let me think. \"Hello\" itself is two words, so that''s out. \"Hey\" is another option, but it''s more of an exclamation. \"Hola\" is Spanish for hello, but maybe they want an English word. \"Hi\" is definitely the most straightforward. I should check if there''s any other possible answer, but I think \"Hi\" is the best choice here. Let me make sure there''s no trick or hidden meaning. The user might just want a simple response. Alright, I''ll go with \"Hi.\"\n</think>\n\nHi.","refusal":null,"role":"assistant","annotations":null,"audio":null,"function_call":null,"tool_calls":[],"reasoning_content":null},"stop_reason":null}],"created":1753058273,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion","service_tier":null,"system_fingerprint":null,"usage":{"completion_tokens":164,"prompt_tokens":23,"total_tokens":187,"completion_tokens_details":null,"prompt_tokens_details":null},"prompt_logprobs":null}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "1248"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+            Via:
+                - 1.1 6477e7b623b71ec66bc28ed8e271db7e.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - nBXsb79coWMq9CaRl1_DUqDr5-ji7sq1aY1oGe_ngbLmxQS7ZdMg9w==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Id:
+                - chatcmpl-b839d6ee8aaf4faa9602aacba1f4dfa7
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Dynamic-Period-Remaining:
+                - 371s
+            X-Ratelimit-Dynamic-Period-Usage-Requests:
+                - 0%
+            X-Ratelimit-Dynamic-Period-Usage-Tokens:
+                - 0%
+            X-Ratelimit-Dynamic-Scale-Requests:
+                - "1.00"
+            X-Ratelimit-Dynamic-Scale-Tokens:
+                - "1.00"
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "400000"
+            X-Ratelimit-Remaining-Requests:
+                - "600"
+            X-Ratelimit-Remaining-Tokens:
+                - "400000"
+            X-Request-Id:
+                - w1fhbVATUjqRsFRp
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.211s

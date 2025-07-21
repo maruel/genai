@@ -6,88 +6,53 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 529
-        transfer_encoding: []
-        trailer: {}
+        content_length: 573
         host: router.huggingface.co
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"stream":false,"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
-        form: {}
+            {"model":"meta-llama/Llama-3.3-70B-Instruct","stream":false,"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/meta-llama%2FLlama-3.3-70B-Instruct/v1/chat/completions
+        url: https://router.huggingface.co/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 423
-        uncompressed: false
-        body: '{"object":"chat.completion","id":"","created":1749485736,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":262,"completion_tokens":17,"total_tokens":279}}'
+        content_length: -1
+        body: |
+            {"id":"b1a83830-9924-4a1d-962d-5476d0be0539","object":"chat.completion","created":1753054255,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"Determining the \"best\" country is subjective and depends on various factors such as personal preferences, priorities, and values. However, I can provide you with a neutral comparison of Canada and the USA based on some key aspects.\n\n### Introduction to the Best Country Tool\n\nFor the sake of this example, let's create a hypothetical tool called `best_country` that compares countries based on certain criteria. The `best_country` tool will consider factors such as quality of life, economic stability, education, healthcare, and environmental sustainability.\n\n### Comparison Criteria\n\nThe following are some key aspects to consider when comparing Canada and the USA:\n\n1. **Quality of Life**: This includes factors such as life expectancy, income, and overall well-being.\n2. **Economic Stability**: This looks at the strength of the economy, employment rates, and GDP per capita.\n3. **Education**: The quality and accessibility of education are crucial for a country's development.\n4. **Healthcare**: The availability, quality, and accessibility of healthcare services are vital.\n5. **Environmental Sustainability**: This considers a country's efforts to protect the environment and mitigate climate change.\n\n### Comparison\n\nHere's a brief comparison based on the above criteria:\n\n- **Quality of Life**: Both countries offer a high quality of life, but Canada often ranks slightly higher in terms of social cohesion and lack of corruption.\n- **Economic Stability**: The USA has a larger and more diverse economy, but Canada is known for its stability and resilience.\n- **Education**: Both countries have excellent education systems, but the cost and accessibility can vary significantly.\n- **Healthcare**: Canada's public healthcare system is often considered more comprehensive and accessible than the mixed public-private system in the USA.\n- **Environmental Sustainability**: Canada has made significant commitments to reduce its carbon footprint, and while the USA has also taken steps, its approach has been more variable.\n\n### The `best_country` Tool\n\nTo create a simple `best_country` tool, we can assign scores based on the criteria mentioned above. However, remember that this is a highly simplified example and real-world assessments would require much more detailed data and complex analysis.\n\n```python\nclass Country:\n    def __init__(self, name, quality_of_life, economic_stability, education, healthcare, environmental_sustainability):\n        self.name = name\n        self.quality_of_life = quality_of_life\n        self.economic_stability = economic_stability\n        self.education = education\n        self.healthcare = healthcare\n        self.environmental_sustainability = environmental_sustainability\n\n    def total_score(self):\n        return self.quality_of_life + self.economic_stability + self.education + self.healthcare + self.environmental_sustainability\n\ndef best_country(country1, country2):\n    if country1.total_score() > country2.total_score():\n        return country1.name\n    elif country2.total_score() > country1.total_score():\n        return country2.name\n    else:\n        return \"Both countries are equal\"\n\n# Example scores (out of 10) for demonstration purposes\ncanada = Country(\"Canada\", 8, 8, 9, 9, 7)\nusa = Country(\"USA\", 8, 9, 8, 7, 6)\n\nprint(best_country(canada, usa))\n```\n\n### Conclusion\n\nThe \"best\" country between Canada and the USA depends on your individual priorities. If you value a strong, diverse economy and a wide range of opportunities, the USA might be considered \"better.\" However, if you prioritize social cohesion, universal healthcare, and a high standard of living with lower costs, Canada could be the preferable choice. The `best_country` tool provided here is a simplistic model and does not capture the full complexity of comparing two nations."},"finish_reason":"stop","content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"usage":{"prompt_tokens":38,"completion_tokens":769,"total_tokens":807,"prompt_tokens_details":null,"completion_tokens_details":null},"system_fingerprint":""}
         headers:
-            Access-Control-Allow-Credentials:
-                - "true"
             Access-Control-Allow-Origin:
                 - '*'
             Access-Control-Expose-Headers:
                 - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
-            Content-Length:
-                - "423"
             Content-Type:
                 - application/json
             Cross-Origin-Opener-Policy:
                 - same-origin
+            Inference-Id:
+                - 0-59bd1956-ae9a-4011-b3b8-afed4e801c2b
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Vary:
-                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
+                - Origin
             Via:
-                - 1.1 df34ce5bf73c140dc63a22fa17a4dcda.cloudfront.net (CloudFront)
+                - 1.1 60c77d7f2a0954d991174a909a828016.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - 0ISCxFI9d-dHuNBODLOF49MSDjtGunJth-I9N8Phx8KBt4ezVnZCYw==
+                - aPXmD-_9ByuU5fM5u8KaoQIWZpZAceS0HkSPtyKFwISrRWCy76wajQ==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
                 - Miss from cloudfront
-            X-Compute-Characters:
-                - "1301"
-            X-Compute-Time:
-                - "2.5027237490000003"
-            X-Compute-Type:
-                - 4-nvida-a100-sxm4-80gb
-            X-Generated-Tokens:
-                - "17"
-            X-Inference-Id:
-                - 6d947533-20f0-43f0-981f-bef9fd548662
-            X-Inference-Time:
-                - "2501"
             X-Powered-By:
                 - huggingface-moon
-            X-Prompt-Tokens:
-                - "262"
-            X-Proxied-Host:
-                - http://10.102.95.200
-            X-Proxied-Path:
-                - /v1/chat/completions
-            X-Proxied-Replica:
-                - vewwpasy-7tsgh
-            X-Queue-Time:
-                - "0"
             X-Request-Id:
-                - YHSsOdWLQB1XUxww
+                - 6D588PmCYmF_hmQr
             X-Robots-Tag:
                 - none
-            X-Time-Per-Token:
-                - "147"
-            X-Total-Time:
-                - "2502"
-            X-Validation-Time:
-                - "1"
+            X-Trace-Id:
+                - 66a121424341fe14f3ae7d42325424d9
         status: 200 OK
         code: 200
-        duration: 2.614s
+        duration: 14.168s

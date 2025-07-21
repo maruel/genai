@@ -6,52 +6,36 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 769
-        transfer_encoding: []
-        trailer: {}
+        content_length: 813
         host: router.huggingface.co
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"stream":true,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
-        form: {}
+            {"model":"meta-llama/Llama-3.3-70B-Instruct","stream":true,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/meta-llama%2FLlama-3.3-70B-Instruct/v1/chat/completions
+        url: https://router.huggingface.co/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |+
-            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":"square_root","arguments":"{"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"id":"473019af-fc3d-4ada-a506-7bdae930ae4a","object":"chat.completion.chunk","created":1753054296,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"delta":{"content":"364","role":"assistant"},"finish_reason":null,"content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"system_fingerprint":""}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":" \""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"id":"473019af-fc3d-4ada-a506-7bdae930ae4a","object":"chat.completion.chunk","created":1753054296,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"delta":{"content":".","role":"assistant"},"finish_reason":null,"content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"system_fingerprint":""}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"number"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"id":"473019af-fc3d-4ada-a506-7bdae930ae4a","object":"chat.completion.chunk","created":1753054296,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"delta":{"content":"0","role":"assistant"},"finish_reason":null,"content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"system_fingerprint":""}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"\":"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"id":"473019af-fc3d-4ada-a506-7bdae930ae4a","object":"chat.completion.chunk","created":1753054296,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":"stop","content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"system_fingerprint":""}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":" \""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"id":"473019af-fc3d-4ada-a506-7bdae930ae4a","object":"chat.completion.chunk","created":1753054296,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null,"content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"system_fingerprint":""}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"132"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"413"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"0","type":"function","function":{"name":null,"arguments":"\"}"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[],"usage":{"prompt_tokens":293,"completion_tokens":18,"total_tokens":311}}
+            data: {"id":"473019af-fc3d-4ada-a506-7bdae930ae4a","object":"chat.completion.chunk","created":1753054296,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null,"content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"system_fingerprint":"","usage":{"prompt_tokens":79,"completion_tokens":4,"total_tokens":83,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"cache_creation_input_tokens":0,"cache_read_input_tokens":0},"completion_tokens_details":{"audio_tokens":0,"reasoning_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}
 
             data: [DONE]
 
         headers:
-            Access-Control-Allow-Credentials:
-                - "true"
             Access-Control-Allow-Origin:
                 - '*'
             Access-Control-Expose-Headers:
@@ -62,122 +46,28 @@ interactions:
                 - text/event-stream
             Cross-Origin-Opener-Policy:
                 - same-origin
+            Inference-Id:
+                - 0-d52138f5-287d-4ec7-8595-68271705a0af
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Vary:
-                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
+                - Origin
             Via:
-                - 1.1 df34ce5bf73c140dc63a22fa17a4dcda.cloudfront.net (CloudFront)
+                - 1.1 60c77d7f2a0954d991174a909a828016.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - Q_KzA371XNwBTGra2p98hHZVbRpZjrQIr54LzSsluYr490ky1IwaPw==
+                - 1nJPN-5yuq97IDjj1eO633TC7HG4_S_NV2WDYdm5bApHdyTlcUrhrw==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
                 - Miss from cloudfront
-            X-Compute-Characters:
-                - "1465"
-            X-Compute-Type:
-                - 4-nvida-a100-sxm4-80gb
-            X-Inference-Id:
-                - 12ce0fd5-9a9a-4ff8-bfa5-9dfe4a5a1afa
             X-Powered-By:
                 - huggingface-moon
-            X-Proxied-Host:
-                - http://10.102.84.74
-            X-Proxied-Path:
-                - /v1/chat/completions
-            X-Proxied-Replica:
-                - vewwpasy-jz9oh
             X-Request-Id:
-                - m9cKi0wmlRtEN2VY
+                - GjfZjr1T-Aw1q0el
             X-Robots-Tag:
                 - none
+            X-Trace-Id:
+                - 0f82a76558be151339c7b6bba7fe5bc7
         status: 200 OK
         code: 200
-        duration: 2.457s
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 960
-        transfer_encoding: []
-        trailer: {}
-        host: router.huggingface.co
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"stream":true,"messages":[{"role":"system","content":"You are an helpful assistant that is very succinct. You only reply to the user's request with no additional information. Use the tools at your disposal and return their result as-is."},{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"name":"square_root","arguments":"{ \"number\": \"132413\"}"}}]},{"role":"tool","content":"363.89","name":"square_root"}],"stream_options":{"include_usage":true},"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/meta-llama%2FLlama-3.3-70B-Instruct/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: -1
-        uncompressed: false
-        body: |+
-            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"363"},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"89"},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":"stop"}],"usage":null}
-
-            data: {"object":"chat.completion.chunk","id":"","created":1749485745,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[],"usage":{"prompt_tokens":153,"completion_tokens":4,"total_tokens":157}}
-
-            data: [DONE]
-
-        headers:
-            Access-Control-Allow-Credentials:
-                - "true"
-            Access-Control-Allow-Origin:
-                - '*'
-            Access-Control-Expose-Headers:
-                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
-            Cache-Control:
-                - no-cache
-            Content-Type:
-                - text/event-stream
-            Cross-Origin-Opener-Policy:
-                - same-origin
-            Referrer-Policy:
-                - strict-origin-when-cross-origin
-            Vary:
-                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
-            Via:
-                - 1.1 df34ce5bf73c140dc63a22fa17a4dcda.cloudfront.net (CloudFront)
-            X-Amz-Cf-Id:
-                - kPjr5nYJwEOmnDWTO7Aprvbmy5IsS6nu9Du2KthqWyrPlSGAGhiH3g==
-            X-Amz-Cf-Pop:
-                - YTO50-P1
-            X-Cache:
-                - Miss from cloudfront
-            X-Compute-Characters:
-                - "793"
-            X-Compute-Type:
-                - 4-nvida-a100-sxm4-80gb
-            X-Inference-Id:
-                - d7f92ee7-b8da-49bc-8b96-4b7c8c5629d5
-            X-Powered-By:
-                - huggingface-moon
-            X-Proxied-Host:
-                - http://10.102.95.187
-            X-Proxied-Path:
-                - /v1/chat/completions
-            X-Proxied-Replica:
-                - vewwpasy-76l93
-            X-Request-Id:
-                - iNwy9wRsEWvK_kO8
-            X-Robots-Tag:
-                - none
-        status: 200 OK
-        code: 200
-        duration: 177ms
+        duration: 418ms

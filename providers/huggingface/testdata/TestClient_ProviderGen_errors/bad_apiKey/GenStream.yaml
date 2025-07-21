@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 116
+        content_length: 140
         host: router.huggingface.co
         body: |
-            {"stream":true,"messages":[{"role":"user","content":"Tell a short joke."}],"stream_options":{"include_usage":true}}
+            {"model":"Qwen/Qwen3-4B","stream":true,"messages":[{"role":"user","content":"Tell a short joke."}],"stream_options":{"include_usage":true}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/Qwen%2FQwen3-4B/v1/chat/completions
+        url: https://router.huggingface.co/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
@@ -39,11 +39,11 @@ interactions:
             Vary:
                 - Origin
             Via:
-                - 1.1 3c503941ffd955a9223590c80d8af4c2.cloudfront.net (CloudFront)
+                - 1.1 60c77d7f2a0954d991174a909a828016.cloudfront.net (CloudFront)
             Www-Authenticate:
                 - Bearer realm="Authentication required", charset="UTF-8"
             X-Amz-Cf-Id:
-                - KnHFxgCYBZ1sojUurr8_5PzBrLzuF54K25ESxQ7raraLeqHAdVkmdQ==
+                - cKynzmfZywcPPitgSTB-a3XlD8cirSMMh4xzjHsdS1-N-XoMCRycXw==
             X-Amz-Cf-Pop:
                 - YUL62-P2
             X-Cache:
@@ -53,9 +53,9 @@ interactions:
             X-Powered-By:
                 - huggingface-moon
             X-Request-Id:
-                - YiPidSP0jdrSv5Q2
+                - B1lnaKNMUGWvWn8A
             X-Robots-Tag:
                 - none
         status: 401 Unauthorized
         code: 401
-        duration: 28ms
+        duration: 37ms

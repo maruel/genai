@@ -6,88 +6,53 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 529
-        transfer_encoding: []
-        trailer: {}
+        content_length: 573
         host: router.huggingface.co
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"stream":false,"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
-        form: {}
+            {"model":"meta-llama/Llama-3.3-70B-Instruct","stream":false,"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/meta-llama%2FLlama-3.3-70B-Instruct/v1/chat/completions
+        url: https://router.huggingface.co/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 420
-        uncompressed: false
-        body: '{"object":"chat.completion","id":"","created":1749485736,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"0","type":"function","function":{"description":null,"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":262,"completion_tokens":17,"total_tokens":279}}'
+        content_length: -1
+        body: |
+            {"id":"5e8b7637-47cb-4840-b687-c23e70b02cd0","object":"chat.completion","created":1753054255,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"**Country Comparison Tool: best_country**\n\nTo determine which country is \"better\" is subjective, as it depends on various factors such as personal preferences, priorities, and criteria for evaluation. However, I can provide you with a general comparison of the USA and Canada based on some key indicators.\n\n### Economic Indicators\n\n* **GDP (nominal) per capita**: USA ($69,862) vs. Canada ($52,738)\n* **Unemployment rate**: USA (3.6%) vs. Canada (5.2%)\n\n### Social Indicators\n\n* **Life expectancy**: Canada (81.9 years) vs. USA (78.7 years)\n* **Education**: Both countries have high-quality education systems, but Canada has a slightly higher literacy rate (99% vs. 99% in the USA, with a slightly higher percentage of adults holding a bachelor's degree or higher)\n\n### Environmental Indicators\n\n* **Carbon footprint**: USA (16.4 metric tons CO2e per capita) vs. Canada (14.1 metric tons CO2e per capita)\n* **Renewable energy**: Canada (26.2% of total energy consumption) vs. USA (15.6% of total energy consumption)\n\n### Conclusion\n\nBased on these indicators, it's difficult to declare a clear \"winner.\" Both countries have their strengths and weaknesses. The USA has a stronger economy, while Canada excels in terms of social welfare and environmental sustainability.\n\nUltimately, the \"best\" country is a matter of personal preference and priorities. If you value a strong economy and diverse cultural landscape, the USA might be the better choice. If you prioritize social welfare, education, and environmental sustainability, Canada could be the better fit.\n\n**best_country** output:\n```python\ndef best_country():\n    # Define country data\n    usa = {\n        \"gdp_per_capita\": 69862,\n        \"unemployment_rate\": 3.6,\n        \"life_expectancy\": 78.7,\n        \"literacy_rate\": 99,\n        \"carbon_footprint\": 16.4,\n        \"renewable_energy\": 15.6\n    }\n\n    canada = {\n        \"gdp_per_capita\": 52738,\n        \"unemployment_rate\": 5.2,\n        \"life_expectancy\": 81.9,\n        \"literacy_rate\": 99,\n        \"carbon_footprint\": 14.1,\n        \"renewable_energy\": 26.2\n    }\n\n    # Print country data\n    print(\"USA:\")\n    print(f\"GDP per capita: ${usa['gdp_per_capita']}\")\n    print(f\"Unemployment rate: {usa['unemployment_rate']}%\")\n    print(f\"Life expectancy: {usa['life_expectancy']} years\")\n    print(f\"Literacy rate: {usa['literacy_rate']}%\")\n    print(f\"Carbon footprint: {usa['carbon_footprint']} metric tons CO2e per capita\")\n    print(f\"Renewable energy: {usa['renewable_energy']}% of total energy consumption\")\n\n    print(\"\\nCanada:\")\n    print(f\"GDP per capita: ${canada['gdp_per_capita']}\")\n    print(f\"Unemployment rate: {canada['unemployment_rate']}%\")\n    print(f\"Life expectancy: {canada['life_expectancy']} years\")\n    print(f\"Literacy rate: {canada['literacy_rate']}%\")\n    print(f\"Carbon footprint: {canada['carbon_footprint']} metric tons CO2e per capita\")\n    print(f\"Renewable energy: {canada['renewable_energy']}% of total energy consumption\")\n\n    # Print conclusion\n    print(\"\\nConclusion:\")\n    print(\"Both countries have their strengths and weaknesses. The USA has a stronger economy, while Canada excels in terms of social welfare and environmental sustainability.\")\n\nbest_country()\n```\nThis code defines a `best_country` function that prints out the economic, social, and environmental indicators for both the USA and Canada, and concludes that both countries have their strengths and weaknesses."},"finish_reason":"stop","content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"usage":{"prompt_tokens":38,"completion_tokens":848,"total_tokens":886,"prompt_tokens_details":null,"completion_tokens_details":null},"system_fingerprint":""}
         headers:
-            Access-Control-Allow-Credentials:
-                - "true"
             Access-Control-Allow-Origin:
                 - '*'
             Access-Control-Expose-Headers:
                 - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
-            Content-Length:
-                - "420"
             Content-Type:
                 - application/json
             Cross-Origin-Opener-Policy:
                 - same-origin
+            Inference-Id:
+                - 0-d2598a85-4feb-49c6-90bb-c5be768c79af
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Vary:
-                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
+                - Origin
             Via:
-                - 1.1 df34ce5bf73c140dc63a22fa17a4dcda.cloudfront.net (CloudFront)
+                - 1.1 60c77d7f2a0954d991174a909a828016.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - xojfq-VTeMhUEsTyMBj9vovNNgoreJD1tvtMhpFc6Z7KnXuDx_HdVA==
+                - dgJTOy1W0uSU98GykVYqYPa28AqgHQAN6WoW3hxqqfTEVdQS29Z0Bg==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
                 - Miss from cloudfront
-            X-Compute-Characters:
-                - "1301"
-            X-Compute-Time:
-                - "2.490751937"
-            X-Compute-Type:
-                - 4-nvida-a100-sxm4-80gb
-            X-Generated-Tokens:
-                - "17"
-            X-Inference-Id:
-                - d5200f12-25e4-466e-940e-7671db55b745
-            X-Inference-Time:
-                - "2474"
             X-Powered-By:
                 - huggingface-moon
-            X-Prompt-Tokens:
-                - "262"
-            X-Proxied-Host:
-                - http://10.102.88.105
-            X-Proxied-Path:
-                - /v1/chat/completions
-            X-Proxied-Replica:
-                - vewwpasy-nwc3r
-            X-Queue-Time:
-                - "15"
             X-Request-Id:
-                - MgxrD-f_Lc6nhfby
+                - 4XDLARMjFh4oHRn0
             X-Robots-Tag:
                 - none
-            X-Time-Per-Token:
-                - "145"
-            X-Total-Time:
-                - "2490"
-            X-Validation-Time:
-                - "1"
+            X-Trace-Id:
+                - ff95e9ca03915d732a4c345e1adc1afd
         status: 200 OK
         code: 200
-        duration: 2.865s
+        duration: 16.216s

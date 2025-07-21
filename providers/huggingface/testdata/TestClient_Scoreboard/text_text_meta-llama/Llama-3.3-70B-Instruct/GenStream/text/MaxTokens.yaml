@@ -6,42 +6,34 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 136
-        transfer_encoding: []
-        trailer: {}
+        content_length: 180
         host: router.huggingface.co
-        remote_addr: ""
-        request_uri: ""
         body: |
-            {"stream":true,"messages":[{"role":"user","content":"Tell a joke in 10 words"}],"max_tokens":3,"stream_options":{"include_usage":true}}
-        form: {}
+            {"model":"meta-llama/Llama-3.3-70B-Instruct","stream":true,"messages":[{"role":"user","content":"Tell a joke in 10 words"}],"max_tokens":3,"stream_options":{"include_usage":true}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://router.huggingface.co/hf-inference/models/meta-llama%2FLlama-3.3-70B-Instruct/v1/chat/completions
+        url: https://router.huggingface.co/v1/chat/completions
         method: POST
       response:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |+
-            data: {"object":"chat.completion.chunk","id":"","created":1749485742,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":"Why"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"id":"c6aee119-f574-439e-a23b-ea847ec652ca","object":"chat.completion.chunk","created":1753054296,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null,"content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"system_fingerprint":""}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1749485742,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" was"},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"id":"c6aee119-f574-439e-a23b-ea847ec652ca","object":"chat.completion.chunk","created":1753054296,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null,"content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"system_fingerprint":""}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1749485742,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[{"index":0,"delta":{"role":"assistant","content":" the"},"logprobs":null,"finish_reason":"length"}],"usage":null}
+            data: {"id":"c6aee119-f574-439e-a23b-ea847ec652ca","object":"chat.completion.chunk","created":1753054296,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"delta":{"content":"Why was the","role":"assistant"},"finish_reason":"length","content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"system_fingerprint":""}
 
-            data: {"object":"chat.completion.chunk","id":"","created":1749485742,"model":"/repository","system_fingerprint":"3.2.1-sha-4d28897","choices":[],"usage":{"prompt_tokens":42,"completion_tokens":3,"total_tokens":45}}
+            data: {"id":"c6aee119-f574-439e-a23b-ea847ec652ca","object":"chat.completion.chunk","created":1753054296,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null,"content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"system_fingerprint":""}
+
+            data: {"id":"c6aee119-f574-439e-a23b-ea847ec652ca","object":"chat.completion.chunk","created":1753054296,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null,"content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"system_fingerprint":"","usage":{"prompt_tokens":18,"completion_tokens":3,"total_tokens":21,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"cache_creation_input_tokens":0,"cache_read_input_tokens":0},"completion_tokens_details":{"audio_tokens":0,"reasoning_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}
 
             data: [DONE]
 
         headers:
-            Access-Control-Allow-Credentials:
-                - "true"
             Access-Control-Allow-Origin:
                 - '*'
             Access-Control-Expose-Headers:
@@ -52,36 +44,28 @@ interactions:
                 - text/event-stream
             Cross-Origin-Opener-Policy:
                 - same-origin
+            Inference-Id:
+                - 0-c08e4c91-2998-46ca-b28a-15ca73f70fad
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Vary:
-                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers
+                - Origin
             Via:
-                - 1.1 df34ce5bf73c140dc63a22fa17a4dcda.cloudfront.net (CloudFront)
+                - 1.1 60c77d7f2a0954d991174a909a828016.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - 0mInXtGUKDRFnNsFCUooLrcJkgMDX-17Yu0InPyfzvd3TmHOT6a0QQ==
+                - cvkW-SP1iThehv3vF9ktiR__kUe51O5akCrgru_Ble8zeBDgJ5t0EA==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
                 - Miss from cloudfront
-            X-Compute-Characters:
-                - "256"
-            X-Compute-Type:
-                - 4-nvida-a100-sxm4-80gb
-            X-Inference-Id:
-                - 39ed225f-99b2-40e5-adc6-2d2bebe0e6ea
             X-Powered-By:
                 - huggingface-moon
-            X-Proxied-Host:
-                - http://10.102.95.187
-            X-Proxied-Path:
-                - /v1/chat/completions
-            X-Proxied-Replica:
-                - vewwpasy-76l93
             X-Request-Id:
-                - _P_HxXPRV5c2HyvB
+                - cSe0eabdzph7az7h
             X-Robots-Tag:
                 - none
+            X-Trace-Id:
+                - c77e2e0c4c0112dc2f061a928115a4e4
         status: 200 OK
         code: 200
-        duration: 192ms
+        duration: 346ms

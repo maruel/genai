@@ -15,7 +15,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -57,45 +56,48 @@ var Scoreboard = genai.Scoreboard{
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:      genai.True,
+				Tools:      genai.Flaky,
 				BiasedTool: genai.True,
-				JSONSchema: true,
+				JSON:       true,
 				Seed:       true,
 			},
 			GenStream: &genai.FunctionalityText{
 				BrokenFinishReason: true,
-				Tools:              genai.True,
+				Tools:              genai.Flaky,
 				BiasedTool:         genai.True,
-				JSONSchema:         true,
+				JSON:               true,
 				Seed:               true,
 			},
 		},
 		{
-			Models: []string{"Qwen/QwQ-32B"},
+			Models: []string{"Qwen/Qwen3-4B"},
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Thinking:   true,
-				Tools:      genai.True,
+				Tools:      genai.Flaky, // Uses a quantized version.
 				BiasedTool: genai.True,
-				JSONSchema: true,
+				JSON:       true,
+				JSONSchema: false, // Doesn't follow instructions.
 				Seed:       true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Thinking:           true,
 				BrokenFinishReason: true,
-				Tools:              genai.True,
+				Tools:              genai.Flaky, // Uses a quantized version.
 				BiasedTool:         genai.True,
-				JSONSchema:         true,
+				JSON:               true,
+				JSONSchema:         false, // Doesn't follow instructions.
 				Seed:               true,
 			},
 		},
 	},
 }
 
+// ChatRequest is underspecified at
 // https://huggingface.co/docs/api-inference/tasks/chat-completion#api-specification
 type ChatRequest struct {
-	Model            string    `json:"model,omitempty"` // It's already in the URL.
+	Model            string    `json:"model"`
 	Stream           bool      `json:"stream"`
 	Messages         []Message `json:"messages"`
 	FrequencyPenalty float64   `json:"frequency_penalty,omitzero"` // [-2.0, 2.0]
@@ -103,10 +105,8 @@ type ChatRequest struct {
 	MaxTokens        int64     `json:"max_tokens,omitzero"`
 	PresencePenalty  float64   `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
 	ResponseFormat   struct {
-		Type string `json:"type"` // "json", "regex"
-		// Type == "regexp": a regex string.
-		// Type == "json": a JSONSchema.
-		Value *jsonschema.Schema `json:"value"`
+		Type       string             `json:"type,omitzero"` // "text", "json_object" or "json_schema".
+		JSONSchema *jsonschema.Schema `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	Seed          int64    `json:"seed,omitzero"`
 	Stop          []string `json:"stop,omitzero"` // Up to 4
@@ -132,6 +132,7 @@ type ChatRequest struct {
 
 // Init initializes the provider specific completion request with the generic completion request.
 func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
+	c.Model = model
 	var errs []error
 	var unsupported []string
 	sp := ""
@@ -148,10 +149,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			}
 			c.Stop = v.Stop
 			if v.DecodeAs != nil {
-				c.ResponseFormat.Type = "json"
-				c.ResponseFormat.Value = jsonschema.Reflect(v.DecodeAs)
+				c.ResponseFormat.Type = "json_schema"
+				c.ResponseFormat.JSONSchema = jsonschema.Reflect(v.DecodeAs)
+				// Huggingface complains otherwise.
+				c.ResponseFormat.JSONSchema.Extras = map[string]any{"name": "response"}
 			} else if v.ReplyAsJSON {
-				c.ResponseFormat.Type = "json"
+				c.ResponseFormat.Type = "json_object"
 			}
 			if len(v.Tools) != 0 {
 				switch v.ToolCallRequest {
@@ -351,17 +354,19 @@ type Tool struct {
 }
 
 type ChatResponse struct {
-	Object            string    `json:"object"`
+	Object            string    `json:"object"` // "chat.completion"
 	ID                string    `json:"id"`
 	Created           base.Time `json:"created"`
 	Model             string    `json:"model"`
 	SystemFingerprint string    `json:"system_fingerprint"`
 
 	Choices []struct {
-		FinishReason FinishReason    `json:"finish_reason"`
-		Index        int64           `json:"index"`
-		Message      MessageResponse `json:"message"`
-		Logprobs     struct {
+		FinishReason         FinishReason         `json:"finish_reason"`
+		Index                int64                `json:"index"`
+		Message              MessageResponse      `json:"message"`
+		ContentFilterResults ContentFilterResults `json:"content_filter_results"`
+		StopReason           string               `json:"stop_reason"`
+		Logprobs             struct {
 			Content []struct {
 				Logprob     float64 `json:"logprob"`
 				Token       string  `json:"token"`
@@ -372,7 +377,9 @@ type ChatResponse struct {
 			} `json:"content"`
 		} `json:"logprobs"`
 	} `json:"choices"`
-	Usage Usage `json:"usage"`
+	Usage          Usage    `json:"usage"`
+	PromptLogprobs struct{} `json:"prompt_logprobs"`
+	ServiceTier    struct{} `json:"service_tier"`
 }
 
 type FinishReason string
@@ -400,17 +407,57 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 }
 
 type Usage struct {
-	PromptTokens     int64 `json:"prompt_tokens"`
-	CompletionTokens int64 `json:"completion_tokens"`
-	TotalTokens      int64 `json:"total_tokens"`
+	PromptTokens        int64 `json:"prompt_tokens"`
+	CompletionTokens    int64 `json:"completion_tokens"`
+	TotalTokens         int64 `json:"total_tokens"`
+	PromptTokensDetails struct {
+		AudioTokens              int64 `json:"audio_tokens"`
+		CachedTokens             int64 `json:"cached_tokens"`
+		CacheCreationInputTokens int64 `json:"cache_creation_input_tokens"`
+		CacheReadInputTokens     int64 `json:"cache_read_input_tokens"`
+	} `json:"prompt_tokens_details"`
+	CompletionTokensDetails struct {
+		AudioTokens              int64 `json:"audio_tokens"`
+		ReasoningTokens          int64 `json:"reasoning_tokens"`
+		AcceptedPredictionTokens int64 `json:"accepted_prediction_tokens"`
+		RejectedPredictionTokens int64 `json:"rejected_prediction_tokens"`
+	} `json:"completion_tokens_details"`
 }
 
-// The structure is different than the request. :(
+type ContentFilterResults struct {
+	Hate struct {
+		Filtered bool `json:"filtered"`
+	} `json:"hate"`
+	SelfHarm struct {
+		Filtered bool `json:"filtered"`
+	} `json:"self_harm"`
+	Sexual struct {
+		Filtered bool `json:"filtered"`
+	} `json:"sexual"`
+	Violence struct {
+		Filtered bool `json:"filtered"`
+	} `json:"violence"`
+	Jailbreak struct {
+		Filtered bool `json:"filtered"`
+		Detected bool `json:"detected"`
+	} `json:"jailbreak"`
+	Profanity struct {
+		Filtered bool `json:"filtered"`
+		Detected bool `json:"detected"`
+	} `json:"profanity"`
+}
+
+// MessageResponse uses a different structure than the request Message. :(
 type MessageResponse struct {
-	Role       string     `json:"role"`
-	Content    string     `json:"content"`
-	ToolCallID string     `json:"tool_call_id"`
-	ToolCalls  []ToolCall `json:"tool_calls"`
+	Role             string     `json:"role"`
+	Content          string     `json:"content"`
+	ToolCallID       string     `json:"tool_call_id"`
+	ToolCalls        []ToolCall `json:"tool_calls"`
+	Refusal          struct{}   `json:"refusal"`
+	FunctionCall     struct{}   `json:"function_call"`
+	ReasoningContent struct{}   `json:"reasoning_content"`
+	Annotations      struct{}   `json:"annotations"`
+	Audio            struct{}   `json:"audio"`
 }
 
 func (m *MessageResponse) To(out *genai.Message) error {
@@ -437,8 +484,9 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		// At the moment, Huggingface doesn't support caching.
 		Usage: genai.Usage{
-			InputTokens:  c.Usage.PromptTokens,
-			OutputTokens: c.Usage.CompletionTokens,
+			InputTokens:       c.Usage.PromptTokens,
+			InputCachedTokens: c.Usage.PromptTokensDetails.CachedTokens,
+			OutputTokens:      c.Usage.CompletionTokens,
 		},
 	}
 	if len(c.Choices) != 1 {
@@ -454,7 +502,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 }
 
 type ChatStreamChunkResponse struct {
-	Object            string    `json:"object"`
+	Object            string    `json:"object"` // "chat.completion.chunk"
 	Created           base.Time `json:"created"`
 	ID                string    `json:"id"`
 	Model             string    `json:"model"`
@@ -463,12 +511,13 @@ type ChatStreamChunkResponse struct {
 		Index        int64        `json:"index"`
 		FinishReason FinishReason `json:"finish_reason"`
 		Delta        struct {
-			Role    genai.Role `json:"role"`
-			Content string     `json:"content"`
-			// ToolCallID string     `json:"tool_call_id"`
+			Role      genai.Role `json:"role"`
+			Content   string     `json:"content"`
 			ToolCalls []ToolCall `json:"tool_calls"`
 		} `json:"delta"`
-		Logprobs struct {
+		ContentFilterResults ContentFilterResults `json:"content_filter_results"`
+		StopReason           string               `json:"stop_reason"`
+		Logprobs             struct {
 			Content []struct {
 				Logprob     float64 `json:"logprob"`
 				Token       string  `json:"token"`
@@ -620,7 +669,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 	c := &Client{
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
-			GenSyncURL:           "https://router.huggingface.co/hf-inference/models/" + url.PathEscape(model) + "/v1/chat/completions",
+			GenSyncURL:           "https://router.huggingface.co/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
 			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "huggingface",
@@ -646,7 +695,6 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 		cheap := model == base.PreferredCheap
 		good := model == base.PreferredGood
 		c.Model = ""
-		c.GenSyncURL = ""
 		trending := 0.
 		weights := 0
 		re := regexp.MustCompile(`(\d+)B`)
@@ -668,7 +716,6 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 				if strings.HasPrefix(m.ID, "meta-llama/Llama") && strings.HasSuffix(m.ID, "-Instruct") && (weights == 0 || w < weights) {
 					weights = w
 					c.Model = m.ID
-					c.GenSyncURL = "https://router.huggingface.co/hf-inference/models/" + url.PathEscape(c.Model) + "/v1/chat/completions"
 				}
 			} else if good {
 				// HF doesn't report the number of weights in the model. Try to guess it.
@@ -683,14 +730,12 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 				if strings.HasPrefix(m.ID, "Qwen/Qwen") && (weights == 0 || w > weights) {
 					weights = w
 					c.Model = m.ID
-					c.GenSyncURL = "https://router.huggingface.co/hf-inference/models/" + url.PathEscape(c.Model) + "/v1/chat/completions"
 				}
 			} else {
 				if strings.HasPrefix(m.ID, "deepseek-ai/") && !strings.Contains(m.ID, "Qwen") && !strings.Contains(m.ID, "Prover") && !strings.Contains(m.ID, "Distill") && (trending == 0 || trending < m.TrendingScore) {
 					// Make it a popularity contest.
 					trending = m.TrendingScore
 					c.Model = m.ID
-					c.GenSyncURL = "https://router.huggingface.co/hf-inference/models/" + url.PathEscape(c.Model) + "/v1/chat/completions"
 				}
 			}
 		}
@@ -722,6 +767,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	for pkt := range ch {
 		if pkt.Usage.PromptTokens != 0 {
 			result.InputTokens = pkt.Usage.PromptTokens
+			result.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
 			result.OutputTokens = pkt.Usage.CompletionTokens
 		}
 		if len(pkt.Choices) != 1 {
@@ -742,7 +788,8 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		f := genai.ContentFragment{TextFragment: pkt.Choices[0].Delta.Content}
 		// Huggingface streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
 		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
-			if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID == pendingCall.ID {
+			// ID is not consistently set. Use Name for now but that's risky.
+			if t := pkt.Choices[0].Delta.ToolCalls[0]; t.Function.Name == pendingCall.Function.Name {
 				// Continuation.
 				pendingCall.Function.Arguments += t.Function.Arguments
 				if !f.IsZero() {
@@ -751,7 +798,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				continue
 			} else {
 				// A new call.
-				if pendingCall.ID == "" {
+				if pendingCall.Function.Name == "" {
 					pendingCall = t
 					if !f.IsZero() {
 						return fmt.Errorf("implement tool call with metadata: %#v", pkt)
@@ -760,9 +807,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				}
 				// Flush.
 				pendingCall.To(&f.ToolCall)
-				pendingCall = t
+				pendingCall = ToolCall{}
 			}
-		} else if pendingCall.ID != "" {
+		} else if pendingCall.Function.Name != "" {
 			// Flush.
 			pendingCall.To(&f.ToolCall)
 			pendingCall = ToolCall{}
@@ -775,7 +822,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 	}
 	// Hugginface doesn't send an "ending" packet, FinishReason isn't even set on the last packet.
-	if pendingCall.ID != "" {
+	if pendingCall.Function.Name != "" {
 		// Flush.
 		f := genai.ContentFragment{}
 		pendingCall.To(&f.ToolCall)

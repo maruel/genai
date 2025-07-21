@@ -1,0 +1,79 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 281
+        host: router.huggingface.co
+        body: |
+            {"model":"Qwen/Qwen3-4B","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]},{"role":"user","content":"/think"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1736
+        body: '{"id":"chatcmpl-cf8bbb2c70d546329e8efef6bd194b53","choices":[{"finish_reason":"stop","index":0,"logprobs":null,"message":{"content":"<think>\nOkay, let''s see. The user is asking for the capital of Quackiland. The first sentence says, \"The capital of Quackiland is Quack.\" Then they mention that the Big Canard Statue is located in Quack. The question is straightforward: What is the capital of Quackiland?\n\nWait, but the first statement already directly answers the question. The capital is Quack. The second sentence provides additional information about the Big Canard Statue being in Quack, which is the capital. So the answer should be Quack. But maybe the user is testing if I can recognize that the first sentence is the direct answer. Sometimes people might try to trick you by giving extra info. Let me confirm. The first sentence explicitly states that the capital is Quack. The second sentence is just extra info about the statue. So the answer is Quack. No need to consider the statue part for the capital. Just the first sentence.\n</think>\n\nThe capital of Quackiland is **Quack**. This is explicitly stated in the first sentence of the question. The mention of the Big Canard Statue being in Quack is additional context but does not affect the answer to the question about the capital.","refusal":null,"role":"assistant","annotations":null,"audio":null,"function_call":null,"tool_calls":[],"reasoning_content":null},"stop_reason":null}],"created":1753058273,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion","service_tier":null,"system_fingerprint":null,"usage":{"completion_tokens":249,"prompt_tokens":45,"total_tokens":294,"completion_tokens_details":null,"prompt_tokens_details":null},"prompt_logprobs":null}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "1736"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+            Via:
+                - 1.1 6477e7b623b71ec66bc28ed8e271db7e.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - zeR9suJZaHja9OtqCCsfooQAnE2-sUrXlZJKzjxflNlwrmAXb5kCtA==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Id:
+                - chatcmpl-cf8bbb2c70d546329e8efef6bd194b53
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Dynamic-Period-Remaining:
+                - 371s
+            X-Ratelimit-Dynamic-Period-Usage-Requests:
+                - 0%
+            X-Ratelimit-Dynamic-Period-Usage-Tokens:
+                - 0%
+            X-Ratelimit-Dynamic-Scale-Requests:
+                - "1.00"
+            X-Ratelimit-Dynamic-Scale-Tokens:
+                - "1.00"
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "400000"
+            X-Ratelimit-Remaining-Requests:
+                - "600"
+            X-Ratelimit-Remaining-Tokens:
+                - "400000"
+            X-Request-Id:
+                - aVkNUcp6YdMGnDam
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.778s

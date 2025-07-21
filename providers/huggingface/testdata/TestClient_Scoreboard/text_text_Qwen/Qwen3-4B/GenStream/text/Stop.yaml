@@ -1,0 +1,123 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 223
+        host: router.huggingface.co
+        body: |
+            {"model":"Qwen/Qwen3-4B","stream":true,"messages":[{"role":"user","content":"Talk about Canada in 10 words. Start with: Canada is"},{"role":"user","content":"/think"}],"stop":["is"],"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-5ae0c167e73a4bd4be9ba940801be415","choices":[{"delta":{"content":"","role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753058276,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5ae0c167e73a4bd4be9ba940801be415","choices":[{"delta":{"content":"<think"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753058276,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5ae0c167e73a4bd4be9ba940801be415","choices":[{"delta":{"content":">"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753058276,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5ae0c167e73a4bd4be9ba940801be415","choices":[{"delta":{"content":"\nOka"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753058276,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5ae0c167e73a4bd4be9ba940801be415","choices":[{"delta":{"content":"y"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753058276,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5ae0c167e73a4bd4be9ba940801be415","choices":[{"delta":{"content":", th"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753058276,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5ae0c167e73a4bd4be9ba940801be415","choices":[{"delta":{"content":"e use"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753058276,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5ae0c167e73a4bd4be9ba940801be415","choices":[{"delta":{"content":"r want"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753058276,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5ae0c167e73a4bd4be9ba940801be415","choices":[{"delta":{"content":"s "},"finish_reason":null,"index":0,"logprobs":null}],"created":1753058276,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5ae0c167e73a4bd4be9ba940801be415","choices":[{"delta":{"content":"a"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753058276,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5ae0c167e73a4bd4be9ba940801be415","choices":[{"delta":{"content":" "},"finish_reason":null,"index":0,"logprobs":null}],"created":1753058276,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5ae0c167e73a4bd4be9ba940801be415","choices":[{"delta":{"content":"1"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753058276,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5ae0c167e73a4bd4be9ba940801be415","choices":[{"delta":{"content":"0-wor"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753058276,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5ae0c167e73a4bd4be9ba940801be415","choices":[{"delta":{"content":"d sentenc"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753058276,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5ae0c167e73a4bd4be9ba940801be415","choices":[{"delta":{"content":"e startin"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753058276,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5ae0c167e73a4bd4be9ba940801be415","choices":[{"delta":{"content":"g wit"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753058276,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5ae0c167e73a4bd4be9ba940801be415","choices":[{"delta":{"content":"h "},"finish_reason":null,"index":0,"logprobs":null}],"created":1753058276,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5ae0c167e73a4bd4be9ba940801be415","choices":[{"delta":{"content":"\"Canad"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753058276,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5ae0c167e73a4bd4be9ba940801be415","choices":[{"delta":{"content":"a "},"finish_reason":"stop","index":0,"logprobs":null,"stop_reason":"is"}],"created":1753058276,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-5ae0c167e73a4bd4be9ba940801be415","choices":[],"created":1753058276,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk","usage":{"completion_tokens":18,"prompt_tokens":29,"total_tokens":47}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+            Via:
+                - 1.1 6477e7b623b71ec66bc28ed8e271db7e.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - oRl31IG0ZaJ7TRPrZf3muK6r7nPHIcr3UA9-FBkF6_JWJp7D_Qe2aw==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Id:
+                - chatcmpl-5ae0c167e73a4bd4be9ba940801be415
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Dynamic-Period-Remaining:
+                - 369s
+            X-Ratelimit-Dynamic-Period-Usage-Requests:
+                - 0%
+            X-Ratelimit-Dynamic-Period-Usage-Tokens:
+                - 0%
+            X-Ratelimit-Dynamic-Scale-Requests:
+                - "1.00"
+            X-Ratelimit-Dynamic-Scale-Tokens:
+                - "1.00"
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "400000"
+            X-Ratelimit-Remaining-Requests:
+                - "599"
+            X-Ratelimit-Remaining-Tokens:
+                - "399480"
+            X-Ratelimit-Reset-Requests:
+                - 1s
+            X-Ratelimit-Reset-Tokens:
+                - 1s
+            X-Request-Id:
+                - hw9nWpuKg93cN2bZ
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.02s

@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -21,8 +22,15 @@ import (
 func TestClient_Scoreboard(t *testing.T) {
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
 		c := getClient(t, m)
-		if m == "Qwen/QwQ-32B" {
-			return &adapters.ProviderGenThinking{ProviderGen: c, TagName: "think", SkipJSON: true}
+		if strings.HasPrefix(m, "Qwen/Qwen3") {
+			return &adapters.ProviderGenThinking{
+				ProviderGen: &adapters.ProviderGenAppend{
+					ProviderGen: c,
+					Append:      genai.NewTextMessage(genai.User, "/think"),
+				},
+				TagName:  "think",
+				SkipJSON: true,
+			}
 		}
 		return c
 	}, nil)
@@ -58,8 +66,8 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 		{
 			Name:         "bad model",
 			Model:        "bad model",
-			ErrGenSync:   "http 404: Not Found",
-			ErrGenStream: "http 404: Not Found",
+			ErrGenSync:   "http 400: error The requested model 'bad model' does not exist.",
+			ErrGenStream: "http 400: error The requested model 'bad model' does not exist.",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {

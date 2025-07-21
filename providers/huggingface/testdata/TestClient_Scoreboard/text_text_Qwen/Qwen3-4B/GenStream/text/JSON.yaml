@@ -1,0 +1,109 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 324
+        host: router.huggingface.co
+        body: |
+            {"model":"Qwen/Qwen3-4B","stream":true,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."},{"role":"user","content":"/think"}],"response_format":{"type":"json_object"},"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-beb095969a494fb7b6ad3962466f82aa","choices":[{"delta":{"content":"","role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753059640,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-beb095969a494fb7b6ad3962466f82aa","choices":[{"delta":{"content":"{\n"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753059640,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-beb095969a494fb7b6ad3962466f82aa","choices":[{"delta":{"content":" "},"finish_reason":null,"index":0,"logprobs":null}],"created":1753059640,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-beb095969a494fb7b6ad3962466f82aa","choices":[{"delta":{"content":" \""},"finish_reason":null,"index":0,"logprobs":null}],"created":1753059640,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-beb095969a494fb7b6ad3962466f82aa","choices":[{"delta":{"content":"is"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753059640,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-beb095969a494fb7b6ad3962466f82aa","choices":[{"delta":{"content":"_f"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753059640,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-beb095969a494fb7b6ad3962466f82aa","choices":[{"delta":{"content":"ruit"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753059640,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-beb095969a494fb7b6ad3962466f82aa","choices":[{"delta":{"content":"\":"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753059640,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-beb095969a494fb7b6ad3962466f82aa","choices":[{"delta":{"content":" true"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753059640,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-beb095969a494fb7b6ad3962466f82aa","choices":[{"delta":{"content":"\n"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753059640,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-beb095969a494fb7b6ad3962466f82aa","choices":[{"delta":{"content":"}"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753059640,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-beb095969a494fb7b6ad3962466f82aa","choices":[{"delta":{"content":""},"finish_reason":"stop","index":0,"logprobs":null,"stop_reason":null}],"created":1753059640,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-beb095969a494fb7b6ad3962466f82aa","choices":[],"created":1753059640,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk","usage":{"completion_tokens":11,"prompt_tokens":44,"total_tokens":55}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+            Via:
+                - 1.1 008b0ed6cc4c9f79c79b5aa34472a884.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - smmDfJEO5LkDAQiKXlI3dyDkdwlLS24p9G8jE2wgR0yLrQAYUZ3IUQ==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Id:
+                - chatcmpl-beb095969a494fb7b6ad3962466f82aa
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Dynamic-Period-Remaining:
+                - 412s
+            X-Ratelimit-Dynamic-Period-Usage-Requests:
+                - 0%
+            X-Ratelimit-Dynamic-Period-Usage-Tokens:
+                - 0%
+            X-Ratelimit-Dynamic-Scale-Requests:
+                - "1.00"
+            X-Ratelimit-Dynamic-Scale-Tokens:
+                - "1.00"
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "400000"
+            X-Ratelimit-Remaining-Requests:
+                - "599"
+            X-Ratelimit-Remaining-Tokens:
+                - "399460"
+            X-Ratelimit-Reset-Requests:
+                - 1s
+            X-Ratelimit-Reset-Tokens:
+                - 1s
+            X-Request-Id:
+                - q49N9CBZR70J0fER
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 434ms

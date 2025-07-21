@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 254
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-reasoner","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"response_format":{"type":"json_object"}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"3f53aede-8cb4-481a-89ca-9f12db9ba14f","object":"chat.completion","created":1753141381,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}","reasoning_content":"First, the user asks: \"Is a banana a fruit?\" I need to answer this question.\n\nI know that bananas are classified as fruits biologically. Fruits are the mature ovaries of flowering plants, and bananas fit that definition.\n\nThe user instructs: \"Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\nThe schema is {\"is_fruit\": bool}. That seems like a typo; it should probably be {\"is_fruit\": bool}. Looking back: \"{\"is_fruit\": bool}\". Yes, it says \"is_fruit\", not \"is_fruit\". So the key is \"is_fruit\", and the value should be a boolean.\n\nI need to reply with a JSON object only. No additional text, no explanations. Just the JSON.\n\nSo, for the question \"Is a banana a fruit?\", the answer is yes. Therefore, the boolean value should be true.\n\nConstructing the JSON: {\"is_fruit\": true} – wait, the schema specifies \"is_fruit\", so it should be {\"is_fruit\": true}.\n\nConfirming the spelling: in the user''s message, it''s \"{\"is_fruit\": bool}\". Yes, \"is_fruit\".\n\nSo, my response should be: {\"is_fruit\": true}\n\nSince bananas are fruits, it''s true. If it were something else, like a vegetable, it might be false, but here it''s true.\n\nFinally, ensure the response is ONLY JSON. No extra words."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":50,"completion_tokens":321,"total_tokens":371,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":312},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":50},"system_fingerprint":"fp_393bca965e_prod0623_fp8_kvcache"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962e8ee24ebf7148-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            X-Content-Type-Options:
+                - nosniff
+            X-Ds-Trace-Id:
+                - cc57f1c1545d53e3f8cb92cace222ca4
+        status: 200 OK
+        code: 200
+        duration: 337ms

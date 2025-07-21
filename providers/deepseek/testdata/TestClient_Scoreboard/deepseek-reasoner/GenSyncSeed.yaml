@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 116
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-reasoner","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"74a9554a-2f65-4c64-a0ca-00a6a49b83cd","object":"chat.completion","created":1753141322,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"Hello.","reasoning_content":"Hmm, the user just asked me to say hello but with a strict limit: only one word. \n\nOkay, let me think about this. The most straightforward response would be \"Hello\" itself—it''s polite, universal, and fulfills the request perfectly. \n\nBut wait... could there be other options? \"Hi\" is shorter but maybe too casual. \"Greetings\" feels formal and archaic. \"Hey\" is friendly but might seem overly familiar. \n\nThe user''s instruction is very clear—just one word, no extras. No room for creativity here, which is unusual since I usually enjoy adding warmth. \n\nI wonder why they want it so minimal. Testing my compliance? Or maybe they''re in a hurry? Either way, best to keep it simple and precise. \n\n\"Hello\" it is—classic, unambiguous, and exactly what they asked for. No fluff, no hidden meanings. Just... hello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":13,"completion_tokens":194,"total_tokens":207,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":190},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":13},"system_fingerprint":"fp_393bca965e_prod0623_fp8_kvcache"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962e8d70ac1e7148-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            X-Content-Type-Options:
+                - nosniff
+            X-Ds-Trace-Id:
+                - db761e4767113da98fe7f2094e25bb69
+        status: 200 OK
+        code: 200
+        duration: 364ms

@@ -14,10 +14,54 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/deepseek"
+	"github.com/maruel/genai/scoreboard/scoreboardtest"
 )
 
+func gc(t testing.TB, name, m string) genai.Provider {
+	fn := func(h http.RoundTripper) http.RoundTripper {
+		if name == "" {
+			return h
+		}
+		r, err2 := testRecorder.Records.Record(name, h)
+		if err2 != nil {
+			t.Fatal(err2)
+		}
+		t.Cleanup(func() {
+			if err3 := r.Stop(); err3 != nil {
+				t.Error(err3)
+			}
+		})
+		return r
+	}
+	apiKey := ""
+	if os.Getenv("DEEPSEEK_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := deepseek.New(apiKey, m, fn)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return c
+}
+
 func TestClient_Scoreboard(t *testing.T) {
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen { return getClient(t, m) }, nil)
+	t.Parallel()
+	usage := genai.Usage{}
+	cc := gc(t, t.Name()+"/ListModels", "")
+	models, err2 := cc.(genai.ProviderModel).ListModels(t.Context())
+	if err2 != nil {
+		t.Fatal(err2)
+	}
+	for _, m := range models {
+		id := m.GetID()
+		t.Run(id, func(t *testing.T) {
+			// Run one model at a time otherwise we can't collect the total usage.
+			usage.Add(scoreboardtest.RunOneModel(t, func(t testing.TB, sn string) genai.Provider {
+				return gc(t, sn, id)
+			}))
+		})
+	}
+	t.Logf("Usage: %#v", usage)
 }
 
 func TestClient_Preferred(t *testing.T) {

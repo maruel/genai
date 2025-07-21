@@ -16,15 +16,13 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/internal"
-	"github.com/maruel/genai/providers/cerebras"
-	"github.com/maruel/genai/providers/deepseek"
 	"github.com/maruel/genai/providers/groq"
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
 )
 
 func TestCreateScenario(t *testing.T) {
 	totalUsage := genai.Usage{}
-	for _, provider := range []string{"deepseek", "groq"} {
+	for _, provider := range []string{"groq"} {
 		t.Run(provider, func(t *testing.T) {
 			providerUsage := genai.Usage{}
 			cc := getClient(t, provider, t.Name()+"/ListModels", "")
@@ -64,35 +62,6 @@ func getClient(t testing.TB, provider, name, m string) genai.Provider {
 		return r
 	}
 	switch provider {
-	case "cerebras":
-		apiKey := ""
-		if os.Getenv("CEREBRAS_API_KEY") == "" {
-			apiKey = "<insert_api_key_here>"
-		}
-		c, err := cerebras.New(apiKey, m, fn)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if strings.HasPrefix(m, "qwen") {
-			return &adapters.ProviderGenThinking{
-				ProviderGen: &adapters.ProviderGenAppend{
-					ProviderGen: c,
-					Append:      genai.NewTextMessage(genai.User, "/think"),
-				},
-				TagName: "think",
-			}
-		}
-		return c
-	case "deepseek":
-		apiKey := ""
-		if os.Getenv("DEEPSEEK_API_KEY") == "" {
-			apiKey = "<insert_api_key_here>"
-		}
-		c, err := deepseek.New(apiKey, m, fn)
-		if err != nil {
-			t.Fatal(err)
-		}
-		return c
 	case "groq":
 		apiKey := ""
 		if os.Getenv("GROQ_API_KEY") == "" {

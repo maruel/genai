@@ -8,7 +8,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"log/slog"
 	"net/http"
 	"os"
 	"slices"
@@ -19,6 +18,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/cerebras"
 	"github.com/maruel/genai/providers/deepseek"
 	"github.com/maruel/genai/providers/groq"
@@ -74,16 +74,7 @@ func runOneModel(t *testing.T, provider, id string, refs genai.Scoreboard) genai
 		}
 		return getClient(t, provider, t.Name()+"/"+name, id)
 	}
-	logger := slog.New(slog.NewTextHandler(&testWriter{t: t}, &slog.HandlerOptions{
-		Level: programLevel,
-		ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
-			if a.Key == "time" {
-				return slog.Attr{}
-			}
-			return a
-		},
-	}))
-	ctx := internal.WithLogger(t.Context(), logger)
+	ctx, _ := internaltest.Log(t)
 	got, usage, err := scoreboard.CreateScenario(ctx, providerFactory)
 	t.Logf("Usage: %#v", usage)
 	if err != nil {
@@ -215,10 +206,7 @@ func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages
 	return c.GenStream(ctx, msgs, replies, opts)
 }
 
-var (
-	recorder     *internal.Records
-	programLevel = new(slog.LevelVar)
-)
+var recorder *internal.Records
 
 func TestMain(m *testing.M) {
 	var err error
@@ -234,11 +222,6 @@ func TestMain(m *testing.M) {
 			filtered = true
 		}
 	})
-	flag.Visit(func(f *flag.Flag) {
-		if f.Name == "test.v" {
-			programLevel.Set(slog.LevelDebug)
-		}
-	})
 	code := m.Run()
 	if err = recorder.Close(); err != nil {
 		if !filtered {
@@ -251,14 +234,4 @@ func TestMain(m *testing.M) {
 
 func init() {
 	internal.BeLenient = false
-}
-
-// testWriter wraps t.Log() to implement io.Writer
-type testWriter struct {
-	t testing.TB
-}
-
-func (tw *testWriter) Write(p []byte) (n int, err error) {
-	tw.t.Log(string(p))
-	return len(p), nil
 }

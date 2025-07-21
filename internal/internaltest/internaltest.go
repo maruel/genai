@@ -6,8 +6,10 @@
 package internaltest
 
 import (
+	"context"
 	"flag"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"os"
@@ -88,4 +90,41 @@ func MatchIgnorePort(r *http.Request, i cassette.Request) bool {
 	r.URL.Host = strings.Split(r.URL.Host, ":")[0]
 	r.Host = strings.Split(r.Host, ":")[0]
 	return internal.DefaultMatcher(r, i)
+}
+
+//
+
+// Log returns a slog.Logger that redirects to testing.TB.Log() and adds it to the Context.
+func Log(tb testing.TB) (context.Context, *slog.Logger) {
+	level := &slog.LevelVar{}
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == "test.v" {
+			level.Set(slog.LevelDebug)
+		}
+	})
+	l := slog.New(slog.NewTextHandler(&testWriter{t: tb}, &slog.HandlerOptions{
+		Level: level,
+		ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+			switch a.Key {
+			case "level":
+				a.Key = "l"
+				a.Value = slog.StringValue(a.Value.String()[:3])
+			case "time":
+				a = slog.Attr{}
+			}
+			return a
+		},
+	}))
+	ctx := internal.WithLogger(tb.Context(), l)
+	return ctx, l
+}
+
+// testWriter wraps t.Log() to implement io.Writer
+type testWriter struct {
+	t testing.TB
+}
+
+func (tw *testWriter) Write(p []byte) (n int, err error) {
+	tw.t.Log(strings.TrimSpace(string(p)))
+	return len(p), nil
 }

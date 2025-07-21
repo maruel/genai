@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 166
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Talk about Canada in 10 words. Start with: Canada is"},{"role":"user","content":"/think"}],"stop":["is"]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-3254a9b3-2fc0-4419-ba2b-5e25a911d652","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, let''s see. The user wants me to talk about Canada in 10 words, starting with \"Canada ","role":"assistant"}}],"created":1752855948,"model":"qwen-3-32b","system_fingerprint":"fp_1504a02d96fb4f08d4e7","object":"chat.completion","usage":{"prompt_tokens":29,"completion_tokens":30,"total_tokens":59,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000111431,"prompt_time":0.001976304,"completion_time":0.013398558,"total_time":0.018198251724243164,"created":1752855948}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9613564cfb76a2c8-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-3254a9b3-2fc0-4419-ba2b-5e25a911d652
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14372"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "62367"
+            X-Ratelimit-Reset-Requests-Day:
+                - "27251.592428445816"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "11.59242844581604"
+            X-Request-Id:
+                - 9613564cfb76a2c8-YUL
+        status: 200 OK
+        code: 200
+        duration: 157ms

@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 129
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Say hello. Use only one word."},{"role":"user","content":"/think"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-208fb9e7-5a4c-488a-a5ce-8f3be9ad4fd0","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, the user told me to say hello using only one word. I need to make sure I follow their instructions. Let me think of different ways to say hello in one word. The most common one is \"Hello\" itself. But maybe they want a different greeting? \"Hi\" is another option. \"Hey\" might work too. But the simplest and most direct answer is \"Hello.\" I should confirm there''s no hidden trick here, but the user didn''t mention any specific language restrictions, so sticking with the straightforward answer is safest. Let me just make sure I''m not missing any nuances. If they said \"use only one word,\" then a single word like \"Hello\" should suffice. Alright, I think that''s it.\n</think>\n\nHello.","role":"assistant"}}],"created":1753062703,"model":"qwen-3-32b","system_fingerprint":"fp_1504a02d96fb4f08d4e7","object":"chat.completion","usage":{"prompt_tokens":23,"completion_tokens":157,"total_tokens":180,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00017868,"prompt_time":0.001302001,"completion_time":0.118280688,"total_time":0.12121152877807617,"created":1753062703}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96270e07fa01714a-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-208fb9e7-5a4c-488a-a5ce-8f3be9ad4fd0
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14392"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Reset-Requests-Day:
+                - "79696.39432954788"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "16.39432954788208"
+            X-Request-Id:
+                - 96270e07fa01714a-YUL
+        status: 200 OK
+        code: 200
+        duration: 338ms

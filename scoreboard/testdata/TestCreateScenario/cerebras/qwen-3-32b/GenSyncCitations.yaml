@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 216
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\nWhat is the capital of Quackiland?\n"},{"role":"user","content":"/think"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "{\"id\":\"chatcmpl-a71355af-310d-44d0-be4a-46ffa37739a3\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"<think>\\nOkay, let's see. The user asked, \\\"What is the capital of Quackiland?\\\" and the previous message mentions that \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\\\"\\n\\nFirst, I need to confirm if the question is straightforward. The user wants to know the capital of Quackiland, and the given data states it's Quack. The second part about the Big Canard Statue is probably additional info but might be a distractor. Wait, \\\"Canard\\\" in French means \\\"duck,\\\" which is related to \\\"Quack,\\\" the onomatopoeia for a duck's sound. So maybe Quackiland is a fictional country with some duck-related themes.\\n\\nThe answer is clearly stated in the given information: the capital is Quack. The statue location is in Quack, which reinforces that. The user might be testing if the assistant can extract the correct answer without getting confused by the extra detail. No need to overcomplicate. Just reiterate that the capital is Quack based on the provided data.\\n</think>\\n\\nThe capital of Quackiland is **Quack**. This is explicitly stated in the given information. The mention of the Big Canard Statue (which might be a humorous reference to the French word for \\\"duck\\\") being located in Quack further reinforces this detail. No additional analysis is needed—the answer is directly provided in the premises! \U0001F986\",\"role\":\"assistant\"}}],\"created\":1752866914,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_1504a02d96fb4f08d4e7\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":45,\"completion_tokens\":296,\"total_tokens\":341,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.000581337,\"prompt_time\":0.001669443,\"completion_time\":0.245122068,\"total_time\":0.2487354278564453,\"created\":1752866914}}"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 961462059cb3a2f4-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-a71355af-310d-44d0-be4a-46ffa37739a3
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14345"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Reset-Requests-Day:
+                - "16285.4784014225"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "25.47840142250061"
+            X-Request-Id:
+                - 961462059cb3a2f4-YUL
+        status: 200 OK
+        code: 200
+        duration: 464ms

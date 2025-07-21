@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 177
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Explain the theory of relativity in great details."},{"role":"user","content":"/think"}],"max_completion_tokens":16}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-c00bd052-f27e-463b-ba0b-354e43213b4b","choices":[{"finish_reason":"length","index":0,"message":{"content":"<think>\nOkay, so I need to explain the theory of relativity in great","role":"assistant"}}],"created":1753062454,"model":"qwen-3-32b","system_fingerprint":"fp_1504a02d96fb4f08d4e7","object":"chat.completion","usage":{"prompt_tokens":26,"completion_tokens":16,"total_tokens":42,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":8.6591e-05,"prompt_time":0.002088606,"completion_time":0.007867579,"total_time":0.011766195297241211,"created":1753062454}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962707f06f10a298-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-c00bd052-f27e-463b-ba0b-354e43213b4b
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14396"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Reset-Requests-Day:
+                - "79945.94294381142"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "25.942943811416626"
+            X-Request-Id:
+                - 962707f06f10a298-YUL
+        status: 200 OK
+        code: 200
+        duration: 329ms

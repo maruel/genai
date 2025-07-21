@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 134
+        host: api.cerebras.ai
+        body: |
+            {"model":"llama-3.3-70b","messages":[{"role":"user","content":"Talk about Canada in 10 words. Start with: Canada is"}],"stop":["is"]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-7fea170e-4474-48e3-a767-5363ee4886a1","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Canada ","role":"assistant"}}],"created":1752852473,"model":"llama-3.3-70b","system_fingerprint":"fp_d9197bd9bfb96c41ef64","object":"chat.completion","usage":{"prompt_tokens":48,"completion_tokens":6,"total_tokens":54,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00024877,"prompt_time":0.002399745,"completion_time":0.001570284,"total_time":0.006376028060913086,"created":1752852473}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 961301784a4ba2df-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-7fea170e-4474-48e3-a767-5363ee4886a1
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14377"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "63862"
+            X-Ratelimit-Reset-Requests-Day:
+                - "30726.207430124283"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "6.207430124282837"
+            X-Request-Id:
+                - 961301784a4ba2df-YUL
+        status: 200 OK
+        code: 200
+        duration: 1.333s

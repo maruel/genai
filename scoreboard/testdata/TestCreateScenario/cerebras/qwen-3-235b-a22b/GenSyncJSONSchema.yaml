@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 584
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3-235b-a22b","messages":[{"role":"user","content":"Responds with a JSON object with a float \"number\" and a bool \"is_fruit\"."},{"role":"user","content":"/think"}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://github.com/maruel/genai/scoreboard/schema","$ref":"#/$defs/schema","$defs":{"schema":{"properties":{"number":{"type":"number"},"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["number","is_fruit"]}}},"strict":true}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-33af25b2-2d1e-48e6-8c1b-6f36025342cf","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"number\": 42.5, \"is_fruit\": true}","role":"assistant"}}],"created":1752855995,"model":"qwen-3-235b-a22b","system_fingerprint":"fp_8160c2d5125333887ba8","object":"chat.completion","usage":{"prompt_tokens":223,"completion_tokens":243,"total_tokens":466,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.254122076,"prompt_time":0.012166815,"completion_time":0.327455441,"total_time":0.5956683158874512,"created":1752855995}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96135772081fa284-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-33af25b2-2d1e-48e6-8c1b-6f36025342cf
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14369"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "62521"
+            X-Ratelimit-Reset-Requests-Day:
+                - "27203.99500155449"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "23.995001554489136"
+            X-Request-Id:
+                - 96135772081fa284-YUL
+        status: 200 OK
+        code: 200
+        duration: 848ms

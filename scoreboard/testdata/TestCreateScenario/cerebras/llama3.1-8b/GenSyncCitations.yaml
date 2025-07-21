@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 182
+        host: api.cerebras.ai
+        body: |
+            {"model":"llama3.1-8b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\nWhat is the capital of Quackiland?\n"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-5a46a8f1-4d07-4137-972e-e481b2c78a4a","choices":[{"finish_reason":"stop","index":0,"message":{"content":"The capital of Quackiland is Quack.","role":"assistant"}}],"created":1752866914,"model":"llama3.1-8b","system_fingerprint":"fp_82a5d41563721f6d9eb1","object":"chat.completion","usage":{"prompt_tokens":65,"completion_tokens":11,"total_tokens":76,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000303869,"prompt_time":0.003271194,"completion_time":0.004826728,"total_time":0.009758234024047852,"created":1752866914}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 961462059cb8a2f4-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-5a46a8f1-4d07-4137-972e-e481b2c78a4a
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14376"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Reset-Requests-Day:
+                - "16285.697279453278"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "25.697279453277588"
+            X-Request-Id:
+                - 961462059cb8a2f4-YUL
+        status: 200 OK
+        code: 200
+        duration: 257ms

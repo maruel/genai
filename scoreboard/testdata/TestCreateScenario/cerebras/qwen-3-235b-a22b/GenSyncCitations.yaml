@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 222
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3-235b-a22b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\nWhat is the capital of Quackiland?\n"},{"role":"user","content":"/think"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-108450fd-a53f-4cf7-a14e-f03d82799394","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, so the user is asking again, \"What is the capital of Quackiland?\" Let me check the history. The previous message from the user was the same question, and my response must have been correct because they''re repeating it now. Wait, no, actually the user''s previous question was a setup. They first provided two statements: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\" Then they asked for the capital of Quackiland. So the answer is straightforward. The first sentence directly states the capital. But maybe the user is testing if I can ignore the second sentence, which is additional information but not relevant to the answer. Let me make sure. The question is the same as before, but since they''re asking again, maybe in a different context. However, in this case, the user hasn''t provided new information. Wait, looking at the current query, the user simply pasted the same information again and is asking the same question. Oh, wait, no, looking again: the first message was the user providing the context (user input), then the assistant''s response, then the user is now asking the same question again. Wait no, in the current history, the user messages are two: the first one with the information and the question, then the current user message which is just the question again. Wait, no, let me check the history again. \n\nActually, looking at the history, the original prompt was:\n\nUser: The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\nWhat is the capital of Quackiland?\n\nThen the assistant''s response would be \"Quack,\" and the user is now sending a new message that''s just the question again: \"What is the capital of Quackiland?\" But wait, in the provided history here, the current query is the same as the previous one. Or perhaps the user is presenting a scenario where they''re asking again after providing that information. \n\nIn any case, the question is straightforward. The capital of Quackiland is given as Quack. The second sentence about the Big Canard Statue is extra and not necessary for answering the question. The answer remains Quack, regardless of the additional information. \n\nI need to make sure that even if the user is trying to trick me by providing extra info, they just want the answer based on the first statement. Since the question is repeated, maybe to test if the model is consistent. So the approach is to check the history, see that the capital is explicitly stated, and answer accordingly. No need for any complex reasoning. Just extract the answer directly from the given facts.\n</think>\n\nThe capital of Quackiland is Quack.","role":"assistant"}}],"created":1752866914,"model":"qwen-3-235b-a22b","system_fingerprint":"fp_0e607ab6e1baee46e4f0","object":"chat.completion","usage":{"prompt_tokens":45,"completion_tokens":565,"total_tokens":610,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.002159971,"prompt_time":0.001558192,"completion_time":1.894440437,"total_time":1.8997039794921875,"created":1752866914}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 961462059cbda2f4-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-108450fd-a53f-4cf7-a14e-f03d82799394
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14359"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Reset-Requests-Day:
+                - "16283.756072282791"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "23.756072282791138"
+            X-Request-Id:
+                - 961462059cbda2f4-YUL
+        status: 200 OK
+        code: 200
+        duration: 2.191s

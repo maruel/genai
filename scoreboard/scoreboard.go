@@ -179,6 +179,7 @@ func exerciseGenCommon(ctx context.Context, pf ProviderFactory, isStream bool, n
 	}
 	if err == nil {
 		var data map[string]any
+		// We could check for "is_fruit". In practice the fact that it's JSON is good enough to have the flag set.
 		f.JSON = resp.Decode(&data) == nil
 	}
 	if f.JSON && (resp.InputTokens == 0 || resp.OutputTokens == 0) {
@@ -190,18 +191,17 @@ func exerciseGenCommon(ctx context.Context, pf ProviderFactory, isStream bool, n
 	}
 
 	// JSONSchema
-	msgs = genai.Messages{genai.NewTextMessage(genai.User, `Responds with a JSON object with a float "number" and a bool "is_fruit".`)}
+	msgs = genai.Messages{genai.NewTextMessage(genai.User, `Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.`)}
 	type schema struct {
-		Number  float64 `json:"number"`
-		IsFruit bool    `json:"is_fruit"`
+		IsFruit bool `json:"is_fruit"`
 	}
 	resp, err = callGen(ctx, pf, name+"JSONSchema", msgs, &genai.OptionsText{DecodeAs: &schema{}}, isStream, &usage)
 	if errors.Is(err, cassette.ErrInteractionNotFound) {
 		return in, out, f, usage, err
 	}
 	if err == nil {
-		var data map[string]any
-		f.JSONSchema = resp.Decode(&data) == nil
+		data := schema{}
+		f.JSONSchema = resp.Decode(&data) == nil && data.IsFruit
 	}
 	if f.JSONSchema && (resp.InputTokens == 0 || resp.OutputTokens == 0) {
 		f.BrokenTokenUsage = genai.True

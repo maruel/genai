@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 578
+        content_length: 537
         host: api.cerebras.ai
         body: |
-            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Responds with a JSON object with a float \"number\" and a bool \"is_fruit\"."},{"role":"user","content":"/think"}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://github.com/maruel/genai/scoreboard/schema","$ref":"#/$defs/schema","$defs":{"schema":{"properties":{"number":{"type":"number"},"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["number","is_fruit"]}}},"strict":true}}}
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."},{"role":"user","content":"/think"}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://github.com/maruel/genai/scoreboard/schema","$ref":"#/$defs/schema","$defs":{"schema":{"properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}},"strict":true}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-a05e28a7-f222-4865-9b4d-7ee1463a9df0","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"number\": 5.0, \"is_fruit\": true}","role":"assistant"}}],"created":1753125082,"model":"qwen-3-32b","system_fingerprint":"fp_1504a02d96fb4f08d4e7","object":"chat.completion","usage":{"prompt_tokens":223,"completion_tokens":417,"total_tokens":640,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":9.589555998,"prompt_time":0.009536851,"completion_time":0.3678617,"total_time":9.96851897239685,"created":1753125082}}'
+        body: '{"id":"chatcmpl-2b0d1f12-ca30-4e39-931e-7d57ecf26694","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"is_fruit\": true}","role":"assistant"}}],"created":1753144359,"model":"qwen-3-32b","system_fingerprint":"fp_1504a02d96fb4f08d4e7","object":"chat.completion","usage":{"prompt_tokens":208,"completion_tokens":252,"total_tokens":460,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.234433952,"prompt_time":0.004751179,"completion_time":0.197738006,"total_time":0.43830251693725586,"created":1753144359}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962d00f6fe9bf4cc-YYZ
+                - 962ed7960aa9a2a6-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-a05e28a7-f222-4865-9b4d-7ee1463a9df0
+                - chatcmpl-2b0d1f12-ca30-4e39-931e-7d57ecf26694
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -46,15 +46,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "64000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14381"
+                - "14400"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "63734"
+                - "64000"
             X-Ratelimit-Reset-Requests-Day:
-                - "17307.22716641426"
+                - "84440.13093972206"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "27.227166414260864"
+                - "20.130939722061157"
             X-Request-Id:
-                - 962d00f6fe9bf4cc-YYZ
+                - 962ed7960aa9a2a6-YUL
         status: 200 OK
         code: 200
-        duration: 10.107s
+        duration: 546ms

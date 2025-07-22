@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 550
+        content_length: 509
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":"Responds with a JSON object with a float \"number\" and a bool \"is_fruit\"."}],"model":"llama-3.1-8b-instant","response_format":{"type":"json_schema","json_schema":{"$defs":{"schema":{"additionalProperties":false,"properties":{"is_fruit":{"type":"boolean"},"number":{"type":"number"}},"required":["number","is_fruit"],"type":"object"}},"$id":"https://github.com/maruel/genai/scoreboard/schema","$ref":"#/$defs/schema","$schema":"https://json-schema.org/draft/2020-12/schema","name":"response"}},"stream":true}
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"model":"llama-3.1-8b-instant","response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://github.com/maruel/genai/scoreboard/schema","$ref":"#/$defs/schema","$defs":{"schema":{"properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}},"name":"response"}},"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -30,7 +30,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962e9ec7eea3a2a8-YUL
+                - 962ed890dc17a288-YUL
             Content-Length:
                 - "204"
             Content-Type:
@@ -44,7 +44,7 @@ interactions:
             X-Groq-Region:
                 - msp
             X-Request-Id:
-                - req_01k0qpgy8meftrthj106qwn3zr
+                - req_01k0qrs5ndf679z4xm8ynf5dgv
         status: 400 Bad Request
         code: 400
-        duration: 63ms
+        duration: 69ms

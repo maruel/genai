@@ -214,8 +214,8 @@ type ChatRequest struct {
 	PresencePenalty   float64         `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
 	ReasoningFormat   ReasoningFormat `json:"reasoning_format,omitzero"`
 	ResponseFormat    struct {
-		Type       string         `json:"type,omitzero"` // "json_object", "json_schema"
-		JSONSchema map[string]any `json:"json_schema,omitzero"`
+		Type       string             `json:"type,omitzero"` // "json_object", "json_schema"
+		JSONSchema *jsonschema.Schema `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	Seed          int64       `json:"seed,omitzero"`
 	ServiceTier   ServiceTier `json:"service_tier,omitzero"`
@@ -307,20 +307,9 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) ([]string,
 	}
 	c.Stop = v.Stop
 	if v.DecodeAs != nil {
-		// Groq seems to require a "name" property. Hack by encoding, decoding, changing.
-		b, err := json.Marshal(jsonschema.Reflect(v.DecodeAs))
-		if err != nil {
-			errs = append(errs, err)
-		} else {
-			m := map[string]any{}
-			if err = json.Unmarshal(b, &m); err != nil {
-				errs = append(errs, err)
-			} else {
-				c.ResponseFormat.Type = "json_schema"
-				m["name"] = "response"
-				c.ResponseFormat.JSONSchema = m
-			}
-		}
+		c.ResponseFormat.Type = "json_schema"
+		c.ResponseFormat.JSONSchema = jsonschema.Reflect(v.DecodeAs)
+		c.ResponseFormat.JSONSchema.Extras = map[string]any{"name": "response"}
 	} else if v.ReplyAsJSON {
 		c.ResponseFormat.Type = "json_object"
 	}

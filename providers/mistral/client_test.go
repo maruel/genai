@@ -5,9 +5,12 @@
 package mistral_test
 
 import (
+	"context"
 	_ "embed"
+	"errors"
 	"net/http"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -16,6 +19,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/mistral"
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
+	"github.com/maruel/httpjson"
 )
 
 func gc(t testing.TB, name, m string) genai.Provider {
@@ -42,7 +46,45 @@ func gc(t testing.TB, name, m string) genai.Provider {
 	if err != nil {
 		t.Fatal(err)
 	}
+	if strings.HasPrefix(m, "voxtral") {
+		// If anyone at Mistral reads this, please get your shit together.
+		return &hideHTTP500{c}
+	}
 	return c
+}
+
+type hideHTTP500 struct {
+	*mistral.Client
+}
+
+func (h *hideHTTP500) Unwrap() genai.Provider {
+	return h.Client
+}
+
+func (h *hideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	resp, err := h.Client.GenSync(ctx, msgs, opts)
+	if err != nil {
+		var herr *httpjson.Error
+		if errors.As(err, &herr) && herr.StatusCode == 500 {
+			// Hide the failure; voxtral throws HTTP 500 on unsupported file format, e.g. AAC.
+			return resp, errors.New("voxtral doesn't support this input format")
+		}
+		return resp, err
+	}
+	return resp, err
+}
+
+func (h *hideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+	resp, err := h.Client.GenStream(ctx, msgs, chunks, opts)
+	if err != nil {
+		var herr *httpjson.Error
+		if errors.As(err, &herr) && herr.StatusCode == 500 {
+			// Hide the failure; voxtral throws HTTP 500 on unsupported file format, e.g. AAC.
+			return resp, errors.New("voxtral doesn't support this input format")
+		}
+		return resp, err
+	}
+	return resp, err
 }
 
 func TestClient_Scoreboard(t *testing.T) {

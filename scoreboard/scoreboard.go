@@ -395,7 +395,7 @@ func exerciseGenAudioInput(ctx context.Context, pf ProviderFactory, f *genai.Fun
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
 			}
 		} else if isBadError(err) {
-			// return m, err
+			return m, err
 		}
 		msgs[0].Contents[1] = genai.Content{URL: rootURL + "audio." + format.ext}
 		if err := exerciseModal(ctx, pf, f, isStream, prefix+format.ext+"-URL", usage, msgs, want); err == nil {
@@ -407,7 +407,7 @@ func exerciseGenAudioInput(ctx context.Context, pf ProviderFactory, f *genai.Fun
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
 			}
 		} else if isBadError(err) {
-			// return m, err
+			return m, err
 		}
 	}
 	return m, nil

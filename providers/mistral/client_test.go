@@ -32,7 +32,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 		t.Fatal(err)
 	}
 	if model.Thinking {
-		t.Fatal("implement me")
+		return &mistral.MagistralThinking{ProviderGen: c}
 	}
 	if strings.HasPrefix(model.Model, "voxtral") {
 		// If anyone at Mistral reads this, please get your shit together.
@@ -82,7 +82,8 @@ func TestClient_Scoreboard(t *testing.T) {
 	}
 	var models []scoreboardtest.Model
 	for _, m := range genaiModels {
-		models = append(models, scoreboardtest.Model{Model: m.GetID()})
+		id := m.GetID()
+		models = append(models, scoreboardtest.Model{Model: id, Thinking: strings.HasPrefix(id, "magistral")})
 	}
 	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
 }

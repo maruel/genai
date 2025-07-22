@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 146
+        host: api.mistral.ai
+        body: |
+            {"model":"magistral-small-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"e40bae490eb447aa82561827f54afd4d","created":1753620802,"model":"magistral-small-latest","usage":{"prompt_tokens":11,"total_tokens":645,"completion_tokens":634},"object":"chat.completion","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","tool_calls":null,"content":[{"type":"text","text":"<think>\nThe user has asked me to say hello using only one word. The simplest and most direct way to say hello in one word is \"Hello\" itself. Alternatively, I could use synonyms like \"Hi\" or greetings like \"Hola\" but since the instruction is to use only one word, \"Hello\" fits perfectly.\n\nHowever, the user might be expecting a more creative or unexpected single word. But given the instruction is to use only one word, and \"Hello\" is the most straightforward greeting, it seems appropriate.\n\nBut to ensure I''m following the instruction precisely, I should confirm if the user means exactly one word, or if they''re open to creative interpretations. But since the instruction is clear: \"use only one word,\" I''ll stick to that.\n\nBut looking again, the problem is to say hello using only one word. The word \"Hello\" is itself a greeting, so it fits the requirement perfectly.\n\nBut perhaps the user wants a more creative or unexpected word. However, without more context, it''s safest to assume they want the standard greeting.\n\nBut to be thorough, I should consider if there are other single words that can serve as a greeting. For example, \"Hi\", \"Hey\", \"Aloha\", \"Ciao\", etc. But since the instruction is to say hello, and not necessarily to use a synonym, \"Hello\" is the most direct response.\n\nBut perhaps the user is testing my ability to follow instructions precisely. The instruction is to say hello using only one word. The most direct way to say hello is with the word \"Hello\". So, the answer is likely \"Hello\".\n\nHowever, to ensure I''m not missing anything, I should think if there''s a way to say hello without using the word \"hello\" itself, but still using only one word. For example, \"Greetings\" is a single word that can serve as a greeting, but it''s not exactly saying hello. Similarly, \"Hi\" is another single word greeting.\n\nGiven that, the simplest and most direct single word greeting is \"Hello\".\n\nBut to be precise, the user said \"say hello\" using only one word. So the word should convey the meaning of hello. \"Hello\" itself is the most direct.\n\nAlternatively, if we think outside the box, could we use a word that isn''t typically a greeting but could convey hello in some context? For example, \"Aloha\" is a single word greeting in Hawaiian.\n\nBut since the user didn''t specify a language, and English is the default, \"Hello\" is appropriate.\n\nBut to ensure completeness, I should consider if there are other English words that can mean hello. For example, \"Hi\", \"Hey\", \"Hola\" (Spanish borrowed into English), etc.\n\nBut since \"Hello\" is the standard English greeting, and the instruction is to say hello using only one word, the answer is likely \"Hello\".\n\nBut perhaps the user expects a more creative answer. However, without more context, it''s safest to provide the standard greeting.\n\nTherefore, the answer is:\n\nHello"},{"type":"thinking","thinking":[]},{"type":"text","text":"Hello."}]}}]}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 965c477e78f2a297-YUL
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 01984bf1-eb59-7431-9fd7-24964eddce1c
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Envoy-Upstream-Service-Time:
+                - "5088"
+            X-Kong-Proxy-Latency:
+                - "11"
+            X-Kong-Request-Id:
+                - 01984bf1-eb59-7431-9fd7-24964eddce1c
+            X-Kong-Upstream-Latency:
+                - "5088"
+            X-Ratelimit-Limit-Req-Minute:
+                - "100"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "75000"
+            X-Ratelimit-Limit-Tokens-Month:
+                - "50000000000"
+            X-Ratelimit-Remaining-Req-Minute:
+                - "98"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "74241"
+            X-Ratelimit-Remaining-Tokens-Month:
+                - "49999999241"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "645"
+        status: 200 OK
+        code: 200
+        duration: 5.288s

@@ -94,6 +94,32 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
+			Models:   []string{"magistral-small-latest"},
+			Thinking: true,
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityPDF: {
+					URL:              true,
+					SupportedFormats: []string{"application/pdf", "application/x-javascript", "application/x-python", "text/css", "text/html", "text/javascript", "text/markdown", "text/plain", "text/x-python"},
+				},
+				genai.ModalityText: {Inline: true},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Tools:          genai.True,
+				IndecisiveTool: genai.True,
+				JSON:           true,
+				JSONSchema:     true,
+				Seed:           true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Tools:          genai.True,
+				IndecisiveTool: genai.True,
+				JSON:           true,
+				JSONSchema:     true,
+				Seed:           true,
+			},
+		},
+		{
 			Models: []string{"pixtral-12b-latest"},
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityImage: {
@@ -167,7 +193,6 @@ var Scoreboard = genai.Scoreboard{
 				"magistral-medium-2506",
 				"magistral-medium-latest",
 				"magistral-small-2506",
-				"magistral-small-latest",
 				"ministral-3b-2410",
 				"ministral-8b-2410",
 				"ministral-8b-latest",
@@ -352,9 +377,6 @@ func (c *ChatRequest) SetStream(stream bool) {
 }
 
 // Message is documented at https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post
-//
-// See the python implementation at
-// https://github.com/mistralai/mistral-common/blob/main/src/mistral_common/protocol/instruct/messages.py
 type Message struct {
 	Role       string     `json:"role"`             // "system", "assistant", "user", "tool"
 	Content    []Content  `json:"content,omitzero"` // For system and assistant, must be at most a single string.

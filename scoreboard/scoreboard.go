@@ -14,6 +14,8 @@ import (
 	"fmt"
 	"maps"
 	"math"
+	"mime"
+	"path/filepath"
 	"slices"
 	"strings"
 	"sync"
@@ -110,7 +112,11 @@ func exerciseGenCommon(ctx context.Context, pf ProviderFactory, isStream bool, p
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
 	resp, err := callGen(ctx, pf, prefix+"Text", msgs, nil, isStream, &usage)
 	if err != nil {
-		return in, out, nil, usage, fmt.Errorf("basic check failed: %w", err)
+		// It happens when the model is audio gen only.
+		if !isBadError(err) {
+			err = nil
+		}
+		return in, out, nil, usage, err
 	}
 	in[genai.ModalityText] = genai.ModalCapability{Inline: true}
 	out[genai.ModalityText] = genai.ModalCapability{Inline: true}
@@ -674,16 +680,19 @@ func callGen(ctx context.Context, pf ProviderFactory, name string, msgs genai.Me
 func exerciseGenDoc(ctx context.Context, pf ProviderFactory) (genai.Scenario, genai.Usage, error) {
 	prefix := "GenDoc-"
 	out := genai.Scenario{
-		In:  map[genai.Modality]genai.ModalCapability{},
-		Out: map[genai.Modality]genai.ModalCapability{},
+		In:     map[genai.Modality]genai.ModalCapability{},
+		Out:    map[genai.Modality]genai.ModalCapability{},
+		GenDoc: &genai.FunctionalityDoc{},
 	}
 	usage := genai.Usage{}
-	out.GenDoc = &genai.FunctionalityDoc{}
 	if err := exerciseGenDocImage(ctx, pf, prefix+"Image", &out, &usage); err != nil {
 		return out, usage, err
 	}
 	if err := exerciseGenDocAudio(ctx, pf, prefix+"Audio", &out, &usage); err != nil {
 		return out, usage, err
+	}
+	if len(out.In) == 0 || len(out.Out) == 0 {
+		out.GenDoc = nil
 	}
 	return out, usage, nil
 }
@@ -702,26 +711,34 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 **Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.
 **Output:** Actual image file for a smooth, colorful doodle-style image on a white background.`
 	msg := genai.NewTextMessage(genai.User, contentsImage)
-	resp, err := c.GenDoc(ctx, msg, nil)
+	resp, err := c.GenDoc(ctx, msg, &genai.OptionsImage{})
 	usage.InputTokens += resp.InputTokens
 	usage.InputCachedTokens += resp.InputCachedTokens
 	usage.OutputTokens += resp.OutputTokens
 	if err == nil {
-		if len(resp.Contents) > 0 && (resp.Contents[0].Filename == "content.png" || resp.Contents[0].Filename == "content.jpg") {
-			v := out.In[genai.ModalityText]
+		if len(resp.Contents) == 0 {
+			return fmt.Errorf("%s: no content", name)
+		}
+		c := resp.Contents[0]
+		fn := c.GetFilename()
+		if fn == "" {
+			return fmt.Errorf("%s: no content filename", name)
+		}
+		out.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
+		v := out.Out[genai.ModalityImage]
+		if resp.Contents[0].URL == "" {
+			v.URL = true
+		} else {
 			v.Inline = true
-			out.In[genai.ModalityText] = v
-			v = out.Out[genai.ModalityImage]
-			// TODO: Detect if image generation is inline or URL.
-			v.Inline = true
-			out.Out[genai.ModalityImage] = v
-			if resp.InputTokens == 0 || resp.OutputTokens == 0 {
-				out.GenDoc.BrokenTokenUsage = genai.True
-			}
-			if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
-				internal.Logger(ctx).DebugContext(ctx, "GenDocImage", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
-				out.GenDoc.BrokenFinishReason = true
-			}
+		}
+		v.SupportedFormats = append(v.SupportedFormats, mime.TypeByExtension(filepath.Ext(fn)))
+		out.Out[genai.ModalityImage] = v
+		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
+			out.GenDoc.BrokenTokenUsage = genai.True
+		}
+		if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
+			internal.Logger(ctx).DebugContext(ctx, "GenDocImage", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+			out.GenDoc.BrokenFinishReason = true
 		}
 	}
 	if isBadError(err) {
@@ -733,26 +750,35 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, out *genai.Scenario, usage *genai.Usage) error {
 	c := pf(name).(genai.ProviderGenDoc)
 	msg := genai.NewTextMessage(genai.User, "Say hi. Just say this word, nothing else.")
-	resp, err := c.GenDoc(ctx, msg, nil)
+	resp, err := c.GenDoc(ctx, msg, &genai.OptionsAudio{})
 	usage.InputTokens += resp.InputTokens
 	usage.InputCachedTokens += resp.InputCachedTokens
 	usage.OutputTokens += resp.OutputTokens
 	if err == nil {
-		if len(resp.Contents) > 0 && resp.Contents[0].Filename == "sound.wav" {
-			v := out.In[genai.ModalityText]
+		if len(resp.Contents) == 0 {
+			return fmt.Errorf("%s: no content", name)
+		}
+		c := resp.Contents[0]
+		fn := c.GetFilename()
+		if fn == "" {
+			return fmt.Errorf("%s: no content filename", name)
+		}
+		out.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
+		out.Out[genai.ModalityAudio] = genai.ModalCapability{Inline: true}
+		v := out.Out[genai.ModalityAudio]
+		if resp.Contents[0].URL == "" {
+			v.URL = true
+		} else {
 			v.Inline = true
-			out.In[genai.ModalityText] = v
-			v = out.Out[genai.ModalityAudio]
-			// TODO: Detect if audio generation is inline or URL.
-			v.Inline = true
-			out.Out[genai.ModalityAudio] = v
-			if resp.InputTokens == 0 || resp.OutputTokens == 0 {
-				out.GenDoc.BrokenTokenUsage = genai.True
-			}
-			if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
-				internal.Logger(ctx).DebugContext(ctx, "GenDocAudio", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
-				out.GenDoc.BrokenFinishReason = true
-			}
+		}
+		v.SupportedFormats = append(v.SupportedFormats, mime.TypeByExtension(filepath.Ext(fn)))
+		out.Out[genai.ModalityAudio] = v
+		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
+			out.GenDoc.BrokenTokenUsage = genai.True
+		}
+		if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
+			internal.Logger(ctx).DebugContext(ctx, "GenDocAudio", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+			out.GenDoc.BrokenFinishReason = true
 		}
 	}
 	if isBadError(err) {

@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 587
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-small-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"62128bebca0f42c59fde66a5a6414468","object":"chat.completion.chunk","created":1753147557,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"62128bebca0f42c59fde66a5a6414468","object":"chat.completion.chunk","created":1753147557,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"tool_calls":[{"id":"Z0Z8TfbW4","function":{"name":"square_root","arguments":"{\"number\": \"132413\"}"},"index":0}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":128,"total_tokens":144,"completion_tokens":16}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962f25a8eccb33f1-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Mistral-Correlation-Id:
+                - 01982fbc-c5dc-7f5b-b5e2-f1eb6581dfb3
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Envoy-Upstream-Service-Time:
+                - "5579"
+            X-Kong-Proxy-Latency:
+                - "7"
+            X-Kong-Request-Id:
+                - 01982fbc-c5dc-7f5b-b5e2-f1eb6581dfb3
+            X-Kong-Upstream-Latency:
+                - "5580"
+        status: 200 OK
+        code: 200
+        duration: 5.728s

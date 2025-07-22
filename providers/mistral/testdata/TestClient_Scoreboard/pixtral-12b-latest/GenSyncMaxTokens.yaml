@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 179
+        host: api.mistral.ai
+        body: |
+            {"model":"pixtral-12b-latest","max_tokens":16,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"d1b66b62a4fe4848824e2847159f39fb","created":1753188025,"model":"pixtral-12b-latest","usage":{"prompt_tokens":13,"total_tokens":29,"completion_tokens":16},"object":"chat.completion","choices":[{"index":0,"finish_reason":"length","message":{"role":"assistant","tool_calls":null,"content":"The theory of relativity is a fundamental concept in physics, developed by Albert Einstein,"}}]}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963301a62827a290-YUL
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 01983226-4415-7b5e-b52d-b581b3efb7e2
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Envoy-Upstream-Service-Time:
+                - "436"
+            X-Kong-Proxy-Latency:
+                - "9"
+            X-Kong-Request-Id:
+                - 01983226-4415-7b5e-b52d-b581b3efb7e2
+            X-Kong-Upstream-Latency:
+                - "436"
+            X-Ratelimit-Limit-Req-10-Second:
+                - "60"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "2000000"
+            X-Ratelimit-Limit-Tokens-Month:
+                - "10000000000"
+            X-Ratelimit-Remaining-Req-10-Second:
+                - "53"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "1999890"
+            X-Ratelimit-Remaining-Tokens-Month:
+                - "9999994614"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "29"
+        status: 200 OK
+        code: 200
+        duration: 585ms

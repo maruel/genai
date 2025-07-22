@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 557
+        host: api.mistral.ai
+        body: |
+            {"model":"pixtral-12b-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"name":"response","strict":true,"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://github.com/maruel/genai/scoreboard/schema","$ref":"#/$defs/schema","$defs":{"schema":{"properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"0151317ebf834d88a75879e42f3ed7a6","object":"chat.completion.chunk","created":1753188026,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"0151317ebf834d88a75879e42f3ed7a6","object":"chat.completion.chunk","created":1753188026,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":"{\""},"finish_reason":null}]}
+
+            data: {"id":"0151317ebf834d88a75879e42f3ed7a6","object":"chat.completion.chunk","created":1753188026,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":"is"},"finish_reason":null}]}
+
+            data: {"id":"0151317ebf834d88a75879e42f3ed7a6","object":"chat.completion.chunk","created":1753188026,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":"_f"},"finish_reason":null}]}
+
+            data: {"id":"0151317ebf834d88a75879e42f3ed7a6","object":"chat.completion.chunk","created":1753188026,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":"ruit"},"finish_reason":null}]}
+
+            data: {"id":"0151317ebf834d88a75879e42f3ed7a6","object":"chat.completion.chunk","created":1753188026,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":"\":"},"finish_reason":null}]}
+
+            data: {"id":"0151317ebf834d88a75879e42f3ed7a6","object":"chat.completion.chunk","created":1753188026,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":" true"},"finish_reason":null}]}
+
+            data: {"id":"0151317ebf834d88a75879e42f3ed7a6","object":"chat.completion.chunk","created":1753188026,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":"}"},"finish_reason":null}]}
+
+            data: {"id":"0151317ebf834d88a75879e42f3ed7a6","object":"chat.completion.chunk","created":1753188026,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":20,"total_tokens":28,"completion_tokens":8}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963301acc95ca290-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Mistral-Correlation-Id:
+                - 01983226-4840-7166-85f6-c378fce4ce8c
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Envoy-Upstream-Service-Time:
+                - "1020"
+            X-Kong-Proxy-Latency:
+                - "5"
+            X-Kong-Request-Id:
+                - 01983226-4840-7166-85f6-c378fce4ce8c
+            X-Kong-Upstream-Latency:
+                - "1021"
+        status: 200 OK
+        code: 200
+        duration: 1.166s

@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 588
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-small-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"aa4cd011c71946bbab440dacc9542c7b","object":"chat.completion","created":1753147559,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"tP9UZ3gbt","function":{"name":"square_root","arguments":"{\"number\": \"132413\"}"},"index":0}],"content":""},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":128,"total_tokens":144,"completion_tokens":16}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962f25b52b8533f1-YUL
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 01982fbc-cd7f-7ebd-8d78-3f683a228fa9
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Envoy-Upstream-Service-Time:
+                - "2772"
+            X-Kong-Proxy-Latency:
+                - "7"
+            X-Kong-Request-Id:
+                - 01982fbc-cd7f-7ebd-8d78-3f683a228fa9
+            X-Kong-Upstream-Latency:
+                - "2773"
+            X-Ratelimit-Limit-Req-10-Second:
+                - "60"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "2000000"
+            X-Ratelimit-Limit-Tokens-Month:
+                - "10000000000"
+            X-Ratelimit-Remaining-Req-10-Second:
+                - "36"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "1998243"
+            X-Ratelimit-Remaining-Tokens-Month:
+                - "9999997927"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "144"
+        status: 200 OK
+        code: 200
+        duration: 2.946s

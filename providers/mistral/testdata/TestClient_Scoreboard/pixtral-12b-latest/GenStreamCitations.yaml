@@ -1,0 +1,77 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 250
+        host: api.mistral.ai
+        body: |
+            {"model":"pixtral-12b-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"8e0a55d23bf14029be379526737e1b19","object":"chat.completion.chunk","created":1753188030,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"8e0a55d23bf14029be379526737e1b19","object":"chat.completion.chunk","created":1753188030,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":"The"},"finish_reason":null}]}
+
+            data: {"id":"8e0a55d23bf14029be379526737e1b19","object":"chat.completion.chunk","created":1753188030,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":" capital"},"finish_reason":null}]}
+
+            data: {"id":"8e0a55d23bf14029be379526737e1b19","object":"chat.completion.chunk","created":1753188030,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":" of"},"finish_reason":null}]}
+
+            data: {"id":"8e0a55d23bf14029be379526737e1b19","object":"chat.completion.chunk","created":1753188030,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":" Qu"},"finish_reason":null}]}
+
+            data: {"id":"8e0a55d23bf14029be379526737e1b19","object":"chat.completion.chunk","created":1753188030,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":"ack"},"finish_reason":null}]}
+
+            data: {"id":"8e0a55d23bf14029be379526737e1b19","object":"chat.completion.chunk","created":1753188030,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":"iland"},"finish_reason":null}]}
+
+            data: {"id":"8e0a55d23bf14029be379526737e1b19","object":"chat.completion.chunk","created":1753188030,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":" is"},"finish_reason":null}]}
+
+            data: {"id":"8e0a55d23bf14029be379526737e1b19","object":"chat.completion.chunk","created":1753188030,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":" Qu"},"finish_reason":null}]}
+
+            data: {"id":"8e0a55d23bf14029be379526737e1b19","object":"chat.completion.chunk","created":1753188030,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":"ack"},"finish_reason":null}]}
+
+            data: {"id":"8e0a55d23bf14029be379526737e1b19","object":"chat.completion.chunk","created":1753188030,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":"."},"finish_reason":null}]}
+
+            data: {"id":"8e0a55d23bf14029be379526737e1b19","object":"chat.completion.chunk","created":1753188030,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":33,"total_tokens":44,"completion_tokens":11}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963301c7de98a290-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Mistral-Correlation-Id:
+                - 01983226-592e-779e-a02e-0cfaec1294ca
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Envoy-Upstream-Service-Time:
+                - "90"
+            X-Kong-Proxy-Latency:
+                - "7"
+            X-Kong-Request-Id:
+                - 01983226-592e-779e-a02e-0cfaec1294ca
+            X-Kong-Upstream-Latency:
+                - "91"
+        status: 200 OK
+        code: 200
+        duration: 240ms

@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 143
+        host: api.mistral.ai
+        body: |
+            {"model":"voxtral-mini-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"4ecaaf7512a54c138c2c5aa9ae01a57c","created":1753188034,"model":"voxtral-mini-latest","usage":{"prompt_tokens":11,"total_tokens":58,"completion_tokens":47},"object":"chat.completion","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","tool_calls":null,"content":"5uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu> Daniels5> elsewhere elsewhere elsewhere elsewhere elsewhere elsewhere elsewhere"}}]}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963301e1397ba290-YUL
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 01983226-6910-7915-a587-2b940fed2a49
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Envoy-Upstream-Service-Time:
+                - "313"
+            X-Kong-Proxy-Latency:
+                - "6"
+            X-Kong-Request-Id:
+                - 01983226-6910-7915-a587-2b940fed2a49
+            X-Kong-Upstream-Latency:
+                - "315"
+            X-Ratelimit-Limit-Req-10-Second:
+                - "60"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "2000000"
+            X-Ratelimit-Limit-Tokens-Month:
+                - "10000000000"
+            X-Ratelimit-Remaining-Req-10-Second:
+                - "34"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "1995887"
+            X-Ratelimit-Remaining-Tokens-Month:
+                - "9999990611"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "58"
+        status: 200 OK
+        code: 200
+        duration: 465ms

@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 144
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-small-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"08949ec349264ed6b678421a6b1f6ea4","object":"chat.completion","created":1753147553,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"Hello."},"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"total_tokens":14,"completion_tokens":3}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962f25907e9333f1-YUL
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 01982fbc-b68f-7d07-a08c-cc08b6452168
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Envoy-Upstream-Service-Time:
+                - "105"
+            X-Kong-Proxy-Latency:
+                - "6"
+            X-Kong-Request-Id:
+                - 01982fbc-b68f-7d07-a08c-cc08b6452168
+            X-Kong-Upstream-Latency:
+                - "106"
+            X-Ratelimit-Limit-Req-10-Second:
+                - "60"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "2000000"
+            X-Ratelimit-Limit-Tokens-Month:
+                - "10000000000"
+            X-Ratelimit-Remaining-Req-10-Second:
+                - "32"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "1998646"
+            X-Ratelimit-Remaining-Tokens-Month:
+                - "9999998330"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "14"
+        status: 200 OK
+        code: 200
+        duration: 254ms

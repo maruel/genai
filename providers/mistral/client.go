@@ -38,29 +38,14 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://console.mistral.ai/usage",
 	Scenarios: []genai.Scenario{
 		{
-			Models: []string{
-				"ministral-3b-latest",
-				"codestral-2501",
-				"codestral-latest",
-				"devstral-small-2505",
-				"devstral-small-latest",
-				"ministral-3b-2410",
-				"ministral-8b-2410",
-				"ministral-8b-latest",
-				"mistral-large-pixtral-2411",
-				"mistral-saba-2502",
-				"mistral-saba-latest",
-				"mistral-tiny",
-				"mistral-tiny-2407",
-				"mistral-tiny-latest",
-				"open-mistral-7b",
-				"open-mistral-nemo",
-				"open-mistral-nemo-2407",
-				"open-mixtral-8x22b",
-				"open-mixtral-8x22b-2404",
-				"open-mixtral-8x7b",
+			Models: []string{"ministral-3b-latest"},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {Inline: true},
+				genai.ModalityPDF: {
+					URL:              true,
+					SupportedFormats: []string{"application/pdf", "application/x-javascript", "application/x-python", "text/css", "text/html", "text/javascript", "text/markdown", "text/plain", "text/x-python"},
+				},
 			},
-			In:  map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Tools:      genai.True,
@@ -78,54 +63,156 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			Models: []string{
-				"mistral-small-latest",
-				"mistral-small",
-				"mistral-small-2501",
-				"mistral-small-2503",
-				"mistral-large-2411",
-				"mistral-large-latest",
-				"mistral-medium",
-				"mistral-medium-2505",
-				"mistral-medium-latest",
-				"pixtral-12b",
-				"pixtral-12b-2409",
-				"pixtral-12b-latest",
-				"pixtral-large-2411",
-				"pixtral-large-latest",
-			},
+			Models: []string{"mistral-small-latest"},
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
-					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
+					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
 				},
 				genai.ModalityPDF: {
 					URL:              true,
-					SupportedFormats: []string{"application/pdf"},
+					SupportedFormats: []string{"application/pdf", "application/x-javascript", "application/x-python", "text/css", "text/html", "text/javascript", "text/markdown", "text/plain", "text/x-python"},
 				},
 				genai.ModalityText: {Inline: true},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:          genai.True,
-				IndecisiveTool: genai.True,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
+				Tools:      genai.True,
+				BiasedTool: genai.True,
+				JSON:       true,
+				JSONSchema: true,
+				Seed:       true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:          genai.True,
-				IndecisiveTool: genai.True,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
+				Tools:      genai.True,
+				BiasedTool: genai.True,
+				JSON:       true,
+				JSONSchema: true,
+				Seed:       true,
+			},
+		},
+		{
+			Models: []string{"pixtral-12b-latest"},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityImage: {
+					Inline:           true,
+					URL:              true,
+					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
+				},
+				genai.ModalityPDF: {
+					URL:              true,
+					SupportedFormats: []string{"application/pdf", "application/x-javascript", "application/x-python", "text/css", "text/html", "text/javascript", "text/markdown", "text/plain", "text/x-python"},
+				},
+				genai.ModalityText: {Inline: true},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Tools:      genai.True,
+				BiasedTool: genai.True,
+				JSON:       true,
+				JSONSchema: true,
+				Seed:       true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Tools:      genai.True,
+				BiasedTool: genai.True,
+				JSON:       true,
+				JSONSchema: true,
+				Seed:       true,
+			},
+		},
+		{
+			Models: []string{"voxtral-mini-latest"},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityAudio: {
+					Inline:           true,
+					SupportedFormats: []string{"audio/aac", "audio/aiff", "audio/flac", "audio/mp3", "audio/ogg", "audio/wav"},
+				},
+				genai.ModalityPDF: {
+					URL:              true,
+					SupportedFormats: []string{"application/pdf", "application/x-javascript", "application/x-python", "text/css", "text/html", "text/javascript", "text/markdown", "text/plain", "text/x-python"},
+				},
+				genai.ModalityText: {Inline: true},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Seed: true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Seed: true,
+			},
+		},
+		// Untested.
+		{
+			Models: []string{
+				"codestral-2411-rc5",
+				"codestral-2412",
+				"codestral-2501",
+				"codestral-latest",
+				"devstral-medium-2507",
+				"devstral-medium-latest",
+				"devstral-small-2505",
+				"devstral-small-2507",
+				"devstral-small-latest",
+				"magistral-medium-2506",
+				"magistral-medium-latest",
+				"magistral-small-2506",
+				"magistral-small-latest",
+				"ministral-3b-2410",
+				"ministral-8b-2410",
+				"ministral-8b-latest",
+				"mistral-large-2407",
+				"mistral-large-2411",
+				"mistral-large-latest",
+				"mistral-large-pixtral-2411",
+				"mistral-medium",
+				"mistral-medium-2505",
+				"mistral-medium-latest",
+				"mistral-ocr-2503",
+				"mistral-ocr-2505",
+				"mistral-ocr-latest",
+				"mistral-saba-2502",
+				"mistral-saba-latest",
+				"mistral-small",
+				"mistral-small-2312",
+				"mistral-small-2409",
+				"mistral-small-2501",
+				"mistral-small-2503",
+				"mistral-small-2506",
+				"mistral-tiny",
+				"mistral-tiny-2312",
+				"mistral-tiny-2407",
+				"mistral-tiny-latest",
+				"open-mistral-7b",
+				"open-mistral-nemo",
+				"open-mistral-nemo-2407",
+				"open-mixtral-8x22b",
+				"open-mixtral-8x22b-2404",
+				"open-mixtral-8x7b",
+				"pixtral-12b",
+				"pixtral-12b-2409",
+				"pixtral-large-2411",
+				"pixtral-large-latest",
+				"voxtral-mini-2507",
+				"voxtral-small-2507",
+				"voxtral-small-latest",
+			},
+		},
+		// Unsupported.
+		{
+			Models: []string{
+				"codestral-embed",
+				"codestral-embed-2505",
+				"mistral-embed",
+				"mistral-moderation-2411",
+				"mistral-moderation-latest",
 			},
 		},
 	},
 }
 
-// https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post
+// ChatRequest is documented at https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post
 type ChatRequest struct {
 	Model          string    `json:"model"`
 	Temperature    float64   `json:"temperature,omitzero"` // [0, 2]
@@ -255,11 +342,14 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-// https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post
+// Message is documented at https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post
+//
+// See the python implementation at
+// https://github.com/mistralai/mistral-common/blob/main/src/mistral_common/protocol/instruct/messages.py
 type Message struct {
-	Role       string     `json:"role"` // "system", "assistant", "user", "tool"
-	Content    []Content  `json:"content,omitzero"`
-	Prefix     bool       `json:"prefix,omitzero"`
+	Role       string     `json:"role"`             // "system", "assistant", "user", "tool"
+	Content    []Content  `json:"content,omitzero"` // For system and assistant, must be at most a single string.
+	Prefix     bool       `json:"prefix,omitzero"`  // Whether the message is a prefix
 	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
 	ToolCallID string     `json:"tool_call_id,omitzero"`
 	Name       string     `json:"name,omitzero"`
@@ -304,24 +394,36 @@ func (m *Message) From(in *genai.Message) error {
 	return nil
 }
 
+// Content is a piece of information sent back and forth.
+//
+// Only the user can send non-textual information.
 type Content struct {
 	Type ContentType `json:"type"`
 
-	// Type == "text"
+	// Type == ContentText
 	Text string `json:"text,omitzero"`
 
-	// Type == "reference"
-	ReferenceIDs []int64 `json:"reference_ids,omitzero"`
+	// Type == ContentImageURL
+	ImageURL struct {
+		URL    string `json:"url,omitzero"`    // Can be inline.
+		Detail string `json:"detail,omitzero"` // undocumented, likely "auto" like OpenAI
+	} `json:"image_url,omitzero"`
+	ModelConfig struct{} `json:"model_config,omitzero"`
 
-	// Type == "document_url"
+	// Type == ContentDocumentURL
 	DocumentURL  string `json:"document_url,omitzero"`
 	DocumentName string `json:"document_name,omitzero"`
 
-	// Type == "image_url"
-	ImageURL struct {
-		URL    string `json:"url,omitzero"`
-		Detail string `json:"detail,omitzero"` // undocumented, likely "auto" like OpenAI
-	} `json:"image_url,omitzero"`
+	// Type == ContentReference
+	ReferenceIDs []int64 `json:"reference_ids,omitzero"`
+
+	// Type == ContentAudioURL
+	AudioURL struct {
+		URL string `json:"url,omitzero"` // Can be inline.
+	} `json:"audio_url,omitzero"`
+
+	// Type == ContentInputAudio
+	InputAudio []byte `json:"input_audio,omitzero"`
 }
 
 func (c *Content) From(in *genai.Content) error {
@@ -335,7 +437,15 @@ func (c *Content) From(in *genai.Content) error {
 		return err
 	}
 	switch {
-	case (in.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
+	case strings.HasPrefix(mimeType, "audio/"):
+		if in.URL != "" {
+			c.Type = ContentAudioURL
+			c.AudioURL.URL = in.URL
+		} else {
+			c.Type = ContentInputAudio
+			c.InputAudio = data
+		}
+	case strings.HasPrefix(mimeType, "image/"):
 		c.Type = ContentImageURL
 		if in.URL == "" {
 			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
@@ -362,13 +472,22 @@ func (c *Content) From(in *genai.Content) error {
 	return nil
 }
 
+// ContentType is the type of a content block in a message.
+//
+// I got the whole list from an error message by sending a bad content type.
 type ContentType string
 
 const (
 	ContentText        ContentType = "text"
-	ContentReference   ContentType = "reference"
-	ContentDocumentURL ContentType = "document_url"
 	ContentImageURL    ContentType = "image_url"
+	ContentDocumentURL ContentType = "document_url"
+	ContentReference   ContentType = "reference"
+	ContentBBox        ContentType = "bbox"
+	ContentFileURL     ContentType = "file_url"
+	ContentInputAudio  ContentType = "input_audio"
+	ContentFile        ContentType = "file"
+	ContentThinking    ContentType = "thinking"
+	ContentAudioURL    ContentType = "audio_url"
 )
 
 type Tool struct {
@@ -423,9 +542,10 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 }
 
 type Usage struct {
-	PromptTokens     int64 `json:"prompt_tokens"`
-	CompletionTokens int64 `json:"completion_tokens"`
-	TotalTokens      int64 `json:"total_tokens"`
+	PromptTokens       int64 `json:"prompt_tokens"`
+	CompletionTokens   int64 `json:"completion_tokens"`
+	TotalTokens        int64 `json:"total_tokens"`
+	PromptAudioSeconds int64 `json:"prompt_audio_seconds"`
 }
 
 type MessageResponse struct {
@@ -511,7 +631,7 @@ type ChatStreamChunkResponse struct {
 	Usage Usage `json:"usage"`
 }
 
-// https://docs.mistral.ai/api/#tag/models/operation/retrieve_model_v1_models__model_id__get
+// Model is documented at https://docs.mistral.ai/api/#tag/models/operation/retrieve_model_v1_models__model_id__get
 type Model struct {
 	ID           string    `json:"id"`
 	Object       string    `json:"object"`

@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 184
+        host: api.mistral.ai
+        body: |
+            {"model":"ministral-3b-latest","stream":true,"stop":["is"],"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"470a2ff60bd942a5be72f4ccfb16c6b9","object":"chat.completion.chunk","created":1753147548,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"470a2ff60bd942a5be72f4ccfb16c6b9","object":"chat.completion.chunk","created":1753147548,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"Canada"},"finish_reason":null}]}
+
+            data: {"id":"470a2ff60bd942a5be72f4ccfb16c6b9","object":"chat.completion.chunk","created":1753147548,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":" "},"finish_reason":"stop"}],"usage":{"prompt_tokens":15,"total_tokens":17,"completion_tokens":2}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962f2573cf6933f1-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Mistral-Correlation-Id:
+                - 01982fbc-a4a2-70ff-8e06-b2d33abb9e21
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Envoy-Upstream-Service-Time:
+                - "65"
+            X-Kong-Proxy-Latency:
+                - "6"
+            X-Kong-Request-Id:
+                - 01982fbc-a4a2-70ff-8e06-b2d33abb9e21
+            X-Kong-Upstream-Latency:
+                - "66"
+        status: 200 OK
+        code: 200
+        duration: 232ms

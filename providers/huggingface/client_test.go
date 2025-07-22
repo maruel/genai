@@ -28,8 +28,7 @@ func TestClient_Scoreboard(t *testing.T) {
 					ProviderGen: c,
 					Append:      genai.NewTextMessage(genai.User, "/think"),
 				},
-				TagName:  "think",
-				SkipJSON: true,
+				TagName: "think",
 			}
 		}
 		return c

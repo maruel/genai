@@ -51,27 +51,20 @@ func TestProviderGenThinking_GenSync(t *testing.T) {
 			want: []genai.Content{{Thinking: "Thinking with whitespace"}},
 		},
 		{
+			name: "JSON",
+			in:   "{\"is_fruit\": true}",
+			want: []genai.Content{{Text: "{\"is_fruit\": true}"}},
+		},
+		{
 			name: "With empty text content",
 			want: []genai.Content{{}},
-		},
-		{
-			name: "SkipJSON with ReplyAsJSON",
-			in:   "<thinking>This is thinking</thinking>Response",
-			opts: &genai.OptionsText{ReplyAsJSON: true},
-			want: []genai.Content{{Text: "<thinking>This is thinking</thinking>Response"}},
-		},
-		{
-			name: "SkipJSON with DecodeAs",
-			in:   "<thinking>This is thinking</thinking>Response",
-			opts: &genai.OptionsText{DecodeAs: &struct{ A string }{}},
-			want: []genai.Content{{Text: "<thinking>This is thinking</thinking>Response"}},
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			mp := &mockProviderGenSync{response: genai.Result{Message: genai.NewTextMessage(genai.Assistant, tc.in)}}
-			tp := &adapters.ProviderGenThinking{ProviderGen: mp, TagName: "thinking", SkipJSON: true}
+			tp := &adapters.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
 			got, err := tp.GenSync(t.Context(), genai.Messages{}, tc.opts)
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
@@ -94,7 +87,7 @@ func TestProviderGenThinking_GenSync_errors(t *testing.T) {
 		{
 			name: "With non-empty content before tag",
 			in:   []genai.Content{{Text: "Text before <thinking>\nThis is thinking</thinking>\nThis is response"}},
-			want: "failed to parse thinking tokens",
+			want: "unexpected prefix before thinking tag: \"Text before \"",
 		},
 		{
 			name: "Error from underlying GenSync",
@@ -104,7 +97,7 @@ func TestProviderGenThinking_GenSync_errors(t *testing.T) {
 		{
 			name: "Multiple content blocks",
 			in:   []genai.Content{{Text: "First part. "}, {Text: "<thinking>Thinking part</thinking>"}, {Text: " Second part."}},
-			want: "failed to parse thinking tokens",
+			want: "unexpected prefix before thinking tag: \"First part.\\n\"",
 		},
 		{
 			name: "Message with existing thinking content",
@@ -136,9 +129,9 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 		want []genai.Content
 	}{
 		{
-			name: "No thinking tags - assumed to be thinking content",
+			name: "No thinking tag",
 			in:   []string{"Just ", "regular", " text", " without ", "thinking ", "tags"},
-			want: []genai.Content{{Thinking: "Just regular text without thinking tags"}},
+			want: []genai.Content{{Text: "Just regular text without thinking tags"}},
 		},
 		{
 			name: "With thinking tags in separate fragments",
@@ -163,11 +156,6 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 				{Thinking: "Thinking content"},
 				{Text: "Response"},
 			},
-		},
-		{
-			name: "Handling fragmented content with regular text only",
-			in:   []string{"Fragment1", "Fragment2", "Fragment3"},
-			want: []genai.Content{{Thinking: "Fragment1Fragment2Fragment3"}},
 		},
 		{
 			name: "With thinking tag at the end",
@@ -223,16 +211,9 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 			},
 		},
 		{
-			name: "SkipJSON with ReplyAsJSON",
-			in:   []string{"<thinking>This is thinking</thinking>Response"},
-			opts: &genai.OptionsText{ReplyAsJSON: true},
-			want: []genai.Content{{Text: "<thinking>This is thinking</thinking>Response"}},
-		},
-		{
-			name: "SkipJSON with DecodeAs",
-			in:   []string{"<thinking>This is thinking</thinking>Response"},
-			opts: &genai.OptionsText{DecodeAs: &struct{ A string }{}},
-			want: []genai.Content{{Text: "<thinking>This is thinking</thinking>Response"}},
+			name: "JSON",
+			in:   []string{"{\"is_fruit\": ", "true}"},
+			want: []genai.Content{{Text: "{\"is_fruit\": true}"}},
 		},
 	}
 
@@ -242,7 +223,7 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 			for _, i := range tc.in {
 				mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.ContentFragment{TextFragment: i})
 			}
-			tp := &adapters.ProviderGenThinking{ProviderGen: mp, TagName: "thinking", SkipJSON: true}
+			tp := &adapters.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
 			ch := make(chan genai.ContentFragment, 100)
 			eg, ctx := errgroup.WithContext(t.Context())
 			accumulated := genai.Message{}
@@ -282,7 +263,7 @@ func TestProviderGenThinking_GenStream_errors(t *testing.T) {
 		{
 			name: "With text before tag in same fragment - error case",
 			in:   []string{"Text before <thinking>", "This is thinking", "</thinking>", "This is response"},
-			want: "unexpected prefix before thinking tag: \"\"",
+			want: "unexpected prefix before thinking tag: \"Text before\"",
 		},
 		{
 			name: "Error from underlying GenStream",

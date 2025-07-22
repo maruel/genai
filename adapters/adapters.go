@@ -239,14 +239,14 @@ func (c *ProviderGenAppend) Unwrap() genai.Provider {
 //
 // It looks for content within tags ("<TagName>" and "</TagName>") and places it in Thinking Content blocks
 // instead of Text.
+//
+// It requires the starting thinking tag. Otherwise, the content is assumed to be text. This is necessary for
+// JSON formatted responses.
 type ProviderGenThinking struct {
 	genai.ProviderGen
 
 	// TagName is the name of the tag to use for thinking content. Normally "think" or "thinking".
 	TagName string
-
-	// SkipJSON specifies to skip parsing when JSON is requested.
-	SkipJSON bool
 
 	_ struct{}
 }
@@ -255,11 +255,8 @@ type ProviderGenThinking struct {
 // and processing the result to extract thinking blocks.
 func (c *ProviderGenThinking) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	result, err := c.ProviderGen.GenSync(ctx, msgs, opts)
-	// When replying in JSON, the thinking tokens are "denied" by the engine.
-	if o, ok := opts.(*genai.OptionsText); !ok || !c.SkipJSON || (!o.ReplyAsJSON && o.DecodeAs == nil) {
-		if err2 := c.processThinkingMessage(&result.Message); err == nil {
-			err = err2
-		}
+	if err2 := c.processThinkingMessage(&result.Message); err == nil {
+		err = err2
 	}
 	return result, err
 }
@@ -268,13 +265,6 @@ func (c *ProviderGenThinking) GenSync(ctx context.Context, msgs genai.Messages, 
 // and processing each fragment to extract thinking blocks.
 // If no thinking tags are present, the first part of the message is assumed to be thinking.
 func (c *ProviderGenThinking) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
-	if c.SkipJSON {
-		if o, ok := opts.(*genai.OptionsText); ok && (o.ReplyAsJSON || o.DecodeAs != nil) {
-			// When replying in JSON, the thinking tokens are "denied" by the engine.
-			return c.ProviderGen.GenStream(ctx, msgs, replies, opts)
-		}
-	}
-
 	internalReplies := make(chan genai.ContentFragment)
 	accumulated := genai.Message{}
 	eg, ctx := errgroup.WithContext(ctx)
@@ -316,20 +306,22 @@ func (c *ProviderGenThinking) processPacket(state tagProcessingState, replies ch
 	switch state {
 	case start:
 		// Ignore whitespace until text or thinking tag is seen.
-		f.ThinkingFragment = strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace)
-		f.TextFragment = ""
+		t := strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace)
 		// The tokens always have a trailing "\n". When streaming, the trailing "\n" will likely be sent as a
 		// separate event. This requires a small state machine to keep track of that.
 		tagStart := "<" + c.TagName + ">"
-		if tStart := strings.Index(f.ThinkingFragment, tagStart); tStart != -1 {
+		if tStart := strings.Index(t, tagStart); tStart != -1 {
 			if tStart != 0 {
-				return state, fmt.Errorf("unexpected prefix before thinking tag: %q", f.TextFragment)
+				return state, fmt.Errorf("unexpected prefix before thinking tag: %q", t[:len(tagStart)+1])
 			}
-			f.ThinkingFragment = strings.TrimLeftFunc(f.ThinkingFragment[len(tagStart):], unicode.IsSpace)
-		}
-		if f.ThinkingFragment != "" {
-			// Some model do not always send tagStart.
+			f.ThinkingFragment = strings.TrimLeftFunc(t[len(tagStart):], unicode.IsSpace)
+			f.TextFragment = ""
 			state = thinkingTextSeen
+		} else if t != "" {
+			// This response does not contain thinking text, it could be JSON or something else.
+			state = textSeen
+		} else {
+			f.TextFragment = ""
 		}
 	case startTagSeen:
 		// Ignore whitespace until text is seen.
@@ -400,10 +392,11 @@ func (c *ProviderGenThinking) processThinkingMessage(m *genai.Message) error {
 	tagEnd := "</" + c.TagName + ">"
 	tStart := strings.Index(text, tagStart)
 	if tStart == -1 {
-		return nil // No thinking tag found, nothing to do
+		// This response does not contain thinking text, it could be JSON or something else.
+		return nil
 	}
 	if prefix := text[:tStart]; strings.TrimSpace(prefix) != "" {
-		return fmt.Errorf("failed to parse thinking tokens")
+		return fmt.Errorf("unexpected prefix before thinking tag: %q", prefix)
 	}
 	// Zap the text.
 	for i := range m.Contents {

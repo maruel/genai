@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 180
+        host: api.cohere.com
+        body: |
+            {"stream":false,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}],"max_tokens":16}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cohere.com/v2/chat
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 338
+        body: '{"id":"fd24b9c7-9086-431b-8a53-bffa79c675fc","message":{"role":"assistant","content":[{"type":"text","text":"The Theory of Relativity, developed by Albert Einstein, is a fundamental concept in"}]},"finish_reason":"MAX_TOKENS","usage":{"billed_units":{"input_tokens":9,"output_tokens":15},"tokens":{"input_tokens":504,"output_tokens":16}}}'
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Debug-Trace-ID
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+            Content-Length:
+                - "338"
+            Content-Type:
+                - application/json
+            Expires:
+                - Thu, 01 Jan 1970 00:00:00 GMT
+            Num_chars:
+                - "2628"
+            Num_tokens:
+                - "24"
+            Pragma:
+                - no-cache
+            Server:
+                - envoy
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Accel-Expires:
+                - "0"
+            X-Debug-Trace-Id:
+                - 71f54c3e295a146dfc195f124892c087
+            X-Envoy-Upstream-Service-Time:
+                - "179"
+        status: 200 OK
+        code: 200
+        duration: 220ms

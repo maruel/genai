@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 151
+        host: api.cohere.com
+        body: |
+            {"stream":true,"model":"c4ai-aya-vision-8b","messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"seed":42}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cohere.com/v2/chat
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: message-start
+            data: {"id":"7a31a6f8-391e-49b9-81b0-af8fb5e86845","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
+
+            event: content-start
+            data: {"type":"content-start","index":0,"delta":{"message":{"content":{"type":"text","text":""}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"Hello"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"!"}}}}
+
+            event: content-end
+            data: {"type":"content-end","index":0}
+
+            event: message-end
+            data: {"type":"message-end","delta":{"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":8,"output_tokens":2},"tokens":{"input_tokens":577,"output_tokens":4}}}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Debug-Trace-ID
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+            Content-Type:
+                - text/event-stream
+            Expires:
+                - Thu, 01 Jan 1970 00:00:00 GMT
+            Pragma:
+                - no-cache
+            Server:
+                - envoy
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Accel-Expires:
+                - "0"
+            X-Debug-Trace-Id:
+                - b0a64695cef93a88a02d4cdc174acbe6
+            X-Envoy-Upstream-Service-Time:
+                - "297"
+        status: 200 OK
+        code: 200
+        duration: 338ms

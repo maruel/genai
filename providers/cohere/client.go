@@ -50,23 +50,84 @@ var Scoreboard = genai.Scoreboard{
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
-				JSONSchema:     true,
-				Citations:      true,
-				Seed:           true,
+				// JSONSchema:     true, Broken https://discord.com/channels/954421988141711382/1168578329423642786/1397015484045594635
+				Citations: true,
+				Seed:      true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
-				JSONSchema:     true,
-				Citations:      true,
-				Seed:           true,
+				// JSONSchema:     true, Broken https://discord.com/channels/954421988141711382/1168578329423642786/1397015484045594635
+				Citations: true,
+				Seed:      true,
+			},
+		},
+		// https://docs.cohere.com/docs/aya-vision
+		{
+			Models: []string{"c4ai-aya-vision-8b"},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {Inline: true},
+				genai.ModalityImage: {
+					Inline:           true,
+					URL:              true,
+					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Citations: true,
+				Seed:      true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Citations: true,
+				Seed:      true,
+			},
+		},
+		// To enable.
+		{
+			Models: []string{
+				"c4ai-aya-expanse-32b",
+				"c4ai-aya-expanse-8b",
+				"c4ai-aya-vision-32b",
+				"command",
+				"command-a-03-2025",
+				"command-a-vision",
+				"command-light",
+				"command-light-nightly",
+				"command-nightly",
+				"command-r",
+				"command-r-08-2024",
+				"command-r-plus",
+				"command-r-plus-08-2024",
+				"command-r7b-arabic-02-2025",
+			},
+		},
+		// Unsupported.
+		{
+			Models: []string{
+				"embed-english-light-v2.0",
+				"embed-english-light-v3.0",
+				"embed-english-light-v3.0-image",
+				"embed-english-v2.0",
+				"embed-english-v3",
+				"embed-english-v3.0",
+				"embed-english-v3.0-image",
+				"embed-multilingual-light-v3.0",
+				"embed-multilingual-light-v3.0-image",
+				"embed-multilingual-v2.0",
+				"embed-multilingual-v3.0",
+				"embed-multilingual-v3.0-image",
+				"embed-v4.0",
+				"rerank-english-v3.0",
+				"rerank-multilingual-v3.0",
+				"rerank-v3.5",
 			},
 		},
 	},
 }
 
-// https://docs.cohere.com/reference/chat
+// ChatRequest is documented at https://docs.cohere.com/reference/chat
 type ChatRequest struct {
 	Stream          bool       `json:"stream"`
 	Model           string     `json:"model"`
@@ -178,7 +239,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-// https://docs.cohere.com/reference/chat
+// Message is documented at https://docs.cohere.com/reference/chat
 type Message struct {
 	Role string `json:"role"` // "system", "assistant", "user", "tool"
 	// Type == "system", "assistant", or "user".
@@ -305,7 +366,7 @@ func (c *Content) To(in *genai.Content) error {
 	return nil
 }
 
-// https://docs.cohere.com/v2/reference/chat
+// ContentType is documented at https://docs.cohere.com/v2/reference/chat
 type ContentType string
 
 const (
@@ -472,6 +533,7 @@ type Usage struct {
 	Tokens struct {
 		InputTokens  int64 `json:"input_tokens"`
 		OutputTokens int64 `json:"output_tokens"`
+		ImageTokens  int64 `json:"image_tokens"`
 	} `json:"tokens"`
 }
 

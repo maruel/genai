@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 294
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"model":"deepseek-r1-distill-llama-70b","reasoning_format":"parsed","response_format":{"type":"json_object"},"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-df7a2d41-c259-41f2-a753-554715808c57","object":"chat.completion","created":1753142005,"model":"deepseek-r1-distill-llama-70b","choices":[{"index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}","reasoning":"Okay, so I need to figure out if a banana is a fruit. Let me start by recalling what defines a fruit. From what I remember in biology, a fruit is the mature ovary of a flowering plant, usually containing seeds. So, the key points are that it develops from the ovary of a flower and contains seeds.\n\nNow, thinking about a banana. I know bananas come from banana plants, which are flowering plants. They grow in clusters and each banana is elongated with a thick peel. Inside, there are the creamy white parts and the strings, but I don't really see any visible seeds. Wait, but I think some bananas have seeds, right? Like plantain bananas or wild bananas have big seeds, while the ones we commonly eat are cultivated to be seedless.\n\nSo, even though the bananas we eat don't have visible seeds, they still develop from the ovary of the banana flower. Therefore, they fit the definition of a fruit because they come from the flower's ovary, even if the seeds are not present or are very small.\n\nI should also consider if there's any other classification for bananas. Sometimes people confuse fruits and vegetables, but vegetables are other parts like leaves (leafy greens) or roots (like potatoes). Since a banana is the ovary part, it's definitely a fruit.\n\nWait, could there be any exceptions? I don't think so. Even seedless fruits are still considered fruits because they develop from the flower's ovary. So, even without seeds, bananas are fruits.\n\nSo, putting it all together, yes, a banana is a fruit because it meets the criteria of developing from the flower's ovary, even if it doesn't have visible seeds.\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.009469087000000001,"prompt_tokens":43,"prompt_time":0.002108253,"completion_tokens":362,"completion_time":1.640683883,"total_tokens":405,"total_time":1.642792136},"usage_breakdown":null,"system_fingerprint":"fp_e98d30d035","x_groq":{"id":"req_01k0qpg42cedxa90npe4gsedpj"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962e9e204901a2a8-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499998"
+            X-Ratelimit-Remaining-Tokens:
+                - "298330"
+            X-Ratelimit-Reset-Requests:
+                - 225.6ms
+            X-Ratelimit-Reset-Tokens:
+                - 334ms
+            X-Request-Id:
+                - req_01k0qpg42cedxa90npe4gsedpj
+        status: 200 OK
+        code: 200
+        duration: 1.711s

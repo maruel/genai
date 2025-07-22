@@ -1,0 +1,97 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 162
+        host: api.groq.com
+        body: |
+            {"max_completion_tokens":16,"messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"model":"mistral-saba-24b","stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-997b9984-0aea-4b88-b340-efec7d69fab3","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"role":"assistant"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-997b9984-0aea-4b88-b340-efec7d69fab3","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":"The"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-997b9984-0aea-4b88-b340-efec7d69fab3","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":" theory"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-997b9984-0aea-4b88-b340-efec7d69fab3","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":" of"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-997b9984-0aea-4b88-b340-efec7d69fab3","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":" relativity"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-997b9984-0aea-4b88-b340-efec7d69fab3","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":","},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-997b9984-0aea-4b88-b340-efec7d69fab3","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":" developed"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-997b9984-0aea-4b88-b340-efec7d69fab3","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":" by"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-997b9984-0aea-4b88-b340-efec7d69fab3","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":" Albert"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-997b9984-0aea-4b88-b340-efec7d69fab3","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":" Einstein"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-997b9984-0aea-4b88-b340-efec7d69fab3","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":","},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-997b9984-0aea-4b88-b340-efec7d69fab3","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":" consists"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-997b9984-0aea-4b88-b340-efec7d69fab3","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":" of"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-997b9984-0aea-4b88-b340-efec7d69fab3","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":" two"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-997b9984-0aea-4b88-b340-efec7d69fab3","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":" inter"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-997b9984-0aea-4b88-b340-efec7d69fab3","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":"related"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-997b9984-0aea-4b88-b340-efec7d69fab3","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":" theories"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-997b9984-0aea-4b88-b340-efec7d69fab3","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"length"}],"x_groq":{"id":"req_01k0qpgg3peervhdj4q9bf6rg0","usage":{"queue_time":0.196492563,"prompt_tokens":14,"prompt_time":0.002075592,"completion_tokens":16,"completion_time":0.048484848,"total_tokens":30,"total_time":0.05056044}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962e9e6d59d1a2a8-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "499997"
+            X-Ratelimit-Remaining-Tokens:
+                - "199982"
+            X-Ratelimit-Reset-Requests:
+                - 434.199999ms
+            X-Ratelimit-Reset-Tokens:
+                - 5.399999ms
+            X-Request-Id:
+                - req_01k0qpgg3peervhdj4q9bf6rg0
+        status: 200 OK
+        code: 200
+        duration: 268ms

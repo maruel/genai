@@ -1,0 +1,105 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 169
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"model":"deepseek-r1-distill-llama-70b","stop":["is"],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"role":"assistant"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"content":"\u003cthink\u003e"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"content":"\n"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"content":"Okay"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"content":","},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"content":" so"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"content":" I"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"content":" need"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"content":" to"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"content":" talk"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"content":" about"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"content":" Canada"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"content":" in"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"content":" great"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"content":" detail"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"content":","},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"content":" starting"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"content":" with"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"content":" \""},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"content":"Canada"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142000,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{"content":" "},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c40afb78-94be-472f-942d-37052d8d16c2","object":"chat.completion.chunk","created":1753142005,"model":"deepseek-r1-distill-llama-70b","system_fingerprint":"fp_87eae35036","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01k0qpfynmedkbzmyx0k2q2xf0","usage":{"queue_time":0.009141596,"prompt_tokens":15,"prompt_time":0.000853363,"completion_tokens":1309,"completion_time":5.31325147,"total_tokens":1324,"total_time":5.314104833}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962e9dfdbd8ca2a8-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499997"
+            X-Ratelimit-Remaining-Tokens:
+                - "299980"
+            X-Ratelimit-Reset-Requests:
+                - 463.4ms
+            X-Ratelimit-Reset-Tokens:
+                - 4ms
+            X-Request-Id:
+                - req_01k0qpfynmedkbzmyx0k2q2xf0
+        status: 200 OK
+        code: 200
+        duration: 73ms

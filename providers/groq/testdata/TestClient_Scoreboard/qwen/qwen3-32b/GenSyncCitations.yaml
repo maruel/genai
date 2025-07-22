@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 282
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]},{"role":"user","content":"/think"}],"model":"qwen/qwen3-32b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "{\"id\":\"chatcmpl-4410d592-3f61-44bb-8451-2d77d74ba959\",\"object\":\"chat.completion\",\"created\":1753142052,\"model\":\"qwen/qwen3-32b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\\u003cthink\\u003e\\nOkay, the user asked, \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\\\" \\n\\nHmm, first I need to figure out what the user is trying to get here. The question is straightforward: they want to know the capital city of Quackiland. But wait, they already provided the answer in the first sentence they wrote. That seems a bit confusing. Maybe they're testing if I pay attention to the information given.\\n\\nLet me break it down. The user starts by stating that the capital is Quack, then mentions the Big Canard Statue's location. Then they ask again for the capital. It's possible they have a typo or maybe they are following up a previous question where the details were different. Alternatively, they might be testing if I can recognize when the answer is included in the question.\\n\\nI should consider that the user might have made a mistake while typing the question. For example, maybe they intended to provide different information but ended up including the answer by accident. My job is to extract the necessary information to answer the question correctly.\\n\\nSince the first part of their message says, \\\"The capital of Quackiland is Quack,\\\" that's the key point. The second part about the Big Canard Statue in Quack is extra information that doesn't affect the answer but might be part of a follow-up question or just an example. \\n\\nSo, the direct answer should be that the capital is Quack. The user might be confirming if I notice that the answer is in the question. Alternatively, maybe they want to ensure that the assistant doesn't get confused by additional details. It's also possible the user is practicing for an exam or a quiz where they need to extract key facts from a text. \\n\\nAnother angle: maybe the user is using fictional names to create a scenario. Quackiland and Quack sound like made-up terms, perhaps for a creative writing or world-building project. The mention of the Big Canard Statue could be part of building that fictional world. But regardless, the main question is about identifying the capital, which is already stated. \\n\\nI need to make sure to answer only the question asked without overcomplicating it. Since the user's first statement gives the answer, I should just restate that the capital is Quack. The rest is context or example, so no need to address that unless the user asks for more.\\n\\u003c/think\\u003e\\n\\nThe capital of Quackiland is **Quack**, as explicitly stated in your question. The mention of the Big Canard Statue located in Quack adds context but does not alter the fact that Quack is the capital. Let me know if you'd like further clarification! \U0001F60A\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.006855671999999999,\"prompt_tokens\":49,\"prompt_time\":0.006652631,\"completion_tokens\":562,\"completion_time\":1.500231725,\"total_tokens\":611,\"total_time\":1.506884356},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_78ac7f3229\",\"x_groq\":{\"id\":\"req_01k0qphhbseh1adgghs5kv8d81\"},\"service_tier\":\"on_demand\"}\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962e9f421df1a2a8-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299609"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 78.2ms
+            X-Request-Id:
+                - req_01k0qphhbseh1adgghs5kv8d81
+        status: 200 OK
+        code: 200
+        duration: 1.598s

@@ -119,7 +119,7 @@ var Scoreboard = genai.Scoreboard{
 				Thinking:       true,
 				Tools:          genai.True,
 				IndecisiveTool: genai.Flaky,
-				BiasedTool:     genai.True,
+				BiasedTool:     genai.Flaky,
 				JSON:           true, // Only when using ReasoningFormat: ReasoningFormatParsed
 				Seed:           true,
 			},
@@ -127,7 +127,7 @@ var Scoreboard = genai.Scoreboard{
 				Thinking:       true,
 				Tools:          genai.True,
 				IndecisiveTool: genai.Flaky,
-				BiasedTool:     genai.True,
+				BiasedTool:     genai.Flaky,
 				JSON:           true, // Only when using ReasoningFormat: ReasoningFormatParsed
 				Seed:           true,
 			},

@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 274
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-f617287d-9e9e-4dc5-99d4-1992e623959c","object":"chat.completion","created":1753142029,"model":"meta-llama/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"The capital of Quackiland is Quack. The question even tells you that already!\n\nSo, the answer is: Quack."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.0017601040000000002,"prompt_tokens":40,"prompt_time":0.003245619,"completion_tokens":28,"completion_time":0.064143123,"total_tokens":68,"total_time":0.067388742},"usage_breakdown":null,"system_fingerprint":"fp_cb546bdbdf","x_groq":{"id":"req_01k0qpgv1wecgv4bgdwaqsg2ah"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962e9eb359f0a2a8-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499993"
+            X-Ratelimit-Remaining-Tokens:
+                - "297134"
+            X-Ratelimit-Reset-Requests:
+                - 1.156399999s
+            X-Ratelimit-Reset-Tokens:
+                - 573.2ms
+            X-Request-Id:
+                - req_01k0qpgv1wecgv4bgdwaqsg2ah
+        status: 200 OK
+        code: 200
+        duration: 137ms

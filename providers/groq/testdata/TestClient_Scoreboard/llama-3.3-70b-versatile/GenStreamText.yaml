@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 121
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"llama-3.3-70b-versatile","stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-fc529ed0-1714-41e5-beb8-81876b86dfd7","object":"chat.completion.chunk","created":1753142013,"model":"llama-3.3-70b-versatile","system_fingerprint":"fp_7b77049e86","choices":[{"index":0,"delta":{"role":"assistant"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-fc529ed0-1714-41e5-beb8-81876b86dfd7","object":"chat.completion.chunk","created":1753142013,"model":"llama-3.3-70b-versatile","system_fingerprint":"fp_7b77049e86","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-fc529ed0-1714-41e5-beb8-81876b86dfd7","object":"chat.completion.chunk","created":1753142013,"model":"llama-3.3-70b-versatile","system_fingerprint":"fp_7b77049e86","choices":[{"index":0,"delta":{"content":"."},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-fc529ed0-1714-41e5-beb8-81876b86dfd7","object":"chat.completion.chunk","created":1753142013,"model":"llama-3.3-70b-versatile","system_fingerprint":"fp_7b77049e86","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01k0qpgbd6eamt6t2kebcq2zy5","usage":{"queue_time":0.069658086,"prompt_tokens":43,"prompt_time":0.002163942,"completion_tokens":3,"completion_time":0.009350991,"total_tokens":46,"total_time":0.011514933}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962e9e4f2c31a2a8-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299987"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 2.6ms
+            X-Request-Id:
+                - req_01k0qpgbd6eamt6t2kebcq2zy5
+        status: 200 OK
+        code: 200
+        duration: 152ms

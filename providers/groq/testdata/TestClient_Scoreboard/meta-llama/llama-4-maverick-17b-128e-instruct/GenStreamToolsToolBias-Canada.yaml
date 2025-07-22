@@ -1,0 +1,67 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 583
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"model":"meta-llama/llama-4-maverick-17b-128e-instruct","stream":true,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-8f0af921-ec9a-4be7-8bcd-6956cf2bbfc9","object":"chat.completion.chunk","created":1753142037,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-8f0af921-ec9a-4be7-8bcd-6956cf2bbfc9","object":"chat.completion.chunk","created":1753142037,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{"tool_calls":[{"id":"852r50898","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-8f0af921-ec9a-4be7-8bcd-6956cf2bbfc9","object":"chat.completion.chunk","created":1753142037,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01k0qph364eddb5xjsd0gfs1dt","usage":{"queue_time":0.004860335999999996,"prompt_tokens":737,"prompt_time":0.030259482,"completion_tokens":23,"completion_time":0.024503251,"total_tokens":760,"total_time":0.054762733}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962e9ee76bc1a2a8-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499998"
+            X-Ratelimit-Remaining-Tokens:
+                - "299547"
+            X-Ratelimit-Reset-Requests:
+                - 214.599999ms
+            X-Ratelimit-Reset-Tokens:
+                - 90.6ms
+            X-Request-Id:
+                - req_01k0qph364eddb5xjsd0gfs1dt
+        status: 200 OK
+        code: 200
+        duration: 122ms

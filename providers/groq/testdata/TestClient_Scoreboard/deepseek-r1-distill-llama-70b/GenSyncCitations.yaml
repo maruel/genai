@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 262
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"model":"deepseek-r1-distill-llama-70b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-c2e89fe4-af79-4296-96d1-eac882879994","object":"chat.completion","created":1753142011,"model":"deepseek-r1-distill-llama-70b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, so I have this question here: \"What is the capital of Quackiland?\" And then there's some additional information given. Let me try to figure this out step by step.\n\nFirst, I'll read the question again to make sure I understand it. It's asking for the capital of a place called Quackiland. The additional information provided is that the Big Canard Statue is located in Quack. Hmm, I'm not sure what \"Canard\" means. Maybe it's a type of bird? Or perhaps it's another word for duck? I think \"canard\" is French for duck, right? So the Big Duck Statue is in Quack.\n\nWait, the question is about the capital of Quackiland. So Quackiland is the country, and the capital is probably a city within that country. The name \"Quack\" sounds like the sound a duck makes, so maybe Quack is a city in Quackiland. The additional info says the Big Canard (Duck) Statue is in Quack. That might be a clue, but I'm not sure how it relates to the capital.\n\nLet me think. Usually, the capital is the main city of a country, where the government is located. Sometimes, the capital is the largest city, but not always. In this case, Quack is mentioned as the location of a significant statue, the Big Canard Statue. Maybe that's a famous landmark, which could indicate that Quack is an important city, possibly the capital.\n\nSo, putting it together: Quackiland is the country, and Quack is a city within it where a notable statue is located. Since the question is asking for the capital, and the additional info points out that Quack has this statue, it's likely that Quack is the capital. But I'm not 100% sure because sometimes statues can be in other cities, but given the context, it seems plausible.\n\nI don't think there's any other information provided that would suggest another city as the capital. The question is straightforward, so I'll go with Quack as the capital of Quackiland.\n\u003c/think\u003e\n\nThe capital of Quackiland is Quack. This conclusion is drawn from the information provided, which highlights Quack as a significant city within Quackiland, notably hosting the Big Canard Statue, suggesting its importance as the capital. \n\nAnswer: The capital of Quackiland is Quack."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.010003626,"prompt_tokens":32,"prompt_time":0.001875076,"completion_tokens":501,"completion_time":2.026287118,"total_tokens":533,"total_time":2.028162194},"usage_breakdown":null,"system_fingerprint":"fp_e98d30d035","x_groq":{"id":"req_01k0qpg963ee6sykxnrktrjdvv"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962e9e410f59a2a8-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299738"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 52.4ms
+            X-Request-Id:
+                - req_01k0qpg963ee6sykxnrktrjdvv
+        status: 200 OK
+        code: 200
+        duration: 2.1s

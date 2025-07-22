@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 616
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."},{"role":"user","content":"/think"}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-9796db12-9480-48d9-81be-d3b051b299dd","object":"chat.completion","created":1753142050,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Okay, let's see. The user is asking if the USA is a better country than Canada and wants me to use the best_country tool to determine which is the best. First, I need to understand what the tool does. The function best_country takes a country parameter, which can be either USA or Canada. But the user is comparing both, so maybe I need to call the function for each country and then compare the results?\n\nWait, the tool's parameters only allow one country at a time. So I can't compare them directly in a single call. The function's enum only includes USA and Canada, so I can call it once for each. But the user is asking which is better, so maybe the tool returns some score or attribute that can be compared. The problem is, the tool's description isn't specified beyond the parameters. Do I assume that the function returns a value that indicates 'best'? \n\nSince the user wants to know which is better, I need to check both countries using the tool. So I should make two separate tool calls: one for USA and one for Canada. Then, based on the results, determine which is ranked higher. However, the current setup allows only one tool call. Wait, the user might expect a single answer, but the assistant can make multiple tool calls. Let me check the instructions again. The tools section says I can call one or more functions. So I can call the best_country function for both countries. \n\nBut wait, the function's purpose isn't clear. If the function is designed to return whether the country is the best, maybe it's a boolean. But the user is asking for a comparison. Alternatively, maybe the function returns a score. Since the function's actual behavior isn't specified, I have to proceed with the information given. The only way to get a comparison is to call the function for both countries and then compare. \n\nTherefore, I should generate two tool calls, one for each country. Then, after getting the results, analyze which one is better based on the returned data. Since the user wants the assistant to use the tool, the correct approach is to make both calls. However, the current system message might allow for that. So in the response, I should make two tool calls and then use the results to answer the user's question.\n","tool_calls":[{"id":"vnmh3f0q2","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}},{"id":"98wdrxn10","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.014057544,"prompt_tokens":211,"prompt_time":0.014197691,"completion_tokens":515,"completion_time":1.203459279,"total_tokens":726,"total_time":1.21765697},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k0qphg38egwvgdamtrpa69g6"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962e9f3a0a92a2a8-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "298824"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 235.2ms
+            X-Request-Id:
+                - req_01k0qphg38egwvgdamtrpa69g6
+        status: 200 OK
+        code: 200
+        duration: 1.289s

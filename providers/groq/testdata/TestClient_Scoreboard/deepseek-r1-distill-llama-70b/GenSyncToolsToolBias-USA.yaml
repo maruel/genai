@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 596
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"model":"deepseek-r1-distill-llama-70b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-b27d1444-4848-48b3-b9d9-c323db58fbd5","object":"chat.completion","created":1753142009,"model":"deepseek-r1-distill-llama-70b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Alright, so I'm trying to figure out whether the USA or Canada is the better country. I'm not really sure how to approach this, but I know there's a tool called best_country that can help. Let me think about how to use it.\n\nFirst, I need to understand what the best_country tool does. It probably takes a country as input and tells me if it's the best one. The function parameters specify that the country can only be either \"USA\" or \"Canada\", so I have to choose between those two.\n\nI'm a bit confused about what criteria the tool uses to determine the best country. Maybe it considers factors like economy, quality of life, education, or something else. I wish I knew the exact criteria, but I guess I'll just have to go with what the tool says.\n\nOkay, so I need to decide which country to input. I'll start by calling the tool with \"USA\" as the argument. Maybe it will tell me if the USA is the best. If it says yes, then I know. If not, I'll try with \"Canada\" next.\n\nWait, but what if both are considered the best? That doesn't make sense. I think the tool probably has a set answer, so I'll just go ahead and call it once with \"USA\" and see what happens.\n\nI hope the tool gives me a clear answer. I'm a bit nervous because I don't want to make the wrong choice. But I guess that's what the tool is for, to help me make an informed decision.\n\nAlright, I'll call the tool with \"USA\" as the country argument. Let's see what it says.\n","tool_calls":[{"id":"qf8shz31d","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.009786247000000001,"prompt_tokens":184,"prompt_time":0.01149704,"completion_tokens":364,"completion_time":1.452668757,"total_tokens":548,"total_time":1.464165797},"usage_breakdown":null,"system_fingerprint":"fp_e98d30d035","x_groq":{"id":"req_01k0qpg7p9ee4v3tgts2tfn6kf"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962e9e3779baa2a8-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499998"
+            X-Ratelimit-Remaining-Tokens:
+                - "299964"
+            X-Ratelimit-Reset-Requests:
+                - 202.399999ms
+            X-Ratelimit-Reset-Tokens:
+                - 7.2ms
+            X-Request-Id:
+                - req_01k0qpg7p9ee4v3tgts2tfn6kf
+        status: 200 OK
+        code: 200
+        duration: 1.53s

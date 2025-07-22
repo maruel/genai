@@ -1,0 +1,67 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 124
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"mistral-saba-24b","seed":42,"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-ca09ac2b-907d-450c-a109-35301c5bd2f6","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"role":"assistant"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-ca09ac2b-907d-450c-a109-35301c5bd2f6","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{"content":"Hi"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-ca09ac2b-907d-450c-a109-35301c5bd2f6","object":"chat.completion.chunk","created":1753142018,"model":"mistral-saba-24b","system_fingerprint":"fp_07e680a590","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01k0qpgfv5eeq963xd26ba551d","usage":{"queue_time":0.197625412,"prompt_tokens":12,"prompt_time":0.002060532,"completion_tokens":2,"completion_time":0.006060606,"total_tokens":14,"total_time":0.008121138}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962e9e6b9f1aa2a8-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "499998"
+            X-Ratelimit-Remaining-Tokens:
+                - "199987"
+            X-Ratelimit-Reset-Requests:
+                - 238.399999ms
+            X-Ratelimit-Reset-Tokens:
+                - 3.9ms
+            X-Request-Id:
+                - req_01k0qpgfv5eeq963xd26ba551d
+        status: 200 OK
+        code: 200
+        duration: 273ms

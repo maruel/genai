@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 615
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."},{"role":"user","content":"/think"}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":true,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-57c7b65d-4f3f-404d-9e4c-65a830db18e3","object":"chat.completion.chunk","created":1753142048,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-57c7b65d-4f3f-404d-9e4c-65a830db18e3","object":"chat.completion.chunk","created":1753142049,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"tool_calls":[{"id":"ezns35q9j","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-57c7b65d-4f3f-404d-9e4c-65a830db18e3","object":"chat.completion.chunk","created":1753142049,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"tool_calls":[{"id":"ybr4jqmmb","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"index":1}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-57c7b65d-4f3f-404d-9e4c-65a830db18e3","object":"chat.completion.chunk","created":1753142049,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01k0qphd9aeebsqjzpr4863817","usage":{"queue_time":0.010831279,"prompt_tokens":211,"prompt_time":0.01343633,"completion_tokens":577,"completion_time":1.443262706,"total_tokens":788,"total_time":1.456699036}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962e9f280fb6a2a8-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299946"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 10.8ms
+            X-Request-Id:
+                - req_01k0qphd9aeebsqjzpr4863817
+        status: 200 OK
+        code: 200
+        duration: 1.495s

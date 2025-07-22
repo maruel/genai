@@ -18,30 +18,71 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/groq"
+	"github.com/maruel/genai/scoreboard/scoreboardtest"
 )
 
-func TestClient_Scoreboard(t *testing.T) {
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
-		c := getClient(t, m)
-		if strings.HasPrefix(m, "qwen/") {
-			return &handleGroqReasoning{
-				Client: &adapters.ProviderGenAppend{
-					ProviderGen: c,
-					Append:      genai.NewTextMessage(genai.User, "/think"),
-				},
-				t: t,
+func gc(t testing.TB, name, m string) genai.Provider {
+	fn := func(h http.RoundTripper) http.RoundTripper {
+		if name == "" {
+			return h
+		}
+		r, err2 := testRecorder.Records.Record(name, h)
+		if err2 != nil {
+			t.Fatal(err2)
+		}
+		t.Cleanup(func() {
+			if err3 := r.Stop(); err3 != nil {
+				t.Error(err3)
 			}
+		})
+		return r
+	}
+	apiKey := ""
+	if os.Getenv("GROQ_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := groq.New(apiKey, m, fn)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.HasPrefix(m, "qwen/") {
+		return &handleGroqReasoning{
+			Client: &adapters.ProviderGenAppend{
+				ProviderGen: c,
+				Append:      genai.NewTextMessage(genai.User, "/think"),
+			},
+			t: t,
 		}
-		if m == "deepseek-r1-distill-llama-70b" {
-			return &handleGroqReasoning{Client: c, t: t}
-		}
-		return c
-	}, nil)
+	}
+	if m == "deepseek-r1-distill-llama-70b" {
+		return &handleGroqReasoning{Client: c, t: t}
+	}
+	return c
+}
+
+func TestClient_Scoreboard(t *testing.T) {
+	t.Parallel()
+	usage := genai.Usage{}
+	cc := gc(t, t.Name()+"/ListModels", "")
+	models, err2 := cc.(genai.ProviderModel).ListModels(t.Context())
+	if err2 != nil {
+		t.Fatal(err2)
+	}
+	for _, m := range models {
+		id := m.GetID()
+		t.Run(id, func(t *testing.T) {
+			// Run one model at a time otherwise we can't collect the total usage.
+			usage.Add(scoreboardtest.RunOneModel(t, func(t testing.TB, sn string) genai.Provider {
+				return gc(t, sn, id)
+			}))
+		})
+	}
+	t.Logf("Usage: %#v", usage)
 }
 
 type handleGroqReasoning struct {
 	Client genai.ProviderGen
-	t      *testing.T
+	t      testing.TB
 }
 
 func (h *handleGroqReasoning) Name() string {

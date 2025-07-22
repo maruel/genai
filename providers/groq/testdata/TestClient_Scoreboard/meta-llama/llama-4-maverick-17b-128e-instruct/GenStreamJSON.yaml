@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 281
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"model":"meta-llama/llama-4-maverick-17b-128e-instruct","response_format":{"type":"json_object"},"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-63b70144-e8d4-403e-8751-3c02b8462844","object":"chat.completion.chunk","created":1753142037,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_565109a0df","choices":[{"index":0,"delta":{"role":"assistant"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-63b70144-e8d4-403e-8751-3c02b8462844","object":"chat.completion.chunk","created":1753142037,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_565109a0df","choices":[{"index":0,"delta":{"content":"{\n  \"is_fruit\": true\n}"},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01k0qph2vgeg7sqaw1vhh2kncs","usage":{"queue_time":0.070260432,"prompt_tokens":57,"prompt_time":0.001026402,"completion_tokens":11,"completion_time":0.011375376,"total_tokens":68,"total_time":0.012401778}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962e9ee5484ca2a8-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299341"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 131.8ms
+            X-Request-Id:
+                - req_01k0qph2vgeg7sqaw1vhh2kncs
+        status: 200 OK
+        code: 200
+        duration: 140ms

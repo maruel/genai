@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 153
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"meta-llama/llama-4-maverick-17b-128e-instruct","seed":42,"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-a68a1215-452a-4bea-9331-4741093c6a5d","object":"chat.completion.chunk","created":1753142035,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{"role":"assistant"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-a68a1215-452a-4bea-9331-4741093c6a5d","object":"chat.completion.chunk","created":1753142035,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-a68a1215-452a-4bea-9331-4741093c6a5d","object":"chat.completion.chunk","created":1753142035,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{"content":"."},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-a68a1215-452a-4bea-9331-4741093c6a5d","object":"chat.completion.chunk","created":1753142035,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01k0qph167eg18czff9j5gyvd2","usage":{"queue_time":0.004399879,"prompt_tokens":18,"prompt_time":0.000322014,"completion_tokens":3,"completion_time":0.004541373,"total_tokens":21,"total_time":0.004863387}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962e9edaa86ea2a8-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499997"
+            X-Ratelimit-Remaining-Tokens:
+                - "299987"
+            X-Ratelimit-Reset-Requests:
+                - 447.4ms
+            X-Ratelimit-Reset-Tokens:
+                - 2.6ms
+            X-Request-Id:
+                - req_01k0qph167eg18czff9j5gyvd2
+        status: 200 OK
+        code: 200
+        duration: 73ms

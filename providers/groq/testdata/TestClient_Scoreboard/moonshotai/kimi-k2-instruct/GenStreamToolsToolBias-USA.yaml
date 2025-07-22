@@ -1,0 +1,67 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 565
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"model":"moonshotai/kimi-k2-instruct","stream":true,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-9860a6a8-22f4-4eb9-9323-6ee6cb6f9d6e","object":"chat.completion.chunk","created":1753141997,"model":"moonshotai/kimi-k2-instruct","system_fingerprint":"fp_c5bd0a648b","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-9860a6a8-22f4-4eb9-9323-6ee6cb6f9d6e","object":"chat.completion.chunk","created":1753141997,"model":"moonshotai/kimi-k2-instruct","system_fingerprint":"fp_c5bd0a648b","choices":[{"index":0,"delta":{"tool_calls":[{"id":"functions.best_country:0","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-9860a6a8-22f4-4eb9-9323-6ee6cb6f9d6e","object":"chat.completion.chunk","created":1753141997,"model":"moonshotai/kimi-k2-instruct","system_fingerprint":"fp_c5bd0a648b","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01k0qpfvcpe8zvqe23thfbzj4d","usage":{"queue_time":0.086559158,"prompt_tokens":137,"prompt_time":0.010461584,"completion_tokens":30,"completion_time":0.099972239,"total_tokens":167,"total_time":0.110433823}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962e9de8afbea2a8-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499996"
+            X-Ratelimit-Remaining-Tokens:
+                - "248358"
+            X-Ratelimit-Reset-Requests:
+                - 654.199999ms
+            X-Ratelimit-Reset-Tokens:
+                - 393.96ms
+            X-Request-Id:
+                - req_01k0qpfvcpe8zvqe23thfbzj4d
+        status: 200 OK
+        code: 200
+        duration: 269ms

@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 253
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"model":"mistral-saba-24b","response_format":{"type":"json_object"},"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-93fec19d-65d0-4136-b4c4-6bb44b15f4b3","object":"chat.completion","created":1753142022,"model":"mistral-saba-24b","choices":[{"index":0,"message":{"role":"assistant","content":"{\n  \"is_fruit\": true\n}"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.197767967,"prompt_tokens":39,"prompt_time":0.002902293,"completion_tokens":11,"completion_time":0.033333333,"total_tokens":50,"total_time":0.036235626},"usage_breakdown":null,"system_fingerprint":"fp_07e680a590","x_groq":{"id":"req_01k0qpgm6bef0t38at6haq7t3q"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 962e9e877836a2a8-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "499998"
+            X-Ratelimit-Remaining-Tokens:
+                - "198986"
+            X-Ratelimit-Reset-Requests:
+                - 286.6ms
+            X-Ratelimit-Reset-Tokens:
+                - 304.099999ms
+            X-Request-Id:
+                - req_01k0qpgm6bef0t38at6haq7t3q
+        status: 200 OK
+        code: 200
+        duration: 297ms

@@ -743,7 +743,13 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 
 func isBadError(err error) bool {
 	var uerr *httpjson.UnknownFieldError
-	return errors.Is(err, cassette.ErrInteractionNotFound) || errors.As(err, &uerr)
+	if errors.Is(err, cassette.ErrInteractionNotFound) || errors.As(err, &uerr) {
+		return true
+	}
+	// Tolerate HTTP 400 as when a model is passed something that it doesn't accept, e.g. sending audio input to
+	// a text-only model, the provider often respond with 400. 500s should not be tolerated at all.
+	var herr *httpjson.Error
+	return errors.As(err, &herr) && herr.StatusCode >= 500
 }
 
 func mergeModalities(m1, m2 map[genai.Modality]genai.ModalCapability) map[genai.Modality]genai.ModalCapability {

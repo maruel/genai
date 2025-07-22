@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 313
+        content_length: 301
         host: api.cohere.com
         body: |
-            {"stream":true,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply with only one word: yes or no."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/banana.jpg"}}]}]}
+            {"stream":true,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply with only one word: yes or no."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -20,7 +20,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: 120
-        body: '{"id":"d9de85cd-8065-460f-a009-5df4cd061ebb","message":"invalid request: image content is not supported for this model"}'
+        body: '{"id":"18cb538d-2183-42d3-bea8-5f6fd4a1e9a8","message":"invalid request: image content is not supported for this model"}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -45,9 +45,9 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - c22be3898ed2b7490010059643ddecae
+                - 0d89f8b685f07af762cc00f64a7422b6
             X-Envoy-Upstream-Service-Time:
-                - "11"
+                - "10"
         status: 400 Bad Request
         code: 400
         duration: 55ms

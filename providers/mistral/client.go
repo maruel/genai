@@ -68,7 +68,7 @@ var Scoreboard = genai.Scoreboard{
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
-					SupportedFormats: []string{"image/jpeg"},
+					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
 				},
 				genai.ModalityPDF: {
 					URL:              true,
@@ -98,7 +98,7 @@ var Scoreboard = genai.Scoreboard{
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
-					SupportedFormats: []string{"image/jpeg"},
+					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
 				},
 				genai.ModalityPDF: {
 					URL:              true,
@@ -123,20 +123,32 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			Models: []string{"voxtral-mini-latest"},
+			Models: []string{"voxtral-small-latest"},
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityAudio: {
 					Inline:           true,
-					SupportedFormats: []string{"audio/mp3"},
+					SupportedFormats: []string{"audio/flac", "audio/mp3", "audio/ogg", "audio/wav"},
+				},
+				genai.ModalityPDF: {
+					URL:              true,
+					SupportedFormats: []string{"application/pdf"},
 				},
 				genai.ModalityText: {Inline: true},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Seed: true,
+				Tools:      genai.True,
+				BiasedTool: genai.True,
+				JSON:       true,
+				JSONSchema: true,
+				Seed:       true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Seed: true,
+				Tools:      genai.True,
+				BiasedTool: genai.True,
+				JSON:       true,
+				JSONSchema: true,
+				Seed:       true,
 			},
 		},
 		// Untested.
@@ -191,8 +203,8 @@ var Scoreboard = genai.Scoreboard{
 				"pixtral-large-2411",
 				"pixtral-large-latest",
 				"voxtral-mini-2507",
+				"voxtral-mini-latest",
 				"voxtral-small-2507",
-				"voxtral-small-latest",
 			},
 		},
 		// Unsupported.
@@ -413,11 +425,6 @@ type Content struct {
 	// Type == ContentReference
 	ReferenceIDs []int64 `json:"reference_ids,omitzero"`
 
-	// Type == ContentAudioURL
-	AudioURL struct {
-		URL string `json:"url,omitzero"` // Can be inline.
-	} `json:"audio_url,omitzero"`
-
 	// Type == ContentInputAudio
 	InputAudio []byte `json:"input_audio,omitzero"`
 }
@@ -435,12 +442,10 @@ func (c *Content) From(in *genai.Content) error {
 	switch {
 	case strings.HasPrefix(mimeType, "audio/"):
 		if in.URL != "" {
-			c.Type = ContentAudioURL
-			c.AudioURL.URL = in.URL
-		} else {
-			c.Type = ContentInputAudio
-			c.InputAudio = data
+			return errors.New("unsupported URL audio reference")
 		}
+		c.Type = ContentInputAudio
+		c.InputAudio = data
 	case strings.HasPrefix(mimeType, "image/"):
 		c.Type = ContentImageURL
 		if in.URL == "" {

@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 301
+        host: api.cohere.com
+        body: |
+            {"stream":false,"model":"c4ai-aya-vision-8b","messages":[{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply with only one word: yes or no."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cohere.com/v2/chat
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 275
+        body: '{"id":"e836807e-6a09-41cb-9716-bfa376457be4","message":{"role":"assistant","content":[{"type":"text","text":"yes"}]},"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":187,"output_tokens":1},"tokens":{"input_tokens":758,"output_tokens":3,"image_tokens":172}}}'
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Debug-Trace-ID
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+            Content-Length:
+                - "275"
+            Content-Type:
+                - application/json
+            Expires:
+                - Thu, 01 Jan 1970 00:00:00 GMT
+            Num_chars:
+                - "5284"
+            Num_tokens:
+                - "188"
+            Pragma:
+                - no-cache
+            Server:
+                - envoy
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Accel-Expires:
+                - "0"
+            X-Debug-Trace-Id:
+                - c1f40046b2ca6ef912d91a55990fa018
+            X-Envoy-Upstream-Service-Time:
+                - "272"
+        status: 200 OK
+        code: 200
+        duration: 314ms

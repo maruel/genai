@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 597
+        host: api.mistral.ai
+        body: |
+            {"model":"voxtral-small-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"0e4fcc47e8634bb5bb70bab7e1e16f6d","object":"chat.completion.chunk","created":1753216780,"model":"voxtral-small-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"0e4fcc47e8634bb5bb70bab7e1e16f6d","object":"chat.completion.chunk","created":1753216780,"model":"voxtral-small-latest","choices":[{"index":0,"delta":{"tool_calls":[{"id":"x3T5ibLxK","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9635bfaaad32a294-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Mistral-Correlation-Id:
+                - 019833dd-06f8-7ccc-8205-bd7ad28838d8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Envoy-Upstream-Service-Time:
+                - "288"
+            X-Kong-Proxy-Latency:
+                - "7"
+            X-Kong-Request-Id:
+                - 019833dd-06f8-7ccc-8205-bd7ad28838d8
+            X-Kong-Upstream-Latency:
+                - "288"
+        status: 200 OK
+        code: 200
+        duration: 436ms

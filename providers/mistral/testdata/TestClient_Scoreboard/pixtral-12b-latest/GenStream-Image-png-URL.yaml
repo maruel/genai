@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 300
+        host: api.mistral.ai
+        body: |
+            {"model":"pixtral-12b-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply with only one word: yes or no."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"fad0c96be2224773872cf7a6b9036c42","object":"chat.completion.chunk","created":1753215953,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"fad0c96be2224773872cf7a6b9036c42","object":"chat.completion.chunk","created":1753215953,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":"Yes"},"finish_reason":null}]}
+
+            data: {"id":"fad0c96be2224773872cf7a6b9036c42","object":"chat.completion.chunk","created":1753215953,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":"."},"finish_reason":null}]}
+
+            data: {"id":"fad0c96be2224773872cf7a6b9036c42","object":"chat.completion.chunk","created":1753215953,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":436,"total_tokens":439,"completion_tokens":3}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9635ab7cfdf9a1de-YYZ
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Mistral-Correlation-Id:
+                - 019833d0-6a5f-742b-a179-e19ac810cee0
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Envoy-Upstream-Service-Time:
+                - "166"
+            X-Kong-Proxy-Latency:
+                - "6"
+            X-Kong-Request-Id:
+                - 019833d0-6a5f-742b-a179-e19ac810cee0
+            X-Kong-Upstream-Latency:
+                - "167"
+        status: 200 OK
+        code: 200
+        duration: 303ms

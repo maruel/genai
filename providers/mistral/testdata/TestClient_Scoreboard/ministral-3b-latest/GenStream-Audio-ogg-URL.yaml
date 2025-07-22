@@ -1,0 +1,53 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 297
+        host: api.mistral.ai
+        body: |
+            {"model":"ministral-3b-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What is the word said? Reply with only the word."},{"type":"audio_url","audio_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.ogg"}}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1473
+        body: '{"detail":[{"type":"string_type","loc":["body","messages",0,"user","content","str"],"msg":"Input should be a valid string","input":[{"type":"text","text":"What is the word said? Reply with only the word."},{"type":"audio_url","audio_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.ogg"}}]},{"type":"union_tag_invalid","loc":["body","messages",0,"user","content","list[tagged-union[TextChunk,ImageURLChunk,DocumentURLChunk,ReferenceChunk,BBoxChunk,FileURLChunk,AudioChunk,FileChunk,ThinkChunk]]",1],"msg":"Input tag ''audio_url'' found using ''type'' does not match any of the expected tags: <ChunkTypes.text: ''text''>, <ChunkTypes.image_url: ''image_url''>, <ChunkTypes.document_url: ''document_url''>, <ChunkTypes.reference: ''reference''>, <ChunkTypes.bbox: ''bbox''>, <ChunkTypes.file_url: ''file_url''>, <ChunkTypes.input_audio: ''input_audio''>, <ChunkTypes.file: ''file''>, <ChunkTypes.thinking: ''thinking''>","input":{"type":"audio_url","audio_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.ogg"}},"ctx":{"discriminator":"''type''","tag":"audio_url","expected_tags":"<ChunkTypes.text: ''text''>, <ChunkTypes.image_url: ''image_url''>, <ChunkTypes.document_url: ''document_url''>, <ChunkTypes.reference: ''reference''>, <ChunkTypes.bbox: ''bbox''>, <ChunkTypes.file_url: ''file_url''>, <ChunkTypes.input_audio: ''input_audio''>, <ChunkTypes.file: ''file''>, <ChunkTypes.thinking: ''thinking''>"}}]}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9635ab61690fa1de-YYZ
+            Content-Length:
+                - "1473"
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 019833d0-5925-7957-b7fd-5b80823f3047
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Envoy-Upstream-Service-Time:
+                - "5"
+            X-Kong-Proxy-Latency:
+                - "6"
+            X-Kong-Request-Id:
+                - 019833d0-5925-7957-b7fd-5b80823f3047
+            X-Kong-Upstream-Latency:
+                - "7"
+        status: 422 Unprocessable Entity
+        code: 422
+        duration: 144ms

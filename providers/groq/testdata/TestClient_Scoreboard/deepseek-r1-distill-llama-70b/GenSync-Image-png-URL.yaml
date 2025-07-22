@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 312
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply with only one word: yes or no."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"model":"deepseek-r1-distill-llama-70b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 91
+        body: |
+            {"error":{"message":"message[0].content must be a string","type":"invalid_request_error"}}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9635a5129f50714a-YUL
+            Content-Length:
+                - "91"
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - msp
+            X-Request-Id:
+                - req_01k0swrsxye9t9memycx5qzd4p
+        status: 400 Bad Request
+        code: 400
+        duration: 50ms

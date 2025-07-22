@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 324
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply with only one word: yes or no."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-b3452c77-b0f8-4af9-af1a-ee186a15a768","object":"chat.completion","created":1753215692,"model":"meta-llama/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"yes"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.018804609,"prompt_tokens":176,"prompt_time":0.007143979,"completion_tokens":2,"completion_time":0.004817175,"total_tokens":178,"total_time":0.011961154},"usage_breakdown":null,"system_fingerprint":"fp_cb546bdbdf","x_groq":{"id":"req_01k0swrvdfe9zr8szvdpcdp1hf"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9635a51c184f714a-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499996"
+            X-Ratelimit-Remaining-Tokens:
+                - "299882"
+            X-Ratelimit-Reset-Requests:
+                - 612.2ms
+            X-Ratelimit-Reset-Tokens:
+                - 23.6ms
+            X-Request-Id:
+                - req_01k0swrvdfe9zr8szvdpcdp1hf
+        status: 200 OK
+        code: 200
+        duration: 115ms

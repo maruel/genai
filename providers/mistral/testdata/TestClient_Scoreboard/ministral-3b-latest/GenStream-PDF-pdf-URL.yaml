@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 307
+        content_length: 293
         host: api.mistral.ai
         body: |
-            {"model":"ministral-3b-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What is the word? Reply with only the word."},{"type":"document_url","document_url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/hidden_word.pdf"}]}]}
+            {"model":"ministral-3b-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What is the word? Reply with only the word."},{"type":"document_url","document_url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf"}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,11 +21,11 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"fbc4d215210a4fd3b1631be64b98a1b5","object":"chat.completion.chunk","created":1753147552,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+            data: {"id":"37e78cea6e8844ec93fea0693ebcb1df","object":"chat.completion.chunk","created":1753215944,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
 
-            data: {"id":"fbc4d215210a4fd3b1631be64b98a1b5","object":"chat.completion.chunk","created":1753147552,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"orange"},"finish_reason":null}]}
+            data: {"id":"37e78cea6e8844ec93fea0693ebcb1df","object":"chat.completion.chunk","created":1753215944,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"orange"},"finish_reason":null}]}
 
-            data: {"id":"fbc4d215210a4fd3b1631be64b98a1b5","object":"chat.completion.chunk","created":1753147552,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":28,"total_tokens":30,"completion_tokens":2}}
+            data: {"id":"37e78cea6e8844ec93fea0693ebcb1df","object":"chat.completion.chunk","created":1753215944,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":28,"total_tokens":30,"completion_tokens":2}}
 
             data: [DONE]
 
@@ -37,23 +37,23 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962f2586eac733f1-YUL
+                - 9635ab435effa1de-YYZ
             Content-Type:
                 - text/event-stream; charset=utf-8
             Mistral-Correlation-Id:
-                - 01982fbc-b0aa-7de0-aeaa-af76579241ad
+                - 019833d0-4663-7998-86cd-4c98a6a3bed3
             Server:
                 - cloudflare
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains
             X-Envoy-Upstream-Service-Time:
-                - "858"
+                - "1617"
             X-Kong-Proxy-Latency:
-                - "6"
+                - "8"
             X-Kong-Request-Id:
-                - 01982fbc-b0aa-7de0-aeaa-af76579241ad
+                - 019833d0-4663-7998-86cd-4c98a6a3bed3
             X-Kong-Upstream-Latency:
-                - "859"
+                - "1618"
         status: 200 OK
         code: 200
-        duration: 1.018s
+        duration: 1.845s

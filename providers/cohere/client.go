@@ -71,7 +71,7 @@ var Scoreboard = genai.Scoreboard{
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
-					SupportedFormats: []string{"image/jpeg"},
+					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},

@@ -6,15 +6,14 @@
 package scoreboard
 
 import (
+	"bytes"
 	"context"
+	"embed"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"maps"
 	"math"
-	"os"
-	"os/exec"
-	"path/filepath"
 	"slices"
 	"strings"
 	"sync"
@@ -25,6 +24,9 @@ import (
 	"golang.org/x/sync/errgroup"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 )
+
+//go:embed testdata/*
+var testdataFiles embed.FS
 
 // ProviderFactory is a function that returns a provider instance. The name represents the sub-test name. This
 // may be used for HTTP recording and replays.
@@ -251,32 +253,28 @@ func exerciseGenCommon(ctx context.Context, pf ProviderFactory, isStream bool, p
 		f.BrokenFinishReason = true
 	}
 
-	root, err := getGitRootPath()
-	if err != nil {
-		return in, out, f, usage, err
-	}
-	m, err := exerciseGenPDFInput(ctx, root, pf, f, isStream, prefix+"PDF-", &usage)
+	m, err := exerciseGenPDFInput(ctx, pf, f, isStream, prefix+"PDF-", &usage)
 	if m != nil {
 		in[genai.ModalityPDF] = *m
 	}
 	if err != nil {
 		return in, out, f, usage, err
 	}
-	m, err = exerciseGenImageInput(ctx, root, pf, f, isStream, prefix+"Image-", &usage)
+	m, err = exerciseGenImageInput(ctx, pf, f, isStream, prefix+"Image-", &usage)
 	if m != nil {
 		in[genai.ModalityImage] = *m
 	}
 	if err != nil {
 		return in, out, f, usage, err
 	}
-	m, err = exerciseGenAudioInput(ctx, root, pf, f, isStream, prefix+"Audio-", &usage)
+	m, err = exerciseGenAudioInput(ctx, pf, f, isStream, prefix+"Audio-", &usage)
 	if m != nil {
 		in[genai.ModalityAudio] = *m
 	}
 	if err != nil {
 		return in, out, f, usage, err
 	}
-	m, err = exerciseGenVideoInput(ctx, root, pf, f, isStream, prefix+"Video-", &usage)
+	m, err = exerciseGenVideoInput(ctx, pf, f, isStream, prefix+"Video-", &usage)
 	if m != nil {
 		in[genai.ModalityVideo] = *m
 	}
@@ -286,16 +284,18 @@ func exerciseGenCommon(ctx context.Context, pf ProviderFactory, isStream bool, p
 	return in, out, f, usage, nil
 }
 
-func exerciseGenPDFInput(ctx context.Context, root string, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, prefix string, usage *genai.Usage) (*genai.ModalCapability, error) {
+func exerciseGenPDFInput(ctx context.Context, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, prefix string, usage *genai.Usage) (*genai.ModalCapability, error) {
 	var m *genai.ModalCapability
 	want := "orange"
 	for _, format := range []extMime{{"pdf", "application/pdf"}} {
-		file, err := os.Open(filepath.Join(root, "internal", "internaltest", "testdata", "hidden_word."+format.ext))
+		data, err := testdataFiles.ReadFile("testdata/document." + format.ext)
 		if err != nil {
 			return nil, fmt.Errorf("failed to open input file: %w", err)
 		}
-		defer file.Close()
-		msgs := genai.Messages{genai.Message{Role: genai.User, Contents: []genai.Content{{Text: "What is the word? Reply with only the word."}, {Document: file, Filename: "hidden_word." + format.ext}}}}
+		msgs := genai.Messages{genai.Message{Role: genai.User, Contents: []genai.Content{
+			{Text: "What is the word? Reply with only the word."},
+			{Document: bytes.NewReader(data), Filename: "document." + format.ext},
+		}}}
 		if err := exerciseModal(ctx, pf, f, isStream, prefix+format.ext+"-Inline", usage, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
@@ -307,7 +307,7 @@ func exerciseGenPDFInput(ctx context.Context, root string, pf ProviderFactory, f
 		} else if isBadError(err) {
 			return m, err
 		}
-		msgs[0].Contents[1] = genai.Content{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/hidden_word." + format.ext}
+		msgs[0].Contents[1] = genai.Content{URL: rootURL + "document." + format.ext}
 		if err := exerciseModal(ctx, pf, f, isStream, prefix+format.ext+"-URL", usage, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
@@ -323,16 +323,24 @@ func exerciseGenPDFInput(ctx context.Context, root string, pf ProviderFactory, f
 	return m, nil
 }
 
-func exerciseGenImageInput(ctx context.Context, root string, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, prefix string, usage *genai.Usage) (*genai.ModalCapability, error) {
+func exerciseGenImageInput(ctx context.Context, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, prefix string, usage *genai.Usage) (*genai.ModalCapability, error) {
 	var m *genai.ModalCapability
 	want := "yes"
-	for _, format := range []extMime{{"jpg", "image/jpeg"}} {
-		file, err := os.Open(filepath.Join(root, "internal", "internaltest", "testdata", "banana."+format.ext))
+	for _, format := range []extMime{
+		{"gif", "image/gif"},
+		// TODO: {"heic", "image/heic"},
+		{"jpg", "image/jpeg"},
+		{"png", "image/png"},
+		{"webp", "image/webp"},
+	} {
+		data, err := testdataFiles.ReadFile("testdata/image." + format.ext)
 		if err != nil {
 			return nil, fmt.Errorf("failed to open input file: %w", err)
 		}
-		defer file.Close()
-		msgs := genai.Messages{genai.Message{Role: genai.User, Contents: []genai.Content{{Text: "Is it a banana? Reply with only one word: yes or no."}, {Document: file, Filename: "banana." + format.ext}}}}
+		msgs := genai.Messages{genai.Message{Role: genai.User, Contents: []genai.Content{
+			{Text: "Is it a banana? Reply with only one word: yes or no."},
+			{Document: bytes.NewReader(data), Filename: "image." + format.ext},
+		}}}
 		if err := exerciseModal(ctx, pf, f, isStream, prefix+format.ext+"-Inline", usage, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
@@ -344,7 +352,7 @@ func exerciseGenImageInput(ctx context.Context, root string, pf ProviderFactory,
 		} else if isBadError(err) {
 			return m, err
 		}
-		msgs[0].Contents[1] = genai.Content{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/banana." + format.ext}
+		msgs[0].Contents[1] = genai.Content{URL: rootURL + "image." + format.ext}
 		if err := exerciseModal(ctx, pf, f, isStream, prefix+format.ext+"-URL", usage, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
@@ -360,53 +368,66 @@ func exerciseGenImageInput(ctx context.Context, root string, pf ProviderFactory,
 	return m, nil
 }
 
-func exerciseGenAudioInput(ctx context.Context, root string, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, prefix string, usage *genai.Usage) (*genai.ModalCapability, error) {
-	var m *genai.ModalCapability
-	want := "" // "orange"
-	for _, format := range []extMime{{"mp3", "audio/mp3"}} {
-		file, err := os.Open(filepath.Join(root, "internal", "internaltest", "testdata", "mystery_word."+format.ext))
-		if err != nil {
-			return nil, fmt.Errorf("failed to open input file: %w", err)
-		}
-		defer file.Close()
-		msgs := genai.Messages{genai.Message{Role: genai.User, Contents: []genai.Content{{Text: "What is the word said? Reply with only the word."}, {Document: file, Filename: "mystery_word." + format.ext}}}}
-		if err := exerciseModal(ctx, pf, f, isStream, prefix+format.ext+"-Inline", usage, msgs, want); err == nil {
-			if m == nil {
-				m = &genai.ModalCapability{}
-			}
-			m.Inline = true
-			if !slices.Contains(m.SupportedFormats, format.mime) {
-				m.SupportedFormats = append(m.SupportedFormats, format.mime)
-			}
-		} else if isBadError(err) {
-			return m, err
-		}
-		msgs[0].Contents[1] = genai.Content{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/mystery_word." + format.ext}
-		if err := exerciseModal(ctx, pf, f, isStream, prefix+format.ext+"-URL", usage, msgs, want); err == nil {
-			if m == nil {
-				m = &genai.ModalCapability{}
-			}
-			m.URL = true
-			if !slices.Contains(m.SupportedFormats, format.mime) {
-				m.SupportedFormats = append(m.SupportedFormats, format.mime)
-			}
-		} else if isBadError(err) {
-			return m, err
-		}
-	}
-	return m, nil
-}
-
-func exerciseGenVideoInput(ctx context.Context, root string, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, prefix string, usage *genai.Usage) (*genai.ModalCapability, error) {
+func exerciseGenAudioInput(ctx context.Context, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, prefix string, usage *genai.Usage) (*genai.ModalCapability, error) {
 	var m *genai.ModalCapability
 	want := "orange"
-	for _, format := range []extMime{{"mp4", "video/mp4"}} {
-		file, err := os.Open(filepath.Join(root, "internal", "internaltest", "testdata", "animation."+format.ext))
+	for _, format := range []extMime{
+		{"aac", "audio/aac"},
+		{"flac", "audio/flac"},
+		{"mp3", "audio/mp3"},
+		{"ogg", "audio/ogg"},
+		{"wav", "audio/wav"},
+	} {
+		data, err := testdataFiles.ReadFile("testdata/audio." + format.ext)
 		if err != nil {
 			return nil, fmt.Errorf("failed to open input file: %w", err)
 		}
-		defer file.Close()
-		msgs := genai.Messages{genai.Message{Role: genai.User, Contents: []genai.Content{{Text: "What is the word said? Reply with only the word."}, {Document: file, Filename: "animation." + format.ext}}}}
+		msgs := genai.Messages{genai.Message{Role: genai.User, Contents: []genai.Content{
+			{Text: "What is the word said? Reply with only the word."},
+			{Document: bytes.NewReader(data), Filename: "audio." + format.ext},
+		}}}
+		if err := exerciseModal(ctx, pf, f, isStream, prefix+format.ext+"-Inline", usage, msgs, want); err == nil {
+			if m == nil {
+				m = &genai.ModalCapability{}
+			}
+			m.Inline = true
+			if !slices.Contains(m.SupportedFormats, format.mime) {
+				m.SupportedFormats = append(m.SupportedFormats, format.mime)
+			}
+		} else if isBadError(err) {
+			// return m, err
+		}
+		msgs[0].Contents[1] = genai.Content{URL: rootURL + "audio." + format.ext}
+		if err := exerciseModal(ctx, pf, f, isStream, prefix+format.ext+"-URL", usage, msgs, want); err == nil {
+			if m == nil {
+				m = &genai.ModalCapability{}
+			}
+			m.URL = true
+			if !slices.Contains(m.SupportedFormats, format.mime) {
+				m.SupportedFormats = append(m.SupportedFormats, format.mime)
+			}
+		} else if isBadError(err) {
+			// return m, err
+		}
+	}
+	return m, nil
+}
+
+func exerciseGenVideoInput(ctx context.Context, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, prefix string, usage *genai.Usage) (*genai.ModalCapability, error) {
+	var m *genai.ModalCapability
+	want := "orange"
+	for _, format := range []extMime{
+		{"mp4", "video/mp4"},
+		{"webm", "video/webm"},
+	} {
+		data, err := testdataFiles.ReadFile("testdata/video." + format.ext)
+		if err != nil {
+			return nil, fmt.Errorf("failed to open input file: %w", err)
+		}
+		msgs := genai.Messages{genai.Message{Role: genai.User, Contents: []genai.Content{
+			{Text: "What is the word said? Reply with only the word."},
+			{Document: bytes.NewReader(data), Filename: "video." + format.ext},
+		}}}
 		if err := exerciseModal(ctx, pf, f, isStream, prefix+format.ext+"-Inline", usage, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
@@ -418,7 +439,7 @@ func exerciseGenVideoInput(ctx context.Context, root string, pf ProviderFactory,
 		} else if isBadError(err) {
 			return m, err
 		}
-		msgs[0].Contents[1] = genai.Content{URL: "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/animation." + format.ext}
+		msgs[0].Contents[1] = genai.Content{URL: rootURL + "video." + format.ext}
 		if err := exerciseModal(ctx, pf, f, isStream, prefix+format.ext+"-URL", usage, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
@@ -740,6 +761,8 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 	return nil
 }
 
+const rootURL = "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/"
+
 func isBadError(err error) bool {
 	var uerr *httpjson.UnknownFieldError
 	if errors.Is(err, cassette.ErrInteractionNotFound) || errors.As(err, &uerr) {
@@ -770,30 +793,4 @@ func mergeSortedUnique(s1, s2 []string) []string {
 	combined := append(s1, s2...)
 	slices.Sort(combined)
 	return slices.Compact(combined)
-}
-
-var (
-	gitRootOnce sync.Once
-	gitRootPath string
-)
-
-func getGitRootPath() (string, error) {
-	var err error
-	gitRootOnce.Do(func() {
-		cmd := exec.Command("git", "rev-parse", "--show-toplevel")
-		output, err2 := cmd.Output()
-		if err2 != nil {
-			err = err2
-			return
-		}
-		path := strings.TrimSpace(string(output))
-		// Ensure the path is absolute and clean
-		absPath, err2 := filepath.Abs(path)
-		if err2 != nil {
-			err = err2
-			return
-		}
-		gitRootPath = absPath
-	})
-	return gitRootPath, err
 }

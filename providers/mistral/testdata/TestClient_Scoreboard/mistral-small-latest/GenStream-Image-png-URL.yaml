@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 302
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-small-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply with only one word: yes or no."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"f4421605dd094a669f475a31529d1071","object":"chat.completion.chunk","created":1753215959,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"f4421605dd094a669f475a31529d1071","object":"chat.completion.chunk","created":1753215959,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":"Yes"},"finish_reason":null}]}
+
+            data: {"id":"f4421605dd094a669f475a31529d1071","object":"chat.completion.chunk","created":1753215959,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":"."},"finish_reason":null}]}
+
+            data: {"id":"f4421605dd094a669f475a31529d1071","object":"chat.completion.chunk","created":1753215959,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":161,"total_tokens":164,"completion_tokens":3}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9635aba3fb7ea1de-YYZ
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Mistral-Correlation-Id:
+                - 019833d0-82b8-7f49-885c-15d64e45686e
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Envoy-Upstream-Service-Time:
+                - "278"
+            X-Kong-Proxy-Latency:
+                - "5"
+            X-Kong-Request-Id:
+                - 019833d0-82b8-7f49-885c-15d64e45686e
+            X-Kong-Upstream-Latency:
+                - "280"
+        status: 200 OK
+        code: 200
+        duration: 415ms

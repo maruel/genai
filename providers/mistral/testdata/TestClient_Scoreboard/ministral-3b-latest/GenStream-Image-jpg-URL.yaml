@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 313
+        content_length: 301
         host: api.mistral.ai
         body: |
-            {"model":"ministral-3b-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply with only one word: yes or no."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/banana.jpg"}}]}]}
+            {"model":"ministral-3b-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply with only one word: yes or no."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -29,25 +29,25 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96352785bd7ea260-YUL
+                - 9635ab531904a1de-YYZ
             Content-Length:
                 - "137"
             Content-Type:
                 - application/json
             Mistral-Correlation-Id:
-                - 0198337d-f02e-7d53-8abb-0381a455c8c2
+                - 019833d0-5039-7920-837e-4b6d74bfee27
             Server:
                 - cloudflare
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains
             X-Envoy-Upstream-Service-Time:
-                - "38"
+                - "36"
             X-Kong-Proxy-Latency:
-                - "5"
+                - "6"
             X-Kong-Request-Id:
-                - 0198337d-f02e-7d53-8abb-0381a455c8c2
+                - 019833d0-5039-7920-837e-4b6d74bfee27
             X-Kong-Upstream-Latency:
-                - "39"
+                - "37"
         status: 400 Bad Request
         code: 400
-        duration: 275ms
+        duration: 181ms

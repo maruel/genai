@@ -1,0 +1,53 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 302
+        host: api.cohere.com
+        body: |
+            {"stream":true,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply with only one word: yes or no."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cohere.com/v2/chat
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 120
+        body: '{"id":"ac51fdf1-99eb-4ef6-bc14-32abe1562a52","message":"invalid request: image content is not supported for this model"}'
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Debug-Trace-ID
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+            Content-Length:
+                - "120"
+            Content-Type:
+                - application/json
+            Expires:
+                - Thu, 01 Jan 1970 00:00:00 GMT
+            Pragma:
+                - no-cache
+            Server:
+                - envoy
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Accel-Expires:
+                - "0"
+            X-Debug-Trace-Id:
+                - 446ef2e96f9059820cc7c59f8b348a24
+            X-Envoy-Upstream-Service-Time:
+                - "11"
+        status: 400 Bad Request
+        code: 400
+        duration: 55ms

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 336
+        content_length: 324
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply with only one word: yes or no."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/banana.jpg"}}]}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","stream":false}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply with only one word: yes or no."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","stream":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-0b3f50bf-e395-4dfa-bd57-559cb5658d0e","object":"chat.completion","created":1753210510,"model":"meta-llama/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"yes"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.078532939,"prompt_tokens":466,"prompt_time":0.018203645,"completion_tokens":2,"completion_time":0.005114647,"total_tokens":468,"total_time":0.023318292},"usage_breakdown":null,"system_fingerprint":"fp_cb546bdbdf","x_groq":{"id":"req_01k0sqtpzte8qb0vj4a9e4swwe"},"service_tier":"on_demand"}
+            {"id":"chatcmpl-22bf1096-7b68-452c-b05a-9cd9afd971db","object":"chat.completion","created":1753215692,"model":"meta-llama/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"Yes."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.019295188,"prompt_tokens":176,"prompt_time":0.007636219,"completion_tokens":3,"completion_time":0.008311766,"total_tokens":179,"total_time":0.015947985},"usage_breakdown":null,"system_fingerprint":"fp_cb546bdbdf","x_groq":{"id":"req_01k0swrvkfezq800astth6sybb"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,15 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 963526995bbaa2df-YUL
+                - 9635a51d59ee714a-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
                 - msp
             X-Ratelimit-Limit-Requests:
@@ -47,15 +45,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "300000"
             X-Ratelimit-Remaining-Requests:
-                - "499997"
+                - "499992"
             X-Ratelimit-Remaining-Tokens:
-                - "299385"
+                - "299981"
             X-Ratelimit-Reset-Requests:
-                - 363.4ms
+                - 1.326399999s
             X-Ratelimit-Reset-Tokens:
-                - 123ms
+                - 3.8ms
             X-Request-Id:
-                - req_01k0sqtpzte8qb0vj4a9e4swwe
+                - req_01k0swrvkfezq800astth6sybb
         status: 200 OK
         code: 200
-        duration: 342ms
+        duration: 137ms

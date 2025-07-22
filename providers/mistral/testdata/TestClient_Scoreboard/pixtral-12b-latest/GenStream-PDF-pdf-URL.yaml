@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 306
+        content_length: 292
         host: api.mistral.ai
         body: |
-            {"model":"pixtral-12b-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What is the word? Reply with only the word."},{"type":"document_url","document_url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/internal/internaltest/testdata/hidden_word.pdf"}]}]}
+            {"model":"pixtral-12b-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What is the word? Reply with only the word."},{"type":"document_url","document_url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf"}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,11 +21,11 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"c764183b1c7247bd8e2d20871760786c","object":"chat.completion.chunk","created":1753188031,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+            data: {"id":"3e690b15ce3540f58692ad93d79dafad","object":"chat.completion.chunk","created":1753215949,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
 
-            data: {"id":"c764183b1c7247bd8e2d20871760786c","object":"chat.completion.chunk","created":1753188031,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":"orange"},"finish_reason":null}]}
+            data: {"id":"3e690b15ce3540f58692ad93d79dafad","object":"chat.completion.chunk","created":1753215949,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":"orange"},"finish_reason":null}]}
 
-            data: {"id":"c764183b1c7247bd8e2d20871760786c","object":"chat.completion.chunk","created":1753188031,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":28,"total_tokens":30,"completion_tokens":2}}
+            data: {"id":"3e690b15ce3540f58692ad93d79dafad","object":"chat.completion.chunk","created":1753215949,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":28,"total_tokens":30,"completion_tokens":2}}
 
             data: [DONE]
 
@@ -37,23 +37,23 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 963301caba78a290-YUL
+                - 9635ab658d80a1de-YYZ
             Content-Type:
                 - text/event-stream; charset=utf-8
             Mistral-Correlation-Id:
-                - 01983226-5aff-7ce8-8527-0cfa041ac4bb
+                - 019833d0-5bba-74c4-9652-c6bafb4e2caa
             Server:
                 - cloudflare
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains
             X-Envoy-Upstream-Service-Time:
-                - "853"
+                - "940"
             X-Kong-Proxy-Latency:
-                - "8"
+                - "6"
             X-Kong-Request-Id:
-                - 01983226-5aff-7ce8-8527-0cfa041ac4bb
+                - 019833d0-5bba-74c4-9652-c6bafb4e2caa
             X-Kong-Upstream-Latency:
-                - "855"
+                - "940"
         status: 200 OK
         code: 200
-        duration: 1.005s
+        duration: 1.129s

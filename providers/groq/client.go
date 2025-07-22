@@ -91,7 +91,7 @@ var Scoreboard = genai.Scoreboard{
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
-					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
+					SupportedFormats: []string{"image/jpeg"},
 				},
 				genai.ModalityText: {Inline: true},
 			},

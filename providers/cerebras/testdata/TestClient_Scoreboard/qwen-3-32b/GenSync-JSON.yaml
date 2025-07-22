@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 267
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."},{"role":"user","content":"/think"}],"response_format":{"type":"json_object"}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-e00329ae-d3c7-44cd-b092-e7f0dc0d610f","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"is_fruit\": true}","role":"assistant"}}],"created":1753209349,"model":"qwen-3-32b","system_fingerprint":"fp_1504a02d96fb4f08d4e7","object":"chat.completion","usage":{"prompt_tokens":45,"completion_tokens":175,"total_tokens":220,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.004796255,"prompt_time":0.001458008,"completion_time":0.135594287,"total_time":0.1431725025177002,"created":1753209349}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96350a3f8faf369d-YYZ
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-e00329ae-d3c7-44cd-b092-e7f0dc0d610f
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14393"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "62846"
+            X-Ratelimit-Reset-Requests-Day:
+                - "19450.744616270065"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "10.744616270065308"
+            X-Request-Id:
+                - 96350a3f8faf369d-YYZ
+        status: 200 OK
+        code: 200
+        duration: 260ms

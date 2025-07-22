@@ -43,7 +43,7 @@ var Scoreboard = genai.Scoreboard{
 				genai.ModalityText: {Inline: true},
 				genai.ModalityPDF: {
 					URL:              true,
-					SupportedFormats: []string{"application/pdf", "application/x-javascript", "application/x-python", "text/css", "text/html", "text/javascript", "text/markdown", "text/plain", "text/x-python"},
+					SupportedFormats: []string{"application/pdf"},
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
@@ -68,11 +68,11 @@ var Scoreboard = genai.Scoreboard{
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
-					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
+					SupportedFormats: []string{"image/jpeg"},
 				},
 				genai.ModalityPDF: {
 					URL:              true,
-					SupportedFormats: []string{"application/pdf", "application/x-javascript", "application/x-python", "text/css", "text/html", "text/javascript", "text/markdown", "text/plain", "text/x-python"},
+					SupportedFormats: []string{"application/pdf"},
 				},
 				genai.ModalityText: {Inline: true},
 			},
@@ -98,11 +98,11 @@ var Scoreboard = genai.Scoreboard{
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
-					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
+					SupportedFormats: []string{"image/jpeg"},
 				},
 				genai.ModalityPDF: {
 					URL:              true,
-					SupportedFormats: []string{"application/pdf", "application/x-javascript", "application/x-python", "text/css", "text/html", "text/javascript", "text/markdown", "text/plain", "text/x-python"},
+					SupportedFormats: []string{"application/pdf"},
 				},
 				genai.ModalityText: {Inline: true},
 			},
@@ -127,11 +127,7 @@ var Scoreboard = genai.Scoreboard{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityAudio: {
 					Inline:           true,
-					SupportedFormats: []string{"audio/aac", "audio/aiff", "audio/flac", "audio/mp3", "audio/ogg", "audio/wav"},
-				},
-				genai.ModalityPDF: {
-					URL:              true,
-					SupportedFormats: []string{"application/pdf", "application/x-javascript", "application/x-python", "text/css", "text/html", "text/javascript", "text/markdown", "text/plain", "text/x-python"},
+					SupportedFormats: []string{"audio/mp3"},
 				},
 				genai.ModalityText: {Inline: true},
 			},

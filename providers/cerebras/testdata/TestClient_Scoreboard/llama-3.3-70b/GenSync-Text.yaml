@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 97
+        host: api.cerebras.ai
+        body: |
+            {"model":"llama-3.3-70b","messages":[{"role":"user","content":"Say hello. Use only one word."}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-fca16d1b-1da6-47f0-9fc7-6f767722b368","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Hello.","role":"assistant"}}],"created":1753209332,"model":"llama-3.3-70b","system_fingerprint":"fp_d9197bd9bfb96c41ef64","object":"chat.completion","usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.07847493,"prompt_time":0.075990168,"completion_time":7.926e-05,"total_time":0.15669822692871094,"created":1753209332}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963509d69a01a2fc-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-fca16d1b-1da6-47f0-9fc7-6f767722b368
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14398"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Reset-Requests-Day:
+                - "19467.475670337677"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "27.475670337677002"
+            X-Request-Id:
+                - 963509d69a01a2fc-YUL
+        status: 200 OK
+        code: 200
+        duration: 318ms

@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 586
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"user","content":"/think"}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-687fd1fc-17e1-4fd3-a64c-cfce83547ce8","choices":[{"finish_reason":"tool_calls","index":0,"message":{"tool_calls":[{"id":"a5027f798","type":"function","function":{"name":"square_root","arguments":"{\"number\": \"132413\"}"}}],"role":"assistant"}}],"created":1753209349,"model":"qwen-3-32b","system_fingerprint":"fp_1504a02d96fb4f08d4e7","object":"chat.completion","usage":{"prompt_tokens":235,"completion_tokens":121,"total_tokens":356,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.290560941,"prompt_time":0.00542405,"completion_time":0.080149309,"total_time":0.3778374195098877,"created":1753209349}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96350a44be88369d-YYZ
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-687fd1fc-17e1-4fd3-a64c-cfce83547ce8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14389"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "62141"
+            X-Ratelimit-Reset-Requests-Day:
+                - "19449.642659187317"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "9.642659187316895"
+            X-Request-Id:
+                - 96350a44be88369d-YYZ
+        status: 200 OK
+        code: 200
+        duration: 524ms

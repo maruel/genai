@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 564
+        host: api.cerebras.ai
+        body: |
+            {"model":"llama-3.3-70b","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-5e495927-571d-4d4c-bfe0-f505bebe6b48","choices":[{"finish_reason":"stop","index":0,"message":{"content":"e","role":"assistant"}}],"created":1753209336,"model":"llama-3.3-70b","system_fingerprint":"fp_d9197bd9bfb96c41ef64","object":"chat.completion","usage":{"prompt_tokens":249,"completion_tokens":16,"total_tokens":265,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00078044,"prompt_time":0.00519508,"completion_time":0.026082875,"total_time":0.03327822685241699,"created":1753209336}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963509f07868a255-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-5e495927-571d-4d4c-bfe0-f505bebe6b48
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14384"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "62472"
+            X-Ratelimit-Reset-Requests-Day:
+                - "19463.47151875496"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "23.471518754959106"
+            X-Request-Id:
+                - 963509f07868a255-YUL
+        status: 200 OK
+        code: 200
+        duration: 182ms

@@ -1,0 +1,79 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 519
+        host: api.cerebras.ai
+        body: |
+            {"model":"llama-3.3-70b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://github.com/maruel/genai/scoreboard/schema","$ref":"#/$defs/schema","$defs":{"schema":{"properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}},"strict":true}},"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-9be6c59d-a2eb-411f-a3d1-69fb116099a0","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1753209335,"model":"llama-3.3-70b","system_fingerprint":"fp_d9197bd9bfb96c41ef64","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-9be6c59d-a2eb-411f-a3d1-69fb116099a0","choices":[{"delta":{"content":"{\""},"index":0}],"created":1753209335,"model":"llama-3.3-70b","system_fingerprint":"fp_d9197bd9bfb96c41ef64","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-9be6c59d-a2eb-411f-a3d1-69fb116099a0","choices":[{"delta":{"content":"is"},"index":0}],"created":1753209335,"model":"llama-3.3-70b","system_fingerprint":"fp_d9197bd9bfb96c41ef64","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-9be6c59d-a2eb-411f-a3d1-69fb116099a0","choices":[{"delta":{"content":"_f"},"index":0}],"created":1753209335,"model":"llama-3.3-70b","system_fingerprint":"fp_d9197bd9bfb96c41ef64","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-9be6c59d-a2eb-411f-a3d1-69fb116099a0","choices":[{"delta":{"content":"ruit"},"index":0}],"created":1753209335,"model":"llama-3.3-70b","system_fingerprint":"fp_d9197bd9bfb96c41ef64","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-9be6c59d-a2eb-411f-a3d1-69fb116099a0","choices":[{"delta":{"content":"\":"},"index":0}],"created":1753209335,"model":"llama-3.3-70b","system_fingerprint":"fp_d9197bd9bfb96c41ef64","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-9be6c59d-a2eb-411f-a3d1-69fb116099a0","choices":[{"delta":{"content":" true"},"index":0}],"created":1753209335,"model":"llama-3.3-70b","system_fingerprint":"fp_d9197bd9bfb96c41ef64","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-9be6c59d-a2eb-411f-a3d1-69fb116099a0","choices":[{"delta":{"content":"}"},"index":0}],"created":1753209335,"model":"llama-3.3-70b","system_fingerprint":"fp_d9197bd9bfb96c41ef64","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-9be6c59d-a2eb-411f-a3d1-69fb116099a0","choices":[{"delta":{},"index":0}],"created":1753209335,"model":"llama-3.3-70b","system_fingerprint":"fp_d9197bd9bfb96c41ef64","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-9be6c59d-a2eb-411f-a3d1-69fb116099a0","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1753209335,"model":"llama-3.3-70b","system_fingerprint":"fp_d9197bd9bfb96c41ef64","object":"chat.completion.chunk","usage":{"prompt_tokens":219,"completion_tokens":8,"total_tokens":227,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.206173423,"prompt_time":0.005935529,"completion_time":0.002043993,"total_time":0.2158679962158203,"created":1753209335}}
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963509ead84aa255-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Inference-Id:
+                - chatcmpl-9be6c59d-a2eb-411f-a3d1-69fb116099a0
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14388"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "63518"
+            X-Ratelimit-Reset-Requests-Day:
+                - "19464.396631479263"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "24.396631479263306"
+            X-Request-Id:
+                - 963509ead84aa255-YUL
+        status: 200 OK
+        code: 200
+        duration: 1.281s

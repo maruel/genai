@@ -12,9 +12,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"maps"
 	"math"
 	"mime"
+	"net/http"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -30,16 +32,17 @@ import (
 //go:embed testdata/*
 var testdataFiles embed.FS
 
-// ProviderFactory is a function that returns a provider instance. The name represents the sub-test name. This
-// may be used for HTTP recording and replays.
-type ProviderFactory func(name string) genai.Provider
+// ProviderFactory is a function that returns a provider instance. The name represents the sub-test name.
+//
+// This may be used for HTTP recording and replays.
+type ProviderFactory func(name string) (genai.Provider, http.RoundTripper)
 
 // CreateScenario calculates the supported Scenario for the given provider and its current model.
 //
 // ProviderFactory must be concurrent safe.
 func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, genai.Usage, error) {
 	usage := genai.Usage{}
-	c := pf("")
+	c, _ := pf("")
 	m := c.ModelID()
 	if m == "" {
 		return genai.Scenario{}, usage, errors.New("provider must have a model")
@@ -667,7 +670,8 @@ func exerciseGenTools(ctx context.Context, pf ProviderFactory, f *genai.Function
 }
 
 func callGen(ctx context.Context, pf ProviderFactory, name string, msgs genai.Messages, opts genai.Options, isStream bool, usage *genai.Usage) (genai.Result, error) {
-	c := pf(name).(genai.ProviderGen)
+	cc, _ := pf(name)
+	c := cc.(genai.ProviderGen)
 	var err error
 	var resp genai.Result
 	if isStream {
@@ -725,7 +729,8 @@ func exerciseGenDoc(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 }
 
 func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, out *genai.Scenario, usage *genai.Usage) error {
-	c := pf(name).(genai.ProviderGenDoc)
+	cc, rt := pf(name)
+	c := cc.(genai.ProviderGenDoc)
 	promptImage := `A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
 	contentsImage := `Generate one square, white-background doodle with smooth, vibrantly colored image depicting ` + promptImage + `.
 
@@ -753,12 +758,30 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 		}
 		out.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
 		v := out.Out[genai.ModalityImage]
-		if resp.Contents[0].URL == "" {
-			// TODO: Retrieve the image. We need to get the underlying http.Roundtripper to ensure it is recorded.
-			// In general the URL is only valid for a short time.
+		if c.URL != "" {
 			v.URL = true
+			// Retrieve the result file.
+			internal.Logger(ctx).ErrorContext(ctx, name, "rt", fmt.Sprintf("%T", rt))
+			resp2, err := (&http.Client{Transport: rt}).Get(c.URL)
+			if err != nil {
+				return fmt.Errorf("failed to download generated result: %w", err)
+			}
+			defer resp2.Body.Close()
+			if resp2.StatusCode != http.StatusOK {
+				return fmt.Errorf("failed to download generated result: %s", resp2.Status)
+			}
+			body, err := io.ReadAll(resp2.Body)
+			if err != nil {
+				return fmt.Errorf("failed to download generated result: %w", err)
+			}
+			internal.Logger(ctx).DebugContext(ctx, name, "generated", len(body), "url", c.URL)
 		} else {
 			v.Inline = true
+			_, body, err := c.ReadDocument(10 * 1024 * 1024)
+			if err != nil {
+				return fmt.Errorf("failed to download generated result: %w", err)
+			}
+			internal.Logger(ctx).DebugContext(ctx, name, "generated", len(body))
 		}
 		v.SupportedFormats = append(v.SupportedFormats, mime.TypeByExtension(filepath.Ext(fn)))
 		out.Out[genai.ModalityImage] = v
@@ -777,7 +800,8 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 }
 
 func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, out *genai.Scenario, usage *genai.Usage) error {
-	c := pf(name).(genai.ProviderGenDoc)
+	cc, rt := pf(name)
+	c := cc.(genai.ProviderGenDoc)
 	msg := genai.NewTextMessage(genai.User, "Say hi. Just say this word, nothing else.")
 	resp, err := c.GenDoc(ctx, msg, &genai.OptionsAudio{})
 	usage.InputTokens += resp.InputTokens
@@ -795,12 +819,29 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 		out.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
 		out.Out[genai.ModalityAudio] = genai.ModalCapability{Inline: true}
 		v := out.Out[genai.ModalityAudio]
-		if resp.Contents[0].URL == "" {
-			// TODO: Retrieve the image. We need to get the underlying http.Roundtripper to ensure it is recorded.
-			// In general the URL is only valid for a short time.
+		if c.URL != "" {
 			v.URL = true
+			// Retrieve the result file.
+			resp2, err := (&http.Client{Transport: rt}).Get(c.URL)
+			if err != nil {
+				return fmt.Errorf("failed to download generated result: %w", err)
+			}
+			defer resp2.Body.Close()
+			if resp2.StatusCode != http.StatusOK {
+				return fmt.Errorf("failed to download generated result: %s", resp2.Status)
+			}
+			body, err := io.ReadAll(resp2.Body)
+			if err != nil {
+				return fmt.Errorf("failed to download generated result: %w", err)
+			}
+			internal.Logger(ctx).DebugContext(ctx, name, "generated", len(body), "url", c.URL)
 		} else {
 			v.Inline = true
+			_, body, err := c.ReadDocument(10 * 1024 * 1024)
+			if err != nil {
+				return fmt.Errorf("failed to download generated result: %w", err)
+			}
+			internal.Logger(ctx).DebugContext(ctx, name, "generated", len(body))
 		}
 		v.SupportedFormats = append(v.SupportedFormats, mime.TypeByExtension(filepath.Ext(fn)))
 		out.Out[genai.ModalityAudio] = v
@@ -808,7 +849,7 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 			out.GenDoc.BrokenTokenUsage = genai.True
 		}
 		if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
-			internal.Logger(ctx).DebugContext(ctx, "GenDocAudio", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+			internal.Logger(ctx).DebugContext(ctx, name, "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
 			out.GenDoc.BrokenFinishReason = true
 		}
 	}

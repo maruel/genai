@@ -22,9 +22,11 @@ import (
 	"github.com/maruel/httpjson"
 )
 
-func gc(t testing.TB, name, m string) genai.Provider {
+func gc(t testing.TB, name, m string) (genai.Provider, http.RoundTripper) {
+	var rt http.RoundTripper
 	fn := func(h http.RoundTripper) http.RoundTripper {
 		if name == "" {
+			rt = h
 			return h
 		}
 		r, err2 := testRecorder.Records.Record(name, h)
@@ -36,6 +38,7 @@ func gc(t testing.TB, name, m string) genai.Provider {
 				t.Error(err3)
 			}
 		})
+		rt = r
 		return r
 	}
 	apiKey := ""
@@ -47,10 +50,10 @@ func gc(t testing.TB, name, m string) genai.Provider {
 		t.Fatal(err)
 	}
 	if strings.HasPrefix(m, "black-forest-labs/") {
-		return &smallImageGen{hideHTTP500{c}}
+		return &smallImageGen{hideHTTP500{c}}, rt
 	}
 	// If anyone at Together.AI reads this, please get your shit together.
-	return &hideHTTP500{c}
+	return &hideHTTP500{c}, rt
 }
 
 type smallImageGen struct {
@@ -126,7 +129,7 @@ func (h *hideHTTP500) GenDoc(ctx context.Context, msg genai.Message, opts genai.
 func TestClient_Scoreboard(t *testing.T) {
 	t.Parallel()
 	usage := genai.Usage{}
-	cc := gc(t, t.Name()+"/ListModels", "")
+	cc, _ := gc(t, t.Name()+"/ListModels", "")
 	models, err2 := cc.(genai.ProviderModel).ListModels(t.Context())
 	if err2 != nil {
 		t.Fatal(err2)
@@ -135,7 +138,7 @@ func TestClient_Scoreboard(t *testing.T) {
 		id := m.GetID()
 		t.Run(id, func(t *testing.T) {
 			// Run one model at a time otherwise we can't collect the total usage.
-			usage.Add(scoreboardtest.RunOneModel(t, func(t testing.TB, sn string) genai.Provider {
+			usage.Add(scoreboardtest.RunOneModel(t, func(t testing.TB, sn string) (genai.Provider, http.RoundTripper) {
 				return gc(t, sn, id)
 			}))
 		})

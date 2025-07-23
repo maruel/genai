@@ -6,6 +6,7 @@
 package scoreboardtest
 
 import (
+	"net/http"
 	"slices"
 	"testing"
 
@@ -16,7 +17,7 @@ import (
 )
 
 // GetClient returns a provider client for a specific model.
-type GetClient func(t testing.TB, scenarioName string) genai.Provider
+type GetClient func(t testing.TB, scenarioName string) (genai.Provider, http.RoundTripper)
 
 // RunOneModel runs the scoreboard on one model.
 //
@@ -25,7 +26,7 @@ type GetClient func(t testing.TB, scenarioName string) genai.Provider
 func RunOneModel(t testing.TB, gc GetClient) genai.Usage {
 	// Find the reference.
 	var want genai.Scenario
-	cc := gc(t, "")
+	cc, _ := gc(t, "")
 	id := cc.ModelID()
 	og := cc
 	for {
@@ -50,11 +51,13 @@ func RunOneModel(t testing.TB, gc GetClient) genai.Usage {
 	}
 
 	// Calculate the scenario.
-	providerFactory := func(name string) genai.Provider {
+	providerFactory := func(name string) (genai.Provider, http.RoundTripper) {
 		if name == "" {
-			return gc(t, name)
+			p, rt := gc(t, name)
+			return p, rt
 		}
-		return gc(t, t.Name()+"/"+name)
+		p, rt := gc(t, t.Name()+"/"+name)
+		return p, rt
 	}
 	ctx, _ := internaltest.Log(t)
 	got, usage, err := scoreboard.CreateScenario(ctx, providerFactory)

@@ -21,9 +21,11 @@ import (
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
 )
 
-func gc(t testing.TB, name, m string) genai.Provider {
+func gc(t testing.TB, name, m string) (genai.Provider, http.RoundTripper) {
+	var rt http.RoundTripper
 	fn := func(h http.RoundTripper) http.RoundTripper {
 		if name == "" {
+			rt = h
 			return h
 		}
 		r, err2 := testRecorder.Records.Record(name, h)
@@ -35,6 +37,7 @@ func gc(t testing.TB, name, m string) genai.Provider {
 				t.Error(err3)
 			}
 		})
+		rt = r
 		return r
 	}
 	apiKey := ""
@@ -52,18 +55,18 @@ func gc(t testing.TB, name, m string) genai.Provider {
 				Append:      genai.NewTextMessage(genai.User, "/think"),
 			},
 			t: t,
-		}
+		}, rt
 	}
 	if m == "deepseek-r1-distill-llama-70b" {
-		return &handleGroqReasoning{Client: c, t: t}
+		return &handleGroqReasoning{Client: c, t: t}, rt
 	}
-	return c
+	return c, rt
 }
 
 func TestClient_Scoreboard(t *testing.T) {
 	t.Parallel()
 	usage := genai.Usage{}
-	cc := gc(t, t.Name()+"/ListModels", "")
+	cc, _ := gc(t, t.Name()+"/ListModels", "")
 	models, err2 := cc.(genai.ProviderModel).ListModels(t.Context())
 	if err2 != nil {
 		t.Fatal(err2)
@@ -72,7 +75,7 @@ func TestClient_Scoreboard(t *testing.T) {
 		id := m.GetID()
 		t.Run(id, func(t *testing.T) {
 			// Run one model at a time otherwise we can't collect the total usage.
-			usage.Add(scoreboardtest.RunOneModel(t, func(t testing.TB, sn string) genai.Provider {
+			usage.Add(scoreboardtest.RunOneModel(t, func(t testing.TB, sn string) (genai.Provider, http.RoundTripper) {
 				return gc(t, sn, id)
 			}))
 		})

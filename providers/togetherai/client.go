@@ -161,7 +161,7 @@ var Scoreboard = genai.Scoreboard{
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityImage: {
-					Inline:           true,
+					URL:              true,
 					SupportedFormats: []string{"image/jpeg"},
 				},
 			},

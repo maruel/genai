@@ -239,14 +239,15 @@ Ultimately, the human endeavor is a quest for understanding, not just of the ext
 
 //
 
-func TestClient_ProviderGen_errors(t *testing.T) {
-	data := []internaltest.ProviderGenError{
+func TestClient_Provider_errors(t *testing.T) {
+	data := []internaltest.ProviderError{
 		{
 			Name:         "bad apiKey",
-			ApiKey:       "badApiKey",
+			APIKey:       "badApiKey",
 			Model:        "gemini-2.0-flash-lite",
 			ErrGenSync:   "http 400: error 400 (INVALID_ARGUMENT): API key not valid. Please pass a valid API key.",
 			ErrGenStream: "http 400: error 400 (INVALID_ARGUMENT): API key not valid. Please pass a valid API key.",
+			ErrListModel: "http 400: error 400 (INVALID_ARGUMENT): API key not valid. Please pass a valid API key.",
 		},
 		{
 			Name:         "bad model",
@@ -255,24 +256,10 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 			ErrGenStream: "http 400: error 400 (INVALID_ARGUMENT): * GenerateContentRequest.model: unexpected model name format",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {
+	f := func(t *testing.T, apiKey, model string) genai.Provider {
 		return getClientInner(t, apiKey, model)
 	}
-	internaltest.TestClient_ProviderGen_errors(t, f, data)
-}
-
-func TestClient_ProviderModel_errors(t *testing.T) {
-	data := []internaltest.ProviderModelError{
-		{
-			Name:   "bad apiKey",
-			ApiKey: "badApiKey",
-			Err:    "http 400: error 400 (INVALID_ARGUMENT): API key not valid. Please pass a valid API key.",
-		},
-	}
-	f := func(t *testing.T, apiKey string) genai.ProviderModel {
-		return getClientInner(t, apiKey, "")
-	}
-	internaltest.TestClient_ProviderModel_errors(t, f, data)
+	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *gemini.Client {

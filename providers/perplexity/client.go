@@ -82,7 +82,7 @@ var Scoreboard = genai.Scoreboard{
 	},
 }
 
-// https://docs.perplexity.ai/api-reference/chat-completions-post
+// ChatRequest is documented at https://docs.perplexity.ai/api-reference/chat-completions-post
 type ChatRequest struct {
 	Model                  string    `json:"model"`
 	Messages               []Message `json:"messages"`

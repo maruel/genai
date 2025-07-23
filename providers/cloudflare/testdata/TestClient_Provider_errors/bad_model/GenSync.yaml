@@ -1,0 +1,41 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 62
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"Tell a short joke."}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/bad%20model
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 104
+        body: '{"success":false,"errors":[{"code":7000,"message":"No route for that URI"}],"messages":[],"result":null}'
+        headers:
+            Api-Version:
+                - "2025-07-23"
+            Cf-Auditlog-Id:
+                - 019837eb-e683-71c3-8bee-6ae2787bb545
+            Cf-Ray:
+                - 963c3ddd6808a2f8-YUL
+            Content-Length:
+                - "104"
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 400 Bad Request
+        code: 400
+        duration: 1.023s

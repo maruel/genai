@@ -1,0 +1,62 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 125
+        host: api.together.xyz
+        body: |
+            {"model":"meta-llama/Llama-3.2-3B-Instruct-Turbo","stream":true,"messages":[{"role":"user","content":"Tell a short joke."}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 266
+        body: |-
+            {
+              "id": "o4EoJKg-4msxKE-963c430669b1a2c2",
+              "error": {
+                "message": "Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
+                "type": "invalid_request_error",
+                "param": null,
+                "code": "invalid_api_key"
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963c430669b1a2c2-YUL
+            Content-Length:
+                - "266"
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"10a-uRetVBbIfjr8IstkcRjpijMvirQ"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - 3b602693-bfe3-48c5-9f3f-34d62dca3496-noamzn
+            X-Api-Received:
+                - "2025-07-23T15:37:55.199Z"
+            X-Request-Id:
+                - o4EoJKg-4msxKE-963c430669b1a2c2
+        status: 401 Unauthorized
+        code: 401
+        duration: 309ms

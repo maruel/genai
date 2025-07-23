@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 177
+        host: api.openai.com
+        body: |
+            {"model":"gpt-4.1-nano","background":false,"store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Tell a short joke."}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 239
+        body: |-
+            {
+              "error": {
+                "message": "Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
+                "type": "invalid_request_error",
+                "param": null,
+                "code": "invalid_api_key"
+              }
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963c5258feb6a25a-YUL
+            Content-Length:
+                - "239"
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "54"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Www-Authenticate:
+                - Bearer realm="OpenAI API"
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - req_e86d4efa68bb4af350d5cbc05e30d408
+        status: 401 Unauthorized
+        code: 401
+        duration: 168ms

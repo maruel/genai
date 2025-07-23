@@ -219,6 +219,9 @@ func (c *Client) ModelID() string {
 	return c.Model
 }
 
+// GenDoc synchronously generates a document.
+//
+// Generation can be rather slow, several seconds or minutes.
 func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
 	id, err := c.GenAsync(ctx, genai.Messages{msg}, opts)
 	if err != nil {
@@ -247,6 +250,9 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
 			return "", err
+		}
+		if opts.Modality() != genai.ModalityImage {
+			return "", errors.New("modality must be image")
 		}
 	}
 	if len(msgs) != 1 {
@@ -318,7 +324,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	return res, nil
 }
 
-// GetResult retrieves the result for a job ID.
+// PokeResultRaw retrieves the result for a job ID if already available.
 func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (ImageResult, error) {
 	res := ImageResult{}
 	u := "https://api.us1.bfl.ai/v1/get_result?id=" + url.QueryEscape(string(id))

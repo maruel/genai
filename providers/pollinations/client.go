@@ -90,13 +90,12 @@ var Scoreboard = genai.Scoreboard{
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
-					SupportedFormats: []string{"image/png", "image/jpeg", "image/webp"},
+					SupportedFormats: []string{"image/jpeg"},
 				},
 			},
 			GenDoc: &genai.FunctionalityDoc{
 				BrokenTokenUsage:   genai.True,
 				BrokenFinishReason: true,
-				Seed:               true,
 			},
 		},
 		{
@@ -875,7 +874,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 }
 
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	if c.isImage(opts) {
+	if c.isAudio(opts) || c.isImage(opts) {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
@@ -885,7 +884,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 }
 
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
-	if c.isImage(opts) {
+	if c.isAudio(opts) || c.isImage(opts) {
 		return base.SimulateStream(ctx, c, msgs, chunks, opts)
 	}
 	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
@@ -999,6 +998,10 @@ func (c *Client) ListImageGenModels(ctx context.Context) ([]genai.Model, error) 
 
 func (c *Client) ListTextModels(ctx context.Context) ([]genai.Model, error) {
 	return base.ListModels[*ErrorResponse, *TextModelsResponse](ctx, &c.Provider, "https://text.pollinations.ai/models")
+}
+
+func (c *Client) isAudio(opts genai.Options) bool {
+	return opts != nil && opts.Modality() == genai.ModalityAudio
 }
 
 func (c *Client) isImage(opts genai.Options) bool {

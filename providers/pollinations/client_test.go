@@ -84,12 +84,12 @@ func TestClient_Preferred(t *testing.T) {
 	}
 }
 
-func TestClient_ProviderGen_errors(t *testing.T) {
+func TestClient_Provider_errors(t *testing.T) {
 	t.Skip("TODO")
-	data := []internaltest.ProviderGenError{
+	data := []internaltest.ProviderError{
 		{
 			Name:         "bad apiKey",
-			ApiKey:       "bad apiKey",
+			APIKey:       "bad apiKey",
 			Model:        "llama3-8b-8192",
 			ErrGenSync:   "http 401: error invalid_api_key (invalid_request_error): Invalid API Key. You can get a new API key at https://console.groq.com/keys",
 			ErrGenStream: "http 401: error invalid_api_key (invalid_request_error): Invalid API Key. You can get a new API key at https://console.groq.com/keys",
@@ -101,10 +101,10 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 			ErrGenStream: "http 404: error model_not_found (invalid_request_error): The model `bad model` does not exist or you do not have access to it.",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {
+	f := func(t *testing.T, apiKey, model string) genai.Provider {
 		return getClientInner(t, model)
 	}
-	internaltest.TestClient_ProviderGen_errors(t, f, data)
+	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *pollinations.Client {

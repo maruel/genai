@@ -113,40 +113,29 @@ func TestClient_Preferred(t *testing.T) {
 	}
 }
 
-func TestClient_ProviderGen_errors(t *testing.T) {
-	data := []internaltest.ProviderGenError{
+func TestClient_Provider_errors(t *testing.T) {
+	data := []internaltest.ProviderError{
 		{
 			Name:         "bad apiKey",
-			ApiKey:       "bad apiKey",
+			APIKey:       "bad apiKey",
 			Model:        "gpt-4.1-nano",
 			ErrGenSync:   "http 401: error invalid_api_key (): Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 			ErrGenStream: "http 401: error invalid_api_key (): Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
+			ErrGenDoc:    "http 401: error invalid_api_key (): Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
+			ErrListModel: "http 401: error invalid_api_key (): Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 		},
 		{
 			Name:         "bad model",
 			Model:        "bad model",
 			ErrGenSync:   "http 400: error invalid_request_error: invalid model ID",
 			ErrGenStream: "http 400: error invalid_request_error: invalid model ID",
+			ErrGenDoc:    "http 400: error invalid_value (): Invalid value: 'bad model'. Supported values are: 'gpt-image-1', 'dall-e-2', and 'dall-e-3'.",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {
+	f := func(t *testing.T, apiKey, model string) genai.Provider {
 		return getClientInner(t, apiKey, model)
 	}
-	internaltest.TestClient_ProviderGen_errors(t, f, data)
-}
-
-func TestClient_ProviderModel_errors(t *testing.T) {
-	data := []internaltest.ProviderModelError{
-		{
-			Name:   "bad apiKey",
-			ApiKey: "badApiKey",
-			Err:    "http 401: error invalid_api_key (): Incorrect API key provided: badApiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
-		},
-	}
-	f := func(t *testing.T, apiKey string) genai.ProviderModel {
-		return getClientInner(t, apiKey, "")
-	}
-	internaltest.TestClient_ProviderModel_errors(t, f, data)
+	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *openaichat.Client {

@@ -1,0 +1,53 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 122
+        host: api.mistral.ai
+        body: |
+            {"model":"bad model","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Tell a short joke."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 105
+        body: '{"object":"error","message":"Invalid model: bad model","type":"invalid_model","param":null,"code":"1500"}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963c4855af4733f1-YUL
+            Content-Length:
+                - "105"
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 019837f2-71cc-764e-ad80-b45fc94869e1
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Envoy-Upstream-Service-Time:
+                - "47"
+            X-Kong-Proxy-Latency:
+                - "7"
+            X-Kong-Request-Id:
+                - 019837f2-71cc-764e-ad80-b45fc94869e1
+            X-Kong-Upstream-Latency:
+                - "47"
+        status: 400 Bad Request
+        code: 400
+        duration: 212ms

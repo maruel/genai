@@ -85,14 +85,15 @@ func TestClient_Preferred(t *testing.T) {
 	}
 }
 
-func TestClient_ProviderGen_errors(t *testing.T) {
-	data := []internaltest.ProviderGenError{
+func TestClient_Provider_errors(t *testing.T) {
+	data := []internaltest.ProviderError{
 		{
 			Name:         "bad apiKey",
-			ApiKey:       "bad apiKey",
+			APIKey:       "bad apiKey",
 			Model:        "command-r7b-12-2024",
 			ErrGenSync:   "http 401: error invalid api token. You can get a new API key at https://dashboard.cohere.com/api-keys",
 			ErrGenStream: "http 401: error invalid api token. You can get a new API key at https://dashboard.cohere.com/api-keys",
+			ErrListModel: "http 401: error invalid api token. You can get a new API key at https://dashboard.cohere.com/api-keys",
 		},
 		{
 			Name:         "bad model",
@@ -101,24 +102,10 @@ func TestClient_ProviderGen_errors(t *testing.T) {
 			ErrGenStream: "http 404: error model 'bad model' not found, make sure the correct model ID was used and that you have access to the model.",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {
+	f := func(t *testing.T, apiKey, model string) genai.Provider {
 		return getClientInner(t, apiKey, model)
 	}
-	internaltest.TestClient_ProviderGen_errors(t, f, data)
-}
-
-func TestClient_ProviderModel_errors(t *testing.T) {
-	data := []internaltest.ProviderModelError{
-		{
-			Name:   "bad apiKey",
-			ApiKey: "badApiKey",
-			Err:    "http 401: error invalid api token. You can get a new API key at https://dashboard.cohere.com/api-keys",
-		},
-	}
-	f := func(t *testing.T, apiKey string) genai.ProviderModel {
-		return getClientInner(t, apiKey, "")
-	}
-	internaltest.TestClient_ProviderModel_errors(t, f, data)
+	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *cohere.Client {

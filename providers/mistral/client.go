@@ -757,22 +757,36 @@ type ErrorDetail struct {
 	URL   string `json:"url"`
 }
 
-func (er *ErrorDetail) String() string {
-	if er.Type == "" && len(er.Loc) == 0 {
+func (ed *ErrorDetail) String() string {
+	if ed.Type == "" && len(ed.Loc) == 0 {
 		// This was actually a string
-		return er.Msg
+		return ed.Msg
 	}
-	return fmt.Sprintf("%s: %s at %s", er.Type, er.Msg, er.Loc)
+	return fmt.Sprintf("%s: %s at %s", ed.Type, ed.Msg, ed.Loc)
 }
 
 type ErrorDetails []ErrorDetail
 
-func (er *ErrorDetails) String() string {
+func (ed *ErrorDetails) String() string {
 	out := ""
-	for _, e := range *er {
+	for _, e := range *ed {
 		out += e.String()
 	}
 	return out
+}
+
+func (ed *ErrorDetails) UnmarshalJSON(d []byte) error {
+	s := ""
+	if err := json.Unmarshal(d, &s); err == nil {
+		*ed = []ErrorDetail{{Msg: s}}
+		return nil
+	}
+	var x []ErrorDetail
+	if err := json.Unmarshal(d, &x); err != nil {
+		return err
+	}
+	*ed = x
+	return nil
 }
 
 type ErrorMessage struct {

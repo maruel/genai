@@ -164,40 +164,38 @@ func TestClient_Preferred(t *testing.T) {
 	}
 }
 
-func TestClient_ProviderGen_errors(t *testing.T) {
-	data := []internaltest.ProviderGenError{
+func TestClient_Provider_errors(t *testing.T) {
+	data := []internaltest.ProviderError{
 		{
 			Name:         "bad apiKey",
-			ApiKey:       "bad apiKey",
+			APIKey:       "bad apiKey",
 			Model:        "meta-llama/Llama-3.2-3B-Instruct-Turbo",
 			ErrGenSync:   "http 401: error invalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
 			ErrGenStream: "http 401: error invalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
+			ErrGenDoc:    "can only generate audio and images",
+			ErrListModel: "http 401: error (): Unauthorized. You can get a new API key at https://api.together.xyz/settings/api-keys",
+		},
+		{
+			Name:         "bad apiKey image",
+			APIKey:       "bad apiKey",
+			Model:        "black-forest-labs/FLUX.1-schnell",
+			ErrGenSync:   "http 401: error invalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
+			ErrGenStream: "http 401: error invalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
+			ErrGenDoc:    "http 401: error invalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
+			ErrListModel: "http 401: error (): Unauthorized. You can get a new API key at https://api.together.xyz/settings/api-keys",
 		},
 		{
 			Name:         "bad model",
 			Model:        "bad model",
 			ErrGenSync:   "http 404: error model_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
 			ErrGenStream: "http 404: error model_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
+			ErrGenDoc:    "can only generate audio and images",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.ProviderGen {
+	f := func(t *testing.T, apiKey, model string) genai.Provider {
 		return getClientInner(t, apiKey, model)
 	}
-	internaltest.TestClient_ProviderGen_errors(t, f, data)
-}
-
-func TestClient_ProviderModel_errors(t *testing.T) {
-	data := []internaltest.ProviderModelError{
-		{
-			Name:   "bad apiKey",
-			ApiKey: "badApiKey",
-			Err:    "http 401: error (): Unauthorized. You can get a new API key at https://api.together.xyz/settings/api-keys",
-		},
-	}
-	f := func(t *testing.T, apiKey string) genai.ProviderModel {
-		return getClientInner(t, apiKey, "")
-	}
-	internaltest.TestClient_ProviderModel_errors(t, f, data)
+	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *togetherai.Client {

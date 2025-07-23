@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 75
+        host: api.together.xyz
+        body: |
+            {"prompt":"Tell a short joke.","model":"black-forest-labs/FLUX.1-schnell"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/images/generations
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 270
+        body: |-
+            {
+              "id": "o4Ep4CL-2kFHot-963c46a21dcca2a8-PDX",
+              "error": {
+                "message": "Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
+                "type": "invalid_request_error",
+                "param": null,
+                "code": "invalid_api_key"
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963c46a21dcca2a8-YUL
+            Content-Length:
+                - "270"
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"10e-2kRUoG/0exz4yZC5gOBgVLa7smE"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Api-Received:
+                - "2025-07-23T15:40:22.789Z"
+            X-Request-Id:
+                - o4Ep4CL-2kFHot-963c46a21dcca2a8-PDX
+        status: 401 Unauthorized
+        code: 401
+        duration: 95ms

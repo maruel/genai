@@ -115,7 +115,7 @@ func exerciseGenCommon(ctx context.Context, pf ProviderFactory, isStream bool, p
 	usage := genai.Usage{}
 	// Make sure simple text generation works, otherwise there's no point.
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
-	resp, err := callGen(ctx, pf, prefix+"Text", msgs, nil, isStream, &usage)
+	resp, err := callGen(ctx, pf, prefix+"Text", msgs, &genai.OptionsText{}, isStream, &usage)
 	if err != nil {
 		internal.Logger(ctx).DebugContext(ctx, "Text", "err", err)
 		// It happens when the model is audio gen only.
@@ -245,7 +245,7 @@ func exerciseGenCommon(ctx context.Context, pf ProviderFactory, isStream bool, p
 			},
 		},
 	}
-	resp, err = callGen(ctx, pf, prefix+"Citations", msgs, nil, isStream, &usage)
+	resp, err = callGen(ctx, pf, prefix+"Citations", msgs, &genai.OptionsText{}, isStream, &usage)
 	if isBadError(err) {
 		return in, out, f, usage, err
 	}
@@ -497,7 +497,7 @@ type extMime struct {
 }
 
 func exerciseModal(ctx context.Context, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, name string, usage *genai.Usage, msgs genai.Messages, want string) error {
-	resp, err := callGen(ctx, pf, name, msgs, nil, isStream, usage)
+	resp, err := callGen(ctx, pf, name, msgs, &genai.OptionsText{}, isStream, usage)
 	if err == nil {
 		got := strings.ToLower(strings.TrimRight(strings.TrimSpace(resp.AsText()), "."))
 		if want != "" && got != want {

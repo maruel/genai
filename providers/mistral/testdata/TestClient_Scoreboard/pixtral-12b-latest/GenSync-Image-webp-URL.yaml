@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 302
+        content_length: 293
         host: api.mistral.ai
         body: |
-            {"model":"pixtral-12b-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply with only one word: yes or no."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}]}
+            {"model":"pixtral-12b-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,7 +21,7 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"8ed2f153ec2f4dbfa85be180cd27d613","created":1753215954,"model":"pixtral-12b-latest","usage":{"prompt_tokens":436,"total_tokens":439,"completion_tokens":3},"object":"chat.completion","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","tool_calls":null,"content":"Yes."}}]}'
+        body: '{"id":"c8d2ec67566340d68b75d7f3d4b6ab50","created":1753232179,"model":"pixtral-12b-latest","usage":{"prompt_tokens":432,"total_tokens":435,"completion_tokens":3},"object":"chat.completion","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","tool_calls":null,"content":"Banana"}}]}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -30,23 +30,23 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9635ab805993a1de-YYZ
+                - 963737a2eaaba2f8-YUL
             Content-Type:
                 - application/json
             Mistral-Correlation-Id:
-                - 019833d0-6c7b-70dc-8c1a-213f0b05aea6
+                - 019834c8-020b-7bb7-a3e3-8966e0ebd29c
             Server:
                 - cloudflare
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains
             X-Envoy-Upstream-Service-Time:
-                - "239"
+                - "401"
             X-Kong-Proxy-Latency:
-                - "8"
+                - "6"
             X-Kong-Request-Id:
-                - 019833d0-6c7b-70dc-8c1a-213f0b05aea6
+                - 019834c8-020b-7bb7-a3e3-8966e0ebd29c
             X-Kong-Upstream-Latency:
-                - "239"
+                - "402"
             X-Ratelimit-Limit-Req-10-Second:
                 - "60"
             X-Ratelimit-Limit-Tokens-Minute:
@@ -54,13 +54,13 @@ interactions:
             X-Ratelimit-Limit-Tokens-Month:
                 - "10000000000"
             X-Ratelimit-Remaining-Req-10-Second:
-                - "14"
+                - "28"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "1993295"
+                - "1993475"
             X-Ratelimit-Remaining-Tokens-Month:
-                - "9999968265"
+                - "9999952347"
             X-Ratelimit-Tokens-Query-Cost:
-                - "439"
+                - "435"
         status: 200 OK
         code: 200
-        duration: 380ms
+        duration: 526ms

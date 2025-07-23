@@ -54,8 +54,8 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 	eg, ctx := errgroup.WithContext(ctx)
 	if _, ok := c.(genai.ProviderGen); ok {
 		eg.Go(func() error {
-			// ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenSync"))
-			in, out, f, usageGen, err := exerciseGenCommon(ctx, pf, false, "GenSync-")
+			ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenSync"))
+			in, out, f, usageGen, err := exerciseGenCommon(ctx2, pf, false, "GenSync-")
 			mu.Lock()
 			usage.Add(usageGen)
 			result.In = mergeModalities(result.In, in)
@@ -68,7 +68,8 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 			return nil
 		})
 		eg.Go(func() error {
-			in, out, f, usageGen, err := exerciseGenCommon(ctx, pf, true, "GenStream-")
+			ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenStream"))
+			in, out, f, usageGen, err := exerciseGenCommon(ctx2, pf, true, "GenStream-")
 			mu.Lock()
 			usage.Add(usageGen)
 			result.In = mergeModalities(result.In, in)
@@ -84,7 +85,8 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 
 	if _, ok := c.(genai.ProviderGenDoc); ok {
 		eg.Go(func() error {
-			outDoc, usageDoc, err := exerciseGenDoc(ctx, pf)
+			ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenDoc"))
+			outDoc, usageDoc, err := exerciseGenDoc(ctx2, pf)
 			mu.Lock()
 			usage.Add(usageDoc)
 			result.In = mergeModalities(result.In, outDoc.In)
@@ -112,6 +114,7 @@ func exerciseGenCommon(ctx context.Context, pf ProviderFactory, isStream bool, p
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
 	resp, err := callGen(ctx, pf, prefix+"Text", msgs, nil, isStream, &usage)
 	if err != nil {
+		internal.Logger(ctx).DebugContext(ctx, "Text", "err", err)
 		// It happens when the model is audio gen only.
 		if !isBadError(err) {
 			err = nil
@@ -302,7 +305,8 @@ func exerciseGenPDFInput(ctx context.Context, pf ProviderFactory, f *genai.Funct
 			{Text: "What is the word? Reply with only the word."},
 			{Document: bytes.NewReader(data), Filename: "document." + format.ext},
 		}}}
-		if err := exerciseModal(ctx, pf, f, isStream, prefix+format.ext+"-Inline", usage, msgs, want); err == nil {
+		name := prefix + format.ext + "-Inline"
+		if err = exerciseModal(ctx, pf, f, isStream, name, usage, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
 			}
@@ -312,9 +316,12 @@ func exerciseGenPDFInput(ctx context.Context, pf ProviderFactory, f *genai.Funct
 			}
 		} else if isBadError(err) {
 			return m, err
+		} else {
+			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
 		msgs[0].Contents[1] = genai.Content{URL: rootURL + "document." + format.ext}
-		if err := exerciseModal(ctx, pf, f, isStream, prefix+format.ext+"-URL", usage, msgs, want); err == nil {
+		name = prefix + format.ext + "-URL"
+		if err = exerciseModal(ctx, pf, f, isStream, name, usage, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
 			}
@@ -324,6 +331,8 @@ func exerciseGenPDFInput(ctx context.Context, pf ProviderFactory, f *genai.Funct
 			}
 		} else if isBadError(err) {
 			return m, err
+		} else {
+			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
 	}
 	return m, nil
@@ -331,7 +340,7 @@ func exerciseGenPDFInput(ctx context.Context, pf ProviderFactory, f *genai.Funct
 
 func exerciseGenImageInput(ctx context.Context, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, prefix string, usage *genai.Usage) (*genai.ModalCapability, error) {
 	var m *genai.ModalCapability
-	want := "yes"
+	want := "banana"
 	for _, format := range []extMime{
 		{"gif", "image/gif"},
 		// TODO: {"heic", "image/heic"},
@@ -344,10 +353,11 @@ func exerciseGenImageInput(ctx context.Context, pf ProviderFactory, f *genai.Fun
 			return nil, fmt.Errorf("failed to open input file: %w", err)
 		}
 		msgs := genai.Messages{genai.Message{Role: genai.User, Contents: []genai.Content{
-			{Text: "Is it a banana? Reply with only one word: yes or no."},
+			{Text: "What fruit is it? Reply with only one word."},
 			{Document: bytes.NewReader(data), Filename: "image." + format.ext},
 		}}}
-		if err := exerciseModal(ctx, pf, f, isStream, prefix+format.ext+"-Inline", usage, msgs, want); err == nil {
+		name := prefix + format.ext + "-Inline"
+		if err = exerciseModal(ctx, pf, f, isStream, name, usage, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
 			}
@@ -357,9 +367,12 @@ func exerciseGenImageInput(ctx context.Context, pf ProviderFactory, f *genai.Fun
 			}
 		} else if isBadError(err) {
 			return m, err
+		} else {
+			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
 		msgs[0].Contents[1] = genai.Content{URL: rootURL + "image." + format.ext}
-		if err := exerciseModal(ctx, pf, f, isStream, prefix+format.ext+"-URL", usage, msgs, want); err == nil {
+		name = prefix + format.ext + "-URL"
+		if err = exerciseModal(ctx, pf, f, isStream, name, usage, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
 			}
@@ -369,6 +382,8 @@ func exerciseGenImageInput(ctx context.Context, pf ProviderFactory, f *genai.Fun
 			}
 		} else if isBadError(err) {
 			return m, err
+		} else {
+			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
 	}
 	return m, nil
@@ -392,7 +407,8 @@ func exerciseGenAudioInput(ctx context.Context, pf ProviderFactory, f *genai.Fun
 			{Text: "What is the word said? Reply with only the word."},
 			{Document: bytes.NewReader(data), Filename: "audio." + format.ext},
 		}}}
-		if err := exerciseModal(ctx, pf, f, isStream, prefix+format.ext+"-Inline", usage, msgs, want); err == nil {
+		name := prefix + format.ext + "-Inline"
+		if err = exerciseModal(ctx, pf, f, isStream, name, usage, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
 			}
@@ -402,9 +418,12 @@ func exerciseGenAudioInput(ctx context.Context, pf ProviderFactory, f *genai.Fun
 			}
 		} else if isBadError(err) {
 			return m, err
+		} else {
+			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
 		msgs[0].Contents[1] = genai.Content{URL: rootURL + "audio." + format.ext}
-		if err := exerciseModal(ctx, pf, f, isStream, prefix+format.ext+"-URL", usage, msgs, want); err == nil {
+		name = prefix + format.ext + "-URL"
+		if err = exerciseModal(ctx, pf, f, isStream, name, usage, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
 			}
@@ -414,6 +433,8 @@ func exerciseGenAudioInput(ctx context.Context, pf ProviderFactory, f *genai.Fun
 			}
 		} else if isBadError(err) {
 			return m, err
+		} else {
+			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
 	}
 	return m, nil
@@ -434,7 +455,8 @@ func exerciseGenVideoInput(ctx context.Context, pf ProviderFactory, f *genai.Fun
 			{Text: "What is the word said? Reply with only the word."},
 			{Document: bytes.NewReader(data), Filename: "video." + format.ext},
 		}}}
-		if err := exerciseModal(ctx, pf, f, isStream, prefix+format.ext+"-Inline", usage, msgs, want); err == nil {
+		name := prefix + format.ext + "-Inline"
+		if err = exerciseModal(ctx, pf, f, isStream, name, usage, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
 			}
@@ -444,9 +466,12 @@ func exerciseGenVideoInput(ctx context.Context, pf ProviderFactory, f *genai.Fun
 			}
 		} else if isBadError(err) {
 			return m, err
+		} else {
+			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
 		msgs[0].Contents[1] = genai.Content{URL: rootURL + "video." + format.ext}
-		if err := exerciseModal(ctx, pf, f, isStream, prefix+format.ext+"-URL", usage, msgs, want); err == nil {
+		name = prefix + format.ext + "-URL"
+		if err = exerciseModal(ctx, pf, f, isStream, name, usage, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
 			}
@@ -456,6 +481,8 @@ func exerciseGenVideoInput(ctx context.Context, pf ProviderFactory, f *genai.Fun
 			}
 		} else if isBadError(err) {
 			return m, err
+		} else {
+			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
 	}
 	return m, nil

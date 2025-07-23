@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 302
+        content_length: 293
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply with only one word: yes or no."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"model":"llama-3.1-8b-instant","stream":true}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"model":"llama-3.1-8b-instant","stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -30,7 +30,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9635a523f849714a-YUL
+                - 96373828d902a299-YUL
             Content-Length:
                 - "91"
             Content-Type:
@@ -39,10 +39,12 @@ interactions:
                 - cloudflare
             Vary:
                 - Origin
+            Via:
+                - 1.1 google
             X-Groq-Region:
                 - msp
             X-Request-Id:
-                - req_01k0swrwmmezqr89d6qrdk4fpq
+                - req_01k0tcgnd6ftbaq5w97zek7ff0
         status: 400 Bad Request
         code: 400
-        duration: 49ms
+        duration: 58ms

@@ -113,6 +113,7 @@ func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Opti
 
 type contextKey struct{}
 
+// Logger retrieves a slog.Logger from the context if any, otherwise returns slog.Default().
 func Logger(ctx context.Context) *slog.Logger {
 	v := ctx.Value(contextKey{})
 	switch v := v.(type) {
@@ -123,6 +124,7 @@ func Logger(ctx context.Context) *slog.Logger {
 	}
 }
 
+// WithLogger injects a slog.Logger into the context. It can be retrieved with Logger().
 func WithLogger(ctx context.Context, logger *slog.Logger) context.Context {
 	return context.WithValue(ctx, contextKey{}, logger)
 }

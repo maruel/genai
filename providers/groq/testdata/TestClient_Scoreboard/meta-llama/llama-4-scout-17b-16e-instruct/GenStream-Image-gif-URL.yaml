@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 323
+        content_length: 314
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply with only one word: yes or no."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","stream":true}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,13 +21,15 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-6c7cae92-c2ad-4ef1-b780-5f956acc4ad4","object":"chat.completion.chunk","created":1753215692,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cb546bdbdf","choices":[{"index":0,"delta":{"role":"assistant"},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-a0bc7cf6-c880-471c-b36b-4ee4ad9be81d","object":"chat.completion.chunk","created":1753232199,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cb546bdbdf","choices":[{"index":0,"delta":{"role":"assistant"},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-6c7cae92-c2ad-4ef1-b780-5f956acc4ad4","object":"chat.completion.chunk","created":1753215692,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cb546bdbdf","choices":[{"index":0,"delta":{"content":"yes"},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-a0bc7cf6-c880-471c-b36b-4ee4ad9be81d","object":"chat.completion.chunk","created":1753232199,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cb546bdbdf","choices":[{"index":0,"delta":{"content":"Ban"},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-6c7cae92-c2ad-4ef1-b780-5f956acc4ad4","object":"chat.completion.chunk","created":1753215692,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cb546bdbdf","choices":[{"index":0,"delta":{"content":"."},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-a0bc7cf6-c880-471c-b36b-4ee4ad9be81d","object":"chat.completion.chunk","created":1753232199,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cb546bdbdf","choices":[{"index":0,"delta":{"content":"ana"},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-6c7cae92-c2ad-4ef1-b780-5f956acc4ad4","object":"chat.completion.chunk","created":1753215692,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cb546bdbdf","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01k0swrvb0ezpvyfasxzpfmttd","usage":{"queue_time":0.019053764,"prompt_tokens":176,"prompt_time":0.00758951,"completion_tokens":3,"completion_time":0.007081241,"total_tokens":179,"total_time":0.014670751}}}
+            data: {"id":"chatcmpl-a0bc7cf6-c880-471c-b36b-4ee4ad9be81d","object":"chat.completion.chunk","created":1753232199,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cb546bdbdf","choices":[{"index":0,"delta":{"content":"."},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-a0bc7cf6-c880-471c-b36b-4ee4ad9be81d","object":"chat.completion.chunk","created":1753232199,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cb546bdbdf","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01k0tcgknzftav6e8sw12pmgch","usage":{"queue_time":0.019138601999999998,"prompt_tokens":172,"prompt_time":0.008304786,"completion_tokens":4,"completion_time":0.011172261,"total_tokens":176,"total_time":0.019477047}}}
 
             data: [DONE]
 
@@ -39,13 +41,15 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9635a51b9fdd714a-YUL
+                - 9637381dc8efa299-YUL
             Content-Type:
                 - text/event-stream
             Server:
                 - cloudflare
             Vary:
                 - Origin
+            Via:
+                - 1.1 google
             X-Groq-Region:
                 - msp
             X-Ratelimit-Limit-Requests:
@@ -55,13 +59,13 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499997"
             X-Ratelimit-Remaining-Tokens:
-                - "299981"
+                - "299947"
             X-Ratelimit-Reset-Requests:
-                - 410.4ms
+                - 420.4ms
             X-Ratelimit-Reset-Tokens:
-                - 3.8ms
+                - 10.6ms
             X-Request-Id:
-                - req_01k0swrvb0ezpvyfasxzpfmttd
+                - req_01k0tcgknzftav6e8sw12pmgch
         status: 200 OK
         code: 200
-        duration: 125ms
+        duration: 239ms

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 300
+        content_length: 291
         host: api.cohere.com
         body: |
-            {"stream":true,"model":"c4ai-aya-vision-8b","messages":[{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply with only one word: yes or no."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}]}
+            {"stream":true,"model":"c4ai-aya-vision-8b","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,19 +22,22 @@ interactions:
         content_length: -1
         body: |+
             event: message-start
-            data: {"id":"d00ebe06-72e4-4b4b-bc3c-5529eab9992f","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
+            data: {"id":"96478fba-b254-476e-9fbe-bc56cc6b0d29","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
 
             event: content-start
             data: {"type":"content-start","index":0,"delta":{"message":{"content":{"type":"text","text":""}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"yes"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"Ban"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"ana"}}}}
 
             event: content-end
             data: {"type":"content-end","index":0}
 
             event: message-end
-            data: {"type":"message-end","delta":{"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":187,"output_tokens":1},"tokens":{"input_tokens":758,"output_tokens":3,"image_tokens":172}}}}
+            data: {"type":"message-end","delta":{"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":183,"output_tokens":2},"tokens":{"input_tokens":754,"output_tokens":4,"image_tokens":172}}}}
 
             data: [DONE]
 
@@ -60,9 +63,9 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - d81960426cabd8bba28d604edd4dacd9
+                - eaa0ce1bdb2d3984b5b02d78dcdb5108
             X-Envoy-Upstream-Service-Time:
-                - "335"
+                - "246"
         status: 200 OK
         code: 200
-        duration: 381ms
+        duration: 287ms

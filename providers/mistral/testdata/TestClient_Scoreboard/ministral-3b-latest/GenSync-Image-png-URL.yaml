@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 302
+        content_length: 293
         host: api.mistral.ai
         body: |
-            {"model":"ministral-3b-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply with only one word: yes or no."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}]}
+            {"model":"ministral-3b-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -29,25 +29,25 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9635ab540a06a1de-YYZ
+                - 963737899ad1a2f8-YUL
             Content-Length:
                 - "137"
             Content-Type:
                 - application/json
             Mistral-Correlation-Id:
-                - 019833d0-50dd-7d09-ba6b-c00ed95230c5
+                - 019834c7-f233-7144-940a-5dae717af624
             Server:
                 - cloudflare
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains
             X-Envoy-Upstream-Service-Time:
-                - "39"
+                - "35"
             X-Kong-Proxy-Latency:
                 - "7"
             X-Kong-Request-Id:
-                - 019833d0-50dd-7d09-ba6b-c00ed95230c5
+                - 019834c7-f233-7144-940a-5dae717af624
             X-Kong-Upstream-Latency:
-                - "41"
+                - "35"
         status: 400 Bad Request
         code: 400
-        duration: 230ms
+        duration: 162ms

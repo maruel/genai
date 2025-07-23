@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 301
+        content_length: 292
         host: api.mistral.ai
         body: |
-            {"model":"ministral-3b-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply with only one word: yes or no."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}]}
+            {"model":"ministral-3b-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -29,25 +29,25 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9635ab531904a1de-YYZ
+                - 963737855cbaa2f8-YUL
             Content-Length:
                 - "137"
             Content-Type:
                 - application/json
             Mistral-Correlation-Id:
-                - 019833d0-5039-7920-837e-4b6d74bfee27
+                - 019834c7-ef95-7908-9c4d-38aace9d6cab
             Server:
                 - cloudflare
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains
             X-Envoy-Upstream-Service-Time:
-                - "36"
-            X-Kong-Proxy-Latency:
-                - "6"
-            X-Kong-Request-Id:
-                - 019833d0-5039-7920-837e-4b6d74bfee27
-            X-Kong-Upstream-Latency:
                 - "37"
+            X-Kong-Proxy-Latency:
+                - "7"
+            X-Kong-Request-Id:
+                - 019834c7-ef95-7908-9c4d-38aace9d6cab
+            X-Kong-Upstream-Latency:
+                - "38"
         status: 400 Bad Request
         code: 400
-        duration: 181ms
+        duration: 189ms

@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -103,12 +104,17 @@ func Log(tb testing.TB) (context.Context, *slog.Logger) {
 		}
 	})
 	l := slog.New(slog.NewTextHandler(&testWriter{t: tb}, &slog.HandlerOptions{
-		Level: level,
+		AddSource: true,
+		Level:     level,
 		ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
 			switch a.Key {
 			case "level":
 				a.Key = "l"
 				a.Value = slog.StringValue(a.Value.String()[:3])
+			case "source":
+				a.Key = "s"
+				s := a.Value.Any().(*slog.Source)
+				s.File = filepath.Base(s.File)
 			case "time":
 				a = slog.Attr{}
 			}
@@ -127,6 +133,7 @@ type testWriter struct {
 }
 
 func (tw *testWriter) Write(p []byte) (n int, err error) {
+	// Sadly the log output is attributed to this line.
 	tw.t.Log(strings.TrimSpace(string(p)))
 	return len(p), nil
 }

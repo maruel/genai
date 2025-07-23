@@ -1,0 +1,79 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 189
+        host: api.together.xyz
+        body: |
+            {"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","stream":true,"messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stop":["is"]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"o496RNN-28Eivz-96361ae42d3b3400","object":"chat.completion.chunk","created":1753220516,"choices":[{"index":0,"text":"","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
+
+            data: {"id":"o496RNN-28Eivz-96361ae42d3b3400","object":"chat.completion.chunk","created":1753220516,"choices":[{"index":0,"text":"Canad","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"Canad","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
+
+            data: {"id":"o496RNN-28Eivz-96361ae42d3b3400","object":"chat.completion.chunk","created":1753220516,"choices":[{"index":0,"text":"a ","logprobs":null,"tool_calls":null,"finish_reason":"stop","delta":{"token_id":null,"role":"assistant","content":"a ","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
+
+            data: {"id":"o496RNN-28Eivz-96361ae42d3b3400","object":"chat.completion.chunk","created":1753220516,"choices":[],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":{"prompt_tokens":22,"total_tokens":24,"completion_tokens":2}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache, no-transform
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96361ae42d3b3400-YUL
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - e716fe98-5d45-4750-9371-2f93da16d5da-noamzn
+            X-Api-Call-Start:
+                - "2025-07-22T21:41:57.343Z"
+            X-Api-Received:
+                - "2025-07-22T21:41:56.831Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "1"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - o496RNN-28Eivz-96361ae42d3b3400
+        status: 200 OK
+        code: 200
+        duration: 879ms

@@ -1,0 +1,85 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 579
+        host: api.together.xyz
+        body: |
+            {"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","stream":true,"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"o498tFA-62bZhn-963626a1e937714a","object":"chat.completion.chunk","created":1753220998,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"o498tFA-62bZhn-963626a1e937714a","object":"chat.completion.chunk","created":1753220998,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_tnf8rkz08da9j363p84o058y","type":"function","function":{"name":"best_country","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"o498tFA-62bZhn-963626a1e937714a","object":"chat.completion.chunk","created":1753220998,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"o498tFA-62bZhn-963626a1e937714a","object":"chat.completion.chunk","created":1753220998,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"id":"call_paz4gddkcm55oionpgfy3eux","type":"function","function":{"name":"best_country","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"o498tFA-62bZhn-963626a1e937714a","object":"chat.completion.chunk","created":1753220998,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"o498tFA-62bZhn-963626a1e937714a","object":"chat.completion.chunk","created":1753220997,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"tool_calls","stop_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
+
+            data: {"id":"o498tFA-62bZhn-963626a1e937714a","object":"chat.completion.chunk","created":1753220997,"choices":[],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":{"prompt_tokens":828,"total_tokens":883,"completion_tokens":55},"warnings":[{"message":"Model supports only tool_choice auto"}]}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache, no-transform
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963626a1e937714a-YUL
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Retry-After:
+                - "1"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - 84ae7630-174e-4729-bbc0-56143f8fa9aa-noamzn
+            X-Api-Call-Start:
+                - "2025-07-22T21:49:57.482Z"
+            X-Api-Received:
+                - "2025-07-22T21:49:57.465Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "117"
+            X-Ratelimit-Reset:
+                - "1"
+            X-Request-Id:
+                - o498tFA-62bZhn-963626a1e937714a
+        status: 200 OK
+        code: 200
+        duration: 694ms

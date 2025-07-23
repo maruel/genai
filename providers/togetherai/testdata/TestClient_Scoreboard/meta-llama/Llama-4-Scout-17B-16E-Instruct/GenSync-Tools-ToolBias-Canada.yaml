@@ -1,0 +1,121 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 580
+        host: api.together.xyz
+        body: |
+            {"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","stream":false,"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "o498qfu-62bZhn-9636266b3c12a2db",
+              "object": "chat.completion",
+              "created": 1753220988,
+              "model": "meta-llama/Llama-4-Scout-17B-16E-Instruct",
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "logprobs": null,
+                  "finish_reason": "tool_calls",
+                  "seed": null,
+                  "message": {
+                    "role": "assistant",
+                    "content": null,
+                    "tool_calls": [
+                      {
+                        "index": 0,
+                        "id": "call_ypxjzb11e1dlnulvn5kw402z",
+                        "type": "function",
+                        "function": {
+                          "arguments": "{\"country\":\"Canada\"}",
+                          "name": "best_country"
+                        }
+                      },
+                      {
+                        "index": 1,
+                        "id": "call_5r5tmp88w0jogixrln7lejvy",
+                        "type": "function",
+                        "function": {
+                          "arguments": "{\"country\":\"USA\"}",
+                          "name": "best_country"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 828,
+                "total_tokens": 883,
+                "completion_tokens": 55
+              },
+              "warnings": [
+                {
+                  "message": "Model supports only tool_choice auto"
+                }
+              ]
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9636266b3c12a2db-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"469-0tLNazv2pM2EauMcNsp2LAl8TP0"
+            Retry-After:
+                - "1"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - df59a9b8-afac-4bdc-b3bf-c6e618151e14-noamzn
+            X-Api-Call-End:
+                - "2025-07-22T21:49:49.451Z"
+            X-Api-Call-Start:
+                - "2025-07-22T21:49:48.823Z"
+            X-Api-Received:
+                - "2025-07-22T21:49:48.808Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "953"
+            X-Ratelimit-Reset:
+                - "1"
+            X-Request-Id:
+                - o498qfu-62bZhn-9636266b3c12a2db
+        status: 200 OK
+        code: 200
+        duration: 829ms

@@ -34,6 +34,7 @@ import (
 //
 // # Warnings
 //
+//   - No model supports "required" tool calling, thus it's flaky everywhere.
 //   - Tool calling is solid with llama 3.3 70B quantized in FP8 (-Turbo) but is flaky in more recent models.
 //
 // # Models
@@ -48,124 +49,219 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://api.together.ai/settings/billing",
 	Scenarios: []genai.Scenario{
 		{
-			// Note that many models do not in fact support tools.
-			Models: []string{
-				"meta-llama/Llama-3.3-70B-Instruct-Turbo", // Not reported by the endpoint as of May 2025
-				"meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
-
-				// Old or fringe models
-				"arcee-ai/arcee-blitz",
-				"arcee-ai/caller",
-				"arcee-ai/coder-large",
-				"arcee-ai/virtuoso-large",
-				"arcee-ai/virtuoso-medium-v2",
-				"arcee_ai/arcee-spotlight",
-				"deepseek-ai/DeepSeek-V3",
-				"Gryphe/MythoMax-L2-13b",
-				"Gryphe/MythoMax-L2-13b-Lite",
-				"lgai/exaone-3-5-32b-instruct",
-				"lgai/exaone-deep-32b",
-				"marin-community/marin-8b-instruct",
-				"meta-llama/Llama-3-70b-chat-hf",
-				"meta-llama/Llama-3.2-3B-Instruct-Turbo",
-				"meta-llama/Meta-Llama-3-70B-Instruct-Turbo",
-				"meta-llama/Meta-Llama-3-8B-Instruct-Lite",
-				"meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
-				"meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo",
-				"meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
-				"mistralai/Mistral-7B-Instruct-v0.3",
-				"mistralai/Mixtral-8x7B-Instruct-v0.1",
-				"nvidia/Llama-3.1-Nemotron-70B-Instruct-HF",
-				"Qwen/Qwen2-72B-Instruct",
-				"Qwen/Qwen2.5-72B-Instruct-Turbo",
-				"Qwen/Qwen2.5-7B-Instruct-Turbo",
-				"Qwen/Qwen2.5-Coder-32B-Instruct",
-				"togethercomputer/Refuel-Llm-V2",
-			},
-			In:  map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
-			},
-			GenStream: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
-			},
-		},
-		{
 			// Tool calling is flaky on llama-4 because it only support tool_choice auto, not required.
-			Models: []string{
-				"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
-				"meta-llama/Llama-4-Scout-17B-16E-Instruct",
-				"meta-llama/Llama-Vision-Free",
-				"mistralai/Mistral-Small-24B-Instruct-2501",
-				"Qwen/Qwen2-VL-72B-Instruct",
-				"Qwen/Qwen2.5-VL-72B-Instruct",
-			},
+			Models: []string{"meta-llama/Llama-4-Scout-17B-16E-Instruct"},
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {Inline: true},
-				// TODO: Video.
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
-					SupportedFormats: []string{"image/png", "image/jpeg", "image/webp"},
+					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:      genai.Flaky,
-				BiasedTool: genai.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
+				Tools:          genai.Flaky,
+				IndecisiveTool: genai.True,
+				JSON:           true,
+				JSONSchema:     true,
+				Seed:           true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:      genai.Flaky,
-				BiasedTool: genai.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
+				Tools:          genai.Flaky,
+				IndecisiveTool: genai.True,
+				JSON:           true,
+				JSONSchema:     true,
 			},
 		},
 		{
-			Models: []string{
-				"black-forest-labs/FLUX.1-schnell-Free",
-				"black-forest-labs/FLUX.1-schnell",
-				//"black-forest-labs/FLUX.1-schnell-fixedres",
-				"black-forest-labs/FLUX.1-dev",
-				"black-forest-labs/FLUX.1.1-pro",
-				"black-forest-labs/FLUX.1-kontext-pro",
-				"black-forest-labs/FLUX.1-kontext-max",
-				"black-forest-labs/FLUX.1-canny",
-				"black-forest-labs/FLUX.1-depth",
-				"black-forest-labs/FLUX.1-redux",
-				"black-forest-labs/FLUX.1-pro",
-				"black-forest-labs/FLUX.1-dev-lora",
+			// Tool calling is flaky on llama-4 because it only support tool_choice auto, not required.
+			Models: []string{"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8"},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {Inline: true},
+				genai.ModalityImage: {
+					Inline:           true,
+					URL:              true,
+					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
+				},
 			},
-			In: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Tools:              genai.Flaky,
+				BiasedTool:         genai.True,
+				JSON:               true,
+				JSONSchema:         true,
+				Seed:               true,
+				BrokenFinishReason: true,
+				NoMaxTokens:        true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Tools:              genai.Flaky,
+				BiasedTool:         genai.True,
+				JSON:               true,
+				JSONSchema:         true,
+				Seed:               true,
+				BrokenFinishReason: true,
+				NoMaxTokens:        true,
+			},
+		},
+		{
+			Models: []string{"meta-llama/Llama-Vision-Free"},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {Inline: true},
+				genai.ModalityImage: {
+					Inline:           true,
+					URL:              true,
+					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Tools:              genai.Flaky,
+				Seed:               true,
+				BrokenFinishReason: true,
+				NoMaxTokens:        true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Tools: genai.Flaky,
+			},
+		},
+		{
+			Models: []string{"moonshotai/Kimi-K2-Instruct"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				JSON:       true,
+				JSONSchema: true,
+				Seed:       true,
+			},
+			GenStream: &genai.FunctionalityText{JSON: true, JSONSchema: true, Seed: true},
+		},
+		{
+			Models: []string{"mistralai/Mistral-Small-24B-Instruct-2501"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Tools:              genai.Flaky,
+				BiasedTool:         genai.True,
+				IndecisiveTool:     genai.True,
+				JSON:               true,
+				Seed:               true,
+				BrokenFinishReason: true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Tools:              genai.Flaky,
+				JSON:               true,
+				Seed:               true,
+				BrokenFinishReason: true,
+			},
+		},
+		{
+			Models: []string{"black-forest-labs/FLUX.1-schnell"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityImage: {
-					URL:              true,
-					SupportedFormats: []string{"image/png", "image/jpeg", "image/webp"},
+					Inline:           true,
+					SupportedFormats: []string{"image/jpeg"},
 				},
 			},
 			GenDoc: &genai.FunctionalityDoc{
 				BrokenTokenUsage:   genai.True,
 				BrokenFinishReason: true,
-				Seed:               true,
+			},
+		},
+		// Skipped
+		{
+			Models: []string{
+				"meta-llama/Llama-3.3-70B-Instruct-Turbo",
+				"meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
+				"Alibaba-NLP/gte-modernbert-base",
+				"Gryphe/MythoMax-L2-13b",
+				"Gryphe/MythoMax-L2-13b-Lite",
+				"NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO",
+				"Qwen/QwQ-32B",
+				"Qwen/Qwen2-72B-Instruct",
+				"Qwen/Qwen2-VL-72B-Instruct",
+				"Qwen/Qwen2.5-72B-Instruct-Turbo",
+				"Qwen/Qwen2.5-7B-Instruct-Turbo",
+				"Qwen/Qwen2.5-Coder-32B-Instruct",
+				"Qwen/Qwen2.5-VL-72B-Instruct",
+				"Qwen/Qwen3-235B-A22B-fp8-tput",
+				"Salesforce/Llama-Rank-V1",
+				"arcee-ai/AFM-4.5B-Preview",
+				"arcee-ai/arcee-blitz",
+				"arcee-ai/caller",
+				"arcee-ai/coder-large",
+				"arcee-ai/maestro-reasoning",
+				"arcee-ai/virtuoso-large",
+				"arcee-ai/virtuoso-medium-v2",
+				"arcee_ai/arcee-spotlight",
+				"black-forest-labs/FLUX.1-canny",
+				"black-forest-labs/FLUX.1-depth",
+				"black-forest-labs/FLUX.1-dev",
+				"black-forest-labs/FLUX.1-dev-lora",
+				"black-forest-labs/FLUX.1-kontext-dev",
+				"black-forest-labs/FLUX.1-kontext-max",
+				"black-forest-labs/FLUX.1-kontext-pro",
+				"black-forest-labs/FLUX.1-pro",
+				"black-forest-labs/FLUX.1-redux",
+				"black-forest-labs/FLUX.1-schnell-Free",
+				"black-forest-labs/FLUX.1-schnell-fixedres",
+				"black-forest-labs/FLUX.1.1-pro",
+				"cartesia/sonic",
+				"cartesia/sonic-2",
+				"deepseek-ai/DeepSeek-R1",
+				"deepseek-ai/DeepSeek-R1-0528-tput",
+				"deepseek-ai/DeepSeek-R1-Distill-Llama-70B",
+				"deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free",
+				"deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+				"deepseek-ai/DeepSeek-R1-Distill-Qwen-14B",
+				"deepseek-ai/DeepSeek-V3",
+				"eddiehou/meta-llama/Llama-3.1-405B",
+				"google/gemma-2-27b-it",
+				"google/gemma-3-27b-it",
+				"google/gemma-3n-E4B-it",
+				"intfloat/multilingual-e5-large-instruct",
+				"lgai/exaone-3-5-32b-instruct",
+				"lgai/exaone-deep-32b",
+				"marin-community/marin-8b-instruct",
+				"meta-llama/Llama-2-70b-hf",
+				"meta-llama/Llama-3-70b-chat-hf",
+				"meta-llama/Llama-3-8b-chat-hf",
+				"meta-llama/Llama-3.2-11B-Vision-Instruct-Turbo",
+				"meta-llama/Llama-3.2-3B-Instruct-Turbo",
+				"meta-llama/Llama-3.2-90B-Vision-Instruct-Turbo",
+				"meta-llama/Llama-Guard-3-11B-Vision-Turbo",
+				"meta-llama/Llama-Guard-4-12B",
+				"meta-llama/LlamaGuard-2-8b",
+				"meta-llama/Meta-Llama-3-70B-Instruct-Turbo",
+				"meta-llama/Meta-Llama-3-8B-Instruct-Lite",
+				"meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
+				"meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo",
+				"meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
+				"meta-llama/Meta-Llama-Guard-3-8B",
+				"mistralai/Mistral-7B-Instruct-v0.1",
+				"mistralai/Mistral-7B-Instruct-v0.2",
+				"mistralai/Mistral-7B-Instruct-v0.3",
+				"mistralai/Mixtral-8x7B-Instruct-v0.1",
+				"mixedbread-ai/Mxbai-Rerank-Large-V2",
+				"nvidia/Llama-3.1-Nemotron-70B-Instruct-HF",
+				"openai/whisper-large-v3",
+				"perplexity-ai/r1-1776",
+				"scb10x/scb10x-llama3-1-typhoon2-70b-instruct",
+				"scb10x/scb10x-typhoon-2-1-gemma3-12b",
+				"togethercomputer/MoA-1",
+				"togethercomputer/MoA-1-Turbo",
+				"togethercomputer/Refuel-Llm-V2",
+				"togethercomputer/Refuel-Llm-V2-Small",
+				"togethercomputer/m2-bert-80M-32k-retrieval",
+				"yan/deepseek-ai-deepseek-v3",
 			},
 		},
 	},
 }
 
-// https://docs.together.ai/reference/chat-completions-1
+// ChatRequest is documented at https://docs.together.ai/reference/chat-completions-1
 //
 // https://docs.together.ai/docs/chat-overview
 type ChatRequest struct {
@@ -274,7 +370,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-// https://docs.together.ai/reference/chat-completions-1
+// Message is documented at https://docs.together.ai/reference/chat-completions-1
 type Message struct {
 	Role    string   `json:"role,omitzero"` // "system", "assistant", "user"
 	Content Contents `json:"content,omitzero"`
@@ -350,6 +446,8 @@ func (m *Message) To(out *genai.Message) error {
 
 type Contents []Content
 
+// UnmarshalJSON implements json.Unmarshaler.
+//
 // Together.AI replies with content as a string.
 func (c *Contents) UnmarshalJSON(data []byte) error {
 	var v []Content
@@ -365,6 +463,8 @@ func (c *Contents) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// MarshalJSON implements json.Marshaler.
+//
 // Together.AI really prefer simple strings.
 func (c *Contents) MarshalJSON() ([]byte, error) {
 	if len(*c) == 1 && (*c)[0].Type == ContentText {
@@ -376,15 +476,15 @@ func (c *Contents) MarshalJSON() ([]byte, error) {
 type Content struct {
 	Type ContentType `json:"type,omitzero"`
 
-	// Type == "text"
+	// Type == ContentText
 	Text string `json:"text,omitzero"`
 
-	// Type == "image_url"
+	// Type == ContentImageURL
 	ImageURL struct {
 		URL string `json:"url,omitzero"`
 	} `json:"image_url,omitzero"`
 
-	// Type == "video_url"
+	// Type == ContentVideoURL
 	VideoURL struct {
 		URL string `json:"url,omitzero"`
 	} `json:"video_url,omitzero"`
@@ -548,10 +648,11 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 }
 
 type Usage struct {
-	PromptTokens     int64 `json:"prompt_tokens"`
-	CompletionTokens int64 `json:"completion_tokens"`
-	TotalTokens      int64 `json:"total_tokens"`
-	CachedTokens     int64 `json:"cached_tokens"`
+	PromptTokens        int64    `json:"prompt_tokens"`
+	CompletionTokens    int64    `json:"completion_tokens"`
+	TotalTokens         int64    `json:"total_tokens"`
+	CachedTokens        int64    `json:"cached_tokens"`
+	PromptTokensDetails struct{} `json:"prompt_tokens_details"`
 }
 
 type ChatStreamChunkResponse struct {
@@ -797,7 +898,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 }
 
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	if c.isImage(opts) {
+	if c.isAudio(opts) || c.isImage(opts) {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
@@ -807,66 +908,74 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 }
 
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
-	if c.isImage(opts) {
+	if c.isAudio(opts) || c.isImage(opts) {
 		return base.SimulateStream(ctx, c, msgs, chunks, opts)
 	}
 	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
 }
 
 func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
-	res := genai.Result{}
-	if err := c.Validate(); err != nil {
-		return genai.Result{}, err
+	if c.isAudio(opts) {
+		// https://docs.together.ai/reference/audio-speech
+		return genai.Result{}, errors.New("audio not implemented yet")
 	}
-	if err := msg.Validate(); err != nil {
-		return res, err
-	}
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
+	if c.isImage(opts) {
+		// https://docs.together.ai/reference/post-images-generations
+		res := genai.Result{}
+		if err := c.Validate(); err != nil {
+			return genai.Result{}, err
+		}
+		if err := msg.Validate(); err != nil {
 			return res, err
 		}
-	}
-	for i := range msg.Contents {
-		if msg.Contents[i].Text == "" {
-			return res, errors.New("only text can be passed as input")
+		if opts != nil {
+			if err := opts.Validate(); err != nil {
+				return res, err
+			}
 		}
-	}
-	req := ImageRequest{
-		Prompt: msg.AsText(),
-		Model:  c.Model,
-	}
-	if opts != nil {
-		switch v := opts.(type) {
-		case *genai.OptionsImage:
-			req.Height = int64(v.Height)
-			req.Width = int64(v.Width)
-			req.Seed = v.Seed
-		case *genai.OptionsText:
-			req.Seed = v.Seed
+		for i := range msg.Contents {
+			if msg.Contents[i].Text == "" {
+				return res, errors.New("only text can be passed as input")
+			}
 		}
-	}
-	resp := ImageResponse{}
-	if err := c.DoRequest(ctx, "POST", "https://api.together.xyz/v1/images/generations", &req, &resp); err != nil {
-		return res, err
-	}
-	res.Role = genai.Assistant
-	res.Contents = make([]genai.Content, len(resp.Data))
-	for i := range resp.Data {
-		n := "content.jpg"
-		if len(resp.Data) > 1 {
-			n = fmt.Sprintf("content%d.jpg", i+1)
+		req := ImageRequest{
+			Prompt: msg.AsText(),
+			Model:  c.Model,
 		}
-		if url := resp.Data[i].URL; url != "" {
-			res.Contents[i].Filename = n
-			res.Contents[i].URL = url
-		} else if d := resp.Data[i].B64JSON; len(d) != 0 {
-			res.Contents[i].Filename = n
-			res.Contents[i].Document = &bb.BytesBuffer{D: resp.Data[i].B64JSON}
-		} else {
-			return res, errors.New("internal error")
+		if opts != nil {
+			switch v := opts.(type) {
+			case *genai.OptionsImage:
+				req.Height = int64(v.Height)
+				req.Width = int64(v.Width)
+				req.Seed = v.Seed
+			case *genai.OptionsText:
+				req.Seed = v.Seed
+			}
 		}
+		resp := ImageResponse{}
+		if err := c.DoRequest(ctx, "POST", "https://api.together.xyz/v1/images/generations", &req, &resp); err != nil {
+			return res, err
+		}
+		res.Role = genai.Assistant
+		res.Contents = make([]genai.Content, len(resp.Data))
+		for i := range resp.Data {
+			n := "content.jpg"
+			if len(resp.Data) > 1 {
+				n = fmt.Sprintf("content%d.jpg", i+1)
+			}
+			if url := resp.Data[i].URL; url != "" {
+				res.Contents[i].Filename = n
+				res.Contents[i].URL = url
+			} else if d := resp.Data[i].B64JSON; len(d) != 0 {
+				res.Contents[i].Filename = n
+				res.Contents[i].Document = &bb.BytesBuffer{D: resp.Data[i].B64JSON}
+			} else {
+				return res, errors.New("internal error")
+			}
+		}
+		return res, nil
 	}
-	return res, nil
+	return genai.Result{}, errors.New("can only generate audio and images")
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
@@ -874,8 +983,18 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, "https://api.together.xyz/v1/models")
 }
 
+func (c *Client) isAudio(opts genai.Options) bool {
+	// TODO: Use Scoreboard list. The problem is that it's recursive while recreating the scoreboard, and that
+	// the server HTTP 500 on onsupported models.
+	if strings.HasPrefix(c.Model, "cartesia/") {
+		return true
+	}
+	return opts != nil && opts.Modality() == genai.ModalityAudio
+}
+
 func (c *Client) isImage(opts genai.Options) bool {
-	// TODO: Use Scoreboard list.
+	// TODO: Use Scoreboard list. The problem is that it's recursive while recreating the scoreboard, and that
+	// the server HTTP 500 on onsupported models.
 	if strings.HasPrefix(c.Model, "black-forest-labs/") {
 		return true
 	}

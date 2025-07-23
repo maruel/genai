@@ -1,0 +1,82 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1167
+        host: api.together.xyz
+        body: |
+            {"prompt":"Generate one square, white-background doodle with smooth, vibrantly colored image depicting A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves..\n\n*Mandatory Requirements (Compacted):**\n\n**Style:** Simple, vibrant, varied-colored doodle/hand-drawn sketch.\n**Background:** Plain solid white (no background colors/elements). Absolutely no black background.\n**Content & Motion:** Clearly depict **A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.** action with colored, moving subject (no static images). If there's an action specified, it should be the main difference between frames.\n**Format:** Square image (1:1 aspect ratio).\n**Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.\n**Output:** Actual image file for a smooth, colorful doodle-style image on a white background.","model":"black-forest-labs/FLUX.1-schnell"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/images/generations
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "o48r2up-2kFHot-9635d65d586fa2cf-PDX",
+              "model": "black-forest-labs/FLUX.1-schnell",
+              "object": "list",
+              "data": [
+                {
+                  "index": 0,
+                  "url": "https://api.together.ai/shrt/tRDwLnF1y6ALAs6G",
+                  "timings": {
+                    "inference": 1.0931329419836402
+                  }
+                }
+              ]
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9635d65d586fa2cf-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"124-YXWJ1fKWCe8BkMJiuvzk+myyf/s"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Api-Call-End:
+                - "2025-07-22T20:55:11.201Z"
+            X-Api-Call-Start:
+                - "2025-07-22T20:55:09.725Z"
+            X-Api-Received:
+                - "2025-07-22T20:55:09.715Z"
+            X-Image-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "0"
+            X-Ratelimit-Remaining:
+                - "1"
+            X-Ratelimit-Remaining-Tokens:
+                - "0"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - o48r2up-2kFHot-9635d65d586fa2cf-PDX
+        status: 200 OK
+        code: 200
+        duration: 2.885s

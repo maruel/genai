@@ -1,0 +1,78 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 314
+        host: api.together.xyz
+        body: |
+            {"model":"mistralai/Mistral-Small-24B-Instruct-2501","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 167
+        body: |-
+            {
+              "id": "o4AALDq-3NKUce-963741d24dc9a2fa",
+              "error": {
+                "message": "Internal server error",
+                "type": "server_error",
+                "param": null,
+                "code": null
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963741d24dc9a2fa-YUL
+            Content-Length:
+                - "167"
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"a7-XbHrn4DY8sKQK/TJDvntyOf1gdY"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - fc16d65b-fd6b-40d3-80ef-943c4b13b278-noamzn
+            X-Api-Received:
+                - "2025-07-23T01:03:16.460Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - o4AALDq-3NKUce-963741d24dc9a2fa
+        status: 500 Internal Server Error
+        code: 500
+        duration: 101ms

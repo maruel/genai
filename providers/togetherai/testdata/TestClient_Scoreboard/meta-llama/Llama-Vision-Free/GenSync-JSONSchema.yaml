@@ -1,0 +1,80 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 495
+        host: api.together.xyz
+        body: |
+            {"model":"meta-llama/Llama-Vision-Free","stream":false,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://github.com/maruel/genai/scoreboard/schema","$ref":"#/$defs/schema","$defs":{"schema":{"properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 167
+        body: |-
+            {
+              "id": "o495thZ-4pPsy7-963618606c8ea2c2",
+              "error": {
+                "message": "Internal server error",
+                "type": "server_error",
+                "param": null,
+                "code": null
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963618606c8ea2c2-YUL
+            Content-Length:
+                - "167"
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"a7-hr0JwP2RN1P9jPnyjMIMuy6BOWg"
+            Retry-After:
+                - "6"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - 5f3f7fe4-f950-4d67-8529-46947ccfc038-noamzn
+            X-Api-Call-Start:
+                - "2025-07-22T21:40:13.681Z"
+            X-Api-Received:
+                - "2025-07-22T21:40:13.660Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "0.1666666667"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "6"
+            X-Request-Id:
+                - o495thZ-4pPsy7-963618606c8ea2c2
+        status: 500 Internal Server Error
+        code: 500
+        duration: 264ms

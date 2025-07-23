@@ -1,0 +1,82 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 264
+        host: api.together.xyz
+        body: |
+            {"model":"meta-llama/Llama-Vision-Free","stream":true,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"response_format":{"type":"json_object"}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 167
+        body: |-
+            {
+              "id": "o495qS3-4msxKE-9636181c089ea2c2",
+              "error": {
+                "message": "Internal server error",
+                "type": "server_error",
+                "param": null,
+                "code": null
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9636181c089ea2c2-YUL
+            Content-Length:
+                - "167"
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"a7-2YBX2HJXG2lfzleHFuMw45lriMU"
+            Retry-After:
+                - "6"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - b08e3495-b627-4c19-aff7-e9e0d50e9c60-noamzn
+            X-Api-Call-Start:
+                - "2025-07-22T21:40:03.057Z"
+            X-Api-Received:
+                - "2025-07-22T21:40:02.668Z"
+            X-Api-Retries:
+                - "1"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "0.1666666667"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "6"
+            X-Request-Id:
+                - o495qS3-4msxKE-9636181c089ea2c2
+        status: 500 Internal Server Error
+        code: 500
+        duration: 10.931s

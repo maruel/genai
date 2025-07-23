@@ -1,0 +1,91 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 507
+        host: api.together.xyz
+        body: |
+            {"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","stream":true,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://github.com/maruel/genai/scoreboard/schema","$ref":"#/$defs/schema","$defs":{"schema":{"properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"o498sHJ-4Yz4kd-9636268d7b77a2db","object":"chat.completion.chunk","created":1753220994,"choices":[{"index":0,"text":"","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
+
+            data: {"id":"o498sHJ-4Yz4kd-9636268d7b77a2db","object":"chat.completion.chunk","created":1753220994,"choices":[{"index":0,"text":"{\"","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"{\"","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
+
+            data: {"id":"o498sHJ-4Yz4kd-9636268d7b77a2db","object":"chat.completion.chunk","created":1753220994,"choices":[{"index":0,"text":"is","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"is","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
+
+            data: {"id":"o498sHJ-4Yz4kd-9636268d7b77a2db","object":"chat.completion.chunk","created":1753220994,"choices":[{"index":0,"text":"_f","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"_f","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
+
+            data: {"id":"o498sHJ-4Yz4kd-9636268d7b77a2db","object":"chat.completion.chunk","created":1753220994,"choices":[{"index":0,"text":"ruit","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"ruit","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
+
+            data: {"id":"o498sHJ-4Yz4kd-9636268d7b77a2db","object":"chat.completion.chunk","created":1753220994,"choices":[{"index":0,"text":"\":","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"\":","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
+
+            data: {"id":"o498sHJ-4Yz4kd-9636268d7b77a2db","object":"chat.completion.chunk","created":1753220994,"choices":[{"index":0,"text":" true","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":" true","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
+
+            data: {"id":"o498sHJ-4Yz4kd-9636268d7b77a2db","object":"chat.completion.chunk","created":1753220994,"choices":[{"index":0,"text":"}","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"}","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
+
+            data: {"id":"o498sHJ-4Yz4kd-9636268d7b77a2db","object":"chat.completion.chunk","created":1753220994,"choices":[{"index":0,"text":"","logprobs":null,"tool_calls":null,"finish_reason":"stop","delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
+
+            data: {"id":"o498sHJ-4Yz4kd-9636268d7b77a2db","object":"chat.completion.chunk","created":1753220994,"choices":[],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":{"prompt_tokens":27,"total_tokens":35,"completion_tokens":8}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache, no-transform
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9636268d7b77a2db-YUL
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Retry-After:
+                - "1"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - f49ea855-b8cf-4ed3-b2da-363227768d59-noamzn
+            X-Api-Call-Start:
+                - "2025-07-22T21:49:54.243Z"
+            X-Api-Received:
+                - "2025-07-22T21:49:54.225Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "826"
+            X-Ratelimit-Reset:
+                - "1"
+            X-Request-Id:
+                - o498sHJ-4Yz4kd-9636268d7b77a2db
+        status: 200 OK
+        code: 200
+        duration: 131ms

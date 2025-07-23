@@ -1,0 +1,78 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 306
+        host: api.together.xyz
+        body: |
+            {"model":"meta-llama/Llama-Vision-Free","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What is the word said? Reply with only the word."},{"type":"video_url","video_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4"}}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 177
+        body: |-
+            {
+              "id": "o496MQy-57nCBj-96361a909d26a303",
+              "error": {
+                "message": "Input validation error",
+                "type": "invalid_request_error",
+                "param": null,
+                "code": null
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96361a909d26a303-YUL
+            Content-Length:
+                - "177"
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"b1-LeewCCMZsqiMfLVOVT6C3u58BJE"
+            Retry-After:
+                - "6"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - c999ed6f-7713-4b3e-b3f1-1dedc10115ab-noamzn
+            X-Api-Received:
+                - "2025-07-22T21:41:43.526Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "0.1666666667"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "6"
+            X-Request-Id:
+                - o496MQy-57nCBj-96361a909d26a303
+        status: 400 Bad Request
+        code: 400
+        duration: 6.535s

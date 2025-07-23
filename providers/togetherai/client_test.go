@@ -18,33 +18,109 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/togetherai"
+	"github.com/maruel/genai/scoreboard/scoreboardtest"
+	"github.com/maruel/httpjson"
 )
 
-func TestClient_Scoreboard(t *testing.T) {
-	f := func(m genai.Model) bool {
-		model := m.(*togetherai.Model)
-		if model.ID == "arcee-ai/maestro-reasoning" || // Requires CoT processing.
-			model.ID == "google/gemma-2b-it" || // Doesn't follow instruction.
-			model.ID == "deepseek-ai/DeepSeek-V3-p-dp" || // Causes HTTP 503.
-			model.ID == "meta-llama/Llama-3.3-70B-Instruct-Turbo" || // rate_limit even if been a while.
-			model.ID == "togethercomputer/Refuel-Llm-V2-Small" || // Fails because Seed option.
-			strings.HasPrefix(model.ID, "deepseek-ai/DeepSeek-R1") || // Requires CoT processing.
-			strings.HasPrefix(model.ID, "perplexity-ai/r1-") || // Requires CoT processing.
-			strings.HasPrefix(model.ID, "Qwen/QwQ-32B") || // Requires CoT processing.
-			strings.HasPrefix(model.ID, "Qwen/Qwen3-235B-A22B-") || // Requires CoT processing.
-			strings.HasPrefix(model.ID, "togethercomputer/MoA-1") { // Causes HTTP 500.
-			return false
+func gc(t testing.TB, name, m string) genai.Provider {
+	fn := func(h http.RoundTripper) http.RoundTripper {
+		if name == "" {
+			return h
 		}
-		return model.Type == "chat" || model.Type == "image"
+		r, err2 := testRecorder.Records.Record(name, h)
+		if err2 != nil {
+			t.Fatal(err2)
+		}
+		t.Cleanup(func() {
+			if err3 := r.Stop(); err3 != nil {
+				t.Error(err3)
+			}
+		})
+		return r
 	}
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
-		c := getClient(t, m)
-		// TODO: Use Scoreboard list.
-		if strings.HasPrefix(c.Model, "black-forest-labs/") {
-			return &injectOption{Client: c, t: t, opts: genai.OptionsImage{Width: 256, Height: 256}}
+	apiKey := ""
+	if os.Getenv("TOGETHER_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := togetherai.New(apiKey, m, fn)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// If anyone at Together.AI reads this, please get your shit together.
+	return &hideHTTP500{c}
+}
+
+type hideHTTP500 struct {
+	*togetherai.Client
+}
+
+func (h *hideHTTP500) Unwrap() genai.Provider {
+	return h.Client
+}
+
+func (h *hideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	if strings.HasPrefix(h.Model, "black-forest-labs/") {
+		return genai.Result{}, errors.New("disabled to save on performance")
+	}
+	resp, err := h.Client.GenSync(ctx, msgs, opts)
+	if err != nil {
+		var herr *httpjson.Error
+		if errors.As(err, &herr) && herr.StatusCode == 500 {
+			// Hide the failure; together.ai throws HTTP 500 on unsupported file formats.
+			return resp, errors.New("together.ai is having a bad day")
 		}
-		return c
-	}, f)
+		return resp, err
+	}
+	return resp, err
+}
+
+func (h *hideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+	if strings.HasPrefix(h.Model, "black-forest-labs/") {
+		return genai.Result{}, errors.New("disabled to save on performance")
+	}
+	resp, err := h.Client.GenStream(ctx, msgs, chunks, opts)
+	if err != nil {
+		var herr *httpjson.Error
+		if errors.As(err, &herr) && herr.StatusCode == 500 {
+			// Hide the failure; together.ai throws HTTP 500 on unsupported file formats.
+			return resp, errors.New("together.ai is having a bad day")
+		}
+		return resp, err
+	}
+	return resp, err
+}
+
+func (h *hideHTTP500) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
+	resp, err := h.Client.GenDoc(ctx, msg, opts)
+	if err != nil {
+		var herr *httpjson.Error
+		if errors.As(err, &herr) && herr.StatusCode == 500 {
+			// Hide the failure; together.ai throws HTTP 500 on unsupported file formats.
+			return resp, errors.New("together.ai is having a bad day")
+		}
+		return resp, err
+	}
+	return resp, err
+}
+
+func TestClient_Scoreboard(t *testing.T) {
+	t.Parallel()
+	usage := genai.Usage{}
+	cc := gc(t, t.Name()+"/ListModels", "")
+	models, err2 := cc.(genai.ProviderModel).ListModels(t.Context())
+	if err2 != nil {
+		t.Fatal(err2)
+	}
+	for _, m := range models {
+		id := m.GetID()
+		t.Run(id, func(t *testing.T) {
+			// Run one model at a time otherwise we can't collect the total usage.
+			usage.Add(scoreboardtest.RunOneModel(t, func(t testing.TB, sn string) genai.Provider {
+				return gc(t, sn, id)
+			}))
+		})
+	}
+	t.Logf("Usage: %#v", usage)
 }
 
 type injectOption struct {

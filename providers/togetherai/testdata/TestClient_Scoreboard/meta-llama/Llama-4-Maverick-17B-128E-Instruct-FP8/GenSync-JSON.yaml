@@ -1,0 +1,97 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 286
+        host: api.together.xyz
+        body: |
+            {"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","stream":false,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"response_format":{"type":"json_object"}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "o496RSM-zqrih-96361ae729923400",
+              "object": "chat.completion",
+              "created": 1753220517,
+              "model": "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "{\"is_fruit\": true}",
+                    "tool_calls": []
+                  },
+                  "logprobs": null,
+                  "finish_reason": "stop",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 39,
+                "total_tokens": 47,
+                "completion_tokens": 8
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96361ae729923400-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"20b-DPE4VzS/9hDB6Ji8n4VefCzzMQ0"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - 9fcdf7d3-50bc-4a33-9b76-6c5688d625f3-noamzn
+            X-Api-Call-End:
+                - "2025-07-22T21:41:57.206Z"
+            X-Api-Call-Start:
+                - "2025-07-22T21:41:57.070Z"
+            X-Api-Received:
+                - "2025-07-22T21:41:57.062Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "976"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - o496RSM-zqrih-96361ae729923400
+        status: 200 OK
+        code: 200
+        duration: 263ms

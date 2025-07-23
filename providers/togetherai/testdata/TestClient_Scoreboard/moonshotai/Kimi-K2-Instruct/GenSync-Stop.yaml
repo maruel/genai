@@ -1,0 +1,97 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 168
+        host: api.together.xyz
+        body: |
+            {"model":"moonshotai/Kimi-K2-Instruct","stream":false,"messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stop":["is"]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "o49b4Ah-zqrih-9636a34b8c10a320",
+              "object": "chat.completion",
+              "created": 1753226104,
+              "model": "moonshotai/Kimi-K2-Instruct",
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "Canada ",
+                    "tool_calls": []
+                  },
+                  "logprobs": null,
+                  "finish_reason": "stop",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 28,
+                "total_tokens": 30,
+                "completion_tokens": 2
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9636a34b8c10a320-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"1e8-1EHFGdMfS23aUQ5gLfNo8ELhsE0"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - a2aa2429-5544-4dc5-b4e3-f433512348fb-noamzn
+            X-Api-Call-End:
+                - "2025-07-22T23:15:04.091Z"
+            X-Api-Call-Start:
+                - "2025-07-22T23:15:03.769Z"
+            X-Api-Received:
+                - "2025-07-22T23:15:03.758Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "1"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - o49b4Ah-zqrih-9636a34b8c10a320
+        status: 200 OK
+        code: 200
+        duration: 1.668s

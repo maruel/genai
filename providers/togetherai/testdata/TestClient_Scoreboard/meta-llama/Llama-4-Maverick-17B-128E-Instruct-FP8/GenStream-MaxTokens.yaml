@@ -1,0 +1,76 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 184
+        host: api.together.xyz
+        body: |
+            {"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","stream":true,"messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_tokens":16}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 310
+        body: |-
+            {
+              "id": "o48rAhz-zqrih-9635d7010c28a2eb",
+              "error": {
+                "message": "Request was rejected due to request rate limiting. Your rate limits are 60 RPM (1 QPS) and 60000 TPM (1000 TPS). See details: https://docs.together.ai/docs/rate-limits",
+                "type": "rate_limit",
+                "param": null,
+                "code": null
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9635d7010c28a2eb-YUL
+            Content-Length:
+                - "310"
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"136-W8lMqz3JyH32qc1eHLd9Ncmk9Y8"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - 214643d6-bee1-421d-aacc-cd23b928dede-noamzn
+            X-Api-Received:
+                - "2025-07-22T20:55:35.941Z"
+            X-Ratelimit:
+                - "true"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - o48rAhz-zqrih-9635d7010c28a2eb
+        status: 429 Too Many Requests
+        code: 429
+        duration: 778ms

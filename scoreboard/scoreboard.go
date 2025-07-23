@@ -762,24 +762,24 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 			v.URL = true
 			// Retrieve the result file.
 			internal.Logger(ctx).ErrorContext(ctx, name, "rt", fmt.Sprintf("%T", rt))
-			resp2, err := (&http.Client{Transport: rt}).Get(c.URL)
-			if err != nil {
-				return fmt.Errorf("failed to download generated result: %w", err)
+			resp2, err2 := (&http.Client{Transport: rt}).Get(c.URL)
+			if err2 != nil {
+				return fmt.Errorf("failed to download generated result: %w", err2)
 			}
 			defer resp2.Body.Close()
 			if resp2.StatusCode != http.StatusOK {
 				return fmt.Errorf("failed to download generated result: %s", resp2.Status)
 			}
-			body, err := io.ReadAll(resp2.Body)
-			if err != nil {
-				return fmt.Errorf("failed to download generated result: %w", err)
+			body, err2 := io.ReadAll(resp2.Body)
+			if err2 != nil {
+				return fmt.Errorf("failed to download generated result: %w", err2)
 			}
 			internal.Logger(ctx).DebugContext(ctx, name, "generated", len(body), "url", c.URL)
 		} else {
 			v.Inline = true
-			_, body, err := c.ReadDocument(10 * 1024 * 1024)
-			if err != nil {
-				return fmt.Errorf("failed to download generated result: %w", err)
+			_, body, err2 := c.ReadDocument(10 * 1024 * 1024)
+			if err2 != nil {
+				return fmt.Errorf("failed to download generated result: %w", err2)
 			}
 			internal.Logger(ctx).DebugContext(ctx, name, "generated", len(body))
 		}
@@ -822,24 +822,25 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 		if c.URL != "" {
 			v.URL = true
 			// Retrieve the result file.
-			resp2, err := (&http.Client{Transport: rt}).Get(c.URL)
-			if err != nil {
-				return fmt.Errorf("failed to download generated result: %w", err)
+			internal.Logger(ctx).ErrorContext(ctx, name, "rt", fmt.Sprintf("%T", rt))
+			resp2, err2 := (&http.Client{Transport: rt}).Get(c.URL)
+			if err2 != nil {
+				return fmt.Errorf("failed to download generated result: %w", err2)
 			}
 			defer resp2.Body.Close()
 			if resp2.StatusCode != http.StatusOK {
 				return fmt.Errorf("failed to download generated result: %s", resp2.Status)
 			}
-			body, err := io.ReadAll(resp2.Body)
-			if err != nil {
-				return fmt.Errorf("failed to download generated result: %w", err)
+			body, err2 := io.ReadAll(resp2.Body)
+			if err2 != nil {
+				return fmt.Errorf("failed to download generated result: %w", err2)
 			}
 			internal.Logger(ctx).DebugContext(ctx, name, "generated", len(body), "url", c.URL)
 		} else {
 			v.Inline = true
-			_, body, err := c.ReadDocument(10 * 1024 * 1024)
-			if err != nil {
-				return fmt.Errorf("failed to download generated result: %w", err)
+			_, body, err2 := c.ReadDocument(10 * 1024 * 1024)
+			if err2 != nil {
+				return fmt.Errorf("failed to download generated result: %w", err2)
 			}
 			internal.Logger(ctx).DebugContext(ctx, name, "generated", len(body))
 		}

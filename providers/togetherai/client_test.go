@@ -46,8 +46,34 @@ func gc(t testing.TB, name, m string) genai.Provider {
 	if err != nil {
 		t.Fatal(err)
 	}
+	if strings.HasPrefix(m, "black-forest-labs/") {
+		return &smallImageGen{hideHTTP500{c}}
+	}
 	// If anyone at Together.AI reads this, please get your shit together.
 	return &hideHTTP500{c}
+}
+
+type smallImageGen struct {
+	hideHTTP500
+}
+
+func (o *smallImageGen) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	return genai.Result{}, errors.New("disabled to save on performance")
+}
+
+func (o *smallImageGen) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+	return genai.Result{}, errors.New("disabled to save on performance")
+}
+
+func (o *smallImageGen) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
+	if v, ok := opts.(*genai.OptionsImage); ok {
+		// Ask for a smaller size.
+		n := *v
+		n.Width = 256
+		n.Height = 256
+		opts = &n
+	}
+	return o.hideHTTP500.GenDoc(ctx, msg, opts)
 }
 
 type hideHTTP500 struct {
@@ -59,9 +85,6 @@ func (h *hideHTTP500) Unwrap() genai.Provider {
 }
 
 func (h *hideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	if strings.HasPrefix(h.Model, "black-forest-labs/") {
-		return genai.Result{}, errors.New("disabled to save on performance")
-	}
 	resp, err := h.Client.GenSync(ctx, msgs, opts)
 	if err != nil {
 		var herr *httpjson.Error
@@ -75,9 +98,6 @@ func (h *hideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts gen
 }
 
 func (h *hideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
-	if strings.HasPrefix(h.Model, "black-forest-labs/") {
-		return genai.Result{}, errors.New("disabled to save on performance")
-	}
 	resp, err := h.Client.GenStream(ctx, msgs, chunks, opts)
 	if err != nil {
 		var herr *httpjson.Error
@@ -121,39 +141,6 @@ func TestClient_Scoreboard(t *testing.T) {
 		})
 	}
 	t.Logf("Usage: %#v", usage)
-}
-
-type injectOption struct {
-	*togetherai.Client
-	t    *testing.T
-	opts genai.OptionsImage
-}
-
-func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	n := i.opts
-	if opts != nil {
-		return genai.Result{}, errors.New("implement me")
-	}
-	opts = &n
-	return i.Client.GenSync(ctx, msgs, opts)
-}
-
-func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
-	n := i.opts
-	if opts != nil {
-		return genai.Result{}, errors.New("implement me")
-	}
-	opts = &n
-	return i.Client.GenStream(ctx, msgs, replies, opts)
-}
-
-func (i *injectOption) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
-	n := i.opts
-	if opts != nil {
-		return genai.Result{}, errors.New("implement me")
-	}
-	opts = &n
-	return i.Client.GenDoc(ctx, msg, opts)
 }
 
 func TestClient_Preferred(t *testing.T) {

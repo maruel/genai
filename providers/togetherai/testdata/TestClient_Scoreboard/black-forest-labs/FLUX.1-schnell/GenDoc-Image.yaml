@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1167
+        content_length: 1192
         host: api.together.xyz
         body: |
-            {"prompt":"Generate one square, white-background doodle with smooth, vibrantly colored image depicting A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves..\n\n*Mandatory Requirements (Compacted):**\n\n**Style:** Simple, vibrant, varied-colored doodle/hand-drawn sketch.\n**Background:** Plain solid white (no background colors/elements). Absolutely no black background.\n**Content & Motion:** Clearly depict **A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.** action with colored, moving subject (no static images). If there's an action specified, it should be the main difference between frames.\n**Format:** Square image (1:1 aspect ratio).\n**Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.\n**Output:** Actual image file for a smooth, colorful doodle-style image on a white background.","model":"black-forest-labs/FLUX.1-schnell"}
+            {"prompt":"Generate one square, white-background doodle with smooth, vibrantly colored image depicting A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves..\n\n*Mandatory Requirements (Compacted):**\n\n**Style:** Simple, vibrant, varied-colored doodle/hand-drawn sketch.\n**Background:** Plain solid white (no background colors/elements). Absolutely no black background.\n**Content & Motion:** Clearly depict **A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.** action with colored, moving subject (no static images). If there's an action specified, it should be the main difference between frames.\n**Format:** Square image (1:1 aspect ratio).\n**Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.\n**Output:** Actual image file for a smooth, colorful doodle-style image on a white background.","model":"black-forest-labs/FLUX.1-schnell","height":256,"width":256}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "o48r2up-2kFHot-9635d65d586fa2cf-PDX",
+              "id": "o4Dx2De-2kFHot-963b584b6beda29a-PDX",
               "model": "black-forest-labs/FLUX.1-schnell",
               "object": "list",
               "data": [
                 {
                   "index": 0,
-                  "url": "https://api.together.ai/shrt/tRDwLnF1y6ALAs6G",
+                  "url": "https://api.together.ai/shrt/k8iW3wtAU105FEfP",
                   "timings": {
-                    "inference": 1.0931329419836402
+                    "inference": 0.12469085794873536
                   }
                 }
               ]
@@ -44,11 +44,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9635d65d586fa2cf-YUL
+                - 963b584b6beda29a-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"124-YXWJ1fKWCe8BkMJiuvzk+myyf/s"
+                - W/"125-fNOGNzI/+wyWSil/thK7Vs/JLYI"
             Retry-After:
                 - "2"
             Server:
@@ -56,11 +56,11 @@ interactions:
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains
             X-Api-Call-End:
-                - "2025-07-22T20:55:11.201Z"
+                - "2025-07-23T12:57:41.205Z"
             X-Api-Call-Start:
-                - "2025-07-22T20:55:09.725Z"
+                - "2025-07-23T12:57:40.544Z"
             X-Api-Received:
-                - "2025-07-22T20:55:09.715Z"
+                - "2025-07-23T12:57:40.537Z"
             X-Image-Version:
                 - v2
             X-Ratelimit:
@@ -76,7 +76,7 @@ interactions:
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - o48r2up-2kFHot-9635d65d586fa2cf-PDX
+                - o4Dx2De-2kFHot-963b584b6beda29a-PDX
         status: 200 OK
         code: 200
-        duration: 2.885s
+        duration: 1.039s

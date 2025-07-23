@@ -754,6 +754,8 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 		out.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
 		v := out.Out[genai.ModalityImage]
 		if resp.Contents[0].URL == "" {
+			// TODO: Retrieve the image. We need to get the underlying http.Roundtripper to ensure it is recorded.
+			// In general the URL is only valid for a short time.
 			v.URL = true
 		} else {
 			v.Inline = true
@@ -794,6 +796,8 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 		out.Out[genai.ModalityAudio] = genai.ModalCapability{Inline: true}
 		v := out.Out[genai.ModalityAudio]
 		if resp.Contents[0].URL == "" {
+			// TODO: Retrieve the image. We need to get the underlying http.Roundtripper to ensure it is recorded.
+			// In general the URL is only valid for a short time.
 			v.URL = true
 		} else {
 			v.Inline = true

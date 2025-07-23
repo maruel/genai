@@ -542,7 +542,7 @@ type Model struct {
 	PipelineTag   string    `json:"pipeline_tag"`
 	LibraryName   string    `json:"library_name"`
 	CreatedAt     time.Time `json:"createdAt"`
-	ModelId       string    `json:"modelId"`
+	ModelID       string    `json:"modelId"`
 
 	// When full=true is specified:
 	Author       string    `json:"author"`

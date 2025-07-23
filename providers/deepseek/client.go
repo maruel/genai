@@ -67,7 +67,7 @@ var Scoreboard = genai.Scoreboard{
 	},
 }
 
-// https://api-docs.deepseek.com/api/create-chat-completion
+// ChatRequest is documented at https://api-docs.deepseek.com/api/create-chat-completion
 type ChatRequest struct {
 	Model            string    `json:"model"`
 	Messages         []Message `json:"messages"`

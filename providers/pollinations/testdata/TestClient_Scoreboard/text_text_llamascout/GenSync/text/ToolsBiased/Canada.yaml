@@ -1,0 +1,136 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        host: image.pollinations.ai
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://image.pollinations.ai/models
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '["flux","kontext","turbo","gptimage"]'
+        headers:
+            Access-Control-Allow-Headers:
+                - Content-Type
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Auth-Status, X-Auth-Reason, X-Debug-Token, X-Debug-Token-Source, X-Debug-Referrer, X-Debug-Legacy-Token-Match, X-Debug-Allowlist-Match, X-Debug-User-Id
+            Cache-Control:
+                - no-store, no-cache, must-revalidate, proxy-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963f0abfadc4a284-YUL
+            Content-Type:
+                - application/json
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 394ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        host: text.pollinations.ai
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://text.pollinations.ai/models
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '[{"name":"deepseek","description":"DeepSeek V3","maxInputChars":9000,"provider":"azure","tier":"flower","community":false,"aliases":"deepseek-v3","input_modalities":["text"],"output_modalities":["text"],"tools":false,"vision":false,"audio":false},{"name":"deepseek-reasoning","description":"DeepSeek R1 0528","maxInputChars":9000,"reasoning":true,"provider":"nebius","tier":"seed","community":false,"aliases":"deepseek-r1-0528","input_modalities":["text"],"output_modalities":["text"],"tools":false,"vision":false,"audio":false},{"name":"gemma-roblox","description":"Gemma 2 9B IT Fast (Nebius)","provider":"nebius","tier":"anonymous","community":false,"aliases":"gemma-2-9b-it-fast","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"grok","description":"xAI Grok-3 Mini","provider":"azure","tier":"seed","community":false,"aliases":"grok-3-mini","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"llama-fast-roblox","description":"Llama 3.2 1B  (Cloudflare)","provider":"cloudflare","tier":"anonymous","community":false,"aliases":"llama-3.2-1b-instruct","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"llama-roblox","description":"Llama 3.1 8B Instruct (Nebius)","provider":"nebius","tier":"anonymous","community":false,"aliases":"llama-3.1-8b-instruct","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"llamascout","description":"Llama 4 Scout 17B","provider":"cloudflare","tier":"anonymous","community":false,"aliases":"llama-4-scout-17b-16e-instruct","input_modalities":["text"],"output_modalities":["text"],"tools":false,"vision":false,"audio":false},{"name":"mistral","description":"Mistral Small 3.1 24B","provider":"cloudflare","tier":"anonymous","community":false,"aliases":"mistral-small-3.1-24b-instruct","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"mistral-nemo-roblox","description":"Mistral Nemo Instruct 2407 (Nebius)","provider":"nebius","tier":"anonymous","community":false,"aliases":"mistral-nemo-instruct-2407","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"mistral-roblox","description":"Mistral Small 3.1 24B (Cloudflare)","provider":"cloudflare","tier":"anonymous","community":false,"aliases":"mistral-small-cloudflare","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"openai","description":"OpenAI GPT-4o Mini","provider":"azure","tier":"anonymous","community":false,"aliases":"gpt-4o-mini","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"openai-audio","description":"OpenAI GPT-4o Mini Audio Preview","maxInputChars":5000,"voices":["alloy","echo","fable","onyx","nova","shimmer","coral","verse","ballad","ash","sage","amuch","dan"],"provider":"azure","tier":"seed","community":false,"aliases":"gpt-4o-mini-audio-preview","input_modalities":["text","image","audio"],"output_modalities":["audio","text"],"tools":true,"vision":true,"audio":true},{"name":"openai-fast","description":"OpenAI GPT-4.1 Nano","provider":"azure","tier":"anonymous","community":false,"aliases":"gpt-4.1-nano","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"openai-large","description":"OpenAI GPT-4.1","maxInputChars":9000,"provider":"azure","tier":"flower","community":false,"aliases":"gpt-4.1","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"openai-roblox","description":"OpenAI GPT-4.1 Mini (Roblox)","provider":"azure","tier":"nectar","community":false,"aliases":"gpt-4.1-mini-roblox","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"phi","description":"Phi-4 Mini Instruct","provider":"azure","tier":"anonymous","community":false,"aliases":"phi-4-mini-instruct","input_modalities":["text","image","audio"],"output_modalities":["text"],"tools":false,"vision":true,"audio":true},{"name":"qwen-coder","description":"Qwen 2.5 Coder 32B","provider":"scaleway","tier":"anonymous","community":false,"aliases":"qwen2.5-coder-32b-instruct","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"bidara","description":"BIDARA (Biomimetic Designer and Research Assistant by NASA)","provider":"azure","tier":"anonymous","community":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"elixposearch","description":"Elixpo Search","provider":"scaleway","tier":"anonymous","community":true,"input_modalities":["text"],"output_modalities":["text"],"tools":false,"vision":false,"audio":false},{"name":"evil","description":"Evil","provider":"cloudflare","uncensored":true,"tier":"seed","community":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"hypnosis-tracy","description":"Hypnosis Tracy","provider":"azure","tier":"seed","community":true,"input_modalities":["text","audio"],"output_modalities":["audio","text"],"tools":true,"vision":false,"audio":true},{"name":"midijourney","description":"MIDIjourney","provider":"azure","tier":"anonymous","community":true,"input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"mirexa","description":"Mirexa AI Companion","provider":"azure","tier":"seed","community":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"rtist","description":"Rtist","provider":"azure","tier":"seed","community":true,"input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"sur","description":"Sur AI Assistant","provider":"cloudflare","tier":"seed","community":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"unity","description":"Unity Unrestricted Agent","provider":"cloudflare","uncensored":true,"tier":"seed","community":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false}]'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963f0ac2193ca2f4-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"1965-KgIp3UzsCsXtjrkEfSOrX0p3QV4"
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+            X-Powered-By:
+                - Express
+        status: 200 OK
+        code: 200
+        duration: 456ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 606
+        host: text.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"model":"llamascout","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to determine the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required","private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://text.pollinations.ai/openai
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"pllns_652c317a0720e7107d612b51eb442957","object":"chat.completion","created":1753313558,"model":"@cf/meta/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","content":null,"tool_calls":[{"id":"call_1753313558273","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}},{"id":"call_1753313558273","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"}}],"refusal":null},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":337,"completion_tokens":35,"total_tokens":372}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963f0ac4bce6a2f4-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"259-Ois8YXIAzRaIhhMvf+dd1QJzZNc"
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2025-07-23T23:32:39.025Z"
+            X-Cache-Key:
+                - 16daa0913431aeb4180e3f0304aab375f6816d93f3da5557bf69c5d6cfa4f0d4
+            X-Powered-By:
+                - Express
+        status: 200 OK
+        code: 200
+        duration: 335ms

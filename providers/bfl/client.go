@@ -251,8 +251,8 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 		if err := opts.Validate(); err != nil {
 			return "", err
 		}
-		if opts.Modality() != genai.ModalityImage {
-			return "", errors.New("modality must be image")
+		if m := opts.Modality(); m != genai.ModalityImage {
+			return "", fmt.Errorf("modality %s not supported", m)
 		}
 	}
 	if len(msgs) != 1 {

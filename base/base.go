@@ -253,6 +253,8 @@ type ResultConverter interface {
 //
 // It includes common functionality for clients that provide chat capabilities.
 // It embeds Provider and adds the missing ModelID() method and implement genai.Validatable.
+//
+// It only accepts text modality.
 type ProviderGen[PErrorResponse fmt.Stringer, PGenRequest InitializableRequest, PGenResponse ResultConverter, GenStreamChunkResponse Obj] struct {
 	Provider[PErrorResponse]
 	// Model is the default model used for chat requests
@@ -283,6 +285,9 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
 			return result, err
+		}
+		if m := opts.Modality(); m != genai.ModalityText {
+			return result, fmt.Errorf("modality %s not supported", m)
 		}
 	}
 	// Check for non-empty Opaque field unless explicitly allowed
@@ -325,6 +330,9 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
 			return result, err
+		}
+		if m := opts.Modality(); m != genai.ModalityText {
+			return result, fmt.Errorf("modality %s not supported", m)
 		}
 	}
 	// Check for non-empty Opaque field unless explicitly allowed

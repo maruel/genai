@@ -6,15 +6,96 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 4595
-        transfer_encoding: []
-        trailer: {}
+        content_length: 0
+        host: image.pollinations.ai
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://image.pollinations.ai/models
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '["flux","kontext","turbo","gptimage"]'
+        headers:
+            Access-Control-Allow-Headers:
+                - Content-Type
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Auth-Status, X-Auth-Reason, X-Debug-Token, X-Debug-Token-Source, X-Debug-Referrer, X-Debug-Legacy-Token-Match, X-Debug-Allowlist-Match, X-Debug-User-Id
+            Cache-Control:
+                - no-store, no-cache, must-revalidate, proxy-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963ed965e97ca269-YUL
+            Content-Type:
+                - application/json
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 123ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
         host: text.pollinations.ai
-        remote_addr: ""
-        request_uri: ""
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://text.pollinations.ai/models
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '[{"name":"deepseek","description":"DeepSeek V3","maxInputChars":9000,"provider":"azure","tier":"flower","community":false,"aliases":"deepseek-v3","input_modalities":["text"],"output_modalities":["text"],"tools":false,"vision":false,"audio":false},{"name":"deepseek-reasoning","description":"DeepSeek R1 0528","maxInputChars":9000,"reasoning":true,"provider":"nebius","tier":"seed","community":false,"aliases":"deepseek-r1-0528","input_modalities":["text"],"output_modalities":["text"],"tools":false,"vision":false,"audio":false},{"name":"gemma-roblox","description":"Gemma 2 9B IT Fast (Nebius)","provider":"nebius","tier":"anonymous","community":false,"aliases":"gemma-2-9b-it-fast","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"grok","description":"xAI Grok-3 Mini","provider":"azure","tier":"seed","community":false,"aliases":"grok-3-mini","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"llama-fast-roblox","description":"Llama 3.2 1B  (Cloudflare)","provider":"cloudflare","tier":"anonymous","community":false,"aliases":"llama-3.2-1b-instruct","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"llama-roblox","description":"Llama 3.1 8B Instruct (Nebius)","provider":"nebius","tier":"anonymous","community":false,"aliases":"llama-3.1-8b-instruct","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"llamascout","description":"Llama 4 Scout 17B","provider":"cloudflare","tier":"anonymous","community":false,"aliases":"llama-4-scout-17b-16e-instruct","input_modalities":["text"],"output_modalities":["text"],"tools":false,"vision":false,"audio":false},{"name":"mistral","description":"Mistral Small 3.1 24B","provider":"cloudflare","tier":"anonymous","community":false,"aliases":"mistral-small-3.1-24b-instruct","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"mistral-nemo-roblox","description":"Mistral Nemo Instruct 2407 (Nebius)","provider":"nebius","tier":"anonymous","community":false,"aliases":"mistral-nemo-instruct-2407","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"mistral-roblox","description":"Mistral Small 3.1 24B (Cloudflare)","provider":"cloudflare","tier":"anonymous","community":false,"aliases":"mistral-small-cloudflare","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"openai","description":"OpenAI GPT-4o Mini","provider":"azure","tier":"anonymous","community":false,"aliases":"gpt-4o-mini","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"openai-audio","description":"OpenAI GPT-4o Mini Audio Preview","maxInputChars":5000,"voices":["alloy","echo","fable","onyx","nova","shimmer","coral","verse","ballad","ash","sage","amuch","dan"],"provider":"azure","tier":"seed","community":false,"aliases":"gpt-4o-mini-audio-preview","input_modalities":["text","image","audio"],"output_modalities":["audio","text"],"tools":true,"vision":true,"audio":true},{"name":"openai-fast","description":"OpenAI GPT-4.1 Nano","provider":"azure","tier":"anonymous","community":false,"aliases":"gpt-4.1-nano","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"openai-large","description":"OpenAI GPT-4.1","maxInputChars":9000,"provider":"azure","tier":"flower","community":false,"aliases":"gpt-4.1","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"openai-roblox","description":"OpenAI GPT-4.1 Mini (Roblox)","provider":"azure","tier":"nectar","community":false,"aliases":"gpt-4.1-mini-roblox","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"phi","description":"Phi-4 Mini Instruct","provider":"azure","tier":"anonymous","community":false,"aliases":"phi-4-mini-instruct","input_modalities":["text","image","audio"],"output_modalities":["text"],"tools":false,"vision":true,"audio":true},{"name":"qwen-coder","description":"Qwen 2.5 Coder 32B","provider":"scaleway","tier":"anonymous","community":false,"aliases":"qwen2.5-coder-32b-instruct","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"bidara","description":"BIDARA (Biomimetic Designer and Research Assistant by NASA)","provider":"azure","tier":"anonymous","community":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"elixposearch","description":"Elixpo Search","provider":"scaleway","tier":"anonymous","community":true,"input_modalities":["text"],"output_modalities":["text"],"tools":false,"vision":false,"audio":false},{"name":"evil","description":"Evil","provider":"cloudflare","uncensored":true,"tier":"seed","community":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"hypnosis-tracy","description":"Hypnosis Tracy","provider":"azure","tier":"seed","community":true,"input_modalities":["text","audio"],"output_modalities":["audio","text"],"tools":true,"vision":false,"audio":true},{"name":"midijourney","description":"MIDIjourney","provider":"azure","tier":"anonymous","community":true,"input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"mirexa","description":"Mirexa AI Companion","provider":"azure","tier":"seed","community":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"rtist","description":"Rtist","provider":"azure","tier":"seed","community":true,"input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"sur","description":"Sur AI Assistant","provider":"cloudflare","tier":"seed","community":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"unity","description":"Unity Unrestricted Agent","provider":"cloudflare","uncensored":true,"tier":"seed","community":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false}]'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963ed966aef533fb-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"1965-KgIp3UzsCsXtjrkEfSOrX0p3QV4"
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+            X-Powered-By:
+                - Express
+        status: 200 OK
+        code: 200
+        duration: 124ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 4595
+        host: text.pollinations.ai
         body: |
             {"messages":[{"role":"user","content":[{"type":"text","text":"Is it a banana? Reply with only one word."},{"type":"image_url","image_url":{"url":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/2wBDACgcHiMeGSgjISMtKygwPGRBPDc3PHtYXUlkkYCZlo+AjIqgtObDoKrarYqMyP/L2u71////m8H////6/+b9//j/2wBDASstLTw1PHZBQXb4pYyl+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj/wAARCAE5AfMDASIAAhEBAxEB/8QAGQABAQEBAQEAAAAAAAAAAAAAAAECAwQF/8QALBABAAICAQMDAwQCAwEAAAAAAAERAgMSITFRBEFhEzJxFCKBkUKhM1Kx8P/EABgBAQEBAQEAAAAAAAAAAAAAAAABAgME/8QAIBEBAQEBAAMAAwEBAQAAAAAAAAERAgMSMRMhUUEyYf/aAAwDAQACEQMRAD8A+yAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4eo3Za5iMa89Xd4vVzeyfhjyXIsddXqoy6Zxxnz7PRExMXE2+TGUxLthnMdcMpxlz58n9MfQHmw9VMRWzGb8w3+qw8Zf06+8MdgibiJj3GkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHzt83lM+Ze/ZNa5eDY4+W/IscYjq6RCRFNQ4q1dQ76NPKs8+3tHly0YfU21P2x1l7nbx87+6lAHZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHLfPSI/l5M+7vtyvKXCXl7u9KyBPZlXr9JhWrl75S7s64468Y8Q09cmTGQBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZ2ZccJn3aeffneVe0M99esHLOXOVmWXlaUq5iCG8IvZj+YJ9HuAexkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmYiLkGdmfDH5ns8WUumzKcptxyebvr2rSWQjUMCw3r/5MfzDENR06k+j3APYyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmWUYxcgszGMXLz55znPx4TLKc5uf6R5++9/UakSWJxbHJXPisYtgYxQ1LMhj3YzeMT5gZ1TerGfhp7WAAAAAcs/Ua8M+EzM5RFzXsn6nDxl/TN6k/RjsMRu1z/AJNxMT2mJ/Cyy/AAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATPOMY+faAMsoxi5cMspym5JmcpuUefvv2/UakQEc1AEUABGZaSRXo9NN6q8S6vP6WanKP5eh6+LvMc79AGkTLKMMeWU1Dyeo9Z/hp7++Xh09dlx0x8y+bjleUs9dZFkdsMYx695nvLpDjhl1d8erybraxCxFLELSouO3PH3v8ALpj6iP8AKK/DlRTU76hj1Y545dpiVeSm8dmePvf5dJ5Z/qY9A547sZ79HSOvZ1ll+MgCgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACZZRjHyW4GeUYx8+HCZmZue6zczc90efvv2akEklHNUFEURQVBUBBUBrTNbY+XqeTDpsx/L1vR4v+WOvoA6svmes25b984YxWOE1/LnGEYxUPRvx47so8zbnTy+Tq243HOI6u2E0zTUQ5q749WqcsZp1ibalQpKaFGaKaEGaWJnHtNKLBvHb/2j+YdImMouJtwojpNw6c+Sz6mO4547J/y/t0iYntLtOpfjOACgAAAAAAAAAAAAAAAAAAAAAAAAAAJllGPdzyynL4jwz11IsjWWz2x6y5/MqOHXV6akRJVJZElARQBFAAEUBEUkDH/kx/MPW8mvrtxj5et6PF8Y6+gDqy83q8ftz/h53v24c9c4+/s8DzeWZdb5FByVYaxmmVgHaMrVyiW4yXTGgibGkFAAFUSilVQjOY79W4zifevywU6TqxMdBzi47TTUZz7w3O4mNCRnH4/KxN9mtQAAAAAAAAAAAAAAAAAmai5AGZ2RHbqxOeU/EfDN7kXHScox7yxOyZ7dGaHK+S34uADmokyTLMyKsyyCAAigAAAAAIkqkg1oi90fEW9Th6bH7sv4d3q8czlzv0AbQeP1GHDZftl1exjdr+prmI7x1hjvn2iy48QivI6Cwig1CsqDUS1GTmqjrauUS3GS6mNqzEq1EUFaRBRQAUQrrfuoCXMe8rzn4lA2jXP4n+F54/8A0MIvvTHTljdXF/lXIqPC/kTHUcrnzJ18z/Z+SGOo58svKc8vJ+SGOo5c8vKTMz7z/Z+SGOxMxHeYhxnrHWb/ACUn5f8AxcdJzxie6fU8R/bAzfJTFnPKfevwlX36gzbb9UAtkBLSxVtLS0QVAFAAAEAAAEBUABJGtePPOI9u8rJtwejVjx1xHu0D2T9OQAAADyep18c+Udsv/XJ788YzxnGe0vDljOGU4z3h5vJzl1vmoqK5NCoqiiKCqigtrEsqDcZNRk5ltSpjrZbna8mvZMdBjktrqY0JZa6AWiaKgJqggmioAACAAAFlgCWlg1aWlpYuLZaIgqAKAAAAAgKgIAAAIColpMgtvTow44XPeXDThzz69o7vW7+Ln/WOr/gA7MgAAADlv1fUxuPuj/bqJZsyj56u/qNXfPH+Yed5OubzcdJdVUEVVRQURQVUFFVAFABS0FRbW2QGrLQNFstAFstAFstAFstkBbLQQW0sBQQAAAAAAABAVBEFEABLLBRLSwUtLSwWzGJzyjGO8p3moevTq+njc/dPdvjj2qW43hhGGMYwoPU5gAAAAAAADzb9PH92MdPePD0jPXM6mVZcfPV23aeP7se3vHhweXrm83K6S6qoINCANKyoKrKqKIoKIAogCiAKIAoigAAAgKIAqAAAAAACAqCAqCWgqJZYq2lpaWg1aWlpYNWWzZai2d+iRczURcvXo08P3Zdcv/GueL0zbi6dPD92X3f+OoPVJJMjn9AFAAAAAAAAAABw3aP8sI/h3EvM6mVZceAevbpjZ1jpl5eXLGcJrKKebri8ty6ggwrQgDQllg1YgDVlsgNWWzZYq2WlloNWM2tgqsqqKIKKIAogCiAKgAAiCiACCAtpaWliraWlpaC2lpaWo1aWlgLbWGGWeVYxctadGW3r2x8vbhhjrxrGHTjx2/us3rGdOmNUecvLoD0SZ8cwBQAAAAAAAAAAAAAATLGM4rKLhQHk2aMsOuPWHJ9Bz2aMc+vafMOPXi/jU6eMa2as9feOnmGHGyz63qqza2gq2zZYNWWlliqJYgCKCiANLbIo1YhYiiWWCiAKWhYLYzZYKJZYKiWWC2lpaWKts2WlgWllpYFg76vS5Z9c/wBsf7anNvwtxxxxnOaxi5evT6WMf3bOs+HfXrx1xWMU078+OT653rQB0ZAAAAAAAAAAAAAAAAAAAAAAHHZ6bHLrj+2f9OxaWS/R4M9WevvHTzDFvo25Z6NeftxnzDl14v41Onjtbbz9Pnj9v7ocpuJqYqXK82fWtastmy2Vastm1sFVmyxWi2bLBstmyxGrLZssGrLZssGrLZssGrLZssGrLZtLBu0tmywatLZssFtLS0mVwW0siMsprGJmfh31+kzy65zxj/bU5t+Jrzu+v0uzPrP7Y+Xq16dev7Y6+Z7ulus8X9ZvTGrRhq7Rc+ZdCx1kxkAAAAAAAAAAAAAAAAAAAAAAAAQSQLSyWZBq05MyzIN8mcqyisoifyzKAxlpwn7ZmHLLXlHapd5Zli8c1drzzcd4ot2mGJwjwxfF/F9mLLJwZqYZvjq63Zbnc+Dkz61ddLLc+RyTB0stz5HIwdLLc+RyMHSy3PkcjB0stz5JyMHW0tz5Lc+F9TW7TkkY5S1Gu+8tTipqck6z2i3XHXjHtf5dY6dmp4/6ns446c8u9R+XbDRhH3TOSq3OJE2umMxjFRERHw1yclbR05LbmsA6WtsQ1ANKzCgoAAAAAAAAAAAAAAAAAAAAAIKAzTNN0UDnScXWkoHLicXWjiDjxTg78U4g4cEnW9HE4g8062Z1PXxTgDyfST6T2cDgDxfR+E+hHh7uCcAeL6EeD9PD28DgmQeH9PHyfp4+Xu4HA9Ya8P6ePlf08eHt4HAyGvF+njwv0I8PZwOC4PJGn4WNT18DgDyxqajW9HFeIOEYLwduJxBx4rxdeK8QcuJxdaKBz4rTdLQMRDUQtLQIoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUUAFFABRQAUUAFFABRQAUUAAAAAAAAAAAAAAAAAAAAAAAAAAAP/9k="}}]}],"model":"openai","stream":true,"private":true,"stream_options":{"include_usage":true}}
-        form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,10 +105,7 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: 1241
-        uncompressed: false
         body: |+
             data: {"choices":[],"created":0,"id":"","model":"","object":"","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}]}
 
@@ -47,7 +125,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 94811038d8c0a290-YUL
+                - 963ed9677fdf33fb-YUL
             Content-Length:
                 - "1241"
             Content-Type:
@@ -66,4 +144,4 @@ interactions:
                 - Express
         status: 200 OK
         code: 200
-        duration: 397ms
+        duration: 485ms

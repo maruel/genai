@@ -493,6 +493,9 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 		if err := opts.Validate(); err != nil {
 			return genai.Result{}, err
 		}
+		if m := opts.Modality(); m != genai.ModalityText {
+			return genai.Result{}, fmt.Errorf("modality %s not supported", m)
+		}
 	}
 	for i, msg := range msgs {
 		for j, content := range msg.Contents {
@@ -529,6 +532,9 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
 			return result, err
+		}
+		if m := opts.Modality(); m != genai.ModalityText {
+			return genai.Result{}, fmt.Errorf("modality %s not supported", m)
 		}
 	}
 

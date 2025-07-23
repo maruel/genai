@@ -344,7 +344,7 @@ type imageToText struct {
 }
 */
 
-// https://developers.cloudflare.com/api/resources/ai/methods/run/
+// ChatResponse is somewhat documented at https://developers.cloudflare.com/api/resources/ai/methods/run/
 // See UnionMember7
 type ChatResponse struct {
 	Result struct {

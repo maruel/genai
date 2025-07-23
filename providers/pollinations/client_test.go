@@ -7,7 +7,6 @@ package pollinations_test
 import (
 	"context"
 	_ "embed"
-	"errors"
 	"net/http"
 	"os"
 	"testing"
@@ -21,10 +20,25 @@ import (
 )
 
 func TestClient_Scoreboard(t *testing.T) {
+	var models []genai.Model
+	t.Run("ListModel", func(t *testing.T) {
+		c := getClientInner(t, "")
+		var err error
+		models, err = c.ListModels(t.Context())
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
 		c := getClient(t, m)
-		if m == "flux" || m == "gptimage" || m == "turbo" {
-			return &injectOption{Client: c, t: t, opts: genai.OptionsImage{Width: 256, Height: 256}}
+		isImage := false
+		for i := range models {
+			if models[i].GetID() == c.Model {
+				_, isImage = models[i].(pollinations.ImageModel)
+			}
+		}
+		if isImage {
+			return &imageModelClient{Client: c, t: t}
 		}
 		if m == "deepseek-reasoning" {
 			return &adapters.ProviderGenThinking{ProviderGen: c, TagName: "think"}
@@ -33,36 +47,19 @@ func TestClient_Scoreboard(t *testing.T) {
 	}, nil)
 }
 
-type injectOption struct {
+type imageModelClient struct {
 	*pollinations.Client
 	t    *testing.T
 	opts genai.OptionsImage
 }
 
-func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	n := i.opts
-	if opts != nil {
-		return genai.Result{}, errors.New("implement me")
+func (i *imageModelClient) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
+	if v, ok := opts.(*genai.OptionsImage); ok {
+		n := *v
+		n.Width = 256
+		n.Height = 256
+		opts = &n
 	}
-	opts = &n
-	return i.Client.GenSync(ctx, msgs, opts)
-}
-
-func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
-	n := i.opts
-	if opts != nil {
-		return genai.Result{}, errors.New("implement me")
-	}
-	opts = &n
-	return i.Client.GenStream(ctx, msgs, replies, opts)
-}
-
-func (i *injectOption) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
-	n := i.opts
-	if opts != nil {
-		return genai.Result{}, errors.New("implement me")
-	}
-	opts = &n
 	return i.Client.GenDoc(ctx, msg, opts)
 }
 

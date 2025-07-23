@@ -21,6 +21,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
@@ -44,7 +45,7 @@ var Scoreboard = genai.Scoreboard{
 	Scenarios: []genai.Scenario{
 		{
 			Models: []string{
-				"llama-scout",
+				"llamascout",
 				"deepseek",
 				"evil",
 				"grok",
@@ -62,14 +63,13 @@ var Scoreboard = genai.Scoreboard{
 				JSON:           true,
 				Seed:           true,
 			},
+			// JSON generated is often bad.
 			GenStream: &genai.FunctionalityText{
-				BrokenTokenUsage: genai.True,
-				NoMaxTokens:      true,
-				NoStopSequence:   true,
-				Tools:            genai.Flaky,
-				IndecisiveTool:   genai.True,
-				JSON:             true,
-				Seed:             true,
+				NoMaxTokens:    true,
+				NoStopSequence: true,
+				Tools:          genai.Flaky,
+				IndecisiveTool: genai.True,
+				Seed:           true,
 			},
 		},
 		{
@@ -156,6 +156,7 @@ var Scoreboard = genai.Scoreboard{
 	},
 }
 
+// ChatRequest is barely documented at
 // https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#text--multimodal-openai-compatible-post-%EF%B8%8F%EF%B8%8F
 //
 // The structure is severely underdocumented.
@@ -530,7 +531,7 @@ type Usage struct {
 type MessageResponse struct {
 	Role             genai.Role `json:"role"`
 	ReasoningContent string     `json:"reasoning_content"`
-	Content          string     `json:"content"`
+	Content          any        `json:"content"` // Normally a string but can be a JSON object!
 	ToolCalls        []ToolCall `json:"tool_calls"`
 	Annotations      []struct{} `json:"annotations"`
 	Refusal          struct{}   `json:"refusal"`
@@ -553,7 +554,16 @@ func (m *MessageResponse) To(out *genai.Message) error {
 		}
 	}
 	if m.Content != "" {
-		out.Contents = append(out.Contents, genai.Content{Text: m.Content})
+		s, ok := m.Content.(string)
+		if !ok {
+			// Assume the request was JSON.
+			b, err := json.Marshal(m.Content)
+			if err != nil {
+				return fmt.Errorf("failed to parse JSON response %w", err)
+			}
+			s = string(b)
+		}
+		out.Contents = append(out.Contents, genai.Content{Text: s})
 	}
 	if m.ReasoningContent != "" {
 		// Paper over broken "deepseek".
@@ -595,7 +605,7 @@ type ChatStreamChunkResponse struct {
 }
 
 type ContentFilterResult struct {
-	Custom_blocklists struct {
+	CustomBlocklists struct {
 		Filtered bool `json:"filtered"`
 		Details  []struct {
 			BlocklistName string `json:"blocklist_name"`
@@ -609,11 +619,11 @@ type ContentFilterResult struct {
 		Filtered bool `json:"filtered"`
 		Detected bool `json:"detected"`
 	} `json:"jailbreak"`
-	Protected_material_code struct {
+	ProtectedMaterialCode struct {
 		Filtered bool `json:"filtered"`
 		Detected bool `json:"detected"`
 	} `json:"protected_material_code"`
-	Protected_material_text struct {
+	ProtectedMaterialText struct {
 		Filtered bool `json:"filtered"`
 		Detected bool `json:"detected"`
 	} `json:"protected_material_text"`
@@ -757,7 +767,7 @@ type ErrorResponse struct {
 		Step      string `json:"step"`
 		Timestamp int64  `json:"timestamp"`
 	} `json:"timingInfo"`
-	RequestId         string         `json:"requestId"`
+	RequestID         string         `json:"requestId"`
 	RequestParameters map[string]any `json:"requestParameters"`
 }
 
@@ -785,6 +795,11 @@ func (er *ErrorResponse) String() string {
 // Client implements genai.ProviderModel.
 type Client struct {
 	base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+
+	// Keep a cache of the model to ensure we don't send a text requested to a image generation model and
+	// vice-versa.
+	mu     sync.Mutex
+	models []genai.Model
 }
 
 // New creates a new client to talk to the Pollinations platform API.
@@ -880,12 +895,18 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 		}
 		return c.GenDoc(ctx, msgs[0], opts)
 	}
+	if err := c.validateModality(genai.ModalityText); err != nil {
+		return genai.Result{}, err
+	}
 	return c.ProviderGen.GenSync(ctx, msgs, opts)
 }
 
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	if c.isAudio(opts) || c.isImage(opts) {
 		return base.SimulateStream(ctx, c, msgs, chunks, opts)
+	}
+	if err := c.validateModality(genai.ModalityText); err != nil {
+		return genai.Result{}, err
 	}
 	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
 }
@@ -911,6 +932,9 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		if msg.Contents[i].Text == "" {
 			return res, errors.New("only text can be passed as input")
 		}
+	}
+	if err := c.validateModality(genai.ModalityImage); err != nil {
+		return genai.Result{}, err
 	}
 	qp := url.Values{}
 	qp.Add("model", c.Model)
@@ -998,6 +1022,42 @@ func (c *Client) ListImageGenModels(ctx context.Context) ([]genai.Model, error) 
 
 func (c *Client) ListTextModels(ctx context.Context) ([]genai.Model, error) {
 	return base.ListModels[*ErrorResponse, *TextModelsResponse](ctx, &c.Provider, "https://text.pollinations.ai/models")
+}
+
+func (c *Client) validateModality(m genai.Modality) error {
+	var err error
+	c.mu.Lock()
+	if c.models == nil {
+		c.models, err = c.ListModels(context.Background())
+	}
+	c.mu.Unlock()
+	if err != nil {
+		return err
+	}
+	isText := false
+	isImage := false
+	found := false
+	for i := range c.models {
+		if c.models[i].GetID() == c.Model {
+			found = true
+			_, isText = c.models[i].(*TextModel)
+			_, isImage = c.models[i].(ImageModel)
+		}
+	}
+	if !found {
+		return fmt.Errorf("model %q not supported by pollinations", c.Model)
+	}
+	switch m {
+	case genai.ModalityText:
+		if isText {
+			return nil
+		}
+	case genai.ModalityImage:
+		if isImage {
+			return nil
+		}
+	}
+	return fmt.Errorf("modality %s not supported", m)
 }
 
 func (c *Client) isAudio(opts genai.Options) bool {

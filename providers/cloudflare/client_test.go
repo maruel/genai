@@ -14,12 +14,51 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/cloudflare"
+	"github.com/maruel/genai/scoreboard/scoreboardtest"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
+func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+	apiKey := ""
+	if os.Getenv("CLOUDFLARE_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	accountID := os.Getenv("CLOUDFLARE_ACCOUNT_ID")
+	if accountID == "" {
+		accountID = "ACCOUNT_ID"
+	}
+	c, err := cloudflare.New(accountID, apiKey, model, fn)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return c
+}
+
 func TestClient_Scoreboard(t *testing.T) {
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen { return getClient(t, m) }, nil)
+	// Cloudflare hosts a ton of useless models, so just get the ones already in the scoreboard.
+	sb := getClient(t, "").Scoreboard()
+	var models []genai.Model
+	for _, sc := range sb.Scenarios {
+		for _, model := range sc.Models {
+			models = append(models, fakeModel(model))
+		}
+	}
+	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
+}
+
+type fakeModel string
+
+func (f fakeModel) GetID() string {
+	return string(f)
+}
+
+func (f fakeModel) String() string {
+	return string(f)
+}
+
+func (f fakeModel) Context() int64 {
+	return 0
 }
 
 func TestClient_Preferred(t *testing.T) {

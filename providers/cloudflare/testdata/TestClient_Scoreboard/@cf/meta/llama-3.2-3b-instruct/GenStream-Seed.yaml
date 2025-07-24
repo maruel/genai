@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 97
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"seed":42,"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/5f8d05006c864a755949615cd0a06064/ai/run/@cf/meta/llama-3.2-3b-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"response":"Hello","p":"abcdefghijklmnopqrstuvwxyz0123456789ab"}
+
+            data: {"response":"!","p":"abcdefghijklmnopqrstuvwxyz0123"}
+
+            data: {"response":"","p":"abcd"}
+
+            data: {"response":"","usage":{"prompt_tokens":19,"completion_tokens":3,"total_tokens":22}}
+
+            data: [DONE]
+
+        headers:
+            Api-Version:
+                - "2025-07-24"
+            Cf-Ai-Req-Id:
+                - c2db5308-554e-4e42-8253-db1a4822bfe7
+            Cf-Auditlog-Id:
+                - 01983e30-5507-76ec-9e2a-5d5903d1192d
+            Cf-Ray:
+                - 964644f4ba433400-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 252ms

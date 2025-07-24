@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 478
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/5f8d05006c864a755949615cd0a06064/ai/run/@cf/meta/llama-3.2-3b-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"result":{"response":null,"tool_calls":[{"name":"square_root","arguments":{"number":"132413"}}],"usage":{"prompt_tokens":199,"completion_tokens":14,"total_tokens":213}},"success":true,"errors":[],"messages":[]}'
+        headers:
+            Api-Version:
+                - "2025-07-24"
+            Cf-Ai-Req-Id:
+                - 5d5d8698-6b9f-4959-9a19-c61058329bcf
+            Cf-Auditlog-Id:
+                - 01983e30-5bee-7713-808f-32b9b33f0826
+            Cf-Ray:
+                - 964644ffcf863400-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 333ms

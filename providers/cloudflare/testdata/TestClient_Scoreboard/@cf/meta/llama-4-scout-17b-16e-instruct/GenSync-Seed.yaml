@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 83
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"seed":42}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/5f8d05006c864a755949615cd0a06064/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"result":{"response":"Hello!","tool_calls":[],"usage":{"prompt_tokens":86,"completion_tokens":3,"total_tokens":89}},"success":true,"errors":[],"messages":[]}'
+        headers:
+            Api-Version:
+                - "2025-07-24"
+            Cf-Ai-Req-Id:
+                - 69db2650-6086-46d4-a1df-2537f4c76260
+            Cf-Auditlog-Id:
+                - 01983e30-46ca-7e52-8296-cdaad922a164
+            Cf-Ray:
+                - 964644ddfcd33400-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 336ms

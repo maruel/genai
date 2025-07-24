@@ -1,0 +1,55 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 87
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/5f8d05006c864a755949615cd0a06064/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abd"}
+
+            data: {"response":"Hello","tool_calls":[],"p":"abdefghi"}
+
+            data: {"response":"!","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklm"}
+
+            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstuvxyz"}
+
+            data: {"tool_calls":[],"p":"abdef"}
+
+            data: {"response":"","usage":{"prompt_tokens":86,"completion_tokens":3,"total_tokens":89}}
+
+            data: [DONE]
+
+        headers:
+            Api-Version:
+                - "2025-07-24"
+            Cf-Ai-Req-Id:
+                - ef5fd169-4752-43db-bf18-e21d74bd171f
+            Cf-Auditlog-Id:
+                - 01983e30-4539-7c05-ab47-8b2c6aeab878
+            Cf-Ray:
+                - 964644db39253400-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 467ms

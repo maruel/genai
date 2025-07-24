@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 110
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_tokens":16}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/5f8d05006c864a755949615cd0a06064/ai/run/@cf/meta/llama-3.2-3b-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"result":{"response":"The theory of relativity, developed by Albert Einstein, is a fundamental concept in","usage":{"prompt_tokens":22,"completion_tokens":16,"total_tokens":38}},"success":true,"errors":[],"messages":[]}'
+        headers:
+            Api-Version:
+                - "2025-07-24"
+            Cf-Ai-Req-Id:
+                - 3bfbdf43-8b0a-45aa-9ff5-808e856aac15
+            Cf-Auditlog-Id:
+                - 01983e30-563f-7597-ba33-fa4f2b8bdfab
+            Cf-Ray:
+                - 964644f6ac873400-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 318ms

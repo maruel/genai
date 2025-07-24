@@ -51,14 +51,13 @@ var Scoreboard = genai.Scoreboard{
 		{
 			// Llama-4 scout supports genai.ModalityImage but I'm not sure if cloudflare supports this modality.
 			// This may change in the future.
-			Models: []string{"@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/meta/llama-3.2-3b-instruct"},
+			Models: []string{"@cf/meta/llama-4-scout-17b-16e-instruct"},
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				BrokenFinishReason: true,
 				NoStopSequence:     true,
 				Tools:              genai.Flaky,
-				BiasedTool:         genai.True,
 				IndecisiveTool:     genai.Flaky,
 				JSON:               true,
 				JSONSchema:         true,
@@ -68,9 +67,26 @@ var Scoreboard = genai.Scoreboard{
 				BrokenFinishReason: true,
 				NoStopSequence:     true,
 				Tools:              genai.Flaky,
-				BiasedTool:         genai.True,
+				Seed:               true,
+			},
+		},
+		{
+			Models: []string{"@cf/meta/llama-3.2-3b-instruct"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				BrokenFinishReason: true,
+				NoStopSequence:     true,
+				Tools:              genai.Flaky,
+				IndecisiveTool:     genai.Flaky,
 				JSON:               true,
-				JSONSchema:         true,
+				Seed:               true,
+			},
+			GenStream: &genai.FunctionalityText{
+				BrokenFinishReason: true,
+				NoStopSequence:     true,
+				Tools:              genai.Flaky,
+				JSON:               true,
 				Seed:               true,
 			},
 		},

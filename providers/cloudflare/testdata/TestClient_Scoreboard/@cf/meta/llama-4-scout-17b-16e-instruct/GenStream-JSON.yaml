@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 225
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"response_format":{"type":"json_object"},"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/5f8d05006c864a755949615cd0a06064/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"response":"","tool_calls":[],"p":"abdef"}
+
+            data: {"response":"{\"","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijkl"}
+
+            data: {"response":"is","tool_calls":[],"p":"abdefghijklmnoprstuvxyz123456"}
+
+            data: {"response":"_f","tool_calls":[],"p":"abdefghij"}
+
+            data: {"response":"ruit","tool_calls":[],"p":"abdefghi"}
+
+            data: {"response":"\":","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmnopr"}
+
+            data: {"response":true,"tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklm"}
+
+            data: {"response":"}","tool_calls":[],"p":"abdefghijklmnop"}
+
+            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234"}
+
+            data: {"tool_calls":[],"p":"abdefghijklmnoprstuvxyz1"}
+
+            data: {"response":"","usage":{"prompt_tokens":107,"completion_tokens":8,"total_tokens":115}}
+
+            data: [DONE]
+
+        headers:
+            Api-Version:
+                - "2025-07-24"
+            Cf-Ai-Req-Id:
+                - c6f5c035-c49e-4297-bc27-cae74aa2a6e4
+            Cf-Auditlog-Id:
+                - 01983e30-4a48-70aa-a500-2abd664f3e74
+            Cf-Ray:
+                - 964644e39bf33400-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 236ms

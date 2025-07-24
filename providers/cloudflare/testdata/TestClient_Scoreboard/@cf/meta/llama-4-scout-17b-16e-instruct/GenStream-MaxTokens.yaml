@@ -1,0 +1,81 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 124
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_tokens":16,"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/5f8d05006c864a755949615cd0a06064/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmnop"}
+
+            data: {"response":"The","tool_calls":[],"p":"abdefghijkl"}
+
+            data: {"response":" theory","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmno"}
+
+            data: {"response":" of","tool_calls":[],"p":"abdefghijklmnopr"}
+
+            data: {"response":" relativity","tool_calls":[],"p":"abdefghijklm"}
+
+            data: {"response":",","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmnopr"}
+
+            data: {"response":" developed","tool_calls":[],"p":"abdefghijklmnop"}
+
+            data: {"response":" by","tool_calls":[],"p":"abdefghijklmnoprs"}
+
+            data: {"response":" Albert","tool_calls":[],"p":"abdefghijklmnoprs"}
+
+            data: {"response":" Einstein","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1"}
+
+            data: {"response":",","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdef"}
+
+            data: {"response":" is","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmnoprs"}
+
+            data: {"response":" a","tool_calls":[],"p":"abdefghijklmnopr"}
+
+            data: {"response":" fundamental","tool_calls":[],"p":"abdefghijklmn"}
+
+            data: {"response":" concept","tool_calls":[],"p":"abdefghijklmnoprstuvxy"}
+
+            data: {"response":" in","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghij"}
+
+            data: {"response":" modern","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdef"}
+
+            data: {"tool_calls":[],"p":"abdefghijklmnopr"}
+
+            data: {"response":"","usage":{"prompt_tokens":87,"completion_tokens":16,"total_tokens":103}}
+
+            data: [DONE]
+
+        headers:
+            Api-Version:
+                - "2025-07-24"
+            Cf-Ai-Req-Id:
+                - 8dc80b43-164c-4ed3-9081-2d53d4bb4fba
+            Cf-Auditlog-Id:
+                - 01983e30-4822-783a-be27-1c041b13ab25
+            Cf-Ray:
+                - 964644e01f3a3400-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 283ms

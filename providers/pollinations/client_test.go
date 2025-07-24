@@ -48,11 +48,11 @@ func gc(t testing.TB, name, m string) (genai.Provider, http.RoundTripper) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	models = warmupCache(t)
+	cachedModels = warmupCache(t)
 	isImage := false
-	for i := range models {
-		if models[i].GetID() == c.Model {
-			_, isImage = models[i].(pollinations.ImageModel)
+	for i := range cachedModels {
+		if cachedModels[i].GetID() == c.Model {
+			_, isImage = cachedModels[i].(pollinations.ImageModel)
 			break
 		}
 	}
@@ -135,11 +135,7 @@ func (i *imageModelClient) GenDoc(ctx context.Context, msg genai.Message, opts g
 
 func TestClient_Scoreboard(t *testing.T) {
 	usage := genai.Usage{}
-	cc, _ := gc(t, t.Name()+"/ListModels", "")
-	models, err2 := cc.(genai.ProviderModel).ListModels(t.Context())
-	if err2 != nil {
-		t.Fatal(err2)
-	}
+	models := warmupCache(t)
 	for _, m := range models {
 		id := m.GetID()
 		t.Run(id, func(t *testing.T) {
@@ -221,19 +217,19 @@ func warmupCache(t testing.TB) []genai.Model {
 		if err2 != nil {
 			t.Fatal(err2)
 		}
-		if models, err = pollinations.Cache.Warmup(c); err != nil {
+		if cachedModels, err = pollinations.Cache.Warmup(c); err != nil {
 			t.Fatal(err)
 		}
 		if err = r.Stop(); err != nil {
 			t.Fatal(err)
 		}
 	})
-	return models
+	return cachedModels
 }
 
 var doOnce sync.Once
 
-var models []genai.Model
+var cachedModels []genai.Model
 
 var testRecorder *internaltest.Records
 

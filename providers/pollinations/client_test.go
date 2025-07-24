@@ -23,27 +23,8 @@ import (
 	"github.com/maruel/httpjson"
 )
 
-func gc(t testing.TB, name, m string) (genai.Provider, http.RoundTripper) {
-	var rt http.RoundTripper
-	fn := func(h http.RoundTripper) http.RoundTripper {
-		if name == "" {
-			rt = h
-			return h
-
-		}
-		r, err2 := testRecorder.Records.Record(name, h)
-		if err2 != nil {
-			t.Fatal(err2)
-		}
-		t.Cleanup(func() {
-			if err3 := r.Stop(); err3 != nil {
-				t.Error(err3)
-			}
-		})
-		rt = r
-		return r
-	}
-	c, err := pollinations.New("", m, fn)
+func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+	c, err := pollinations.New("", model, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -57,12 +38,12 @@ func gc(t testing.TB, name, m string) (genai.Provider, http.RoundTripper) {
 	}
 	c2 := &hideHTTP500{Client: c}
 	if isImage {
-		return &imageModelClient{parent: c2}, rt
+		return &imageModelClient{parent: c2}
 	}
-	if m == "deepseek-reasoning" {
-		return &adapters.ProviderGenThinking{ProviderGen: c2, TagName: "think"}, rt
+	if model == "deepseek-reasoning" {
+		return &adapters.ProviderGenThinking{ProviderGen: c2, TagName: "think"}
 	}
-	return c2, rt
+	return c2
 }
 
 type hideHTTP500 struct {
@@ -133,18 +114,8 @@ func (i *imageModelClient) GenDoc(ctx context.Context, msg genai.Message, opts g
 }
 
 func TestClient_Scoreboard(t *testing.T) {
-	usage := genai.Usage{}
 	models := warmupCache(t)
-	for _, m := range models {
-		id := m.GetID()
-		t.Run(id, func(t *testing.T) {
-			// Run one model at a time otherwise we can't collect the total usage.
-			usage.Add(scoreboardtest.RunOneModel(t, func(t testing.TB, sn string) (genai.Provider, http.RoundTripper) {
-				return gc(t, sn, id)
-			}))
-		})
-	}
-	t.Logf("Usage: %#v", usage)
+	scoreboardtest.TestClient_Scoreboard(t, getClientRT, models, testRecorder.Records)
 }
 
 func TestClient_Preferred(t *testing.T) {

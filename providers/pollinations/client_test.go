@@ -38,7 +38,7 @@ func TestClient_Scoreboard(t *testing.T) {
 			}
 		}
 		if isImage {
-			return &imageModelClient{Client: c, t: t}
+			return &imageModelClient{Client: c}
 		}
 		if m == "deepseek-reasoning" {
 			return &adapters.ProviderGenThinking{ProviderGen: c, TagName: "think"}
@@ -49,8 +49,6 @@ func TestClient_Scoreboard(t *testing.T) {
 
 type imageModelClient struct {
 	*pollinations.Client
-	t    *testing.T
-	opts genai.OptionsImage
 }
 
 func (i *imageModelClient) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {

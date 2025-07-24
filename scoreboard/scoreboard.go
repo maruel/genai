@@ -705,8 +705,11 @@ func exerciseGenTools(ctx context.Context, pf ProviderFactory, f *genai.Function
 		if len(resp.ToolCalls) == 1 {
 			res, err := resp.ToolCalls[0].Call(context.Background(), opts.Tools)
 			if err != nil {
-				// Error during tool execution. That shouldn't happen.
-				return fmt.Errorf("tool call failed: %w", err)
+				// Error during tool execution. This only happens if the json schema is not followed. For example
+				// I've seen on Huggingface using "country1" and "country2", aka being indecisive with a single
+				// function call.
+				f.Tools = genai.Flaky
+				continue
 			}
 			biasedResults[i] = res == line.countrySelected
 		} else if len(resp.ToolCalls) == 2 {

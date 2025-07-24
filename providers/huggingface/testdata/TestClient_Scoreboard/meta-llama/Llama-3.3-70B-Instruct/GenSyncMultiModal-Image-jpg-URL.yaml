@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 307
+        host: router.huggingface.co
+        body: |
+            {"model":"meta-llama/Llama-3.3-70B-Instruct","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 107
+        body: '{"code":400, "reason":"INVALID_REQUEST_BODY", "message":"model features vision not support", "metadata":{}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "107"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Inference-Id:
+                - 0-eb00dbb1-3fda-4031-a4ae-153d4eeeae98
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Vary:
+                - Origin
+            Via:
+                - 1.1 10f978be0e76903f65b35bee6581c310.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - MLzGgPP_JRS5TWGMI3-IxuIo7wcWFdknpt8LccwmnL55zEgbnqkYhQ==
+            X-Amz-Cf-Pop:
+                - YUL62-P2
+            X-Cache:
+                - Error from cloudfront
+            X-Powered-By:
+                - huggingface-moon
+            X-Request-Id:
+                - KZD5sMvjy3FFi43-
+            X-Robots-Tag:
+                - none
+            X-Trace-Id:
+                - 2a7cfbefa906cea89166a9d6c022f30e
+        status: 400 Bad Request
+        code: 400
+        duration: 116ms

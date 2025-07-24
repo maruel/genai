@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 561
+        host: router.huggingface.co
+        body: |
+            {"model":"meta-llama/Llama-3.3-70B-Instruct","stream":false,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 772
+        body: |
+            {"id":"905da44e-30e2-440d-9963-1c7b9007dd2c","object":"chat.completion","created":1753389222,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"id":"call_rlxf6U432uSBZ8k25NjlV8MX","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},"finish_reason":"tool_calls","content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"usage":{"prompt_tokens":220,"completion_tokens":14,"total_tokens":234,"prompt_tokens_details":null,"completion_tokens_details":null},"system_fingerprint":""}
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "772"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Inference-Id:
+                - 0-7a30e6cc-eedc-461b-9c3d-d70aa794287a
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Vary:
+                - Origin
+            Via:
+                - 1.1 df34ce5bf73c140dc63a22fa17a4dcda.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - j0DHdR_c5wFqQD401LsH-SW2jKSK8Tg6FD_F_YwaG8od8nvz3Cp1eg==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Powered-By:
+                - huggingface-moon
+            X-Request-Id:
+                - NK30N2TE_6HiBg85
+            X-Robots-Tag:
+                - none
+            X-Trace-Id:
+                - c7bd4e640b4293524b99b8a0e10d1dcf
+        status: 200 OK
+        code: 200
+        duration: 934ms

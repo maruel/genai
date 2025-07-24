@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 171
+        host: router.huggingface.co
+        body: |
+            {"model":"meta-llama/Llama-3.3-70B-Instruct","stream":true,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"a99353c7-7cfc-462f-a4e3-3bbd81174485","object":"chat.completion.chunk","created":1753388817,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null,"content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"system_fingerprint":"","usage":{"prompt_tokens":43,"completion_tokens":0,"total_tokens":43,"prompt_tokens_details":null,"completion_tokens_details":null}}
+
+            data: {"id":"a99353c7-7cfc-462f-a4e3-3bbd81174485","object":"chat.completion.chunk","created":1753388817,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null,"content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"system_fingerprint":"","usage":{"prompt_tokens":43,"completion_tokens":1,"total_tokens":44,"prompt_tokens_details":null,"completion_tokens_details":null}}
+
+            data: {"id":"a99353c7-7cfc-462f-a4e3-3bbd81174485","object":"chat.completion.chunk","created":1753388817,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"delta":{"content":"."},"finish_reason":null,"content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"system_fingerprint":"","usage":{"prompt_tokens":43,"completion_tokens":2,"total_tokens":45,"prompt_tokens_details":null,"completion_tokens_details":null}}
+
+            data: {"id":"a99353c7-7cfc-462f-a4e3-3bbd81174485","object":"chat.completion.chunk","created":1753388817,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"delta":{},"finish_reason":"stop","content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"system_fingerprint":"","usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46,"prompt_tokens_details":null,"completion_tokens_details":null}}
+
+            data: {"id":"a99353c7-7cfc-462f-a4e3-3bbd81174485","object":"chat.completion.chunk","created":1753388817,"model":"meta-llama/llama-3.3-70b-instruct","choices":[],"system_fingerprint":"","usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46,"prompt_tokens_details":null,"completion_tokens_details":null}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Inference-Id:
+                - 0-0e38300d-b8a9-4ae0-b09a-4467e91ec085
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Vary:
+                - Origin
+            Via:
+                - 1.1 c73f9dc228a4b3fb05ae37ce52d04a1c.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - X_ApiaJ-_Vhgigt-sf1a4JUehj-0qTB-6avwpwDztiH6ad62s4Zpsw==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Powered-By:
+                - huggingface-moon
+            X-Request-Id:
+                - ZL0cDOlUFw3EZ8IZ
+            X-Robots-Tag:
+                - none
+            X-Trace-Id:
+                - 971e5be8f1f56ec4b3ce5175784f87e3
+        status: 200 OK
+        code: 200
+        duration: 440ms

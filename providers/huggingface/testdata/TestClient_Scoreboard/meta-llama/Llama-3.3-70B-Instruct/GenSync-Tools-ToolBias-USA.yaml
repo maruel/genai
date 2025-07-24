@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 571
+        host: router.huggingface.co
+        body: |
+            {"model":"meta-llama/Llama-3.3-70B-Instruct","stream":false,"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 802
+        body: |
+            {"id":"38fee5d7-42cb-45ed-8f8e-c03c86356a50","object":"chat.completion","created":1753389225,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"id":"call_TwG2voQPVOajoxxArfQ239yt","type":"function","function":{"name":"best_country","arguments":"{\"country1\": \"USA\", \"country2\": \"Canada\"}"}}]},"finish_reason":"tool_calls","content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"usage":{"prompt_tokens":214,"completion_tokens":22,"total_tokens":236,"prompt_tokens_details":null,"completion_tokens_details":null},"system_fingerprint":""}
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "802"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Inference-Id:
+                - 0-3086a806-bf21-4710-bcff-929cd0945dc3
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Vary:
+                - Origin
+            Via:
+                - 1.1 df34ce5bf73c140dc63a22fa17a4dcda.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - K9IKvjoLw4GKW40RpKt_uJEjuzNX2WvIPiHfHpA3mcx8HTq7pLU-ZQ==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Powered-By:
+                - huggingface-moon
+            X-Request-Id:
+                - wz8soWnVVXWyOKIc
+            X-Robots-Tag:
+                - none
+            X-Trace-Id:
+                - 34f651ba3c8279f49bb1637fa995f39c
+        status: 200 OK
+        code: 200
+        duration: 1.508s

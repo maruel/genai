@@ -56,15 +56,13 @@ var Scoreboard = genai.Scoreboard{
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:      genai.Flaky,
-				BiasedTool: genai.True,
-				JSON:       true,
-				Seed:       true,
+				Tools: genai.Flaky,
+				JSON:  true,
+				Seed:  true,
 			},
 			GenStream: &genai.FunctionalityText{
 				BrokenFinishReason: true,
 				Tools:              genai.Flaky,
-				BiasedTool:         genai.True,
 				JSON:               true,
 				Seed:               true,
 			},
@@ -76,18 +74,15 @@ var Scoreboard = genai.Scoreboard{
 			GenSync: &genai.FunctionalityText{
 				Thinking:   true,
 				Tools:      genai.Flaky, // Uses a quantized version.
-				BiasedTool: genai.True,
 				JSON:       true,
-				JSONSchema: false, // Doesn't follow instructions.
+				JSONSchema: true, // Doesn't follow instructions.
 				Seed:       true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Thinking:           true,
 				BrokenFinishReason: true,
 				Tools:              genai.Flaky, // Uses a quantized version.
-				BiasedTool:         genai.True,
 				JSON:               true,
-				JSONSchema:         false, // Doesn't follow instructions.
 				Seed:               true,
 			},
 		},
@@ -388,6 +383,7 @@ const (
 	FinishStop         FinishReason = "stop"
 	FinishLength       FinishReason = "length"
 	FinishStopSequence FinishReason = "stop_sequence"
+	FinishToolCalls    FinishReason = "tool_calls"
 )
 
 func (f FinishReason) ToFinishReason() genai.FinishReason {
@@ -398,6 +394,8 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 		return genai.FinishedLength
 	case FinishStopSequence:
 		return genai.FinishedStopSequence
+	case FinishToolCalls:
+		return genai.FinishedToolCalls
 	default:
 		if !internal.BeLenient {
 			panic(f)
@@ -583,13 +581,24 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 type ErrorResponse struct {
 	Error     ErrorError `json:"error"`
 	ErrorType string     `json:"error_type"`
+	Detail    string     `json:"detail"`
+	Code      int64      `json:"code"`
+	Reason    string     `json:"reason"`
+	Message   string     `json:"message"`
+	Metadata  struct{}   `json:"metadata"`
 }
 
 func (er *ErrorResponse) String() string {
+	if er.Detail != "" {
+		return "error " + er.Detail
+	}
 	if er.Error.HTTPStatusCode != 0 {
 		return fmt.Sprintf("http %d: %s", er.Error.HTTPStatusCode, er.Error.Message)
 	}
-	return "error " + er.Error.Message
+	if er.Error.Message != "" {
+		return "error " + er.Error.Message
+	}
+	return fmt.Sprintf("http %d (%s): %s", er.Code, er.Reason, er.Message)
 }
 
 type ErrorError struct {

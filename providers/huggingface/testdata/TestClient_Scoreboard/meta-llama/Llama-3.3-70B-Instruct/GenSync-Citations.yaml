@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 266
+        host: router.huggingface.co
+        body: |
+            {"model":"meta-llama/Llama-3.3-70B-Instruct","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 750
+        body: |
+            {"id":"8ebf0309-cea8-4e81-8559-1fbc1671fb6e","object":"chat.completion","created":1753389349,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"That's an easy one! The capital of Quackiland is Quack. (The information about the Big Canard Statue doesn't change that fact!)"},"finish_reason":"stop","content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"usage":{"prompt_tokens":40,"completion_tokens":31,"total_tokens":71,"prompt_tokens_details":null,"completion_tokens_details":null},"system_fingerprint":""}
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "750"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Inference-Id:
+                - 0-066c686c-b02b-4929-a492-68e230e92e3f
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Vary:
+                - Origin
+            Via:
+                - 1.1 10f978be0e76903f65b35bee6581c310.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - ZkMjk-1CMJQRbiZx4EEA0js9T44EaDLDXukDHJm_goWvTESjA5Dwew==
+            X-Amz-Cf-Pop:
+                - YUL62-P2
+            X-Cache:
+                - Miss from cloudfront
+            X-Powered-By:
+                - huggingface-moon
+            X-Request-Id:
+                - JZWi7D4o554pfKtO
+            X-Robots-Tag:
+                - none
+            X-Trace-Id:
+                - fe9a096c9f125eddbb95cc2699ddf75f
+        status: 200 OK
+        code: 200
+        duration: 2.084s

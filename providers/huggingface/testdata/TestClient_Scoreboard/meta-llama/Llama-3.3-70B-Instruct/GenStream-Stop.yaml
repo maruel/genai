@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 213
+        host: router.huggingface.co
+        body: |
+            {"model":"meta-llama/Llama-3.3-70B-Instruct","stream":true,"messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stop":["is"],"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"a21ac4f6-3346-4334-9b67-61e1e5f6e5de","object":"chat.completion.chunk","created":1753388818,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null,"content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"system_fingerprint":"","usage":{"prompt_tokens":47,"completion_tokens":0,"total_tokens":47,"prompt_tokens_details":null,"completion_tokens_details":null}}
+
+            data: {"id":"a21ac4f6-3346-4334-9b67-61e1e5f6e5de","object":"chat.completion.chunk","created":1753388818,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"delta":{"content":"Canad"},"finish_reason":null,"content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"system_fingerprint":"","usage":{"prompt_tokens":47,"completion_tokens":1,"total_tokens":48,"prompt_tokens_details":null,"completion_tokens_details":null}}
+
+            data: {"id":"a21ac4f6-3346-4334-9b67-61e1e5f6e5de","object":"chat.completion.chunk","created":1753388818,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"delta":{"content":"a "},"finish_reason":"stop","content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"system_fingerprint":"","usage":{"prompt_tokens":47,"completion_tokens":2,"total_tokens":49,"prompt_tokens_details":null,"completion_tokens_details":null}}
+
+            data: {"id":"a21ac4f6-3346-4334-9b67-61e1e5f6e5de","object":"chat.completion.chunk","created":1753388818,"model":"meta-llama/llama-3.3-70b-instruct","choices":[],"system_fingerprint":"","usage":{"prompt_tokens":47,"completion_tokens":2,"total_tokens":49,"prompt_tokens_details":null,"completion_tokens_details":null}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Inference-Id:
+                - 0-7e1b44cc-f923-4442-afeb-51871dd70bea
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Vary:
+                - Origin
+            Via:
+                - 1.1 c73f9dc228a4b3fb05ae37ce52d04a1c.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - -tGmDOIUKMLAT_lWofLIubBgpHUHdY3M3IfViz1INn6vCYkD16KPhQ==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Powered-By:
+                - huggingface-moon
+            X-Request-Id:
+                - -fMxM_dVu2WEHxJ4
+            X-Robots-Tag:
+                - none
+            X-Trace-Id:
+                - 309055769af9b389a0be7a76b195deee
+        status: 200 OK
+        code: 200
+        duration: 487ms

@@ -17,22 +17,50 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/huggingface"
+	"github.com/maruel/genai/scoreboard/scoreboardtest"
 )
 
-func TestClient_Scoreboard(t *testing.T) {
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
-		c := getClient(t, m)
-		if strings.HasPrefix(m, "Qwen/Qwen3") {
-			return &adapters.ProviderGenThinking{
-				ProviderGen: &adapters.ProviderGenAppend{
-					ProviderGen: c,
-					Append:      genai.NewTextMessage(genai.User, "/think"),
-				},
-				TagName: "think",
-			}
+func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+	c, err := huggingface.New(getAPIKey(t), model, fn)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.HasPrefix(model, "Qwen/Qwen3") {
+		return &adapters.ProviderGenThinking{
+			ProviderGen: &adapters.ProviderGenAppend{
+				ProviderGen: c,
+				Append:      genai.NewTextMessage(genai.User, "/think"),
+			},
+			TagName: "think",
 		}
-		return c
-	}, nil)
+	}
+	return c
+}
+
+func TestClient_Scoreboard(t *testing.T) {
+	// We do not want to test thousands of models, so get the ones already in the scoreboard.
+	sb := getClient(t, "").Scoreboard()
+	var models []genai.Model
+	for _, sc := range sb.Scenarios {
+		for _, model := range sc.Models {
+			models = append(models, fakeModel(model))
+		}
+	}
+	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
+}
+
+type fakeModel string
+
+func (f fakeModel) GetID() string {
+	return string(f)
+}
+
+func (f fakeModel) String() string {
+	return string(f)
+}
+
+func (f fakeModel) Context() int64 {
+	return 0
 }
 
 func TestClient_Preferred(t *testing.T) {
@@ -82,21 +110,28 @@ func getClient(t *testing.T, m string) *huggingface.Client {
 }
 
 func getClientInner(t *testing.T, apiKey, m string) *huggingface.Client {
-	if apiKey == "" && os.Getenv("HUGGINGFACE_API_KEY") == "" {
-		// Fallback to loading from the python client's cache.
-		h, err := os.UserHomeDir()
-		if err != nil {
-			t.Fatal("can't find home directory")
-		}
-		if _, err := os.Stat(filepath.Join(h, ".cache", "huggingface", "token")); err != nil {
-			apiKey = "<insert_api_key_here>"
-		}
+	if apiKey == "" {
+		apiKey = getAPIKey(t)
 	}
 	c, err := huggingface.New(apiKey, m, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 	if err != nil {
 		t.Fatal(err)
 	}
 	return c
+}
+
+func getAPIKey(t testing.TB) string {
+	if os.Getenv("HUGGINGFACE_API_KEY") == "" {
+		// Fallback to loading from the python client's cache.
+		h, err := os.UserHomeDir()
+		if err != nil {
+			t.Fatal("can't find home directory")
+		}
+		if _, err := os.Stat(filepath.Join(h, ".cache", "huggingface", "token")); err != nil {
+			return "<insert_api_key_here>"
+		}
+	}
+	return ""
 }
 
 var testRecorder *internaltest.Records

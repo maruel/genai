@@ -22,6 +22,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
@@ -127,9 +128,7 @@ var Scoreboard = genai.Scoreboard{
 				Seed:             true,
 			},
 		},
-		// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#speech-to-text-capabilities-audio-input-%EF%B8%8F
-		// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#generate-audio-api-
-		// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#text-to-speech-post---openai-compatible-%EF%B8%8F%EF%B8%8F
+		// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md
 		{
 			Models: []string{"openai-audio"},
 			In: map[genai.Modality]genai.ModalCapability{
@@ -174,7 +173,7 @@ type ChatRequest struct {
 	Private         bool            `json:"private,omitzero"`     // Set to true to prevent the response from appearing in the public feed.
 	ReasoningEffort ReasoningEffort `json:"reasoning_format,omitzero"`
 
-	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#text-to-speech-post---openai-compatible-%EF%B8%8F%EF%B8%8F
+	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md
 	Modalities []string `json:"modalities,omitzero"`
 	Audio      struct {
 		Voice  string `json:"voice,omitzero"`
@@ -459,6 +458,7 @@ type ChatResponse struct {
 	PromptFilterResults []PromptFilterResult `json:"prompt_filter_results"`
 	SystemFingerprint   string               `json:"system_fingerprint"`
 	PromptLogprobs      struct{}             `json:"prompt_logprobs"`
+	KVTransferParams    struct{}             `json:"kv_transfer_params"`
 }
 
 func (c *ChatResponse) ToResult() (genai.Result, error) {
@@ -812,7 +812,8 @@ type Client struct {
 // base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
 // possible the model is not available anymore.
 //
-// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
+// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport
+// with a retry on HTTP 402 (payment required).
 func New(auth, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	var h http.Header
 	if auth == "" {
@@ -826,6 +827,17 @@ func New(auth, model string, wrapper func(http.RoundTripper) http.RoundTripper) 
 		}
 	}
 	t := base.DefaultTransport
+	if r, ok := t.(*roundtrippers.Retry); ok {
+		c := *r
+		if p, ok := c.Policy.(*roundtrippers.ExponentialBackoff); ok {
+			c.Policy = &exponentialBackoff{ExponentialBackoff: *p}
+		} else {
+			return nil, fmt.Errorf("unsupported retry policy %T", c.Policy)
+		}
+		t = &c
+	} else {
+		return nil, fmt.Errorf("unsupported transport %T", t)
+	}
 	if wrapper != nil {
 		t = wrapper(t)
 	}
@@ -915,7 +927,9 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 //
 // Default rate limit is 0.2 QPS / IP.
 func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
-	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#text-to-image-get-%EF%B8%8F
+	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#1-text-to-image-get-%EF%B8%8F
+	// TODO:
+	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#4-text-to-speech-get-%EF%B8%8F%EF%B8%8F
 	res := genai.Result{}
 	if err := c.Validate(); err != nil {
 		return res, err
@@ -926,6 +940,9 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	if opts != nil {
 		if err := opts.Validate(); err != nil {
 			return res, err
+		}
+		if m := opts.Modality(); m != genai.ModalityImage {
+			return res, fmt.Errorf("modality %s not supported", m)
 		}
 	}
 	for i := range msg.Contents {
@@ -1042,6 +1059,7 @@ func (c *Client) validateModality(m genai.Modality) error {
 			found = true
 			_, isText = c.models[i].(*TextModel)
 			_, isImage = c.models[i].(ImageModel)
+			break
 		}
 	}
 	if !found {
@@ -1139,6 +1157,17 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 	}
 	return nil
+}
+
+type exponentialBackoff struct {
+	roundtrippers.ExponentialBackoff
+}
+
+func (e *exponentialBackoff) ShouldRetry(ctx context.Context, start time.Time, try int, err error, resp *http.Response) bool {
+	if resp.StatusCode == 402 {
+		return true
+	}
+	return e.ExponentialBackoff.ShouldRetry(ctx, start, try, err, resp)
 }
 
 var (

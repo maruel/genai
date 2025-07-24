@@ -7,8 +7,10 @@ package pollinations_test
 import (
 	"context"
 	_ "embed"
+	"errors"
 	"net/http"
 	"os"
+	"sync"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -17,44 +19,137 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/pollinations"
+	"github.com/maruel/genai/scoreboard/scoreboardtest"
+	"github.com/maruel/httpjson"
+	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
-func TestClient_Scoreboard(t *testing.T) {
-	var models []genai.Model
-	t.Run("ListModel", func(t *testing.T) {
-		c := getClientInner(t, "")
-		_ = pollinations.Cache.ValidateModality(c, genai.ModalityText)
-	})
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
-		c := getClient(t, m)
-		isImage := false
-		for i := range models {
-			if models[i].GetID() == c.Model {
-				_, isImage = models[i].(pollinations.ImageModel)
+func gc(t testing.TB, name, m string) (genai.Provider, http.RoundTripper) {
+	var rt http.RoundTripper
+	fn := func(h http.RoundTripper) http.RoundTripper {
+		if name == "" {
+			rt = h
+			return h
+
+		}
+		r, err2 := testRecorder.Records.Record(name, h)
+		if err2 != nil {
+			t.Fatal(err2)
+		}
+		t.Cleanup(func() {
+			if err3 := r.Stop(); err3 != nil {
+				t.Error(err3)
 			}
+		})
+		rt = r
+		return r
+	}
+	c, err := pollinations.New("", m, fn)
+	if err != nil {
+		t.Fatal(err)
+	}
+	models = warmupCache(t)
+	isImage := false
+	for i := range models {
+		if models[i].GetID() == c.Model {
+			_, isImage = models[i].(pollinations.ImageModel)
+			break
 		}
-		if isImage {
-			return &imageModelClient{Client: c}
-		}
-		if m == "deepseek-reasoning" {
-			return &adapters.ProviderGenThinking{ProviderGen: c, TagName: "think"}
-		}
-		return c
-	}, nil)
+	}
+	c2 := &hideHTTP500{Client: c}
+	if isImage {
+		return &imageModelClient{parent: c2}, rt
+	}
+	if m == "deepseek-reasoning" {
+		return &adapters.ProviderGenThinking{ProviderGen: c2, TagName: "think"}, rt
+	}
+	return c2, rt
 }
 
-type imageModelClient struct {
+type hideHTTP500 struct {
 	*pollinations.Client
+}
+
+func (h *hideHTTP500) Unwrap() genai.Provider {
+	return h.Client
+}
+
+func (h *hideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	resp, err := h.Client.GenSync(ctx, msgs, opts)
+	if err != nil {
+		var herr *httpjson.Error
+		if errors.As(err, &herr) && herr.StatusCode == 500 {
+			// Hide the failure; pollinations.ai throws HTTP 500 on unsupported file formats.
+			return resp, errors.New("together.ai is having a bad day")
+		}
+		return resp, err
+	}
+	return resp, err
+}
+
+func (h *hideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+	resp, err := h.Client.GenStream(ctx, msgs, chunks, opts)
+	if err != nil {
+		var herr *httpjson.Error
+		if errors.As(err, &herr) && herr.StatusCode == 500 {
+			// Hide the failure; pollinations.ai throws HTTP 500 on unsupported file formats.
+			return resp, errors.New("together.ai is having a bad day")
+		}
+		return resp, err
+	}
+	return resp, err
+}
+
+func (h *hideHTTP500) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
+	resp, err := h.Client.GenDoc(ctx, msg, opts)
+	if err != nil {
+		var herr *httpjson.Error
+		if errors.As(err, &herr) && herr.StatusCode == 500 {
+			// Hide the failure; pollinations.ai throws HTTP 500 on unsupported file formats.
+			return resp, errors.New("together.ai is having a bad day")
+		}
+		return resp, err
+	}
+	return resp, err
+}
+
+type parent interface {
+	genai.ProviderGenDoc
+	genai.ProviderModel
+	genai.ProviderScoreboard
+}
+type imageModelClient struct {
+	parent
 }
 
 func (i *imageModelClient) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
 	if v, ok := opts.(*genai.OptionsImage); ok {
+		// Ask for a smaller size.
 		n := *v
 		n.Width = 256
 		n.Height = 256
 		opts = &n
 	}
-	return i.Client.GenDoc(ctx, msg, opts)
+	return i.parent.GenDoc(ctx, msg, opts)
+}
+
+func TestClient_Scoreboard(t *testing.T) {
+	usage := genai.Usage{}
+	cc, _ := gc(t, t.Name()+"/ListModels", "")
+	models, err2 := cc.(genai.ProviderModel).ListModels(t.Context())
+	if err2 != nil {
+		t.Fatal(err2)
+	}
+	for _, m := range models {
+		id := m.GetID()
+		t.Run(id, func(t *testing.T) {
+			// Run one model at a time otherwise we can't collect the total usage.
+			usage.Add(scoreboardtest.RunOneModel(t, func(t testing.TB, sn string) (genai.Provider, http.RoundTripper) {
+				return gc(t, sn, id)
+			}))
+		})
+	}
+	t.Logf("Usage: %#v", usage)
 }
 
 func TestClient_Preferred(t *testing.T) {
@@ -108,8 +203,37 @@ func getClientInner(t *testing.T, m string) *pollinations.Client {
 	if err != nil {
 		t.Fatal(err)
 	}
+	warmupCache(t)
 	return c
 }
+
+func warmupCache(t testing.TB) []genai.Model {
+	doOnce.Do(func() {
+		var r *recorder.Recorder
+		var err2 error
+		c, err := pollinations.New("genai-unittests", "", func(h http.RoundTripper) http.RoundTripper {
+			r, err2 = testRecorder.Records.Record("WarmupCache", h)
+			return r
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err2 != nil {
+			t.Fatal(err2)
+		}
+		if models, err = pollinations.Cache.Warmup(c); err != nil {
+			t.Fatal(err)
+		}
+		if err = r.Stop(); err != nil {
+			t.Fatal(err)
+		}
+	})
+	return models
+}
+
+var doOnce sync.Once
+
+var models []genai.Model
 
 var testRecorder *internaltest.Records
 

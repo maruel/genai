@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 163
+        host: text.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"llamascout","stream":true,"private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://text.pollinations.ai/openai
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 652
+        body: |+
+            data: {"id":"id-1753315610408","created":1753315610,"model":"@cf/meta/llama-4-scout-17b-16e-instruct","object":"chat.completion.chunk","choices":[{"index":0,"delta":{"content":"Hello"}}]}
+
+            data: {"id":"id-1753315610408","created":1753315610,"model":"@cf/meta/llama-4-scout-17b-16e-instruct","object":"chat.completion.chunk","choices":[{"index":0,"delta":{"content":"!"}}]}
+
+            data: {"id":"id-1753315610408","object":"chat.completion.chunk","created":1753315610,"model":"@cf/meta/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":{"prompt_tokens":86,"completion_tokens":3,"total_tokens":89}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963fa44a480e6e0a-YUL
+            Content-Length:
+                - "652"
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2025-07-24T00:06:51.386Z"
+            X-Cache-Key:
+                - 0b4c702de9e4a192f6aa2e3c5a5b7693c340fb66c86ff788b8fc404bf830f461
+            X-Powered-By:
+                - Express
+        status: 200 OK
+        code: 200
+        duration: 256ms

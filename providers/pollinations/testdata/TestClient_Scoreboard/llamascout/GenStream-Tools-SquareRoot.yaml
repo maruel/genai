@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 593
+        host: text.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"llamascout","stream":true,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required","private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://text.pollinations.ai/openai
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 2127
+        body: |+
+            data: {"id":"id-1753315633804","object":"chat.completion.chunk","created":1753315633,"model":"@cf/meta/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"delta":{"tool_calls":[{"id":"chatcmpl-tool-5f0ad230e1ec4bf7a8523cb5c172eb90","type":"function","index":0,"function":{"name":"square_root","arguments":"{\""}}]},"finish_reason":null}]}
+
+            data: {"id":"id-1753315633804","object":"chat.completion.chunk","created":1753315633,"model":"@cf/meta/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"number"}}]},"finish_reason":null}]}
+
+            data: {"id":"id-1753315633804","object":"chat.completion.chunk","created":1753315633,"model":"@cf/meta/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\":"}}]},"finish_reason":null}]}
+
+            data: {"id":"id-1753315633804","object":"chat.completion.chunk","created":1753315633,"model":"@cf/meta/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":" \""}}]},"finish_reason":null}]}
+
+            data: {"id":"id-1753315633804","object":"chat.completion.chunk","created":1753315633,"model":"@cf/meta/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"132"}}]},"finish_reason":null}]}
+
+            data: {"id":"id-1753315633804","object":"chat.completion.chunk","created":1753315633,"model":"@cf/meta/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"413"}}]},"finish_reason":null}]}
+
+            data: {"id":"id-1753315633804","object":"chat.completion.chunk","created":1753315633,"model":"@cf/meta/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\"}"}}]},"finish_reason":null}]}
+
+            data: {"id":"id-1753315633804","object":"chat.completion.chunk","created":1753315633,"model":"@cf/meta/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":{"prompt_tokens":325,"completion_tokens":19,"total_tokens":344}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963fa4502f746e0a-YUL
+            Content-Length:
+                - "2127"
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2025-07-24T00:07:15.010Z"
+            X-Cache-Key:
+                - 97ffef1d5c53ecadb7876c9421c6b8c778553c065460e4ccb03569d1e0288b29
+            X-Powered-By:
+                - Express
+        status: 200 OK
+        code: 200
+        duration: 180ms

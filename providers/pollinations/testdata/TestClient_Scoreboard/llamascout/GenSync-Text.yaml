@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 164
+        host: text.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"llamascout","stream":false,"private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://text.pollinations.ai/openai
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"pllns_cf45fc8e81913d8ce5353286b984ba67","object":"chat.completion","created":1753315610,"model":"@cf/meta/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"Hello!","refusal":null},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":86,"completion_tokens":3,"total_tokens":89}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963fa44a480a6e0a-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"156-MImItUEEnjzcyCsKWv6BEn90/C0"
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2025-07-24T00:06:51.559Z"
+            X-Cache-Key:
+                - edf998e5d8989fa34348c1f242f486618e138d9e9cf7947be62762fa6ea01471
+            X-Powered-By:
+                - Express
+        status: 200 OK
+        code: 200
+        duration: 256ms

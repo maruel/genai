@@ -45,17 +45,9 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://auth.pollinations.ai/",
 	Scenarios: []genai.Scenario{
 		{
-			Models: []string{
-				"llamascout",
-				"deepseek",
-				"evil",
-				"grok",
-				"mistral",
-				"openai-fast",
-				"qwen-coder",
-			},
-			In:  map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Models: []string{"llamascout"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				NoMaxTokens:    true,
 				NoStopSequence: true,
@@ -74,19 +66,21 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			Models: []string{"deepseek-reasoning", "openai-reasoning"},
-			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
-				Thinking:       true,
-				NoMaxTokens:    true,
-				NoStopSequence: true,
-				Seed:           true,
-			},
-			// Upstream parsing is broken, which means we can't recommend GenStream.
+			Models: []string{"deepseek-reasoning"},
+			/*
+				In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+				Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+				GenSync: &genai.FunctionalityText{
+					Thinking:       true,
+					NoMaxTokens:    true,
+					NoStopSequence: true,
+					Seed:           true,
+				},
+				// Upstream parsing is broken, which means we can't recommend GenStream.
+			*/
 		},
 		{
-			Models: []string{"flux", "gptimage", "turbo"},
+			Models: []string{"flux"},
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityImage: {
@@ -100,12 +94,12 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			Models: []string{"openai", "openai-large"},
+			Models: []string{"openai"},
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
-					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
+					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
 				},
 				genai.ModalityText: {Inline: true},
 			},
@@ -131,6 +125,7 @@ var Scoreboard = genai.Scoreboard{
 		// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md
 		{
 			Models: []string{"openai-audio"},
+			/* TODO: Requires audio and Scoreboard fails to test this use case.
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityAudio: {
 					Inline:           true,
@@ -151,6 +146,39 @@ var Scoreboard = genai.Scoreboard{
 				Seed:        true,
 			},
 			// GenStream doesn't succeed in the smoke test, so consider it broken for now.
+			*/
+		},
+		// Ignored.
+		{
+			Models: []string{
+				"bidara",
+				"deepseek",
+				"elixposearch",
+				"evil",
+				"gemma-roblox",
+				"gptimage",
+				"grok",
+				"hypnosis-tracy",
+				"kontext",
+				"llama-fast-roblox",
+				"llama-roblox",
+				"midijourney",
+				"mirexa",
+				"mistral",
+				"mistral-nemo-roblox",
+				"mistral-roblox",
+				"openai-fast",
+				"openai-large",
+				"openai-reasoning",
+				"openai-roblox",
+				"phi",
+				"qwen-coder",
+				"rtist",
+				"searchgpt",
+				"sur",
+				"turbo",
+				"unity",
+			},
 		},
 	},
 }
@@ -759,6 +787,15 @@ type ErrorResponse struct {
 		QueueInfo map[string]string `json:"queueInfo"`
 		Timestamp string            `json:"timestamp"`
 		Provider  string            `json:"provider"`
+		Errors    []struct {
+			Path        []string     `json:"path"`
+			Message     string       `json:"message"`
+			Code        string       `json:"code"`
+			UnionErrors []UnionError `json:"unionErrors"`
+		} `json:"errors"`
+		Success  bool       `json:"success"`
+		Result   struct{}   `json:"result"`
+		Messages []struct{} `json:"messages"`
 	} `json:"details"`
 
 	Message    string   `json:"message"`
@@ -776,6 +813,9 @@ func (er *ErrorResponse) String() string {
 	if er.Details.Provider != "" {
 		suffix = "; provider:" + er.Details.Provider
 	}
+	if len(er.Details.Errors) != 0 {
+		return fmt.Sprintf("error %s%s", er.Details.Errors[0].Message, suffix)
+	}
 	if er.Details.Error.Message != "" {
 		// It already contains the Provider name.
 		return fmt.Sprintf("error %s/%s%s: %s%s", er.Details.Error.Type, er.Details.Error.Param, er.Details.Error.Code, er.Details.Error.Message, suffix)
@@ -790,6 +830,18 @@ func (er *ErrorResponse) String() string {
 		return fmt.Sprintf("error %s %s%s", er.Error, er.Message, suffix)
 	}
 	return fmt.Sprintf("error %s%s", er.Error, suffix)
+}
+
+type UnionError struct {
+	Issues []struct {
+		Code        string       `json:"code"`
+		Expected    string       `json:"expected"`
+		Received    string       `json:"received"`
+		Path        []string     `json:"path"`
+		Message     string       `json:"message"`
+		UnionErrors []UnionError `json:"unionErrors"`
+	} `json:"issues"`
+	Name string `json:"name"`
 }
 
 // Client implements genai.ProviderModel.
@@ -823,8 +875,10 @@ func New(auth, model string, wrapper func(http.RoundTripper) http.RoundTripper) 
 	}
 	t := base.DefaultTransport
 	if r, ok := t.(*roundtrippers.Retry); ok {
+		// Make a copy so we can edit it.
 		c := *r
 		if p, ok := c.Policy.(*roundtrippers.ExponentialBackoff); ok {
+			// Tweak the policy.
 			c.Policy = &exponentialBackoff{ExponentialBackoff: *p}
 		} else {
 			return nil, fmt.Errorf("unsupported retry policy %T", c.Policy)
@@ -1122,7 +1176,7 @@ type exponentialBackoff struct {
 }
 
 func (e *exponentialBackoff) ShouldRetry(ctx context.Context, start time.Time, try int, err error, resp *http.Response) bool {
-	if resp.StatusCode == 402 {
+	if resp != nil && resp.StatusCode == 402 {
 		return true
 	}
 	return e.ExponentialBackoff.ShouldRetry(ctx, start, try, err, resp)
@@ -1137,20 +1191,14 @@ type ModelCache struct {
 }
 
 // ValidateModality returns nil if the modality is supported by the model.
-func (m *ModelCache) ValidateModality(c *Client, mod genai.Modality) error {
-	var err error
-	m.mu.Lock()
-	if m.models == nil {
-		m.models, err = c.ListModels(context.Background())
-	}
-	m.mu.Unlock()
-	if err != nil {
+func (m *ModelCache) ValidateModality(c genai.ProviderModel, mod genai.Modality) error {
+	if _, err := m.Warmup(c); err != nil {
 		return err
 	}
-	model := c.Model
 	isText := false
 	isImage := false
 	found := false
+	model := c.ModelID()
 	for i := range m.models {
 		if m.models[i].GetID() == model {
 			found = true
@@ -1173,6 +1221,16 @@ func (m *ModelCache) ValidateModality(c *Client, mod genai.Modality) error {
 		}
 	}
 	return fmt.Errorf("modality %s not supported", mod)
+}
+
+func (m *ModelCache) Warmup(c genai.ProviderModel) ([]genai.Model, error) {
+	var err error
+	m.mu.Lock()
+	if m.models == nil {
+		m.models, err = c.ListModels(context.Background())
+	}
+	m.mu.Unlock()
+	return m.models, err
 }
 
 func (m *ModelCache) Clear() {

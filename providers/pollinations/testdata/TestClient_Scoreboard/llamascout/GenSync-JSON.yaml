@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 302
+        host: text.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"model":"llamascout","stream":false,"response_format":{"type":"json_object"},"private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://text.pollinations.ai/openai
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"pllns_dc78954856bb4d52a1e06bb4b6d4cda4","object":"chat.completion","created":1753313561,"model":"@cf/meta/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","content":{"is_fruit":true},"refusal":null},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":107,"completion_tokens":8,"total_tokens":115}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963fa44eedb16e0a-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"161-fCeaRbl5DY2lDlYUWA0wwutTaqc"
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2025-07-23T23:32:42.075Z"
+            X-Cache-Key:
+                - be4d2a0df520166982cae86b9d555956049ad0948fee47a7fd2ee3549a3f68bb
+            X-Powered-By:
+                - Express
+        status: 200 OK
+        code: 200
+        duration: 176ms

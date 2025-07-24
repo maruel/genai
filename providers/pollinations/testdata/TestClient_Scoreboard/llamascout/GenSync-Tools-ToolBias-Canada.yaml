@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 604
+        host: text.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"model":"llamascout","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required","private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://text.pollinations.ai/openai
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"pllns_946d95e9b94472e9e5624bf1abf762d3","object":"chat.completion","created":1753319674,"model":"@cf/meta/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","content":null,"tool_calls":[{"id":"call_1753319674656","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}},{"id":"call_1753319674656","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"}}],"refusal":null},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":337,"completion_tokens":35,"total_tokens":372}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963fa45148db6e0a-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"259-B2MBa9TQ7D7JoEcy5SDBHgZJM4o"
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2025-07-24T01:14:35.364Z"
+            X-Cache-Key:
+                - af14c2a1301ed7ee329374e277d177a9a45a75cea2dd2a9c5164b9759c89f34e
+            X-Powered-By:
+                - Express
+        status: 200 OK
+        code: 200
+        duration: 182ms

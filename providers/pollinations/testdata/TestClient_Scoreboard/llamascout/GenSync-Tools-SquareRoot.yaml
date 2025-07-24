@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 594
+        host: text.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"llamascout","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required","private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://text.pollinations.ai/openai
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"pllns_92fd953a8f1e5bb93caca01d77e31697","object":"chat.completion","created":1753319671,"model":"@cf/meta/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","content":null,"tool_calls":[{"id":"call_1753319671440","type":"function","function":{"name":"square_root","arguments":"{\"number\": \"132413\"}"}}],"refusal":null},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":325,"completion_tokens":19,"total_tokens":344}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 963fa4500f3b6e0a-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"1e1-ylHtKtoBWKPbWYnxyB+GshnBxD0"
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2025-07-24T01:14:32.141Z"
+            X-Cache-Key:
+                - 289115212b91803915666392388e3ab51ad15f13c5e7633fb497b3fa0e34cc04
+            X-Powered-By:
+                - Express
+        status: 200 OK
+        code: 200
+        duration: 199ms

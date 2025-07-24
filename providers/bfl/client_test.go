@@ -7,57 +7,70 @@ package bfl
 import (
 	"context"
 	_ "embed"
-	"errors"
 	"net/http"
 	"os"
 	"testing"
 	"time"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
+	"github.com/maruel/genai/scoreboard/scoreboardtest"
 )
 
+func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+	apiKey := ""
+	if os.Getenv("BFL_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := New(apiKey, model, fn)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return c
+}
+
 func TestClient_Scoreboard(t *testing.T) {
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
-		return &injectOption{Client: getClient(t, m), t: t, opts: genai.OptionsImage{Width: 256, Height: 256}}
-	}, nil)
+	// bfl does not have a public API to list models.
+	sb := getClient(t, "").Scoreboard()
+	var models []genai.Model
+	for _, sc := range sb.Scenarios {
+		if sc.GenDoc != nil {
+			for _, model := range sc.Models {
+				models = append(models, fakeModel(model))
+			}
+		}
+	}
+	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
 }
 
-type injectOption struct {
+type fakeModel string
+
+func (f fakeModel) GetID() string {
+	return string(f)
+}
+
+func (f fakeModel) String() string {
+	return string(f)
+}
+
+func (f fakeModel) Context() int64 {
+	return 0
+}
+
+type imageModelClient struct {
 	*Client
-	t    *testing.T
-	opts genai.OptionsImage
 }
 
-func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	n := i.opts
-	if opts != nil {
-		return genai.Result{}, errors.New("implement me")
+func (i *imageModelClient) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
+	if v, ok := opts.(*genai.OptionsImage); ok {
+		// Ask for a smaller size.
+		n := *v
+		n.Width = 256
+		n.Height = 256
+		opts = &n
 	}
-	opts = &n
-	p := adapters.ProviderGenDocToGen{ProviderGenDoc: i.Client}
-	return p.GenSync(ctx, msgs, opts)
-}
-
-func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
-	n := i.opts
-	if opts != nil {
-		return genai.Result{}, errors.New("implement me")
-	}
-	opts = &n
-	p := adapters.ProviderGenDocToGen{ProviderGenDoc: i.Client}
-	return p.GenStream(ctx, msgs, replies, opts)
-}
-
-func (i *injectOption) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
-	n := i.opts
-	if opts != nil {
-		return genai.Result{}, errors.New("implement me")
-	}
-	opts = &n
 	return i.Client.GenDoc(ctx, msg, opts)
 }
 

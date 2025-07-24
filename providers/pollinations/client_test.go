@@ -98,6 +98,7 @@ type parent interface {
 	genai.ProviderModel
 	genai.ProviderScoreboard
 }
+
 type imageModelClient struct {
 	parent
 }

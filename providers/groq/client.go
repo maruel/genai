@@ -42,7 +42,6 @@ var Scoreboard = genai.Scoreboard{
 				// bit better but not perfect.
 				"llama-3.1-8b-instant",
 				"llama-3.3-70b-versatile",
-				"mistral-saba-24b",
 			},
 			In:  map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
@@ -155,6 +154,7 @@ var Scoreboard = genai.Scoreboard{
 				"gemma2-9b-it",
 				"llama3-70b-8192",
 				"llama3-8b-8192",
+				"mistral-saba-24b",
 			},
 		},
 		// Unsupported models.

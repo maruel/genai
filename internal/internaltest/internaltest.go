@@ -59,7 +59,7 @@ func (r *Records) Close() int {
 //
 // It ignores the port number in the URL both for recording and playback so it
 // works with local services like ollama and llama-server.
-func (r *Records) Record(t *testing.T, h http.RoundTripper, opts ...recorder.Option) *recorder.Recorder {
+func (r *Records) Record(t *testing.T, h http.RoundTripper, opts ...recorder.Option) internal.Recorder {
 	rr, err := r.Records.Record(t.Name(), h, opts...)
 	if err != nil {
 		t.Fatal(err)

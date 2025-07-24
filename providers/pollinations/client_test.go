@@ -21,7 +21,6 @@ import (
 	"github.com/maruel/genai/providers/pollinations"
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
 	"github.com/maruel/httpjson"
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
 func gc(t testing.TB, name, m string) (genai.Provider, http.RoundTripper) {
@@ -205,7 +204,7 @@ func getClientInner(t *testing.T, m string) *pollinations.Client {
 
 func warmupCache(t testing.TB) []genai.Model {
 	doOnce.Do(func() {
-		var r *recorder.Recorder
+		var r internal.Recorder
 		var err2 error
 		c, err := pollinations.New("genai-unittests", "", func(h http.RoundTripper) http.RoundTripper {
 			r, err2 = testRecorder.Records.Record("WarmupCache", h)

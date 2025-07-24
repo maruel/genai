@@ -8,6 +8,7 @@ package internal
 import (
 	"context"
 	"fmt"
+	"io"
 	"io/fs"
 	"log/slog"
 	"net/http"
@@ -31,6 +32,12 @@ var BeLenient = true
 
 // DefaultMatcher ignores authentication via API keys.
 var DefaultMatcher = cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Api-Key", "X-Key", "X-Request-Id"))
+
+type Recorder interface {
+	http.RoundTripper
+	Stop() error
+	IsNewCassette() bool
+}
 
 // Records represents HTTP recordings.
 type Records struct {
@@ -88,7 +95,7 @@ func (r *Records) Signal(name string) {
 //
 // It ignores the port number in the URL both for recording and playback so it
 // works with local services like ollama and llama-server.
-func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Option) (*recorder.Recorder, error) {
+func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Option) (Recorder, error) {
 	name = strings.ReplaceAll(strings.ReplaceAll(name, "/", string(os.PathSeparator)), ":", "-")
 	if d := filepath.Dir(name); d != "." {
 		if err := os.MkdirAll(filepath.Join(r.root, d), 0o755); err != nil {
@@ -108,10 +115,12 @@ func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Opti
 	}
 	r.Signal(name)
 	// Don't forget to call Stop()!
-	return recorder.New(filepath.Join(r.root, name), append(args, opts...)...)
+	rec, err := recorder.New(filepath.Join(r.root, name), append(args, opts...)...)
+	if err != nil {
+		return nil, err
+	}
+	return &recorderWithBody{Recorder: rec, name: name + ".yaml"}, nil
 }
-
-type contextKey struct{}
 
 // Logger retrieves a slog.Logger from the context if any, otherwise returns slog.Default().
 func Logger(ctx context.Context) *slog.Logger {
@@ -130,6 +139,8 @@ func WithLogger(ctx context.Context, logger *slog.Logger) context.Context {
 }
 
 //
+
+type contextKey struct{}
 
 type orphanedError struct {
 	root string
@@ -156,4 +167,22 @@ func trimResponseHeaders(i *cassette.Interaction) error {
 	// Noise.
 	i.Response.Duration = i.Response.Duration.Round(time.Millisecond)
 	return nil
+}
+
+// recorderWithBody wraps the POST body in the error message.
+type recorderWithBody struct {
+	*recorder.Recorder
+	name string
+}
+
+func (r *recorderWithBody) RoundTrip(req *http.Request) (*http.Response, error) {
+	resp, err := r.Recorder.RoundTrip(req)
+	if err != nil && req.GetBody != nil {
+		if body, _ := req.GetBody(); body != nil {
+			defer body.Close()
+			b, _ := io.ReadAll(body)
+			err = fmt.Errorf("%w; cassette %q; body:\n %s", err, r.name, string(b))
+		}
+	}
+	return resp, err
 }

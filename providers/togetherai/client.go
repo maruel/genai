@@ -173,8 +173,6 @@ var Scoreboard = genai.Scoreboard{
 		// Skipped
 		{
 			Models: []string{
-				"meta-llama/Llama-3.3-70B-Instruct-Turbo",
-				"meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
 				"Alibaba-NLP/gte-modernbert-base",
 				"Gryphe/MythoMax-L2-13b",
 				"Gryphe/MythoMax-L2-13b-Lite",
@@ -186,7 +184,9 @@ var Scoreboard = genai.Scoreboard{
 				"Qwen/Qwen2.5-7B-Instruct-Turbo",
 				"Qwen/Qwen2.5-Coder-32B-Instruct",
 				"Qwen/Qwen2.5-VL-72B-Instruct",
+				"Qwen/Qwen3-235B-A22B-Instruct-2507-tput",
 				"Qwen/Qwen3-235B-A22B-fp8-tput",
+				"Qwen/Qwen3-32B-FP8",
 				"Salesforce/Llama-Rank-V1",
 				"arcee-ai/AFM-4.5B-Preview",
 				"arcee-ai/arcee-blitz",
@@ -231,6 +231,8 @@ var Scoreboard = genai.Scoreboard{
 				"meta-llama/Llama-3.2-11B-Vision-Instruct-Turbo",
 				"meta-llama/Llama-3.2-3B-Instruct-Turbo",
 				"meta-llama/Llama-3.2-90B-Vision-Instruct-Turbo",
+				"meta-llama/Llama-3.3-70B-Instruct-Turbo",
+				"meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
 				"meta-llama/Llama-Guard-3-11B-Vision-Turbo",
 				"meta-llama/Llama-Guard-4-12B",
 				"meta-llama/LlamaGuard-2-8b",

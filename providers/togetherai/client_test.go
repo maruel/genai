@@ -22,38 +22,20 @@ import (
 	"github.com/maruel/httpjson"
 )
 
-func gc(t testing.TB, name, m string) (genai.Provider, http.RoundTripper) {
-	var rt http.RoundTripper
-	fn := func(h http.RoundTripper) http.RoundTripper {
-		if name == "" {
-			rt = h
-			return h
-		}
-		r, err2 := testRecorder.Records.Record(name, h)
-		if err2 != nil {
-			t.Fatal(err2)
-		}
-		t.Cleanup(func() {
-			if err3 := r.Stop(); err3 != nil {
-				t.Error(err3)
-			}
-		})
-		rt = r
-		return r
-	}
+func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 	apiKey := ""
 	if os.Getenv("TOGETHER_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := togetherai.New(apiKey, m, fn)
+	c, err := togetherai.New(apiKey, model, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if strings.HasPrefix(m, "black-forest-labs/") {
-		return &smallImageGen{hideHTTP500{c}}, rt
+	if strings.HasPrefix(model, "black-forest-labs/") {
+		return &smallImageGen{hideHTTP500{c}}
 	}
 	// If anyone at Together.AI reads this, please get your shit together.
-	return &hideHTTP500{c}, rt
+	return &hideHTTP500{c}
 }
 
 type smallImageGen struct {
@@ -127,23 +109,11 @@ func (h *hideHTTP500) GenDoc(ctx context.Context, msg genai.Message, opts genai.
 }
 
 func TestClient_Scoreboard(t *testing.T) {
-	t.Parallel()
-	usage := genai.Usage{}
-	cc, _ := gc(t, t.Name()+"/ListModels", "")
-	models, err2 := cc.(genai.ProviderModel).ListModels(t.Context())
-	if err2 != nil {
-		t.Fatal(err2)
+	models, err := getClient(t, "").ListModels(t.Context())
+	if err != nil {
+		t.Fatal(err)
 	}
-	for _, m := range models {
-		id := m.GetID()
-		t.Run(id, func(t *testing.T) {
-			// Run one model at a time otherwise we can't collect the total usage.
-			usage.Add(scoreboardtest.RunOneModel(t, func(t testing.TB, sn string) (genai.Provider, http.RoundTripper) {
-				return gc(t, sn, id)
-			}))
-		})
-	}
-	t.Logf("Usage: %#v", usage)
+	scoreboardtest.TestClient_Scoreboard(t, getClientRT, models, testRecorder.Records)
 }
 
 func TestClient_Preferred(t *testing.T) {

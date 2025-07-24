@@ -99,6 +99,9 @@ var Scoreboard = genai.Scoreboard{
 				Seed:       true,
 			},
 		},
+		{
+			Models: []string{"llama-4-maverick-17b-128e-instruct"},
+		},
 	},
 }
 
@@ -107,7 +110,7 @@ var Scoreboard = genai.Scoreboard{
 // CompletionsResource.create() at
 // https://github.com/Cerebras/cerebras-cloud-sdk-python/blob/main/src/cerebras/cloud/sdk/resources/chat/completions.py
 
-// https://inference-docs.cerebras.ai/api-reference/chat-completions
+// ChatRequest is documented at https://inference-docs.cerebras.ai/api-reference/chat-completions
 type ChatRequest struct {
 	Model               string    `json:"model"`
 	Messages            []Message `json:"messages"`

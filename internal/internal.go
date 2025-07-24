@@ -79,6 +79,9 @@ func (r *Records) Close() error {
 }
 
 func (r *Records) Signal(name string) {
+	if name == "" {
+		return
+	}
 	r.mu.Lock()
 	_, ok := r.recorded[name+".yaml"]
 	r.recorded[name+".yaml"] = struct{}{}

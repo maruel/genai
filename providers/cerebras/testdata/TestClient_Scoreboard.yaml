@@ -19,14 +19,14 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"object":"list","data":[{"id":"llama3.1-8b","object":"model","created":1721692800,"owned_by":"Meta"},{"id":"llama-3.3-70b","object":"model","created":1733443200,"owned_by":"Meta"},{"id":"llama-4-scout-17b-16e-instruct","object":"model","created":1743811200,"owned_by":"Meta"},{"id":"qwen-3-32b","object":"model","created":1745798400,"owned_by":"Qwen"},{"id":"qwen-3-235b-a22b","object":"model","created":1749945600,"owned_by":"Qwen"}]}'
+        body: '{"object":"list","data":[{"id":"llama3.1-8b","object":"model","created":1721692800,"owned_by":"Meta"},{"id":"llama-3.3-70b","object":"model","created":1733443200,"owned_by":"Meta"},{"id":"llama-4-scout-17b-16e-instruct","object":"model","created":1743811200,"owned_by":"Meta"},{"id":"llama-4-maverick-17b-128e-instruct","object":"model","created":1743811200,"owned_by":"Meta"},{"id":"qwen-3-32b","object":"model","created":1745798400,"owned_by":"Qwen"},{"id":"qwen-3-235b-a22b","object":"model","created":1749945600,"owned_by":"Qwen"}]}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9613af7ffc52a2ac-YUL
+                - 9643881e7e7aa313-YUL
             Content-Type:
                 - application/json
             Referrer-Policy:
@@ -39,4 +39,4 @@ interactions:
                 - nosniff
         status: 200 OK
         code: 200
-        duration: 207ms
+        duration: 239ms

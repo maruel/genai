@@ -12,18 +12,56 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/scoreboard"
 )
 
-// GetClient returns a provider client for a specific model.
-type GetClient func(t testing.TB, scenarioName string) (genai.Provider, http.RoundTripper)
+// GetClientOneModel returns a provider client for a specific model.
+type GetClientOneModel func(t testing.TB, scenarioName string) (genai.Provider, http.RoundTripper)
+
+type GetClient func(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider
+
+func TestClient_Scoreboard(t *testing.T, gc GetClient, models []genai.Model, rec *internal.Records) {
+	if len(models) == 0 {
+		t.Fatal("no models")
+	}
+	usage := genai.Usage{}
+	for _, m := range models {
+		id := m.GetID()
+		t.Run(id, func(t *testing.T) {
+			// Run one model at a time otherwise we can't collect the total usage.
+			usage.Add(RunOneModel(t, func(t testing.TB, sn string) (genai.Provider, http.RoundTripper) {
+				var rt http.RoundTripper
+				fn := func(h http.RoundTripper) http.RoundTripper {
+					if sn == "" {
+						rt = h
+						return h
+					}
+					r, err2 := rec.Record(sn, h)
+					if err2 != nil {
+						t.Fatal(err2)
+					}
+					t.Cleanup(func() {
+						if err3 := r.Stop(); err3 != nil {
+							t.Error(err3)
+						}
+					})
+					rt = r
+					return r
+				}
+				return gc(t, id, fn), rt
+			}))
+		})
+	}
+	t.Logf("Usage: %#v", usage)
+}
 
 // RunOneModel runs the scoreboard on one model.
 //
 // It must implement genai.ProviderScoreboard. If it is wrapped, the wrappers must implement
 // genai.ProviderUnwrap.
-func RunOneModel(t testing.TB, gc GetClient) genai.Usage {
+func RunOneModel(t testing.TB, gc GetClientOneModel) genai.Usage {
 	// Find the reference.
 	var want genai.Scenario
 	cc, _ := gc(t, "")

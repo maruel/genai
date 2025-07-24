@@ -45,7 +45,7 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://console.anthropic.com/settings/billing",
 	Scenarios: []genai.Scenario{
 		{
-			Models:    []string{"claude-3-haiku-20240307", "claude-2.0", "claude-2.1", "claude-3-opus-20240229", "claude-3-sonnet-20240229"},
+			Models:    []string{"claude-3-haiku-20240307", "claude-3-opus-20240229"},
 			In:        map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync:   &genai.FunctionalityText{},
@@ -123,7 +123,7 @@ type OptionsText struct {
 	MessagesToCache int
 }
 
-// https://docs.anthropic.com/en/api/messages
+// ChatRequest is documented at https://docs.anthropic.com/en/api/messages
 type ChatRequest struct {
 	Model      string      `json:"model,omitzero"`
 	MaxTokens  int64       `json:"max_tokens"`

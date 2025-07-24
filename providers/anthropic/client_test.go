@@ -16,12 +16,27 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/anthropic"
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
+	"github.com/maruel/genai/scoreboard/scoreboardtest"
 )
 
+func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+	apiKey := ""
+	if os.Getenv("ANTHROPIC_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := anthropic.New(apiKey, model, fn)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return c
+}
+
 func TestClient_Scoreboard(t *testing.T) {
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen { return getClient(t, m) }, nil)
+	models, err := getClient(t, "").ListModels(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
 }
 
 // This is a tricky test since batch operations can take up to 24h to complete.
@@ -113,14 +128,7 @@ func getClientInner(t *testing.T, apiKey, m string) *anthropic.Client {
 	if apiKey == "" && os.Getenv("ANTHROPIC_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	wrapper := func(h http.RoundTripper) http.RoundTripper {
-		// The Anthropic-Version header was not historically saved in the recordings. So instead of re-creating all the recordings,
-		// I'm removing it from the matcher.
-		// TODO: Redo all recordings then stop skipping this header.
-		m := cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("X-Api-Key", "Anthropic-Version", "X-Request-Id"))
-		return testRecorder.Record(t, h, recorder.WithMatcher(m))
-	}
-	c, err := anthropic.New(apiKey, m, wrapper)
+	c, err := anthropic.New(apiKey, m, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 	if err != nil {
 		t.Fatal(err)
 	}

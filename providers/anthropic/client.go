@@ -45,25 +45,19 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://console.anthropic.com/settings/billing",
 	Scenarios: []genai.Scenario{
 		{
-			Models:    []string{"claude-3-haiku-20240307", "claude-3-opus-20240229"},
-			In:        map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync:   &genai.FunctionalityText{},
-			GenStream: &genai.FunctionalityText{},
-		},
-		{
-			Models: []string{"claude-3-5-haiku-20241022", "claude-3-5-sonnet-20240620", "claude-3-5-sonnet-20241022"},
+			Models: []string{"claude-3-5-haiku-20241022"},
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
-					SupportedFormats: []string{"image/jpeg", "image/png", "image/gif", "image/webp"},
+					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
 				},
 				genai.ModalityPDF: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"application/pdf", "text/plain"},
+					Inline: true,
+					URL:    true,
+					// TODO: Add "text/plain" back.
+					SupportedFormats: []string{"application/pdf"},
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
@@ -79,18 +73,19 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			Models: []string{"claude-3-7-sonnet-20250219", "claude-opus-4-20250514", "claude-sonnet-4-20250514"},
+			Models: []string{"claude-sonnet-4-20250514"},
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
-					SupportedFormats: []string{"image/jpeg", "image/png", "image/gif", "image/webp"},
+					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
 				},
 				genai.ModalityPDF: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"application/pdf", "text/plain"},
+					Inline: true,
+					URL:    true,
+					// TODO: Add "text/plain" back.
+					SupportedFormats: []string{"application/pdf"},
 				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
@@ -103,6 +98,20 @@ var Scoreboard = genai.Scoreboard{
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				Citations:  true,
+			},
+		},
+		// They take more than 10 minutes to run the test, which causes it to timeout. And they cost a lot.
+		{
+			Models: []string{"claude-opus-4-20250514"},
+		},
+		// Old models
+		{
+			Models: []string{
+				"claude-3-5-sonnet-20240620",
+				"claude-3-5-sonnet-20241022",
+				"claude-3-7-sonnet-20250219",
+				"claude-3-haiku-20240307",
+				"claude-3-opus-20240229",
 			},
 		},
 	},
@@ -440,7 +449,7 @@ type Content struct {
 		Type SourceType `json:"type,omitzero"`
 
 		// Valid with Source.Type == SourceBase64, SourceURL, SourceText
-		// Content.Type == ContentImage: "image/jpeg", "image/png", "image/gif", "image/webp"
+		// Content.Type == ContentImage: "image/gif", "image/jpeg", "image/png", "image/webp"
 		// Content.Type == ContentDocument: "application/pdf", "text/plain"
 		MediaType string `json:"media_type,omitzero"`
 

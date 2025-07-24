@@ -1,0 +1,102 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 612
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-4-20250514","max_tokens":32000,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"stream":true,"thinking":{"type":"disabled"},"tool_choice":{"type":"any"},"tools":[{"description":"A tool to specify the best country","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"name":"best_country"}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"id":"msg_015NnzwiWf3aKQbGW8zSL29M","type":"message","role":"assistant","model":"claude-sonnet-4-20250514","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":443,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":16,"service_tier":"standard"}}             }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_013FdfB2qcEYQS98cdtZGJZB","name":"best_country","input":{}}            }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":""}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"{\""}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"country\""}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":": \"Canad"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"a\"}"}            }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0  }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null},"usage":{"output_tokens":38}            }
+
+            event: message_stop
+            data: {"type":"message_stop"     }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2025-07-24T21:48:04Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2025-07-24T21:48:04Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2025-07-24T21:48:04Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2025-07-24T21:48:04Z"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96469e9ed876a306-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 971ms

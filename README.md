@@ -20,7 +20,7 @@ The _high performance_ low level native Go client for LLMs.
 | [ollama](https://ollama.com/)                               | 🏠      | 💬📸       | 💬         | ✅      | ✅             | ✅     | ✅        | 💨🧐   | ❌    | ✅   | ❌    | ❌        | ❌       |
 | [openai](https://platform.openai.com/usage)                 | 🇺🇸      | 🎤💬📄📸   | 🎤💬📸     | ✅      | ✅             | ✅🤪   | ✅🤪      | ✅💥🧐 | ✅    | ✅   | ✅    | ❌        | ❌       |
 | [perplexity](https://www.perplexity.ai/settings/api)        | 🇺🇸      | 💬         | 💬         | ❌      | 🤪             | ✅🤪   | ✅🤪      | 💨🧐   | ❌    | ❌   | ❌    | ✅        | ✅       |
-| [pollinations](https://auth.pollinations.ai/)               | 🇩🇪      | 🎤💬📸     | 🎤💬📸     | 🤪      | ❌             | ✅🤪   | ✅💸🤪    | ✅💥🧐 | ❌    | ✅   | ❌    | ❌        | ✅       |
+| [pollinations](https://auth.pollinations.ai/)               | 🇩🇪      | 💬📸       | 💬📸       | 🤪      | ❌             | ✅🤪   | ✅💸🤪    | ✅💥🧐 | ❌    | ✅   | ❌    | ❌        | ❌       |
 | [togetherai](https://api.together.ai/settings/billing)      | 🇺🇸      | 💬📸       | 💬📸       | ✅      | ✅             | ✅🚩🤪 | ✅🚩🤪    | 💥💨🧐 | ❌    | ✅   | ❌    | ❌        | ❌       |
 | openaicompatible                                            | N/A     | 💬         | 💬         | ❌      | ❌             | ✅     | ✅        | 💨🧐   | ❌    | ❌   | ❌    | ❌        | ❌       |
 

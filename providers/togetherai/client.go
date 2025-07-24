@@ -174,8 +174,6 @@ var Scoreboard = genai.Scoreboard{
 		{
 			Models: []string{
 				"Alibaba-NLP/gte-modernbert-base",
-				"Gryphe/MythoMax-L2-13b",
-				"Gryphe/MythoMax-L2-13b-Lite",
 				"NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO",
 				"Qwen/QwQ-32B",
 				"Qwen/Qwen2-72B-Instruct",
@@ -206,7 +204,6 @@ var Scoreboard = genai.Scoreboard{
 				"black-forest-labs/FLUX.1-pro",
 				"black-forest-labs/FLUX.1-redux",
 				"black-forest-labs/FLUX.1-schnell-Free",
-				"black-forest-labs/FLUX.1-schnell-fixedres",
 				"black-forest-labs/FLUX.1.1-pro",
 				"cartesia/sonic",
 				"cartesia/sonic-2",
@@ -257,7 +254,6 @@ var Scoreboard = genai.Scoreboard{
 				"togethercomputer/Refuel-Llm-V2",
 				"togethercomputer/Refuel-Llm-V2-Small",
 				"togethercomputer/m2-bert-80M-32k-retrieval",
-				"yan/deepseek-ai-deepseek-v3",
 			},
 		},
 	},

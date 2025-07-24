@@ -115,7 +115,7 @@ func (i *imageModelClient) GenDoc(ctx context.Context, msg genai.Message, opts g
 
 func TestClient_Scoreboard(t *testing.T) {
 	models := warmupCache(t)
-	scoreboardtest.TestClient_Scoreboard(t, getClientRT, models, testRecorder.Records)
+	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
 }
 
 func TestClient_Preferred(t *testing.T) {

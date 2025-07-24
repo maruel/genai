@@ -17,21 +17,65 @@ import (
 	"github.com/maruel/genai/scoreboard"
 )
 
-// GetClientOneModel returns a provider client for a specific model.
-type GetClientOneModel func(t testing.TB, scenarioName string) (genai.Provider, http.RoundTripper)
-
+// GetClient is the client to assert the scoreboard. It will have the HTTP requests recorded.
 type GetClient func(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider
 
-func TestClient_Scoreboard(t *testing.T, gc GetClient, models []genai.Model, rec *internal.Records) {
+// AssertScoreboard regenerates the scoreboard and asserts it is up to date.
+func AssertScoreboard(t *testing.T, gc GetClient, models []genai.Model, rec *internal.Records) {
 	if len(models) == 0 {
 		t.Fatal("no models")
 	}
 	usage := genai.Usage{}
+
+	// Find the reference.
+	cc := gc(t, "", nil)
+	og := cc
+	for {
+		if u, ok := og.(genai.ProviderUnwrap); ok {
+			og = u.Unwrap()
+		} else {
+			break
+		}
+	}
+	sb := og.(genai.ProviderScoreboard).Scoreboard()
+	// Check for duplicates
+	sbModels := map[string]struct{}{}
+	for _, sc := range sb.Scenarios {
+		for _, model := range sc.Models {
+			if _, ok := sbModels[model]; ok {
+				t.Fatalf("duplicate model in scoreboard: %q", model)
+			}
+			sbModels[model] = struct{}{}
+		}
+	}
+
+	seen := map[string]struct{}{}
 	for _, m := range models {
-		id := m.GetID()
-		t.Run(id, func(t *testing.T) {
+		model := m.GetID()
+		t.Run(model, func(t *testing.T) {
+			if _, ok := seen[model]; ok {
+				t.Fatalf("duplicate model in ListModel: %q", model)
+			}
+			seen[model] = struct{}{}
+
+			// Find the reference.
+			var want genai.Scenario
+			for _, sc := range sb.Scenarios {
+				if slices.Contains(sc.Models, model) {
+					want = sc
+					want.Models = []string{model}
+					break
+				}
+			}
+			if len(want.Models) == 0 {
+				t.Fatalf("no scenario for model %q", model)
+			}
+			if want.In == nil && want.Out == nil {
+				t.Skip("Explicitly unsupported model")
+			}
+
 			// Run one model at a time otherwise we can't collect the total usage.
-			usage.Add(RunOneModel(t, func(t testing.TB, sn string) (genai.Provider, http.RoundTripper) {
+			u := runOneModel(t, func(t testing.TB, sn string) (genai.Provider, http.RoundTripper) {
 				var rt http.RoundTripper
 				fn := func(h http.RoundTripper) http.RoundTripper {
 					if sn == "" {
@@ -50,44 +94,28 @@ func TestClient_Scoreboard(t *testing.T, gc GetClient, models []genai.Model, rec
 					rt = r
 					return r
 				}
-				return gc(t, id, fn), rt
-			}))
+				return gc(t, model, fn), rt
+			}, model, want)
+			usage.Add(u)
 		})
 	}
 	t.Logf("Usage: %#v", usage)
+
+	for model := range sbModels {
+		if _, ok := seen[model]; !ok {
+			t.Errorf("stale model in scoreboard: %q", model)
+		}
+	}
 }
 
-// RunOneModel runs the scoreboard on one model.
+// getClientOneModel returns a provider client for a specific model.
+type getClientOneModel func(t testing.TB, scenarioName string) (genai.Provider, http.RoundTripper)
+
+// runOneModel runs the scoreboard on one model.
 //
 // It must implement genai.ProviderScoreboard. If it is wrapped, the wrappers must implement
 // genai.ProviderUnwrap.
-func RunOneModel(t testing.TB, gc GetClientOneModel) genai.Usage {
-	// Find the reference.
-	var want genai.Scenario
-	cc, _ := gc(t, "")
-	id := cc.ModelID()
-	og := cc
-	for {
-		if u, ok := og.(genai.ProviderUnwrap); ok {
-			og = u.Unwrap()
-		} else {
-			break
-		}
-	}
-	for _, sc := range og.(genai.ProviderScoreboard).Scoreboard().Scenarios {
-		if slices.Contains(sc.Models, id) {
-			want = sc
-			want.Models = []string{id}
-			break
-		}
-	}
-	if len(want.Models) == 0 {
-		t.Fatalf("no scenario for model %q", id)
-	}
-	if want.In == nil && want.Out == nil {
-		t.Skip("Explicitly unsupported model")
-	}
-
+func runOneModel(t testing.TB, gc getClientOneModel, model string, want genai.Scenario) genai.Usage {
 	// Calculate the scenario.
 	providerFactory := func(name string) (genai.Provider, http.RoundTripper) {
 		if name == "" {

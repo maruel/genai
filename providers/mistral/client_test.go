@@ -77,7 +77,7 @@ func TestClient_Scoreboard(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	scoreboardtest.TestClient_Scoreboard(t, getClientRT, models, testRecorder.Records)
+	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
 }
 
 func TestClient_Preferred(t *testing.T) {

@@ -110,7 +110,6 @@ var Scoreboard = genai.Scoreboard{
 				"embed-english-light-v3.0",
 				"embed-english-light-v3.0-image",
 				"embed-english-v2.0",
-				"embed-english-v3",
 				"embed-english-v3.0",
 				"embed-english-v3.0-image",
 				"embed-multilingual-light-v3.0",

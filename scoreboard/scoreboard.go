@@ -828,10 +828,21 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 **Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.
 **Output:** Actual image file for a smooth, colorful doodle-style image on a white background.`
 	msg := genai.NewTextMessage(genai.User, contentsImage)
-	resp, err := c.GenDoc(ctx, msg, &genai.OptionsImage{})
+	resp, err := c.GenDoc(ctx, msg, &genai.OptionsImage{Seed: 42})
 	usage.InputTokens += resp.InputTokens
 	usage.InputCachedTokens += resp.InputCachedTokens
 	usage.OutputTokens += resp.OutputTokens
+	out.GenDoc.Seed = true
+	var uerr *genai.UnsupportedContinuableError
+	if errors.As(err, &uerr) {
+		// Cheap trick to make sure the error is not wrapped. Figure out if there's another way!
+		if strings.HasPrefix(err.Error(), "unsupported options: ") {
+			if slices.Contains(uerr.Unsupported, "Seed") {
+				out.GenDoc.Seed = false
+			}
+			err = nil
+		}
+	}
 	if err == nil {
 		if len(resp.Contents) == 0 {
 			return fmt.Errorf("%s: no content", name)
@@ -889,10 +900,21 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 	cc, rt := pf(name)
 	c := cc.(genai.ProviderGenDoc)
 	msg := genai.NewTextMessage(genai.User, "Say hi. Just say this word, nothing else.")
-	resp, err := c.GenDoc(ctx, msg, &genai.OptionsAudio{})
+	resp, err := c.GenDoc(ctx, msg, &genai.OptionsAudio{Seed: 42})
 	usage.InputTokens += resp.InputTokens
 	usage.InputCachedTokens += resp.InputCachedTokens
 	usage.OutputTokens += resp.OutputTokens
+	out.GenDoc.Seed = true
+	var uerr *genai.UnsupportedContinuableError
+	if errors.As(err, &uerr) {
+		// Cheap trick to make sure the error is not wrapped. Figure out if there's another way!
+		if strings.HasPrefix(err.Error(), "unsupported options: ") {
+			if slices.Contains(uerr.Unsupported, "Seed") {
+				out.GenDoc.Seed = false
+			}
+			err = nil
+		}
+	}
 	if err == nil {
 		if len(resp.Contents) == 0 {
 			return fmt.Errorf("%s: no content", name)

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1163
+        content_length: 1173
         host: api.together.xyz
         body: |
-            {"prompt":"Generate one square, white-background doodle with smooth, vibrantly colored image depicting A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves..\n\n*Mandatory Requirements (Compacted):**\n\n**Style:** Simple, vibrant, varied-colored doodle/hand-drawn sketch.\n**Background:** Plain solid white (no background colors/elements). Absolutely no black background.\n**Content & Motion:** Clearly depict **A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.** action with colored, moving subject (no static images). If there's an action specified, it should be the main difference between frames.\n**Format:** Square image (1:1 aspect ratio).\n**Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.\n**Output:** Actual image file for a smooth, colorful doodle-style image on a white background.","model":"meta-llama/Llama-Vision-Free"}
+            {"prompt":"Generate one square, white-background doodle with smooth, vibrantly colored image depicting A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves..\n\n*Mandatory Requirements (Compacted):**\n\n**Style:** Simple, vibrant, varied-colored doodle/hand-drawn sketch.\n**Background:** Plain solid white (no background colors/elements). Absolutely no black background.\n**Content & Motion:** Clearly depict **A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.** action with colored, moving subject (no static images). If there's an action specified, it should be the main difference between frames.\n**Format:** Square image (1:1 aspect ratio).\n**Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.\n**Output:** Actual image file for a smooth, colorful doodle-style image on a white background.","model":"meta-llama/Llama-Vision-Free","seed":42}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,7 +22,7 @@ interactions:
         content_length: 171
         body: |-
             {
-              "id": "o48r8hA-2kFHot-9635d6d6f953a2eb-PDX",
+              "id": "o4QCzNG-2kFHot-96466a69ca8ca2de-PDX",
               "error": {
                 "message": "Internal server error",
                 "type": "server_error",
@@ -38,13 +38,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9635d6d6f953a2eb-YUL
+                - 96466a69ca8ca2de-YUL
             Content-Length:
                 - "171"
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"ab-szZt9Odx/JqwzEBFWAtG8SRjCE0"
+                - W/"ab-jTSGFBVEb2gZDphzlE0LV7XyHFg"
             Retry-After:
                 - "6"
             Server:
@@ -52,9 +52,9 @@ interactions:
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains
             X-Api-Call-Start:
-                - "2025-07-22T20:55:32.855Z"
+                - "2025-07-24T21:12:29.919Z"
             X-Api-Received:
-                - "2025-07-22T20:55:29.165Z"
+                - "2025-07-24T21:12:25.949Z"
             X-Api-Retries:
                 - "10"
             X-Image-Version:
@@ -72,7 +72,7 @@ interactions:
             X-Ratelimit-Reset:
                 - "6"
             X-Request-Id:
-                - o48r8hA-2kFHot-9635d6d6f953a2eb-PDX
+                - o4QCzNG-2kFHot-96466a69ca8ca2de-PDX
         status: 500 Internal Server Error
         code: 500
-        duration: 3.961s
+        duration: 4.256s

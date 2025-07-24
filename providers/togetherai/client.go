@@ -163,6 +163,7 @@ var Scoreboard = genai.Scoreboard{
 				},
 			},
 			GenDoc: &genai.FunctionalityDoc{
+				Seed:               true,
 				BrokenTokenUsage:   genai.True,
 				BrokenFinishReason: true,
 			},

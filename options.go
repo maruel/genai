@@ -282,7 +282,11 @@ const (
 
 // Other modalities
 
-type OptionsAudio struct{}
+type OptionsAudio struct {
+	// Seed for the random number generator. Default is 0 which means
+	// non-deterministic.
+	Seed int64
+}
 
 func (o *OptionsAudio) Validate() error {
 	return nil

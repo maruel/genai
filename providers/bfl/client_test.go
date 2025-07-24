@@ -28,7 +28,7 @@ func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.Rou
 	if err != nil {
 		t.Fatal(err)
 	}
-	return c
+	return &imageModelClient{c}
 }
 
 func TestClient_Scoreboard(t *testing.T) {

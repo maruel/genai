@@ -13,7 +13,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://api.cloudflare.com/client/v4/accounts/5f8d05006c864a755949615cd0a06064/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
         method: POST
       response:
         proto: HTTP/2.0
@@ -21,15 +21,15 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abd"}
+            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmn"}
 
-            data: {"response":"Hello","tool_calls":[],"p":"abdefghi"}
+            data: {"response":"Hello","tool_calls":[],"p":"abdefghijklmno"}
 
-            data: {"response":"!","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklm"}
+            data: {"response":"!","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghij"}
 
-            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstuvxyz"}
+            data: {"response":"","tool_calls":[],"p":"abdefghijklmnop"}
 
-            data: {"tool_calls":[],"p":"abdef"}
+            data: {"tool_calls":[],"p":"abdefghijklmnoprstuvxyz123456"}
 
             data: {"response":"","usage":{"prompt_tokens":86,"completion_tokens":3,"total_tokens":89}}
 
@@ -39,11 +39,11 @@ interactions:
             Api-Version:
                 - "2025-07-24"
             Cf-Ai-Req-Id:
-                - ef5fd169-4752-43db-bf18-e21d74bd171f
+                - d2776ccb-dd13-4dd2-8ac1-e0718463b537
             Cf-Auditlog-Id:
-                - 01983e30-4539-7c05-ab47-8b2c6aeab878
+                - 01983e5e-a9b7-7f7d-ac25-42274d55b8e0
             Cf-Ray:
-                - 964644db39253400-YUL
+                - 96468f15cbf8a257-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -52,4 +52,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 467ms
+        duration: 352ms

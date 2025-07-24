@@ -13,7 +13,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://api.cloudflare.com/client/v4/accounts/5f8d05006c864a755949615cd0a06064/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
         method: POST
       response:
         proto: HTTP/2.0
@@ -21,41 +21,41 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmnop"}
+            data: {"response":"","tool_calls":[],"p":"abdefghi"}
 
-            data: {"response":"The","tool_calls":[],"p":"abdefghijkl"}
+            data: {"response":"The","tool_calls":[],"p":"abdefghijklmnoprst"}
 
-            data: {"response":" theory","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmno"}
+            data: {"response":" theory","tool_calls":[],"p":"abdefghijklmnoprstu"}
 
-            data: {"response":" of","tool_calls":[],"p":"abdefghijklmnopr"}
+            data: {"response":" of","tool_calls":[],"p":"abdef"}
 
-            data: {"response":" relativity","tool_calls":[],"p":"abdefghijklm"}
+            data: {"response":" relativity","tool_calls":[],"p":"abdefghijklmnoprs"}
 
             data: {"response":",","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmnopr"}
 
-            data: {"response":" developed","tool_calls":[],"p":"abdefghijklmnop"}
+            data: {"response":" developed","tool_calls":[],"p":"abdefghijklmnoprstuvxyz12345"}
 
-            data: {"response":" by","tool_calls":[],"p":"abdefghijklmnoprs"}
+            data: {"response":" by","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefgh"}
 
-            data: {"response":" Albert","tool_calls":[],"p":"abdefghijklmnoprs"}
+            data: {"response":" Albert","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmnoprs"}
 
-            data: {"response":" Einstein","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1"}
+            data: {"response":" Einstein","tool_calls":[],"p":"abdefghijklmnop"}
 
-            data: {"response":",","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdef"}
+            data: {"response":",","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefgh"}
 
             data: {"response":" is","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmnoprs"}
 
             data: {"response":" a","tool_calls":[],"p":"abdefghijklmnopr"}
 
-            data: {"response":" fundamental","tool_calls":[],"p":"abdefghijklmn"}
+            data: {"response":" fundamental","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghi"}
 
-            data: {"response":" concept","tool_calls":[],"p":"abdefghijklmnoprstuvxy"}
+            data: {"response":" concept","tool_calls":[],"p":"abdefghijklmnopr"}
 
-            data: {"response":" in","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghij"}
+            data: {"response":" in","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmnoprs"}
 
-            data: {"response":" modern","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdef"}
+            data: {"response":" modern","tool_calls":[],"p":"abdefghijklmnoprstuvxy"}
 
-            data: {"tool_calls":[],"p":"abdefghijklmnopr"}
+            data: {"tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmn"}
 
             data: {"response":"","usage":{"prompt_tokens":87,"completion_tokens":16,"total_tokens":103}}
 
@@ -65,11 +65,11 @@ interactions:
             Api-Version:
                 - "2025-07-24"
             Cf-Ai-Req-Id:
-                - 8dc80b43-164c-4ed3-9081-2d53d4bb4fba
+                - 69ca9daa-d412-4fcd-bd5b-94eb5e8429d8
             Cf-Auditlog-Id:
-                - 01983e30-4822-783a-be27-1c041b13ab25
+                - 01983e5e-ac2c-72ea-bc5a-fe3bd409bd4f
             Cf-Ray:
-                - 964644e01f3a3400-YUL
+                - 96468f19c933a257-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -78,4 +78,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 283ms
+        duration: 234ms

@@ -13,7 +13,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://api.cloudflare.com/client/v4/accounts/5f8d05006c864a755949615cd0a06064/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
         method: POST
       response:
         proto: HTTP/2.0
@@ -21,25 +21,25 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"response":"","tool_calls":[],"p":"abdef"}
+            data: {"response":"","tool_calls":[],"p":"abdefghij"}
 
-            data: {"response":"{\"","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijkl"}
+            data: {"response":"{\"","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdef"}
 
-            data: {"response":"is","tool_calls":[],"p":"abdefghijklmnoprstuvxyz123456"}
+            data: {"response":"is","tool_calls":[],"p":"abdefgh"}
 
-            data: {"response":"_f","tool_calls":[],"p":"abdefghij"}
+            data: {"response":"_f","tool_calls":[],"p":"abdefghijklmnopr"}
 
-            data: {"response":"ruit","tool_calls":[],"p":"abdefghi"}
+            data: {"response":"ruit","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1"}
 
-            data: {"response":"\":","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmnopr"}
+            data: {"response":"\":","tool_calls":[],"p":"abdefghijklmnoprst"}
 
-            data: {"response":true,"tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklm"}
+            data: {"response":true,"tool_calls":[],"p":"abdefghijklmnoprstuvxy"}
 
-            data: {"response":"}","tool_calls":[],"p":"abdefghijklmnop"}
+            data: {"response":"}","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890ab"}
 
-            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234"}
+            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstuvxyz12"}
 
-            data: {"tool_calls":[],"p":"abdefghijklmnoprstuvxyz1"}
+            data: {"tool_calls":[],"p":"abdefghijklmnoprstuvxyz123"}
 
             data: {"response":"","usage":{"prompt_tokens":107,"completion_tokens":8,"total_tokens":115}}
 
@@ -49,11 +49,11 @@ interactions:
             Api-Version:
                 - "2025-07-24"
             Cf-Ai-Req-Id:
-                - c6f5c035-c49e-4297-bc27-cae74aa2a6e4
+                - 0358710d-19a6-4edd-8de5-3d4dfa77fa08
             Cf-Auditlog-Id:
-                - 01983e30-4a48-70aa-a500-2abd664f3e74
+                - 01983e5e-ae02-7406-9bf5-88ff92f821aa
             Cf-Ray:
-                - 964644e39bf33400-YUL
+                - 96468f1cbccba257-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -62,4 +62,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 236ms
+        duration: 211ms

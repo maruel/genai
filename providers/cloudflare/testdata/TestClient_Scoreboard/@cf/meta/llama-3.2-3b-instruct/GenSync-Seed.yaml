@@ -13,7 +13,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://api.cloudflare.com/client/v4/accounts/5f8d05006c864a755949615cd0a06064/ai/run/@cf/meta/llama-3.2-3b-instruct
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-3b-instruct
         method: POST
       response:
         proto: HTTP/2.0
@@ -26,11 +26,11 @@ interactions:
             Api-Version:
                 - "2025-07-24"
             Cf-Ai-Req-Id:
-                - 069aeaa7-5eeb-4333-95c1-5ca8dc417a98
+                - 78030c2c-6b61-4f69-9bb1-751b573b1da9
             Cf-Auditlog-Id:
-                - 01983e30-552c-7913-a771-59a6c15f3f1b
+                - 01983e5e-bb77-7413-9476-18a0428a3f3f
             Cf-Ray:
-                - 964644f4fa913400-YUL
+                - 96468f323b29a257-YUL
             Content-Type:
                 - application/json
             Server:
@@ -39,4 +39,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 267ms
+        duration: 245ms

@@ -13,7 +13,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://api.cloudflare.com/client/v4/accounts/5f8d05006c864a755949615cd0a06064/ai/run/@cf/meta/llama-3.2-3b-instruct
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-3b-instruct
         method: POST
       response:
         proto: HTTP/2.0
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"result":{"response":null,"tool_calls":[{"name":"square_root","arguments":{"number":"132413"}}],"usage":{"prompt_tokens":199,"completion_tokens":14,"total_tokens":213}},"success":true,"errors":[],"messages":[]}'
+        body: '{"result":{"response":null,"tool_calls":[{"name":"square_root","arguments":{"number":"132413"}}],"usage":{"prompt_tokens":199,"completion_tokens":18,"total_tokens":217}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
                 - "2025-07-24"
             Cf-Ai-Req-Id:
-                - 5d5d8698-6b9f-4959-9a19-c61058329bcf
+                - c8fab6a7-c099-4d9c-95dc-0fa15f523f41
             Cf-Auditlog-Id:
-                - 01983e30-5bee-7713-808f-32b9b33f0826
+                - 01983e5e-c1b0-74da-aba5-6873bfd1cd18
             Cf-Ray:
-                - 964644ffcf863400-YUL
+                - 96468f3c387ea257-YUL
             Content-Type:
                 - application/json
             Server:
@@ -39,4 +39,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 333ms
+        duration: 327ms

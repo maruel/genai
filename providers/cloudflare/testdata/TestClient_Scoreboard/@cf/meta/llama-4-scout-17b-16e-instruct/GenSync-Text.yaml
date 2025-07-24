@@ -13,7 +13,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://api.cloudflare.com/client/v4/accounts/5f8d05006c864a755949615cd0a06064/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
         method: POST
       response:
         proto: HTTP/2.0
@@ -26,11 +26,11 @@ interactions:
             Api-Version:
                 - "2025-07-24"
             Cf-Ai-Req-Id:
-                - 4fbb1aac-b9ca-4754-bb2b-5e246a1fb8ce
+                - cd44495a-5c5d-45a7-9ae6-d8e649a9ed70
             Cf-Auditlog-Id:
-                - 01983e30-453d-7960-a6bb-f2878c659585
+                - 01983e5e-a9b9-7578-88e8-73f6c8e11710
             Cf-Ray:
-                - 964644db392b3400-YUL
+                - 96468f15cbfca257-YUL
             Content-Type:
                 - application/json
             Server:
@@ -39,4 +39,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 482ms
+        duration: 501ms

@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 	"sync"
@@ -111,10 +112,11 @@ func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Opti
 	}
 	args := []recorder.Option{
 		recorder.WithHook(trimResponseHeaders, recorder.AfterCaptureHook),
+		recorder.WithHook(trimRecordingCloudflare, recorder.AfterCaptureHook),
 		recorder.WithMode(mode),
 		recorder.WithSkipRequestLatency(true),
 		recorder.WithRealTransport(h),
-		recorder.WithMatcher(DefaultMatcher),
+		recorder.WithMatcher(matchCassetteCloudflare),
 	}
 	r.Signal(name)
 	// Don't forget to call Stop()!
@@ -170,6 +172,21 @@ func trimResponseHeaders(i *cassette.Interaction) error {
 	// Noise.
 	i.Response.Duration = i.Response.Duration.Round(time.Millisecond)
 	return nil
+}
+
+var reCloudflareAccount = regexp.MustCompile(`/accounts/[0-9a-fA-F]{32}/`)
+
+func trimRecordingCloudflare(i *cassette.Interaction) error {
+	// Zap the account ID from the URL path before saving.
+	i.Request.URL = reCloudflareAccount.ReplaceAllString(i.Request.URL, "/accounts/ACCOUNT_ID/")
+	return nil
+}
+
+func matchCassetteCloudflare(r *http.Request, i cassette.Request) bool {
+	r = r.Clone(r.Context())
+	// When matching, ignore the account ID from the URL path.
+	r.URL.Path = reCloudflareAccount.ReplaceAllString(r.URL.Path, "/accounts/ACCOUNT_ID/")
+	return DefaultMatcher(r, i)
 }
 
 // recorderWithBody wraps the POST body in the error message.

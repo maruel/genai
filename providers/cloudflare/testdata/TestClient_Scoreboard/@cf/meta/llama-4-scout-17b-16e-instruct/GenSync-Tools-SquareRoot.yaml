@@ -13,7 +13,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://api.cloudflare.com/client/v4/accounts/5f8d05006c864a755949615cd0a06064/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
         method: POST
       response:
         proto: HTTP/2.0
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"result":{"tool_calls":[{"id":"chatcmpl-tool-4d7175b3a283475d88173d7dda325615","type":"function","function":{"name":"square_root","arguments":"{\"number\": \"132413\"}"}}],"usage":{"prompt_tokens":325,"completion_tokens":18,"total_tokens":343}},"success":true,"errors":[],"messages":[]}'
+        body: '{"result":{"tool_calls":[{"id":"chatcmpl-tool-4e01335d862a46b78b5cb870c6895c75","type":"function","function":{"name":"square_root","arguments":"{\"number\": \"132413\"}"}}],"usage":{"prompt_tokens":325,"completion_tokens":18,"total_tokens":343}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
                 - "2025-07-24"
             Cf-Ai-Req-Id:
-                - bc02d823-60f2-4e0d-99b1-bf0d8fbe746c
+                - dff85a30-175a-41be-9e1e-b09ed38f2926
             Cf-Auditlog-Id:
-                - 01983e30-4eda-706c-91e9-15f946f7cef7
+                - 01983e5e-b5a2-74a2-b6bc-dd2bfde8043a
             Cf-Ray:
-                - 964644eaed1c3400-YUL
+                - 96468f28edc6a257-YUL
             Content-Type:
                 - application/json
             Server:
@@ -39,4 +39,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 1.29s
+        duration: 1.17s

@@ -13,7 +13,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://api.cloudflare.com/client/v4/accounts/5f8d05006c864a755949615cd0a06064/ai/run/@cf/meta/llama-3.2-3b-instruct
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-3b-instruct
         method: POST
       response:
         proto: HTTP/2.0
@@ -21,37 +21,37 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"response":"The","p":"abcdefghijklmnopqrstuvwxyz01"}
+            data: {"response":"The","p":"abcdefghijklmnopqrstuvwxyz01234567"}
 
-            data: {"response":" theory","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdefghijk"}
+            data: {"response":" theory","p":"abcdefghijklmnopqrstuvwxy"}
 
-            data: {"response":" of","p":"abcdefghij"}
+            data: {"response":" of","p":"abcdefghijklmno"}
 
-            data: {"response":" rel","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdefghijkl"}
+            data: {"response":" rel","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdefghijk"}
 
-            data: {"response":"ativity","p":"abcdefghijkl"}
+            data: {"response":"ativity","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklm"}
 
-            data: {"response":",","p":"abcdefgh"}
+            data: {"response":",","p":"abcdefghijklmnopqrstuvwxyz0123456789abcde"}
 
-            data: {"response":" developed","p":"abcdefghijklmnop"}
+            data: {"response":" developed","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdef"}
 
-            data: {"response":" by","p":"abcdefghijklmnopqrstuvwxyz0123456"}
+            data: {"response":" by","p":"abcdefghijklmnopqrstuvwxyz0"}
 
-            data: {"response":" Albert","p":"abcdefghijklmnopqrstuvwxyz0123456789"}
+            data: {"response":" Albert","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdefg"}
 
-            data: {"response":" Einstein","p":"abcdefghijklmnopqrstuvwxyz0123456"}
+            data: {"response":" Einstein","p":"abcdefghijklmnopqrstuvwxyz"}
 
-            data: {"response":",","p":"abc"}
+            data: {"response":",","p":"abcdefghijklmnopqrstuvwxyz0123456789ab"}
 
-            data: {"response":" is","p":"a"}
+            data: {"response":" is","p":"abcdefghijklmnopqrstuvwxyz0123"}
 
-            data: {"response":" a","p":"abcdefg"}
+            data: {"response":" a","p":"abcdefghijklmnopqrstuvwxyz01"}
 
-            data: {"response":" fundamental","p":"abcdefghijklmnopqrstuvwxyz01"}
+            data: {"response":" fundamental","p":"abcdefghijklmnopqrstuvwxyz0123456789abc"}
 
-            data: {"response":" concept","p":"abcdefghijklmnopqrstuvwxyz0123456789abc"}
+            data: {"response":" concept","p":"abcdefghijklmnopqrstuvwxyz01"}
 
-            data: {"response":" in","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklm"}
+            data: {"response":" in"}
 
             data: {"response":"","usage":{"prompt_tokens":22,"completion_tokens":16,"total_tokens":38}}
 
@@ -61,11 +61,11 @@ interactions:
             Api-Version:
                 - "2025-07-24"
             Cf-Ai-Req-Id:
-                - 0adb5580-80ab-447d-a791-2bea356a1f49
+                - 0430c0e4-33f1-489a-a8a8-8d463fcbc97b
             Cf-Auditlog-Id:
-                - 01983e30-5607-7a93-b5d9-64e89de0404f
+                - 01983e5e-bca3-7a7d-b23c-eb0f04118aca
             Cf-Ray:
-                - 964644f66c343400-YUL
+                - 96468f341de6a257-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -74,4 +74,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 229ms
+        duration: 255ms

@@ -13,7 +13,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://api.cloudflare.com/client/v4/accounts/5f8d05006c864a755949615cd0a06064/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
         method: POST
       response:
         proto: HTTP/2.0
@@ -21,15 +21,15 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstu"}
+            data: {"response":"","tool_calls":[],"p":"abdefghijklmnop"}
 
-            data: {"response":"Hello","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmn"}
+            data: {"response":"Hello","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmnoprs"}
 
-            data: {"response":"!","tool_calls":[],"p":"abdef"}
+            data: {"response":"!","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmno"}
 
-            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmnopr"}
+            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmnoprs"}
 
-            data: {"tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmn"}
+            data: {"tool_calls":[],"p":"abdefghijkl"}
 
             data: {"response":"","usage":{"prompt_tokens":86,"completion_tokens":3,"total_tokens":89}}
 
@@ -39,11 +39,11 @@ interactions:
             Api-Version:
                 - "2025-07-24"
             Cf-Ai-Req-Id:
-                - ed340cf8-2a68-45d6-b950-7a778d3a917c
+                - 7e82378e-d7f8-4481-b682-fde7da82081b
             Cf-Auditlog-Id:
-                - 01983e30-46f0-7acf-a9da-383439410370
+                - 01983e5e-ab11-7d4e-bdd7-a5f7989fbaa3
             Cf-Ray:
-                - 964644de3d233400-YUL
+                - 96468f180f04a257-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -52,4 +52,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 260ms
+        duration: 223ms

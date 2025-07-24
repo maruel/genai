@@ -13,7 +13,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://api.cloudflare.com/client/v4/accounts/5f8d05006c864a755949615cd0a06064/ai/run/@cf/meta/llama-3.2-3b-instruct
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-3b-instruct
         method: POST
       response:
         proto: HTTP/2.0
@@ -21,14 +21,14 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"errors":[{"message":"AiError: Ai: JSON Schema mode is not supported with stream mode. (72ccbb44-fbfb-43da-a6c7-f2b8c777a8ba)","code":5023}],"success":false,"result":{},"messages":[]}'
+        body: '{"errors":[{"message":"AiError: Ai: JSON Schema mode is not supported with stream mode. (22b2ad11-93f9-4523-b625-a012817ee1c1)","code":5023}],"success":false,"result":{},"messages":[]}'
         headers:
             Api-Version:
                 - "2025-07-24"
             Cf-Auditlog-Id:
-                - 01983e30-58a2-7293-bfbf-42dca890ebe9
+                - 01983e5e-bef9-76c4-8d6c-4904df846a0c
             Cf-Ray:
-                - 964644fa895c3400-YUL
+                - 96468f37ca90a257-YUL
             Content-Type:
                 - application/json
             Server:
@@ -37,4 +37,4 @@ interactions:
                 - Accept-Encoding
         status: 403 Forbidden
         code: 403
-        duration: 797ms
+        duration: 494ms

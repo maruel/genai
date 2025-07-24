@@ -13,7 +13,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://api.cloudflare.com/client/v4/accounts/5f8d05006c864a755949615cd0a06064/ai/run/@cf/meta/llama-3.2-3b-instruct
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-3b-instruct
         method: POST
       response:
         proto: HTTP/2.0
@@ -21,21 +21,21 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"response":"{\"","p":"abcdefghijklmnopqr"}
+            data: {"response":"{\"","p":"abcdefghijklmnop"}
 
-            data: {"response":"is","p":"abcd"}
+            data: {"response":"is","p":"abcdefghijklmn"}
 
-            data: {"response":"_f","p":"abcdefghijklmnopqrstuv"}
+            data: {"response":"_f","p":"abcdefghijklmnopqrstuvwxyz012345678"}
 
-            data: {"response":"ruit","p":"abcde"}
+            data: {"response":"ruit","p":"abcdefghijklmnopqrstuvwxyz0123456"}
 
-            data: {"response":"\":","p":"abcdefghijklmnopqrstuv"}
+            data: {"response":"\":","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdef"}
 
-            data: {"response":" true","p":"abcdefghijklmnopqrstuvwxy"}
+            data: {"response":" true","p":"abcdefghijklmnopqrstuvwxyz0123456789abcd"}
 
-            data: {"response":"}","p":"abcdefghijklmnopqrstuvwxyz0123456789abc"}
+            data: {"response":"}","p":"abcdefghijkl"}
 
-            data: {"response":""}
+            data: {"response":"","p":"abcdefghijklmnopqrstuvwxyz012345"}
 
             data: {"response":"","usage":{"prompt_tokens":40,"completion_tokens":8,"total_tokens":48}}
 
@@ -45,11 +45,11 @@ interactions:
             Api-Version:
                 - "2025-07-24"
             Cf-Ai-Req-Id:
-                - e239ac5f-64fb-4001-ac41-82c42f321037
+                - d6dfe7cb-c287-4147-8ccc-2626b5fd6d6c
             Cf-Auditlog-Id:
-                - 01983e30-5771-74bb-a299-4dc19325aaef
+                - 01983e5e-bdf7-7e24-97a5-bf922506a475
             Cf-Ray:
-                - 964644f89ede3400-YUL
+                - 96468f363884a257-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -58,4 +58,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 297ms
+        duration: 218ms

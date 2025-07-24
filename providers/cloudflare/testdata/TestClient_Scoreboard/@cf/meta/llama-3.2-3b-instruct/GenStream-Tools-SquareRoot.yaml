@@ -13,7 +13,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://api.cloudflare.com/client/v4/accounts/5f8d05006c864a755949615cd0a06064/ai/run/@cf/meta/llama-3.2-3b-instruct
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-3b-instruct
         method: POST
       response:
         proto: HTTP/2.0
@@ -21,41 +21,41 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"response":"{\"","p":"abcdefghijklmnopqrstuvwxyz01234567"}
+            data: {"response":"{\"","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdefg"}
 
-            data: {"response":"name","p":"abcde"}
-
-            data: {"response":"\":","p":"abcdefghijklmnopqrstuvwxy"}
-
-            data: {"response":" \"","p":"abcdefghijklmnopqrstuvwxyz0"}
-
-            data: {"response":"square","p":"abcdefghijklmnopqrstuvwx"}
-
-            data: {"response":"_root","p":"abcdefghijkl"}
-
-            data: {"response":"\",","p":"abc"}
-
-            data: {"response":" \"","p":"abcdefghijklmnopqrs"}
-
-            data: {"response":"parameters","p":"abcdefghijkl"}
+            data: {"response":"name","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdefghi"}
 
             data: {"response":"\":","p":"abcdefghijklmnopqrstuvwxyz012345"}
 
-            data: {"response":" {\"","p":"abcdefghijklmnopqrstuvwxy"}
+            data: {"response":" \"","p":"abcdefghijklmnopqrs"}
 
-            data: {"response":"number","p":"abcdefghijklmnopqrstuvwxyz01234567"}
+            data: {"response":"square","p":"abc"}
 
-            data: {"response":"\":","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdefghij"}
+            data: {"response":"_root","p":"abcd"}
 
-            data: {"response":" \"","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdef"}
+            data: {"response":"\",","p":"abcdefghijklmnopqrstuvw"}
 
-            data: {"response":"132","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdef"}
+            data: {"response":" \"","p":"abcdefghijklmnopqrstuvwxyz012345678"}
 
-            data: {"response":"413","p":"abcdefghijklmnopqrstuvwxyz012345"}
+            data: {"response":"parameters","p":"abcdef"}
 
-            data: {"response":"\"}}","p":"abcdefghijklmnopqrstuvwxyz"}
+            data: {"response":"\":","p":"abcdefgh"}
 
-            data: {"response":"","p":"abcdefghijklmnopqrstuvwxyz0123456"}
+            data: {"response":" {\"","p":"abcdefghijklmnopqrstuvwxyz0123456789abcd"}
+
+            data: {"response":"number","p":"abcdefghijklmnopqrstuvw"}
+
+            data: {"response":"\":","p":"abcdefghijklmnopqrstuvwxyz0123456789abc"}
+
+            data: {"response":" \"","p":"abcdefghijklmnopqrstuvwxyz012345678"}
+
+            data: {"response":"132","p":"abcdefghijk"}
+
+            data: {"response":"413","p":"abcdefghijklmnopqrstuvwxyz0123"}
+
+            data: {"response":"\"}}","p":"ab"}
+
+            data: {"response":"","p":"abcdefghijklmnopqrstuvwxyz012345"}
 
             data: {"response":"","usage":{"prompt_tokens":199,"completion_tokens":18,"total_tokens":217}}
 
@@ -65,11 +65,11 @@ interactions:
             Api-Version:
                 - "2025-07-24"
             Cf-Ai-Req-Id:
-                - 551a9177-543d-42ac-879d-dab2362f2cc9
+                - 4f5148c7-1105-459e-9d33-b4184446c0ec
             Cf-Auditlog-Id:
-                - 01983e30-5bd0-75c1-afe4-9af753d0204c
+                - 01983e5e-c0e3-727c-90f7-1a7d3e98b795
             Cf-Ray:
-                - 964644ff8f3e3400-YUL
+                - 96468f3aee7ca257-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -78,4 +78,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 240ms
+        duration: 219ms

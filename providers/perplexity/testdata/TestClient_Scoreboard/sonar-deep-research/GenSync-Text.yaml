@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 171
+        host: api.perplexity.ai
+        body: |
+            {"model":"sonar-deep-research","messages":[{"role":"user","content":"Say hello. Use only one word."}],"return_images":true,"return_related_questions":true,"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id": "4214bc05-b611-48c1-8aba-65a4dfa9d4e3", "model": "sonar-deep-research", "created": 1753366328, "usage": {"prompt_tokens": 8, "completion_tokens": 145, "total_tokens": 153, "reasoning_tokens": 1822}, "citations": [], "search_results": [], "related_questions": ["What is the simplest way to greet someone", "How can I make a strong first impression with a single word", "What are some creative one-word greetings", "How do different cultures use one-word greetings", "Can you list some powerful one-word greetings"], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "<think>\nWe are given a system instruction that we are Perplexity, a large language model created by Perplexity AI.\n The current date is Thursday, July 24, 2025, 2:12:05 PM UTC.\n The user says: \"Say hello. Use only one word.\"\n We must respond with only one word, and that word should be a greeting.\n The most common and appropriate one-word greeting is \"Hello\".\n However, note that the user said \"Say hello\", so we can also use \"Hello\" to match.\n But note: the instruction says \"Use only one word\", so we must use exactly one word.\n Therefore, our response should be: \"Hello\"\n</think>\nHello"}, "delta": {"role": "assistant", "content": ""}}]}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 964402788e50a2b7-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 12.138s

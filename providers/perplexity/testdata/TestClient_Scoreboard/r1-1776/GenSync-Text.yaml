@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 159
+        host: api.perplexity.ai
+        body: |
+            {"model":"r1-1776","messages":[{"role":"user","content":"Say hello. Use only one word."}],"return_images":true,"return_related_questions":true,"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id": "b2da11be-0a9c-4653-a9ca-18748f2f0c9e", "model": "r1-1776", "created": 1753366312, "usage": {"prompt_tokens": 8, "completion_tokens": 189, "total_tokens": 197}, "related_questions": ["What is the simplest way to greet someone", "How can I make a strong first impression with a single word", "What are some creative one-word greetings", "How do different cultures use one-word greetings", "Can you list some powerful one-word greetings"], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "<think>\nHmm, the user just asked me to say hello using only one word. That''s a simple and direct request. \n\nLooking at the context, I''m Perplexity AI and the current date is July 24, 2025. The user seems to want a minimal response - no elaboration, just a single word greeting. \n\nI wonder if this is a test of my ability to follow instructions precisely. Maybe they''re checking if I can resist the temptation to add more context. \n\n\"Hello\" would be the most natural choice since it''s the standard greeting. Other options like \"Hi\" or \"Hey\" could work too, but \"Hello\" feels slightly more formal and universal. \n\nSince they emphasized \"only one word\", I should strictly adhere to that. No punctuation marks either - just the pure word. \n\nOkay, I''ll respond with just \"Hello\" to fulfill the request perfectly.\n</think>\nHello."}, "delta": {"role": "assistant", "content": ""}}]}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96440243ff8ca2b7-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 3.712s

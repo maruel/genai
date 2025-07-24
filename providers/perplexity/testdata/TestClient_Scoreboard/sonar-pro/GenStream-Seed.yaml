@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 160
+        host: api.perplexity.ai
+        body: |
+            {"model":"sonar-pro","messages":[{"role":"user","content":"Say hello. Use only one word."}],"return_images":true,"return_related_questions":true,"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"id\": \"1ca63fbb-7b94-4558-9e52-7c5adf13d483\", \"model\": \"sonar-pro\", \"created\": 1753366346, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 1, \"total_tokens\": 9, \"search_context_size\": \"low\"}, \"citations\": [\"https://www.youtube.com/watch?v=Z4p2mL7m8Lc\", \"https://preply.com/en/blog/22-useful-english-greetings-for-every-day/\", \"https://blog.duolingo.com/hello-in-english/\", \"https://languagetool.org/insights/post/word-choice-other-ways-to-say-hello/\", \"https://www.berlitz.com/blog/hello-in-english\"], \"search_results\": [{\"title\": \"Other Ways to Say Hello in English | Informal and ...\", \"url\": \"https://www.youtube.com/watch?v=Z4p2mL7m8Lc\", \"date\": \"2022-12-07\", \"last_updated\": \"2025-06-30\"}, {\"title\": \"English Greetings: Say \\u201cHello\\u201d in Style\", \"url\": \"https://preply.com/en/blog/22-useful-english-greetings-for-every-day/\", \"date\": \"2025-05-12\", \"last_updated\": \"2025-06-16\"}, {\"title\": \"Different Ways to Say Hello in English and How to Respond\", \"url\": \"https://blog.duolingo.com/hello-in-english/\", \"date\": \"2024-10-17\", \"last_updated\": \"2025-07-01\"}, {\"title\": \"Ten Other Ways To Say \\\"Hello\\\"\", \"url\": \"https://languagetool.org/insights/post/word-choice-other-ways-to-say-hello/\", \"date\": \"2025-06-16\", \"last_updated\": \"2025-06-21\"}, {\"title\": \"107 interesting and different ways to say hi in English\", \"url\": \"https://www.berlitz.com/blog/hello-in-english\", \"date\": \"2021-12-19\", \"last_updated\": \"2025-06-16\"}], \"images\": [{\"image_url\": \"https://i.pinimg.com/736x/65/8f/83/658f83711cd60fdcd3c16e1592289fb8.jpg\", \"origin_url\": \"https://www.pinterest.com/pin/20-different-ways-to-say-hello-in-english--823947694343125514/\", \"height\": 990, \"width\": 700}, {\"image_url\": \"https://lingo-apps.com/www/wp-content/uploads/2018/06/Screen-Shot-2018-06-27-at-19.05.32.png\", \"origin_url\": \"https://lingo-apps.com/say-hello-many-different-languages/\", \"height\": 538, \"width\": 867}, {\"image_url\": \"https://i.pinimg.com/736x/aa/4c/4b/aa4c4b0469ff08bb7e1ff96dbc466243.jpg\", \"origin_url\": \"https://www.pinterest.com/pin/gv--681310249864070444/\", \"height\": 883, \"width\": 736}, {\"image_url\": \"https://i.ytimg.com/vi/6xa9LUVw48I/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLAnLq8snQhz-7XDdXqsOPiPlmkO1Q\", \"origin_url\": \"https://www.youtube.com/watch?v=6xa9LUVw48I\", \"height\": 386, \"width\": 686}, {\"image_url\": \"https://i0.wp.com/cms.babbel.news/wp-content/uploads/2023/05/hello-in-10-languages.png?resize=1284%2C2000&strip=none&ssl=1\", \"origin_url\": \"https://www.babbel.com/en/magazine/how-to-say-hello-in-10-different-languages\", \"height\": 2000, \"width\": 1284}], \"related_questions\": [\"What are some creative ways to say hello\", \"How do you greet someone formally in English\", \"What are some informal greetings in English\", \"How can I use slang to say hello\", \"What are some polite greetings for a business meeting\"], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"Hello\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"Hello\"}}]}\r\n\r\ndata: {\"id\": \"1ca63fbb-7b94-4558-9e52-7c5adf13d483\", \"model\": \"sonar-pro\", \"created\": 1753366346, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 1, \"total_tokens\": 9, \"search_context_size\": \"low\"}, \"citations\": [\"https://www.youtube.com/watch?v=Z4p2mL7m8Lc\", \"https://preply.com/en/blog/22-useful-english-greetings-for-every-day/\", \"https://blog.duolingo.com/hello-in-english/\", \"https://languagetool.org/insights/post/word-choice-other-ways-to-say-hello/\", \"https://www.berlitz.com/blog/hello-in-english\"], \"search_results\": [{\"title\": \"Other Ways to Say Hello in English | Informal and ...\", \"url\": \"https://www.youtube.com/watch?v=Z4p2mL7m8Lc\", \"date\": \"2022-12-07\", \"last_updated\": \"2025-06-30\"}, {\"title\": \"English Greetings: Say \\u201cHello\\u201d in Style\", \"url\": \"https://preply.com/en/blog/22-useful-english-greetings-for-every-day/\", \"date\": \"2025-05-12\", \"last_updated\": \"2025-06-16\"}, {\"title\": \"Different Ways to Say Hello in English and How to Respond\", \"url\": \"https://blog.duolingo.com/hello-in-english/\", \"date\": \"2024-10-17\", \"last_updated\": \"2025-07-01\"}, {\"title\": \"Ten Other Ways To Say \\\"Hello\\\"\", \"url\": \"https://languagetool.org/insights/post/word-choice-other-ways-to-say-hello/\", \"date\": \"2025-06-16\", \"last_updated\": \"2025-06-21\"}, {\"title\": \"107 interesting and different ways to say hi in English\", \"url\": \"https://www.berlitz.com/blog/hello-in-english\", \"date\": \"2021-12-19\", \"last_updated\": \"2025-06-16\"}], \"images\": [{\"image_url\": \"https://i.pinimg.com/736x/65/8f/83/658f83711cd60fdcd3c16e1592289fb8.jpg\", \"origin_url\": \"https://www.pinterest.com/pin/20-different-ways-to-say-hello-in-english--823947694343125514/\", \"height\": 990, \"width\": 700}, {\"image_url\": \"https://lingo-apps.com/www/wp-content/uploads/2018/06/Screen-Shot-2018-06-27-at-19.05.32.png\", \"origin_url\": \"https://lingo-apps.com/say-hello-many-different-languages/\", \"height\": 538, \"width\": 867}, {\"image_url\": \"https://i.pinimg.com/736x/aa/4c/4b/aa4c4b0469ff08bb7e1ff96dbc466243.jpg\", \"origin_url\": \"https://www.pinterest.com/pin/gv--681310249864070444/\", \"height\": 883, \"width\": 736}, {\"image_url\": \"https://i.ytimg.com/vi/6xa9LUVw48I/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLAnLq8snQhz-7XDdXqsOPiPlmkO1Q\", \"origin_url\": \"https://www.youtube.com/watch?v=6xa9LUVw48I\", \"height\": 386, \"width\": 686}, {\"image_url\": \"https://i0.wp.com/cms.babbel.news/wp-content/uploads/2023/05/hello-in-10-languages.png?resize=1284%2C2000&strip=none&ssl=1\", \"origin_url\": \"https://www.babbel.com/en/magazine/how-to-say-hello-in-10-different-languages\", \"height\": 2000, \"width\": 1284}], \"related_questions\": [\"What are some creative ways to say hello\", \"How do you greet someone formally in English\", \"What are some informal greetings in English\", \"How can I use slang to say hello\", \"What are some polite greetings for a business meeting\"], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"Hello\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}\r\n\r\n"
+        headers:
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 964403237d0ea2b7-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 1.9s

@@ -35,18 +35,31 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://www.perplexity.ai/settings/api",
 	Scenarios: []genai.Scenario{
 		{
-			Models: []string{"r1-1776", "sonar-deep-research"},
+			Models: []string{"r1-1776"},
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Thinking:       true,
 				NoStopSequence: true,
-				JSONSchema:     true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Thinking:       true,
 				NoStopSequence: true,
-				JSONSchema:     true,
+			},
+		},
+		{
+			Models: []string{"sonar-deep-research", "sonar-reasoning", "sonar-reasoning-pro"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Thinking:       true,
+				Citations:      true,
+				NoStopSequence: true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Thinking:       true,
+				Citations:      true,
+				NoStopSequence: true,
 			},
 		},
 		{
@@ -54,29 +67,12 @@ var Scoreboard = genai.Scoreboard{
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				NoStopSequence: true,
-				JSONSchema:     true,
 				Citations:      true,
+				NoStopSequence: true,
 			},
 			GenStream: &genai.FunctionalityText{
-				NoStopSequence: true,
 				Citations:      true,
-			},
-		},
-		{
-			Models: []string{"sonar-reasoning", "sonar-reasoning-pro"},
-			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
-				Thinking:       true,
 				NoStopSequence: true,
-				JSONSchema:     true,
-				Citations:      true,
-			},
-			GenStream: &genai.FunctionalityText{
-				Thinking:       true,
-				NoStopSequence: true,
-				Citations:      true,
 			},
 		},
 	},
@@ -190,7 +186,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-// https://docs.perplexity.ai/api-reference/chat-completions
+// Message is documented at https://docs.perplexity.ai/api-reference/chat-completions
 type Message struct {
 	Role    string `json:"role"` // "system", "assistant", "user"
 	Content string `json:"content"`
@@ -346,6 +342,9 @@ type Usage struct {
 	CompletionTokens  int64  `json:"completion_tokens"`
 	TotalTokens       int64  `json:"total_tokens"`
 	SearchContextSize string `json:"search_context_size"` // "low"
+	ReasoningTokens   int64  `json:"reasoning_tokens"`
+	CitationTokens    int64  `json:"citation_tokens"`
+	NumSearchQueries  int64  `json:"num_search_queries"`
 }
 
 type ChatStreamChunkResponse = ChatResponse

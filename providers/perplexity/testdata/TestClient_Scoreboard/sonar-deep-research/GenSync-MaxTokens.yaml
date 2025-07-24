@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 208
+        host: api.perplexity.ai
+        body: |
+            {"model":"sonar-deep-research","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_tokens":16,"return_images":true,"return_related_questions":true,"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id": "1ca762fa-e5b3-4514-a885-d2147ca892b2", "model": "sonar-deep-research", "created": 1753367860, "usage": {"prompt_tokens": 9, "completion_tokens": 14, "total_tokens": 23, "citation_tokens": 9788, "num_search_queries": 26, "reasoning_tokens": 87107}, "citations": ["https://en.wikipedia.org/wiki/Theory_of_relativity", "https://www.cantorsparadise.com/einsteins-miraculous-year-a-summary-of-the-1905-annus-mirabilis-papers-5c7ed413a8d3", "https://einsteinrelativelyeasy.com/index.php/einstein/83-the-einstein-field-equations-series", "https://theaveragescientist.co.uk/2024/01/08/understanding-the-differences-special-relativity-vs-general-relativity/", "https://byjus.com/physics/relativity/", "https://www.numberanalytics.com/blog/relativity-historical-perspective", "https://case.edu/ech/articles/m/michelson-morley-experiment", "https://en.wikipedia.org/wiki/History_of_general_relativity", "https://en.wikipedia.org/wiki/Derivations_of_the_Lorentz_transformations", "https://byjus.com/physics/lorentz-transformations/", "https://en.wikipedia.org/wiki/Minkowski_space", "https://www.einstein-online.info/en/spotlight/equivalence_principle/", "https://www.ebsco.com/research-starters/physics/schwarzschild-solves-equations-general-relativity", "https://www.montana.edu/xgi/research/grav_wave_theory.html", "https://en.wikipedia.org/wiki/Equivalence_principle", "https://en.wikipedia.org/wiki/Einstein_field_equations", "https://esahubble.org/wordbank/gravitational-lensing/", "https://link.aps.org/doi/10.1103/PhysRevLett.120.191101", "https://map.gsfc.nasa.gov/universe/uni_accel.html"], "search_results": [{"title": "Theory of relativity", "url": "https://en.wikipedia.org/wiki/Theory_of_relativity", "date": null, "last_updated": null}, {"title": "Einstein''s Miraculous Year: A Summary of the 1905 Annus ...", "url": "https://www.cantorsparadise.com/einsteins-miraculous-year-a-summary-of-the-1905-annus-mirabilis-papers-5c7ed413a8d3", "date": null, "last_updated": null}, {"title": "Nov 1915 The four Einstein''s papers", "url": "https://einsteinrelativelyeasy.com/index.php/einstein/83-the-einstein-field-equations-series", "date": null, "last_updated": null}, {"title": "Know your Einstein: Special Relativity vs General Relativity", "url": "https://theaveragescientist.co.uk/2024/01/08/understanding-the-differences-special-relativity-vs-general-relativity/", "date": null, "last_updated": null}, {"title": "General Theory of Relativity - BYJU''S", "url": "https://byjus.com/physics/relativity/", "date": null, "last_updated": null}, {"title": "Relativity: A Historical Perspective", "url": "https://www.numberanalytics.com/blog/relativity-historical-perspective", "date": null, "last_updated": null}, {"title": "MICHELSON-MORLEY EXPERIMENT | Encyclopedia of Cleveland ...", "url": "https://case.edu/ech/articles/m/michelson-morley-experiment", "date": null, "last_updated": null}, {"title": "History of general relativity", "url": "https://en.wikipedia.org/wiki/History_of_general_relativity", "date": null, "last_updated": null}, {"title": "Derivations of the Lorentz transformations - Wikipedia", "url": "https://en.wikipedia.org/wiki/Derivations_of_the_Lorentz_transformations", "date": null, "last_updated": null}, {"title": "Lorentz Transformation - BYJU''S", "url": "https://byjus.com/physics/lorentz-transformations/", "date": null, "last_updated": null}, {"title": "Minkowski space - Wikipedia", "url": "https://en.wikipedia.org/wiki/Minkowski_space", "date": null, "last_updated": null}, {"title": "The elevator, the rocket, and gravity: the equivalence principle", "url": "https://www.einstein-online.info/en/spotlight/equivalence_principle/", "date": null, "last_updated": null}, {"title": "Schwarzschild Solves the Equations of General Relativity - EBSCO", "url": "https://www.ebsco.com/research-starters/physics/schwarzschild-solves-equations-general-relativity", "date": null, "last_updated": null}, {"title": "Gravitational Wave Theory - eXtreme Gravity Institute (XGI)", "url": "https://www.montana.edu/xgi/research/grav_wave_theory.html", "date": null, "last_updated": null}, {"title": "Equivalence principle - Wikipedia", "url": "https://en.wikipedia.org/wiki/Equivalence_principle", "date": null, "last_updated": null}, {"title": "Einstein field equations - Wikipedia", "url": "https://en.wikipedia.org/wiki/Einstein_field_equations", "date": null, "last_updated": null}, {"title": "Gravitational Lensing - ESA/Hubble", "url": "https://esahubble.org/wordbank/gravitational-lensing/", "date": null, "last_updated": null}, {"title": "New General Relativistic Contribution to Mercury''s Perihelion ...", "url": "https://link.aps.org/doi/10.1103/PhysRevLett.120.191101", "date": null, "last_updated": null}, {"title": "WMAP- Cosmological Constant or Dark Energy - NASA", "url": "https://map.gsfc.nasa.gov/universe/uni_accel.html", "date": null, "last_updated": null}], "related_questions": ["How did Einstein''s theory of relativity revolutionize our understanding of space and time", "What are the main differences between special relativity and general relativity", "How does the concept of spacetime interval help in understanding relativity", "What role did the Michelson-Morley experiment play in the development of relativity", "Can you explain the significance of the Lorentz transformation in special relativity"], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "length", "message": {"role": "assistant", "content": "<think>\nWe are going to write a detailed report on the Theory of"}, "delta": {"role": "assistant", "content": ""}}]}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9644260898b5a20b-YYZ
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 1m26.899s

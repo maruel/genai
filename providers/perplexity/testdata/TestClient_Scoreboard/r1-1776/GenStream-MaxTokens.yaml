@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 195
+        host: api.perplexity.ai
+        body: |
+            {"model":"r1-1776","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_tokens":16,"return_images":true,"return_related_questions":true,"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"id\": \"c84bc9a5-eb4a-4573-951d-85bbc4d1246c\", \"model\": \"r1-1776\", \"created\": 1753366315, \"usage\": {\"prompt_tokens\": 9, \"completion_tokens\": 2, \"total_tokens\": 11}, \"related_questions\": [\"How did Albert Einstein develop the theory of relativity\", \"What are the key principles of special relativity\", \"How does general relativity differ from special relativity\", \"Can you provide examples of how relativity is applied in everyday life\", \"What experiments have tested the theory of relativity\"], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\n\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"<think>\\n\"}}]}\r\n\r\ndata: {\"id\": \"c84bc9a5-eb4a-4573-951d-85bbc4d1246c\", \"model\": \"r1-1776\", \"created\": 1753366315, \"usage\": {\"prompt_tokens\": 9, \"completion_tokens\": 4, \"total_tokens\": 13}, \"related_questions\": [\"How did Albert Einstein develop the theory of relativity\", \"What are the key principles of special relativity\", \"How does general relativity differ from special relativity\", \"Can you provide examples of how relativity is applied in everyday life\", \"What experiments have tested the theory of relativity\"], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nOkay,\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"Okay,\"}}]}\r\n\r\ndata: {\"id\": \"c84bc9a5-eb4a-4573-951d-85bbc4d1246c\", \"model\": \"r1-1776\", \"created\": 1753366315, \"usage\": {\"prompt_tokens\": 9, \"completion_tokens\": 8, \"total_tokens\": 17}, \"related_questions\": [\"How did Albert Einstein develop the theory of relativity\", \"What are the key principles of special relativity\", \"How does general relativity differ from special relativity\", \"Can you provide examples of how relativity is applied in everyday life\", \"What experiments have tested the theory of relativity\"], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nOkay, the user wants a\"}, \"delta\": {\"role\": \"assistant\", \"content\": \" the user wants a\"}}]}\r\n\r\ndata: {\"id\": \"c84bc9a5-eb4a-4573-951d-85bbc4d1246c\", \"model\": \"r1-1776\", \"created\": 1753366315, \"usage\": {\"prompt_tokens\": 9, \"completion_tokens\": 14, \"total_tokens\": 23}, \"related_questions\": [\"How did Albert Einstein develop the theory of relativity\", \"What are the key principles of special relativity\", \"How does general relativity differ from special relativity\", \"Can you provide examples of how relativity is applied in everyday life\", \"What experiments have tested the theory of relativity\"], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nOkay, the user wants a detailed explanation of the theory of\"}, \"delta\": {\"role\": \"assistant\", \"content\": \" detailed explanation of the theory of\"}}]}\r\n\r\ndata: {\"id\": \"c84bc9a5-eb4a-4573-951d-85bbc4d1246c\", \"model\": \"r1-1776\", \"created\": 1753366315, \"usage\": {\"prompt_tokens\": 9, \"completion_tokens\": 14, \"total_tokens\": 23}, \"related_questions\": [\"How did Albert Einstein develop the theory of relativity\", \"What are the key principles of special relativity\", \"How does general relativity differ from special relativity\", \"Can you provide examples of how relativity is applied in everyday life\", \"What experiments have tested the theory of relativity\"], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"length\", \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nOkay, the user wants a detailed explanation of the theory of\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}\r\n\r\n"
+        headers:
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 964402697a30a2b7-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 1.125s

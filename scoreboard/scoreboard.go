@@ -186,6 +186,9 @@ func exerciseGenTextOnly(ctx context.Context, pf ProviderFactory, isStream bool,
 		internal.Logger(ctx).DebugContext(ctx, "Text", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
 		f.BrokenFinishReason = true
 	}
+	if strings.Contains(resp.AsText(), "<think") {
+		return nil, usage, fmt.Errorf("response contains <think: use adapters.ProviderGenThinking")
+	}
 
 	// Seed
 	msgs = genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
@@ -200,6 +203,13 @@ func exerciseGenTextOnly(ctx context.Context, pf ProviderFactory, isStream bool,
 	resp, err = callGen(ctx, pf, prefix+"MaxTokens", msgs, &genai.OptionsText{MaxTokens: 16}, isStream, &usage)
 	if isBadError(err) {
 		return f, usage, err
+	}
+	// Will trigger citations on providers with search enabled.
+	for _, content := range resp.Contents {
+		if len(content.Citations) > 0 {
+			f.Citations = true
+			break
+		}
 	}
 	f.NoMaxTokens = err != nil || strings.Count(resp.AsText(), " ")+1 > 20
 	if err == nil {
@@ -316,14 +326,14 @@ func exerciseGenTextOnly(ctx context.Context, pf ProviderFactory, isStream bool,
 				break
 			}
 		}
-	}
-	if f.Citations && (resp.InputTokens == 0 || resp.OutputTokens == 0) {
-		internal.Logger(ctx).DebugContext(ctx, "Citations", "issue", "token usage")
-		f.BrokenTokenUsage = genai.True
-	}
-	if expectedFR := genai.FinishedStop; f.Citations && resp.FinishReason != expectedFR {
-		internal.Logger(ctx).DebugContext(ctx, "Citations", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
-		f.BrokenFinishReason = true
+		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
+			internal.Logger(ctx).DebugContext(ctx, "Citations", "issue", "token usage")
+			f.BrokenTokenUsage = genai.True
+		}
+		if expectedFR := genai.FinishedStop; f.Citations && resp.FinishReason != expectedFR {
+			internal.Logger(ctx).DebugContext(ctx, "Citations", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+			f.BrokenFinishReason = true
+		}
 	}
 	return f, usage, nil
 }

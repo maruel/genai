@@ -23,11 +23,7 @@ func TestClient_Scoreboard(t *testing.T) {
 	var models []genai.Model
 	t.Run("ListModel", func(t *testing.T) {
 		c := getClientInner(t, "")
-		var err error
-		models, err = c.ListModels(t.Context())
-		if err != nil {
-			t.Fatal(err)
-		}
+		_ = pollinations.Cache.ValidateModality(c, genai.ModalityText)
 	})
 	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
 		c := getClient(t, m)

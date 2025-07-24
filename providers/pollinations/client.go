@@ -795,11 +795,6 @@ func (er *ErrorResponse) String() string {
 // Client implements genai.ProviderModel.
 type Client struct {
 	base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
-
-	// Keep a cache of the model to ensure we don't send a text requested to a image generation model and
-	// vice-versa.
-	mu     sync.Mutex
-	models []genai.Model
 }
 
 // New creates a new client to talk to the Pollinations platform API.
@@ -907,7 +902,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 		}
 		return c.GenDoc(ctx, msgs[0], opts)
 	}
-	if err := c.validateModality(genai.ModalityText); err != nil {
+	if err := Cache.ValidateModality(c, genai.ModalityText); err != nil {
 		return genai.Result{}, err
 	}
 	return c.ProviderGen.GenSync(ctx, msgs, opts)
@@ -917,7 +912,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	if c.isAudio(opts) || c.isImage(opts) {
 		return base.SimulateStream(ctx, c, msgs, chunks, opts)
 	}
-	if err := c.validateModality(genai.ModalityText); err != nil {
+	if err := Cache.ValidateModality(c, genai.ModalityText); err != nil {
 		return genai.Result{}, err
 	}
 	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
@@ -950,7 +945,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 			return res, errors.New("only text can be passed as input")
 		}
 	}
-	if err := c.validateModality(genai.ModalityImage); err != nil {
+	if err := Cache.ValidateModality(c, genai.ModalityImage); err != nil {
 		return genai.Result{}, err
 	}
 	qp := url.Values{}
@@ -1039,43 +1034,6 @@ func (c *Client) ListImageGenModels(ctx context.Context) ([]genai.Model, error) 
 
 func (c *Client) ListTextModels(ctx context.Context) ([]genai.Model, error) {
 	return base.ListModels[*ErrorResponse, *TextModelsResponse](ctx, &c.Provider, "https://text.pollinations.ai/models")
-}
-
-func (c *Client) validateModality(m genai.Modality) error {
-	var err error
-	c.mu.Lock()
-	if c.models == nil {
-		c.models, err = c.ListModels(context.Background())
-	}
-	c.mu.Unlock()
-	if err != nil {
-		return err
-	}
-	isText := false
-	isImage := false
-	found := false
-	for i := range c.models {
-		if c.models[i].GetID() == c.Model {
-			found = true
-			_, isText = c.models[i].(*TextModel)
-			_, isImage = c.models[i].(ImageModel)
-			break
-		}
-	}
-	if !found {
-		return fmt.Errorf("model %q not supported by pollinations", c.Model)
-	}
-	switch m {
-	case genai.ModalityText:
-		if isText {
-			return nil
-		}
-	case genai.ModalityImage:
-		if isImage {
-			return nil
-		}
-	}
-	return fmt.Errorf("modality %s not supported", m)
 }
 
 func (c *Client) isAudio(opts genai.Options) bool {
@@ -1169,6 +1127,62 @@ func (e *exponentialBackoff) ShouldRetry(ctx context.Context, start time.Time, t
 	}
 	return e.ExponentialBackoff.ShouldRetry(ctx, start, try, err, resp)
 }
+
+// ModelCache is a cache of the list of models.
+type ModelCache struct {
+	// Keep a cache of the model to ensure we don't send a text requested to a image generation model and
+	// vice-versa.
+	mu     sync.Mutex
+	models []genai.Model
+}
+
+// ValidateModality returns nil if the modality is supported by the model.
+func (m *ModelCache) ValidateModality(c *Client, mod genai.Modality) error {
+	var err error
+	m.mu.Lock()
+	if m.models == nil {
+		m.models, err = c.ListModels(context.Background())
+	}
+	m.mu.Unlock()
+	if err != nil {
+		return err
+	}
+	model := c.Model
+	isText := false
+	isImage := false
+	found := false
+	for i := range m.models {
+		if m.models[i].GetID() == model {
+			found = true
+			_, isText = m.models[i].(*TextModel)
+			_, isImage = m.models[i].(ImageModel)
+			break
+		}
+	}
+	if !found {
+		return fmt.Errorf("model %q not supported by pollinations", model)
+	}
+	switch mod {
+	case genai.ModalityText:
+		if isText {
+			return nil
+		}
+	case genai.ModalityImage:
+		if isImage {
+			return nil
+		}
+	}
+	return fmt.Errorf("modality %s not supported", mod)
+}
+
+func (m *ModelCache) Clear() {
+	m.mu.Lock()
+	m.models = nil
+	m.mu.Unlock()
+}
+
+// Cache is the global cache of the list of models.
+var Cache ModelCache
 
 var (
 	_ genai.Provider           = &Client{}

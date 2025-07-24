@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-c6c3cf4f-b7fe-4410-ada4-1f0154fb7f3a","object":"chat.completion","created":1753232199,"model":"meta-llama/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"Banana."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.018796396,"prompt_tokens":172,"prompt_time":0.008549642,"completion_tokens":4,"completion_time":0.010872767,"total_tokens":176,"total_time":0.019422409},"usage_breakdown":null,"system_fingerprint":"fp_cb546bdbdf","x_groq":{"id":"req_01k0tcgkjqf5zrqd72h8ntzvgf"},"service_tier":"on_demand"}
+            {"id":"chatcmpl-f27d0100-2244-4de5-9b1b-e3f2622b165c","object":"chat.completion","created":1753362451,"model":"meta-llama/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"Banana."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.07611503,"prompt_tokens":172,"prompt_time":0.008016539,"completion_tokens":4,"completion_time":0.009383304,"total_tokens":176,"total_time":0.017399843},"usage_breakdown":null,"system_fingerprint":"fp_38b31b7025","x_groq":{"id":"req_01k0y8qjzefq6r2tx1bcff8hd9"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,7 +31,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9637381d2817a299-YUL
+                - 9643a4193fd7a278-YUL
             Content-Type:
                 - application/json
             Server:
@@ -41,7 +41,7 @@ interactions:
             Via:
                 - 1.1 google
             X-Groq-Region:
-                - msp
+                - us-west-1
             X-Ratelimit-Limit-Requests:
                 - "500000"
             X-Ratelimit-Limit-Tokens:
@@ -55,7 +55,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 3.2ms
             X-Request-Id:
-                - req_01k0tcgkjqf5zrqd72h8ntzvgf
+                - req_01k0y8qjzefq6r2tx1bcff8hd9
         status: 200 OK
         code: 200
-        duration: 107ms
+        duration: 186ms

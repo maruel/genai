@@ -54,7 +54,7 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 		Out:    map[genai.Modality]genai.ModalCapability{},
 	}
 
-	eg, ctx := errgroup.WithContext(ctx)
+	eg := errgroup.Group{}
 	if _, ok := c.(genai.ProviderGen); ok {
 		eg.Go(func() error {
 			ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenSync"))

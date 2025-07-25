@@ -6,6 +6,7 @@
 package scoreboardtest
 
 import (
+	"flag"
 	"net/http"
 	"slices"
 	"testing"
@@ -101,9 +102,17 @@ func AssertScoreboard(t *testing.T, gc GetClient, models []genai.Model, rec *int
 	}
 	t.Logf("Usage: %#v", usage)
 
-	for model := range sbModels {
-		if _, ok := seen[model]; !ok {
-			t.Errorf("stale model in scoreboard: %q", model)
+	filtered := false
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == "test.run" {
+			filtered = true
+		}
+	})
+	if !filtered {
+		for model := range sbModels {
+			if _, ok := seen[model]; !ok {
+				t.Errorf("stale model in scoreboard: %q", model)
+			}
 		}
 	}
 }

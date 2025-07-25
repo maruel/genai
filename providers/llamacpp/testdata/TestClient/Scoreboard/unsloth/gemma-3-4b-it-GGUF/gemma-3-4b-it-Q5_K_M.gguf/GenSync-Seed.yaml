@@ -53,13 +53,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1689
-        body: '{"index":0,"content":"Hello.","tokens":[],"id_slot":0,"stop":true,"model":"gpt-3.5-turbo","tokens_predicted":3,"tokens_evaluated":17,"generation_settings":{"n_predict":-1,"seed":42,"temperature":0.800000011920929,"dynatemp_range":0.0,"dynatemp_exponent":1.0,"top_k":40,"top_p":0.949999988079071,"min_p":0.05000000074505806,"top_n_sigma":-1.0,"xtc_probability":0.0,"xtc_threshold":0.10000000149011612,"typical_p":1.0,"repeat_last_n":64,"repeat_penalty":1.0,"presence_penalty":0.0,"frequency_penalty":0.0,"dry_multiplier":0.0,"dry_base":1.75,"dry_allowed_length":2,"dry_penalty_last_n":4096,"dry_sequence_breakers":["\n",":","\"","*"],"mirostat":0,"mirostat_tau":5.0,"mirostat_eta":0.10000000149011612,"stop":[],"max_tokens":-1,"n_keep":0,"n_discard":0,"ignore_eos":false,"stream":false,"logit_bias":[],"n_probs":0,"min_keep":0,"grammar":"","grammar_lazy":false,"grammar_triggers":[],"preserved_tokens":[],"chat_format":"Content-only","reasoning_format":"deepseek","reasoning_in_content":false,"thinking_forced_open":false,"samplers":["penalties","dry","top_n_sigma","top_k","typ_p","top_p","min_p","xtc","temperature"],"speculative.n_max":16,"speculative.n_min":0,"speculative.p_min":0.75,"timings_per_token":false,"post_sampling_probs":false,"lora":[]},"prompt":"<bos><start_of_turn>user\nSay hello. Use only one word.<end_of_turn>\n<start_of_turn>model\n","has_new_line":false,"truncated":false,"stop_type":"eos","stopping_word":"","tokens_cached":19,"timings":{"prompt_n":17,"prompt_ms":198.797,"prompt_per_token_ms":11.693941176470588,"prompt_per_second":85.51436892910858,"predicted_n":3,"predicted_ms":129.702,"predicted_per_token_ms":43.234,"predicted_per_second":23.12994402553546}}'
+        content_length: 1687
+        body: '{"index":0,"content":"Hello.","tokens":[],"id_slot":0,"stop":true,"model":"gpt-3.5-turbo","tokens_predicted":3,"tokens_evaluated":17,"generation_settings":{"n_predict":-1,"seed":42,"temperature":0.800000011920929,"dynatemp_range":0.0,"dynatemp_exponent":1.0,"top_k":40,"top_p":0.949999988079071,"min_p":0.05000000074505806,"top_n_sigma":-1.0,"xtc_probability":0.0,"xtc_threshold":0.10000000149011612,"typical_p":1.0,"repeat_last_n":64,"repeat_penalty":1.0,"presence_penalty":0.0,"frequency_penalty":0.0,"dry_multiplier":0.0,"dry_base":1.75,"dry_allowed_length":2,"dry_penalty_last_n":4096,"dry_sequence_breakers":["\n",":","\"","*"],"mirostat":0,"mirostat_tau":5.0,"mirostat_eta":0.10000000149011612,"stop":[],"max_tokens":-1,"n_keep":0,"n_discard":0,"ignore_eos":false,"stream":false,"logit_bias":[],"n_probs":0,"min_keep":0,"grammar":"","grammar_lazy":false,"grammar_triggers":[],"preserved_tokens":[],"chat_format":"Content-only","reasoning_format":"deepseek","reasoning_in_content":false,"thinking_forced_open":false,"samplers":["penalties","dry","top_n_sigma","top_k","typ_p","top_p","min_p","xtc","temperature"],"speculative.n_max":16,"speculative.n_min":0,"speculative.p_min":0.75,"timings_per_token":false,"post_sampling_probs":false,"lora":[]},"prompt":"<bos><start_of_turn>user\nSay hello. Use only one word.<end_of_turn>\n<start_of_turn>model\n","has_new_line":false,"truncated":false,"stop_type":"eos","stopping_word":"","tokens_cached":19,"timings":{"prompt_n":1,"prompt_ms":55.552,"prompt_per_token_ms":55.552,"prompt_per_second":18.00115207373272,"predicted_n":3,"predicted_ms":110.105,"predicted_per_token_ms":36.70166666666667,"predicted_per_second":27.246719040915487}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1689"
+                - "1687"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -68,4 +68,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 329ms
+        duration: 330ms

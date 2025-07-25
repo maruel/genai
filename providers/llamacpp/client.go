@@ -42,10 +42,17 @@ var Scoreboard = genai.Scoreboard{
 		{
 			Models: []string{"unsloth/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q5_K_M.gguf"},
 			// TODO: It supports genai.ModalityImage
-			In:        map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync:   &genai.FunctionalityText{Seed: true},
-			GenStream: &genai.FunctionalityText{Seed: true},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {Inline: true},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			// TODO: Implement all the feature set.
+			GenSync: &genai.FunctionalityText{
+				Seed: true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Seed: true,
+			},
 		},
 	},
 }

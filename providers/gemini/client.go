@@ -140,22 +140,22 @@ type OptionsText struct {
 	ResponseModalities []Modality
 }
 
-// https://ai.google.dev/api/caching?hl=en#Blob
+// Blob is documented at https://ai.google.dev/api/caching?hl=en#Blob
 type Blob struct {
 	MimeType string `json:"mimeType,omitzero"`
 	Data     []byte `json:"data,omitzero"`
 }
 
-// https://ai.google.dev/api/caching?hl=en#FileData
+// FileData is documented at https://ai.google.dev/api/caching?hl=en#FileData
 type FileData struct {
 	MimeType string `json:"mimeType,omitzero"`
 	FileURI  string `json:"fileUri,omitzero"`
 }
 
-// https://protobuf.dev/reference/protobuf/google.protobuf/#struct
+// StructValue is documented at https://protobuf.dev/reference/protobuf/google.protobuf/#struct
 type StructValue map[string]any
 
-// https://protobuf.dev/reference/protobuf/google.protobuf/#value
+// Value is documented at https://protobuf.dev/reference/protobuf/google.protobuf/#value
 type Value struct {
 	NullValue   int64       `json:"null_value,omitzero"`
 	NumberValue float64     `json:"number_value,omitzero"`
@@ -165,13 +165,13 @@ type Value struct {
 	ListValue   []Value     `json:"list_value,omitzero"`
 }
 
-// https://ai.google.dev/api/generate-content?hl=en#v1beta.SafetySetting
+// SafetySetting is documented at https://ai.google.dev/api/generate-content?hl=en#v1beta.SafetySetting
 type SafetySetting struct {
 	Category  string `json:"category"`  // https://ai.google.dev/api/generate-content?hl=en#v1beta.HarmCategory
 	Threshold int64  `json:"threshold"` // https://ai.google.dev/api/generate-content?hl=en#HarmBlockThreshold
 }
 
-// https://ai.google.dev/api/caching?hl=en#Tool
+// Tool is documented at https://ai.google.dev/api/caching?hl=en#Tool
 type Tool struct {
 	FunctionDeclarations []FunctionDeclaration `json:"functionDeclarations,omitzero"`
 	// https://ai.google.dev/api/caching?hl=en#GoogleSearchRetrieval
@@ -187,7 +187,7 @@ type Tool struct {
 	GoogleSearch  struct{} `json:"googleSearch,omitzero"`
 }
 
-// https://ai.google.dev/api/caching?hl=en#FunctionDeclaration
+// FunctionDeclaration is documented at https://ai.google.dev/api/caching?hl=en#FunctionDeclaration
 type FunctionDeclaration struct {
 	Name        string `json:"name,omitzero"`
 	Description string `json:"description,omitzero"`
@@ -195,7 +195,7 @@ type FunctionDeclaration struct {
 	Response    Schema `json:"response,omitzero"`
 }
 
-// https://ai.google.dev/api/caching?hl=en#Schema
+// Schema is documented at https://ai.google.dev/api/caching?hl=en#Schema
 type Schema struct {
 	// https://ai.google.dev/api/caching?hl=en#Type
 	// https://spec.openapis.org/oas/v3.0.3#data-types
@@ -247,7 +247,7 @@ func (s *Schema) FromJSONSchema(j *jsonschema.Schema) {
 	}
 }
 
-// https://ai.google.dev/api/caching?hl=en#Mode_1
+// ToolMode is documented at https://ai.google.dev/api/caching?hl=en#Mode_1
 type ToolMode string
 
 const (
@@ -267,7 +267,7 @@ const (
 	ToolModeValidated ToolMode = "VALIDATED"
 )
 
-// https://ai.google.dev/api/caching?hl=en#ToolConfig
+// ToolConfig is documented at https://ai.google.dev/api/caching?hl=en#ToolConfig
 type ToolConfig struct {
 	// https://ai.google.dev/api/caching?hl=en#FunctionCallingConfig
 	FunctionCallingConfig struct {
@@ -276,7 +276,7 @@ type ToolConfig struct {
 	} `json:"functionCallingConfig,omitzero"`
 }
 
-// https://ai.google.dev/api/generate-content#Modality
+// Modality is documented at https://ai.google.dev/api/generate-content#Modality
 type Modality string
 
 const (
@@ -286,7 +286,7 @@ const (
 	ModalityAudio       Modality = "AUDIO"
 )
 
-// https://ai.google.dev/api/generate-content#MediaResolution
+// MediaResolution is documented at https://ai.google.dev/api/generate-content#MediaResolution
 type MediaResolution string
 
 const (
@@ -296,7 +296,7 @@ const (
 	MediaResolutionHigh        MediaResolution = "HIGH"   // zoomed reframing with 256 tokens
 )
 
-// https://ai.google.dev/api/generate-content?hl=en#text_gen_text_only_prompt-SHELL
+// ChatRequest is documented at https://ai.google.dev/api/generate-content?hl=en#text_gen_text_only_prompt-SHELL
 type ChatRequest struct {
 	Contents          []Content       `json:"contents"`
 	Tools             []Tool          `json:"tools,omitzero"`
@@ -606,7 +606,7 @@ func (p *Part) FromContent(in *genai.Content) error {
 	return nil
 }
 
-// https://ai.google.dev/api/caching?hl=en#FunctionCall
+// FunctionCall is documented at https://ai.google.dev/api/caching?hl=en#FunctionCall
 type FunctionCall struct {
 	ID   string      `json:"id,omitzero"`
 	Name string      `json:"name,omitzero"`
@@ -633,7 +633,7 @@ func (f *FunctionCall) To(out *genai.ToolCall) error {
 	return nil
 }
 
-// https://ai.google.dev/api/caching?hl=en#FunctionResponse
+// FunctionResponse is documented at https://ai.google.dev/api/caching?hl=en#FunctionResponse
 type FunctionResponse struct {
 	ID       string      `json:"id,omitzero"`
 	Name     string      `json:"name,omitzero"`
@@ -648,26 +648,26 @@ func (f *FunctionResponse) From(in *genai.ToolCallResult) error {
 	return nil
 }
 
-// https://ai.google.dev/api/caching?hl=en#ExecutableCode
+// ExecutableCode is documented at https://ai.google.dev/api/caching?hl=en#ExecutableCode
 type ExecutableCode struct {
 	Language string `json:"language,omitzero"` // Only PYTHON is supported as of March 2025.
 	Code     string `json:"code,omitzero"`
 }
 
-// https://ai.google.dev/api/caching?hl=en#CodeExecutionResult
+// CodeExecutionResult is documented at https://ai.google.dev/api/caching?hl=en#CodeExecutionResult
 type CodeExecutionResult struct {
 	Outcome string `json:"outcome,omitzero"` // One of OUTCOME_UNSPECIFIED, OUTCOME_OK, OUTCOME_FAILED, OUTCOME_DEADLINE_EXCEEDED
 	Output  string `json:"output,omitzero"`
 }
 
-// https://ai.google.dev/api/caching#VideoMetadata
+// VideoMetadata is documented at https://ai.google.dev/api/caching#VideoMetadata
 type VideoMetadata struct {
 	StartOffset Duration `json:"startOffset,omitzero"`
 	EndOffset   Duration `json:"endOffset,omitzero"`
 	FPS         int64    `json:"fps,omitzero"` // Default: 1.0, range ]0, 24]
 }
 
-// https://ai.google.dev/api/generate-content?hl=en#ThinkingConfig
+// ThinkingConfig is documented at https://ai.google.dev/api/generate-content?hl=en#ThinkingConfig
 // See https://ai.google.dev/gemini-api/docs/thinking#rest
 type ThinkingConfig struct {
 	// IncludeThoughts has no effect since January 2025 according to
@@ -676,7 +676,7 @@ type ThinkingConfig struct {
 	ThinkingBudget  int64 `json:"thinkingBudget"`  // Must not be omitted. [0, 24576]
 }
 
-// https://ai.google.dev/api/generate-content?hl=en#v1beta.GenerateContentResponse
+// ChatResponse is documented at https://ai.google.dev/api/generate-content?hl=en#v1beta.GenerateContentResponse
 type ChatResponse struct {
 	// https://ai.google.dev/api/generate-content?hl=en#v1beta.Candidate
 	Candidates []struct {
@@ -773,7 +773,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	return out, err
 }
 
-// https://ai.google.dev/api/generate-content?hl=en#FinishReason
+// FinishReason is documented at https://ai.google.dev/api/generate-content?hl=en#FinishReason
 type FinishReason string
 
 const (
@@ -818,7 +818,7 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	}
 }
 
-// https://ai.google.dev/api/generate-content?hl=en#UsageMetadata
+// UsageMetadata is documented at https://ai.google.dev/api/generate-content?hl=en#UsageMetadata
 type UsageMetadata struct {
 	PromptTokenCount           int64                `json:"promptTokenCount"`
 	CachedContentTokenCount    int64                `json:"cachedContentTokenCount"`
@@ -832,6 +832,7 @@ type UsageMetadata struct {
 	ToolUsePromptTokensDetails []ModalityTokenCount `json:"toolUsePromptTokensDetails"`
 }
 
+// ModalityTokenCount is documented at
 // https://ai.google.dev/api/generate-content?hl=en#v1beta.ModalityTokenCount
 type ModalityTokenCount struct {
 	Modality   Modality `json:"modality"`
@@ -851,8 +852,8 @@ type ChatStreamChunkResponse struct {
 
 // Caching
 
+// CachedContent is documented at https://ai.google.dev/api/caching?hl=en#CachedContent
 // https://ai.google.dev/api/caching?hl=en#request-body
-// https://ai.google.dev/api/caching?hl=en#CachedContent
 type CachedContent struct {
 	Expiration
 	Contents          []Content  `json:"contents,omitzero"`
@@ -911,12 +912,12 @@ func (d *Duration) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-// https://ai.google.dev/api/caching?hl=en#UsageMetadata
+// CachingUsageMetadata is documented at https://ai.google.dev/api/caching?hl=en#UsageMetadata
 type CachingUsageMetadata struct {
 	TotalTokenCount int64 `json:"totalTokenCount"`
 }
 
-// https://ai.google.dev/api/models#Model
+// Model is documented at  https://ai.google.dev/api/models#Model
 type Model struct {
 	Name                       string   `json:"name"`
 	BaseModelID                string   `json:"baseModelId"`
@@ -954,7 +955,7 @@ type ModelsResponse struct {
 	NextPageToken string  `json:"nextPageToken"`
 }
 
-// ToIModels converts Gemini models to genai.Model interfaces
+// ToModels converts Gemini models to genai.Model interfaces
 func (r *ModelsResponse) ToModels() []genai.Model {
 	models := make([]genai.Model, len(r.Models))
 	for i := range r.Models {

@@ -1,0 +1,87 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 650
+        host: api.openai.com
+        body: |
+            {"model":"o4-mini","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"reasoning_effort":"medium","service_tier":"flex","stream_options":{"include_usage":true},"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-BxJqZBCqone3OF25ZYwuDDmpDkaXG","object":"chat.completion.chunk","created":1753477343,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":null,"tool_calls":[{"index":0,"id":"call_e8FjcvMoGUT7Zpl9pA1ICziX","type":"function","function":{"name":"square_root","arguments":""}}],"refusal":null},"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BxJqZBCqone3OF25ZYwuDDmpDkaXG","object":"chat.completion.chunk","created":1753477343,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\""}}]},"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BxJqZBCqone3OF25ZYwuDDmpDkaXG","object":"chat.completion.chunk","created":1753477343,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"number"}}]},"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BxJqZBCqone3OF25ZYwuDDmpDkaXG","object":"chat.completion.chunk","created":1753477343,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\":"}}]},"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BxJqZBCqone3OF25ZYwuDDmpDkaXG","object":"chat.completion.chunk","created":1753477343,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"132"}}]},"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BxJqZBCqone3OF25ZYwuDDmpDkaXG","object":"chat.completion.chunk","created":1753477343,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"413"}}]},"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BxJqZBCqone3OF25ZYwuDDmpDkaXG","object":"chat.completion.chunk","created":1753477343,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"}"}}]},"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BxJqZBCqone3OF25ZYwuDDmpDkaXG","object":"chat.completion.chunk","created":1753477343,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"tool_calls"}],"usage":null}
+
+            data: {"id":"chatcmpl-BxJqZBCqone3OF25ZYwuDDmpDkaXG","object":"chat.completion.chunk","created":1753477343,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":74,"completion_tokens":280,"total_tokens":354,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":256,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 964e9914fa6e7154-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Organization:
+                - user-vtmtcvpbctksjfewktqdl2sw
+            Openai-Processing-Ms:
+                - "11859"
+            Openai-Project:
+                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "11862"
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "498"
+            X-Ratelimit-Remaining-Tokens:
+                - "199967"
+            X-Ratelimit-Reset-Requests:
+                - 138ms
+            X-Ratelimit-Reset-Tokens:
+                - 9ms
+            X-Request-Id:
+                - 97d9b5c4-7cdf-4725-88bd-ac61bf1cb77f
+        status: 200 OK
+        code: 200
+        duration: 12s

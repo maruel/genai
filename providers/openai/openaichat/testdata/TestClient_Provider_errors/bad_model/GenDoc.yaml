@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 85
+        content_length: 56
         host: api.openai.com
         body: |
-            {"prompt":"Generate a short joke.","model":"bad model","response_format":"b64_json"}
+            {"prompt":"Generate a short joke.","model":"bad model"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,11 +19,11 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 218
+        content_length: 247
         body: |-
             {
               "error": {
-                "message": "Invalid value: 'bad model'. Supported values are: 'gpt-image-1', 'dall-e-2', and 'dall-e-3'.",
+                "message": "Invalid value: 'bad model'. Supported values are: 'gpt-image-1', 'gpt-image-0721-mini-alpha', 'dall-e-2', and 'dall-e-3'.",
                 "type": "invalid_request_error",
                 "param": "model",
                 "code": "invalid_value"
@@ -35,15 +35,15 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 963c563bdd4ea2ce-YUL
+                - 964f5f407f1ba2d5-YUL
             Content-Length:
-                - "218"
+                - "247"
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "18"
+                - "23"
             Openai-Project:
                 - proj_tH6hQUFvA4Bx6SyAb23zzLEg
             Openai-Version:
@@ -55,7 +55,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Request-Id:
-                - req_de914f2df3d74fd6b3f6e8c1dcce6075
+                - req_d2ec6877cd7b46e4edc32438f33b65de
         status: 400 Bad Request
         code: 400
-        duration: 142ms
+        duration: 166ms

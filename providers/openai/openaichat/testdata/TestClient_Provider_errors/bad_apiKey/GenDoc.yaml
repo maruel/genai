@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 88
+        content_length: 59
         host: api.openai.com
         body: |
-            {"prompt":"Generate a short joke.","model":"gpt-4.1-nano","response_format":"b64_json"}
+            {"prompt":"Generate a short joke.","model":"gpt-4.1-nano"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -35,13 +35,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 963c5633ea2ea2ce-YUL
+                - 964f5ef63c71a2ed-YUL
             Content-Length:
                 - "239"
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "39"
+                - "45"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -53,7 +53,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Request-Id:
-                - req_d7d5e2ac7db1b8ff83be4207ce998060
+                - req_ef6126c55f32c26942101e2fe89dfe70
         status: 401 Unauthorized
         code: 401
-        duration: 186ms
+        duration: 156ms

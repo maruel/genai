@@ -7,6 +7,7 @@ package openaichat_test
 import (
 	"context"
 	_ "embed"
+	"errors"
 	"net/http"
 	"os"
 	"testing"
@@ -17,25 +18,44 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/openai/openaichat"
+	"github.com/maruel/genai/scoreboard/scoreboardtest"
 )
 
-func TestClient_Scoreboard(t *testing.T) {
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
-		c := getClient(t, m)
-		if m == "o4-mini" {
-			return &injectOption{Client: c, t: t, opts: openaichat.OptionsText{
+func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+	apiKey := ""
+	if os.Getenv("OPENAI_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := openaichat.New(apiKey, model, fn)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if model == "o4-mini" {
+		return &injectOption{
+			Client: c,
+			opts: openaichat.OptionsText{
 				// This will lead to spurious HTTP 500 but it is 25% of the cost.
 				ServiceTier:     openaichat.ServiceTierFlex,
-				ReasoningEffort: openaichat.ReasoningEffortHigh,
-			}}
+				ReasoningEffort: openaichat.ReasoningEffortMedium,
+			},
 		}
-		return c
-	}, nil)
+	}
+	if model == "gpt-image-1" {
+		return &imageClient{Client: c}
+	}
+	return c
+}
+
+func TestClient_Scoreboard(t *testing.T) {
+	models, err := getClient(t, "").ListModels(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
 }
 
 type injectOption struct {
 	*openaichat.Client
-	t    *testing.T
 	opts openaichat.OptionsText
 }
 
@@ -57,6 +77,25 @@ func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, repli
 	return i.Client.GenStream(ctx, msgs, replies, opts)
 }
 
+// imageClient only exposes GenDoc to save on costs.
+type imageClient struct {
+	*openaichat.Client
+}
+
+func (i *imageClient) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	return genai.Result{}, errors.New("disabled to save on costs")
+}
+
+func (i *imageClient) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+	return genai.Result{}, errors.New("disabled to save on costs")
+}
+
+func (i *imageClient) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
+	// TODO: Specify quality "low"
+	// TODO: Test "jpeg" and "webp".
+	return i.Client.GenDoc(ctx, msg, opts)
+}
+
 // This is a tricky test since batch operations can take up to 24h to complete.
 func TestClient_Batch(t *testing.T) {
 	ctx := t.Context()
@@ -69,14 +108,14 @@ func TestClient_Batch(t *testing.T) {
 		t.Fatal(err)
 	}
 	// TODO: Detect when recording and sleep only in this case.
-	is_recording := os.Getenv("RECORD") == "1"
+	isRecording := os.Getenv("RECORD") == "1"
 	for {
 		res, err := c.PokeResult(ctx, job)
 		if err != nil {
 			t.Fatal(err)
 		}
 		if res.FinishReason == genai.Pending {
-			if is_recording {
+			if isRecording {
 				t.Logf("Waiting...")
 				time.Sleep(time.Second)
 			}
@@ -129,7 +168,7 @@ func TestClient_Provider_errors(t *testing.T) {
 			Model:        "bad model",
 			ErrGenSync:   "http 400: error invalid_request_error: invalid model ID",
 			ErrGenStream: "http 400: error invalid_request_error: invalid model ID",
-			ErrGenDoc:    "http 400: error invalid_value (): Invalid value: 'bad model'. Supported values are: 'gpt-image-1', 'dall-e-2', and 'dall-e-3'.",
+			ErrGenDoc:    "http 400: error invalid_value (): Invalid value: 'bad model'. Supported values are: 'gpt-image-1', 'gpt-image-0721-mini-alpha', 'dall-e-2', and 'dall-e-3'.",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.Provider {

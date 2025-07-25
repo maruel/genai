@@ -49,137 +49,138 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://platform.openai.com/usage",
 	Scenarios: []genai.Scenario{
 		{
+			Models: []string{"gpt-4.1"},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityImage: {
+					Inline:           true,
+					URL:              true,
+					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
+				},
+				genai.ModalityPDF:  {Inline: true, SupportedFormats: []string{"application/pdf"}},
+				genai.ModalityText: {Inline: true},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Tools:          genai.True,
+				IndecisiveTool: genai.True,
+				JSON:           true,
+				JSONSchema:     true,
+				Seed:           true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Tools:          genai.True,
+				IndecisiveTool: genai.True,
+				JSON:           true,
+				JSONSchema:     true,
+				Seed:           true,
+			},
+		},
+		{
+			Models: []string{"gpt-4o-audio-preview"},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityAudio: {
+					Inline:           true,
+					SupportedFormats: []string{"audio/mp3", "audio/wav"},
+				},
+			},
+			Out:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync:   &genai.FunctionalityText{},
+			GenStream: &genai.FunctionalityText{},
+		},
+		{
+			Models: []string{"o4-mini"},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityImage: {
+					Inline:           true,
+					URL:              true,
+					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
+				},
+				genai.ModalityPDF:  {Inline: true, SupportedFormats: []string{"application/pdf"}},
+				genai.ModalityText: {Inline: true},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				NoStopSequence: true,
+				Tools:          genai.True,
+				BiasedTool:     genai.True,
+				JSON:           true,
+				JSONSchema:     true,
+				Seed:           true,
+			},
+			GenStream: &genai.FunctionalityText{
+				NoStopSequence: true,
+				Tools:          genai.True,
+				BiasedTool:     genai.True,
+				JSON:           true,
+				JSONSchema:     true,
+				Seed:           true,
+			},
+		},
+		{
+			Models: []string{"gpt-image-1"},
+			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out: map[genai.Modality]genai.ModalCapability{
+				// TODO: Expose other supported image formats.
+				genai.ModalityImage: {
+					Inline:           true,
+					SupportedFormats: []string{"image/jpeg"},
+				},
+			},
+			GenDoc: &genai.FunctionalityDoc{
+				BrokenTokenUsage:   genai.True,
+				BrokenFinishReason: true,
+				Seed:               true,
+			},
+		},
+		{
 			Models: []string{
-				"gpt-4-turbo",
-				"gpt-4-turbo-2024-04-09",
-				"gpt-4-turbo-preview",
-				"gpt-4",
-				"gpt-4-0125-preview",
-				"gpt-4-0613",
-				"gpt-4-1106-preview",
+				"chatgpt-4o-latest",
+				"codex-mini-latest",
+				"dall-e-2",
+				"dall-e-3",
+				"davinci-002",
 				"gpt-3.5-turbo",
 				"gpt-3.5-turbo-0125",
 				"gpt-3.5-turbo-1106",
 				"gpt-3.5-turbo-16k",
 				"gpt-3.5-turbo-instruct",
 				"gpt-3.5-turbo-instruct-0914",
-			},
-			In:  map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
-				Tools:          genai.True,
-				BiasedTool:     genai.True,
-				IndecisiveTool: genai.True,
-				JSON:           true,
-				Seed:           true,
-			},
-			GenStream: &genai.FunctionalityText{
-				Tools:          genai.True,
-				BiasedTool:     genai.True,
-				IndecisiveTool: genai.True,
-				JSON:           true,
-				Seed:           true,
-			},
-		},
-		{
-			Models: []string{
-				"gpt-4.1-nano",
-				"gpt-4.1",
+				"gpt-4",
+				"gpt-4-0125-preview",
+				"gpt-4-0613",
+				"gpt-4-1106-preview",
+				"gpt-4-turbo",
+				"gpt-4-turbo-2024-04-09",
+				"gpt-4-turbo-preview",
 				"gpt-4.1-2025-04-14",
 				"gpt-4.1-mini",
 				"gpt-4.1-mini-2025-04-14",
+				"gpt-4.1-nano",
 				"gpt-4.1-nano-2025-04-14",
-				"gpt-4.5-preview",
-				"gpt-4.5-preview-2025-02-27",
 				"gpt-4o",
 				"gpt-4o-2024-05-13",
 				"gpt-4o-2024-08-06",
 				"gpt-4o-2024-11-20",
+				"gpt-4o-audio-preview-2024-10-01",
+				"gpt-4o-audio-preview-2024-12-17",
+				"gpt-4o-audio-preview-2025-06-03",
 				"gpt-4o-mini",
 				"gpt-4o-mini-2024-07-18",
+				"gpt-4o-mini-audio-preview", // This model fails the smoke test.
+				"gpt-4o-mini-audio-preview-2024-12-17",
 				"gpt-4o-mini-realtime-preview",
 				"gpt-4o-mini-realtime-preview-2024-12-17",
 				"gpt-4o-mini-search-preview",
 				"gpt-4o-mini-search-preview-2025-03-11",
+				"gpt-4o-mini-transcribe",
+				"gpt-4o-mini-tts",
 				"gpt-4o-realtime-preview",
 				"gpt-4o-realtime-preview-2024-10-01",
 				"gpt-4o-realtime-preview-2024-12-17",
+				"gpt-4o-realtime-preview-2025-06-03",
 				"gpt-4o-search-preview",
 				"gpt-4o-search-preview-2025-03-11",
-			},
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityImage: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
-				},
-				genai.ModalityPDF: {
-					Inline:           true,
-					SupportedFormats: []string{"application/pdf"},
-				},
-				genai.ModalityText: {Inline: true},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
-				Tools:          genai.True,
-				IndecisiveTool: genai.True,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
-			},
-			GenStream: &genai.FunctionalityText{
-				Tools:          genai.True,
-				IndecisiveTool: genai.True,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
-			},
-		},
-		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityAudio: {
-					Inline:           true,
-					SupportedFormats: []string{"audio/mpeg", "audio/wav", "audio/mp4", "audio/x-m4a", "audio/webm"},
-				},
-				genai.ModalityText: {Inline: true},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityAudio: {
-					Inline:           true,
-					SupportedFormats: []string{"audio/mpeg", "audio/wav", "audio/mp4", "audio/x-m4a", "audio/webm"},
-				},
-				genai.ModalityText: {Inline: true},
-			},
-			Models: []string{
-				"gpt-4o-audio-preview",
-				// "gpt-4o-audio-preview-2025-06-03", Listed on the web site but not listed in the API.
-				"gpt-4o-audio-preview-2024-10-01",
-				"gpt-4o-audio-preview-2024-12-17",
-				"gpt-4o-mini-transcribe",
 				"gpt-4o-transcribe",
-
-				// This model fails the smoke test.
-				"gpt-4o-mini-audio-preview",
-				"gpt-4o-mini-audio-preview-2024-12-17",
-			},
-			GenSync: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
-			},
-			GenStream: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
-			},
-		},
-		{
-			Models: []string{
-				"o4-mini",
 				"o1",
 				"o1-2024-12-17",
 				"o1-mini",
@@ -188,59 +189,30 @@ var Scoreboard = genai.Scoreboard{
 				"o1-preview-2024-09-12",
 				"o1-pro",
 				"o1-pro-2025-03-19",
+				"o3",
+				"o3-2025-04-16",
+				"o3-deep-research",
+				"o3-deep-research-2025-06-26",
 				"o3-mini",
 				"o3-mini-2025-01-31",
+				"o3-pro",
+				"o3-pro-2025-06-10",
 				"o4-mini-2025-04-16",
-			},
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityImage: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
-				},
-				genai.ModalityText: {Inline: true},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
-				NoStopSequence: true,
-				Tools:          genai.True,
-				BiasedTool:     genai.True,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
-			},
-			GenStream: &genai.FunctionalityText{
-				NoStopSequence: true,
-				Tools:          genai.True,
-				BiasedTool:     genai.True,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
+				"o4-mini-deep-research",
+				"o4-mini-deep-research-2025-06-26",
+				"omni-moderation-2024-09-26",
+				"omni-moderation-latest",
+				"text-embedding-3-large",
+				"text-embedding-3-small",
+				"text-embedding-ada-002",
+				"tts-1",
+				"tts-1-1106",
+				"tts-1-hd",
+				"tts-1-hd-1106",
+				"whisper-1",
 			},
 		},
-		{
-			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {
-					Inline: true,
-				},
-			},
-			Out: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityImage: {
-					Inline:           true,
-					SupportedFormats: []string{"image/png", "image/jpeg", "image/webp"},
-				},
-			},
-			Models: []string{
-				"dall-e-2",
-				"dall-e-3",
-				"gpt-image-1",
-			},
-			GenDoc: &genai.FunctionalityDoc{
-				BrokenTokenUsage:   genai.True,
-				BrokenFinishReason: true,
-				Seed:               true,
-			},
-		},
+
 		// Audio only output:
 		// "gpt-4o-mini-tts",
 		// "tts-1",
@@ -881,6 +853,10 @@ type ImageResponse struct {
 			ImageTokens int64 `json:"image_tokens"`
 		} `json:"input_tokens_details"`
 	} `json:"usage"`
+	Background   string `json:"background"`    // "opaque"
+	Size         string `json:"size"`          // e.g. "1024x1024"
+	Quality      string `json:"quality"`       // e.g. "medium"
+	OutputFormat string `json:"output_format"` // e.g. "png"
 }
 
 type ImageChoiceData struct {
@@ -1204,9 +1180,8 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		}
 	}
 	req := ImageRequest{
-		Prompt:         msg.AsText(),
-		Model:          c.Model,
-		ResponseFormat: "b64_json",
+		Prompt: msg.AsText(),
+		Model:  c.Model,
 	}
 	// This is unfortunate.
 	switch c.Model {
@@ -1219,6 +1194,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		// req.Size = "1536x1024"
 	case "dall-e-3":
 		// req.Size = "1792x1024"
+		req.ResponseFormat = "b64_json"
 	case "dall-e-2":
 		// We assume dall-e-2 is only used for smoke testing, so use the smallest image.
 		req.Size = "256x256"
@@ -1227,6 +1203,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		if len(req.Prompt) > 1000 {
 			req.Prompt = req.Prompt[:1000]
 		}
+		req.ResponseFormat = "b64_json"
 	default:
 		// Silently pass.
 	}

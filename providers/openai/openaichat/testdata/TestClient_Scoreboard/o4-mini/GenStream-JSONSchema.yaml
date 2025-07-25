@@ -1,0 +1,89 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 533
+        host: api.openai.com
+        body: |
+            {"model":"o4-mini","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"reasoning_effort":"medium","response_format":{"type":"json_schema","json_schema":{"name":"response","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"service_tier":"flex","stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-BxLvu3QTwerWZkvmmdbboEZi4dXnf","object":"chat.completion.chunk","created":1753485362,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BxLvu3QTwerWZkvmmdbboEZi4dXnf","object":"chat.completion.chunk","created":1753485362,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"{\""},"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BxLvu3QTwerWZkvmmdbboEZi4dXnf","object":"chat.completion.chunk","created":1753485362,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"is"},"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BxLvu3QTwerWZkvmmdbboEZi4dXnf","object":"chat.completion.chunk","created":1753485362,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"_f"},"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BxLvu3QTwerWZkvmmdbboEZi4dXnf","object":"chat.completion.chunk","created":1753485362,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"ruit"},"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BxLvu3QTwerWZkvmmdbboEZi4dXnf","object":"chat.completion.chunk","created":1753485362,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"\":"},"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BxLvu3QTwerWZkvmmdbboEZi4dXnf","object":"chat.completion.chunk","created":1753485362,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"true"},"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BxLvu3QTwerWZkvmmdbboEZi4dXnf","object":"chat.completion.chunk","created":1753485362,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"}"},"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-BxLvu3QTwerWZkvmmdbboEZi4dXnf","object":"chat.completion.chunk","created":1753485362,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":null}
+
+            data: {"id":"chatcmpl-BxLvu3QTwerWZkvmmdbboEZi4dXnf","object":"chat.completion.chunk","created":1753485362,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":50,"completion_tokens":92,"total_tokens":142,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":64,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 964f5cd8dd6ca2c4-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Organization:
+                - user-vtmtcvpbctksjfewktqdl2sw
+            Openai-Processing-Ms:
+                - "4991"
+            Openai-Project:
+                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "4993"
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "199980"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 6ms
+            X-Request-Id:
+                - 6a653379-56b5-48f7-9351-d831a9914b45
+        status: 200 OK
+        code: 200
+        duration: 5.295s

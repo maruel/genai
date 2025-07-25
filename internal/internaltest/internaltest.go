@@ -98,11 +98,14 @@ func MatchIgnorePort(r *http.Request, i cassette.Request) bool {
 // Log returns a slog.Logger that redirects to testing.TB.Log() and adds it to the Context.
 func Log(tb testing.TB) (context.Context, *slog.Logger) {
 	level := &slog.LevelVar{}
-	flag.Visit(func(f *flag.Flag) {
-		if f.Name == "test.v" {
-			level.Set(slog.LevelDebug)
-		}
-	})
+	// Tone down logging by default because it's intense. Need to revisit because tests on CI use -v.
+	/*
+		flag.Visit(func(f *flag.Flag) {
+			if f.Name == "test.v" {
+				level.Set(slog.LevelDebug)
+			}
+		})
+	*/
 	l := slog.New(slog.NewTextHandler(&testWriter{t: tb}, &slog.HandlerOptions{
 		AddSource: true,
 		Level:     level,

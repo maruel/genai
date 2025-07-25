@@ -17,7 +17,6 @@ import (
 	"fmt"
 	"io"
 	"maps"
-	"mime"
 	"path"
 	"path/filepath"
 	"reflect"
@@ -26,6 +25,7 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
 )
 
@@ -425,11 +425,11 @@ func (c *Content) ReadDocument(maxSize int64) (string, []byte, error) {
 	if c.Text != "" {
 		return "", nil, errors.New("only document messages can be read as documents")
 	}
-	mimeType := mime.TypeByExtension(filepath.Ext(c.GetFilename()))
+	mimeType := internal.MimeByExt(filepath.Ext(c.GetFilename()))
 	if c.URL != "" {
 		// Not all provider require a mime-type so do not error out.
 		if mimeType == "" {
-			mimeType = mime.TypeByExtension(filepath.Ext(path.Base(c.URL)))
+			mimeType = internal.MimeByExt(filepath.Ext(path.Base(c.URL)))
 		}
 		return mimeType, nil, nil
 	}

@@ -11,6 +11,7 @@ import (
 	"io"
 	"io/fs"
 	"log/slog"
+	"mime"
 	"net/http"
 	"net/url"
 	"os"
@@ -244,4 +245,18 @@ func (r *recorderWithBody) RoundTrip(req *http.Request) (*http.Response, error) 
 		}
 	}
 	return resp, err
+}
+
+// MimeByExt wraps mime.TypeByExtension.
+//
+// It overrides audio entries because they vary surprisingly a lot across OSes!
+func MimeByExt(ext string) string {
+	switch ext {
+	case ".aac":
+		return "audio/aac"
+	case ".wav":
+		return "audio/wav"
+	default:
+		return mime.TypeByExtension(ext)
+	}
 }

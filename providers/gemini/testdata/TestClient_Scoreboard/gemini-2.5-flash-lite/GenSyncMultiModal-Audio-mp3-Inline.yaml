@@ -28,7 +28,7 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "00:00"
+                        "text": "said"
                       }
                     ],
                     "role": "model"
@@ -39,8 +39,8 @@ interactions:
               ],
               "usageMetadata": {
                 "promptTokenCount": 40,
-                "candidatesTokenCount": 5,
-                "totalTokenCount": 45,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 41,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
@@ -53,7 +53,7 @@ interactions:
                 ]
               },
               "modelVersion": "gemini-2.5-flash-lite",
-              "responseId": "rbeCaPqBO_nUjMcPu46doAc"
+              "responseId": "0N2CaLnMFpKi1MkPp7P-4A4"
             }
         headers:
             Alt-Svc:
@@ -63,7 +63,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=633
+                - gfet4t7; dur=661
             Vary:
                 - Origin
                 - X-Origin
@@ -76,4 +76,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 645ms
+        duration: 672ms

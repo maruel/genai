@@ -20,29 +20,47 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/gemini"
+	"github.com/maruel/genai/scoreboard/scoreboardtest"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
+func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+	apiKey := ""
+	if os.Getenv("GEMINI_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	c, err := gemini.New(apiKey, model, fn)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// https://ai.google.dev/gemini-api/docs/thinking?hl=en
+	if strings.Contains(model, "thinking") {
+		// e.g. "gemini-2.0-flash-thinking-exp" or "gemini-2.5-flash-preview-04-17-thinking"
+		return &injectOption{Client: c, t: t, opts: gemini.OptionsText{ThinkingBudget: 4096}}
+	}
+	if strings.Contains(model, "image-generation") {
+		// e.g. "gemini-2.0-flash-preview-image-generation"
+		return &injectOption{
+			Client: c,
+			t:      t,
+			opts:   gemini.OptionsText{ResponseModalities: []gemini.Modality{gemini.ModalityText, gemini.ModalityImage}},
+		}
+	}
+	return c
+}
+
 func TestClient_Scoreboard(t *testing.T) {
-	internaltest.TestScoreboard(t, func(t *testing.T, m string) genai.ProviderGen {
-		c := getClient(t, m)
-		// https://ai.google.dev/gemini-api/docs/thinking?hl=en
-		if strings.Contains(m, "thinking") {
-			// e.g. "gemini-2.0-flash-thinking-exp" or "gemini-2.5-flash-preview-04-17-thinking"
-			return &injectOption{Client: c, t: t, opts: gemini.OptionsText{ThinkingBudget: 4096}}
-		}
-		if strings.Contains(m, "image-generation") {
-			// e.g. "gemini-2.0-flash-preview-image-generation"
-			return &injectOption{Client: c, t: t, opts: gemini.OptionsText{ResponseModalities: []gemini.Modality{gemini.ModalityText, gemini.ModalityImage}}}
-		}
-		return c
-	}, nil)
+	models, err := getClient(t, "").ListModels(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
 }
 
 type injectOption struct {
 	*gemini.Client
-	t    *testing.T
+	t    testing.TB
 	opts gemini.OptionsText
 }
 
@@ -63,8 +81,6 @@ func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, repli
 	opts = &n
 	return i.Client.GenStream(ctx, msgs, replies, opts)
 }
-
-//
 
 func TestClient_Preferred(t *testing.T) {
 	data := []struct {

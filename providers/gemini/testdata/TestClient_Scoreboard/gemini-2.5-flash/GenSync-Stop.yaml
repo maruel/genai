@@ -1,0 +1,75 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 246
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Talk about Canada in great details. Start with: Canada is"}]}],"generationConfig":{"stopSequences":["is"],"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":false,"thinkingBudget":0}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "Let's delve into Canada, a nation as vast and varied as its landscapes.\n\nCanada "
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 13,
+                "candidatesTokenCount": 19,
+                "totalTokenCount": 32,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  }
+                ]
+              },
+              "modelVersion": "gemini-2.5-flash",
+              "responseId": "mLeCaOWpCsrUjMcPm9j0-A4"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=470
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 481ms

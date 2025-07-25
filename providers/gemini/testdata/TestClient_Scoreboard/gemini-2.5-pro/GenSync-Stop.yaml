@@ -1,0 +1,80 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 247
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Talk about Canada in great details. Start with: Canada is"}]}],"generationConfig":{"stopSequences":["is"],"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**Breaking Down \"Canada in Great Detail\"**\n\nOkay, so the user wants a deep dive on Canada. \"In great detail\" means I can't just skim the surface. I need to paint a comprehensive picture. First things first, the prompt *demands* I begin with \"Canada is.\" I can work with that! To deliver a truly insightful response, I'm going to need a structured approach. I'm thinking:\n\n*   **Introduction:**  \"Canada is...\" Okay, that sets the stage. Time for a quick overview – its vastness, diversity, and northern location are the obvious starting points.\n*   **Geography:** This is absolutely essential! Canada's size and varied landscapes practically *define* it. I'll need to break it down logically.\n    *   Size and location, duh.\n    *   I'll organize the geographical regions to make it easy to digest. Atlantic, Central, Prairies, West Coast, North. Nice and clean.\n    *   Mountains, lakes, forests, and tundra - a quick hit list of key features.\n    *   Oh, and the climate. Gotta address the stereotypes and acknowledge the *real* diversity.\n*   **History:**  A chronological narrative will make the most sense.\n    *   Indigenous Peoples *have* to come first. Their history is the *foundation* of Canada. I'll need to emphasize the diversity of nations and their deep roots.\n    *   European arrival: Vikings, the French and the British.\n    *   New France and British North America: The rivalry, the wars (Seven Years' War).\n    *   Confederation (1867): The birth of modern Canada. I should make sure to mention key figures and founding provinces. That's the outline, now for the details!\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Canada "
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 13,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 388,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  }
+                ],
+                "thoughtsTokenCount": 374
+              },
+              "modelVersion": "gemini-2.5-pro",
+              "responseId": "I-eDaInABLay1MkP0aLMmAY"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=7494
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 7.506s

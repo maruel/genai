@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 330
+        content_length: 331
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"generationConfig":{"responseMimeType":"application/json","responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":false,"thinkingBudget":0}}}
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"generationConfig":{"responseMimeType":"application/json","responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,7 +28,11 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "{\"is_fruit\": true}"
+                        "text": "**Addressing the Banana Inquiry**\n\nAlright, a straightforward question: is a banana a fruit?  Simple enough, I can handle this. The task is to represent the answer as a JSON object, specifically with a key \"is_fruit\" and a boolean value.  Considering my understanding of botany, a banana *is* undeniably a fruit.  Therefore, the corresponding boolean value should be `true`.  The final output, then, needs to be neatly formatted as `{\"is_fruit\": true}`.  Excellent.\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "{\n  \"is_fruit\": true\n}"
                       }
                     ],
                     "role": "model"
@@ -39,17 +43,18 @@ interactions:
               ],
               "usageMetadata": {
                 "promptTokenCount": 30,
-                "candidatesTokenCount": 7,
-                "totalTokenCount": 37,
+                "candidatesTokenCount": 11,
+                "totalTokenCount": 113,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 30
                   }
-                ]
+                ],
+                "thoughtsTokenCount": 72
               },
               "modelVersion": "gemini-2.5-flash",
-              "responseId": "6beDaJDlOOaOjMcPssezoQo"
+              "responseId": "jeiDaIrdOOqu1MkPvZfvmAY"
             }
         headers:
             Alt-Svc:
@@ -59,7 +64,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=581
+                - gfet4t7; dur=1330
             Vary:
                 - Origin
                 - X-Origin
@@ -72,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 664ms
+        duration: 1.342s

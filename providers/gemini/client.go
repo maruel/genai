@@ -46,6 +46,13 @@ import (
 //   - Files can be referenced by URL but only if they have been uploaded via the file API, which is not
 //     implemented yet.
 //   - Rate limit is based on how much you spend per month: https://ai.google.dev/gemini-api/docs/rate-limits
+//
+// See the following multi-modal sources:
+//
+// https://ai.google.dev/gemini-api/docs/image-understanding?hl=en&lang=rest#supported-formats
+// https://ai.google.dev/gemini-api/docs/video-understanding?hl=en#supported-formats
+// https://ai.google.dev/gemini-api/docs/audio?hl=en#supported-formats
+// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#technical-details
 var Scoreboard = genai.Scoreboard{
 	Country:      "US",
 	DashboardURL: "http://aistudio.google.com",
@@ -81,8 +88,12 @@ var Scoreboard = genai.Scoreboard{
 		},
 		{
 			Models: []string{"gemini-2.5-flash"},
+			// It supports URL but only when uploaded to its own storage.
 			In: map[genai.Modality]genai.ModalCapability{
-				genai.ModalityText: {Inline: true},
+				genai.ModalityAudio: {
+					Inline:           true,
+					SupportedFormats: []string{"audio/aac", "audio/flac", "audio/mp3", "audio/ogg", "audio/wav"},
+				},
 				genai.ModalityImage: {
 					Inline:           true,
 					SupportedFormats: []string{"image/jpeg", "image/png", "image/webp"},
@@ -91,26 +102,60 @@ var Scoreboard = genai.Scoreboard{
 					Inline:           true,
 					SupportedFormats: []string{"application/pdf"},
 				},
-				genai.ModalityAudio: {
-					Inline:           true,
-					SupportedFormats: []string{"audio/aac", "audio/flac", "audio/ogg", "audio/wav"},
-				},
+				genai.ModalityText: {Inline: true},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				// It supports URL but only when uploaded to its own storage.
+				Thinking:       true,
+				Tools:          genai.True,
+				IndecisiveTool: genai.True,
+				JSON:           true,
+				JSONSchema:     true,
+				Seed:           true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Thinking:   true,
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				JSON:       true,
 				JSONSchema: true,
 				Seed:       true,
 			},
+		},
+		{
+			Models: []string{"gemini-2.5-pro"},
+			// It supports URL but only when uploaded to its own storage.
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityAudio: {
+					Inline:           true,
+					SupportedFormats: []string{"audio/aac", "audio/flac", "audio/mp3", "audio/wav"},
+				},
+				genai.ModalityImage: {
+					Inline:           true,
+					SupportedFormats: []string{"image/jpeg", "image/png", "image/webp"},
+				},
+				genai.ModalityPDF: {
+					Inline:           true,
+					SupportedFormats: []string{"application/pdf"},
+				},
+				genai.ModalityText: {Inline: true},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Thinking:       true,
+				Tools:          genai.True,
+				IndecisiveTool: genai.True,
+				JSON:           true,
+				JSONSchema:     true,
+				Seed:           true,
+			},
 			GenStream: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
+				Thinking:       true,
+				Tools:          genai.True,
+				IndecisiveTool: genai.True,
+				JSON:           true,
+				JSONSchema:     true,
+				Seed:           true,
 			},
 		},
 		{
@@ -168,7 +213,6 @@ var Scoreboard = genai.Scoreboard{
 				"gemini-2.5-flash-preview-05-20",
 				"gemini-2.5-flash-preview-native-audio-dialog",
 				"gemini-2.5-flash-preview-tts",
-				"gemini-2.5-pro",
 				"gemini-2.5-pro-preview-03-25",
 				"gemini-2.5-pro-preview-05-06",
 				"gemini-2.5-pro-preview-06-05",
@@ -532,6 +576,10 @@ func (c *Content) To(out *genai.Message) error {
 	}
 
 	for _, part := range c.Parts {
+		if part.Thought {
+			out.Contents = append(out.Contents, genai.Content{Thinking: part.Text})
+			continue
+		}
 		// There's no signal as to what it is, we have to test its content.
 		// We need to split out content from tools.
 		if part.Text != "" {
@@ -561,10 +609,14 @@ func (c *Content) To(out *genai.Message) error {
 			continue
 		}
 		if part.FunctionCall.Name != "" {
-			out.ToolCalls = append(out.ToolCalls, genai.ToolCall{})
-			if err := part.FunctionCall.To(&out.ToolCalls[len(out.ToolCalls)-1]); err != nil {
+			t := genai.ToolCall{}
+			if err := part.FunctionCall.To(&t); err != nil {
 				return err
 			}
+			if len(part.ThoughtSignature) != 0 {
+				// TODO: t.Opaque = map[string]any{"signature": part.ThoughtSignature}
+			}
+			out.ToolCalls = append(out.ToolCalls, t)
 			continue
 		}
 		if reflect.ValueOf(part).IsZero() {
@@ -580,7 +632,8 @@ func (c *Content) To(out *genai.Message) error {
 //
 // https://ai.google.dev/api/caching?hl=en#Part
 type Part struct {
-	Thought bool `json:"thought,omitzero"` // TODO
+	Thought          bool   `json:"thought,omitzero"`
+	ThoughtSignature []byte `json:"thoughtSignature,omitzero"`
 
 	// Union:
 	Text                string              `json:"text,omitzero"`
@@ -1046,51 +1099,7 @@ type Client struct {
 // See https://ai.google.dev/gemini-api/docs/file-prompting-strategies?hl=en
 // for good ideas on how to prompt with images.
 //
-// https://ai.google.dev/gemini-api/docs/pricing
-//
 // Using large files requires a pinned model with caching support.
-//
-// Supported mime types for images:
-// https://ai.google.dev/gemini-api/docs/vision?hl=en&lang=rest#prompting-images
-// - image/png
-// - image/jpeg
-// - image/webp
-// - image/heic
-// - image/heif
-//
-// Supported mime types for videos:
-// https://ai.google.dev/gemini-api/docs/vision?hl=en&lang=rest#technical-details-video
-// - video/mp4
-// - video/mpeg
-// - video/mov
-// - video/avi
-// - video/x-flv
-// - video/mpg
-// - video/webm
-// - video/wmv
-// - video/3gpp
-//
-// Supported mime types for audio:
-// https://ai.google.dev/gemini-api/docs/audio?hl=en&lang=rest#supported-formats
-// - audio/wav
-// - audio/mp3
-// - audio/aiff
-// - audio/aac
-// - audio/ogg
-// - audio/flac
-//
-// Supported mime types for documents:
-// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#technical-details
-// - application/pdf
-// - application/x-javascript, text/javascript
-// - application/x-python, text/x-python
-// - text/plain
-// - text/html
-// - text/css
-// - text/md
-// - text/csv
-// - text/xml
-// - text/rtf
 //
 // Visit https://ai.google.dev/gemini-api/docs/pricing for up to date information.
 //
@@ -1142,39 +1151,36 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 		c.GenSyncURL = ""
 		c.GenStreamURL = ""
 		var tokens int64
-		version := ""
 		for _, mdl := range mdls {
 			m := mdl.(*Model)
 			if strings.Contains(m.Name, "tts") {
 				continue
 			}
+			// TODO: Do numerical comparison? For now, we select the the unpinned model, without the "-NNN" suffix.
 			name := strings.TrimPrefix(m.Name, "models/")
-			if cheap {
-				// This would select gemma instead, which is much cheaper:
-				// if strings.HasPrefix(name, "gemma") && (tokens == 0 || tokens <= m.OutputTokenLimit) && (c.Model == "" || c.Model <= name) {
-				if strings.HasPrefix(name, "gemini") && strings.Contains(m.Name, "flash-lite") && (tokens == 0 || tokens <= m.OutputTokenLimit) && (version == "" || version <= m.Version) {
-					tokens = m.OutputTokenLimit
-					version = m.Version
-					c.Model = name
-					c.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Model) + ":generateContent?key=" + url.QueryEscape(apiKey)
-					c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Model) + ":streamGenerateContent?alt=sse&key=" + url.QueryEscape(apiKey)
-				}
-			} else if good {
-				// We want flash and not flash-lite.
-				if strings.HasPrefix(name, "gemini") && strings.Contains(m.Name, "flash") && !strings.Contains(m.Name, "flash-lite") && (tokens == 0 || tokens <= m.OutputTokenLimit) && (version == "" || version <= m.Version) {
-					tokens = m.OutputTokenLimit
-					version = m.Version
-					c.Model = name
-					c.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Model) + ":generateContent?key=" + url.QueryEscape(apiKey)
-					c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Model) + ":streamGenerateContent?alt=sse&key=" + url.QueryEscape(apiKey)
-				}
-			} else {
-				if strings.HasPrefix(name, "gemini") && strings.Contains(m.Name, "pro") && (tokens == 0 || tokens <= m.OutputTokenLimit) && (version == "" || version <= m.Version) {
-					tokens = m.OutputTokenLimit
-					version = m.Version
-					c.Model = name
-					c.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Model) + ":generateContent?key=" + url.QueryEscape(apiKey)
-					c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Model) + ":streamGenerateContent?alt=sse&key=" + url.QueryEscape(apiKey)
+			if (tokens == 0 || tokens <= m.OutputTokenLimit) && (c.Model == "" || name > c.Model) {
+				if cheap {
+					if strings.HasPrefix(name, "gemini") && strings.HasSuffix(name, "flash-lite") {
+						tokens = m.OutputTokenLimit
+						c.Model = name
+						c.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/" + m.Name + ":generateContent?key=" + url.QueryEscape(apiKey)
+						c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/" + m.Name + ":streamGenerateContent?alt=sse&key=" + url.QueryEscape(apiKey)
+					}
+				} else if good {
+					// We want flash and not flash-lite.
+					if strings.HasPrefix(name, "gemini") && strings.HasSuffix(name, "flash") {
+						tokens = m.OutputTokenLimit
+						c.Model = name
+						c.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/" + m.Name + ":generateContent?key=" + url.QueryEscape(apiKey)
+						c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/" + m.Name + ":streamGenerateContent?alt=sse&key=" + url.QueryEscape(apiKey)
+					}
+				} else {
+					if strings.HasPrefix(name, "gemini") && strings.HasSuffix(name, "pro") {
+						tokens = m.OutputTokenLimit
+						c.Model = name
+						c.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/" + m.Name + ":generateContent?key=" + url.QueryEscape(apiKey)
+						c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/" + m.Name + ":streamGenerateContent?alt=sse&key=" + url.QueryEscape(apiKey)
+					}
 				}
 			}
 		}
@@ -1356,7 +1362,11 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		// Gemini is the only one returning uppercase so convert down for compatibility.
 		f := genai.ContentFragment{}
 		for _, part := range pkt.Candidates[0].Content.Parts {
-			f.TextFragment += part.Text
+			if part.Thought {
+				f.ThinkingFragment += part.Text
+			} else {
+				f.TextFragment += part.Text
+			}
 			if part.InlineData.MimeType != "" || len(part.InlineData.Data) != 0 {
 				exts, err := mime.ExtensionsByType(part.InlineData.MimeType)
 				if err != nil {

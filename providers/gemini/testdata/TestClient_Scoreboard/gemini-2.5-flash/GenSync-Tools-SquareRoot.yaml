@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 661
+        content_length: 662
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":false,"thinkingBudget":0}}}
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,12 +28,17 @@ interactions:
                   "content": {
                     "parts": [
                       {
+                        "text": "**Okay, here's what I'm thinking:**\n\nThe user wants me to find the square root of 132413.  Given my expertise, it's pretty clear what needs to be done. I'll need to use the `square_root` tool, specifically calling the `square_root` function. The input, of course, is the number 132413.  My next step will be to pass that number to the function. Once I have the result, I'll print it out so the user can see it. That's a straightforward application of the tool.\n",
+                        "thought": true
+                      },
+                      {
                         "functionCall": {
                           "name": "square_root",
                           "args": {
                             "number": 132413
                           }
-                        }
+                        },
+                        "thoughtSignature": "CtEBAVSoXO5Hgqu9Pyy/cPObH1uNtoQt85s9Q99Em4Q3ZC/0NozWEmAFOshNgmB9dyh/ZPhou1JELxuUYi7YNhq3foXCCVdvWFHcyO/wxk04A1Bgj0hESEU21RkrE3S+BgEn9HzjN5Z/3PTISJvr0uY/+UrTdo7nVpde3gnKRkeb31pKBMZcUIUZg30EqfKNPSwbrAbOCUu/lpMGsokhcdKm5uvcKF1LFMKIbbARp0KSjbdBcbrN1pmqKyEUFYF1pNOYEtc0r2ad2aaZEoUcvdmREm8="
                       }
                     ],
                     "role": "model"
@@ -45,16 +50,17 @@ interactions:
               "usageMetadata": {
                 "promptTokenCount": 117,
                 "candidatesTokenCount": 20,
-                "totalTokenCount": 137,
+                "totalTokenCount": 192,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 117
                   }
-                ]
+                ],
+                "thoughtsTokenCount": 55
               },
               "modelVersion": "gemini-2.5-flash",
-              "responseId": "pNeDaM7VFeKYjMcPnpeE8Ag"
+              "responseId": "keiDaKXED76Z1MkPoq71uQY"
             }
         headers:
             Alt-Svc:
@@ -64,7 +70,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=448
+                - gfet4t7; dur=1765
             Vary:
                 - Origin
                 - X-Origin
@@ -77,4 +83,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 528ms
+        duration: 1.777s

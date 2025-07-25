@@ -34,18 +34,18 @@ func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.Rou
 	if err != nil {
 		t.Fatal(err)
 	}
-	// https://ai.google.dev/gemini-api/docs/thinking?hl=en
-	if strings.Contains(model, "thinking") {
-		// e.g. "gemini-2.0-flash-thinking-exp" or "gemini-2.5-flash-preview-04-17-thinking"
-		return &injectOption{Client: c, t: t, opts: gemini.OptionsText{ThinkingBudget: 4096}}
-	}
 	if strings.Contains(model, "image-generation") {
 		// e.g. "gemini-2.0-flash-preview-image-generation"
 		return &injectOption{
 			Client: c,
-			t:      t,
 			opts:   gemini.OptionsText{ResponseModalities: []gemini.Modality{gemini.ModalityText, gemini.ModalityImage}},
 		}
+	}
+	// Do not enable thinking for flash lite otherwise inputs are text only. I suspect it is a different model
+	// underneath!
+	if !strings.Contains(model, "flash-lite") {
+		// https://ai.google.dev/gemini-api/docs/thinking?hl=en
+		return &injectOption{Client: c, opts: gemini.OptionsText{ThinkingBudget: 512}}
 	}
 	return c
 }
@@ -60,7 +60,6 @@ func TestClient_Scoreboard(t *testing.T) {
 
 type injectOption struct {
 	*gemini.Client
-	t    testing.TB
 	opts gemini.OptionsText
 }
 
@@ -87,9 +86,9 @@ func TestClient_Preferred(t *testing.T) {
 		name string
 		want string
 	}{
-		{base.PreferredCheap, "gemini-2.5-flash-lite-preview-06-17"},
-		{base.PreferredGood, "gemini-2.5-flash-preview-05-20"},
-		{base.PreferredSOTA, "gemini-2.5-pro-preview-06-05"},
+		{base.PreferredCheap, "gemini-2.5-flash-lite"},
+		{base.PreferredGood, "gemini-2.5-flash"},
+		{base.PreferredSOTA, "gemini-2.5-pro"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {

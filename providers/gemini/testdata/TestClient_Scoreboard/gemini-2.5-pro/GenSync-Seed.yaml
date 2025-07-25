@@ -1,0 +1,80 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 206
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"seed":42,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**Analyzing the Request and Formulating a Response**\n\nOkay, here's the situation: the user wants me to \"say hello,\" but with a single word. That's the challenge. Let's break it down. The core task is a greeting, and the constraint is the one-word limit.\n\nNow, I need to come up with potential \"hello\" words. The obvious ones pop up immediately: *Hello, Hi, Hey*. Simple, direct, and they all work. Then, I consider the more formal options: *Greetings, Salutations*. I can even get a bit more regional and casual with *Howdy* and *Yo*.  \n\nOf course, I can't forget about international options. *Hola, Bonjour, Ciao, Konnichiwa, Shalom, Namaste, Hallo*... All those fit the single-word requirement.\n\nSo, the evaluation process is straightforward. Each of these contenders is a single word, so they *all* meet the essential criterion. The choice boils down to considering the tone, context, and potential audience. I need to select the most appropriate and direct option. Given the task's simplicity, the most straightforward greeting seems best.\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Hello"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 9,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 364,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 9
+                  }
+                ],
+                "thoughtsTokenCount": 354
+              },
+              "modelVersion": "gemini-2.5-pro",
+              "responseId": "GOeDaIXzMcO01MkPwLSIgQc"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=5696
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 5.708s

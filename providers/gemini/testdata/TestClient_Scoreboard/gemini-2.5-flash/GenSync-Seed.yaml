@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 205
+        content_length: 206
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"seed":42,"thinkingConfig":{"includeThoughts":false,"thinkingBudget":0}}}
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"seed":42,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,7 +28,11 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "Hello"
+                        "text": "**My Concise Task**\n\nOkay, so I need to acknowledge the user. They've given me a very straightforward task: simply say \"Hello\" using a single word.  Given the constraints, \"Hello\" is the optimal and only viable response.  It's a direct mapping of the instructions to the simplest possible output.  Done.\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Hello."
                       }
                     ],
                     "role": "model"
@@ -39,17 +43,18 @@ interactions:
               ],
               "usageMetadata": {
                 "promptTokenCount": 9,
-                "candidatesTokenCount": 1,
-                "totalTokenCount": 10,
+                "candidatesTokenCount": 2,
+                "totalTokenCount": 49,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 9
                   }
-                ]
+                ],
+                "thoughtsTokenCount": 38
               },
               "modelVersion": "gemini-2.5-flash",
-              "responseId": "l7eCaJSyC6jRjMcPoLntuAc"
+              "responseId": "heiDaOubHI6w1MkP6fSyyA4"
             }
         headers:
             Alt-Svc:
@@ -59,7 +64,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=339
+                - gfet4t7; dur=1278
             Vary:
                 - Origin
                 - X-Origin
@@ -72,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 350ms
+        duration: 1.289s

@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 662
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Initiating Calculation**\\n\\nI have identified the appropriate tool, `square_root`, to calculate the square root of the provided number, 132413. The tool requires one parameter, `number`, which I now have. I will proceed with the calculation.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 117,\"totalTokenCount\": 188,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 117}],\"thoughtsTokenCount\": 71},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"K-eDaKSYFryx1MkPwZTN0QY\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Formulating Tool Call**\\n\\nHaving confirmed the user's request, I've outlined the necessary steps. I'll construct the tool call, `print(square_root(number=132413))`, to calculate the square root. I'm considering the desired output format, ensuring only the numerical result is presented as requested, bypassing any superfluous explanations.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 117,\"totalTokenCount\": 299,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 117}],\"thoughtsTokenCount\": 182},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"K-eDaKSYFryx1MkPwZTN0QY\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"square_root\",\"args\": {\"number\": 132413}},\"thoughtSignature\": \"CiIBVKhc7v/vC1MwoNAMMtJwMdsEyHnlLeZ7mVe/Vxt9J6KTCmcBVKhc7oU7vBpv8uKq43//sVdUnTPSlPfQPe9Bg0gUZroG7H73MHmu9LIPe4+Opqf/VdcV7I+LEbplW1qBORsFlS11aSobY0QOmJKCP4LM8JrmIwRwC0LfhIo+UmrXe0ZfIJauRD5qCoUBAVSoXO5NjTSydlU24uuD8Fun0cf0SR3M0IHbhRwo+Dl8Ze+xblq+1LClb5u5gV3u+cdeny9SKDVmg3jeXKXBT5ckN57GkZhug1smXstj/uIIMmxQE+V2UotKeatTgzXsmLyeIwP3Bis0oH7Y6RDVc8G2igkYDY7lkmKrH3m1fuB50J68Wwp/AVSoXO53knI4ABHtfoiuvyj7IBm/IlGnhhZPx3N4Kw2z2b+vSacNLqeQY2enG2UhdESiKwSKEvWKUk+hc8cuWT1NjA28jmwSbtp6Uk0REZxWgJtzdx0QQpl/na5C2o8SVnZRBAyRypCsoaxyhJ2ZiQ+VOs/3n0hLWixxQxq1Mgp9AVSoXO7WFiUCZ+1HI8qSjqqTH9gWNxOK1CSA7OnuBsRnQV2A09b6d8zCzGf8PlNnjS1eYt2k1WCf4gSauo8JKgjY6Zn93TiL7UuRbkG6LrW3kYpl9k0k0ZVOXKAHlY2Ai5YXn1pGrZhhu+EXDvEjxvjRVZSfBVsrmLwI7oYKoAEBVKhc7vfJ8EUKkJ24FxSoSEJgholykEWbjheZbS59vPWWLwhB2lis3gSXWrZQNZQvXezdCyA5yz+N5P1dT3+ZLO0coObSGoVrDOsIYDObRhicKtX2HhNlEspGpl2vvq6SduyDnmQdAgskyAmdNOR6HX5b2pcJEeSMgYLkU2RIjKPf9ZbqitoayKPCvLp31nU+kMGDJA3dC6Ovif4BZVirCpMBAVSoXO4gtiU+GANdCAQrEYb4zqyk7Umwyrlea25hebyLfWFKO16PFvKE52M2tHjJpcVerxW98WaXpbUJ93kb1H+tQUqFTzOx56evvAVvO/AxLzir7sRAMo03RB/hgx2VbYTD0DlznkP2jKrNDqWA2UVA30qjy9fw0DHGWgwhTL1i0olI0oTqE3DIOXfkpvX+d29WCoABAVSoXO7blxPwfl8Fg+Vi3ou4OP3VzObD0nmR4ENH6ebzOBM4mEGrEq+LFc+rxUe6FQqM0ywzySR0QbWWY1w6+zrI9knrICzekLleKwhmTM9XG7VxIN9N33iJEfDbolNE0cUyHDWpucsigdV3QsQ7ufmaAnJdd8fLpVoRUFXjPZQKQgFUqFzu/kckG4ym6Fpd+U9s2MGB5zMOwjdFzngZoheafA4E+pSC3DU3ZdbxRyXj+Wrj/BWbo+H3KhWppfnY6GZjMQ==\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 117,\"candidatesTokenCount\": 18,\"totalTokenCount\": 317,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 117}],\"thoughtsTokenCount\": 182},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"K-eDaKSYFryx1MkPwZTN0QY\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2205
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.216s

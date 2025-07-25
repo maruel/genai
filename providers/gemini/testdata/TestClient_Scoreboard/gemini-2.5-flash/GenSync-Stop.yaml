@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 246
+        content_length: 247
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Talk about Canada in great details. Start with: Canada is"}]}],"generationConfig":{"stopSequences":["is"],"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":false,"thinkingBudget":0}}}
+            {"contents":[{"role":"user","parts":[{"text":"Talk about Canada in great details. Start with: Canada is"}]}],"generationConfig":{"stopSequences":["is"],"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,7 +28,11 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "Let's delve into Canada, a nation as vast and varied as its landscapes.\n\nCanada "
+                        "text": "**Canada: A Detailed Exploration**\n\nOkay, so I'm thinking about how to really nail this \"detailed Canada\" response. First, I need to break down the prompt. It's clear I need to be *comprehensive* – really get into the nitty-gritty. And, importantly, I need to start with \"Canada is...\" to set the tone.\n\nTo achieve \"great detail,\" I know I need to cover all the bases. I'm thinking: geography and size are a given, then a concise history, followed by politics and government. The economy is crucial, of course, including major sectors and trade. Culture's essential – multiculturalism, the arts, sports, and, yes, even some of the stereotypes that are thrown around. Demographics, the environment, education, healthcare, and Canada's role on the international stage are all important. And I can't forget the challenges it faces and its overall future outlook. Finally, I'll need to incorporate those unique aspects – bilingualism, politeness, and yes, maple syrup!\n\nNow, the structure. I'll need a good logical flow. I'll kick it off with an introduction using the provided start phrase, then give a quick overview of Canada. Next, a deep dive into geography and demographics – size, provinces, climate, population distribution, and the crucial topic of Indigenous peoples. History will follow: Indigenous roots, European colonization, Confederation, and 20th-century development. Then, into government and politics: the constitutional monarchy, parliamentary democracy, federal system, key institutions, political parties, and Quebec's issues. The economy will cover resources, diversification, and trade. I know I have a lot to say, and now, I can say it well.\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Canada "
                       }
                     ],
                     "role": "model"
@@ -39,17 +43,18 @@ interactions:
               ],
               "usageMetadata": {
                 "promptTokenCount": 13,
-                "candidatesTokenCount": 19,
-                "totalTokenCount": 32,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 464,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 13
                   }
-                ]
+                ],
+                "thoughtsTokenCount": 450
               },
               "modelVersion": "gemini-2.5-flash",
-              "responseId": "mLeCaOWpCsrUjMcPm9j0-A4"
+              "responseId": "jOiDaJbaI6GY1MkP_PbPuQY"
             }
         headers:
             Alt-Svc:
@@ -59,7 +64,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=470
+                - gfet4t7; dur=4445
             Vary:
                 - Origin
                 - X-Origin
@@ -72,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 481ms
+        duration: 4.456s

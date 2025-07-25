@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 672
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["Canada","USA"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Evaluating 'Better' Countries**\\n\\nI've homed in on the user's focus: identifying a \\\"better\\\" country. The query immediately targeted the `best_country` tool, a significant lead. I'm now processing the tool's sole parameter, `country`, and the input \\\"Canada\\\" and \\\"USA.\\\" This should provide a basis for comparison, which will be the next step.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"totalTokenCount\": 188,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 73},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"suiDaNu5F4HQ1MkPmr7a2AE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Analyzing the 'Best'**\\n\\nI've determined the core of the problem: a subjective preference for a \\\"better\\\" country. My analysis confirms the `best_country` tool is the relevant instrument. The parameters now require scrutiny, particularly the 'country' input, which is ambiguous due to the user's simultaneous mention of Canada and the USA. This ambiguity demands immediate clarification from the user to proceed.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"totalTokenCount\": 358,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 243},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"suiDaNu5F4HQ1MkPmr7a2AE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"Canada\"}},\"thoughtSignature\": \"CiIBVKhc7gOPoHYWkW8WiLYFKH3RYj25pz+ZurUBlXhvlaiACnABVKhc7kddYhuIp9iGx9TPYmmTpsLpQTkA2ZRTe0Szcm5P7sYPTm+YnYH2OStsMxGPkEUweT8poYpZogP5+UOT/4aAuYcRfFxG1vZMwsyZs1AxdHNOHRSZmHxD5ESzAjapljtAedWsLhY/DtoLi4DHCo4BAVSoXO4Nd5u72E7tCpnzUfF2+QwewXgQF+pd2JHpHvNTK60iiUMu7xlUnUqUIsUZ6ad8eDVlQ2Q14cGdWFH9fAp/R63kvv6iRNR58p+CE8jMa9aBMQ6r4Kc2L3M0SrEo9CmL260paUcSRjfH/g62T9mB+fjKurbI3DXhX3CEpe3rz+2jzseHEBpT1dSjfQqDAQFUqFzupgFQGVBj0q2yo4nUjNUU/Fk9VhZMo+UhZ8zDkZxoTZ9SnJpqrmJHHMIn7/bDw/o7ZgobM6v1VvwXzp9RdyUVgax4zTxQHin7QXOzNnAW+9mMccG2JspZG8dLjP1GD/5hWU2LINV1yC+BaUD4HgIWEDNqU8I8T4LW3eQk9iDzCoEBAVSoXO6wV/x6rFfoA/L58jaJjhpVlivsn+OpybKGWN8eJYf+JXeic7MLI3hPdkBNxTbcIyjI50C6Q5uNojmljhDDWHqR+PD/mjwpO+IQKi38MfEQbvSiF+f3Tvhujk9g3IsYJpzztSvPw8YlFld3cRmZtOhmMIBFq37mLebQcFiNCo8BAVSoXO7/wG5e//8Te369Q0J0reng6786OOy5NAJaCr6txpRZC+rJM3xiInzyhOjsm+vDjhsgtg5xbsN0PqknFpAGi+ytJTIKxWLdXKQ+6ct0H8UD0N2CgV0WwB+YZxOg2qNCrMTvLEml8Pl/AtP6Oyg0wXdHuG6Gtdc9foRxH7AbDVGgsWZ81Cd/9N8l/+QKlgEBVKhc7rEqLy6PzwJGX6a+r/xo6KBHibUzulgvgaFR2hN4HOqqqXx1p06L722EPJ3tdprz7hKMHLZk1eOc+AbEB3z/vcrcSIkdCI8rOSLKqdlUQ9EbIV4UGKRRsEdTUplCPJE/+rBnuiu53ifC0Iv5CbYnnEW4u38iOOajWfcAxAZuM9LvJbG1GLvW7thb4Xci6ihgsfQKkgEBVKhc7nq/h9zyzYnDKupQFPkrVoQHJUAUseJZGd693GeYsygx4pds+MIDO5oRkvgxfmI4+P2t+oYe/NEiH5zAbHJpL+kKAdLPjnamlV5f6Yq2GoiyB3fN/pDOezCk85ZokFuLJvCNnoZFl6mzGlGdGYHBJa3fgGjz1SVBofQ05ZJV3CQ52N9lL44E16zvWeE6+gqYAQFUqFzuOXORKntmmZEclh83Dj+7ZyKF+LK+jSrWX4cSNn9AWSDg0sO1vEakJvYTqkyagrVa9tnQklBrGOvXFsVkwQQNIpOU9bWiNJ55PIttlCft4I1VBIS+JU1eVIbQnakO0bbxkEVjYCrdy1Ic2XVvLAihscQCDt3RDWtMjlG/fwhPf+lJgP0ggGVKU7biNu5kA4J5nz+RCogBAVSoXO4XLhlZEnGxLl2vcTVUxA0xAIDkgtcRzk1PrE5eurlAJJyxwkOOLJXY2fJxXrxt4ADuLlV9Au9xpYKtYAyUA7gTiOM/5E9+btu28/Qsp8qfrseU2edyvQzNmX0NQnuNkTrSH0Pfl3A9bMFHAuU4OYkns+3nZrJAR8WFZG9CsZLrr7b79QqCAQFUqFzuXXH5VusQ2Db4PVsbxx4MhewayPD4jkc2w4HkiPibNPQBhCw6HqJ4YJ/ZDbCV7jJhyEynAn+JSa0GuEe5HNCG5kINtbd/QmGulNcgkTnFTApY0sFxZQBE5zsmwULPD8kFyBjUJbKrEwyJfpWtVk4CbH4pjUEGKNeFtYGBh9o=\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"candidatesTokenCount\": 13,\"totalTokenCount\": 371,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 243},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"suiDaNu5F4HQ1MkPmr7a2AE\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2412
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.424s

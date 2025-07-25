@@ -254,6 +254,8 @@ func MimeByExt(ext string) string {
 	switch ext {
 	case ".aac":
 		return "audio/aac"
+	case ".flac":
+		return "audio/flac"
 	case ".wav":
 		return "audio/wav"
 	default:

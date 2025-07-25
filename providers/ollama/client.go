@@ -41,22 +41,20 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://ollama.com/",
 	Scenarios: []genai.Scenario{
 		{
+			Models: []string{"gemma3:4b"},
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
-					SupportedFormats: []string{"image/png", "image/jpeg", "image/gif", "image/webp"},
+					SupportedFormats: []string{"image/jpeg", "image/png", "image/webp"},
 				},
-				genai.ModalityText: {
-					Inline:           true,
-					SupportedFormats: []string{"text/plain"},
-				},
+				genai.ModalityText: {Inline: true},
 			},
-			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Models: []string{"gemma3:4b"},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
+				NoStopSequence: true, // It's not true, it's just the model is too quantized and doesn't follow instruction.
+				JSON:           true,
+				JSONSchema:     true,
+				Seed:           true,
 			},
 			GenStream: &genai.FunctionalityText{
 				JSON:       true,

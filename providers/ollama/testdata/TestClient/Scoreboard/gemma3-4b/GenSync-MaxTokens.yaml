@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 158
+        host: localhost
+        body: |
+            {"model":"gemma3:4b","stream":false,"messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"options":{"num_predict":16}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 368
+        body: '{"model":"gemma3:4b","created_at":"2025-07-26T00:30:22.238951821Z","message":{"role":"assistant","content":"Okay, let''s dive into the theory of relativity, a cornerstone of modern"},"done_reason":"length","done":true,"total_duration":1230574099,"load_duration":58899113,"prompt_eval_count":18,"prompt_eval_duration":191394038,"eval_count":16,"eval_duration":979835269}'
+        headers:
+            Content-Length:
+                - "368"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 1.231s

@@ -117,11 +117,12 @@ func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Opti
 	args := []recorder.Option{
 		recorder.WithHook(trimResponseHeaders, recorder.AfterCaptureHook),
 		recorder.WithHook(trimRecordingCloudflare, recorder.AfterCaptureHook),
+		recorder.WithHook(trimRecordingHostPort, recorder.AfterCaptureHook),
 		recorder.WithHook(trimRecordingGemini, recorder.AfterCaptureHook),
 		recorder.WithMode(mode),
 		recorder.WithSkipRequestLatency(true),
 		recorder.WithRealTransport(h),
-		recorder.WithMatcher(matchCassetteGemini),
+		recorder.WithMatcher(matchIgnorePort),
 	}
 	r.Signal(name)
 	// Don't forget to call Stop()!
@@ -214,10 +215,31 @@ func trimRecordingGemini(i *cassette.Interaction) error {
 	return nil
 }
 
+// trimRecordingHostPort is a recorder.HookFunc to remove the port number when recording.
+func trimRecordingHostPort(i *cassette.Interaction) error {
+	i.Request.Host = strings.Split(i.Request.Host, ":")[0]
+	u, err := url.Parse(i.Request.URL)
+	if err != nil {
+		return err
+	}
+	u.Host = strings.Split(u.Host, ":")[0]
+	i.Request.URL = u.String()
+	return nil
+}
+
+// matchIgnorePort is a recorder.MatcherFunc that ignore the host port number. This is useful for locally
+// hosted LLM providers like llamacpp and ollama.
+func matchIgnorePort(r *http.Request, i cassette.Request) bool {
+	r = r.Clone(r.Context())
+	r.URL.Host = strings.Split(r.URL.Host, ":")[0]
+	r.Host = strings.Split(r.Host, ":")[0]
+	return matchCassetteGemini(r, i)
+}
+
 func removeKeyFromQuery(query, keyToRemove string) string {
 	// Using url.URL.Query() then Encode() reorders the keys, which makes it non-deterministic. Do it manually.
 	b := strings.Builder{}
-	for _, part := range strings.Split(query, "&") {
+	for part := range strings.SplitSeq(query, "&") {
 		if part != "" {
 			if k := strings.SplitN(part, "=", 2)[0]; k == keyToRemove {
 				continue

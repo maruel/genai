@@ -9,7 +9,7 @@ interactions:
         content_length: 591
         host: api.cohere.com
         body: |
-            {"stream":true,"model":"c4ai-aya-vision-8b","messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]},"description":"Calculates and return the square root of a number"}}],"tool_choice":"required","strict_tools":true}
+            {"stream":true,"model":"c4ai-aya-vision-8b","messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"description":"Calculates and return the square root of a number"}}],"tool_choice":"required","strict_tools":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -20,7 +20,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: 118
-        body: '{"id":"14a8c491-daf7-409d-8ccb-c014dbc7ca7f","message":"invalid request: tool_choice is not supported for this model"}'
+        body: '{"id":"49395805-9907-4c18-9063-7e8b74580e9c","message":"invalid request: tool_choice is not supported for this model"}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -45,9 +45,9 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - cc96a75012f28cbd3d9879c54c2121ad
+                - 20cfdc96c0d7b08363da84af0f91fd3f
             X-Envoy-Upstream-Service-Time:
-                - "12"
+                - "1660"
         status: 400 Bad Request
         code: 400
-        duration: 53ms
+        duration: 1.704s

@@ -9,7 +9,7 @@ interactions:
         content_length: 576
         host: router.huggingface.co
         body: |
-            {"model":"Qwen/Qwen3-4B","stream":false,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"user","content":"/think"}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+            {"model":"Qwen/Qwen3-4B","stream":false,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"user","content":"/think"}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -20,7 +20,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: 689
-        body: '{"id":"chatcmpl-999e8283cedd45f38d51d8257c02cde0","choices":[{"finish_reason":"stop","index":0,"logprobs":null,"message":{"content":"","refusal":null,"role":"assistant","annotations":null,"audio":null,"function_call":null,"tool_calls":[{"id":"chatcmpl-tool-2dcdb761ffdc4c63a0d9b6e8b10605c0","function":{"arguments":"{}","name":"square_root"},"type":"function"}],"reasoning_content":null},"stop_reason":null}],"created":1753388825,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion","service_tier":null,"system_fingerprint":null,"usage":{"completion_tokens":16,"prompt_tokens":164,"total_tokens":180,"completion_tokens_details":null,"prompt_tokens_details":null},"prompt_logprobs":null}'
+        body: '{"id":"chatcmpl-f5393b353ff3464ba0da4ee5a3938cff","choices":[{"finish_reason":"stop","index":0,"logprobs":null,"message":{"content":"","refusal":null,"role":"assistant","annotations":null,"audio":null,"function_call":null,"tool_calls":[{"id":"chatcmpl-tool-50070eead464431b9e44bb3c1836fcb6","function":{"arguments":"{}","name":"square_root"},"type":"function"}],"reasoning_content":null},"stop_reason":null}],"created":1753471488,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion","service_tier":null,"system_fingerprint":null,"usage":{"completion_tokens":16,"prompt_tokens":164,"total_tokens":180,"completion_tokens_details":null,"prompt_tokens_details":null},"prompt_logprobs":null}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
@@ -41,19 +41,19 @@ interactions:
             Vary:
                 - Origin
             Via:
-                - 1.1 c73f9dc228a4b3fb05ae37ce52d04a1c.cloudfront.net (CloudFront)
+                - 1.1 bfb1eb580f1b74920e77f7f003dbce62.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - 6boskJpRBRRroDkXM-SvMCSBcWHg-MdJO7T63IRZcRs_eg-FPFuZzA==
+                - yyQiNr_Prld6KAraoQ9QsmMKJCoqeADEMZ36WZhmcNXcGFpmtcV9lA==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
                 - Miss from cloudfront
             X-Inference-Id:
-                - chatcmpl-999e8283cedd45f38d51d8257c02cde0
+                - chatcmpl-f5393b353ff3464ba0da4ee5a3938cff
             X-Powered-By:
                 - huggingface-moon
             X-Ratelimit-Dynamic-Period-Remaining:
-                - 751s
+                - 579s
             X-Ratelimit-Dynamic-Period-Usage-Requests:
                 - 0%
             X-Ratelimit-Dynamic-Period-Usage-Tokens:
@@ -73,9 +73,9 @@ interactions:
             X-Ratelimit-Reset-Requests:
                 - 1s
             X-Request-Id:
-                - VlpfuXv0SYfPzrqf
+                - ePh6tWZEmXQhvEzK
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 784ms
+        duration: 298ms

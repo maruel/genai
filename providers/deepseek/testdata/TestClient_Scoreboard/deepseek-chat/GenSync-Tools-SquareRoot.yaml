@@ -9,7 +9,7 @@ interactions:
         content_length: 542
         host: api.deepseek.com
         body: |
-            {"model":"deepseek-chat","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":false,"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+            {"model":"deepseek-chat","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":false,"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,14 +21,14 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"251f3e7b-dfbd-4a56-851e-263261c3e65f","object":"chat.completion","created":1753141294,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"index":0,"id":"call_0_91e732e2-ba3a-4e01-ae2b-00b84759c819","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":160,"completion_tokens":18,"total_tokens":178,"prompt_tokens_details":{"cached_tokens":128},"prompt_cache_hit_tokens":128,"prompt_cache_miss_tokens":32},"system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache"}'
+        body: '{"id":"957c4249-adeb-4d4b-82f0-288549a48e55","object":"chat.completion","created":1753471759,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"index":0,"id":"call_0_99d10fd9-f16e-4d85-861e-6eea1715a9a9","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":160,"completion_tokens":18,"total_tokens":178,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":160},"system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache"}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962e8cc459bc7148-YUL
+                - 964e10beff8ea306-YUL
             Content-Type:
                 - application/json
             Server:
@@ -40,7 +40,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - 25203d46576eadbd6ec1988d16f8c57d
+                - 1fb6c2cd20a62b419225239c2fc63678
         status: 200 OK
         code: 200
-        duration: 343ms
+        duration: 330ms

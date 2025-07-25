@@ -21,11 +21,13 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-28e417b7-5bb9-4fad-866e-2256219af2be","object":"chat.completion.chunk","created":1753142016,"model":"llama-3.3-70b-versatile","system_fingerprint":"fp_7b77049e86","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-42f249eb-e98e-4106-baab-4a14337d1bfd","object":"chat.completion.chunk","created":1753471558,"model":"llama-3.3-70b-versatile","system_fingerprint":"fp_21854da540","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-28e417b7-5bb9-4fad-866e-2256219af2be","object":"chat.completion.chunk","created":1753142016,"model":"llama-3.3-70b-versatile","system_fingerprint":"fp_7b77049e86","choices":[{"index":0,"delta":{"tool_calls":[{"id":"0m3qnqbyn","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-42f249eb-e98e-4106-baab-4a14337d1bfd","object":"chat.completion.chunk","created":1753471559,"model":"llama-3.3-70b-versatile","system_fingerprint":"fp_21854da540","choices":[{"index":0,"delta":{"tool_calls":[{"id":"qw76kvjcz","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-28e417b7-5bb9-4fad-866e-2256219af2be","object":"chat.completion.chunk","created":1753142016,"model":"llama-3.3-70b-versatile","system_fingerprint":"fp_7b77049e86","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01k0qpgeqmeembvpbgbvract81","usage":{"queue_time":0.070441412,"prompt_tokens":285,"prompt_time":0.015829915,"completion_tokens":12,"completion_time":0.037816569,"total_tokens":297,"total_time":0.053646484}}}
+            data: {"id":"chatcmpl-42f249eb-e98e-4106-baab-4a14337d1bfd","object":"chat.completion.chunk","created":1753471559,"model":"llama-3.3-70b-versatile","system_fingerprint":"fp_21854da540","choices":[{"index":0,"delta":{"tool_calls":[{"id":"6te0w5ssg","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"index":1}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-42f249eb-e98e-4106-baab-4a14337d1bfd","object":"chat.completion.chunk","created":1753471559,"model":"llama-3.3-70b-versatile","system_fingerprint":"fp_21854da540","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01k11gs9ace74rp1hpa5m8t1tk","usage":{"queue_time":0.00861738,"prompt_tokens":285,"prompt_time":0.014542515,"completion_tokens":26,"completion_time":0.066011166,"total_tokens":311,"total_time":0.080553681}}}
 
             data: [DONE]
 
@@ -37,15 +39,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962e9e646b2ca2a8-YUL
+                - 964e0bdb7854a2df-YUL
             Content-Type:
                 - text/event-stream
             Server:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
                 - msp
             X-Ratelimit-Limit-Requests:
@@ -53,15 +53,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "300000"
             X-Ratelimit-Remaining-Requests:
-                - "499996"
+                - "499995"
             X-Ratelimit-Remaining-Tokens:
-                - "299387"
+                - "299655"
             X-Ratelimit-Reset-Requests:
-                - 586.2ms
+                - 766ms
             X-Ratelimit-Reset-Tokens:
-                - 122.6ms
+                - 69ms
             X-Request-Id:
-                - req_01k0qpgeqmeembvpbgbvract81
+                - req_01k11gs9ace74rp1hpa5m8t1tk
         status: 200 OK
         code: 200
-        duration: 207ms
+        duration: 116ms

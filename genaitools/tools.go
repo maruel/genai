@@ -77,9 +77,9 @@ var Arithmetic = genai.ToolDef{
 }
 
 type calculateArgs struct {
-	Operation    string `jsonschema:"enum=addition,enum=subtraction,enum=multiplication,enum=division"`
-	FirstNumber  json.Number
-	SecondNumber json.Number
+	Operation    string      `json:"operation" jsonschema:"enum=addition,enum=subtraction,enum=multiplication,enum=division"`
+	FirstNumber  json.Number `json:"first_number" jsonschema:"type=number"`
+	SecondNumber json.Number `json:"second_number" jsonschema:"type=number"`
 }
 
 // GetTodayClockTime returns the current time and day in a format that the LLM

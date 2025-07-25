@@ -65,16 +65,18 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:      genai.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
+				Tools:          genai.True,
+				IndecisiveTool: genai.Flaky,
+				JSON:           true,
+				JSONSchema:     true,
+				Seed:           true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:      genai.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
+				Tools:          genai.True,
+				IndecisiveTool: genai.Flaky,
+				JSON:           true,
+				JSONSchema:     true,
+				Seed:           true,
 			},
 		},
 		{
@@ -98,12 +100,14 @@ var Scoreboard = genai.Scoreboard{
 			GenSync: &genai.FunctionalityText{
 				// It supports URL but only when uploaded to its own storage.
 				Tools:      genai.True,
+				BiasedTool: genai.True,
 				JSON:       true,
 				JSONSchema: true,
 				Seed:       true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:      genai.True,
+				BiasedTool: genai.True,
 				JSON:       true,
 				JSONSchema: true,
 				Seed:       true,
@@ -392,9 +396,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			if len(v.ResponseModalities) != 0 {
 				c.GenerationConfig.ResponseModalities = v.ResponseModalities
 			}
-			unsupported = c.initOptions(&v.OptionsText, model)
+			unsupported, errs = c.initOptions(&v.OptionsText, model)
 		case *genai.OptionsText:
-			unsupported = c.initOptions(v, model)
+			unsupported, errs = c.initOptions(v, model)
 		default:
 			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 		}
@@ -421,8 +425,9 @@ func (c *ChatRequest) SetStream(stream bool) {
 	// There's no field to set, the URL is different.
 }
 
-func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) []string {
+func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) ([]string, []error) {
 	var unsupported []string
+	var errs []error
 	c.GenerationConfig.MaxOutputTokens = v.MaxTokens
 	c.GenerationConfig.Temperature = v.Temperature
 	c.GenerationConfig.TopP = v.TopP
@@ -435,7 +440,9 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) []string {
 	c.GenerationConfig.StopSequences = v.Stop
 	if v.DecodeAs != nil {
 		c.GenerationConfig.ResponseMimeType = "application/json"
-		c.GenerationConfig.ResponseSchema.FromGoObj(v.DecodeAs)
+		if err := c.GenerationConfig.ResponseSchema.FromGoObj(v.DecodeAs); err != nil {
+			errs = append(errs, fmt.Errorf("decodeAs: %w", err))
+		}
 	} else if v.ReplyAsJSON {
 		c.GenerationConfig.ResponseMimeType = "application/json"
 	}
@@ -452,10 +459,11 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) []string {
 		for i, t := range v.Tools {
 			params := Schema{}
 			if t.InputSchemaOverride != nil {
-				panic("TODO")
-				// params.FromJSONSchema(t.InputSchemaOverride)
+				errs = append(errs, fmt.Errorf("%s: ToolDef.InputSchemaOverride is not yet implemented", t.Name))
 			} else {
-				params.FromGoObj(reflect.TypeOf(t.Callback).In(1))
+				if err := params.FromGoType(reflect.TypeOf(t.Callback).In(1).Elem(), reflect.StructTag(""), ""); err != nil {
+					errs = append(errs, fmt.Errorf("%s: tool parameters: %w", t.Name, err))
+				}
 			}
 			// See FunctionResponse.To().
 			c.Tools[i].FunctionDeclarations = []FunctionDeclaration{{
@@ -463,10 +471,12 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) []string {
 				Description: t.Description,
 				Parameters:  params,
 			}}
-			c.Tools[i].FunctionDeclarations[0].Response.FromGoObj(functionResponse)
+			if err := c.Tools[i].FunctionDeclarations[0].Response.FromGoObj(functionResponse); err != nil {
+				errs = append(errs, fmt.Errorf("%s: tool response: %w", t.Name, err))
+			}
 		}
 	}
-	return unsupported
+	return unsupported, errs
 }
 
 var functionResponse struct {

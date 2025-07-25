@@ -9,7 +9,7 @@ interactions:
         content_length: 587
         host: api.mistral.ai
         body: |
-            {"model":"mistral-small-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+            {"model":"mistral-small-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,9 +21,9 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"62128bebca0f42c59fde66a5a6414468","object":"chat.completion.chunk","created":1753147557,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+            data: {"id":"1a16cb1fbf9945ef98d61a6f75388019","object":"chat.completion.chunk","created":1753471463,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
 
-            data: {"id":"62128bebca0f42c59fde66a5a6414468","object":"chat.completion.chunk","created":1753147557,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"tool_calls":[{"id":"Z0Z8TfbW4","function":{"name":"square_root","arguments":"{\"number\": \"132413\"}"},"index":0}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":128,"total_tokens":144,"completion_tokens":16}}
+            data: {"id":"1a16cb1fbf9945ef98d61a6f75388019","object":"chat.completion.chunk","created":1753471463,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"tool_calls":[{"id":"ZRvaahNWg","function":{"name":"square_root","arguments":"{\"number\": 132413}"},"index":0}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":128,"total_tokens":144,"completion_tokens":16}}
 
             data: [DONE]
 
@@ -35,23 +35,23 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962f25a8eccb33f1-YUL
+                - 964e0989585da2c9-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Mistral-Correlation-Id:
-                - 01982fbc-c5dc-7f5b-b5e2-f1eb6581dfb3
+                - 0198430b-3219-7f5f-8330-07f0840821b8
             Server:
                 - cloudflare
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains
             X-Envoy-Upstream-Service-Time:
-                - "5579"
+                - "255"
             X-Kong-Proxy-Latency:
-                - "7"
+                - "10"
             X-Kong-Request-Id:
-                - 01982fbc-c5dc-7f5b-b5e2-f1eb6581dfb3
+                - 0198430b-3219-7f5f-8330-07f0840821b8
             X-Kong-Upstream-Latency:
-                - "5580"
+                - "255"
         status: 200 OK
         code: 200
-        duration: 5.728s
+        duration: 397ms

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 613
+        content_length: 661
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{},"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":false,"thinkingBudget":0}}}
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":false,"thinkingBudget":0}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -30,7 +30,9 @@ interactions:
                       {
                         "functionCall": {
                           "name": "square_root",
-                          "args": {}
+                          "args": {
+                            "number": 132413
+                          }
                         }
                       }
                     ],
@@ -41,18 +43,18 @@ interactions:
                 }
               ],
               "usageMetadata": {
-                "promptTokenCount": 106,
-                "candidatesTokenCount": 10,
-                "totalTokenCount": 116,
+                "promptTokenCount": 117,
+                "candidatesTokenCount": 20,
+                "totalTokenCount": 137,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
-                    "tokenCount": 106
+                    "tokenCount": 117
                   }
                 ]
               },
               "modelVersion": "gemini-2.5-flash",
-              "responseId": "6reDaPCaMNWXjMcPlsTTsAc"
+              "responseId": "pNeDaM7VFeKYjMcPnpeE8Ag"
             }
         headers:
             Alt-Svc:
@@ -62,7 +64,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=427
+                - gfet4t7; dur=448
             Vary:
                 - Origin
                 - X-Origin
@@ -75,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 438ms
+        duration: 528ms

@@ -21,19 +21,19 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"o498t1z-62bZhn-9636269be8db714a","object":"chat.completion.chunk","created":1753220997,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"o4XEnMi-4Yz4kd-964e00ecaf49a2f0","object":"chat.completion.chunk","created":1753471156,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"o498t1z-62bZhn-9636269be8db714a","object":"chat.completion.chunk","created":1753220997,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_zyzhhhywamllwe36gfkc0kgy","type":"function","function":{"name":"best_country","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"o4XEnMi-4Yz4kd-964e00ecaf49a2f0","object":"chat.completion.chunk","created":1753471156,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_k3olyzpzdb980vwhfb4l52sz","type":"function","function":{"name":"best_country","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"o498t1z-62bZhn-9636269be8db714a","object":"chat.completion.chunk","created":1753220997,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"o4XEnMi-4Yz4kd-964e00ecaf49a2f0","object":"chat.completion.chunk","created":1753471156,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"o498t1z-62bZhn-9636269be8db714a","object":"chat.completion.chunk","created":1753220997,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"id":"call_99rnylyfb8qhxpssfjj1fud5","type":"function","function":{"name":"best_country","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"o4XEnMi-4Yz4kd-964e00ecaf49a2f0","object":"chat.completion.chunk","created":1753471156,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"id":"call_9fkde9rdjivy8tvypd7vnzjd","type":"function","function":{"name":"best_country","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"o498t1z-62bZhn-9636269be8db714a","object":"chat.completion.chunk","created":1753220997,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"o4XEnMi-4Yz4kd-964e00ecaf49a2f0","object":"chat.completion.chunk","created":1753471156,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"o498t1z-62bZhn-9636269be8db714a","object":"chat.completion.chunk","created":1753220996,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"tool_calls","stop_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
+            data: {"id":"o4XEnMi-4Yz4kd-964e00ecaf49a2f0","object":"chat.completion.chunk","created":1753471111,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"tool_calls","stop_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
 
-            data: {"id":"o498t1z-62bZhn-9636269be8db714a","object":"chat.completion.chunk","created":1753220996,"choices":[],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":{"prompt_tokens":828,"total_tokens":883,"completion_tokens":55},"warnings":[{"message":"Model supports only tool_choice auto"}]}
+            data: {"id":"o4XEnMi-4Yz4kd-964e00ecaf49a2f0","object":"chat.completion.chunk","created":1753471111,"choices":[],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":{"prompt_tokens":828,"total_tokens":883,"completion_tokens":55},"warnings":[{"message":"Model supports only tool_choice auto"}]}
 
             data: [DONE]
 
@@ -47,7 +47,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9636269be8db714a-YUL
+                - 964e00ecaf49a2f0-YUL
             Content-Type:
                 - text/event-stream;charset=utf-8
             Retry-After:
@@ -59,11 +59,11 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - eae9c14d-77a8-48a0-951c-c599a8e29502-noamzn
+                - 1a151307-f091-47c3-8ef2-79a2cedd2d00-noamzn
             X-Api-Call-Start:
-                - "2025-07-22T21:49:56.716Z"
+                - "2025-07-25T19:18:31.268Z"
             X-Api-Received:
-                - "2025-07-22T21:49:56.701Z"
+                - "2025-07-25T19:18:31.245Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -79,7 +79,7 @@ interactions:
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - o498t1z-62bZhn-9636269be8db714a
+                - o4XEnMi-4Yz4kd-964e00ecaf49a2f0
         status: 200 OK
         code: 200
-        duration: 952ms
+        duration: 47.533s

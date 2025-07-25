@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-58de96e4-52f8-4a67-86a2-5f028a56d5bf","object":"chat.completion","created":1753142038,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"aajgder4v","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.005609580000000003,"prompt_tokens":737,"prompt_time":0.039578584,"completion_tokens":23,"completion_time":0.024834785,"total_tokens":760,"total_time":0.064413369},"usage_breakdown":null,"system_fingerprint":"fp_7c27472e1f","x_groq":{"id":"req_01k0qph3k2edesmydxr2y46kyp"},"service_tier":"on_demand"}
+            {"id":"chatcmpl-74b467d0-ff06-4b66-a7a1-844d5c434e8c","object":"chat.completion","created":1753471562,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"1t8ab7xz8","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.005068312000000002,"prompt_tokens":737,"prompt_time":0.017536857,"completion_tokens":23,"completion_time":0.036320988,"total_tokens":760,"total_time":0.053857845},"usage_breakdown":null,"system_fingerprint":"fp_7c27472e1f","x_groq":{"id":"req_01k11gsd1he7f94xyjt3dg837j"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,15 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962e9ee9ffdea2a8-YUL
+                - 964e0bf34b5fa2df-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
                 - msp
             X-Ratelimit-Limit-Requests:
@@ -47,15 +45,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "300000"
             X-Ratelimit-Remaining-Requests:
-                - "499993"
+                - "499996"
             X-Ratelimit-Remaining-Tokens:
-                - "298071"
+                - "298785"
             X-Ratelimit-Reset-Requests:
-                - 1.075599999s
+                - 683.2ms
             X-Ratelimit-Reset-Tokens:
-                - 385.8ms
+                - 243ms
             X-Request-Id:
-                - req_01k0qph3k2edesmydxr2y46kyp
+                - req_01k11gsd1he7f94xyjt3dg837j
         status: 200 OK
         code: 200
-        duration: 142ms
+        duration: 121ms

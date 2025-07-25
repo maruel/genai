@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-56319cfd-23a2-4f81-9f41-c1603d52da4a","object":"chat.completion","created":1753142038,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"vwwnr7ggx","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}},{"id":"z24x6cxe3","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.006017086000000001,"prompt_tokens":737,"prompt_time":0.028953016,"completion_tokens":43,"completion_time":0.038781268,"total_tokens":780,"total_time":0.067734284},"usage_breakdown":null,"system_fingerprint":"fp_7c27472e1f","x_groq":{"id":"req_01k0qph3qgeg9aeth4hamcr742"},"service_tier":"on_demand"}
+            {"id":"chatcmpl-a2f8fbe1-f899-42fa-b2b7-61c7f4cd323e","object":"chat.completion","created":1753471562,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"xbevhptg2","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}},{"id":"avjpr62xf","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.005107493000000005,"prompt_tokens":737,"prompt_time":0.040418708,"completion_tokens":43,"completion_time":0.045155485,"total_tokens":780,"total_time":0.085574193},"usage_breakdown":null,"system_fingerprint":"fp_7c27472e1f","x_groq":{"id":"req_01k11gsd53ft1s1zbr6p8vaxm9"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,15 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962e9eead986a2a8-YUL
+                - 964e0bf40c81a2df-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
                 - msp
             X-Ratelimit-Limit-Requests:
@@ -47,15 +45,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "300000"
             X-Ratelimit-Remaining-Requests:
-                - "499990"
+                - "499994"
             X-Ratelimit-Remaining-Tokens:
-                - "297565"
+                - "297835"
             X-Ratelimit-Reset-Requests:
-                - 1.709999999s
+                - 1.034799999s
             X-Ratelimit-Reset-Tokens:
-                - 487ms
+                - 433ms
             X-Request-Id:
-                - req_01k0qph3qgeg9aeth4hamcr742
+                - req_01k11gsd53ft1s1zbr6p8vaxm9
         status: 200 OK
         code: 200
-        duration: 146ms
+        duration: 142ms

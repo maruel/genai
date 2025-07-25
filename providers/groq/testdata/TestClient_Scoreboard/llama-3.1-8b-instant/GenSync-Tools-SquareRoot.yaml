@@ -9,7 +9,7 @@ interactions:
         content_length: 549
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"llama-3.1-8b-instant","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"llama-3.1-8b-instant","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,7 +21,7 @@ interactions:
         proto_minor: 0
         content_length: 279
         body: |
-            {"error":{"message":"tool call validation failed: attempted to call tool ' square_root ' which was not request.tools","type":"invalid_request_error","code":"tool_use_failed","failed_generation":"\u003cfunction= square_root \u003e{\"number\": \"132413\"} \u003c/function\u003e"}}
+            {"error":{"message":"tool call validation failed: attempted to call tool ' square_root' which was not request.tools","type":"invalid_request_error","code":"tool_use_failed","failed_generation":"\u003cfunction= square_root\u003e{\"number\": 132413}\u003c/function\u003e 363.98"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -30,7 +30,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962e9ed6aa8fa2a8-YUL
+                - 964e0bdcc9e9a2df-YUL
             Content-Length:
                 - "279"
             Content-Type:
@@ -39,8 +39,6 @@ interactions:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
                 - msp
             X-Ratelimit-Limit-Requests:
@@ -48,15 +46,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "250000"
             X-Ratelimit-Remaining-Requests:
-                - "499999"
+                - "499998"
             X-Ratelimit-Remaining-Tokens:
-                - "248872"
+                - "249964"
             X-Ratelimit-Reset-Requests:
-                - 172.799999ms
+                - 293.6ms
             X-Ratelimit-Reset-Tokens:
-                - 270.68ms
+                - 8.64ms
             X-Request-Id:
-                - req_01k0qph0jced3s578wkjrs97hn
+                - req_01k11gs9jge74t204qhf3ff38a
         status: 400 Bad Request
         code: 400
-        duration: 200ms
+        duration: 286ms

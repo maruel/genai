@@ -20,7 +20,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: 563
-        body: '{"id":"32afe784-35aa-499d-a9d4-c9aed4ab1f68","message":{"role":"assistant","tool_plan":"I will use one or more of the available tools to find the answer","tool_calls":[{"id":"best_country_z65qgv3ne362","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}},{"id":"best_country_zbkwjqf6cgfv","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":49,"output_tokens":30},"tokens":{"input_tokens":1514,"output_tokens":63}}}'
+        body: '{"id":"ab0ed776-e384-46e7-b787-238b6f9dd848","message":{"role":"assistant","tool_plan":"I will use one or more of the available tools to find the answer","tool_calls":[{"id":"best_country_qyqp7pvbkfva","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}},{"id":"best_country_dgrcsscx2s9v","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":49,"output_tokens":30},"tokens":{"input_tokens":1514,"output_tokens":63}}}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -49,9 +49,9 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - c5949ebadc5e463b3a91cd55239efc78
+                - 6cd94bc06896aa16f1f67f20397d7b36
             X-Envoy-Upstream-Service-Time:
-                - "615"
+                - "646"
         status: 200 OK
         code: 200
-        duration: 657ms
+        duration: 690ms

@@ -596,7 +596,7 @@ func exerciseModal(ctx context.Context, pf ProviderFactory, f *genai.Functionali
 func exerciseGenTools(ctx context.Context, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, prefix string, usage *genai.Usage) error {
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.")}
 	type got struct {
-		Number json.Number `json:"number"`
+		Number json.Number `json:"number" jsonschema:"type=number"`
 	}
 	optsTools := genai.OptionsText{
 		Tools: []genai.ToolDef{
@@ -617,6 +617,9 @@ func exerciseGenTools(ctx context.Context, pf ProviderFactory, f *genai.Function
 		},
 		ToolCallRequest: genai.ToolCallRequired,
 	}
+	// TODO: Try a second time with ToolCallRequest to ToolCallAny.
+	// TODO: Do not consider a single tool call failure a failure, try a few times.
+	// TODO: Run adapters.GenSyncWithToolCallLoop or adapters.GenStreamWithToolCallLoop
 	resp, err := callGen(ctx, pf, prefix+"SquareRoot", msgs, &optsTools, isStream, usage)
 	if isBadError(err) {
 		return err

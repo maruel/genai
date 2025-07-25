@@ -23,36 +23,36 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"msg_01DLrzdx4m4vAPFcJDhaYew1","type":"message","role":"assistant","model":"claude-sonnet-4-20250514","content":[{"type":"tool_use","id":"toolu_01QQgATrMjnc3izjRRUFpnaS","name":"best_country","input":{"country":"Canada"}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":443,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":38,"service_tier":"standard"}}'
+        body: '{"id":"msg_013JuUcWz96nXum9oJxDaqF4","type":"message","role":"assistant","model":"claude-sonnet-4-20250514","content":[{"type":"tool_use","id":"toolu_01SHTgiBMvWXCPqtquavrNW6","name":"best_country","input":{"country":"Canada"}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":443,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":38,"service_tier":"standard"}}'
         headers:
             Anthropic-Ratelimit-Input-Tokens-Limit:
                 - "2000000"
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "2000000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-07-24T21:48:04Z"
+                - "2025-07-25T19:34:30Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "400000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "400000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-07-24T21:48:04Z"
+                - "2025-07-25T19:34:30Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "4000"
             Anthropic-Ratelimit-Requests-Remaining:
                 - "3999"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-07-24T21:48:03Z"
+                - "2025-07-25T19:34:29Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "2400000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "2400000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-07-24T21:48:04Z"
+                - "2025-07-25T19:34:30Z"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96469e9bbc3aa306-YUL
+                - 964e18523b47a303-YUL
             Content-Type:
                 - application/json
             Server:
@@ -65,4 +65,4 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 1.187s
+        duration: 1.367s

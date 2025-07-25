@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-fe73cd10-d748-4c80-a103-ad7a7b6bed24","object":"chat.completion","created":1753142009,"model":"deepseek-r1-distill-llama-70b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Okay, the user is asking whether Canada is better than the USA and wants me to use the best_country tool to determine which is the best. Since the tool only accepts \"Canada\" or \"USA\" as valid inputs, I need to choose one. I'll go with Canada as the argument.\n","tool_calls":[{"id":"22ar1n3mf","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.009455011000000001,"prompt_tokens":184,"prompt_time":0.011772347,"completion_tokens":84,"completion_time":0.394037046,"total_tokens":268,"total_time":0.405809393},"usage_breakdown":null,"system_fingerprint":"fp_e98d30d035","x_groq":{"id":"req_01k0qpg77feacs914097msp40k"},"service_tier":"on_demand"}
+            {"id":"chatcmpl-4fb774eb-0b59-41d1-a81f-1a26a1839497","object":"chat.completion","created":1753471564,"model":"deepseek-r1-distill-llama-70b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Alright, the user is asking whether Canada is better than the USA and wants me to use the best_country tool to find out. First, I need to understand the function's parameters. It only accepts \"country\" with options \"Canada\" or \"USA\". Since the user is comparing both, but the tool requires a single country, I'll choose one. I'll go with Canada as the user mentioned it first. I'll structure the tool call accordingly, ensuring the JSON is correct.\n","tool_calls":[{"id":"jbrp72j0m","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.013036053,"prompt_tokens":184,"prompt_time":0.011478324,"completion_tokens":122,"completion_time":0.570229201,"total_tokens":306,"total_time":0.581707525},"usage_breakdown":null,"system_fingerprint":"fp_e98d30d035","x_groq":{"id":"req_01k11gse9begc9y29m2hb92e00"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,15 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962e9e347dfba2a8-YUL
+                - 964e0bfb4df4a2df-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
                 - msp
             X-Ratelimit-Limit-Requests:
@@ -47,15 +45,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "300000"
             X-Ratelimit-Remaining-Requests:
-                - "499999"
+                - "499998"
             X-Ratelimit-Remaining-Tokens:
-                - "299737"
+                - "299847"
             X-Ratelimit-Reset-Requests:
-                - 172.799999ms
+                - 191.599999ms
             X-Ratelimit-Reset-Tokens:
-                - 52.6ms
+                - 30.6ms
             X-Request-Id:
-                - req_01k0qpg77feacs914097msp40k
+                - req_01k11gse9begc9y29m2hb92e00
         status: 200 OK
         code: 200
-        duration: 473ms
+        duration: 654ms

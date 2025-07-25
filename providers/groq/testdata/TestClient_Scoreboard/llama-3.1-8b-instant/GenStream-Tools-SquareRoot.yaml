@@ -9,7 +9,7 @@ interactions:
         content_length: 548
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"llama-3.1-8b-instant","stream":true,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"llama-3.1-8b-instant","stream":true,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         body: |+
             event: error
-            data: {"error":{"message":"tool call validation failed: attempted to call tool 'calculate_square_root' which was not request.tools","type":"invalid_request_error","code":"tool_use_failed","failed_generation":"\u003cfunction=calculate_square_root\u003e{\"number\": \"132413\"}\u003c/function\u003e","status_code":400}}
+            data: {"error":{"message":"tool call validation failed: attempted to call tool ' square_root' which was not request.tools","type":"invalid_request_error","code":"tool_use_failed","failed_generation":"\u003cfunction= square_root\u003e {\"number\": 132413} \u003c/function\u003e","status_code":400}}
 
         headers:
             Alt-Svc:
@@ -32,15 +32,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962e9ec85f2ea2a8-YUL
+                - 964e0bdcc9efa2df-YUL
             Content-Type:
                 - text/event-stream
             Server:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
                 - msp
             X-Ratelimit-Limit-Requests:
@@ -56,7 +54,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 8.64ms
             X-Request-Id:
-                - req_01k0qpgyamecs9x3k544eg9g8z
+                - req_01k11gs9gwe74re15qsr8ezs3y
         status: 200 OK
         code: 200
-        duration: 253ms
+        duration: 192ms

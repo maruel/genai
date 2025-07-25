@@ -99,13 +99,13 @@ func MatchIgnorePort(r *http.Request, i cassette.Request) bool {
 func Log(tb testing.TB) (context.Context, *slog.Logger) {
 	level := &slog.LevelVar{}
 	// Tone down logging by default because it's intense. Need to revisit because tests on CI use -v.
-	/*
+	if false {
 		flag.Visit(func(f *flag.Flag) {
 			if f.Name == "test.v" {
 				level.Set(slog.LevelDebug)
 			}
 		})
-	*/
+	}
 	l := slog.New(slog.NewTextHandler(&testWriter{t: tb}, &slog.HandlerOptions{
 		AddSource: true,
 		Level:     level,

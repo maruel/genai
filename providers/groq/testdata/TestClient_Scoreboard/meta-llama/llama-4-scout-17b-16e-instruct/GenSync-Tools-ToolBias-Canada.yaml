@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-696807ce-17f0-4830-8a5c-4e892811171a","object":"chat.completion","created":1753142028,"model":"meta-llama/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"f19rfqqfw","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.064082529,"prompt_tokens":737,"prompt_time":0.024767789,"completion_tokens":23,"completion_time":0.060915978,"total_tokens":760,"total_time":0.085683767},"usage_breakdown":null,"system_fingerprint":"fp_38b31b7025","x_groq":{"id":"req_01k0qpgtjkecgt19270hcgcn1s"},"service_tier":"on_demand"}
+            {"id":"chatcmpl-18d3a9b1-0008-4430-89dd-9d4831963b59","object":"chat.completion","created":1753471562,"model":"meta-llama/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"em17dmq6a","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.0017661890000000013,"prompt_tokens":737,"prompt_time":0.028092507,"completion_tokens":23,"completion_time":0.057406232,"total_tokens":760,"total_time":0.085498739},"usage_breakdown":null,"system_fingerprint":"fp_cb546bdbdf","x_groq":{"id":"req_01k11gscfxfsyr6khm5w4qd22y"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,15 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962e9eb04db4a2a8-YUL
+                - 964e0befce11a2df-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
                 - msp
             X-Ratelimit-Limit-Requests:
@@ -47,15 +45,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "300000"
             X-Ratelimit-Remaining-Requests:
-                - "499995"
+                - "499998"
             X-Ratelimit-Remaining-Tokens:
-                - "297767"
+                - "298720"
             X-Ratelimit-Reset-Requests:
-                - 745.999999ms
+                - 279.399999ms
             X-Ratelimit-Reset-Tokens:
-                - 446.6ms
+                - 256ms
             X-Request-Id:
-                - req_01k0qpgtjkecgt19270hcgcn1s
+                - req_01k11gscfxfsyr6khm5w4qd22y
         status: 200 OK
         code: 200
-        duration: 213ms
+        duration: 143ms

@@ -21,14 +21,14 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"b8e7565a-aa4b-401c-9763-bdcbc650d51e","object":"chat.completion","created":1753141299,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"index":0,"id":"call_0_47345072-1a76-49ab-80b4-e59af0dfd7af","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}},{"index":1,"id":"call_1_bbf184f2-a636-485a-a52f-7a5477609ce6","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":175,"completion_tokens":36,"total_tokens":211,"prompt_tokens_details":{"cached_tokens":128},"prompt_cache_hit_tokens":128,"prompt_cache_miss_tokens":47},"system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache"}'
+        body: '{"id":"af1a5c84-0ddf-4879-9cd3-9faed247599e","object":"chat.completion","created":1753471763,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"index":0,"id":"call_0_b2b8d9c9-611a-4f20-8392-ac8af9102cde","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}},{"index":1,"id":"call_1_1258b029-e3ff-467f-8d93-836a260f8409","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":175,"completion_tokens":36,"total_tokens":211,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":175},"system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache"}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962e8cdddb237148-YUL
+                - 964e10dbbd42a306-YUL
             Content-Type:
                 - application/json
             Server:
@@ -40,7 +40,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - 4bcc2de22f413bf4e4bacb295e4f77d0
+                - cf5f64a08ee9d3692b7c710da0c6c708
         status: 200 OK
         code: 200
-        duration: 316ms
+        duration: 304ms

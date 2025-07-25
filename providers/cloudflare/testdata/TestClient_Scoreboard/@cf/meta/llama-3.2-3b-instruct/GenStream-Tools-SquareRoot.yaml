@@ -9,7 +9,7 @@ interactions:
         content_length: 492
         host: api.cloudflare.com
         body: |
-            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,41 +21,41 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"response":"{\"","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdefg"}
+            data: {"response":"{\"","p":"abcdefghijklmnopqrstuvwxyz01234567"}
 
-            data: {"response":"name","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdefghi"}
+            data: {"response":"name","p":"abcdefghijklmnopqrstuvwxy"}
 
-            data: {"response":"\":","p":"abcdefghijklmnopqrstuvwxyz012345"}
+            data: {"response":"\":","p":"abcdefghijklmnopqrstu"}
 
-            data: {"response":" \"","p":"abcdefghijklmnopqrs"}
+            data: {"response":" \"","p":"abcdefghij"}
 
-            data: {"response":"square","p":"abc"}
+            data: {"response":"square","p":"abcdefghijklmnopqrstuvwxyz0123"}
 
-            data: {"response":"_root","p":"abcd"}
+            data: {"response":"_root","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdefghij"}
 
-            data: {"response":"\",","p":"abcdefghijklmnopqrstuvw"}
+            data: {"response":"\","}
 
-            data: {"response":" \"","p":"abcdefghijklmnopqrstuvwxyz012345678"}
+            data: {"response":" \"","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdefghijk"}
 
-            data: {"response":"parameters","p":"abcdef"}
+            data: {"response":"parameters","p":"abcdefghijklmnopqrstuvwxyz01234567"}
 
-            data: {"response":"\":","p":"abcdefgh"}
+            data: {"response":"\":","p":"ab"}
 
-            data: {"response":" {\"","p":"abcdefghijklmnopqrstuvwxyz0123456789abcd"}
+            data: {"response":" {\"","p":"abcdefghijklmnopqrstuvwxyz0123456789abcde"}
 
-            data: {"response":"number","p":"abcdefghijklmnopqrstuvw"}
+            data: {"response":"number","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdefg"}
 
-            data: {"response":"\":","p":"abcdefghijklmnopqrstuvwxyz0123456789abc"}
+            data: {"response":"\":","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdefgh"}
 
-            data: {"response":" \"","p":"abcdefghijklmnopqrstuvwxyz012345678"}
+            data: {"response":" ","p":"abc"}
 
-            data: {"response":"132","p":"abcdefghijk"}
+            data: {"response":"132","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdefghij"}
 
-            data: {"response":"413","p":"abcdefghijklmnopqrstuvwxyz0123"}
+            data: {"response":"413"}
 
-            data: {"response":"\"}}","p":"ab"}
+            data: {"response":"}}","p":"abcdefghijklmnopqrstu"}
 
-            data: {"response":"","p":"abcdefghijklmnopqrstuvwxyz012345"}
+            data: {"response":"","p":"abcdefghijklmnopqrstuvwxyz0123456789abcdefghi"}
 
             data: {"response":"","usage":{"prompt_tokens":199,"completion_tokens":18,"total_tokens":217}}
 
@@ -63,13 +63,13 @@ interactions:
 
         headers:
             Api-Version:
-                - "2025-07-24"
+                - "2025-07-25"
             Cf-Ai-Req-Id:
-                - 4f5148c7-1105-459e-9d33-b4184446c0ec
+                - 41306e7e-3c01-4ca5-a839-e9adc61f367c
             Cf-Auditlog-Id:
-                - 01983e5e-c0e3-727c-90f7-1a7d3e98b795
+                - 01984312-a444-791c-83ae-506efe14d9a7
             Cf-Ray:
-                - 96468f3aee7ca257-YUL
+                - 964e15737feea290-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -78,4 +78,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 219ms
+        duration: 293ms

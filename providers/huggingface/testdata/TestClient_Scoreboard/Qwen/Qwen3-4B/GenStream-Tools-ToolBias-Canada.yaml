@@ -21,15 +21,15 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-d05c70b39e004aa99b73b41f7f1f01b8","choices":[{"delta":{"content":"","role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753388829,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-927096808cd54503a952b7a14f62d60c","choices":[{"delta":{"content":"","role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753471488,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-d05c70b39e004aa99b73b41f7f1f01b8","choices":[{"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{}","name":"best_country"},"type":"function"}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1753388829,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-927096808cd54503a952b7a14f62d60c","choices":[{"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{}","name":"best_country"},"type":"function"}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1753471488,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-d05c70b39e004aa99b73b41f7f1f01b8","choices":[{"delta":{"tool_calls":[{"index":0,"function":{"arguments":" ","name":null},"type":"function"}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1753388829,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-927096808cd54503a952b7a14f62d60c","choices":[{"delta":{"tool_calls":[{"index":0,"function":{"arguments":" ","name":null},"type":"function"}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1753471488,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-d05c70b39e004aa99b73b41f7f1f01b8","choices":[{"delta":{"tool_calls":[{"index":0,"function":{"arguments":" ","name":null},"type":"function"}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1753388829,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-927096808cd54503a952b7a14f62d60c","choices":[{"delta":{"tool_calls":[{"index":0,"function":{"arguments":" ","name":null},"type":"function"}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1753471488,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-d05c70b39e004aa99b73b41f7f1f01b8","choices":[],"created":1753388829,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk","usage":{"completion_tokens":20,"prompt_tokens":157,"total_tokens":177}}
+            data: {"id":"chatcmpl-927096808cd54503a952b7a14f62d60c","choices":[],"created":1753471488,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk","usage":{"completion_tokens":20,"prompt_tokens":157,"total_tokens":177}}
 
             data: [DONE]
 
@@ -51,19 +51,19 @@ interactions:
             Vary:
                 - Origin
             Via:
-                - 1.1 c73f9dc228a4b3fb05ae37ce52d04a1c.cloudfront.net (CloudFront)
+                - 1.1 bfb1eb580f1b74920e77f7f003dbce62.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - Ses20VLQ_7JECTTx4hME8s6av-65NK0gKSaf2ESwpGCMN_UsoYX8RA==
+                - EhzeuL2eF0Rh3Kyk4xhVu1oVPBN6RdIAYHsq-y1qAMYqtas1CpUXgQ==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
                 - Miss from cloudfront
             X-Inference-Id:
-                - chatcmpl-d05c70b39e004aa99b73b41f7f1f01b8
+                - chatcmpl-927096808cd54503a952b7a14f62d60c
             X-Powered-By:
                 - huggingface-moon
             X-Ratelimit-Dynamic-Period-Remaining:
-                - 749s
+                - 579s
             X-Ratelimit-Dynamic-Period-Usage-Requests:
                 - 0%
             X-Ratelimit-Dynamic-Period-Usage-Tokens:
@@ -85,9 +85,9 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 1s
             X-Request-Id:
-                - vNvzmX8J8EuabEoT
+                - alGWvvsglPXZ8cO1
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 235ms
+        duration: 237ms

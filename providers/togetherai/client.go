@@ -140,14 +140,16 @@ var Scoreboard = genai.Scoreboard{
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Tools:              genai.Flaky,
-				BiasedTool:         genai.True,
-				IndecisiveTool:     genai.True,
+				BiasedTool:         genai.Flaky,
+				IndecisiveTool:     genai.Flaky,
 				JSON:               true,
 				Seed:               true,
 				BrokenFinishReason: true, // It's actually JSON that is broken.
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:              genai.Flaky,
+				BiasedTool:         genai.Flaky,
+				IndecisiveTool:     genai.Flaky,
 				JSON:               true,
 				Seed:               true,
 				BrokenFinishReason: true,

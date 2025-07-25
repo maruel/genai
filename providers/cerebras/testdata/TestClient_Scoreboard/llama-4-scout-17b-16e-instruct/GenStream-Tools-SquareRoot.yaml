@@ -9,7 +9,7 @@ interactions:
         content_length: 585
         host: api.cerebras.ai
         body: |
-            {"model":"llama-4-scout-17b-16e-instruct","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+            {"model":"llama-4-scout-17b-16e-instruct","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,11 +21,11 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-8cd34868-1085-4d6f-a219-3621a6ffe80a","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1753209343,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-92fd63f4-73e8-487b-a5d7-09e33aca6f68","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1753472021,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_e439cc65f01febf1121f","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-8cd34868-1085-4d6f-a219-3621a6ffe80a","choices":[{"delta":{"tool_calls":[{"id":"c993d5d42","type":"function","function":{"name":"square_root","arguments":"{\"number\": \"132413\"}"},"index":0}]},"index":0}],"created":1753209343,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-92fd63f4-73e8-487b-a5d7-09e33aca6f68","choices":[{"delta":{"tool_calls":[{"id":"2c97cf51a","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"},"index":0}]},"index":0}],"created":1753472021,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_e439cc65f01febf1121f","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-8cd34868-1085-4d6f-a219-3621a6ffe80a","choices":[{"delta":{},"finish_reason":"tool_calls","index":0}],"created":1753209343,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion.chunk","usage":{"prompt_tokens":376,"completion_tokens":18,"total_tokens":394,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.402786179,"prompt_time":0.010769801,"completion_time":0.004645739,"total_time":0.41997313499450684,"created":1753209343}}
+            data: {"id":"chatcmpl-92fd63f4-73e8-487b-a5d7-09e33aca6f68","choices":[{"delta":{},"finish_reason":"tool_calls","index":0}],"created":1753472021,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_e439cc65f01febf1121f","object":"chat.completion.chunk","usage":{"prompt_tokens":376,"completion_tokens":18,"total_tokens":394,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.401621352,"prompt_time":0.010924758,"completion_time":0.001796933,"total_time":0.41806960105895996,"created":1753472021}}
 
         headers:
             Alt-Svc:
@@ -33,11 +33,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96350a1f7e61a2ca-YUL
+                - 964e172519d5a2c9-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Inference-Id:
-                - chatcmpl-8cd34868-1085-4d6f-a219-3621a6ffe80a
+                - chatcmpl-92fd63f4-73e8-487b-a5d7-09e33aca6f68
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -51,15 +51,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14387"
+                - "14399"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "59691"
+                - "60000"
             X-Ratelimit-Reset-Requests-Day:
-                - "19455.979724407196"
+                - "15978.638320446014"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "15.979724407196045"
+                - "18.638320446014404"
             X-Request-Id:
-                - 96350a1f7e61a2ca-YUL
+                - 964e172519d5a2c9-YUL
         status: 200 OK
         code: 200
-        duration: 148ms
+        duration: 131ms

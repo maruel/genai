@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "o496Saq-28Eivz-96361afe9b25a31a",
+              "id": "o4XEkVg-zqrih-964e00c5aabca272",
               "object": "chat.completion",
-              "created": 1753220520,
+              "created": 1753471104,
               "model": "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
               "prompt": [],
               "choices": [
@@ -40,7 +40,7 @@ interactions:
                     "tool_calls": [
                       {
                         "index": 0,
-                        "id": "call_qxpco7hszphl3kyzqpjdcixa",
+                        "id": "call_kc2h8kutqbirwr6hck6g6qh4",
                         "type": "function",
                         "function": {
                           "arguments": "{\"country\":\"Canada\"}",
@@ -70,13 +70,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96361afe9b25a31a-YUL
+                - 964e00c5aabca272-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"36c-oteHqikTr+/ArE5DWB2zB3Yu/mk"
+                - W/"36b-sv7Ney1g6mv6QmaT0wOosdUJgR8"
             Retry-After:
-                - "1"
+                - "2"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -84,13 +84,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 3ee994be-cc94-428c-85e6-b05c58a9035d-noamzn
+                - 6c5457e0-69b2-4ea3-a2fe-0c85acbc526d-noamzn
             X-Api-Call-End:
-                - "2025-07-22T21:42:01.274Z"
+                - "2025-07-25T19:18:25.323Z"
             X-Api-Call-Start:
-                - "2025-07-22T21:42:00.929Z"
+                - "2025-07-25T19:18:24.992Z"
             X-Api-Received:
-                - "2025-07-22T21:42:00.918Z"
+                - "2025-07-25T19:18:24.979Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -100,13 +100,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "965"
-            X-Ratelimit-Reset:
                 - "1"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "2"
             X-Request-Id:
-                - o496Saq-28Eivz-96361afe9b25a31a
+                - o4XEkVg-zqrih-964e00c5aabca272
         status: 200 OK
         code: 200
-        duration: 1.713s
+        duration: 2.788s

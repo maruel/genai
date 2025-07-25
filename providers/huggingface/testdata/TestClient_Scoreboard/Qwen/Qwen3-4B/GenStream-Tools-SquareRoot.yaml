@@ -9,7 +9,7 @@ interactions:
         content_length: 615
         host: router.huggingface.co
         body: |
-            {"model":"Qwen/Qwen3-4B","stream":true,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"user","content":"/think"}],"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+            {"model":"Qwen/Qwen3-4B","stream":true,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"user","content":"/think"}],"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,11 +21,11 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-1929170a34a349428e2bf7597181ab32","choices":[{"delta":{"content":"","role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753388828,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-9d6203bac705464989e44c97baef81f4","choices":[{"delta":{"content":"","role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753471488,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-1929170a34a349428e2bf7597181ab32","choices":[{"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{}","name":"square_root"},"type":"function"}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1753388828,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-9d6203bac705464989e44c97baef81f4","choices":[{"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{}","name":"square_root"},"type":"function"}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1753471488,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-1929170a34a349428e2bf7597181ab32","choices":[],"created":1753388828,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk","usage":{"completion_tokens":16,"prompt_tokens":164,"total_tokens":180}}
+            data: {"id":"chatcmpl-9d6203bac705464989e44c97baef81f4","choices":[],"created":1753471488,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk","usage":{"completion_tokens":16,"prompt_tokens":164,"total_tokens":180}}
 
             data: [DONE]
 
@@ -47,19 +47,19 @@ interactions:
             Vary:
                 - Origin
             Via:
-                - 1.1 c73f9dc228a4b3fb05ae37ce52d04a1c.cloudfront.net (CloudFront)
+                - 1.1 bfb1eb580f1b74920e77f7f003dbce62.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - rNZPy_Fo8YW3wrq-cW20xbJoLknsRWBfuajZnkbRjrgx-Gc94R7Vdw==
+                - hmbAGPOI0TaxH24NIXqLOF6UYeuKxstdUC6eh_Vly_SKjrWVZ2vk1g==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
                 - Miss from cloudfront
             X-Inference-Id:
-                - chatcmpl-1929170a34a349428e2bf7597181ab32
+                - chatcmpl-9d6203bac705464989e44c97baef81f4
             X-Powered-By:
                 - huggingface-moon
             X-Ratelimit-Dynamic-Period-Remaining:
-                - 749s
+                - 579s
             X-Ratelimit-Dynamic-Period-Usage-Requests:
                 - 0%
             X-Ratelimit-Dynamic-Period-Usage-Tokens:
@@ -73,17 +73,17 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "400000"
             X-Ratelimit-Remaining-Requests:
-                - "599"
+                - "598"
             X-Ratelimit-Remaining-Tokens:
-                - "399460"
+                - "399120"
             X-Ratelimit-Reset-Requests:
                 - 1s
             X-Ratelimit-Reset-Tokens:
                 - 1s
             X-Request-Id:
-                - bTNGFVP2iQIvjlqr
+                - 3s9cun1XOqyWgQoj
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 187ms
+        duration: 191ms

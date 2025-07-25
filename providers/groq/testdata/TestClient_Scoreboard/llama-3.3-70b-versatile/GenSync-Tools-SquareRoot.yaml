@@ -9,7 +9,7 @@ interactions:
         content_length: 552
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"llama-3.3-70b-versatile","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"llama-3.3-70b-versatile","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-a041594b-10c0-4d17-8dc0-0b28b7f72a05","object":"chat.completion","created":1753142016,"model":"llama-3.3-70b-versatile","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"qb3kd13zv","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.06986785100000001,"prompt_tokens":285,"prompt_time":0.021057991,"completion_tokens":13,"completion_time":0.025269625,"total_tokens":298,"total_time":0.046327616},"usage_breakdown":null,"system_fingerprint":"fp_7b77049e86","x_groq":{"id":"req_01k0qpgesqeaxrhmz93gnr24ap"},"service_tier":"on_demand"}
+            {"id":"chatcmpl-92147e6a-ed9d-4260-a2b6-6b47eec1b6bc","object":"chat.completion","created":1753471558,"model":"llama-3.3-70b-versatile","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"npx9nbdj3","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.008717034000000002,"prompt_tokens":285,"prompt_time":0.02193779,"completion_tokens":12,"completion_time":0.025554119,"total_tokens":297,"total_time":0.047491909},"usage_breakdown":null,"system_fingerprint":"fp_21854da540","x_groq":{"id":"req_01k11gs93ze738d3ydtvrpj755"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,15 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962e9e64ec64a2a8-YUL
+                - 964e0bd9cdcfa2df-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
                 - msp
             X-Ratelimit-Limit-Requests:
@@ -47,15 +45,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "300000"
             X-Ratelimit-Remaining-Requests:
-                - "499995"
+                - "499998"
             X-Ratelimit-Remaining-Tokens:
-                - "299722"
+                - "299964"
             X-Ratelimit-Reset-Requests:
-                - 798ms
+                - 303.599999ms
             X-Ratelimit-Reset-Tokens:
-                - 55.6ms
+                - 7.2ms
             X-Request-Id:
-                - req_01k0qpgesqeaxrhmz93gnr24ap
+                - req_01k11gs93ze738d3ydtvrpj755
         status: 200 OK
         code: 200
-        duration: 177ms
+        duration: 213ms

@@ -9,7 +9,7 @@ interactions:
         content_length: 592
         host: api.cohere.com
         body: |
-            {"stream":true,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]},"description":"Calculates and return the square root of a number"}}],"tool_choice":"required","strict_tools":true}
+            {"stream":true,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"description":"Calculates and return the square root of a number"}}],"tool_choice":"required","strict_tools":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         body: |+
             event: message-start
-            data: {"id":"0592abc9-54cc-47f3-800b-1b56a3234fd3","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
+            data: {"id":"5b4930b0-efed-4ff4-98a3-b816eabfb2fd","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
 
             event: tool-plan-delta
             data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"I"}}}
@@ -67,7 +67,7 @@ interactions:
             data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" answer"}}}
 
             event: tool-call-start
-            data: {"type":"tool-call-start","index":0,"delta":{"message":{"tool_calls":{"id":"square_root_07cdnwxt8wnt","type":"function","function":{"name":"square_root","arguments":""}}}}}
+            data: {"type":"tool-call-start","index":0,"delta":{"message":{"tool_calls":{"id":"square_root_77zajjevm2b7","type":"function","function":{"name":"square_root","arguments":""}}}}}
 
             event: tool-call-delta
             data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"{\""}}}}}
@@ -79,7 +79,7 @@ interactions:
             data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"\":"}}}}}
 
             event: tool-call-delta
-            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":" \""}}}}}
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":" "}}}}}
 
             event: tool-call-delta
             data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"1"}}}}}
@@ -100,13 +100,19 @@ interactions:
             data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"3"}}}}}
 
             event: tool-call-delta
-            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"\"}"}}}}}
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"."}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"0"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"}"}}}}}
 
             event: tool-call-end
             data: {"type":"tool-call-end","index":0}
 
             event: message-end
-            data: {"type":"message-end","delta":{"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":46,"output_tokens":27},"tokens":{"input_tokens":1511,"output_tokens":38}}}}
+            data: {"type":"message-end","delta":{"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":46,"output_tokens":29},"tokens":{"input_tokens":1511,"output_tokens":40}}}}
 
             data: [DONE]
 
@@ -132,9 +138,9 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - 8670497a92a3bae4767db1e9d445e8c2
+                - 7836fed8318cb35bc4950a54aab45e0d
             X-Envoy-Upstream-Service-Time:
-                - "37"
+                - "65"
         status: 200 OK
         code: 200
-        duration: 79ms
+        duration: 142ms

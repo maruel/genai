@@ -9,7 +9,7 @@ interactions:
         content_length: 573
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"meta-llama/llama-4-maverick-17b-128e-instruct","stream":true,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"meta-llama/llama-4-maverick-17b-128e-instruct","stream":true,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,11 +21,11 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-3b9c6e5a-bcda-4de8-b7f0-56f6fdf1d510","object":"chat.completion.chunk","created":1753142037,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-2a73246a-bfee-4847-a9d2-b5f7a04ef87c","object":"chat.completion.chunk","created":1753471562,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-3b9c6e5a-bcda-4de8-b7f0-56f6fdf1d510","object":"chat.completion.chunk","created":1753142037,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{"tool_calls":[{"id":"sn09qw2rf","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-2a73246a-bfee-4847-a9d2-b5f7a04ef87c","object":"chat.completion.chunk","created":1753471562,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{"tool_calls":[{"id":"0cschwvmh","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-3b9c6e5a-bcda-4de8-b7f0-56f6fdf1d510","object":"chat.completion.chunk","created":1753142037,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01k0qph320eg7tq31j1y56xr51","usage":{"queue_time":0.004747368000000002,"prompt_tokens":733,"prompt_time":0.017089853,"completion_tokens":24,"completion_time":0.043234614,"total_tokens":757,"total_time":0.060324467}}}
+            data: {"id":"chatcmpl-2a73246a-bfee-4847-a9d2-b5f7a04ef87c","object":"chat.completion.chunk","created":1753471562,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01k11gscx5ft0t88rtw7c0p073","usage":{"queue_time":0.004703733000000002,"prompt_tokens":733,"prompt_time":0.042260972,"completion_tokens":24,"completion_time":0.029819606,"total_tokens":757,"total_time":0.072080578}}}
 
             data: [DONE]
 
@@ -37,15 +37,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962e9ee69a47a2a8-YUL
+                - 964e0bf26a36a2df-YUL
             Content-Type:
                 - text/event-stream
             Server:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
                 - msp
             X-Ratelimit-Limit-Requests:
@@ -53,15 +51,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "300000"
             X-Ratelimit-Remaining-Requests:
-                - "499999"
+                - "499998"
             X-Ratelimit-Remaining-Tokens:
                 - "299964"
             X-Ratelimit-Reset-Requests:
-                - 172.799999ms
+                - 341.6ms
             X-Ratelimit-Reset-Tokens:
                 - 7.2ms
             X-Request-Id:
-                - req_01k0qph320eg7tq31j1y56xr51
+                - req_01k11gscx5ft0t88rtw7c0p073
         status: 200 OK
         code: 200
-        duration: 130ms
+        duration: 125ms

@@ -9,7 +9,7 @@ interactions:
         content_length: 555
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"moonshotai/kimi-k2-instruct","stream":true,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"moonshotai/kimi-k2-instruct","stream":true,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,13 +21,8 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-1cd1bd3c-c626-4034-acbf-0b68b5dea2c2","object":"chat.completion.chunk","created":1753141996,"model":"moonshotai/kimi-k2-instruct","system_fingerprint":"fp_c5bd0a648b","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-1cd1bd3c-c626-4034-acbf-0b68b5dea2c2","object":"chat.completion.chunk","created":1753141996,"model":"moonshotai/kimi-k2-instruct","system_fingerprint":"fp_c5bd0a648b","choices":[{"index":0,"delta":{"tool_calls":[{"id":"functions.square_root:0","type":"function","function":{"name":"square_root","arguments":"{\"number\":\"132413\"}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-1cd1bd3c-c626-4034-acbf-0b68b5dea2c2","object":"chat.completion.chunk","created":1753141996,"model":"moonshotai/kimi-k2-instruct","system_fingerprint":"fp_c5bd0a648b","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01k0qpftyre8yr4n5qmsc2qh4n","usage":{"queue_time":0.08658663899999999,"prompt_tokens":128,"prompt_time":0.00533139,"completion_tokens":18,"completion_time":0.053605159,"total_tokens":146,"total_time":0.058936549}}}
-
-            data: [DONE]
+            event: error
+            data: {"error":{"message":"Failed to call a function. Please adjust your prompt. See 'failed_generation' for more details.","type":"invalid_request_error","code":"tool_use_failed","failed_generation":"364.023","status_code":400}}
 
         headers:
             Alt-Svc:
@@ -37,15 +32,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962e9de5ebeaa2a8-YUL
+                - 964e0bdebcb8a2df-YUL
             Content-Type:
                 - text/event-stream
             Server:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
                 - msp
             X-Ratelimit-Limit-Requests:
@@ -55,13 +48,13 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499998"
             X-Ratelimit-Remaining-Tokens:
-                - "247011"
+                - "249964"
             X-Ratelimit-Reset-Requests:
-                - 319.599999ms
+                - 342.599999ms
             X-Ratelimit-Reset-Tokens:
-                - 717.36ms
+                - 8.64ms
             X-Request-Id:
-                - req_01k0qpftyre8yr4n5qmsc2qh4n
+                - req_01k11gs9treg5rfw0zc53c06c4
         status: 200 OK
         code: 200
-        duration: 214ms
+        duration: 164ms

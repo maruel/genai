@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "o498qfu-62bZhn-9636266b3c12a2db",
+              "id": "o4XEmTb-4Yz4kd-964e00d97f95a290",
               "object": "chat.completion",
-              "created": 1753220988,
+              "created": 1753471108,
               "model": "meta-llama/Llama-4-Scout-17B-16E-Instruct",
               "prompt": [],
               "choices": [
@@ -40,7 +40,7 @@ interactions:
                     "tool_calls": [
                       {
                         "index": 0,
-                        "id": "call_ypxjzb11e1dlnulvn5kw402z",
+                        "id": "call_hwo7biq11k4t677qp59dn9xl",
                         "type": "function",
                         "function": {
                           "arguments": "{\"country\":\"Canada\"}",
@@ -49,7 +49,7 @@ interactions:
                       },
                       {
                         "index": 1,
-                        "id": "call_5r5tmp88w0jogixrln7lejvy",
+                        "id": "call_ru1uo8ah56th464okbkp2dfu",
                         "type": "function",
                         "function": {
                           "arguments": "{\"country\":\"USA\"}",
@@ -79,13 +79,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9636266b3c12a2db-YUL
+                - 964e00d97f95a290-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"469-0tLNazv2pM2EauMcNsp2LAl8TP0"
+                - W/"469-3qzVZ5WFraiZtKPVYqNX5t6weJo"
             Retry-After:
-                - "1"
+                - "2"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -93,13 +93,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - df59a9b8-afac-4bdc-b3bf-c6e618151e14-noamzn
+                - d35e3c13-2ee7-494b-8ac4-cd8677cb08ae-noamzn
             X-Api-Call-End:
-                - "2025-07-22T21:49:49.451Z"
+                - "2025-07-25T19:18:29.164Z"
             X-Api-Call-Start:
-                - "2025-07-22T21:49:48.823Z"
+                - "2025-07-25T19:18:28.535Z"
             X-Api-Received:
-                - "2025-07-22T21:49:48.808Z"
+                - "2025-07-25T19:18:28.222Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -111,11 +111,11 @@ interactions:
             X-Ratelimit-Remaining:
                 - "0"
             X-Ratelimit-Remaining-Tokens:
-                - "953"
+                - "1000"
             X-Ratelimit-Reset:
-                - "1"
+                - "2"
             X-Request-Id:
-                - o498qfu-62bZhn-9636266b3c12a2db
+                - o4XEmTb-4Yz4kd-964e00d97f95a290
         status: 200 OK
         code: 200
-        duration: 829ms
+        duration: 1.143s

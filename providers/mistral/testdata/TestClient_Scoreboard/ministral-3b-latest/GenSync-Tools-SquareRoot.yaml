@@ -9,7 +9,7 @@ interactions:
         content_length: 587
         host: api.mistral.ai
         body: |
-            {"model":"ministral-3b-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+            {"model":"ministral-3b-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,7 +21,7 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"bf722120050e40ad8fb3cf060204e661","object":"chat.completion","created":1753147550,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"1d2zvGOhj","function":{"name":"square_root","arguments":"{\"number\": \"132413\"}"},"index":0}],"content":""},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":128,"total_tokens":153,"completion_tokens":25}}'
+        body: '{"id":"840d73090c344cc885e9c6864f919c71","created":1753471460,"model":"ministral-3b-latest","usage":{"prompt_tokens":128,"total_tokens":153,"completion_tokens":25},"object":"chat.completion","choices":[{"index":0,"finish_reason":"tool_calls","message":{"role":"assistant","tool_calls":[{"id":"QoLw4PqQx","function":{"name":"square_root","arguments":"{\"number\": 132413}"},"index":0}],"content":""}}]}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -30,23 +30,23 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962f257ab98733f1-YUL
+                - 964e0970ab9aa2c9-YUL
             Content-Type:
                 - application/json
             Mistral-Correlation-Id:
-                - 01982fbc-a921-7b0b-84f4-ec79acc75cc1
+                - 0198430b-239f-7e47-aafa-73e0255f1b71
             Server:
                 - cloudflare
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains
             X-Envoy-Upstream-Service-Time:
-                - "902"
+                - "215"
             X-Kong-Proxy-Latency:
-                - "5"
+                - "7"
             X-Kong-Request-Id:
-                - 01982fbc-a921-7b0b-84f4-ec79acc75cc1
+                - 0198430b-239f-7e47-aafa-73e0255f1b71
             X-Kong-Upstream-Latency:
-                - "903"
+                - "216"
             X-Ratelimit-Limit-Req-10-Second:
                 - "60"
             X-Ratelimit-Limit-Tokens-Minute:
@@ -54,13 +54,13 @@ interactions:
             X-Ratelimit-Limit-Tokens-Month:
                 - "10000000000"
             X-Ratelimit-Remaining-Req-10-Second:
-                - "46"
+                - "58"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "1999410"
+                - "1999847"
             X-Ratelimit-Remaining-Tokens-Month:
-                - "9999999094"
+                - "9999949158"
             X-Ratelimit-Tokens-Query-Cost:
                 - "153"
         status: 200 OK
         code: 200
-        duration: 1.114s
+        duration: 653ms

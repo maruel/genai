@@ -9,7 +9,7 @@ interactions:
         content_length: 571
         host: api.cerebras.ai
         body: |
-            {"model":"llama-4-scout-17b-16e-instruct","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+            {"model":"llama-4-scout-17b-16e-instruct","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-254613a1-cd58-48f1-ae10-d936574a34e4","choices":[{"finish_reason":"tool_calls","index":0,"message":{"tool_calls":[{"id":"d3750bd59","type":"function","function":{"name":"square_root","arguments":"{\"number\": \"132413\"}"}}],"role":"assistant"}}],"created":1753209343,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion","usage":{"prompt_tokens":376,"completion_tokens":18,"total_tokens":394,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.346980563,"prompt_time":0.018438271,"completion_time":0.002815687,"total_time":0.36975932121276855,"created":1753209343}}'
+        body: '{"id":"chatcmpl-f07e73d6-8254-463c-8621-8308a222f8c3","choices":[{"finish_reason":"tool_calls","index":0,"message":{"tool_calls":[{"id":"be298a533","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}],"role":"assistant"}}],"created":1753472021,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_e439cc65f01febf1121f","object":"chat.completion","usage":{"prompt_tokens":376,"completion_tokens":18,"total_tokens":394,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.402072991,"prompt_time":0.010964303,"completion_time":0.001794892,"total_time":0.41886305809020996,"created":1753472021}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96350a1fceaaa2ca-YUL
+                - 964e172519d2a2c9-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-254613a1-cd58-48f1-ae10-d936574a34e4
+                - chatcmpl-f07e73d6-8254-463c-8621-8308a222f8c3
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -46,15 +46,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14386"
+                - "14400"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "59285"
+                - "60000"
             X-Ratelimit-Reset-Requests-Day:
-                - "19455.549385547638"
+                - "15978.177235126495"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "15.54938554763794"
+                - "18.17723512649536"
             X-Request-Id:
-                - 96350a1fceaaa2ca-YUL
+                - 964e172519d2a2c9-YUL
         status: 200 OK
         code: 200
-        duration: 537ms
+        duration: 597ms

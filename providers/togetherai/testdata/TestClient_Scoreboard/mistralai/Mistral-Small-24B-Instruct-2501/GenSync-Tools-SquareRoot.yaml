@@ -9,7 +9,7 @@ interactions:
         content_length: 570
         host: api.together.xyz
         body: |
-            {"model":"mistralai/Mistral-Small-24B-Instruct-2501","stream":false,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+            {"model":"mistralai/Mistral-Small-24B-Instruct-2501","stream":false,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,38 +23,28 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "o495joU-3NKUce-963617a4e867a28b",
+              "id": "o4XEhK4-62bZhn-964e0082baf5a30f",
               "object": "chat.completion",
-              "created": 1753220383,
+              "created": 1753471094,
               "model": "mistralai/Mistral-Small-24B-Instruct-2501",
               "prompt": [],
               "choices": [
                 {
                   "index": 0,
                   "logprobs": null,
-                  "finish_reason": "tool_calls",
+                  "finish_reason": "stop",
                   "seed": null,
                   "message": {
                     "role": "assistant",
-                    "content": null,
-                    "tool_calls": [
-                      {
-                        "index": 0,
-                        "id": "call_6chvdes65xn38l8aehxod52b",
-                        "type": "function",
-                        "function": {
-                          "arguments": "{\"number\":\"132413\"}",
-                          "name": "square_root"
-                        }
-                      }
-                    ]
+                    "content": "\\[{\"name\": \"square_root\", \"arguments\": {\"number\": 132413}}\\]",
+                    "tool_calls": []
                   }
                 }
               ],
               "usage": {
                 "prompt_tokens": 456,
-                "total_tokens": 481,
-                "completion_tokens": 25
+                "total_tokens": 480,
+                "completion_tokens": 24
               },
               "warnings": [
                 {
@@ -70,11 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 963617a4e867a28b-YUL
+                - 964e0082baf5a30f-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"362-ZpHHbQ7PV1ZgznfacjRk7kT++Ts"
+                - W/"292-zULuIst+NWFQ/4d4APcyecyczMc"
             Retry-After:
                 - "2"
             Server:
@@ -84,13 +74,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 757fa96e-8634-4885-9011-3f618251cd9c-noamzn
+                - 0bd5dd30-ab32-4731-bfb8-1090cd727fca-noamzn
             X-Api-Call-End:
-                - "2025-07-22T21:39:44.051Z"
+                - "2025-07-25T19:18:14.801Z"
             X-Api-Call-Start:
-                - "2025-07-22T21:39:43.732Z"
+                - "2025-07-25T19:18:14.492Z"
             X-Api-Received:
-                - "2025-07-22T21:39:43.727Z"
+                - "2025-07-25T19:18:14.271Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -106,7 +96,7 @@ interactions:
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - o495joU-3NKUce-963617a4e867a28b
+                - o4XEhK4-62bZhn-964e0082baf5a30f
         status: 200 OK
         code: 200
-        duration: 474ms
+        duration: 689ms

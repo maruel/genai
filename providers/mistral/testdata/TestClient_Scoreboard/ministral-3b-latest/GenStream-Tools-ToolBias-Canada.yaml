@@ -21,9 +21,9 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"ab03b20813044dcea9d03423973110c2","object":"chat.completion.chunk","created":1753147551,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+            data: {"id":"0e862f37038c4719af9132fe59eb79cd","object":"chat.completion.chunk","created":1753471460,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
 
-            data: {"id":"ab03b20813044dcea9d03423973110c2","object":"chat.completion.chunk","created":1753147551,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"tool_calls":[{"id":"hIbdQk7oT","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}
+            data: {"id":"0e862f37038c4719af9132fe59eb79cd","object":"chat.completion.chunk","created":1753471460,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"tool_calls":[{"id":"HwKQTFAnA","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}
 
             data: [DONE]
 
@@ -35,23 +35,23 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962f2580da8d33f1-YUL
+                - 964e0974a9e2a2c9-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Mistral-Correlation-Id:
-                - 01982fbc-ad07-7e6b-ac0c-061552523ca5
+                - 0198430b-252a-7ad8-916c-6a6ec055e346
             Server:
                 - cloudflare
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains
             X-Envoy-Upstream-Service-Time:
-                - "193"
+                - "205"
             X-Kong-Proxy-Latency:
                 - "7"
             X-Kong-Request-Id:
-                - 01982fbc-ad07-7e6b-ac0c-061552523ca5
+                - 0198430b-252a-7ad8-916c-6a6ec055e346
             X-Kong-Upstream-Latency:
-                - "193"
+                - "206"
         status: 200 OK
         code: 200
-        duration: 396ms
+        duration: 349ms

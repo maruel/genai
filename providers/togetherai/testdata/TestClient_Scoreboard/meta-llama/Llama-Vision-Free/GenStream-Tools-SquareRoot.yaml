@@ -9,7 +9,7 @@ interactions:
         content_length: 556
         host: api.together.xyz
         body: |
-            {"model":"meta-llama/Llama-Vision-Free","stream":true,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+            {"model":"meta-llama/Llama-Vision-Free","stream":true,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,7 +22,7 @@ interactions:
         content_length: 167
         body: |-
             {
-              "id": "o495vcT-4msxKE-963618881ec2a304",
+              "id": "o4XEhbi-4pPsy7-964e00887a7aa30f",
               "error": {
                 "message": "Internal server error",
                 "type": "server_error",
@@ -38,13 +38,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 963618881ec2a304-YUL
+                - 964e00887a7aa30f-YUL
             Content-Length:
                 - "167"
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"a7-IF0O/nkUAwMcSJrG6Xh9KXf6yAw"
+                - W/"a7-4Gj2DTlNXYgb7op/P8MNaJeAE28"
             Retry-After:
                 - "6"
             Server:
@@ -54,11 +54,9 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 7319e21d-a0c5-46e6-a9ae-d67e0012122f-noamzn
+                - ffe8d59e-fa6e-4c72-a272-f2910ab6d445-noamzn
             X-Api-Received:
-                - "2025-07-22T21:40:20.092Z"
-            X-Api-Retries:
-                - "5"
+                - "2025-07-25T19:18:15.237Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -74,7 +72,7 @@ interactions:
             X-Ratelimit-Reset:
                 - "6"
             X-Request-Id:
-                - o495vcT-4msxKE-963618881ec2a304
+                - o4XEhbi-4pPsy7-964e00887a7aa30f
         status: 500 Internal Server Error
         code: 500
-        duration: 8.35s
+        duration: 629ms

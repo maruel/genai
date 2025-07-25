@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-8d36aaa9-467c-48d3-b46b-0e57155a1b1b","object":"chat.completion","created":1753142017,"model":"llama-3.3-70b-versatile","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"hyenzycz0","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}},{"id":"fs6e3z71r","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.009331018000000002,"prompt_tokens":285,"prompt_time":0.015471404,"completion_tokens":26,"completion_time":0.070924057,"total_tokens":311,"total_time":0.086395461},"usage_breakdown":null,"system_fingerprint":"fp_21854da540","x_groq":{"id":"req_01k0qpgf3neem97e6mnasbqcfm"},"service_tier":"on_demand"}
+            {"id":"chatcmpl-3a3aa9b2-eff9-41fa-8499-eb257a5296fa","object":"chat.completion","created":1753471559,"model":"llama-3.3-70b-versatile","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"gx5p0exv8","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}},{"id":"1bdjg6dkj","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.008610100000000002,"prompt_tokens":285,"prompt_time":0.021880062,"completion_tokens":26,"completion_time":0.057362648,"total_tokens":311,"total_time":0.07924271},"usage_breakdown":null,"system_fingerprint":"fp_21854da540","x_groq":{"id":"req_01k11gs9bcfspt0nmwc272pnx1"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,15 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962e9e66cfaca2a8-YUL
+                - 964e0bdba89aa2df-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Vary:
                 - Origin
-            Via:
-                - 1.1 google
             X-Groq-Region:
                 - msp
             X-Ratelimit-Limit-Requests:
@@ -47,15 +45,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "300000"
             X-Ratelimit-Remaining-Requests:
-                - "499992"
+                - "499994"
             X-Ratelimit-Remaining-Tokens:
-                - "299964"
+                - "299820"
             X-Ratelimit-Reset-Requests:
-                - 1.237399999s
+                - 1.0048s
             X-Ratelimit-Reset-Tokens:
-                - 7.2ms
+                - 36ms
             X-Request-Id:
-                - req_01k0qpgf3neem97e6mnasbqcfm
+                - req_01k11gs9bcfspt0nmwc272pnx1
         status: 200 OK
         code: 200
-        duration: 183ms
+        duration: 146ms

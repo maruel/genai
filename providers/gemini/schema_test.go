@@ -5,6 +5,7 @@
 package gemini
 
 import (
+	"encoding/json"
 	"sort"
 	"testing"
 	"time"
@@ -224,6 +225,32 @@ func TestSchema_FromGoType(t *testing.T) {
 			},
 		},
 		{
+			name: "struct with json.Number",
+			in: &struct {
+				Num json.Number `json:"n"`
+			}{},
+			want: Schema{
+				Type: "OBJECT",
+				Properties: map[string]Schema{
+					"n": {Type: "STRING"},
+				},
+				Required: []string{"n"},
+			},
+		},
+		{
+			name: "struct with json.Number as number",
+			in: &struct {
+				Num json.Number `json:"n" jsonschema:"type=number"`
+			}{},
+			want: Schema{
+				Type: "OBJECT",
+				Properties: map[string]Schema{
+					"n": {Type: "NUMBER"},
+				},
+				Required: []string{"n"},
+			},
+		},
+		{
 			name: "struct with ignored field",
 			in: &struct {
 				A string `json:"-"`
@@ -337,6 +364,114 @@ func TestSchema_FromGoType(t *testing.T) {
 				Required: []string{"A"},
 			},
 		},
+		{
+			name: "struct with minLength",
+			in: &struct {
+				A string `jsonschema:"minLength=5"`
+			}{},
+			want: Schema{
+				Type: "OBJECT",
+				Properties: map[string]Schema{
+					"A": {
+						Type:      "STRING",
+						MinLength: 5,
+					},
+				},
+				Required: []string{"A"},
+			},
+		},
+		{
+			name: "struct with maxLength",
+			in: &struct {
+				A string `jsonschema:"maxLength=10"`
+			}{},
+			want: Schema{
+				Type: "OBJECT",
+				Properties: map[string]Schema{
+					"A": {
+						Type:      "STRING",
+						MaxLength: 10,
+					},
+				},
+				Required: []string{"A"},
+			},
+		},
+		{
+			name: "struct with minItems",
+			in: &struct {
+				A []string `jsonschema:"minItems=2"`
+			}{},
+			want: Schema{
+				Type: "OBJECT",
+				Properties: map[string]Schema{
+					"A": {
+						Type:     "ARRAY",
+						Items:    &Schema{Type: "STRING"},
+						MinItems: 2,
+					},
+				},
+				Required: []string{"A"},
+			},
+		},
+		{
+			name: "struct with maxItems",
+			in: &struct {
+				A []string `jsonschema:"maxItems=5"`
+			}{},
+			want: Schema{
+				Type: "OBJECT",
+				Properties: map[string]Schema{
+					"A": {
+						Type:     "ARRAY",
+						Items:    &Schema{Type: "STRING"},
+						MaxItems: 5,
+					},
+				},
+				Required: []string{"A"},
+			},
+		},
+		{
+			name: "map string to string",
+			in:   map[string]string{},
+			want: Schema{
+				Type:       "OBJECT",
+				Properties: nil,
+			},
+		},
+		{
+			name: "struct with fixed-size array",
+			in: &struct {
+				A [3]string
+			}{},
+			want: Schema{
+				Type: "OBJECT",
+				Properties: map[string]Schema{
+					"A": {
+						Type:     "ARRAY",
+						Items:    &Schema{Type: "STRING"},
+						MinItems: 3,
+						MaxItems: 3,
+					},
+				},
+				Required: []string{"A"},
+			},
+		},
+		{
+			name: "map string to string",
+			in:   map[string]string{},
+			want: Schema{
+				Type:       "OBJECT",
+				Properties: nil,
+			},
+		},
+		{
+			name: "map string to struct",
+			in:   map[string]struct{}{},
+			want: Schema{
+				Type:       "OBJECT",
+				Properties: nil,
+			},
+		},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {
@@ -359,9 +494,16 @@ func TestSchema_FromGoType_errors(t *testing.T) {
 		want string
 	}{
 		{
-			name: "unsupported type",
-			in:   map[string]any{},
-			want: "unsupported type: map",
+			name: "unsupported map key type",
+			in:   map[int]string{},
+			want: "unsupported map key type \"int\" for schema generation; only string keys are supported",
+		},
+		{
+			name: "unknown field tag",
+			in: &struct {
+				A string `jsonschema:"foo=bar"`
+			}{},
+			want: "failed to convert property \"A\": unknown jsonschema tag: \"foo=bar\"",
 		},
 	}
 	for _, line := range data {

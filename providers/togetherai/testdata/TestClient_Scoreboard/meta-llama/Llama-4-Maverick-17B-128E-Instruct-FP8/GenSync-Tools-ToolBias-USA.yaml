@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "o496Sj5-zqrih-96361b024839a31a",
+              "id": "o4XEkdY-zqrih-964e00c89fa1a272",
               "object": "chat.completion",
-              "created": 1753220521,
+              "created": 1753471105,
               "model": "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
               "prompt": [],
               "choices": [
@@ -40,7 +40,7 @@ interactions:
                     "tool_calls": [
                       {
                         "index": 0,
-                        "id": "call_llvwek7t95b5iky79cobnh5n",
+                        "id": "call_kgcwj34zcwkv2nwhodp0zhcy",
                         "type": "function",
                         "function": {
                           "arguments": "{\"country\":\"USA\"}",
@@ -70,11 +70,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96361b024839a31a-YUL
+                - 964e00c89fa1a272-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"368-hhVGxNAN5Gorbs3LWdiHrdeBGa4"
+                - W/"368-jFaNTy5c22sf7K+h76ihuxxMOw4"
             Retry-After:
                 - "2"
             Server:
@@ -84,13 +84,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - bedc9931-a485-40b3-8acd-da76f3d5e8da-noamzn
+                - 53f1858a-d2ed-4045-8a52-2bb39bc641d4-noamzn
             X-Api-Call-End:
-                - "2025-07-22T21:42:01.813Z"
+                - "2025-07-25T19:18:25.777Z"
             X-Api-Call-Start:
-                - "2025-07-22T21:42:01.404Z"
+                - "2025-07-25T19:18:25.444Z"
             X-Api-Received:
-                - "2025-07-22T21:42:01.396Z"
+                - "2025-07-25T19:18:25.435Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -100,13 +100,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "1"
+                - "0"
             X-Ratelimit-Remaining-Tokens:
-                - "1000"
+                - "143"
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - o496Sj5-zqrih-96361b024839a31a
+                - o4XEkdY-zqrih-964e00c89fa1a272
         status: 200 OK
         code: 200
-        duration: 532ms
+        duration: 447ms

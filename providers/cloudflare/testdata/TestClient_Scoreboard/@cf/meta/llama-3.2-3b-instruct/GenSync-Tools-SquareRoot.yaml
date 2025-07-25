@@ -9,7 +9,7 @@ interactions:
         content_length: 478
         host: api.cloudflare.com
         body: |
-            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,13 +24,13 @@ interactions:
         body: '{"result":{"response":null,"tool_calls":[{"name":"square_root","arguments":{"number":"132413"}}],"usage":{"prompt_tokens":199,"completion_tokens":18,"total_tokens":217}},"success":true,"errors":[],"messages":[]}'
         headers:
             Api-Version:
-                - "2025-07-24"
+                - "2025-07-25"
             Cf-Ai-Req-Id:
-                - c8fab6a7-c099-4d9c-95dc-0fa15f523f41
+                - 5efdbb53-6f54-4f34-8c01-5a3798fbc15d
             Cf-Auditlog-Id:
-                - 01983e5e-c1b0-74da-aba5-6873bfd1cd18
+                - 01984312-a447-7ec2-acba-404acddfcbac
             Cf-Ray:
-                - 96468f3c387ea257-YUL
+                - 964e15736feaa290-YUL
             Content-Type:
                 - application/json
             Server:
@@ -39,4 +39,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 327ms
+        duration: 443ms

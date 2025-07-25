@@ -9,7 +9,7 @@ interactions:
         content_length: 545
         host: api.deepseek.com
         body: |
-            {"model":"deepseek-reasoner","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+            {"model":"deepseek-reasoner","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -27,7 +27,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962e900c38497148-YUL
+                - 964e1127aa5fa306-YUL
             Content-Length:
                 - "150"
             Content-Type:
@@ -41,7 +41,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - 7322ab24c9ebe1be138c73a94bdb4421
+                - 4c224eee855420533294c9203724d1db
         status: 400 Bad Request
         code: 400
-        duration: 316ms
+        duration: 294ms

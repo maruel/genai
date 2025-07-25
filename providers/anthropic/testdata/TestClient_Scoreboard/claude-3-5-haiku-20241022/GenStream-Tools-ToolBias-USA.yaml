@@ -24,34 +24,37 @@ interactions:
         content_length: -1
         body: |+
             event: message_start
-            data: {"type":"message_start","message":{"id":"msg_01Nd5EyCkSCPa2ihUwoiz3gN","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":483,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":10,"service_tier":"standard"}} }
+            data: {"type":"message_start","message":{"id":"msg_01GE5j3C4AxhRxuoSCST9fPh","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":483,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":10,"service_tier":"standard"}}  }
 
             event: content_block_start
-            data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_01B4NJ8pSzskMFerGsuEV47C","name":"best_country","input":{}}         }
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_01SBdN6AofrMvsmo6EZPEQ8p","name":"best_country","input":{}}  }
 
             event: ping
             data: {"type": "ping"}
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":""}}
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":""}            }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"{\""}               }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"{\"countr"}     }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"count"}               }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"y\":"} }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"ry\": \"USA\"}"}      }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":" \"USA"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"\"}"}       }
 
             event: content_block_stop
-            data: {"type":"content_block_stop","index":0     }
+            data: {"type":"content_block_stop","index":0              }
 
             event: message_delta
-            data: {"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null},"usage":{"output_tokens":38}               }
+            data: {"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null},"usage":{"output_tokens":38}       }
 
             event: message_stop
-            data: {"type":"message_stop" }
+            data: {"type":"message_stop"           }
 
         headers:
             Anthropic-Ratelimit-Input-Tokens-Limit:
@@ -59,31 +62,31 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "400000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2025-07-24T22:19:26Z"
+                - "2025-07-25T19:34:33Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "80000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "80000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2025-07-24T22:19:26Z"
+                - "2025-07-25T19:34:33Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "4000"
             Anthropic-Ratelimit-Requests-Remaining:
                 - "3999"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2025-07-24T22:19:26Z"
+                - "2025-07-25T19:34:33Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "480000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "480000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2025-07-24T22:19:26Z"
+                - "2025-07-25T19:34:33Z"
             Cache-Control:
                 - no-cache
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9646cc91d811a2dc-YUL
+                - 964e186ce9b9a303-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Server:
@@ -96,4 +99,4 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 500ms
+        duration: 520ms

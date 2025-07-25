@@ -9,7 +9,7 @@ interactions:
         content_length: 492
         host: api.cloudflare.com
         body: |
-            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"string"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,19 +21,13 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"response":"","tool_calls":[],"p":"abdefghi"}
+            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1"}
 
-            data: {"tool_calls":[{"id":"chatcmpl-tool-07509d43de6e48598ad55b828ab4c112","type":"function","index":0,"function":{"name":"square_root"}}],"p":"abdefghijklmnoprstuvxyz12345"}
+            data: {"tool_calls":[{"id":"chatcmpl-tool-969852565edd45b6a918fdffc7e9667e","type":"function","index":0,"function":{"name":"square_root"}}],"p":"abdefghijk"}
 
-            data: {"tool_calls":[{"index":0,"function":{"arguments":"{\"number\": \""}}],"p":"abdefghijklmnoprstuvxyz1"}
+            data: {"tool_calls":[{"index":0,"function":{"arguments":"{\"number\": 132413}"}}],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmnoprs"}
 
-            data: {"tool_calls":[{"index":0,"function":{"arguments":"132"}}],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijklmnoprs"}
-
-            data: {"tool_calls":[{"index":0,"function":{"arguments":"413\"}"}}],"p":"abdefghijklmnoprstuvxyz1234567890abde"}
-
-            data: {"tool_calls":[{"index":0,"function":{"arguments":""}}],"p":"abdefghijklmnopr"}
-
-            data: {"tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijk"}
+            data: {"tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefg"}
 
             data: {"response":"","usage":{"prompt_tokens":325,"completion_tokens":18,"total_tokens":343}}
 
@@ -41,13 +35,13 @@ interactions:
 
         headers:
             Api-Version:
-                - "2025-07-24"
+                - "2025-07-25"
             Cf-Ai-Req-Id:
-                - 0ab21978-ec9a-4e8b-9954-68590c7acebd
+                - f81bb34c-a24b-492e-a7f6-f1b381d93677
             Cf-Auditlog-Id:
-                - 01983e5e-b267-7f98-aef8-b163741a77c3
+                - 01984312-8ee2-7d84-9520-46708edb0796
             Cf-Ray:
-                - 96468f23be8ba257-YUL
+                - 964e1550fca4a290-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -56,4 +50,4 @@ interactions:
                 - Accept-Encoding
         status: 200 OK
         code: 200
-        duration: 257ms
+        duration: 1.466s

@@ -61,10 +61,9 @@ var Scoreboard = genai.Scoreboard{
 				Seed:  true,
 			},
 			GenStream: &genai.FunctionalityText{
-				BrokenFinishReason: true,
-				Tools:              genai.Flaky,
-				JSON:               true,
-				Seed:               true,
+				Tools: genai.Flaky,
+				JSON:  true,
+				Seed:  true,
 			},
 		},
 		{

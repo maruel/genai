@@ -116,7 +116,7 @@ var Scoreboard = genai.Scoreboard{
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Thinking:       true,
-				Tools:          genai.True,
+				Tools:          genai.Flaky,
 				IndecisiveTool: genai.Flaky,
 				BiasedTool:     genai.Flaky,
 				JSON:           true, // Only when using ReasoningFormat: ReasoningFormatParsed
@@ -124,7 +124,7 @@ var Scoreboard = genai.Scoreboard{
 			},
 			GenStream: &genai.FunctionalityText{
 				Thinking:       true,
-				Tools:          genai.True,
+				Tools:          genai.Flaky,
 				IndecisiveTool: genai.Flaky,
 				BiasedTool:     genai.Flaky,
 				JSON:           true, // Only when using ReasoningFormat: ReasoningFormatParsed
@@ -204,7 +204,7 @@ const (
 	ServiceTierFlex ServiceTier = "flex"
 )
 
-// https://console.groq.com/docs/api-reference#chat-create
+// ChatRequest is documented at https://console.groq.com/docs/api-reference#chat-create
 type ChatRequest struct {
 	FrequencyPenalty  float64         `json:"frequency_penalty,omitzero"` // [-2.0, 2.0]
 	MaxChatTokens     int64           `json:"max_completion_tokens,omitzero"`
@@ -347,7 +347,7 @@ const (
 	ReasoningFormatHidden ReasoningFormat = "hidden"
 )
 
-// https://console.groq.com/docs/api-reference#chat-create
+// Message is documented at https://console.groq.com/docs/api-reference#chat-create
 type Message struct {
 	Role       string     `json:"role"`          // "system", "assistant", "user"
 	Name       string     `json:"name,omitzero"` // An optional name for the participant. Provides the model information to differentiate between participants of the same role.

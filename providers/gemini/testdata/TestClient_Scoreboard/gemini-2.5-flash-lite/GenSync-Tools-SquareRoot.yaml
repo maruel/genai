@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 599
+        content_length: 551
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"type":"object","properties":{"number":{"type":"string"}},"required":["number"]},"response":{"type":"object","properties":{"response":{"type":"string"}},"required":["response"]}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"]}}
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{},"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"]}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -30,9 +30,7 @@ interactions:
                       {
                         "functionCall": {
                           "name": "square_root",
-                          "args": {
-                            "number": "132413"
-                          }
+                          "args": {}
                         }
                       }
                     ],
@@ -43,18 +41,18 @@ interactions:
                 }
               ],
               "usageMetadata": {
-                "promptTokenCount": 117,
-                "candidatesTokenCount": 20,
-                "totalTokenCount": 137,
+                "promptTokenCount": 106,
+                "candidatesTokenCount": 10,
+                "totalTokenCount": 116,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
-                    "tokenCount": 117
+                    "tokenCount": 106
                   }
                 ]
               },
               "modelVersion": "gemini-2.5-flash-lite",
-              "responseId": "t9eCaJ_ZLu6XjMcPvq-YuQs"
+              "responseId": "7LeDaOe0G9Le_uMPyYykiAY"
             }
         headers:
             Alt-Svc:
@@ -64,7 +62,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=362
+                - gfet4t7; dur=257
             Vary:
                 - Origin
                 - X-Origin
@@ -77,4 +75,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 372ms
+        duration: 268ms

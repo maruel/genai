@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 275
+        content_length: 379
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":false,"thinkingBudget":0}}}
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"properties":{"is_fruit":{"type":"BOOLEAN"}},"required":["is_fruit"],"type":"OBJECT"},"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":false,"thinkingBudget":0}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,7 +28,7 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "{\n\"is_banana_a_fruit\": true\n}"
+                        "text": "{\"is_fruit\": true}"
                       }
                     ],
                     "role": "model"
@@ -39,8 +39,8 @@ interactions:
               ],
               "usageMetadata": {
                 "promptTokenCount": 18,
-                "candidatesTokenCount": 14,
-                "totalTokenCount": 32,
+                "candidatesTokenCount": 7,
+                "totalTokenCount": 25,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
@@ -49,7 +49,7 @@ interactions:
                 ]
               },
               "modelVersion": "gemini-2.5-flash",
-              "responseId": "KNaCaMy3OurGjMcP2MCX2As"
+              "responseId": "6reDaMCdFcCOjMcPkZz9qAY"
             }
         headers:
             Alt-Svc:
@@ -59,7 +59,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=478
+                - gfet4t7; dur=409
             Vary:
                 - Origin
                 - X-Origin
@@ -72,4 +72,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 488ms
+        duration: 420ms

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 671
+        content_length: 597
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"type":"object","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"required":["country"]},"response":{"type":"object","properties":{"response":{"type":"string"}},"required":["response"]}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":false,"thinkingBudget":0}}}
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{},"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":false,"thinkingBudget":0}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -30,17 +30,7 @@ interactions:
                       {
                         "functionCall": {
                           "name": "best_country",
-                          "args": {
-                            "country": "USA"
-                          }
-                        }
-                      },
-                      {
-                        "functionCall": {
-                          "name": "best_country",
-                          "args": {
-                            "country": "Canada"
-                          }
+                          "args": {}
                         }
                       }
                     ],
@@ -51,18 +41,18 @@ interactions:
                 }
               ],
               "usageMetadata": {
-                "promptTokenCount": 115,
-                "candidatesTokenCount": 30,
-                "totalTokenCount": 145,
+                "promptTokenCount": 99,
+                "candidatesTokenCount": 10,
+                "totalTokenCount": 109,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
-                    "tokenCount": 115
+                    "tokenCount": 99
                   }
                 ]
               },
               "modelVersion": "gemini-2.5-flash",
-              "responseId": "t9eCaOD_FpzijMcPouK34Qo"
+              "responseId": "67eDaPGcIaDgjMcPtu-RuQ8"
             }
         headers:
             Alt-Svc:
@@ -72,7 +62,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=398
+                - gfet4t7; dur=325
             Vary:
                 - Origin
                 - X-Origin
@@ -85,4 +75,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 408ms
+        duration: 335ms

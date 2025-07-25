@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 213
+        content_length: 317
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseModalities":["TEXT"]}}
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"properties":{"is_fruit":{"type":"BOOLEAN"}},"required":["is_fruit"],"type":"OBJECT"},"responseModalities":["TEXT"]}}
         form:
             alt:
                 - sse
@@ -23,7 +23,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"{\\n  \\\"is_fruit\\\": true\\n}\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"candidatesTokenCount\": 11,\"totalTokenCount\": 29,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}]},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"KdaCaKX8NcvUjMcP7cjOiA0\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"{\\n  \\\"is_\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"candidatesTokenCount\": 6,\"totalTokenCount\": 24,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}]},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"7LeDaOeJGvOo_uMP8fq4mQk\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"fruit\\\": true\\n}\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"candidatesTokenCount\": 11,\"totalTokenCount\": 29,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}]},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"7LeDaOeJGvOo_uMP8fq4mQk\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -34,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=356
+                - gfet4t7; dur=340
             Vary:
                 - Origin
                 - X-Origin
@@ -47,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 365ms
+        duration: 351ms

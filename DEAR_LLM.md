@@ -39,8 +39,10 @@ and ease of use.
 ### Style
 
 - Always use the latest Go features. You can see the current version in go.mod.
-  - for i := range number
+  - Integer range clause, e.g. for i := range number
   - any instead of interface{}
+  - Go iterators, e.g. strings.SplitSeq()
+- Prefer short variable names as long as possible.
 
 ### File Headers
 
@@ -50,6 +52,7 @@ All Go files must start with:
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 ```
+with the right year.
 
 ### Package Documentation
 
@@ -63,7 +66,7 @@ Every package should have comprehensive documentation explaining:
 
 - Always handle errors explicitly
 - Provide meaningful error messages with context
-- Use `fmt.Errorf` for error wrapping
+- Use `fmt.Errorf` for error wrapping when appropriate
 - Validate inputs early and return descriptive errors
 
 ### Testing
@@ -74,6 +77,8 @@ Every package should have comprehensive documentation explaining:
 - Use HTTP record/playback for provider integration tests
 - Store test data in `testdata/` directories
 - Test files should be named `*_test.go`
+- Test using HTTP recording often fails when run inside the environment. Ask for help when this happens, do
+  not try to resolve by yourself.
 
 ### Performance Considerations
 
@@ -199,8 +204,8 @@ func (o *Options) Validate() error {
 ## Common Pitfalls to Avoid
 
 - Don't ignore errors or use `panic()` in library code
-- Don't use global state or package-level variables
-- Don't hardcode timeouts or limits without making them configurable
+- Prefer to not use global state or package-level variables if possible
+- Prefer to not hardcode timeouts or limits without making them configurable
 - Don't assume all providers support the same features
 - Don't commit test recordings with real API keys
 - Ask before breaking backward compatibility

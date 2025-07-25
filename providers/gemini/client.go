@@ -27,7 +27,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -56,12 +55,8 @@ var Scoreboard = genai.Scoreboard{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
-					Inline: true,
-					SupportedFormats: []string{
-						"image/jpeg",
-						"image/png",
-						"image/webp",
-					},
+					Inline:           true,
+					SupportedFormats: []string{"image/jpeg", "image/png", "image/webp"},
 				},
 				genai.ModalityPDF: {
 					Inline:           true,
@@ -70,19 +65,16 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:          genai.True,
-				BiasedTool:     genai.Flaky,
-				IndecisiveTool: genai.Flaky,
-				JSON:           true,
-				Seed:           true,
+				Tools:      genai.True,
+				JSON:       true,
+				JSONSchema: true,
+				Seed:       true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:          genai.True,
-				BiasedTool:     genai.Flaky,
-				IndecisiveTool: genai.Flaky,
-				JSON:           true,
-				JSONSchema:     true, // Happenstance.
-				Seed:           true,
+				Tools:      genai.True,
+				JSON:       true,
+				JSONSchema: true,
+				Seed:       true,
 			},
 		},
 		{
@@ -90,12 +82,8 @@ var Scoreboard = genai.Scoreboard{
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
-					Inline: true,
-					SupportedFormats: []string{
-						"image/jpeg",
-						"image/png",
-						"image/webp",
-					},
+					Inline:           true,
+					SupportedFormats: []string{"image/jpeg", "image/png", "image/webp"},
 				},
 				genai.ModalityPDF: {
 					Inline:           true,
@@ -109,18 +97,16 @@ var Scoreboard = genai.Scoreboard{
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				// It supports URL but only when uploaded to its own storage.
-				Tools:          genai.True,
-				BiasedTool:     genai.True, // It's rare, but it happens.
-				IndecisiveTool: genai.Flaky,
-				JSON:           true,
-				Seed:           true,
+				Tools:      genai.True,
+				JSON:       true,
+				JSONSchema: true,
+				Seed:       true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:          genai.True,
-				BiasedTool:     genai.True, // It's rare, but it happens.
-				IndecisiveTool: genai.Flaky,
-				JSON:           true,
-				Seed:           true,
+				Tools:      genai.True,
+				JSON:       true,
+				JSONSchema: true,
+				Seed:       true,
 			},
 		},
 		{
@@ -274,58 +260,6 @@ type FunctionDeclaration struct {
 	Description string `json:"description,omitzero"`
 	Parameters  Schema `json:"parameters,omitzero"`
 	Response    Schema `json:"response,omitzero"`
-}
-
-// Schema is documented at https://ai.google.dev/api/caching?hl=en#Schema
-type Schema struct {
-	// https://ai.google.dev/api/caching?hl=en#Type
-	// https://spec.openapis.org/oas/v3.0.3#data-types
-	Type             string            `json:"type,omitzero"`             // TYPE_UNSPECIFIED, STRING, NUMBER, INTEGER, BOOLEAN, ARRAY, OBJECT
-	Format           string            `json:"format,omitzero"`           // NUMBER type: float, double for INTEGER type: int32, int64 for STRING type: enum, date-time
-	Description      string            `json:"description,omitzero"`      //
-	Nullable         bool              `json:"nullable,omitzero"`         //
-	Enum             []string          `json:"enum,omitzero"`             // STRING
-	MaxItems         int64             `json:"maxItems,omitzero"`         // ARRAY
-	MinItems         int64             `json:"minItems,omitzero"`         // ARRAY
-	Properties       map[string]Schema `json:"properties,omitzero"`       // OBJECT
-	Required         []string          `json:"required,omitzero"`         // OBJECT
-	PropertyOrdering []string          `json:"propertyOrdering,omitzero"` // OBJECT
-	Items            *Schema           `json:"items,omitzero"`            // ARRAY
-}
-
-func (s *Schema) FromJSONSchema(j *jsonschema.Schema) {
-	s.Type = j.Type
-	// s.Format = j.Format
-	s.Description = j.Description
-	s.Nullable = false
-	if len(j.Enum) != 0 {
-		s.Enum = make([]string, len(j.Enum))
-		for i, e := range j.Enum {
-			switch v := e.(type) {
-			case string:
-				s.Enum[i] = v
-			default:
-				// TODO: Propagate the error.
-				panic(fmt.Sprintf("invalid enum type: got %T, want string", e))
-			}
-		}
-	}
-	// s.MaxItems = j.MaxItems
-	// s.MinItems = j.MinItems
-	if l := j.Properties.Len(); l != 0 {
-		s.Properties = make(map[string]Schema, l)
-		for pair := j.Properties.Oldest(); pair != nil; pair = pair.Next() {
-			i := Schema{}
-			i.FromJSONSchema(pair.Value)
-			s.Properties[pair.Key] = i
-		}
-	}
-	s.Required = j.Required
-	// s.PropertyOrdering = j.PropertyOrdering
-	if j.Items != nil {
-		s.Items = &Schema{}
-		s.Items.FromJSONSchema(j.Items)
-	}
 }
 
 // ToolMode is documented at https://ai.google.dev/api/caching?hl=en#Mode_1
@@ -501,7 +435,7 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) []string {
 	c.GenerationConfig.StopSequences = v.Stop
 	if v.DecodeAs != nil {
 		c.GenerationConfig.ResponseMimeType = "application/json"
-		c.GenerationConfig.ResponseSchema.FromJSONSchema(jsonschema.Reflect(v.DecodeAs))
+		c.GenerationConfig.ResponseSchema.FromGoObj(v.DecodeAs)
 	} else if v.ReplyAsJSON {
 		c.GenerationConfig.ResponseMimeType = "application/json"
 	}
@@ -518,9 +452,10 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) []string {
 		for i, t := range v.Tools {
 			params := Schema{}
 			if t.InputSchemaOverride != nil {
-				params.FromJSONSchema(t.InputSchemaOverride)
+				panic("TODO")
+				// params.FromJSONSchema(t.InputSchemaOverride)
 			} else {
-				params.FromJSONSchema(t.GetInputSchema())
+				params.FromGoObj(reflect.TypeOf(t.Callback).In(1))
 			}
 			// See FunctionResponse.To().
 			c.Tools[i].FunctionDeclarations = []FunctionDeclaration{{
@@ -528,7 +463,7 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) []string {
 				Description: t.Description,
 				Parameters:  params,
 			}}
-			c.Tools[i].FunctionDeclarations[0].Response.FromJSONSchema(jsonschema.Reflect(functionResponse))
+			c.Tools[i].FunctionDeclarations[0].Response.FromGoObj(functionResponse)
 		}
 	}
 	return unsupported

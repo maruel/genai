@@ -212,15 +212,6 @@ var Scoreboard = genai.Scoreboard{
 				"whisper-1",
 			},
 		},
-
-		// Audio only output:
-		// "gpt-4o-mini-tts",
-		// "tts-1",
-		// "tts-1-1106",
-		// "tts-1-hd",
-		// "tts-1-hd-1106",
-		// Audio only input:
-		// "whisper-1",
 	},
 }
 

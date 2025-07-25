@@ -1,0 +1,123 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 227
+        host: api.openai.com
+        body: |
+            {"model":"gpt-4.1","background":false,"max_output_tokens":16,"store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Explain the theory of relativity in great details."}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: response.created
+            data: {"type":"response.created","sequence_number":0,"response":{"id":"resp_688413a016f8819a92b2463441ed6c1309beb539aad209c0","object":"response","created_at":1753486240,"status":"in_progress","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":16,"max_tool_calls":null,"model":"gpt-4.1-2025-04-14","output":[],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":null,"summary":null},"safety_identifier":null,"service_tier":"auto","store":false,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}}}
+
+            event: response.in_progress
+            data: {"type":"response.in_progress","sequence_number":1,"response":{"id":"resp_688413a016f8819a92b2463441ed6c1309beb539aad209c0","object":"response","created_at":1753486240,"status":"in_progress","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":16,"max_tool_calls":null,"model":"gpt-4.1-2025-04-14","output":[],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":null,"summary":null},"safety_identifier":null,"service_tier":"auto","store":false,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}}}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","sequence_number":2,"output_index":0,"item":{"id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","type":"message","status":"in_progress","content":[],"role":"assistant"}}
+
+            event: response.content_part.added
+            data: {"type":"response.content_part.added","sequence_number":3,"item_id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","output_index":0,"content_index":0,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":""}}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":4,"item_id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","output_index":0,"content_index":0,"delta":"Certainly","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":5,"item_id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","output_index":0,"content_index":0,"delta":"!","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":6,"item_id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","output_index":0,"content_index":0,"delta":" The","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":7,"item_id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","output_index":0,"content_index":0,"delta":" **","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":8,"item_id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","output_index":0,"content_index":0,"delta":"the","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":9,"item_id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","output_index":0,"content_index":0,"delta":"ory","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":10,"item_id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","output_index":0,"content_index":0,"delta":" of","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":11,"item_id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","output_index":0,"content_index":0,"delta":" relat","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":12,"item_id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","output_index":0,"content_index":0,"delta":"ivity","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":13,"item_id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","output_index":0,"content_index":0,"delta":"**","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":14,"item_id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","output_index":0,"content_index":0,"delta":" refers","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":15,"item_id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","output_index":0,"content_index":0,"delta":" to","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":16,"item_id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","output_index":0,"content_index":0,"delta":" two","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":17,"item_id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","output_index":0,"content_index":0,"delta":" foundational","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":18,"item_id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","output_index":0,"content_index":0,"delta":" physical","logprobs":[]}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":19,"item_id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","output_index":0,"content_index":0,"delta":" theories","logprobs":[]}
+
+            event: response.output_text.done
+            data: {"type":"response.output_text.done","sequence_number":20,"item_id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","output_index":0,"content_index":0,"text":"Certainly! The **theory of relativity** refers to two foundational physical theories","logprobs":[]}
+
+            event: response.content_part.done
+            data: {"type":"response.content_part.done","sequence_number":21,"item_id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","output_index":0,"content_index":0,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":"Certainly! The **theory of relativity** refers to two foundational physical theories"}}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","sequence_number":22,"output_index":0,"item":{"id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","type":"message","status":"incomplete","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"Certainly! The **theory of relativity** refers to two foundational physical theories"}],"role":"assistant"}}
+
+            event: response.incomplete
+            data: {"type":"response.incomplete","sequence_number":23,"response":{"id":"resp_688413a016f8819a92b2463441ed6c1309beb539aad209c0","object":"response","created_at":1753486240,"status":"incomplete","background":false,"error":null,"incomplete_details":{"reason":"max_output_tokens"},"instructions":null,"max_output_tokens":16,"max_tool_calls":null,"model":"gpt-4.1-2025-04-14","output":[{"id":"msg_688413a07ecc819a861d07c191b2155f09beb539aad209c0","type":"message","status":"incomplete","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"Certainly! The **theory of relativity** refers to two foundational physical theories"}],"role":"assistant"}],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":null,"summary":null},"safety_identifier":null,"service_tier":"default","store":false,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":{"input_tokens":0,"input_tokens_details":{"cached_tokens":0},"output_tokens":0,"output_tokens_details":{"reasoning_tokens":0},"total_tokens":0},"user":null,"metadata":{}}}
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 964f7247fe2da2c6-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Organization:
+                - user-vtmtcvpbctksjfewktqdl2sw
+            Openai-Processing-Ms:
+                - "105"
+            Openai-Project:
+                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - req_26bca16ffdaebe6de87a800f3cf4db6f
+        status: 200 OK
+        code: 200
+        duration: 241ms

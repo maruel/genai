@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/maruel/genai/providers/gemini"
@@ -77,9 +78,7 @@ func trimRecording(i *cassette.Interaction) error {
 	if err != nil {
 		return err
 	}
-	q := u.Query()
-	q.Del("key")
-	u.RawQuery = q.Encode()
+	u.RawQuery = removeKeyFromQuery(u.RawQuery, "key")
 	i.Request.URL = u.String()
 	i.Request.Form.Del("key")
 	// Reduce noise.
@@ -93,11 +92,27 @@ func trimRecording(i *cassette.Interaction) error {
 func matchCassette(r *http.Request, i cassette.Request) bool {
 	// Gemini pass the API key as a query argument (!) so zap it before matching.
 	r = r.Clone(r.Context())
-	q := r.URL.Query()
-	q.Del("key")
-	r.URL.RawQuery = q.Encode()
+	r.URL.RawQuery = removeKeyFromQuery(r.URL.RawQuery, "key")
 	r.ParseForm()
 	return defaultMatcher(r, i)
 }
 
 var defaultMatcher = cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Request-Id"))
+
+// removeKeyFromQuery remove a key from a raw query.
+// Using url.URL.Query() then Encode() reorders the keys, which makes it non-deterministic. Do it manually.
+func removeKeyFromQuery(query, keyToRemove string) string {
+	b := strings.Builder{}
+	for _, part := range strings.Split(query, "&") {
+		if part != "" {
+			if k := strings.SplitN(part, "=", 2)[0]; k == keyToRemove {
+				continue
+			}
+		}
+		if b.Len() != 0 {
+			b.WriteByte('&')
+		}
+		b.WriteString(part)
+	}
+	return b.String()
+}

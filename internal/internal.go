@@ -12,6 +12,7 @@ import (
 	"io/fs"
 	"log/slog"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -113,10 +114,11 @@ func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Opti
 	args := []recorder.Option{
 		recorder.WithHook(trimResponseHeaders, recorder.AfterCaptureHook),
 		recorder.WithHook(trimRecordingCloudflare, recorder.AfterCaptureHook),
+		recorder.WithHook(trimRecordingGemini, recorder.AfterCaptureHook),
 		recorder.WithMode(mode),
 		recorder.WithSkipRequestLatency(true),
 		recorder.WithRealTransport(h),
-		recorder.WithMatcher(matchCassetteCloudflare),
+		recorder.WithMatcher(matchCassetteGemini),
 	}
 	r.Signal(name)
 	// Don't forget to call Stop()!
@@ -187,6 +189,43 @@ func matchCassetteCloudflare(r *http.Request, i cassette.Request) bool {
 	// When matching, ignore the account ID from the URL path.
 	r.URL.Path = reCloudflareAccount.ReplaceAllString(r.URL.Path, "/accounts/ACCOUNT_ID/")
 	return DefaultMatcher(r, i)
+}
+
+func matchCassetteGemini(r *http.Request, i cassette.Request) bool {
+	// Gemini pass the API key as a query argument (!) so zap it before matching.
+	r = r.Clone(r.Context())
+	r.URL.RawQuery = removeKeyFromQuery(r.URL.RawQuery, "key")
+	r.ParseForm()
+	return matchCassetteCloudflare(r, i)
+}
+
+func trimRecordingGemini(i *cassette.Interaction) error {
+	// Gemini pass the API key as a query argument (!) so zap it before recording.
+	u, err := url.Parse(i.Request.URL)
+	if err != nil {
+		return err
+	}
+	u.RawQuery = removeKeyFromQuery(u.RawQuery, "key")
+	i.Request.URL = u.String()
+	i.Request.Form.Del("key")
+	return nil
+}
+
+func removeKeyFromQuery(query, keyToRemove string) string {
+	// Using url.URL.Query() then Encode() reorders the keys, which makes it non-deterministic. Do it manually.
+	b := strings.Builder{}
+	for _, part := range strings.Split(query, "&") {
+		if part != "" {
+			if k := strings.SplitN(part, "=", 2)[0]; k == keyToRemove {
+				continue
+			}
+		}
+		if b.Len() != 0 {
+			b.WriteByte('&')
+		}
+		b.WriteString(part)
+	}
+	return b.String()
 }
 
 // recorderWithBody wraps the POST body in the error message.

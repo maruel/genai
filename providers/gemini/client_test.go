@@ -275,15 +275,13 @@ func getClientInner(t *testing.T, apiKey, m string) *gemini.Client {
 	matchCassetteInternal := func(r *http.Request, i cassette.Request) bool {
 		// Gemini pass the API key as a query argument (!) so zap it before matching.
 		r = r.Clone(r.Context())
-		q := r.URL.Query()
-		q.Del("key")
-		r.URL.RawQuery = q.Encode()
+		r.URL.RawQuery = removeKeyFromQuery(r.URL.RawQuery, "key")
 		r.ParseForm()
 		res := internal.DefaultMatcher(r, i)
-		if !res {
-			// Useful for debugging.
-			// t.Logf("Failed to match request\nReq: %v\nInt: %v", r, i)
-		}
+		// Useful for debugging.
+		// if !res {
+		// 	t.Logf("Failed to match request\nReq: %v\nInt: %v", r, i)
+		// }
 		return res
 	}
 	wrapper := func(h http.RoundTripper) http.RoundTripper {
@@ -302,9 +300,7 @@ func trimRecordingInternal(i *cassette.Interaction) error {
 	if err != nil {
 		return err
 	}
-	q := u.Query()
-	q.Del("key")
-	u.RawQuery = q.Encode()
+	u.RawQuery = removeKeyFromQuery(u.RawQuery, "key")
 	i.Request.URL = u.String()
 	i.Request.Form.Del("key")
 	return nil

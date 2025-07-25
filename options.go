@@ -184,10 +184,14 @@ func (o *OptionsText) Validate() error {
 // ReflectedToJSON must be a pointer to a struct that can be decoded by
 // encoding/json and can have jsonschema tags.
 //
-// It is recommended to use jsonscheme_description tags to describe each
+// It is recommended to use jsonschema_description tags to describe each
 // field or argument.
 //
 // Use jsonschema:"enum=..." to enforce a specific value within a set.
+//
+// Use omitempty to make the field optional.
+//
+// See https://github.com/invopop/jsonschema#example for more examples.
 type ReflectedToJSON any
 
 // Tools

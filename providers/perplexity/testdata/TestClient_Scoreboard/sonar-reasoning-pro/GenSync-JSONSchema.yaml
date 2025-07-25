@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 555
+        content_length: 452
         host: api.perplexity.ai
         body: |
-            {"model":"sonar-reasoning-pro","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"return_images":true,"return_related_questions":true,"stream":false,"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://github.com/maruel/genai/scoreboard/schema","$ref":"#/$defs/schema","$defs":{"schema":{"properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}}}
+            {"model":"sonar-reasoning-pro","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"return_images":true,"return_related_questions":true,"stream":false,"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,21 +19,20 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 97
-        body: '{"error":{"message":"Invalid JSON schema. #/$defs/schema","type":"invalid_parameter","code":400}}'
+        content_length: -1
+        uncompressed: true
+        body: '{"id": "b85dfdb3-af0d-479d-8b86-0b7bf86def0d", "model": "sonar-reasoning-pro", "created": 1753479499, "usage": {"prompt_tokens": 17, "completion_tokens": 186, "total_tokens": 203, "search_context_size": "low"}, "citations": ["https://www.healthline.com/nutrition/bananas-berries-or-fruits", "https://www.banana-label-catalog.org/es/article/banana-fruit-berry-or-vegetable-0", "https://citizendium.org/wiki/Banana", "https://docs.vertica.com/23.4.x/en/data-load/data-formats/json-data/", "https://en.wikipedia.org/wiki/Banana"], "search_results": [{"title": "Is a Banana a Berry or Fruit? The Surprising Truth - Healthline", "url": "https://www.healthline.com/nutrition/bananas-berries-or-fruits", "date": "2018-12-14", "last_updated": "2025-06-28"}, {"title": "Is a banana a fruit, berry, or vegetable? - Bananalabel Catalog", "url": "https://www.banana-label-catalog.org/es/article/banana-fruit-berry-or-vegetable-0", "date": "2004-02-01", "last_updated": "2025-01-12"}, {"title": "Banana - Citizendium", "url": "https://citizendium.org/wiki/Banana", "date": "2024-07-16", "last_updated": "2025-07-20"}, {"title": "JSON data | Vertica 23.4.x", "url": "https://docs.vertica.com/23.4.x/en/data-load/data-formats/json-data/", "date": null, "last_updated": "2025-07-23"}, {"title": "Banana - Wikipedia", "url": "https://en.wikipedia.org/wiki/Banana", "date": "2002-02-12", "last_updated": "2025-07-18"}], "images": [{"image_url": "https://images.slideplayer.com/15/4642859/slides/slide_2.jpg", "origin_url": "https://slideplayer.com/slide/4642859/", "height": 720, "width": 1279}, {"image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Bananavarieties.jpg/250px-Bananavarieties.jpg", "origin_url": "https://en.wikipedia.org/wiki/Banana", "height": 143, "width": 250}, {"image_url": "https://www.freshpoint.com/wp-content/uploads/2019/04/freshpoint-produce-101-banana-ripening-chart-v3.jpg", "origin_url": "https://www.freshpoint.com/news/produce-101-banana-guide/", "height": 4583, "width": 2292}, {"image_url": "https://www.mdpi.com/applsci/applsci-13-03533/article_deploy/html/images/applsci-13-03533-g001.png", "origin_url": "https://www.mdpi.com/2076-3417/13/6/3533", "height": 1219, "width": 3273}, {"image_url": "https://pub.mdpi-res.com/agriculture/agriculture-11-00687/article_deploy/html/images/agriculture-11-00687-g007.png?1626869532", "origin_url": "https://www.mdpi.com/2077-0472/11/8/687", "height": 1492, "width": 3789}], "related_questions": ["What other fruits are considered berries", "How do bananas differ from plantains", "Why are bananas often mistaken for vegetables", "What are the main characteristics of a botanical berry", "How do the exocarp, mesocarp, and endocarp contribute to fruit classification"], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "<think>\nOkay, the user is asking if a banana is a fruit and wants a JSON response without any explanation. Let me check the search results.\n\nFrom the first result, Healthline says bananas are botanically berries. The second source, Bananalabel Catalog, confirms they''re berries under botanical classification. Then, third result from Citizendium also lists bananas as fruit. Wikipedia''s entry clearly states a banana is a berry botanically. \n\nSo, all the sources agree a banana is a fruit, specifically a berry. The user wants a JSON answer, so I need to structure that as true in a JSON object. Need to make sure the key is \"is_fruit\" and the value is true. No other fields, just the boolean. Also, check if any sources contradict, but all confirm it''s a fruit. So the JSON should be straightforward.\n</think>\n\n{\"is_fruit\": true}"}, "delta": {"role": "assistant", "content": ""}}]}'
         headers:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9644055f3df2a2b7-YUL
-            Content-Length:
-                - "97"
+                - 964ecda01b67a29a-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains; preload
-        status: 400 Bad Request
-        code: 400
-        duration: 51ms
+        status: 200 OK
+        code: 200
+        duration: 4.224s

@@ -16,6 +16,7 @@ import (
 	"math/big"
 	"net/http"
 	"os"
+	"reflect"
 	"strings"
 	"time"
 
@@ -116,11 +117,13 @@ var Scoreboard = genai.Scoreboard{
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Tools:       genai.Flaky,
+				JSONSchema:  true,
 				Seed:        true,
 				NoMaxTokens: true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools: genai.Flaky,
+				Tools:      genai.Flaky,
+				JSONSchema: true,
 			},
 		},
 		{
@@ -308,7 +311,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			if v.DecodeAs != nil {
 				// Warning: using a model small may fail.
 				c.ResponseFormat.Type = "json_schema"
-				c.ResponseFormat.Schema = jsonschema.Reflect(v.DecodeAs)
+				c.ResponseFormat.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
 			} else if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}

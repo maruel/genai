@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 460
+        content_length: 357
         host: api.cloudflare.com
         body: |
-            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://github.com/maruel/genai/scoreboard/schema","$ref":"#/$defs/schema","$defs":{"schema":{"properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}},"stream":true}
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}},"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,14 +21,14 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"errors":[{"message":"AiError: Ai: JSON Schema mode is not supported with stream mode. (22b2ad11-93f9-4523-b625-a012817ee1c1)","code":5023}],"success":false,"result":{},"messages":[]}'
+        body: '{"errors":[{"message":"AiError: Ai: JSON Schema mode is not supported with stream mode. (0b6232f4-1c5d-4ab2-b737-f7e989f7723f)","code":5023}],"success":false,"result":{},"messages":[]}'
         headers:
             Api-Version:
-                - "2025-07-24"
+                - "2025-07-25"
             Cf-Auditlog-Id:
-                - 01983e5e-bef9-76c4-8d6c-4904df846a0c
+                - 01984394-8f1b-7d70-995a-6c2b3f606864
             Cf-Ray:
-                - 96468f37ca90a257-YUL
+                - 964ee5518a8ca31b-YUL
             Content-Type:
                 - application/json
             Server:
@@ -37,4 +37,4 @@ interactions:
                 - Accept-Encoding
         status: 403 Forbidden
         code: 403
-        duration: 494ms
+        duration: 1.114s

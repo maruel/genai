@@ -17,6 +17,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"reflect"
 	"slices"
 	"sort"
 	"strings"
@@ -50,17 +51,17 @@ var Scoreboard = genai.Scoreboard{
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
-				// JSONSchema:     true, Broken https://discord.com/channels/954421988141711382/1168578329423642786/1397015484045594635
-				Citations: true,
-				Seed:      true,
+				JSONSchema:     true,
+				Citations:      true,
+				Seed:           true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
-				// JSONSchema:     true, Broken https://discord.com/channels/954421988141711382/1168578329423642786/1397015484045594635
-				Citations: true,
-				Seed:      true,
+				JSONSchema:     true,
+				Citations:      true,
+				Seed:           true,
 			},
 		},
 		// https://docs.cohere.com/docs/aya-vision
@@ -172,7 +173,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			c.StopSequences = v.Stop
 			if v.DecodeAs != nil {
 				c.ResponseFormat.Type = "json_schema"
-				c.ResponseFormat.JSONSchema = jsonschema.Reflect(v.DecodeAs)
+				c.ResponseFormat.JSONSchema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
 			} else if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}

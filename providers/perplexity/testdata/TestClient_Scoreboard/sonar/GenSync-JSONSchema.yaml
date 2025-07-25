@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 541
+        content_length: 438
         host: api.perplexity.ai
         body: |
-            {"model":"sonar","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"return_images":true,"return_related_questions":true,"stream":false,"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://github.com/maruel/genai/scoreboard/schema","$ref":"#/$defs/schema","$defs":{"schema":{"properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}}}
+            {"model":"sonar","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"return_images":true,"return_related_questions":true,"stream":false,"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,21 +19,20 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 97
-        body: '{"error":{"message":"Invalid JSON schema. #/$defs/schema","type":"invalid_parameter","code":400}}'
+        content_length: -1
+        uncompressed: true
+        body: '{"id": "8cf43b4d-5ec3-4351-9edc-07654bff810a", "model": "sonar", "created": 1753479502, "usage": {"prompt_tokens": 17, "completion_tokens": 7, "total_tokens": 24, "search_context_size": "low"}, "citations": ["https://www.medicinenet.com/are_bananas_classified_as_a_fruit_or_a_berry/article.htm", "https://www.banana-label-catalog.org/es/article/banana-fruit-berry-or-vegetable-0", "https://www.healthline.com/nutrition/bananas-berries-or-fruits", "https://docs.vertica.com/23.4.x/en/data-load/data-formats/json-data/", "https://citizendium.org/wiki/Banana"], "search_results": [{"title": "Are Bananas Classified as a Fruit or a Berry?", "url": "https://www.medicinenet.com/are_bananas_classified_as_a_fruit_or_a_berry/article.htm", "date": "2022-08-03", "last_updated": "2025-07-24"}, {"title": "Is a banana a fruit, berry, or vegetable? - Bananalabel Catalog", "url": "https://www.banana-label-catalog.org/es/article/banana-fruit-berry-or-vegetable-0", "date": "2004-02-01", "last_updated": "2025-01-12"}, {"title": "Is a Banana a Berry or Fruit? The Surprising Truth", "url": "https://www.healthline.com/nutrition/bananas-berries-or-fruits", "date": "2018-12-14", "last_updated": "2025-06-28"}, {"title": "JSON data | Vertica 23.4.x", "url": "https://docs.vertica.com/23.4.x/en/data-load/data-formats/json-data/", "date": null, "last_updated": "2025-07-23"}, {"title": "Banana", "url": "https://citizendium.org/wiki/Banana", "date": "2024-07-16", "last_updated": "2025-07-20"}], "images": [{"image_url": "https://images.slideplayer.com/15/4642859/slides/slide_2.jpg", "origin_url": "https://slideplayer.com/slide/4642859/", "height": 720, "width": 1279}, {"image_url": "https://images.medicinenet.com/images/article/main_image/are-bananas-fattening-for-you.jpg?output-quality=75", "origin_url": "https://www.medicinenet.com/are_bananas_classified_as_a_fruit_or_a_berry/article.htm", "height": 442, "width": 650}, {"image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Bananavarieties.jpg/250px-Bananavarieties.jpg", "origin_url": "https://en.wikipedia.org/wiki/Banana", "height": 143, "width": 250}, {"image_url": "https://www.mdpi.com/agriculture/agriculture-12-00530/article_deploy/html/images/agriculture-12-00530-g001.png", "origin_url": "https://www.mdpi.com/2077-0472/12/4/530", "height": 1144, "width": 2044}, {"image_url": "https://www.freshpoint.com/wp-content/uploads/2019/04/freshpoint-produce-101-banana-ripening-chart-v3.jpg", "origin_url": "https://www.freshpoint.com/news/produce-101-banana-guide/", "height": 4583, "width": 2292}], "related_questions": ["What other fruits are considered berries", "Why do people often think bananas are not berries", "How do bananas fit into the classification of fruits", "Are there any other common fruits that are botanically berries", "What are the main characteristics of a botanical berry"], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "{\"is_fruit\":true}"}, "delta": {"role": "assistant", "content": ""}}]}'
         headers:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96441bf52cd3a2be-YUL
-            Content-Length:
-                - "97"
+                - 964ecdbf686ca29a-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains; preload
-        status: 400 Bad Request
-        code: 400
-        duration: 224ms
+        status: 200 OK
+        code: 200
+        duration: 1.965s

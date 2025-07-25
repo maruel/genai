@@ -16,12 +16,14 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"reflect"
 	"regexp"
 	"sort"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/invopop/jsonschema"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
@@ -261,4 +263,13 @@ func MimeByExt(ext string) string {
 	default:
 		return mime.TypeByExtension(ext)
 	}
+}
+
+// JSONSchemaFor returns the JSON schema for the given type.
+//
+// Many providers (including OpenAI) struggle with $ref that jsonschema package uses by default.
+func JSONSchemaFor(t reflect.Type) *jsonschema.Schema {
+	// No need to set an ID on the struct, it's unnecessary data that may confuse the tool.
+	r := jsonschema.Reflector{Anonymous: true, DoNotReference: true}
+	return r.ReflectFromType(t)
 }

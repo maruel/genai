@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 555
+        content_length: 452
         host: api.perplexity.ai
         body: |
-            {"model":"sonar-deep-research","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"return_images":true,"return_related_questions":true,"stream":false,"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://github.com/maruel/genai/scoreboard/schema","$ref":"#/$defs/schema","$defs":{"schema":{"properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}}}
+            {"model":"sonar-deep-research","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"return_images":true,"return_related_questions":true,"stream":false,"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,21 +19,20 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 97
-        body: '{"error":{"message":"Invalid JSON schema. #/$defs/schema","type":"invalid_parameter","code":400}}'
+        content_length: -1
+        uncompressed: true
+        body: '{"id": "6b9c662f-1ea1-4882-ab74-7e5c4a5c9875", "model": "sonar-deep-research", "created": 1753479475, "usage": {"prompt_tokens": 17, "completion_tokens": 176, "total_tokens": 193, "citation_tokens": 5399, "num_search_queries": 2, "reasoning_tokens": 9572}, "citations": ["https://en.wikipedia.org/wiki/Banana", "https://www.banana-label-catalog.org/es/article/banana-fruit-berry-or-vegetable-0", "https://www.dictionary.com/browse/banana", "https://www.medicinenet.com/are_bananas_classified_as_a_fruit_or_a_berry/article.htm", "https://www.vocabulary.com/dictionary/banana", "https://www.healthline.com/nutrition/bananas-berries-or-fruits", "https://www.hellofresh.com/eat/ingredient-info/are-bananas-considered-berries-or-fruits", "https://www.britannica.com/plant/banana-plant"], "search_results": [{"title": "Banana", "url": "https://en.wikipedia.org/wiki/Banana", "date": null, "last_updated": null}, {"title": "Is a banana a fruit, berry, or vegetable?", "url": "https://www.banana-label-catalog.org/es/article/banana-fruit-berry-or-vegetable-0", "date": null, "last_updated": null}, {"title": "BANANA Definition & Meaning", "url": "https://www.dictionary.com/browse/banana", "date": null, "last_updated": null}, {"title": "Are Bananas Classified as a Fruit or a Berry?", "url": "https://www.medicinenet.com/are_bananas_classified_as_a_fruit_or_a_berry/article.htm", "date": null, "last_updated": null}, {"title": "Banana - Definition, Meaning & Synonyms", "url": "https://www.vocabulary.com/dictionary/banana", "date": null, "last_updated": null}, {"title": "Is a Banana a Berry or Fruit? The Surprising Truth", "url": "https://www.healthline.com/nutrition/bananas-berries-or-fruits", "date": null, "last_updated": null}, {"title": "Are Bananas Considered Berries or Fruits? + Other Fruity ...", "url": "https://www.hellofresh.com/eat/ingredient-info/are-bananas-considered-berries-or-fruits", "date": null, "last_updated": null}, {"title": "Banana | Description, History, Cultivation, Nutrition ...", "url": "https://www.britannica.com/plant/banana-plant", "date": null, "last_updated": null}], "related_questions": ["What other fruits are considered berries", "Why do people often think bananas are not berries", "How do bananas differ from plantains", "What are the nutritional benefits of eating bananas", "How do bananas grow and develop on the plant"], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "<think>\nAlright, let''s tackle this query. The user is asking if a banana is a fruit, and they want only a JSON response without any explanation. First, I need to check the search results to confirm the correct classification.\n\nLooking at the sources, both [1] and [2] mention that botanically, bananas are considered berries. However, all berries are a subset of fruits. Source [4] and [6] explicitly state that bananas meet the botanical criteria for berries, which are a type of fruit. Even though berries are a specific category within fruits, the general classification as a fruit still holds. The user wants a simple JSON answer, so the answer should be \"yes.\" I need to make sure that the JSON structure is correct, using lowercase keys and standard formatting without any additional comments or explanations.\n</think>\n\n{\"is_fruit\": true}"}, "delta": {"role": "assistant", "content": ""}}]}'
         headers:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 964428275e8fa20b-YYZ
-            Content-Length:
-                - "97"
+                - 964ecc8dda89a29a-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains; preload
-        status: 400 Bad Request
-        code: 400
-        duration: 58ms
+        status: 200 OK
+        code: 200
+        duration: 23.226s

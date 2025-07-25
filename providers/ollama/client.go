@@ -17,6 +17,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"reflect"
 	"strings"
 	"time"
 
@@ -115,7 +116,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			c.Options.TopK = v.TopK
 			c.Options.Stop = v.Stop
 			if v.DecodeAs != nil {
-				c.Format = jsonschema.Reflect(v.DecodeAs)
+				c.Format = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
 			} else if v.ReplyAsJSON {
 				c.Format = "json"
 			}

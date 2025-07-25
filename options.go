@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/invopop/jsonschema"
+	"github.com/maruel/genai/internal"
 )
 
 // UnsupportedContinuableError is an error when an unsupported option is used but the operation still
@@ -264,9 +265,7 @@ func (t *ToolDef) Validate() error {
 // GetInputSchema returns the json schema for the input argument of the callback.
 func (t *ToolDef) GetInputSchema() *jsonschema.Schema {
 	// This function assumes Validate() was called.
-	// No need to set an ID on the struct, it's unnecessary data that may confuse the tool.
-	r := jsonschema.Reflector{Anonymous: true, DoNotReference: true}
-	return r.ReflectFromType(reflect.TypeOf(t.Callback).In(1))
+	return internal.JSONSchemaFor(reflect.TypeOf(t.Callback).In(1))
 }
 
 // ToolCallRequest determines if we want the LLM to request a tool call.

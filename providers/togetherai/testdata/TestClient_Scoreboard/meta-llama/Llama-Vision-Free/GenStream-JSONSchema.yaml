@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 494
+        content_length: 391
         host: api.together.xyz
         body: |
-            {"model":"meta-llama/Llama-Vision-Free","stream":true,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://github.com/maruel/genai/scoreboard/schema","$ref":"#/$defs/schema","$defs":{"schema":{"properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}}
+            {"model":"meta-llama/Llama-Vision-Free","stream":true,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,32 +19,43 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 177
-        body: |-
-            {
-              "id": "o495tgF-4msxKE-963618606c8ba2c2",
-              "error": {
-                "message": "Input validation error",
-                "type": "invalid_request_error",
-                "param": null,
-                "code": null
-              }
-            }
+        content_length: -1
+        body: |+
+            data: {"id":"o4Xxkpr-4msxKE-964ec8dc2a4ba2de","object":"chat.completion.chunk","created":1753479300,"choices":[{"index":0,"text":"","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-Vision-Free","usage":null}
+
+            data: {"id":"o4Xxkpr-4msxKE-964ec8dc2a4ba2de","object":"chat.completion.chunk","created":1753479300,"choices":[{"index":0,"text":"{\"","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"{\"","tool_calls":null}}],"model":"meta-llama/Llama-Vision-Free","usage":null}
+
+            data: {"id":"o4Xxkpr-4msxKE-964ec8dc2a4ba2de","object":"chat.completion.chunk","created":1753479300,"choices":[{"index":0,"text":"is","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"is","tool_calls":null}}],"model":"meta-llama/Llama-Vision-Free","usage":null}
+
+            data: {"id":"o4Xxkpr-4msxKE-964ec8dc2a4ba2de","object":"chat.completion.chunk","created":1753479300,"choices":[{"index":0,"text":"_f","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"_f","tool_calls":null}}],"model":"meta-llama/Llama-Vision-Free","usage":null}
+
+            data: {"id":"o4Xxkpr-4msxKE-964ec8dc2a4ba2de","object":"chat.completion.chunk","created":1753479300,"choices":[{"index":0,"text":"ruit","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"ruit","tool_calls":null}}],"model":"meta-llama/Llama-Vision-Free","usage":null}
+
+            data: {"id":"o4Xxkpr-4msxKE-964ec8dc2a4ba2de","object":"chat.completion.chunk","created":1753479300,"choices":[{"index":0,"text":"\":","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"\":","tool_calls":null}}],"model":"meta-llama/Llama-Vision-Free","usage":null}
+
+            data: {"id":"o4Xxkpr-4msxKE-964ec8dc2a4ba2de","object":"chat.completion.chunk","created":1753479300,"choices":[{"index":0,"text":" true","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":" true","tool_calls":null}}],"model":"meta-llama/Llama-Vision-Free","usage":null}
+
+            data: {"id":"o4Xxkpr-4msxKE-964ec8dc2a4ba2de","object":"chat.completion.chunk","created":1753479300,"choices":[{"index":0,"text":"}","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"}","tool_calls":null}}],"model":"meta-llama/Llama-Vision-Free","usage":null}
+
+            data: {"id":"o4Xxkpr-4msxKE-964ec8dc2a4ba2de","object":"chat.completion.chunk","created":1753479300,"choices":[{"index":0,"text":"","logprobs":null,"tool_calls":null,"finish_reason":"stop","delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-Vision-Free","usage":null}
+
+            data: {"id":"o4Xxkpr-4msxKE-964ec8dc2a4ba2de","object":"chat.completion.chunk","created":1753479300,"choices":[],"model":"meta-llama/Llama-Vision-Free","usage":{"prompt_tokens":27,"total_tokens":35,"completion_tokens":8}}
+
+            data: [DONE]
+
         headers:
             Access-Control-Allow-Origin:
                 - '*'
             Alt-Svc:
                 - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache, no-transform
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 963618606c8ba2c2-YUL
-            Content-Length:
-                - "177"
+                - 964ec8dc2a4ba2de-YUL
             Content-Type:
-                - application/json; charset=utf-8
-            Etag:
-                - W/"b1-90XnLYX2a8/NhXQn88r4gmjiknQ"
+                - text/event-stream;charset=utf-8
             Retry-After:
                 - "6"
             Server:
@@ -54,9 +65,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 68ee271f-4492-498c-8bd1-14ce53b7e621-noamzn
+                - 452ea0c0-c35a-4026-946a-646678da423a-noamzn
+            X-Api-Call-Start:
+                - "2025-07-25T21:35:01.928Z"
             X-Api-Received:
-                - "2025-07-22T21:40:13.584Z"
+                - "2025-07-25T21:35:00.795Z"
+            X-Api-Retries:
+                - "5"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -72,7 +87,7 @@ interactions:
             X-Ratelimit-Reset:
                 - "6"
             X-Request-Id:
-                - o495tgF-4msxKE-963618606c8ba2c2
-        status: 400 Bad Request
-        code: 400
-        duration: 169ms
+                - o4Xxkpr-4msxKE-964ec8dc2a4ba2de
+        status: 200 OK
+        code: 200
+        duration: 1.553s

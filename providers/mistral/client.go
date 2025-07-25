@@ -15,6 +15,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"reflect"
 	"strings"
 
 	"github.com/invopop/jsonschema"
@@ -291,7 +292,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 				// Mistral requires a name.
 				c.ResponseFormat.JSONSchema.Name = "response"
 				c.ResponseFormat.JSONSchema.Strict = true
-				c.ResponseFormat.JSONSchema.Schema = jsonschema.Reflect(v.DecodeAs)
+				c.ResponseFormat.JSONSchema.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
 			} else if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}

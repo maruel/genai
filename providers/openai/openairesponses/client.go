@@ -17,6 +17,7 @@ import (
 	"mime"
 	"net/http"
 	"os"
+	"reflect"
 	"strings"
 	"time"
 
@@ -434,7 +435,7 @@ func (r *Response) initOptions(v *genai.OptionsText, model string) ([]string, []
 		// OpenAI requires a name.
 		r.Text.Format.Name = "response"
 		r.Text.Format.Strict = true
-		r.Text.Format.Schema = jsonschema.Reflect(v.DecodeAs)
+		r.Text.Format.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
 	} else if v.ReplyAsJSON {
 		r.Text.Format.Type = "json_object"
 	}

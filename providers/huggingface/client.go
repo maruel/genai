@@ -17,6 +17,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
@@ -144,7 +145,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			c.Stop = v.Stop
 			if v.DecodeAs != nil {
 				c.ResponseFormat.Type = "json_schema"
-				c.ResponseFormat.JSONSchema = jsonschema.Reflect(v.DecodeAs)
+				c.ResponseFormat.JSONSchema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
 				// Huggingface complains otherwise.
 				c.ResponseFormat.JSONSchema.Extras = map[string]any{"name": "response"}
 			} else if v.ReplyAsJSON {

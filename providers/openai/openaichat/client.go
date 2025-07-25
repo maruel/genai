@@ -22,6 +22,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"reflect"
 	"strings"
 	"time"
 
@@ -292,7 +293,7 @@ type OptionsImage struct {
 	Background Background
 }
 
-// https://platform.openai.com/docs/api-reference/chat/create
+// ChatRequest is documented at https://platform.openai.com/docs/api-reference/chat/create
 type ChatRequest struct {
 	Model            string             `json:"model"`
 	MaxTokens        int64              `json:"max_tokens,omitzero"` // Deprecated
@@ -440,7 +441,7 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) []string {
 		// OpenAI requires a name.
 		c.ResponseFormat.JSONSchema.Name = "response"
 		c.ResponseFormat.JSONSchema.Strict = true
-		c.ResponseFormat.JSONSchema.Schema = jsonschema.Reflect(v.DecodeAs)
+		c.ResponseFormat.JSONSchema.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
 	} else if v.ReplyAsJSON {
 		c.ResponseFormat.Type = "json_object"
 	}
@@ -482,7 +483,7 @@ const (
 	ReasoningEffortHigh   ReasoningEffort = "high"
 )
 
-// https://platform.openai.com/docs/api-reference/chat/create
+// Message is documented at https://platform.openai.com/docs/api-reference/chat/create
 type Message struct {
 	Role    string   `json:"role,omitzero"` // "developer", "assistant", "user"
 	Name    string   `json:"name,omitzero"` // An optional name for the participant. Provides the model information to differentiate between participants of the same role.
@@ -561,6 +562,8 @@ func (m *Message) To(out *genai.Message) error {
 
 type Contents []Content
 
+// UnmarshalJSON implements json.Unmarshaler.
+//
 // OpenAI replies with content as a string.
 func (c *Contents) UnmarshalJSON(data []byte) error {
 	var v []Content
@@ -841,7 +844,7 @@ type ChatStreamChunkResponse struct {
 
 //
 
-// https://platform.openai.com/docs/api-reference/images
+// ImageRequest is documented at https://platform.openai.com/docs/api-reference/images
 type ImageRequest struct {
 	Prompt            string     `json:"prompt"`
 	Model             string     `json:"model,omitzero"`              // Default to dall-e-2, unless a gpt-image-1 specific parameter is used.
@@ -888,7 +891,7 @@ type ImageChoiceData struct {
 
 //
 
-// https://platform.openai.com/docs/api-reference/files/object
+// File is documented at https://platform.openai.com/docs/api-reference/files/object
 type File struct {
 	Bytes         int64     `json:"bytes"` // File size
 	CreatedAt     base.Time `json:"created_at"`
@@ -913,14 +916,14 @@ func (f *File) GetExpiry() time.Time {
 	return f.ExpiresAt.AsTime()
 }
 
-// https://platform.openai.com/docs/api-reference/files/delete
+// FileDeleteResponse is documented at https://platform.openai.com/docs/api-reference/files/delete
 type FileDeleteResponse struct {
 	ID      string `json:"id"`
 	Object  string `json:"object"` // "file"
 	Deleted bool   `json:"deleted"`
 }
 
-// https://platform.openai.com/docs/api-reference/files/list
+// FileListResponse is documented at https://platform.openai.com/docs/api-reference/files/list
 type FileListResponse struct {
 	Data   []File `json:"data"`
 	Object string `json:"object"` // "list"
@@ -928,7 +931,7 @@ type FileListResponse struct {
 
 //
 
-// https://platform.openai.com/docs/api-reference/batch/request-input
+// BatchRequestInput is documented at https://platform.openai.com/docs/api-reference/batch/request-input
 type BatchRequestInput struct {
 	CustomID string      `json:"custom_id"`
 	Method   string      `json:"method"` // "POST"
@@ -936,7 +939,7 @@ type BatchRequestInput struct {
 	Body     ChatRequest `json:"body"`
 }
 
-// https://platform.openai.com/docs/api-reference/batch/request-output
+// BatchRequestOutput is documented at https://platform.openai.com/docs/api-reference/batch/request-output
 type BatchRequestOutput struct {
 	CustomID string `json:"custom_id"`
 	ID       string `json:"id"`
@@ -951,7 +954,7 @@ type BatchRequestOutput struct {
 	} `json:"response"`
 }
 
-// https://platform.openai.com/docs/api-reference/batch/create
+// BatchRequest is documented at https://platform.openai.com/docs/api-reference/batch/create
 type BatchRequest struct {
 	CompletionWindow string            `json:"completion_window"` // Must be "24h"
 	Endpoint         string            `json:"endpoint"`          // One of /v1/responses, /v1/chat/completions, /v1/embeddings, /v1/completions
@@ -959,7 +962,7 @@ type BatchRequest struct {
 	Metadata         map[string]string `json:"metadata,omitzero"` // Maximum 16 keys of 64 chars, values max 512 chars
 }
 
-// https://platform.openai.com/docs/api-reference/batch/object
+// Batch is documented at https://platform.openai.com/docs/api-reference/batch/object
 type Batch struct {
 	CancelledAt      base.Time `json:"cancelled_at"`
 	CancellingAt     base.Time `json:"cancelling_at"`
@@ -996,7 +999,7 @@ type Batch struct {
 
 //
 
-// https://platform.openai.com/docs/api-reference/models/object
+// Model is documented at https://platform.openai.com/docs/api-reference/models/object
 //
 // Sadly the modalities aren't reported. The only way I can think of to find it at run time is to fetch
 // https://platform.openai.com/docs/models/gpt-4o-mini-realtime-preview, find the div containing

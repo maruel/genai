@@ -15,6 +15,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"reflect"
 	"strings"
 
 	"github.com/invopop/jsonschema"
@@ -308,7 +309,7 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) ([]string,
 	c.Stop = v.Stop
 	if v.DecodeAs != nil {
 		c.ResponseFormat.Type = "json_schema"
-		c.ResponseFormat.JSONSchema = jsonschema.Reflect(v.DecodeAs)
+		c.ResponseFormat.JSONSchema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
 		c.ResponseFormat.JSONSchema.Extras = map[string]any{"name": "response"}
 	} else if v.ReplyAsJSON {
 		c.ResponseFormat.Type = "json_object"

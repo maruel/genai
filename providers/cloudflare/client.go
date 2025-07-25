@@ -18,6 +18,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"reflect"
 	"slices"
 	"sort"
 	"strconv"
@@ -64,6 +65,7 @@ var Scoreboard = genai.Scoreboard{
 				Seed:               true,
 			},
 			GenStream: &genai.FunctionalityText{
+				JSONSchema:         true,
 				BrokenFinishReason: true,
 				NoStopSequence:     true,
 				Tools:              genai.Flaky,
@@ -136,7 +138,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			}
 			if v.DecodeAs != nil {
 				c.ResponseFormat.Type = "json_schema"
-				c.ResponseFormat.JSONSchema = jsonschema.Reflect(v.DecodeAs)
+				c.ResponseFormat.JSONSchema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
 			} else if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}

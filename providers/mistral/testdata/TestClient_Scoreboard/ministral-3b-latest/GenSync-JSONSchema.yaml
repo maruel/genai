@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 559
+        content_length: 456
         host: api.mistral.ai
         body: |
-            {"model":"ministral-3b-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"name":"response","strict":true,"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://github.com/maruel/genai/scoreboard/schema","$ref":"#/$defs/schema","$defs":{"schema":{"properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}}}
+            {"model":"ministral-3b-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"name":"response","strict":true,"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,7 +21,7 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"0ad0ff211f32472c991fdce2276b38fc","object":"chat.completion","created":1753147549,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"{\"is_fruit\": true}"},"finish_reason":"stop"}],"usage":{"prompt_tokens":20,"total_tokens":28,"completion_tokens":8}}'
+        body: '{"id":"37f25f7e48e143209d5bad7a3cbc31fb","created":1753479403,"model":"ministral-3b-latest","usage":{"prompt_tokens":20,"total_tokens":28,"completion_tokens":8},"object":"chat.completion","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","tool_calls":null,"content":"{\"is_fruit\": true}"}}]}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -30,23 +30,23 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962f2578be7933f1-YUL
+                - 964ecb613cb6a2e6-YUL
             Content-Type:
                 - application/json
             Mistral-Correlation-Id:
-                - 01982fbc-a7c6-7343-adaa-3b5751c22fa6
+                - 01984384-591c-720f-b088-f4c6f0f593d3
             Server:
                 - cloudflare
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains
             X-Envoy-Upstream-Service-Time:
-                - "113"
+                - "126"
             X-Kong-Proxy-Latency:
-                - "7"
+                - "5"
             X-Kong-Request-Id:
-                - 01982fbc-a7c6-7343-adaa-3b5751c22fa6
+                - 01984384-591c-720f-b088-f4c6f0f593d3
             X-Kong-Upstream-Latency:
-                - "113"
+                - "127"
             X-Ratelimit-Limit-Req-10-Second:
                 - "60"
             X-Ratelimit-Limit-Tokens-Minute:
@@ -54,13 +54,13 @@ interactions:
             X-Ratelimit-Limit-Tokens-Month:
                 - "10000000000"
             X-Ratelimit-Remaining-Req-10-Second:
-                - "47"
+                - "58"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "1999716"
+                - "1999972"
             X-Ratelimit-Remaining-Tokens-Month:
-                - "9999999400"
+                - "9999945729"
             X-Ratelimit-Tokens-Query-Cost:
                 - "28"
         status: 200 OK
         code: 200
-        duration: 319ms
+        duration: 342ms

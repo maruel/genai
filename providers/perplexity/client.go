@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"reflect"
 	"strings"
 
 	"github.com/invopop/jsonschema"
@@ -40,10 +41,12 @@ var Scoreboard = genai.Scoreboard{
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Thinking:       true,
+				JSONSchema:     true,
 				NoStopSequence: true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Thinking:       true,
+				JSONSchema:     true,
 				NoStopSequence: true,
 			},
 		},
@@ -53,11 +56,13 @@ var Scoreboard = genai.Scoreboard{
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Thinking:       true,
+				JSONSchema:     true,
 				Citations:      true,
 				NoStopSequence: true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Thinking:       true,
+				JSONSchema:     true,
 				Citations:      true,
 				NoStopSequence: true,
 			},
@@ -67,10 +72,12 @@ var Scoreboard = genai.Scoreboard{
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
+				JSONSchema:     true,
 				Citations:      true,
 				NoStopSequence: true,
 			},
 			GenStream: &genai.FunctionalityText{
+				JSONSchema:     true,
 				Citations:      true,
 				NoStopSequence: true,
 			},
@@ -145,7 +152,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			if v.DecodeAs != nil {
 				// Requires Tier 3 to work in practice.
 				c.ResponseFormat.Type = "json_schema"
-				c.ResponseFormat.JSONSchema.Schema = jsonschema.Reflect(v.DecodeAs)
+				c.ResponseFormat.JSONSchema.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
 			} else if v.ReplyAsJSON {
 				errs = append(errs, errors.New("unsupported option ReplyAsJSON"))
 			}
@@ -455,6 +462,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			return fmt.Errorf("unexpected role %q", role)
 		}
 		f := genai.ContentFragment{TextFragment: pkt.Choices[0].Delta.Content}
+		fmt.Fprintf(os.Stderr, "- %q\n", f.TextFragment)
 		if !f.IsZero() {
 			if err := result.Accumulate(f); err != nil {
 				return err

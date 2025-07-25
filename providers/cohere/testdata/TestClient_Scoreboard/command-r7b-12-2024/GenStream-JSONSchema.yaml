@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 515
+        content_length: 412
         host: api.cohere.com
         body: |
-            {"stream":true,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://github.com/maruel/genai/scoreboard/schema","$ref":"#/$defs/schema","$defs":{"schema":{"properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}}
+            {"stream":true,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,8 +19,46 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 164
-        body: '{"id":"f5ad553a-dd7c-41b5-bf80-be2e05623d81","message":"invalid request: response_format validation: invalid ''json_schema'' provided: missing required field ''type''"}'
+        content_length: -1
+        body: |+
+            event: message-start
+            data: {"id":"bfe5f54d-5ec1-4b69-b090-10b8a8302b7b","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
+
+            event: content-start
+            data: {"type":"content-start","index":0,"delta":{"message":{"content":{"type":"text","text":""}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"{"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"\n    \""}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"is"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"_"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"fruit"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"\":"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" true"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"\n}"}}}}
+
+            event: content-end
+            data: {"type":"content-end","index":0}
+
+            event: message-end
+            data: {"type":"message-end","delta":{"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":17,"output_tokens":10},"tokens":{"input_tokens":512,"output_tokens":12}}}}
+
+            data: [DONE]
+
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -28,10 +66,8 @@ interactions:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
             Cache-Control:
                 - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
-            Content-Length:
-                - "164"
             Content-Type:
-                - application/json
+                - text/event-stream
             Expires:
                 - Thu, 01 Jan 1970 00:00:00 GMT
             Pragma:
@@ -45,9 +81,9 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - 233d76e0399d718afebf887db5b442d2
+                - acfa3913e6e6349aa8c1d4ca2e930168
             X-Envoy-Upstream-Service-Time:
-                - "16"
-        status: 400 Bad Request
-        code: 400
-        duration: 56ms
+                - "141"
+        status: 200 OK
+        code: 200
+        duration: 223ms

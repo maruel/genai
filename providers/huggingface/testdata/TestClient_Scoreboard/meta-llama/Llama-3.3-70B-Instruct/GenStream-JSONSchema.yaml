@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 562
+        content_length: 459
         host: router.huggingface.co
         body: |
-            {"model":"meta-llama/Llama-3.3-70B-Instruct","stream":true,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://github.com/maruel/genai/scoreboard/schema","$ref":"#/$defs/schema","$defs":{"schema":{"properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}},"name":"response"}},"stream_options":{"include_usage":true}}
+            {"model":"meta-llama/Llama-3.3-70B-Instruct","stream":true,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"],"name":"response"}},"stream_options":{"include_usage":true}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -33,15 +33,15 @@ interactions:
             Cross-Origin-Opener-Policy:
                 - same-origin
             Inference-Id:
-                - 0-61031c3c-1a93-4908-8901-94c288e144ef
+                - 0-acb64542-d7ee-4f75-bda7-7d642581b6db
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Vary:
                 - Origin
             Via:
-                - 1.1 c73f9dc228a4b3fb05ae37ce52d04a1c.cloudfront.net (CloudFront)
+                - 1.1 614ee5305862f7e9bae65335466e5512.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - 9ipSn0uXLXJwIoVDacbzl9jftUlGRAcAgZqwMfYuJytSQTUk_AtYTA==
+                - 1cYhdmDU9rBecI4WJIGNk6k_b1__VRKWTSUoywIkBi-gsB5G7qPp1g==
             X-Amz-Cf-Pop:
                 - YTO50-P1
             X-Cache:
@@ -49,11 +49,11 @@ interactions:
             X-Powered-By:
                 - huggingface-moon
             X-Request-Id:
-                - ghLSX2hzoNuOzjNX
+                - DFZgCcrzoCCKHPTt
             X-Robots-Tag:
                 - none
             X-Trace-Id:
-                - 1559efa764406e87cdbc6a309345efa6
+                - 2e40f3ccbdcf065c708ee85b0107b7a6
         status: 400 Bad Request
         code: 400
-        duration: 118ms
+        duration: 189ms

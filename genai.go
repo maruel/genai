@@ -23,7 +23,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"unicode"
 
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
@@ -242,10 +241,10 @@ func (m *Message) AsText() string {
 	out := data[:0]
 	for i := range m.Contents {
 		if s := m.Contents[i].Text; s != "" {
-			out = append(out, strings.TrimRightFunc(s, unicode.IsSpace))
+			out = append(out, s)
 		}
 	}
-	return strings.Join(out, "\n")
+	return strings.Join(out, "")
 }
 
 // Decode decodes the JSON message into the struct.

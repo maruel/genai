@@ -97,7 +97,7 @@ func TestProviderGenThinking_GenSync_errors(t *testing.T) {
 		{
 			name: "Multiple content blocks",
 			in:   []genai.Content{{Text: "First part. "}, {Text: "<thinking>Thinking part</thinking>"}, {Text: " Second part."}},
-			want: "unexpected prefix before thinking tag: \"First part.\\n\"",
+			want: "unexpected prefix before thinking tag: \"First part. \"",
 		},
 		{
 			name: "Message with existing thinking content",

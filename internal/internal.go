@@ -195,7 +195,7 @@ func matchCassetteGemini(r *http.Request, i cassette.Request) bool {
 	// Gemini pass the API key as a query argument (!) so zap it before matching.
 	r = r.Clone(r.Context())
 	r.URL.RawQuery = removeKeyFromQuery(r.URL.RawQuery, "key")
-	r.ParseForm()
+	_ = r.ParseForm()
 	return matchCassetteCloudflare(r, i)
 }
 

@@ -276,7 +276,7 @@ func getClientInner(t *testing.T, apiKey, m string) *gemini.Client {
 		// Gemini pass the API key as a query argument (!) so zap it before matching.
 		r = r.Clone(r.Context())
 		r.URL.RawQuery = removeKeyFromQuery(r.URL.RawQuery, "key")
-		r.ParseForm()
+		_ = r.ParseForm()
 		res := internal.DefaultMatcher(r, i)
 		// Useful for debugging.
 		// if !res {

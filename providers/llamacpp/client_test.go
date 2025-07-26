@@ -96,6 +96,9 @@ type lazyServer struct {
 }
 
 func (l *lazyServer) lazyStart(t testing.TB) string {
+	if os.Getenv("RECORD") != "1" && os.Getenv("CI") == "true" {
+		return "http://localhost:0"
+	}
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	if l.url == "" {

@@ -510,6 +510,11 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 				return genai.Result{}, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
 			}
 		}
+		for j, tool := range msg.ToolCalls {
+			if len(tool.Opaque) != 0 {
+				return genai.Result{}, fmt.Errorf("message #%d tool call #%d: field Opaque not supported", i, j)
+			}
+		}
 	}
 	rpcin := CompletionRequest{CachePrompt: true}
 	if err := rpcin.Init(msgs, opts, ""); err != nil {
@@ -545,11 +550,15 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 		}
 	}
 
-	// Check for non-empty Opaque field
 	for i, msg := range msgs {
 		for j, content := range msg.Contents {
 			if len(content.Opaque) != 0 {
 				return result, fmt.Errorf("message #%d content #%d: Opaque field not supported", i, j)
+			}
+		}
+		for j, tool := range msg.ToolCalls {
+			if len(tool.Opaque) != 0 {
+				return result, fmt.Errorf("message #%d tool call #%d: field Opaque not supported", i, j)
 			}
 		}
 	}

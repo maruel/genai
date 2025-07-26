@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1376
+        content_length: 2762
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"model","parts":[{"thought":true,"text":"**Calculating a Square Root**\n\nOkay, so the user wants the square root of 132413.  No problem. They've specified the `square_root` tool, and that's precisely what I'll use.  It's pretty straightforward: I need to call the `square_root` tool and pass it the `number` 132413.  Once the tool runs, it'll give me the answer, which I'll then present back to the user without any extra commentary, just the numerical result.  I'll print the tool's output for my own reference. Let's get to it.\n"},{"functionCall":{"name":"square_root","args":{"number":132413}}}]},{"role":"user","parts":[{"functionResponse":{"name":"square_root","response":{"response":"363.89"}}}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"NONE"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"model","parts":[{"thought":true,"text":"**Calculating a Square Root - Streamlined Approach**\n\nOkay, I need to find the square root of 132413.  Perfect, there's a dedicated `square_root` tool. It takes the input `number`, which is 132413 in this case.  Easy enough, I'll call the `square_root` function with that parameter.\n\nThe user's preference is clear: just the result, no extra fluff. So, after I execute the tool and get the output, I'll present *only* the calculated value.  \n\nThe necessary tool call will be `print(square_root(number=132413))`. This will give me the square root, ready for the user's consumption.  That's it, simple and direct.\n"},{"thoughtSignature":"CpsHAVSoXO5HpwUyXD6MfY1tBAH4amOhLmnAYRTC09zq1Vo44kqMWjT2iVxzc08rWSPUOg9DLugiNt75hcZVSZOisxSyl70/uEGLX0vqSEMit42NQhzJyV8ES0FT/ulBc4IXWDKVfYt5W24bSijYVqCoyiwSA5S28CEcsaiWfCyhlipk8p+gAqc6Gum0ZAxDBr/On1j7+bqUfspGNuMR1i1KpkQYYkOQr35DFzf/g09pCVcRaLElWaRcqj63OfwBwO3agaAHbFXKWSPucnEs4Q/XqtWBupCo4TTb4JsNNrcnAsgksQm5rpp1vEM8WU1aY3TQA9s5ZjDA2O9UBsoXv6vlk34kspBCX2cOf12y6b8JzC9I1/666t3FZ2Sr9FIfVRCVNSMOcJfzvnUR3jUmj5fk/Vyuh3qYQUSemHthUs/UAUQhshql0dp4UBkiLNZo1zHG039IE0jauby4+vi21eZvb0LMS98R2WSekQtn8BNk0XovLaL8+Nvt/Z4g7K8djUz8LoXTUbDMy6Ej3zKcpDJ1w8pKl4A1L3gTOFFf4cxp9MirTSaOIXC2GYUh2Ye2kNul8fgjJLoU3pxxGhzRsP3nmg3Y3jyejuufVfeZbDOt4xh9uZlwqCKNAfKkBIJAQ3BeBRYEhR0PFQH1TjfZ/ojGMnVK5quoLGvcfJBs8Y98EduYnhaTE6xPce1SFI/0EpCarUvTMDEjwawwQuxUerucepi/eIeXaEePjYH/g6vMd7ZPpK5118Zax5A9O+6rMvMNRHKp9uOfMpyxQkXwbS7wF+dCwL5fiJWnw9PSdtrUvbSprCkj9Ki/nKkb59Bv9canYBGbwhYnzeqUOK2f/2hUFEJRelwJlIsepx+hevt7JFWb9qBQRx0jaaUGqH2UX7wMAkO3nnXNh3btb+7A6tLrpivWfV84PEEtVk4AG/u+SLa9b5Ilg2At5anBeBL5Cgdr10yaLtCkKoIIkCO/slexJCoTuFJw7jpNKc75sGoB1gcSVjEkNXlotvdVHlgnOsAAIuPgvKRT2oMrJBgTe6ce/Fem9Rab7Rsdc83ZIo3wvomNrMMNArH94G5ZjonmmO+mZmf4netn+g/m54oHgvXps2ffkUCttN+VxbE1QEA+LwU2sP2LoxBym1/eklzSe6mfOwJsOXhE1zgzrWBf7ZBqWggPuULZRGIzEC/f0JmVjYgMThxzzTvY1vkAVy85yEIatENC06I35oo7zT8=","functionCall":{"name":"square_root","args":{"number":132413}}}]},{"role":"user","parts":[{"functionResponse":{"name":"square_root","response":{"response":"363.89"}}}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"NONE"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -38,18 +38,18 @@ interactions:
                 }
               ],
               "usageMetadata": {
-                "promptTokenCount": 299,
+                "promptTokenCount": 332,
                 "candidatesTokenCount": 6,
-                "totalTokenCount": 305,
+                "totalTokenCount": 338,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
-                    "tokenCount": 299
+                    "tokenCount": 332
                   }
                 ]
               },
               "modelVersion": "gemini-2.5-pro",
-              "responseId": "I_mEaMuMA-Sc1MkPwpjT2QM"
+              "responseId": "6waFaNjRIv-2jMcPyIPQ2Ak"
             }
         headers:
             Alt-Svc:
@@ -59,7 +59,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=1309
+                - gfet4t7; dur=1010
             Vary:
                 - Origin
                 - X-Origin
@@ -72,4 +72,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.32s
+        duration: 1.02s

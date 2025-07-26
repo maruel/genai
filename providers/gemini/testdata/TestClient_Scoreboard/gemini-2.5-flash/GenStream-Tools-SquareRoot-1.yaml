@@ -23,7 +23,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Computing the Square Root**\\n\\nI've initiated the calculation by calling the `square_root` tool with the input number 132413. My next step will be to efficiently extract and present the numerical result, the \\\"response\\\" field, from the tool's output.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 117,\"totalTokenCount\": 183,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 117}],\"thoughtsTokenCount\": 66},\"modelVersion\": \"gemini-2.5-flash\",\"responseId\": \"ePeEaKuUC4_cjMcP5bu94AM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"square_root\",\"args\": {\"number\": 132413}},\"thoughtSignature\": \"CiQBVKhc7v3Q3+uQw5rFXWyMII/HahOy91Ez402dIveTtBx1V7kKVwFUqFzu8HD5reEY3u3zrfukEYaxf7BomJYXmRtqd42Ttcwvd3jvjGSR/DEBcph+O//FJNMd+9K4OuSTAj6ZlsRJkONrw++LgsTIx0ejoEJIh3n5bPE+1QrDAQFUqFzuV4VTULsBoF6e1OXpz2t/5z8B2HvozAFWYfdTITbDRMKHPmuqkjNTuGIlqI0WBHphV8hbUVTKG6cPM9eWgz9cUZH8BB6JR8v4NbmGeOxuC65r198ClkFp8RaaLl2f/iuIcT3qswIt/ebWm91EuXBMjIlovRVJMywR1Drn8mP7fE3qim/yrOeMWOZ2IOuDneh+vzLLOmhDs+sEtWsacqFkG5afatuUeHH7rYpbBwEZH8qFHxzIvXgi2r8hpTwtGQ==\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 117,\"candidatesTokenCount\": 19,\"totalTokenCount\": 202,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 117}],\"thoughtsTokenCount\": 66},\"modelVersion\": \"gemini-2.5-flash\",\"responseId\": \"ePeEaKuUC4_cjMcP5bu94AM\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Computing the Square Root**\\n\\nI'm ready to use the `square_root` tool now. The number I need to find the square root of is 132413. My next step will be to call the tool with the appropriate input. Once I get the result, I'll provide it as the final answer.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 117,\"totalTokenCount\": 185,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 117}],\"thoughtsTokenCount\": 68},\"modelVersion\": \"gemini-2.5-flash\",\"responseId\": \"4waFaOGzBv7VjMcPgam_4AM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"square_root\",\"args\": {\"number\": 132413}},\"thoughtSignature\": \"CiQBVKhc7hf0Q9u6c4gf2QG+58KqMxi6vXNvxQ7LJJimU0jH8n8KVwFUqFzuL6a5D37YFbfmcGUJp3+GZTE9AeO0dvPqhetnhxc4TOiTEHG8y50HtUXzEhYzkS6ducQM43ry9qSd3W2+vlv1p6Q+7zgWlsc6g6SECZi76oBSuQrDAQFUqFzukpndlKqLLXmbsEaxEW3eNtA/11LyYDdPSE9X7JJr7ZQEMe6+ARUUrKJdCrzk9r5nbK8VlPHzZ+2hnYqOJtS3uF5N/bVlLE2T9Qsw3WkmGfhaOuRAzRpriMXOlUNfmY0L5NzWbhodjDvb3bH710vWIcMcxgZb9Fwtyj48Z7OlnAdS+11RkYPqTzWWCIA5qP4FgSLgSF27erlnfU+CqHfSGWwXjLWkLe21x8lqal5KnErfc9ZmZHs5+1av7ZzJNQ==\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 117,\"candidatesTokenCount\": 19,\"totalTokenCount\": 204,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 117}],\"thoughtsTokenCount\": 68},\"modelVersion\": \"gemini-2.5-flash\",\"responseId\": \"4waFaOGzBv7VjMcPgam_4AM\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -34,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=1256
+                - gfet4t7; dur=1274
             Vary:
                 - Origin
                 - X-Origin
@@ -47,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.334s
+        duration: 1.348s

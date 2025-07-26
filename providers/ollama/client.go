@@ -511,6 +511,11 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 				return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
 			}
 		}
+		for j, tool := range msg.ToolCalls {
+			if len(tool.Opaque) != 0 {
+				return result, fmt.Errorf("message #%d tool call #%d: field Opaque not supported", i, j)
+			}
+		}
 	}
 
 	var in ChatRequest
@@ -569,6 +574,11 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 		for j, content := range msg.Contents {
 			if len(content.Opaque) != 0 {
 				return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
+			}
+		}
+		for j, tool := range msg.ToolCalls {
+			if len(tool.Opaque) != 0 {
+				return result, fmt.Errorf("message #%d tool call #%d: field Opaque not supported", i, j)
 			}
 		}
 	}

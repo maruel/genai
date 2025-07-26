@@ -55,6 +55,7 @@ The _high performance_ low level native Go client for LLMs.
 - Files: Upload and store large files.
 - Citations: Citation generation. Especially useful for RAG.
 - Thinking: Supports chain-of-thought thinking process.
+    - Both redacted (Anthropic, Gemini) and explicit (Deepseek R1, Qwen3, etc).
 
 </details>
 

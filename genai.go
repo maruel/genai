@@ -630,6 +630,12 @@ type ToolCall struct {
 	Name      string `json:"name,omitzero"`      // Tool being called.
 	Arguments string `json:"arguments,omitzero"` // encoded as JSON
 
+	// Opaque is added to keep continuity on the processing. A good example is Gemini's extended thinking. It
+	// must be kept during an exchange.
+	//
+	// A message with only Opaque set is valid.
+	Opaque map[string]any `json:"opaque,omitzero"`
+
 	_ struct{}
 }
 

@@ -555,6 +555,10 @@ func (c *Content) From(in *genai.Message) error {
 		if err := c.Parts[offset+i].FunctionCall.From(&in.ToolCalls[i]); err != nil {
 			return fmt.Errorf("part %d: %w", offset+i, err)
 		}
+		o := in.ToolCalls[i].Opaque
+		if b, ok := o["signature"].([]byte); ok {
+			c.Parts[offset+i].ThoughtSignature = b
+		}
 	}
 	offset += len(in.ToolCalls)
 	for i := range in.ToolCallResults {
@@ -610,11 +614,11 @@ func (c *Content) To(out *genai.Message) error {
 		}
 		if part.FunctionCall.Name != "" {
 			t := genai.ToolCall{}
+			if len(part.ThoughtSignature) != 0 {
+				t.Opaque = map[string]any{"signature": part.ThoughtSignature}
+			}
 			if err := part.FunctionCall.To(&t); err != nil {
 				return err
-			}
-			if len(part.ThoughtSignature) != 0 {
-				// TODO: t.Opaque = map[string]any{"signature": part.ThoughtSignature}
 			}
 			out.ToolCalls = append(out.ToolCalls, t)
 			continue
@@ -1134,6 +1138,7 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 			GenStreamURL:         "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(model) + ":streamGenerateContent?alt=sse&key=" + url.QueryEscape(apiKey),
 			ProcessStreamPackets: processStreamPackets,
 			LieToolCalls:         true,
+			AllowOpaqueFields:    true,
 			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "gemini",
 				APIKeyURL:    apiKeyURL,
@@ -1386,6 +1391,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			}
 			if part.FunctionCall.ID != "" || part.FunctionCall.Name != "" {
 				// https://ai.google.dev/api/caching?hl=en#FunctionCall
+				if len(part.ThoughtSignature) != 0 {
+					f.ToolCall.Opaque = map[string]any{"signature": part.ThoughtSignature}
+				}
 				if err := part.FunctionCall.To(&f.ToolCall); err != nil {
 					return err
 				}

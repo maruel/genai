@@ -28,7 +28,7 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**Calculating a Square Root**\n\nOkay, so the user wants the square root of 132413.  No problem. They've specified the `square_root` tool, and that's precisely what I'll use.  It's pretty straightforward: I need to call the `square_root` tool and pass it the `number` 132413.  Once the tool runs, it'll give me the answer, which I'll then present back to the user without any extra commentary, just the numerical result.  I'll print the tool's output for my own reference. Let's get to it.\n",
+                        "text": "**Calculating a Square Root - Streamlined Approach**\n\nOkay, I need to find the square root of 132413.  Perfect, there's a dedicated `square_root` tool. It takes the input `number`, which is 132413 in this case.  Easy enough, I'll call the `square_root` function with that parameter.\n\nThe user's preference is clear: just the result, no extra fluff. So, after I execute the tool and get the output, I'll present *only* the calculated value.  \n\nThe necessary tool call will be `print(square_root(number=132413))`. This will give me the square root, ready for the user's consumption.  That's it, simple and direct.\n",
                         "thought": true
                       },
                       {
@@ -38,7 +38,7 @@ interactions:
                             "number": 132413
                           }
                         },
-                        "thoughtSignature": "CscDAVSoXO7/+avM7dWvKXh51OeZvdjghZEsSXMyecC1QkHECAvx5T3Dvmdlq32jDLC/qDHRBW8Kh47h3YhQiY7tt7IdsIBtyZzwMZlrqdYLXwDVcSzchRLGJ3ZZdmMq+SyKu1oj2sG5Ec8UFFVM9FXtY+d2dhN1jbd17BVNwIOBOLBfi+w4MEtcdSEaGGd/cwe/y1mjUbEEQ3epz9LcBofpUkLTh1YmG+vyBtgAFBWVgBfD/YEeWPtMfTgkgkMDtFjkwFSoNFFs4tJih8PO48LCzVqmfpJrX4SGdDah/WimvxCiqORkQ5w/Y/4iokzvHssjE6qEy2Un6psxekrl+xl6l5xp44fwbUkeZhdDMchfDeCB6qaNEPiXztSbo7+Qp+sAIGWFN3OwlmrR7j6Pc9a/y6xND54wXaQ3VxNoV9x1vbkRixgNqdsPHd9qWA2jANiDTwKLBVtDVoyaf5YuFI7Te93cCrQc3C7iZ0vJHY7vyZl3deaYQazOgPVEg8HCaWoYWcEVyPoBrp27V8LWx5bseGPnlf0/C9hAo2pJt0JphTBOZdKPqRBNEbNKbRMI+0hkF+W9Z7IWP77w9o4aAViN8gcNQgw090k="
+                        "thoughtSignature": "CpsHAVSoXO5HpwUyXD6MfY1tBAH4amOhLmnAYRTC09zq1Vo44kqMWjT2iVxzc08rWSPUOg9DLugiNt75hcZVSZOisxSyl70/uEGLX0vqSEMit42NQhzJyV8ES0FT/ulBc4IXWDKVfYt5W24bSijYVqCoyiwSA5S28CEcsaiWfCyhlipk8p+gAqc6Gum0ZAxDBr/On1j7+bqUfspGNuMR1i1KpkQYYkOQr35DFzf/g09pCVcRaLElWaRcqj63OfwBwO3agaAHbFXKWSPucnEs4Q/XqtWBupCo4TTb4JsNNrcnAsgksQm5rpp1vEM8WU1aY3TQA9s5ZjDA2O9UBsoXv6vlk34kspBCX2cOf12y6b8JzC9I1/666t3FZ2Sr9FIfVRCVNSMOcJfzvnUR3jUmj5fk/Vyuh3qYQUSemHthUs/UAUQhshql0dp4UBkiLNZo1zHG039IE0jauby4+vi21eZvb0LMS98R2WSekQtn8BNk0XovLaL8+Nvt/Z4g7K8djUz8LoXTUbDMy6Ej3zKcpDJ1w8pKl4A1L3gTOFFf4cxp9MirTSaOIXC2GYUh2Ye2kNul8fgjJLoU3pxxGhzRsP3nmg3Y3jyejuufVfeZbDOt4xh9uZlwqCKNAfKkBIJAQ3BeBRYEhR0PFQH1TjfZ/ojGMnVK5quoLGvcfJBs8Y98EduYnhaTE6xPce1SFI/0EpCarUvTMDEjwawwQuxUerucepi/eIeXaEePjYH/g6vMd7ZPpK5118Zax5A9O+6rMvMNRHKp9uOfMpyxQkXwbS7wF+dCwL5fiJWnw9PSdtrUvbSprCkj9Ki/nKkb59Bv9canYBGbwhYnzeqUOK2f/2hUFEJRelwJlIsepx+hevt7JFWb9qBQRx0jaaUGqH2UX7wMAkO3nnXNh3btb+7A6tLrpivWfV84PEEtVk4AG/u+SLa9b5Ilg2At5anBeBL5Cgdr10yaLtCkKoIIkCO/slexJCoTuFJw7jpNKc75sGoB1gcSVjEkNXlotvdVHlgnOsAAIuPgvKRT2oMrJBgTe6ce/Fem9Rab7Rsdc83ZIo3wvomNrMMNArH94G5ZjonmmO+mZmf4netn+g/m54oHgvXps2ffkUCttN+VxbE1QEA+LwU2sP2LoxBym1/eklzSe6mfOwJsOXhE1zgzrWBf7ZBqWggPuULZRGIzEC/f0JmVjYgMThxzzTvY1vkAVy85yEIatENC06I35oo7zT8="
                       }
                     ],
                     "role": "model"
@@ -50,17 +50,17 @@ interactions:
               "usageMetadata": {
                 "promptTokenCount": 117,
                 "candidatesTokenCount": 20,
-                "totalTokenCount": 246,
+                "totalTokenCount": 357,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 117
                   }
                 ],
-                "thoughtsTokenCount": 109
+                "thoughtsTokenCount": 220
               },
               "modelVersion": "gemini-2.5-pro",
-              "responseId": "fveEaLTFA5LdjMcPo5qZ6Qs"
+              "responseId": "6gaFaIiiIeaM-sAP8q6kmAs"
             }
         headers:
             Alt-Svc:
@@ -70,7 +70,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=4461
+                - gfet4t7; dur=5472
             Vary:
                 - Origin
                 - X-Origin
@@ -83,4 +83,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 4.472s
+        duration: 5.482s

@@ -21,19 +21,19 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"o4XF1mN-62bZhn-964e0206cc8ca2f0","object":"chat.completion.chunk","created":1753471157,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"o4dhZwR-4Yz4kd-9654fa358db6a30f","object":"chat.completion.chunk","created":1753544237,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"o4XF1mN-62bZhn-964e0206cc8ca2f0","object":"chat.completion.chunk","created":1753471157,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_ogrqbttwux1pa2gfihoxwqw1","type":"function","function":{"name":"best_country","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"o4dhZwR-4Yz4kd-9654fa358db6a30f","object":"chat.completion.chunk","created":1753544237,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_vm6s9e90b4uxukratqo0ojm3","type":"function","function":{"name":"best_country","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"o4XF1mN-62bZhn-964e0206cc8ca2f0","object":"chat.completion.chunk","created":1753471157,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"o4dhZwR-4Yz4kd-9654fa358db6a30f","object":"chat.completion.chunk","created":1753544237,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"o4XF1mN-62bZhn-964e0206cc8ca2f0","object":"chat.completion.chunk","created":1753471157,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"id":"call_1cro5mb2zojrwop23i1u9hik","type":"function","function":{"name":"best_country","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"o4dhZwR-4Yz4kd-9654fa358db6a30f","object":"chat.completion.chunk","created":1753544237,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"id":"call_czxnytzn1ztgqzjjcf5y602w","type":"function","function":{"name":"best_country","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"o4XF1mN-62bZhn-964e0206cc8ca2f0","object":"chat.completion.chunk","created":1753471157,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"o4dhZwR-4Yz4kd-9654fa358db6a30f","object":"chat.completion.chunk","created":1753544237,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"o4XF1mN-62bZhn-964e0206cc8ca2f0","object":"chat.completion.chunk","created":1753471156,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"tool_calls","stop_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
+            data: {"id":"o4dhZwR-4Yz4kd-9654fa358db6a30f","object":"chat.completion.chunk","created":1753544236,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"tool_calls","stop_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
 
-            data: {"id":"o4XF1mN-62bZhn-964e0206cc8ca2f0","object":"chat.completion.chunk","created":1753471156,"choices":[],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":{"prompt_tokens":828,"total_tokens":883,"completion_tokens":55},"warnings":[{"message":"Model supports only tool_choice auto"}]}
+            data: {"id":"o4dhZwR-4Yz4kd-9654fa358db6a30f","object":"chat.completion.chunk","created":1753544236,"choices":[],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":{"prompt_tokens":828,"total_tokens":883,"completion_tokens":55},"warnings":[{"message":"Model supports only tool_choice auto"}]}
 
             data: [DONE]
 
@@ -47,7 +47,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 964e0206cc8ca2f0-YUL
+                - 9654fa358db6a30f-YUL
             Content-Type:
                 - text/event-stream;charset=utf-8
             Retry-After:
@@ -59,11 +59,11 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - edfcf4d6-ba0e-4d10-8d6f-9aa11342489e-noamzn
+                - b9432068-4ced-47ad-a057-beaa6d3b8d98-noamzn
             X-Api-Call-Start:
-                - "2025-07-25T19:19:16.363Z"
+                - "2025-07-26T15:37:16.487Z"
             X-Api-Received:
-                - "2025-07-25T19:19:16.349Z"
+                - "2025-07-26T15:37:16.468Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -73,13 +73,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "1"
+                - "0"
             X-Ratelimit-Remaining-Tokens:
-                - "117"
+                - "1000"
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - o4XF1mN-62bZhn-964e0206cc8ca2f0
+                - o4dhZwR-4Yz4kd-9654fa358db6a30f
         status: 200 OK
         code: 200
-        duration: 770ms
+        duration: 741ms

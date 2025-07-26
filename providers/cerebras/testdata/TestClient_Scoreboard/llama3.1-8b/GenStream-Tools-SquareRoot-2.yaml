@@ -1,0 +1,91 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 787
+        host: api.cerebras.ai
+        body: |
+            {"model":"llama3.1-8b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"36ed3f69e","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"36ed3f69e","name":"square_root"}],"stream":true,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-e5b82d4e-fd5f-4ce7-8c4c-9f242886040f","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1753545377,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-e5b82d4e-fd5f-4ce7-8c4c-9f242886040f","choices":[{"delta":{"content":"The"},"index":0}],"created":1753545377,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-e5b82d4e-fd5f-4ce7-8c4c-9f242886040f","choices":[{"delta":{"content":" square"},"index":0}],"created":1753545377,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-e5b82d4e-fd5f-4ce7-8c4c-9f242886040f","choices":[{"delta":{"content":" root"},"index":0}],"created":1753545377,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-e5b82d4e-fd5f-4ce7-8c4c-9f242886040f","choices":[{"delta":{"content":" of"},"index":0}],"created":1753545377,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-e5b82d4e-fd5f-4ce7-8c4c-9f242886040f","choices":[{"delta":{"content":" "},"index":0}],"created":1753545377,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-e5b82d4e-fd5f-4ce7-8c4c-9f242886040f","choices":[{"delta":{"content":"132"},"index":0}],"created":1753545377,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-e5b82d4e-fd5f-4ce7-8c4c-9f242886040f","choices":[{"delta":{"content":"413"},"index":0}],"created":1753545377,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-e5b82d4e-fd5f-4ce7-8c4c-9f242886040f","choices":[{"delta":{"content":" is"},"index":0}],"created":1753545377,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-e5b82d4e-fd5f-4ce7-8c4c-9f242886040f","choices":[{"delta":{"content":" "},"index":0}],"created":1753545377,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-e5b82d4e-fd5f-4ce7-8c4c-9f242886040f","choices":[{"delta":{"content":"363"},"index":0}],"created":1753545377,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-e5b82d4e-fd5f-4ce7-8c4c-9f242886040f","choices":[{"delta":{"content":"."},"index":0}],"created":1753545377,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-e5b82d4e-fd5f-4ce7-8c4c-9f242886040f","choices":[{"delta":{"content":"89"},"index":0}],"created":1753545377,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-e5b82d4e-fd5f-4ce7-8c4c-9f242886040f","choices":[{"delta":{"content":"."},"index":0}],"created":1753545377,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-e5b82d4e-fd5f-4ce7-8c4c-9f242886040f","choices":[{"delta":{},"index":0}],"created":1753545377,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-e5b82d4e-fd5f-4ce7-8c4c-9f242886040f","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1753545377,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk","usage":{"prompt_tokens":79,"completion_tokens":14,"total_tokens":93,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00017821,"prompt_time":0.003961141,"completion_time":0.006264174,"total_time":0.011865854263305664,"created":1753545377}}
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96551613fe43a2f8-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Inference-Id:
+                - chatcmpl-e5b82d4e-fd5f-4ce7-8c4c-9f242886040f
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "60000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14392"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "59029"
+            X-Ratelimit-Reset-Requests-Day:
+                - "29021.97854566574"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "41.97854566574097"
+            X-Request-Id:
+                - 96551613fe43a2f8-YUL
+        status: 200 OK
+        code: 200
+        duration: 1.274s

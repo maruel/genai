@@ -63,14 +63,14 @@ var Scoreboard = genai.Scoreboard{
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Tools:          genai.Flaky,
-				IndecisiveTool: genai.True,
+				IndecisiveTool: genai.Flaky,
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.Flaky,
-				IndecisiveTool: genai.True,
+				IndecisiveTool: genai.Flaky,
 				JSON:           true,
 				JSONSchema:     true,
 			},
@@ -131,11 +131,18 @@ var Scoreboard = genai.Scoreboard{
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
+				Tools:      genai.Flaky,
+				BiasedTool: genai.Flaky,
 				JSON:       true,
 				JSONSchema: true,
 				Seed:       true,
 			},
-			GenStream: &genai.FunctionalityText{JSON: true, JSONSchema: true, Seed: true},
+			GenStream: &genai.FunctionalityText{
+				Tools:      genai.Flaky,
+				JSON:       true,
+				JSONSchema: true,
+				Seed:       true,
+			},
 		},
 		{
 			Models: []string{"mistralai/Mistral-Small-24B-Instruct-2501"},
@@ -617,6 +624,16 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	}
 	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
+	if err == nil && len(c.Warnings) != 0 {
+		uce := &genai.UnsupportedContinuableError{}
+		for _, w := range c.Warnings {
+			if strings.Contains(w.Message, "tool_choice") {
+				uce.Unsupported = append(uce.Unsupported, "ToolCallRequest")
+			} else {
+				uce.Unsupported = append(uce.Unsupported, w.Message)
+			}
+		}
+	}
 	return out, err
 }
 

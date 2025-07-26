@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "o4XEmTb-4Yz4kd-964e00d97f95a290",
+              "id": "o4dhZmC-62bZhn-9654fa31cef6a30f",
               "object": "chat.completion",
-              "created": 1753471108,
+              "created": 1753544235,
               "model": "meta-llama/Llama-4-Scout-17B-16E-Instruct",
               "prompt": [],
               "choices": [
@@ -40,7 +40,7 @@ interactions:
                     "tool_calls": [
                       {
                         "index": 0,
-                        "id": "call_hwo7biq11k4t677qp59dn9xl",
+                        "id": "call_hqnxyicudv3yyegucc47lnck",
                         "type": "function",
                         "function": {
                           "arguments": "{\"country\":\"Canada\"}",
@@ -49,7 +49,7 @@ interactions:
                       },
                       {
                         "index": 1,
-                        "id": "call_ru1uo8ah56th464okbkp2dfu",
+                        "id": "call_xh7hc4fwnvuioqe9ibl9h7fm",
                         "type": "function",
                         "function": {
                           "arguments": "{\"country\":\"USA\"}",
@@ -79,11 +79,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 964e00d97f95a290-YUL
+                - 9654fa31cef6a30f-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"469-3qzVZ5WFraiZtKPVYqNX5t6weJo"
+                - W/"469-dlQNrlQKSZRIPyxoYzsuRFUX6RU"
             Retry-After:
                 - "2"
             Server:
@@ -93,13 +93,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - d35e3c13-2ee7-494b-8ac4-cd8677cb08ae-noamzn
+                - 963dac52-f97e-4e3b-b218-766b5addcaeb-noamzn
             X-Api-Call-End:
-                - "2025-07-25T19:18:29.164Z"
+                - "2025-07-26T15:37:16.460Z"
             X-Api-Call-Start:
-                - "2025-07-25T19:18:28.535Z"
+                - "2025-07-26T15:37:15.886Z"
             X-Api-Received:
-                - "2025-07-25T19:18:28.222Z"
+                - "2025-07-26T15:37:15.875Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -109,13 +109,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "0"
+                - "1"
             X-Ratelimit-Remaining-Tokens:
-                - "1000"
+                - "934"
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - o4XEmTb-4Yz4kd-964e00d97f95a290
+                - o4dhZmC-62bZhn-9654fa31cef6a30f
         status: 200 OK
         code: 200
-        duration: 1.143s
+        duration: 1.809s

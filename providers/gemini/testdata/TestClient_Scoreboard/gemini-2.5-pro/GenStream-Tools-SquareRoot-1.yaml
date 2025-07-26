@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 662
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Initiating Calculation**\\n\\nI've identified the appropriate tool, `square_root`, to address the user's request. The user wants to find the square root of 132413. The tool's single parameter, `number`, is directly satisfied by the provided input, \\\"132413\\\". I'm ready to proceed with the calculation.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 117,\"totalTokenCount\": 188,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 117}],\"thoughtsTokenCount\": 71},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"e_eEaJHvAa7VjMcP2KSA-Qo\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Refining the Response**\\n\\nI've refined my approach to address the user's specific requirements. I now understand that I need to extract and present only the numerical result from the tool's output. Consequently, my strategy involves calling the tool and then parsing the output to isolate the number. This ensures a concise and direct answer, fulfilling the user's request for \\\"only the result.\\\"\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 117,\"totalTokenCount\": 383,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 117}],\"thoughtsTokenCount\": 266},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"e_eEaJHvAa7VjMcP2KSA-Qo\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"square_root\",\"args\": {\"number\": 132413}},\"thoughtSignature\": \"CiIBVKhc7pzwmd1wrmtYMpghkC24E1KQy0GLs4ranWvHNMlECmcBVKhc7qbB6B5AGbKelHmx2/fnevBiU0CDAkY3lOXtu7zr94Ep6jluVfrONvd1Cood6Yap/hWWXRNa4PZXarS4STvRf6g/KsA7v6OZHJ4NR6kt8ibIgHy4j9gbtj5qqvLqlMgbF5s0CoUBAVSoXO6WBmNmi6nO1VEULf8zh1IGma3zByubuSwiaaABTHLdRPsq9gM2YyS1P2s4BfOI9A2gRyysBlSVVoROq3tg1/eepUyr4hHyGdVtKkEL8TdDwYpDp1EHzEBEHYc2SiVM7SZWKgT/rhz9FKT1/9hNEFIyy5UB3sN5u0lRu4StfvbcvAp/AVSoXO7STmWY0umoqcT+7/QGNbc0ydf9qMW1bgYeLuxcuuMbiqbkDT71xlpw9WHMwOhZErkG2U1rGMouDOcKt0bKXm3hJSUuR6kzSzRKgOSw5FJgKlnpsVGf+uG70RU04h7NhbiW1otfzVcr/uz9pRR1os4Fv8eoV0qD07uzZgp6AVSoXO4tn/rlatVwMRSfCllJ66TEd07+qnFAl+pwmKf6QhGGwgDHd64xB+H/fMx5s1a1BG14sypV+HIGwOQwbNUfWhE7s0bjDhwnpswsXcuc2oVqEePdrlIacv+Mk29Ph7CgBQAP8VLcpDbQO7xcEYIM7SFgRitmy/4KkwEBVKhc7jB/ILzUjqfgyhDRxILlzJiDQtiwvAgl27E6U4Xxb0KshyXqFRWnY04CIQMMan/BsD8wPsE768wfw7XwsEC3x3FtctBIQS1HY7f9aV+AhRk2YF5EO5QjcUcaZm9CtfxKXhQbFnyZ3HiMgqtc+h4et+pOSkBGytzYNlqEXTCghPJ/h+E7gad45+Ff12/OnDcKmAEBVKhc7viA7W6k6jyG2BT63xgt7JVwTEMHl3LYFwZNCVUfj5BMcj6mpTQku9cHnq7zPrFMt40VxMT1cD3Xj9otfFR8Uw5rnHUyGRV7fFQG7RluFiCyY9dNTNFDtXN3GSMLROPZLKNwk4EPQN1dr4CioRZpA4mt/ESaQn3AiIGLRUCr/8rvKGdv9dnREh4KosmX1z4hRX3h2AqDAQFUqFzusWIYHXj6A4qg84xgahXPqVpYIVzmmKPHYpA86KyozPbtSrJteAwnF90QI6r74ydTRi7fd8WCEzxNdTG49TMGtq89FEIS+n8HvscQqgVPA7SNHsmS5OiWIcDJ0tWh1N5HXRsav58aLD4dHXhl8EzvLUT8gV0qEir/m4zGVe9PCo8BAVSoXO6Sr1opeDe1MZ0jiOx2b7xneS+e/vTjT85iqU8eQqU5zU0Cop1sdmI28HNXTijFuZJyezkNA3MXnySOE7Ffgxnafxp16hzZQ4WrjU16mndbH2rqNIFRfcTCm/MjkLxCiKlWSi2zfP/8oURa1YN3vlNA2Vd4gk6bwdMvNN2gWgRfSfI2nsMmoieGPbIKWwFUqFzuZCvcbfRXz/3AUssZOLjwNOokXKypaAD4e+i3N9AWu4kerevLY/gUjSuxc0pAHlphGHw7D49ZjUtNpPiswL8qWRCUFRBdxvL3gcIbNKLJDsehhd0KZokKcwFUqFzuXBuWamee80du1jBeN0SptDKIH4wTPa8MtcSO4i2FAs/CYc0Su81liXO10Lwehj/RbtUU2Jae1JNvWGXKCsgyJ20sqVJ5oaWTZOtWl4NkH+yfbzy3AbSaybwS4xRIYOgPUsWaZC4GTcadf5AYGn4KPQFUqFzupvtOF94rRbLSAJyeccdqCqYfPqNhNTVRmoUOe46l90DarobI40Eh4h993SdTtH/ssmOJlFv1tcs=\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 117,\"candidatesTokenCount\": 18,\"totalTokenCount\": 401,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 117}],\"thoughtsTokenCount\": 266},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"e_eEaJHvAa7VjMcP2KSA-Qo\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2552
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.563s

@@ -1,0 +1,67 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 573
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"meta-llama/llama-4-maverick-17b-128e-instruct","stream":true,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-e041f7cf-5e05-4af8-b383-51971b783e00","object":"chat.completion.chunk","created":1753544416,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-e041f7cf-5e05-4af8-b383-51971b783e00","object":"chat.completion.chunk","created":1753544416,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{"tool_calls":[{"id":"ynta6xpax","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-e041f7cf-5e05-4af8-b383-51971b783e00","object":"chat.completion.chunk","created":1753544416,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01k13p8qcpeds8hrvt58cxg21q","usage":{"queue_time":0.005349659999999999,"prompt_tokens":733,"prompt_time":0.020102172,"completion_tokens":24,"completion_time":0.038882249,"total_tokens":757,"total_time":0.058984421}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9654fe9be914a290-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499998"
+            X-Ratelimit-Remaining-Tokens:
+                - "299964"
+            X-Ratelimit-Reset-Requests:
+                - 343.599999ms
+            X-Ratelimit-Reset-Tokens:
+                - 7.2ms
+            X-Request-Id:
+                - req_01k13p8qcpeds8hrvt58cxg21q
+        status: 200 OK
+        code: 200
+        duration: 123ms

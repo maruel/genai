@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 772
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"759659599","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"759659599","name":"square_root"}],"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-5492cb60-84f1-4104-ae26-32c18f9d5303","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, let me check the user''s query. They wanted the square root of 132413 using the square_root tool. The tool returned 363.89. I need to verify if this is accurate.\n\nFirst, I''ll calculate 363.89 squared to see if it approximates 132413. 363.89 * 363.89. Let me break this down. 360 squared is 129600. Then, 3.89 squared is roughly 15.1321. Now, the cross term: 2*360*3.89. That''s 720*3.89. Let me compute 700*3.89 = 2723 and 20*3.89 = 77.8, adding up to 2723 + 77.8 = 2800.8. So total is 129600 + 2800.8 + 15.1321 = 132415.9321. That''s very close to 132413, with a slight overestimation. \n\nBut since square roots can have multiple decimal places, maybe the tool rounded it. Let me check with a calculator. The square root of 132413 is approximately 363.885... So rounding to two decimal places would give 363.89. That makes sense. The user specified to reply with only the result, so I should just present 363.89 without any explanation. Got it.\n</think>\n\n363.89","role":"assistant"}}],"created":1753545381,"model":"qwen-3-32b","system_fingerprint":"fp_d92e1e5be69bb839ccfe","object":"chat.completion","usage":{"prompt_tokens":83,"completion_tokens":385,"total_tokens":468,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000387199,"prompt_time":0.002615065,"completion_time":0.201304992,"total_time":0.20555782318115234,"created":1753545381}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96551627ad63a2f8-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-5492cb60-84f1-4104-ae26-32c18f9d5303
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14397"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "63664"
+            X-Ratelimit-Reset-Requests-Day:
+                - "29018.60634112358"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "38.60634112358093"
+            X-Request-Id:
+                - 96551627ad63a2f8-YUL
+        status: 200 OK
+        code: 200
+        duration: 382ms

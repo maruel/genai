@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 751
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"fwfazm82c","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"fwfazm82c"}],"model":"llama-3.3-70b-versatile","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-88ec5b6c-9cd7-42bb-b0eb-013faa2adf71","object":"chat.completion","created":1753544414,"model":"llama-3.3-70b-versatile","choices":[{"index":0,"message":{"role":"assistant","content":"363.89"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.008386770000000002,"prompt_tokens":116,"prompt_time":0.014635532,"completion_tokens":4,"completion_time":0.014997175,"total_tokens":120,"total_time":0.029632707},"usage_breakdown":null,"system_fingerprint":"fp_21854da540","x_groq":{"id":"req_01k13p8nfjedra1zs5cn26vm03"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9654fe8fae96a290-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499997"
+            X-Ratelimit-Remaining-Tokens:
+                - "299739"
+            X-Ratelimit-Reset-Requests:
+                - 514.4ms
+            X-Ratelimit-Reset-Tokens:
+                - 52.2ms
+            X-Request-Id:
+                - req_01k13p8nfjedra1zs5cn26vm03
+        status: 200 OK
+        code: 200
+        duration: 99ms

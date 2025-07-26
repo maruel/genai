@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 800
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","content":null,"tool_calls":[{"type":"function","id":"3j4x60vvt","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"3j4x60vvt"}],"model":"deepseek-r1-distill-llama-70b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-5b10fd2c-6c61-4740-bd78-5456f34c437d","object":"chat.completion","created":1753544418,"model":"deepseek-r1-distill-llama-70b","choices":[{"index":0,"message":{"role":"assistant","content":"363.89","reasoning":"Alright, so I need to figure out the square root of 132,413. Hmm, okay, let's start by recalling what a square root actually is. The square root of a number is another number that, when multiplied by itself, gives the original number. So, in this case, I'm looking for a number that, when squared, equals 132,413.\n\nFirst, I should probably estimate the square root to get a rough idea of where it might lie. I know that 300 squared is 90,000 because 300 times 300 is 90,000. Then, 400 squared is 160,000 because 400 times 400 is 160,000. So, the square root of 132,413 must be somewhere between 300 and 400.\n\nNow, to narrow it down further, let's see: 350 squared is 122,500. That's because 350 times 350 is 122,500. Okay, so 132,413 is higher than 122,500, which means the square root is greater than 350. Next, let's try 360 squared. 360 times 360 is 129,600. Still, 132,413 is higher than that, so the square root is greater than 360.\n\nMoving on, let's calculate 370 squared. 370 times 370 is 136,900. Ah, now 132,413 is less than 136,900, so the square root must be between 360 and 370.\n\nTo get a more precise value, I can try numbers between 360 and 370. Let's start with 363. 363 squared is... let's see, 360 squared is 129,600, and 3 squared is 9. Then, the cross term is 2 times 360 times 3, which is 2,160. So, adding those up: 129,600 + 2,160 + 9 = 131,769. Hmm, that's still less than 132,413.\n\nOkay, let's try 364. 364 squared would be similar: 360 squared is 129,600, 4 squared is 16, and the cross term is 2 times 360 times 4, which is 2,880. Adding those: 129,600 + 2,880 + 16 = 132,496. That's very close to 132,413, but still a bit higher.\n\nMaybe 363.5? Let's check that. 363.5 squared. Well, that's going to be a bit more complicated. Let's break it down: 363.5 is 363 + 0.5. So, (363 + 0.5)^2 = 363^2 + 2*363*0.5 + 0.5^2. We already know that 363^2 is 131,769. Then, 2*363*0.5 is 363. And 0.5 squared is 0.25. So, adding those up: 131,769 + 363 + 0.25 = 132,132.25. That's still less than 132,413.\n\nOkay, so 363.5 squared is 132,132.25, and 364 squared is 132,496. So, the square root of 132,413 must be between 363.5 and 364. Let's see how much difference there is.\n\n132,413 - 132,132.25 = 280.75. So, we have a difference of 280.75 between 363.5 squared and our target. The total difference between 363.5 squared and 364 squared is 132,496 - 132,132.25 = 363.75.\n\nSo, the fraction would be 280.75 / 363.75 ≈ 0.771. Therefore, the square root should be approximately 363.5 + 0.771 = 364.271. Wait, but that can't be right because 364 squared is 132,496, which is higher than 132,413. So, maybe I made a mistake in the calculation.\n\nLet me try a different approach. Instead of trying to calculate it manually, maybe I can use a better estimation method. Let's use linear approximation between 363.5 and 364.\n\nAt 363.5: 132,132.25\n\nAt 364: 132,496\n\nDifference in squares: 132,496 - 132,132.25 = 363.75\n\nWe need to find x such that 132,132.25 + (x * 363.75) = 132,413\n\nSo, x = (132,413 - 132,132.25) / 363.75 = 280.75 / 363.75 ≈ 0.771\n\nTherefore, the square root is approximately 363.5 + 0.771 ≈ 364.271\n\nBut wait, earlier I thought that 364 squared is 132,496, which is higher than 132,413. So, 364.271 squared should be slightly less than 132,496, but still higher than 132,413. Hmm, maybe my estimation is off.\n\nAlternatively, maybe I should accept that manually calculating square roots is error-prone and better to use a calculator or a tool for precise results. But since I'm supposed to do this manually, I'll try to refine my approximation.\n\nGiven that 363.5 squared is 132,132.25 and 364 squared is 132,496, and our target is 132,413, which is 280.75 above 132,132.25.\n\nSo, the proportion is 280.75 / 363.75 ≈ 0.771. Therefore, the square root should be 363.5 + 0.771 ≈ 364.271. But as I thought earlier, this seems contradictory because 364 squared is already 132,496, which is higher than 132,413.\n\nMaybe I need to check my calculations again. Let's recalculate 363.5 squared properly.\n\n363.5 squared = (363 + 0.5)^2 = 363^2 + 2*363*0.5 + 0.5^2 = 131,769 + 363 + 0.25 = 132,132.25\n\nNow, 132,413 - 132,132.25 = 280.75\n\nThe difference between 363.5 and 364 is 0.5 in the square root, which leads to a difference of 363.75 in the squares.\n\nSo, to cover 280.75, the fraction is 280.75 / 363.75 ≈ 0.771\n\nTherefore, the square root is approximately 363.5 + (0.771 * 0.5) ≈ 363.5 + 0.385 ≈ 363.885\n\nSo, approximately 363.885\n\nRounding to two decimal places, that's 363.89\n\nSo, the square root of 132,413 is approximately 363.89\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.076417066,"prompt_tokens":84,"prompt_time":0.005737989,"completion_tokens":1506,"completion_time":5.476363636,"total_tokens":1590,"total_time":5.482101625},"usage_breakdown":null,"system_fingerprint":"fp_5d7bb96f85","x_groq":{"id":"req_01k13p8s0pedtbfnx8wagexmq2"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9654fea64943a290-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299816"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 36.8ms
+            X-Request-Id:
+                - req_01k13p8s0pedtbfnx8wagexmq2
+        status: 200 OK
+        code: 200
+        duration: 5.613s

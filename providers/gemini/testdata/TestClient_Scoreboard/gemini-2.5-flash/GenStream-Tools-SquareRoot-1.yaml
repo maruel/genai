@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 662
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Computing the Square Root**\\n\\nI've initiated the calculation by calling the `square_root` tool with the input number 132413. My next step will be to efficiently extract and present the numerical result, the \\\"response\\\" field, from the tool's output.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 117,\"totalTokenCount\": 183,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 117}],\"thoughtsTokenCount\": 66},\"modelVersion\": \"gemini-2.5-flash\",\"responseId\": \"ePeEaKuUC4_cjMcP5bu94AM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"square_root\",\"args\": {\"number\": 132413}},\"thoughtSignature\": \"CiQBVKhc7v3Q3+uQw5rFXWyMII/HahOy91Ez402dIveTtBx1V7kKVwFUqFzu8HD5reEY3u3zrfukEYaxf7BomJYXmRtqd42Ttcwvd3jvjGSR/DEBcph+O//FJNMd+9K4OuSTAj6ZlsRJkONrw++LgsTIx0ejoEJIh3n5bPE+1QrDAQFUqFzuV4VTULsBoF6e1OXpz2t/5z8B2HvozAFWYfdTITbDRMKHPmuqkjNTuGIlqI0WBHphV8hbUVTKG6cPM9eWgz9cUZH8BB6JR8v4NbmGeOxuC65r198ClkFp8RaaLl2f/iuIcT3qswIt/ebWm91EuXBMjIlovRVJMywR1Drn8mP7fE3qim/yrOeMWOZ2IOuDneh+vzLLOmhDs+sEtWsacqFkG5afatuUeHH7rYpbBwEZH8qFHxzIvXgi2r8hpTwtGQ==\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 117,\"candidatesTokenCount\": 19,\"totalTokenCount\": 202,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 117}],\"thoughtsTokenCount\": 66},\"modelVersion\": \"gemini-2.5-flash\",\"responseId\": \"ePeEaKuUC4_cjMcP5bu94AM\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1256
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.334s

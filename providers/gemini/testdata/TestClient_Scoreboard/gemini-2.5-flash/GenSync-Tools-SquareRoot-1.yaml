@@ -1,0 +1,86 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 662
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**Square Root Calculation: My Approach**\n\nOkay, so the user wants the square root of 132413.  No problem. My plan is straightforward: I'll use the `square_root` tool. I need to feed it the number, which is 132413. Specifically, I'll call the `square_root` function with the argument `number=132413`.  Once I get the result back, I'll just need to extract the `response` field, and that will be the answer the user's looking for. Simple and efficient.\n",
+                        "thought": true
+                      },
+                      {
+                        "functionCall": {
+                          "name": "square_root",
+                          "args": {
+                            "number": 132413
+                          }
+                        },
+                        "thoughtSignature": "Cv0BAVSoXO56z5T8XTpGYfoj6FxvilfXL+bv4+le7hjIIKRzB2s6OcRsknbaWPpOiJplhJYrxvK02JA3w/tYz/kcZLy3lFtF2bSe9l0E6mX25t/q7jkRNk5A5u3OmZhRMu1ZTf/IcuqyYR/Wu1qNedSpv4P2TKzc/JIvpViVHIBJVDwRoZnQgK7PfSYYweerfAS3Fsr/z31Q4Va0LqCtQfbJQ+82PalgffoXRfJMHEdKTT575vA6TmyDPD/KtZHDM2bkCT5BenS2FoYWe8lbTUHqg6xPPou3WxXSwh87k75+u+jzvoxmMOP+SDQsQrjsUfvndfuWVeWbiSKhHz402g=="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 117,
+                "candidatesTokenCount": 20,
+                "totalTokenCount": 205,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 117
+                  }
+                ],
+                "thoughtsTokenCount": 68
+              },
+              "modelVersion": "gemini-2.5-flash",
+              "responseId": "efeEaJejI5vnjMcP8uOqmAQ"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1756
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.833s

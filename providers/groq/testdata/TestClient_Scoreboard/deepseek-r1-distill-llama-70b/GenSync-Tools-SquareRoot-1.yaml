@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 586
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"deepseek-r1-distill-llama-70b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-9eba5956-85f7-46a3-b8f2-4d20d575e577","object":"chat.completion","created":1753544416,"model":"deepseek-r1-distill-llama-70b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Okay, so I need to figure out how to use the square_root tool to calculate the square root of 132413. First, I'll look at the function provided. The function is called square_root and it takes one parameter, which is a number. \n\nI remember that the function is supposed to return the square root of that number. So, I should call this function with the number 132413 as the argument. \n\nI think the way to do this is by creating a JSON object with the function name and the arguments. The function name should be \"square_root\" and the arguments should be an object with the key \"number\" and the value 132413. \n\nSo, the JSON would look like:\n{\n  \"name\": \"square_root\",\n  \"arguments\": {\n    \"number\": 132413\n  }\n}\n\nI need to make sure that the JSON is correctly formatted and that the number is correctly passed as an integer. I should double-check the function's parameters to ensure I'm providing the right type. Since 132413 is an integer, it should be fine.\n\nI also need to make sure that the XML tags are correctly placed around the JSON object. The tool_call should be wrapped within \u003ctool_call\u003e tags, and the JSON should be inside them.\n\nPutting it all together, the final tool call should look like this:\n\n\u003ctool_call\u003e{\"name\": \"square_root\", \"arguments\": {\"number\": 132413}}\u003c/tool_call\u003e\n\nI think that's all I need to do. I just have to make sure there are no syntax errors and that the JSON is properly formatted.\n","tool_calls":[{"id":"3j4x60vvt","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.019601920999999998,"prompt_tokens":181,"prompt_time":0.011352759,"completion_tokens":356,"completion_time":1.294545455,"total_tokens":537,"total_time":1.305898214},"usage_breakdown":null,"system_fingerprint":"fp_87eae35036","x_groq":{"id":"req_01k13p8qn8ft8rs98p886qmv8p"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9654fe9d9bcfa290-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299964"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 7.2ms
+            X-Request-Id:
+                - req_01k13p8qn8ft8rs98p886qmv8p
+        status: 200 OK
+        code: 200
+        duration: 1.394s

@@ -79,11 +79,10 @@ var Scoreboard = genai.Scoreboard{
 				Seed:       true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Thinking:           true,
-				BrokenFinishReason: true,
-				Tools:              genai.Flaky, // Uses a quantized version.
-				JSON:               true,
-				Seed:               true,
+				Thinking: true,
+				Tools:    genai.Flaky, // Uses a quantized version.
+				JSON:     true,
+				Seed:     true,
 			},
 		},
 	},

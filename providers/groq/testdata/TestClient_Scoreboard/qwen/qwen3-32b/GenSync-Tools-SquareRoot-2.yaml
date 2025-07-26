@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 785
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","content":null,"tool_calls":[{"type":"function","id":"tswcmxww6","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"tswcmxww6"}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-68a40bad-602a-4fbf-a80d-4f716d0dc96f","object":"chat.completion","created":1753544415,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"363.89","reasoning":"Okay, the user asked for the square root of 132413. I used the square_root tool with that number as the argument. The tool returned 363.89. I need to make sure that's correct.\n\nLet me check by squaring 363.89. If I multiply 363.89 by itself, what do I get? Let's see:\n\n363.89 * 363.89 = ?\n\nFirst, approximate 364 * 364 = 132,496. But the actual value is a bit less. The exact result from the tool is 363.89, which is slightly less than 364. So, 363.89 squared should be approximately 132,413, which matches the original number. So the answer seems correct.\n\nThe user wants only the result, no explanation. So I just need to present 363.89 as the response.\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.00824938,"prompt_tokens":237,"prompt_time":0.104975608,"completion_tokens":231,"completion_time":0.442468217,"total_tokens":468,"total_time":0.547443825},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k13p8pcnft7t33q7vwqkm2k1"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9654fe957f76a290-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499998"
+            X-Ratelimit-Remaining-Tokens:
+                - "299953"
+            X-Ratelimit-Reset-Requests:
+                - 292.399999ms
+            X-Ratelimit-Reset-Tokens:
+                - 9.4ms
+            X-Request-Id:
+                - req_01k13p8pcnft7t33q7vwqkm2k1
+        status: 200 OK
+        code: 200
+        duration: 618ms

@@ -57,10 +57,12 @@ var Scoreboard = genai.Scoreboard{
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Thinking: true,
+				Tools:    genai.Flaky,
 				JSON:     true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Thinking: true,
+				Tools:    genai.Flaky,
 				JSON:     true,
 			},
 		},
@@ -130,7 +132,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 				case genai.ToolCallAny:
 					c.ToolChoice = "auto"
 				case genai.ToolCallRequired:
-					c.ToolChoice = "required"
+					if strings.Contains(model, "reasoner") {
+						// "deepseek-reasoner does not support this tool_choice"
+						unsupported = append(unsupported, "ToolCallRequired")
+					} else {
+						c.ToolChoice = "required"
+					}
 				case genai.ToolCallNone:
 					c.ToolChoice = "none"
 				}

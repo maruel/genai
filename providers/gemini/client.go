@@ -108,7 +108,7 @@ var Scoreboard = genai.Scoreboard{
 			GenSync: &genai.FunctionalityText{
 				Thinking:       true,
 				Tools:          genai.True,
-				IndecisiveTool: genai.True,
+				IndecisiveTool: genai.Flaky,
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
@@ -116,7 +116,7 @@ var Scoreboard = genai.Scoreboard{
 			GenStream: &genai.FunctionalityText{
 				Thinking:   true,
 				Tools:      genai.True,
-				BiasedTool: genai.True,
+				BiasedTool: genai.Flaky,
 				JSON:       true,
 				JSONSchema: true,
 				Seed:       true,
@@ -144,7 +144,7 @@ var Scoreboard = genai.Scoreboard{
 			GenSync: &genai.FunctionalityText{
 				Thinking:       true,
 				Tools:          genai.True,
-				IndecisiveTool: genai.True,
+				IndecisiveTool: genai.Flaky,
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
@@ -152,7 +152,7 @@ var Scoreboard = genai.Scoreboard{
 			GenStream: &genai.FunctionalityText{
 				Thinking:       true,
 				Tools:          genai.True,
-				IndecisiveTool: genai.True,
+				IndecisiveTool: genai.Flaky,
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
@@ -649,6 +649,11 @@ type Part struct {
 }
 
 func (p *Part) FromContent(in *genai.Content) error {
+	if in.Thinking != "" {
+		p.Thought = true
+		p.Text = in.Thinking
+		return nil
+	}
 	if in.Text != "" {
 		p.Text = in.Text
 		return nil

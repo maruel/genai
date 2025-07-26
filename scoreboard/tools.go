@@ -7,9 +7,11 @@ package scoreboard
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math"
 	"slices"
+	"strings"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
@@ -28,7 +30,12 @@ func exerciseGenTools(ctx context.Context, pf ProviderFactory, f *genai.Function
 				Callback: func(ctx context.Context, g *got) (string, error) {
 					i, err := g.Number.Int64()
 					if err != nil {
-						return "", fmt.Errorf("wanted 132413 as an int, got %q: %w", g.Number, err)
+						// Cohere appends ".0"
+						f, err := g.Number.Float64()
+						if err != nil {
+							return "", fmt.Errorf("wanted 132413 as an int, got %q: %w", g.Number, err)
+						}
+						i = int64(f)
 					}
 					if i != 132413 {
 						return "", fmt.Errorf("wanted 132413 as an int, got %s", g.Number)
@@ -39,12 +46,22 @@ func exerciseGenTools(ctx context.Context, pf ProviderFactory, f *genai.Function
 		},
 		ToolCallRequest: genai.ToolCallRequired,
 	}
-	// TODO: Try a second time with ToolCallRequest to ToolCallAny.
 	// TODO: Do not consider a single tool call failure a failure, try a few times.
-	// TODO: Run adapters.GenSyncWithToolCallLoop or adapters.GenStreamWithToolCallLoop
-	resp, err := callGen(ctx, pf, prefix+"SquareRoot", msgs, &optsTools, isStream, usage)
+	resp, err := callGen(ctx, pf, prefix+"SquareRoot-1", msgs, &optsTools, isStream, usage)
 	if isBadError(err) {
 		return err
+	}
+	flaky := false
+	var uerr *genai.UnsupportedContinuableError
+	if errors.As(err, &uerr) {
+		// Cheap trick to make sure the error is not wrapped. Figure out if there's another way!
+		if strings.HasPrefix(err.Error(), "unsupported options: ") {
+			if slices.Contains(uerr.Unsupported, "ToolCallRequest") {
+				// At best, tool calling is flaky.
+				flaky = true
+			}
+			err = nil
+		}
 	}
 	if err != nil || len(resp.ToolCalls) == 0 {
 		// Tools are not supported, no need to do the rest.
@@ -53,13 +70,41 @@ func exerciseGenTools(ctx context.Context, pf ProviderFactory, f *genai.Function
 		f.IndecisiveTool = genai.False
 		return nil
 	}
-	f.Tools = genai.True
+
+	msgs = append(msgs, resp.Message)
+	tr, err := resp.DoToolCalls(ctx, optsTools.Tools)
+	if err != nil {
+		f.Tools = genai.False
+		return nil
+	}
+	if tr.IsZero() {
+		return fmt.Errorf("expected tool call to return a result or an error")
+	}
+	msgs = append(msgs, tr)
+	optsTools.ToolCallRequest = genai.ToolCallNone
+
+	resp, err = callGen(ctx, pf, prefix+"SquareRoot-2", msgs, &optsTools, isStream, usage)
+	if isBadError(err) {
+		return err
+	}
+	if err != nil || len(resp.ToolCalls) != 0 {
+		f.Tools = genai.Flaky
+		f.BiasedTool = genai.False
+		f.IndecisiveTool = genai.False
+		return nil
+	}
+
+	if flaky {
+		f.Tools = genai.True
+	} else {
+		f.Tools = genai.Flaky
+	}
 	if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot", "issue", "token usage")
 		f.BrokenTokenUsage = genai.True
 	}
 	// The finish reason for tool calls is genai.FinishedToolCalls
-	if expectedFR := genai.FinishedToolCalls; resp.FinishReason != expectedFR {
+	if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
 		f.BrokenFinishReason = true
 	}

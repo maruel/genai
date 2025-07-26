@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 492
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234"}
+
+            data: {"tool_calls":[{"id":"chatcmpl-tool-5ca61a6421d842a3bd5fb8c0eac82079","type":"function","index":0,"function":{"name":"square_root"}}],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijkl"}
+
+            data: {"tool_calls":[{"index":0,"function":{"arguments":"{\"number\": 132"}}],"p":"abdefghijklmnoprstuvxyz1"}
+
+            data: {"tool_calls":[{"index":0,"function":{"arguments":"413}"}}],"p":"abdefghijklmnoprstuvxyz123"}
+
+            data: {"tool_calls":[{"index":0,"function":{"arguments":""}}],"p":"abdefghijklmnoprstuvx"}
+
+            data: {"tool_calls":[],"p":"abdefghij"}
+
+            data: {"response":"","usage":{"prompt_tokens":325,"completion_tokens":18,"total_tokens":343}}
+
+            data: [DONE]
+
+        headers:
+            Api-Version:
+                - "2025-07-26"
+            Cf-Ai-Req-Id:
+                - 1967941a-44af-42ec-b5c6-8fde971e1555
+            Cf-Auditlog-Id:
+                - 01984773-0181-700e-bf08-75bb0204e3cc
+            Cf-Ray:
+                - 96551608ae3ba26c-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 374ms

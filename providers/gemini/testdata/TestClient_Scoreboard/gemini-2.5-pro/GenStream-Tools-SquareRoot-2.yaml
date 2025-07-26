@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1599
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"model","parts":[{"thought":true,"text":"**Initiating Calculation**\n\nI've identified the appropriate tool, `square_root`, to address the user's request. The user wants to find the square root of 132413. The tool's single parameter, `number`, is directly satisfied by the provided input, \"132413\". I'm ready to proceed with the calculation.\n\n\n**Refining the Response**\n\nI've refined my approach to address the user's specific requirements. I now understand that I need to extract and present only the numerical result from the tool's output. Consequently, my strategy involves calling the tool and then parsing the output to isolate the number. This ensures a concise and direct answer, fulfilling the user's request for \"only the result.\"\n\n\n"},{"functionCall":{"name":"square_root","args":{"number":132413}}}]},{"role":"user","parts":[{"functionResponse":{"name":"square_root","response":{"response":"363.89"}}}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"NONE"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"3\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 320,\"candidatesTokenCount\": 1,\"totalTokenCount\": 321,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 320}]},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"IvmEaL_rMqiH1MkP0KKtgQM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"63.89\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 320,\"candidatesTokenCount\": 6,\"totalTokenCount\": 326,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 320}]},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"IvmEaL_rMqiH1MkP0KKtgQM\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1087
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.098s

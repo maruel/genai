@@ -1,0 +1,86 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 662
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**Calculating a Square Root**\n\nOkay, so the user wants the square root of 132413.  No problem. They've specified the `square_root` tool, and that's precisely what I'll use.  It's pretty straightforward: I need to call the `square_root` tool and pass it the `number` 132413.  Once the tool runs, it'll give me the answer, which I'll then present back to the user without any extra commentary, just the numerical result.  I'll print the tool's output for my own reference. Let's get to it.\n",
+                        "thought": true
+                      },
+                      {
+                        "functionCall": {
+                          "name": "square_root",
+                          "args": {
+                            "number": 132413
+                          }
+                        },
+                        "thoughtSignature": "CscDAVSoXO7/+avM7dWvKXh51OeZvdjghZEsSXMyecC1QkHECAvx5T3Dvmdlq32jDLC/qDHRBW8Kh47h3YhQiY7tt7IdsIBtyZzwMZlrqdYLXwDVcSzchRLGJ3ZZdmMq+SyKu1oj2sG5Ec8UFFVM9FXtY+d2dhN1jbd17BVNwIOBOLBfi+w4MEtcdSEaGGd/cwe/y1mjUbEEQ3epz9LcBofpUkLTh1YmG+vyBtgAFBWVgBfD/YEeWPtMfTgkgkMDtFjkwFSoNFFs4tJih8PO48LCzVqmfpJrX4SGdDah/WimvxCiqORkQ5w/Y/4iokzvHssjE6qEy2Un6psxekrl+xl6l5xp44fwbUkeZhdDMchfDeCB6qaNEPiXztSbo7+Qp+sAIGWFN3OwlmrR7j6Pc9a/y6xND54wXaQ3VxNoV9x1vbkRixgNqdsPHd9qWA2jANiDTwKLBVtDVoyaf5YuFI7Te93cCrQc3C7iZ0vJHY7vyZl3deaYQazOgPVEg8HCaWoYWcEVyPoBrp27V8LWx5bseGPnlf0/C9hAo2pJt0JphTBOZdKPqRBNEbNKbRMI+0hkF+W9Z7IWP77w9o4aAViN8gcNQgw090k="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 117,
+                "candidatesTokenCount": 20,
+                "totalTokenCount": 246,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 117
+                  }
+                ],
+                "thoughtsTokenCount": 109
+              },
+              "modelVersion": "gemini-2.5-pro",
+              "responseId": "fveEaLTFA5LdjMcPo5qZ6Qs"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=4461
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 4.472s

@@ -619,7 +619,7 @@ func callGen(ctx context.Context, pf ProviderFactory, name string, msgs genai.Me
 		resp, err = c.GenSync(ctx, msgs, opts)
 	}
 	if err != nil {
-		return resp, fmt.Errorf("%s: %w", name, err)
+		return resp, err
 	}
 	usage.InputTokens += resp.InputTokens
 	usage.InputCachedTokens += resp.InputCachedTokens

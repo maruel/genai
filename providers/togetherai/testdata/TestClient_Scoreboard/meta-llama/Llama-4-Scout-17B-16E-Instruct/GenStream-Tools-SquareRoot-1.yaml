@@ -1,0 +1,81 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 569
+        host: api.together.xyz
+        body: |
+            {"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","stream":true,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"o4dhYuK-62bZhn-9654fa1fcb21a320","object":"chat.completion.chunk","created":1753544233,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"o4dhYuK-62bZhn-9654fa1fcb21a320","object":"chat.completion.chunk","created":1753544233,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_asylb73ykoeinwk7vesx4uis","type":"function","function":{"name":"square_root","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"o4dhYuK-62bZhn-9654fa1fcb21a320","object":"chat.completion.chunk","created":1753544233,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\"number\":132413}"}}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"o4dhYuK-62bZhn-9654fa1fcb21a320","object":"chat.completion.chunk","created":1753544232,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"tool_calls","stop_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
+
+            data: {"id":"o4dhYuK-62bZhn-9654fa1fcb21a320","object":"chat.completion.chunk","created":1753544232,"choices":[],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":{"prompt_tokens":816,"total_tokens":846,"completion_tokens":30},"warnings":[{"message":"Model supports only tool_choice auto"}]}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache, no-transform
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9654fa1fcb21a320-YUL
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - 9ac230f9-cb43-4cb9-af7a-d331b5d67ada-noamzn
+            X-Api-Call-Start:
+                - "2025-07-26T15:37:12.996Z"
+            X-Api-Received:
+                - "2025-07-26T15:37:12.982Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "1"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - o4dhYuK-62bZhn-9654fa1fcb21a320
+        status: 200 OK
+        code: 200
+        duration: 399ms

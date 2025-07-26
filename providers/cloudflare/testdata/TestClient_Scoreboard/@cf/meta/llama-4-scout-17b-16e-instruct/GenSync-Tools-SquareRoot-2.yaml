@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 695
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","content":"{\"number\": 132413}","tool_call_id":"chatcmpl-tool-f80d516154e04ed8a42e536801bfc469"},{"role":"tool","content":"363.89","tool_call_id":"chatcmpl-tool-f80d516154e04ed8a42e536801bfc469"}],"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"result":{"response":"The square root of 132413 is approximately 363.89.","tool_calls":[],"usage":{"prompt_tokens":348,"completion_tokens":15,"total_tokens":363}},"success":true,"errors":[],"messages":[]}'
+        headers:
+            Api-Version:
+                - "2025-07-26"
+            Cf-Ai-Req-Id:
+                - a11c0c66-b675-4d08-b0bf-07a792ce1c9a
+            Cf-Auditlog-Id:
+                - 01984773-03a1-7497-bf80-ded5f9a77c13
+            Cf-Ray:
+                - 9655160c1b44a26c-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 527ms

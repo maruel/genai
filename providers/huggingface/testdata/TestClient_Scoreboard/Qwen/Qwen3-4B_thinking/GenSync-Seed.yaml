@@ -1,0 +1,79 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 161
+        host: router.huggingface.co
+        body: |
+            {"model":"Qwen/Qwen3-4B","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."},{"role":"user","content":"\n\n/think"}],"seed":42}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1326
+        body: '{"id":"chatcmpl-1e7fb8507fbf47dfb9419a46bebe0329","choices":[{"finish_reason":"stop","index":0,"logprobs":null,"message":{"content":"<think>\nOkay, the user said, \"Say hello. Use only one word.\" So I need to respond with a single word that means hello. The most common one is \"Hi,\" but maybe they want something more formal? Like \"Hello\" itself, but that''s two words. Wait, the instruction says only one word. \"Hi\" is one word. Alternatively, \"Hello\" is two words, so that''s out. Maybe \"Hey\"? That''s also one word. But the user might be looking for the most standard answer. In English, \"Hi\" is the most common single-word greeting. So I think \"Hi\" is the right choice here. Let me make sure there''s no other possible answer. Maybe \"Hello\" is acceptable if it''s considered as one word in some contexts, but usually, it''s two words. So \"Hi\" is the safest bet.\n</think>\n\nHi","refusal":null,"role":"assistant","annotations":null,"audio":null,"function_call":null,"tool_calls":[],"reasoning_content":null},"stop_reason":null}],"created":1753570468,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion","service_tier":null,"system_fingerprint":null,"usage":{"completion_tokens":185,"prompt_tokens":23,"total_tokens":208,"completion_tokens_details":null,"prompt_tokens_details":null},"prompt_logprobs":null}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "1326"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+            Via:
+                - 1.1 2080aae7ace369c71819923852e1b17e.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - ULj5-U2oO8NYiHUFvbffnwZ197hqrev0SeOBCneZY2KBpxQNIJKxWQ==
+            X-Amz-Cf-Pop:
+                - YUL62-P2
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Id:
+                - chatcmpl-1e7fb8507fbf47dfb9419a46bebe0329
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Dynamic-Period-Remaining:
+                - 897s
+            X-Ratelimit-Dynamic-Period-Usage-Requests:
+                - 0%
+            X-Ratelimit-Dynamic-Period-Usage-Tokens:
+                - 0%
+            X-Ratelimit-Dynamic-Scale-Requests:
+                - "1.00"
+            X-Ratelimit-Dynamic-Scale-Tokens:
+                - "1.00"
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "400000"
+            X-Ratelimit-Remaining-Requests:
+                - "600"
+            X-Ratelimit-Remaining-Tokens:
+                - "400000"
+            X-Request-Id:
+                - LwpFjTcym_mkv1gO
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.573s

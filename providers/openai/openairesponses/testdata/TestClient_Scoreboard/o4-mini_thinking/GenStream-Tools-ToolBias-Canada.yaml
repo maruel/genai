@@ -1,0 +1,339 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 705
+        host: api.openai.com
+        body: |
+            {"model":"o4-mini","background":false,"parallel_tool_calls":true,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"tool_choice":"required","tools":[{"type":"function","name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: response.created
+            data: {"type":"response.created","sequence_number":0,"response":{"id":"resp_68856a0b09ec8198992be689398bc64c025bf23d4d27660d","object":"response","created_at":1753573899,"status":"in_progress","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"o4-mini-2025-04-16","output":[],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":"low","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":false,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"required","tools":[{"type":"function","description":"A tool to specify the best country","name":"best_country","parameters":{"properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}}}
+
+            event: response.in_progress
+            data: {"type":"response.in_progress","sequence_number":1,"response":{"id":"resp_68856a0b09ec8198992be689398bc64c025bf23d4d27660d","object":"response","created_at":1753573899,"status":"in_progress","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"o4-mini-2025-04-16","output":[],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":"low","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":false,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"required","tools":[{"type":"function","description":"A tool to specify the best country","name":"best_country","parameters":{"properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}}}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","sequence_number":2,"output_index":0,"item":{"id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","type":"reasoning","summary":[]}}
+
+            event: response.reasoning_summary_part.added
+            data: {"type":"response.reasoning_summary_part.added","sequence_number":3,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"part":{"type":"summary_text","text":""}}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":4,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":"**Choosing"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":5,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" a"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":6,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" country"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":7,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" for"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":8,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" comparison"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":9,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":"**\n\nThe"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":10,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" user"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":11,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" is"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":12,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" asking"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":13,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" me"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":14,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" to"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":15,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" compare"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":16,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" Canada"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":17,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" and"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":18,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" the"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":19,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" USA"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":20,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":","}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":21,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" specifically"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":22,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" wondering"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":23,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" if"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":24,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" Canada"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":25,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" might"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":26,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" be"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":27,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" better"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":28,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":"."}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":29,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" I"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":30,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" need"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":31,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" to"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":32,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" use"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":33,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" a"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":34,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" function"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":35,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" to"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":36,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" determine"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":37,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" the"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":38,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" best"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":39,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" country"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":40,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":"."}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":41,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" Since"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":42,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" the"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":43,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" tool"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":44,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" can"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":45,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" only"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":46,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" pick"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":47,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" between"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":48,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" Canada"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":49,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" or"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":50,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" the"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":51,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" USA"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":52,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":","}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":53,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" I"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":54,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" think"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":55,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" Canada"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":56,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" is"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":57,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" a"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":58,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" sensible"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":59,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" choice"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":60,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":","}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":61,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" though"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":62,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" it"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":63,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":"’s"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":64,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" ultimately"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":65,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" subjective"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":66,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":"."}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":67,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" So"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":68,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":","}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":69,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" I"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":70,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":"’ll"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":71,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" go"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":72,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" ahead"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":73,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" and"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":74,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" proceed"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":75,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" by"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":76,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" calling"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":77,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" with"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":78,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" Canada"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":79,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" as"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":80,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" the"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":81,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" designated"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":82,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":" country"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":83,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"delta":"."}
+
+            event: response.reasoning_summary_text.done
+            data: {"type":"response.reasoning_summary_text.done","sequence_number":84,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"text":"**Choosing a country for comparison**\n\nThe user is asking me to compare Canada and the USA, specifically wondering if Canada might be better. I need to use a function to determine the best country. Since the tool can only pick between Canada or the USA, I think Canada is a sensible choice, though it’s ultimately subjective. So, I’ll go ahead and proceed by calling with Canada as the designated country."}
+
+            event: response.reasoning_summary_part.done
+            data: {"type":"response.reasoning_summary_part.done","sequence_number":85,"item_id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","output_index":0,"summary_index":0,"part":{"type":"summary_text","text":"**Choosing a country for comparison**\n\nThe user is asking me to compare Canada and the USA, specifically wondering if Canada might be better. I need to use a function to determine the best country. Since the tool can only pick between Canada or the USA, I think Canada is a sensible choice, though it’s ultimately subjective. So, I’ll go ahead and proceed by calling with Canada as the designated country."}}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","sequence_number":86,"output_index":0,"item":{"id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","type":"reasoning","summary":[{"type":"summary_text","text":"**Choosing a country for comparison**\n\nThe user is asking me to compare Canada and the USA, specifically wondering if Canada might be better. I need to use a function to determine the best country. Since the tool can only pick between Canada or the USA, I think Canada is a sensible choice, though it’s ultimately subjective. So, I’ll go ahead and proceed by calling with Canada as the designated country."}]}}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","sequence_number":87,"output_index":1,"item":{"id":"fc_68856a0d428081989ab91aac5f9572ff025bf23d4d27660d","type":"function_call","status":"in_progress","arguments":"","call_id":"call_pMOASVHtxP9YUK7yILyTeXJV","name":"best_country"}}
+
+            event: response.function_call_arguments.delta
+            data: {"type":"response.function_call_arguments.delta","sequence_number":88,"item_id":"fc_68856a0d428081989ab91aac5f9572ff025bf23d4d27660d","output_index":1,"delta":"{\""}
+
+            event: response.function_call_arguments.delta
+            data: {"type":"response.function_call_arguments.delta","sequence_number":89,"item_id":"fc_68856a0d428081989ab91aac5f9572ff025bf23d4d27660d","output_index":1,"delta":"country"}
+
+            event: response.function_call_arguments.delta
+            data: {"type":"response.function_call_arguments.delta","sequence_number":90,"item_id":"fc_68856a0d428081989ab91aac5f9572ff025bf23d4d27660d","output_index":1,"delta":"\":\""}
+
+            event: response.function_call_arguments.delta
+            data: {"type":"response.function_call_arguments.delta","sequence_number":91,"item_id":"fc_68856a0d428081989ab91aac5f9572ff025bf23d4d27660d","output_index":1,"delta":"Canada"}
+
+            event: response.function_call_arguments.delta
+            data: {"type":"response.function_call_arguments.delta","sequence_number":92,"item_id":"fc_68856a0d428081989ab91aac5f9572ff025bf23d4d27660d","output_index":1,"delta":"\"}"}
+
+            event: response.function_call_arguments.done
+            data: {"type":"response.function_call_arguments.done","sequence_number":93,"item_id":"fc_68856a0d428081989ab91aac5f9572ff025bf23d4d27660d","output_index":1,"arguments":"{\"country\":\"Canada\"}"}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","sequence_number":94,"output_index":1,"item":{"id":"fc_68856a0d428081989ab91aac5f9572ff025bf23d4d27660d","type":"function_call","status":"completed","arguments":"{\"country\":\"Canada\"}","call_id":"call_pMOASVHtxP9YUK7yILyTeXJV","name":"best_country"}}
+
+            event: response.completed
+            data: {"type":"response.completed","sequence_number":95,"response":{"id":"resp_68856a0b09ec8198992be689398bc64c025bf23d4d27660d","object":"response","created_at":1753573899,"status":"completed","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"o4-mini-2025-04-16","output":[{"id":"rs_68856a0b8dac8198b8634b4486ad5383025bf23d4d27660d","type":"reasoning","summary":[{"type":"summary_text","text":"**Choosing a country for comparison**\n\nThe user is asking me to compare Canada and the USA, specifically wondering if Canada might be better. I need to use a function to determine the best country. Since the tool can only pick between Canada or the USA, I think Canada is a sensible choice, though it’s ultimately subjective. So, I’ll go ahead and proceed by calling with Canada as the designated country."}]},{"id":"fc_68856a0d428081989ab91aac5f9572ff025bf23d4d27660d","type":"function_call","status":"completed","arguments":"{\"country\":\"Canada\"}","call_id":"call_pMOASVHtxP9YUK7yILyTeXJV","name":"best_country"}],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":"low","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":false,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"required","tools":[{"type":"function","description":"A tool to specify the best country","name":"best_country","parameters":{"properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":{"input_tokens":74,"input_tokens_details":{"cached_tokens":0},"output_tokens":84,"output_tokens_details":{"reasoning_tokens":64},"total_tokens":158},"user":null,"metadata":{}}}
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9657ce646a86a2d2-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Organization:
+                - user-vtmtcvpbctksjfewktqdl2sw
+            Openai-Processing-Ms:
+                - "83"
+            Openai-Project:
+                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - req_c1c8f1dd6e4de08762e8b407463ff530
+        status: 200 OK
+        code: 200
+        duration: 224ms

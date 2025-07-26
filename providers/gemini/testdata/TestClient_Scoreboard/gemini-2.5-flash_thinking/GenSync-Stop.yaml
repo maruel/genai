@@ -1,0 +1,80 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 247
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Talk about Canada in great details. Start with: Canada is"}]}],"generationConfig":{"stopSequences":["is"],"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Internal Breakdown for a Comprehensive Canada Description**\n\nOkay, so the prompt is clear: \"Talk about Canada in great detail.\"  I need to go beyond surface-level information and delve deep. The provided opening, \"Canada is...\", will help guide the flow, keeping it coherent and essay-like.\n\nMy first thought is to break down the concept of \"Canada\" into key pillars.  I'll need to cover its:\n\n*   **Geography and physical traits** - This is paramount, given its vastness.\n*   **History and how it was formed** - A look at its foundations.\n*   **Politics and government** - How the country is run.\n*   **Economy and natural resources** - What drives its prosperity.\n*   **Culture and society (including diversity)** - A reflection of its people.\n*   **Its role on the international stage** - How it interacts with the world.\n*   **Challenges and future** - A look to the horizon.\n\nNow, to flesh out each of these areas with specifics.\n\n**Introduction:**  I'll start with the basics: second-largest landmass, North American nation, and what it's known for – its size, beauty, multiculturalism, and high quality of life.  Then, a quick nod to its core identity: peaceful, progressive, and incredibly diverse.\n\n**Geography:** This will need serious detail!  Highlighting the *vastness* is crucial, so I'll mention the square kilometers. The *borders* are key, specifically the long land border with the USA. Then, its *three oceans* – Atlantic, Pacific, and Arctic.  Next, I'll need to systematically cover its diverse *regions*:  the Atlantic Provinces, Central Canada, the Prairies, the West Coast, and the North. For *Landforms*, I'll hit the highlights: Rocky Mountains, Canadian Shield, the Great Lakes, and the Arctic Archipelago.  Finally, I must address the *climate* - highly varied, with extremes - and its *abundant natural resources*, mentioning environmental responsibility.\n\nI'll pick up the history next.\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Canada "
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 13,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 509,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  }
+                ],
+                "thoughtsTokenCount": 495
+              },
+              "modelVersion": "gemini-2.5-flash",
+              "responseId": "gV2FaLXyNdSL-sAP_oGJsQs"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=5020
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 5.03s

@@ -78,7 +78,8 @@ var Scoreboard = genai.Scoreboard{
 		},
 		// The model is completely misbehaving with PDFs. This is weird.
 		{
-			Models: []string{"o4-mini"},
+			Models:   []string{"o4-mini"},
+			Thinking: true,
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
@@ -120,6 +121,30 @@ var Scoreboard = genai.Scoreboard{
 				BrokenTokenUsage:   genai.True,
 				BrokenFinishReason: true,
 			},
+		},
+		{
+			Models: []string{
+				"o1",
+				"o1-2024-12-17",
+				"o1-mini",
+				"o1-mini-2024-09-12",
+				"o1-preview",
+				"o1-preview-2024-09-12",
+				"o1-pro",
+				"o1-pro-2025-03-19",
+				"o3",
+				"o3-2025-04-16",
+				"o3-deep-research",
+				"o3-deep-research-2025-06-26",
+				"o3-mini",
+				"o3-mini-2025-01-31",
+				"o3-pro",
+				"o3-pro-2025-06-10",
+				"o4-mini-2025-04-16",
+				"o4-mini-deep-research",
+				"o4-mini-deep-research-2025-06-26",
+			},
+			Thinking: true,
 		},
 		{
 			Models: []string{
@@ -170,25 +195,6 @@ var Scoreboard = genai.Scoreboard{
 				"gpt-4o-search-preview",
 				"gpt-4o-search-preview-2025-03-11",
 				"gpt-4o-transcribe",
-				"o1",
-				"o1-2024-12-17",
-				"o1-mini",
-				"o1-mini-2024-09-12",
-				"o1-preview",
-				"o1-preview-2024-09-12",
-				"o1-pro",
-				"o1-pro-2025-03-19",
-				"o3",
-				"o3-2025-04-16",
-				"o3-deep-research",
-				"o3-deep-research-2025-06-26",
-				"o3-mini",
-				"o3-mini-2025-01-31",
-				"o3-pro",
-				"o3-pro-2025-06-10",
-				"o4-mini-2025-04-16",
-				"o4-mini-deep-research",
-				"o4-mini-deep-research-2025-06-26",
 				"omni-moderation-2024-09-26",
 				"omni-moderation-latest",
 				"text-embedding-3-large",
@@ -299,6 +305,7 @@ func (r *Response) Init(msgs genai.Messages, opts genai.Options, model string) e
 	var unsupported []string
 	var errs []error
 	r.Model = model
+	r.Reasoning.Summary = "auto"
 	if opts != nil {
 		switch v := opts.(type) {
 		case *OptionsText:
@@ -1439,6 +1446,11 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 			pendingToolCall.Arguments = pkt.Arguments
 			f.ToolCall = pendingToolCall
 			pendingToolCall = genai.ToolCall{}
+		case ResponseReasoningSummaryPartAdded:
+		case ResponseReasoningSummaryTextDelta:
+			f.ThinkingFragment = pkt.Delta
+		case ResponseReasoningSummaryTextDone:
+		case ResponseReasoningSummaryPartDone:
 		case ResponseError:
 			return fmt.Errorf("error: %s", pkt.Message)
 		default:

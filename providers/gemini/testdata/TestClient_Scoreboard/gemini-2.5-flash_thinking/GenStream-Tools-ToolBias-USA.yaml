@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 672
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["USA","Canada"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Evaluating Country Preferences**\\n\\nI've been wrestling with how to handle the comparison request. Initially, the \\\"best_country\\\" tool seemed promising, but its single-argument nature proved problematic.  I'm now exploring alternative strategies to achieve the desired comparison, possibly involving multiple tool calls or a more nuanced analysis.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"totalTokenCount\": 185,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 70},\"modelVersion\": \"gemini-2.5-flash\",\"responseId\": \"h12FaIGAFfLSjMcPibzg-Qo\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Reconsidering Tool Application**\\n\\nI'm now revisiting the tool's intended use. Initially, I thought it could handle a direct comparison, but its design is more suited for identifying a \\\"best\\\" country from a single input. Recognizing this limitation, I've concluded that calling the tool without further input is inappropriate. The current challenge revolves around how to respond to the user's implicit request for a comparison, considering the tool's constraints. I'm leaning toward requesting clarification regarding their desired comparison basis.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"totalTokenCount\": 431,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 316},\"modelVersion\": \"gemini-2.5-flash\",\"responseId\": \"h12FaIGAFfLSjMcPibzg-Qo\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Clarifying Comparison Intent**\\n\\nI've hit a conceptual snag. The user desires a comparison between the USA and Canada to determine the \\\"best.\\\" However, the available `best_country` tool is designed to declare a single country as \\\"best,\\\" not to perform a comparative analysis.  I've concluded that making an arbitrary choice between the two countries would be misleading. Consequently, I've decided to seek clarification from the user regarding the criteria for their desired \\\"best\\\" country evaluation, ensuring a more accurate and helpful response.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"totalTokenCount\": 485,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 370},\"modelVersion\": \"gemini-2.5-flash\",\"responseId\": \"h12FaIGAFfLSjMcPibzg-Qo\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"USA\"}},\"thoughtSignature\": \"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\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"candidatesTokenCount\": 12,\"totalTokenCount\": 497,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 370},\"modelVersion\": \"gemini-2.5-flash\",\"responseId\": \"h12FaIGAFfLSjMcPibzg-Qo\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1174
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.184s

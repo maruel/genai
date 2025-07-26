@@ -1,0 +1,129 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 232
+        host: router.huggingface.co
+        body: |
+            {"model":"Qwen/Qwen3-4B","stream":true,"messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"},{"role":"user","content":"\n\n/think"}],"stop":["is"],"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":"","role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":"<think"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":">"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":"\nOka"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":"y"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":", th"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":"e use"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":"r want"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":"s m"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":"e t"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":"o tal"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":"k abou"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":"t Canad"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":"a i"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":"n grea"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":"t detai"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":"l"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":", startin"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":"g wit"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":"h "},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":"\"Canad"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[{"delta":{"content":"a "},"finish_reason":"stop","index":0,"logprobs":null,"stop_reason":"is"}],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2ff854af55d84719a5530f6cefc28fe9","choices":[],"created":1753570469,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk","usage":{"completion_tokens":21,"prompt_tokens":27,"total_tokens":48}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+            Via:
+                - 1.1 2080aae7ace369c71819923852e1b17e.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - b6AWKv_5y-3nQjlKN6Muktn15h82-ITBHCbW7PpiCCsc8LKYmNRdBA==
+            X-Amz-Cf-Pop:
+                - YUL62-P2
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Id:
+                - chatcmpl-2ff854af55d84719a5530f6cefc28fe9
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Dynamic-Period-Remaining:
+                - 897s
+            X-Ratelimit-Dynamic-Period-Usage-Requests:
+                - 0%
+            X-Ratelimit-Dynamic-Period-Usage-Tokens:
+                - 0%
+            X-Ratelimit-Dynamic-Scale-Requests:
+                - "1.00"
+            X-Ratelimit-Dynamic-Scale-Tokens:
+                - "1.00"
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "400000"
+            X-Ratelimit-Remaining-Requests:
+                - "599"
+            X-Ratelimit-Remaining-Tokens:
+                - "399473"
+            X-Ratelimit-Reset-Requests:
+                - 1s
+            X-Ratelimit-Reset-Tokens:
+                - 1s
+            X-Request-Id:
+                - xjXgYrRO_Aa2yNlg
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 170ms

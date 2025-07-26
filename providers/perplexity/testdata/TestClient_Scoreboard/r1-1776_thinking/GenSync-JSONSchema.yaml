@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 440
+        host: api.perplexity.ai
+        body: |
+            {"model":"r1-1776","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"return_images":true,"return_related_questions":true,"stream":false,"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id": "7a94f284-9f21-460c-bc3b-002ab74eb0b7", "model": "r1-1776", "created": 1753574563, "usage": {"prompt_tokens": 17, "completion_tokens": 259, "total_tokens": 276}, "related_questions": ["What are the main characteristics of a fruit", "How do bananas differ from other fruits", "Are there any fruits that are not commonly known", "What are some unusual fruits from around the world", "How do bananas contribute to a healthy diet"], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "<think>\nOkay, the user is asking if a banana is a fruit and wants a JSON response without any explanation. Let me break this down.\n\nFirst, I need to confirm whether a banana is technically a fruit. From what I know, bananas are classified as fruits because they develop from the flower of the banana plant and contain seeds. However, sometimes people categorize certain fruits as vegetables based on culinary usage, but that''s a different context. Since the user is asking for a straightforward answer, the response should be a yes or no in JSON.\n\nThe user specified not to include any explanation, just the JSON. So the answer in JSON should be {\"isFruit\": true}. But wait, maybe I should double-check to make sure I''m not missing anything. Let me think. Botanically, bananas are fruits. They have the characteristics of a fruit: developed from the ovary of a flower and hold seeds. Even though they''re often used as a sweet item and not in savory dishes, that doesn''t change their botanical classification. So the answer is yes, a banana is a fruit. Therefore, the JSON response should be {\"isFruit\": true}. That''s simple and meets the user''s request without any extra text.\n</think>\n\n{\"is_fruit\": true}"}, "delta": {"role": "assistant", "content": ""}}]}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9657de828e89a2a2-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 4.084s

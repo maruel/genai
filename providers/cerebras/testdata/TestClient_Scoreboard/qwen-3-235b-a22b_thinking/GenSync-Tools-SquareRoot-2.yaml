@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 778
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3-235b-a22b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"1ea4cd52a","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"1ea4cd52a","name":"square_root"}],"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-fde7dee4-7e76-4dbe-a0a4-3f1ae33b778a","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, I need to find the square root of 132413. Let me start by recalling how to approach this. Using the square_root tool as instructed, but maybe I should first check if there''s a way to estimate it.\n\nHmm, 360 squared is 129,600. Let me check that. 360^2 = 129,600. Then 365^2 is 133,225, right? Because 360^2 + 2*360*5 +5^2 = 129600 + 3600 + 25 = 133,225. So 132413 is between 360^2 and 365^2. \n\nSo between 360 and 365. Let''s see the difference between 132,413 and 129,600. That''s 132,413 - 129,600 = 2,813. The total range between 360^2 and 365^2 is 133,225 - 129,600 = 3,625. So 2,813 is about 77.6% of the way from 360^2 towards 365^2. That might mean the square root is roughly around 360 + 0.77*5 ≈ 360 + 3.85 = 363.85. \n\nBut since the tool gives 363.89, that aligns with the approximate calculation. So the answer is 363.89.\n</think>\n\n363.89","role":"assistant"}}],"created":1753569357,"model":"qwen-3-235b-a22b","system_fingerprint":"fp_e789b0163b52d4174343","object":"chat.completion","usage":{"prompt_tokens":83,"completion_tokens":407,"total_tokens":490,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.001535465,"prompt_time":0.005276513,"completion_time":0.383522362,"total_time":0.3916153907775879,"created":1753569357}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96575f868a4da2cc-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-fde7dee4-7e76-4dbe-a0a4-3f1ae33b778a
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14347"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "61858"
+            X-Ratelimit-Reset-Requests-Day:
+                - "5041.656223773956"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "1.6562237739562988"
+            X-Request-Id:
+                - 96575f868a4da2cc-YUL
+        status: 200 OK
+        code: 200
+        duration: 1.655s

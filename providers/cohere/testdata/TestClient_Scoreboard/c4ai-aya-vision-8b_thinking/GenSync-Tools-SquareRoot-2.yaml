@@ -1,0 +1,53 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 828
+        host: api.cohere.com
+        body: |
+            {"stream":false,"model":"c4ai-aya-vision-8b","messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"id":"square_root_cf6bm1j15d9g","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413.0}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"square_root_cf6bm1j15d9g"}],"tools":[{"type":"function","function":{"name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"description":"Calculates and return the square root of a number"}}],"tool_choice":"none"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cohere.com/v2/chat
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 118
+        body: '{"id":"1467997a-9ca5-4fc6-bef6-f5f77d14b624","message":"invalid request: tool_choice is not supported for this model"}'
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Debug-Trace-ID
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+            Content-Length:
+                - "118"
+            Content-Type:
+                - application/json
+            Expires:
+                - Thu, 01 Jan 1970 00:00:00 GMT
+            Pragma:
+                - no-cache
+            Server:
+                - envoy
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Accel-Expires:
+                - "0"
+            X-Debug-Trace-Id:
+                - 0e205e2e7c5d5d29d7add4a102a5aeff
+            X-Envoy-Upstream-Service-Time:
+                - "10"
+        status: 400 Bad Request
+        code: 400
+        duration: 54ms

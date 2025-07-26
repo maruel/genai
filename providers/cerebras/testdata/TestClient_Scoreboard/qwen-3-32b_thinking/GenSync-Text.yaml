@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 133
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Say hello. Use only one word."},{"role":"user","content":"\n\n/think"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-2640cde7-f06d-443b-8d8f-81dbd5b03785","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, the user said \"Say hello. Use only one word.\" So I need to respond with just one word. Let me think... The most straightforward one-word greeting is \"Hello.\" But maybe they want something more creative? Like \"Hi\" or \"Hey.\" Wait, \"Hello\" is one word. Let me check the instruction again. They said \"Use only one word,\" so \"Hello\" should be fine. I don''t want to overcomplicate it. Maybe the user is testing if I follow instructions precisely. Let me make sure there''s no extra text or punctuation. Just the single word \"Hello.\" Yeah, that''s it. I''ll go with that.\n</think>\n\nHello.","role":"assistant"}}],"created":1753569339,"model":"qwen-3-32b","system_fingerprint":"fp_d92e1e5be69bb839ccfe","object":"chat.completion","usage":{"prompt_tokens":23,"completion_tokens":145,"total_tokens":168,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.001025098,"prompt_time":0.001237541,"completion_time":0.07973653,"total_time":0.08334827423095703,"created":1753569339}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96575f14a8687151-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-2640cde7-f06d-443b-8d8f-81dbd5b03785
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14351"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "63729"
+            X-Ratelimit-Reset-Requests-Day:
+                - "5060.120609998703"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "20.120609998703003"
+            X-Request-Id:
+                - 96575f14a8687151-YUL
+        status: 200 OK
+        code: 200
+        duration: 1.451s

@@ -1,0 +1,94 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 672
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["USA","Canada"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**Navigating the Inquiry: A Limited Toolset**\n\nOkay, so the user wants a comparison between the USA and Canada – which is \"better,\" specifically. They're directing me to use the `best_country` tool. My first thought is to check the tool's documentation.  \n\nThe `best_country` tool only accepts a single country input, either \"USA\" or \"Canada.\"  Its core function seems to be to determine if *one* country is the best, not to compare them directly. The design is a bit narrow here.\n\nThe user's query implies a comparative analysis – which is better, USA or Canada? But the tool I have access to doesn't support that directly. It only allows me to assess if a single country, submitted independently, is deemed \"the best.\"  I'll need to explain this limitation clearly to the user, perhaps by outlining what the tool can do, rather than what it can't.\n",
+                        "thought": true
+                      },
+                      {
+                        "functionCall": {
+                          "name": "best_country",
+                          "args": {
+                            "country": "USA"
+                          }
+                        },
+                        "thoughtSignature": "CrIIAVSoXO62sJDgMK6v0cn43420otAD/KntSk1U9k8XqDzMpP/lsABIjrVspYd/has3Cs5yWPrzU5DEKuVWx+D6U/WYIVzN56zzjbOC31BJdjUOaTPf1ZIyN7NQmbO5uCalh9In9VTsnB5LfQmYcWIZ+oT7DvlD3y1DwT6Jhz/PFyHYaigIe7zhG8gnGhFiKQPyjQH6XvaAk2JsKgK9sj+3bVObRaOq56mdMPakM5QjHrEjditykQm9LNUJNeDSveVi4JUd0kpxv2OnNHyg/WckEOg7jH9RhmogK00NaZffjcp6MZzyeKU8tSY38Ex3pVJ+SMHutvfAtR4cDftGRD7oYqnhYgZlTzANXddplzxnXTVxrJKd3p062LRHn14HVb868jxomcdLSzB1ip+AjhoB/pKEpG0xgG80vD0kaJhTmGZ4dxVNhxM4RisG6wt6tE1OS7Yq2sInbory0F51W0PPr9nEU2RxA8S4tPy/gxfH+0/1Wye1DXIidrnwszac9zw4qe2BG85DlsgOVnBgJMxcWwzvRrgp0vPnR6oAIAFF0qvt6Ws3xL4q1Jtl82falnNPmjHgSmF9vD2Ot1OE7NxuTlFDO5yp6o/oIjCYAe0j8bIZvSXHVuS84zqBx6qOPNb7qLjPR17PtJf6qvz7iEi47THx0s5G0JjpqG4ePsa+KfAj9piKFhaU3X9HF3MgANZ/6IKEF8pS83sNMI3wq1O9grHpJgBS0eXjMVQOqkwMvCb62f+L4hP8FkbHtqmTLhQaetNUtw0ZbTaRVXjwdqbxFpOjyJLCM4p1W8a/o+IUTJ4ZSXLS7pkbjfaxdwXP05jR5Weiixv2+Rq2VO8Bc3o1UztxmIDr6zkfaOaXQND7APicw22irBF3A4u/RAUhXZRoqFh9M983Wn6kVek+VR60FBjAxqplpl3m++f+Mz1JGaVTrvvk4PrmYbu98EmD8F07SnPGkhkQKtZope9vvIadnBKtYdfZoMih34Ul6LnQm/l+CHp9zTjOJuRWYGanCwybhHsRl4M83lhoTfysMBZ5rWwkjp332GrLMkiudCiqH/X4xhavbmq4x2mvGMH28dS3Be9SmI+tnNegh0uqh/p56tbAyrbXcammNIVDQx0S9EjDsNLjr+R01mupSMoadJOjXC8JhvKPTPnNYBjZayGB7f8TZkIN359dYCXe9RvczuY1FgAaLIRCSeRioc3MXrpDgBMmbGyKUDnuu4vOzICnpiEOj3hn1w8JrpiuFHhH4BmJoWoAZnpc85ZgvHBV4oddoznFJQE2YoAks1UAnhRYHXuKPsI0KaxHjSMAMR1HFsHUVajbog2Y+h5gDdbVpvwnc+Owei1JXpF5sVRhbpYsLXHhurIQLSOioyDZ8bY4FOyN9BRtLQrYE9FiTGRFoGXnWwpXUht505GyUxepXb1VSg0v"
+                      },
+                      {
+                        "functionCall": {
+                          "name": "best_country",
+                          "args": {
+                            "country": "Canada"
+                          }
+                        }
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 115,
+                "candidatesTokenCount": 30,
+                "totalTokenCount": 389,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 115
+                  }
+                ],
+                "thoughtsTokenCount": 244
+              },
+              "modelVersion": "gemini-2.5-flash-lite",
+              "responseId": "DGKFaMjMDa7SjMcP39yw8Qo"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2070
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.081s

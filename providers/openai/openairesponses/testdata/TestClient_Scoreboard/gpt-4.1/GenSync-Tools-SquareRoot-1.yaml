@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 613
+        content_length: 644
         host: api.openai.com
         body: |
-            {"model":"gpt-4.1","background":false,"parallel_tool_calls":true,"store":false,"tool_choice":"required","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}]}
+            {"model":"gpt-4.1","background":false,"parallel_tool_calls":true,"reasoning":{"summary":"auto"},"store":false,"tool_choice":"required","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_6884faa82790819a811c0c0a85aac77e0f38aa83b37d753a",
+              "id": "resp_68856c159f508198b8ec16d5dab671a803c8e18266e2c6ad",
               "object": "response",
-              "created_at": 1753545384,
+              "created_at": 1753574421,
               "status": "completed",
               "background": false,
               "error": null,
@@ -36,11 +36,11 @@ interactions:
               "model": "gpt-4.1-2025-04-14",
               "output": [
                 {
-                  "id": "fc_6884faa88508819a8a80a0c56182c4830f38aa83b37d753a",
+                  "id": "fc_68856c15f6808198b3ae2b1aef4de8f603c8e18266e2c6ad",
                   "type": "function_call",
                   "status": "completed",
                   "arguments": "{\"number\":132413}",
-                  "call_id": "call_W5Gkka7G3CXgjEYiwNkQYcC2",
+                  "call_id": "call_gMhCYICfg5enHuicRacM6dcB",
                   "name": "square_root"
                 }
               ],
@@ -104,13 +104,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9655163a7f53a29e-YUL
+                - 9657db26ac0aa2ff-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "455"
+                - "423"
             Openai-Project:
                 - proj_tH6hQUFvA4Bx6SyAb23zzLEg
             Openai-Version:
@@ -134,7 +134,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 588ms
             X-Request-Id:
-                - req_c33a11f582e02bf8ed43f7f56255993c
+                - req_78fabe20a48245c50c651d17f765b6fd
         status: 200 OK
         code: 200
-        duration: 578ms
+        duration: 539ms

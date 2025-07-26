@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 521
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-reasoner","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"0b6ba761-5bf6-4c2a-bc72-a5bad20943da","object":"chat.completion","created":1753566464,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"```json\n{\"function\":\"square_root\",\"arguments\":{\"number\":132413}}\n```<｜tool▁call▁end｜><｜tool▁calls▁end｜>","reasoning_content":"We are going to use the square_root function to calculate the square root of 132413.\n The function requires one parameter: \"number\", which we set to 132413.\n We then return the result as the answer."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":161,"completion_tokens":66,"total_tokens":227,"prompt_tokens_details":{"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":45},"prompt_cache_hit_tokens":128,"prompt_cache_miss_tokens":33},"system_fingerprint":"fp_393bca965e_prod0623_fp8_kvcache"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 965718e0cadfa30e-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            X-Content-Type-Options:
+                - nosniff
+            X-Ds-Trace-Id:
+                - e8bdd270acaed0e02405029093d9d807
+        status: 200 OK
+        code: 200
+        duration: 279ms

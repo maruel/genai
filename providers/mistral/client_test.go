@@ -22,16 +22,19 @@ import (
 	"github.com/maruel/httpjson"
 )
 
-func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 	apiKey := ""
 	if os.Getenv("MISTRAL_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := mistral.New(apiKey, model, fn)
+	c, err := mistral.New(apiKey, model.Model, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if strings.HasPrefix(model, "voxtral") {
+	if model.Thinking {
+		t.Fatal("implement me")
+	}
+	if strings.HasPrefix(model.Model, "voxtral") {
 		// If anyone at Mistral reads this, please get your shit together.
 		return &hideHTTP500{c}
 	}
@@ -73,9 +76,13 @@ func (h *hideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, chunks
 }
 
 func TestClient_Scoreboard(t *testing.T) {
-	models, err := getClient(t, "").ListModels(t.Context())
+	genaiModels, err := getClient(t, "").ListModels(t.Context())
 	if err != nil {
 		t.Fatal(err)
+	}
+	var models []scoreboardtest.Model
+	for _, m := range genaiModels {
+		models = append(models, scoreboardtest.Model{Model: m.GetID()})
 	}
 	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
 }

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 160
+        content_length: 191
         host: api.openai.com
         body: |
-            {"model":"bad model","background":false,"store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Tell a short joke."}]}]}
+            {"model":"bad model","background":false,"reasoning":{"summary":"auto"},"store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Tell a short joke."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -35,7 +35,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 964faf22da89a311-YUL
+                - 9657dcdd2c02714a-YUL
             Content-Length:
                 - "175"
             Content-Type:
@@ -43,7 +43,7 @@ interactions:
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "264"
+                - "120"
             Openai-Project:
                 - proj_tH6hQUFvA4Bx6SyAb23zzLEg
             Openai-Version:
@@ -55,7 +55,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Request-Id:
-                - req_360d85991daa2dc65a475c72a5d790ba
+                - req_38b7c2f1decd25c88fa33869a87db67a
         status: 400 Bad Request
         code: 400
-        duration: 403ms
+        duration: 256ms

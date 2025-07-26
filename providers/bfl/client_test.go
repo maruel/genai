@@ -19,14 +19,17 @@ import (
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
 )
 
-func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 	apiKey := ""
 	if os.Getenv("BFL_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := New(apiKey, model, fn)
+	c, err := New(apiKey, model.Model, fn)
 	if err != nil {
 		t.Fatal(err)
+	}
+	if model.Thinking {
+		t.Fatal("unexpected")
 	}
 	return &imageModelClient{c}
 }
@@ -34,29 +37,15 @@ func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.Rou
 func TestClient_Scoreboard(t *testing.T) {
 	// bfl does not have a public API to list models.
 	sb := getClient(t, "").Scoreboard()
-	var models []genai.Model
+	var models []scoreboardtest.Model
 	for _, sc := range sb.Scenarios {
 		if sc.GenDoc != nil {
 			for _, model := range sc.Models {
-				models = append(models, fakeModel(model))
+				models = append(models, scoreboardtest.Model{Model: model})
 			}
 		}
 	}
 	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
-}
-
-type fakeModel string
-
-func (f fakeModel) GetID() string {
-	return string(f)
-}
-
-func (f fakeModel) String() string {
-	return string(f)
-}
-
-func (f fakeModel) Context() int64 {
-	return 0
 }
 
 type imageModelClient struct {

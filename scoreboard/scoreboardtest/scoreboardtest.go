@@ -18,18 +18,33 @@ import (
 	"github.com/maruel/genai/scoreboard"
 )
 
+// Model is a model to test. It specifies if the model should run in "thinking  mode" or not. Most models only
+// support one or the other but a few support both. Often their functionality is different depending if
+// thinking is enabled or not.
+type Model struct {
+	Model    string
+	Thinking bool
+}
+
+func (m *Model) String() string {
+	if m.Thinking {
+		return m.Model + "_thinking"
+	}
+	return m.Model
+}
+
 // GetClient is the client to assert the scoreboard. It will have the HTTP requests recorded.
-type GetClient func(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider
+type GetClient func(t testing.TB, m Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider
 
 // AssertScoreboard regenerates the scoreboard and asserts it is up to date.
-func AssertScoreboard(t *testing.T, gc GetClient, models []genai.Model, rec *internal.Records) {
+func AssertScoreboard(t *testing.T, gc GetClient, models []Model, rec *internal.Records) {
 	if len(models) == 0 {
 		t.Fatal("no models")
 	}
 	usage := genai.Usage{}
 
 	// Find the reference.
-	cc := gc(t, "", nil)
+	cc := gc(t, Model{}, nil)
 	og := cc
 	for {
 		if u, ok := og.(genai.ProviderUnwrap); ok {
@@ -39,37 +54,37 @@ func AssertScoreboard(t *testing.T, gc GetClient, models []genai.Model, rec *int
 		}
 	}
 	sb := og.(genai.ProviderScoreboard).Scoreboard()
-	// Check for duplicates
-	sbModels := map[string]struct{}{}
+	// Check for duplicates. Disambiguates between thinking and non-thinking.
+	sbModels := map[Model]struct{}{}
 	for _, sc := range sb.Scenarios {
 		for _, model := range sc.Models {
-			if _, ok := sbModels[model]; ok {
-				t.Fatalf("duplicate model in scoreboard: %q", model)
+			k := Model{Model: model, Thinking: sc.Thinking}
+			if _, ok := sbModels[k]; ok {
+				t.Fatalf("duplicate model in scoreboard: %v", k)
 			}
-			sbModels[model] = struct{}{}
+			sbModels[k] = struct{}{}
 		}
 	}
 
-	seen := map[string]struct{}{}
+	seen := map[Model]struct{}{}
 	for _, m := range models {
-		model := m.GetID()
-		t.Run(model, func(t *testing.T) {
-			if _, ok := seen[model]; ok {
-				t.Fatalf("duplicate model in ListModel: %q", model)
+		t.Run(m.String(), func(t *testing.T) {
+			if _, ok := seen[m]; ok {
+				t.Fatalf("duplicate model in ListModel: %v", m)
 			}
-			seen[model] = struct{}{}
+			seen[m] = struct{}{}
 
 			// Find the reference.
 			var want genai.Scenario
 			for _, sc := range sb.Scenarios {
-				if slices.Contains(sc.Models, model) {
+				if slices.Contains(sc.Models, m.Model) && m.Thinking == sc.Thinking {
 					want = sc
-					want.Models = []string{model}
+					want.Models = []string{m.Model}
 					break
 				}
 			}
 			if len(want.Models) == 0 {
-				t.Fatalf("no scenario for model %q", model)
+				t.Fatalf("no scenario for model %v", m)
 			}
 			if want.In == nil && want.Out == nil {
 				t.Skip("Explicitly unsupported model")
@@ -95,8 +110,8 @@ func AssertScoreboard(t *testing.T, gc GetClient, models []genai.Model, rec *int
 					rt = r
 					return r
 				}
-				return gc(t, model, fn), rt
-			}, model, want)
+				return gc(t, m, fn), rt
+			}, m, want)
 			usage.Add(u)
 		})
 	}
@@ -111,7 +126,7 @@ func AssertScoreboard(t *testing.T, gc GetClient, models []genai.Model, rec *int
 	if !filtered {
 		for model := range sbModels {
 			if _, ok := seen[model]; !ok {
-				t.Errorf("stale model in scoreboard: %q", model)
+				t.Errorf("stale model in scoreboard: %v", model)
 			}
 		}
 	}
@@ -124,7 +139,7 @@ type getClientOneModel func(t testing.TB, scenarioName string) (genai.Provider, 
 //
 // It must implement genai.ProviderScoreboard. If it is wrapped, the wrappers must implement
 // genai.ProviderUnwrap.
-func runOneModel(t testing.TB, gc getClientOneModel, model string, want genai.Scenario) genai.Usage {
+func runOneModel(t testing.TB, gc getClientOneModel, m Model, want genai.Scenario) genai.Usage {
 	// Calculate the scenario.
 	providerFactory := func(name string) (genai.Provider, http.RoundTripper) {
 		if name == "" {

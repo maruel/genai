@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 772
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"eee25ae88","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"eee25ae88","name":"square_root"}],"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-f03b7d04-266b-4625-8f62-08464655e103","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, let me figure out how to approach this. The user asked for the square root of 132413 using the square_root tool. The tool returned 363.89. I need to verify if that''s accurate.\n\nFirst, I''ll recall that the square of 363.89 should be approximately 132413. Let me calculate 363.89 squared. 363 squared is 132,489. Then, the decimal part: 0.89 times 363.89. Wait, that might not be the best way. Let me do it step by step.\n\nCalculating (363.89)^2: Break it into (363 + 0.89)^2. Using the formula (a + b)^2 = a² + 2ab + b². So, 363² is 132,489. Then 2 * 363 * 0.89 = 2 * 363 * 0.89. Let''s compute 363 * 0.89 first. 363 * 0.89 = 363 * (0.9 - 0.01) = 326.7 - 3.63 = 323.07. Multiply by 2 gives 646.14. Now, add that to 132,489: 132,489 + 646.14 = 133,135.14. Then add the square of 0.89, which is 0.7921. So total would be 133,135.14 + 0.7921 ≈ 133,135.93. Hmm, that''s way higher than 132,413. Wait, that can''t be right. Did I make a mistake in the calculation steps?\n\nLet me try a different method. Maybe using a calculator for better precision. Let me check 363.89 * 363.89. Let''s compute 363.89 * 363.89. \n\nAlternatively, maybe I can use a known square. Let''s see, 364 squared is 132,496 (since 360²=129,600 and 4²=16, plus 2*360*4=2,880, so 129,600 +2,880 +16=132,496). But 132,413 is less than that, so the square root should be a bit less than 364. The tool''s answer is 363.89, which is indeed less than 364. But when I squared 363.89 earlier, I got a number higher than 132,496, which is contradictory. Wait, maybe my manual calculation was incorrect.\n\nWait, if 364² is 132,496, then 363.89² would be (364 - 0.11)² = 364² - 2*364*0.11 + 0.11². So that''s 132,496 - 80.08 + 0.0121 = 132,496 - 80.08 = 132,415.92 + 0.0121 ≈ 132,415.93. But the original number is 132,413. The difference is about 2.93. So the actual square root should be a bit less than 363.89. Let me check 363.88². 363.88 * 363.88. Let''s do 363.88² = (363.89 - 0.01)² = 363.89² - 2*363.89*0.01 + 0.01². If 363.89² ≈ 132,415.93, then subtracting 2*363.89*0.01 = 7.2778 gives 132,415.93 - 7.28 = 132,408.65. Then add 0.0001. So it''s around 132,408.65. That''s lower than 132,413. So the square root of 132,413 is between 363.88 and 363.89. But the tool says 363.89. Wait, maybe there''s a rounding error in the tool''s result. Let me compute 363.89 * 363.89 again more carefully.\n\n363.89 * 363.89:\n\nBreak it down as (363 + 0.89) * (363 + 0.89) = 363² + 2*363*0.89 + 0.89².\n\n363² is 132,489.\n\n2*363*0.89 = 2*363*0.89 = 726*0.89. Let''s compute 700*0.89 = 623 and 26*0.89 = 23.14, total 623 +23.14=646.14.\n\n0.89² is 0.7921.\n\nSo total is 132,489 + 646.14 = 133,135.14 + 0.7921 ≈ 133,135.93. Wait, that''s definitely higher than 132,413. There''s a problem here. Did I miscalculate?\n\nWait, perhaps I messed up the initial assumption. Because 363^2 is 132,489. If the original number is 132,413, which is 132,489 - 76 = 132,413. So the square root should be 363 minus something. Let me do it with a better approximation.\n\nLet me use the Newton-Raphson method for better precision. Let me take x0 = 363.8.\n\nx0 = 363.8.\n\nx1 = (x0 + 132413/x0)/2.\n\nCompute 132413 / 363.8. Let''s see, 363.8 * 363 = 363.8 * 300 + 363.8 * 60 + 363.8 * 3 = 109,140 + 21,828 + 1,091.4 = 132,059.4. So 363.8 * 363 = 132,059.4. The actual number is 132,413. So the difference is 132,413 - 132,059.4 = 353.6. Therefore, 132413/x0 is approximately 363 + 353.6 / 363.8 ≈ 363 + (approx) 0.9727. So about 363.9727.\n\nThen x1 = (363.8 + 363.9727)/2 = 363.88635. So 363.89 when rounded to two decimal places. So the tool''s result of 363.89 is correct. My earlier manual calculation was wrong because I confused the expansion. So despite 363.89 being slightly over, it''s actually a correct result here. The user probably just wants the result provided by the tool, so I should present 363.89 as the answer.\n</think>\n\n363.89","role":"assistant"}}],"created":1753569344,"model":"qwen-3-32b","system_fingerprint":"fp_d92e1e5be69bb839ccfe","object":"chat.completion","usage":{"prompt_tokens":83,"completion_tokens":1933,"total_tokens":2016,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00010676,"prompt_time":0.00310325,"completion_time":0.942966509,"total_time":0.9474008083343506,"created":1753569344}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96575f334fbea2f4-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-f03b7d04-266b-4625-8f62-08464655e103
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14340"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "61536"
+            X-Ratelimit-Reset-Requests-Day:
+                - "5054.303982257843"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "14.303982257843018"
+            X-Request-Id:
+                - 96575f334fbea2f4-YUL
+        status: 200 OK
+        code: 200
+        duration: 2.383s

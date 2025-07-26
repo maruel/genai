@@ -19,31 +19,42 @@ import (
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
 )
 
-func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 	apiKey := ""
 	if os.Getenv("CEREBRAS_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err2 := cerebras.New(apiKey, model, fn)
+	c, err2 := cerebras.New(apiKey, model.Model, fn)
 	if err2 != nil {
 		t.Fatal(err2)
 	}
-	if strings.HasPrefix(model, "qwen") {
+	if strings.HasPrefix(model.Model, "qwen") {
+		if !model.Thinking {
+			t.Fatal("expected thinking")
+		}
 		return &adapters.ProviderGenThinking{
-			ProviderGen: &adapters.ProviderGenAppend{
-				ProviderGen: c,
-				Append:      genai.NewTextMessage(genai.User, "/think"),
-			},
-			TagName: "think",
+			ProviderGen: &adapters.ProviderGenAppend{ProviderGen: c, Append: genai.NewTextMessage(genai.User, "\n\n/think")},
+			TagName:     "think",
 		}
 	}
 	return c
 }
 
 func TestClient_Scoreboard(t *testing.T) {
-	models, err := getClient(t, "").ListModels(t.Context())
+	genaiModels, err := getClient(t, "").ListModels(t.Context())
 	if err != nil {
 		t.Fatal(err)
+	}
+	var models []scoreboardtest.Model
+	for _, m := range genaiModels {
+		id := m.GetID()
+		if strings.HasPrefix(id, "qwen") {
+			// Sadly even when thinking is forcibly disabled, "<think>\n\n</think>" is sent and it still thinks when
+			// doing tool calling.
+			models = append(models, scoreboardtest.Model{Model: id, Thinking: true})
+		} else {
+			models = append(models, scoreboardtest.Model{Model: id})
+		}
 	}
 	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
 }

@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 620
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."},{"role":"user","content":"\n\n/think"}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-44f4b3ba-ab2f-4398-ad9a-1bd88fc072b8","object":"chat.completion","created":1753570118,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Okay, the user is asking if the USA is better than Canada and wants me to use the best_country tool to determine which is the best. Let me check the available functions. The tool has an enum with USA and Canada. I need to call the function for each country and compare the results. Wait, but the function's description isn't provided. Maybe it returns some criteria like quality of life, economy, etc. Since I can't know the actual implementation, I should call both functions and then present the results. But the user might expect a single answer. Let me check the function parameters again. The function requires a country parameter, either USA or Canada. So I need to call best_country for both and then decide based on the responses. But how? Since I don't have the actual function logic, maybe the responses are predefined. Let me proceed by calling both functions and then compare the hypothetical results.\n","tool_calls":[{"id":"ag0r22jmp","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}},{"id":"7fqp344ka","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.008013114999999998,"prompt_tokens":211,"prompt_time":0.027669716,"completion_tokens":228,"completion_time":0.485656739,"total_tokens":439,"total_time":0.513326455},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k14es2wtenysq18xjdskntan"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96577218cd8da273-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299811"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 37.8ms
+            X-Request-Id:
+                - req_01k14es2wtenysq18xjdskntan
+        status: 200 OK
+        code: 200
+        duration: 581ms

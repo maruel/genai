@@ -87,7 +87,73 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
+			Models:   []string{"gemini-2.5-flash-lite"},
+			Thinking: true,
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {Inline: true},
+				genai.ModalityImage: {
+					Inline:           true,
+					SupportedFormats: []string{"image/jpeg", "image/png", "image/webp"},
+				},
+				genai.ModalityPDF: {
+					Inline:           true,
+					SupportedFormats: []string{"application/pdf"},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Tools:          genai.True,
+				IndecisiveTool: genai.Flaky,
+				JSON:           true,
+				JSONSchema:     true,
+				Seed:           true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Tools:          genai.True,
+				IndecisiveTool: genai.Flaky,
+				JSON:           true,
+				JSONSchema:     true,
+				Seed:           true,
+			},
+		},
+		{
 			Models: []string{"gemini-2.5-flash"},
+			// It supports URL but only when uploaded to its own storage.
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityAudio: {
+					Inline:           true,
+					SupportedFormats: []string{"audio/aac", "audio/ogg", "audio/wav"},
+				},
+				genai.ModalityImage: {
+					Inline:           true,
+					SupportedFormats: []string{"image/jpeg", "image/png", "image/webp"},
+				},
+				genai.ModalityPDF: {
+					Inline:           true,
+					SupportedFormats: []string{"application/pdf"},
+				},
+				genai.ModalityText: {Inline: true},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Tools:          genai.True,
+				BiasedTool:     genai.Flaky,
+				IndecisiveTool: genai.Flaky,
+				JSON:           true,
+				JSONSchema:     true,
+				Seed:           true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Tools:      genai.True,
+				BiasedTool: genai.Flaky,
+				JSON:       true,
+				JSONSchema: true,
+				Seed:       true,
+			},
+		},
+		{
+			Models:   []string{"gemini-2.5-flash"},
+			Thinking: true,
 			// It supports URL but only when uploaded to its own storage.
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityAudio: {
@@ -106,15 +172,14 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Thinking:       true,
 				Tools:          genai.True,
+				BiasedTool:     genai.Flaky,
 				IndecisiveTool: genai.Flaky,
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Thinking:   true,
 				Tools:      genai.True,
 				BiasedTool: genai.Flaky,
 				JSON:       true,
@@ -123,12 +188,13 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			Models: []string{"gemini-2.5-pro"},
+			Models:   []string{"gemini-2.5-pro"},
+			Thinking: true,
 			// It supports URL but only when uploaded to its own storage.
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityAudio: {
 					Inline:           true,
-					SupportedFormats: []string{"audio/aac", "audio/flac", "audio/mp3", "audio/wav"},
+					SupportedFormats: []string{"audio/aac", "audio/flac", "audio/wav"},
 				},
 				genai.ModalityImage: {
 					Inline:           true,
@@ -142,7 +208,6 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Thinking:       true,
 				Tools:          genai.True,
 				IndecisiveTool: genai.Flaky,
 				JSON:           true,
@@ -150,7 +215,6 @@ var Scoreboard = genai.Scoreboard{
 				Seed:           true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Thinking:       true,
 				Tools:          genai.True,
 				IndecisiveTool: genai.Flaky,
 				JSON:           true,
@@ -177,6 +241,10 @@ var Scoreboard = genai.Scoreboard{
 				GenSync:   &genai.FunctionalityText{Seed: true},
 				GenStream: &genai.FunctionalityText{Seed: true},
 			*/
+		},
+		{
+			Models:   []string{"gemini-2.5-flash-exp-native-audio-thinking-dialog"},
+			Thinking: true,
 		},
 		{
 			Models: []string{

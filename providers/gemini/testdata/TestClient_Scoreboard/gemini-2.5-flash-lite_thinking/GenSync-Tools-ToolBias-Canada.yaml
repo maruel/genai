@@ -1,0 +1,94 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 672
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["Canada","USA"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**Initial Assessment: Understanding the Nuances of \"Best Country\"**\n\nOkay, so the user wants me to compare Canada and the USA and determine which is \"better.\"  The key is they explicitly mentioned using the `best_country` tool.  Interesting.  My first thought is that the tool description seems straightforward enough: \"A tool to specify the best country.\"  And its input, `country: Literal['Canada', 'USA']`, is also very clear.  It only accepts one country at a time, either \"Canada\" or \"USA\".\n\nHowever, the phrasing of the question, \"I wonder if Canada is a better country than the USA?\" implies a comparison. This is where I start to question the tool's design.  Given the tool's signature, it looks like `best_country` isn't *really* meant for direct comparison. It's more likely designed to evaluate a single country, not compare two. My hypothesis is that it might be able to confirm *if* the input country is, in fact, the \"best\" in some implicit context.\n\nIf the tool truly *compares* countries, it would need a different signature.  It would need to be able to take both countries as input, or at least a comparison operator. As it stands, if I call `best_country(\"Canada\")`, I'll probably get an assessment of Canada, and if I call `best_country(\"USA\")`, I'll get an assessment of the USA.  It won't tell me which is inherently \"better\" in a general sense. It seems to function more like a confirmation tool, perhaps with specific criteria the user is not telling me about.\n",
+                        "thought": true
+                      },
+                      {
+                        "functionCall": {
+                          "name": "best_country",
+                          "args": {
+                            "country": "Canada"
+                          }
+                        },
+                        "thoughtSignature": "CuYKAVSoXO70BzGVrWhxXxu+maxAuFqZXWUevdgtRJNBP3sceX7gcsehnlqyIYszghk/vpkT6z27zjPkqKbOr9nnleHTJJiBFyjguHfopR/sazm8RomkBO7Zk0q9aX/i7JoYaGUCjwgmJbBNbILc7j82QBA5rIyM8rqbKCbAyF5IL5jiWYOYmk9WwFScl3n7VYy2C4f3mdMFyuTkWPxRyal5FhKW1feLpu/RrDbtcBqafPqLROEMJdp9oTozV0dHPcKdB7v+dCNoXnczRp/4Cm6R647yhlBB25FOOR6nPDIHZQUtSXNlvkfM4Wc+ea84m86vj/v9o06UsaykQ3uewVCUEIyRo1tdb7EI++SFXlIimPDNl5FkgJ5N42w/QRW0uebEztwhYSTOEOLE/jrfQpR3edEAJZ555lfr3oX5X7icLn5/QhBWdij6eUJh8RIlpdLz1pua/4xewZVD4Oy4qyYyfLtNF+xWztY9DlHAG4mU4/il//irvwzcDqJs7TwInx8EmC13WRVXJ1uJyeKBJgIGjHb8t6sU8mHbxxzjjpgXeLw7SweTj5jc+9DtPasInWE0Rc5qgBVOJTdh4a6fD6CiSUtykwP6u46JWxJod4F6WIRY+fTi5gCYGvjYB1gHCgDenzgKoGobg5tw8EL0Q9gJqocHEPPwLqYxl0sJrQPQ0xY+AjE2o7yQQkmby3/1fxfeRRv0pNwOuuaycHy5Qpt4vsokJWCB8KSzYS+ZsyhXSWyvxnrG2+Yl3Ilti6UZQQNJrSodgFWhMDnS75XLcSpJG+/KcNS7pBrtFxCrXa9vL5TgmFqtL1QgYr5bl8gWczCBPJkAUkuc1nlfyPo1xW/rdTfn6EX8Aip+WShGNHSj5KlxellwVziTayZM5eERMdGVDBod3/k22xXuFP8yZwi2nHrpkh/TJQl846r7UGdA6qctxwy+BJT6wasT7c3ftJaFnikrMzbZuflAxU7kk3JA30to/qHHIAyQlE6ULmMttpaOrnNskdJy94A6RMmiv9jQz5L2Dnh1YjffO61e8uCGOPElS2nVE1s6ZLJx9oj5S1PGYWM1dxloGdipsZbVLL3qy8ezwv9ugq3UASn0M41eBNOFmCTqSzd2y/9eToIte2haV+7hzpeBWxRQvvKm6vDjSH4NVtThcybqsLuKalCvgQgcltMr40ELciwfCWd893tFrGCpQPn7ZfiC5gq5dGBeW6iKJ9w9Sh+2Ne7fy4Td5eZ5ApBBaIbaez3WSEy6iW8ICOFLqW22y6dxdM6M8Tbk6jFRWHDykiRjHGDX/NocwsUkiWf+KrrFIXn/K8+13bh8LrjZyu0kil19xOtOheept358FTCGjQDpJw4NcifTlZ2mKAtTdYjaXWV6Vo/T/4LnfTzIyiVA4+oo10d2CFqcVbd16ELbKwr4NvgUxpFPGthmRKlnBgKA5373mbjAxgWLM8q2Vu/Q+aOV0345dP+T8D29QTiGSFJPSfJFD7twEUfMnvzLntEz/Y0OKFhmMMIQFXvAjeL9dPEgljbnv/8+TQ0mCh7x5eyBalJ4oWpgdAfRljhveEOd9t+Hhvw76sw6lqHgHcmKK28hDYmZKqGiatwR9BuDnEV2ggkDtNcS0PIrOw7NaSfP76NO5qaobsS+OcFcb8kBhQ6uUxthRjoRB3rCRrGuTPJphMxdecHrymbCRkHfLisH2Ww5gzIq8ykdg8jzkyv+AhlZafzmwj+DiUdcx60aSA29fECMsVSVG6JYhrOT2eHJ5crjWL0cafL+wZrrd0AFR5qsuM54t4CCYvSaRfIa4IOX0dd5aywSg/s14XPprN/pNY/kywEUgbVvZZ8EAmc="
+                      },
+                      {
+                        "functionCall": {
+                          "name": "best_country",
+                          "args": {
+                            "country": "USA"
+                          }
+                        }
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 115,
+                "candidatesTokenCount": 30,
+                "totalTokenCount": 467,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 115
+                  }
+                ],
+                "thoughtsTokenCount": 322
+              },
+              "modelVersion": "gemini-2.5-flash-lite",
+              "responseId": "CmKFaMLMCOuPjMcPn_2v6QM"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2913
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.924s

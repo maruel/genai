@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 397
+        content_length: 428
         host: api.openai.com
         body: |
-            {"model":"gpt-4.1","background":false,"store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_file","file_data":"data:text/plain; charset=utf-8;base64,VGhlIGNhcGl0YWwgb2YgUXVhY2tpbGFuZCBpcyBRdWFjay4gVGhlIEJpZyBDYW5hcmQgU3RhdHVlIGlzIGxvY2F0ZWQgaW4gUXVhY2su","filename":"capital_info.txt"},{"type":"input_text","text":"What is the capital of Quackiland?"}]}],"stream":true}
+            {"model":"gpt-4.1","background":false,"reasoning":{"summary":"auto"},"store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_file","file_data":"data:text/plain; charset=utf-8;base64,VGhlIGNhcGl0YWwgb2YgUXVhY2tpbGFuZCBpcyBRdWFjay4gVGhlIEJpZyBDYW5hcmQgU3RhdHVlIGlzIGxvY2F0ZWQgaW4gUXVhY2su","filename":"capital_info.txt"},{"type":"input_text","text":"What is the capital of Quackiland?"}]}],"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -35,7 +35,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 964f72618e83a2c6-YUL
+                - 9657db383e92a2ff-YUL
             Content-Length:
                 - "201"
             Content-Type:
@@ -43,7 +43,7 @@ interactions:
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "102"
+                - "113"
             Openai-Project:
                 - proj_tH6hQUFvA4Bx6SyAb23zzLEg
             Openai-Version:
@@ -55,7 +55,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Request-Id:
-                - req_d24b182743e49de9b12e8be459728497
+                - req_3985990383e6267b273b393442880f60
         status: 400 Bad Request
         code: 400
-        duration: 234ms
+        duration: 240ms

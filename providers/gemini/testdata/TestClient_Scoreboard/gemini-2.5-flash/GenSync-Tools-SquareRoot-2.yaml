@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1912
+        content_length: 857
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"model","parts":[{"thought":true,"text":"**Let's Get That Square Root**\n\nOkay, so I've been tasked with finding the square root of 132413.  Given my familiarity with mathematical tools, this is straightforward. The user clearly wants a numerical answer. My understanding is that the `square_root` tool is the appropriate function for this. Therefore, my immediate action is to call the `square_root` function with the argument `number=132413`. Once I receive a `SquareRootResponse` object, I'll need to extract the square root value, likely residing in the `response` field. That will give me the answer the user is looking for. This is a simple, direct calculation.\n"},{"thoughtSignature":"CpYCAVSoXO5JMfnPFFLhk6ERd4tu/8KWRZ1qOviWyCBiSKV/36smcNGw1dE1g3Bwbo5H/3hWw4gdc/nQ+MeDLaqIQHHD4tLpZcugPJCC6ta/KJWftFI5se5kz1WJM1R3jx75EBXQD+X/zYHpn10UYqIK3sO+CdS0n0AU8he0Uqyi17sCnwwDAIq7kDN0C90u2QHBaR9mVgDbyfqdfTYyQ8jPQd9hRn3kHmxF7s1zog4iwllT4VDXx4PYyrgrgqLIQs0Vp/vea5gNetigM5ipf+nOPwzFc7esho6fOpk9e7vtTj1mITo6XZg7PPd+5YqmQfLAP6TbM9gxF5COKDAr7/PubTWrsGUqJ+/uXVWbRgc6e7gvZfdPhj8=","functionCall":{"name":"square_root","args":{"number":132413}}}]},{"role":"user","parts":[{"functionResponse":{"name":"square_root","response":{"response":"363.89"}}}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"NONE"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"model","parts":[{"functionCall":{"name":"square_root","args":{"number":132413}}}]},{"role":"user","parts":[{"functionResponse":{"name":"square_root","response":{"response":"363.89"}}}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"NONE"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":false,"thinkingBudget":0}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -38,18 +38,18 @@ interactions:
                 }
               ],
               "usageMetadata": {
-                "promptTokenCount": 307,
+                "promptTokenCount": 157,
                 "candidatesTokenCount": 6,
-                "totalTokenCount": 313,
+                "totalTokenCount": 163,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
-                    "tokenCount": 307
+                    "tokenCount": 157
                   }
                 ]
               },
               "modelVersion": "gemini-2.5-flash",
-              "responseId": "5QaFaNjMArHUjMcPjdGO8Ao"
+              "responseId": "A1-FaNeoOoiUjMcPhaig6AM"
             }
         headers:
             Alt-Svc:
@@ -59,7 +59,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=248
+                - gfet4t7; dur=349
             Vary:
                 - Origin
                 - X-Origin
@@ -72,4 +72,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 258ms
+        duration: 359ms

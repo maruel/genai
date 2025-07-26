@@ -26,8 +26,8 @@ func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		models := []genai.Model{fakeModel(llamacpp.Scoreboard.Scenarios[0].Models[0])}
-		scoreboardtest.AssertScoreboard(t, func(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+		models := []scoreboardtest.Model{{Model: llamacpp.Scoreboard.Scenarios[0].Models[0]}}
+		scoreboardtest.AssertScoreboard(t, func(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			serverURL := s.lazyStart(t)
 			c, err := llamacpp.New(serverURL, nil, fn)
 			if err != nil {
@@ -49,20 +49,6 @@ func (h *hideHTTP500) Unwrap() genai.Provider {
 func (h *hideHTTP500) ModelID() string {
 	// Hack, it should be a separate class.
 	return llamacpp.Scoreboard.Scenarios[0].Models[0]
-}
-
-type fakeModel string
-
-func (f fakeModel) GetID() string {
-	return string(f)
-}
-
-func (f fakeModel) String() string {
-	return string(f)
-}
-
-func (f fakeModel) Context() int64 {
-	return 0
 }
 
 func (h *hideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {

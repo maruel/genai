@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 116
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-reasoner","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"b5313f54-ebfe-4554-ae20-4a5662249430","object":"chat.completion","created":1753566410,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"Hello.","reasoning_content":"Hmm, the user asked me to say hello but with only one word. That''s a pretty simple request, but I need to make sure I follow it exactly.\n\nThe user seems to be testing if I can handle constraints, like using minimal words. Maybe they want something concise or playful. \n\nI''m thinking about possible one-word responses: \"Hello\" is standard, \"Hi\" is casual, or \"Hey\" could work too. \"Hello\" feels the most universal and clear.\n\nThere might be more behind this - perhaps the user is checking my ability to follow instructions precisely, or they''re in a hurry and want quick interactions. \n\nI should keep it friendly and straightforward. No extra words, just the greeting. \"Hello\" it is."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":13,"completion_tokens":156,"total_tokens":169,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":152},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":13},"system_fingerprint":"fp_393bca965e_prod0623_fp8_kvcache"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9657178dfd29a30e-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            X-Content-Type-Options:
+                - nosniff
+            X-Ds-Trace-Id:
+                - 0618851ffa480b94ba94c212bad29c59
+        status: 200 OK
+        code: 200
+        duration: 830ms

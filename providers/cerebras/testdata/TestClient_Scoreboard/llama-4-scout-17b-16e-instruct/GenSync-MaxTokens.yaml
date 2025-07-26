@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-e45e5828-d264-45c2-adb6-7b4c9a5b4dd4","choices":[{"finish_reason":"length","index":0,"message":{"content":"The theory of relativity, developed by Albert Einstein, is a fundamental concept in modern","role":"assistant"}}],"created":1753209340,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion","usage":{"prompt_tokens":19,"completion_tokens":16,"total_tokens":35,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000761529,"prompt_time":0.001084638,"completion_time":0.011004958,"total_time":0.014340400695800781,"created":1753209340}}'
+        body: '{"id":"chatcmpl-fc77cd65-803d-4517-b731-0a1a5ba48721","choices":[{"finish_reason":"length","index":0,"message":{"content":"The theory of relativity, developed by Albert Einstein, is a fundamental concept in modern","role":"assistant"}}],"created":1753569332,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_e439cc65f01febf1121f","object":"chat.completion","usage":{"prompt_tokens":19,"completion_tokens":16,"total_tokens":35,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00012341,"prompt_time":0.001267769,"completion_time":0.009780254,"total_time":0.012420892715454102,"created":1753569332}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96350a0b4a8ca2d6-YUL
+                - 96575ee4c99fa305-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-e45e5828-d264-45c2-adb6-7b4c9a5b4dd4
+                - chatcmpl-fc77cd65-803d-4517-b731-0a1a5ba48721
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -46,15 +46,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14393"
+                - "14361"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "59881"
+                - "59239"
             X-Ratelimit-Reset-Requests-Day:
-                - "19459.155608177185"
+                - "5067.926559686661"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "19.15560817718506"
+                - "27.926559686660767"
             X-Request-Id:
-                - 96350a0b4a8ca2d6-YUL
+                - 96575ee4c99fa305-YUL
         status: 200 OK
         code: 200
-        duration: 211ms
+        duration: 1.309s

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 371
+        content_length: 370
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"inlineData":{"mimeType":"text/plain; charset=utf-8","data":"VGhlIGNhcGl0YWwgb2YgUXVhY2tpbGFuZCBpcyBRdWFjay4gVGhlIEJpZyBDYW5hcmQgU3RhdHVlIGlzIGxvY2F0ZWQgaW4gUXVhY2su"}},{"text":"What is the capital of Quackiland?"}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"inlineData":{"mimeType":"text/plain; charset=utf-8","data":"VGhlIGNhcGl0YWwgb2YgUXVhY2tpbGFuZCBpcyBRdWFjay4gVGhlIEJpZyBDYW5hcmQgU3RhdHVlIGlzIGxvY2F0ZWQgaW4gUXVhY2su"}},{"text":"What is the capital of Quackiland?"}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":false,"thinkingBudget":0}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -37,7 +37,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=78
+                - gfet4t7; dur=46
             Vary:
                 - Origin
                 - X-Origin
@@ -50,4 +50,4 @@ interactions:
                 - "0"
         status: 400 Bad Request
         code: 400
-        duration: 90ms
+        duration: 57ms

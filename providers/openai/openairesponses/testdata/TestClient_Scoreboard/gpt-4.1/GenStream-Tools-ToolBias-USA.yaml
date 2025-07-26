@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 637
+        content_length: 668
         host: api.openai.com
         body: |
-            {"model":"gpt-4.1","background":false,"parallel_tool_calls":true,"store":false,"tool_choice":"required","tools":[{"type":"function","name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"stream":true}
+            {"model":"gpt-4.1","background":false,"parallel_tool_calls":true,"reasoning":{"summary":"auto"},"store":false,"tool_choice":"required","tools":[{"type":"function","name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,37 +22,37 @@ interactions:
         content_length: -1
         body: |+
             event: response.created
-            data: {"type":"response.created","sequence_number":0,"response":{"id":"resp_688413a393d8819abc699846a6642bf50e14d58298149bf0","object":"response","created_at":1753486243,"status":"in_progress","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-4.1-2025-04-14","output":[],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":null,"summary":null},"safety_identifier":null,"service_tier":"auto","store":false,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"required","tools":[{"type":"function","description":"A tool to specify the best country","name":"best_country","parameters":{"properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}}}
+            data: {"type":"response.created","sequence_number":0,"response":{"id":"resp_68856c17c7cc819aafa166c252408d550a4f64b79677c5af","object":"response","created_at":1753574423,"status":"in_progress","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-4.1-2025-04-14","output":[],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":null,"summary":null},"safety_identifier":null,"service_tier":"auto","store":false,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"required","tools":[{"type":"function","description":"A tool to specify the best country","name":"best_country","parameters":{"properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}}}
 
             event: response.in_progress
-            data: {"type":"response.in_progress","sequence_number":1,"response":{"id":"resp_688413a393d8819abc699846a6642bf50e14d58298149bf0","object":"response","created_at":1753486243,"status":"in_progress","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-4.1-2025-04-14","output":[],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":null,"summary":null},"safety_identifier":null,"service_tier":"auto","store":false,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"required","tools":[{"type":"function","description":"A tool to specify the best country","name":"best_country","parameters":{"properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}}}
+            data: {"type":"response.in_progress","sequence_number":1,"response":{"id":"resp_68856c17c7cc819aafa166c252408d550a4f64b79677c5af","object":"response","created_at":1753574423,"status":"in_progress","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-4.1-2025-04-14","output":[],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":null,"summary":null},"safety_identifier":null,"service_tier":"auto","store":false,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"required","tools":[{"type":"function","description":"A tool to specify the best country","name":"best_country","parameters":{"properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}}}
 
             event: response.output_item.added
-            data: {"type":"response.output_item.added","sequence_number":2,"output_index":0,"item":{"id":"fc_688413a3f158819a87e07418290180f00e14d58298149bf0","type":"function_call","status":"in_progress","arguments":"","call_id":"call_O2jU470Af2gjVE29KADnzeO2","name":"best_country"}}
+            data: {"type":"response.output_item.added","sequence_number":2,"output_index":0,"item":{"id":"fc_68856c182d68819aad26216c71a874c20a4f64b79677c5af","type":"function_call","status":"in_progress","arguments":"","call_id":"call_37ATAabbbhaMztUr4BZWrjIO","name":"best_country"}}
 
             event: response.function_call_arguments.delta
-            data: {"type":"response.function_call_arguments.delta","sequence_number":3,"item_id":"fc_688413a3f158819a87e07418290180f00e14d58298149bf0","output_index":0,"delta":"{\""}
+            data: {"type":"response.function_call_arguments.delta","sequence_number":3,"item_id":"fc_68856c182d68819aad26216c71a874c20a4f64b79677c5af","output_index":0,"delta":"{\""}
 
             event: response.function_call_arguments.delta
-            data: {"type":"response.function_call_arguments.delta","sequence_number":4,"item_id":"fc_688413a3f158819a87e07418290180f00e14d58298149bf0","output_index":0,"delta":"country"}
+            data: {"type":"response.function_call_arguments.delta","sequence_number":4,"item_id":"fc_68856c182d68819aad26216c71a874c20a4f64b79677c5af","output_index":0,"delta":"country"}
 
             event: response.function_call_arguments.delta
-            data: {"type":"response.function_call_arguments.delta","sequence_number":5,"item_id":"fc_688413a3f158819a87e07418290180f00e14d58298149bf0","output_index":0,"delta":"\":\""}
+            data: {"type":"response.function_call_arguments.delta","sequence_number":5,"item_id":"fc_68856c182d68819aad26216c71a874c20a4f64b79677c5af","output_index":0,"delta":"\":\""}
 
             event: response.function_call_arguments.delta
-            data: {"type":"response.function_call_arguments.delta","sequence_number":6,"item_id":"fc_688413a3f158819a87e07418290180f00e14d58298149bf0","output_index":0,"delta":"USA"}
+            data: {"type":"response.function_call_arguments.delta","sequence_number":6,"item_id":"fc_68856c182d68819aad26216c71a874c20a4f64b79677c5af","output_index":0,"delta":"USA"}
 
             event: response.function_call_arguments.delta
-            data: {"type":"response.function_call_arguments.delta","sequence_number":7,"item_id":"fc_688413a3f158819a87e07418290180f00e14d58298149bf0","output_index":0,"delta":"\"}"}
+            data: {"type":"response.function_call_arguments.delta","sequence_number":7,"item_id":"fc_68856c182d68819aad26216c71a874c20a4f64b79677c5af","output_index":0,"delta":"\"}"}
 
             event: response.function_call_arguments.done
-            data: {"type":"response.function_call_arguments.done","sequence_number":8,"item_id":"fc_688413a3f158819a87e07418290180f00e14d58298149bf0","output_index":0,"arguments":"{\"country\":\"USA\"}"}
+            data: {"type":"response.function_call_arguments.done","sequence_number":8,"item_id":"fc_68856c182d68819aad26216c71a874c20a4f64b79677c5af","output_index":0,"arguments":"{\"country\":\"USA\"}"}
 
             event: response.output_item.done
-            data: {"type":"response.output_item.done","sequence_number":9,"output_index":0,"item":{"id":"fc_688413a3f158819a87e07418290180f00e14d58298149bf0","type":"function_call","status":"completed","arguments":"{\"country\":\"USA\"}","call_id":"call_O2jU470Af2gjVE29KADnzeO2","name":"best_country"}}
+            data: {"type":"response.output_item.done","sequence_number":9,"output_index":0,"item":{"id":"fc_68856c182d68819aad26216c71a874c20a4f64b79677c5af","type":"function_call","status":"completed","arguments":"{\"country\":\"USA\"}","call_id":"call_37ATAabbbhaMztUr4BZWrjIO","name":"best_country"}}
 
             event: response.completed
-            data: {"type":"response.completed","sequence_number":10,"response":{"id":"resp_688413a393d8819abc699846a6642bf50e14d58298149bf0","object":"response","created_at":1753486243,"status":"completed","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-4.1-2025-04-14","output":[{"id":"fc_688413a3f158819a87e07418290180f00e14d58298149bf0","type":"function_call","status":"completed","arguments":"{\"country\":\"USA\"}","call_id":"call_O2jU470Af2gjVE29KADnzeO2","name":"best_country"}],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":null,"summary":null},"safety_identifier":null,"service_tier":"default","store":false,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"required","tools":[{"type":"function","description":"A tool to specify the best country","name":"best_country","parameters":{"properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":{"input_tokens":81,"input_tokens_details":{"cached_tokens":0},"output_tokens":6,"output_tokens_details":{"reasoning_tokens":0},"total_tokens":87},"user":null,"metadata":{}}}
+            data: {"type":"response.completed","sequence_number":10,"response":{"id":"resp_68856c17c7cc819aafa166c252408d550a4f64b79677c5af","object":"response","created_at":1753574423,"status":"completed","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-4.1-2025-04-14","output":[{"id":"fc_68856c182d68819aad26216c71a874c20a4f64b79677c5af","type":"function_call","status":"completed","arguments":"{\"country\":\"USA\"}","call_id":"call_37ATAabbbhaMztUr4BZWrjIO","name":"best_country"}],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":null,"summary":null},"safety_identifier":null,"service_tier":"default","store":false,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"required","tools":[{"type":"function","description":"A tool to specify the best country","name":"best_country","parameters":{"properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":{"input_tokens":81,"input_tokens_details":{"cached_tokens":0},"output_tokens":6,"output_tokens_details":{"reasoning_tokens":0},"total_tokens":87},"user":null,"metadata":{}}}
 
         headers:
             Alt-Svc:
@@ -60,13 +60,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 964f725d987ba2c6-YUL
+                - 9657db34080ba2ff-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "64"
+                - "75"
             Openai-Project:
                 - proj_tH6hQUFvA4Bx6SyAb23zzLEg
             Openai-Version:
@@ -78,7 +78,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Request-Id:
-                - req_c73a353c226a890ea77953a01aa9501b
+                - req_fcbab242c959f4216682b763f7009f6a
         status: 200 OK
         code: 200
-        duration: 238ms
+        duration: 207ms

@@ -1,0 +1,94 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 672
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["USA","Canada"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**Understanding the User's Inquiry**\n\nOkay, so the user wants to compare the USA and Canada and specifically wants to leverage the `best_country` tool. That's straightforward, and a perfect application for this tool! I see that the tool expects a single country as input, using the `country` parameter. The user, however, has presented me with a slightly ambiguous question: \"Is the USA better than Canada?\". They haven't explicitly stated which country they think is *best*.\n\nMy thought is to clarify this ambiguity. The tool needs a specific country to work its magic. So, I'll generate a response that acknowledges their request, explains the problem, and gives them the options they can choose from, which are \"USA\" and \"Canada\". That way, they can easily provide the input I need to use the `best_country` tool and get them the information they're looking for. The best response for this situation is: \"I can call the tool to check which country is better, but I need to know which country you would like to choose. Is it USA or Canada?\" That should do the trick!\n",
+                        "thought": true
+                      },
+                      {
+                        "functionCall": {
+                          "name": "best_country",
+                          "args": {
+                            "country": "USA"
+                          }
+                        },
+                        "thoughtSignature": "CpQKAVSoXO7sj/SRzXdDVE0zObdn2/pD6rd+6Euq0AwLOWOPZ4JZ3KGGa5WKEORwedPRLU5wyk8TZwxSshSn9uD6qbZyZFCoCcBupMkfwXypB9awlha9MH5FI5vlwMBf2pkAyAmCrXZayLuMOCv0UwUlo6utcz25LgiUoPjOT/x3/5zljFMFmXIb2ijiEb7bQPgeZPs2hqGxfnFYgLA5LHD61Awh5jB4cJG5XX/MPPNGBUj1vmxrY1qyBUOg7pm5G0B867JTDnxpHxEIw7QTKnjKJPEdJ3z6LUt4LL7yjqLB2r6R6aJebCi4yKOlPnPnAWi/sfRYRILwn48VQnSZBRmZ4W0t6Lem0LEOeNU/LWAqVCFKjll1gTGoAbjdNVHWXCykQWQPH6YgsGqWJt9/9HPHrOzIsX4R19xsiWEtjwd0QdDJowbzgVC3FDKJNnDj3L5sNKDmch6nMnv/AKYRAtJ6OyRfnygzMJh95gPRrSxQzVKpeppoTb/INT1PJEcOH0XZSp9dDHXfLYo+/KJLpM/+S1sg7oNh2kZ3UWpPWaIcpEgSXafY8rMAKRC3VLI24lNzSTfpqQMVEbVPgBYmfzzf9/hIJiLQLLQ5IjETUaEPp6Ua4VTK9shng2pGgcXkAw296xWDGmVcFdDeRwxiRV+TLA3funHwoDHpn0lt5FT7NPTV5XEtbNjG5pXCMQxkXbNdw5sU6dooc4mBkB0GdB1pEkgAyEgH8jzdMPayamU1RwZ7adwznW97Ub1Sz7q7Ct05fkTBRtujUvixhcdobsO9UnmMLXIMr05A9V68Cyk1t6WKTrsKM0beidmPbP9n/lr2oDqixs0xCPfcfVqazz5FtLVEL+UVMTVjDnwmGiwD11B7I2ds5ZT7sjfqMftUvcQUOjk0d9FcoXCPI0InZdTh5Iz46rioAY6b3Q0AImYBtjvNa06mPFbRD+ly7XIgh6SFyldq9RYc18lwKprai+H4tAwBs/4CZ+8nD4TAta/2HHvpkJS1/HkfTILoSzLD0JF3XkTzZiufAwKlJ3mgkM7Rv4bQ4awdoMaw6ddt+7vvuP3ctJyY5fTIsNrMcrxIhrvDTbC435jWVmib6fASyD+6bIKlolrASi0Fzd0trEZvXSYXGotReDxzhjZlqGQOIbgtKefLMWWFfh+RnoRi5b/DRms1a4h6w2/OceBLSnZOAw1MYqrMKgnQ4ijhjuUDN42do1xb6C1cTnKKuPLHRoabgt/vzHxfgVM1G/P8hQcNN8MohQR3GThLYc1envuZcFLjG7GV7LghhPsxpSG2z2CPmBvJjtK6eJ4rjqhvoXwF2XAnQQJnbapTMxvbounmfhbsQqz2IxYKedZQ/Deg40MGSObbDmW8Ry+MjGfi91jEj4meMU5UPYYRsCUGne+5S6AM1My4SoaXTgvdFRftC1gqUIcLrAD5L03pAzQbDzcZbk4Grx3YGaPTPpuOpUr4r468tDnaG8M2lqxP6x3l3QzwlRm4GllGYDajiSobBwekhHFX8W7S1KNYcCRl/5rU+GpwnodE6S4usNsr3QzJwKh9x+fz2SOPAxLZJLuS00pV09I50Opl02GVGTrfPVBXc/35eFp5VgwMx3vKDiq1GKDmQxERo107kXWWfyMoE6BBrx+LB5qL1R6E8f9e4BLpFSFP6A4JaySVeyD2hSLkHfITYqehPTIyypuH8mYIfwG0R2zBYRBTLTBGjWOjBYVyegGNsztEzw=="
+                      },
+                      {
+                        "functionCall": {
+                          "name": "best_country",
+                          "args": {
+                            "country": "Canada"
+                          }
+                        }
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 115,
+                "candidatesTokenCount": 30,
+                "totalTokenCount": 450,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 115
+                  }
+                ],
+                "thoughtsTokenCount": 305
+              },
+              "modelVersion": "gemini-2.5-pro",
+              "responseId": "1l2FaKXJLe2NjMcPkpet4AM"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=6170
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 6.181s

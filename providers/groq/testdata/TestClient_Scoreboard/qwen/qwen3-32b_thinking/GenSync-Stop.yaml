@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 194
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"},{"role":"user","content":"\n\n/think"}],"model":"qwen/qwen3-32b","stop":["is"],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-f1176c00-e321-40c0-80b1-a673e2ca4a7e","object":"chat.completion","created":1753570110,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, the user asked for a detailed talk about Canada, and I provided an initial response. Now, they're following up with the same query but maybe expecting more depth or a different angle. Let me see... The initial response covered geography, politics, economy, demographics, culture, and challenges. Since they asked again, perhaps they want more specific information or maybe a different structure. Let me check the user's h"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.006145072,"prompt_tokens":32,"prompt_time":0.001176875,"completion_tokens":1800,"completion_time":5.072423115,"total_tokens":1832,"total_time":5.07359999},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k14erty8enr9dqt3gks6v2bj"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 965771e5de25a273-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499998"
+            X-Ratelimit-Remaining-Tokens:
+                - "299816"
+            X-Ratelimit-Reset-Requests:
+                - 253.599999ms
+            X-Ratelimit-Reset-Tokens:
+                - 36.8ms
+            X-Request-Id:
+                - req_01k14erty8enr9dqt3gks6v2bj
+        status: 200 OK
+        code: 200
+        duration: 5.149s

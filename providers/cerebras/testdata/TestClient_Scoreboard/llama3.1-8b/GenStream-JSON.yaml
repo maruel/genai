@@ -21,25 +21,25 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-60fe9f7c-5f03-4f79-83ff-93e87c387b84","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1753209329,"model":"llama3.1-8b","system_fingerprint":"fp_82a5d41563721f6d9eb1","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-b3764264-6716-4f6b-8083-893fc92faaf6","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1753569315,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-60fe9f7c-5f03-4f79-83ff-93e87c387b84","choices":[{"delta":{"content":"{\""},"index":0}],"created":1753209329,"model":"llama3.1-8b","system_fingerprint":"fp_82a5d41563721f6d9eb1","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-b3764264-6716-4f6b-8083-893fc92faaf6","choices":[{"delta":{"content":"{\""},"index":0}],"created":1753569315,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-60fe9f7c-5f03-4f79-83ff-93e87c387b84","choices":[{"delta":{"content":"is"},"index":0}],"created":1753209329,"model":"llama3.1-8b","system_fingerprint":"fp_82a5d41563721f6d9eb1","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-b3764264-6716-4f6b-8083-893fc92faaf6","choices":[{"delta":{"content":"is"},"index":0}],"created":1753569315,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-60fe9f7c-5f03-4f79-83ff-93e87c387b84","choices":[{"delta":{"content":"_f"},"index":0}],"created":1753209329,"model":"llama3.1-8b","system_fingerprint":"fp_82a5d41563721f6d9eb1","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-b3764264-6716-4f6b-8083-893fc92faaf6","choices":[{"delta":{"content":"_f"},"index":0}],"created":1753569315,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-60fe9f7c-5f03-4f79-83ff-93e87c387b84","choices":[{"delta":{"content":"ruit"},"index":0}],"created":1753209329,"model":"llama3.1-8b","system_fingerprint":"fp_82a5d41563721f6d9eb1","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-b3764264-6716-4f6b-8083-893fc92faaf6","choices":[{"delta":{"content":"ruit"},"index":0}],"created":1753569315,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-60fe9f7c-5f03-4f79-83ff-93e87c387b84","choices":[{"delta":{"content":"\":"},"index":0}],"created":1753209329,"model":"llama3.1-8b","system_fingerprint":"fp_82a5d41563721f6d9eb1","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-b3764264-6716-4f6b-8083-893fc92faaf6","choices":[{"delta":{"content":"\":"},"index":0}],"created":1753569315,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-60fe9f7c-5f03-4f79-83ff-93e87c387b84","choices":[{"delta":{"content":" true"},"index":0}],"created":1753209329,"model":"llama3.1-8b","system_fingerprint":"fp_82a5d41563721f6d9eb1","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-b3764264-6716-4f6b-8083-893fc92faaf6","choices":[{"delta":{"content":" true"},"index":0}],"created":1753569315,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-60fe9f7c-5f03-4f79-83ff-93e87c387b84","choices":[{"delta":{"content":"}"},"index":0}],"created":1753209329,"model":"llama3.1-8b","system_fingerprint":"fp_82a5d41563721f6d9eb1","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-b3764264-6716-4f6b-8083-893fc92faaf6","choices":[{"delta":{"content":"}"},"index":0}],"created":1753569315,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-60fe9f7c-5f03-4f79-83ff-93e87c387b84","choices":[{"delta":{},"index":0}],"created":1753209329,"model":"llama3.1-8b","system_fingerprint":"fp_82a5d41563721f6d9eb1","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-b3764264-6716-4f6b-8083-893fc92faaf6","choices":[{"delta":{},"index":0}],"created":1753569315,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-60fe9f7c-5f03-4f79-83ff-93e87c387b84","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1753209329,"model":"llama3.1-8b","system_fingerprint":"fp_82a5d41563721f6d9eb1","object":"chat.completion.chunk","usage":{"prompt_tokens":64,"completion_tokens":8,"total_tokens":72,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.003756367,"prompt_time":0.003217122,"completion_time":0.003552774,"total_time":0.013402223587036133,"created":1753209329}}
+            data: {"id":"chatcmpl-b3764264-6716-4f6b-8083-893fc92faaf6","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1753569315,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk","usage":{"prompt_tokens":64,"completion_tokens":8,"total_tokens":72,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.003965243,"prompt_time":0.003217409,"completion_time":0.003618185,"total_time":0.012248754501342773,"created":1753569315}}
 
         headers:
             Alt-Svc:
@@ -47,11 +47,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 963509c0baf0a2fc-YUL
+                - 96575e7c4e0ea298-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Inference-Id:
-                - chatcmpl-60fe9f7c-5f03-4f79-83ff-93e87c387b84
+                - chatcmpl-b3764264-6716-4f6b-8083-893fc92faaf6
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -65,15 +65,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14388"
+                - "14364"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "59518"
+                - "59755"
             X-Ratelimit-Reset-Requests-Day:
-                - "19470.95770430565"
+                - "5084.618136882782"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "30.957704305648804"
+                - "44.61813688278198"
             X-Request-Id:
-                - 963509c0baf0a2fc-YUL
+                - 96575e7c4e0ea298-YUL
         status: 200 OK
         code: 200
-        duration: 1.468s
+        duration: 186ms

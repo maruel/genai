@@ -1,0 +1,76 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 238
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Explain the theory of relativity in great details."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":16,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "Here's the detailed breakdown of my thought process:\n\n**Diving Deep into the Explanation**\n\nOkay, so I'm presented with a need to craft a *really* thorough explanation.  My mind immediately starts dissecting what that actually *means*.  First, I'm thinking about the audience - an expert. This dictates the level of detail I can comfortably include. I don't need to explain basic concepts, but I *do* need to ensure the explanation is logically sound and comprehensive.\n\nI'm starting to visualize a roadmap in my head.  What are the key components of the topic at hand? What are the potential areas of confusion or nuance?  I'm focusing on anticipating questions that a seasoned professional might have.  That means considering edge cases, alternative approaches, and the underlying assumptions that drive this explanation.\n\nNext, I'm thinking about structure. A good explanation needs a clear flow.  I'm mentally outlining the key sections I'll need to address.  Introduction, core principles, practical examples, potential pitfalls, and, if applicable, a comparison to alternative approaches are starting to form.  I want it to be a complete picture, a self-contained unit of information.\n\nThe challenge is to balance comprehensiveness with clarity.  I'm mentally searching for the best way to present the information.  Would a step-by-step approach be best? A top-down approach? Or perhaps a more modular structure, allowing the reader to delve deeper into specific areas as they need? I'm constantly evaluating options and refining my mental plan.\n\nFinally, I'm picturing the end result - a polished, detailed, and insightful explanation that not only answers the question but leaves the expert feeling satisfied and perhaps even stimulated to explore further.  That's the ultimate goal, isn't it? To provide value and foster deeper understanding.\n",
+                        "thought": true
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "MAX_TOKENS",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 10,
+                "totalTokenCount": 25,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 10
+                  }
+                ],
+                "thoughtsTokenCount": 15
+              },
+              "modelVersion": "gemini-2.5-pro",
+              "responseId": "t12FaIeuDJ-OjMcPzv3mwQk"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3642
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.652s

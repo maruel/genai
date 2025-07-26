@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 603
+        host: api.cohere.com
+        body: |
+            {"stream":false,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"description":"A tool to specify the best country"}}],"tool_choice":"required","strict_tools":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cohere.com/v2/chat
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 563
+        body: '{"id":"d9163dec-b499-4982-a519-7ed1ac92de01","message":{"role":"assistant","tool_plan":"I will use one or more of the available tools to find the answer","tool_calls":[{"id":"best_country_s73qsfv4m0b5","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}},{"id":"best_country_z7376kmthtze","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":49,"output_tokens":30},"tokens":{"input_tokens":1514,"output_tokens":63}}}'
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Debug-Trace-ID
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+            Content-Length:
+                - "563"
+            Content-Type:
+                - application/json
+            Expires:
+                - Thu, 01 Jan 1970 00:00:00 GMT
+            Num_chars:
+                - "7083"
+            Num_tokens:
+                - "79"
+            Pragma:
+                - no-cache
+            Server:
+                - envoy
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Accel-Expires:
+                - "0"
+            X-Debug-Trace-Id:
+                - 2e3269dc57c9a724033fa5bfc213542b
+            X-Envoy-Upstream-Service-Time:
+                - "493"
+        status: 200 OK
+        code: 200
+        duration: 538ms

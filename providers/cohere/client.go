@@ -44,11 +44,11 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://dashboard.cohere.com/billing",
 	Scenarios: []genai.Scenario{
 		{
-			Models: []string{"command-r7b-12-2024"},
-			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Models:   []string{"command-r7b-12-2024"},
+			Thinking: true, // Only related to tool planning.
+			In:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:      map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Thinking:       true, // Only related to tool planning.
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
@@ -57,7 +57,6 @@ var Scoreboard = genai.Scoreboard{
 				Seed:           true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Thinking:       true,
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
@@ -68,7 +67,8 @@ var Scoreboard = genai.Scoreboard{
 		},
 		// https://docs.cohere.com/docs/aya-vision
 		{
-			Models: []string{"c4ai-aya-vision-8b"},
+			Models:   []string{"c4ai-aya-vision-8b"},
+			Thinking: true, // Only related to tool planning.
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
@@ -79,13 +79,11 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Thinking:  true, // Only related to tool planning.
 				Tools:     genai.True,
 				Citations: true,
 				Seed:      true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Thinking:  true,
 				Tools:     genai.True,
 				Citations: true,
 				Seed:      true,

@@ -68,21 +68,21 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			Models: []string{"Qwen/Qwen3-4B"},
-			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Models:   []string{"Qwen/Qwen3-4B"},
+			Thinking: true,
+			In:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:      map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Thinking:   true,
+				Tools:      genai.Flaky, // Uses a quantized version.
+				JSON:       true,
+				JSONSchema: false, // Doesn't follow instructions.
+				Seed:       true,
+			},
+			GenStream: &genai.FunctionalityText{
 				Tools:      genai.Flaky, // Uses a quantized version.
 				JSON:       true,
 				JSONSchema: true, // Doesn't follow instructions.
 				Seed:       true,
-			},
-			GenStream: &genai.FunctionalityText{
-				Thinking: true,
-				Tools:    genai.Flaky, // Uses a quantized version.
-				JSON:     true,
-				Seed:     true,
 			},
 		},
 	},

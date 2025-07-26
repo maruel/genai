@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 294
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"model":"deepseek-r1-distill-llama-70b","reasoning_format":"parsed","response_format":{"type":"json_object"},"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-1dfb587a-a286-469c-9a10-32dbb693d93e","object":"chat.completion","created":1753570129,"model":"deepseek-r1-distill-llama-70b","choices":[{"index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}","reasoning":"Okay, so I need to figure out whether a banana is a fruit. Let me start by recalling what I know about fruits. From what I remember, fruits are the sweet and fleshy parts of plants that develop from the flower and contain seeds. Examples include apples, berries, and citrus fruits.\n\nNow, thinking about a banana. I know bananas grow on banana plants, which are large and have big leaves. The banana itself is elongated, yellow when ripe, and has a thick peel that's easy to remove. Inside, there's the soft, creamy part that people eat. I also remember that bananas have several strings that run through them, but I'm not sure if those are considered seeds.\n\nWait, do bananas have seeds? I think wild bananas do have seeds, but the ones we commonly eat are cultivated varieties that have been bred to have very small, undeveloped seeds. So, in the bananas we eat, the seeds are not really noticeable. But the fact that they're there, even if small, might still classify them as fruits.\n\nAlso, I remember that in botany, a fruit is defined as the mature ovary of a flowering plant, usually containing seeds. So, even if the seeds are tiny or not easily visible, as long as the structure comes from the flower's ovary, it's a fruit.\n\nAnother point to consider is how bananas grow. They develop from the banana flower, which is at the top of the plant. The flower is covered by large petals that eventually peel back, revealing the developing bananas. This process aligns with how fruits develop from flowers.\n\nI should also think about other similar foods. For example, tomatoes are technically fruits because they develop from the flower's ovary and contain seeds. Similarly, cucumbers and squash are fruits. So, if a tomato is a fruit, why wouldn't a banana be one?\n\nBut wait, sometimes people confuse fruits and vegetables based on how they're used in cooking. Fruits are typically sweet and used in desserts, while vegetables can be savory and used in main dishes. However, this is a culinary distinction, not a botanical one. So, even though we use bananas in sweet dishes, the botanical classification should still apply.\n\nI should check if there's any conflicting information. Are there sources that say bananas are not fruits? I don't recall any. Most reliable sources, like botanical textbooks or educational websites, classify bananas as fruits.\n\nTherefore, putting it all together: bananas grow from flowers, develop from the ovary, contain seeds (even if small), and fit the botanical definition of a fruit. So, yes, a banana is a fruit.\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.010051069000000001,"prompt_tokens":43,"prompt_time":0.002100066,"completion_tokens":550,"completion_time":2.420990398,"total_tokens":593,"total_time":2.423090464},"usage_breakdown":null,"system_fingerprint":"fp_87eae35036","x_groq":{"id":"req_01k14esdr3ep8acbrk89a9793y"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9657725e3c81a273-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "298859"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 228.2ms
+            X-Request-Id:
+                - req_01k14esdr3ep8acbrk89a9793y
+        status: 200 OK
+        code: 200
+        duration: 2.49s

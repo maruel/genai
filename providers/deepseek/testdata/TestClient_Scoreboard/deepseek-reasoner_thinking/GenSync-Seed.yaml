@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 116
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-reasoner","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"b0e0000b-0980-4ce4-8055-0429fafc1b29","object":"chat.completion","created":1753566420,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"Hello.","reasoning_content":"Hmm, the user asked me to say hello but with only one word. That''s a simple and clear request. \n\nI wonder why they want just one word - maybe they''re testing if I can follow instructions precisely, or perhaps they''re in a hurry. The tone feels playful though, like a mini-challenge. \n\nOkay, the obvious one-word response is \"Hello\" itself. It''s polite, direct, and fulfills the requirement perfectly. \n\n\"Hi\" would also work but \"Hello\" feels slightly more formal and universal. No need to overcomplicate this - keeping it simple is what they asked for. \n\n...And done. Short and sweet."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":13,"completion_tokens":140,"total_tokens":153,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":136},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":13},"system_fingerprint":"fp_393bca965e_prod0623_fp8_kvcache"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 965717cd1d5fa30e-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            X-Content-Type-Options:
+                - nosniff
+            X-Ds-Trace-Id:
+                - 9e168a7c546000d3c330dd8ade19796b
+        status: 200 OK
+        code: 200
+        duration: 277ms

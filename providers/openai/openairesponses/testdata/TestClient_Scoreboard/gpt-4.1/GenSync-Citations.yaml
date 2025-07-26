@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 383
+        content_length: 414
         host: api.openai.com
         body: |
-            {"model":"gpt-4.1","background":false,"store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_file","file_data":"data:text/plain; charset=utf-8;base64,VGhlIGNhcGl0YWwgb2YgUXVhY2tpbGFuZCBpcyBRdWFjay4gVGhlIEJpZyBDYW5hcmQgU3RhdHVlIGlzIGxvY2F0ZWQgaW4gUXVhY2su","filename":"capital_info.txt"},{"type":"input_text","text":"What is the capital of Quackiland?"}]}]}
+            {"model":"gpt-4.1","background":false,"reasoning":{"summary":"auto"},"store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_file","file_data":"data:text/plain; charset=utf-8;base64,VGhlIGNhcGl0YWwgb2YgUXVhY2tpbGFuZCBpcyBRdWFjay4gVGhlIEJpZyBDYW5hcmQgU3RhdHVlIGlzIGxvY2F0ZWQgaW4gUXVhY2su","filename":"capital_info.txt"},{"type":"input_text","text":"What is the capital of Quackiland?"}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -35,7 +35,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 964f72653b81a2c6-YUL
+                - 9657db3b5b04a2ff-YUL
             Content-Length:
                 - "201"
             Content-Type:
@@ -55,7 +55,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Request-Id:
-                - req_f0c4fc858b215d00012ced973001426f
+                - req_5d94df491cc4d2948ee63d3fd9d120e5
         status: 400 Bad Request
         code: 400
-        duration: 230ms
+        duration: 226ms

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 329
+        content_length: 360
         host: api.openai.com
         body: |
-            {"model":"gpt-4.1","background":false,"store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"What fruit is it? Reply with only one word."},{"type":"input_image","image_url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif","detail":"auto"}]}]}
+            {"model":"gpt-4.1","background":false,"reasoning":{"summary":"auto"},"store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"What fruit is it? Reply with only one word."},{"type":"input_image","image_url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif","detail":"auto"}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_688413a669408198987ad7fe5cad3805070302559c8f7d88",
+              "id": "resp_68856c1ac124819aa83fc1bb7d0bef9b0af33a8234b07f13",
               "object": "response",
-              "created_at": 1753486246,
+              "created_at": 1753574426,
               "status": "completed",
               "background": false,
               "error": null,
@@ -36,7 +36,7 @@ interactions:
               "model": "gpt-4.1-2025-04-14",
               "output": [
                 {
-                  "id": "msg_688413a75bbc8198baaae1e45bbc8128070302559c8f7d88",
+                  "id": "msg_68856c1b5174819a85bc753446db34150af33a8234b07f13",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -91,13 +91,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 964f726f7afea2c6-YUL
+                - 9657db46aea1a2ff-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "1030"
+                - "625"
             Openai-Project:
                 - proj_tH6hQUFvA4Bx6SyAb23zzLEg
             Openai-Version:
@@ -115,7 +115,7 @@ interactions:
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Request-Id:
-                - req_f01b5315d19691611c38cda7f35a1f05
+                - req_2afd0b174cd6e7944f8b632943563a7e
         status: 200 OK
         code: 200
-        duration: 1.169s
+        duration: 758ms

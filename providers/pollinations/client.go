@@ -66,12 +66,12 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			Models: []string{"deepseek-reasoning"},
+			Models:   []string{"deepseek-reasoning"},
+			Thinking: true,
 			/*
 				In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 				Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 				GenSync: &genai.FunctionalityText{
-					Thinking:       true,
 					NoMaxTokens:    true,
 					NoStopSequence: true,
 					Seed:           true,

@@ -1,0 +1,86 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 662
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**Calculating the Square Root**\n\nOkay, so I need to find the square root of 132413.  Luckily, there's a handy tool called `square_root` for this. I remember it only takes one argument, `number`, which is a float.  Therefore, I'll simply call the tool with the input `number=132413`.  I just need the numerical result, so I'll use `print(default_api.square_root(number=132413))` to execute the function and print the square root directly. That should do the trick.\n",
+                        "thought": true
+                      },
+                      {
+                        "functionCall": {
+                          "name": "square_root",
+                          "args": {
+                            "number": 132413
+                          }
+                        },
+                        "thoughtSignature": "Cp4DAVSoXO6ImuKaq+RacG5mCcqGvo8cOo4kAmgfTbL2aEMTowg6StBslCAFsE7VghdR5ePxF93r1TByakuhrgQynDnNtGA+bRaTLLKyb7eICnh3IW1tSJaEkG173YbcxMUjva63b8MyH5dnO5ccWAiFI2rrQYFkgkR1eTFsm7ynGZuF4UM6tcnvorBnoiaVBoVaHVyQyvWs3zetDCfBNet7kwcnGcmyRLn+EyMI5b/BJzuihz33/xbCKjMd05hDQUlvXKfOmasLyNLxV+qq+wkTFY/+R7waDmCSjcjczyBsGVqZqy/ZA01aLRyGv1KiTHZYo8yjlKPTFh2GgJBUEXVH0IvsJKgaiedstFftoznQyEc3znggtXzx9/8GJ3vMtdwDoaI/N7a8XpvDpq25t2zGDEtH9xpbhwtkGjDXRNhbQrRdtpdDtIwxhNu+W0E86AtK/DUvtJAyNSs2ebg8aFynzZT5xFHm1wY5f3BDrKNDkKD18V3cur+tRxhP1eXqoJs7stU9puA2wtz1CC1qAu1j2siqnGMlRAEtstzFf96e"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 117,
+                "candidatesTokenCount": 20,
+                "totalTokenCount": 251,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 117
+                  }
+                ],
+                "thoughtsTokenCount": 114
+              },
+              "modelVersion": "gemini-2.5-flash-lite",
+              "responseId": "BmKFaLSoPP2OjMcPgdPP6Qo"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1172
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.182s

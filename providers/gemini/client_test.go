@@ -25,35 +25,45 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
-func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 	apiKey := ""
 	if os.Getenv("GEMINI_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := gemini.New(apiKey, model, fn)
+	c, err := gemini.New(apiKey, model.Model, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if strings.Contains(model, "image-generation") {
+	if strings.Contains(model.Model, "image-generation") {
 		// e.g. "gemini-2.0-flash-preview-image-generation"
 		return &injectOption{
 			Client: c,
 			opts:   gemini.OptionsText{ResponseModalities: []gemini.Modality{gemini.ModalityText, gemini.ModalityImage}},
 		}
 	}
-	// Do not enable thinking for flash lite otherwise inputs are text only. I suspect it is a different model
-	// underneath!
-	if !strings.Contains(model, "flash-lite") {
+	if model.Thinking {
 		// https://ai.google.dev/gemini-api/docs/thinking?hl=en
 		return &injectOption{Client: c, opts: gemini.OptionsText{ThinkingBudget: 512}}
 	}
-	return c
+	// Forcibly disable thinking.
+	return &injectOption{Client: c, opts: gemini.OptionsText{ThinkingBudget: 0}}
 }
 
 func TestClient_Scoreboard(t *testing.T) {
-	models, err := getClient(t, "").ListModels(t.Context())
+	genaiModels, err := getClient(t, "").ListModels(t.Context())
 	if err != nil {
 		t.Fatal(err)
+	}
+	var models []scoreboardtest.Model
+	for _, m := range genaiModels {
+		id := m.GetID()
+		if id != "gemini-2.5-pro" {
+			// According to https://ai.google.dev/gemini-api/docs/thinking?hl=en, thinking cannot be disabled.
+			models = append(models, scoreboardtest.Model{Model: id})
+		}
+		if strings.HasPrefix(id, "gemini-2.5-") && !strings.Contains(id, "preview") {
+			models = append(models, scoreboardtest.Model{Model: id, Thinking: true})
+		}
 	}
 	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
 }

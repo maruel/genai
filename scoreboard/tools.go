@@ -116,9 +116,9 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 	}
 
 	if flaky {
-		f.Tools = genai.True
-	} else {
 		f.Tools = genai.Flaky
+	} else {
+		f.Tools = genai.True
 	}
 	if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot", "issue", "token usage")

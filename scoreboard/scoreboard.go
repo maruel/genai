@@ -63,7 +63,7 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 				result.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
 				result.Out[genai.ModalityText] = genai.ModalCapability{Inline: true}
 				if cs.isThinking {
-					f.Thinking = true
+					result.Thinking = true
 				}
 				if cs.hasCitations {
 					f.Citations = true
@@ -94,7 +94,7 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 					}
 				}
 				if cs.isThinking {
-					result.GenSync.Thinking = true
+					result.Thinking = true
 				}
 				if cs.hasCitations {
 					result.GenSync.Citations = true
@@ -116,7 +116,7 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 				result.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
 				result.Out[genai.ModalityText] = genai.ModalCapability{Inline: true}
 				if cs.isThinking {
-					f.Thinking = true
+					result.Thinking = true
 				}
 				if cs.hasCitations {
 					f.Citations = true
@@ -147,7 +147,7 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 					}
 				}
 				if cs.isThinking {
-					result.GenStream.Thinking = true
+					result.Thinking = true
 				}
 				if cs.hasCitations {
 					result.GenStream.Citations = true

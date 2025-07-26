@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 254
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-reasoner","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"response_format":{"type":"json_object"}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"31b19fd9-1083-40fc-b64e-aeff17e4a706","object":"chat.completion","created":1753566451,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}","reasoning_content":"First, the user asks: \"Is a banana a fruit?\" I need to answer this question.\n\nFrom my knowledge, a banana is indeed a fruit. Botanically, fruits are the mature ovaries of flowering plants, and bananas fit that definition.\n\nThe user specifies: \"Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\nSo, I must reply with a JSON object only. The schema given is {\"is_fruit\": bool}, which means I need to have a key \"is_fruit\" with a boolean value.\n\nSince a banana is a fruit, the value should be true.\n\nMy response should be strictly in JSON format, with no additional text or explanation. Just the JSON object.\n\nConstructing the JSON: {\"is_fruit\": true}\n\nThat''s it. I shouldn''t add any other keys or properties.\n\nFinally, ensure that the response is valid JSON."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":50,"completion_tokens":198,"total_tokens":248,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":189},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":50},"system_fingerprint":"fp_393bca965e_prod0623_fp8_kvcache"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96571892483ea30e-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            X-Content-Type-Options:
+                - nosniff
+            X-Ds-Trace-Id:
+                - 9457eba9f5e8af0d899b450936320b68
+        status: 200 OK
+        code: 200
+        duration: 313ms

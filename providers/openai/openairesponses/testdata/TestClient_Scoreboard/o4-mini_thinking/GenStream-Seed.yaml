@@ -1,0 +1,348 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 251
+        host: api.openai.com
+        body: |
+            {"model":"o4-mini","background":false,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Say hello. Use only one word."}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: response.created
+            data: {"type":"response.created","sequence_number":0,"response":{"id":"resp_688569fd42f0819ab2b428daadbbeb8104388528a75769c3","object":"response","created_at":1753573885,"status":"in_progress","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"o4-mini-2025-04-16","output":[],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":"low","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":false,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}}}
+
+            event: response.in_progress
+            data: {"type":"response.in_progress","sequence_number":1,"response":{"id":"resp_688569fd42f0819ab2b428daadbbeb8104388528a75769c3","object":"response","created_at":1753573885,"status":"in_progress","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"o4-mini-2025-04-16","output":[],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":"low","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":false,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}}}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","sequence_number":2,"output_index":0,"item":{"id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","type":"reasoning","summary":[]}}
+
+            event: response.reasoning_summary_part.added
+            data: {"type":"response.reasoning_summary_part.added","sequence_number":3,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"part":{"type":"summary_text","text":""}}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":4,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":"**Determ"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":5,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":"ining"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":6,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" a"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":7,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" one"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":8,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":"-word"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":9,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" greeting"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":10,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":"**\n\nThe"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":11,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" user"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":12,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" has"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":13,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" asked"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":14,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" for"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":15,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" a"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":16,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" one"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":17,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":"-word"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":18,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" greeting"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":19,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":","}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":20,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" so"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":21,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" I"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":22,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" think"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":23,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" a"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":24,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" simple"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":25,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" \""}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":26,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":"Hello"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":27,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":"\""}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":28,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" or"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":29,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" maybe"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":30,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" just"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":31,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" \""}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":32,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":"Hi"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":33,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":"\""}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":34,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" fits"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":35,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" perfectly"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":36,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":"."}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":37,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" I"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":38,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" want"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":39,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" to"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":40,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" keep"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":41,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" it"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":42,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" straightforward"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":43,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":","}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":44,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" without"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":45,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" adding"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":46,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" anything"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":47,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" extra"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":48,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" since"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":49,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" they"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":50,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" specified"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":51,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" one"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":52,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" word"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":53,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" only"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":54,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":"."}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":55,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" I"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":56,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" don"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":57,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":"’t"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":58,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" think"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":59,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" punctuation"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":60,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" is"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":61,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" necessary"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":62,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" either"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":63,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":","}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":64,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" just"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":65,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" a"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":66,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" clean"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":67,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":","}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":68,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" singular"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":69,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" word"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":70,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":"."}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":71,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" So"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":72,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":","}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":73,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" my"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":74,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" choice"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":75,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" is"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":76,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" to"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":77,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" go"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":78,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" with"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":79,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" \""}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":80,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":"Hello"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":81,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":"\""}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":82,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" as"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":83,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" it"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":84,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" clearly"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":85,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" meets"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":86,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" their"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":87,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":" request"}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","sequence_number":88,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"delta":"!"}
+
+            event: response.reasoning_summary_text.done
+            data: {"type":"response.reasoning_summary_text.done","sequence_number":89,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"text":"**Determining a one-word greeting**\n\nThe user has asked for a one-word greeting, so I think a simple \"Hello\" or maybe just \"Hi\" fits perfectly. I want to keep it straightforward, without adding anything extra since they specified one word only. I don’t think punctuation is necessary either, just a clean, singular word. So, my choice is to go with \"Hello\" as it clearly meets their request!"}
+
+            event: response.reasoning_summary_part.done
+            data: {"type":"response.reasoning_summary_part.done","sequence_number":90,"item_id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","output_index":0,"summary_index":0,"part":{"type":"summary_text","text":"**Determining a one-word greeting**\n\nThe user has asked for a one-word greeting, so I think a simple \"Hello\" or maybe just \"Hi\" fits perfectly. I want to keep it straightforward, without adding anything extra since they specified one word only. I don’t think punctuation is necessary either, just a clean, singular word. So, my choice is to go with \"Hello\" as it clearly meets their request!"}}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","sequence_number":91,"output_index":0,"item":{"id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","type":"reasoning","summary":[{"type":"summary_text","text":"**Determining a one-word greeting**\n\nThe user has asked for a one-word greeting, so I think a simple \"Hello\" or maybe just \"Hi\" fits perfectly. I want to keep it straightforward, without adding anything extra since they specified one word only. I don’t think punctuation is necessary either, just a clean, singular word. So, my choice is to go with \"Hello\" as it clearly meets their request!"}]}}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","sequence_number":92,"output_index":1,"item":{"id":"msg_688569ff8004819a940de1f1f0664e6d04388528a75769c3","type":"message","status":"in_progress","content":[],"role":"assistant"}}
+
+            event: response.content_part.added
+            data: {"type":"response.content_part.added","sequence_number":93,"item_id":"msg_688569ff8004819a940de1f1f0664e6d04388528a75769c3","output_index":1,"content_index":0,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":""}}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","sequence_number":94,"item_id":"msg_688569ff8004819a940de1f1f0664e6d04388528a75769c3","output_index":1,"content_index":0,"delta":"Hello","logprobs":[]}
+
+            event: response.output_text.done
+            data: {"type":"response.output_text.done","sequence_number":95,"item_id":"msg_688569ff8004819a940de1f1f0664e6d04388528a75769c3","output_index":1,"content_index":0,"text":"Hello","logprobs":[]}
+
+            event: response.content_part.done
+            data: {"type":"response.content_part.done","sequence_number":96,"item_id":"msg_688569ff8004819a940de1f1f0664e6d04388528a75769c3","output_index":1,"content_index":0,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":"Hello"}}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","sequence_number":97,"output_index":1,"item":{"id":"msg_688569ff8004819a940de1f1f0664e6d04388528a75769c3","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"Hello"}],"role":"assistant"}}
+
+            event: response.completed
+            data: {"type":"response.completed","sequence_number":98,"response":{"id":"resp_688569fd42f0819ab2b428daadbbeb8104388528a75769c3","object":"response","created_at":1753573885,"status":"completed","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"o4-mini-2025-04-16","output":[{"id":"rs_688569fdb8cc819ab4afb657120d25a904388528a75769c3","type":"reasoning","summary":[{"type":"summary_text","text":"**Determining a one-word greeting**\n\nThe user has asked for a one-word greeting, so I think a simple \"Hello\" or maybe just \"Hi\" fits perfectly. I want to keep it straightforward, without adding anything extra since they specified one word only. I don’t think punctuation is necessary either, just a clean, singular word. So, my choice is to go with \"Hello\" as it clearly meets their request!"}]},{"id":"msg_688569ff8004819a940de1f1f0664e6d04388528a75769c3","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"Hello"}],"role":"assistant"}],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":"low","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":false,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":{"input_tokens":14,"input_tokens_details":{"cached_tokens":0},"output_tokens":71,"output_tokens_details":{"reasoning_tokens":64},"total_tokens":85},"user":null,"metadata":{}}}
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9657ce0e5e72a2d2-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Organization:
+                - user-vtmtcvpbctksjfewktqdl2sw
+            Openai-Processing-Ms:
+                - "73"
+            Openai-Project:
+                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - req_4599749c83d1bf4249876b32f8a8ce5b
+        status: 200 OK
+        code: 200
+        duration: 193ms

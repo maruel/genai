@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 672
+        content_length: 671
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["Canada","USA"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["Canada","USA"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":false,"thinkingBudget":0}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,23 +28,10 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**Deciphering the User's Query**\n\nOkay, I understand. The user wants a comparison between Canada and the USA, specifically with the goal of determining which is the \"best country.\" The key here is the tool `best_country`.  It looks like this tool is designed to evaluate and compare countries. To fulfill the prompt's request to \"Call the tool best_country...\", it's clear I need to utilize this tool. The most straightforward approach, given the prompt's wording, is to call the tool first for \"Canada\" and then for \"USA,\" or vice versa. This will give me a direct comparison from the tool's perspective. I'll get some data from the tool for Canada, then run it again for the USA. That will give me the information I need to fulfill the prompt. I'm ready to proceed with these tool calls.\n",
-                        "thought": true
-                      },
-                      {
                         "functionCall": {
                           "name": "best_country",
                           "args": {
                             "country": "Canada"
-                          }
-                        },
-                        "thoughtSignature": "Cq4FAVSoXO5Upk3UmChX2BdcWxhkHsTw8MsqiL+qdyKiEmot9VKr0TKaZ1z9FW79ouFd1RU3kXY5dd/UiS3eCdpzmvuxmLfjGuLOzmazajFOb40+3Tx4Wgs4UDhGda2kU1h6S53UULayQHbEE1Kh+eMpLAU8GJtxj7zrpbNs61uTZHDcZpS8//05r8qSqzyZGfirIJMX/jtE1cQZX04t0RqftNDayIRhshGL0daSAUGGunleyD1cXVDJx7xngVD94vutuNdVUmQ55JYn2Jw42khgFiL3QA7Y4TS/QobfdN6WfLsfKj2fYlknAz/4uPfM3FIIh75hr85HvInpAGCAB0IWlCZFlaHH9/saCdO0Ky5Sr7Qk0QNUVQfe1O+G3ZYkXF8ud3um1wqB225zQn3+HjAy5QJU28UCEvNsaBd15f3H7S7KA39IUWWtKiDqWxDMEP5EzAMk+0TKyacrXQ/TZ9hK6l3WCnBdPKnE2iN8YYeM5OmC6KBPoNBd4pJ2kz5zhcBgwqUF5xfZnRMcebIEIsvm1mt+Tousctku7zjfUaVRozWUyIZ0PLs8WKmx2C8bKGTIwE/8aB3zGv5zz23T9LDHD+D0pMGLxLNw5W6a7omAyxzQKFuL/k57l/rh6hlTzmt9AAxwUtxqVarhUCihe8z4t8MSbb16PLDbD1UsW1cwZPRcPmDC2QSr/gnNcXasoPvW6XbL9zsilarN5kLtvw5MlebCT5qq7U1UPOsp9EHtLnasi2GfHiCf+ooUyukT1IXV7EDzug0V3vhuwnFUHei0Tu+18fQzidvO3PFxEHD0w5F8KeXvAV7hQFj26YtPmDy+h3Ib3l7UQvSYpVJjAV/PaQzu9Lb6QgQIuAmr7bCx7aSbIq/rxLAMUByfejE/cJPMwVg/9PwA08XCs3ZYTeo="
-                      },
-                      {
-                        "functionCall": {
-                          "name": "best_country",
-                          "args": {
-                            "country": "USA"
                           }
                         }
                       }
@@ -57,18 +44,17 @@ interactions:
               ],
               "usageMetadata": {
                 "promptTokenCount": 115,
-                "candidatesTokenCount": 30,
-                "totalTokenCount": 299,
+                "candidatesTokenCount": 15,
+                "totalTokenCount": 130,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 115
                   }
-                ],
-                "thoughtsTokenCount": 154
+                ]
               },
               "modelVersion": "gemini-2.5-flash",
-              "responseId": "k-iDaNLlGo2i1MkPrezI4Q4"
+              "responseId": "BF-FaP_mFvrWjMcPxrvYoAQ"
             }
         headers:
             Alt-Svc:
@@ -78,7 +64,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=2169
+                - gfet4t7; dur=407
             Vary:
                 - Origin
                 - X-Origin
@@ -91,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 2.181s
+        duration: 418ms

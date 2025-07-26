@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-70889049-5327-4fb4-9a04-bb319781cdbc","choices":[{"finish_reason":"stop","index":0,"message":{"content":"The capital of Quackiland is Quack.","role":"assistant"}}],"created":1753209332,"model":"llama3.1-8b","system_fingerprint":"fp_82a5d41563721f6d9eb1","object":"chat.completion","usage":{"prompt_tokens":65,"completion_tokens":11,"total_tokens":76,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000487729,"prompt_time":0.003270609,"completion_time":0.004829533,"total_time":0.00992131233215332,"created":1753209332}}'
+        body: '{"id":"chatcmpl-d5f7f202-1e33-4d9a-8511-b4838893bad0","choices":[{"finish_reason":"stop","index":0,"message":{"content":"The capital of Quackiland is Quack.","role":"assistant"}}],"created":1753569321,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion","usage":{"prompt_tokens":65,"completion_tokens":11,"total_tokens":76,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000350299,"prompt_time":0.004433351,"completion_time":0.005310155,"total_time":0.011299848556518555,"created":1753569321}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 963509d5785ca2fc-YUL
+                - 96575e9fd920a2f6-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-70889049-5327-4fb4-9a04-bb319781cdbc
+                - chatcmpl-d5f7f202-1e33-4d9a-8511-b4838893bad0
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -46,15 +46,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14379"
+                - "14349"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "56232"
+                - "56131"
             X-Ratelimit-Reset-Requests-Day:
-                - "19467.800898313522"
+                - "5078.863528013229"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "27.80089831352234"
+                - "38.86352801322937"
             X-Request-Id:
-                - 963509d5785ca2fc-YUL
+                - 96575e9fd920a2f6-YUL
         status: 200 OK
         code: 200
-        duration: 1.314s
+        duration: 247ms

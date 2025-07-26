@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-67aea4bb-2178-423c-b4e9-2955dbc68ff8","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"is_fruit\": true}","role":"assistant"}}],"created":1753209341,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_930a11df63bf5dc7eac4","object":"chat.completion","usage":{"prompt_tokens":39,"completion_tokens":8,"total_tokens":47,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.006426305,"prompt_time":0.002102044,"completion_time":0.001526942,"total_time":0.011174917221069336,"created":1753209341}}'
+        body: '{"id":"chatcmpl-b2619391-3d2a-4f2d-ad48-2f7e67529cc8","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"is_fruit\": true}","role":"assistant"}}],"created":1753569332,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_e439cc65f01febf1121f","object":"chat.completion","usage":{"prompt_tokens":39,"completion_tokens":8,"total_tokens":47,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.005929433,"prompt_time":0.002324351,"completion_time":0.001840517,"total_time":0.011353492736816406,"created":1753569332}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96350a14ba7da2ff-YUL
+                - 96575ee78da2a305-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-67aea4bb-2178-423c-b4e9-2955dbc68ff8
+                - chatcmpl-b2619391-3d2a-4f2d-ad48-2f7e67529cc8
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -46,15 +46,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14390"
+                - "14359"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "59785"
+                - "59174"
             X-Ratelimit-Reset-Requests-Day:
-                - "19457.683576583862"
+                - "5067.515454530716"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "17.683576583862305"
+                - "27.515454530715942"
             X-Request-Id:
-                - 96350a14ba7da2ff-YUL
+                - 96575ee78da2a305-YUL
         status: 200 OK
         code: 200
-        duration: 161ms
+        duration: 127ms

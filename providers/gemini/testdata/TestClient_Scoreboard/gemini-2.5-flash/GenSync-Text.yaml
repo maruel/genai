@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 196
+        content_length: 195
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":false,"thinkingBudget":0}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,10 +28,6 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**My Concise Greeting**\n\nWell, this is straightforward. The user wants me to greet them with a single word.  \"Hello\" fits the bill perfectly; it's a recognized greeting and consists of exactly one word. Done.\n",
-                        "thought": true
-                      },
-                      {
                         "text": "Hello"
                       }
                     ],
@@ -44,17 +40,16 @@ interactions:
               "usageMetadata": {
                 "promptTokenCount": 9,
                 "candidatesTokenCount": 1,
-                "totalTokenCount": 36,
+                "totalTokenCount": 10,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 9
                   }
-                ],
-                "thoughtsTokenCount": 26
+                ]
               },
               "modelVersion": "gemini-2.5-flash",
-              "responseId": "hOiDaJWjCpyG1MkPoaCAyA4"
+              "responseId": "AV-FaPaPD47RjMcP0rjquAs"
             }
         headers:
             Alt-Svc:
@@ -64,7 +59,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=787
+                - gfet4t7; dur=442
             Vary:
                 - Origin
                 - X-Origin
@@ -77,4 +72,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 872ms
+        duration: 521ms

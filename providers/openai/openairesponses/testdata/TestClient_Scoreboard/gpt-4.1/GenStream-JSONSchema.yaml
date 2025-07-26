@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 480
+        content_length: 511
         host: api.openai.com
         body: |
-            {"model":"gpt-4.1","background":false,"store":false,"text":{"format":{"type":"json_schema","name":"response","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"stream":true}
+            {"model":"gpt-4.1","background":false,"reasoning":{"summary":"auto"},"store":false,"text":{"format":{"type":"json_schema","name":"response","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,49 +22,49 @@ interactions:
         content_length: -1
         body: |+
             event: response.created
-            data: {"type":"response.created","sequence_number":0,"response":{"id":"resp_688413a16964819a98e307fbc2183057004e57912397d583","object":"response","created_at":1753486241,"status":"in_progress","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-4.1-2025-04-14","output":[],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":null,"summary":null},"safety_identifier":null,"service_tier":"auto","store":false,"temperature":1.0,"text":{"format":{"type":"json_schema","description":null,"name":"response","schema":{"properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}}}
+            data: {"type":"response.created","sequence_number":0,"response":{"id":"resp_68856c1526b8819b821cfc87cfcc63bb0ba2886c67b8923e","object":"response","created_at":1753574421,"status":"in_progress","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-4.1-2025-04-14","output":[],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":null,"summary":null},"safety_identifier":null,"service_tier":"auto","store":false,"temperature":1.0,"text":{"format":{"type":"json_schema","description":null,"name":"response","schema":{"properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}}}
 
             event: response.in_progress
-            data: {"type":"response.in_progress","sequence_number":1,"response":{"id":"resp_688413a16964819a98e307fbc2183057004e57912397d583","object":"response","created_at":1753486241,"status":"in_progress","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-4.1-2025-04-14","output":[],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":null,"summary":null},"safety_identifier":null,"service_tier":"auto","store":false,"temperature":1.0,"text":{"format":{"type":"json_schema","description":null,"name":"response","schema":{"properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}}}
+            data: {"type":"response.in_progress","sequence_number":1,"response":{"id":"resp_68856c1526b8819b821cfc87cfcc63bb0ba2886c67b8923e","object":"response","created_at":1753574421,"status":"in_progress","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-4.1-2025-04-14","output":[],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":null,"summary":null},"safety_identifier":null,"service_tier":"auto","store":false,"temperature":1.0,"text":{"format":{"type":"json_schema","description":null,"name":"response","schema":{"properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}}}
 
             event: response.output_item.added
-            data: {"type":"response.output_item.added","sequence_number":2,"output_index":0,"item":{"id":"msg_688413a1df94819a98f1cc3c7534cd25004e57912397d583","type":"message","status":"in_progress","content":[],"role":"assistant"}}
+            data: {"type":"response.output_item.added","sequence_number":2,"output_index":0,"item":{"id":"msg_68856c1593cc819bb8ff3de26e49e9840ba2886c67b8923e","type":"message","status":"in_progress","content":[],"role":"assistant"}}
 
             event: response.content_part.added
-            data: {"type":"response.content_part.added","sequence_number":3,"item_id":"msg_688413a1df94819a98f1cc3c7534cd25004e57912397d583","output_index":0,"content_index":0,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":""}}
+            data: {"type":"response.content_part.added","sequence_number":3,"item_id":"msg_68856c1593cc819bb8ff3de26e49e9840ba2886c67b8923e","output_index":0,"content_index":0,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":""}}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","sequence_number":4,"item_id":"msg_688413a1df94819a98f1cc3c7534cd25004e57912397d583","output_index":0,"content_index":0,"delta":"{\"","logprobs":[]}
+            data: {"type":"response.output_text.delta","sequence_number":4,"item_id":"msg_68856c1593cc819bb8ff3de26e49e9840ba2886c67b8923e","output_index":0,"content_index":0,"delta":"{\"","logprobs":[]}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","sequence_number":5,"item_id":"msg_688413a1df94819a98f1cc3c7534cd25004e57912397d583","output_index":0,"content_index":0,"delta":"is","logprobs":[]}
+            data: {"type":"response.output_text.delta","sequence_number":5,"item_id":"msg_68856c1593cc819bb8ff3de26e49e9840ba2886c67b8923e","output_index":0,"content_index":0,"delta":"is","logprobs":[]}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","sequence_number":6,"item_id":"msg_688413a1df94819a98f1cc3c7534cd25004e57912397d583","output_index":0,"content_index":0,"delta":"_f","logprobs":[]}
+            data: {"type":"response.output_text.delta","sequence_number":6,"item_id":"msg_68856c1593cc819bb8ff3de26e49e9840ba2886c67b8923e","output_index":0,"content_index":0,"delta":"_f","logprobs":[]}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","sequence_number":7,"item_id":"msg_688413a1df94819a98f1cc3c7534cd25004e57912397d583","output_index":0,"content_index":0,"delta":"ruit","logprobs":[]}
+            data: {"type":"response.output_text.delta","sequence_number":7,"item_id":"msg_68856c1593cc819bb8ff3de26e49e9840ba2886c67b8923e","output_index":0,"content_index":0,"delta":"ruit","logprobs":[]}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","sequence_number":8,"item_id":"msg_688413a1df94819a98f1cc3c7534cd25004e57912397d583","output_index":0,"content_index":0,"delta":"\":","logprobs":[]}
+            data: {"type":"response.output_text.delta","sequence_number":8,"item_id":"msg_68856c1593cc819bb8ff3de26e49e9840ba2886c67b8923e","output_index":0,"content_index":0,"delta":"\":","logprobs":[]}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","sequence_number":9,"item_id":"msg_688413a1df94819a98f1cc3c7534cd25004e57912397d583","output_index":0,"content_index":0,"delta":" true","logprobs":[]}
+            data: {"type":"response.output_text.delta","sequence_number":9,"item_id":"msg_68856c1593cc819bb8ff3de26e49e9840ba2886c67b8923e","output_index":0,"content_index":0,"delta":" true","logprobs":[]}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","sequence_number":10,"item_id":"msg_688413a1df94819a98f1cc3c7534cd25004e57912397d583","output_index":0,"content_index":0,"delta":"}","logprobs":[]}
+            data: {"type":"response.output_text.delta","sequence_number":10,"item_id":"msg_68856c1593cc819bb8ff3de26e49e9840ba2886c67b8923e","output_index":0,"content_index":0,"delta":"}","logprobs":[]}
 
             event: response.output_text.done
-            data: {"type":"response.output_text.done","sequence_number":11,"item_id":"msg_688413a1df94819a98f1cc3c7534cd25004e57912397d583","output_index":0,"content_index":0,"text":"{\"is_fruit\": true}","logprobs":[]}
+            data: {"type":"response.output_text.done","sequence_number":11,"item_id":"msg_68856c1593cc819bb8ff3de26e49e9840ba2886c67b8923e","output_index":0,"content_index":0,"text":"{\"is_fruit\": true}","logprobs":[]}
 
             event: response.content_part.done
-            data: {"type":"response.content_part.done","sequence_number":12,"item_id":"msg_688413a1df94819a98f1cc3c7534cd25004e57912397d583","output_index":0,"content_index":0,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":"{\"is_fruit\": true}"}}
+            data: {"type":"response.content_part.done","sequence_number":12,"item_id":"msg_68856c1593cc819bb8ff3de26e49e9840ba2886c67b8923e","output_index":0,"content_index":0,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":"{\"is_fruit\": true}"}}
 
             event: response.output_item.done
-            data: {"type":"response.output_item.done","sequence_number":13,"output_index":0,"item":{"id":"msg_688413a1df94819a98f1cc3c7534cd25004e57912397d583","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"{\"is_fruit\": true}"}],"role":"assistant"}}
+            data: {"type":"response.output_item.done","sequence_number":13,"output_index":0,"item":{"id":"msg_68856c1593cc819bb8ff3de26e49e9840ba2886c67b8923e","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"{\"is_fruit\": true}"}],"role":"assistant"}}
 
             event: response.completed
-            data: {"type":"response.completed","sequence_number":14,"response":{"id":"resp_688413a16964819a98e307fbc2183057004e57912397d583","object":"response","created_at":1753486241,"status":"completed","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-4.1-2025-04-14","output":[{"id":"msg_688413a1df94819a98f1cc3c7534cd25004e57912397d583","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"{\"is_fruit\": true}"}],"role":"assistant"}],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":null,"summary":null},"safety_identifier":null,"service_tier":"default","store":false,"temperature":1.0,"text":{"format":{"type":"json_schema","description":null,"name":"response","schema":{"properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":{"input_tokens":48,"input_tokens_details":{"cached_tokens":0},"output_tokens":8,"output_tokens_details":{"reasoning_tokens":0},"total_tokens":56},"user":null,"metadata":{}}}
+            data: {"type":"response.completed","sequence_number":14,"response":{"id":"resp_68856c1526b8819b821cfc87cfcc63bb0ba2886c67b8923e","object":"response","created_at":1753574421,"status":"completed","background":false,"error":null,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-4.1-2025-04-14","output":[{"id":"msg_68856c1593cc819bb8ff3de26e49e9840ba2886c67b8923e","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"{\"is_fruit\": true}"}],"role":"assistant"}],"parallel_tool_calls":true,"previous_response_id":null,"prompt_cache_key":null,"reasoning":{"effort":null,"summary":null},"safety_identifier":null,"service_tier":"default","store":false,"temperature":1.0,"text":{"format":{"type":"json_schema","description":null,"name":"response","schema":{"properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":1.0,"truncation":"disabled","usage":{"input_tokens":48,"input_tokens_details":{"cached_tokens":0},"output_tokens":8,"output_tokens_details":{"reasoning_tokens":0},"total_tokens":56},"user":null,"metadata":{}}}
 
         headers:
             Alt-Svc:
@@ -72,13 +72,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 964f72504ad3a2c6-YUL
+                - 9657db23afb5a2ff-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "69"
+                - "65"
             Openai-Project:
                 - proj_tH6hQUFvA4Bx6SyAb23zzLEg
             Openai-Version:
@@ -90,7 +90,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Request-Id:
-                - req_bec1743ef3e6e05d68a78e9d319e65f1
+                - req_db0044d3d17595eee1ca92cfc6570349
         status: 200 OK
         code: 200
-        duration: 204ms
+        duration: 181ms

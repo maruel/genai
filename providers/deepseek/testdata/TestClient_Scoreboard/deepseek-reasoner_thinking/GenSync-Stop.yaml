@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 158
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-reasoner","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"stop":["is"]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"5342efce-f033-40ac-80c3-0ea2d0008edb","object":"chat.completion","created":1753566432,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"Canada ","reasoning_content":"Okay, the user wants a detailed description of Canada starting with \"Canada is\". Hmm, they didn''t specify exact parameters but \"great details\" suggests comprehensive coverage. \n\nFirst thought: This needs structural clarity. Should flow from geography to society to economy. User probably expects both facts and cultural insights. \n\nNoticing they used \"great\" not \"extreme\" details - means depth but not overwhelming minutiae. Smart balance needed. \n\n*mental checklist* \nMust-haves: geography uniqueness (that coastline!), bilingualism, indigenous roots, modern multiculturalism. \nGood-to-haves: regional quirks (like Alberta beef), global contributions (insulin discovery!). \n\nAh, the hockey mention is essential - cultural touchstone. But should counter with lesser-known facts too (Nanaimo bars? Haida art?). \n\nUser''s phrasing feels academic. Might be preparing presentation? Or curious traveler. Either way, ending with \"diverse and prosperous\" ties it neatly to opening. \n\n*double-checking* Did I miss anything? Oh right - territorial distinctions! Yukon/NWT/Nunavut uniqueness matters. Added permafrost point. \n\nFinal sweep: Kept Quebec separatism factual but neutral. Good. Maple syrup production stats - precise numbers build credibility. \n\n...and saved First Nations reconciliation for later section intentionally. Better flow from historical foundation to modern challenges. \n\n*approving nod* The \"eh?\" linguistic note adds warmth. User gets both textbook and lived-experience Canada."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":17,"completion_tokens":308,"total_tokens":325,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":304},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":17},"system_fingerprint":"fp_393bca965e_prod0623_fp8_kvcache"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9657181a6da6a30e-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            X-Content-Type-Options:
+                - nosniff
+            X-Ds-Trace-Id:
+                - c5bebb7b66272690e37e135b05e683b2
+        status: 200 OK
+        code: 200
+        duration: 308ms

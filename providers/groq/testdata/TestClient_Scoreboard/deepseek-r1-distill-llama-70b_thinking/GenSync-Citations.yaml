@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 262
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"model":"deepseek-r1-distill-llama-70b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-dcb83f39-7292-4a98-b3d9-9c4aa20beaa8","object":"chat.completion","created":1753570138,"model":"deepseek-r1-distill-llama-70b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, so I'm trying to figure out the capital of Quackiland. The question gives me some information: the Big Canard Statue is located in Quack. Hmm, I need to connect these dots. \n\nFirst, I know that in many countries, the capital city is where significant landmarks are placed. So, if the Big Canard Statue is in Quack, maybe that's the capital. But wait, the question already states that the capital is Quack. So, it's a bit confusing because it's giving me the answer within the question.\n\nLet me break it down. The question is asking for the capital of Quackiland, and it tells me that the Big Canard Statue is in Quack. But then it also says the capital is Quack. So, maybe the question is testing if I can identify the capital from the given information.\n\nI think the key here is to recognize that the capital is explicitly mentioned as Quack. The part about the Big Canard Statue might be extra information, but it's also a hint because often statues or important landmarks are in the capital. So, even if the capital wasn't directly stated, I could infer it from the statue's location.\n\nBut in this case, since the capital is already given, the answer is straightforward. I just need to make sure I'm not overcomplicating it. Sometimes questions include extra details to distract, but here, the relevant info is right there.\n\nSo, putting it all together, the capital of Quackiland is Quack because the question states it directly, and the statue's location supports that.\n\u003c/think\u003e\n\nThe capital of Quackiland is Quack. The information about the Big Canard Statue being located in Quack serves as additional confirmation, but the capital is explicitly stated as Quack.\n\n**Answer:** The capital of Quackiland is Quack."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.009729697999999998,"prompt_tokens":32,"prompt_time":0.001442029,"completion_tokens":382,"completion_time":1.487636318,"total_tokens":414,"total_time":1.489078347},"usage_breakdown":null,"system_fingerprint":"fp_e98d30d035","x_groq":{"id":"req_01k14esphrepet0y8va7m6neym"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 965772968bf2a273-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299966"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 6.8ms
+            X-Request-Id:
+                - req_01k14esphrepet0y8va7m6neym
+        status: 200 OK
+        code: 200
+        duration: 1.559s

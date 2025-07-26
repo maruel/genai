@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 143
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Say hello. Use only one word."},{"role":"user","content":"\n\n/think"}],"seed":42}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-108f87e2-945d-4a7e-9917-ebc72062ad8d","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, the user said \"Say hello. Use only one word.\" So I need to respond with just one word that means hello. Let me think. Common one-word greetings are \"Hi\" or \"Hello\". But maybe they want something more creative? Or a different language? No, the user specified to use only one word in English. Let me check if \"Hello\" is allowed. Wait, the instruction says \"Use only one word,\" so I can''t use any more. Just make sure it''s a single word. I''ll go with \"Hello\".\n</think>\n\nHello","role":"assistant"}}],"created":1753569340,"model":"qwen-3-32b","system_fingerprint":"fp_d92e1e5be69bb839ccfe","object":"chat.completion","usage":{"prompt_tokens":23,"completion_tokens":120,"total_tokens":143,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00010368,"prompt_time":0.001208149,"completion_time":0.072462322,"total_time":0.07524538040161133,"created":1753569340}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96575f169ace7151-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-108f87e2-945d-4a7e-9917-ebc72062ad8d
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14350"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "63561"
+            X-Ratelimit-Reset-Requests-Day:
+                - "5059.8614246845245"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "19.861424684524536"
+            X-Request-Id:
+                - 96575f169ace7151-YUL
+        status: 200 OK
+        code: 200
+        duration: 257ms

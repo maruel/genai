@@ -74,6 +74,9 @@ type tableDataRow struct {
 
 func (t *tableDataRow) initFromScenario(s *genai.Scenario) {
 	for m := range s.In {
+		if s.Thinking {
+			t.Thinking = "✅"
+		}
 		if v, ok := modalityMap[m]; !ok {
 			panic("unknown modality: " + m)
 		} else if !strings.Contains(t.Inputs, v) {
@@ -146,9 +149,6 @@ func (t *tableDataRow) initFromScenario(s *genai.Scenario) {
 		t.Tools = sortString(t.Tools)
 		if s.GenSync.Citations {
 			t.Citations = "✅"
-		}
-		if s.GenSync.Thinking {
-			t.Thinking = "✅"
 		}
 		if s.GenSync.Seed {
 			t.Seed = "✅"

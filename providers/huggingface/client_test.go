@@ -20,18 +20,19 @@ import (
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
 )
 
-func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-	c, err := huggingface.New(getAPIKey(t), model, fn)
+func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+	c, err := huggingface.New(getAPIKey(t), model.Model, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if strings.HasPrefix(model, "Qwen/Qwen3") {
-		return &adapters.ProviderGenThinking{
-			ProviderGen: &adapters.ProviderGenAppend{
-				ProviderGen: c,
-				Append:      genai.NewTextMessage(genai.User, "/think"),
-			},
-			TagName: "think",
+	if strings.HasPrefix(model.Model, "Qwen/Qwen3") {
+		if model.Thinking {
+			return &adapters.ProviderGenThinking{
+				ProviderGen: &adapters.ProviderGenAppend{ProviderGen: c, Append: genai.NewTextMessage(genai.User, "\n\n/think")},
+				TagName:     "think",
+			}
+		} else {
+			return &adapters.ProviderGenAppend{ProviderGen: c, Append: genai.NewTextMessage(genai.User, "\n\n/no_think")}
 		}
 	}
 	return c
@@ -40,27 +41,13 @@ func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.Rou
 func TestClient_Scoreboard(t *testing.T) {
 	// We do not want to test thousands of models, so get the ones already in the scoreboard.
 	sb := getClient(t, "").Scoreboard()
-	var models []genai.Model
+	var models []scoreboardtest.Model
 	for _, sc := range sb.Scenarios {
 		for _, model := range sc.Models {
-			models = append(models, fakeModel(model))
+			models = append(models, scoreboardtest.Model{Model: model, Thinking: sc.Thinking})
 		}
 	}
 	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
-}
-
-type fakeModel string
-
-func (f fakeModel) GetID() string {
-	return string(f)
-}
-
-func (f fakeModel) String() string {
-	return string(f)
-}
-
-func (f fakeModel) Context() int64 {
-	return 0
 }
 
 func TestClient_Preferred(t *testing.T) {

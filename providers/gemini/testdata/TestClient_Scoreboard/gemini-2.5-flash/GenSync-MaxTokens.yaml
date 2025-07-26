@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 238
+        content_length: 237
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Explain the theory of relativity in great details."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":16,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Explain the theory of relativity in great details."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":16,"thinkingConfig":{"includeThoughts":false,"thinkingBudget":0}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,8 +28,7 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "Here's the process I'm considering to achieve a comprehensive explanation:\n\n**Breaking Down the Problem & Mapping the Landscape**\n\nMy initial thought is to thoroughly dissect the core problem. I need to identify all the facets involved, the potential variables, and any inherent assumptions. I'll need to create a clear mental map of the subject matter, perhaps jotting down key concepts and their relationships to each other. This is crucial for avoiding tunnel vision and ensuring I address all relevant angles. I'll need to be quite critical of my initial understanding at this stage.\n\n**Leveraging Existing Knowledge & Identifying Gaps**\n\nNext, I'll need to tap into my existing knowledge base. What established theories, models, or frameworks are already applicable? What are the strengths and weaknesses of those? Where are the gaps in our understanding? It's important to be honest with myself about what I already know and where I might be lacking information or needing to do additional research.\n\n**Formulating Hypotheses & Testing Assumptions**\n\nWith a solid foundation in place, I can begin to formulate hypotheses. What are the potential explanations or solutions? I'll need to frame these in a way that allows for rigorous testing, looking for clear ways to validate or invalidate them. I will need to be extremely deliberate in how I test these assumptions, considering multiple forms of data and evidence. This will also involve thinking about the edge cases - the situations where these hypotheses might fail.\n\n**Crafting a Narrative & Synthesizing Information**\n\nOnce I have a firm grasp on the core concepts, I'll need to craft a cohesive narrative. How do all these pieces fit together? What's the logical flow of my explanation? It's essential to organize the information in a way that's both accurate and understandable. Synthesizing these various strands into a well-structured argument is the final task. My goal here is not only to explain but also to teach.\n",
-                        "thought": true
+                        "text": "The Theory of Relativity, developed by Albert Einstein in the early 20th"
                       }
                     ],
                     "role": "model"
@@ -40,17 +39,17 @@ interactions:
               ],
               "usageMetadata": {
                 "promptTokenCount": 10,
-                "totalTokenCount": 25,
+                "candidatesTokenCount": 16,
+                "totalTokenCount": 26,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 10
                   }
-                ],
-                "thoughtsTokenCount": 15
+                ]
               },
               "modelVersion": "gemini-2.5-flash",
-              "responseId": "iOiDaMT6B9yz1MkPsLKo4A0"
+              "responseId": "Al-FaPS5B_GJ-sAP9dOP6Qo"
             }
         headers:
             Alt-Svc:
@@ -60,7 +59,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=2657
+                - gfet4t7; dur=511
             Vary:
                 - Origin
                 - X-Origin
@@ -73,4 +72,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 2.669s
+        duration: 522ms

@@ -897,10 +897,6 @@ type ProviderScoreboard interface {
 // The third group is to identify bugged providers. A provider is considered to be bugged if any of the field
 // is false.
 type FunctionalityText struct {
-	// Thinking means that the model does either explicit chain-of-thought or hidden thinking. For some
-	// providers, this is controlled via a OptionsText. For some models (like Qwen3), a token "/nothink" or
-	// "/think" is used to control.
-	Thinking bool
 	// Tools means that tool call is supported. This is a requirement for MCP. Some provider support tool
 	// calling but the model is very flaky at actually requesting the calls. This is more frequent on highly
 	// quantized models, small models or MoE models.
@@ -987,6 +983,11 @@ type Scenario struct {
 	// Models is a *non exhaustive* list of models that support this scenario. It can't be exhaustive since
 	// providers continuouly release new models. It is still valuable to use the first value
 	Models []string
+
+	// Thinking means that the model does either explicit chain-of-thought or hidden thinking. For some
+	// providers, this is controlled via a OptionsText. For some models (like Qwen3), a token "/no_think" or
+	// "/think" is used to control.
+	Thinking bool
 
 	// GenSync declares features supported when using ProviderGen.GenSync
 	GenSync *FunctionalityText

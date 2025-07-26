@@ -30,10 +30,10 @@ func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		models := []genai.Model{fakeModel(ollama.Scoreboard.Scenarios[0].Models[0])}
-		scoreboardtest.AssertScoreboard(t, func(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+		models := []scoreboardtest.Model{{Model: ollama.Scoreboard.Scenarios[0].Models[0]}}
+		scoreboardtest.AssertScoreboard(t, func(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			serverURL := s.lazyStart(t)
-			c, err := ollama.New(serverURL, model, fn)
+			c, err := ollama.New(serverURL, model.Model, fn)
 			if err != nil {
 				t.Fatal(err)
 			}

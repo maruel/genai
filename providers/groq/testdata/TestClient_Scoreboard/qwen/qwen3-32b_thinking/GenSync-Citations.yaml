@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 286
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]},{"role":"user","content":"\n\n/think"}],"model":"qwen/qwen3-32b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "{\"id\":\"chatcmpl-fcf07cc8-16c9-4c22-8164-23395238fe4e\",\"object\":\"chat.completion\",\"created\":1753570119,\"model\":\"qwen/qwen3-32b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\\u003cthink\\u003e\\nOkay, let's see. The user asked, \\\"What is the capital of Quackiland?\\\" Earlier, they provided some information that the capital of Quackiland is Quack and that the Big Canard Statue is located there. Now, the user is asking again for the capital.\\n\\nFirst, I need to check if there's any new information or if the user is changing the question. They didn't add any new details; it's the same question as before. So the answer should still be Quack. But wait, maybe there's a trick here? Like, could it be a test of my memory or a setup for a follow-up? I should stick to the facts given. The initial statement clearly states the capital is Quack. The mention of the Big Canard Statue is probably just extra info to confirm the location but isn't relevant to the question.\\n\\nIs there any reason to doubt that? Like, maybe the user is asking to test if I can recognize the same question again? Since the user is using the same terms, Quackiland and Quack, the answer is straightforward. I should just reiterate that the capital is Quack. No need to complicate it. Also, the user might be reinforcing the information through repetition, so confirming it again makes sense. The answer is Quack.\\n\\u003c/think\\u003e\\n\\nThe capital of Quackiland is **Quack**, as explicitly stated in your initial question. The mention of the Big Canard Statue in Quack serves to reinforce the location but does not alter the fact that Quack remains the capital. \U0001F60A\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.006565395999999999,\"prompt_tokens\":49,\"prompt_time\":0.001983426,\"completion_tokens\":322,\"completion_time\":0.759195546,\"total_tokens\":371,\"total_time\":0.761178972},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_78ac7f3229\",\"x_groq\":{\"id\":\"req_01k14es3f6ehaa2bhbav9mn7mz\"},\"service_tier\":\"on_demand\"}\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9657721c6b19a273-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299870"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 26ms
+            X-Request-Id:
+                - req_01k14es3f6ehaa2bhbav9mn7mz
+        status: 200 OK
+        code: 200
+        duration: 832ms

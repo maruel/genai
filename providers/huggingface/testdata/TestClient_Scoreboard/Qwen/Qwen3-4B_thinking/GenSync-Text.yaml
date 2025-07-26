@@ -1,0 +1,79 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 151
+        host: router.huggingface.co
+        body: |
+            {"model":"Qwen/Qwen3-4B","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."},{"role":"user","content":"\n\n/think"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1734
+        body: '{"id":"chatcmpl-b5ed08b03e504b8aae330b8bcd830979","choices":[{"finish_reason":"stop","index":0,"logprobs":null,"message":{"content":"<think>\nOkay, the user asked me to say hello using only one word. Let me think about the best way to respond.\n\nFirst, I need to make sure I understand the request correctly. They want a greeting that''s just one word. So, I can''t use a phrase or multiple words. The standard greeting \"Hello\" is two words, so that''s not allowed. \n\nWhat single-word greetings are there? \"Hi\" is one word. \"Hey\" is another. \"Salutations\" is longer. Maybe \"Greetings\" but that''s two words. \"Salve\" is a different term but might not be as common. \n\nThe user might be looking for a simple, common word. \"Hi\" is the most straightforward. It''s friendly and widely used. \"Hey\" is more casual. Which one is better? The original instruction was to say hello, so \"Hi\" is a direct alternative. \n\nI should check if there''s any cultural or context-specific consideration. Since the user didn''t specify, I''ll go with the most universal choice. \"Hi\" is safe and appropriate. \n\nAlso, the user might be testing if I can follow instructions strictly. Making sure I don''t add anything extra. Just the one word. Alright, I think \"Hi\" is the right answer here.\n</think>\n\nHi","refusal":null,"role":"assistant","annotations":null,"audio":null,"function_call":null,"tool_calls":[],"reasoning_content":null},"stop_reason":null}],"created":1753570466,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion","service_tier":null,"system_fingerprint":null,"usage":{"completion_tokens":271,"prompt_tokens":23,"total_tokens":294,"completion_tokens_details":null,"prompt_tokens_details":null},"prompt_logprobs":null}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "1734"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+            Via:
+                - 1.1 2080aae7ace369c71819923852e1b17e.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - srzOVDEyU5AWxG-rJyyNNtCdgryb-Dda3JhMtCvz9-e-SjYvvk3TmA==
+            X-Amz-Cf-Pop:
+                - YUL62-P2
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Id:
+                - chatcmpl-b5ed08b03e504b8aae330b8bcd830979
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Dynamic-Period-Remaining:
+                - 899s
+            X-Ratelimit-Dynamic-Period-Usage-Requests:
+                - 0%
+            X-Ratelimit-Dynamic-Period-Usage-Tokens:
+                - 0%
+            X-Ratelimit-Dynamic-Scale-Requests:
+                - "1.00"
+            X-Ratelimit-Dynamic-Scale-Tokens:
+                - "1.00"
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "400000"
+            X-Ratelimit-Remaining-Requests:
+                - "600"
+            X-Ratelimit-Remaining-Tokens:
+                - "400000"
+            X-Request-Id:
+                - B9Lnwnt4N3bMELm_
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 2.012s

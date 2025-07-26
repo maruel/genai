@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 169
+        content_length: 200
         host: api.openai.com
         body: |
-            {"model":"gpt-4.1","background":false,"store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Say hello. Use only one word."}]}]}
+            {"model":"gpt-4.1","background":false,"reasoning":{"summary":"auto"},"store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Say hello. Use only one word."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_6884139fc5c4819bb12adf7351cf2d6c0123dd0f6ae6c36b",
+              "id": "resp_68856c12c8c88199ab17731981fa2fe907022a8b2a3f3a6c",
               "object": "response",
-              "created_at": 1753486239,
+              "created_at": 1753574418,
               "status": "completed",
               "background": false,
               "error": null,
@@ -36,7 +36,7 @@ interactions:
               "model": "gpt-4.1-2025-04-14",
               "output": [
                 {
-                  "id": "msg_688413a03258819bab0f78d78342c6ab0123dd0f6ae6c36b",
+                  "id": "msg_68856c133bf08199950f07aa206ac5f607022a8b2a3f3a6c",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -91,13 +91,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 964f72460ae7a2c6-YUL
+                - 9657db14ef35a2ff-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "484"
+                - "517"
             Openai-Project:
                 - proj_tH6hQUFvA4Bx6SyAb23zzLEg
             Openai-Version:
@@ -121,7 +121,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 68ms
             X-Request-Id:
-                - req_d836e87f7d63ba0ad3a076b5e6dad86e
+                - req_c9a48210cdf588b3628a624c7edc49e6
         status: 200 OK
         code: 200
-        duration: 621ms
+        duration: 639ms

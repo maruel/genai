@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 672
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["Canada","USA"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Exploring Best Fit**\\n\\nMy focus is on understanding the user's intent. They're clearly looking for a 'best' country comparison, signaling the `best_country` tool is relevant. The single parameter, `country`, seems straightforward. I'm exploring how to frame the comparison effectively.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"totalTokenCount\": 185,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 70},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"x12FaJztK4WI-sAP2NezkAE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Identifying the Ambiguity**\\n\\nI've homed in on the core challenge: the tool requires a single country, but the user presents a comparison. My plan is to ask the user which country they want to evaluate within the tool's framework, explicitly offering \\\"Canada\\\" and \\\"USA\\\" as options. I see this as the most direct path to utilizing the `best_country` tool appropriately and respecting its single-parameter design.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"totalTokenCount\": 399,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 284},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"x12FaJztK4WI-sAP2NezkAE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"Canada\"}},\"thoughtSignature\": \"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\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"candidatesTokenCount\": 13,\"totalTokenCount\": 412,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 284},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"x12FaJztK4WI-sAP2NezkAE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"USA\"}}}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"candidatesTokenCount\": 28,\"totalTokenCount\": 427,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 284},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"x12FaJztK4WI-sAP2NezkAE\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2499
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.509s

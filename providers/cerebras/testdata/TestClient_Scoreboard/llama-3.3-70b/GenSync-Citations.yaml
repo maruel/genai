@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-e54ae443-2758-472d-9b00-22c29266ddab","choices":[{"finish_reason":"stop","index":0,"message":{"content":"The capital of Quackiland is Quack.","role":"assistant"}}],"created":1753209338,"model":"llama-3.3-70b","system_fingerprint":"fp_d9197bd9bfb96c41ef64","object":"chat.completion","usage":{"prompt_tokens":65,"completion_tokens":11,"total_tokens":76,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.001053236,"prompt_time":0.002599711,"completion_time":0.004516814,"total_time":0.009320497512817383,"created":1753209338}}'
+        body: '{"id":"chatcmpl-8377082a-8fb0-4f16-afcb-16b09f0be51b","choices":[{"finish_reason":"stop","index":0,"message":{"content":"The capital of Quackiland is Quack. The information about the Big Canard Statue doesn''t change that fact.","role":"assistant"}}],"created":1753569329,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion","usage":{"prompt_tokens":65,"completion_tokens":25,"total_tokens":90,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00011689,"prompt_time":0.002901578,"completion_time":0.019050081,"total_time":0.023322105407714844,"created":1753569329}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96350a005a557148-YUL
+                - 96575ed24a17a257-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-e54ae443-2758-472d-9b00-22c29266ddab
+                - chatcmpl-8377082a-8fb0-4f16-afcb-16b09f0be51b
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -46,15 +46,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "64000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14380"
+                - "14349"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "61422"
+                - "61248"
             X-Ratelimit-Reset-Requests-Day:
-                - "19460.940120458603"
+                - "5070.767982959747"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "20.940120458602905"
+                - "30.767982959747314"
             X-Request-Id:
-                - 96350a005a557148-YUL
+                - 96575ed24a17a257-YUL
         status: 200 OK
         code: 200
-        duration: 2.538s
+        duration: 1.392s

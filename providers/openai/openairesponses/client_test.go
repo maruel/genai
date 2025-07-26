@@ -9,6 +9,7 @@ import (
 	"errors"
 	"net/http"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -19,35 +20,40 @@ import (
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
 )
 
-func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 	apiKey := ""
 	if os.Getenv("OPENAI_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := openairesponses.New(apiKey, model, fn)
+	c, err := openairesponses.New(apiKey, model.Model, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if model == "o4-mini" {
+	if model.Thinking {
 		return &injectOption{
 			Client: c,
 			opts: openairesponses.OptionsText{
 				// This will lead to spurious HTTP 500 but it is 25% of the cost.
 				ServiceTier:     openairesponses.ServiceTierFlex,
-				ReasoningEffort: openairesponses.ReasoningEffortMedium,
+				ReasoningEffort: openairesponses.ReasoningEffortLow,
 			},
 		}
 	}
-	if model == "gpt-image-1" {
+	if model.Model == "gpt-image-1" {
 		return &imageClient{Client: c}
 	}
 	return c
 }
 
 func TestClient_Scoreboard(t *testing.T) {
-	models, err := getClient(t, "").ListModels(t.Context())
+	genaiModels, err := getClient(t, "").ListModels(t.Context())
 	if err != nil {
 		t.Fatal(err)
+	}
+	var models []scoreboardtest.Model
+	for _, m := range genaiModels {
+		id := m.GetID()
+		models = append(models, scoreboardtest.Model{Model: id, Thinking: strings.HasPrefix(id, "o") && !strings.Contains(id, "moderation")})
 	}
 	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
 }

@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 220
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\nWhat is the capital of Quackiland?\n"},{"role":"user","content":"\n\n/think"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-07eed8b9-5676-4732-a015-c5a156cd9713","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, let''s see. The user is asking about the capital of Quackiland. The first thing that comes to mind is that the question is based on provided information. The first sentence says, \"The capital of Quackiland is Quack.\" The second sentence mentions the Big Canard Statue in Quack. Hmm, maybe that''s just extra info to check if I can extract the main point.\n\nWait, but sometimes these types of questions can be tricky. They might include similar-sounding words to create confusion. Let me read again. The country is Quackiland, and its capital is Quack. The Big Canard Statue is in Quack. I need to make sure \"Quack\" is the correct answer here. \n\nI should break it down. The question is a direct test of memory and comprehension of the given text. The key fact is that Quackiland''s capital is specified as Quack. The second sentence about the statue just provides a location within Quack, which is the capital. There''s no other capital mentioned. \n\nI wonder if \"Quack\" is the only possible answer. Since the user wrote that explicitly, and the statue''s location is also in Quack, it''s pretty straightforward. Maybe the purpose of the question is to ensure I ignore the statue part and focus on the capital statement. No contradictions in the info given. \n\nSo the answer should be Quack. I don''t need to overcomplicate it. Just confirm the user''s first statement. I think that''s all there is to it here. Let me double-check if there are any possible typos or if the user intended something else. For example, maybe \"Canard\" is a play on words, but the capital is clearly stated as Quack. Probably a joke on the word quack, which sounds like the duck''s call. The statue''s name is Big Canard, which is French for \"big duck,\" so that aligns with the theme. \n\nNo alternative interpretations come to mind. The user is just asking for the capital as per the given statements. So, based on the information provided, the answer is Quack.\n</think>\n\nThe capital of Quackiland is **Quack**.  \n\nThe first sentence explicitly states this fact, and the second sentence simply provides additional context (the location of the Big Canard Statue) to reinforce the name. No further inference is needed.","role":"assistant"}}],"created":1753569347,"model":"qwen-3-32b","system_fingerprint":"fp_d92e1e5be69bb839ccfe","object":"chat.completion","usage":{"prompt_tokens":45,"completion_tokens":492,"total_tokens":537,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00010429,"prompt_time":0.001734656,"completion_time":0.353091223,"total_time":0.3563051223754883,"created":1753569347}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96575f43cd7aa2f4-YUL
+            Content-Type:
+                - application/json
+            Inference-Id:
+                - chatcmpl-07eed8b9-5676-4732-a015-c5a156cd9713
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14337"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "58585"
+            X-Ratelimit-Reset-Requests-Day:
+                - "5052.344856977463"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "12.344856977462769"
+            X-Request-Id:
+                - 96575f43cd7aa2f4-YUL
+        status: 200 OK
+        code: 200
+        duration: 540ms

@@ -88,7 +88,8 @@ var Scoreboard = genai.Scoreboard{
 			GenStream: &genai.FunctionalityText{},
 		},
 		{
-			Models: []string{"o4-mini"},
+			Models:   []string{"o4-mini"},
+			Thinking: true,
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
@@ -102,7 +103,7 @@ var Scoreboard = genai.Scoreboard{
 			GenSync: &genai.FunctionalityText{
 				NoStopSequence: true,
 				Tools:          genai.True,
-				BiasedTool:     genai.True,
+				BiasedTool:     genai.Flaky,
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
@@ -110,7 +111,7 @@ var Scoreboard = genai.Scoreboard{
 			GenStream: &genai.FunctionalityText{
 				NoStopSequence: true,
 				Tools:          genai.True,
-				BiasedTool:     genai.True,
+				BiasedTool:     genai.Flaky,
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
@@ -131,6 +132,30 @@ var Scoreboard = genai.Scoreboard{
 				BrokenFinishReason: true,
 				Seed:               true,
 			},
+		},
+		{
+			Models: []string{
+				"o1",
+				"o1-2024-12-17",
+				"o1-mini",
+				"o1-mini-2024-09-12",
+				"o1-preview",
+				"o1-preview-2024-09-12",
+				"o1-pro",
+				"o1-pro-2025-03-19",
+				"o3",
+				"o3-2025-04-16",
+				"o3-deep-research",
+				"o3-deep-research-2025-06-26",
+				"o3-mini",
+				"o3-mini-2025-01-31",
+				"o3-pro",
+				"o3-pro-2025-06-10",
+				"o4-mini-2025-04-16",
+				"o4-mini-deep-research",
+				"o4-mini-deep-research-2025-06-26",
+			},
+			Thinking: true,
 		},
 		{
 			Models: []string{
@@ -181,25 +206,6 @@ var Scoreboard = genai.Scoreboard{
 				"gpt-4o-search-preview",
 				"gpt-4o-search-preview-2025-03-11",
 				"gpt-4o-transcribe",
-				"o1",
-				"o1-2024-12-17",
-				"o1-mini",
-				"o1-mini-2024-09-12",
-				"o1-preview",
-				"o1-preview-2024-09-12",
-				"o1-pro",
-				"o1-pro-2025-03-19",
-				"o3",
-				"o3-2025-04-16",
-				"o3-deep-research",
-				"o3-deep-research-2025-06-26",
-				"o3-mini",
-				"o3-mini-2025-01-31",
-				"o3-pro",
-				"o3-pro-2025-06-10",
-				"o4-mini-2025-04-16",
-				"o4-mini-deep-research",
-				"o4-mini-deep-research-2025-06-26",
 				"omni-moderation-2024-09-26",
 				"omni-moderation-latest",
 				"text-embedding-3-large",
@@ -469,11 +475,16 @@ func (m *Message) From(in *genai.Message) error {
 	}
 	m.Name = in.User
 	if len(in.Contents) != 0 {
-		m.Content = make([]Content, len(in.Contents))
+		m.Content = make([]Content, 0, len(in.Contents))
 		for i := range in.Contents {
-			if err := m.Content[i].From(&in.Contents[i]); err != nil {
+			if in.Contents[i].Thinking != "" {
+				continue
+			}
+			c := Content{}
+			if err := c.From(&in.Contents[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
+			m.Content = append(m.Content, c)
 		}
 	}
 	if len(in.ToolCalls) != 0 {
@@ -720,6 +731,10 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	}
 	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
+	if c.Usage.CompletionTokensDetails.ReasoningTokens != 0 {
+		// Append a fake Thinking content to signal that reasoning is happening.
+		out.Contents = append(out.Contents, genai.Content{Thinking: "\n\n"})
+	}
 	return out, err
 }
 
@@ -1462,6 +1477,14 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		if pkt.Usage.PromptTokens != 0 {
 			result.InputTokens = pkt.Usage.PromptTokens
 			result.OutputTokens = pkt.Usage.CompletionTokens
+			if pkt.Usage.CompletionTokensDetails.ReasoningTokens != 0 {
+				// Send a fake Thinking packet to signal that reasoning is happening.
+				f := genai.ContentFragment{ThinkingFragment: "\n\n"}
+				if err := result.Accumulate(f); err != nil {
+					return err
+				}
+				chunks <- f
+			}
 		}
 		if len(pkt.Choices) != 1 {
 			continue

@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 672
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["USA","Canada"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Analyzing User Intent**\\n\\nI've determined the user is seeking an opinion on the USA versus Canada, with the `best_country` tool explicitly requested. I've broken down the tool's function and identified its sole parameter: `country`, an `enum` of sorts. My goal is to use this tool appropriately to address the user's question, ensuring a relevant and concise response. I'm strategizing how to best leverage the `best_country` tool for this comparison.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"totalTokenCount\": 188,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 73},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"zV2FaLPbBajRjMcP1M2E8Qo\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Defining the Tool Call**\\n\\nI've determined that the `best_country` tool should be called with \\\"USA\\\" as the parameter.  The user's query implies a preference and requests the tool.  The resulting `print` statement will facilitate the tool's execution. My approach is now focused on optimizing the presentation of the tool's output to the user.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"totalTokenCount\": 435,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 320},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"zV2FaLPbBajRjMcP1M2E8Qo\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"USA\"}},\"thoughtSignature\": \"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\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"candidatesTokenCount\": 13,\"totalTokenCount\": 448,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 320},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"zV2FaLPbBajRjMcP1M2E8Qo\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2593
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.603s

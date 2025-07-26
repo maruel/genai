@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 213
+        content_length: 244
         host: api.openai.com
         body: |
-            {"model":"gpt-4.1","background":false,"max_output_tokens":16,"store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Explain the theory of relativity in great details."}]}]}
+            {"model":"gpt-4.1","background":false,"max_output_tokens":16,"reasoning":{"summary":"auto"},"store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Explain the theory of relativity in great details."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_688413a061648199874302e345b4d6df04d9eb8a788dd52d",
+              "id": "resp_68856c137434819ba7d3afeda0bd97a006609d90ee4d3770",
               "object": "response",
-              "created_at": 1753486240,
+              "created_at": 1753574419,
               "status": "incomplete",
               "background": false,
               "error": null,
@@ -38,7 +38,7 @@ interactions:
               "model": "gpt-4.1-2025-04-14",
               "output": [
                 {
-                  "id": "msg_688413a0e9908199a8c722918d730ee804d9eb8a788dd52d",
+                  "id": "msg_68856c140a4c819bb6814bd38d90e8e706609d90ee4d3770",
                   "type": "message",
                   "status": "incomplete",
                   "content": [
@@ -46,7 +46,7 @@ interactions:
                       "type": "output_text",
                       "annotations": [],
                       "logprobs": [],
-                      "text": "Certainly! The \u201c**theory of relativity**\u201d typically refers to **"
+                      "text": "Certainly! The **theory of relativity** actually refers to two interrelated"
                     }
                   ],
                   "role": "assistant"
@@ -93,13 +93,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 964f7249e966a2c6-YUL
+                - 9657db18ed24a2ff-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "695"
+                - "751"
             Openai-Project:
                 - proj_tH6hQUFvA4Bx6SyAb23zzLEg
             Openai-Version:
@@ -123,7 +123,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 72ms
             X-Request-Id:
-                - req_ab0143a855b32f71c9b1ad0a2960707b
+                - req_c4d2ba5f7314498b2bbf5d4e11d98e2d
         status: 200 OK
         code: 200
-        duration: 827ms
+        duration: 890ms

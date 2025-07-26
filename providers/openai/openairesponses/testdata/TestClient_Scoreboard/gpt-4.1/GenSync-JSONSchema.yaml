@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 466
+        content_length: 497
         host: api.openai.com
         body: |
-            {"model":"gpt-4.1","background":false,"store":false,"text":{"format":{"type":"json_schema","name":"response","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}]}
+            {"model":"gpt-4.1","background":false,"reasoning":{"summary":"auto"},"store":false,"text":{"format":{"type":"json_schema","name":"response","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_688413a1d3488198ae5fc2d9d4220a6c07c4b2dc09629318",
+              "id": "resp_68856c14d050819aa895529aac64770a0dcd9588776b6cdc",
               "object": "response",
-              "created_at": 1753486241,
+              "created_at": 1753574420,
               "status": "completed",
               "background": false,
               "error": null,
@@ -36,7 +36,7 @@ interactions:
               "model": "gpt-4.1-2025-04-14",
               "output": [
                 {
-                  "id": "msg_688413a228b48198bb75a1a374d8202707c4b2dc09629318",
+                  "id": "msg_68856c155678819aba1772fe69a96f970dcd9588776b6cdc",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -106,13 +106,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 964f7252ef0ba2c6-YUL
+                - 9657db219c1fa2ff-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "443"
+                - "687"
             Openai-Project:
                 - proj_tH6hQUFvA4Bx6SyAb23zzLEg
             Openai-Version:
@@ -136,7 +136,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 134ms
             X-Request-Id:
-                - req_cfe00e5215d2454f27e747fbacc7b6a7
+                - req_fefe0ade4adaa05725368a3961309d05
         status: 200 OK
         code: 200
-        duration: 576ms
+        duration: 810ms

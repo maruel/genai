@@ -1,0 +1,76 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 238
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Explain the theory of relativity in great details."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":16,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**Deconstructing the Cognitive Process**\n\nOkay, so I'm tackling this task of explaining a complex concept - likely something nuanced given the potential need for a \"fulsome summary.\"  The initial hurdle is always structuring the explanation. My mental model here is to break it down. I need to consider what *I* understand about the subject first. What are the core components? What are the inherent difficulties in conveying them clearly?\n\nSince this is geared toward an expert, I can assume a level of prior knowledge, which means I can afford to get more technical and dive into the intricacies earlier than I might with a lay audience.  My approach will involve building from the fundamentals, then layering on complexities in a logical and coherent manner. I need to identify the key assumptions the target audience *will* have. This allows me to then identify the key unknowns that need clarification.\n\nThe next critical step is anticipating questions. What are the predictable inquiries that will arise during the explanation? By preemptively addressing potential objections or points of confusion, I can ensure a more streamlined and effective understanding for the reader. I should be as clear and concise as possible, while not sacrificing any key information. I'll need to use examples, metaphors, or analogies if necessary.\n",
+                        "thought": true
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "MAX_TOKENS",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 10,
+                "totalTokenCount": 25,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 10
+                  }
+                ],
+                "thoughtsTokenCount": 15
+              },
+              "modelVersion": "gemini-2.5-flash-lite",
+              "responseId": "_2GFaLiOHf-2jMcPyIPQ2Ak"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1652
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.662s

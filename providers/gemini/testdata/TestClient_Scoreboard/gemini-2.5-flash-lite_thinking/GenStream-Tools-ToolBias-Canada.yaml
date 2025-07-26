@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 672
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["Canada","USA"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Assessing National Superiority**\\n\\nI've been contemplating the core question: which nation reigns supreme, Canada or the USA? My focus is laser-sharp on the implicit call for the `best_country` tool. It seems this tool will be crucial in dissecting the nuanced differences, but its function is still a bit of a black box. I need to figure out the parameters and what to ask.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"totalTokenCount\": 185,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 70},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"BGKFaLPFIJLdjMcPo5qZ6Qs\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Comparing Nation Strengths**\\n\\nI'm now zeroing in on how to leverage the `best_country` tool to compare Canada and the USA. My initial thought was to simply call it twice, but the tool's design makes that tricky. It seems to evaluate a single country at a time, making a direct comparison unclear. I'm exploring different approaches to interpret the results and determine a relative ranking based on the tool's output. I'm trying to figure out how to best incorporate the tool into the analysis.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"totalTokenCount\": 430,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 315},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"BGKFaLPFIJLdjMcPo5qZ6Qs\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"Canada\"}},\"thoughtSignature\": \"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\"},{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"USA\"}}}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"candidatesTokenCount\": 28,\"totalTokenCount\": 458,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 315},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"BGKFaLPFIJLdjMcPo5qZ6Qs\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=861
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 871ms

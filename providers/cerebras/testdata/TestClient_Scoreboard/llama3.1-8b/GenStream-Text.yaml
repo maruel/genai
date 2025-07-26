@@ -21,15 +21,15 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-aefe010a-af47-4b75-9da7-0d6cc5356b39","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1753209325,"model":"llama3.1-8b","system_fingerprint":"fp_82a5d41563721f6d9eb1","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-155186c5-3391-45ad-88cb-8dc811fd1bb5","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1753569313,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-aefe010a-af47-4b75-9da7-0d6cc5356b39","choices":[{"delta":{"content":"Hello"},"index":0}],"created":1753209325,"model":"llama3.1-8b","system_fingerprint":"fp_82a5d41563721f6d9eb1","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-155186c5-3391-45ad-88cb-8dc811fd1bb5","choices":[{"delta":{"content":"Hello"},"index":0}],"created":1753569313,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-aefe010a-af47-4b75-9da7-0d6cc5356b39","choices":[{"delta":{"content":"."},"index":0}],"created":1753209325,"model":"llama3.1-8b","system_fingerprint":"fp_82a5d41563721f6d9eb1","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-155186c5-3391-45ad-88cb-8dc811fd1bb5","choices":[{"delta":{"content":"."},"index":0}],"created":1753569313,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-aefe010a-af47-4b75-9da7-0d6cc5356b39","choices":[{"delta":{},"index":0}],"created":1753209325,"model":"llama3.1-8b","system_fingerprint":"fp_82a5d41563721f6d9eb1","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-155186c5-3391-45ad-88cb-8dc811fd1bb5","choices":[{"delta":{},"index":0}],"created":1753569313,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-aefe010a-af47-4b75-9da7-0d6cc5356b39","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1753209325,"model":"llama3.1-8b","system_fingerprint":"fp_82a5d41563721f6d9eb1","object":"chat.completion.chunk","usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00012714,"prompt_time":0.002667056,"completion_time":0.00131575,"total_time":0.0061473846435546875,"created":1753209325}}
+            data: {"id":"chatcmpl-155186c5-3391-45ad-88cb-8dc811fd1bb5","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1753569313,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion.chunk","usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000480468,"prompt_time":0.002171028,"completion_time":0.00132466,"total_time":0.005767822265625,"created":1753569313}}
 
         headers:
             Alt-Svc:
@@ -37,11 +37,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 963509ab7f9ca303-YUL
+                - 96575e6f38b3a27e-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Inference-Id:
-                - chatcmpl-aefe010a-af47-4b75-9da7-0d6cc5356b39
+                - chatcmpl-155186c5-3391-45ad-88cb-8dc811fd1bb5
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -55,15 +55,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14397"
+                - "14369"
             X-Ratelimit-Remaining-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Reset-Requests-Day:
-                - "19474.23468542099"
+                - "5086.60536980629"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "34.23468542098999"
+                - "46.60536980628967"
             X-Request-Id:
-                - 963509ab7f9ca303-YUL
+                - 96575e6f38b3a27e-YUL
         status: 200 OK
         code: 200
-        duration: 536ms
+        duration: 334ms

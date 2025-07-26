@@ -21,41 +21,47 @@ import (
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
 )
 
-func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 	apiKey := ""
 	if os.Getenv("GROQ_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := groq.New(apiKey, model, fn)
+	cl, err := groq.New(apiKey, model.Model, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if strings.HasPrefix(model, "qwen/") {
-		return &handleGroqReasoning{
-			Client: &adapters.ProviderGenAppend{
-				ProviderGen: c,
-				Append:      genai.NewTextMessage(genai.User, "/think"),
-			},
-			t: t,
+	var c genai.ProviderGen = cl
+	if strings.HasPrefix(model.Model, "qwen/") {
+		if !model.Thinking {
+			t.Fatal("thinking is not supported for qwen at the moment")
 		}
+		c = &adapters.ProviderGenAppend{ProviderGen: c, Append: genai.NewTextMessage(genai.User, "\n\n/think")}
 	}
-	if model == "deepseek-r1-distill-llama-70b" {
-		return &handleGroqReasoning{Client: c, t: t}
+	if model.Thinking {
+		return &handleGroqReasoning{Client: c}
 	}
 	return c
 }
 
 func TestClient_Scoreboard(t *testing.T) {
-	models, err := getClient(t, "").ListModels(t.Context())
+	genaiModels, err := getClient(t, "").ListModels(t.Context())
 	if err != nil {
 		t.Fatal(err)
+	}
+	var models []scoreboardtest.Model
+	for _, m := range genaiModels {
+		id := m.GetID()
+		if id == "deepseek-r1-distill-llama-70b" || strings.HasPrefix(id, "qwen/") {
+			models = append(models, scoreboardtest.Model{Model: id, Thinking: true})
+		} else {
+			models = append(models, scoreboardtest.Model{Model: id})
+		}
 	}
 	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
 }
 
 type handleGroqReasoning struct {
 	Client genai.ProviderGen
-	t      testing.TB
 }
 
 func (h *handleGroqReasoning) Name() string {

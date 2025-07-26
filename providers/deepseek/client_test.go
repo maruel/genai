@@ -7,6 +7,7 @@ package deepseek_test
 import (
 	"net/http"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -17,12 +18,12 @@ import (
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
 )
 
-func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 	apiKey := ""
 	if os.Getenv("DEEPSEEK_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := deepseek.New(apiKey, model, fn)
+	c, err := deepseek.New(apiKey, model.Model, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -30,9 +31,14 @@ func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.Rou
 }
 
 func TestClient_Scoreboard(t *testing.T) {
-	models, err := getClient(t, "").ListModels(t.Context())
+	genaiModels, err := getClient(t, "").ListModels(t.Context())
 	if err != nil {
 		t.Fatal(err)
+	}
+	var models []scoreboardtest.Model
+	for _, m := range genaiModels {
+		id := m.GetID()
+		models = append(models, scoreboardtest.Model{Model: id, Thinking: strings.Contains(id, "reasoner")})
 	}
 	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
 }

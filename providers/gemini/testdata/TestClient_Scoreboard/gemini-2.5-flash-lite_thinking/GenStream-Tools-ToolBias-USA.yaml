@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 672
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["USA","Canada"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Examining Country Options**\\n\\nI'm currently focused on the best approach for comparing the USA and Canada. The `best_country` tool looks promising, but it only accepts a single country at a time. I need to figure out how to effectively utilize this tool, given the user's simultaneous interest in both nations and the tool's input constraints.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"totalTokenCount\": 187,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 72},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"BmKFaIenCZmL-sAPg_bW-Qo\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Implementing Dual Calls**\\n\\nI've determined the best strategy for utilizing the `best_country` tool to compare the USA and Canada. Because it only accepts one country at a time, I'll need to call it twice. The first call will use \\\"USA\\\" as the input, and the second will use \\\"Canada\\\". This two-call approach will provide the necessary data for a comprehensive comparison, addressing the user's specific request.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"totalTokenCount\": 266,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 151},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"BmKFaIenCZmL-sAPg_bW-Qo\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"USA\"}},\"thoughtSignature\": \"CiQBVKhc7mjxqE0lGnV0wjwQxkv8u2SWc62SrpZumEvpy0T2rFEKdwFUqFzuOU8kZnL+u+GzsT4iLk7S65a/fdqMZoBFIIiHKy5eqkap97PA4JjmF9QxwIlB0PrdGVC6QgXpOlIR4M/+e8Cw3lDEXXVhQzWIChsRuHnKIguMM/LzRpT2szXyYE/7HQJThLiGP5bM6dpzpkkv9dUsKahHCvkBAVSoXO5tfwvEzdLZlfrWW3w5MIG912DTggX+J/n2uM4k/ZZ1Z2Tt5npTRRqb5gHjpetUAMDgGsdkCnZlJTT5wbdpTnye6IJ2Zrl+zuKGH0HIVhIpXuAnFNmffcyo7EMOdFaKEi7gxtMRtROmuBw5KvWCTEmlRP2tCV5V47afFAWb5BCUYlD72JI2+jDmObCJK+qFk3lXHv91r3RUGdNbAyZGYqTanRTfup5X97DdpNAOIEqPrOfu0PTFwom9RwzGvCN3JleWRTXiIIJ8pBJ7Wa821Y+r3HKqQoY+EE9bP2bXz2OcxE4e9UMQys00C+QoLo5Q4W86YqYdCv4BAVSoXO5MePCDOD2C4aMC34BRO4wDAUwPxVFlBN4D5WQMmFTo5x0QHR87PVs7pryiHyum+rfFUKW9pCCqrYnKkHWCovduX7orPXka/2d1nfy/4Pwhip9c3aBJ4MDWO3OlInV+Sz0fmcR43qRdONSrHehiBewuK1vg68gF9Q4R68aoxd32SbiCx8f63I8O8yBMxuwEg7J3HMAvzZA3xSlp3oNM6cy16xLk3YAdvuGWo/LlJGuiQEllkRm1T2zusdWX2q7Xr4G0KPzAze/E0fhDGY9lMy/M6asVbEtfBRVk4vOTS2ccFYFlaSYw5IzBXO+tX4cNFOFXrQ4NbKJY0JIKpQEBVKhc7gQWUo8MkVF6pL3p2v4qGML6GYj/loZ+2JD400uI2sPZHeLz7JURZALK2vGdGuPgEyGzgZxdBClpti5/jltLmg7IHjhJuiWvGyi1LHrXJUKGSB/OYg+beMcpST2qBCF1N9Ubz8su4dDTom34oCgoC3d3KHi9vJzw99ZmuEaH++VtJqGmnE5/igUIUIu2E+Nzvn8dabd4YqJcKVlafssP0L0=\"},{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"Canada\"}}}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"candidatesTokenCount\": 28,\"totalTokenCount\": 294,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 151},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"BmKFaIenCZmL-sAPg_bW-Qo\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=935
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 947ms

@@ -9,7 +9,7 @@ interactions:
         content_length: 792
         host: api.cerebras.ai
         body: |
-            {"model":"llama-4-scout-17b-16e-instruct","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"9830ec3fe","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"9830ec3fe","name":"square_root"}],"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+            {"model":"llama-4-scout-17b-16e-instruct","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"8ed4d4ed4","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"8ed4d4ed4","name":"square_root"}],"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-682f6027-5227-48f2-8bbf-9f6556bec892","choices":[{"finish_reason":"stop","index":0,"message":{"content":"The final answer is: $\\boxed{363.89}$","role":"assistant"}}],"created":1753545380,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_e439cc65f01febf1121f","object":"chat.completion","usage":{"prompt_tokens":73,"completion_tokens":13,"total_tokens":86,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00010684,"prompt_time":0.003194618,"completion_time":0.005585244,"total_time":0.010632753372192383,"created":1753545380}}'
+        body: '{"id":"chatcmpl-56cd4646-7108-44fa-b534-a12ec5df5957","choices":[{"finish_reason":"stop","index":0,"message":{"content":"## Step 1\nThe problem requires calculating the square root of 132413.\n\n## Step 2\nTo find the square root, we can use a mathematical tool or function specifically designed for this purpose.\n\n## Step 3\nUsing the square_root tool, we input 132413 as the number for which we want to find the square root.\n\n## Step 4\nThe tool then calculates and returns the square root of 132413.\n\nThe final answer is: $\\boxed{364}$","role":"assistant"}}],"created":1753569335,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_e439cc65f01febf1121f","object":"chat.completion","usage":{"prompt_tokens":73,"completion_tokens":101,"total_tokens":174,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000484021,"prompt_time":0.002674122,"completion_time":0.050324788,"total_time":0.05462765693664551,"created":1753569335}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96551622accfa2f8-YUL
+                - 96575ef8cf106e0b-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-682f6027-5227-48f2-8bbf-9f6556bec892
+                - chatcmpl-56cd4646-7108-44fa-b534-a12ec5df5957
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -46,15 +46,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14394"
+                - "14354"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "59212"
+                - "58072"
             X-Ratelimit-Reset-Requests-Day:
-                - "29019.62911915779"
+                - "5064.703054904938"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "39.62911915779114"
+                - "24.703054904937744"
             X-Request-Id:
-                - 96551622accfa2f8-YUL
+                - 96575ef8cf106e0b-YUL
         status: 200 OK
         code: 200
-        duration: 205ms
+        duration: 189ms

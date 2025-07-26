@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 610
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"user","content":"\n\n/think"}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-900fbb52-5290-4348-be72-583a48303397","object":"chat.completion","created":1753570116,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Okay, so the user wants me to use the square_root tool to calculate the square root of 132413 and just give the result without any explanation. Let me think about how to approach this.\n\nFirst, I need to check if the square_root function is available. The user provided the function signature in the tools section. The function takes a number as a parameter. The number here is 132413. \n\nI should make sure that 132413 is a non-negative number because the square root of a negative number isn't a real number. Since 132413 is positive, it's valid. \n\nNow, I need to call the square_root function with number=132413. The tool call should be in the specified JSON format within the tool_call tags. \n\nWait, the user said to reply with only the result and not give an explanation. So the final answer should just be the square root value. But I need to first correctly make the tool call so the system can process it and then provide the result. \n\nLet me double-check the function parameters. The function requires a \"number\" property of type number. The value 132413 is a number, so that's correct. \n\nI'll structure the tool_call as follows:\n{\n  \"name\": \"square_root\",\n  \"arguments\": {\n    \"number\": 132413\n  }\n}\n\nOnce this is processed, the system will return the square root, which I can then present as the final answer. The user wants no explanation, just the result. So after the tool returns the value, I'll box it as the final output.\n","tool_calls":[{"id":"nqbdv9r40","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.00759666,"prompt_tokens":206,"prompt_time":0.008256398,"completion_tokens":383,"completion_time":0.722400634,"total_tokens":589,"total_time":0.730657032},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k14es0hffh5tap8q99k9va58"},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96577209ad8ba273-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "299957"
+            X-Ratelimit-Reset-Requests:
+                - 172.799999ms
+            X-Ratelimit-Reset-Tokens:
+                - 8.6ms
+            X-Request-Id:
+                - req_01k14es0hffh5tap8q99k9va58
+        status: 200 OK
+        code: 200
+        duration: 806ms

@@ -23,15 +23,15 @@ import (
 	"github.com/maruel/httpjson"
 )
 
-func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-	c, err := pollinations.New("", model, fn)
+func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+	c, err := pollinations.New("", model.Model, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
 	cachedModels = warmupCache(t)
 	isImage := false
 	for i := range cachedModels {
-		if cachedModels[i].GetID() == c.Model {
+		if cachedModels[i].GetID() == model.Model {
 			_, isImage = cachedModels[i].(pollinations.ImageModel)
 			break
 		}
@@ -40,7 +40,7 @@ func getClientRT(t testing.TB, model string, fn func(http.RoundTripper) http.Rou
 	if isImage {
 		return &imageModelClient{parent: c2}
 	}
-	if model == "deepseek-reasoning" {
+	if model.Thinking {
 		return &adapters.ProviderGenThinking{ProviderGen: c2, TagName: "think"}
 	}
 	return c2
@@ -116,7 +116,12 @@ func (i *imageModelClient) GenDoc(ctx context.Context, msg genai.Message, opts g
 
 func TestClient_Scoreboard(t *testing.T) {
 	models := warmupCache(t)
-	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
+	var sbModels []scoreboardtest.Model
+	for _, m := range models {
+		id := m.GetID()
+		sbModels = append(sbModels, scoreboardtest.Model{Model: id, Thinking: id == "deepseek-reasoning"})
+	}
+	scoreboardtest.AssertScoreboard(t, getClientRT, sbModels, testRecorder.Records)
 }
 
 func TestClient_Preferred(t *testing.T) {

@@ -1,0 +1,123 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 623
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-4-20250514","max_tokens":32000,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"stream":true,"thinking":{"budget_tokens":1024,"type":"enabled"},"tool_choice":{"type":"auto"},"tools":[{"description":"Calculates and return the square root of a number","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"name":"square_root"}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"id":"msg_01Mqd53GxyodTVi9VQLBDNbu","type":"message","role":"assistant","model":"claude-sonnet-4-20250514","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":466,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":8,"service_tier":"standard"}}}
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}        }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"The user wants me to use the"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" square_root tool to calculate the square"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" root of 132413 and reply"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" with only the result, no explanation."}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I need to call the function with the number 132413."}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"EuICCkYIBRgCKkClzUPOsqBTKpD4nkgNTlwppi9eZfx5sVYvKy76CHGxCSE+DHuykxiVIbvGIEpo6qGcilzjsLqhcufL/EZlRd+mEgwfsZ87fj3GtdPi9T8aDBIRoVyTYTNOKk31JCIw1HV8AIMkaHZeh9RVC3JP9SN/U0XPBtHTG53bAkAMighg2FpX+mMASjxA+ogEIOshKskBm6ywQB1mCQvJlV4XCJmoS4lgnbbxC0WZQsf11T44/oHgb3b+XQySx8kB+018YbOFHPyTEpn+grFFjTNs/PazQHZZny6+qplfErLi7b2Ak6c6AIqPDl5DRIXk3YXCr7dXf5wIXk3RJAgUaEB7MKtvmiaHc/Ao1MjsUpmqhSAbCrSrUTRgZH8pZEQwfRHrro3y9eVOYgsSq6VSI+KeMwItCdBaw4nOVSchY1mAGyp/CgMWrs4sVCcXwTZnehS7e16Ta57AmJDc6FTqGAE="}              }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0    }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_use","id":"toolu_01VvHC9bw21kREaqYutvGMMm","name":"square_root","input":{}}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":""}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"{\"num"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"ber"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"\": 132413}"}       }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1  }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null},"usage":{"output_tokens":107}      }
+
+            event: message_stop
+            data: {"type":"message_stop"        }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2025-07-26T17:04:57Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2025-07-26T17:04:57Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2025-07-26T17:04:57Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2025-07-26T17:04:57Z"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96557aa77db9a2db-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.223s

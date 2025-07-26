@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 402
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-4-20250514","max_tokens":32000,"messages":[{"role":"user","content":[{"type":"text","text":"What is the word? Reply with only the word."},{"type":"document","cache_control":{"type":"ephemeral"},"source":{"type":"url","url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf"}}]}],"thinking":{"budget_tokens":1024,"type":"enabled"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"msg_01GEyhb38SNaQVj7Qn5AdvYt","type":"message","role":"assistant","model":"claude-sonnet-4-20250514","content":[{"type":"thinking","thinking":"The user is asking for \"the word\" and wants me to reply with only the word. Looking at the document, I can see the word \"orange\" appears twice on the page - once at the top and once in the middle. Since they asked for \"the word\" (singular), and \"orange\" is the main content word visible in this document, that appears to be what they''re asking for.","signature":"EoUECkYIBRgCKkAGmVjqDEQsJZ8kATGT6obYmUU1HryIsQZSMfGfqfL0djlveh0p1OJxabyIkLwje578nfejN7abulBzpaxQGJ8CEgxtzSXwjVGagtB3O/MaDATrOxO/1z9SmzHDdCIwFYDj2pQeMH9x9BAdl3/nCqFvbo4LwpHZb+9lEnYAPm8QwNhMahi0zCCNQyynsRXVKuwCbnGzCU7kRJdRhhDxW/MXIvP0Bwaqq7l+NJKnlwag/wmoFdMUlN9PnLYLxEf/U0afY8gjrs77ZGNRhHMl8lufebRW2W94Ktr25VqMKVWFGwgKyPdaurmTlXGsP3ziIvIFPTOwlHcsQbgvmO9ysmANEN6WPbQZ44UhkTyPitTcpO4/009KMu1yZfXmwx/1XcfxgYs4cCiJJ6OYo+Mkg22g9rQLGU9qglzkTJ/w3GDHBg1ee3JSZdIiqytu08uQdzX9aCBuaHeehJAUBKkDy6LCEZscvjnUBp9oXKHSIvP754PAtT6rDkFRUcYMwaKmpLXsTUsWAqDHjRrXz4sNzk0RcQao5X9X1UpPoMmimg9AAE7vNrNbBHbmtUbuGlILA7uVERD8EovnyHeYp6juvagnguiCD/56eWpyojNv2Ch3hCsI+76h+1U6w0O0BgPS6vTHCKKayonqJLh/Z7e2u7/5IG6k+f/TYzT9RHpXtBgB"},{"type":"text","text":"orange"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":10,"cache_creation_input_tokens":0,"cache_read_input_tokens":1612,"output_tokens":96,"service_tier":"standard"}}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "1904000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2025-07-26T16:59:44Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2025-07-26T16:59:44Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2025-07-26T16:59:40Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "2304000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2025-07-26T16:59:44Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 965572ea082ea2a8-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 3.554s

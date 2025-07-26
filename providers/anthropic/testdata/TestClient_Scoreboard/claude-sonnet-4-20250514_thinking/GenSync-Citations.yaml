@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 433
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-4-20250514","max_tokens":32000,"messages":[{"role":"user","content":[{"type":"document","cache_control":{"type":"ephemeral"},"citations":{"enabled":true},"source":{"type":"text","media_type":"text/plain","data":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."}},{"type":"text","text":"What is the capital of Quackiland?"}]}],"thinking":{"budget_tokens":1024,"type":"enabled"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"msg_01YUUXxfVqRUYVE2WPQ77QCC","type":"message","role":"assistant","model":"claude-sonnet-4-20250514","content":[{"type":"thinking","thinking":"The user is asking about the capital of Quackiland. Looking at the document, I can see that sentence 1-1 states \"The capital of Quackiland is Quack.\" This directly answers the user''s question, so I should cite this sentence to support my answer.","signature":"Ep4DCkYIBRgCKkCaH2/pfDgsPcx/6XsMaCG9ypdLmTMAxQ3jvI0Lfcidz2AVKDC3ASxqiC9Kyrchpt/iHKJnfYIe3S5+j/Nb/ZeCEgz33ZfrtSFP1vWyW4AaDOxE8KsKHch6Ew6mxiIwe+XZZ/bhu/VZDEk7w5EWzDxATUCeRFjixOM51rhFC4YV9+jlps6WPf5oRcK/ajesKoUCWA9jeqF+2KZkC9oCZ6OB0mz7g3IWrR5max+dX1knPUcMXivzflcu9YQUjYXFDj1z82BH3kuphBHXhfoRvfy7y4IcdB3TuZn9XYlBqHkFXXybyvld4n9dhZxvabN6ruLHdLTpGQNotnGkL+Q/xcOtyMmra9kUY+3Xx0a+pm+JcDuvf8c63li/rvsueCsgrXivG9q0QYyiSlwxnei5hDaq6tDx0bK1IX8vfwMdUChhhNXJco7muenCLhNADabBlujrZP1QfcJf7nYatuXQFEjR1Ul3W2ohaxWQVYoUeW/ExCPZLpRgPQytWsDVW8J9zNpN+JdriA3livGZo+MLOSuqEcATXbnTGAE="},{"type":"text","text":""},{"citations":[{"type":"char_location","cited_text":"The capital of Quackiland is Quack. ","document_index":0,"document_title":null,"start_char_index":0,"end_char_index":36}],"type":"text","text":"The capital of Quackiland is Quack."}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":624,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":104,"service_tier":"standard"}}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2025-07-26T16:59:36Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2025-07-26T16:59:37Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2025-07-26T16:59:35Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2025-07-26T16:59:36Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 965572cafcefa2a8-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.998s

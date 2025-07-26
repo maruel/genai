@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 255
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-4-20250514","max_tokens":32000,"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"stop_sequences":["is"],"thinking":{"budget_tokens":1024,"type":"enabled"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"msg_016RwmC35nTgxEA9LopowGug","type":"message","role":"assistant","model":"claude-sonnet-4-20250514","content":[{"type":"thinking","thinking":"The user wants me to talk about Canada in great detail, starting with \"Canada is\". I should provide comprehensive information covering various aspects like geography, history, culture, politics, economy, demographics, and other important features of Canada.","signature":"EqoDCkYIBRgCKkC2Ssqdb9T1YKVZhmi1Cu+5kxgOFdnVe7pI0CIPwHmMTjO8zCe7YJFt5KQsE2u8owYcBG+dwqEjpRe5ZXmOWOzsEgy/nz/M8hzHzU/dgN4aDLzdm44rcMWRC5NSCyIwtysmCJJLAiv8zqfh4tqSIyUXQIvo6Ac+IfAlcFZzVQ1OcVr5UjYzDtXdlUXdwh/SKpECjo9hzeGgMSjAhvOPOCvSTH1FQgYO4rLe8NTEaVGcKyz5ylJthh/k1kP9VuEFnh0E6F9vo/uyh9uPtzHy9/obopSu0EJEtTtr3EossQWj6TVrdQFho1sNnYSIIONFV5uxGEvxP297PxStDYwvJ1silbh6Bj4wxcZc753dNvd7IMG+RSw3QTPeeVrB4p9KXyadHrEDZYMTw3a82V5aNQq9nioBqOkfAZgZzcXD74R3NkvMBO/yDpSZKiPaI0q08ac/AKC1NVX8G8ck78mwFQTrkQ0XAUbXVz2ipCR9IlLra1j+dxcsFotmLowQ1M/1f9cjSilrzQBOgPoI0mWDQl4fQM+xJLB4p/Ne/Vb1rTY8cMP2GAE="},{"type":"text","text":"Canada "}],"stop_reason":"stop_sequence","stop_sequence":"is","usage":{"input_tokens":47,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":57,"service_tier":"standard"}}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2025-07-26T16:59:34Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2025-07-26T16:59:35Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2025-07-26T16:59:33Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2025-07-26T16:59:34Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 965572bd89c0a2a8-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 2.069s

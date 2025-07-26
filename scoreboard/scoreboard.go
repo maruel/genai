@@ -331,6 +331,13 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	if isBadError(err) {
 		return f, err
 	}
+	var uerr *genai.UnsupportedContinuableError
+	if errors.As(err, &uerr) {
+		// Cheap trick to make sure the error is not wrapped. Figure out if there's another way!
+		if strings.HasPrefix(err.Error(), "unsupported options: ") {
+			err = nil
+		}
+	}
 	if err == nil {
 		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 			internal.Logger(ctx).DebugContext(ctx, "Citations", "issue", "token usage")

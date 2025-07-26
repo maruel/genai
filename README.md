@@ -6,7 +6,7 @@ The _high performance_ low level native Go client for LLMs.
 
 | Provider                                                    | Country | ➛Inputs   | Outputs➛   | JSON➛   | JSON+Schema➛   | Chat   | Streaming | Tools  | Batch | Seed | Files | Citations | Thinking |
 | ----------------------------------------------------------- | ------- | --------- | ---------- | ------- | -------------- | ------ | --------- | ------ | ----- | ---- | ----- | --------- | -------- |
-| [anthropic](https://console.anthropic.com/settings/billing) | 🇺🇸      | 💬📄📸    | 💬         | ❌      | ❌             | ✅     | ✅        | ✅     | ✅    | ❌   | ❌    | ✅        | ❌       |
+| [anthropic](https://console.anthropic.com/settings/billing) | 🇺🇸      | 💬📄📸    | 💬         | ❌      | ❌             | ✅🤪   | ✅🤪      | ✅🧐   | ✅    | ❌   | ❌    | ✅        | ✅       |
 | [bfl](https://dashboard.bfl.ai/)                            | 🇩🇪      | 💬        | 📸         | ❌      | ❌             | ❌     | ❌        | ❌     | ✅    | ✅   | ❌    | ❌        | ❌       |
 | [cerebras](https://cloud.cerebras.ai)                       | 🇺🇸      | 💬        | 💬         | 🤪      | 🤪             | ✅     | ✅        | 💨     | ❌    | ✅   | ❌    | ❌        | ✅       |
 | [cloudflare](https://dash.cloudflare.com)                   | 🇺🇸      | 💬        | 💬         | 🤪      | ✅             | ✅🚩🤪 | ✅🚩🤪    | 💨🧐   | ❌    | ✅   | ❌    | ❌        | ❌       |

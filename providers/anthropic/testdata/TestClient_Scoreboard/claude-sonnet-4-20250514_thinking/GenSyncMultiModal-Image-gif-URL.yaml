@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 396
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-4-20250514","max_tokens":32000,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image","cache_control":{"type":"ephemeral"},"source":{"type":"url","url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"thinking":{"budget_tokens":1024,"type":"enabled"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"msg_01UL5sZYHVnyV2BjCWw8Fabp","type":"message","role":"assistant","model":"claude-sonnet-4-20250514","content":[{"type":"thinking","thinking":"I can see an image of a yellow, curved fruit with a brown stem at the top. This is clearly a banana. The user asked me to reply with only one word, so I should just say \"Banana\".","signature":"EtsCCkYIBRgCKkC29zFbAZLocfKxfVfvRMS7zOOZty8uN5TQevTNm1L7H/prH62LS5lb2PEbpdMrcem27wt/Hv3hX6fjwMShzSDlEgzn7h+qJ0yd84arJ78aDJr5fCSnCWr5WJqTqCIwBqSHO9ZT0JgOINX+azxH60+5Ugen1ZIikol3FaPKSfys6MWmUMI5KrKOVOVO68L4KsIBPPOMGVdE3ekb0xrCJ+rOaAkQcLQ+oQub2Ew/xOpVdIelVw6LnEB40eLndUu1NgovME9wnSJXBD28r75OMts4clCXppB7CE3qMXylaLV/bM7Ml2eGrTggfVLZQ+kbkToNeWA2kku9SnU0GWPjwbWKPKcby+oFNN2sLGR2HQBYrxBY0Nd0PQMfleyR00cJeMI7TRBEnqbALOaud6QGivOFF5hNHXQYHJNGLWw6j94ZRdJ/YQRsg8V9xsuoV/ym+H5v0FMYAQ=="},{"type":"text","text":"Banana"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":181,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":59,"service_tier":"standard"}}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2025-07-26T16:59:47Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2025-07-26T16:59:49Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2025-07-26T16:59:46Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2025-07-26T16:59:47Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9655730fcd8fa2a8-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 2.885s

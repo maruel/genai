@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 609
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-4-20250514","max_tokens":32000,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"thinking":{"budget_tokens":1024,"type":"enabled"},"tool_choice":{"type":"auto"},"tools":[{"description":"Calculates and return the square root of a number","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"name":"square_root"}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"msg_01S5GBsmYBZmZxeFzLTxuaxn","type":"message","role":"assistant","model":"claude-sonnet-4-20250514","content":[{"type":"thinking","thinking":"The user wants me to use the square_root tool to calculate the square root of 132413 and reply with only the result, no explanation. I need to call the function with the number 132413.","signature":"EuECCkYIBRgCKkClzUPOsqBTKpD4nkgNTlwppi9eZfx5sVYvKy76CHGxCSE+DHuykxiVIbvGIEpo6qGcilzjsLqhcufL/EZlRd+mEgytqFwAWl5lBpCJZcgaDGvAJkJcO+pdJEZuVyIwhPUpH719mbXVRDgRv3VMQlkjcGN9KqxziRqhfbrzC0iFkLufJ5olGuiNvmoBu/cxKsgBMaSRBqooZzIg2dW7bxCRxEtOdalzXphFu7K4wFFopRkXmHdzqmf+wZC5JbwpQVoq9wfTQbYXKdVJpqoERJPXU0sQas6w0X55b4f7EEkio+KLyqllrWQO22ilPPsgDem1dTS3DakR2BT+gvZY8bYR8aigsnMllm8N2d46NGtu5F3QMnAY3po9AM6RwI0cGL2b998gKNr7648rpBI6d6fDbSn7UiTR7hcDLvqgS6fWU1lmYsTCS5M+YGtNm5LgaOPBDf+snuHamM4YAQ=="},{"type":"tool_use","id":"toolu_01CZwUXox3W7i5T4JBD5URuM","name":"square_root","input":{"number":132413}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":466,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":107,"service_tier":"standard"}}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2025-07-26T17:04:58Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2025-07-26T17:04:59Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2025-07-26T17:04:57Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2025-07-26T17:04:58Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96557aa73d61a2db-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Via:
+                - 1.1 google
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 2.303s

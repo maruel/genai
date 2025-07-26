@@ -37,8 +37,6 @@ import (
 //   - No Anthropic model support structured output, you have to use tool calling instead.
 //   - Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the
 //     tool's first argument.
-//   - Thinking is set to false because it doesn't happen systematically and the smoke tests do not trigger the
-//     condition. This is a bug in the smoke test.
 //   - Rate limit is based on how much you spend per month: https://docs.anthropic.com/en/api/rate-limits#requirements-to-advance-tier
 var Scoreboard = genai.Scoreboard{
 	Country:      "US",
@@ -98,6 +96,35 @@ var Scoreboard = genai.Scoreboard{
 				Tools:      genai.True,
 				BiasedTool: genai.True,
 				Citations:  true,
+			},
+		},
+		{
+			Models:   []string{"claude-sonnet-4-20250514"},
+			Thinking: true,
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {Inline: true},
+				genai.ModalityImage: {
+					Inline:           true,
+					URL:              true,
+					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
+				},
+				genai.ModalityPDF: {
+					Inline: true,
+					URL:    true,
+					// TODO: Add "text/plain" back.
+					SupportedFormats: []string{"application/pdf"},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Tools:       genai.True,
+				NoMaxTokens: true,
+				Citations:   true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Tools:       genai.True,
+				NoMaxTokens: true,
+				Citations:   true,
 			},
 		},
 		// They take more than 10 minutes to run the test, which causes it to timeout. And they cost a lot.
@@ -396,7 +423,7 @@ func (m *Message) To(out *genai.Message) error {
 		return err
 	}
 	switch role := m.Role; role {
-	case "assistant", "user":
+	case "assistant":
 		out.Role = genai.Role(role)
 	case "":
 		return errors.New("message doesn't have role defined")
@@ -407,9 +434,11 @@ func (m *Message) To(out *genai.Message) error {
 	for i := range m.Content {
 		switch m.Content[i].Type {
 		case ContentText, ContentThinking, ContentRedactedThinking:
-			out.Contents = append(out.Contents, genai.Content{})
-			if err := m.Content[i].ToContent(&out.Contents[len(out.Contents)-1]); err != nil {
+			c := genai.Content{}
+			if skip, err := m.Content[i].ToContent(&c); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
+			} else if !skip {
+				out.Contents = append(out.Contents, c)
 			}
 		case ContentToolUse:
 			out.ToolCalls = append(out.ToolCalls, genai.ToolCall{})
@@ -486,9 +515,10 @@ type Content struct {
 func (c *Content) Validate() error {
 	switch c.Type {
 	case ContentText:
-		if c.Text == "" {
-			return errors.New("ContentText: Text must be set")
-		}
+		// It happens with citations.
+		// if c.Text == "" {
+		// 	return errors.New("ContentText: Text must be set")
+		// }
 		if c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || c.ID != "" || c.Name != "" || c.Input != nil ||
 			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.Title != "" {
 			return errors.New("ContentText: unexpected fields set")
@@ -631,7 +661,7 @@ func (c *Content) FromToolCallResult(in *genai.ToolCallResult) error {
 	return nil
 }
 
-func (c *Content) ToContent(out *genai.Content) error {
+func (c *Content) ToContent(out *genai.Content) (bool, error) {
 	switch c.Type {
 	case ContentText:
 		out.Text = c.Text
@@ -639,9 +669,13 @@ func (c *Content) ToContent(out *genai.Content) error {
 			out.Citations = make([]genai.Citation, len(c.Citations.Citations))
 			for i := range c.Citations.Citations {
 				if err := c.Citations.Citations[i].To(&out.Citations[i]); err != nil {
-					return fmt.Errorf("citation %d: %w", i, err)
+					return false, fmt.Errorf("citation %d: %w", i, err)
 				}
 			}
+		} else if len(out.Text) == 0 {
+			// This happens with citations with claude 4 sonnet with thinking enabled where an empty text packet is
+			// sent first.
+			return true, nil
 		}
 	case ContentThinking:
 		out.Thinking = c.Thinking
@@ -649,9 +683,9 @@ func (c *Content) ToContent(out *genai.Content) error {
 	case ContentRedactedThinking:
 		out.Opaque = map[string]any{"redacted_thinking": c.Signature}
 	default:
-		return fmt.Errorf("unsupported content type %q", c.Type)
+		return false, fmt.Errorf("unsupported content type %q", c.Type)
 	}
-	return nil
+	return false, nil
 }
 
 func (c *Content) ToToolCall(out *genai.ToolCall) error {
@@ -1122,9 +1156,11 @@ func (b *BatchQueryResponse) To(out *genai.Message) error {
 	for i := range b.Result.Message.Content {
 		switch b.Result.Message.Content[i].Type {
 		case ContentText, ContentThinking, ContentRedactedThinking:
-			out.Contents = append(out.Contents, genai.Content{})
-			if err := b.Result.Message.Content[i].ToContent(&out.Contents[len(out.Contents)-1]); err != nil {
+			c := genai.Content{}
+			if skip, err := b.Result.Message.Content[i].ToContent(&c); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
+			} else if !skip {
+				out.Contents = append(out.Contents, c)
 			}
 		case ContentToolUse:
 			out.ToolCalls = append(out.ToolCalls, genai.ToolCall{})

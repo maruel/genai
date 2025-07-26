@@ -5,9 +5,11 @@
 package anthropic_test
 
 import (
+	"context"
 	_ "embed"
 	"net/http"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -29,9 +31,32 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 		t.Fatal(err)
 	}
 	if model.Thinking {
-		t.Fatal("implement me")
+		return &injectOption{Client: c, opts: anthropic.OptionsText{ThinkingBudget: 1024}}
 	}
-	return c
+	return &injectOption{Client: c, opts: anthropic.OptionsText{ThinkingBudget: 0}}
+}
+
+type injectOption struct {
+	*anthropic.Client
+	opts anthropic.OptionsText
+}
+
+func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	n := i.opts
+	if opts != nil {
+		n.OptionsText = *opts.(*genai.OptionsText)
+	}
+	opts = &n
+	return i.Client.GenSync(ctx, msgs, opts)
+}
+
+func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+	n := i.opts
+	if opts != nil {
+		n.OptionsText = *opts.(*genai.OptionsText)
+	}
+	opts = &n
+	return i.Client.GenStream(ctx, msgs, replies, opts)
 }
 
 func TestClient_Scoreboard(t *testing.T) {
@@ -43,7 +68,9 @@ func TestClient_Scoreboard(t *testing.T) {
 	for _, m := range genaiModels {
 		id := m.GetID()
 		models = append(models, scoreboardtest.Model{Model: id})
-		// TODO: Thinking: true
+		if strings.HasPrefix(id, "claude-sonnet") {
+			models = append(models, scoreboardtest.Model{Model: id, Thinking: true})
+		}
 	}
 	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
 }

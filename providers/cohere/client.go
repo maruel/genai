@@ -48,6 +48,7 @@ var Scoreboard = genai.Scoreboard{
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
+				Thinking:       true, // Only related to tool planning.
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
@@ -56,6 +57,7 @@ var Scoreboard = genai.Scoreboard{
 				Seed:           true,
 			},
 			GenStream: &genai.FunctionalityText{
+				Thinking:       true,
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
@@ -77,11 +79,13 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
+				Thinking:  true, // Only related to tool planning.
 				Tools:     genai.True,
 				Citations: true,
 				Seed:      true,
 			},
 			GenStream: &genai.FunctionalityText{
+				Thinking:  true,
 				Tools:     genai.True,
 				Citations: true,
 				Seed:      true,
@@ -897,7 +901,6 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			// Will be useful when there's multiple index.
 		case ChunkToolPlanDelta:
 			f.ThinkingFragment = pkt.Delta.Message.ToolPlan
-			continue
 		case ChunkToolCallStart:
 			if len(pkt.Delta.Message.ToolCalls) != 1 {
 				return fmt.Errorf("expected tool call %#v", pkt)

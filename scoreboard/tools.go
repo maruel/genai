@@ -17,7 +17,7 @@ import (
 	"github.com/maruel/genai/internal"
 )
 
-func exerciseGenTools(ctx context.Context, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, prefix string, usage *genai.Usage) error {
+func exerciseGenTools(ctx context.Context, cs *callState, f *genai.FunctionalityText, prefix string) error {
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.")}
 	type got struct {
 		Number json.Number `json:"number" jsonschema:"type=number"`
@@ -47,7 +47,7 @@ func exerciseGenTools(ctx context.Context, pf ProviderFactory, f *genai.Function
 		ToolCallRequest: genai.ToolCallRequired,
 	}
 	// TODO: Do not consider a single tool call failure a failure, try a few times.
-	resp, err := callGen(ctx, pf, prefix+"SquareRoot-1", msgs, &optsTools, isStream, usage)
+	resp, err := cs.callGen(ctx, prefix+"SquareRoot-1", msgs, &optsTools)
 	if isBadError(err) {
 		return err
 	}
@@ -66,7 +66,7 @@ func exerciseGenTools(ctx context.Context, pf ProviderFactory, f *genai.Function
 	if err != nil {
 		// Try a second time without forcing a tool call.
 		optsTools.ToolCallRequest = genai.ToolCallAny
-		resp, err = callGen(ctx, pf, prefix+"SquareRoot-1-any", msgs, &optsTools, isStream, usage)
+		resp, err = cs.callGen(ctx, prefix+"SquareRoot-1-any", msgs, &optsTools)
 		if isBadError(err) {
 			return err
 		}
@@ -104,7 +104,7 @@ func exerciseGenTools(ctx context.Context, pf ProviderFactory, f *genai.Function
 	msgs = append(msgs, tr)
 	optsTools.ToolCallRequest = genai.ToolCallNone
 
-	resp, err = callGen(ctx, pf, prefix+"SquareRoot-2", msgs, &optsTools, isStream, usage)
+	resp, err = cs.callGen(ctx, prefix+"SquareRoot-2", msgs, &optsTools)
 	if isBadError(err) {
 		return err
 	}
@@ -168,7 +168,7 @@ func exerciseGenTools(ctx context.Context, pf ProviderFactory, f *genai.Function
 		}
 
 		check := prefix + fmt.Sprintf("ToolBias-%s", line.countrySelected)
-		resp, err := callGen(ctx, pf, check, genai.Messages{genai.NewTextMessage(genai.User, line.prompt)}, &opts, isStream, usage)
+		resp, err := cs.callGen(ctx, check, genai.Messages{genai.NewTextMessage(genai.User, line.prompt)}, &opts)
 		if isBadError(err) {
 			return err
 		}

@@ -54,13 +54,20 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 	eg := errgroup.Group{}
 	if _, ok := c.(genai.ProviderGen); ok {
 		eg.Go(func() error {
+			cs := callState{pf: pf, isStream: false}
 			ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenSync"))
-			f, usageGen, err := exerciseGenTextOnly(ctx2, pf, false, "GenSync-")
+			f, err := exerciseGenTextOnly(ctx2, &cs, "GenSync-")
 			mu.Lock()
-			usage.Add(usageGen)
+			usage.Add(cs.usage)
 			if f != nil {
 				result.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
 				result.Out[genai.ModalityText] = genai.ModalCapability{Inline: true}
+				if cs.isThinking {
+					f.Thinking = true
+				}
+				if cs.hasCitations {
+					f.Citations = true
+				}
 				result.GenSync = f
 			}
 			mu.Unlock()
@@ -68,10 +75,11 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 				return fmt.Errorf("failed with GenSync: %w", err)
 			}
 
+			cs = callState{pf: pf, isStream: false}
 			ctx2 = internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenSyncMultiModal"))
-			in, out, f, usageGen, err := exerciseGenTextMultiModal(ctx2, pf, false, "GenSyncMultiModal-")
+			in, out, f, err := exerciseGenTextMultiModal(ctx2, &cs, "GenSyncMultiModal-")
 			mu.Lock()
-			usage.Add(usageGen)
+			usage.Add(cs.usage)
 			if len(in) != 0 {
 				result.In = mergeModalities(result.In, in)
 				result.Out = mergeModalities(result.Out, out)
@@ -85,6 +93,12 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 						result.GenSync.BrokenFinishReason = f.BrokenFinishReason
 					}
 				}
+				if cs.isThinking {
+					result.GenSync.Thinking = true
+				}
+				if cs.hasCitations {
+					result.GenSync.Citations = true
+				}
 			}
 			mu.Unlock()
 			if err != nil {
@@ -93,13 +107,20 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 			return nil
 		})
 		eg.Go(func() error {
+			cs := callState{pf: pf, isStream: true}
 			ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenStream"))
-			f, usageGen, err := exerciseGenTextOnly(ctx2, pf, true, "GenStream-")
+			f, err := exerciseGenTextOnly(ctx2, &cs, "GenStream-")
 			mu.Lock()
-			usage.Add(usageGen)
+			usage.Add(cs.usage)
 			if f != nil {
 				result.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
 				result.Out[genai.ModalityText] = genai.ModalCapability{Inline: true}
+				if cs.isThinking {
+					f.Thinking = true
+				}
+				if cs.hasCitations {
+					f.Citations = true
+				}
 				result.GenStream = f
 			}
 			mu.Unlock()
@@ -107,10 +128,11 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 				return fmt.Errorf("failed with GenStream: %w", err)
 			}
 
+			cs = callState{pf: pf, isStream: true}
 			ctx2 = internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenStreamMultiModal"))
-			in, out, f, usageGen, err := exerciseGenTextMultiModal(ctx2, pf, true, "GenStreamMultiModal-")
+			in, out, f, err := exerciseGenTextMultiModal(ctx2, &cs, "GenStreamMultiModal-")
 			mu.Lock()
-			usage.Add(usageGen)
+			usage.Add(cs.usage)
 			if len(in) != 0 {
 				result.In = mergeModalities(result.In, in)
 				result.Out = mergeModalities(result.Out, out)
@@ -123,6 +145,12 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 					if f.BrokenFinishReason {
 						result.GenStream.BrokenFinishReason = f.BrokenFinishReason
 					}
+				}
+				if cs.isThinking {
+					result.GenStream.Thinking = true
+				}
+				if cs.hasCitations {
+					result.GenStream.Citations = true
 				}
 			}
 			mu.Unlock()
@@ -156,25 +184,19 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 
 // genai.ProviderGen
 
-func exerciseGenTextOnly(ctx context.Context, pf ProviderFactory, isStream bool, prefix string) (*genai.FunctionalityText, genai.Usage, error) {
-	usage := genai.Usage{}
+func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*genai.FunctionalityText, error) {
 	// Make sure simple text generation works, otherwise there's no point.
 	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
-	resp, err := callGen(ctx, pf, prefix+"Text", msgs, &genai.OptionsText{}, isStream, &usage)
+	resp, err := cs.callGen(ctx, prefix+"Text", msgs, &genai.OptionsText{})
 	if err != nil {
 		internal.Logger(ctx).DebugContext(ctx, "Text", "err", err)
 		// It happens when the model is audio gen only.
 		if !isBadError(err) {
 			err = nil
 		}
-		return nil, usage, err
+		return nil, err
 	}
 	f := &genai.FunctionalityText{}
-	for _, c := range resp.Contents {
-		if c.Thinking != "" {
-			f.Thinking = true
-		}
-	}
 	if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 		internal.Logger(ctx).DebugContext(ctx, "Text", "issue", "token usage")
 		f.BrokenTokenUsage = genai.True
@@ -184,29 +206,23 @@ func exerciseGenTextOnly(ctx context.Context, pf ProviderFactory, isStream bool,
 		f.BrokenFinishReason = true
 	}
 	if strings.Contains(resp.AsText(), "<think") {
-		return nil, usage, fmt.Errorf("response contains <think: use adapters.ProviderGenThinking")
+		return nil, fmt.Errorf("response contains <think: use adapters.ProviderGenThinking")
 	}
 
 	// Seed
 	msgs = genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
-	resp, err = callGen(ctx, pf, prefix+"Seed", msgs, &genai.OptionsText{Seed: 42}, isStream, &usage)
+	resp, err = cs.callGen(ctx, prefix+"Seed", msgs, &genai.OptionsText{Seed: 42})
 	if isBadError(err) {
-		return f, usage, err
+		return f, err
 	}
 	f.Seed = err == nil
 
 	// MaxTokens
+	// This will trigger citations on providers with search enabled.
 	msgs = genai.Messages{genai.NewTextMessage(genai.User, "Explain the theory of relativity in great details.")}
-	resp, err = callGen(ctx, pf, prefix+"MaxTokens", msgs, &genai.OptionsText{MaxTokens: 16}, isStream, &usage)
+	resp, err = cs.callGen(ctx, prefix+"MaxTokens", msgs, &genai.OptionsText{MaxTokens: 16})
 	if isBadError(err) {
-		return f, usage, err
-	}
-	// Will trigger citations on providers with search enabled.
-	for _, content := range resp.Contents {
-		if len(content.Citations) > 0 {
-			f.Citations = true
-			break
-		}
+		return f, err
 	}
 	f.NoMaxTokens = err != nil || strings.Count(resp.AsText(), " ")+1 > 20
 	if err == nil {
@@ -226,9 +242,9 @@ func exerciseGenTextOnly(ctx context.Context, pf ProviderFactory, isStream bool,
 
 	// Stop
 	msgs = genai.Messages{genai.NewTextMessage(genai.User, "Talk about Canada in great details. Start with: Canada is")}
-	resp, err = callGen(ctx, pf, prefix+"Stop", msgs, &genai.OptionsText{Stop: []string{"is"}}, isStream, &usage)
+	resp, err = cs.callGen(ctx, prefix+"Stop", msgs, &genai.OptionsText{Stop: []string{"is"}})
 	if isBadError(err) {
-		return f, usage, err
+		return f, err
 	}
 	f.NoStopSequence = err != nil || strings.Count(resp.AsText(), " ")+1 > 20
 	if !f.NoStopSequence && (resp.InputTokens == 0 || resp.OutputTokens == 0) {
@@ -249,9 +265,9 @@ func exerciseGenTextOnly(ctx context.Context, pf ProviderFactory, isStream bool,
 
 	// JSON
 	msgs = genai.Messages{genai.NewTextMessage(genai.User, `Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {"is_fruit": bool}.`)}
-	resp, err = callGen(ctx, pf, prefix+"JSON", msgs, &genai.OptionsText{ReplyAsJSON: true}, isStream, &usage)
+	resp, err = cs.callGen(ctx, prefix+"JSON", msgs, &genai.OptionsText{ReplyAsJSON: true})
 	if isBadError(err) {
-		return f, usage, err
+		return f, err
 	}
 	if err == nil {
 		var data map[string]any
@@ -274,9 +290,9 @@ func exerciseGenTextOnly(ctx context.Context, pf ProviderFactory, isStream bool,
 	type schema struct {
 		IsFruit bool `json:"is_fruit"`
 	}
-	resp, err = callGen(ctx, pf, prefix+"JSONSchema", msgs, &genai.OptionsText{DecodeAs: &schema{}}, isStream, &usage)
+	resp, err = cs.callGen(ctx, prefix+"JSONSchema", msgs, &genai.OptionsText{DecodeAs: &schema{}})
 	if isBadError(err) {
-		return f, usage, err
+		return f, err
 	}
 	if err == nil {
 		data := schema{}
@@ -293,11 +309,12 @@ func exerciseGenTextOnly(ctx context.Context, pf ProviderFactory, isStream bool,
 		}
 	}
 
-	if err = exerciseGenTools(ctx, pf, f, isStream, prefix+"Tools-", &usage); err != nil {
-		return f, usage, err
+	if err = exerciseGenTools(ctx, cs, f, prefix+"Tools-"); err != nil {
+		return f, err
 	}
 
 	// Citations
+	// Force triggering citations for a document provided.
 	msgs = genai.Messages{
 		genai.Message{
 			Role: genai.User,
@@ -306,23 +323,15 @@ func exerciseGenTextOnly(ctx context.Context, pf ProviderFactory, isStream bool,
 					Document: strings.NewReader("The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."),
 					Filename: "capital_info.txt",
 				},
-				{
-					Text: "What is the capital of Quackiland?",
-				},
+				{Text: "What is the capital of Quackiland?"},
 			},
 		},
 	}
-	resp, err = callGen(ctx, pf, prefix+"Citations", msgs, &genai.OptionsText{}, isStream, &usage)
+	resp, err = cs.callGen(ctx, prefix+"Citations", msgs, &genai.OptionsText{})
 	if isBadError(err) {
-		return f, usage, err
+		return f, err
 	}
 	if err == nil {
-		for _, content := range resp.Contents {
-			if len(content.Citations) > 0 {
-				f.Citations = true
-				break
-			}
-		}
 		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 			internal.Logger(ctx).DebugContext(ctx, "Citations", "issue", "token usage")
 			f.BrokenTokenUsage = genai.True
@@ -332,47 +341,46 @@ func exerciseGenTextOnly(ctx context.Context, pf ProviderFactory, isStream bool,
 			f.BrokenFinishReason = true
 		}
 	}
-	return f, usage, nil
+	return f, nil
 }
 
-func exerciseGenTextMultiModal(ctx context.Context, pf ProviderFactory, isStream bool, prefix string) (map[genai.Modality]genai.ModalCapability, map[genai.Modality]genai.ModalCapability, *genai.FunctionalityText, genai.Usage, error) {
+func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string) (map[genai.Modality]genai.ModalCapability, map[genai.Modality]genai.ModalCapability, *genai.FunctionalityText, error) {
 	in := map[genai.Modality]genai.ModalCapability{}
 	out := map[genai.Modality]genai.ModalCapability{}
-	usage := genai.Usage{}
 	f := &genai.FunctionalityText{}
-	m, err := exerciseGenPDFInput(ctx, pf, f, isStream, prefix+"PDF-", &usage)
+	m, err := exerciseGenPDFInput(ctx, cs, f, prefix+"PDF-")
 	if m != nil {
 		in[genai.ModalityPDF] = *m
 		out[genai.ModalityText] = genai.ModalCapability{Inline: true}
 	}
 	if err != nil {
-		return in, out, f, usage, err
+		return in, out, f, err
 	}
-	m, err = exerciseGenImageInput(ctx, pf, f, isStream, prefix+"Image-", &usage)
+	m, err = exerciseGenImageInput(ctx, cs, f, prefix+"Image-")
 	if m != nil {
 		in[genai.ModalityImage] = *m
 		out[genai.ModalityText] = genai.ModalCapability{Inline: true}
 	}
 	if err != nil {
-		return in, out, f, usage, err
+		return in, out, f, err
 	}
-	m, err = exerciseGenAudioInput(ctx, pf, f, isStream, prefix+"Audio-", &usage)
+	m, err = exerciseGenAudioInput(ctx, cs, f, prefix+"Audio-")
 	if m != nil {
 		in[genai.ModalityAudio] = *m
 		out[genai.ModalityText] = genai.ModalCapability{Inline: true}
 	}
 	if err != nil {
-		return in, out, f, usage, err
+		return in, out, f, err
 	}
-	m, err = exerciseGenVideoInput(ctx, pf, f, isStream, prefix+"Video-", &usage)
+	m, err = exerciseGenVideoInput(ctx, cs, f, prefix+"Video-")
 	if m != nil {
 		in[genai.ModalityVideo] = *m
 		out[genai.ModalityText] = genai.ModalCapability{Inline: true}
 	}
-	return in, out, f, usage, err
+	return in, out, f, err
 }
 
-func exerciseGenPDFInput(ctx context.Context, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, prefix string, usage *genai.Usage) (*genai.ModalCapability, error) {
+func exerciseGenPDFInput(ctx context.Context, cs *callState, f *genai.FunctionalityText, prefix string) (*genai.ModalCapability, error) {
 	var m *genai.ModalCapability
 	want := "orange"
 	for _, format := range []extMime{{"pdf", "application/pdf"}} {
@@ -385,7 +393,7 @@ func exerciseGenPDFInput(ctx context.Context, pf ProviderFactory, f *genai.Funct
 			{Document: bytes.NewReader(data), Filename: "document." + format.ext},
 		}}}
 		name := prefix + format.ext + "-Inline"
-		if err = exerciseModal(ctx, pf, f, isStream, name, usage, msgs, want); err == nil {
+		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
 			}
@@ -400,7 +408,7 @@ func exerciseGenPDFInput(ctx context.Context, pf ProviderFactory, f *genai.Funct
 		}
 		msgs[0].Contents[1] = genai.Content{URL: rootURL + "document." + format.ext}
 		name = prefix + format.ext + "-URL"
-		if err = exerciseModal(ctx, pf, f, isStream, name, usage, msgs, want); err == nil {
+		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
 			}
@@ -417,7 +425,7 @@ func exerciseGenPDFInput(ctx context.Context, pf ProviderFactory, f *genai.Funct
 	return m, nil
 }
 
-func exerciseGenImageInput(ctx context.Context, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, prefix string, usage *genai.Usage) (*genai.ModalCapability, error) {
+func exerciseGenImageInput(ctx context.Context, cs *callState, f *genai.FunctionalityText, prefix string) (*genai.ModalCapability, error) {
 	var m *genai.ModalCapability
 	want := "banana"
 	for _, format := range []extMime{
@@ -436,7 +444,7 @@ func exerciseGenImageInput(ctx context.Context, pf ProviderFactory, f *genai.Fun
 			{Document: bytes.NewReader(data), Filename: "image." + format.ext},
 		}}}
 		name := prefix + format.ext + "-Inline"
-		if err = exerciseModal(ctx, pf, f, isStream, name, usage, msgs, want); err == nil {
+		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
 			}
@@ -451,7 +459,7 @@ func exerciseGenImageInput(ctx context.Context, pf ProviderFactory, f *genai.Fun
 		}
 		msgs[0].Contents[1] = genai.Content{URL: rootURL + "image." + format.ext}
 		name = prefix + format.ext + "-URL"
-		if err = exerciseModal(ctx, pf, f, isStream, name, usage, msgs, want); err == nil {
+		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
 			}
@@ -468,7 +476,7 @@ func exerciseGenImageInput(ctx context.Context, pf ProviderFactory, f *genai.Fun
 	return m, nil
 }
 
-func exerciseGenAudioInput(ctx context.Context, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, prefix string, usage *genai.Usage) (*genai.ModalCapability, error) {
+func exerciseGenAudioInput(ctx context.Context, cs *callState, f *genai.FunctionalityText, prefix string) (*genai.ModalCapability, error) {
 	var m *genai.ModalCapability
 	want := "orange"
 	for _, format := range []extMime{
@@ -487,7 +495,7 @@ func exerciseGenAudioInput(ctx context.Context, pf ProviderFactory, f *genai.Fun
 			{Document: bytes.NewReader(data), Filename: "audio." + format.ext},
 		}}}
 		name := prefix + format.ext + "-Inline"
-		if err = exerciseModal(ctx, pf, f, isStream, name, usage, msgs, want); err == nil {
+		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
 			}
@@ -502,7 +510,7 @@ func exerciseGenAudioInput(ctx context.Context, pf ProviderFactory, f *genai.Fun
 		}
 		msgs[0].Contents[1] = genai.Content{URL: rootURL + "audio." + format.ext}
 		name = prefix + format.ext + "-URL"
-		if err = exerciseModal(ctx, pf, f, isStream, name, usage, msgs, want); err == nil {
+		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
 			}
@@ -519,7 +527,7 @@ func exerciseGenAudioInput(ctx context.Context, pf ProviderFactory, f *genai.Fun
 	return m, nil
 }
 
-func exerciseGenVideoInput(ctx context.Context, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, prefix string, usage *genai.Usage) (*genai.ModalCapability, error) {
+func exerciseGenVideoInput(ctx context.Context, cs *callState, f *genai.FunctionalityText, prefix string) (*genai.ModalCapability, error) {
 	var m *genai.ModalCapability
 	want := "orange"
 	for _, format := range []extMime{
@@ -535,7 +543,7 @@ func exerciseGenVideoInput(ctx context.Context, pf ProviderFactory, f *genai.Fun
 			{Document: bytes.NewReader(data), Filename: "video." + format.ext},
 		}}}
 		name := prefix + format.ext + "-Inline"
-		if err = exerciseModal(ctx, pf, f, isStream, name, usage, msgs, want); err == nil {
+		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
 			}
@@ -550,7 +558,7 @@ func exerciseGenVideoInput(ctx context.Context, pf ProviderFactory, f *genai.Fun
 		}
 		msgs[0].Contents[1] = genai.Content{URL: rootURL + "video." + format.ext}
 		name = prefix + format.ext + "-URL"
-		if err = exerciseModal(ctx, pf, f, isStream, name, usage, msgs, want); err == nil {
+		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
 				m = &genai.ModalCapability{}
 			}
@@ -572,8 +580,8 @@ type extMime struct {
 	mime string
 }
 
-func exerciseModal(ctx context.Context, pf ProviderFactory, f *genai.FunctionalityText, isStream bool, name string, usage *genai.Usage, msgs genai.Messages, want string) error {
-	resp, err := callGen(ctx, pf, name, msgs, &genai.OptionsText{}, isStream, usage)
+func exerciseModal(ctx context.Context, cs *callState, f *genai.FunctionalityText, name string, msgs genai.Messages, want string) error {
+	resp, err := cs.callGen(ctx, name, msgs, &genai.OptionsText{})
 	if err == nil {
 		got := strings.ToLower(strings.TrimRight(strings.TrimSpace(resp.AsText()), "."))
 		if want != "" && got != want {
@@ -591,12 +599,22 @@ func exerciseModal(ctx context.Context, pf ProviderFactory, f *genai.Functionali
 	return err
 }
 
-func callGen(ctx context.Context, pf ProviderFactory, name string, msgs genai.Messages, opts genai.Options, isStream bool, usage *genai.Usage) (genai.Result, error) {
-	cc, _ := pf(name)
+type callState struct {
+	pf       ProviderFactory
+	isStream bool
+	usage    genai.Usage
+
+	// discovered states
+	isThinking   bool
+	hasCitations bool
+}
+
+func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	cc, _ := cs.pf(name)
 	c := cc.(genai.ProviderGen)
 	var err error
 	var resp genai.Result
-	if isStream {
+	if cs.isStream {
 		chunks := make(chan genai.ContentFragment)
 		done := make(chan struct{})
 		go func() {
@@ -618,12 +636,20 @@ func callGen(ctx context.Context, pf ProviderFactory, name string, msgs genai.Me
 	} else {
 		resp, err = c.GenSync(ctx, msgs, opts)
 	}
+	for _, c := range resp.Contents {
+		if len(c.Citations) != 0 {
+			cs.hasCitations = true
+		}
+		if c.Thinking != "" {
+			cs.isThinking = true
+		}
+	}
 	if err != nil {
 		return resp, err
 	}
-	usage.InputTokens += resp.InputTokens
-	usage.InputCachedTokens += resp.InputCachedTokens
-	usage.OutputTokens += resp.OutputTokens
+	cs.usage.InputTokens += resp.InputTokens
+	cs.usage.InputCachedTokens += resp.InputCachedTokens
+	cs.usage.OutputTokens += resp.OutputTokens
 	return resp, err
 }
 

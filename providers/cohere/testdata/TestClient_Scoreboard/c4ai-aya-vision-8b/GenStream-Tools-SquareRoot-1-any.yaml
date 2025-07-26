@@ -1,0 +1,167 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 546
+        host: api.cohere.com
+        body: |
+            {"stream":true,"model":"c4ai-aya-vision-8b","messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"description":"Calculates and return the square root of a number"}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cohere.com/v2/chat
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: message-start
+            data: {"id":"05b32e0a-4138-4bd8-87df-c41ced791a24","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"I"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" will"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" use"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" the"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" square"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"_"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"root"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" tool"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" to"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" calculate"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" the"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" square"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" root"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" of"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" 1"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"3"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"2"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"4"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"1"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"3"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"."}}}
+
+            event: tool-call-start
+            data: {"type":"tool-call-start","index":0,"delta":{"message":{"tool_calls":{"id":"square_root_fe28mfae9fed","type":"function","function":{"name":"square_root","arguments":""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"{\""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"number"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"\":"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":" "}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"1"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"3"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"2"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"4"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"1"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"3"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"."}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"0"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"}"}}}}}
+
+            event: tool-call-end
+            data: {"type":"tool-call-end","index":0}
+
+            event: message-end
+            data: {"type":"message-end","delta":{"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":46,"output_tokens":37},"tokens":{"input_tokens":1567,"output_tokens":66}}}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Debug-Trace-ID
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+            Content-Type:
+                - text/event-stream
+            Expires:
+                - Thu, 01 Jan 1970 00:00:00 GMT
+            Pragma:
+                - no-cache
+            Server:
+                - envoy
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Accel-Expires:
+                - "0"
+            X-Debug-Trace-Id:
+                - 6ea45ea2519fde35d62708e056e62b4a
+            X-Envoy-Upstream-Service-Time:
+                - "464"
+        status: 200 OK
+        code: 200
+        duration: 526ms

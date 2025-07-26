@@ -63,6 +63,27 @@ func exerciseGenTools(ctx context.Context, pf ProviderFactory, f *genai.Function
 			err = nil
 		}
 	}
+	if err != nil {
+		// Try a second time without forcing a tool call.
+		optsTools.ToolCallRequest = genai.ToolCallAny
+		resp, err = callGen(ctx, pf, prefix+"SquareRoot-1-any", msgs, &optsTools, isStream, usage)
+		if isBadError(err) {
+			return err
+		}
+		flaky = true
+		var uerr *genai.UnsupportedContinuableError
+		if errors.As(err, &uerr) {
+			// Cheap trick to make sure the error is not wrapped. Figure out if there's another way!
+			if strings.HasPrefix(err.Error(), "unsupported options: ") {
+				if slices.Contains(uerr.Unsupported, "ToolCallRequest") {
+					// At best, tool calling is flaky.
+					flaky = true
+				}
+				err = nil
+			}
+		}
+	}
+
 	if err != nil || len(resp.ToolCalls) == 0 {
 		// Tools are not supported, no need to do the rest.
 		f.Tools = genai.False

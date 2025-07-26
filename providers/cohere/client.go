@@ -77,10 +77,12 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
+				Tools:     genai.True,
 				Citations: true,
 				Seed:      true,
 			},
 			GenStream: &genai.FunctionalityText{
+				Tools:     genai.True,
 				Citations: true,
 				Seed:      true,
 			},
@@ -180,8 +182,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			if len(v.Tools) != 0 {
 				switch v.ToolCallRequest {
 				case genai.ToolCallAny:
-					// Cohere doesn't have an "auto" value, instead the value must not be specified.
-					c.StrictTools = true
 				case genai.ToolCallRequired:
 					c.ToolChoice = "required"
 					c.StrictTools = true

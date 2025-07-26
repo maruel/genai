@@ -20,8 +20,6 @@ import (
 	"github.com/maruel/genai/providers/llamacpp"
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
 	"github.com/maruel/httpjson"
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
 func TestClient(t *testing.T) {
@@ -97,25 +95,6 @@ type lazyServer struct {
 	url string
 }
 
-func (l *lazyServer) lazyStartWithRecord(t testing.TB) (string, func(http.RoundTripper) http.RoundTripper) {
-	transport := testRecorder.Record(t, http.DefaultTransport,
-		recorder.WithHook(func(i *cassette.Interaction) error { return internaltest.SaveIgnorePort(t, i) }, recorder.AfterCaptureHook),
-		recorder.WithMatcher(internaltest.MatchIgnorePort),
-	)
-	wrapper := func(http.RoundTripper) http.RoundTripper { return transport }
-	if !transport.IsNewCassette() {
-		return "http://localhost:0", wrapper
-	}
-	name := "testdata/" + strings.ReplaceAll(t.Name(), "/", "_") + ".yaml"
-	t.Cleanup(func() {
-		if t.Failed() {
-			t.Log("Removing record")
-			_ = os.Remove(name)
-		}
-	})
-	return l.lazyStart(t), wrapper
-}
-
 func (l *lazyServer) lazyStart(t testing.TB) string {
 	l.mu.Lock()
 	defer l.mu.Unlock()
@@ -135,15 +114,6 @@ func (l *lazyServer) lazyStart(t testing.TB) string {
 		})
 	}
 	return l.url
-}
-
-func (l *lazyServer) getClient(t *testing.T) genai.ProviderGen {
-	serverURL, wrapper := l.lazyStartWithRecord(t)
-	c, err := llamacpp.New(serverURL, nil, wrapper)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return c
 }
 
 // This test doesn't require the server to start.

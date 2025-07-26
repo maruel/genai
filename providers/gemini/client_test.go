@@ -103,12 +103,12 @@ func TestClient_Cache(t *testing.T) {
 	slow := os.Getenv("GEMINI_SLOW") != ""
 	ctx := t.Context()
 	c := getClient(t, "gemini-2.0-flash-lite")
-	f1, err := os.Open("../../internal/internaltest/testdata/animation.mp4")
+	f1, err := os.Open("../../scoreboard/testdata/video.mp4")
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer f1.Close()
-	f2, err := os.Open("../../internal/internaltest/testdata/mystery_word.opus")
+	f2, err := os.Open("../../scoreboard/testdata/audio.ogg")
 	if err != nil {
 		t.Fatal(err)
 	}

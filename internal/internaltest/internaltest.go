@@ -14,9 +14,11 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
@@ -91,6 +93,16 @@ func MatchIgnorePort(r *http.Request, i cassette.Request) bool {
 	r.URL.Host = strings.Split(r.URL.Host, ":")[0]
 	r.Host = strings.Split(r.Host, ":")[0]
 	return internal.DefaultMatcher(r, i)
+}
+
+// ValidateWordResponse validates that the response contains exactly one of the expected words.
+func ValidateWordResponse(t testing.TB, resp genai.Result, want ...string) {
+	got := resp.AsText()
+	cleaned := strings.TrimRight(strings.TrimSpace(strings.ToLower(got)), ".!")
+	if !slices.Contains(want, cleaned) {
+		t.Helper()
+		t.Fatalf("Expected %q, got %q", strings.Join(want, ", "), got)
+	}
 }
 
 //

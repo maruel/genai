@@ -302,7 +302,7 @@ func modelsMaxTokens(model string) int64 {
 	return 32000
 }
 
-// https://docs.anthropic.com/en/api/messages#body-mcp-servers
+// MCPServer is documented at  https://docs.anthropic.com/en/api/messages#body-mcp-servers
 type MCPServer struct {
 	Name               string `json:"name"` //
 	Type               string `json:"type"` // "url"
@@ -324,7 +324,7 @@ type SystemMessage struct {
 	Citations []Citation `json:"citations,omitzero"`
 }
 
-// https://docs.anthropic.com/en/api/messages
+// Message is documented at https://docs.anthropic.com/en/api/messages
 type Message struct {
 	Type string `json:"type,omitzero"` // "message"
 	Role string `json:"role"`          // "assistant", "user"
@@ -826,7 +826,7 @@ type Thinking struct {
 	Type         string `json:"type,omitzero"`          // "enabled", "disabled"
 }
 
-// https://docs.anthropic.com/en/api/messages#body-tool-choice
+// ToolChoiceType is documented at  https://docs.anthropic.com/en/api/messages#body-tool-choice
 type ToolChoiceType string
 
 const (
@@ -851,7 +851,7 @@ type ToolChoice struct {
 	Name string `json:"name,omitzero"`
 }
 
-// https://docs.anthropic.com/en/api/messages#body-tools
+// Tool is documented at  https://docs.anthropic.com/en/api/messages#body-tools
 type Tool struct {
 	Type string `json:"type,omitzero"` // "custom", "computer_20241022", "computer_20250124", "bash_20241022", "bash_20250124", "text_editor_20241022", "text_editor_20250124"
 	// Type == "custom"
@@ -902,7 +902,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	return out, err
 }
 
-// https://docs.anthropic.com/en/api/messages#response-stop-reason
+// StopReason is documented at https://docs.anthropic.com/en/api/messages#response-stop-reason
 type StopReason string
 
 const (
@@ -932,7 +932,8 @@ func (s StopReason) ToFinishReason() genai.FinishReason {
 	}
 }
 
-// https://docs.anthropic.com/en/api/messages-streaming
+// ChatStreamChunkResponse is documented at https://docs.anthropic.com/en/api/messages-streaming
+//
 // Each stream uses the following event flow:
 //   - message_start: contains a Message object with empty content.
 //   - A series of content blocks, each of which have a content_block_start, one
@@ -1036,12 +1037,12 @@ type Usage struct {
 
 //
 
-// https://docs.anthropic.com/en/api/creating-message-batches
+// BatchRequest is documented at https://docs.anthropic.com/en/api/creating-message-batches
 type BatchRequest struct {
 	Requests []BatchRequestItem `json:"requests"`
 }
 
-// https://docs.anthropic.com/en/api/creating-message-batches
+// BatchRequestItem is documented at https://docs.anthropic.com/en/api/creating-message-batches
 type BatchRequestItem struct {
 	CustomID string      `json:"custom_id"`
 	Params   ChatRequest `json:"params"`
@@ -1056,7 +1057,7 @@ func (b *BatchRequestItem) Init(msgs genai.Messages, opts genai.Options, model s
 	return b.Params.initImpl(msgs, opts, model, false)
 }
 
-// https://docs.anthropic.com/en/api/creating-message-batches
+// BatchResponse is documented at https://docs.anthropic.com/en/api/creating-message-batches
 type BatchResponse struct {
 	ID                string    `json:"id"`   // Starts with "msgbatch_"
 	Type              string    `json:"type"` // "message_batch"
@@ -1076,7 +1077,7 @@ type BatchResponse struct {
 	ResultsURL string `json:"results_url"`
 }
 
-// https://docs.anthropic.com/en/api/retrieving-message-batch-results
+// BatchQueryResponse is documented at https://docs.anthropic.com/en/api/retrieving-message-batch-results
 type BatchQueryResponse struct {
 	CustomID string `json:"custom_id"`
 	Result   struct {
@@ -1178,7 +1179,7 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 //
 
-// https://docs.anthropic.com/en/api/messages#response-error
+// ErrorResponse is documented at https://docs.anthropic.com/en/api/messages#response-error
 type ErrorResponse struct {
 	Type  string `json:"type"` // "error"
 	Error struct {

@@ -135,12 +135,12 @@ func (t *tableDataRow) initFromScenario(s *genai.Scenario) {
 			} else if strings.Contains(t.Tools, "💨") {
 				t.Tools = strings.Replace(t.Tools, "💨", "✅", 1)
 			}
-		} else {
+		} else if s.GenSync.Tools == genai.Flaky && (s.GenStream != nil && s.GenStream.Tools == genai.Flaky) {
 			if t.Tools == "" {
 				t.Tools = "💨"
 			}
 		}
-		if s.GenSync.BiasedTool == genai.False && !strings.Contains(t.Tools, "🧐") {
+		if s.GenSync.BiasedTool != genai.False && !strings.Contains(t.Tools, "🧐") {
 			t.Tools += "🧐"
 		}
 		if s.GenSync.IndecisiveTool == genai.True && !strings.Contains(t.Tools, "💥") {

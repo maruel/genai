@@ -967,7 +967,7 @@ func (s StopReason) ToFinishReason() genai.FinishReason {
 	case StopRefusal:
 		return genai.FinishedContentFilter
 	case StopPauseTurn:
-		fallthrough
+		return genai.Pending
 	default:
 		if !internal.BeLenient {
 			panic(s)

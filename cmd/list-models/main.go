@@ -35,12 +35,12 @@ func printStructDense(v any, indent string) string {
 	if val.Kind() != reflect.Struct {
 		return indent + fmt.Sprintf("%v", v)
 	}
-	typ := val.Type()
+	t := val.Type()
 	var fields []string
 	// Iterate through struct fields
 	for i := range val.NumField() {
 		f := val.Field(i)
-		fn := typ.Field(i).Name
+		fn := t.Field(i).Name
 		switch f.Kind() {
 		case reflect.Struct:
 			// Recursively print nested structs
@@ -69,6 +69,8 @@ func printStructDense(v any, indent string) string {
 				}
 				fields = append(fields, fmt.Sprintf("%s%s: [%s]", indent, fn, strings.Join(elements, ",")))
 			}
+		case reflect.Invalid, reflect.Bool, reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr, reflect.Float32, reflect.Float64, reflect.Complex64, reflect.Complex128, reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.String, reflect.UnsafePointer:
+			fallthrough
 		default:
 			fields = append(fields, fmt.Sprintf("%s%s: %v", indent, fn, f.Interface()))
 		}

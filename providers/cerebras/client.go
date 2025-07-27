@@ -308,6 +308,8 @@ func (m *Message) From(in *genai.Message) error {
 	switch in.Role {
 	case genai.User, genai.Assistant:
 		m.Role = string(in.Role)
+	case genai.Computer:
+		fallthrough
 	default:
 		return fmt.Errorf("unsupported role %q", in.Role)
 	}

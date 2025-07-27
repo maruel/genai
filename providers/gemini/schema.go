@@ -283,6 +283,8 @@ func (s *Schema) FromGoType(t reflect.Type, tag reflect.StructTag, parent string
 	case reflect.Ptr:
 		s.Nullable = true
 		return s.FromGoType(t.Elem(), tag, parent) // Pass tag to underlying element.
+	case reflect.Invalid, reflect.Complex64, reflect.Complex128, reflect.Chan, reflect.Func, reflect.Interface, reflect.UnsafePointer:
+		fallthrough
 	default:
 		return fmt.Errorf("unsupported type: %s", t.Kind())
 	}
@@ -317,6 +319,8 @@ func convertValue(s string, kind reflect.Kind) (any, error) {
 		return b, nil
 	case reflect.String:
 		return s, nil
+	case reflect.Invalid, reflect.Uintptr, reflect.Complex64, reflect.Complex128, reflect.Array, reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Pointer, reflect.Slice, reflect.Struct, reflect.UnsafePointer:
+		fallthrough
 	default:
 		return nil, fmt.Errorf("failed to convert example value %v for type %s", s, kind)
 	}

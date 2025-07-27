@@ -217,6 +217,8 @@ func (m *Message) From(in *genai.Message) error {
 	switch in.Role {
 	case genai.User, genai.Assistant:
 		m.Role = string(in.Role)
+	case genai.Computer:
+		fallthrough
 	default:
 		return fmt.Errorf("unsupported role %q", in.Role)
 	}
@@ -785,7 +787,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			result.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 		}
 		switch role := pkt.Choices[0].Delta.Role; role {
-		case "assistant", "":
+		case genai.Assistant, "":
+		case genai.User, genai.Computer:
+			fallthrough
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}

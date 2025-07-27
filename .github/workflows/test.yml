@@ -103,6 +103,7 @@ jobs:
         go install github.com/securego/gosec/v2/cmd/gosec@latest
         go install golang.org/x/tools/go/analysis/passes/shadow/cmd/shadow@latest
         go install honnef.co/go/tools/cmd/staticcheck@latest
+        go install github.com/nishanths/exhaustive/cmd/exhaustive@latest
     - name: 'go install necessary tools (ubuntu)'
       if: always() && matrix.os == 'ubuntu-latest'
       run: |
@@ -130,6 +131,9 @@ jobs:
       run: gosec -fmt=golint -quiet -exclude G101,G107,G110,G115,G204,G301,G302,G304,G306 ./...
       # The following checks are not dependent on the OS or go build tags. Only
       # run them on ubuntu-latest since it's the fastest one.
+    - name: 'Check: exhaustive'
+      if: always()
+      run: exhaustive ./...
     - name: 'Check: no executable was committed (ubuntu)'
       if: always() && matrix.os == 'ubuntu-latest'
       run: |

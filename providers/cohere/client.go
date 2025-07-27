@@ -258,6 +258,8 @@ func (m *Message) From(in *genai.Message) ([]Document, error) {
 	switch in.Role {
 	case genai.User, genai.Assistant:
 		m.Role = string(in.Role)
+	case genai.Computer:
+		fallthrough
 	default:
 		return nil, fmt.Errorf("unsupported role %q", in.Role)
 	}
@@ -360,8 +362,8 @@ func (c *Content) To(in *genai.Content) error {
 	switch c.Type {
 	case ContentText:
 		in.Text = c.Text
-	// case ContentImageURL:
-	// case ContentDocument:
+	case ContentDocument, ContentImageURL:
+		fallthrough
 	default:
 		return fmt.Errorf("implement %s", c.Type)
 	}
@@ -517,6 +519,8 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 		return genai.FinishedLength
 	case FinishStopSequence:
 		return genai.FinishedStopSequence
+	case FinishError:
+		fallthrough
 	default:
 		if !internal.BeLenient {
 			panic(f)

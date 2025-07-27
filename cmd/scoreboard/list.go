@@ -122,6 +122,7 @@ func functionalityText(f *genai.FunctionalityText) string {
 	case genai.Flaky:
 		items = append(items, "✅tools")
 		flakyTool = true
+	case genai.False:
 	}
 
 	if flakyTool {

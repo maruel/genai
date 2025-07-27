@@ -470,6 +470,8 @@ func (m *Message) From(in *genai.Message) error {
 	switch in.Role {
 	case genai.User, genai.Assistant:
 		m.Role = string(in.Role)
+	case genai.Computer:
+		fallthrough
 	default:
 		return fmt.Errorf("unsupported role %q", in.Role)
 	}
@@ -650,6 +652,8 @@ func (c *Content) To(out *genai.Content) error {
 	switch c.Type {
 	case ContentText:
 		out.Text = c.Text
+	case ContentImageURL, ContentInputAudio, ContentRefusal, ContentAudio, ContentFile:
+		fallthrough
 	default:
 		return fmt.Errorf("unsupported content type %q", c.Type)
 	}

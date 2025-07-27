@@ -528,6 +528,8 @@ func (m *Message) From(msg *genai.Message) error {
 	switch msg.Role {
 	case genai.Assistant, genai.User:
 		m.Role = string(msg.Role)
+	case genai.Computer:
+		fallthrough
 	default:
 		return fmt.Errorf("implement role %q", msg.Role)
 	}
@@ -592,6 +594,8 @@ func (m *Message) To(out *genai.Message) error {
 		}
 	case MessageFunctionCall:
 		out.ToolCalls = append(out.ToolCalls, genai.ToolCall{ID: m.CallID, Name: m.Name, Arguments: m.Arguments})
+	case MessageFileSearchCall, MessageComputerCall, MessageWebSearchCall, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
+		fallthrough
 	default:
 		return fmt.Errorf("unsupported output type %q", m.Type)
 	}
@@ -645,6 +649,8 @@ func (c *Content) To(out *genai.Content) error {
 	switch c.Type {
 	case ContentOutputText:
 		out.Text = c.Text
+	case ContentInputText, ContentInputImage, ContentInputFile, ContentRefusal:
+		return fmt.Errorf("implement content type %q", c.Type)
 	default:
 		return fmt.Errorf("unsupported content type %q", c.Type)
 	}
@@ -1413,6 +1419,8 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 					bits = append(bits, pkt.Item.Summary[i].Text)
 				}
 				f.ThinkingFragment = strings.Join(bits, "")
+			case MessageFileSearchCall, MessageComputerCall, MessageWebSearchCall, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
+				fallthrough
 			default:
 				return fmt.Errorf("implement item: %q", pkt.Item.Type)
 			}
@@ -1427,8 +1435,8 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 				if len(pkt.Part.Text) > 0 {
 					return fmt.Errorf("unexpected text: %q", pkt.Part.Text)
 				}
-			case ContentRefusal:
-				return fmt.Errorf("implement part: %q", pkt.Part.Type)
+			case ContentRefusal, ContentInputText, ContentInputImage, ContentInputFile:
+				fallthrough
 			default:
 				return fmt.Errorf("implement part: %q", pkt.Part.Type)
 			}
@@ -1453,6 +1461,8 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 		case ResponseReasoningSummaryPartDone:
 		case ResponseError:
 			return fmt.Errorf("error: %s", pkt.Message)
+		case ResponseFileSearchCallCompleted, ResponseFileSearchCallInProgress, ResponseFileSearchCallSearching, ResponseImageGenerationCallCompleted, ResponseImageGenerationCallGenerating, ResponseImageGenerationCallInProgress, ResponseImageGenerationCallPartialImage, ResponseMCPCallArgumentsDelta, ResponseMCPCallArgumentsDone, ResponseMCPCallCompleted, ResponseMCPCallFailed, ResponseMCPCallInProgress, ResponseMCPListToolsCompleted, ResponseMCPListToolsFailed, ResponseMCPListToolsInProgress, ResponseOutputTextAnnotationAdded, ResponseQueued, ResponseReasoningDelta, ResponseReasoningDone, ResponseReasoningSummaryDelta, ResponseReasoningSummaryDone, ResponseWebSearchCallCompleted, ResponseWebSearchCallInProgress, ResponseWebSearchCallSearching:
+			fallthrough
 		default:
 			return fmt.Errorf("implement packet: %q", pkt.Type)
 		}

@@ -322,6 +322,8 @@ func (m *Message) From(in *genai.Message) error {
 	switch in.Role {
 	case genai.User, genai.Assistant:
 		m.Role = string(in.Role)
+	case genai.Computer:
+		fallthrough
 	default:
 		return fmt.Errorf("unsupported role %q", in.Role)
 	}
@@ -569,8 +571,10 @@ type MessageResponse struct {
 
 func (m *MessageResponse) To(out *genai.Message) error {
 	switch role := m.Role; role {
-	case "assistant", "user":
+	case genai.Assistant, genai.User:
 		out.Role = genai.Role(role)
+	case genai.Computer:
+		fallthrough
 	default:
 		return fmt.Errorf("unsupported role %q", role)
 	}
@@ -1218,6 +1222,7 @@ func (m *ModelCache) ValidateModality(c genai.ProviderModel, mod genai.Modality)
 		if isImage {
 			return nil
 		}
+	case genai.ModalityAny, genai.ModalityVideo, genai.ModalityPDF, genai.ModalityAudio:
 	}
 	return fmt.Errorf("modality %s not supported", mod)
 }

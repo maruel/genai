@@ -609,6 +609,8 @@ func (c *Content) From(in *genai.Message) error {
 		c.Role = "user"
 	case genai.Assistant:
 		c.Role = "model"
+	case genai.Computer:
+		fallthrough
 	default:
 		return fmt.Errorf("unsupported role %q", in.Role)
 	}
@@ -966,6 +968,8 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	case FinishSafety, FinishBlocklist, FinishProhibitedContent, FinishSPII, FinishImageSafety:
 		// TODO: Confirm. We lose on nuance here but does it matter?
 		return genai.FinishedContentFilter
+	case FinishRecitation, FinishLanguage, FinishOther, FinishMalformed:
+		fallthrough
 	default:
 		if !internal.BeLenient {
 			panic(f)

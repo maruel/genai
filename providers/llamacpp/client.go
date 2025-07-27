@@ -736,6 +736,8 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 				in.Prompt += c.encoding.AssistantTokenStart + b.Text + c.encoding.AssistantTokenEnd
 			}
 			// in.Prompt += c.encoding.ToolCallTokenStart + m.Text + c.encoding.ToolCallTokenEnd
+		case genai.Computer:
+			fallthrough
 		default:
 			return fmt.Errorf("unexpected role %q", m.Role)
 		}

@@ -146,20 +146,6 @@ func (l *lazyServer) getClient(t testing.TB, model string) genai.ProviderGen {
 	return c
 }
 
-type fakeModel string
-
-func (f fakeModel) GetID() string {
-	return string(f)
-}
-
-func (f fakeModel) String() string {
-	return string(f)
-}
-
-func (f fakeModel) Context() int64 {
-	return 0
-}
-
 // This test doesn't require the server to start.
 func TestClient_Preferred(t *testing.T) {
 	data := []struct {

@@ -451,7 +451,7 @@ func (m *Message) To(out *genai.Message) error {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		case ContentImage, ContentDocument, ContentToolResult:
-			return fmt.Errorf("unsupported content type %q", m.Content[i].Type)
+			fallthrough
 		default:
 			return fmt.Errorf("unsupported content type %q", m.Content[i].Type)
 		}
@@ -689,7 +689,7 @@ func (c *Content) ToContent(out *genai.Content) (bool, error) {
 	case ContentRedactedThinking:
 		out.Opaque = map[string]any{"redacted_thinking": c.Signature}
 	case ContentImage, ContentDocument, ContentToolResult, ContentToolUse:
-		return false, fmt.Errorf("unsupported content type %q", c.Type)
+		fallthrough
 	default:
 		return false, fmt.Errorf("unsupported content type %q", c.Type)
 	}
@@ -967,7 +967,7 @@ func (s StopReason) ToFinishReason() genai.FinishReason {
 	case StopRefusal:
 		return genai.FinishedContentFilter
 	case StopPauseTurn:
-		return genai.FinishReason(s)
+		fallthrough
 	default:
 		if !internal.BeLenient {
 			panic(s)
@@ -1460,7 +1460,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			case ContentRedactedThinking:
 				f.Opaque = map[string]any{"redacted_thinking": pkt.ContentBlock.Signature}
 			case ContentImage, ContentDocument, ContentToolResult:
-				return fmt.Errorf("missing implementation for content block %q", pkt.ContentBlock.Type)
+				fallthrough
 			default:
 				return fmt.Errorf("missing implementation for content block %q", pkt.ContentBlock.Type)
 			}

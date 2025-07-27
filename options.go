@@ -46,14 +46,14 @@ type Modality string
 const (
 	// ModalityAny is an unconstrained modality.
 	ModalityAny Modality = "any"
-	// ModalityText is text. This can include code blocks.
+	// ModalityText is for raw text.
 	ModalityText Modality = "text"
 	// ModalityImage is support for PNG, JPG, often single frame GIF, WEBP.
 	ModalityImage Modality = "image"
 	// ModalityVideo is support for codecs like H264 and containers like MP4 or MKV.
 	ModalityVideo Modality = "video"
-	// ModalityPDF is support for PDF with multi-modal comprehension, both images and text.
-	ModalityPDF Modality = "pdf"
+	// ModalityDocument is support for PDF with multi-modal comprehension, both images and text. This includes code blocks.
+	ModalityDocument Modality = "document"
 	// ModalityAudio is support for audio MP3, sometimes OPUS.
 	ModalityAudio Modality = "audio"
 )

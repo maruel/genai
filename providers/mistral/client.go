@@ -42,7 +42,7 @@ var Scoreboard = genai.Scoreboard{
 			Models: []string{"ministral-3b-latest"},
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {Inline: true},
-				genai.ModalityPDF: {
+				genai.ModalityDocument: {
 					URL:              true,
 					SupportedFormats: []string{"application/pdf"},
 				},
@@ -71,7 +71,7 @@ var Scoreboard = genai.Scoreboard{
 					URL:              true,
 					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
 				},
-				genai.ModalityPDF: {
+				genai.ModalityDocument: {
 					URL:              true,
 					SupportedFormats: []string{"application/pdf"},
 				},
@@ -101,7 +101,7 @@ var Scoreboard = genai.Scoreboard{
 					URL:              true,
 					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
 				},
-				genai.ModalityPDF: {
+				genai.ModalityDocument: {
 					URL:              true,
 					SupportedFormats: []string{"application/pdf"},
 				},
@@ -130,7 +130,7 @@ var Scoreboard = genai.Scoreboard{
 					Inline:           true,
 					SupportedFormats: []string{"audio/flac", "audio/mp3", "audio/ogg", "audio/wav"},
 				},
-				genai.ModalityPDF: {
+				genai.ModalityDocument: {
 					URL:              true,
 					SupportedFormats: []string{"application/pdf"},
 				},

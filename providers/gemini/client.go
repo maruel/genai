@@ -65,7 +65,7 @@ var Scoreboard = genai.Scoreboard{
 					Inline:           true,
 					SupportedFormats: []string{"image/jpeg", "image/png", "image/webp"},
 				},
-				genai.ModalityPDF: {
+				genai.ModalityDocument: {
 					Inline:           true,
 					SupportedFormats: []string{"application/pdf"},
 				},
@@ -95,7 +95,7 @@ var Scoreboard = genai.Scoreboard{
 					Inline:           true,
 					SupportedFormats: []string{"image/jpeg", "image/png", "image/webp"},
 				},
-				genai.ModalityPDF: {
+				genai.ModalityDocument: {
 					Inline:           true,
 					SupportedFormats: []string{"application/pdf"},
 				},
@@ -128,7 +128,7 @@ var Scoreboard = genai.Scoreboard{
 					Inline:           true,
 					SupportedFormats: []string{"image/jpeg", "image/png", "image/webp"},
 				},
-				genai.ModalityPDF: {
+				genai.ModalityDocument: {
 					Inline:           true,
 					SupportedFormats: []string{"application/pdf"},
 				},
@@ -164,7 +164,7 @@ var Scoreboard = genai.Scoreboard{
 					Inline:           true,
 					SupportedFormats: []string{"image/jpeg", "image/png", "image/webp"},
 				},
-				genai.ModalityPDF: {
+				genai.ModalityDocument: {
 					Inline:           true,
 					SupportedFormats: []string{"application/pdf"},
 				},
@@ -200,7 +200,7 @@ var Scoreboard = genai.Scoreboard{
 					Inline:           true,
 					SupportedFormats: []string{"image/jpeg", "image/png", "image/webp"},
 				},
-				genai.ModalityPDF: {
+				genai.ModalityDocument: {
 					Inline:           true,
 					SupportedFormats: []string{"application/pdf"},
 				},

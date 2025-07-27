@@ -193,11 +193,11 @@ var countryMap = map[string]string{
 }
 
 var modalityMap = map[genai.Modality]string{
-	genai.ModalityText:  "💬", // "📝",
-	genai.ModalityImage: "📸", // "🖼️",
-	genai.ModalityAudio: "🎤",
-	genai.ModalityVideo: "🎥", // "🎞️",
-	genai.ModalityPDF:   "📄", // "📚",
+	genai.ModalityText:     "💬", // "📝",
+	genai.ModalityImage:    "📸", // "🖼️",
+	genai.ModalityAudio:    "🎤",
+	genai.ModalityVideo:    "🎥", // "🎞️",
+	genai.ModalityDocument: "📄", // "📚",
 }
 
 func printTable(provider string) error {

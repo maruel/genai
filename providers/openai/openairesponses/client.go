@@ -50,8 +50,8 @@ var Scoreboard = genai.Scoreboard{
 					URL:              true,
 					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
 				},
-				genai.ModalityPDF:  {Inline: true, SupportedFormats: []string{"application/pdf"}},
-				genai.ModalityText: {Inline: true},
+				genai.ModalityDocument: {Inline: true, SupportedFormats: []string{"application/pdf"}},
+				genai.ModalityText:     {Inline: true},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{

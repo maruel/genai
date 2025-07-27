@@ -355,15 +355,15 @@ func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string
 	in := map[genai.Modality]genai.ModalCapability{}
 	out := map[genai.Modality]genai.ModalCapability{}
 	f := &genai.FunctionalityText{}
-	m, err := exerciseGenPDFInput(ctx, cs, f, prefix+"PDF-")
+	m, err := exerciseGenInputDocument(ctx, cs, f, prefix+"Document-")
 	if m != nil {
-		in[genai.ModalityPDF] = *m
+		in[genai.ModalityDocument] = *m
 		out[genai.ModalityText] = genai.ModalCapability{Inline: true}
 	}
 	if err != nil {
 		return in, out, f, err
 	}
-	m, err = exerciseGenImageInput(ctx, cs, f, prefix+"Image-")
+	m, err = exerciseGenInputImage(ctx, cs, f, prefix+"Image-")
 	if m != nil {
 		in[genai.ModalityImage] = *m
 		out[genai.ModalityText] = genai.ModalCapability{Inline: true}
@@ -371,7 +371,7 @@ func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string
 	if err != nil {
 		return in, out, f, err
 	}
-	m, err = exerciseGenAudioInput(ctx, cs, f, prefix+"Audio-")
+	m, err = exerciseGenInputAudio(ctx, cs, f, prefix+"Audio-")
 	if m != nil {
 		in[genai.ModalityAudio] = *m
 		out[genai.ModalityText] = genai.ModalCapability{Inline: true}
@@ -379,7 +379,7 @@ func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string
 	if err != nil {
 		return in, out, f, err
 	}
-	m, err = exerciseGenVideoInput(ctx, cs, f, prefix+"Video-")
+	m, err = exerciseGenInputVideo(ctx, cs, f, prefix+"Video-")
 	if m != nil {
 		in[genai.ModalityVideo] = *m
 		out[genai.ModalityText] = genai.ModalCapability{Inline: true}
@@ -387,7 +387,7 @@ func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string
 	return in, out, f, err
 }
 
-func exerciseGenPDFInput(ctx context.Context, cs *callState, f *genai.FunctionalityText, prefix string) (*genai.ModalCapability, error) {
+func exerciseGenInputDocument(ctx context.Context, cs *callState, f *genai.FunctionalityText, prefix string) (*genai.ModalCapability, error) {
 	var m *genai.ModalCapability
 	want := "orange"
 	for _, format := range []extMime{{"pdf", "application/pdf"}} {
@@ -432,7 +432,7 @@ func exerciseGenPDFInput(ctx context.Context, cs *callState, f *genai.Functional
 	return m, nil
 }
 
-func exerciseGenImageInput(ctx context.Context, cs *callState, f *genai.FunctionalityText, prefix string) (*genai.ModalCapability, error) {
+func exerciseGenInputImage(ctx context.Context, cs *callState, f *genai.FunctionalityText, prefix string) (*genai.ModalCapability, error) {
 	var m *genai.ModalCapability
 	want := "banana"
 	for _, format := range []extMime{
@@ -483,7 +483,7 @@ func exerciseGenImageInput(ctx context.Context, cs *callState, f *genai.Function
 	return m, nil
 }
 
-func exerciseGenAudioInput(ctx context.Context, cs *callState, f *genai.FunctionalityText, prefix string) (*genai.ModalCapability, error) {
+func exerciseGenInputAudio(ctx context.Context, cs *callState, f *genai.FunctionalityText, prefix string) (*genai.ModalCapability, error) {
 	var m *genai.ModalCapability
 	want := "orange"
 	for _, format := range []extMime{
@@ -534,7 +534,7 @@ func exerciseGenAudioInput(ctx context.Context, cs *callState, f *genai.Function
 	return m, nil
 }
 
-func exerciseGenVideoInput(ctx context.Context, cs *callState, f *genai.FunctionalityText, prefix string) (*genai.ModalCapability, error) {
+func exerciseGenInputVideo(ctx context.Context, cs *callState, f *genai.FunctionalityText, prefix string) (*genai.ModalCapability, error) {
 	var m *genai.ModalCapability
 	want := "orange"
 	for _, format := range []extMime{

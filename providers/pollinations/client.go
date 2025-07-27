@@ -1222,7 +1222,7 @@ func (m *ModelCache) ValidateModality(c genai.ProviderModel, mod genai.Modality)
 		if isImage {
 			return nil
 		}
-	case genai.ModalityAny, genai.ModalityVideo, genai.ModalityPDF, genai.ModalityAudio:
+	case genai.ModalityAny, genai.ModalityVideo, genai.ModalityDocument, genai.ModalityAudio:
 	}
 	return fmt.Errorf("modality %s not supported", mod)
 }

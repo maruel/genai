@@ -51,7 +51,7 @@ var Scoreboard = genai.Scoreboard{
 					URL:              true,
 					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
 				},
-				genai.ModalityPDF: {
+				genai.ModalityDocument: {
 					Inline: true,
 					URL:    true,
 					// TODO: Add "text/plain" back.
@@ -79,7 +79,7 @@ var Scoreboard = genai.Scoreboard{
 					URL:              true,
 					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
 				},
-				genai.ModalityPDF: {
+				genai.ModalityDocument: {
 					Inline: true,
 					URL:    true,
 					// TODO: Add "text/plain" back.
@@ -108,7 +108,7 @@ var Scoreboard = genai.Scoreboard{
 					URL:              true,
 					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
 				},
-				genai.ModalityPDF: {
+				genai.ModalityDocument: {
 					Inline: true,
 					URL:    true,
 					// TODO: Add "text/plain" back.

@@ -234,6 +234,9 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, opts genai.Options, model st
 			if err := c.Messages[len(c.Messages)-1].Validate(); err != nil {
 				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 			}
+		case genai.Computer:
+			errs = append(errs, fmt.Errorf("message %d: unsupported role %q", i, msgs[i].Role))
+			continue
 		default:
 			errs = append(errs, fmt.Errorf("message %d: unsupported role %q", i, msgs[i].Role))
 			continue
@@ -393,6 +396,8 @@ func (m *Message) From(in *genai.Message) error {
 		m.Role = string(in.Role)
 	case "":
 		return errors.New("message doesn't have role defined")
+	case genai.Computer:
+		return fmt.Errorf("unsupported role %q", role)
 	default:
 		return fmt.Errorf("unsupported role %q", role)
 	}
@@ -445,7 +450,8 @@ func (m *Message) To(out *genai.Message) error {
 			if err := m.Content[i].ToToolCall(&out.ToolCalls[len(out.ToolCalls)-1]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
-			// ContentImage, ContentDocument, ContentToolResult
+		case ContentImage, ContentDocument, ContentToolResult:
+			return fmt.Errorf("unsupported content type %q", m.Content[i].Type)
 		default:
 			return fmt.Errorf("unsupported content type %q", m.Content[i].Type)
 		}
@@ -682,6 +688,8 @@ func (c *Content) ToContent(out *genai.Content) (bool, error) {
 		out.Opaque = map[string]any{"signature": c.Signature}
 	case ContentRedactedThinking:
 		out.Opaque = map[string]any{"redacted_thinking": c.Signature}
+	case ContentImage, ContentDocument, ContentToolResult, ContentToolUse:
+		return false, fmt.Errorf("unsupported content type %q", c.Type)
 	default:
 		return false, fmt.Errorf("unsupported content type %q", c.Type)
 	}
@@ -689,18 +697,16 @@ func (c *Content) ToContent(out *genai.Content) (bool, error) {
 }
 
 func (c *Content) ToToolCall(out *genai.ToolCall) error {
-	switch c.Type {
-	case ContentToolUse:
-		out.ID = c.ID
-		out.Name = c.Name
-		raw, err := json.Marshal(c.Input)
-		if err != nil {
-			return fmt.Errorf("failed to marshal input: %w; for tool call: %#v", err, c)
-		}
-		out.Arguments = string(raw)
-	default:
+	if c.Type != ContentToolUse {
 		return fmt.Errorf("unsupported content type %q", c.Type)
 	}
+	out.ID = c.ID
+	out.Name = c.Name
+	raw, err := json.Marshal(c.Input)
+	if err != nil {
+		return fmt.Errorf("failed to marshal input: %w; for tool call: %#v", err, c)
+	}
+	out.Arguments = string(raw)
 	return nil
 }
 
@@ -958,6 +964,10 @@ func (s StopReason) ToFinishReason() genai.FinishReason {
 		return genai.FinishedStopSequence
 	case StopMaxTokens:
 		return genai.FinishedLength
+	case StopRefusal:
+		return genai.FinishedContentFilter
+	case StopPauseTurn:
+		return genai.FinishReason(s)
 	default:
 		if !internal.BeLenient {
 			panic(s)
@@ -1167,7 +1177,8 @@ func (b *BatchQueryResponse) To(out *genai.Message) error {
 			if err := b.Result.Message.Content[i].ToToolCall(&out.ToolCalls[len(out.ToolCalls)-1]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
-			// ContentImage, ContentDocument, ContentToolResult
+		case ContentImage, ContentDocument, ContentToolResult:
+			return fmt.Errorf("unsupported content type %q", b.Result.Message.Content[i].Type)
 		default:
 			return fmt.Errorf("unsupported content type %q", b.Result.Message.Content[i].Type)
 		}
@@ -1446,6 +1457,10 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				pendingCall.Name = pkt.ContentBlock.Name
 				pendingCall.Arguments = ""
 				// TODO: Is there anything to do with Input? pendingCall.Arguments = pkt.ContentBlock.Input
+			case ContentRedactedThinking:
+				f.Opaque = map[string]any{"redacted_thinking": pkt.ContentBlock.Signature}
+			case ContentImage, ContentDocument, ContentToolResult:
+				return fmt.Errorf("missing implementation for content block %q", pkt.ContentBlock.Type)
 			default:
 				return fmt.Errorf("missing implementation for content block %q", pkt.ContentBlock.Type)
 			}

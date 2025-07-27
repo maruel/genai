@@ -38,7 +38,7 @@ The _high performance_ low level native Go client for LLMs.
     - Output: generate images
 - 🎤: Audio
 - 🎥: Video: process a video (e.g. MP4) as input.
-- 🤪: Partial support: no MaxTokens or StopSequences, or JSON output is flay.
+- 🤪: Partial support: no MaxTokens or StopSequences, or JSON output is flaky.
 - 💸: Usage is not reported: we can't know how many tokens were used.
 - 🚩: Broken FinishReason: we can't know if the request was cut off.
 - 💨: Tool calling is flaky.

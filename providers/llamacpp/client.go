@@ -6,7 +6,9 @@
 // the OpenAI compatible one.
 //
 // It is described at
-// https://github.com/ggerganov/llama.cpp/blob/master/examples/server/README.md#api-endpoints
+// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md#api-endpoints
+//
+// The implementation is at https://github.com/ggml-org/llama.cpp/blob/master/tools/server/server.cpp
 package llamacpp
 
 import (
@@ -57,15 +59,16 @@ var Scoreboard = genai.Scoreboard{
 	},
 }
 
-// healthResponse is documented at
-// https://github.com/ggerganov/llama.cpp/blob/master/examples/server/README.md#api-endpoints
-type healthResponse struct {
+// HealthResponse is documented at
+// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md#get-health-returns-heath-check-result
+type HealthResponse struct {
 	Status          string
 	SlotsIdle       int64 `json:"slots_idle"`
 	SlotsProcessing int64 `json:"slots_processing"`
 }
 
-// https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
+// CompletionRequest is documented at
+// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 type CompletionRequest struct {
 	// TODO: Prompt can be a string, a list of tokens or a mix.
 	Prompt              string             `json:"prompt"`
@@ -446,9 +449,9 @@ func (er *ErrorResponse) String() string {
 type Client struct {
 	base.Provider[*ErrorResponse]
 
-	baseURL  string
-	chatURL  string
-	encoding *PromptEncoding
+	baseURL        string
+	completionsURL string
+	encoding       *PromptEncoding
 }
 
 // New creates a new client to talk to a llama-server instance.
@@ -475,9 +478,9 @@ func New(baseURL string, encoding *PromptEncoding, wrapper func(http.RoundTrippe
 				Client:  &http.Client{Transport: &roundtrippers.RequestID{Transport: t}},
 			},
 		},
-		baseURL:  baseURL,
-		chatURL:  baseURL + "/completion",
-		encoding: encoding,
+		baseURL:        baseURL,
+		completionsURL: baseURL + "/completion",
+		encoding:       encoding,
 	}, nil
 }
 
@@ -490,7 +493,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 }
 
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	// https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
+	// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
 	if err := msgs.Validate(); err != nil {
@@ -533,7 +536,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
 	// TODO: Distinguish between completion and chat. Chat is completion with the template applied.
 	in.Stream = false
-	return c.DoRequest(ctx, "POST", c.chatURL, in, out)
+	return c.DoRequest(ctx, "POST", c.completionsURL, in, out)
 }
 
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
@@ -597,23 +600,28 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
 	in.Stream = true
-	resp, err := c.ClientJSON.Request(ctx, "POST", c.chatURL, nil, in)
+	resp, err := c.ClientJSON.Request(ctx, "POST", c.completionsURL, nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get llama server response: %w", err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return c.DecodeError(c.chatURL, resp)
+		return c.DecodeError(c.completionsURL, resp)
 	}
 	return sse.Process(resp.Body, out, nil, c.ClientJSON.Lenient)
 }
 
 func (c *Client) GetHealth(ctx context.Context) (string, error) {
-	msg := healthResponse{}
+	msg, err := c.GetHealthRaw(ctx)
+	return msg.Status, err
+}
+
+func (c *Client) GetHealthRaw(ctx context.Context) (HealthResponse, error) {
+	msg := HealthResponse{}
 	if err := c.DoRequest(ctx, "GET", c.baseURL+"/health", nil, &msg); err != nil {
-		return "", fmt.Errorf("failed to get health response: %w", err)
+		return msg, fmt.Errorf("failed to get health response: %w", err)
 	}
-	return msg.Status, nil
+	return msg, nil
 }
 
 // GetMetrics retrieves the performance statistics from the server.
@@ -646,7 +654,7 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 			return fmt.Errorf("failed to parse line %q: %w", l, err)
 		}
 		// Search for these strings in
-		// https://github.com/ggerganov/llama.cpp/blob/master/examples/server/server.cpp
+		// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/server.cpp
 		f := 0.0
 		if parts[1] == "nan" || parts[1] == "-nan" {
 			f = math.NaN()

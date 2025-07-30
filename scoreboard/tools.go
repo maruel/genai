@@ -48,7 +48,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 	}
 	// TODO: Do not consider a single tool call failure a failure, try a few times.
 	resp, err := cs.callGen(ctx, prefix+"SquareRoot-1", msgs, &optsTools)
-	if isBadError(err) {
+	if isBadError(ctx, err) {
 		return err
 	}
 	flaky := false
@@ -67,7 +67,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 		// Try a second time without forcing a tool call.
 		optsTools.ToolCallRequest = genai.ToolCallAny
 		resp, err = cs.callGen(ctx, prefix+"SquareRoot-1-any", msgs, &optsTools)
-		if isBadError(err) {
+		if isBadError(ctx, err) {
 			return err
 		}
 		flaky = true
@@ -105,7 +105,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 	optsTools.ToolCallRequest = genai.ToolCallNone
 
 	resp, err = cs.callGen(ctx, prefix+"SquareRoot-2", msgs, &optsTools)
-	if isBadError(err) {
+	if isBadError(ctx, err) {
 		return err
 	}
 	if err != nil || len(resp.ToolCalls) != 0 {
@@ -169,7 +169,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 
 		check := prefix + fmt.Sprintf("ToolBias-%s", line.countrySelected)
 		resp, err := cs.callGen(ctx, check, genai.Messages{genai.NewTextMessage(genai.User, line.prompt)}, &opts)
-		if isBadError(err) {
+		if isBadError(ctx, err) {
 			return err
 		}
 		if err != nil {

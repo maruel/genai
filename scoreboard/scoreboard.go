@@ -191,7 +191,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	if err != nil {
 		internal.Logger(ctx).DebugContext(ctx, "Text", "err", err)
 		// It happens when the model is audio gen only.
-		if !isBadError(err) {
+		if !isBadError(ctx, err) {
 			err = nil
 		}
 		return nil, err
@@ -212,7 +212,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	// Seed
 	msgs = genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
 	resp, err = cs.callGen(ctx, prefix+"Seed", msgs, &genai.OptionsText{Seed: 42})
-	if isBadError(err) {
+	if isBadError(ctx, err) {
 		return f, err
 	}
 	f.Seed = err == nil
@@ -221,7 +221,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	// This will trigger citations on providers with search enabled.
 	msgs = genai.Messages{genai.NewTextMessage(genai.User, "Explain the theory of relativity in great details.")}
 	resp, err = cs.callGen(ctx, prefix+"MaxTokens", msgs, &genai.OptionsText{MaxTokens: 16})
-	if isBadError(err) {
+	if isBadError(ctx, err) {
 		return f, err
 	}
 	f.NoMaxTokens = err != nil || strings.Count(resp.AsText(), " ")+1 > 20
@@ -243,7 +243,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	// Stop
 	msgs = genai.Messages{genai.NewTextMessage(genai.User, "Talk about Canada in great details. Start with: Canada is")}
 	resp, err = cs.callGen(ctx, prefix+"Stop", msgs, &genai.OptionsText{Stop: []string{"is"}})
-	if isBadError(err) {
+	if isBadError(ctx, err) {
 		return f, err
 	}
 	f.NoStopSequence = err != nil || strings.Count(resp.AsText(), " ")+1 > 20
@@ -266,7 +266,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	// JSON
 	msgs = genai.Messages{genai.NewTextMessage(genai.User, `Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {"is_fruit": bool}.`)}
 	resp, err = cs.callGen(ctx, prefix+"JSON", msgs, &genai.OptionsText{ReplyAsJSON: true})
-	if isBadError(err) {
+	if isBadError(ctx, err) {
 		return f, err
 	}
 	if err == nil {
@@ -291,7 +291,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 		IsFruit bool `json:"is_fruit"`
 	}
 	resp, err = cs.callGen(ctx, prefix+"JSONSchema", msgs, &genai.OptionsText{DecodeAs: &schema{}})
-	if isBadError(err) {
+	if isBadError(ctx, err) {
 		return f, err
 	}
 	if err == nil {
@@ -328,7 +328,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 		},
 	}
 	resp, err = cs.callGen(ctx, prefix+"Citations", msgs, &genai.OptionsText{})
-	if isBadError(err) {
+	if isBadError(ctx, err) {
 		return f, err
 	}
 	var uerr *genai.UnsupportedContinuableError
@@ -408,7 +408,7 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *genai.Funct
 			if !slices.Contains(m.SupportedFormats, format.mime) {
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
 			}
-		} else if isBadError(err) {
+		} else if isBadError(ctx, err) {
 			return m, err
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
@@ -423,7 +423,7 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *genai.Funct
 			if !slices.Contains(m.SupportedFormats, format.mime) {
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
 			}
-		} else if isBadError(err) {
+		} else if isBadError(ctx, err) {
 			return m, err
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
@@ -459,7 +459,7 @@ func exerciseGenInputImage(ctx context.Context, cs *callState, f *genai.Function
 			if !slices.Contains(m.SupportedFormats, format.mime) {
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
 			}
-		} else if isBadError(err) {
+		} else if isBadError(ctx, err) {
 			return m, err
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
@@ -474,7 +474,7 @@ func exerciseGenInputImage(ctx context.Context, cs *callState, f *genai.Function
 			if !slices.Contains(m.SupportedFormats, format.mime) {
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
 			}
-		} else if isBadError(err) {
+		} else if isBadError(ctx, err) {
 			return m, err
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
@@ -510,7 +510,7 @@ func exerciseGenInputAudio(ctx context.Context, cs *callState, f *genai.Function
 			if !slices.Contains(m.SupportedFormats, format.mime) {
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
 			}
-		} else if isBadError(err) {
+		} else if isBadError(ctx, err) {
 			return m, err
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
@@ -525,7 +525,7 @@ func exerciseGenInputAudio(ctx context.Context, cs *callState, f *genai.Function
 			if !slices.Contains(m.SupportedFormats, format.mime) {
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
 			}
-		} else if isBadError(err) {
+		} else if isBadError(ctx, err) {
 			return m, err
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
@@ -558,7 +558,7 @@ func exerciseGenInputVideo(ctx context.Context, cs *callState, f *genai.Function
 			if !slices.Contains(m.SupportedFormats, format.mime) {
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
 			}
-		} else if isBadError(err) {
+		} else if isBadError(ctx, err) {
 			return m, err
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
@@ -573,7 +573,7 @@ func exerciseGenInputVideo(ctx context.Context, cs *callState, f *genai.Function
 			if !slices.Contains(m.SupportedFormats, format.mime) {
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
 			}
-		} else if isBadError(err) {
+		} else if isBadError(ctx, err) {
 			return m, err
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
@@ -760,7 +760,7 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 			out.GenDoc.BrokenFinishReason = true
 		}
 	}
-	if isBadError(err) {
+	if isBadError(ctx, err) {
 		return err
 	}
 	return nil
@@ -833,7 +833,7 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 			out.GenDoc.BrokenFinishReason = true
 		}
 	}
-	if isBadError(err) {
+	if isBadError(ctx, err) {
 		return err
 	}
 	return nil
@@ -841,9 +841,10 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 
 const rootURL = "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/"
 
-func isBadError(err error) bool {
+func isBadError(ctx context.Context, err error) bool {
 	var uerr *httpjson.UnknownFieldError
 	if errors.Is(err, cassette.ErrInteractionNotFound) || errors.As(err, &uerr) {
+		internal.Logger(ctx).ErrorContext(ctx, "isBadError", "err", err)
 		return true
 	}
 	// Tolerate HTTP 400 as when a model is passed something that it doesn't accept, e.g. sending audio input to

@@ -18,6 +18,7 @@ import (
 	"io"
 	"math"
 	"net/http"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -114,7 +115,12 @@ type CompletionRequest struct {
 	TimingsPerToken     bool               `json:"timings_per_token,omitzero"`
 	PostSamplingProbs   bool               `json:"post_sampling_probs,omitzero"`
 	ResponseFields      []string           `json:"response_fields,omitzero"`
-	Lora                []any              `json:"lora,omitzero"`
+	Lora                []Lora             `json:"lora,omitzero"`
+}
+
+type Lora struct {
+	ID    int64   `json:"id,omitzero"`
+	Scale float64 `json:"scale,omitzero"`
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
@@ -212,7 +218,7 @@ type CompletionResponse struct {
 		SpeculativePMin     float64  `json:"speculative.p_min"`
 		TimingsPerToken     bool     `json:"timings_per_token"`
 		PostSamplingProbs   bool     `json:"post_sampling_probs"`
-		Lora                []any    `json:"lora"`
+		Lora                []Lora   `json:"lora"`
 		TopNSigma           float64  `json:"top_n_sigma"`
 	} `json:"generation_settings"`
 	Prompt       string   `json:"prompt"`
@@ -375,6 +381,82 @@ type Message struct {
 
 //
 
+type ModelHF struct {
+	Name         string   `json:"name"`  // Path to the file
+	Model        string   `json:"model"` // Path to the file
+	ModifiedAt   string   `json:"modified_at"`
+	Size         string   `json:"size"`
+	Digest       string   `json:"digest"`
+	Type         string   `json:"type"` // "model"
+	Description  string   `json:"description"`
+	Tags         []string `json:"tags"`
+	Capabilities []string `json:"capabilities"` // "completion"
+	Parameters   string   `json:"parameters"`
+	Details      struct {
+		ParentModel       string   `json:"parent_model"`
+		Format            string   `json:"format"` // "gguf"
+		Family            string   `json:"family"`
+		Families          []string `json:"families"`
+		ParameterSize     string   `json:"parameter_size"`
+		QuantizationLevel string   `json:"quantization_level"`
+	} `json:"details"`
+}
+
+type ModelOpenAI struct {
+	ID      string    `json:"id"`     // Path to the file
+	Object  string    `json:"object"` // "model"
+	Created base.Time `json:"created"`
+	OwnedBy string    `json:"owned_by"` // "llamacpp"
+	Meta    struct {
+		VocabType int64 `json:"vocab_type"` // 1
+		NVocab    int64 `json:"n_vocab"`
+		NCtxTrain int64 `json:"n_ctx_train"`
+		NEmbd     int64 `json:"n_embd"`
+		NParams   int64 `json:"n_params"`
+		Size      int64 `json:"size"`
+	} `json:"meta"`
+}
+
+// Model is a synthetic struct combining the information from both ModelHF and ModelOpenAI
+type Model struct {
+	HF     ModelHF
+	OpenAI ModelOpenAI
+}
+
+// GetID implements genai.Model.
+//
+// It returns the base path name otherwise it's overwhelming and breaks our test cases.
+func (m *Model) GetID() string {
+	return filepath.Base(m.OpenAI.ID)
+}
+
+func (m *Model) String() string {
+	return m.OpenAI.ID
+}
+
+func (m *Model) Context() int64 {
+	return m.OpenAI.Meta.NCtxTrain
+}
+
+type ModelsResponse struct {
+	Models []ModelHF     `json:"models"`
+	Object string        `json:"object"` // "list"
+	Data   []ModelOpenAI `json:"data"`
+}
+
+func (m *ModelsResponse) ToModels() []genai.Model {
+	var out []genai.Model
+	if len(m.Models) != len(m.Data) {
+		panic(fmt.Errorf("unexpected response; got different list sizes for models: %d vs %d", len(m.Models), len(m.Data)).Error())
+	}
+	for i := range m.Models {
+		out = append(out, &Model{HF: m.Models[i], OpenAI: m.Data[i]})
+	}
+	return out
+}
+
+//
+
 // PromptEncoding describes how to encode the prompt.
 type PromptEncoding struct {
 	// Prompt encoding.
@@ -451,6 +533,7 @@ type Client struct {
 
 	baseURL        string
 	completionsURL string
+	modelsURL      string
 	encoding       *PromptEncoding
 }
 
@@ -480,6 +563,7 @@ func New(baseURL string, encoding *PromptEncoding, wrapper func(http.RoundTrippe
 		},
 		baseURL:        baseURL,
 		completionsURL: baseURL + "/completion",
+		modelsURL:      baseURL + "/v1/models",
 		encoding:       encoding,
 	}, nil
 }
@@ -490,6 +574,11 @@ func (c *Client) Name() string {
 
 func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard
+}
+
+func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	// https://api-docs.deepseek.com/api/list-models
+	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, c.modelsURL)
 }
 
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
@@ -584,7 +673,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	ch := make(chan CompletionStreamChunkResponse)
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		return processStreamPackets(ch, chunks, &result)
+		return processCompletionsStreamPackets(ch, chunks, &result)
 	})
 	err := c.CompletionStreamRaw(ctx, &in, ch)
 	close(ch)
@@ -753,7 +842,7 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 	return nil
 }
 
-func processStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
+func processCompletionsStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
 	for msg := range ch {
 		if msg.Timings.PredictedN != 0 {
 			result.InputTokens = msg.Timings.PromptN

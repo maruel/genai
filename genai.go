@@ -497,7 +497,7 @@ func (c *Content) UnmarshalJSON(b []byte) error {
 	c.Filename = cc.Filename
 	c.URL = cc.URL
 	if len(cc.Document) != 0 {
-		c.Document = bytes.NewReader(cc.Document)
+		c.Document = &bb.BytesBuffer{D: cc.Document}
 	}
 	return c.Validate()
 }

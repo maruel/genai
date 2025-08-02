@@ -1060,7 +1060,7 @@ func (d *Duration) MarshalJSON() ([]byte, error) {
 }
 
 func (d *Duration) UnmarshalJSON(b []byte) error {
-	var s string
+	s := ""
 	if err := json.Unmarshal(b, &s); err != nil {
 		return fmt.Errorf("invalid duration %q: %w", string(b), err)
 	}

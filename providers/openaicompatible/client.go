@@ -8,6 +8,7 @@
 package openaicompatible
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -145,31 +146,35 @@ func (c *Contents) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements custom unmarshalling for Contents type
 // to handle cases where content could be a string or Content struct.
-func (c *Contents) UnmarshalJSON(data []byte) error {
-	// Try unmarshalling as a string first
-	var contentStr string
-	if err := json.Unmarshal(data, &contentStr); err == nil {
-		// If it worked, create a single content with the string
-		*c = Contents{{
-			Type: ContentText,
-			Text: contentStr,
-		}}
+func (c *Contents) UnmarshalJSON(b []byte) error {
+	if bytes.Equal(b, []byte("null")) {
+		*c = nil
 		return nil
 	}
-	// If that failed, try as array of Content
-	var contents []Content
-	if err := json.Unmarshal(data, &contents); err == nil {
-		*c = contents
+	d := json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
+	}
+	if err := d.Decode((*[]Content)(c)); err == nil {
 		return nil
 	}
 
-	// If that failed, try as one Content
-	var content Content
-	err := json.Unmarshal(data, &content)
-	if err == nil {
-		*c = Contents{content}
+	v := Content{}
+	d = json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
 	}
-	return err
+	if err := d.Decode(&v); err == nil {
+		*c = Contents{v}
+		return nil
+	}
+
+	s := ""
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	*c = Contents{{Type: ContentText, Text: s}}
+	return nil
 }
 
 // From converts from a genai.Message to a Message.

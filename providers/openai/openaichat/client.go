@@ -541,17 +541,24 @@ type Contents []Content
 // UnmarshalJSON implements json.Unmarshaler.
 //
 // OpenAI replies with content as a string.
-func (c *Contents) UnmarshalJSON(data []byte) error {
-	var v []Content
-	if err := json.Unmarshal(data, &v); err != nil {
-		s := ""
-		if err = json.Unmarshal(data, &s); err != nil {
-			return err
-		}
-		*c = []Content{{Type: ContentText, Text: s}}
+func (c *Contents) UnmarshalJSON(b []byte) error {
+	if bytes.Equal(b, []byte("null")) {
+		*c = nil
 		return nil
 	}
-	*c = Contents(v)
+	d := json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
+	}
+	if err := d.Decode((*[]Content)(c)); err == nil {
+		return nil
+	}
+
+	s := ""
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	*c = Contents{{Type: ContentText, Text: s}}
 	return nil
 }
 

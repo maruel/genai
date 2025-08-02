@@ -8,6 +8,7 @@
 package mistral
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
@@ -782,17 +783,19 @@ func (ed *ErrorDetails) String() string {
 	return out
 }
 
-func (ed *ErrorDetails) UnmarshalJSON(d []byte) error {
-	s := ""
-	if err := json.Unmarshal(d, &s); err == nil {
-		*ed = []ErrorDetail{{Msg: s}}
+func (ed *ErrorDetails) UnmarshalJSON(b []byte) error {
+	d := json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
+	}
+	if err := d.Decode((*[]ErrorDetail)(ed)); err == nil {
 		return nil
 	}
-	var x []ErrorDetail
-	if err := json.Unmarshal(d, &x); err != nil {
+	s := ""
+	if err := json.Unmarshal(b, &s); err != nil {
 		return err
 	}
-	*ed = x
+	*ed = []ErrorDetail{{Msg: s}}
 	return nil
 }
 
@@ -800,16 +803,20 @@ type ErrorMessage struct {
 	Detail ErrorDetails `json:"detail"`
 }
 
-func (er *ErrorMessage) UnmarshalJSON(d []byte) error {
+func (er *ErrorMessage) UnmarshalJSON(b []byte) error {
 	s := ""
-	if err := json.Unmarshal(d, &s); err == nil {
+	if err := json.Unmarshal(b, &s); err == nil {
 		er.Detail = ErrorDetails{{Msg: s}}
 		return nil
 	}
 	var x struct {
 		Detail ErrorDetails `json:"detail"`
 	}
-	if err := json.Unmarshal(d, &x); err != nil {
+	d := json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
+	}
+	if err := d.Decode(&x); err != nil {
 		return err
 	}
 	er.Detail = x.Detail

@@ -49,8 +49,10 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 	// TODO: Do not consider a single tool call failure a failure, try a few times.
 	resp, err := cs.callGen(ctx, prefix+"SquareRoot-1", msgs, &optsTools)
 	if isBadError(ctx, err) {
+		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1", "err", err)
 		return err
 	}
+	internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1", "resp", resp)
 	flaky := false
 	var uerr *genai.UnsupportedContinuableError
 	if errors.As(err, &uerr) {
@@ -64,10 +66,12 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 		}
 	}
 	if err != nil {
+		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1", "err", err, "msg", "trying toolany")
 		// Try a second time without forcing a tool call.
 		optsTools.ToolCallRequest = genai.ToolCallAny
 		resp, err = cs.callGen(ctx, prefix+"SquareRoot-1-any", msgs, &optsTools)
 		if isBadError(ctx, err) {
+			internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1-any", "err", err)
 			return err
 		}
 		flaky = true
@@ -96,6 +100,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 	msgs = append(msgs, resp.Message)
 	tr, err := resp.DoToolCalls(ctx, optsTools.Tools)
 	if err != nil {
+		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1 (do calls)", "err", err)
 		f.Tools = genai.False
 		return nil
 	}
@@ -107,9 +112,11 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 
 	resp, err = cs.callGen(ctx, prefix+"SquareRoot-2", msgs, &optsTools)
 	if isBadError(ctx, err) {
+		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-2", "err", err)
 		return err
 	}
 	if err != nil || len(resp.ToolCalls) != 0 {
+		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-2", "err", err)
 		f.Tools = genai.Flaky
 		f.BiasedTool = genai.False
 		f.IndecisiveTool = genai.False

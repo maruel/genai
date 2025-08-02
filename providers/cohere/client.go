@@ -10,6 +10,7 @@ package cohere
 // See official client at https://github.com/cohere-ai/cohere-go
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
@@ -244,14 +245,14 @@ func (c *ChatRequest) SetStream(stream bool) {
 // Message is documented at https://docs.cohere.com/reference/chat
 type Message struct {
 	Role string `json:"role"` // "system", "assistant", "user", "tool"
-	// Type == "system", "assistant", or "user".
+	// Type == "system", "assistant", "user" or "tool".
 	Content []Content `json:"content,omitzero"`
 	// Type == "assistant"
 	Citations []Citation `json:"citations,omitzero"`
-	// Type == "assistant"
-	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
-	ToolCallID string     `json:"tool_call_id,omitzero"`
-	ToolPlan   string     `json:"tool_plan,omitzero"`
+	ToolCalls []ToolCall `json:"tool_calls,omitzero"`
+	ToolPlan  string     `json:"tool_plan,omitzero"`
+	// Type == "tool"
+	ToolCallID string `json:"tool_call_id,omitzero"`
 }
 
 func (m *Message) From(in *genai.Message) ([]Document, error) {
@@ -383,16 +384,25 @@ type Citations []Citation
 
 // UnmarshalJSON implements custom unmarshalling for Citations type
 // to handle cases where citations could be a list or a single object.
-func (c *Citations) UnmarshalJSON(data []byte) error {
-	// Try unmarshalling as a a list first
-	var l []Citation
-	if err := json.Unmarshal(data, &l); err == nil {
-		*c = (Citations)(l)
+func (c *Citations) UnmarshalJSON(b []byte) error {
+	if bytes.Equal(b, []byte("null")) {
+		*c = nil
+		return nil
+	}
+	d := json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
+	}
+	if err := d.Decode((*[]Citation)(c)); err == nil {
 		return nil
 	}
 
-	var v Citation
-	if err := json.Unmarshal(data, &v); err != nil {
+	v := Citation{}
+	d = json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
+	}
+	if err := d.Decode(&v); err != nil {
 		return err
 	}
 	*c = Citations{v}
@@ -605,14 +615,32 @@ func (m *MessageResponse) To(out *genai.Message) error {
 type Contents []Content
 
 func (c *Contents) UnmarshalJSON(b []byte) error {
-	cc := Content{}
-	if err := json.Unmarshal(b, &cc); err == nil {
-		if !cc.IsZero() {
-			*c = (Contents)([]Content{cc})
-		}
+	if bytes.Equal(b, []byte("null")) {
+		*c = nil
 		return nil
 	}
-	return json.Unmarshal(b, (*[]Content)(c))
+	d := json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
+	}
+	if err := d.Decode((*[]Content)(c)); err == nil {
+		return nil
+	}
+
+	v := Content{}
+	d = json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
+	}
+	if err := d.Decode(&v); err != nil {
+		return err
+	}
+	if !v.IsZero() {
+		*c = (Contents)([]Content{v})
+	} else {
+		*c = nil
+	}
+	return nil
 }
 
 type ToolCall struct {
@@ -644,14 +672,32 @@ func (t *ToolCall) To(out *genai.ToolCall) {
 type ToolCalls []ToolCall
 
 func (t *ToolCalls) UnmarshalJSON(b []byte) error {
-	tc := ToolCall{}
-	if err := json.Unmarshal(b, &tc); err == nil {
-		if !tc.IsZero() {
-			*t = (ToolCalls)([]ToolCall{tc})
-		}
+	if bytes.Equal(b, []byte("null")) {
+		*t = nil
 		return nil
 	}
-	return json.Unmarshal(b, (*[]ToolCall)(t))
+	d := json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
+	}
+	if err := d.Decode((*[]ToolCall)(t)); err == nil {
+		return nil
+	}
+
+	tc := ToolCall{}
+	d = json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
+	}
+	if err := d.Decode(&tc); err != nil {
+		return err
+	}
+	if !tc.IsZero() {
+		*t = (ToolCalls)([]ToolCall{tc})
+	} else {
+		*t = nil
+	}
+	return nil
 }
 
 type ChatStreamChunkResponse struct {

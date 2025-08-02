@@ -11,6 +11,7 @@ package anthropic
 // See official client at https://github.com/anthropics/anthropic-sdk-go
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
@@ -740,22 +741,34 @@ const (
 
 // UnmarshalJSON implements json.Unmarshaler for Citations.
 // It attempts to unmarshal the input as either a slice of Citations or a struct with an Enabled field.
-func (c *Citations) UnmarshalJSON(data []byte) error {
-	var s []Citation
-	// TODO: Unknown fields.
-	if err := json.Unmarshal(data, &s); err == nil {
-		c.Citations = s
+func (c *Citations) UnmarshalJSON(b []byte) error {
+	if bytes.Equal(b, []byte("null")) {
+		c.Citations = nil
 		c.Enabled = false
 		return nil
 	}
-	o := citationsObject{}
-	// TODO: Unknown fields.
-	if err := json.Unmarshal(data, &o); err == nil {
-		c.Enabled = o.Enabled
-		c.Citations = nil
+	d := json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
+	}
+	var cc []Citation
+	if err := d.Decode(&cc); err == nil {
+		c.Citations = cc
+		c.Enabled = false
 		return nil
 	}
-	return fmt.Errorf("failed to unmarshal Citations as array or object")
+
+	o := citationsObject{}
+	d = json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
+	}
+	if err := d.Decode(&o); err != nil {
+		return err
+	}
+	c.Enabled = o.Enabled
+	c.Citations = nil
+	return nil
 }
 
 // MarshalJSON implements json.Marshaler for Citations.

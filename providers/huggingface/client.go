@@ -9,6 +9,7 @@
 package huggingface
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
@@ -598,6 +599,9 @@ func (er *ErrorResponse) Error() string {
 		return fmt.Sprintf("http %d: %s", er.ErrorVal.HTTPStatusCode, er.ErrorVal.Message)
 	}
 	if er.ErrorVal.Message != "" {
+		if er.ErrorVal.Type != "" {
+			return fmt.Sprintf("%s (%s): %s: %s", er.ErrorVal.Type, er.ErrorVal.Code, er.ErrorVal.Param, er.ErrorVal.Message)
+		}
 		return er.ErrorVal.Message
 	}
 	return fmt.Sprintf("http %d (%s): %s", er.Code, er.Reason, er.Message)
@@ -610,23 +614,26 @@ func (er *ErrorResponse) IsAPIError() bool {
 type ErrorError struct {
 	Message        string `json:"message"`
 	HTTPStatusCode int64  `json:"http_status_code"`
+	Type           string `json:"type"`
+	Param          string `json:"param"`
+	Code           string `json:"code"`
 }
 
-func (ee *ErrorError) UnmarshalJSON(d []byte) error {
+func (ee *ErrorError) UnmarshalJSON(b []byte) error {
 	s := ""
-	if err := json.Unmarshal(d, &s); err == nil {
+	if err := json.Unmarshal(b, &s); err == nil {
 		ee.Message = s
 		return nil
 	}
-	var x struct {
-		Message        string `json:"message"`
-		HTTPStatusCode int64  `json:"http_status_code"`
+	type Alias ErrorError
+	a := struct{ *Alias }{Alias: (*Alias)(ee)}
+	d := json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
 	}
-	if err := json.Unmarshal(d, &x); err != nil {
+	if err := d.Decode(&a); err != nil {
 		return err
 	}
-	ee.Message = x.Message
-	ee.HTTPStatusCode = x.HTTPStatusCode
 	return nil
 }
 

@@ -81,8 +81,8 @@ func TestClient_Provider_errors(t *testing.T) {
 		{
 			Name:         "bad model",
 			Model:        "bad model",
-			ErrGenSync:   "http 400\nThe requested model 'bad model' does not exist.",
-			ErrGenStream: "http 400\nThe requested model 'bad model' does not exist.",
+			ErrGenSync:   "http 400\ninvalid_request_error (model_not_found): model: The requested model 'bad model' does not exist.",
+			ErrGenStream: "http 400\ninvalid_request_error (model_not_found): model: The requested model 'bad model' does not exist.",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.Provider {

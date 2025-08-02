@@ -20,6 +20,7 @@ import (
 	"sync"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/httpjson"
 	"golang.org/x/sync/errgroup"
@@ -846,6 +847,11 @@ func isBadError(ctx context.Context, err error) bool {
 	if errors.Is(err, cassette.ErrInteractionNotFound) || errors.As(err, &uerr) {
 		internal.Logger(ctx).ErrorContext(ctx, "isBadError", "err", err)
 		return true
+	}
+	// API error are never 'bad'.
+	var ua base.ErrAPI
+	if errors.As(err, &ua) && ua.IsAPIError() {
+		return false
 	}
 	// Tolerate HTTP 400 as when a model is passed something that it doesn't accept, e.g. sending audio input to
 	// a text-only model, the provider often respond with 400. 500s should not be tolerated at all.

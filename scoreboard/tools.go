@@ -85,6 +85,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 	}
 
 	if err != nil || len(resp.ToolCalls) == 0 {
+		internal.Logger(ctx).DebugContext(ctx, "SquareRoot", "err", err)
 		// Tools are not supported, no need to do the rest.
 		f.Tools = genai.False
 		f.BiasedTool = genai.False

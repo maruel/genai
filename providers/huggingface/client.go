@@ -580,7 +580,7 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 //
 
 type ErrorResponse struct {
-	Error     ErrorError `json:"error"`
+	ErrorVal  ErrorError `json:"error"`
 	ErrorType string     `json:"error_type"`
 	Detail    string     `json:"detail"`
 	Code      int64      `json:"code"`
@@ -589,17 +589,22 @@ type ErrorResponse struct {
 	Metadata  struct{}   `json:"metadata"`
 }
 
-func (er *ErrorResponse) String() string {
+func (er *ErrorResponse) Error() string {
 	if er.Detail != "" {
-		return "error " + er.Detail
+		return er.Detail
 	}
-	if er.Error.HTTPStatusCode != 0 {
-		return fmt.Sprintf("http %d: %s", er.Error.HTTPStatusCode, er.Error.Message)
+	if er.ErrorVal.HTTPStatusCode != 0 {
+		// This is a relayed http failure from the router.
+		return fmt.Sprintf("http %d: %s", er.ErrorVal.HTTPStatusCode, er.ErrorVal.Message)
 	}
-	if er.Error.Message != "" {
-		return "error " + er.Error.Message
+	if er.ErrorVal.Message != "" {
+		return er.ErrorVal.Message
 	}
 	return fmt.Sprintf("http %d (%s): %s", er.Code, er.Reason, er.Message)
+}
+
+func (er *ErrorResponse) IsAPIError() bool {
+	return true
 }
 
 type ErrorError struct {

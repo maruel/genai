@@ -74,15 +74,15 @@ func TestClient_Provider_errors(t *testing.T) {
 			Name:         "bad apiKey",
 			APIKey:       "bad apiKey",
 			Model:        "Qwen/Qwen3-4B",
-			ErrGenSync:   "http 401: error Invalid credentials in Authorization header. You can get a new API key at https://huggingface.co/settings/tokens",
-			ErrGenStream: "http 401: error Invalid credentials in Authorization header. You can get a new API key at https://huggingface.co/settings/tokens",
-			ErrListModel: "http 401: error Invalid credentials in Authorization header. You can get a new API key at https://huggingface.co/settings/tokens",
+			ErrGenSync:   "http 401\nInvalid credentials in Authorization header\nget a new API key at https://huggingface.co/settings/tokens",
+			ErrGenStream: "http 401\nInvalid credentials in Authorization header\nget a new API key at https://huggingface.co/settings/tokens",
+			ErrListModel: "http 401\nInvalid credentials in Authorization header\nget a new API key at https://huggingface.co/settings/tokens",
 		},
 		{
 			Name:         "bad model",
 			Model:        "bad model",
-			ErrGenSync:   "http 400: error The requested model 'bad model' does not exist.",
-			ErrGenStream: "http 400: error The requested model 'bad model' does not exist.",
+			ErrGenSync:   "http 400\nThe requested model 'bad model' does not exist.",
+			ErrGenStream: "http 400\nThe requested model 'bad model' does not exist.",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.Provider {

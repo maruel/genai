@@ -738,15 +738,19 @@ type ErrorResponse struct {
 	// Code  int64  `json:"code"`
 }
 
-func (er *ErrorResponse) String() string {
+func (er *ErrorResponse) Error() string {
 	out := er.Type
 	if out != "" {
 		out += ": "
 	}
 	if s := er.Detail.String(); s != "" {
-		return "error " + out + s
+		return out + s
 	}
-	return "error " + out + er.Message.Detail.String()
+	return out + er.Message.Detail.String()
+}
+
+func (er *ErrorResponse) IsAPIError() bool {
+	return true
 }
 
 // ErrorDetail can be either a struct or a string. When a string, it decodes into Msg.

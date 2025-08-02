@@ -801,8 +801,8 @@ type ImageChoiceData struct {
 //
 
 type ErrorResponse struct {
-	ID    string `json:"id"`
-	Error struct {
+	ID       string `json:"id"`
+	ErrorVal struct {
 		Message string `json:"message"`
 		Type    string `json:"type"`
 		Code    string `json:"code"`
@@ -810,11 +810,18 @@ type ErrorResponse struct {
 	} `json:"error"`
 }
 
-func (er *ErrorResponse) String() string {
-	if er.Error.Code != "" {
-		return fmt.Sprintf("error %s (%s): %s", er.Error.Code, er.Error.Type, er.Error.Message)
+func (er *ErrorResponse) Error() string {
+	if er.ErrorVal.Code != "" {
+		return fmt.Sprintf("%s (%s): %s", er.ErrorVal.Code, er.ErrorVal.Type, er.ErrorVal.Message)
 	}
-	return fmt.Sprintf("error (%s): %s", er.Error.Type, er.Error.Message)
+	if er.ErrorVal.Type != "" {
+		return fmt.Sprintf("%s: %s", er.ErrorVal.Type, er.ErrorVal.Message)
+	}
+	return er.ErrorVal.Message
+}
+
+func (er *ErrorResponse) IsAPIError() bool {
+	return true
 }
 
 // Client implements genai.ProviderGen and genai.ProviderModel.

@@ -330,8 +330,12 @@ type Usage struct {
 // ErrorResponse is as generic as possible since error responses are highly non-standard.
 type ErrorResponse map[string]any
 
-func (er *ErrorResponse) String() string {
-	return fmt.Sprintf("error %s", *er)
+func (er *ErrorResponse) Error() string {
+	return fmt.Sprintf("%s", *er)
+}
+
+func (er *ErrorResponse) IsAPIError() bool {
+	return true
 }
 
 // Client implements genai.ProviderGen.

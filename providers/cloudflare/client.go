@@ -616,12 +616,16 @@ type ErrorResponse struct {
 	Messages []struct{} `json:"messages"` // Annoyingly, it's included all the time
 }
 
-func (er *ErrorResponse) String() string {
+func (er *ErrorResponse) Error() string {
 	if len(er.Errors) == 0 {
-		return fmt.Sprintf("error unknown (%#v)", er)
+		return fmt.Sprintf("unknown (%#v)", er)
 	}
 	// Sometimes Code is set too.
-	return fmt.Sprintf("error %s", er.Errors[0].Message)
+	return er.Errors[0].Message
+}
+
+func (er *ErrorResponse) IsAPIError() bool {
+	return true
 }
 
 // Client implements genai.ProviderGen and genai.ProviderModel.

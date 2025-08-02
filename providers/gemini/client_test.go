@@ -270,15 +270,15 @@ func TestClient_Provider_errors(t *testing.T) {
 			Name:         "bad apiKey",
 			APIKey:       "badApiKey",
 			Model:        "gemini-2.0-flash-lite",
-			ErrGenSync:   "http 400: error 400 (INVALID_ARGUMENT): API key not valid. Please pass a valid API key.",
-			ErrGenStream: "http 400: error 400 (INVALID_ARGUMENT): API key not valid. Please pass a valid API key.",
-			ErrListModel: "http 400: error 400 (INVALID_ARGUMENT): API key not valid. Please pass a valid API key.",
+			ErrGenSync:   "http 400\nINVALID_ARGUMENT (400): API key not valid. Please pass a valid API key.",
+			ErrGenStream: "http 400\nINVALID_ARGUMENT (400): API key not valid. Please pass a valid API key.",
+			ErrListModel: "http 400\nINVALID_ARGUMENT (400): API key not valid. Please pass a valid API key.",
 		},
 		{
 			Name:         "bad model",
 			Model:        "bad model",
-			ErrGenSync:   "http 400: error 400 (INVALID_ARGUMENT): * GenerateContentRequest.model: unexpected model name format",
-			ErrGenStream: "http 400: error 400 (INVALID_ARGUMENT): * GenerateContentRequest.model: unexpected model name format",
+			ErrGenSync:   "http 400\nINVALID_ARGUMENT (400): * GenerateContentRequest.model: unexpected model name format",
+			ErrGenStream: "http 400\nINVALID_ARGUMENT (400): * GenerateContentRequest.model: unexpected model name format",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.Provider {

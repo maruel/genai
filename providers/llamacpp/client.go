@@ -514,15 +514,19 @@ type applyTemplateResponse struct {
 }
 
 type ErrorResponse struct {
-	Error struct {
+	ErrorVal struct {
 		Code    int64
 		Message string
 		Type    string
 	} `json:"error"`
 }
 
-func (er *ErrorResponse) String() string {
-	return fmt.Sprintf("error %d (%s): %s", er.Error.Code, er.Error.Type, er.Error.Message)
+func (er *ErrorResponse) Error() string {
+	return fmt.Sprintf("%d (%s): %s", er.ErrorVal.Code, er.ErrorVal.Type, er.ErrorVal.Message)
+}
+
+func (er *ErrorResponse) IsAPIError() bool {
+	return true
 }
 
 //

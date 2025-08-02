@@ -443,7 +443,7 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 type ErrorResponse struct {
 	// Type  string `json:"type"`
-	Error struct {
+	ErrorVal struct {
 		Message string `json:"message"`
 		Type    string `json:"type"`
 		Param   string `json:"param"`
@@ -451,8 +451,12 @@ type ErrorResponse struct {
 	} `json:"error"`
 }
 
-func (er *ErrorResponse) String() string {
-	return fmt.Sprintf("error %s: %s", er.Error.Type, er.Error.Message)
+func (er *ErrorResponse) Error() string {
+	return fmt.Sprintf("%s: %s", er.ErrorVal.Type, er.ErrorVal.Message)
+}
+
+func (er *ErrorResponse) IsAPIError() bool {
+	return true
 }
 
 // Client implements genai.ProviderGen and genai.ProviderModel.

@@ -776,9 +776,9 @@ func (r *TextModelsResponse) ToModels() []genai.Model {
 //
 
 type ErrorResponse struct {
-	Error   string `json:"error"`
-	Status  int64  `json:"status"`
-	Details struct {
+	ErrorVal string `json:"error"`
+	Status   int64  `json:"status"`
+	Details  struct {
 		Detail string `json:"detail"`
 		Error  struct {
 			Message string `json:"message"`
@@ -811,28 +811,32 @@ type ErrorResponse struct {
 	RequestParameters map[string]any `json:"requestParameters"`
 }
 
-func (er *ErrorResponse) String() string {
+func (er *ErrorResponse) Error() string {
 	suffix := ""
 	if er.Details.Provider != "" {
 		suffix = "; provider:" + er.Details.Provider
 	}
 	if len(er.Details.Errors) != 0 {
-		return fmt.Sprintf("error %s%s", er.Details.Errors[0].Message, suffix)
+		return fmt.Sprintf("%s%s", er.Details.Errors[0].Message, suffix)
 	}
 	if er.Details.Error.Message != "" {
 		// It already contains the Provider name.
-		return fmt.Sprintf("error %s/%s%s: %s%s", er.Details.Error.Type, er.Details.Error.Param, er.Details.Error.Code, er.Details.Error.Message, suffix)
+		return fmt.Sprintf("%s/%s%s: %s%s", er.Details.Error.Type, er.Details.Error.Param, er.Details.Error.Code, er.Details.Error.Message, suffix)
 	}
 	if er.Details.Message != "" {
-		return fmt.Sprintf("error %s%s", er.Details.Message, suffix)
+		return fmt.Sprintf("%s%s", er.Details.Message, suffix)
 	}
 	if er.Details.Detail != "" {
-		return fmt.Sprintf("error %s%s", er.Details.Detail, suffix)
+		return fmt.Sprintf("%s%s", er.Details.Detail, suffix)
 	}
 	if er.Message != "" {
-		return fmt.Sprintf("error %s %s%s", er.Error, er.Message, suffix)
+		return fmt.Sprintf("%s %s%s", er.ErrorVal, er.Message, suffix)
 	}
-	return fmt.Sprintf("error %s%s", er.Error, suffix)
+	return fmt.Sprintf("%s%s", er.ErrorVal, suffix)
+}
+
+func (er *ErrorResponse) IsAPIError() bool {
+	return true
 }
 
 type UnionError struct {

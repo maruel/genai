@@ -1116,7 +1116,7 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 // ErrorResponse represents an error response from the OpenAI API.
 type ErrorResponse struct {
-	Error struct {
+	ErrorVal struct {
 		Message string `json:"message"`
 		Type    string `json:"type"`
 		Code    string `json:"code"`
@@ -1124,8 +1124,12 @@ type ErrorResponse struct {
 	} `json:"error"`
 }
 
-func (e *ErrorResponse) String() string {
-	return fmt.Sprintf("openai responses error: %s (type: %s, code: %s)", e.Error.Message, e.Error.Type, e.Error.Code)
+func (e *ErrorResponse) Error() string {
+	return fmt.Sprintf("%s (type: %s, code: %s)", e.ErrorVal.Message, e.ErrorVal.Type, e.ErrorVal.Code)
+}
+
+func (er *ErrorResponse) IsAPIError() bool {
+	return true
 }
 
 //

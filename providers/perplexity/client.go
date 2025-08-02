@@ -359,19 +359,26 @@ type ChatStreamChunkResponse = ChatResponse
 //
 
 type ErrorResponse struct {
-	Detail string `json:"detail"`
-	Error  struct {
+	Detail   string `json:"detail"`
+	ErrorVal struct {
 		Message string `json:"message"`
 		Type    string `json:"type"`
 		Code    int    `json:"code"`
 	} `json:"error"`
 }
 
-func (er *ErrorResponse) String() string {
+func (er *ErrorResponse) Error() string {
 	if er.Detail != "" {
-		return "error " + er.Detail
+		return er.Detail
 	}
-	return "error " + er.Error.Message
+	if er.ErrorVal.Code != 0 {
+		return fmt.Sprintf("%s (%d): %s", er.ErrorVal.Type, er.ErrorVal.Code, er.ErrorVal.Message)
+	}
+	return er.ErrorVal.Message
+}
+
+func (er *ErrorResponse) IsAPIError() bool {
+	return true
 }
 
 // Client implements genai.ProviderGen.

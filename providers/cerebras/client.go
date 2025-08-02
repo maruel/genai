@@ -570,7 +570,7 @@ type ErrorResponse struct {
 
 	// Or this (tool call)
 	StatusCode int64 `json:"status_code"`
-	Error      struct {
+	ErrorVal   struct {
 		Message          string `json:"message"`
 		Type             string `json:"type"`
 		Param            string `json:"param"`
@@ -586,17 +586,21 @@ type ErrorResponse struct {
 	FailedGeneration string `json:"failed_generation"`
 }
 
-func (er *ErrorResponse) String() string {
+func (er *ErrorResponse) Error() string {
 	if er.Detail != "" {
-		return fmt.Sprintf("error %s", er.Detail)
+		return er.Detail
 	}
 	if er.StatusCode != 0 {
-		return fmt.Sprintf("error %s/%s/%s: %s while generating %q", er.Error.Type, er.Error.Param, er.Error.Code, er.Error.Message, er.Error.FailedGeneration)
+		return fmt.Sprintf("%s/%s/%s: %s while generating %q", er.ErrorVal.Type, er.ErrorVal.Param, er.ErrorVal.Code, er.ErrorVal.Message, er.ErrorVal.FailedGeneration)
 	}
 	if er.FailedGeneration != "" {
-		return fmt.Sprintf("error %s/%s/%s: %s while generating %q", er.Type, er.Param, er.Code, er.Message, er.FailedGeneration)
+		return fmt.Sprintf("%s/%s/%s: %s while generating %q", er.Type, er.Param, er.Code, er.Message, er.FailedGeneration)
 	}
-	return fmt.Sprintf("error %s/%s/%s: %s", er.Type, er.Param, er.Code, er.Message)
+	return fmt.Sprintf("%s/%s/%s: %s", er.Type, er.Param, er.Code, er.Message)
+}
+
+func (er *ErrorResponse) IsAPIError() bool {
+	return true
 }
 
 // Client implements genai.ProviderGen and genai.ProviderModel.

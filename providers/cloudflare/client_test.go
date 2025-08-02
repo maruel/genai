@@ -74,15 +74,15 @@ func TestClient_Provider_errors(t *testing.T) {
 			Name:         "bad apiKey",
 			APIKey:       "bad apiKey",
 			Model:        "@hf/nousresearch/hermes-2-pro-mistral-7b",
-			ErrGenSync:   "http 401: error Authentication error. You can get a new API key at https://dash.cloudflare.com/profile/api-tokens",
-			ErrGenStream: "http 401: error Authentication error. You can get a new API key at https://dash.cloudflare.com/profile/api-tokens",
-			ErrListModel: "http 400: error Unable to authenticate request",
+			ErrGenSync:   "http 401\nAuthentication error\nget a new API key at https://dash.cloudflare.com/profile/api-tokens",
+			ErrGenStream: "http 401\nAuthentication error\nget a new API key at https://dash.cloudflare.com/profile/api-tokens",
+			ErrListModel: "http 400\nUnable to authenticate request",
 		},
 		{
 			Name:         "bad model",
 			Model:        "bad model",
-			ErrGenSync:   "http 400: error No route for that URI",
-			ErrGenStream: "http 400: error No route for that URI",
+			ErrGenSync:   "http 400\nNo route for that URI",
+			ErrGenStream: "http 400\nNo route for that URI",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.Provider {

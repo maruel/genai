@@ -66,17 +66,18 @@ func TestClient_Preferred(t *testing.T) {
 func TestClient_Provider_errors(t *testing.T) {
 	data := []internaltest.ProviderError{
 		{
-			Name:         "bad apiKey",
-			APIKey:       "bad apiKey",
-			Model:        "sonar",
-			ErrGenSync:   "http 401: Unauthorized. You can get a new API key at https://www.perplexity.ai/settings/api",
-			ErrGenStream: "http 401: Unauthorized. You can get a new API key at https://www.perplexity.ai/settings/api",
+			Name:   "bad apiKey",
+			APIKey: "bad apiKey",
+			Model:  "sonar",
+			// It returns an HTML page...
+			ErrGenSync:   "http 401\nget a new API key at https://www.perplexity.ai/settings/api",
+			ErrGenStream: "http 401\nget a new API key at https://www.perplexity.ai/settings/api",
 		},
 		{
 			Name:         "bad model",
 			Model:        "bad model",
-			ErrGenSync:   "http 400: error Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.",
-			ErrGenStream: "http 400: error Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.",
+			ErrGenSync:   "http 400\ninvalid_model (400): Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.",
+			ErrGenStream: "http 400\ninvalid_model (400): Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.Provider {

@@ -685,7 +685,7 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 //
 
 type ErrorResponse struct {
-	Error struct {
+	ErrorVal struct {
 		Message          string `json:"message"`
 		Type             string `json:"type"`
 		Code             string `json:"code"`
@@ -694,12 +694,16 @@ type ErrorResponse struct {
 	} `json:"error"`
 }
 
-func (er *ErrorResponse) String() string {
+func (er *ErrorResponse) Error() string {
 	suffix := ""
-	if er.Error.FailedGeneration != "" {
-		suffix = fmt.Sprintf("error Failed generation: %q", er.Error.FailedGeneration)
+	if er.ErrorVal.FailedGeneration != "" {
+		suffix = fmt.Sprintf("failed generation: %q", er.ErrorVal.FailedGeneration)
 	}
-	return fmt.Sprintf("error %s (%s): %s%s", er.Error.Code, er.Error.Type, er.Error.Message, suffix)
+	return fmt.Sprintf("%s (%s): %s%s", er.ErrorVal.Code, er.ErrorVal.Type, er.ErrorVal.Message, suffix)
+}
+
+func (er *ErrorResponse) IsAPIError() bool {
+	return true
 }
 
 // Client implements genai.ProviderGen and genai.ProviderModel.

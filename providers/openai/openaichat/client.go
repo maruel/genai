@@ -1027,14 +1027,18 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 //
 
 type ErrorResponse struct {
-	Error ErrorResponseError `json:"error"`
+	ErrorVal ErrorResponseError `json:"error"`
 }
 
-func (er *ErrorResponse) String() string {
-	if er.Error.Code == "" {
-		return fmt.Sprintf("error %s: %s", er.Error.Type, er.Error.Message)
+func (er *ErrorResponse) Error() string {
+	if er.ErrorVal.Code == "" {
+		return fmt.Sprintf("%s: %s", er.ErrorVal.Type, er.ErrorVal.Message)
 	}
-	return fmt.Sprintf("error %s (%s): %s", er.Error.Code, er.Error.Status, er.Error.Message)
+	return fmt.Sprintf("%s (%s): %s", er.ErrorVal.Code, er.ErrorVal.Status, er.ErrorVal.Message)
+}
+
+func (er *ErrorResponse) IsAPIError() bool {
+	return true
 }
 
 type ErrorResponseError struct {

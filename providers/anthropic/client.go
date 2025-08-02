@@ -1228,16 +1228,20 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 // ErrorResponse is documented at https://docs.anthropic.com/en/api/messages#response-error
 type ErrorResponse struct {
-	Type  string `json:"type"` // "error"
-	Error struct {
+	Type     string `json:"type"` // "error"
+	ErrorVal struct {
 		// Type is one of "invalid_request_error", "authentication_error", "billing_error", "permission_error", "not_found_error", "rate_limit_error", "timeout_error", "api_error", "overloaded_error"
 		Type    string `json:"type"`
 		Message string `json:"message"`
 	} `json:"error"`
 }
 
-func (er *ErrorResponse) String() string {
-	return fmt.Sprintf("error %s: %s", er.Error.Type, er.Error.Message)
+func (er *ErrorResponse) Error() string {
+	return fmt.Sprintf("%s: %s", er.ErrorVal.Type, er.ErrorVal.Message)
+}
+
+func (er *ErrorResponse) IsAPIError() bool {
+	return true
 }
 
 // Client implements genai.ProviderGen and genai.ProviderModel.
@@ -1393,8 +1397,8 @@ func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (BatchQueryRes
 		if errors.As(err, &herr) && herr.StatusCode == 404 {
 			er := ErrorResponse{}
 			if json.Unmarshal(herr.ResponseBody, &er) == nil {
-				if er.Error.Type == "not_found_error" {
-					resp.Result.Type = er.Error.Type
+				if er.ErrorVal.Type == "not_found_error" {
+					resp.Result.Type = er.ErrorVal.Type
 				}
 			}
 		}

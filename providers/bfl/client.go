@@ -162,8 +162,12 @@ type ErrorResponse struct {
 	Detail string `json:"detail"`
 }
 
-func (er *ErrorResponse) String() string {
-	return "error " + er.Detail
+func (er *ErrorResponse) Error() string {
+	return er.Detail
+}
+
+func (er *ErrorResponse) IsAPIError() bool {
+	return true
 }
 
 // Client implements genai.ProviderGen and genai.ProviderModel.

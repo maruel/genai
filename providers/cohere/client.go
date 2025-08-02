@@ -745,8 +745,12 @@ type ErrorResponse struct {
 	RequestID string `json:"request_id"`
 }
 
-func (er *ErrorResponse) String() string {
-	return "error " + er.Message
+func (er *ErrorResponse) Error() string {
+	return er.Message
+}
+
+func (er *ErrorResponse) IsAPIError() bool {
+	return true
 }
 
 // Client implements genai.ProviderGen and genai.ProviderModel.

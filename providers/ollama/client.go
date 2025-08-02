@@ -418,11 +418,15 @@ type pullModelResponse struct {
 //
 
 type ErrorResponse struct {
-	Error string `json:"error"`
+	ErrorVal string `json:"error"`
 }
 
-func (er *ErrorResponse) String() string {
-	return "error " + er.Error
+func (er *ErrorResponse) Error() string {
+	return er.ErrorVal
+}
+
+func (er *ErrorResponse) IsAPIError() bool {
+	return true
 }
 
 //
@@ -705,7 +709,7 @@ func processJSONStream(body io.Reader, out chan<- ChatStreamChunkResponse, lenie
 			if err := d.Decode(&er); err != nil {
 				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
 			}
-			return errors.New(er.String())
+			return &er
 		}
 		out <- msg
 	}

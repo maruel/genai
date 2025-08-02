@@ -65,10 +65,16 @@ func (e *ErrAPIKeyRequired) Error() string {
 	return fmt.Sprintf("api key is required; set environment variable %s to it", e.EnvVar)
 }
 
+// ErrAPI is returned when the API returns a structured error.
+type ErrAPI interface {
+	error
+	IsAPIError() bool
+}
+
 // Provider implements genai.Provider (except for ModelID()).
 //
 // It contains the shared HTTP client functionality used across all API clients.
-type Provider[PErrorResponse fmt.Stringer] struct {
+type Provider[PErrorResponse ErrAPI] struct {
 	// ClientJSON is exported for testing replay purposes.
 	ClientJSON httpjson.Client
 	// APIKeyURL is the URL to present to the user upon authentication error.
@@ -138,11 +144,13 @@ func (c *Provider[PErrorResponse]) DecodeResponse(resp *http.Response, url strin
 		if v := reflect.ValueOf(er); !reflect.DeepEqual(out, reflect.Zero(v.Type()).Interface()) {
 			return nil
 		}
+		errs = append(errs, er)
 	} else if foundExtraKeys {
 		// This is confusing, not sure it's a good idea. The problem is that we need to detect when error fields
 		// appear too!
 		errs = append(errs, err)
 	} else {
+		// Return only the original error.
 		return err
 	}
 	return errors.Join(errs...)
@@ -156,7 +164,6 @@ func (c *Provider[PErrorResponse]) DecodeError(url string, resp *http.Response) 
 	c.lateInit()
 	// When we are in lenient mode, we do not want to buffer the result. When in strict mode, we want to buffer
 	// to give more details.
-	er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
 	b, err := io.ReadAll(resp.Body)
 	if err2 := resp.Body.Close(); err == nil {
 		err = err2
@@ -171,22 +178,21 @@ func (c *Provider[PErrorResponse]) DecodeError(url string, resp *http.Response) 
 		d.DisallowUnknownFields()
 		r2 = r
 	}
+	var errs []error
 	herr := &httpjson.Error{StatusCode: resp.StatusCode, ResponseBody: b}
+	er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
 	if foundExtraKeys, err := decodeJSON(d, er, r2); err == nil {
-		if c.APIKeyURL != "" && resp.StatusCode == http.StatusUnauthorized {
-			if s := er.String(); !strings.Contains(s, c.APIKeyURL) {
-				return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, s, c.APIKeyURL)
-			}
-		}
-		return fmt.Errorf("%w: %s", herr, er)
+		errs = append(errs, herr, er)
 	} else if foundExtraKeys {
 		// In strict mode, return the decoding error instead.
-		return fmt.Errorf("%w: %w", herr, err)
+		errs = append(errs, err)
+	} else {
+		errs = append(errs, herr)
 	}
-	if c.APIKeyURL != "" && resp.StatusCode == http.StatusUnauthorized {
-		return fmt.Errorf("%w: %s. You can get a new API key at %s", herr, http.StatusText(resp.StatusCode), c.APIKeyURL)
+	if c.APIKeyURL != "" && resp.StatusCode == http.StatusUnauthorized && !strings.Contains(er.Error(), c.APIKeyURL) {
+		errs = append(errs, fmt.Errorf("get a new API key at %s", c.APIKeyURL))
 	}
-	return fmt.Errorf("%w: %s", herr, http.StatusText(resp.StatusCode))
+	return errors.Join(errs...)
 }
 
 func (c *Provider[PErrorResponse]) lateInit() {
@@ -255,7 +261,7 @@ type ResultConverter interface {
 // It embeds Provider and adds the missing ModelID() method and implement genai.Validatable.
 //
 // It only accepts text modality.
-type ProviderGen[PErrorResponse fmt.Stringer, PGenRequest InitializableRequest, PGenResponse ResultConverter, GenStreamChunkResponse Obj] struct {
+type ProviderGen[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenResponse ResultConverter, GenStreamChunkResponse Obj] struct {
 	Provider[PErrorResponse]
 	// Model is the default model used for chat requests
 	Model string
@@ -461,7 +467,7 @@ type ListModelsResponse interface {
 
 // ListModels is a generic function that implements the common pattern for listing models across providers.
 // It makes an HTTP GET request to the specified URL and converts the response to a slice of genai.Model.
-func ListModels[PErrorResponse fmt.Stringer, R ListModelsResponse](ctx context.Context, c *Provider[PErrorResponse], url string) ([]genai.Model, error) {
+func ListModels[PErrorResponse ErrAPI, R ListModelsResponse](ctx context.Context, c *Provider[PErrorResponse], url string) ([]genai.Model, error) {
 	var resp R
 	if err := c.DoRequest(ctx, "GET", url, nil, &resp); err != nil {
 		return nil, err

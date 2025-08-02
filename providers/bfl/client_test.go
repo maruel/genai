@@ -87,12 +87,12 @@ func TestClient_Provider_errors(t *testing.T) {
 			Name:      "bad apiKey",
 			APIKey:    "bad apiKey",
 			Model:     "flux-dev",
-			ErrGenDoc: "http 403: error Not authenticated - Invalid Authentication",
+			ErrGenDoc: "http 403\nNot authenticated - Invalid Authentication",
 		},
 		{
 			Name:      "bad model",
 			Model:     "bad model",
-			ErrGenDoc: "http 404: error Not Found",
+			ErrGenDoc: "http 404\nNot Found",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) genai.Provider {

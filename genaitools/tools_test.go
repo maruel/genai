@@ -121,12 +121,12 @@ func TestGetTodayClockTime(t *testing.T) {
 	}
 
 	// Verify the time is within a reasonable range (last minute)
-	parsedTime, err := time.Parse("Monday 2006-01-02 15:04:05", result)
+	parsedTime, err := time.ParseInLocation("Monday 2006-01-02 15:04:05", result, time.Local)
 	if err != nil {
 		t.Fatalf("Failed to parse time %q: %v", result, err)
 	}
-	if parsedTime.Sub(before) > time.Minute {
-		t.Fatalf("Time is too old: %v", parsedTime)
+	if diff := parsedTime.Sub(before); diff > time.Minute {
+		t.Fatalf("Time is too old: %v - %v = %s", parsedTime, before, diff)
 	}
 	if parsedTime.After(before.Add(time.Minute)) {
 		t.Fatalf("Time is in the future: %v", parsedTime)

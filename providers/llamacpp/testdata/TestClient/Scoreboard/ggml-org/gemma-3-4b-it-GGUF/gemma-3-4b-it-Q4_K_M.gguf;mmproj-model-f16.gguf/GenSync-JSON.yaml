@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 236
+        host: localhost
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"response_format":{"type":"json_object"}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 592
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}\n"}}],"created":1754046712,"model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion","usage":{"completion_tokens":9,"prompt_tokens":38,"total_tokens":47},"id":"chatcmpl-Gfd0vLonNeE1TlvhVLUNoEyR63ushWYi","timings":{"prompt_n":34,"prompt_ms":1309.919,"prompt_per_token_ms":38.52702941176471,"prompt_per_second":25.955803374101755,"predicted_n":9,"predicted_ms":721.156,"predicted_per_token_ms":80.12844444444444,"predicted_per_second":12.479962726511324}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "592"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 14.092s

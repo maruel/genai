@@ -6,7 +6,6 @@ package llamacpp_test
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"os"
 	"strings"
@@ -19,64 +18,78 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/llamacpp"
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
-	"github.com/maruel/httpjson"
 )
 
 func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 
+	t.Run("ListModels", func(t *testing.T) {
+		c, err := llamacpp.New(s.lazyStart(t), nil, func(h http.RoundTripper) http.RoundTripper {
+			return testRecorder.Record(t, h)
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		genaiModels, err := c.ListModels(t.Context())
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(genaiModels) != 1 {
+			t.Fatalf("unexpected: %#v", genaiModels)
+		}
+	})
+
 	t.Run("Scoreboard", func(t *testing.T) {
-		models := []scoreboardtest.Model{{Model: llamacpp.Scoreboard.Scenarios[0].Models[0]}}
-		scoreboardtest.AssertScoreboard(t, func(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-			serverURL := s.lazyStart(t)
-			c, err := llamacpp.New(serverURL, nil, fn)
-			if err != nil {
-				t.Fatal(err)
+		serverURL := s.lazyStart(t)
+		c, err := llamacpp.New(serverURL, nil, func(h http.RoundTripper) http.RoundTripper {
+			return testRecorder.Record(t, h)
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		var models []scoreboardtest.Model
+		for _, sc := range c.Scoreboard().Scenarios {
+			for _, id := range sc.Models {
+				models = append(models, scoreboardtest.Model{Model: id})
 			}
-			return &hideHTTP500{c}
+		}
+		scoreboardtest.AssertScoreboard(t, func(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+			c2, err2 := llamacpp.New(serverURL, nil, fn)
+			if err2 != nil {
+				t.Fatal(err2)
+			}
+			return &modelID{c2, model.Model}
 		}, models, testRecorder.Records)
+	})
+
+	// Run this at the end so there would be non-zero values.
+	t.Run("Metrics", func(t *testing.T) {
+		serverURL := s.lazyStart(t)
+		c, err := llamacpp.New(serverURL, nil, func(h http.RoundTripper) http.RoundTripper {
+			return testRecorder.Record(t, h)
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		m := llamacpp.Metrics{}
+		if err := c.GetMetrics(t.Context(), &m); err != nil {
+			t.Fatal(err)
+		}
+		t.Logf("Metrics: %+v", m)
 	})
 }
 
-type hideHTTP500 struct {
+type modelID struct {
 	*llamacpp.Client
+	modelID string
 }
 
-func (h *hideHTTP500) Unwrap() genai.Provider {
-	return h.Client
-}
-
-func (h *hideHTTP500) ModelID() string {
-	// Hack, it should be a separate class.
-	return llamacpp.Scoreboard.Scenarios[0].Models[0]
-}
-
-func (h *hideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	resp, err := h.Client.GenSync(ctx, msgs, opts)
-	if err != nil {
-		var herr *httpjson.Error
-		if errors.As(err, &herr) && herr.StatusCode == 500 {
-			return resp, errors.New("server is having a bad day")
-		}
-		return resp, err
-	}
-	return resp, err
-}
-
-func (h *hideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
-	resp, err := h.Client.GenStream(ctx, msgs, chunks, opts)
-	if err != nil {
-		var herr *httpjson.Error
-		if errors.As(err, &herr) && herr.StatusCode == 500 {
-			return resp, errors.New("server is having a bad day")
-		}
-		return resp, err
-	}
-	return resp, err
+func (m *modelID) ModelID() string {
+	return m.modelID
 }
 
 type lazyServer struct {
-	t   *testing.T
+	t   testing.TB
 	mu  sync.Mutex
 	url string
 }
@@ -85,13 +98,17 @@ func (l *lazyServer) lazyStart(t testing.TB) string {
 	if os.Getenv("RECORD") != "1" && os.Getenv("CI") == "true" {
 		return "http://localhost:0"
 	}
+	if url := os.Getenv("LLAMA_SERVER"); url != "" {
+		return url
+	}
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	if l.url == "" {
 		t.Log("Starting server")
 		// Use the context of the parent for server lifecycle management.
-		parts := strings.Split(llamacpp.Scoreboard.Scenarios[0].Models[0], "/")
-		srv, err := startServer(l.t.Context(), parts[0], parts[1], parts[2])
+		mains := strings.SplitN(llamacpp.Scoreboard.Scenarios[0].Models[0], ";", 2)
+		parts := strings.Split(mains[0], "/")
+		srv, err := startServer(l.t.Context(), parts[0], parts[1], parts[2], mains[1])
 		if err != nil {
 			t.Fatal(err)
 		}

@@ -12,13 +12,17 @@
 package llamacpp
 
 import (
+	"bytes"
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"math"
 	"net/http"
 	"path/filepath"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -42,22 +46,268 @@ var Scoreboard = genai.Scoreboard{
 	Country:      "Local",
 	DashboardURL: "https://github.com/ggml-org/llama.cpp",
 	Scenarios: []genai.Scenario{
+		// https://huggingface.co/ggml-org/gemma-3-4b-it-GGUF/tree/main
 		{
-			Models: []string{"unsloth/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q5_K_M.gguf"},
+			// Models: []string{"ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q8_0.gguf;mmproj-model-f16.gguf"},
+			Models: []string{"ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q4_K_M.gguf;mmproj-model-f16.gguf"},
 			// TODO: It supports genai.ModalityImage
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {Inline: true},
+				genai.ModalityImage: {
+					Inline:           true,
+					URL:              true,
+					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png"},
+				},
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			// TODO: Implement all the feature set.
 			GenSync: &genai.FunctionalityText{
-				Seed: true,
+				Tools:      genai.True,
+				BiasedTool: genai.True,
+				Seed:       true,
+				JSON:       true,
+				JSONSchema: true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Seed: true,
+				Tools:      genai.True,
+				BiasedTool: genai.True,
+				Seed:       true,
+				JSON:       true,
+				JSONSchema: true,
 			},
 		},
 	},
+}
+
+// ChatRequest is not documented.
+//
+// Better take a look at oaicompat_chat_params_parse() in
+// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/utils.hpp
+type ChatRequest struct {
+	Stream         bool      `json:"stream,omitzero"`
+	Model          string    `json:"model,omitzero"`
+	MaxTokens      int64     `json:"max_tokens,omitzero"`
+	Messages       []Message `json:"messages"`
+	ResponseFormat struct {
+		Type       string `json:"type,omitzero"` // Default: "text"; "json_object", "json_schema"
+		JSONSchema struct {
+			Schema *jsonschema.Schema `json:"schema,omitzero"` // To confirm.
+		} `json:"json_schema,omitzero"` // To confirm.
+	} `json:"response_format,omitzero"`
+	Grammar         string `json:"grammar,omitzero"`
+	TimingsPerToken bool   `json:"timings_per_token,omitzero"`
+
+	Tools               []Tool   `json:"tools,omitzero"`
+	ToolChoice          string   `json:"tool_choice,omitzero"` // Default: "auto"; "none", "required"
+	Stop                []string `json:"stop,omitzero"`
+	ParallelToolCalls   bool     `json:"parallel_tool_calls,omitzero"`
+	AddGenerationPrompt bool     `json:"add_generation_prompt,omitzero"`
+	// ReasoningFormat     struct{}   `json:"reasoning_format,omitzero"`
+	// EnableThinking      bool       `json:"enable_thinking,omitzero"`
+	ChatTemplateKWArgs map[string]string `json:"chat_template_kwargs,omitzero"`
+	N                  int64             `json:"n,omitzero"` // Must be 1 anyway.
+	Logprobs           bool              `json:"logprobs,omitzero"`
+	TopLogprobs        int64             `json:"top_logprobs,omitzero"` // Requires Logprobs:true
+
+	// Prompt              string             `json:"prompt"`
+	Temperature         float64  `json:"temperature,omitzero"`
+	DynaTempRange       float64  `json:"dynatemp_range,omitzero"`
+	DynaTempExponent    float64  `json:"dynatemp_exponent,omitzero"`
+	TopK                int64    `json:"top_k,omitzero"`
+	TopP                float64  `json:"top_p,omitzero"`
+	MinP                float64  `json:"min_p,omitzero"`
+	NPredict            int64    `json:"n_predict,omitzero"` // Maximum number of tokens to predict
+	NIndent             int64    `json:"n_indent,omitzero"`
+	NKeep               int64    `json:"n_keep,omitzero"`
+	TypicalP            float64  `json:"typical_p,omitzero"`
+	RepeatPenalty       float64  `json:"repeat_penalty,omitzero"`
+	RepeatLastN         int64    `json:"repeat_last_n,omitzero"`
+	PresencePenalty     float64  `json:"presence_penalty,omitzero"`
+	FrequencyPenalty    float64  `json:"frequency_penalty,omitzero"`
+	DryMultiplier       float64  `json:"dry_multiplier,omitzero"`
+	DryBase             float64  `json:"dry_base,omitzero"`
+	DryAllowedLength    int64    `json:"dry_allowed_length,omitzero"`
+	DryPenaltyLastN     int64    `json:"dry_penalty_last_n,omitzero"`
+	DrySequenceBreakers []string `json:"dry_sequence_breakers,omitzero"`
+	XTCProbability      float64  `json:"xtc_probability,omitzero"`
+	XTCThreshold        float64  `json:"xtc_threshold,omitzero"`
+	Mirostat            int32    `json:"mirostat,omitzero"`
+	MirostatTau         float64  `json:"mirostat_tau,omitzero"`
+	MirostatEta         float64  `json:"mirostat_eta,omitzero"`
+	Seed                int64    `json:"seed,omitzero"`
+	IgnoreEos           bool     `json:"ignore_eos,omitzero"`
+	LogitBias           []any    `json:"logit_bias,omitzero"`
+	Nprobs              int64    `json:"n_probs,omitzero"`
+	MinKeep             int64    `json:"min_keep,omitzero"`
+	TMaxPredictMS       int64    `json:"t_max_predict_ms,omitzero"`
+	ImageData           []any    `json:"image_data,omitzero"`
+	IDSlot              int64    `json:"id_slot,omitzero"`
+	CachePrompt         bool     `json:"cache_prompt,omitzero"`
+	ReturnTokens        bool     `json:"return_tokens,omitzero"`
+	Samplers            []string `json:"samplers,omitzero"`
+	PostSamplingProbs   bool     `json:"post_sampling_probs,omitzero"`
+	ResponseFields      []string `json:"response_fields,omitzero"`
+	Lora                []Lora   `json:"lora,omitzero"`
+}
+
+// Init initializes the provider specific completion request with the generic completion request.
+func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
+	var errs []error
+	var unsupported []string
+	sp := ""
+	// c.CachePrompt = true
+	if opts != nil {
+		switch v := opts.(type) {
+		case *genai.OptionsText:
+			c.NPredict = v.MaxTokens
+			c.Seed = v.Seed
+			c.Temperature = v.Temperature
+			c.TopP = v.TopP
+			c.TopK = v.TopK
+			c.Stop = v.Stop
+			if v.ReplyAsJSON {
+				c.ResponseFormat.Type = "json_object"
+			}
+			if v.DecodeAs != nil {
+				c.ResponseFormat.Type = "json_schema"
+				c.ResponseFormat.JSONSchema.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+			}
+			if len(v.Tools) != 0 {
+				c.Tools = make([]Tool, len(v.Tools))
+				for i := range c.Tools {
+					c.Tools[i].Type = "function"
+					c.Tools[i].Function.Name = v.Tools[i].Name
+					c.Tools[i].Function.Description = v.Tools[i].Description
+					if v.Tools[i].InputSchemaOverride != nil {
+						c.Tools[i].Function.Parameters = v.Tools[i].InputSchemaOverride
+					} else {
+						c.Tools[i].Function.Parameters = v.Tools[i].GetInputSchema()
+					}
+				}
+			}
+		default:
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+		}
+	}
+	offset := 0
+	if sp != "" {
+		offset = 1
+	}
+	c.Messages = make([]Message, len(msgs)+offset)
+	if sp != "" {
+		c.Messages[0].Role = "system"
+		c.Messages[0].Content = Contents{{Type: "text", Text: sp}}
+	}
+	for i := range msgs {
+		if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
+			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+		}
+	}
+	if len(unsupported) > 0 {
+		// If we have unsupported features but no other errors, return a continuable error
+		if len(errs) == 0 {
+			return &genai.UnsupportedContinuableError{Unsupported: unsupported}
+		}
+		// Otherwise, add the unsupported features to the error list
+		errs = append(errs, &genai.UnsupportedContinuableError{Unsupported: unsupported})
+	}
+	return errors.Join(errs...)
+}
+
+func (c *ChatRequest) SetStream(stream bool) {
+	c.Stream = stream
+}
+
+type ChatResponse struct {
+	Created           base.Time `json:"created"`
+	SystemFingerprint string    `json:"system_fingerprint"`
+	Object            string    `json:"object"` // "chat.completion"
+	ID                string    `json:"id"`
+	Timings           Timings   `json:"timings"`
+	Usage             Usage     `json:"usage"`
+	Choices           []struct {
+		FinishReason FinishReason `json:"finish_reason"`
+		Index        int64        `json:"index"`
+		Message      Message      `json:"message"`
+	} `json:"choices"`
+	Model string `json:"model"` // "gpt-3.5-turbo"
+}
+
+func (c *ChatResponse) ToResult() (genai.Result, error) {
+	out := genai.Result{
+		Usage: genai.Usage{
+			InputTokens:  c.Usage.PromptTokens,
+			OutputTokens: c.Usage.CompletionTokens,
+		},
+	}
+	if len(c.Choices) == 1 {
+		out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
+		if err := c.Choices[0].Message.To(&out.Message); err != nil {
+			return out, err
+		}
+	}
+	return out, nil
+}
+
+// Tool is not documented.
+//
+// It's purely handled by the chat templates, thus its real structure varies from model to model.
+// See https://github.com/ggml-org/llama.cpp/blob/master/common/chat.cpp
+type Tool struct {
+	Type     string `json:"type"` // "function"
+	Function struct {
+		Name        string             `json:"name"`
+		Description string             `json:"description"`
+		Parameters  *jsonschema.Schema `json:"parameters"`
+	} `json:"function"`
+}
+
+type Usage struct {
+	CompletionTokens int64 `json:"completion_tokens"`
+	PromptTokens     int64 `json:"prompt_tokens"`
+	TotalTokens      int64 `json:"total_tokens"`
+}
+
+type FinishReason string
+
+const (
+	FinishedStop      FinishReason = "stop"
+	FinishedLength    FinishReason = "length"
+	FinishedToolCalls FinishReason = "tool_calls"
+)
+
+func (f FinishReason) ToFinishReason() genai.FinishReason {
+	switch f {
+	case FinishedStop:
+		return genai.FinishedStop
+	case FinishedLength:
+		return genai.FinishedLength
+	case FinishedToolCalls:
+		return genai.FinishedToolCalls
+	default:
+		if !internal.BeLenient {
+			panic(f)
+		}
+		return genai.FinishReason(f)
+	}
+}
+
+type ChatStreamChunkResponse struct {
+	Created           base.Time `json:"created"`
+	ID                string    `json:"id"`
+	Model             string    `json:"model"` // "gpt-3.5-turbo"
+	SystemFingerprint string    `json:"system_fingerprint"`
+	Object            string    `json:"object"` // "chat.completion.chunk"
+	Choices           []struct {
+		FinishReason FinishReason `json:"finish_reason"`
+		Index        int64        `json:"index"`
+		Delta        struct {
+			Role      string     `json:"role"`
+			Content   string     `json:"content"`
+			ToolCalls []ToolCall `json:"tool_calls"`
+		} `json:"delta"`
+	} `json:"choices"`
+	Usage   Usage   `json:"usage"`
+	Timings Timings `json:"timings"`
 }
 
 // HealthResponse is documented at
@@ -138,14 +388,13 @@ func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Options, model 
 			c.TopK = v.TopK
 			c.Stop = v.Stop
 			if v.ReplyAsJSON {
-				errs = append(errs, errors.New("unsupported option ReplyAsJSON"))
+				errs = append(errs, errors.New("implement option ReplyAsJSON"))
 			}
 			if v.DecodeAs != nil {
-				errs = append(errs, errors.New("unsupported option DecodeAs"))
+				errs = append(errs, errors.New("implement option DecodeAs"))
 			}
 			if len(v.Tools) != 0 {
-				// TODO: June 2025, support was added recently for streaming.
-				errs = append(errs, errors.New("unsupported option Tools"))
+				errs = append(errs, errors.New("implement option Tools"))
 			}
 		default:
 			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
@@ -322,7 +571,7 @@ func (a *applyTemplateRequest) Init(opts genai.Options, msgs genai.Messages) err
 	a.Messages = make([]Message, len(msgs)+offset)
 	if sp != "" {
 		a.Messages[0].Role = "system"
-		a.Messages[0].Content = sp
+		a.Messages[0].Content = Contents{{Type: "text", Text: sp}}
 	}
 	for i := range msgs {
 		if err := a.Messages[i+offset].From(&msgs[i]); err != nil {
@@ -340,72 +589,248 @@ func (a *applyTemplateRequest) Init(opts genai.Options, msgs genai.Messages) err
 	return errors.Join(errs...)
 }
 
-func (msg *Message) From(m *genai.Message) error {
-	// We don't filter the role here.
-	msg.Role = string(m.Role)
-	if len(m.Contents) != 1 {
-		return fmt.Errorf("expected exactly one block, got %d", len(m.Contents))
-	}
-	if m.Contents[0].Text != "" {
-		msg.Content = m.Contents[0].Text
-	} else if m.Contents[0].Document != nil {
-		// Check if this is a text/plain document
-		mimeType, data, err := m.Contents[0].ReadDocument(10 * 1024 * 1024)
-		if err != nil {
-			return fmt.Errorf("failed to read document: %w", err)
-		}
-		if strings.HasPrefix(mimeType, "text/plain") {
-			if m.Contents[0].URL != "" {
-				return errors.New("text/plain documents must be provided inline, not as a URL")
+// Message is not documented.
+//
+// You can look at how it's used in oaicompat_chat_params_parse() in
+// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/utils.hpp
+// and common_chat_msgs_parse_oaicompat() in
+// https://github.com/ggml-org/llama.cpp/blob/master/common/chat.cpp
+type Message struct {
+	Role             string     `json:"role"` // "system", "assistant", "user", "tool"
+	Content          Contents   `json:"content,omitzero"`
+	ToolCalls        []ToolCall `json:"tool_calls,omitzero"`
+	ReasoningContent struct{}   `json:"reasoning_content,omitzero"`
+	Name             string     `json:"name,omitzero"`
+	ToolCallID       string     `json:"tool_call_id,omitzero"`
+}
+
+func (m *Message) From(in *genai.Message) error {
+	// We intentionally do not filter the role here.
+	m.Role = string(in.Role)
+	if len(in.Contents) != 0 {
+		for i := range in.Contents {
+			c := Content{}
+			if skip, err := c.From(&in.Contents[i]); err != nil {
+				return err
+			} else if !skip {
+				m.Content = append(m.Content, c)
 			}
-			msg.Content = string(data)
-		} else {
-			return fmt.Errorf("llamacpp only supports text/plain documents, got %s", mimeType)
 		}
-	} else {
-		return fmt.Errorf("unsupported content type %v", m.Contents[0])
 	}
-	if len(m.ToolCalls) != 0 {
-		return errors.New("implement tool call results")
+	if len(in.ToolCalls) != 0 {
+		m.ToolCalls = make([]ToolCall, len(in.ToolCalls))
+		for i := range m.ToolCalls {
+			if err := m.ToolCalls[i].From(&in.ToolCalls[i]); err != nil {
+				return err
+			}
+		}
 	}
-	if len(m.ToolCallResults) != 0 {
-		return errors.New("implement tool call results")
+	if len(in.ToolCallResults) != 0 {
+		if len(in.Contents) != 0 || len(in.ToolCalls) != 0 {
+			// This could be worked around.
+			return fmt.Errorf("can't have tool call result along content or tool calls")
+		}
+		if len(in.ToolCallResults) != 1 {
+			// This could be worked around.
+			return fmt.Errorf("can't have more than one tool call result at a time")
+		}
+		m.Role = "tool"
+		m.ToolCallID = in.ToolCallResults[0].ID
+		m.Content = []Content{{Type: "text", Text: in.ToolCallResults[0].Result}}
 	}
 	return nil
 }
 
-type Message struct {
-	Role    string `json:"role"`
-	Content string `json:"content"`
+func (m *Message) To(out *genai.Message) error {
+	out.Role = genai.Assistant
+	for i := range m.Content {
+		out.Contents = make([]genai.Content, len(m.Content))
+		if err := m.Content[i].To(&out.Contents[i]); err != nil {
+			return err
+		}
+	}
+	if len(m.ToolCalls) != 0 {
+		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))
+		for i := range m.ToolCalls {
+			if err := m.ToolCalls[i].To(&out.ToolCalls[i]); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+type Contents []Content
+
+// UnmarshalJSON implements custom unmarshalling for Contents type
+// to handle cases where content could be a string or []Content.
+func (c *Contents) UnmarshalJSON(b []byte) error {
+	if bytes.Equal(b, []byte("null")) {
+		*c = nil
+		return nil
+	}
+	d := json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
+	}
+	if err := d.Decode((*[]Content)(c)); err == nil {
+		return nil
+	}
+
+	s := ""
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	*c = Contents{{Type: "text", Text: s}}
+	return nil
+}
+
+// Content is not documented.
+//
+// You can look at how it's used in oaicompat_chat_params_parse() in
+// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/utils.hpp
+type Content struct {
+	Type string `json:"type"` // "text", "image_url", "input_audio"
+
+	// Type == "text"
+	Text string `json:"text,omitzero"`
+
+	// Type == "image_url"
+	ImageURL struct {
+		URL string `json:"url,omitzero"`
+	} `json:"image_url,omitzero"`
+
+	InputAudio struct {
+		Data   []byte `json:"data,omitzero"`
+		Format string `json:"format,omitzero"` // "mp3", "wav"
+	} `json:"input_audio,omitzero"`
+}
+
+func (c *Content) From(in *genai.Content) (bool, error) {
+	if len(in.Citations) != 0 {
+		return false, errors.New("citations are not supported")
+	}
+	if len(in.Opaque) != 0 {
+		return false, errors.New("opaque data is not supported")
+	}
+	if in.Thinking != "" {
+		return true, nil
+	}
+	if in.Text != "" {
+		c.Type = "text"
+		c.Text = in.Text
+		return false, nil
+	}
+	// Check if this is a text/plain document
+	mimeType, data, err := in.ReadDocument(10 * 1024 * 1024)
+	if err != nil {
+		return false, fmt.Errorf("failed to read document: %w", err)
+	}
+	switch {
+	case strings.HasPrefix(mimeType, "text/plain"):
+		if in.URL != "" {
+			return false, errors.New("text/plain documents must be provided inline, not as a URL")
+		}
+		c.Type = "text"
+		c.Text = string(data)
+	case strings.HasPrefix(mimeType, "audio/"):
+		c.Type = "input_audio"
+		if in.URL != "" {
+			return false, errors.New("audio doesn't support URLs")
+		}
+		c.InputAudio.Data = data
+		c.InputAudio.Format, _ = strings.CutPrefix(mimeType, "audio/")
+		return false, nil
+	case strings.HasPrefix(mimeType, "image/"):
+		c.Type = "image_url"
+		if in.URL != "" {
+			c.ImageURL.URL = in.URL
+		} else {
+			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+		}
+		return false, nil
+	default:
+		return false, fmt.Errorf("mime type %s is unsupported", mimeType)
+	}
+	return false, fmt.Errorf("unsupported content type %v", in)
+}
+
+func (c *Content) To(out *genai.Content) error {
+	switch c.Type {
+	case "text":
+		if c.Text == "" {
+			return errors.New("text content is empty")
+		}
+		out.Text = c.Text
+		return nil
+	case "image_url":
+		return errors.New("implement support for generated images")
+	case "input_audio":
+		return errors.New("implement support for generated audio")
+	default:
+		return fmt.Errorf("unexpected content type %q", c.Type)
+	}
+}
+
+// ToolCall is not documented.
+//
+// You can look at how it's used in common_chat_msgs_parse_oaicompat() in
+// https://github.com/ggml-org/llama.cpp/blob/master/common/chat.cpp
+type ToolCall struct {
+	Type     string `json:"type"` // "function"
+	Index    int64  `json:"index"`
+	ID       string `json:"id,omitzero"`
+	Function struct {
+		Name      string `json:"name,omitzero"`
+		Arguments string `json:"arguments,omitzero"`
+	} `json:"function"`
+}
+
+func (t *ToolCall) From(in *genai.ToolCall) error {
+	if len(in.Opaque) != 0 {
+		return errors.New("unsupported opaque in tool call")
+	}
+	t.Type = "function"
+	t.ID = in.ID
+	t.Function.Name = in.Name
+	t.Function.Arguments = in.Arguments
+	return nil
+}
+
+func (t *ToolCall) To(out *genai.ToolCall) error {
+	out.ID = t.ID
+	out.Name = t.Function.Name
+	out.Arguments = t.Function.Arguments
+	return nil
 }
 
 //
 
 type ModelHF struct {
-	Name         string   `json:"name"`  // Path to the file
-	Model        string   `json:"model"` // Path to the file
-	ModifiedAt   string   `json:"modified_at"`
-	Size         string   `json:"size"`
-	Digest       string   `json:"digest"`
-	Type         string   `json:"type"` // "model"
-	Description  string   `json:"description"`
-	Tags         []string `json:"tags"`
-	Capabilities []string `json:"capabilities"` // "completion"
-	Parameters   string   `json:"parameters"`
+	Name         string   `json:"name"`         // Path to the file
+	Model        string   `json:"model"`        // Path to the file
+	ModifiedAt   string   `json:"modified_at"`  // Dummy
+	Size         string   `json:"size"`         // Dummy
+	Digest       string   `json:"digest"`       // Dummy
+	Type         string   `json:"type"`         // "model"
+	Description  string   `json:"description"`  // Dummy
+	Tags         []string `json:"tags"`         // Dummy
+	Capabilities []string `json:"capabilities"` // "completion" (hardcoded)
+	Parameters   string   `json:"parameters"`   // Dummy
 	Details      struct {
-		ParentModel       string   `json:"parent_model"`
-		Format            string   `json:"format"` // "gguf"
-		Family            string   `json:"family"`
-		Families          []string `json:"families"`
-		ParameterSize     string   `json:"parameter_size"`
-		QuantizationLevel string   `json:"quantization_level"`
+		ParentModel       string   `json:"parent_model"`       // Dummy
+		Format            string   `json:"format"`             // "gguf" (hardcoded)
+		Family            string   `json:"family"`             // Dummy
+		Families          []string `json:"families"`           // Dummy
+		ParameterSize     string   `json:"parameter_size"`     // Dummy
+		QuantizationLevel string   `json:"quantization_level"` // Dummy
 	} `json:"details"`
 }
 
 type ModelOpenAI struct {
-	ID      string    `json:"id"`     // Path to the file
-	Object  string    `json:"object"` // "model"
-	Created base.Time `json:"created"`
+	ID      string    `json:"id"`       // Path to the file
+	Object  string    `json:"object"`   // "model"
+	Created base.Time `json:"created"`  // Dummy
 	OwnedBy string    `json:"owned_by"` // "llamacpp"
 	Meta    struct {
 		VocabType int64 `json:"vocab_type"` // 1
@@ -438,6 +863,10 @@ func (m *Model) Context() int64 {
 	return m.OpenAI.Meta.NCtxTrain
 }
 
+// ModelsResponse is not documented.
+//
+// See handle_models() in
+// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/server.cpp
 type ModelsResponse struct {
 	Models []ModelHF     `json:"models"`
 	Object string        `json:"object"` // "list"
@@ -489,6 +918,10 @@ type TokenPerformance struct {
 	Duration time.Duration
 }
 
+func (t *TokenPerformance) String() string {
+	return fmt.Sprintf("%d (%s)", t.Count, t.Duration)
+}
+
 // Rate is the number of token per second.
 func (t *TokenPerformance) Rate() float64 {
 	if t.Duration == 0 {
@@ -515,9 +948,9 @@ type applyTemplateResponse struct {
 
 type ErrorResponse struct {
 	ErrorVal struct {
-		Code    int64
-		Message string
-		Type    string
+		Code    int64  `json:"code"`
+		Message string `json:"message"`
+		Type    string `json:"type"`
 	} `json:"error"`
 }
 
@@ -533,7 +966,7 @@ func (er *ErrorResponse) IsAPIError() bool {
 
 // Client implements genai.ProviderGen.
 type Client struct {
-	base.Provider[*ErrorResponse]
+	base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 
 	baseURL        string
 	completionsURL string
@@ -559,33 +992,44 @@ func New(baseURL string, encoding *PromptEncoding, wrapper func(http.RoundTrippe
 		t = wrapper(t)
 	}
 	return &Client{
-		Provider: base.Provider[*ErrorResponse]{
-			ClientJSON: httpjson.Client{
-				Lenient: internal.BeLenient,
-				Client:  &http.Client{Transport: &roundtrippers.RequestID{Transport: t}},
+		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+			GenSyncURL:           baseURL + "/chat/completions",
+			ProcessStreamPackets: processChatStreamPackets,
+			ModelOptional:        true,
+			Provider: base.Provider[*ErrorResponse]{
+				ProviderName: "llamacpp",
+				ClientJSON: httpjson.Client{
+					Lenient: internal.BeLenient,
+					Client: &http.Client{
+						Transport: &roundtrippers.RequestID{Transport: t},
+					},
+				},
 			},
 		},
 		baseURL:        baseURL,
-		completionsURL: baseURL + "/completion",
+		completionsURL: baseURL + "/completions",
 		modelsURL:      baseURL + "/v1/models",
 		encoding:       encoding,
 	}, nil
-}
-
-func (c *Client) Name() string {
-	return "llamacpp"
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard
 }
 
+func (c *Client) ModelID() string {
+	m, _ := c.ListModels(context.Background())
+	if len(m) > 0 {
+		return m[0].GetID()
+	}
+	return ""
+}
+
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
-	// https://api-docs.deepseek.com/api/list-models
 	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, c.modelsURL)
 }
 
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+func (c *Client) Completions(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
@@ -627,12 +1071,11 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 }
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
-	// TODO: Distinguish between completion and chat. Chat is completion with the template applied.
 	in.Stream = false
 	return c.DoRequest(ctx, "POST", c.completionsURL, in, out)
 }
 
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
 	if err := msgs.Validate(); err != nil {
 		return result, err
@@ -719,7 +1162,6 @@ func (c *Client) GetHealthRaw(ctx context.Context) (HealthResponse, error) {
 
 // GetMetrics retrieves the performance statistics from the server.
 func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
-	// TODO: Generalize.
 	req, err := http.NewRequestWithContext(ctx, "GET", c.baseURL+"/metrics", nil)
 	if err != nil {
 		return fmt.Errorf("failed to create HTTP request: %w", err)
@@ -779,14 +1221,13 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 		case "llamacpp:n_decode_total":
 		case "llamacpp:n_busy_slots_per_decode":
 		default:
+			if !internal.BeLenient {
+				panic(fmt.Sprintf("unknown metric %q", l))
+			}
 			return fmt.Errorf("unknown metric %q", l)
 		}
 	}
 	return nil
-}
-
-func (c *Client) ModelID() string {
-	return ""
 }
 
 func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts genai.Options, msgs genai.Messages) error {
@@ -841,6 +1282,71 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 			fallthrough
 		default:
 			return fmt.Errorf("unexpected role %q", m.Role)
+		}
+	}
+	return nil
+}
+
+func processChatStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
+	defer func() {
+		// We need to empty the channel to avoid blocking the goroutine.
+		for range ch {
+		}
+	}()
+	pendingCall := ToolCall{}
+	for pkt := range ch {
+		if len(pkt.Choices) != 1 {
+			continue
+		}
+		if pkt.Choices[0].FinishReason != "" {
+			result.InputTokens = pkt.Usage.PromptTokens
+			// result.InputCachedTokens = pkt.Usage.TokensCached
+			result.OutputTokens = pkt.Usage.CompletionTokens
+			result.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
+		}
+		switch role := pkt.Choices[0].Delta.Role; role {
+		case "assistant", "":
+		default:
+			return fmt.Errorf("unexpected role %q", role)
+		}
+		f := genai.ContentFragment{
+			TextFragment: pkt.Choices[0].Delta.Content,
+			// ThinkingFragment: pkt.Choices[0].Delta.ReasoningContent,
+		}
+		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
+			return fmt.Errorf("implement multiple tool calls: %#v", pkt)
+		}
+		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
+			if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {
+				// A new call.
+				if pendingCall.ID == "" {
+					pendingCall = t
+					if !f.IsZero() {
+						return fmt.Errorf("implement tool call with metadata: %#v", pkt)
+					}
+					continue
+				}
+				// Flush.
+				pendingCall.To(&f.ToolCall)
+				pendingCall = t
+			} else if pendingCall.ID != "" {
+				// Continuation.
+				pendingCall.Function.Arguments += t.Function.Arguments
+				if !f.IsZero() {
+					return fmt.Errorf("implement tool call with metadata: %#v", pkt)
+				}
+				continue
+			}
+		} else if pendingCall.ID != "" {
+			// Flush.
+			pendingCall.To(&f.ToolCall)
+			pendingCall = ToolCall{}
+		}
+		if !f.IsZero() {
+			if err := result.Accumulate(f); err != nil {
+				return err
+			}
+			chunks <- f
 		}
 	}
 	return nil

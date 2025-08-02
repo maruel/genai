@@ -23,7 +23,7 @@ func ExampleClient_GenSync() {
 	// Download and start the server.
 	ctx := context.Background()
 	// Start a server with a minimalist model: Qwen2 0.5B in Q2_K quantization.
-	srv, err := startServer(ctx, "Qwen", "Qwen2-0.5B-Instruct-GGUF", "qwen2-0_5b-instruct-q2_k.gguf")
+	srv, err := startServer(ctx, "Qwen", "Qwen2-0.5B-Instruct-GGUF", "qwen2-0_5b-instruct-q2_k.gguf", "")
 	if err != nil {
 		log.Print(err)
 		return
@@ -55,7 +55,7 @@ func ExampleClient_GenSync() {
 }
 
 // startServer starts a server with Qwen2 0.5B in Q2_K quantization.
-func startServer(ctx context.Context, author, repo, file string) (*llamacppsrv.Server, error) {
+func startServer(ctx context.Context, author, repo, modelfile, multimodal string) (*llamacppsrv.Server, error) {
 	cache, err := filepath.Abs("testdata/tmp")
 	if err != nil {
 		return nil, err
@@ -75,17 +75,24 @@ func startServer(ctx context.Context, author, repo, file string) (*llamacppsrv.S
 	if err != nil {
 		return nil, err
 	}
-	// A really small model.
-	modelPath, err := hf.EnsureFile(ctx, huggingface.ModelRef{Author: author, Repo: repo}, "HEAD", file)
+	modelPath, err := hf.EnsureFile(ctx, huggingface.ModelRef{Author: author, Repo: repo}, "HEAD", modelfile)
 	if err != nil {
 		return nil, err
+	}
+	extraArgs := []string{"--jinja"}
+	mmPath := ""
+	if multimodal != "" {
+		if mmPath, err = hf.EnsureFile(ctx, huggingface.ModelRef{Author: author, Repo: repo}, "HEAD", multimodal); err != nil {
+			return nil, err
+		}
+		extraArgs = []string{"--mmproj", mmPath}
 	}
 	l, err := os.Create(filepath.Join(cache, "lllama-server.log"))
 	if err != nil {
 		return nil, err
 	}
 	defer l.Close()
-	return llamacppsrv.NewServer(ctx, exe, modelPath, l, fmt.Sprintf("127.0.0.1:%d", port), 0, nil)
+	return llamacppsrv.NewServer(ctx, exe, modelPath, l, fmt.Sprintf("127.0.0.1:%d", port), 0, extraArgs)
 }
 
 func findFreePort() int {

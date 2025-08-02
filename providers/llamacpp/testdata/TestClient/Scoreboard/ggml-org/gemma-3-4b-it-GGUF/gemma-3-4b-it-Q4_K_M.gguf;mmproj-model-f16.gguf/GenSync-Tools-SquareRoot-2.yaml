@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 787
+        host: localhost
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"X8N2RJILYvY7zIxh4MvVxwfd05RfsU5n","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"X8N2RJILYvY7zIxh4MvVxwfd05RfsU5n"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 573
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"363.89"}}],"created":1754166128,"model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion","usage":{"completion_tokens":18,"prompt_tokens":459,"total_tokens":477},"id":"chatcmpl-k7A4zI9SHKRRIkgQFP2agaQjodyt92iu","timings":{"prompt_n":150,"prompt_ms":4785.714,"prompt_per_token_ms":31.90476,"prompt_per_second":31.343285453330477,"predicted_n":18,"predicted_ms":1702.145,"predicted_per_token_ms":94.56361111111111,"predicted_per_second":10.574892268285017}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "573"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 6.49s

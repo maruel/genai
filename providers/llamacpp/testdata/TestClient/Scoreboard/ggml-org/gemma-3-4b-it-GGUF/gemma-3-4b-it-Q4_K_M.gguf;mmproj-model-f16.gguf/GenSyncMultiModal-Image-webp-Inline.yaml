@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 4619
+        host: localhost
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"data:image/webp;base64,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"}}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 100
+        body: '{"error":{"code":400,"message":"Failed to load image or audio file","type":"invalid_request_error"}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "100"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 400 Bad Request
+        code: 400
+        duration: 1ms

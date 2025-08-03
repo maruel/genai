@@ -652,9 +652,7 @@ func (m *Message) To(out *genai.Message) error {
 	if len(m.ToolCalls) != 0 {
 		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))
 		for i := range m.ToolCalls {
-			if err := m.ToolCalls[i].To(&out.ToolCalls[i]); err != nil {
-				return err
-			}
+			m.ToolCalls[i].To(&out.ToolCalls[i])
 		}
 	}
 	return nil
@@ -797,11 +795,10 @@ func (t *ToolCall) From(in *genai.ToolCall) error {
 	return nil
 }
 
-func (t *ToolCall) To(out *genai.ToolCall) error {
+func (t *ToolCall) To(out *genai.ToolCall) {
 	out.ID = t.ID
 	out.Name = t.Function.Name
 	out.Arguments = t.Function.Arguments
-	return nil
 }
 
 //

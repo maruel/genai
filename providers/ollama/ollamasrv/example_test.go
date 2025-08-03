@@ -5,9 +5,11 @@
 package ollamasrv_test
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"log"
+	"log/slog"
 	"net"
 	"os"
 	"path/filepath"
@@ -51,6 +53,7 @@ func Example() {
 	// Normalize some of the variance. Obviously many models will still fail this test.
 	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.AsText())), ".!")
 	fmt.Printf("Response: %s\n", txt)
+	// Output: Response: hello
 }
 
 //
@@ -78,10 +81,31 @@ func startServer(ctx context.Context) (*ollamasrv.Server, error) {
 		return nil, err
 	}
 	port := findFreePort()
-	l, err := os.Create(filepath.Join(cache, "ollama.log"))
-	if err != nil {
-		return nil, err
-	}
-	defer l.Close()
+	// ollama doesn't log much, so redirect that to the logs instead of to a file. This permits not writing a
+	// file, which can cause go test caching issues.
+	l := &logWriter{slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{
+		ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+			if a.Key == "level" || a.Key == "msg" || a.Key == "time" {
+				a = slog.Attr{}
+			}
+			return a
+		},
+	}))}
 	return ollamasrv.NewServer(ctx, exe, l, port)
+}
+
+type logWriter struct {
+	logger *slog.Logger
+}
+
+func (w *logWriter) Write(p []byte) (n int, err error) {
+	lines := bytes.Split(p, []byte("\n"))
+	for i, line := range lines {
+		// Skip the last empty line if the data ended with \n
+		if i == len(lines)-1 && len(line) == 0 {
+			continue
+		}
+		w.logger.Info("ollama", "ollama", string(line))
+	}
+	return len(p), nil
 }

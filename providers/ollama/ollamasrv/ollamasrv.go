@@ -45,8 +45,10 @@ type Server struct {
 // NewServer creates a new instance of the ollama serve server and ensures the
 // server is healthy.
 //
+// Use env to specify the OLLAMA_xxx environment variables. They are documented with "ollama help serve".
+//
 // Output is redirected to logOutput if non-nil.
-func NewServer(ctx context.Context, exe string, logOutput io.Writer, port int) (*Server, error) {
+func NewServer(ctx context.Context, exe string, logOutput io.Writer, port int, env []string) (*Server, error) {
 	if !filepath.IsAbs(exe) {
 		return nil, errors.New("exe must be an absolute path")
 	}
@@ -65,6 +67,7 @@ func NewServer(ctx context.Context, exe string, logOutput io.Writer, port int) (
 	if runtime.GOOS != "windows" {
 		cmd.Env = append(cmd.Env, "LD_LIBRARY_PATH="+cmd.Dir+":"+os.Getenv("LD_LIBRARY_PATH"))
 	}
+	cmd.Env = append(cmd.Env, env...)
 	cmd.Cancel = func() error {
 		if runtime.GOOS == "windows" {
 			return cmd.Process.Kill()

@@ -80,7 +80,7 @@ func startServer(ctx context.Context) (*ollamasrv.Server, error) {
 			return a
 		},
 	}))}
-	return ollamasrv.NewServer(ctx, exe, l, port)
+	return ollamasrv.NewServer(ctx, exe, l, port, []string{"OLLAMA_FLASH_ATTENTION=1", "OLLAMA_KV_CACHE_TYPE=q8_0"})
 }
 
 type logWriter struct {

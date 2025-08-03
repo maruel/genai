@@ -41,15 +41,16 @@ import (
 //
 // # Warnings
 //
-//   - llama.cpp supports now more than what the client here has implemented, like vision and tool calling.
+//   - The multi-modal file is referred to with "#" character. I was initially using ";" but it caused
+//     "go get" to fail and frankly it was annoying to use when copy-pasting paths in bash.
 var Scoreboard = genai.Scoreboard{
 	Country:      "Local",
 	DashboardURL: "https://github.com/ggml-org/llama.cpp",
 	Scenarios: []genai.Scenario{
 		// https://huggingface.co/ggml-org/gemma-3-4b-it-GGUF/tree/main
 		{
-			// Models: []string{"ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q8_0.gguf;mmproj-model-f16.gguf"},
-			Models: []string{"ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q4_K_M.gguf;mmproj-model-f16.gguf"},
+			// Models: []string{"ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q8_0.gguf#mmproj-model-f16.gguf"},
+			Models: []string{"ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q4_K_M.gguf#mmproj-model-f16.gguf"},
 			// TODO: It supports genai.ModalityImage
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {Inline: true},

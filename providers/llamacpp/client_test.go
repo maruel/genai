@@ -106,7 +106,7 @@ func (l *lazyServer) lazyStart(t testing.TB) string {
 	if l.url == "" {
 		t.Log("Starting server")
 		// Use the context of the parent for server lifecycle management.
-		mains := strings.SplitN(llamacpp.Scoreboard.Scenarios[0].Models[0], ";", 2)
+		mains := strings.SplitN(llamacpp.Scoreboard.Scenarios[0].Models[0], "#", 2)
 		parts := strings.Split(mains[0], "/")
 		srv, err := startServer(l.t.Context(), parts[0], parts[1], parts[2], mains[1])
 		if err != nil {

@@ -2,11 +2,11 @@
 
 | Model                                             | ➛Inputs   | Outputs➛   | JSON➛   | JSON+Schema➛   | Chat | Streaming | Tools | Batch | Seed | Files | Citations | Thinking |
 | ------------------------------------------------- | --------- | ---------- | ------- | -------------- | ---- | --------- | ----- | ----- | ---- | ----- | --------- | -------- |
-| meta-llama/Llama-4-Scout-17B-16E-Instruct         | 💬📸      | 💬         | ✅      | ✅             | ✅   | ✅        | 💨🧐  | ❌    | ✅   | ❌    | ❌        | ❌       |
-| meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8 | 💬📸      | 💬         | ✅      | ✅             | ✅🤪 | ✅🤪      | 💨    | ❌    | ✅   | ❌    | ❌        | ❌       |
-| meta-llama/Llama-Vision-Free                      | 💬📸      | 💬         | ❌      | ✅             | ✅🤪 | ✅        | 💨🧐  | ❌    | ✅   | ❌    | ❌        | ❌       |
-| moonshotai/Kimi-K2-Instruct                       | 💬        | 💬         | ✅      | ✅             | ✅   | ✅        | 💨    | ❌    | ✅   | ❌    | ❌        | ❌       |
-| mistralai/Mistral-Small-24B-Instruct-2501         | 💬        | 💬         | ✅      | ❌             | ✅🚩 | ✅🚩      | 💨    | ❌    | ✅   | ❌    | ❌        | ❌       |
+| meta-llama/Llama-4-Scout-17B-16E-Instruct         | 💬📸      | 💬         | ✅      | ✅             | ✅   | ✅        | 💨    | ❌    | ✅   | ❌    | ❌        | ❌       |
+| meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8 | 💬📸      | 💬         | ✅      | ✅             | ✅🤪 | ✅🤪      | 💨🧐  | ❌    | ✅   | ❌    | ❌        | ❌       |
+| meta-llama/Llama-Vision-Free                      | 💬📸      | 💬         | ❌      | ✅             | ✅🤪 | ✅        | 💨    | ❌    | ✅   | ❌    | ❌        | ❌       |
+| moonshotai/Kimi-K2-Instruct                       | 💬        | 💬         | ✅      | ✅             | ✅   | ✅        | 💨🧐  | ❌    | ✅   | ❌    | ❌        | ❌       |
+| mistralai/Mistral-Small-24B-Instruct-2501         | 💬        | 💬         | ✅      | ❌             | ✅🚩 | ✅🚩      | 💨🧐  | ❌    | ✅   | ❌    | ❌        | ❌       |
 | black-forest-labs/FLUX.1-schnell                  | 💬        | 📸         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ✅   | ❌    | ❌        | ❌       |
 | Alibaba-NLP/gte-modernbert-base                   | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO       | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |

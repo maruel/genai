@@ -90,8 +90,8 @@ type ChatRequest struct {
 	ResponseFormat struct {
 		Type       string `json:"type,omitzero"` // Default: "text"; "json_object", "json_schema"
 		JSONSchema struct {
-			Schema *jsonschema.Schema `json:"schema,omitzero"` // To confirm.
-		} `json:"json_schema,omitzero"` // To confirm.
+			Schema *jsonschema.Schema `json:"schema,omitzero"`
+		} `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	Grammar         string `json:"grammar,omitzero"`
 	TimingsPerToken bool   `json:"timings_per_token,omitzero"`

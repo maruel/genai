@@ -33,7 +33,7 @@ import (
 // https://github.com/ollama/ollama/releases
 //
 // You are free to use the version number that works best for you.
-const Version = "v0.9.6"
+const Version = "v0.10.1"
 
 // Server is an "ollama serve" instance.
 type Server struct {

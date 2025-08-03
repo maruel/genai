@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 200
+        host: localhost
+        body: |
+            {"model":"qwen3:4b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"},{"role":"user","content":"\n\n/think"}],"stream":false,"options":{"stop":["is"]}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 398
+        body: '{"model":"qwen3:4b","created_at":"2025-08-03T09:33:32.572412172Z","message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, the user wants me to talk about Canada in great detail, starting with \"Canada "},"done_reason":"stop","done":true,"total_duration":2353861699,"load_duration":16615468,"prompt_eval_count":23,"prompt_eval_duration":52577648,"eval_count":21,"eval_duration":1030374935}'
+        headers:
+            Content-Length:
+                - "398"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 2.354s

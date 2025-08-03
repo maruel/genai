@@ -1,0 +1,53 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 199
+        host: localhost
+        body: |
+            {"model":"qwen3:4b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"},{"role":"user","content":"\n\n/think"}],"stream":true,"options":{"stop":["is"]}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:30.467304798Z","message":{"role":"assistant","content":"\u003cthink\u003e"},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:30.516815355Z","message":{"role":"assistant","content":"\n"},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:30.566567626Z","message":{"role":"assistant","content":"Okay"},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:30.612950496Z","message":{"role":"assistant","content":","},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:30.665796426Z","message":{"role":"assistant","content":" the"},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:30.715403505Z","message":{"role":"assistant","content":" user"},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:30.765201059Z","message":{"role":"assistant","content":" wants"},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:30.815877366Z","message":{"role":"assistant","content":" me"},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:30.868012087Z","message":{"role":"assistant","content":" to"},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:30.922470215Z","message":{"role":"assistant","content":" talk"},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:30.979091415Z","message":{"role":"assistant","content":" about"},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:31.027526442Z","message":{"role":"assistant","content":" Canada"},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:31.080071673Z","message":{"role":"assistant","content":" in"},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:31.131229611Z","message":{"role":"assistant","content":" great"},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:31.18126993Z","message":{"role":"assistant","content":" detail"},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:31.230559023Z","message":{"role":"assistant","content":","},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:31.285551248Z","message":{"role":"assistant","content":" starting"},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:31.337588144Z","message":{"role":"assistant","content":" with"},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:31.386487573Z","message":{"role":"assistant","content":" \""},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:31.436476405Z","message":{"role":"assistant","content":"Canada"},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:31.48908068Z","message":{"role":"assistant","content":" "},"done":false}
+            {"model":"qwen3:4b","created_at":"2025-08-03T09:33:31.489084652Z","message":{"role":"assistant","content":""},"done_reason":"stop","done":true,"total_duration":2080969450,"load_duration":22065453,"prompt_eval_count":23,"prompt_eval_duration":247823196,"eval_count":21,"eval_duration":1022598107}
+        headers:
+            Content-Type:
+                - application/x-ndjson
+        status: 200 OK
+        code: 200
+        duration: 1.059s

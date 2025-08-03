@@ -9,7 +9,7 @@ interactions:
         content_length: 220
         host: localhost
         body: |
-            {"model":"gemma3:4b","stream":true,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"format":"json"}
+            {"model":"gemma3:4b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":true,"format":"json"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,17 +23,17 @@ interactions:
             - chunked
         content_length: -1
         body: |
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:24.145286123Z","message":{"role":"assistant","content":"{\""},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:24.203219182Z","message":{"role":"assistant","content":"is"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:24.263166315Z","message":{"role":"assistant","content":"_"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:24.319816559Z","message":{"role":"assistant","content":"fruit"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:24.376634028Z","message":{"role":"assistant","content":"\":"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:24.434559677Z","message":{"role":"assistant","content":" true"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:24.495027499Z","message":{"role":"assistant","content":"}"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:24.60232105Z","message":{"role":"assistant","content":""},"done_reason":"stop","done":true,"total_duration":1055733896,"load_duration":49292360,"prompt_eval_count":38,"prompt_eval_duration":422970012,"eval_count":8,"eval_duration":484100453}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:46:26.495908245Z","message":{"role":"assistant","content":"{\""},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:46:26.552105241Z","message":{"role":"assistant","content":"is"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:46:26.609892761Z","message":{"role":"assistant","content":"_"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:46:26.667744593Z","message":{"role":"assistant","content":"fruit"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:46:26.725956267Z","message":{"role":"assistant","content":"\":"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:46:26.783559521Z","message":{"role":"assistant","content":" true"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:46:26.841890199Z","message":{"role":"assistant","content":"}"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:46:27.010703368Z","message":{"role":"assistant","content":""},"done_reason":"stop","done":true,"total_duration":11210403865,"load_duration":8262174592,"prompt_eval_count":38,"prompt_eval_duration":55933659,"eval_count":8,"eval_duration":547074781}
         headers:
             Content-Type:
                 - application/x-ndjson
         status: 200 OK
         code: 200
-        duration: 599ms
+        duration: 10.697s

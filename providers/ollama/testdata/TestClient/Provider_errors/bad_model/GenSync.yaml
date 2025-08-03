@@ -9,7 +9,7 @@ interactions:
         content_length: 97
         host: localhost
         body: |
-            {"model":"bad_model","stream":false,"messages":[{"role":"user","content":"Tell a short joke."}]}
+            {"model":"bad_model","messages":[{"role":"user","content":"Tell a short joke."}],"stream":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -56,4 +56,4 @@ interactions:
                 - application/json
         status: 500 Internal Server Error
         code: 500
-        duration: 235ms
+        duration: 901ms

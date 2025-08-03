@@ -34,6 +34,8 @@ import (
 //
 // # Warnings
 //
+//   - https://ollama.com/search?c=tool is not a reliable source of truth to determine which model has tool
+//     support enabled. See https://github.com/ollama/ollama/issues/9680.
 //   - Figure out tools as streaming support recently got added to llama.cpp.
 //   - Ollama supports more than what the client supports.
 var Scoreboard = genai.Scoreboard{
@@ -51,12 +53,31 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				NoStopSequence: true, // It's not true, it's just the model is too quantized and doesn't follow instruction.
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
+				JSON:       true,
+				JSONSchema: true,
+				Seed:       true,
 			},
 			GenStream: &genai.FunctionalityText{
+				JSON:       true,
+				JSONSchema: true,
+				Seed:       true,
+			},
+		},
+		{
+			Models:   []string{"qwen3:4b"},
+			Thinking: true,
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {Inline: true},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				Tools:      genai.True,
+				JSON:       true,
+				JSONSchema: true,
+				Seed:       true,
+			},
+			GenStream: &genai.FunctionalityText{
+				Tools:      genai.True,
 				JSON:       true,
 				JSONSchema: true,
 				Seed:       true,
@@ -70,31 +91,69 @@ var Scoreboard = genai.Scoreboard{
 //
 // The source of truth is at
 // https://pkg.go.dev/github.com/ollama/ollama/api#ChatRequest
+//
+// The implementation is at https://pkg.go.dev/github.com/ollama/ollama/server#Server.ChatHandler
+//
+// We do not refer to the original struct for two reasons:
+// - It uses pointers, which is not ergonomic and is unnecessary.
+// - It would fetch a ton of junk.
+// - There's two raw JSON fields (completely unnecessary!).
 type ChatRequest struct {
-	Model    string    `json:"model"`
-	Stream   bool      `json:"stream"`
-	Messages []Message `json:"messages"`
-	Tools    []Tool    `json:"tools,omitzero"`
-	Format   any       `json:"format,omitzero"` // Either *jsonschema.Schema or string
-	// https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values
-	// https://pkg.go.dev/github.com/ollama/ollama/api#Options
-	// https://pkg.go.dev/github.com/ollama/ollama/api#Runner
-	Options struct {
-		Mirostat      int64    `json:"mirostat,omitzero"` // [0, 1, 2]
-		MirostatEta   float64  `json:"mirostat_eta,omitzero"`
-		MirostatTau   float64  `json:"mirostat_tau,omitzero"`
-		NumCtx        int64    `json:"num_ctx,omitzero"`        // Context Window, default 2048
-		RepeatLastN   int64    `json:"repeat_last_n,omitzero"`  // Lookback for repeated tokens, default 64
-		RepeatPenalty float64  `json:"repeat_penalty,omitzero"` // default 1.1
-		Temperature   float64  `json:"temperature,omitzero"`    // default 0.8
-		Seed          int64    `json:"seed,omitzero"`
-		Stop          []string `json:"stop,omitzero"`        // keywords to stop completion
-		NumPredict    int64    `json:"num_predict,omitzero"` // Max tokens
-		TopK          int64    `json:"top_k,omitzero"`       // Default: 40
-		TopP          float64  `json:"top_p,omitzero"`       // Default: 0.9
-		MinP          float64  `json:"min_p,omitzero"`       // Default: 0.0
-	} `json:"options,omitzero"`
-	KeepAlive string `json:"keep_alive,omitzero"` // Default "5m"
+	Model     string             `json:"model"`
+	Messages  []Message          `json:"messages"`
+	Stream    bool               `json:"stream"`
+	Format    ChatRequestFormat  `json:"format,omitzero"`
+	KeepAlive string             `json:"keep_alive,omitzero"` // Default "5m"
+	Tools     []Tool             `json:"tools,omitzero"`
+	Options   ChatRequestOptions `json:"options,omitzero"`
+	Think     bool               `json:"think,omitzero"`
+}
+
+// ChatRequestFormat is not documented.
+//
+// See fromChatRequest() in https://github.com/ollama/ollama/blob/main/openai/openai.go for the actual
+// expected format. I think that using llama-server's actual format may be saner.
+//
+// See llmServer.Completion() in https://github.com/ollama/ollama/blob/main/llm/server.go for the use. Ollama
+// doesn't use llama-server's native JSON support at all.
+type ChatRequestFormat struct {
+	Type   string
+	Schema *jsonschema.Schema
+}
+
+func (c *ChatRequestFormat) MarshalJSON() ([]byte, error) {
+	if c.Type != "" {
+		return json.Marshal(c.Type)
+	}
+	return json.Marshal(c.Schema)
+}
+
+// ChatRequestOptions is named Options in ollama.
+//
+// It is documented at: https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values
+type ChatRequestOptions struct {
+	// Fields from: https://pkg.go.dev/github.com/ollama/ollama/api#Runner
+	NumCtx    int64 `json:"num_ctx,omitzero"` // Context Window, default 4096
+	NumBatch  int64 `json:"num_batch,omitzero"`
+	NumGPU    int64 `json:"num_gpu,omitzero"`
+	MainGPU   int64 `json:"main_gpu,omitzero"`
+	UseMMap   bool  `json:"use_mmap,omitzero"`
+	NumThread int64 `json:"num_thread,omitzero"`
+
+	// Fields from: https://pkg.go.dev/github.com/ollama/ollama/api#Options
+	NumKeep          int64    `json:"num_keep,omitzero"`          //
+	Seed             int64    `json:"seed,omitzero"`              //
+	NumPredict       int64    `json:"num_predict,omitzero"`       // MaxTokens
+	TopK             int64    `json:"top_k,omitzero"`             // Default: 40
+	TopP             float64  `json:"top_p,omitzero"`             // Default: 0.9
+	MinP             float64  `json:"min_p,omitzero"`             // Default: 0.0
+	TypicalP         float64  `json:"typical_p,omitzero"`         //
+	RepeatLastN      int64    `json:"repeat_last_n,omitzero"`     // Lookback for repeated tokens, default 64
+	Temperature      float64  `json:"temperature,omitzero"`       // default 0.7 or 0.8?
+	RepeatPenalty    float64  `json:"repeat_penalty,omitzero"`    // default 1.1
+	PresencePenalty  float64  `json:"presence_penalty,omitzero"`  //
+	FrequencyPenalty float64  `json:"frequency_penalty,omitzero"` //
+	Stop             []string `json:"stop,omitzero"`              //
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
@@ -114,9 +173,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			c.Options.TopK = v.TopK
 			c.Options.Stop = v.Stop
 			if v.DecodeAs != nil {
-				c.Format = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+				c.Format.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
 			} else if v.ReplyAsJSON {
-				c.Format = "json"
+				c.Format.Type = "json"
 			}
 			if len(v.Tools) != 0 {
 				switch v.ToolCallRequest {
@@ -167,12 +226,13 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	return errors.Join(errs...)
 }
 
-// https://github.com/ollama/ollama/blob/main/docs/api.md#parameters-1
+// Message is described at https://github.com/ollama/ollama/blob/main/docs/api.md#parameters-1
 //
-// https://pkg.go.dev/github.com/ollama/ollama/api#Message
+// The source of truth is at https://pkg.go.dev/github.com/ollama/ollama/api#Message
 type Message struct {
 	Role      string     `json:"role,omitzero"` // "system", "assistant", "user"
 	Content   string     `json:"content,omitzero"`
+	Thinking  string     `json:"thinking,omitzero"`
 	Images    [][]byte   `json:"images,omitzero"` // List of images as base64 encoded strings.
 	ToolCalls []ToolCall `json:"tool_calls,omitzero"`
 }
@@ -206,6 +266,9 @@ func (m *Message) From(in *genai.Message) error {
 			}
 			switch {
 			case strings.HasPrefix(mimeType, "image/"):
+				if in.Contents[i].URL != "" {
+					return errors.New("url are not supported for images")
+				}
 				m.Images = append(m.Images, data)
 			case strings.HasPrefix(mimeType, "text/plain"):
 				if in.Contents[i].URL != "" {
@@ -337,11 +400,15 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	return out, err
 }
 
+// DoneReason is not documented.
 type DoneReason string
 
 const (
 	DoneStop   DoneReason = "stop"
 	DoneLength DoneReason = "length"
+	// See https://pkg.go.dev/github.com/ollama/ollama/server#Server.ChatHandler
+	DoneLoad   DoneReason = "load"
+	DoneUnload DoneReason = "unload"
 )
 
 func (d DoneReason) ToFinishReason() genai.FinishReason {
@@ -350,6 +417,8 @@ func (d DoneReason) ToFinishReason() genai.FinishReason {
 		return genai.FinishedStop
 	case DoneLength:
 		return genai.FinishedLength
+	case DoneLoad, DoneUnload:
+		return genai.FinishReason(d)
 	default:
 		if !internal.BeLenient {
 			panic(d)

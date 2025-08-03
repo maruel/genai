@@ -6,7 +6,6 @@ package ollama_test
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"os"
 	"strings"
@@ -14,12 +13,12 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/ollama"
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
-	"github.com/maruel/httpjson"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
@@ -30,14 +29,29 @@ func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		models := []scoreboardtest.Model{{Model: ollama.Scoreboard.Scenarios[0].Models[0]}}
+		var models []scoreboardtest.Model
+		for _, sc := range ollama.Scoreboard.Scenarios {
+			for _, m := range sc.Models {
+				models = append(models, scoreboardtest.Model{Model: m, Thinking: sc.Thinking})
+			}
+		}
 		scoreboardtest.AssertScoreboard(t, func(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			serverURL := s.lazyStart(t)
 			c, err := ollama.New(serverURL, model.Model, fn)
 			if err != nil {
 				t.Fatal(err)
 			}
-			return &hideHTTP500{c}
+			if strings.HasPrefix(model.Model, "qwen") {
+				if !model.Thinking {
+					t.Fatal("expected thinking")
+				}
+				return &adapters.ProviderGenThinking{
+					ProviderGen: &adapters.ProviderGenAppend{ProviderGen: c, Append: genai.NewTextMessage(genai.User, "\n\n/think")},
+					TagName:     "think",
+				}
+			}
+			return c
+			// return &hideHTTP500{c}
 		}, models, testRecorder.Records)
 	})
 
@@ -55,38 +69,6 @@ func TestClient(t *testing.T) {
 		}
 		internaltest.TestClient_Provider_errors(t, f, data)
 	})
-}
-
-type hideHTTP500 struct {
-	*ollama.Client
-}
-
-func (h *hideHTTP500) Unwrap() genai.Provider {
-	return h.Client
-}
-
-func (h *hideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	resp, err := h.Client.GenSync(ctx, msgs, opts)
-	if err != nil {
-		var herr *httpjson.Error
-		if errors.As(err, &herr) && herr.StatusCode == 500 {
-			return resp, errors.New("ollama is having a bad day")
-		}
-		return resp, err
-	}
-	return resp, err
-}
-
-func (h *hideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
-	resp, err := h.Client.GenStream(ctx, msgs, chunks, opts)
-	if err != nil {
-		var herr *httpjson.Error
-		if errors.As(err, &herr) && herr.StatusCode == 500 {
-			return resp, errors.New("ollama is having a bad day")
-		}
-		return resp, err
-	}
-	return resp, err
 }
 
 type lazyServer struct {

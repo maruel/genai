@@ -9,7 +9,7 @@ interactions:
         content_length: 108
         host: localhost
         body: |
-            {"model":"gemma3:4b","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."}]}
+            {"model":"gemma3:4b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 302
-        body: '{"model":"gemma3:4b","created_at":"2025-07-26T00:30:20.749788844Z","message":{"role":"assistant","content":"Hello."},"done_reason":"stop","done":true,"total_duration":1631448174,"load_duration":1177950824,"prompt_eval_count":17,"prompt_eval_duration":202114777,"eval_count":3,"eval_duration":249482894}'
+        content_length: 305
+        body: '{"model":"gemma3:4b","created_at":"2025-08-03T08:34:20.707124244Z","message":{"role":"assistant","content":"Hello."},"done_reason":"stop","done":true,"total_duration":19561100879,"load_duration":16121588699,"prompt_eval_count":17,"prompt_eval_duration":3275314531,"eval_count":3,"eval_duration":150173047}'
         headers:
             Content-Length:
-                - "302"
+                - "305"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 1.632s
+        duration: 19.563s

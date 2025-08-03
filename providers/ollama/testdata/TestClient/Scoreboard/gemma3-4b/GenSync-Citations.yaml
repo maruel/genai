@@ -9,7 +9,7 @@ interactions:
         content_length: 113
         host: localhost
         body: |
-            {"model":"gemma3:4b","stream":false,"messages":[{"role":"user","content":"What is the capital of Quackiland?"}]}
+            {"model":"gemma3:4b","messages":[{"role":"user","content":"What is the capital of Quackiland?"}],"stream":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 476
-        body: "{\"model\":\"gemma3:4b\",\"created_at\":\"2025-07-26T00:31:38.467670551Z\",\"message\":{\"role\":\"assistant\",\"content\":\"This is a trick question! Quackiland doesn't actually exist. It's a made-up country. \U0001F60A \\n\\nTherefore, it has no capital. \\n\\nLet me know if you'd like to try another riddle!\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":48358199073,\"load_duration\":55026947,\"prompt_eval_count\":18,\"prompt_eval_duration\":22905755042,\"eval_count\":50,\"eval_duration\":25396894664}"
+        content_length: 470
+        body: "{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-03T08:34:47.736534158Z\",\"message\":{\"role\":\"assistant\",\"content\":\"This is a fun question! Since Quackiland is a fictional country, its capital is **Duckburg**. \\n\\nIt’s the home of Superman Duck and the Mystery Inc. detectives! \U0001F986\U0001F389\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":10073871028,\"load_duration\":120389490,\"prompt_eval_count\":18,\"prompt_eval_duration\":981008952,\"eval_count\":43,\"eval_duration\":8971385407}"
         headers:
             Content-Length:
-                - "476"
+                - "470"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 48.359s
+        duration: 10.075s

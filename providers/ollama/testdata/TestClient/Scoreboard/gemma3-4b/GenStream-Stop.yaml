@@ -9,7 +9,7 @@ interactions:
         content_length: 161
         host: localhost
         body: |
-            {"model":"gemma3:4b","stream":true,"messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"options":{"stop":["is"]}}
+            {"model":"gemma3:4b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":true,"options":{"stop":["is"]}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,24 +23,12 @@ interactions:
             - chunked
         content_length: -1
         body: |
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:22.789484358Z","message":{"role":"assistant","content":"Okay"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:22.847036129Z","message":{"role":"assistant","content":","},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:22.905373351Z","message":{"role":"assistant","content":" let"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:22.965886494Z","message":{"role":"assistant","content":"'"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:23.023302222Z","message":{"role":"assistant","content":"s"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:23.084289219Z","message":{"role":"assistant","content":" dive"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:23.14191119Z","message":{"role":"assistant","content":" deep"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:23.199982502Z","message":{"role":"assistant","content":" into"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:23.258952688Z","message":{"role":"assistant","content":" Canada"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:23.315646998Z","message":{"role":"assistant","content":" –"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:23.36911953Z","message":{"role":"assistant","content":" a"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:23.430538904Z","message":{"role":"assistant","content":" country"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:23.487566882Z","message":{"role":"assistant","content":" that"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:23.545974249Z","message":{"role":"assistant","content":" cons"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:23.545977476Z","message":{"role":"assistant","content":""},"done_reason":"stop","done":true,"total_duration":1210537401,"load_duration":50105383,"prompt_eval_count":21,"prompt_eval_duration":403035214,"eval_count":14,"eval_duration":756881571}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:37.206318846Z","message":{"role":"assistant","content":"Canada"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:37.456599172Z","message":{"role":"assistant","content":" "},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:37.456612034Z","message":{"role":"assistant","content":""},"done_reason":"stop","done":true,"total_duration":2155014479,"load_duration":536982123,"prompt_eval_count":21,"prompt_eval_duration":455216206,"eval_count":2,"eval_duration":251744144}
         headers:
             Content-Type:
                 - application/x-ndjson
         status: 200 OK
         code: 200
-        duration: 454ms
+        duration: 1.905s

@@ -9,7 +9,7 @@ interactions:
         content_length: 162
         host: localhost
         body: |
-            {"model":"gemma3:4b","stream":false,"messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"options":{"stop":["is"]}}
+            {"model":"gemma3:4b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"options":{"stop":["is"]}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 667
-        body: '{"model":"gemma3:4b","created_at":"2025-07-26T00:30:27.524687858Z","message":{"role":"assistant","content":"Okay, let''s dive deep into Canada – a country that’s often described as a paradox, a land of breathtaking beauty and vast wilderness alongside bustling cities and a remarkably diverse population. Here’s a detailed exploration of Canada, broken down into key areas:\n\n**1. Geography \u0026 Environment – The Land of Extremes:**\n\n* **Size \u0026 Scale:** Canada "},"done_reason":"stop","done":true,"total_duration":5285407354,"load_duration":43194125,"prompt_eval_count":21,"prompt_eval_duration":247079519,"eval_count":76,"eval_duration":4994581861}'
+        content_length: 303
+        body: '{"model":"gemma3:4b","created_at":"2025-08-03T08:34:36.748539258Z","message":{"role":"assistant","content":"Canada "},"done_reason":"stop","done":true,"total_duration":3623756722,"load_duration":211483863,"prompt_eval_count":21,"prompt_eval_duration":1237491844,"eval_count":2,"eval_duration":211987124}'
         headers:
             Content-Length:
-                - "667"
+                - "303"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 5.286s
+        duration: 3.624s

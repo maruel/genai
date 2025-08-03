@@ -9,7 +9,7 @@ interactions:
         content_length: 107
         host: localhost
         body: |
-            {"model":"gemma3:4b","stream":true,"messages":[{"role":"user","content":"Say hello. Use only one word."}]}
+            {"model":"gemma3:4b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,12 +23,12 @@ interactions:
             - chunked
         content_length: -1
         body: |
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:20.751213756Z","message":{"role":"assistant","content":"Hello"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:20.801232116Z","message":{"role":"assistant","content":"."},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:20.84907135Z","message":{"role":"assistant","content":""},"done_reason":"stop","done":true,"total_duration":1729725310,"load_duration":1177545272,"prompt_eval_count":17,"prompt_eval_duration":451443204,"eval_count":3,"eval_duration":99409542}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:22.289872889Z","message":{"role":"assistant","content":"Hello"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:22.35905731Z","message":{"role":"assistant","content":"."},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:22.429033264Z","message":{"role":"assistant","content":""},"done_reason":"stop","done":true,"total_duration":21283718667,"load_duration":16121829708,"prompt_eval_count":17,"prompt_eval_duration":1579886372,"eval_count":3,"eval_duration":140961976}
         headers:
             Content-Type:
                 - application/x-ndjson
         status: 200 OK
         code: 200
-        duration: 1.633s
+        duration: 21.145s

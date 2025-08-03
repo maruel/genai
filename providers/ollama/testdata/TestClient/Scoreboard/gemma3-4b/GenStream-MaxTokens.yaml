@@ -9,7 +9,7 @@ interactions:
         content_length: 157
         host: localhost
         body: |
-            {"model":"gemma3:4b","stream":true,"messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"options":{"num_predict":16}}
+            {"model":"gemma3:4b","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":true,"options":{"num_predict":16}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,26 +23,26 @@ interactions:
             - chunked
         content_length: -1
         body: |
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:21.501502525Z","message":{"role":"assistant","content":"Okay"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:21.557564782Z","message":{"role":"assistant","content":","},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:21.611174846Z","message":{"role":"assistant","content":" let"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:21.667120434Z","message":{"role":"assistant","content":"'"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:21.722170398Z","message":{"role":"assistant","content":"s"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:21.781724716Z","message":{"role":"assistant","content":" dive"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:21.838577759Z","message":{"role":"assistant","content":" into"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:21.891824191Z","message":{"role":"assistant","content":" the"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:21.952170035Z","message":{"role":"assistant","content":" theory"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:22.012224287Z","message":{"role":"assistant","content":" of"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:22.070878341Z","message":{"role":"assistant","content":" relativity"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:22.127114808Z","message":{"role":"assistant","content":","},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:22.182345743Z","message":{"role":"assistant","content":" a"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:22.238899113Z","message":{"role":"assistant","content":" cornerstone"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:22.28694935Z","message":{"role":"assistant","content":" of"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:22.334782918Z","message":{"role":"assistant","content":" modern"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-07-26T00:30:22.334788363Z","message":{"role":"assistant","content":""},"done_reason":"length","done":true,"total_duration":1231331812,"load_duration":77101425,"prompt_eval_count":18,"prompt_eval_duration":318500261,"eval_count":16,"eval_duration":835355174}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:33.395283734Z","message":{"role":"assistant","content":"Okay"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:33.461727322Z","message":{"role":"assistant","content":","},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:33.586290904Z","message":{"role":"assistant","content":" let"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:33.66726437Z","message":{"role":"assistant","content":"’"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:33.773252388Z","message":{"role":"assistant","content":"s"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:33.874605547Z","message":{"role":"assistant","content":" dive"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:33.987947592Z","message":{"role":"assistant","content":" into"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:34.218998605Z","message":{"role":"assistant","content":" the"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:34.37412235Z","message":{"role":"assistant","content":" theory"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:34.477958259Z","message":{"role":"assistant","content":" of"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:34.610393873Z","message":{"role":"assistant","content":" relativity"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:34.731210033Z","message":{"role":"assistant","content":","},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:34.854631743Z","message":{"role":"assistant","content":" which"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:34.995219991Z","message":{"role":"assistant","content":" is"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:35.146747728Z","message":{"role":"assistant","content":" actually"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:35.296923261Z","message":{"role":"assistant","content":" comprised"},"done":false}
+            {"model":"gemma3:4b","created_at":"2025-08-03T08:34:35.297012854Z","message":{"role":"assistant","content":""},"done_reason":"length","done":true,"total_duration":9021938114,"load_duration":408985249,"prompt_eval_count":18,"prompt_eval_duration":269918274,"eval_count":16,"eval_duration":1902581606}
         headers:
             Content-Type:
                 - application/x-ndjson
         status: 200 OK
         code: 200
-        duration: 398ms
+        duration: 7.121s

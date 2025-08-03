@@ -51,7 +51,8 @@ func ExampleClient_GenSync() {
 	log.Printf("Raw response: %#v", resp)
 	// Normalize some of the variance. Obviously many models will still fail this test.
 	fmt.Printf("Response: %s\n", strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.AsText())), ".!"))
-	// Output: Response: hello
+	// Disabled because it's slow in CI, especially on Windows.
+	// // Output: Response: hello
 }
 
 //

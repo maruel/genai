@@ -987,6 +987,8 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 				req.Seed = v.Seed
 			case *genai.OptionsText:
 				req.Seed = v.Seed
+			default:
+				return res, fmt.Errorf("unsupported options type %T", opts)
 			}
 		}
 		resp := ImageResponse{}

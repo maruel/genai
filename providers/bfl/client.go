@@ -311,6 +311,8 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 			req.Seed = v.Seed
 		case *genai.OptionsText:
 			req.Seed = v.Seed
+		default:
+			return "", fmt.Errorf("unsupported options type %T", opts)
 		}
 	}
 	reqresp, err := c.GenAsyncRaw(ctx, req)

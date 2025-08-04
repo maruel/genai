@@ -1030,6 +1030,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 			qp.Add("seed", strconv.FormatInt(v.Seed, 10))
 		}
 	default:
+		return genai.Result{}, fmt.Errorf("unsupported options type %T", opts)
 	}
 
 	qp.Add("nologo", "true")

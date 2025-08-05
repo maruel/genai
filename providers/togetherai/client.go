@@ -851,13 +851,22 @@ type Client struct {
 // base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
 // possible the model is not available anymore.
 //
-// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
+// wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
+// retries, or to throttle outgoing requests.
 //
 // # Vision
 //
 // We must select a model that supports video.
 // https://docs.together.ai/docs/serverless-models#vision-models
-func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+	if opts.AccountID != "" {
+		return nil, errors.New("unexpected option AccountID")
+	}
+	if opts.Remote != "" {
+		return nil, errors.New("unexpected option Remote")
+	}
+	apiKey := opts.APIKey
+	model := opts.Model
 	const apiKeyURL = "https://api.together.xyz/settings/api-keys"
 	var err error
 	if apiKey == "" {

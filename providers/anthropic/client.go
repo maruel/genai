@@ -1264,7 +1264,7 @@ type Client struct {
 
 // New creates a new client to talk to the Anthropic platform API.
 //
-// If apiKey is not provided, it tries to load it from the ANTHROPIC_API_KEY environment variable.
+// If opts.APIKey is not provided, it tries to load it from the ANTHROPIC_API_KEY environment variable.
 // If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get an API key at https://console.anthropic.com/settings/keys
 //
@@ -1272,12 +1272,17 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the model from https://docs.anthropic.com/en/docs/about-claude/models/all-models
 //
-// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
-// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
-// possible the model is not available anymore.
-//
-// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
-func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+// wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
+// retries, or to throttle outgoing requests.
+func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+	if opts.AccountID != "" {
+		return nil, errors.New("unexpected option AccountID")
+	}
+	if opts.Remote != "" {
+		return nil, errors.New("unexpected option Remote")
+	}
+	apiKey := opts.APIKey
+	model := opts.Model
 	const apiKeyURL = "https://console.anthropic.com/settings/keys"
 	var err error
 	if apiKey == "" {

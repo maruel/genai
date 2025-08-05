@@ -12,6 +12,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/providers/cohere"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
@@ -56,7 +57,7 @@ func ExampleNew_hTTP_record() {
 	if os.Getenv("COHERE_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := cohere.New(apiKey, "", wrapper)
+	c, err := cohere.New(&genai.OptionsProvider{APIKey: apiKey}, wrapper)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -520,12 +520,17 @@ type Client struct {
 // baseURL defaults to "http://localhost:11434". Ollama doesn't have any mean of authentication so there's no
 // API key.
 //
-// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
-// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
-// possible the model is not available anymore.
-//
-// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
-func New(baseURL, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+// wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
+// retries, or to throttle outgoing requests.
+func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+	if opts.APIKey != "" {
+		return nil, errors.New("unexpected option APIKey")
+	}
+	if opts.AccountID != "" {
+		return nil, errors.New("unexpected option AccountID")
+	}
+	model := opts.Model
+	baseURL := opts.Remote
 	if baseURL == "" {
 		baseURL = "http://localhost:11434"
 	}

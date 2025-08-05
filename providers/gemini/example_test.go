@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/providers/gemini"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
@@ -58,7 +59,7 @@ func ExampleNew_hTTP_record() {
 	if os.Getenv("GEMINI_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := gemini.New(apiKey, "", wrapper)
+	c, err := gemini.New(&genai.OptionsProvider{APIKey: apiKey}, wrapper)
 	if err != nil {
 		log.Fatal(err)
 	}

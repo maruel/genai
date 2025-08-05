@@ -398,8 +398,17 @@ type Client struct {
 // base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
 // possible the model is not available anymore.
 //
-// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
-func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+// wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
+// retries, or to throttle outgoing requests.
+func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+	if opts.AccountID != "" {
+		return nil, errors.New("unexpected option AccountID")
+	}
+	if opts.Remote != "" {
+		return nil, errors.New("unexpected option Remote")
+	}
+	apiKey := opts.APIKey
+	model := opts.Model
 	const apiKeyURL = "https://www.perplexity.ai/settings/api"
 	var err error
 	if apiKey == "" {

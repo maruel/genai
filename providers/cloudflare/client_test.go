@@ -28,7 +28,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if accountID == "" {
 		accountID = "ACCOUNT_ID"
 	}
-	c, err := cloudflare.New(accountID, apiKey, model.Model, fn)
+	c, err := cloudflare.New(&genai.OptionsProvider{APIKey: apiKey, AccountID: accountID, Model: model.Model}, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -107,7 +107,7 @@ func getClientInner(t *testing.T, apiKey, m string) *cloudflare.Client {
 	wrapper := func(h http.RoundTripper) http.RoundTripper {
 		return testRecorder.Record(t, h, recorder.WithHook(trimRecordingInternal, recorder.AfterCaptureHook), recorder.WithMatcher(matchCassetteInternal))
 	}
-	c, err := cloudflare.New(accountID, apiKey, m, wrapper)
+	c, err := cloudflare.New(&genai.OptionsProvider{APIKey: apiKey, AccountID: accountID, Model: m}, wrapper)
 	if err != nil {
 		t.Fatal(err)
 	}

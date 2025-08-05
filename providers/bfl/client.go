@@ -173,24 +173,31 @@ func (er *ErrorResponse) IsAPIError() bool {
 // Client implements genai.ProviderGen and genai.ProviderModel.
 type Client struct {
 	base.Provider[*ErrorResponse]
-	Model string
+	Model  string
+	remote string
 }
 
 // New creates a new client to talk to the Black Forest Labs platform API.
 //
-// If apiKey is not provided, it tries to load it from the BFL_API_KEY environment variable.
+// If opts.APIKey is not provided, it tries to load it from the BFL_API_KEY environment variable.
 // If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your API key at https://dashboard.bfl.ai/keys
 //
+// opts.Remote defaults to "https://api.bfl.ai" and can be specified to use a region specific backend.
+//
 // To use multiple models, create multiple clients.
+//
 // Use one of the model from https://docs.bfl.ml/quick_start/generating_images
 //
-// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
-// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
-// possible the model is not available anymore.
-//
-// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
-func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+// wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
+// retries, or to throttle outgoing requests.
+func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+	if opts.AccountID != "" {
+		return nil, errors.New("unexpected option AccountID")
+	}
+	apiKey := opts.APIKey
+	model := opts.Model
+	remote := opts.Remote
 	const apiKeyURL = "https://dashboard.bfl.ai/keys"
 	var err error
 	if apiKey == "" {
@@ -212,8 +219,12 @@ func New(apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper
 	if wrapper != nil {
 		t = wrapper(t)
 	}
+	if remote == "" {
+		remote = "https://api.bfl.ai"
+	}
 	return &Client{
-		Model: model,
+		Model:  model,
+		remote: remote,
 		Provider: base.Provider[*ErrorResponse]{
 			ProviderName: "bfl",
 			APIKeyURL:    apiKeyURL,
@@ -324,7 +335,7 @@ func (c *Client) GenAsyncRaw(ctx context.Context, req ImageRequest) (ImageReques
 	// https://docs.bfl.ai/integration_guidelines#polling-url-usage
 	// TODO: Switch to use PollingURL
 	reqresp := ImageRequestResponse{}
-	err := c.DoRequest(ctx, "POST", "https://api.bfl.ai/v1/"+c.Model, &req, &reqresp)
+	err := c.DoRequest(ctx, "POST", c.remote+"/v1/"+c.Model, &req, &reqresp)
 	return reqresp, err
 }
 

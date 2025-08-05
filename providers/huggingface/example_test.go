@@ -12,6 +12,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/providers/huggingface"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
@@ -56,7 +57,7 @@ func ExampleNew_hTTP_record() {
 	if os.Getenv("HUGGINGFACE_API_KEY") == "" && mode != recorder.ModeRecordOnly {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := huggingface.New(apiKey, "", wrapper)
+	c, err := huggingface.New(&genai.OptionsProvider{APIKey: apiKey}, wrapper)
 	if err != nil {
 		log.Fatal(err)
 	}

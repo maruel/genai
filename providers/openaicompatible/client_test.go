@@ -14,6 +14,7 @@ import (
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/openaicompatible"
+	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -22,7 +23,7 @@ import (
 func TestClient_Preferred(t *testing.T) {
 	for _, line := range []string{base.PreferredCheap, base.PreferredGood, base.PreferredSOTA} {
 		t.Run(line, func(t *testing.T) {
-			_, err := openaicompatible.New("http://localhost", nil, line, nil)
+			_, err := openaicompatible.New(&genai.OptionsProvider{Remote: "http://localhost", Model: line}, nil)
 			if err == nil {
 				t.Fatal("expected error")
 			}
@@ -209,8 +210,13 @@ func getClient(t *testing.T, provider string) genai.ProviderGen {
 	if apiKey == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	wrapper := func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) }
-	c, err := openaicompatible.New(p.chatURL, p.header(apiKey), p.model, wrapper)
+	wrapper := func(h http.RoundTripper) http.RoundTripper {
+		return &roundtrippers.Header{
+			Header:    p.header(apiKey),
+			Transport: testRecorder.Record(t, h),
+		}
+	}
+	c, err := openaicompatible.New(&genai.OptionsProvider{Remote: p.chatURL, Model: p.model}, wrapper)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -24,7 +24,7 @@ import (
 )
 
 func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-	c, err := pollinations.New("", model.Model, fn)
+	c, err := pollinations.New(&genai.OptionsProvider{Model: model.Model}, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -60,7 +60,7 @@ func (h *hideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts gen
 		var herr *httpjson.Error
 		if errors.As(err, &herr) && herr.StatusCode == 500 {
 			// Hide the failure; pollinations.ai throws HTTP 500 on unsupported file formats.
-			return resp, errors.New("together.ai is having a bad day")
+			return resp, errors.New("pollinations.ai is having a bad day")
 		}
 		return resp, err
 	}
@@ -73,7 +73,7 @@ func (h *hideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, chunks
 		var herr *httpjson.Error
 		if errors.As(err, &herr) && herr.StatusCode == 500 {
 			// Hide the failure; pollinations.ai throws HTTP 500 on unsupported file formats.
-			return resp, errors.New("together.ai is having a bad day")
+			return resp, errors.New("pollinations.ai is having a bad day")
 		}
 		return resp, err
 	}
@@ -86,7 +86,7 @@ func (h *hideHTTP500) GenDoc(ctx context.Context, msg genai.Message, opts genai.
 		var herr *httpjson.Error
 		if errors.As(err, &herr) && herr.StatusCode == 500 {
 			// Hide the failure; pollinations.ai throws HTTP 500 on unsupported file formats.
-			return resp, errors.New("together.ai is having a bad day")
+			return resp, errors.New("pollinations.ai is having a bad day")
 		}
 		return resp, err
 	}
@@ -171,7 +171,7 @@ func getClient(t *testing.T, m string) *pollinations.Client {
 }
 
 func getClientInner(t *testing.T, m string) *pollinations.Client {
-	c, err := pollinations.New("genai-unittests", m, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	c, err := pollinations.New(&genai.OptionsProvider{APIKey: "genai-unittests", Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -183,7 +183,7 @@ func warmupCache(t testing.TB) []genai.Model {
 	doOnce.Do(func() {
 		var r internal.Recorder
 		var err2 error
-		c, err := pollinations.New("genai-unittests", "", func(h http.RoundTripper) http.RoundTripper {
+		c, err := pollinations.New(&genai.OptionsProvider{APIKey: "genai-unittests"}, func(h http.RoundTripper) http.RoundTripper {
 			r, err2 = testRecorder.Records.Record("WarmupCache", h)
 			return r
 		})

@@ -857,27 +857,35 @@ type Client struct {
 }
 
 // New creates a new client to talk to the Pollinations platform API.
-// The value for auth can be either an API key retrieved from https://auth.pollinations.ai/ or a referrer.
+// The value for options APIKey can be either an API key retrieved from https://auth.pollinations.ai/ or a referrer.
 // https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#referrer-
 //
-// auth is optional. Providing one, either via environment variable POLLINATIONS_API_KEY, will increase quota.
+// options APIKey is optional. Providing one, either via environment variable POLLINATIONS_API_KEY, will increase quota.
 //
 // Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
 // base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
 // possible the model is not available anymore.
 //
-// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport
-// with a retry on HTTP 402 (payment required).
-func New(auth, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
-	var h http.Header
-	if auth == "" {
-		auth = os.Getenv("POLLINATIONS_API_KEY")
+// wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
+// retries, or to throttle outgoing requests.
+func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+	if opts.AccountID != "" {
+		return nil, errors.New("unexpected option AccountID")
 	}
-	if auth != "" {
-		if strings.HasPrefix(auth, "http://") || strings.HasPrefix(auth, "https://") {
-			h = http.Header{"Referrer": {auth}}
+	if opts.Remote != "" {
+		return nil, errors.New("unexpected option Remote")
+	}
+	apiKey := opts.APIKey
+	model := opts.Model
+	var h http.Header
+	if apiKey == "" {
+		apiKey = os.Getenv("POLLINATIONS_API_KEY")
+	}
+	if apiKey != "" {
+		if strings.HasPrefix(apiKey, "http://") || strings.HasPrefix(apiKey, "https://") {
+			h = http.Header{"Referrer": {apiKey}}
 		} else {
-			h = http.Header{"Authorization": {"Bearer " + auth}}
+			h = http.Header{"Authorization": {"Bearer " + apiKey}}
 		}
 	}
 	t := base.DefaultTransport

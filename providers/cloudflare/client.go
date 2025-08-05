@@ -637,8 +637,8 @@ type Client struct {
 
 // New creates a new client to talk to the Cloudflare Workers AI platform API.
 //
-// If accountID is not provided, it tries to load it from the CLOUDFLARE_ACCOUNT_ID environment variable.
-// If apiKey is not provided, it tries to load it from the CLOUDFLARE_API_KEY environment variable.
+// If opts.AccountID is not provided, it tries to load it from the CLOUDFLARE_ACCOUNT_ID environment variable.
+// If opts.APIKey is not provided, it tries to load it from the CLOUDFLARE_API_KEY environment variable.
 // If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your account ID and API key at https://dash.cloudflare.com/profile/api-tokens
 //
@@ -646,14 +646,17 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the model from https://developers.cloudflare.com/workers-ai/models/
 //
-// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
-// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
-// possible the model is not available anymore.
-//
-// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
-func New(accountID, apiKey, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+// wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
+// retries, or to throttle outgoing requests.
+func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+	if opts.Remote != "" {
+		return nil, errors.New("unexpected option Remote")
+	}
+	apiKey := opts.APIKey
+	model := opts.Model
 	const apiKeyURL = "https://dash.cloudflare.com/profile/api-tokens"
 	var err error
+	accountID := opts.AccountID
 	if accountID == "" {
 		if accountID = os.Getenv("CLOUDFLARE_ACCOUNT_ID"); accountID == "" {
 			err = &base.ErrAPIKeyRequired{EnvVar: "CLOUDFLARE_ACCOUNT_ID", URL: apiKeyURL}

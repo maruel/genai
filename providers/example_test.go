@@ -19,7 +19,7 @@ import (
 
 func Example_all_ProvidersModel() {
 	for _, name := range GetProvidersModel() {
-		c, err := providers.All[name]("", nil)
+		c, err := providers.All[name](&genai.OptionsProvider{}, nil)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -48,7 +48,7 @@ func Example_all_ProvidersModel() {
 func GetProvidersModel() []string {
 	var names []string
 	for name, f := range providers.All {
-		c, _ := f("", nil)
+		c, _ := f(&genai.OptionsProvider{}, nil)
 		if c == nil {
 			continue
 		}
@@ -62,7 +62,7 @@ func GetProvidersModel() []string {
 
 func Example_all_ProviderGen() {
 	for _, name := range GetProvidersGen() {
-		c, err := providers.All[name](base.PreferredCheap, nil)
+		c, err := providers.All[name](&genai.OptionsProvider{Model: base.PreferredCheap}, nil)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -105,7 +105,7 @@ func Example_all_ProviderGen() {
 func GetProvidersGen() []string {
 	var names []string
 	for name, f := range providers.All {
-		c, _ := f("", nil)
+		c, _ := f(&genai.OptionsProvider{}, nil)
 		if c == nil {
 			continue
 		}
@@ -127,6 +127,7 @@ func Example_all_GetProvidersGenAsync() {
 	// anthropic
 	// bfl
 	// openai
+	// openaichat
 }
 
 // GetProvidersGenAsync returns all the providers that support asynchronous (batch) operations.
@@ -142,7 +143,7 @@ func Example_all_GetProvidersGenAsync() {
 func GetProvidersGenAsync() []string {
 	var names []string
 	for name, f := range providers.All {
-		c, _ := f("", nil)
+		c, _ := f(&genai.OptionsProvider{}, nil)
 		if c == nil {
 			continue
 		}

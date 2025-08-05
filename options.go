@@ -34,6 +34,31 @@ type Validatable interface {
 	Validate() error
 }
 
+// OptionsProvider contains all the options to connect to a model provider.
+//
+// All fields are optional, but some provider do require some of the fields.
+type OptionsProvider struct {
+	// APIKey provides an API key to authenticate to the server.
+	//
+	// Most providers require an API key, and the client will look at an environment variable
+	// "<PROVIDER>_API_KEY" to use as a default value if unspecified.
+	APIKey string `json:"apikey,omitzero" yaml:"apikey,omitzero"`
+	// AccountID provides an account ID key. Rarely used (only Cloudflare).
+	AccountID string `json:"accountid,omitzero" yaml:"accountid,omitzero"`
+	// Remote is the remote address to access the service.
+	//
+	// It is mostly used by locally hosted services (llamacpp, ollama) or for generic client (openaicompatible).
+	Remote string `json:"remote,omitzero" yaml:"remote,omitzero"`
+	// Model specify the model ID to use.
+	//
+	// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
+	// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
+	// possible the model is not available anymore or that the default model changes.
+	Model string `json:"model,omitzero" yaml:"model,omitzero"`
+
+	_ struct{}
+}
+
 // Options is options that can be provided to a ProviderGen interface.
 type Options interface {
 	Validatable

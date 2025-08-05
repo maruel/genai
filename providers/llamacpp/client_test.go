@@ -24,7 +24,7 @@ func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 
 	t.Run("ListModels", func(t *testing.T) {
-		c, err := llamacpp.New(s.lazyStart(t), nil, func(h http.RoundTripper) http.RoundTripper {
+		c, err := llamacpp.New(&genai.OptionsProvider{Remote: s.lazyStart(t)}, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
 		if err != nil {
@@ -41,7 +41,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("Scoreboard", func(t *testing.T) {
 		serverURL := s.lazyStart(t)
-		c, err := llamacpp.New(serverURL, nil, func(h http.RoundTripper) http.RoundTripper {
+		c, err := llamacpp.New(&genai.OptionsProvider{Remote: serverURL}, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
 		if err != nil {
@@ -54,7 +54,7 @@ func TestClient(t *testing.T) {
 			}
 		}
 		scoreboardtest.AssertScoreboard(t, func(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-			c2, err2 := llamacpp.New(serverURL, nil, fn)
+			c2, err2 := llamacpp.New(&genai.OptionsProvider{Remote: serverURL}, fn)
 			if err2 != nil {
 				t.Fatal(err2)
 			}
@@ -65,7 +65,7 @@ func TestClient(t *testing.T) {
 	// Run this at the end so there would be non-zero values.
 	t.Run("Metrics", func(t *testing.T) {
 		serverURL := s.lazyStart(t)
-		c, err := llamacpp.New(serverURL, nil, func(h http.RoundTripper) http.RoundTripper {
+		c, err := llamacpp.New(&genai.OptionsProvider{Remote: serverURL}, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
 		if err != nil {
@@ -134,7 +134,7 @@ func TestClient_Preferred(t *testing.T) {
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {
-			c, err := llamacpp.New(line.name, nil, nil)
+			c, err := llamacpp.New(&genai.OptionsProvider{Model: line.name}, nil)
 			if err != nil {
 				t.Fatal(err)
 			}

@@ -16,7 +16,6 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/providers"
-	"github.com/maruel/genai/providers/openaicompatible"
 )
 
 type tableSummaryRow struct {
@@ -202,9 +201,6 @@ var modalityMap = map[genai.Modality]string{
 
 func printTable(provider string) error {
 	all := maps.Clone(providers.All)
-	all["openaicompatible"] = func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		return openaicompatible.New("http://localhost:8080/v1", nil, model, wrapper)
-	}
 	if provider == "" {
 		return printSummaryTable(all)
 	}
@@ -212,17 +208,17 @@ func printTable(provider string) error {
 	if f == nil {
 		return fmt.Errorf("provider %s: not found", provider)
 	}
-	c, err := f("", nil)
+	c, err := f(&genai.OptionsProvider{}, nil)
 	if c == nil {
 		return fmt.Errorf("provider %s: %w", provider, err)
 	}
 	return printProviderTable(c)
 }
 
-func printSummaryTable(all map[string]func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error)) error {
+func printSummaryTable(all map[string]func(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error)) error {
 	var rows []tableSummaryRow
 	for name, f := range all {
-		p, err := f("", nil)
+		p, err := f(&genai.OptionsProvider{}, nil)
 		// The function can return an error and still return a client when no API key was found. It's okay here
 		// because we won't use the service provider.
 		if p == nil {

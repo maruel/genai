@@ -151,20 +151,12 @@ func (c *Contents) UnmarshalJSON(b []byte) error {
 		*c = nil
 		return nil
 	}
-	d := json.NewDecoder(bytes.NewReader(b))
-	if !internal.BeLenient {
-		d.DisallowUnknownFields()
-	}
-	if err := d.Decode((*[]Content)(c)); err == nil {
+	if err := json.Unmarshal(b, (*[]Content)(c)); err == nil {
 		return nil
 	}
 
 	v := Content{}
-	d = json.NewDecoder(bytes.NewReader(b))
-	if !internal.BeLenient {
-		d.DisallowUnknownFields()
-	}
-	if err := d.Decode(&v); err == nil {
+	if err := json.Unmarshal(b, &v); err == nil {
 		*c = Contents{v}
 		return nil
 	}
@@ -352,10 +344,19 @@ type Client struct {
 //
 // It only support text exchanges (no multi-modal) and no tool calls.
 //
-// Automatic model values base.PreferredCheap, base.PreferredGood and base.PreferredSOTA are not supported.
+// Option Remote must be set.
 //
-// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
-func New(chatURL string, h http.Header, model string, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+// wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
+// retries, or to throttle outgoing requests.
+func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+	if opts.APIKey != "" {
+		return nil, errors.New("unexpected option APIKey")
+	}
+	if opts.AccountID != "" {
+		return nil, errors.New("unexpected option AccountID")
+	}
+	chatURL := opts.Remote
+	model := opts.Model
 	if model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA {
 		return nil, errors.New("default models are not supported")
 	}
@@ -374,12 +375,7 @@ func New(chatURL string, h http.Header, model string, wrapper func(http.RoundTri
 				ClientJSON: httpjson.Client{
 					// It is always lenient by definition.
 					Lenient: true,
-					Client: &http.Client{
-						Transport: &roundtrippers.Header{
-							Header:    h,
-							Transport: &roundtrippers.RequestID{Transport: t},
-						},
-					},
+					Client:  &http.Client{Transport: &roundtrippers.RequestID{Transport: t}},
 				},
 			},
 		},

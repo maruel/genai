@@ -974,15 +974,25 @@ type Client struct {
 
 // New creates a new client to talk to a llama-server instance.
 //
-// encoding is optional.
+// Options Remote defaults to "http://localhost:8080".
 //
-// baseURL defaults to "http://localhost:8080". It is not a model, so automatic model values
-// base.PreferredCheap, base.PreferredGood and base.PreferredSOTA also default to "http://localhost:8080".
-// llama-server doesn't have any mean of authentication so there's no API key.
-//
-// wrapper can be used to throttle outgoing requests, record calls, etc. It defaults to base.DefaultTransport.
-func New(baseURL string, encoding *PromptEncoding, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
-	if baseURL == "" || baseURL == base.PreferredCheap || baseURL == base.PreferredGood || baseURL == base.PreferredSOTA {
+// wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
+// retries, or to throttle outgoing requests.
+func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+	var encoding *PromptEncoding
+	if opts.APIKey != "" {
+		return nil, errors.New("option APIKey is not yet implemented")
+	}
+	if opts.AccountID != "" {
+		return nil, errors.New("unexpected option AccountID")
+	}
+	switch opts.Model {
+	case "", base.PreferredCheap, base.PreferredGood, base.PreferredSOTA:
+	default:
+		return nil, errors.New("unexpected option Model")
+	}
+	baseURL := opts.Remote
+	if baseURL == "" {
 		baseURL = "http://localhost:8080"
 	}
 	t := base.DefaultTransport

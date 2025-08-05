@@ -30,7 +30,7 @@ func ExampleClient_GenSync() {
 	}
 	defer srv.Close()
 	// Connect the provider.
-	c, err := ollama.New(srv.URL(), "gemma3:1b", nil)
+	c, err := ollama.New(&genai.OptionsProvider{Remote: srv.URL(), Model: "gemma3:1b"}, nil)
 	if err != nil {
 		log.Print(err)
 		return

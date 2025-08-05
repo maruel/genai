@@ -7,7 +7,6 @@ package main
 import (
 	"fmt"
 	"maps"
-	"net/http"
 	"os"
 	"slices"
 	"sort"
@@ -15,14 +14,10 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/providers"
-	"github.com/maruel/genai/providers/openaicompatible"
 )
 
 func printList() error {
 	all := maps.Clone(providers.All)
-	all["openaicompatible"] = func(model string, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		return openaicompatible.New("http://localhost:8080/v1", nil, model, wrapper)
-	}
 	names := make([]string, 0, len(all))
 	for name := range all {
 		names = append(names, name)
@@ -30,7 +25,7 @@ func printList() error {
 	sort.Strings(names)
 	for _, name := range names {
 		fmt.Printf("- %s\n", name)
-		c, err := all[name]("", nil)
+		c, err := all[name](&genai.OptionsProvider{}, nil)
 		// The function can return an error and still return a client when no API key was found. It's okay here
 		// because we won't use the service provider.
 		if c == nil {

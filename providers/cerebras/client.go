@@ -64,10 +64,12 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			Models:   []string{"qwen-3-32b"},
-			Thinking: true,
-			In:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:      map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Models:             []string{"qwen-3-32b"},
+			Thinking:           true,
+			ThinkingTokenStart: "<think>",
+			ThinkingTokenEnd:   "\n</think>\n",
+			In:                 map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:                map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Tools:      genai.Flaky,
 				BiasedTool: genai.True,
@@ -102,17 +104,16 @@ var Scoreboard = genai.Scoreboard{
 		},
 		{
 			Models: []string{
-				"llama-4-maverick-17b-128e-instruct",
 				"deepseek-r1-distill-llama-70b",
 				"gpt-oss-120b",
+				"llama-4-maverick-17b-128e-instruct",
+				"qwen-3-235b-a22b-instruct-2507",
+				"qwen-3-coder-480b",
 			},
 		},
 		{
 			Models: []string{
-				// TODO: Incorrect.
-				"qwen-3-coder-480b",
 				"qwen-3-235b-a22b-thinking-2507",
-				"qwen-3-235b-a22b-instruct-2507",
 			},
 			Thinking: true,
 		},

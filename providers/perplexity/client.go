@@ -36,24 +36,12 @@ var Scoreboard = genai.Scoreboard{
 	DashboardURL: "https://www.perplexity.ai/settings/api",
 	Scenarios: []genai.Scenario{
 		{
-			Models:   []string{"r1-1776"},
-			Thinking: true,
-			In:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:      map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
-				JSONSchema:     true,
-				NoStopSequence: true,
-			},
-			GenStream: &genai.FunctionalityText{
-				JSONSchema:     true,
-				NoStopSequence: true,
-			},
-		},
-		{
-			Models:   []string{"sonar-deep-research", "sonar-reasoning", "sonar-reasoning-pro"},
-			Thinking: true,
-			In:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:      map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Models:             []string{"sonar-deep-research", "sonar-reasoning", "sonar-reasoning-pro"},
+			Thinking:           true,
+			ThinkingTokenStart: "<think>",
+			ThinkingTokenEnd:   "</think>",
+			In:                 map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:                map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				JSONSchema:     true,
 				Citations:      true,

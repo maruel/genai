@@ -62,10 +62,12 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			Models:   []string{"deepseek-r1-distill-llama-70b"},
-			Thinking: true,
-			In:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:      map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Models:             []string{"deepseek-r1-distill-llama-70b"},
+			Thinking:           true,
+			ThinkingTokenStart: "<think>",
+			ThinkingTokenEnd:   "\n</think>\n",
+			In:                 map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:                map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Tools:          genai.Flaky,
 				BiasedTool:     genai.True,
@@ -111,10 +113,12 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			Models:   []string{"qwen/qwen3-32b"},
-			Thinking: true,
-			In:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:      map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Models:             []string{"qwen/qwen3-32b"},
+			Thinking:           true,
+			ThinkingTokenStart: "<think>",
+			ThinkingTokenEnd:   "\n</think>\n",
+			In:                 map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:                map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Tools:          genai.Flaky,
 				IndecisiveTool: genai.Flaky,

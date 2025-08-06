@@ -9,6 +9,7 @@ import (
 	_ "embed"
 	"net/http"
 	"os"
+	"slices"
 	"strings"
 	"testing"
 
@@ -31,10 +32,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 		t.Fatal(err)
 	}
 	var c genai.ProviderGen = cl
-	if strings.HasPrefix(model.Model, "qwen/") {
-		if !model.Thinking {
-			t.Fatal("thinking is not supported for qwen at the moment")
-		}
+	if strings.HasPrefix(model.Model, "qwen/") && model.Thinking {
 		c = &adapters.ProviderGenAppend{ProviderGen: c, Append: genai.NewTextMessage(genai.User, "\n\n/think")}
 	}
 	if model.Thinking {
@@ -44,18 +42,24 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 }
 
 func TestClient_Scoreboard(t *testing.T) {
-	genaiModels, err := getClient(t, base.NoModel).ListModels(t.Context())
+	c := getClient(t, base.NoModel)
+	genaiModels, err := c.ListModels(t.Context())
 	if err != nil {
 		t.Fatal(err)
 	}
+	scenarios := c.Scoreboard().Scenarios
 	var models []scoreboardtest.Model
 	for _, m := range genaiModels {
 		id := m.GetID()
-		if id == "deepseek-r1-distill-llama-70b" || strings.HasPrefix(id, "qwen/") {
-			models = append(models, scoreboardtest.Model{Model: id, Thinking: true})
-		} else {
-			models = append(models, scoreboardtest.Model{Model: id})
+		thinking := false
+		for _, sc := range scenarios {
+			if slices.Contains(sc.Models, id) {
+				t.Logf("%s: %t", id, sc.Thinking)
+				thinking = sc.Thinking
+				break
+			}
 		}
+		models = append(models, scoreboardtest.Model{Model: id, Thinking: thinking})
 	}
 	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
 }
@@ -79,7 +83,7 @@ func (h *handleGroqReasoning) GenSync(ctx context.Context, msgs genai.Messages, 
 			return h.Client.GenSync(ctx, msgs, opts)
 		}
 	}
-	c := adapters.ProviderGenThinking{ProviderGen: h.Client, TagName: "think"}
+	c := adapters.ProviderGenThinking{ProviderGen: h.Client, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "\n</think>\n"}
 	return c.GenSync(ctx, msgs, opts)
 }
 
@@ -90,7 +94,7 @@ func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages
 			return h.Client.GenStream(ctx, msgs, replies, opts)
 		}
 	}
-	c := adapters.ProviderGenThinking{ProviderGen: h.Client, TagName: "think"}
+	c := adapters.ProviderGenThinking{ProviderGen: h.Client, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "\n</think>\n"}
 	return c.GenStream(ctx, msgs, replies, opts)
 }
 

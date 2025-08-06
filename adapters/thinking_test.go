@@ -18,11 +18,10 @@ import (
 
 func TestProviderGenThinking_GenSync(t *testing.T) {
 	tests := []struct {
-		name    string
-		tagName string
-		in      string
-		opts    genai.Options
-		want    []genai.Content
+		name string
+		in   string
+		opts genai.Options
+		want []genai.Content
 	}{
 		{
 			name: "No thinking tags",
@@ -64,7 +63,7 @@ func TestProviderGenThinking_GenSync(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			mp := &mockProviderGenSync{response: genai.Result{Message: genai.NewTextMessage(genai.Assistant, tc.in)}}
-			tp := &adapters.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
+			tp := &adapters.ProviderGenThinking{ProviderGen: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
 			got, err := tp.GenSync(t.Context(), genai.Messages{}, tc.opts)
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
@@ -78,11 +77,10 @@ func TestProviderGenThinking_GenSync(t *testing.T) {
 
 func TestProviderGenThinking_GenSync_errors(t *testing.T) {
 	tests := []struct {
-		name    string
-		tagName string
-		in      []genai.Content
-		err     error
-		want    string
+		name string
+		in   []genai.Content
+		err  error
+		want string
 	}{
 		{
 			name: "With non-empty content before tag",
@@ -109,7 +107,7 @@ func TestProviderGenThinking_GenSync_errors(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			mp := &mockProviderGenSync{response: genai.Result{Message: genai.Message{Role: genai.Assistant, Contents: tc.in}}, err: tc.err}
-			tp := &adapters.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
+			tp := &adapters.ProviderGenThinking{ProviderGen: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
 			_, err := tp.GenSync(t.Context(), genai.Messages{}, nil)
 			if err == nil {
 				t.Fatal("expected error but got none")
@@ -223,7 +221,7 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 			for _, i := range tc.in {
 				mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.ContentFragment{TextFragment: i})
 			}
-			tp := &adapters.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
+			tp := &adapters.ProviderGenThinking{ProviderGen: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
 			ch := make(chan genai.ContentFragment, 100)
 			eg, ctx := errgroup.WithContext(t.Context())
 			accumulated := genai.Message{}
@@ -291,7 +289,7 @@ func TestProviderGenThinking_GenStream_errors(t *testing.T) {
 					mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.ContentFragment{TextFragment: i})
 				}
 			}
-			tp := &adapters.ProviderGenThinking{ProviderGen: mp, TagName: "thinking"}
+			tp := &adapters.ProviderGenThinking{ProviderGen: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
 			ch := make(chan genai.ContentFragment, 100)
 			eg := errgroup.Group{}
 			eg.Go(func() error {

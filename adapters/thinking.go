@@ -17,16 +17,18 @@ import (
 
 // ProviderGenThinking wraps a ProviderGen and processes its output to extract thinking blocks.
 //
-// It looks for content within tags ("<TagName>" and "</TagName>") and places it in Thinking Content blocks
-// instead of Text.
+// It looks for content within tags ThinkingTokenStart and ThinkingTokenEnd and places it in Thinking Content
+// blocks instead of Text.
 //
 // It requires the starting thinking tag. Otherwise, the content is assumed to be text. This is necessary for
 // JSON formatted responses.
 type ProviderGenThinking struct {
 	genai.ProviderGen
 
-	// TagName is the name of the tag to use for thinking content. Normally "think" or "thinking".
-	TagName string
+	// ThinkingTokenStart is the start thinking token. It is often "<think>\n".
+	ThinkingTokenStart string
+	// ThinkingTokenEnd is the end thinking token, where the explicit answer lies after. It is often "\n</think>\n".
+	ThinkingTokenEnd string
 
 	_ struct{}
 }
@@ -90,12 +92,11 @@ func (c *ProviderGenThinking) processPacket(state tagProcessingState, replies ch
 		t := strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace)
 		// The tokens always have a trailing "\n". When streaming, the trailing "\n" will likely be sent as a
 		// separate event. This requires a small state machine to keep track of that.
-		tagStart := "<" + c.TagName + ">"
-		if tStart := strings.Index(t, tagStart); tStart != -1 {
+		if tStart := strings.Index(t, c.ThinkingTokenStart); tStart != -1 {
 			if tStart != 0 {
-				return state, fmt.Errorf("unexpected prefix before thinking tag: %q", t[:len(tagStart)+1])
+				return state, fmt.Errorf("unexpected prefix before thinking tag: %q", t[:len(c.ThinkingTokenStart)+1])
 			}
-			f.ThinkingFragment = strings.TrimLeftFunc(t[len(tagStart):], unicode.IsSpace)
+			f.ThinkingFragment = strings.TrimLeftFunc(t[len(c.ThinkingTokenStart):], unicode.IsSpace)
 			f.TextFragment = ""
 			state = thinkingTextSeen
 		} else if t != "" {
@@ -115,10 +116,9 @@ func (c *ProviderGenThinking) processPacket(state tagProcessingState, replies ch
 	case thinkingTextSeen:
 		f.ThinkingFragment = f.TextFragment
 		f.TextFragment = ""
-		tagEnd := "</" + c.TagName + ">"
-		if tEnd := strings.Index(f.ThinkingFragment, tagEnd); tEnd != -1 {
+		if tEnd := strings.Index(f.ThinkingFragment, c.ThinkingTokenEnd); tEnd != -1 {
 			state = endTagSeen
-			after := f.ThinkingFragment[tEnd+len(tagEnd):]
+			after := f.ThinkingFragment[tEnd+len(c.ThinkingTokenEnd):]
 			if tEnd != 0 {
 				// Unlikely case where we need to flush out the remainder.
 				f.ThinkingFragment = f.ThinkingFragment[:tEnd]
@@ -171,9 +171,7 @@ func (c *ProviderGenThinking) processThinkingMessage(m *genai.Message) error {
 		return nil
 	}
 
-	tagStart := "<" + c.TagName + ">"
-	tagEnd := "</" + c.TagName + ">"
-	tStart := strings.Index(text, tagStart)
+	tStart := strings.Index(text, c.ThinkingTokenStart)
 	if tStart == -1 {
 		// This response does not contain thinking text, it could be JSON or something else.
 		return nil
@@ -186,10 +184,10 @@ func (c *ProviderGenThinking) processThinkingMessage(m *genai.Message) error {
 		m.Contents[i].Text = ""
 	}
 	// Remove whitespace after the starting tag.
-	textAfterStartTag := strings.TrimLeftFunc(text[tStart+len(tagStart):], unicode.IsSpace)
-	if tEnd := strings.Index(textAfterStartTag, tagEnd); tEnd != -1 {
+	textAfterStartTag := strings.TrimLeftFunc(text[tStart+len(c.ThinkingTokenStart):], unicode.IsSpace)
+	if tEnd := strings.Index(textAfterStartTag, c.ThinkingTokenEnd); tEnd != -1 {
 		thinkingContent := textAfterStartTag[:tEnd]
-		remainingText := strings.TrimLeftFunc(textAfterStartTag[tEnd+len(tagEnd):], unicode.IsSpace)
+		remainingText := strings.TrimLeftFunc(textAfterStartTag[tEnd+len(c.ThinkingTokenEnd):], unicode.IsSpace)
 		m.Contents[0].Thinking = thinkingContent
 		if len(m.Contents) == 1 {
 			m.Contents = append(m.Contents, genai.Content{})

@@ -46,8 +46,9 @@ func TestClient(t *testing.T) {
 					t.Fatal("expected thinking")
 				}
 				return &adapters.ProviderGenThinking{
-					ProviderGen: &adapters.ProviderGenAppend{ProviderGen: c, Append: genai.NewTextMessage(genai.User, "\n\n/think")},
-					TagName:     "think",
+					ProviderGen:        &adapters.ProviderGenAppend{ProviderGen: c, Append: genai.NewTextMessage(genai.User, "\n\n/think")},
+					ThinkingTokenStart: "<think>",
+					ThinkingTokenEnd:   "\n</think>\n",
 				}
 			}
 			return c

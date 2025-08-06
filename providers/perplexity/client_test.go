@@ -28,7 +28,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 		t.Fatal(err)
 	}
 	if model.Thinking {
-		return &adapters.ProviderGenThinking{ProviderGen: c, TagName: "think"}
+		return &adapters.ProviderGenThinking{ProviderGen: c, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "</think>"}
 	}
 	return c
 }

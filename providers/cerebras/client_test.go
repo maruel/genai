@@ -7,7 +7,7 @@ package cerebras_test
 import (
 	"net/http"
 	"os"
-	"strings"
+	"slices"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -28,34 +28,35 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if err2 != nil {
 		t.Fatal(err2)
 	}
-	// TODO: Incorrect.
-	if strings.HasPrefix(model.Model, "qwen") {
-		if !model.Thinking {
-			t.Fatal("expected thinking")
-		}
+	if model.Thinking {
 		return &adapters.ProviderGenThinking{
-			ProviderGen: &adapters.ProviderGenAppend{ProviderGen: c, Append: genai.NewTextMessage(genai.User, "\n\n/think")},
-			TagName:     "think",
+			ProviderGen:        &adapters.ProviderGenAppend{ProviderGen: c, Append: genai.NewTextMessage(genai.User, "\n\n/think")},
+			ThinkingTokenStart: "<think>",
+			ThinkingTokenEnd:   "\n</think>\n",
 		}
 	}
 	return c
 }
 
 func TestClient_Scoreboard(t *testing.T) {
-	genaiModels, err := getClient(t, base.NoModel).ListModels(t.Context())
+	c := getClient(t, base.NoModel)
+	genaiModels, err := c.ListModels(t.Context())
 	if err != nil {
 		t.Fatal(err)
 	}
+	scenarios := c.Scoreboard().Scenarios
 	var models []scoreboardtest.Model
 	for _, m := range genaiModels {
 		id := m.GetID()
-		if strings.HasPrefix(id, "qwen") {
-			// Sadly even when thinking is forcibly disabled, "<think>\n\n</think>" is sent and it still thinks when
-			// doing tool calling.
-			models = append(models, scoreboardtest.Model{Model: id, Thinking: true})
-		} else {
-			models = append(models, scoreboardtest.Model{Model: id})
+		thinking := false
+		for _, sc := range scenarios {
+			if slices.Contains(sc.Models, id) {
+				t.Logf("%s: %t", id, sc.Thinking)
+				thinking = sc.Thinking
+				break
+			}
 		}
+		models = append(models, scoreboardtest.Model{Model: id, Thinking: thinking})
 	}
 	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
 }

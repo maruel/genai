@@ -156,7 +156,17 @@ func runOneModel(t testing.TB, gc getClientOneModel, want genai.Scenario) genai.
 	if err != nil {
 		t.Fatalf("CreateScenario failed: %v", err)
 	}
-
+	if !want.Thinking {
+		if want.ThinkingTokenStart != "" {
+			t.Fatal("unexpected ThinkingTokenStart")
+		}
+		if want.ThinkingTokenEnd != "" {
+			t.Fatal("unexpected ThinkingTokenEnd")
+		}
+	} else {
+		want.ThinkingTokenStart = ""
+		want.ThinkingTokenEnd = ""
+	}
 	// Check if valid.
 	if diff := cmp.Diff(want, got, opt); diff != "" {
 		t.Errorf("mismatch (-want +got):\n%s", diff)

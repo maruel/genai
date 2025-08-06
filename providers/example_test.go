@@ -7,9 +7,11 @@ package providers_test
 import (
 	"context"
 	"errors"
+	"flag"
 	"fmt"
 	"log"
 	"os"
+	"slices"
 	"sort"
 	"strings"
 
@@ -92,6 +94,45 @@ func Example_all_ProviderGen() {
 			fmt.Printf("- %s: %v\n", name, response)
 		}
 	}
+}
+
+func Example_all_Full() {
+	// This example includes:
+	// - Making sure the provider implements genai.ProviderGen.
+	// - Processing <think> tokens for explicit Chain-of-Thoughts models (e.g. Qwen3).
+	provider := flag.String("provider", "", "provider to use")
+	model := flag.String("model", "", "model to use")
+	remote := flag.String("remote", "", "url to use")
+	flag.Parse()
+	f := providers.All[*provider]
+	if f == nil {
+		log.Fatalf("unknown provider %q", *provider)
+	}
+	c, err := f(&genai.OptionsProvider{Model: *model, Remote: *remote}, nil)
+	if err != nil {
+		log.Fatalf("failed to connect to provider %q: %s", *provider, err)
+	}
+	p, ok := c.(genai.ProviderGen)
+	if !ok {
+		log.Fatalf("provider %q doesn't implement genai.ProviderGen", *provider)
+	}
+	if s, ok := c.(genai.ProviderScoreboard); ok {
+		id := c.ModelID()
+		for _, sc := range s.Scoreboard().Scenarios {
+			if slices.Contains(sc.Models, id) {
+				if sc.ThinkingTokenStart != "" {
+					p = &adapters.ProviderGenThinking{ProviderGen: p, ThinkingTokenStart: sc.ThinkingTokenStart, ThinkingTokenEnd: sc.ThinkingTokenEnd}
+				}
+				break
+			}
+		}
+	}
+	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Provide a life tip that sounds good but is actually a bad idea.")}
+	resp, err := p.GenSync(context.Background(), msgs, nil)
+	if err != nil {
+		log.Fatalf("failed to use provider %q: %s", *provider, err)
+	}
+	fmt.Printf("%s\n", resp.AsText())
 }
 
 func LoadProviderGen() (genai.ProviderGen, error) {

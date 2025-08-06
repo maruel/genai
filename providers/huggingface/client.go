@@ -69,10 +69,12 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			Models:   []string{"Qwen/Qwen3-4B"},
-			Thinking: true,
-			In:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:      map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Models:             []string{"Qwen/Qwen3-4B"},
+			Thinking:           true,
+			ThinkingTokenStart: "<think>",
+			ThinkingTokenEnd:   "</think>",
+			In:                 map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:                map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				Tools:      genai.Flaky, // Uses a quantized version.
 				JSON:       true,

@@ -986,8 +986,11 @@ type Scenario struct {
 
 	// Thinking means that the model does either explicit chain-of-thought or hidden thinking. For some
 	// providers, this is controlled via a OptionsText. For some models (like Qwen3), a token "/no_think" or
-	// "/think" is used to control.
-	Thinking bool
+	// "/think" is used to control. ThinkingTokenStart and ThinkingTokenEnd must only be set on explicit inline
+	// thinking models. They often use <think> and </think>.
+	Thinking           bool
+	ThinkingTokenStart string
+	ThinkingTokenEnd   string
 
 	// GenSync declares features supported when using ProviderGen.GenSync
 	GenSync *FunctionalityText
@@ -998,6 +1001,20 @@ type Scenario struct {
 
 	_ struct{}
 }
+
+// Thinking specifies if a model Scenario supports thinking.
+type Thinking int8
+
+const (
+	// NoThinking means that no thinking is supported.
+	NoThinking Thinking = 0
+	// ThinkingInline means that the thinking tokens are inline and must be explicitly parsed from Content.Text
+	// with adapters.ProviderGenThinking.
+	ThinkingInline Thinking = 1
+	// ThinkingAutomatic means that the thinking tokens are properly generated and handled by the provider and
+	// are returned as Content.Thinking.
+	ThinkingAutomatic Thinking = -1
+)
 
 // Scoreboard is a snapshot of the capabilities of the provider. These are smoke tested to confirm the
 // accuracy.

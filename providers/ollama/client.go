@@ -64,8 +64,10 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			Models:   []string{"qwen3:4b"},
-			Thinking: true,
+			Models:             []string{"qwen3:4b"},
+			Thinking:           true,
+			ThinkingTokenStart: "<think>",
+			ThinkingTokenEnd:   "\n</think>\n",
 			In: map[genai.Modality]genai.ModalCapability{
 				genai.ModalityText: {Inline: true},
 			},

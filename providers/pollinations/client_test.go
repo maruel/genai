@@ -41,7 +41,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 		return &imageModelClient{parent: c2}
 	}
 	if model.Thinking {
-		return &adapters.ProviderGenThinking{ProviderGen: c2, TagName: "think"}
+		return &adapters.ProviderGenThinking{ProviderGen: c2, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "\n</think>\n"}
 	}
 	return c2
 }

@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/openaicompatible"
@@ -102,11 +101,12 @@ func TestClient_GenStream_simple(t *testing.T) {
 }
 
 type provider struct {
-	envAPIKey string
-	chatURL   string
-	header    func(apiKey string) http.Header
-	model     string
-	thinking  string
+	envAPIKey     string
+	chatURL       string
+	header        func(apiKey string) http.Header
+	model         string
+	thinkingStart string
+	thinkingEnd   string
 }
 
 // Keep in sync with ExampleProviderGen_all in ../example_test.go.
@@ -184,15 +184,15 @@ var providers = map[string]provider{
 		},
 		model: "gpt-4.1-nano",
 	},
-	"perplexity": {
-		envAPIKey: "PERPLEXITY_API_KEY",
-		chatURL:   "https://api.perplexity.ai/chat/completions",
-		header: func(apiKey string) http.Header {
-			return http.Header{"Authorization": {"Bearer " + apiKey}}
-		},
-		model:    "r1-1776",
-		thinking: "think",
-	},
+	// "perplexity": {
+	// 	envAPIKey: "PERPLEXITY_API_KEY",
+	// 	chatURL:   "https://api.perplexity.ai/chat/completions",
+	// 	header: func(apiKey string) http.Header {
+	// 		return http.Header{"Authorization": {"Bearer " + apiKey}}
+	// 	},
+	// 	model:         "sonar",
+	// 	thinkingStart: "<think>",
+	// },
 	"togetherai": {
 		envAPIKey: "TOGETHER_API_KEY",
 		chatURL:   "https://api.together.xyz/v1/chat/completions",
@@ -219,9 +219,6 @@ func getClient(t *testing.T, provider string) genai.ProviderGen {
 	c, err := openaicompatible.New(&genai.OptionsProvider{Remote: p.chatURL, Model: p.model}, wrapper)
 	if err != nil {
 		t.Fatal(err)
-	}
-	if p.thinking != "" {
-		return &adapters.ProviderGenThinking{ProviderGen: c, TagName: p.thinking}
 	}
 	return c
 }

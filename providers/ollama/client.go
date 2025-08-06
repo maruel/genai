@@ -486,6 +486,10 @@ type pullModelResponse struct {
 	Completed int64  `json:"completed"`
 }
 
+type Version struct {
+	Version string `json:"version"`
+}
+
 //
 
 type ErrorResponse struct {
@@ -747,6 +751,19 @@ func (c *Client) PullModel(ctx context.Context, model string) error {
 		return fmt.Errorf("pull failed: %s", out.Status)
 	}
 	return nil
+}
+
+func (c *Client) Version(ctx context.Context) (string, error) {
+	v := Version{}
+	if err := c.DoRequest(ctx, "GET", c.baseURL+"/api/version", nil, &v); err != nil {
+		return v.Version, fmt.Errorf("failed to get version: %w", err)
+	}
+	return v.Version, nil
+}
+
+func (c *Client) Ping(ctx context.Context) error {
+	_, err := c.Version(ctx)
+	return err
 }
 
 func (c *Client) Validate() error {

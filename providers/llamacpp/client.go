@@ -314,9 +314,9 @@ type ChatStreamChunkResponse struct {
 // HealthResponse is documented at
 // https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md#get-health-returns-heath-check-result
 type HealthResponse struct {
-	Status          string
-	SlotsIdle       int64 `json:"slots_idle"`
-	SlotsProcessing int64 `json:"slots_processing"`
+	Status          string `json:"status"`
+	SlotsIdle       int64  `json:"slots_idle"`
+	SlotsProcessing int64  `json:"slots_processing"`
 }
 
 // CompletionRequest is documented at
@@ -1171,6 +1171,14 @@ func (c *Client) GetHealthRaw(ctx context.Context) (HealthResponse, error) {
 		return msg, fmt.Errorf("failed to get health response: %w", err)
 	}
 	return msg, nil
+}
+
+func (c *Client) Ping(ctx context.Context) error {
+	status, err := c.GetHealth(ctx)
+	if err == nil && status != "ok" {
+		err = fmt.Errorf("server unavailable. status: %q", status)
+	}
+	return err
 }
 
 // GetMetrics retrieves the performance statistics from the server.

@@ -870,6 +870,16 @@ type Model interface {
 	Context() int64
 }
 
+// Ping
+
+// ProviderPing represents a provider that you can ping.
+type ProviderPing interface {
+	Provider
+	// Ping enables confirming that the provider is accessible, without incurring cost. This is useful for local
+	// providers to detect if they are accessible or not.
+	Ping(ctx context.Context) error
+}
+
 //
 
 // ProviderScoreboard describes the known state of the provider.

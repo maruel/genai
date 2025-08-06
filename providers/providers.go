@@ -6,6 +6,7 @@
 package providers
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/maruel/genai"
@@ -93,14 +94,15 @@ var All = map[string]func(opts *genai.OptionsProvider, wrapper func(http.RoundTr
 }
 
 // Available returns the factories that are valid.
-//
-// # Caveat
-//
-// llamacpp and ollama will always be returned.
 func Available() map[string]func(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
 	avail := map[string]func(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error){}
 	for name, f := range All {
-		if _, err := f(&genai.OptionsProvider{Model: base.NoModel}, nil); err == nil {
+		if c, err := f(&genai.OptionsProvider{Model: base.NoModel}, nil); err == nil {
+			if p, ok := c.(genai.ProviderPing); ok {
+				if err = p.Ping(context.Background()); err != nil {
+					continue
+				}
+			}
 			avail[name] = f
 		}
 	}

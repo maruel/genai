@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/providers/anthropic"
 	"github.com/maruel/genai/providers/bfl"
 	"github.com/maruel/genai/providers/cerebras"
@@ -89,4 +90,19 @@ var All = map[string]func(opts *genai.OptionsProvider, wrapper func(http.RoundTr
 	"togetherai": func(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
 		return togetherai.New(opts, wrapper)
 	},
+}
+
+// Available returns the factories that are valid.
+//
+// # Caveat
+//
+// llamacpp and ollama will always be returned.
+func Available() map[string]func(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+	avail := map[string]func(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error){}
+	for name, f := range All {
+		if _, err := f(&genai.OptionsProvider{Model: base.NoModel}, nil); err == nil {
+			avail[name] = f
+		}
+	}
+	return avail
 }

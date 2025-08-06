@@ -6,8 +6,10 @@ package providers_test
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
+	"os"
 	"sort"
 	"strings"
 
@@ -89,6 +91,41 @@ func Example_all_ProviderGen() {
 		} else {
 			fmt.Printf("- %s: %v\n", name, response)
 		}
+	}
+}
+
+func LoadProviderGen() (genai.ProviderGen, error) {
+	avail := providers.Available()
+	if len(avail) == 1 {
+		for name, f := range avail {
+			c, err := f(&genai.OptionsProvider{Model: base.NoModel}, nil)
+			if err != nil {
+				return nil, err
+			}
+			p, ok := c.(genai.ProviderGen)
+			if !ok {
+				return nil, fmt.Errorf("provider %q doesn't implement genai.ProviderGen", name)
+			}
+			return p, nil
+		}
+	}
+	if len(avail) == 0 {
+		return nil, errors.New("no provider available; please set environment variables or specify a provider and API keys or remote URL")
+	}
+	names := make([]string, 0, len(avail))
+	for name := range avail {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	return nil, fmt.Errorf("multiple providers available, select one of: %s", strings.Join(names, ", "))
+}
+
+func ExampleAvailable() {
+	// Automatically select the provider available if there's only one. Asserts that the provider implements
+	// ProviderGen.
+	_, err := LoadProviderGen()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 	}
 }
 

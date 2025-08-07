@@ -128,9 +128,9 @@ func TestClient_Preferred(t *testing.T) {
 		name string
 		want string
 	}{
-		{base.PreferredCheap, "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"},
-		{base.PreferredGood, "Qwen/Qwen2.5-72B-Instruct-Turbo"},
-		{base.PreferredSOTA, "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo"},
+		{base.PreferredCheap, "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"},
+		{base.PreferredGood, "Qwen/Qwen2.5-7B-Instruct-Turbo"},
+		{base.PreferredSOTA, "Qwen/Qwen3-235B-A22B-Thinking-2507"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {

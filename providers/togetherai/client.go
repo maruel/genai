@@ -14,6 +14,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
 	"math/big"
 	"net/http"
 	"os"
@@ -907,6 +908,9 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		good := model == base.PreferredGood
 		c.Model = ""
 		price := 0.
+		if cheap || good {
+			price = math.Inf(1)
+		}
 		cutoff := time.Now().Add(-365 * 25 * time.Hour)
 		for _, mdl := range mdls {
 			m := mdl.(*Model)
@@ -914,19 +918,19 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 				continue
 			}
 			if cheap {
-				if strings.HasPrefix(m.ID, "meta-llama/") && (price == 0 || price > m.Pricing.Output) {
+				if strings.HasPrefix(m.ID, "meta-llama/") && (m.Pricing.Output == 0 || (price > m.Pricing.Output)) {
 					price = m.Pricing.Output
 					// date = m.Created
 					c.Model = m.ID
 				}
 			} else if good {
-				if strings.HasPrefix(m.ID, "Qwen/Qwen") && (price == 0 || price < m.Pricing.Output) {
+				if strings.HasPrefix(m.ID, "Qwen/Qwen") && price > m.Pricing.Output {
 					// Take the most expensive
 					price = m.Pricing.Output
 					c.Model = m.ID
 				}
 			} else {
-				if strings.HasPrefix(m.ID, "meta-llama/") && (price == 0 || price < m.Pricing.Output) {
+				if strings.HasPrefix(m.ID, "Qwen/Qwen") && price < m.Pricing.Output {
 					price = m.Pricing.Output
 					c.Model = m.ID
 				}

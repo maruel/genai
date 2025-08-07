@@ -149,7 +149,7 @@ func TestClient_Provider_errors(t *testing.T) {
 			ErrListModel: "",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.Provider {
+	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
 		return getClientInner(t, apiKey, model)
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
@@ -157,18 +157,18 @@ func TestClient_Provider_errors(t *testing.T) {
 
 func getClient(t *testing.T, m string) *anthropic.Client {
 	t.Parallel()
-	return getClientInner(t, "", m)
-}
-
-func getClientInner(t *testing.T, apiKey, m string) *anthropic.Client {
-	if apiKey == "" && os.Getenv("ANTHROPIC_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
-	}
-	c, err := anthropic.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	c, err := getClientInner(t, "", m)
 	if err != nil {
 		t.Fatal(err)
 	}
 	return c
+}
+
+func getClientInner(t *testing.T, apiKey, m string) (*anthropic.Client, error) {
+	if apiKey == "" && os.Getenv("ANTHROPIC_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	return anthropic.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
 var testRecorder *internaltest.Records

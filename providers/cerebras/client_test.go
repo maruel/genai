@@ -94,7 +94,7 @@ func TestClient_Provider_errors(t *testing.T) {
 			ErrGenStream: "http 404\nnot_found_error/model/model_not_found: Model bad model does not exist or you do not have access to it.",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.Provider {
+	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
 		return getClientInner(t, apiKey, model)
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
@@ -102,18 +102,18 @@ func TestClient_Provider_errors(t *testing.T) {
 
 func getClient(t *testing.T, m string) *cerebras.Client {
 	t.Parallel()
-	return getClientInner(t, "", m)
-}
-
-func getClientInner(t *testing.T, apiKey, m string) *cerebras.Client {
-	if apiKey == "" && os.Getenv("CEREBRAS_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
-	}
-	c, err := cerebras.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	c, err := getClientInner(t, "", m)
 	if err != nil {
 		t.Fatal(err)
 	}
 	return c
+}
+
+func getClientInner(t *testing.T, apiKey, m string) (*cerebras.Client, error) {
+	if apiKey == "" && os.Getenv("CEREBRAS_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	return cerebras.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
 var testRecorder *internaltest.Records

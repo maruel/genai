@@ -85,7 +85,7 @@ func TestClient_Provider_errors(t *testing.T) {
 			ErrGenStream: "http 400\ninvalid_request_error (model_not_found): model: The requested model 'bad model' does not exist.",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.Provider {
+	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
 		return getClientInner(t, apiKey, model)
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
@@ -93,18 +93,18 @@ func TestClient_Provider_errors(t *testing.T) {
 
 func getClient(t *testing.T, m string) *huggingface.Client {
 	t.Parallel()
-	return getClientInner(t, "", m)
-}
-
-func getClientInner(t *testing.T, apiKey, m string) *huggingface.Client {
-	if apiKey == "" {
-		apiKey = getAPIKey(t)
-	}
-	c, err := huggingface.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	c, err := getClientInner(t, "", m)
 	if err != nil {
 		t.Fatal(err)
 	}
 	return c
+}
+
+func getClientInner(t *testing.T, apiKey, m string) (*huggingface.Client, error) {
+	if apiKey == "" {
+		apiKey = getAPIKey(t)
+	}
+	return huggingface.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
 func getAPIKey(t testing.TB) string {

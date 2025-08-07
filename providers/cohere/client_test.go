@@ -82,7 +82,7 @@ func TestClient_Provider_errors(t *testing.T) {
 			ErrGenStream: "http 404\nmodel 'bad model' not found, make sure the correct model ID was used and that you have access to the model.",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.Provider {
+	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
 		return getClientInner(t, apiKey, model)
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
@@ -90,18 +90,18 @@ func TestClient_Provider_errors(t *testing.T) {
 
 func getClient(t *testing.T, m string) *cohere.Client {
 	t.Parallel()
-	return getClientInner(t, "", m)
-}
-
-func getClientInner(t *testing.T, apiKey, m string) *cohere.Client {
-	if apiKey == "" && os.Getenv("COHERE_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
-	}
-	c, err := cohere.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	c, err := getClientInner(t, "", m)
 	if err != nil {
 		t.Fatal(err)
 	}
 	return c
+}
+
+func getClientInner(t *testing.T, apiKey, m string) (*cohere.Client, error) {
+	if apiKey == "" && os.Getenv("COHERE_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	return cohere.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
 var testRecorder *internaltest.Records

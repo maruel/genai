@@ -281,7 +281,7 @@ func TestClient_Provider_errors(t *testing.T) {
 			ErrGenStream: "http 400\nINVALID_ARGUMENT (400): * GenerateContentRequest.model: unexpected model name format",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.Provider {
+	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
 		return getClientInner(t, apiKey, model)
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
@@ -289,10 +289,14 @@ func TestClient_Provider_errors(t *testing.T) {
 
 func getClient(t *testing.T, m string) *gemini.Client {
 	t.Parallel()
-	return getClientInner(t, "", m)
+	c, err := getClientInner(t, "", m)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return c
 }
 
-func getClientInner(t *testing.T, apiKey, m string) *gemini.Client {
+func getClientInner(t *testing.T, apiKey, m string) (*gemini.Client, error) {
 	if apiKey == "" && os.Getenv("GEMINI_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
@@ -312,11 +316,7 @@ func getClientInner(t *testing.T, apiKey, m string) *gemini.Client {
 	wrapper := func(h http.RoundTripper) http.RoundTripper {
 		return testRecorder.Record(t, h, recorder.WithHook(trimRecordingInternal, recorder.AfterCaptureHook), recorder.WithMatcher(matchCassetteInternal))
 	}
-	c, err := gemini.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, wrapper)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return c
+	return gemini.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, wrapper)
 }
 
 func trimRecordingInternal(i *cassette.Interaction) error {

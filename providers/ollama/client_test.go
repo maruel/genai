@@ -64,7 +64,7 @@ func TestClient(t *testing.T) {
 				ErrGenStream: "pull failed: http 500\npull model manifest: file does not exist",
 			},
 		}
-		f := func(t *testing.T, apiKey, model string) genai.Provider {
+		f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
 			return s.getClient(t, model)
 		}
 		internaltest.TestClient_Provider_errors(t, f, data)
@@ -119,13 +119,9 @@ func (l *lazyServer) lazyStart(t testing.TB) string {
 	return l.url
 }
 
-func (l *lazyServer) getClient(t testing.TB, model string) genai.ProviderGen {
+func (l *lazyServer) getClient(t testing.TB, model string) (genai.ProviderGen, error) {
 	serverURL, wrapper := l.lazyStartWithRecord(t)
-	c, err := ollama.New(&genai.OptionsProvider{Remote: serverURL, Model: model}, wrapper)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return c
+	return ollama.New(&genai.OptionsProvider{Remote: serverURL, Model: model}, wrapper)
 }
 
 // This test doesn't require the server to start.

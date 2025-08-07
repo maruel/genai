@@ -177,7 +177,7 @@ func TestClient_Provider_errors(t *testing.T) {
 			ErrGenDoc:    "http 400\nInvalid value: 'bad model'. Supported values are: 'gpt-image-1', 'gpt-image-0721-mini-alpha', 'dall-e-2', and 'dall-e-3'. (type: invalid_request_error, code: invalid_value)",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.Provider {
+	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
 		return getClientInner(t, apiKey, model)
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
@@ -185,18 +185,18 @@ func TestClient_Provider_errors(t *testing.T) {
 
 func getClient(t *testing.T, m string) *openairesponses.Client {
 	t.Parallel()
-	return getClientInner(t, "", m)
-}
-
-func getClientInner(t *testing.T, apiKey, m string) *openairesponses.Client {
-	if apiKey == "" && os.Getenv("OPENAI_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
-	}
-	c, err := openairesponses.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	c, err := getClientInner(t, "", m)
 	if err != nil {
 		t.Fatal(err)
 	}
 	return c
+}
+
+func getClientInner(t *testing.T, apiKey, m string) (*openairesponses.Client, error) {
+	if apiKey == "" && os.Getenv("OPENAI_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	return openairesponses.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
 var testRecorder *internaltest.Records

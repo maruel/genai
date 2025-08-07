@@ -78,7 +78,7 @@ func TestClient_Provider_errors(t *testing.T) {
 			ErrGenStream: "http 400\ninvalid_request_error: Model Not Exist",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.Provider {
+	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
 		return getClientInner(t, apiKey, model)
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
@@ -86,18 +86,18 @@ func TestClient_Provider_errors(t *testing.T) {
 
 func getClient(t *testing.T, m string) *deepseek.Client {
 	t.Parallel()
-	return getClientInner(t, "", m)
-}
-
-func getClientInner(t *testing.T, apiKey, m string) *deepseek.Client {
-	if apiKey == "" && os.Getenv("DEEPSEEK_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
-	}
-	c, err := deepseek.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	c, err := getClientInner(t, "", m)
 	if err != nil {
 		t.Fatal(err)
 	}
 	return c
+}
+
+func getClientInner(t *testing.T, apiKey, m string) (*deepseek.Client, error) {
+	if apiKey == "" && os.Getenv("DEEPSEEK_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	return deepseek.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
 var testRecorder *internaltest.Records

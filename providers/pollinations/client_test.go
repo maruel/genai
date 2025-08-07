@@ -143,23 +143,16 @@ func TestClient_Preferred(t *testing.T) {
 }
 
 func TestClient_Provider_errors(t *testing.T) {
-	t.Skip("TODO")
 	data := []internaltest.ProviderError{
-		{
-			Name:         "bad apiKey",
-			APIKey:       "bad apiKey",
-			Model:        "llama3-8b-8192",
-			ErrGenSync:   "http 401: error invalid_api_key (invalid_request_error): Invalid API Key. You can get a new API key at https://console.groq.com/keys",
-			ErrGenStream: "http 401: error invalid_api_key (invalid_request_error): Invalid API Key. You can get a new API key at https://console.groq.com/keys",
-		},
 		{
 			Name:         "bad model",
 			Model:        "bad model",
-			ErrGenSync:   "http 404: error model_not_found (invalid_request_error): The model `bad model` does not exist or you do not have access to it.",
-			ErrGenStream: "http 404: error model_not_found (invalid_request_error): The model `bad model` does not exist or you do not have access to it.",
+			ErrGenSync:   "model \"bad model\" not supported by pollinations",
+			ErrGenStream: "model \"bad model\" not supported by pollinations",
+			ErrGenDoc:    "model \"bad model\" not supported by pollinations",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.Provider {
+	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
 		return getClientInner(t, model)
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
@@ -167,16 +160,20 @@ func TestClient_Provider_errors(t *testing.T) {
 
 func getClient(t *testing.T, m string) *pollinations.Client {
 	t.Parallel()
-	return getClientInner(t, m)
-}
-
-func getClientInner(t *testing.T, m string) *pollinations.Client {
-	c, err := pollinations.New(&genai.OptionsProvider{APIKey: "genai-unittests", Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	c, err := getClientInner(t, m)
 	if err != nil {
 		t.Fatal(err)
 	}
-	warmupCache(t)
 	return c
+}
+
+func getClientInner(t *testing.T, m string) (*pollinations.Client, error) {
+	c, err := pollinations.New(&genai.OptionsProvider{APIKey: "genai-unittests", Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	if err != nil {
+		return nil, err
+	}
+	warmupCache(t)
+	return c, nil
 }
 
 func warmupCache(t testing.TB) []genai.Model {

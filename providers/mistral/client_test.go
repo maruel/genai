@@ -122,7 +122,7 @@ func TestClient_Provider_errors(t *testing.T) {
 			ErrGenStream: "http 400\ninvalid_model: Invalid model: bad model",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.Provider {
+	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
 		return getClientInner(t, apiKey, model)
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
@@ -130,18 +130,18 @@ func TestClient_Provider_errors(t *testing.T) {
 
 func getClient(t *testing.T, m string) *mistral.Client {
 	t.Parallel()
-	return getClientInner(t, "", m)
-}
-
-func getClientInner(t *testing.T, apiKey, m string) *mistral.Client {
-	if apiKey == "" && os.Getenv("MISTRAL_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
-	}
-	c, err := mistral.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	c, err := getClientInner(t, "", m)
 	if err != nil {
 		t.Fatal(err)
 	}
 	return c
+}
+
+func getClientInner(t *testing.T, apiKey, m string) (*mistral.Client, error) {
+	if apiKey == "" && os.Getenv("MISTRAL_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
+	}
+	return mistral.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
 var testRecorder *internaltest.Records

@@ -85,7 +85,7 @@ func TestClient_Provider_errors(t *testing.T) {
 			ErrGenStream: "http 400\nNo route for that URI",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) genai.Provider {
+	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
 		return getClientInner(t, apiKey, model)
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
@@ -93,10 +93,14 @@ func TestClient_Provider_errors(t *testing.T) {
 
 func getClient(t *testing.T, m string) *cloudflare.Client {
 	t.Parallel()
-	return getClientInner(t, "", m)
+	c, err := getClientInner(t, "", m)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return c
 }
 
-func getClientInner(t *testing.T, apiKey, m string) *cloudflare.Client {
+func getClientInner(t *testing.T, apiKey, m string) (*cloudflare.Client, error) {
 	if apiKey == "" && os.Getenv("CLOUDFLARE_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
@@ -107,11 +111,7 @@ func getClientInner(t *testing.T, apiKey, m string) *cloudflare.Client {
 	wrapper := func(h http.RoundTripper) http.RoundTripper {
 		return testRecorder.Record(t, h, recorder.WithHook(trimRecordingInternal, recorder.AfterCaptureHook), recorder.WithMatcher(matchCassetteInternal))
 	}
-	c, err := cloudflare.New(&genai.OptionsProvider{APIKey: apiKey, AccountID: accountID, Model: m}, wrapper)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return c
+	return cloudflare.New(&genai.OptionsProvider{APIKey: apiKey, AccountID: accountID, Model: m}, wrapper)
 }
 
 // trimRecording trims API key and noise from the recording.

@@ -98,7 +98,7 @@ var Scoreboard = genai.Scoreboard{
 				"c4ai-aya-vision-32b",
 				"command",
 				"command-a-03-2025",
-				"command-a-vision",
+				"command-a-vision-07-2025",
 				"command-light",
 				"command-light-nightly",
 				"command-nightly",
@@ -810,7 +810,6 @@ type Client struct {
 // If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your API key at https://dashboard.cohere.com/api-keys
 //
-// If no model is provided, only functions that do not require a model, like ListModels, will work.
 // Use one of the model from https://cohere.com/pricing and https://docs.cohere.com/v2/docs/models
 // To use multiple models, create multiple clients.
 //
@@ -829,13 +828,16 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		return nil, errors.New("unexpected option Remote")
 	}
 	apiKey := opts.APIKey
-	model := opts.Model
 	const apiKeyURL = "https://dashboard.cohere.com/api-keys"
 	var err error
 	if apiKey == "" {
 		if apiKey = os.Getenv("COHERE_API_KEY"); apiKey == "" {
 			err = &base.ErrAPIKeyRequired{EnvVar: "COHERE_API_KEY", URL: apiKeyURL}
 		}
+	}
+	model := opts.Model
+	if model == "" {
+		model = base.PreferredGood
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {

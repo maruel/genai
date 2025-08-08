@@ -223,26 +223,6 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			Models: []string{"gemini-2.0-flash-preview-image-generation"},
-			/*
-				genai.ModalityVideo: {
-					Inline: true,
-					// "video/mpeg", "video/mov", "video/avi", "video/x-flv", "video/mpg", "video/wmv", "video/3gpp"
-					SupportedFormats: []string{"video/mp4", "video/webm"},
-				},
-				In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-				Out: map[genai.Modality]genai.ModalCapability{
-					genai.ModalityText: {Inline: true},
-					genai.ModalityImage: {
-						Inline:           true,
-						SupportedFormats: []string{"image/jpeg", "image/png", "image/webp"},
-					},
-				},
-				GenSync:   &genai.FunctionalityText{Seed: true},
-				GenStream: &genai.FunctionalityText{Seed: true},
-			*/
-		},
-		{
 			Models:   []string{"gemini-2.5-flash-exp-native-audio-thinking-dialog"},
 			Thinking: true,
 		},
@@ -251,7 +231,6 @@ var Scoreboard = genai.Scoreboard{
 				"aqa",
 				"embedding-001",
 				"embedding-gecko-001",
-				"gemini-1.0-pro-vision-latest",
 				"gemini-1.5-flash",
 				"gemini-1.5-flash-002",
 				"gemini-1.5-flash-8b",
@@ -264,7 +243,6 @@ var Scoreboard = genai.Scoreboard{
 				"gemini-2.0-flash",
 				"gemini-2.0-flash-001",
 				"gemini-2.0-flash-exp",
-				"gemini-2.0-flash-exp-image-generation",
 				"gemini-2.0-flash-lite",
 				"gemini-2.0-flash-lite-001",
 				"gemini-2.0-flash-lite-preview",
@@ -290,7 +268,6 @@ var Scoreboard = genai.Scoreboard{
 				"gemini-embedding-exp-03-07",
 				"gemini-exp-1206",
 				"gemini-live-2.5-flash-preview",
-				"gemini-pro-vision",
 				"gemma-3-12b-it",
 				"gemma-3-1b-it",
 				"gemma-3-27b-it",
@@ -304,6 +281,7 @@ var Scoreboard = genai.Scoreboard{
 				"text-embedding-004",
 				"veo-2.0-generate-001",
 				"veo-3.0-generate-preview",
+				"veo-3.0-fast-generate-preview",
 			},
 		},
 	},
@@ -1171,7 +1149,6 @@ type Client struct {
 // If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your API key at https://ai.google.dev/gemini-api/docs/getting-started
 //
-// If no model is provided, only functions that do not require a model, like ListModels, will work.
 // To use multiple models, create multiple clients.
 // Use one of the model from https://ai.google.dev/gemini-api/docs/models/gemini
 //
@@ -1195,13 +1172,16 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		return nil, errors.New("unexpected option Remote")
 	}
 	apiKey := opts.APIKey
-	model := opts.Model
 	const apiKeyURL = "https://ai.google.dev/gemini-api/docs/getting-started"
 	var err error
 	if apiKey == "" {
 		if apiKey = os.Getenv("GEMINI_API_KEY"); apiKey == "" {
 			err = &base.ErrAPIKeyRequired{EnvVar: "GEMINI_API_KEY", URL: apiKeyURL}
 		}
+	}
+	model := opts.Model
+	if model == "" {
+		model = base.PreferredGood
 	}
 	// Google supports HTTP POST gzip compression!
 	var t http.RoundTripper = &roundtrippers.PostCompressed{

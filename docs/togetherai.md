@@ -18,16 +18,14 @@
 | Qwen/Qwen2.5-Coder-32B-Instruct                   | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | Qwen/Qwen2.5-VL-72B-Instruct                      | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | Qwen/Qwen3-235B-A22B-Instruct-2507-tput           | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
+| Qwen/Qwen3-235B-A22B-Thinking-2507                | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | Qwen/Qwen3-235B-A22B-fp8-tput                     | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
-| Qwen/Qwen3-32B-FP8                                | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
+| Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8           | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | Salesforce/Llama-Rank-V1                          | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
-| arcee-ai/AFM-4.5B-Preview                         | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
-| arcee-ai/arcee-blitz                              | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
-| arcee-ai/caller                                   | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
+| Virtue-AI/VirtueGuard-Text-Lite                   | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | arcee-ai/coder-large                              | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | arcee-ai/maestro-reasoning                        | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | arcee-ai/virtuoso-large                           | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
-| arcee-ai/virtuoso-medium-v2                       | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | arcee_ai/arcee-spotlight                          | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | black-forest-labs/FLUX.1-canny                    | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | black-forest-labs/FLUX.1-depth                    | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
@@ -36,12 +34,14 @@
 | black-forest-labs/FLUX.1-kontext-dev              | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | black-forest-labs/FLUX.1-kontext-max              | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | black-forest-labs/FLUX.1-kontext-pro              | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
+| black-forest-labs/FLUX.1-krea-dev                 | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | black-forest-labs/FLUX.1-pro                      | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | black-forest-labs/FLUX.1-redux                    | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | black-forest-labs/FLUX.1-schnell-Free             | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | black-forest-labs/FLUX.1.1-pro                    | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | cartesia/sonic                                    | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | cartesia/sonic-2                                  | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
+| deepcogito/cogito-v2-preview-deepseek-671b        | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | deepseek-ai/DeepSeek-R1                           | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | deepseek-ai/DeepSeek-R1-0528-tput                 | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | deepseek-ai/DeepSeek-R1-Distill-Llama-70B         | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
@@ -49,7 +49,6 @@
 | deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B         | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | deepseek-ai/DeepSeek-R1-Distill-Qwen-14B          | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | deepseek-ai/DeepSeek-V3                           | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
-| eddiehou/meta-llama/Llama-3.1-405B                | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | google/gemma-2-27b-it                             | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | google/gemma-3-27b-it                             | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | google/gemma-3n-E4B-it                            | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
@@ -80,6 +79,8 @@
 | mistralai/Mixtral-8x7B-Instruct-v0.1              | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | mixedbread-ai/Mxbai-Rerank-Large-V2               | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | nvidia/Llama-3.1-Nemotron-70B-Instruct-HF         | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
+| openai/gpt-oss-120b                               | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
+| openai/gpt-oss-20b                                | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | openai/whisper-large-v3                           | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | perplexity-ai/r1-1776                             | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | scb10x/scb10x-llama3-1-typhoon2-70b-instruct      | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
@@ -88,4 +89,4 @@
 | togethercomputer/MoA-1-Turbo                      | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | togethercomputer/Refuel-Llm-V2                    | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
 | togethercomputer/Refuel-Llm-V2-Small              | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
-| togethercomputer/m2-bert-80M-32k-retrieval        | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |
+| zai-org/GLM-4.5-Air-FP8                           | ❌        | ❌         | ❌      | ❌             | ❌   | ❌        | ❌    | ❌    | ❌   | ❌    | ❌        | ❌       |

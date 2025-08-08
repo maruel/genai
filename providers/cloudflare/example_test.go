@@ -72,7 +72,7 @@ func ExampleNew_hTTP_record() {
 	}
 	fmt.Printf("Found %d models\n", len(models))
 	// Output:
-	// Found 68 models
+	// Found 70 models
 }
 
 var reAccount = regexp.MustCompile(`/accounts/[0-9a-fA-F]{32}/`)

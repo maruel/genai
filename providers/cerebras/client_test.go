@@ -28,6 +28,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if err2 != nil {
 		t.Fatal(err2)
 	}
+	// TODO: Incorrect.
 	if strings.HasPrefix(model.Model, "qwen") {
 		if !model.Thinking {
 			t.Fatal("expected thinking")

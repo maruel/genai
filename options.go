@@ -54,6 +54,9 @@ type OptionsProvider struct {
 	// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
 	// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
 	// possible the model is not available anymore or that the default model changes.
+	//
+	// When unspecified, the provider may try to select the same model, likely as if base.PreferredGood had been
+	// specified but it's not guaranteed.
 	Model string `json:"model,omitzero" yaml:"model,omitzero"`
 
 	_ struct{}

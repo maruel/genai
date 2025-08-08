@@ -392,11 +392,8 @@ type Client struct {
 // If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your API key at https://www.perplexity.ai/settings/api
 //
+// To use multiple models, create multiple clients.
 // Models are listed at https://docs.perplexity.ai/guides/model-cards
-//
-// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
-// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
-// possible the model is not available anymore.
 //
 // wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
 // retries, or to throttle outgoing requests.
@@ -408,7 +405,6 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		return nil, errors.New("unexpected option Remote")
 	}
 	apiKey := opts.APIKey
-	model := opts.Model
 	const apiKeyURL = "https://www.perplexity.ai/settings/api"
 	var err error
 	if apiKey == "" {
@@ -416,8 +412,9 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			err = &base.ErrAPIKeyRequired{EnvVar: "PERPLEXITY_API_KEY", URL: apiKeyURL}
 		}
 	}
+	model := opts.Model
 	switch model {
-	case base.PreferredCheap:
+	case base.PreferredCheap, "":
 		model = "sonar"
 	case base.PreferredGood:
 		model = "sonar-pro"

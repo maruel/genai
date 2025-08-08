@@ -7,7 +7,6 @@ package huggingface_test
 import (
 	"net/http"
 	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 
@@ -21,7 +20,7 @@ import (
 )
 
 func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-	c, err := huggingface.New(&genai.OptionsProvider{APIKey: getAPIKey(t), Model: model.Model}, fn)
+	c, err := huggingface.New(&genai.OptionsProvider{APIKey: getAPIKeyTest(t), Model: model.Model}, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -102,23 +101,17 @@ func getClient(t *testing.T, m string) *huggingface.Client {
 
 func getClientInner(t *testing.T, apiKey, m string) (*huggingface.Client, error) {
 	if apiKey == "" {
-		apiKey = getAPIKey(t)
+		apiKey = getAPIKeyTest(t)
 	}
 	return huggingface.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
-func getAPIKey(t testing.TB) string {
-	if os.Getenv("HUGGINGFACE_API_KEY") == "" {
-		// Fallback to loading from the python client's cache.
-		h, err := os.UserHomeDir()
-		if err != nil {
-			t.Fatal("can't find home directory")
-		}
-		if _, err := os.Stat(filepath.Join(h, ".cache", "huggingface", "token")); err != nil {
-			return "<insert_api_key_here>"
-		}
+func getAPIKeyTest(t testing.TB) string {
+	apiKey, err := getAPIKey()
+	if err != nil {
+		t.Fatal(err)
 	}
-	return ""
+	return apiKey
 }
 
 var testRecorder *internaltest.Records

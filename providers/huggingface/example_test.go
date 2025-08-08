@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/maruel/genai"
@@ -52,10 +53,9 @@ func ExampleNew_hTTP_record() {
 		}
 		return rr
 	}
-	// When playing back the smoke test, no API key is needed. Insert a fake API key.
-	apiKey := ""
-	if os.Getenv("HUGGINGFACE_API_KEY") == "" && mode != recorder.ModeRecordOnly {
-		apiKey = "<insert_api_key_here>"
+	apiKey, err := getAPIKey()
+	if err != nil {
+		log.Fatal(err)
 	}
 	c, err := huggingface.New(&genai.OptionsProvider{APIKey: apiKey}, wrapper)
 	if err != nil {
@@ -68,6 +68,20 @@ func ExampleNew_hTTP_record() {
 	fmt.Printf("Found %d models\n", len(models))
 	// Output:
 	// Found 1000 models
+}
+
+func getAPIKey() (string, error) {
+	if os.Getenv("HUGGINGFACE_API_KEY") == "" {
+		// Fallback to loading from the python client's cache.
+		h, err := os.UserHomeDir()
+		if err != nil {
+			return "", fmt.Errorf("can't find home directory: %w", err)
+		}
+		if _, err := os.Stat(filepath.Join(h, ".cache", "huggingface", "token")); err != nil {
+			return "<insert_api_key_here>", nil
+		}
+	}
+	return "", nil
 }
 
 // trimResponseHeaders trims API key and noise from the recording.

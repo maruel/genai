@@ -159,6 +159,7 @@ var Scoreboard = genai.Scoreboard{
 				"codestral-2411-rc5",
 				"codestral-2412",
 				"codestral-2501",
+				"codestral-2508",
 				"codestral-latest",
 				"devstral-medium-2507",
 				"devstral-medium-latest",
@@ -206,6 +207,7 @@ var Scoreboard = genai.Scoreboard{
 				"pixtral-large-latest",
 				"voxtral-mini-2507",
 				"voxtral-mini-latest",
+				"voxtral-mini-transcribe-2507",
 				"voxtral-small-2507",
 			},
 		},
@@ -214,6 +216,8 @@ var Scoreboard = genai.Scoreboard{
 			Models: []string{
 				"codestral-embed",
 				"codestral-embed-2505",
+				"magistral-medium-2507",
+				"magistral-small-2507",
 				"mistral-embed",
 				"mistral-moderation-2411",
 				"mistral-moderation-latest",
@@ -643,10 +647,13 @@ type Model struct {
 	Created      base.Time `json:"created"`
 	OwnedBy      string    `json:"owned_by"`
 	Capabilities struct {
+		Audio           bool `json:"audio"`
 		CompletionChat  bool `json:"completion_chat"`
 		CompletionFim   bool `json:"completion_fim"`
 		FunctionCalling bool `json:"function_calling"`
 		FineTuning      bool `json:"fine_tuning"`
+		Moderation      bool `json:"moderation"`
+		OCR             bool `json:"ocr"`
 		Vision          bool `json:"vision"`
 		Classification  bool `json:"classification"`
 	} `json:"capabilities"`
@@ -838,7 +845,6 @@ type Client struct {
 // If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your API key at https://console.mistral.ai/api-keys or https://console.mistral.ai/codestral
 //
-// If no model is provided, only functions that do not require a model, like ListModels, will work.
 // To use multiple models, create multiple clients.
 // Use one of the model from https://docs.mistral.ai/getting-started/models/models_overview/
 //
@@ -866,13 +872,16 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		return nil, errors.New("unexpected option Remote")
 	}
 	apiKey := opts.APIKey
-	model := opts.Model
 	const apiKeyURL = "https://console.mistral.ai/api-keys"
 	var err error
 	if apiKey == "" {
 		if apiKey = os.Getenv("MISTRAL_API_KEY"); apiKey == "" {
 			err = &base.ErrAPIKeyRequired{EnvVar: "MISTRAL_API_KEY", URL: apiKeyURL}
 		}
+	}
+	model := opts.Model
+	if model == "" {
+		model = base.PreferredGood
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {

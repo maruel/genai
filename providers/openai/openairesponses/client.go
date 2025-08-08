@@ -128,8 +128,6 @@ var Scoreboard = genai.Scoreboard{
 				"o1-2024-12-17",
 				"o1-mini",
 				"o1-mini-2024-09-12",
-				"o1-preview",
-				"o1-preview-2024-09-12",
 				"o1-pro",
 				"o1-pro-2025-03-19",
 				"o3",
@@ -195,6 +193,13 @@ var Scoreboard = genai.Scoreboard{
 				"gpt-4o-search-preview",
 				"gpt-4o-search-preview-2025-03-11",
 				"gpt-4o-transcribe",
+				"gpt-5",
+				"gpt-5-2025-08-07",
+				"gpt-5-chat-latest",
+				"gpt-5-mini",
+				"gpt-5-mini-2025-08-07",
+				"gpt-5-nano",
+				"gpt-5-nano-2025-08-07",
 				"omni-moderation-2024-09-26",
 				"omni-moderation-latest",
 				"text-embedding-3-large",
@@ -1145,7 +1150,6 @@ type Client struct {
 // If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your API key at https://platform.openai.com/settings/organization/api-keys
 //
-// If no model is provided, only functions that do not require a model, like ListModels, will work.
 // To use multiple models, create multiple clients.
 // Use one of the model from https://platform.openai.com/docs/models
 //
@@ -1164,13 +1168,16 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		return nil, errors.New("unexpected option Remote")
 	}
 	apiKey := opts.APIKey
-	model := opts.Model
 	const apiKeyURL = "https://platform.openai.com/settings/organization/api-keys"
 	var err error
 	if apiKey == "" {
 		if apiKey = os.Getenv("OPENAI_API_KEY"); apiKey == "" {
 			err = &base.ErrAPIKeyRequired{EnvVar: "OPENAI_API_KEY", URL: apiKeyURL}
 		}
+	}
+	model := opts.Model
+	if model == "" {
+		model = base.PreferredGood
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {

@@ -186,7 +186,6 @@ type Client struct {
 // opts.Remote defaults to "https://api.bfl.ai" and can be specified to use a region specific backend.
 //
 // To use multiple models, create multiple clients.
-//
 // Use one of the model from https://docs.bfl.ml/quick_start/generating_images
 //
 // wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
@@ -196,8 +195,6 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		return nil, errors.New("unexpected option AccountID")
 	}
 	apiKey := opts.APIKey
-	model := opts.Model
-	remote := opts.Remote
 	const apiKeyURL = "https://dashboard.bfl.ai/keys"
 	var err error
 	if apiKey == "" {
@@ -205,9 +202,11 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			err = &base.ErrAPIKeyRequired{EnvVar: "BFL_API_KEY", URL: apiKeyURL}
 		}
 	}
-	// If Black Forest Labs ever implement model listing, add this.
+	// If Black Forest Labs ever implement model listing, start using it!
+	// When no model is specified, use the dev model since costs increase quite fast.
+	model := opts.Model
 	switch model {
-	case base.PreferredCheap:
+	case base.PreferredCheap, "":
 		model = "flux-dev"
 	case base.PreferredGood:
 		model = "flux-pro-1.1"
@@ -219,6 +218,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	if wrapper != nil {
 		t = wrapper(t)
 	}
+	remote := opts.Remote
 	if remote == "" {
 		remote = "https://api.bfl.ai"
 	}

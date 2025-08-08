@@ -67,7 +67,7 @@ func ExampleNew_hTTP_record() {
 	}
 	fmt.Printf("Found %d models\n", len(models))
 	// Output:
-	// Found 52 models
+	// Found 64 models
 }
 
 // trimResponseHeaders trims API key and noise from the recording.

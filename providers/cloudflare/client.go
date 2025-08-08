@@ -642,7 +642,6 @@ type Client struct {
 // If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your account ID and API key at https://dash.cloudflare.com/profile/api-tokens
 //
-// If no model is provided, only functions that do not require a model, like ListModels, will work.
 // To use multiple models, create multiple clients.
 // Use one of the model from https://developers.cloudflare.com/workers-ai/models/
 //
@@ -653,7 +652,6 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		return nil, errors.New("unexpected option Remote")
 	}
 	apiKey := opts.APIKey
-	model := opts.Model
 	const apiKeyURL = "https://dash.cloudflare.com/profile/api-tokens"
 	var err error
 	accountID := opts.AccountID
@@ -666,6 +664,10 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		if apiKey = os.Getenv("CLOUDFLARE_API_KEY"); apiKey == "" {
 			err = &base.ErrAPIKeyRequired{EnvVar: "CLOUDFLARE_API_KEY", URL: apiKeyURL}
 		}
+	}
+	model := opts.Model
+	if model == "" {
+		model = base.PreferredGood
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {

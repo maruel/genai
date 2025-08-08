@@ -153,12 +153,10 @@ var Scoreboard = genai.Scoreboard{
 		{
 			Models: []string{
 				"bidara",
-				"deepseek",
-				"elixposearch",
 				"evil",
-				"gemma-roblox",
-				"gptimage",
-				"grok",
+				"gemini",
+				"geminisearch",
+				"glm",
 				"hypnosis-tracy",
 				"kontext",
 				"llama-fast-roblox",
@@ -171,7 +169,6 @@ var Scoreboard = genai.Scoreboard{
 				"openai-fast",
 				"openai-large",
 				"openai-roblox",
-				"phi",
 				"qwen-coder",
 				"rtist",
 				"sur",
@@ -862,9 +859,8 @@ type Client struct {
 //
 // options APIKey is optional. Providing one, either via environment variable POLLINATIONS_API_KEY, will increase quota.
 //
-// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
-// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
-// possible the model is not available anymore.
+// To use multiple models, create multiple clients.
+// Models are listed at https://docs.perplexity.ai/guides/model-cards
 //
 // wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
 // retries, or to throttle outgoing requests.
@@ -876,7 +872,6 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		return nil, errors.New("unexpected option Remote")
 	}
 	apiKey := opts.APIKey
-	model := opts.Model
 	var h http.Header
 	if apiKey == "" {
 		apiKey = os.Getenv("POLLINATIONS_API_KEY")
@@ -887,6 +882,10 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		} else {
 			h = http.Header{"Authorization": {"Bearer " + apiKey}}
 		}
+	}
+	model := opts.Model
+	if model == "" {
+		model = base.PreferredGood
 	}
 	t := base.DefaultTransport
 	if r, ok := t.(*roundtrippers.Retry); ok {

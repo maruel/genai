@@ -153,7 +153,6 @@ var Scoreboard = genai.Scoreboard{
 				"gemma2-9b-it",
 				"llama3-70b-8192",
 				"llama3-8b-8192",
-				"mistral-saba-24b",
 			},
 		},
 		// Unsupported models.
@@ -166,6 +165,8 @@ var Scoreboard = genai.Scoreboard{
 				"meta-llama/llama-guard-4-12b",
 				"meta-llama/llama-prompt-guard-2-22m",
 				"meta-llama/llama-prompt-guard-2-86m",
+				"openai/gpt-oss-20b",
+				"openai/gpt-oss-120b",
 				"playai-tts-arabic",
 				"playai-tts",
 				"whisper-large-v3-turbo",
@@ -717,7 +718,6 @@ type Client struct {
 // If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your API key at https://console.groq.com/keys
 //
-// If no model is provided, only functions that do not require a model, like ListModels, will work.
 // To use multiple models, create multiple clients.
 // Use one of the model from https://console.groq.com/dashboard/limits or https://console.groq.com/docs/models
 //
@@ -734,13 +734,16 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		return nil, errors.New("unexpected option Remote")
 	}
 	apiKey := opts.APIKey
-	model := opts.Model
 	const apiKeyURL = "https://console.groq.com/keys"
 	var err error
 	if apiKey == "" {
 		if apiKey = os.Getenv("GROQ_API_KEY"); apiKey == "" {
 			err = &base.ErrAPIKeyRequired{EnvVar: "GROQ_API_KEY", URL: apiKeyURL}
 		}
+	}
+	model := opts.Model
+	if model == "" {
+		model = base.PreferredGood
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {

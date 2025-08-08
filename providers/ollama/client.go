@@ -529,7 +529,6 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	if opts.AccountID != "" {
 		return nil, errors.New("unexpected option AccountID")
 	}
-	model := opts.Model
 	baseURL := opts.Remote
 	if baseURL == "" {
 		baseURL = "http://localhost:11434"
@@ -538,10 +537,11 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	// https://github.com/ollama/ollama/issues/8241
 	// Hard code some popular models, it's more useful than failing hard. The model is not immediately pulled,
 	// it will be pulled upon first use.
+	model := opts.Model
 	switch model {
 	case base.PreferredCheap:
 		model = "gemma3:1b"
-	case base.PreferredGood:
+	case base.PreferredGood, "":
 		model = "qwen3:30b"
 	case base.PreferredSOTA:
 		model = "qwen3:32b"

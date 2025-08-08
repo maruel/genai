@@ -64,7 +64,7 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			Models:   []string{"qwen-3-32b", "qwen-3-235b-a22b"},
+			Models:   []string{"qwen-3-32b"},
 			Thinking: true,
 			In:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:      map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
@@ -101,7 +101,20 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
-			Models: []string{"llama-4-maverick-17b-128e-instruct"},
+			Models: []string{
+				"llama-4-maverick-17b-128e-instruct",
+				"deepseek-r1-distill-llama-70b",
+				"gpt-oss-120b",
+			},
+		},
+		{
+			Models: []string{
+				// TODO: Incorrect.
+				"qwen-3-coder-480b",
+				"qwen-3-235b-a22b-thinking-2507",
+				"qwen-3-235b-a22b-instruct-2507",
+			},
+			Thinking: true,
 		},
 	},
 }
@@ -625,7 +638,6 @@ type Client struct {
 // If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get an API key at http://cloud.cerebras.ai/
 //
-// If no model is provided, only functions that do not require a model, like ListModels, will work.
 // To use multiple models, create multiple clients.
 // Use one of the model from https://cerebras.ai/inference
 //
@@ -639,13 +651,16 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		return nil, errors.New("unexpected option Remote")
 	}
 	apiKey := opts.APIKey
-	model := opts.Model
 	const apiKeyURL = "https://cloud.cerebras.ai/platform/"
 	var err error
 	if apiKey == "" {
 		if apiKey = os.Getenv("CEREBRAS_API_KEY"); apiKey == "" {
 			err = &base.ErrAPIKeyRequired{EnvVar: "CEREBRAS_API_KEY", URL: apiKeyURL}
 		}
+	}
+	model := opts.Model
+	if model == "" {
+		model = base.PreferredGood
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {

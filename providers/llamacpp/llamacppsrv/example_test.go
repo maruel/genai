@@ -8,7 +8,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net"
 	"os"
 	"path/filepath"
 	"strings"
@@ -22,7 +21,7 @@ import (
 
 func Example() {
 	ctx := context.Background()
-	srv, err := startServer(ctx)
+	srv, err := startServer(ctx, "Qwen", "Qwen2-0.5B-Instruct-GGUF", "qwen2-0_5b-instruct-q2_k.gguf", "")
 	if err != nil {
 		log.Print(err)
 		return
@@ -63,17 +62,7 @@ func Example() {
 
 //
 
-func findFreePort() int {
-	l, err := net.Listen("tcp", "localhost:0")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer l.Close()
-	return l.Addr().(*net.TCPAddr).Port
-}
-
-// startServer starts a server with Qwen2 0.5B in Q2_K quantization.
-func startServer(ctx context.Context) (*llamacppsrv.Server, error) {
+func startServer(ctx context.Context, author, repo, modelfile, multimodal string) (*llamacppsrv.Server, error) {
 	cache, err := filepath.Abs("testdata/tmp")
 	if err != nil {
 		return nil, err
@@ -86,20 +75,28 @@ func startServer(ctx context.Context) (*llamacppsrv.Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	port := findFreePort()
+	// llama.cpp now knows how to pull from huggingface but this was not integrated yet, so pull a model
+	// manually.
 	hf, err := huggingface.New("")
 	if err != nil {
 		return nil, err
 	}
-	// A really small model.
-	modelPath, err := hf.EnsureFile(ctx, huggingface.ModelRef{Author: "Qwen", Repo: "Qwen2-0.5B-Instruct-GGUF"}, "HEAD", "qwen2-0_5b-instruct-q2_k.gguf")
+	modelPath, err := hf.EnsureFile(ctx, huggingface.ModelRef{Author: author, Repo: repo}, "HEAD", modelfile)
 	if err != nil {
 		return nil, err
+	}
+	extraArgs := []string{"--jinja", "--flash-attn", "--cache-type-k", "q8_0", "--cache-type-v", "q8_0"}
+	mmPath := ""
+	if multimodal != "" {
+		if mmPath, err = hf.EnsureFile(ctx, huggingface.ModelRef{Author: author, Repo: repo}, "HEAD", multimodal); err != nil {
+			return nil, err
+		}
+		extraArgs = append(extraArgs, "--mmproj", mmPath)
 	}
 	l, err := os.Create(filepath.Join(cache, "lllama-server.log"))
 	if err != nil {
 		return nil, err
 	}
 	defer l.Close()
-	return llamacppsrv.NewServer(ctx, exe, modelPath, l, fmt.Sprintf("127.0.0.1:%d", port), 0, nil)
+	return llamacppsrv.New(ctx, exe, modelPath, l, "", 0, extraArgs)
 }

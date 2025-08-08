@@ -14,6 +14,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -44,17 +45,45 @@ type Server struct {
 	cmd  *exec.Cmd
 }
 
-// NewServer creates a new instance of the ollama serve server and ensures the
-// server is healthy.
+// New creates a new instance of the ollama serve server and ensures the server is healthy.
+//
+// hostPort can be one of the forms "localhost", "localhost:11434", "localhost:0", ":11434", ":0" or "". "" is effectively
+// "localhost:0", trying with port 11434 first then falling back to an ephemeral port.
 //
 // Use env to specify the OLLAMA_xxx environment variables. They are documented with "ollama help serve".
 //
 // Output is redirected to logOutput if non-nil.
-func NewServer(ctx context.Context, exe string, logOutput io.Writer, port int, env []string) (*Server, error) {
+func New(ctx context.Context, exe string, logOutput io.Writer, hostPort string, env []string) (*Server, error) {
 	if !filepath.IsAbs(exe) {
 		return nil, errors.New("exe must be an absolute path")
 	}
-	url := "http://localhost:" + strconv.Itoa(port)
+	if hostPort == "" {
+		hostPort = "localhost:0"
+	}
+	host, portStr, err := net.SplitHostPort(hostPort)
+	if err != nil {
+		return nil, err
+	}
+	port := 0
+	if portStr != "" {
+		if port, err = strconv.Atoi(portStr); err != nil {
+			return nil, err
+		}
+	}
+	if port == 0 {
+		// First try the default port.
+		l, err := net.Listen("tcp", host+":11434")
+		if err != nil {
+			if l, err = net.Listen("tcp", host+":0"); err != nil {
+				return nil, err
+			}
+		}
+		port = l.Addr().(*net.TCPAddr).Port
+		if err = l.Close(); err != nil {
+			return nil, err
+		}
+	}
+	u := "http://" + host + ":" + strconv.Itoa(port)
 	cmd := exec.CommandContext(ctx, exe, "serve")
 	if logOutput != nil {
 		cmd.Stdout = logOutput
@@ -65,7 +94,7 @@ func NewServer(ctx context.Context, exe string, logOutput io.Writer, port int, e
 	}
 	// Make sure dynamic libraries will be found.
 	cmd.Dir = filepath.Dir(exe)
-	cmd.Env = append(os.Environ(), "GIN_MODE=release", "OLLAMA_HOST="+url)
+	cmd.Env = append(os.Environ(), "GIN_MODE=release", "OLLAMA_HOST="+u)
 	if runtime.GOOS != "windows" {
 		cmd.Env = append(cmd.Env, "LD_LIBRARY_PATH="+cmd.Dir+":"+os.Getenv("LD_LIBRARY_PATH"))
 	}
@@ -100,7 +129,7 @@ func NewServer(ctx context.Context, exe string, logOutput io.Writer, port int, e
 	}()
 
 	// Wait for the server to be ready.
-	c, err := ollama.New(&genai.OptionsProvider{Remote: url, Model: base.NoModel}, nil)
+	c, err := ollama.New(&genai.OptionsProvider{Remote: u, Model: base.NoModel}, nil)
 	if err != nil {
 		_ = cmd.Cancel()
 		<-done
@@ -122,7 +151,7 @@ func NewServer(ctx context.Context, exe string, logOutput io.Writer, port int, e
 		}
 	}
 
-	return &Server{url: url, done: done, cmd: cmd}, nil
+	return &Server{url: u, done: done, cmd: cmd}, nil
 }
 
 func (s *Server) Close() error {

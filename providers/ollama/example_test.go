@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"log"
 	"log/slog"
-	"net"
 	"os"
 	"path/filepath"
 	"strings"
@@ -70,7 +69,6 @@ func startServer(ctx context.Context) (*ollamasrv.Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	port := findFreePort()
 	// ollama doesn't log much, so redirect that to the logs instead of to a file. This permits not writing a
 	// file, which can cause go test caching issues.
 	l := &logWriter{slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{
@@ -81,7 +79,7 @@ func startServer(ctx context.Context) (*ollamasrv.Server, error) {
 			return a
 		},
 	}))}
-	return ollamasrv.NewServer(ctx, exe, l, port, []string{"OLLAMA_FLASH_ATTENTION=1", "OLLAMA_KV_CACHE_TYPE=q8_0"})
+	return ollamasrv.New(ctx, exe, l, "", []string{"OLLAMA_FLASH_ATTENTION=1", "OLLAMA_KV_CACHE_TYPE=q8_0"})
 }
 
 type logWriter struct {
@@ -98,13 +96,4 @@ func (w *logWriter) Write(p []byte) (n int, err error) {
 		w.logger.Info("ollama", "ollama", string(line))
 	}
 	return len(p), nil
-}
-
-func findFreePort() int {
-	l, err := net.Listen("tcp", "localhost:0")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer l.Close()
-	return l.Addr().(*net.TCPAddr).Port
 }

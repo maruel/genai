@@ -39,32 +39,53 @@ const BuildNumber = 5994
 
 // Server is a llama-server instance.
 type Server struct {
-	port int
+	url  string
 	done <-chan error
 	cmd  *exec.Cmd
 }
 
-// NewServer creates a new instance of the llama-server and ensures the server
-// is healthy.
+// New creates a new instance of the llama-server and ensures the server is healthy.
+//
+// hostPort can be one of the forms "localhost", "localhost:8080", "localhost:0", ":8080", ":0" or "". "" is effectively
+// "localhost:0", trying with port 8080 first then falling back to an ephemeral port.
 //
 // Doesn't pass "-ngl", "9999" by default so the user can override it.
 //
 // Output is redirected to logOutput if non-nil.
-func NewServer(ctx context.Context, exe, modelPath string, logOutput io.Writer, hostPort string, threads int, extraArgs []string) (*Server, error) {
+func New(ctx context.Context, exe, modelPath string, logOutput io.Writer, hostPort string, threads int, extraArgs []string) (*Server, error) {
 	if !filepath.IsAbs(exe) {
 		return nil, errors.New("exe must be an absolute path")
 	}
 	if !filepath.IsAbs(modelPath) {
 		return nil, errors.New("modelPath must be an absolute path")
 	}
+	if hostPort == "" {
+		hostPort = "localhost:0"
+	}
 	host, portStr, err := net.SplitHostPort(hostPort)
 	if err != nil {
 		return nil, err
 	}
-	port, err := strconv.Atoi(portStr)
-	if err != nil {
-		return nil, err
+	port := 0
+	if portStr != "" {
+		if port, err = strconv.Atoi(portStr); err != nil {
+			return nil, err
+		}
 	}
+	if port == 0 {
+		// First try the default port.
+		l, err := net.Listen("tcp", host+":8080")
+		if err != nil {
+			if l, err = net.Listen("tcp", host+":0"); err != nil {
+				return nil, err
+			}
+		}
+		port = l.Addr().(*net.TCPAddr).Port
+		if err = l.Close(); err != nil {
+			return nil, err
+		}
+	}
+	u := "http://" + host + ":" + strconv.Itoa(port)
 	if threads == 0 {
 		// Surprisingly llama-server seems to be hardcoded to 8 threads. Leave 2
 		// cores (especially critical when HT) to allow us to get some CPU time.
@@ -73,7 +94,7 @@ func NewServer(ctx context.Context, exe, modelPath string, logOutput io.Writer, 
 		}
 	}
 	args := []string{
-		exe, "--model", modelPath, "--metrics", "--threads", strconv.Itoa(threads), "--port", portStr,
+		exe, "--model", modelPath, "--metrics", "--threads", strconv.Itoa(threads), "--port", strconv.Itoa(port),
 	}
 	if host != "" {
 		args = append(args, "--host", host)
@@ -123,7 +144,7 @@ func NewServer(ctx context.Context, exe, modelPath string, logOutput io.Writer, 
 	}()
 
 	// Wait for the server to be ready.
-	c, err := llamacpp.New(&genai.OptionsProvider{Remote: "http://localhost:" + strconv.Itoa(port), Model: base.NoModel}, nil)
+	c, err := llamacpp.New(&genai.OptionsProvider{Remote: u, Model: base.NoModel}, nil)
 	if err != nil {
 		_ = cmd.Cancel()
 		<-done
@@ -145,7 +166,7 @@ func NewServer(ctx context.Context, exe, modelPath string, logOutput io.Writer, 
 		}
 	}
 
-	return &Server{port: port, done: done, cmd: cmd}, nil
+	return &Server{url: u, done: done, cmd: cmd}, nil
 }
 
 func (s *Server) Close() error {
@@ -156,7 +177,7 @@ func (s *Server) Close() error {
 
 // URL returns the URL to the server.
 func (s *Server) URL() string {
-	return "http://localhost:" + strconv.Itoa(s.port)
+	return s.url
 }
 
 // Done is a channel to listen to the server's termination. No need to call
@@ -168,8 +189,7 @@ func (s *Server) Done() <-chan error {
 // DownloadRelease downloads a specific release from GitHub into the specified
 // directory and returns the file path to llama.cpp executable.
 //
-// Returns the file path to the executable and true if it is llamafile, false
-// if it is llama-server from llama.cpp.
+// Returns the file path to the executable.
 func DownloadRelease(ctx context.Context, cache string, version int) (string, error) {
 	execSuffix := ""
 	if runtime.GOOS == "windows" {

@@ -8,7 +8,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net"
 	"os"
 	"path/filepath"
 	"strings"
@@ -56,7 +55,7 @@ func ExampleClient_GenSync() {
 	// // Output: Response: hello
 }
 
-// startServer starts a server with Qwen2 0.5B in Q2_K quantization.
+// startServer starts a server.
 func startServer(ctx context.Context, author, repo, modelfile, multimodal string) (*llamacppsrv.Server, error) {
 	cache, err := filepath.Abs("testdata/tmp")
 	if err != nil {
@@ -70,7 +69,6 @@ func startServer(ctx context.Context, author, repo, modelfile, multimodal string
 	if err != nil {
 		return nil, err
 	}
-	port := findFreePort()
 	// llama.cpp now knows how to pull from huggingface but this was not integrated yet, so pull a model
 	// manually.
 	hf, err := huggingface.New("")
@@ -94,14 +92,5 @@ func startServer(ctx context.Context, author, repo, modelfile, multimodal string
 		return nil, err
 	}
 	defer l.Close()
-	return llamacppsrv.NewServer(ctx, exe, modelPath, l, fmt.Sprintf("127.0.0.1:%d", port), 0, extraArgs)
-}
-
-func findFreePort() int {
-	l, err := net.Listen("tcp", "localhost:0")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer l.Close()
-	return l.Addr().(*net.TCPAddr).Port
+	return llamacppsrv.New(ctx, exe, modelPath, l, "", 0, extraArgs)
 }

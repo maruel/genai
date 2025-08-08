@@ -80,7 +80,7 @@ func mainImpl() error {
 	}
 
 	log.Printf("Starting llama-server on %s...", *hostPort)
-	server, err := llamacppsrv.NewServer(ctx, exe, modelPath, os.Stdout, *hostPort, *threads, flag.Args())
+	server, err := llamacppsrv.New(ctx, exe, modelPath, os.Stdout, *hostPort, *threads, flag.Args())
 	if err != nil {
 		return err
 	}

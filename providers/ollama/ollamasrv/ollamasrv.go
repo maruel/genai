@@ -72,8 +72,8 @@ func New(ctx context.Context, exe string, logOutput io.Writer, hostPort string, 
 	}
 	if port == 0 {
 		// First try the default port.
-		l, err := net.Listen("tcp", host+":11434")
-		if err != nil {
+		var l net.Listener
+		if l, err = net.Listen("tcp", host+":11434"); err != nil {
 			if l, err = net.Listen("tcp", host+":0"); err != nil {
 				return nil, err
 			}
@@ -105,7 +105,7 @@ func New(ctx context.Context, exe string, logOutput io.Writer, hostPort string, 
 		}
 		return cmd.Process.Signal(os.Interrupt)
 	}
-	if err := cmd.Start(); err != nil {
+	if err = cmd.Start(); err != nil {
 		return nil, err
 	}
 	done := make(chan error)

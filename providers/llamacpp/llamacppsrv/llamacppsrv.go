@@ -74,8 +74,8 @@ func New(ctx context.Context, exe, modelPath string, logOutput io.Writer, hostPo
 	}
 	if port == 0 {
 		// First try the default port.
-		l, err := net.Listen("tcp", host+":8080")
-		if err != nil {
+		var l net.Listener
+		if l, err = net.Listen("tcp", host+":8080"); err != nil {
 			if l, err = net.Listen("tcp", host+":0"); err != nil {
 				return nil, err
 			}

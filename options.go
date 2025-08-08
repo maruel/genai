@@ -56,7 +56,7 @@ type OptionsProvider struct {
 	// possible the model is not available anymore or that the default model changes.
 	//
 	// When unspecified, the provider may try to select the same model, likely as if base.PreferredGood had been
-	// specified but it's not guaranteed.
+	// specified but it's not guaranteed. To disable this behavior, use base.NoModel.
 	Model string `json:"model,omitzero" yaml:"model,omitzero"`
 
 	_ struct{}

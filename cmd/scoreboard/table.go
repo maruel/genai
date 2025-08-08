@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/providers"
 )
 
@@ -208,7 +209,7 @@ func printTable(provider string) error {
 	if f == nil {
 		return fmt.Errorf("provider %s: not found", provider)
 	}
-	c, err := f(&genai.OptionsProvider{}, nil)
+	c, err := f(&genai.OptionsProvider{Model: base.NoModel}, nil)
 	if c == nil {
 		return fmt.Errorf("provider %s: %w", provider, err)
 	}
@@ -218,7 +219,7 @@ func printTable(provider string) error {
 func printSummaryTable(all map[string]func(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error)) error {
 	var rows []tableSummaryRow
 	for name, f := range all {
-		p, err := f(&genai.OptionsProvider{}, nil)
+		p, err := f(&genai.OptionsProvider{Model: base.NoModel}, nil)
 		// The function can return an error and still return a client when no API key was found. It's okay here
 		// because we won't use the service provider.
 		if p == nil {

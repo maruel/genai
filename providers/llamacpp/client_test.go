@@ -24,7 +24,7 @@ func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 
 	t.Run("ListModels", func(t *testing.T) {
-		c, err := llamacpp.New(&genai.OptionsProvider{Remote: s.lazyStart(t)}, func(h http.RoundTripper) http.RoundTripper {
+		c, err := llamacpp.New(&genai.OptionsProvider{Remote: s.lazyStart(t), Model: base.NoModel}, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
 		if err != nil {
@@ -41,7 +41,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("Scoreboard", func(t *testing.T) {
 		serverURL := s.lazyStart(t)
-		c, err := llamacpp.New(&genai.OptionsProvider{Remote: serverURL}, func(h http.RoundTripper) http.RoundTripper {
+		c, err := llamacpp.New(&genai.OptionsProvider{Remote: serverURL, Model: base.NoModel}, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
 		if err != nil {
@@ -54,18 +54,18 @@ func TestClient(t *testing.T) {
 			}
 		}
 		scoreboardtest.AssertScoreboard(t, func(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-			c2, err2 := llamacpp.New(&genai.OptionsProvider{Remote: serverURL}, fn)
+			c2, err2 := llamacpp.New(&genai.OptionsProvider{Remote: serverURL, Model: model.Model}, fn)
 			if err2 != nil {
 				t.Fatal(err2)
 			}
-			return &modelID{c2, model.Model}
+			return c2
 		}, models, testRecorder.Records)
 	})
 
 	// Run this at the end so there would be non-zero values.
 	t.Run("Metrics", func(t *testing.T) {
 		serverURL := s.lazyStart(t)
-		c, err := llamacpp.New(&genai.OptionsProvider{Remote: serverURL}, func(h http.RoundTripper) http.RoundTripper {
+		c, err := llamacpp.New(&genai.OptionsProvider{Remote: serverURL, Model: base.NoModel}, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
 		if err != nil {
@@ -77,15 +77,6 @@ func TestClient(t *testing.T) {
 		}
 		t.Logf("Metrics: %+v", m)
 	})
-}
-
-type modelID struct {
-	*llamacpp.Client
-	modelID string
-}
-
-func (m *modelID) ModelID() string {
-	return m.modelID
 }
 
 type lazyServer struct {

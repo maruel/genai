@@ -19,7 +19,7 @@ import (
 
 func Example_all_ProvidersModel() {
 	for _, name := range GetProvidersModel() {
-		c, err := providers.All[name](&genai.OptionsProvider{}, nil)
+		c, err := providers.All[name](&genai.OptionsProvider{Model: base.NoModel}, nil)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -48,7 +48,7 @@ func Example_all_ProvidersModel() {
 func GetProvidersModel() []string {
 	var names []string
 	for name, f := range providers.All {
-		c, _ := f(&genai.OptionsProvider{}, nil)
+		c, _ := f(&genai.OptionsProvider{Model: base.NoModel}, nil)
 		if c == nil {
 			continue
 		}
@@ -105,7 +105,7 @@ func Example_all_ProviderGen() {
 func GetProvidersGen() []string {
 	var names []string
 	for name, f := range providers.All {
-		c, _ := f(&genai.OptionsProvider{}, nil)
+		c, _ := f(&genai.OptionsProvider{Model: base.NoModel}, nil)
 		if c == nil {
 			continue
 		}
@@ -143,7 +143,7 @@ func Example_all_GetProvidersGenAsync() {
 func GetProvidersGenAsync() []string {
 	var names []string
 	for name, f := range providers.All {
-		c, _ := f(&genai.OptionsProvider{}, nil)
+		c, _ := f(&genai.OptionsProvider{Model: base.NoModel}, nil)
 		if c == nil {
 			continue
 		}

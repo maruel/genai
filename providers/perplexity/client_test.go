@@ -35,7 +35,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 
 func TestClient_Scoreboard(t *testing.T) {
 	// Perplexity doesn't support listing models. See https://docs.perplexity.ai/api-reference
-	sb := getClient(t, "").Scoreboard()
+	sb := getClient(t, base.NoModel).Scoreboard()
 	var models []scoreboardtest.Model
 	for _, sc := range sb.Scenarios {
 		for _, model := range sc.Models {

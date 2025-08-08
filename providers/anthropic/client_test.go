@@ -60,7 +60,7 @@ func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, repli
 }
 
 func TestClient_Scoreboard(t *testing.T) {
-	genaiModels, err := getClient(t, "").ListModels(t.Context())
+	genaiModels, err := getClient(t, base.NoModel).ListModels(t.Context())
 	if err != nil {
 		t.Fatal(err)
 	}

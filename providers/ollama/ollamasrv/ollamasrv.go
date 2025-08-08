@@ -27,6 +27,7 @@ import (
 	"time"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/providers/ollama"
 )
 
@@ -99,7 +100,7 @@ func NewServer(ctx context.Context, exe string, logOutput io.Writer, port int, e
 	}()
 
 	// Wait for the server to be ready.
-	c, err := ollama.New(&genai.OptionsProvider{Remote: url}, nil)
+	c, err := ollama.New(&genai.OptionsProvider{Remote: url, Model: base.NoModel}, nil)
 	if err != nil {
 		_ = cmd.Cancel()
 		<-done

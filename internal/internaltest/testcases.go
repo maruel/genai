@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 )
 
 type ProviderError struct {
@@ -124,7 +125,7 @@ func TestClient_Provider_errors(t *testing.T, getClient func(t *testing.T, apiKe
 			if _, ok := tester.(genai.ProviderModel); ok {
 				if line.ErrListModel != "" {
 					t.Run("ListModels", func(t *testing.T) {
-						c, err := getClient(t, line.APIKey, "")
+						c, err := getClient(t, line.APIKey, base.NoModel)
 						if err != nil {
 							if err.Error() == line.ErrListModel {
 								return

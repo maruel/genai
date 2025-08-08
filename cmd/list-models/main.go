@@ -19,6 +19,7 @@ import (
 	"syscall"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/providers"
 	"github.com/maruel/genai/providers/huggingface"
@@ -81,7 +82,7 @@ func printStructDense(v any, indent string) string {
 func getProvidersModel() []string {
 	var names []string
 	for name, f := range providers.All {
-		if c, _ := f(&genai.OptionsProvider{}, nil); c != nil {
+		if c, _ := f(&genai.OptionsProvider{Model: base.NoModel}, nil); c != nil {
 			if _, ok := c.(genai.ProviderModel); ok {
 				names = append(names, name)
 			}
@@ -112,7 +113,7 @@ func mainImpl() error {
 	if !slices.Contains(names, *provider) {
 		return fmt.Errorf("unknown backend %q", *provider)
 	}
-	c, err := providers.All[*provider](&genai.OptionsProvider{}, nil)
+	c, err := providers.All[*provider](&genai.OptionsProvider{Model: base.NoModel}, nil)
 	if err != nil {
 		return err
 	}

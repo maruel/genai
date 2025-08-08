@@ -39,7 +39,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 
 func TestClient_Scoreboard(t *testing.T) {
 	// We do not want to test thousands of models, so get the ones already in the scoreboard.
-	sb := getClient(t, "").Scoreboard()
+	sb := getClient(t, base.NoModel).Scoreboard()
 	var models []scoreboardtest.Model
 	for _, sc := range sb.Scenarios {
 		for _, model := range sc.Models {

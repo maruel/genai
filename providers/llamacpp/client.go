@@ -986,10 +986,11 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	if opts.AccountID != "" {
 		return nil, errors.New("unexpected option AccountID")
 	}
-	switch opts.Model {
-	case "", base.PreferredCheap, base.PreferredGood, base.PreferredSOTA:
+	model := opts.Model
+	switch model {
+	case "", base.NoModel, base.PreferredCheap, base.PreferredGood, base.PreferredSOTA:
+		model = ""
 	default:
-		return nil, errors.New("unexpected option Model")
 	}
 	baseURL := opts.Remote
 	if baseURL == "" {
@@ -1004,6 +1005,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			GenSyncURL:           baseURL + "/chat/completions",
 			ProcessStreamPackets: processChatStreamPackets,
 			ModelOptional:        true,
+			Model:                model,
 			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "llamacpp",
 				ClientJSON: httpjson.Client{
@@ -1026,6 +1028,9 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 }
 
 func (c *Client) ModelID() string {
+	if c.Model != "" {
+		return c.Model
+	}
 	m, _ := c.ListModels(context.Background())
 	if len(m) > 0 {
 		return m[0].GetID()

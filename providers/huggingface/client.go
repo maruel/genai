@@ -716,7 +716,9 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			},
 		},
 	}
-	if err == nil && (model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA) {
+	if model == base.NoModel {
+		c.Model = ""
+	} else if err == nil && (model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA) {
 		// Warning: listing models from Huggingface takes a while.
 		mdls, err2 := c.ListModels(context.Background())
 		if err2 != nil {

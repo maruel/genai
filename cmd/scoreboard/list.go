@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/providers"
 )
 
@@ -25,7 +26,7 @@ func printList() error {
 	sort.Strings(names)
 	for _, name := range names {
 		fmt.Printf("- %s\n", name)
-		c, err := all[name](&genai.OptionsProvider{}, nil)
+		c, err := all[name](&genai.OptionsProvider{Model: base.NoModel}, nil)
 		// The function can return an error and still return a client when no API key was found. It's okay here
 		// because we won't use the service provider.
 		if c == nil {

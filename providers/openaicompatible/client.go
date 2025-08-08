@@ -357,7 +357,9 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	}
 	chatURL := opts.Remote
 	model := opts.Model
-	if model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA {
+	if model == base.NoModel {
+		model = ""
+	} else if model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA {
 		return nil, errors.New("default models are not supported")
 	}
 	t := base.DefaultTransport

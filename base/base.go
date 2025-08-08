@@ -41,6 +41,10 @@ var DefaultTransport http.RoundTripper = &roundtrippers.Retry{
 }
 
 const (
+	// NoModel explicitly tells the providers' New() function to not automatically select a model. The use case
+	// is when the only intended call is ListModel(), thus there's no point into selecting a model automatically.
+	NoModel = "NO_MODEL"
+
 	// PreferredCheap is a marker for providers' New() function to tell it to use the cheapest model it can find.
 	PreferredCheap = "PREFERRED_CHEAP"
 

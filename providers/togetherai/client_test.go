@@ -112,7 +112,7 @@ func (h *hideHTTP500) GenDoc(ctx context.Context, msg genai.Message, opts genai.
 }
 
 func TestClient_Scoreboard(t *testing.T) {
-	genaiModels, err := getClient(t, "").ListModels(t.Context())
+	genaiModels, err := getClient(t, base.NoModel).ListModels(t.Context())
 	if err != nil {
 		t.Fatal(err)
 	}

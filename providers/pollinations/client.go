@@ -924,7 +924,9 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			},
 		},
 	}
-	if model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA {
+	if model == base.NoModel {
+		c.Model = ""
+	} else if model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA {
 		mdls, err := c.ListTextModels(context.Background())
 		if err != nil {
 			return nil, err

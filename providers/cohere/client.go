@@ -863,7 +863,9 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			},
 		},
 	}
-	if err == nil && (model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA) {
+	if model == base.NoModel {
+		c.Model = ""
+	} else if err == nil && (model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA) {
 		mdls, err2 := c.ListModels(context.Background())
 		if err2 != nil {
 			return nil, err2

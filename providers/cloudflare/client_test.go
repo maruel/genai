@@ -40,7 +40,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 
 func TestClient_Scoreboard(t *testing.T) {
 	// Cloudflare hosts a ton of useless models, so just get the ones already in the scoreboard.
-	sb := getClient(t, "").Scoreboard()
+	sb := getClient(t, base.NoModel).Scoreboard()
 	var models []scoreboardtest.Model
 	for _, sc := range sb.Scenarios {
 		for _, model := range sc.Models {

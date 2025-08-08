@@ -27,6 +27,7 @@ import (
 	"time"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/providers/llamacpp"
 )
 
@@ -122,7 +123,7 @@ func NewServer(ctx context.Context, exe, modelPath string, logOutput io.Writer, 
 	}()
 
 	// Wait for the server to be ready.
-	c, err := llamacpp.New(&genai.OptionsProvider{Remote: "http://localhost:" + strconv.Itoa(port)}, nil)
+	c, err := llamacpp.New(&genai.OptionsProvider{Remote: "http://localhost:" + strconv.Itoa(port), Model: base.NoModel}, nil)
 	if err != nil {
 		_ = cmd.Cancel()
 		<-done

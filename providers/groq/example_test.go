@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/providers/groq"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
@@ -57,7 +58,7 @@ func ExampleNew_hTTP_record() {
 	if os.Getenv("GROQ_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := groq.New(&genai.OptionsProvider{APIKey: apiKey}, wrapper)
+	c, err := groq.New(&genai.OptionsProvider{APIKey: apiKey, Model: base.NoModel}, wrapper)
 	if err != nil {
 		log.Fatal(err)
 	}

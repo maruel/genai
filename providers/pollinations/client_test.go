@@ -180,7 +180,7 @@ func warmupCache(t testing.TB) []genai.Model {
 	doOnce.Do(func() {
 		var r internal.Recorder
 		var err2 error
-		c, err := pollinations.New(&genai.OptionsProvider{APIKey: "genai-unittests"}, func(h http.RoundTripper) http.RoundTripper {
+		c, err := pollinations.New(&genai.OptionsProvider{APIKey: "genai-unittests", Model: base.NoModel}, func(h http.RoundTripper) http.RoundTripper {
 			r, err2 = testRecorder.Records.Record("WarmupCache", h)
 			return r
 		})

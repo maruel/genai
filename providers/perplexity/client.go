@@ -414,6 +414,8 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	}
 	model := opts.Model
 	switch model {
+	case base.NoModel:
+		model = ""
 	case base.PreferredCheap, "":
 		model = "sonar"
 	case base.PreferredGood:

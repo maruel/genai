@@ -16,6 +16,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/genaitools"
 	"github.com/maruel/genai/providers/anthropic"
 	"github.com/maruel/genai/providers/gemini"
@@ -284,7 +285,7 @@ func ExampleProvider_hTTP_record() {
 	if os.Getenv("GROQ_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := groq.New(&genai.OptionsProvider{APIKey: apiKey}, wrapper)
+	c, err := groq.New(&genai.OptionsProvider{APIKey: apiKey, Model: base.NoModel}, wrapper)
 	if err != nil {
 		log.Fatal(err)
 	}

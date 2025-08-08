@@ -101,12 +101,10 @@ func TestClient_GenStream_simple(t *testing.T) {
 }
 
 type provider struct {
-	envAPIKey     string
-	chatURL       string
-	header        func(apiKey string) http.Header
-	model         string
-	thinkingStart string
-	thinkingEnd   string
+	envAPIKey string
+	chatURL   string
+	header    func(apiKey string) http.Header
+	model     string
 }
 
 // Keep in sync with ExampleProviderGen_all in ../example_test.go.

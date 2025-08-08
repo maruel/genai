@@ -13,6 +13,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/scoreboard"
@@ -44,7 +45,7 @@ func AssertScoreboard(t *testing.T, gc GetClient, models []Model, rec *internal.
 	usage := genai.Usage{}
 
 	// Find the reference.
-	cc := gc(t, Model{}, nil)
+	cc := gc(t, Model{Model: base.NoModel}, nil)
 	og := cc
 	for {
 		if u, ok := og.(genai.ProviderUnwrap); ok {
@@ -111,7 +112,7 @@ func AssertScoreboard(t *testing.T, gc GetClient, models []Model, rec *internal.
 					return r
 				}
 				return gc(t, m, fn), rt
-			}, m, want)
+			}, want)
 			usage.Add(u)
 		})
 	}
@@ -139,7 +140,7 @@ type getClientOneModel func(t testing.TB, scenarioName string) (genai.Provider, 
 //
 // It must implement genai.ProviderScoreboard. If it is wrapped, the wrappers must implement
 // genai.ProviderUnwrap.
-func runOneModel(t testing.TB, gc getClientOneModel, m Model, want genai.Scenario) genai.Usage {
+func runOneModel(t testing.TB, gc getClientOneModel, want genai.Scenario) genai.Usage {
 	// Calculate the scenario.
 	providerFactory := func(name string) (genai.Provider, http.RoundTripper) {
 		if name == "" {

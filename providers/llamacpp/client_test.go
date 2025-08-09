@@ -8,6 +8,7 @@ import (
 	"context"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"testing"
@@ -17,7 +18,9 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/llamacpp"
+	"github.com/maruel/genai/providers/llamacpp/llamacppsrv"
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
+	"github.com/maruel/huggingface"
 )
 
 func TestClient(t *testing.T) {
@@ -99,10 +102,7 @@ func (l *lazyServer) lazyStart(t testing.TB) string {
 		// Use the context of the parent for server lifecycle management.
 		mains := strings.SplitN(llamacpp.Scoreboard.Scenarios[0].Models[0], "#", 2)
 		parts := strings.Split(mains[0], "/")
-		srv, err := startServer(l.t.Context(), parts[0], parts[1], parts[2], mains[1])
-		if err != nil {
-			t.Fatal(err)
-		}
+		srv := startServerTest(l.t, parts[0], parts[1], parts[2], mains[1])
 		l.url = srv.URL()
 		l.t.Cleanup(func() {
 			if err := srv.Close(); err != nil && err != context.Canceled {
@@ -134,6 +134,46 @@ func TestClient_Preferred(t *testing.T) {
 			}
 		})
 	}
+}
+
+func startServerTest(t testing.TB, author, repo, modelfile, multimodal string) *llamacppsrv.Server {
+	cache, err := filepath.Abs("testdata/tmp")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = os.MkdirAll(cache, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	ctx := t.Context()
+	// It's a bit inefficient to download from github every single time.
+	exe, err := llamacppsrv.DownloadRelease(ctx, cache, llamacppsrv.BuildNumber)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// llama.cpp now knows how to pull from huggingface but this was not integrated yet, so pull a model
+	// manually.
+	hf, err := huggingface.New("")
+	if err != nil {
+		t.Fatal(err)
+	}
+	modelPath, err := hf.EnsureFile(ctx, huggingface.ModelRef{Author: author, Repo: repo}, "HEAD", modelfile)
+	if err != nil {
+		t.Fatal(err)
+	}
+	extraArgs := []string{"--jinja", "--flash-attn", "--cache-type-k", "q8_0", "--cache-type-v", "q8_0"}
+	mmPath := ""
+	if multimodal != "" {
+		if mmPath, err = hf.EnsureFile(ctx, huggingface.ModelRef{Author: author, Repo: repo}, "HEAD", multimodal); err != nil {
+			t.Fatal(err)
+		}
+		extraArgs = append(extraArgs, "--mmproj", mmPath)
+	}
+	l := internaltest.LogFile(t, cache, "llama-server.log")
+	srv, err := llamacppsrv.New(ctx, exe, modelPath, l, "", 0, extraArgs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return srv
 }
 
 var testRecorder *internaltest.Records

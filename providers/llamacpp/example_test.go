@@ -87,7 +87,7 @@ func startServer(ctx context.Context, author, repo, modelfile, multimodal string
 		}
 		extraArgs = append(extraArgs, "--mmproj", mmPath)
 	}
-	l, err := os.Create(filepath.Join(cache, "lllama-server.log"))
+	l, err := os.Create(filepath.Join(cache, "llama-server.log"))
 	if err != nil {
 		return nil, err
 	}

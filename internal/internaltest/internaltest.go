@@ -140,6 +140,28 @@ func Log(tb testing.TB) (context.Context, *slog.Logger) {
 	return ctx, l
 }
 
+// LogFile returns a file to be used as log that is only saved when the test fails.
+//
+// This makes it possible to inspect the logs for debugging, yet keeps the test cacheable by "go test".
+func LogFile(tb testing.TB, cache, name string) *os.File {
+	p := filepath.Join(tb.TempDir(), name)
+	l, err := os.Create(p)
+	if err != nil {
+		tb.Fatal(err)
+	}
+	tb.Cleanup(func() {
+		if err2 := l.Close(); err2 != nil {
+			tb.Error(err2)
+		}
+		if tb.Failed() {
+			if err2 := os.Rename(p, filepath.Join(cache, name)); err2 != nil {
+				tb.Error(err2)
+			}
+		}
+	})
+	return l
+}
+
 //
 
 // testWriter wraps t.Log() to implement io.Writer

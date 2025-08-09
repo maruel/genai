@@ -61,15 +61,15 @@ type tableDataRow struct {
 	Inputs     string `title:"➛Inputs"` // Has to be large enough otherwise the emojis warp on github visualization
 	Outputs    string `title:"Outputs➛"`
 	JSON       string `title:"JSON➛"`
-	JSONSchema string `title:"JSON+Schema➛"`
+	JSONSchema string `title:"Schema➛"`
 	Chat       string `title:"Chat"`
-	Streaming  string `title:"Streaming"`
+	Streaming  string `title:"Stream"`
 	Tools      string `title:"Tools"`
 	Batch      string `title:"Batch"`
 	Seed       string `title:"Seed"`
 	Files      string `title:"Files"`
 	Citations  string `title:"Citations"`
-	Thinking   string `title:"Thinking"`
+	Thinking   string `title:"Think"`
 	Logprobs   string `title:"Logprobs"`
 }
 

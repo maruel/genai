@@ -63,18 +63,20 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.True,
-				Seed:       true,
-				JSON:       true,
-				JSONSchema: true,
+				Tools:       genai.True,
+				BiasedTool:  genai.True,
+				Seed:        true,
+				TopLogprobs: true,
+				JSON:        true,
+				JSONSchema:  true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.True,
-				Seed:       true,
-				JSON:       true,
-				JSONSchema: true,
+				Tools:       genai.True,
+				BiasedTool:  genai.True,
+				Seed:        true,
+				TopLogprobs: true,
+				JSON:        true,
+				JSONSchema:  true,
 			},
 		},
 	},
@@ -162,6 +164,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 		case *genai.OptionsText:
 			c.NPredict = v.MaxTokens
 			c.Seed = v.Seed
+			if v.TopLogprobs > 0 {
+				c.TopLogprobs = v.TopLogprobs
+				c.Logprobs = true
+			}
 			c.Temperature = v.Temperature
 			c.TopP = v.TopP
 			c.TopK = v.TopK
@@ -230,6 +236,7 @@ type ChatResponse struct {
 		FinishReason FinishReason `json:"finish_reason"`
 		Index        int64        `json:"index"`
 		Message      Message      `json:"message"`
+		Logprobs     Logprobs     `json:"logprobs"`
 	} `json:"choices"`
 	Model string `json:"model"` // "gpt-3.5-turbo"
 }
@@ -248,6 +255,21 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		}
 	}
 	return out, nil
+}
+
+type Logprobs struct {
+	Content []struct {
+		ID          int64   `json:"id"`
+		Token       string  `json:"token"`
+		Bytes       []byte  `json:"bytes"`
+		Logprob     float64 `json:"logprob"`
+		TopLogprobs []struct {
+			ID      int64   `json:"id"`
+			Token   string  `json:"token"`
+			Bytes   []byte  `json:"bytes"`
+			Logprob float64 `json:"logprob"`
+		} `json:"top_logprobs"`
+	} `json:"content"`
 }
 
 // Tool is not documented.
@@ -307,6 +329,7 @@ type ChatStreamChunkResponse struct {
 			Content   string     `json:"content"`
 			ToolCalls []ToolCall `json:"tool_calls"`
 		} `json:"delta"`
+		Logprobs Logprobs `json:"logprobs"`
 	} `json:"choices"`
 	Usage   Usage   `json:"usage"`
 	Timings Timings `json:"timings"`
@@ -385,6 +408,10 @@ func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Options, model 
 		case *genai.OptionsText:
 			c.NPredict = v.MaxTokens
 			c.Seed = v.Seed
+			if v.TopLogprobs > 0 {
+				// TODO: This should be supported.
+				unsupported = append(unsupported, "TopLogprobs")
+			}
 			c.Temperature = v.Temperature
 			c.TopP = v.TopP
 			c.TopK = v.TopK

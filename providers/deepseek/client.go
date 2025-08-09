@@ -44,11 +44,13 @@ var Scoreboard = genai.Scoreboard{
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
+				TopLogprobs:    true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.True,
 				IndecisiveTool: genai.True,
 				JSON:           true,
+				TopLogprobs:    true,
 			},
 		},
 		{
@@ -113,6 +115,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			c.Temperature = v.Temperature
 			c.TopP = v.TopP
 			sp = v.SystemPrompt
+			if v.TopLogprobs > 0 {
+				c.TopLogprob = v.TopLogprobs
+				c.Logprobs = true
+			}
 			if v.Seed != 0 {
 				unsupported = append(unsupported, "Seed")
 			}
@@ -382,11 +388,11 @@ type Logprobs struct {
 	Content []struct {
 		Token       string  `json:"token"`
 		Logprob     float64 `json:"logprob"`
-		Bytes       []int64 `json:"bytes"`
+		Bytes       []byte  `json:"bytes"`
 		TopLogprobs []struct {
 			Token   string  `json:"token"`
 			Logprob float64 `json:"logprob"`
-			Bytes   []int64 `json:"bytes"`
+			Bytes   []byte  `json:"bytes"`
 		} `json:"top_logprobs"`
 	} `json:"content"`
 }

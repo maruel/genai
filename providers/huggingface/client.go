@@ -58,14 +58,16 @@ var Scoreboard = genai.Scoreboard{
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools: genai.Flaky,
-				JSON:  true,
-				Seed:  true,
+				Tools:       genai.Flaky,
+				JSON:        true,
+				Seed:        true,
+				TopLogprobs: true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools: genai.Flaky,
-				JSON:  true,
-				Seed:  true,
+				Tools:       genai.Flaky,
+				JSON:        true,
+				Seed:        true,
+				TopLogprobs: true,
 			},
 		},
 		{
@@ -76,16 +78,18 @@ var Scoreboard = genai.Scoreboard{
 			In:                 map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:                map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:      genai.Flaky, // Uses a quantized version.
-				JSON:       true,
-				JSONSchema: false, // Doesn't follow instructions.
-				Seed:       true,
+				Tools:       genai.Flaky, // Uses a quantized version.
+				JSON:        true,
+				JSONSchema:  false, // Doesn't follow instructions.
+				Seed:        true,
+				TopLogprobs: true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:      genai.Flaky, // Uses a quantized version.
-				JSON:       true,
-				JSONSchema: true, // Doesn't follow instructions.
-				Seed:       true,
+				Tools:       genai.Flaky, // Uses a quantized version.
+				JSON:        true,
+				JSONSchema:  true, // Doesn't follow instructions.
+				Seed:        true,
+				TopLogprobs: true,
 			},
 		},
 	},
@@ -141,6 +145,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			c.TopP = v.TopP
 			sp = v.SystemPrompt
 			c.Seed = v.Seed
+			if v.TopLogprobs > 0 {
+				c.TopLogprobs = v.TopLogprobs
+				c.Logprobs = true
+			}
 			if v.TopK != 0 {
 				unsupported = append(unsupported, "TopK")
 			}
@@ -365,20 +373,25 @@ type ChatResponse struct {
 		Message              MessageResponse      `json:"message"`
 		ContentFilterResults ContentFilterResults `json:"content_filter_results"`
 		StopReason           string               `json:"stop_reason"`
-		Logprobs             struct {
-			Content []struct {
-				Logprob     float64 `json:"logprob"`
-				Token       string  `json:"token"`
-				TopLogprobs []struct {
-					Token   string  `json:"token"`
-					Logprob float64 `json:"logprob"`
-				} `json:"top_logprobs"`
-			} `json:"content"`
-		} `json:"logprobs"`
+		Logprobs             Logprobs             `json:"logprobs"`
 	} `json:"choices"`
 	Usage          Usage    `json:"usage"`
 	PromptLogprobs struct{} `json:"prompt_logprobs"`
 	ServiceTier    struct{} `json:"service_tier"`
+}
+
+type Logprobs struct {
+	Content []struct {
+		Bytes       []byte  `json:"bytes"`
+		Logprob     float64 `json:"logprob"`
+		Token       string  `json:"token"`
+		TopLogprobs []struct {
+			Bytes   []byte  `json:"bytes"`
+			Token   string  `json:"token"`
+			Logprob float64 `json:"logprob"`
+		} `json:"top_logprobs"`
+	} `json:"content"`
+	Refusal struct{} `json:"refusal"`
 }
 
 type FinishReason string
@@ -519,16 +532,7 @@ type ChatStreamChunkResponse struct {
 		} `json:"delta"`
 		ContentFilterResults ContentFilterResults `json:"content_filter_results"`
 		StopReason           string               `json:"stop_reason"`
-		Logprobs             struct {
-			Content []struct {
-				Logprob     float64 `json:"logprob"`
-				Token       string  `json:"token"`
-				TopLogprobs []struct {
-					Token   string  `json:"token"`
-					Logprob float64 `json:"logprob"`
-				} `json:"top_logprobs"`
-			} `json:"content"`
-		} `json:"logprobs"`
+		Logprobs             Logprobs             `json:"logprobs"`
 	} `json:"choices"`
 	Usage Usage `json:"usage"`
 }

@@ -1,0 +1,62 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 165
+        host: router.huggingface.co
+        body: |
+            {"model":"meta-llama/Llama-3.3-70B-Instruct","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"logprobs":true,"top_logprobs":2}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1357
+        body: |
+            {"id":"f2dec4ba-8fc4-4a56-92db-a14a7ca7155b","object":"chat.completion","created":1754769495,"model":"meta-llama/llama-3.3-70b-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"Hello."},"finish_reason":"stop","logprobs":{"content":[{"token":"Hello","logprob":-0.000004410734163684538,"bytes":"SGVsbG8=","top_logprobs":[{"token":"Hello","logprob":-0.000004410734163684538,"bytes":"SGVsbG8="},{"token":"hello","logprob":-13.000004768371582,"bytes":"aGVsbG8="}]},{"token":".","logprob":-0.02997591905295849,"bytes":"Lg==","top_logprobs":[{"token":".","logprob":-0.02997591905295849,"bytes":"Lg=="},{"token":"<|eot_id|>","logprob":-4.154975891113281,"bytes":"PHxlb3RfaWR8Pg=="}]},{"token":"<|eot_id|>","logprob":-0.000012397689715726301,"bytes":"PHxlb3RfaWR8Pg==","top_logprobs":[{"token":"<|eot_id|>","logprob":-0.000012397689715726301,"bytes":"PHxlb3RfaWR8Pg=="},{"token":"EMPLARY","logprob":-12.250012397766113,"bytes":"RU1QTEFSWQ=="}]}]},"content_filter_results":{"hate":{"filtered":false},"self_harm":{"filtered":false},"sexual":{"filtered":false},"violence":{"filtered":false},"jailbreak":{"filtered":false,"detected":false},"profanity":{"filtered":false,"detected":false}}}],"usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46,"prompt_tokens_details":null,"completion_tokens_details":null},"system_fingerprint":""}
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "1357"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Inference-Id:
+                - 0-fa46d495-c7fe-4005-93ab-1097ab52ca41
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Vary:
+                - Origin
+            Via:
+                - 1.1 f92b450b48c98e711c027c1986c59944.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - EK8F6lQK2LC-MarRTIii80hQIwpu9lg0kSKensBnDP8tADBxzgYOLw==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Provider:
+                - novita
+            X-Powered-By:
+                - huggingface-moon
+            X-Request-Id:
+                - JfdtX8h9nonN8sUL
+            X-Robots-Tag:
+                - none
+            X-Trace-Id:
+                - 7533845458409717ad18597d9d1eb5eb
+        status: 200 OK
+        code: 200
+        duration: 630ms

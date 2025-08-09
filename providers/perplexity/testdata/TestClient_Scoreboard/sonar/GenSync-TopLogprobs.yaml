@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 172
+        host: api.perplexity.ai
+        body: |
+            {"model":"sonar","messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"return_images":true,"stream":false,"disable_search":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id": "f2a14ce0-06ef-461b-b5f5-fe7c588510e1", "model": "sonar", "created": 1754769502, "usage": {"prompt_tokens": 8, "completion_tokens": 2, "total_tokens": 10, "search_context_size": "low", "cost": {"input_tokens_cost": 8e-06, "output_tokens_cost": 2e-06, "request_cost": 0.005, "total_cost": 0.00501}}, "citations": [], "search_results": [], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "Hello!"}, "delta": {"role": "assistant", "content": ""}}]}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96c9d3ef5e71a29e-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 383ms

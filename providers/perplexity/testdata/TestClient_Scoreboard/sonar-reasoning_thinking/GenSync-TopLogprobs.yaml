@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 182
+        host: api.perplexity.ai
+        body: |
+            {"model":"sonar-reasoning","messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"return_images":true,"stream":false,"disable_search":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id": "b2d53514-bb91-4f4c-901c-8f28eafcdd1d", "model": "sonar-reasoning", "created": 1754769500, "usage": {"prompt_tokens": 8, "completion_tokens": 291, "total_tokens": 299, "search_context_size": "low", "cost": {"input_tokens_cost": 8e-06, "output_tokens_cost": 0.001455, "request_cost": 0.005, "total_cost": 0.006463}}, "citations": [], "search_results": [], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "<think>\nOkay, the user asked me to say hello using only one word. Let me check the instructions again. They specified \"Say hello. Use only one word.\" So I need to respond with just a single word that means hello.\n\nCommon one-word greetings in English are \"Hello,\" \"Hi,\" \"Hey,\" etc. Since the user said \"say hello,\" maybe \"Hello\" is the most direct. But \"Hi\" is also a valid one-word greeting. I should choose the simplest and most standard one.\n\nWait, the user might be testing if I follow instructions precisely. They want exactly one word, no more. So I have to make sure not to add any punctuation or extra characters. Just the word. \n\nLooking at the style guidelines, it says to avoid links and not make up files. But here it''s just a greeting. No issues there. \n\nThe current date is given, but that''s probably for context on time-sensitive queries. This isn''t time-sensitive. \n\nSo the correct response is either \"Hello\" or \"Hi\". Since the user said \"say hello,\" using \"Hello\" matches their wording. But \"Hi\" is shorter. However, the instruction is to say hello, so \"Hello\" is the exact word. \n\nI think \"Hello\" is the right choice here. Let me confirm: one word, exactly as requested. No extra spaces or characters. Just \"Hello\".\n</think>\n\nHello"}, "delta": {"role": "assistant", "content": ""}}]}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96c9d3c1fe97a29e-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 5.059s

@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 146
+        host: localhost
+        body: |
+            {"model":"qwen3:4b","messages":[{"role":"user","content":"Say hello. Use only one word."},{"role":"user","content":"\n\n/think"}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1000
+        body: '{"model":"qwen3:4b","created_at":"2025-08-09T19:58:35.60751297Z","message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, the user asked me to say hello and use only one word. Let me think. The instruction is clear: respond with a single word. The word \"hello\" is already one word, so maybe that''s the answer. But wait, the user might be testing if I can do something else. Let me check the rules again. They said \"use only one word,\" so I need to make sure I don''t add anything else. Maybe they want a greeting in another language? But the example given is \"hello,\" so probably just \"hello\" is correct. I should confirm that there''s no trick here. The user might be testing if I can follow instructions strictly. Alright, I''ll go with \"hello\" as the response.\n\u003c/think\u003e\n\nHello."},"done_reason":"stop","done":true,"total_duration":18114893481,"load_duration":2438450994,"prompt_eval_count":18,"prompt_eval_duration":50787097,"eval_count":158,"eval_duration":7976452506}'
+        headers:
+            Content-Length:
+                - "1000"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 18.115s

@@ -216,7 +216,24 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	if isBadError(ctx, err) {
 		return f, err
 	}
-	f.Seed = err == nil
+	var uerr *genai.UnsupportedContinuableError
+	if errors.As(err, &uerr) {
+		f.Seed = !slices.Contains(uerr.Unsupported, "Seed")
+	} else if err == nil {
+		f.Seed = true
+	}
+
+	// TopLogprobs
+	msgs = genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
+	resp, err = cs.callGen(ctx, prefix+"TopLogprobs", msgs, &genai.OptionsText{TopLogprobs: 2})
+	if isBadError(ctx, err) {
+		return f, err
+	}
+	if errors.As(err, &uerr) {
+		f.TopLogprobs = !slices.Contains(uerr.Unsupported, "TopLogprobs")
+	} else if err == nil {
+		f.TopLogprobs = true
+	}
 
 	// MaxTokens
 	// This will trigger citations on providers with search enabled.
@@ -332,7 +349,6 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	if isBadError(ctx, err) {
 		return f, err
 	}
-	var uerr *genai.UnsupportedContinuableError
 	if errors.As(err, &uerr) {
 		// Cheap trick to make sure the error is not wrapped. Figure out if there's another way!
 		if strings.HasPrefix(err.Error(), "unsupported options: ") {

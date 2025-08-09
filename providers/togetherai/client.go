@@ -70,12 +70,14 @@ var Scoreboard = genai.Scoreboard{
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
+				TopLogprobs:    true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.Flaky,
 				IndecisiveTool: genai.Flaky,
 				JSON:           true,
 				JSONSchema:     true,
+				TopLogprobs:    true,
 			},
 		},
 		{
@@ -96,6 +98,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:        true,
 				JSONSchema:  true,
 				Seed:        true,
+				TopLogprobs: true,
 				NoMaxTokens: true,
 			},
 			GenStream: &genai.FunctionalityText{
@@ -104,6 +107,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:        true,
 				JSONSchema:  true,
 				Seed:        true,
+				TopLogprobs: true,
 				NoMaxTokens: true,
 			},
 		},
@@ -122,11 +126,13 @@ var Scoreboard = genai.Scoreboard{
 				Tools:       genai.Flaky,
 				JSONSchema:  true,
 				Seed:        true,
+				TopLogprobs: true,
 				NoMaxTokens: true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:      genai.Flaky,
-				JSONSchema: true,
+				Tools:       genai.Flaky,
+				JSONSchema:  true,
+				TopLogprobs: true,
 			},
 		},
 		{
@@ -134,17 +140,19 @@ var Scoreboard = genai.Scoreboard{
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:      genai.Flaky,
-				BiasedTool: genai.Flaky,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
+				Tools:       genai.Flaky,
+				BiasedTool:  genai.Flaky,
+				JSON:        true,
+				JSONSchema:  true,
+				Seed:        true,
+				TopLogprobs: true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:      genai.Flaky,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
+				Tools:       genai.Flaky,
+				JSON:        true,
+				JSONSchema:  true,
+				Seed:        true,
+				TopLogprobs: true,
 			},
 		},
 		{
@@ -157,6 +165,7 @@ var Scoreboard = genai.Scoreboard{
 				IndecisiveTool:     genai.Flaky,
 				JSON:               true,
 				Seed:               true,
+				TopLogprobs:        true,
 				BrokenFinishReason: true, // It's actually JSON that is broken.
 			},
 			GenStream: &genai.FunctionalityText{
@@ -165,6 +174,7 @@ var Scoreboard = genai.Scoreboard{
 				IndecisiveTool:     genai.Flaky,
 				JSON:               true,
 				Seed:               true,
+				TopLogprobs:        true,
 				BrokenFinishReason: true,
 			},
 		},
@@ -317,6 +327,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			c.TopP = v.TopP
 			sp = v.SystemPrompt
 			c.Seed = v.Seed
+			if v.TopLogprobs > 0 {
+				c.Logprobs = 1
+			}
 			c.TopK = v.TopK
 			c.Stop = v.Stop
 			if v.DecodeAs != nil {
@@ -384,8 +397,9 @@ func (c *ChatRequest) SetStream(stream bool) {
 
 // Message is documented at https://docs.together.ai/reference/chat-completions-1
 type Message struct {
-	Role    string   `json:"role,omitzero"` // "system", "assistant", "user"
-	Content Contents `json:"content,omitzero"`
+	Role      string   `json:"role,omitzero"` // "system", "assistant", "user"
+	Content   Contents `json:"content,omitzero"`
+	Reasoning struct{} `json:"reasoning,omitzero"`
 	// Warning: using a small model may fail.
 	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
 	ToolCallID string     `json:"tool_call_id,omitzero"`
@@ -611,11 +625,7 @@ type ChatResponse struct {
 		Seed         big.Int      `json:"seed"`
 		FinishReason FinishReason `json:"finish_reason"`
 		Message      Message      `json:"message"`
-		Logprobs     struct {
-			TokenIDs      []int64   `json:"token_ids"`
-			Tokens        []string  `json:"tokens"`
-			TokenLogprobs []float64 `json:"token_logprobs"`
-		} `json:"logprobs"`
+		Logprobs     Logprobs     `json:"logprobs"`
 	} `json:"choices"`
 	Usage    Usage     `json:"usage"`
 	Created  base.Time `json:"created"`
@@ -680,6 +690,21 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	}
 }
 
+type Logprobs struct {
+	Tokens        []string  `json:"tokens"`
+	TokenIDs      []int64   `json:"token_ids"`
+	TokenLogprobs []float64 `json:"token_logprobs"`
+}
+
+type LogprobsChunk struct {
+	Tokens        []string  `json:"tokens"`
+	TokenLogprobs []float64 `json:"token_logprobs"`
+	TopLogprobs   [][]struct {
+		Token   string  `json:"token"`
+		Logprob float64 `json:"logprob"`
+	} `json:"top_logprobs"`
+}
+
 type Usage struct {
 	PromptTokens        int64    `json:"prompt_tokens"`
 	CompletionTokens    int64    `json:"completion_tokens"`
@@ -702,11 +727,12 @@ type ChatStreamChunkResponse struct {
 			Role      genai.Role `json:"role"`
 			Content   string     `json:"content"`
 			ToolCalls []ToolCall `json:"tool_calls"`
+			Reasoning struct{}   `json:"reasoning"`
 		} `json:"delta"`
-		Logprobs     struct{}     `json:"logprobs"`
-		FinishReason FinishReason `json:"finish_reason"`
-		StopReason   int64        `json:"stop_reason"` // Seems to be a token
-		ToolCalls    []ToolCall   `json:"tool_calls"`  // TODO: Implement.
+		Logprobs     LogprobsChunk `json:"logprobs"`
+		FinishReason FinishReason  `json:"finish_reason"`
+		StopReason   int64         `json:"stop_reason"` // Seems to be a token
+		ToolCalls    []ToolCall    `json:"tool_calls"`  // TODO: Implement.
 	} `json:"choices"`
 	// SystemFingerprint string `json:"system_fingerprint"`
 	Usage    Usage `json:"usage"`

@@ -21,14 +21,14 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"68e032eb-e09e-4506-8ae9-6c6493ffe7c4","object":"chat.completion","created":1753141283,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"completion_tokens":1,"total_tokens":12,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":11},"system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache"}'
+        body: '{"id":"2a141e62-22a5-43e7-9927-7ba29e8e2251","object":"chat.completion","created":1754770538,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"Hello"},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"completion_tokens":1,"total_tokens":12,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":11},"system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache"}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 962e8c7cfb417148-YUL
+                - 96c9ed38ddfd6e0b-YUL
             Content-Type:
                 - application/json
             Server:
@@ -40,7 +40,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - c7e25181d08ca3677ccd42cbe8ad1a42
+                - 891bb84fe5aaa78210fff9e95f82db19
         status: 200 OK
         code: 200
-        duration: 333ms
+        duration: 344ms

@@ -28,7 +28,7 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "Hi"
+                        "text": "Hi."
                       }
                     ],
                     "role": "model"
@@ -39,8 +39,8 @@ interactions:
               ],
               "usageMetadata": {
                 "promptTokenCount": 9,
-                "candidatesTokenCount": 1,
-                "totalTokenCount": 10,
+                "candidatesTokenCount": 2,
+                "totalTokenCount": 11,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
@@ -49,7 +49,7 @@ interactions:
                 ]
               },
               "modelVersion": "gemini-2.5-flash-lite",
-              "responseId": "p7eCaI6kCfCOjMcPkLnOuQc"
+              "responseId": "TKyXaNqmFr6y1MkP_6-LmAc"
             }
         headers:
             Alt-Svc:
@@ -59,7 +59,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=181
+                - gfet4t7; dur=574
             Vary:
                 - Origin
                 - X-Origin
@@ -72,4 +72,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 193ms
+        duration: 585ms

@@ -920,6 +920,8 @@ type FunctionalityText struct {
 	Citations bool
 	// Seed is set when the provider and model combination supports seed for reproducibility.
 	Seed bool
+	// TopLogprobs is set when the provider and model combination supports top_logprobs.
+	TopLogprobs bool
 
 	// BrokenTokenUsage means that the usage is not correctly reported.
 	BrokenTokenUsage TriState

@@ -67,6 +67,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
+				TopLogprobs:    true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.True,
@@ -74,6 +75,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
+				TopLogprobs:    true,
 			},
 		},
 		{
@@ -405,6 +407,10 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) []string {
 		}
 	} else {
 		c.Seed = v.Seed
+	}
+	if v.TopLogprobs > 0 {
+		c.TopLogprobs = v.TopLogprobs
+		c.Logprobs = true
 	}
 	if v.TopK != 0 {
 		// Track this as an unsupported feature that can be ignored
@@ -805,11 +811,11 @@ type Logprobs struct {
 	Content []struct {
 		Token       string  `json:"token"`
 		Logprob     float64 `json:"logprob"`
-		Bytes       []int   `json:"bytes"`
+		Bytes       []byte  `json:"bytes"`
 		TopLogprobs []struct {
 			Token   string  `json:"token"`
 			Logprob float64 `json:"logprob"`
-			Bytes   []int   `json:"bytes"`
+			Bytes   []byte  `json:"bytes"`
 		} `json:"top_logprobs"`
 	} `json:"content"`
 	Refusal string `json:"refusal"`
@@ -835,6 +841,7 @@ type ChatStreamChunkResponse struct {
 	ServiceTier       string    `json:"service_tier"`
 	SystemFingerprint string    `json:"system_fingerprint"`
 	Usage             Usage     `json:"usage"`
+	Obfuscation       string    `json:"obfuscation"`
 }
 
 //

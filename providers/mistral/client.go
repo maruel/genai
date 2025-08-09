@@ -291,6 +291,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			if v.TopK != 0 {
 				unsupported = append(unsupported, "TopK")
 			}
+			if v.TopLogprobs > 0 {
+				unsupported = append(unsupported, "TopLogprobs")
+			}
 			c.Stop = v.Stop
 			if v.DecodeAs != nil {
 				c.ResponseFormat.Type = "json_schema"

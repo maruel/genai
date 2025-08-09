@@ -175,6 +175,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			c.Options.Seed = v.Seed
 			c.Options.TopK = v.TopK
 			c.Options.Stop = v.Stop
+			if v.TopLogprobs > 0 {
+				unsupported = append(unsupported, "TopLogprobs")
+			}
 			if v.DecodeAs != nil {
 				c.Format.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
 			} else if v.ReplyAsJSON {

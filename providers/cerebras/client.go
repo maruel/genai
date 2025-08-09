@@ -53,6 +53,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
+				TopLogprobs:    true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.Flaky,
@@ -61,6 +62,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
+				TopLogprobs:    true,
 			},
 		},
 		{
@@ -71,14 +73,16 @@ var Scoreboard = genai.Scoreboard{
 			In:                 map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:                map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:      genai.Flaky,
-				BiasedTool: genai.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
+				Tools:       genai.Flaky,
+				BiasedTool:  genai.True,
+				JSON:        true,
+				JSONSchema:  true,
+				Seed:        true,
+				TopLogprobs: true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Seed: true,
+				Seed:        true,
+				TopLogprobs: true,
 			},
 		},
 		{
@@ -88,18 +92,20 @@ var Scoreboard = genai.Scoreboard{
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:      genai.Flaky,
-				BiasedTool: genai.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
+				Tools:       genai.Flaky,
+				BiasedTool:  genai.True,
+				JSON:        true,
+				JSONSchema:  true,
+				Seed:        true,
+				TopLogprobs: true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:      genai.Flaky,
-				BiasedTool: genai.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
+				Tools:       genai.Flaky,
+				BiasedTool:  genai.True,
+				JSON:        true,
+				JSONSchema:  true,
+				Seed:        true,
+				TopLogprobs: true,
 			},
 		},
 		{
@@ -175,6 +181,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			c.TopP = v.TopP
 			sp = v.SystemPrompt
 			c.Seed = v.Seed
+			if v.TopLogprobs > 0 {
+				c.TopLogprobs = v.TopLogprobs
+				c.Logprobs = true
+			}
 			if v.TopK != 0 {
 				unsupported = append(unsupported, "TopK")
 			}
@@ -461,6 +471,7 @@ type ChatResponse struct {
 		Index        int64        `json:"index"`
 		FinishReason FinishReason `json:"finish_reason"`
 		Message      Message      `json:"message"`
+		Logprobs     Logprobs     `json:"logprobs"`
 	} `json:"choices"`
 	Usage    Usage `json:"usage"`
 	TimeInfo struct {
@@ -533,6 +544,7 @@ type ChatStreamChunkResponse struct {
 		} `json:"delta"`
 		Index        int64        `json:"index"`
 		FinishReason FinishReason `json:"finish_reason"`
+		Logprobs     Logprobs     `json:"logprobs"`
 	} `json:"choices"`
 	Usage    Usage `json:"usage"`
 	TimeInfo struct {
@@ -542,6 +554,19 @@ type ChatStreamChunkResponse struct {
 		TotalTime  float64   `json:"total_time"`
 		Created    base.Time `json:"created"`
 	} `json:"time_info"`
+}
+
+type Logprobs struct {
+	Content []struct {
+		Token       string  `json:"token"`
+		Logprob     float64 `json:"logprob"`
+		Bytes       []byte  `json:"bytes"`
+		TopLogprobs []struct {
+			Token   string  `json:"token"`
+			Logprob float64 `json:"logprob"`
+			Bytes   []byte  `json:"bytes"`
+		} `json:"top_logprobs"`
+	} `json:"content"`
 }
 
 type Usage struct {

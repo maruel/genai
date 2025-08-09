@@ -56,6 +56,7 @@ var Scoreboard = genai.Scoreboard{
 				IndecisiveTool: genai.Flaky,
 				JSON:           true,
 				Seed:           true,
+				TopLogprobs:    true,
 			},
 			// JSON generated is often bad.
 			GenStream: &genai.FunctionalityText{
@@ -64,6 +65,7 @@ var Scoreboard = genai.Scoreboard{
 				Tools:          genai.Flaky,
 				IndecisiveTool: genai.Flaky,
 				Seed:           true,
+				TopLogprobs:    true,
 			},
 		},
 		{
@@ -113,6 +115,7 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:     genai.True,
 				JSON:           true,
 				Seed:           true,
+				TopLogprobs:    true,
 			},
 			GenStream: &genai.FunctionalityText{
 				BrokenTokenUsage: genai.True,
@@ -122,6 +125,7 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:       genai.True,
 				JSON:             true,
 				Seed:             true,
+				TopLogprobs:      true,
 			},
 		},
 		// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md
@@ -212,6 +216,8 @@ type ChatRequest struct {
 	StreamOptions struct {
 		IncludeUsage bool `json:"include_usage,omitzero"`
 	} `json:"stream_options,omitzero"`
+	Logprobs    bool  `json:"logprobs,omitzero"`
+	TopLogprobs int64 `json:"top_logprobs,omitzero"`
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
@@ -270,6 +276,10 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) ([]string,
 	c.Seed = v.Seed
 	if v.TopK != 0 {
 		unsupported = append(unsupported, "TopK")
+	}
+	if v.TopLogprobs > 0 {
+		c.TopLogprobs = v.TopLogprobs
+		c.Logprobs = true
 	}
 	c.Stop = v.Stop
 	if v.DecodeAs != nil {

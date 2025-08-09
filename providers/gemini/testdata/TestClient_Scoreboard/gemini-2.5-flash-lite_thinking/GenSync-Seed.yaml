@@ -28,11 +28,11 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**The Most Concise Greeting**\n\nOkay, so the user wants me to distill this down to a single word for \"hello.\"  Being a language expert, this is straightforward. The goal is simple: communicate a greeting in the most efficient manner possible. \"Hello\" is the universally understood and direct answer. There's no need to overcomplicate it.\n",
+                        "text": "**One-Word Wonder**\n\nOkay, so the user wants me to boil it down, just one word to say \"hello.\"  No fluff, no embellishment.  From a language perspective, the most direct, universally understood greeting is undeniably \"Hello.\"  It's efficient, unambiguous, and immediately conveys the intended sentiment. There's really no need to overthink this one. \"Hello\" it is.\n",
                         "thought": true
                       },
                       {
-                        "text": "Hello"
+                        "text": "Hello."
                       }
                     ],
                     "role": "model"
@@ -43,18 +43,18 @@ interactions:
               ],
               "usageMetadata": {
                 "promptTokenCount": 9,
-                "candidatesTokenCount": 1,
-                "totalTokenCount": 46,
+                "candidatesTokenCount": 2,
+                "totalTokenCount": 41,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 9
                   }
                 ],
-                "thoughtsTokenCount": 36
+                "thoughtsTokenCount": 30
               },
               "modelVersion": "gemini-2.5-flash-lite",
-              "responseId": "_WGFaIm8MfbpjMcPvdTbsAQ"
+              "responseId": "TayXaMaeMf211MkPytCh6As"
             }
         headers:
             Alt-Svc:
@@ -64,7 +64,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=895
+                - gfet4t7; dur=1284
             Vary:
                 - Origin
                 - X-Origin
@@ -77,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 906ms
+        duration: 1.296s

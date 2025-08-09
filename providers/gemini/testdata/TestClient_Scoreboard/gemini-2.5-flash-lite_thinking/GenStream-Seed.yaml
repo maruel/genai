@@ -23,7 +23,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Comprehending a single word**\\n\\nI have successfully comprehended the user's intent to express \\\"hello\\\" using a solitary word. My processing led me to the most direct and universally recognized option: \\\"Hello.\\\"\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"totalTokenCount\": 45,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 36},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"_WGFaOp8-taMxw_Gu9igBA\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Hello\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"totalTokenCount\": 45,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 36},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"_WGFaOp8-taMxw_Gu9igBA\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Comprehending \\\"Hello\\\"**\\n\\nI am now thoroughly considering the request for a single-word greeting. The most straightforward approach seems to be the universally understood \\\"Hello\\\". I will try to consider it further.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"totalTokenCount\": 45,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 36},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"TayXaPLJAcaf1MkP-a2gwAg\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Hello\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"totalTokenCount\": 45,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 36},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"TayXaPLJAcaf1MkP-a2gwAg\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -34,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=593
+                - gfet4t7; dur=1083
             Vary:
                 - Origin
                 - X-Origin
@@ -47,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 603ms
+        duration: 1.095s

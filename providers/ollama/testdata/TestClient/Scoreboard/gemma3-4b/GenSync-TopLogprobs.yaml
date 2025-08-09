@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 108
+        host: localhost
+        body: |
+            {"model":"gemma3:4b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 301
+        body: '{"model":"gemma3:4b","created_at":"2025-08-09T19:58:17.337281646Z","message":{"role":"assistant","content":"Hello."},"done_reason":"stop","done":true,"total_duration":1983207523,"load_duration":1679590140,"prompt_eval_count":17,"prompt_eval_duration":204510810,"eval_count":3,"eval_duration":97514459}'
+        headers:
+            Content-Length:
+                - "301"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 1.983s

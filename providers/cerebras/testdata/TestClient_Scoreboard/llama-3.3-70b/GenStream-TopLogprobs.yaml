@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 144
+        host: api.cerebras.ai
+        body: |
+            {"model":"llama-3.3-70b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true,"logprobs":true,"top_logprobs":2}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-c636cc9c-7f4a-4a5e-b831-5ac3a7159592","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1754769495,"model":"llama-3.3-70b","system_fingerprint":"fp_fc1b1e189ab86b9641f6","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-c636cc9c-7f4a-4a5e-b831-5ac3a7159592","choices":[{"delta":{"content":"Hello"},"index":0,"logprobs":{"content":[{"token":"Hello","logprob":-4.0531076592742465e-6,"bytes":[72,101,108,108,111],"top_logprobs":[{"token":"Hello","logprob":-4.0531076592742465e-6,"bytes":[72,101,108,108,111]},{"token":"hello","logprob":-12.937503814697266,"bytes":[104,101,108,108,111]}]}]}}],"created":1754769495,"model":"llama-3.3-70b","system_fingerprint":"fp_fc1b1e189ab86b9641f6","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-c636cc9c-7f4a-4a5e-b831-5ac3a7159592","choices":[{"delta":{"content":"."},"index":0,"logprobs":{"content":[{"token":".","logprob":-0.027605539187788963,"bytes":[46],"top_logprobs":[{"token":".","logprob":-0.027605539187788963,"bytes":[46]},{"token":"<|eot_id|>","logprob":-4.0432305335998535,"bytes":[60,124,101,111,116,95,105,100,124,62]}]}]}}],"created":1754769495,"model":"llama-3.3-70b","system_fingerprint":"fp_fc1b1e189ab86b9641f6","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-c636cc9c-7f4a-4a5e-b831-5ac3a7159592","choices":[{"delta":{},"index":0,"logprobs":{"content":[{"token":"<|eot_id|>","logprob":-7.271740287251305e-6,"bytes":[60,124,101,111,116,95,105,100,124,62],"top_logprobs":[{"token":"<|eot_id|>","logprob":-7.271740287251305e-6,"bytes":[60,124,101,111,116,95,105,100,124,62]},{"token":"EMPLARY","logprob":-12.406257629394531,"bytes":[69,77,80,76,65,82,89]}]}]}}],"created":1754769495,"model":"llama-3.3-70b","system_fingerprint":"fp_fc1b1e189ab86b9641f6","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-c636cc9c-7f4a-4a5e-b831-5ac3a7159592","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1754769495,"model":"llama-3.3-70b","system_fingerprint":"fp_fc1b1e189ab86b9641f6","object":"chat.completion.chunk","usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000871638,"prompt_time":0.002150944,"completion_time":0.001224477,"total_time":0.006451129913330078,"created":1754769495}}
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96c9d3c20d8ea293-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Inference-Id:
+                - chatcmpl-c636cc9c-7f4a-4a5e-b831-5ac3a7159592
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=3600; includeSubDomains
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "14400"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "14399"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "64000"
+            X-Ratelimit-Reset-Requests-Day:
+                - "14504.347170114517"
+            X-Ratelimit-Reset-Tokens-Minute:
+                - "44.34717011451721"
+            X-Request-Id:
+                - 96c9d3c20d8ea293-YUL
+        status: 200 OK
+        code: 200
+        duration: 368ms

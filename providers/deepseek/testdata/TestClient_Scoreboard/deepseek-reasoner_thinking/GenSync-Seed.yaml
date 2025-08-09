@@ -21,14 +21,14 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"b0e0000b-0980-4ce4-8055-0429fafc1b29","object":"chat.completion","created":1753566420,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"Hello.","reasoning_content":"Hmm, the user asked me to say hello but with only one word. That''s a simple and clear request. \n\nI wonder why they want just one word - maybe they''re testing if I can follow instructions precisely, or perhaps they''re in a hurry. The tone feels playful though, like a mini-challenge. \n\nOkay, the obvious one-word response is \"Hello\" itself. It''s polite, direct, and fulfills the requirement perfectly. \n\n\"Hi\" would also work but \"Hello\" feels slightly more formal and universal. No need to overcomplicate this - keeping it simple is what they asked for. \n\n...And done. Short and sweet."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":13,"completion_tokens":140,"total_tokens":153,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":136},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":13},"system_fingerprint":"fp_393bca965e_prod0623_fp8_kvcache"}'
+        body: '{"id":"eed908a7-1ea6-4d55-82a8-33243933fd32","object":"chat.completion","created":1754770545,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"Hmm, the user asked me to \"say hello\" but with a strict constraint: use only one word. That''s straightforward, but I need to make sure my response is concise and directly addresses the request.\n\nThe user specified \"only one word,\" so I should avoid any extra words or punctuation that might count as more. \"Hello\" is the obvious choice—it''s the standard greeting and fits perfectly.\n\nI''m assessing the user''s scenario: they''re likely testing my ability to follow instructions precisely, or maybe they''re in a hurry and want a quick, minimal interaction. Their actual need seems simple—just a greeting—but deeper down, they might be checking for attention to detail or brevity.\n\nUnspoken needs could include wanting efficiency, as they didn''t ask for anything complex. By responding with just \"Hello,\" I''m showing that I can adhere to rules without overcomplicating things, which might build trust or satisfaction.\n\nFinally, I''ll respond with exactly that one word to keep it clean and compliant."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":13,"completion_tokens":210,"total_tokens":223,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":207},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":13},"system_fingerprint":"fp_393bca965e_prod0623_fp8_kvcache"}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 965717cd1d5fa30e-YUL
+                - 96c9ed63db2c6e0b-YUL
             Content-Type:
                 - application/json
             Server:
@@ -40,7 +40,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - 9e168a7c546000d3c330dd8ade19796b
+                - fbafb591438b9d9deb21bc1c91ba55a2
         status: 200 OK
         code: 200
-        duration: 277ms
+        duration: 287ms

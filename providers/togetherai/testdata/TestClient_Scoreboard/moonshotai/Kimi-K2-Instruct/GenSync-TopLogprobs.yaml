@@ -1,0 +1,108 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 139
+        host: api.together.xyz
+        body: |
+            {"model":"moonshotai/Kimi-K2-Instruct","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"logprobs":1}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "o6VyiYZ-zqrih-96c9d58c58b5a281",
+              "object": "chat.completion",
+              "created": 1754769570,
+              "model": "moonshotai/Kimi-K2-Instruct",
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "Hello",
+                    "tool_calls": [],
+                    "reasoning": null
+                  },
+                  "logprobs": {
+                    "tokens": [
+                      "Hello",
+                      "<|im_end|>"
+                    ],
+                    "token_logprobs": [
+                      -0.004408047068864107,
+                      -0.00030510310898534954
+                    ],
+                    "token_ids": []
+                  },
+                  "finish_reason": "stop",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 24,
+                "total_tokens": 26,
+                "completion_tokens": 2
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96c9d58c58b5a281-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"2d1-nkimxOxiWSObC27+1xu9T2/xBUE"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - e3111535-1a66-41f2-a948-4b80dd217d29-noamzn
+            X-Api-Call-End:
+                - "2025-08-09T19:59:30.026Z"
+            X-Api-Call-Start:
+                - "2025-08-09T19:59:28.785Z"
+            X-Api-Received:
+                - "2025-08-09T19:59:28.778Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "1000"
+            X-Ratelimit-Remaining:
+                - "1"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Request-Id:
+                - o6VyiYZ-zqrih-96c9d58c58b5a281
+        status: 200 OK
+        code: 200
+        duration: 2.546s

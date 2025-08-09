@@ -62,6 +62,7 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:       genai.True,
 				JSON:             true,
 				JSONSchema:       true,
+				TopLogprobs:      true,
 			},
 			GenStream: &genai.FunctionalityText{
 				NoStopSequence:   true,
@@ -70,6 +71,7 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:       genai.True,
 				JSON:             true,
 				JSONSchema:       true,
+				TopLogprobs:      true,
 			},
 		},
 		// https://platform.openai.com/docs/guides/audio
@@ -97,6 +99,7 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:       genai.True,
 				JSON:             true,
 				JSONSchema:       true,
+				TopLogprobs:      true,
 			},
 			GenStream: &genai.FunctionalityText{
 				NoStopSequence:   true,
@@ -105,6 +108,7 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:       genai.True,
 				JSON:             true,
 				JSONSchema:       true,
+				TopLogprobs:      true,
 			},
 		},
 		{
@@ -283,13 +287,14 @@ type Response struct {
 			Schema      *jsonschema.Schema `json:"schema,omitzero"`
 			Strict      bool               `json:"strict,omitzero"`
 		} `json:"format"`
+		Verbosity string `json:"verbosity,omitzero"` // "low", "medium", "high"
 	} `json:"text,omitzero"`
-	TopLogprobs float64 `json:"top_logprobs,omitzero"`
+	TopLogprobs int64   `json:"top_logprobs,omitzero"` // [0, 20]
 	TopP        float64 `json:"top_p,omitzero"`
 	ToolChoice  string  `json:"tool_choice,omitzero"` // "none", "auto", "required"
-	Truncation  string  `json:"truncation,omitzero"`  // "disabled"
+	Truncation  string  `json:"truncation,omitzero"`  // "disabled", "auto"
 	Tools       []Tool  `json:"tools,omitzero"`
-	User        string  `json:"user,omitzero"`
+	User        string  `json:"user,omitzero"` // Deprecated, use SafetyIdentifier and PromptCacheKey
 
 	// Request only
 	Input  []Message `json:"input,omitzero"`
@@ -740,11 +745,11 @@ type Annotation struct {
 }
 
 type Logprobs struct {
-	Bytes       []int64 `json:"bytes,omitzero"`
+	Bytes       []byte  `json:"bytes,omitzero"`
 	Token       string  `json:"token,omitzero"`
 	Logprob     float64 `json:"logprob,omitzero"`
 	TopLogprobs []struct {
-		Bytes   []int64 `json:"bytes,omitzero"`
+		Bytes   []byte  `json:"bytes,omitzero"`
 		Token   string  `json:"token,omitzero"`
 		Logprob float64 `json:"logprob,omitzero"`
 	} `json:"top_logprobs,omitzero"`
@@ -892,7 +897,9 @@ type ResponseStreamChunkResponse struct {
 	Message string `json:"message,omitzero"`
 	Param   string `json:"param,omitzero"`
 
-	Logprobs []Logprobs `json:"logprobs,omitzero"` // TODO: I believe this is incorrect.
+	Logprobs []struct{} `json:"logprobs,omitzero"` // TODO: I believe this is incorrect.
+
+	Obfuscation string `json:"obfuscation,omitzero"`
 
 	/* TODO
 	ResponseFileSearchCallCompleted
@@ -920,7 +927,7 @@ type ResponseStreamChunkResponse struct {
 
 //
 
-// https://platform.openai.com/docs/api-reference/images
+// ImageRequest is documentd at https://platform.openai.com/docs/api-reference/images
 type ImageRequest struct {
 	Prompt            string     `json:"prompt"`
 	Model             string     `json:"model,omitzero"`              // Default to dall-e-2, unless a gpt-image-1 specific parameter is used.
@@ -971,7 +978,7 @@ type ImageChoiceData struct {
 
 //
 
-// https://platform.openai.com/docs/api-reference/files/object
+// File is documentd at https://platform.openai.com/docs/api-reference/files/object
 type File struct {
 	Bytes         int64     `json:"bytes"` // File size
 	CreatedAt     base.Time `json:"created_at"`
@@ -996,14 +1003,14 @@ func (f *File) GetExpiry() time.Time {
 	return f.ExpiresAt.AsTime()
 }
 
-// https://platform.openai.com/docs/api-reference/files/delete
+// FileDeleteResponse is documented at https://platform.openai.com/docs/api-reference/files/delete
 type FileDeleteResponse struct {
 	ID      string `json:"id"`
 	Object  string `json:"object"` // "file"
 	Deleted bool   `json:"deleted"`
 }
 
-// https://platform.openai.com/docs/api-reference/files/list
+// FileListResponse is documented at https://platform.openai.com/docs/api-reference/files/list
 type FileListResponse struct {
 	Data   []File `json:"data"`
 	Object string `json:"object"` // "list"
@@ -1011,7 +1018,7 @@ type FileListResponse struct {
 
 //
 
-// https://platform.openai.com/docs/api-reference/batch/request-input
+// BatchRequestInput is documented at https://platform.openai.com/docs/api-reference/batch/request-input
 type BatchRequestInput struct {
 	CustomID string   `json:"custom_id"`
 	Method   string   `json:"method"` // "POST"
@@ -1019,7 +1026,7 @@ type BatchRequestInput struct {
 	Body     Response `json:"body"`
 }
 
-// https://platform.openai.com/docs/api-reference/batch/request-output
+// BatchRequestOutput is documented at https://platform.openai.com/docs/api-reference/batch/request-output
 type BatchRequestOutput struct {
 	CustomID string `json:"custom_id"`
 	ID       string `json:"id"`
@@ -1034,7 +1041,7 @@ type BatchRequestOutput struct {
 	} `json:"response"`
 }
 
-// https://platform.openai.com/docs/api-reference/batch/create
+// BatchRequest is documented at https://platform.openai.com/docs/api-reference/batch/create
 type BatchRequest struct {
 	CompletionWindow string            `json:"completion_window"` // Must be "24h"
 	Endpoint         string            `json:"endpoint"`          // One of /v1/responses, /v1/chat/completions, /v1/embeddings, /v1/completions
@@ -1042,7 +1049,7 @@ type BatchRequest struct {
 	Metadata         map[string]string `json:"metadata,omitzero"` // Maximum 16 keys of 64 chars, values max 512 chars
 }
 
-// https://platform.openai.com/docs/api-reference/batch/object
+// Batch is documented at https://platform.openai.com/docs/api-reference/batch/object
 type Batch struct {
 	CancelledAt      base.Time `json:"cancelled_at"`
 	CancellingAt     base.Time `json:"cancelling_at"`
@@ -1079,7 +1086,7 @@ type Batch struct {
 
 //
 
-// https://platform.openai.com/docs/api-reference/models/object
+// Model is documented at https://platform.openai.com/docs/api-reference/models/object
 //
 // Sadly the modalities aren't reported. The only way I can think of to find it at run time is to fetch
 // https://platform.openai.com/docs/models/gpt-4o-mini-realtime-preview, find the div containing
@@ -1134,7 +1141,7 @@ func (e *ErrorResponse) Error() string {
 	return fmt.Sprintf("%s (type: %s, code: %s)", e.ErrorVal.Message, e.ErrorVal.Type, e.ErrorVal.Code)
 }
 
-func (er *ErrorResponse) IsAPIError() bool {
+func (e *ErrorResponse) IsAPIError() bool {
 	return true
 }
 

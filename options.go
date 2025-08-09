@@ -144,6 +144,8 @@ type OptionsText struct {
 	// MaxTokens is the maximum number of tokens to generate. Used to limit it
 	// lower than the default maximum, for budget reasons.
 	MaxTokens int64
+	// TopLogprobs requests to return the top logprobs in the reply.
+	TopLogprobs int64
 	// SystemPrompt is the prompt to use for the system role.
 	SystemPrompt string
 

@@ -264,6 +264,9 @@ func (c *ChatRequest) SetStream(stream bool) {
 func (c *ChatRequest) initOptions(v *genai.OptionsText) ([]string, []error) {
 	var unsupported []string
 	var errs []error
+	if v.TopLogprobs > 0 {
+		unsupported = append(unsupported, "TopLogprobs")
+	}
 	if v.MaxTokens != 0 {
 		c.MaxTokens = v.MaxTokens
 	}

@@ -555,6 +555,10 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) ([]string,
 		c.SystemInstruction.Parts = []Part{{Text: v.SystemPrompt}}
 	}
 	c.GenerationConfig.Seed = v.Seed
+	if v.TopLogprobs > 0 {
+		c.GenerationConfig.Logprobs = v.TopLogprobs
+		c.GenerationConfig.ResponseLogprobs = true
+	}
 	c.GenerationConfig.TopK = v.TopK
 	c.GenerationConfig.StopSequences = v.Stop
 	if v.DecodeAs != nil {
@@ -904,9 +908,9 @@ type ChatResponse struct {
 				GoogleSearchDynamicRetrievalScore float64 `json:"googleSearchDynamicRetrievalScore"`
 			} `json:"retrievalMetadata"`
 		} `json:"groundingMetadata"`
-		AvgLogprobs    float64 `json:"avgLogprobs"`
-		LogprobsResult any     `json:"logprobsResult"`
-		Index          int64   `json:"index"`
+		AvgLogprobs    float64  `json:"avgLogprobs"`
+		LogprobsResult struct{} `json:"logprobsResult"`
+		Index          int64    `json:"index"`
 	} `json:"candidates"`
 	PromptFeedback any           `json:"promptFeedback,omitzero"`
 	UsageMetadata  UsageMetadata `json:"usageMetadata"`

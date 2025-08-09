@@ -215,6 +215,9 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText) ([]string, []error) {
 		unsupported = append(unsupported, "Seed")
 	}
 	c.TopK = v.TopK
+	if v.TopLogprobs > 0 {
+		unsupported = append(unsupported, "TopLogprobs")
+	}
 	if len(v.Stop) != 0 {
 		errs = append(errs, errors.New("unsupported option Stop"))
 	}

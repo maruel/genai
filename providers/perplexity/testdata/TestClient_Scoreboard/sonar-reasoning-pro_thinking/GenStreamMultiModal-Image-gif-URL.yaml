@@ -1,3 +1,39 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 335
+        host: api.perplexity.ai
+        body: |
+            {"model":"sonar-reasoning-pro","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"return_images":true,"stream":true,"disable_search":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"id\": \"a83afe9b-3b19-4ea2-a7a8-4288818d83ea\", \"model\": \"sonar-reasoning-pro\", \"created\": 1754746302, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 2, \"total_tokens\": 141, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\n\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"<think>\\n\"}}]}\r\n\r\ndata: {\"id\": \"a83afe9b-3b19-4ea2-a7a8-4288818d83ea\", \"model\": \"sonar-reasoning-pro\", \"created\": 1754746302, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 3, \"total_tokens\": 142, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nI\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"I\"}}]}\r\n\r\ndata: {\"id\": \"a83afe9b-3b19-4ea2-a7a8-4288818d83ea\", \"model\": \"sonar-reasoning-pro\", \"created\": 1754746302, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 14, \"total_tokens\": 153, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nI can see an image of a yellow curved fruit with a\"}, \"delta\": {\"role\": \"assistant\", \"content\": \" can see an image of a yellow curved fruit with a\"}}]}\r\n\r\ndata: {\"id\": \"a83afe9b-3b19-4ea2-a7a8-4288818d83ea\", \"model\": \"sonar-reasoning-pro\", \"created\": 1754746302, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 23, \"total_tokens\": 162, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nI can see an image of a yellow curved fruit with a brown stem at the top. This is clearly\"}, \"delta\": {\"role\": \"assistant\", \"content\": \" brown stem at the top. This is clearly\"}}]}\r\n\r\ndata: {\"id\": \"a83afe9b-3b19-4ea2-a7a8-4288818d83ea\", \"model\": \"sonar-reasoning-pro\", \"created\": 1754746302, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 37, \"total_tokens\": 176, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nI can see an image of a yellow curved fruit with a brown stem at the top. This is clearly a banana. The user asked me to reply with only one word,\"}, \"delta\": {\"role\": \"assistant\", \"content\": \" a banana. The user asked me to reply with only one word,\"}}]}\r\n\r\ndata: {\"id\": \"a83afe9b-3b19-4ea2-a7a8-4288818d83ea\", \"model\": \"sonar-reasoning-pro\", \"created\": 1754746303, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 46, \"total_tokens\": 185, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nI can see an image of a yellow curved fruit with a brown stem at the top. This is clearly a banana. The user asked me to reply with only one word, so I should just say \\\"Banana\\\".\"}, \"delta\": {\"role\": \"assistant\", \"content\": \" so I should just say \\\"Banana\\\".\"}}]}\r\n\r\ndata: {\"id\": \"a83afe9b-3b19-4ea2-a7a8-4288818d83ea\", \"model\": \"sonar-reasoning-pro\", \"created\": 1754746303, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 49, \"total_tokens\": 188, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nI can see an image of a yellow curved fruit with a brown stem at the top. This is clearly a banana. The user asked me to reply with only one word, so I should just say \\\"Banana\\\".\\n</think>\\n\\n\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\\n</think>\\n\\n\"}}]}\r\n\r\ndata: {\"id\": \"a83afe9b-3b19-4ea2-a7a8-4288818d83ea\", \"model\": \"sonar-reasoning-pro\", \"created\": 1754746303, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 51, \"total_tokens\": 190, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nI can see an image of a yellow curved fruit with a brown stem at the top. This is clearly a banana. The user asked me to reply with only one word, so I should just say \\\"Banana\\\".\\n</think>\\n\\nBanana\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"Banana\"}}]}\r\n\r\ndata: {\"id\": \"a83afe9b-3b19-4ea2-a7a8-4288818d83ea\", \"model\": \"sonar-reasoning-pro\", \"created\": 1754746303, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 51, \"total_tokens\": 190, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.000278, \"output_tokens_cost\": 0.000408, \"request_cost\": 0.006, \"total_cost\": 0.006686}}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nI can see an image of a yellow curved fruit with a brown stem at the top. This is clearly a banana. The user asked me to reply with only one word, so I should just say \\\"Banana\\\".\\n</think>\\n\\nBanana\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}\r\n\r\n"
+        headers:
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96c79d6f7896a28f-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 3.486s

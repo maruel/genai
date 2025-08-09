@@ -1,3 +1,38 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 332
+        host: api.perplexity.ai
+        body: |
+            {"model":"sonar-reasoning","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"return_images":true,"stream":false,"disable_search":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id": "ceaf1a29-7eba-4854-b1ce-fa7090378f80", "model": "sonar-reasoning", "created": 1754746140, "usage": {"prompt_tokens": 139, "completion_tokens": 51, "total_tokens": 190, "search_context_size": "low", "cost": {"input_tokens_cost": 0.000139, "output_tokens_cost": 0.000255, "request_cost": 0.005, "total_cost": 0.005394}}, "citations": [], "search_results": [], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "<think>\nI can see an image of a yellow, curved fruit with a brown stem at the top. This is clearly a banana. The user asked for only one word, so I should just respond with \"Banana.\"\n</think>\n\nBanana"}, "delta": {"role": "assistant", "content": ""}}]}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96c7997c58c4a31c-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 3.188s

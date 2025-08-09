@@ -8,6 +8,9 @@
 package perplexity
 
 import (
+	"bytes"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -27,21 +30,26 @@ import (
 //
 // # Warnings
 //
-//   - Thinking is not returned.
-//   - Websearch, which is automatic for all models except r1-1776, is very expensive.
-//   - Perplexity supports more than what the client supports.
+//   - Websearch, which is automatic for all models, is very expensive. Disable it manually when testing.
 //   - No tool calling support.
 var Scoreboard = genai.Scoreboard{
 	Country:      "US",
 	DashboardURL: "https://www.perplexity.ai/settings/api",
 	Scenarios: []genai.Scenario{
 		{
-			Models:             []string{"sonar-deep-research", "sonar-reasoning", "sonar-reasoning-pro"},
+			Models:             []string{"sonar-reasoning", "sonar-reasoning-pro"},
 			Thinking:           true,
 			ThinkingTokenStart: "<think>",
 			ThinkingTokenEnd:   "</think>",
-			In:                 map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:                map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {Inline: true},
+				genai.ModalityImage: {
+					Inline:           true,
+					URL:              true,
+					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				JSONSchema:     true,
 				Citations:      true,
@@ -55,8 +63,15 @@ var Scoreboard = genai.Scoreboard{
 		},
 		{
 			Models: []string{"sonar", "sonar-pro"},
-			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {Inline: true},
+				genai.ModalityImage: {
+					Inline:           true,
+					URL:              true,
+					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
+				},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
 				JSONSchema:     true,
 				Citations:      true,
@@ -68,28 +83,48 @@ var Scoreboard = genai.Scoreboard{
 				NoStopSequence: true,
 			},
 		},
+		// sonar-deep-research has the same capability as sonar-reasoning-pro but it is way too expensive, it cost
+		// over 5$USD to run a scoreboard.
+		{
+			Models:             []string{"sonar-deep-research"},
+			Thinking:           true,
+			ThinkingTokenStart: "<think>",
+			ThinkingTokenEnd:   "</think>",
+		},
 	},
+}
+
+// OptionsText includes Perplexity specific options.
+type OptionsText struct {
+	genai.OptionsText
+
+	// DisableSearch disables websearch, which is automatic for all models.
+	DisableSearch bool
+	// DisableRelatedQuestions disabled related questions, to save on tokens and latency.
+	DisableRelatedQuestions bool
 }
 
 // ChatRequest is documented at https://docs.perplexity.ai/api-reference/chat-completions-post
 type ChatRequest struct {
-	Model                  string    `json:"model"`
-	Messages               []Message `json:"messages"`
-	SearchMode             string    `json:"search_mode,omitzero"`      // "web", "academic"
-	ReasoningEffort        string    `json:"reasoning_effort,omitzero"` // "low", "medium", "high" (model: sonar-deep-research)
-	MaxTokens              int64     `json:"max_tokens,omitzero"`
-	Temperature            float64   `json:"temperature,omitzero"`
-	TopP                   float64   `json:"top_p,omitzero"` // [0, 1.0]
-	SearchDomainFilter     []string  `json:"search_domain_filter,omitzero"`
-	ReturnImages           bool      `json:"return_images,omitzero"`
-	ReturnRelatedQuestions bool      `json:"return_related_questions,omitzero"`
-	SearchRecencyFilter    string    `json:"search_recency_filter,omitzero"`     // "month", "week", "day", "hour"
-	SearchAfterDateFilter  string    `json:"search_after_date_filter,omitzero"`  // RFC3339 date
-	SearchBeforeDateFilter string    `json:"search_before_date_filter,omitzero"` // RFC3339 date
-	TopK                   int64     `json:"top_k,omitzero"`                     // [0, 2048^]
-	Stream                 bool      `json:"stream"`
-	PresencePenalty        float64   `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
-	FrequencyPenalty       float64   `json:"frequency_penalty,omitzero"`
+	Model                   string    `json:"model"`
+	Messages                []Message `json:"messages"`
+	SearchMode              string    `json:"search_mode,omitzero"`      // "web", "academic"
+	ReasoningEffort         string    `json:"reasoning_effort,omitzero"` // "low", "medium", "high" (model: sonar-deep-research)
+	MaxTokens               int64     `json:"max_tokens,omitzero"`
+	Temperature             float64   `json:"temperature,omitzero"`          // [0, 2.0]
+	TopP                    float64   `json:"top_p,omitzero"`                // [0, 1.0]
+	SearchDomainFilter      []string  `json:"search_domain_filter,omitzero"` // Max 10 items. Prefix "-" to exclude.
+	ReturnImages            bool      `json:"return_images,omitzero"`
+	ReturnRelatedQuestions  bool      `json:"return_related_questions,omitzero"`
+	SearchRecencyFilter     string    `json:"search_recency_filter,omitzero"`      // "month", "week", "day", "hour"
+	SearchAfterDateFilter   string    `json:"search_after_date_filter,omitzero"`   // RFC3339 date
+	SearchBeforeDateFilter  string    `json:"search_before_date_filter,omitzero"`  // RFC3339 date
+	LastUpdatedAfterFilter  string    `json:"last_updated_after_filter,omitzero"`  // RFC3339 date
+	LastUpdatedBeforeFilter string    `json:"last_updated_before_filter,omitzero"` // RFC3339 date
+	TopK                    int64     `json:"top_k,omitzero"`                      // [0, 2048]
+	Stream                  bool      `json:"stream"`                              //
+	PresencePenalty         float64   `json:"presence_penalty,omitzero"`           // [0, 2.0]
+	FrequencyPenalty        float64   `json:"frequency_penalty,omitzero"`          // [0, 2.0]
 	// Only available in higher tiers, see
 	// https://docs.perplexity.ai/guides/usage-tiers and
 	// https://docs.perplexity.ai/guides/structured-outputs
@@ -110,6 +145,10 @@ type ChatRequest struct {
 			CountryCode string  `json:"country_code,omitzero"` // e.g. "US", "CA", "FR"
 		} `json:"user_location,omitzero"`
 	} `json:"web_search_options,omitzero"`
+
+	// These are "documented" at https://docs.perplexity.ai/guides/search-control-guide#curl-2
+	DisableSearch          bool `json:"disable_search,omitzero"`
+	EnableSearchClassifier bool `json:"enable_search_classifier,omitzero"`
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
@@ -117,6 +156,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	c.Model = model
 	// Didn't seem to increase token usage, unclear if it increases costs.
 	c.ReturnImages = true
+	// This likely increase token usage.
 	c.ReturnRelatedQuestions = true
 	var errs []error
 	var unsupported []string
@@ -124,27 +164,13 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	if opts != nil {
 		switch v := opts.(type) {
 		case *genai.OptionsText:
-			c.MaxTokens = v.MaxTokens
-			c.Temperature = v.Temperature
-			c.TopP = v.TopP
+			unsupported, errs = c.initOptions(v)
 			sp = v.SystemPrompt
-			if v.Seed != 0 {
-				unsupported = append(unsupported, "Seed")
-			}
-			c.TopK = v.TopK
-			if len(v.Stop) != 0 {
-				errs = append(errs, errors.New("unsupported option Stop"))
-			}
-			if v.DecodeAs != nil {
-				// Requires Tier 3 to work in practice.
-				c.ResponseFormat.Type = "json_schema"
-				c.ResponseFormat.JSONSchema.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
-			} else if v.ReplyAsJSON {
-				errs = append(errs, errors.New("unsupported option ReplyAsJSON"))
-			}
-			if len(v.Tools) != 0 {
-				errs = append(errs, errors.New("unsupported option Tools"))
-			}
+		case *OptionsText:
+			unsupported, errs = c.initOptions(&v.OptionsText)
+			sp = v.SystemPrompt
+			c.DisableSearch = v.DisableSearch
+			c.ReturnRelatedQuestions = !v.DisableRelatedQuestions
 		default:
 			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 		}
@@ -157,7 +183,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	c.Messages = make([]Message, len(msgs)+offset)
 	if sp != "" {
 		c.Messages[0].Role = "system"
-		c.Messages[0].Content = sp
+		c.Messages[0].Content = Contents{Content{Type: "text", Text: sp}}
 	}
 	for i := range msgs {
 		if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
@@ -179,10 +205,36 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
+func (c *ChatRequest) initOptions(v *genai.OptionsText) ([]string, []error) {
+	var unsupported []string
+	var errs []error
+	c.MaxTokens = v.MaxTokens
+	c.Temperature = v.Temperature
+	c.TopP = v.TopP
+	if v.Seed != 0 {
+		unsupported = append(unsupported, "Seed")
+	}
+	c.TopK = v.TopK
+	if len(v.Stop) != 0 {
+		errs = append(errs, errors.New("unsupported option Stop"))
+	}
+	if v.DecodeAs != nil {
+		// Requires Tier 3 to work in practice.
+		c.ResponseFormat.Type = "json_schema"
+		c.ResponseFormat.JSONSchema.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+	} else if v.ReplyAsJSON {
+		errs = append(errs, errors.New("unsupported option ReplyAsJSON"))
+	}
+	if len(v.Tools) != 0 {
+		errs = append(errs, errors.New("unsupported option Tools"))
+	}
+	return unsupported, errs
+}
+
 // Message is documented at https://docs.perplexity.ai/api-reference/chat-completions
 type Message struct {
-	Role    string `json:"role"` // "system", "assistant", "user"
-	Content string `json:"content"`
+	Role    string   `json:"role"` // "system", "assistant", "user"
+	Content Contents `json:"content"`
 }
 
 func (m *Message) From(in *genai.Message) error {
@@ -194,33 +246,39 @@ func (m *Message) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", in.Role)
 	}
-	if len(in.Contents) > 1 {
-		return errors.New("perplexity doesn't support multiple content blocks; TODO split transparently")
-	}
 	if len(in.ToolCalls) != 0 {
 		return errors.New("perplexity doesn't support tools")
 	}
 	if len(in.ToolCallResults) != 0 {
 		return errors.New("perplexity doesn't support tools")
 	}
-	if in.Contents[0].Text != "" {
-		m.Content = in.Contents[0].Text
-	} else if in.Contents[0].Document != nil {
-		// Check if this is a text/plain document
-		mimeType, data, err := in.Contents[0].ReadDocument(10 * 1024 * 1024)
-		if err != nil {
-			return fmt.Errorf("failed to read document: %w", err)
-		}
-		if strings.HasPrefix(mimeType, "text/plain") {
-			if in.Contents[0].URL != "" {
-				return errors.New("text/plain documents must be provided inline, not as a URL")
-			}
-			m.Content = string(data)
+	for i := range in.Contents {
+		if in.Contents[i].Text != "" {
+			m.Content = append(m.Content, Content{Type: "text", Text: in.Contents[i].Text})
 		} else {
-			return fmt.Errorf("perplexity only supports text/plain documents, got %s", mimeType)
+			// Check if this is a text/plain document
+			mimeType, data, err := in.Contents[i].ReadDocument(10 * 1024 * 1024)
+			if err != nil {
+				return fmt.Errorf("failed to read document: %w", err)
+			}
+			switch {
+			case strings.HasPrefix(mimeType, "text/plain"):
+				if in.Contents[i].URL != "" {
+					return errors.New("text/plain documents must be provided inline, not as a URL")
+				}
+				m.Content = append(m.Content, Content{Type: "text", Text: string(data)})
+			case strings.HasPrefix(mimeType, "image/"):
+				c := Content{Type: "image_url"}
+				if in.Contents[i].URL != "" {
+					c.ImageURL.URL = in.Contents[i].URL
+				} else {
+					c.ImageURL.URL = "data:" + mimeType + ";base64," + base64.StdEncoding.EncodeToString(data)
+				}
+				m.Content = append(m.Content, c)
+			default:
+				return fmt.Errorf("perplexity only supports text/plain documents, got %s", mimeType)
+			}
 		}
-	} else {
-		return fmt.Errorf("unsupported content type %v", in.Contents[0])
 	}
 	return nil
 }
@@ -235,7 +293,46 @@ func (m *Message) To(out *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", role)
 	}
-	out.Contents = []genai.Content{{Text: m.Content}}
+	for i := range m.Content {
+		if m.Content[i].Type == "text" {
+			out.Contents = append(out.Contents, genai.Content{Text: m.Content[i].Text})
+		} else {
+			return fmt.Errorf("unsupported content type %q", m.Content[i].Type)
+		}
+	}
+	return nil
+}
+
+type Content struct {
+	Type     string `json:"type"` // "text", "image_url"
+	Text     string `json:"text,omitzero"`
+	ImageURL struct {
+		URL string `json:"url,omitzero"`
+	} `json:"image_url,omitzero"`
+}
+
+type Contents []Content
+
+func (c *Contents) UnmarshalJSON(b []byte) error {
+	if bytes.Equal(b, []byte("null")) {
+		*c = nil
+		return nil
+	}
+	if err := json.Unmarshal(b, (*[]Content)(c)); err == nil {
+		return nil
+	}
+
+	v := Content{}
+	if err := json.Unmarshal(b, &v); err == nil {
+		*c = Contents{v}
+		return nil
+	}
+
+	s := ""
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	*c = Contents{{Type: "text", Text: s}}
 	return nil
 }
 
@@ -340,6 +437,15 @@ type Usage struct {
 	ReasoningTokens   int64  `json:"reasoning_tokens"`
 	CitationTokens    int64  `json:"citation_tokens"`
 	NumSearchQueries  int64  `json:"num_search_queries"`
+	Cost              struct {
+		RequestCost         float64 `json:"request_cost"`
+		InputTokensCost     float64 `json:"input_tokens_cost"`
+		OutputTokensCost    float64 `json:"output_tokens_cost"`
+		ReasoningTokensCost float64 `json:"reasoning_tokens_cost"`
+		CitationTokensCost  float64 `json:"citation_tokens_cost"`
+		SearchQueriesCost   float64 `json:"search_queries_cost"`
+		TotalCost           float64 `json:"total_cost"`
+	} `json:"cost"`
 }
 
 type ChatStreamChunkResponse = ChatResponse

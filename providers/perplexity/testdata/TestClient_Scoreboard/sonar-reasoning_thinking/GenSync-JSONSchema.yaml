@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 448
+        content_length: 463
         host: api.perplexity.ai
         body: |
-            {"model":"sonar-reasoning","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"return_images":true,"return_related_questions":true,"stream":false,"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}
+            {"model":"sonar-reasoning","messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"return_images":true,"stream":false,"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}},"disable_search":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,12 +21,12 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id": "1f1d1ef5-267e-45d4-be37-de7288b9bfc2", "model": "sonar-reasoning", "created": 1753479492, "usage": {"prompt_tokens": 17, "completion_tokens": 264, "total_tokens": 281, "search_context_size": "low"}, "citations": ["https://www.healthline.com/nutrition/bananas-berries-or-fruits", "https://docs.vertica.com/23.4.x/en/data-load/data-formats/json-data/", "https://en.wikipedia.org/wiki/Banana", "https://pmc.ncbi.nlm.nih.gov/articles/PMC10340651/", "https://www.medicinenet.com/are_bananas_classified_as_a_fruit_or_a_berry/article.htm"], "search_results": [{"title": "Is a Banana a Berry or Fruit? The Surprising Truth", "url": "https://www.healthline.com/nutrition/bananas-berries-or-fruits", "date": "2018-12-14", "last_updated": "2025-06-28"}, {"title": "JSON data | Vertica 23.4.x", "url": "https://docs.vertica.com/23.4.x/en/data-load/data-formats/json-data/", "date": null, "last_updated": "2025-07-23"}, {"title": "Banana", "url": "https://en.wikipedia.org/wiki/Banana", "date": "2002-02-12", "last_updated": "2025-07-18"}, {"title": "The Extent of Fruit Cross-Reactivity and Reaction Severity in Adults ...", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10340651/", "date": "2023-06-23", "last_updated": "2025-07-09"}, {"title": "Are Bananas Classified as a Fruit or a Berry?", "url": "https://www.medicinenet.com/are_bananas_classified_as_a_fruit_or_a_berry/article.htm", "date": "2022-08-03", "last_updated": "2025-07-24"}], "images": [{"image_url": "https://images.slideplayer.com/15/4642859/slides/slide_2.jpg", "origin_url": "https://slideplayer.com/slide/4642859/", "height": 720, "width": 1279}, {"image_url": "https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg", "origin_url": "https://en.wikipedia.org/wiki/Banana", "height": 221, "width": 387}, {"image_url": "https://www.mdpi.com/agriculture/agriculture-12-00530/article_deploy/html/images/agriculture-12-00530-g001.png", "origin_url": "https://www.mdpi.com/2077-0472/12/4/530", "height": 1144, "width": 2044}, {"image_url": "https://www.freshpoint.com/wp-content/uploads/2019/04/freshpoint-produce-101-banana-ripening-chart-v3.jpg", "origin_url": "https://www.freshpoint.com/news/produce-101-banana-guide/", "height": 4583, "width": 2292}, {"image_url": "https://pub.mdpi-res.com/agriculture/agriculture-11-00687/article_deploy/html/images/agriculture-11-00687-g007.png?1626869532", "origin_url": "https://www.mdpi.com/2077-0472/11/8/687", "height": 1492, "width": 3789}], "related_questions": ["What other fruits are classified as berries", "How do bananas differ from plantains", "Why are bananas considered berries but not apples", "What are the nutritional benefits of eating bananas", "How do bananas cause allergic reactions in some people"], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "<think>\nOkay, let me tackle this query. The user is asking if a banana is a fruit and wants only a JSON reply without any explanation.\n\nFirst, I need to check the search results provided. Looking through them, result [1] clearly states that bananas are classified as berries botanically, with explanations about their structure and development from a single ovary. Result [3] from Wikipedia also mentions that bananas are botanically a berry. However, the user wants a yes or no answer as JSON.\n\nWait, but the question is whether a banana is a fruit. Even though botanically it''s a berry (a type of fruit), the user might be considering common definitions. But according to botanical terms, berries are fruits. So the answer should be \"true\" because bananas are a type of fruit (specifically a berry).\n\nI need to structure the JSON response as {\"is_fruit\": true}. Let me confirm from the sources again. Both [1] and [3] confirm that bananas are fruits (berries being a subset). So the answer is yes. The JSON key should be \"is_fruit\" with a boolean value. I need to make sure there are no explanations, just the JSON. Alright, that''s the response.\n</think>\n\n{\"is_fruit\": true}"}, "delta": {"role": "assistant", "content": ""}}]}'
+        body: '{"id": "b83f0d52-0d80-482d-86d3-c05119a46a9f", "model": "sonar-reasoning", "created": 1754746103, "usage": {"prompt_tokens": 17, "completion_tokens": 7, "total_tokens": 24, "search_context_size": "low", "cost": {"input_tokens_cost": 1.7e-05, "output_tokens_cost": 3.5e-05, "request_cost": 0.005, "total_cost": 0.005052}}, "citations": [], "search_results": [], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "{\"is_fruit\": true}"}, "delta": {"role": "assistant", "content": ""}}]}'
         headers:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 964ecd6378b0a29a-YUL
+                - 96c798a74d95a31c-YUL
             Content-Type:
                 - application/json
             Server:
@@ -35,4 +35,4 @@ interactions:
                 - max-age=15552000; includeSubDomains; preload
         status: 200 OK
         code: 200
-        duration: 6.682s
+        duration: 483ms

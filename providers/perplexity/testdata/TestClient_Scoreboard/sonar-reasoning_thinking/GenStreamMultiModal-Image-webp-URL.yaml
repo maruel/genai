@@ -1,3 +1,39 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 332
+        host: api.perplexity.ai
+        body: |
+            {"model":"sonar-reasoning","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"return_images":true,"stream":true,"disable_search":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"id\": \"3af941ca-a8ce-4d9f-ab2e-af986766a005\", \"model\": \"sonar-reasoning\", \"created\": 1754746149, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 2, \"total_tokens\": 141, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\n\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"<think>\\n\"}}]}\r\n\r\ndata: {\"id\": \"3af941ca-a8ce-4d9f-ab2e-af986766a005\", \"model\": \"sonar-reasoning\", \"created\": 1754746149, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 3, \"total_tokens\": 142, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nI\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"I\"}}]}\r\n\r\ndata: {\"id\": \"3af941ca-a8ce-4d9f-ab2e-af986766a005\", \"model\": \"sonar-reasoning\", \"created\": 1754746149, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 20, \"total_tokens\": 159, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nI can see an image of a yellow curved fruit. This is clearly a banana. The\"}, \"delta\": {\"role\": \"assistant\", \"content\": \" can see an image of a yellow curved fruit. This is clearly a banana. The\"}}]}\r\n\r\ndata: {\"id\": \"3af941ca-a8ce-4d9f-ab2e-af986766a005\", \"model\": \"sonar-reasoning\", \"created\": 1754746150, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 34, \"total_tokens\": 173, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nI can see an image of a yellow curved fruit. This is clearly a banana. The user asked me to reply with only one word, so I should just\"}, \"delta\": {\"role\": \"assistant\", \"content\": \" user asked me to reply with only one word, so I should just\"}}]}\r\n\r\ndata: {\"id\": \"3af941ca-a8ce-4d9f-ab2e-af986766a005\", \"model\": \"sonar-reasoning\", \"created\": 1754746150, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 39, \"total_tokens\": 178, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nI can see an image of a yellow curved fruit. This is clearly a banana. The user asked me to reply with only one word, so I should just say \\\"Banana\\\".\"}, \"delta\": {\"role\": \"assistant\", \"content\": \" say \\\"Banana\\\".\"}}]}\r\n\r\ndata: {\"id\": \"3af941ca-a8ce-4d9f-ab2e-af986766a005\", \"model\": \"sonar-reasoning\", \"created\": 1754746150, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 42, \"total_tokens\": 181, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nI can see an image of a yellow curved fruit. This is clearly a banana. The user asked me to reply with only one word, so I should just say \\\"Banana\\\".\\n</think>\\n\\n\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\\n</think>\\n\\n\"}}]}\r\n\r\ndata: {\"id\": \"3af941ca-a8ce-4d9f-ab2e-af986766a005\", \"model\": \"sonar-reasoning\", \"created\": 1754746150, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 44, \"total_tokens\": 183, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nI can see an image of a yellow curved fruit. This is clearly a banana. The user asked me to reply with only one word, so I should just say \\\"Banana\\\".\\n</think>\\n\\nBanana\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"Banana\"}}]}\r\n\r\ndata: {\"id\": \"3af941ca-a8ce-4d9f-ab2e-af986766a005\", \"model\": \"sonar-reasoning\", \"created\": 1754746150, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 44, \"total_tokens\": 183, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.000139, \"output_tokens_cost\": 0.00022, \"request_cost\": 0.005, \"total_cost\": 0.005359}}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nI can see an image of a yellow curved fruit. This is clearly a banana. The user asked me to reply with only one word, so I should just say \\\"Banana\\\".\\n</think>\\n\\nBanana\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}\r\n\r\n"
+        headers:
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96c799beeb51a31c-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 2.091s

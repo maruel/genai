@@ -1,3 +1,38 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 337
+        host: api.perplexity.ai
+        body: |
+            {"model":"sonar-reasoning-pro","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"return_images":true,"stream":false,"disable_search":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id": "761eb28b-d0cf-4d83-8229-ddbea2df19b9", "model": "sonar-reasoning-pro", "created": 1754746355, "usage": {"prompt_tokens": 139, "completion_tokens": 77, "total_tokens": 216, "search_context_size": "low", "cost": {"input_tokens_cost": 0.000278, "output_tokens_cost": 0.000616, "request_cost": 0.006, "total_cost": 0.006894}}, "citations": [], "search_results": [], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "<think>\nI can see an image of a yellow, curved fruit. It has the characteristic shape and color of a banana - yellow skin, elongated curved shape, and what appears to be a brown stem at the top. This is clearly a banana.\n\nThe user asked me to reply with only one word, so I should just say \"Banana.\"\n</think>\n\nBanana"}, "delta": {"role": "assistant", "content": ""}}]}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96c79eba3d91a28f-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 4.246s

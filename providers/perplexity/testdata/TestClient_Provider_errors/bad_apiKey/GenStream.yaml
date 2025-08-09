@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 145
+        content_length: 170
         host: api.perplexity.ai
         body: |
-            {"model":"sonar","messages":[{"role":"user","content":"Tell a short joke."}],"return_images":true,"return_related_questions":true,"stream":true}
+            {"model":"sonar","messages":[{"role":"user","content":[{"type":"text","text":"Tell a short joke."}]}],"return_images":true,"return_related_questions":true,"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -20,12 +20,12 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "<html>\r\n<head><title>401 Authorization Required</title></head>\r\n<body>\r\n<center><h1>401 Authorization Required</h1></center>\r\n<hr><center>openresty/1.27.4</center>\r\n<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML=\"window.__CF$cv$params={r:'963c40c0cfaa53e3',t:'MTc1MzI4NDk4MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);\";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>\r\n</html>\r\n"
+        body: "<html>\r\n<head><title>401 Authorization Required</title></head>\r\n<body>\r\n<center><h1>401 Authorization Required</h1></center>\r\n<hr><center>openresty/1.27.4</center>\r\n<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML=\"window.__CF$cv$params={r:'96c772d88ca4a286',t:'MTc1NDc0NDU1NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);\";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>\r\n</html>\r\n"
         headers:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 963c40c0cfaa53e3-YYZ
+                - 96c772d88ca4a286-YUL
             Content-Type:
                 - text/html
             Server:
@@ -34,4 +34,4 @@ interactions:
                 - max-age=15552000; includeSubDomains; preload
         status: 401 Unauthorized
         code: 401
-        duration: 42ms
+        duration: 126ms

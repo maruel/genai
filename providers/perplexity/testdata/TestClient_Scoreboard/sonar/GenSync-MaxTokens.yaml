@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 194
+        content_length: 209
         host: api.perplexity.ai
         body: |
-            {"model":"sonar","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_tokens":16,"return_images":true,"return_related_questions":true,"stream":false}
+            {"model":"sonar","messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}],"max_tokens":16,"return_images":true,"stream":false,"disable_search":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,12 +21,12 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id": "d5fa607a-558d-42ce-993f-096f2fb54fc3", "model": "sonar", "created": 1753366337, "usage": {"prompt_tokens": 11, "completion_tokens": 15, "total_tokens": 26, "search_context_size": "low"}, "citations": ["https://en.wikipedia.org/wiki/Theory_of_relativity", "https://www.youtube.com/watch?v=yuD34tEpRFw", "https://www.space.com/36273-theory-special-relativity.html", "https://www.pbslearningmedia.org/resource/phy03.sci.phys.energy.sprelativity/einsteins-special-theory-of-relativity/", "https://www.space.com/17661-theory-general-relativity.html"], "search_results": [{"title": "Theory of relativity - Wikipedia", "url": "https://en.wikipedia.org/wiki/Theory_of_relativity", "date": "2001-09-29", "last_updated": "2025-07-20"}, {"title": "Time Dilation - Einstein''s Theory Of Relativity Explained! - YouTube", "url": "https://www.youtube.com/watch?v=yuD34tEpRFw", "date": "2018-04-13", "last_updated": "2025-06-30"}, {"title": "Special relativity explained \u2014 Einstein''s mind-bending theory of ...", "url": "https://www.space.com/36273-theory-special-relativity.html", "date": "2025-05-12", "last_updated": null}, {"title": "Einstein''s Special Theory of Relativity | PBS LearningMedia", "url": "https://www.pbslearningmedia.org/resource/phy03.sci.phys.energy.sprelativity/einsteins-special-theory-of-relativity/", "date": "2014-03-19", "last_updated": null}, {"title": "What is the theory of general relativity? Understanding Einstein''s ...", "url": "https://www.space.com/17661-theory-general-relativity.html", "date": "2024-10-29", "last_updated": null}], "images": [{"image_url": "https://www.factmonster.com/images/ESCI073RELATI001.gif", "origin_url": "https://www.factmonster.com/dk/encyclopedia/science/relativity", "height": 226, "width": 250}, {"image_url": "http://physics.aps.org/assets/c28bb6a6-91d3-4cc5-a431-e56a4dcf54e9", "origin_url": "http://resourcesforhistoryteachers.pbworks.com/w/page/126510452/Einstein''s%20Theory%20of%20Relativity", "height": 538, "width": 450}, {"image_url": "https://dr282zn36sxxg.cloudfront.net/datastreams/f-d%3Acbb3921a77106ae822203b55b6c9720f2eab3da31e4c10c2c58768ff%2BCOVER_PAGE%2BCOVER_PAGE.1", "origin_url": "https://www.ck12.org/c/physics/general-theory-of-relativity/lecture/Albert-Einsteins-Theory-of-Relativity/", "height": 237, "width": 400}, {"image_url": "https://cdn.mos.cms.futurecdn.net/NREz4NoMVQzQT3arQVcubP.jpg", "origin_url": "https://www.space.com/28738-einstein-theory-of-relativity-explained-infgraphic.html", "height": 3627, "width": 620}, {"image_url": "https://cdn.britannica.com/43/92943-050-8DB198B0/velocities-speed-of-light-Invariance-Arrows-train.jpg", "origin_url": "https://www.britannica.com/science/relativity", "height": 1564, "width": 1600}], "related_questions": ["How does special relativity differ from general relativity", "What are some practical applications of the theory of relativity", "How did Einstein''s theory of relativity revolutionize physics", "Can you explain the concept of spacetime in more detail", "What experimental evidence supports the theory of relativity"], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "length", "message": {"role": "assistant", "content": "The **theory of relativity**, developed by Albert Einstein, consists of two"}, "delta": {"role": "assistant", "content": ""}}]}'
+        body: '{"id": "51d457f7-34f9-4ea1-9418-b0235830b8e4", "model": "sonar", "created": 1754745765, "usage": {"prompt_tokens": 11, "completion_tokens": 16, "total_tokens": 27, "search_context_size": "low", "cost": {"input_tokens_cost": 1.1e-05, "output_tokens_cost": 1.6e-05, "request_cost": 0.005, "total_cost": 0.005027}}, "citations": [], "search_results": [], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "length", "message": {"role": "assistant", "content": "Certainly! The theory of relativity is one of the cornerstones of modern physics"}, "delta": {"role": "assistant", "content": ""}}]}'
         headers:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 964402ec6841a2b7-YUL
+                - 96c790644bfca2f3-YUL
             Content-Type:
                 - application/json
             Server:
@@ -35,4 +35,4 @@ interactions:
                 - max-age=15552000; includeSubDomains; preload
         status: 200 OK
         code: 200
-        duration: 2.322s
+        duration: 1.128s

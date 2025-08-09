@@ -1,3 +1,38 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 332
+        host: api.perplexity.ai
+        body: |
+            {"model":"sonar-reasoning","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"return_images":true,"stream":false,"disable_search":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id": "e5cd24d8-3ce2-4569-86e0-aca9b4435128", "model": "sonar-reasoning", "created": 1754746134, "usage": {"prompt_tokens": 139, "completion_tokens": 66, "total_tokens": 205, "search_context_size": "low", "cost": {"input_tokens_cost": 0.000139, "output_tokens_cost": 0.00033, "request_cost": 0.005, "total_cost": 0.005469}}, "citations": [], "search_results": [], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "<think>\nI can see an image of a yellow curved fruit that appears to be a banana. The user is asking me to identify what fruit it is and wants me to reply with only one word. This is clearly a banana based on its distinctive curved shape, yellow color, and brown stem end.\n</think>\n\nBanana"}, "delta": {"role": "assistant", "content": ""}}]}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96c79955dc7ba31c-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 3.194s

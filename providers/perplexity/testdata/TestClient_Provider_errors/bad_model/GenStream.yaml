@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 149
+        content_length: 174
         host: api.perplexity.ai
         body: |
-            {"model":"bad model","messages":[{"role":"user","content":"Tell a short joke."}],"return_images":true,"return_related_questions":true,"stream":true}
+            {"model":"bad model","messages":[{"role":"user","content":[{"type":"text","text":"Tell a short joke."}]}],"return_images":true,"return_related_questions":true,"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -25,7 +25,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 963c40c1788353e3-YYZ
+                - 96c772d9ceaaa286-YUL
             Content-Length:
                 - "185"
             Content-Type:
@@ -36,4 +36,4 @@ interactions:
                 - max-age=15552000; includeSubDomains; preload
         status: 400 Bad Request
         code: 400
-        duration: 85ms
+        duration: 58ms

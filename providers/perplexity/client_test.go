@@ -5,8 +5,10 @@
 package perplexity_test
 
 import (
+	"context"
 	"net/http"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -16,6 +18,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/perplexity"
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
+	"github.com/maruel/roundtrippers"
 )
 
 func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
@@ -23,14 +26,64 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if os.Getenv("PERPLEXITY_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := perplexity.New(&genai.OptionsProvider{APIKey: apiKey, Model: model.Model}, fn)
+	c, err := perplexity.New(&genai.OptionsProvider{APIKey: apiKey, Model: model.Model}, func(h http.RoundTripper) http.RoundTripper {
+		// Perplexity is quick to ban users. It first start with 429 and then Cloudflare blocks it with a
+		// javascript challenge. It's extra dumb because it is an API endpoint.
+		// https://docs.perplexity.ai/guides/usage-tiers
+		qps := 48. / 60.
+		if strings.Contains(model.Model, "deep") {
+			// Assume Tier 0 with is 5 RPM. For this test to succeed, it must be run with "go test -timeout 1h"
+			qps = 4.8 / 60.
+		}
+		h = &roundtrippers.Throttle{QPS: qps, Transport: h}
+		if fn != nil {
+			h = fn(h)
+		}
+		return h
+	})
 	if err != nil {
 		t.Fatal(err)
 	}
-	if model.Thinking {
-		return &adapters.ProviderGenThinking{ProviderGen: c, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "</think>"}
+	// Save on costs when running the smoke test.
+	var p genai.ProviderGen = &injectOption{
+		Client: c,
+		opts: perplexity.OptionsText{
+			DisableSearch:           true,
+			DisableRelatedQuestions: true,
+		},
 	}
-	return c
+	if model.Thinking {
+		p = &adapters.ProviderGenThinking{ProviderGen: p, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "</think>"}
+	}
+	return p
+}
+
+// injectOption generally inject the option unless "Quackiland" is in the last message.
+type injectOption struct {
+	*perplexity.Client
+	opts perplexity.OptionsText
+}
+
+func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	if !strings.Contains(msgs[len(msgs)-1].Contents[len(msgs[0].Contents)-1].Text, "Quackiland") {
+		n := i.opts
+		if opts != nil {
+			n.OptionsText = *opts.(*genai.OptionsText)
+		}
+		opts = &n
+	}
+	return i.Client.GenSync(ctx, msgs, opts)
+}
+
+func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+	if !strings.Contains(msgs[len(msgs)-1].Contents[len(msgs[0].Contents)-1].Text, "Quackiland") {
+		n := i.opts
+		if opts != nil {
+			n.OptionsText = *opts.(*genai.OptionsText)
+		}
+		opts = &n
+	}
+	return i.Client.GenStream(ctx, msgs, replies, opts)
 }
 
 func TestClient_Scoreboard(t *testing.T) {

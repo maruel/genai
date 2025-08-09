@@ -501,6 +501,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 						c.GenerationConfig.ResponseModalities[i] = ModalityImage
 					case genai.ModalityText:
 						c.GenerationConfig.ResponseModalities[i] = ModalityText
+					case genai.ModalityDocument, genai.ModalityVideo:
+						fallthrough
 					default:
 						errs = append(errs, fmt.Errorf("unsupported modality %s", m))
 					}

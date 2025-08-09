@@ -338,7 +338,7 @@ func (m *Message) To(out *genai.Message) error {
 	return nil
 }
 
-// https://github.com/ollama/ollama/blob/main/docs/api.md#response-16
+// ToolCall is somewhat documented at https://github.com/ollama/ollama/blob/main/docs/api.md#response-16
 // https://pkg.go.dev/github.com/ollama/ollama/api#ToolCall
 type ToolCall struct {
 	Function struct {
@@ -360,7 +360,7 @@ func (t *ToolCall) To(out *genai.ToolCall) error {
 	return err
 }
 
-// https://github.com/ollama/ollama/blob/main/docs/api.md#chat-request-with-tools
+// Tool is somewhat documented at https://github.com/ollama/ollama/blob/main/docs/api.md#chat-request-with-tools
 // https://pkg.go.dev/github.com/ollama/ollama/api#Tool
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
@@ -371,7 +371,7 @@ type Tool struct {
 	} `json:"function,omitzero"`
 }
 
-// https://github.com/ollama/ollama/blob/main/docs/api.md#response-10
+// ChatResponse is somewhat documented at https://github.com/ollama/ollama/blob/main/docs/api.md#response-10
 // https://pkg.go.dev/github.com/ollama/ollama/api#ChatResponse
 type ChatResponse struct {
 	Model      string     `json:"model"`
@@ -435,7 +435,7 @@ func (d DoneReason) ToFinishReason() genai.FinishReason {
 
 type ChatStreamChunkResponse ChatResponse
 
-// https://pkg.go.dev/github.com/ollama/ollama/api#ListModelResponse
+// Model is somewhat documented at https://pkg.go.dev/github.com/ollama/ollama/api#ListModelResponse
 type Model struct {
 	Name       string    `json:"name"`
 	Model      string    `json:"model"`

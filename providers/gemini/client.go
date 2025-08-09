@@ -912,7 +912,7 @@ type ChatResponse struct {
 		LogprobsResult struct{} `json:"logprobsResult"`
 		Index          int64    `json:"index"`
 	} `json:"candidates"`
-	PromptFeedback any           `json:"promptFeedback,omitzero"`
+	PromptFeedback struct{}      `json:"promptFeedback,omitzero"`
 	UsageMetadata  UsageMetadata `json:"usageMetadata"`
 	ModelVersion   string        `json:"modelVersion"`
 	ResponseID     string        `json:"responseId"`

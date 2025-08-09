@@ -572,7 +572,7 @@ type CompletionStreamChunkResponse struct {
 
 	// Last message
 	Model              string   `json:"model"`
-	GenerationSettings any      `json:"generation_settings"`
+	GenerationSettings struct{} `json:"generation_settings"`
 	Prompt             string   `json:"prompt"`
 	HasNewLine         bool     `json:"has_new_line"`
 	Truncated          bool     `json:"truncated"`

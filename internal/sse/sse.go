@@ -11,6 +11,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"reflect"
 
 	"github.com/maruel/genai/internal"
 )
@@ -48,22 +49,28 @@ func Process[T any](body io.Reader, out chan<- T, er error, lenient bool) error 
 				r2 = r
 			}
 			var msg T
-			if foundExtraKeys, err := internal.DecodeJSON(d, &msg, r2); err == nil {
-				out <- msg
-				continue
-			} else if !foundExtraKeys {
-				if er != nil {
-					r = bytes.NewReader(suffix)
-					r2 = nil
-					d = json.NewDecoder(r)
-					if !lenient {
-						d.DisallowUnknownFields()
-						r2 = r
-					}
-					if _, err := internal.DecodeJSON(d, er, r2); err == nil {
-						return er
-					}
+			if _, err = internal.DecodeJSON(d, &msg, r2); err == nil {
+				// It may have succeeded but not decoded anything.
+				if v := reflect.ValueOf(&msg); !reflect.DeepEqual(&msg, reflect.Zero(v.Type()).Interface()) {
+					out <- msg
+					continue
 				}
+			}
+			if er == nil {
+				if err == nil {
+					return fmt.Errorf("failed to decode server response %q", string(line))
+				}
+				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+			}
+			if _, err2 := r.Seek(0, 0); err2 != nil {
+				return err2
+			}
+			d = json.NewDecoder(r)
+			if !lenient {
+				d.DisallowUnknownFields()
+			}
+			if _, err2 := internal.DecodeJSON(d, er, r2); err2 == nil {
+				return er
 			}
 			// Falling back or when in strict mode, return the decoding error instead.
 			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)

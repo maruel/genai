@@ -187,7 +187,7 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 
 func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*genai.FunctionalityText, error) {
 	// Make sure simple text generation works, otherwise there's no point.
-	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
+	msgs := genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
 	resp, err := cs.callGen(ctx, prefix+"Text", msgs, &genai.OptionsText{})
 	if err != nil {
 		internal.Logger(ctx).DebugContext(ctx, "Text", "err", err)
@@ -211,7 +211,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	}
 
 	// Seed
-	msgs = genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
+	msgs = genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
 	resp, err = cs.callGen(ctx, prefix+"Seed", msgs, &genai.OptionsText{Seed: 42})
 	if isBadError(ctx, err) {
 		return f, err
@@ -220,7 +220,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 
 	// MaxTokens
 	// This will trigger citations on providers with search enabled.
-	msgs = genai.Messages{genai.NewTextMessage(genai.User, "Explain the theory of relativity in great details.")}
+	msgs = genai.Messages{genai.NewTextMessage("Explain the theory of relativity in great details.")}
 	resp, err = cs.callGen(ctx, prefix+"MaxTokens", msgs, &genai.OptionsText{MaxTokens: 16})
 	if isBadError(ctx, err) {
 		return f, err
@@ -242,7 +242,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	}
 
 	// Stop
-	msgs = genai.Messages{genai.NewTextMessage(genai.User, "Talk about Canada in great details. Start with: Canada is")}
+	msgs = genai.Messages{genai.NewTextMessage("Talk about Canada in great details. Start with: Canada is")}
 	resp, err = cs.callGen(ctx, prefix+"Stop", msgs, &genai.OptionsText{Stop: []string{"is"}})
 	if isBadError(ctx, err) {
 		return f, err
@@ -265,7 +265,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	}
 
 	// JSON
-	msgs = genai.Messages{genai.NewTextMessage(genai.User, `Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {"is_fruit": bool}.`)}
+	msgs = genai.Messages{genai.NewTextMessage(`Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {"is_fruit": bool}.`)}
 	resp, err = cs.callGen(ctx, prefix+"JSON", msgs, &genai.OptionsText{ReplyAsJSON: true})
 	if isBadError(ctx, err) {
 		return f, err
@@ -287,7 +287,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	}
 
 	// JSONSchema
-	msgs = genai.Messages{genai.NewTextMessage(genai.User, `Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.`)}
+	msgs = genai.Messages{genai.NewTextMessage(`Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.`)}
 	type schema struct {
 		IsFruit bool `json:"is_fruit"`
 	}
@@ -698,7 +698,7 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 **Format:** Square image (1:1 aspect ratio).
 **Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.
 **Output:** Actual image file for a smooth, colorful doodle-style image on a white background.`
-	msg := genai.NewTextMessage(genai.User, contentsImage)
+	msg := genai.NewTextMessage(contentsImage)
 	resp, err := c.GenDoc(ctx, msg, &genai.OptionsImage{Seed: 42})
 	usage.InputTokens += resp.InputTokens
 	usage.InputCachedTokens += resp.InputCachedTokens
@@ -770,7 +770,7 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, out *genai.Scenario, usage *genai.Usage) error {
 	cc, rt := pf(name)
 	c := cc.(genai.ProviderGenDoc)
-	msg := genai.NewTextMessage(genai.User, "Say hi. Just say this word, nothing else.")
+	msg := genai.NewTextMessage("Say hi. Just say this word, nothing else.")
 	resp, err := c.GenDoc(ctx, msg, &genai.OptionsAudio{Seed: 42})
 	usage.InputTokens += resp.InputTokens
 	usage.InputCachedTokens += resp.InputCachedTokens

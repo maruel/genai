@@ -127,8 +127,8 @@ func TestRole_Validate(t *testing.T) {
 func TestMessages_Validate(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		m := Messages{
-			NewTextMessage(User, "Hello"),
-			NewTextMessage(Assistant, "I can help with that"),
+			NewTextMessage("Hello"),
+			Message{Role: Assistant, Contents: []Content{{Text: "I can help with that"}}},
 		}
 		if err := m.Validate(); err != nil {
 			t.Fatalf("unexpected error: %q", err)
@@ -173,7 +173,7 @@ func TestMessage_Validate(t *testing.T) {
 		}{
 			{
 				name:    "Valid user text message",
-				message: NewTextMessage(User, "Hello"),
+				message: NewTextMessage("Hello"),
 			},
 			{
 				name: "Valid user document message",
@@ -189,7 +189,7 @@ func TestMessage_Validate(t *testing.T) {
 			},
 			{
 				name:    "Valid assistant message",
-				message: NewTextMessage(Assistant, "I can help with that"),
+				message: Message{Role: Assistant, Contents: []Content{{Text: "I can help with that"}}},
 			},
 		}
 		for _, tt := range tests {
@@ -279,7 +279,7 @@ func TestContent_ReadDocument(t *testing.T) {
 
 func TestMessage_Decode(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
-		m := NewTextMessage(Assistant, "{\"key\": \"value\"}")
+		m := Message{Role: Assistant, Contents: []Content{{Text: "{\"key\": \"value\"}"}}}
 		if err := m.Decode(&struct{ Key string }{}); err != nil {
 			t.Fatalf("unexpected error: %q", err)
 		}
@@ -292,7 +292,7 @@ func TestMessage_Decode(t *testing.T) {
 		}{
 			{
 				name:    "Invalid JSON message",
-				message: NewTextMessage(Assistant, "invalid"),
+				message: Message{Role: Assistant, Contents: []Content{{Text: "invalid"}}},
 				errMsg:  "failed to decode message text as JSON: invalid character 'i' looking for beginning of value; content: \"invalid\"",
 			},
 			{
@@ -327,17 +327,17 @@ func TestAccumulateContentFragment(t *testing.T) {
 	}{
 		{
 			name: "Join assistant text",
-			msgs: Messages{NewTextMessage(Assistant, "Hello")},
+			msgs: Messages{Message{Role: Assistant, Contents: []Content{{Text: "Hello"}}}},
 			f:    ContentFragment{TextFragment: " world"},
-			want: Messages{NewTextMessage(Assistant, "Hello world")},
+			want: Messages{Message{Role: Assistant, Contents: []Content{{Text: "Hello world"}}}},
 		},
 		{
 			name: "User then assistant",
-			msgs: Messages{NewTextMessage(User, "Make me a sandwich")},
+			msgs: Messages{NewTextMessage("Make me a sandwich")},
 			f:    ContentFragment{TextFragment: "No"},
 			want: Messages{
-				NewTextMessage(User, "Make me a sandwich"),
-				NewTextMessage(Assistant, "No"),
+				NewTextMessage("Make me a sandwich"),
+				Message{Role: Assistant, Contents: []Content{{Text: "No"}}},
 			},
 		},
 		{
@@ -427,7 +427,7 @@ func TestMessage_Accumulate(t *testing.T) {
 			name:     "Text",
 			message:  Message{Role: Assistant},
 			fragment: ContentFragment{TextFragment: "Hello"},
-			want:     NewTextMessage(Assistant, "Hello"),
+			want:     Message{Role: Assistant, Contents: []Content{{Text: "Hello"}}},
 		},
 		{
 			name:    "Document",
@@ -452,9 +452,9 @@ func TestMessage_Accumulate(t *testing.T) {
 		},
 		{
 			name:     "Add text to existing text",
-			message:  NewTextMessage(Assistant, "Hello"),
+			message:  Message{Role: Assistant, Contents: []Content{{Text: "Hello"}}},
 			fragment: ContentFragment{TextFragment: " world"},
-			want:     NewTextMessage(Assistant, "Hello world"),
+			want:     Message{Role: Assistant, Contents: []Content{{Text: "Hello world"}}},
 		},
 		{
 			name:     "Add thinking to existing thinking",

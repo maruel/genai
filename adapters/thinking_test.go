@@ -62,7 +62,9 @@ func TestProviderGenThinking_GenSync(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			mp := &mockProviderGenSync{response: genai.Result{Message: genai.NewTextMessage(genai.Assistant, tc.in)}}
+			mp := &mockProviderGenSync{
+				response: genai.Result{Message: genai.Message{Role: genai.Assistant, Contents: []genai.Content{{Text: tc.in}}}},
+			}
 			tp := &adapters.ProviderGenThinking{ProviderGen: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
 			got, err := tp.GenSync(t.Context(), genai.Messages{}, tc.opts)
 			if err != nil {
@@ -106,7 +108,10 @@ func TestProviderGenThinking_GenSync_errors(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			mp := &mockProviderGenSync{response: genai.Result{Message: genai.Message{Role: genai.Assistant, Contents: tc.in}}, err: tc.err}
+			mp := &mockProviderGenSync{
+				response: genai.Result{Message: genai.Message{Role: genai.Assistant, Contents: tc.in}},
+				err:      tc.err,
+			}
 			tp := &adapters.ProviderGenThinking{ProviderGen: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
 			_, err := tp.GenSync(t.Context(), genai.Messages{}, nil)
 			if err == nil {

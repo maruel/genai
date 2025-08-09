@@ -149,7 +149,7 @@ func main() {
 		log.Fatal(err)
 	}
 	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "What is 3214 + 5632? Leverage the tool available to you to tell me the answer. Do not explain. Be terse. Include only the answer."),
+		genai.NewTextMessage("What is 3214 + 5632? Leverage the tool available to you to tell me the answer. Do not explain. Be terse. Include only the answer."),
 	}
 	opts := genai.OptionsText{
 		Tools: []genai.ToolDef{genaitools.Arithmetic},
@@ -194,7 +194,7 @@ func main() {
 		B int `json:"b"`
 	}
 	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "What is 3214 + 5632? Call the tool \"add\" to tell me the answer. Do not explain. Be terse. Include only the answer."),
+		genai.NewTextMessage("What is 3214 + 5632? Call the tool \"add\" to tell me the answer. Do not explain. Be terse. Include only the answer."),
 	}
 	opts := genai.OptionsText{
 		Tools: []genai.ToolDef{
@@ -266,7 +266,7 @@ func main() {
 		log.Fatal(err)
 	}
 	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Is a circle round? Reply as JSON."),
+		genai.NewTextMessage("Is a circle round? Reply as JSON."),
 	}
 	var circle struct {
 		Round bool `json:"round"`

@@ -184,8 +184,8 @@ type Message struct {
 
 // NewTextMessage is a shorthand function to create a Message with a single
 // text block.
-func NewTextMessage(role Role, text string) Message {
-	return Message{Role: role, Contents: []Content{{Text: text}}}
+func NewTextMessage(text string) Message {
+	return Message{Role: User, Contents: []Content{{Text: text}}}
 }
 
 func (m *Message) IsZero() bool {

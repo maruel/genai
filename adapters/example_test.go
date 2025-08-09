@@ -27,7 +27,7 @@ func ExampleGenSyncWithToolCallLoop() {
 		log.Fatal(err)
 	}
 	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "What is 3214 + 5632? Leverage the tool available to you to tell me the answer. Do not explain. Be terse. Include only the answer."),
+		genai.NewTextMessage("What is 3214 + 5632? Leverage the tool available to you to tell me the answer. Do not explain. Be terse. Include only the answer."),
 	}
 	opts := genai.OptionsText{
 		Tools: []genai.ToolDef{genaitools.Arithmetic},
@@ -55,7 +55,7 @@ func ExampleGenStreamWithToolCallLoop() {
 		log.Fatal(err)
 	}
 	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "What is 3214 + 5632? Leverage the tool available to you to tell me the answer. Do not explain. Be terse. Include only the answer."),
+		genai.NewTextMessage("What is 3214 + 5632? Leverage the tool available to you to tell me the answer. Do not explain. Be terse. Include only the answer."),
 	}
 	opts := genai.OptionsText{
 		Tools: []genai.ToolDef{genaitools.Arithmetic},

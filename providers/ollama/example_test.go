@@ -35,7 +35,7 @@ func ExampleClient_GenSync() {
 		return
 	}
 	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Say hello. Reply with only one word."),
+		genai.NewTextMessage("Say hello. Reply with only one word."),
 	}
 	opts := genai.OptionsText{
 		Seed:        1,

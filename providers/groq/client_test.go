@@ -33,7 +33,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	}
 	var c genai.ProviderGen = cl
 	if strings.HasPrefix(model.Model, "qwen/") && model.Thinking {
-		c = &adapters.ProviderGenAppend{ProviderGen: c, Append: genai.NewTextMessage(genai.User, "\n\n/think")}
+		c = &adapters.ProviderGenAppend{ProviderGen: c, Append: genai.NewTextMessage("\n\n/think")}
 	}
 	if model.Thinking {
 		return &handleGroqReasoning{Client: c}

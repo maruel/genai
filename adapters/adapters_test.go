@@ -33,7 +33,7 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 			},
 		},
 	}
-	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Calculate 5 + 3")}
+	msgs := genai.Messages{genai.NewTextMessage("Calculate 5 + 3")}
 	type CalculatorArgs struct {
 		A         int    `json:"a"`
 		B         int    `json:"b"`

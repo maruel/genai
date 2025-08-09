@@ -37,7 +37,7 @@ func TestClient_GenSync_simple(t *testing.T) {
 	for name := range providers {
 		t.Run(name, func(t *testing.T) {
 			c := getClient(t, name)
-			msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
+			msgs := genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
 			opts := genai.OptionsText{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
 			ctx := t.Context()
 			resp, err := c.GenSync(ctx, msgs, &opts)
@@ -59,7 +59,7 @@ func TestClient_GenStream_simple(t *testing.T) {
 	for name := range providers {
 		t.Run(name, func(t *testing.T) {
 			c := getClient(t, name)
-			msgs := genai.Messages{genai.NewTextMessage(genai.User, "Say hello. Use only one word.")}
+			msgs := genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
 			opts := genai.OptionsText{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
 			ctx := t.Context()
 			chunks := make(chan genai.ContentFragment)

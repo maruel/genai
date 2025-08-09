@@ -18,7 +18,7 @@ import (
 )
 
 func exerciseGenTools(ctx context.Context, cs *callState, f *genai.FunctionalityText, prefix string) error {
-	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.")}
+	msgs := genai.Messages{genai.NewTextMessage("Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.")}
 	type got struct {
 		Number json.Number `json:"number" jsonschema:"type=number"`
 	}
@@ -176,7 +176,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 		}
 
 		check := prefix + fmt.Sprintf("ToolBias-%s", line.countrySelected)
-		resp, err := cs.callGen(ctx, check, genai.Messages{genai.NewTextMessage(genai.User, line.prompt)}, &opts)
+		resp, err := cs.callGen(ctx, check, genai.Messages{genai.NewTextMessage(line.prompt)}, &opts)
 		if isBadError(ctx, err) {
 			return err
 		}

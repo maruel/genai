@@ -80,7 +80,7 @@ func Example_all_ProviderGen() {
 			}
 		}
 		msgs := genai.Messages{
-			genai.NewTextMessage(genai.User, "Tell a story in 10 words."),
+			genai.NewTextMessage("Tell a story in 10 words."),
 		}
 		// Include options with some unsupported features to demonstrate UnsupportedContinuableError
 		opts := &genai.OptionsText{
@@ -113,7 +113,7 @@ func Example_all_Full() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Provide a life tip that sounds good but is actually a bad idea.")}
+	msgs := genai.Messages{genai.NewTextMessage("Provide a life tip that sounds good but is actually a bad idea.")}
 	resp, err := p.GenSync(context.Background(), msgs, nil)
 	if err != nil {
 		if _, ok := err.(*genai.UnsupportedContinuableError); !ok {

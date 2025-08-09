@@ -81,7 +81,7 @@ func TestClient_Batch(t *testing.T) {
 	// Using an extremely old cheap model that nobody uses helps a lot on reducing the latency, I got it to work
 	// within a few minutes.
 	c := getClient(t, "claude-3-haiku-20240307")
-	msgs := genai.Messages{genai.NewTextMessage(genai.User, "Tell a joke in 10 words")}
+	msgs := genai.Messages{genai.NewTextMessage("Tell a joke in 10 words")}
 	job, err := c.GenAsync(ctx, msgs, nil)
 	if err != nil {
 		t.Fatal(err)

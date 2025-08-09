@@ -43,7 +43,7 @@ func TestClient_Provider_errors(t *testing.T, getClient func(t *testing.T, apiKe
 			}
 
 			if _, ok := tester.(genai.ProviderGen); ok {
-				msgs := genai.Messages{genai.NewTextMessage(genai.User, "Tell a short joke.")}
+				msgs := genai.Messages{genai.NewTextMessage("Tell a short joke.")}
 				if line.ErrGenSync != "" {
 					t.Run("GenSync", func(t *testing.T) {
 						c, err := getClient(t, line.APIKey, line.Model)
@@ -97,7 +97,7 @@ func TestClient_Provider_errors(t *testing.T, getClient func(t *testing.T, apiKe
 				}
 			}
 			if _, ok := tester.(genai.ProviderGenDoc); ok {
-				msg := genai.NewTextMessage(genai.User, "Generate a short joke.")
+				msg := genai.NewTextMessage("Generate a short joke.")
 				if line.ErrGenDoc != "" {
 					t.Run("GenDoc", func(t *testing.T) {
 						c, err := getClient(t, line.APIKey, line.Model)

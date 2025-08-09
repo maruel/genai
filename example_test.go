@@ -67,7 +67,7 @@ func ExampleClient_GenSync_jSON() {
 		log.Fatal(err)
 	}
 	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Is a circle round? Reply as JSON with the form {\"round\": false} or {\"round\": true}."),
+		genai.NewTextMessage("Is a circle round? Reply as JSON with the form {\"round\": false} or {\"round\": true}."),
 	}
 	opts := genai.OptionsText{ReplyAsJSON: true}
 	resp, err := c.GenSync(context.Background(), msgs, &opts)
@@ -92,7 +92,7 @@ func ExampleClient_GenSync_jSON_schema() {
 		log.Fatal(err)
 	}
 	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Is a circle round? Reply as JSON."),
+		genai.NewTextMessage("Is a circle round? Reply as JSON."),
 	}
 	var got struct {
 		Round bool `json:"round"`
@@ -187,7 +187,7 @@ func ExampleProviderGen_genSync_video() {
 	defer f.Close()
 	// TogetherAI seems to require separate messages for text and images.
 	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "What is the word? Reply with exactly and only one word."),
+		genai.NewTextMessage("What is the word? Reply with exactly and only one word."),
 		{Role: genai.User, Contents: []genai.Content{{Document: f}}},
 	}
 	resp, err := c.GenSync(context.Background(), msgs, nil)
@@ -209,7 +209,7 @@ func ExampleProviderGen_GenStream() {
 	}
 	ctx := context.Background()
 	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "Say hello. Use only one word."),
+		genai.NewTextMessage("Say hello. Use only one word."),
 	}
 	opts := genai.OptionsText{
 		Seed:      1,
@@ -327,7 +327,7 @@ func Example_genSyncWithToolCallLoop_with_custom_HTTP_Header() {
 		log.Fatal(err)
 	}
 	msgs := genai.Messages{
-		genai.NewTextMessage(genai.User, "What is 3214 + 5632? Leverage the tool available to you to tell me the answer. Do not explain. Be terse. Include only the answer."),
+		genai.NewTextMessage("What is 3214 + 5632? Leverage the tool available to you to tell me the answer. Do not explain. Be terse. Include only the answer."),
 	}
 	opts := genai.OptionsText{
 		Tools: []genai.ToolDef{genaitools.Arithmetic},

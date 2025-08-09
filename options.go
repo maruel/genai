@@ -65,15 +65,16 @@ type OptionsProvider struct {
 // Options is options that can be provided to a ProviderGen interface.
 type Options interface {
 	Validatable
-	Modality() Modality
+	// Modalities returns the list of modalities supported by these options.
+	// For single-modality options, it returns a slice with one element.
+	// For multi-modality options, it returns a slice with multiple elements.
+	Modalities() Modalities
 }
 
 // Modality is one of the supported modalities.
 type Modality string
 
 const (
-	// ModalityAny is an unconstrained modality.
-	ModalityAny Modality = "any"
 	// ModalityText is for raw text.
 	ModalityText Modality = "text"
 	// ModalityImage is support for PNG, JPG, often single frame GIF, WEBP.
@@ -168,8 +169,8 @@ type OptionsText struct {
 	_ struct{}
 }
 
-func (o *OptionsText) Modality() Modality {
-	return ModalityText
+func (o *OptionsText) Modalities() Modalities {
+	return Modalities{ModalityText}
 }
 
 // Validate ensures the completion options are valid.
@@ -323,8 +324,8 @@ func (o *OptionsAudio) Validate() error {
 	return nil
 }
 
-func (o *OptionsAudio) Modality() Modality {
-	return ModalityAudio
+func (o *OptionsAudio) Modalities() Modalities {
+	return Modalities{ModalityAudio}
 }
 
 // OptionsImage is a list of frequent options supported by most ProviderDoc.
@@ -353,8 +354,8 @@ func (o *OptionsImage) Validate() error {
 	return nil
 }
 
-func (o *OptionsImage) Modality() Modality {
-	return ModalityImage
+func (o *OptionsImage) Modalities() Modalities {
+	return Modalities{ModalityImage}
 }
 
 type OptionsVideo struct{}
@@ -363,8 +364,8 @@ func (o *OptionsVideo) Validate() error {
 	return nil
 }
 
-func (o *OptionsVideo) Modality() Modality {
-	return ModalityVideo
+func (o *OptionsVideo) Modalities() Modalities {
+	return Modalities{ModalityVideo}
 }
 
 // Private

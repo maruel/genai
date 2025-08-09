@@ -35,18 +35,18 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 		t.Fatal(err)
 	}
 	if strings.Contains(model.Model, "image-generation") {
-		// e.g. "gemini-2.0-flash-preview-image-generation"
+		// TODO: Doesn't exist anymore.
 		return &injectOption{
 			Client: c,
-			opts:   gemini.OptionsText{ResponseModalities: []gemini.Modality{gemini.ModalityText, gemini.ModalityImage}},
+			opts:   gemini.Options{ResponseModalities: genai.Modalities{genai.ModalityText, genai.ModalityImage}},
 		}
 	}
 	if model.Thinking {
 		// https://ai.google.dev/gemini-api/docs/thinking?hl=en
-		return &injectOption{Client: c, opts: gemini.OptionsText{ThinkingBudget: 512}}
+		return &injectOption{Client: c, opts: gemini.Options{ThinkingBudget: 512, ResponseModalities: genai.Modalities{genai.ModalityText}}}
 	}
 	// Forcibly disable thinking.
-	return &injectOption{Client: c, opts: gemini.OptionsText{ThinkingBudget: 0}}
+	return &injectOption{Client: c, opts: gemini.Options{ThinkingBudget: 0, ResponseModalities: genai.Modalities{genai.ModalityText}}}
 }
 
 func TestClient_Scoreboard(t *testing.T) {
@@ -70,7 +70,7 @@ func TestClient_Scoreboard(t *testing.T) {
 
 type injectOption struct {
 	*gemini.Client
-	opts gemini.OptionsText
+	opts gemini.Options
 }
 
 func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {

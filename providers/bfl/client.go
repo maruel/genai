@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"slices"
 	"strings"
 	"time"
 
@@ -283,8 +284,8 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 		if err := opts.Validate(); err != nil {
 			return "", err
 		}
-		if m := opts.Modality(); m != genai.ModalityImage {
-			return "", fmt.Errorf("modality %s not supported", m)
+		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityImage) {
+			return "", fmt.Errorf("modality image not supported, supported: %s", supported)
 		}
 	}
 	if len(msgs) != 1 {

@@ -19,6 +19,7 @@ import (
 	"net/http"
 	"os"
 	"reflect"
+	"slices"
 	"strings"
 	"time"
 
@@ -1042,7 +1043,7 @@ func (c *Client) isAudio(opts genai.Options) bool {
 	if strings.HasPrefix(c.Model, "cartesia/") {
 		return true
 	}
-	return opts != nil && opts.Modality() == genai.ModalityAudio
+	return opts != nil && slices.Contains(opts.Modalities(), genai.ModalityAudio)
 }
 
 func (c *Client) isImage(opts genai.Options) bool {
@@ -1051,7 +1052,7 @@ func (c *Client) isImage(opts genai.Options) bool {
 	if strings.HasPrefix(c.Model, "black-forest-labs/") {
 		return true
 	}
-	return opts != nil && opts.Modality() == genai.ModalityImage
+	return opts != nil && slices.Contains(opts.Modalities(), genai.ModalityImage)
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {

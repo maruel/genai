@@ -23,6 +23,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"reflect"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -1053,8 +1054,8 @@ func (c *Client) Completions(ctx context.Context, msgs genai.Messages, opts gena
 		if err := opts.Validate(); err != nil {
 			return genai.Result{}, err
 		}
-		if m := opts.Modality(); m != genai.ModalityText {
-			return genai.Result{}, fmt.Errorf("modality %s not supported", m)
+		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityText) {
+			return genai.Result{}, fmt.Errorf("modality text not supported, supported: %s", supported)
 		}
 	}
 	for i, msg := range msgs {
@@ -1097,8 +1098,8 @@ func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, chu
 		if err := opts.Validate(); err != nil {
 			return result, err
 		}
-		if m := opts.Modality(); m != genai.ModalityText {
-			return genai.Result{}, fmt.Errorf("modality %s not supported", m)
+		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityText) {
+			return genai.Result{}, fmt.Errorf("modality text not supported, supported: %s", supported)
 		}
 	}
 

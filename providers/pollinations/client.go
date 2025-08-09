@@ -18,6 +18,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -1006,8 +1007,8 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		if err := opts.Validate(); err != nil {
 			return res, err
 		}
-		if m := opts.Modality(); m != genai.ModalityImage {
-			return res, fmt.Errorf("modality %s not supported", m)
+		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityImage) {
+			return res, fmt.Errorf("modality image not supported, supported: %s", supported)
 		}
 	}
 	for i := range msg.Contents {
@@ -1108,7 +1109,7 @@ func (c *Client) ListTextModels(ctx context.Context) ([]genai.Model, error) {
 }
 
 func (c *Client) isAudio(opts genai.Options) bool {
-	return opts != nil && opts.Modality() == genai.ModalityAudio
+	return opts != nil && slices.Contains(opts.Modalities(), genai.ModalityAudio)
 }
 
 func (c *Client) isImage(opts genai.Options) bool {
@@ -1117,7 +1118,7 @@ func (c *Client) isImage(opts genai.Options) bool {
 	case "flux", "gptimage", "turbo":
 		return true
 	default:
-		return opts != nil && opts.Modality() == genai.ModalityImage
+		return opts != nil && slices.Contains(opts.Modalities(), genai.ModalityImage)
 	}
 }
 
@@ -1236,7 +1237,7 @@ func (m *ModelCache) ValidateModality(c genai.ProviderModel, mod genai.Modality)
 		if isImage {
 			return nil
 		}
-	case genai.ModalityAny, genai.ModalityVideo, genai.ModalityDocument, genai.ModalityAudio:
+	case genai.ModalityVideo, genai.ModalityDocument, genai.ModalityAudio:
 	}
 	return fmt.Errorf("modality %s not supported", mod)
 }

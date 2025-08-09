@@ -14,6 +14,7 @@ import (
 	"io"
 	"net/http"
 	"reflect"
+	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -296,8 +297,9 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 		if err := opts.Validate(); err != nil {
 			return result, err
 		}
-		if m := opts.Modality(); m != genai.ModalityText {
-			return result, fmt.Errorf("modality %s not supported", m)
+		// TODO: Specify as a field.
+		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityText) {
+			return result, fmt.Errorf("modality %s not supported", supported)
 		}
 	}
 	// Check for non-empty Opaque field unless explicitly allowed
@@ -346,8 +348,9 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 		if err := opts.Validate(); err != nil {
 			return result, err
 		}
-		if m := opts.Modality(); m != genai.ModalityText {
-			return result, fmt.Errorf("modality %s not supported", m)
+		// TODO: Specify as a field.
+		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityText) {
+			return result, fmt.Errorf("modality %s not supported", supported)
 		}
 	}
 	// Check for non-empty Opaque field unless explicitly allowed

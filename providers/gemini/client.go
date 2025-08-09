@@ -287,8 +287,10 @@ var Scoreboard = genai.Scoreboard{
 	},
 }
 
-// OptionsText includes Gemini specific options.
-type OptionsText struct {
+// Options includes Gemini specific options.
+type Options struct {
+	genai.OptionsAudio
+	genai.OptionsImage
 	genai.OptionsText
 
 	// ThinkingBudget is the maximum number of tokens the LLM can use to think about the answer. When 0,
@@ -298,7 +300,15 @@ type OptionsText struct {
 	// ResponseModalities defines what the LLM can return, text, images or audio. Default to text.
 	//
 	// https://ai.google.dev/gemini-api/docs/image-generation
-	ResponseModalities []Modality
+	ResponseModalities genai.Modalities
+}
+
+func (o *Options) Validate() error {
+	return errors.Join([]error{o.OptionsAudio.Validate(), o.OptionsImage.Validate(), o.OptionsText.Validate()}...)
+}
+
+func (o *Options) Modalities() genai.Modalities {
+	return o.ResponseModalities
 }
 
 // Blob is documented at https://ai.google.dev/api/caching?hl=en#Blob
@@ -390,9 +400,9 @@ type Modality string
 
 const (
 	ModalityUnspecified Modality = "" // "MODALITY_UNSPECIFIED"
-	ModalityText        Modality = "TEXT"
-	ModalityImage       Modality = "IMAGE"
 	ModalityAudio       Modality = "AUDIO"
+	ModalityImage       Modality = "IMAGE"
+	ModalityText        Modality = "TEXT"
 )
 
 // MediaResolution is documented at https://ai.google.dev/api/generate-content#MediaResolution
@@ -467,15 +477,13 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 		c.GenerationConfig.ThinkingConfig = &ThinkingConfig{}
 	}
 	// Default to text generation.
-	if len(c.GenerationConfig.ResponseModalities) == 0 {
-		c.GenerationConfig.ResponseModalities = []Modality{ModalityText}
-	}
+	c.GenerationConfig.ResponseModalities = []Modality{ModalityText}
 
 	if opts != nil {
 		// This doesn't seem to be well supported yet:
 		//    in.GenerationConfig.ResponseLogprobs = true
 		switch v := opts.(type) {
-		case *OptionsText:
+		case *Options:
 			if v.ThinkingBudget > 0 {
 				// https://ai.google.dev/gemini-api/docs/thinking
 				c.GenerationConfig.ThinkingConfig = &ThinkingConfig{
@@ -484,11 +492,30 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 				}
 			}
 			if len(v.ResponseModalities) != 0 {
-				c.GenerationConfig.ResponseModalities = v.ResponseModalities
+				c.GenerationConfig.ResponseModalities = make([]Modality, len(v.ResponseModalities))
+				for i, m := range v.ResponseModalities {
+					switch m {
+					case genai.ModalityAudio:
+						c.GenerationConfig.ResponseModalities[i] = ModalityAudio
+					case genai.ModalityImage:
+						c.GenerationConfig.ResponseModalities[i] = ModalityImage
+					case genai.ModalityText:
+						c.GenerationConfig.ResponseModalities[i] = ModalityText
+					default:
+						errs = append(errs, fmt.Errorf("unsupported modality %s", m))
+					}
+				}
 			}
+			// TODO: Handle audio, image and video.
 			unsupported, errs = c.initOptions(&v.OptionsText, model)
 		case *genai.OptionsText:
 			unsupported, errs = c.initOptions(v, model)
+		case *genai.OptionsAudio:
+			errs = append(errs, fmt.Errorf("todo: implement options type %T", opts))
+		case *genai.OptionsImage:
+			errs = append(errs, fmt.Errorf("todo: implement options type %T", opts))
+		case *genai.OptionsVideo:
+			errs = append(errs, fmt.Errorf("todo: implement options type %T", opts))
 		default:
 			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
 		}

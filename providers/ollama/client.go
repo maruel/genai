@@ -18,6 +18,7 @@ import (
 	"io"
 	"net/http"
 	"reflect"
+	"slices"
 	"strings"
 	"time"
 
@@ -589,8 +590,8 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 		if err := opts.Validate(); err != nil {
 			return result, err
 		}
-		if m := opts.Modality(); m != genai.ModalityText {
-			return result, fmt.Errorf("modality %s not supported", m)
+		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityText) {
+			return result, fmt.Errorf("modality text not supported, supported: %s", supported)
 		}
 	}
 	for i, msg := range msgs {
@@ -654,8 +655,8 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 		if err := opts.Validate(); err != nil {
 			return result, err
 		}
-		if m := opts.Modality(); m != genai.ModalityText {
-			return result, fmt.Errorf("modality %s not supported", m)
+		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityText) {
+			return result, fmt.Errorf("modality text not supported, supported: %s", supported)
 		}
 	}
 	for i, msg := range msgs {

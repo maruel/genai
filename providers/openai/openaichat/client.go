@@ -23,6 +23,7 @@ import (
 	"net/url"
 	"os"
 	"reflect"
+	"slices"
 	"strings"
 	"time"
 
@@ -1296,7 +1297,7 @@ func (c *Client) isImage(opts genai.Options) bool {
 	case "dall-e-2", "dall-e-3", "gpt-image-1":
 		return true
 	default:
-		return opts != nil && opts.Modality() == genai.ModalityImage
+		return opts != nil && slices.Contains(opts.Modalities(), genai.ModalityImage)
 	}
 }
 

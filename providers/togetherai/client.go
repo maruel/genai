@@ -658,6 +658,15 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 			}
 		}
 	}
+	if len(c.Choices[0].Logprobs.Tokens) != 0 {
+		out.Logprobs = &genai.Logprobs{
+			Content: make([]genai.LogprobsContent, len(c.Choices[0].Logprobs.Tokens)),
+		}
+		for i := range c.Choices[0].Logprobs.Tokens {
+			out.Logprobs.Content[i].Token = c.Choices[0].Logprobs.Tokens[i]
+			out.Logprobs.Content[i].Logprob = c.Choices[0].Logprobs.TokenLogprobs[i]
+		}
+	}
 	return out, err
 }
 
@@ -1165,6 +1174,23 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				return err
 			}
 			chunks <- f
+		}
+		if len(pkt.Choices[0].Logprobs.Tokens) != 0 {
+			if result.Logprobs == nil {
+				result.Logprobs = &genai.Logprobs{}
+			}
+			for i := range pkt.Choices[0].Logprobs.Tokens {
+				genaiLp := genai.LogprobsContent{
+					Token:   pkt.Choices[0].Logprobs.Tokens[i],
+					Logprob: pkt.Choices[0].Logprobs.TokenLogprobs[i],
+				}
+				genaiLp.TopLogprobs = make([]genai.TopLogprob, len(pkt.Choices[0].Logprobs.TopLogprobs[i]))
+				for j, tlp := range pkt.Choices[0].Logprobs.TopLogprobs[i] {
+					genaiLp.TopLogprobs[j].Token = tlp.Token
+					genaiLp.TopLogprobs[j].Logprob = tlp.Logprob
+				}
+				result.Logprobs.Content = append(result.Logprobs.Content, genaiLp)
+			}
 		}
 	}
 	if len(warnings) != 0 {

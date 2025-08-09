@@ -56,6 +56,7 @@ var Scoreboard = genai.Scoreboard{
 				JSONSchema:     true,
 				Citations:      true,
 				Seed:           true,
+				TopLogprobs:    true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.True,
@@ -64,6 +65,7 @@ var Scoreboard = genai.Scoreboard{
 				JSONSchema:     true,
 				Citations:      true,
 				Seed:           true,
+				TopLogprobs:    true,
 			},
 		},
 		// https://docs.cohere.com/docs/aya-vision
@@ -80,14 +82,16 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:     genai.True,
-				Citations: true,
-				Seed:      true,
+				Tools:       genai.True,
+				Citations:   true,
+				Seed:        true,
+				TopLogprobs: true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:     genai.True,
-				Citations: true,
-				Seed:      true,
+				Tools:       genai.True,
+				Citations:   true,
+				Seed:        true,
+				TopLogprobs: true,
 			},
 		},
 		// To enable.
@@ -176,7 +180,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			c.Seed = v.Seed
 			c.K = v.TopK
 			if v.TopLogprobs > 0 {
-				unsupported = append(unsupported, "TopLogprobs")
+				c.Logprobs = true
 			}
 			c.StopSequences = v.Stop
 			if v.DecodeAs != nil {
@@ -490,11 +494,7 @@ type ChatResponse struct {
 	FinishReason FinishReason    `json:"finish_reason"`
 	Message      MessageResponse `json:"message"`
 	Usage        Usage           `json:"usage"`
-	Logprobs     []struct {
-		TokenIDs []int64   `json:"token_ids"`
-		Text     string    `json:"text"`
-		Logprobs []float64 `json:"logprobs"`
-	} `json:"logprobs"`
+	Logprobs     []Logprobs      `json:"logprobs"`
 }
 
 func (c *ChatResponse) ToResult() (genai.Result, error) {
@@ -506,6 +506,18 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 			OutputTokens: c.Usage.Tokens.OutputTokens,
 			FinishReason: c.FinishReason.ToFinishReason(),
 		},
+	}
+	if len(c.Logprobs) != 0 {
+		out.Logprobs = &genai.Logprobs{
+			Content: make([]genai.LogprobsContent, len(c.Logprobs)),
+		}
+		for i, lp := range c.Logprobs {
+			out.Logprobs.Content[i] = genai.LogprobsContent{
+				Token:   lp.Text,
+				Logprob: lp.Logprobs[0],
+				Bytes:   []byte(lp.Text),
+			}
+		}
 	}
 	// It is very frustrating that Cohere uses different message response types.
 	err := c.Message.To(&out.Message)
@@ -540,6 +552,12 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 		}
 		return genai.FinishReason(strings.ToLower(string(f)))
 	}
+}
+
+type Logprobs struct {
+	TokenIDs []int64   `json:"token_ids"`
+	Text     string    `json:"text"`
+	Logprobs []float64 `json:"logprobs"`
 }
 
 type Usage struct {
@@ -712,6 +730,7 @@ type ChatStreamChunkResponse struct {
 		FinishReason FinishReason    `json:"finish_reason"`
 		Usage        Usage           `json:"usage"`
 	} `json:"delta"`
+	Logprobs Logprobs `json:"logprobs"`
 }
 
 type ChunkType string
@@ -992,6 +1011,16 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 
 		if len(pkt.Delta.Message.Content) == 1 {
 			f.TextFragment = pkt.Delta.Message.Content[0].Text
+		}
+		if pkt.Logprobs.Text != "" {
+			if result.Logprobs == nil {
+				result.Logprobs = &genai.Logprobs{}
+			}
+			result.Logprobs.Content = append(result.Logprobs.Content, genai.LogprobsContent{
+				Token:   pkt.Logprobs.Text,
+				Logprob: pkt.Logprobs.Logprobs[0],
+				Bytes:   []byte(pkt.Logprobs.Text),
+			})
 		}
 		if !f.IsZero() {
 			if err := result.Accumulate(f); err != nil {

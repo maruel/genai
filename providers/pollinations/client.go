@@ -56,7 +56,6 @@ var Scoreboard = genai.Scoreboard{
 				IndecisiveTool: genai.Flaky,
 				JSON:           true,
 				Seed:           true,
-				TopLogprobs:    true,
 			},
 			// JSON generated is often bad.
 			GenStream: &genai.FunctionalityText{
@@ -65,7 +64,6 @@ var Scoreboard = genai.Scoreboard{
 				Tools:          genai.Flaky,
 				IndecisiveTool: genai.Flaky,
 				Seed:           true,
-				TopLogprobs:    true,
 			},
 		},
 		{
@@ -115,7 +113,6 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:     genai.True,
 				JSON:           true,
 				Seed:           true,
-				TopLogprobs:    true,
 			},
 			GenStream: &genai.FunctionalityText{
 				BrokenTokenUsage: genai.True,
@@ -125,7 +122,6 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:       genai.True,
 				JSON:             true,
 				Seed:             true,
-				TopLogprobs:      true,
 			},
 		},
 		// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md
@@ -278,8 +274,10 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) ([]string,
 		unsupported = append(unsupported, "TopK")
 	}
 	if v.TopLogprobs > 0 {
+		// Try to request it but it's known to not work, so add it anyway to the unsupported flag.
 		c.TopLogprobs = v.TopLogprobs
 		c.Logprobs = true
+		unsupported = append(unsupported, "TopLogprobs")
 	}
 	c.Stop = v.Stop
 	if v.DecodeAs != nil {

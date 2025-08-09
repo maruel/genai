@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 142
+        content_length: 158
         host: api.cohere.com
         body: |
-            {"stream":false,"model":"c4ai-aya-vision-8b","messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
+            {"stream":false,"model":"c4ai-aya-vision-8b","messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"logprobs":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,8 +19,8 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 257
-        body: '{"id":"584d0705-3025-48cb-bd0b-06c18d282461","message":{"role":"assistant","content":[{"type":"text","text":"Hello!"}]},"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":8,"output_tokens":2},"tokens":{"input_tokens":577,"output_tokens":4}}}'
+        content_length: 366
+        body: '{"id":"a497e717-395d-4d9c-b378-e8b24e85d308","message":{"role":"assistant","content":[{"type":"text","text":"Hello!"}]},"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":8,"output_tokens":2},"tokens":{"input_tokens":577,"output_tokens":4}},"logprobs":[{"text":"Hello","token_ids":[28339],"logprobs":[0]},{"text":"!","token_ids":[8],"logprobs":[0]}]}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -29,7 +29,7 @@ interactions:
             Cache-Control:
                 - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
             Content-Length:
-                - "257"
+                - "366"
             Content-Type:
                 - application/json
             Expires:
@@ -49,9 +49,9 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - 9fa16ed7cac4db6aa990424e130bd761
+                - 54397814715809d9c7802712a95ddf89
             X-Envoy-Upstream-Service-Time:
-                - "455"
+                - "209"
         status: 200 OK
         code: 200
-        duration: 500ms
+        duration: 253ms

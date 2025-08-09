@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 142
+        content_length: 158
         host: api.cohere.com
         body: |
-            {"stream":true,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
+            {"stream":true,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"logprobs":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,16 +22,16 @@ interactions:
         content_length: -1
         body: |+
             event: message-start
-            data: {"id":"f9045e33-daf0-4ce3-9121-5b0f1910974f","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
+            data: {"id":"248a248a-58b9-454d-a981-1a2abe863a94","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
 
             event: content-start
             data: {"type":"content-start","index":0,"delta":{"message":{"content":{"type":"text","text":""}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"Hello"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"Hello"}}},"logprobs":{"text":"Hello","token_ids":[28339],"logprobs":[-0.1040524]}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"."}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"."}}},"logprobs":{"text":".","token_ids":[21],"logprobs":[-0.55914485]}}
 
             event: content-end
             data: {"type":"content-end","index":0}
@@ -63,9 +63,9 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - fe6b64a4d145b707caa0e64685bb319c
+                - dc09d4e055fda00591e3d8a2d1644ee1
             X-Envoy-Upstream-Service-Time:
-                - "100"
+                - "141"
         status: 200 OK
         code: 200
-        duration: 183ms
+        duration: 222ms

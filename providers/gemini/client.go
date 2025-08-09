@@ -77,6 +77,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
+				TopLogprobs:    true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.True,
@@ -107,6 +108,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
+				TopLogprobs:    true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.True,
@@ -142,6 +144,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
+				TopLogprobs:    true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:      genai.True,
@@ -178,6 +181,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
+				TopLogprobs:    true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:      genai.True,
@@ -213,6 +217,7 @@ var Scoreboard = genai.Scoreboard{
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
+				TopLogprobs:    true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.True,
@@ -437,7 +442,7 @@ type ChatRequest struct {
 		PresencePenalty            float64    `json:"presencePenalty,omitzero"`
 		FrequencyPenalty           float64    `json:"frequencyPenalty,omitzero"`
 		ResponseLogprobs           bool       `json:"responseLogprobs,omitzero"`
-		Logprobs                   int64      `json:"logProbs,omitzero"` // Number of logprobs to return
+		Logprobs                   int64      `json:"logprobs,omitzero"`
 		EnableEnhancedCivicAnswers bool       `json:"enableEnhancedCivicAnswers,omitzero"`
 		// https://ai.google.dev/api/generate-content?hl=en#SpeechConfig
 		SpeechConfig struct {
@@ -480,8 +485,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	c.GenerationConfig.ResponseModalities = []Modality{ModalityText}
 
 	if opts != nil {
-		// This doesn't seem to be well supported yet:
-		//    in.GenerationConfig.ResponseLogprobs = true
 		switch v := opts.(type) {
 		case *Options:
 			if v.ThinkingBudget > 0 {
@@ -908,9 +911,9 @@ type ChatResponse struct {
 				GoogleSearchDynamicRetrievalScore float64 `json:"googleSearchDynamicRetrievalScore"`
 			} `json:"retrievalMetadata"`
 		} `json:"groundingMetadata"`
-		AvgLogprobs    float64  `json:"avgLogprobs"`
-		LogprobsResult struct{} `json:"logprobsResult"`
-		Index          int64    `json:"index"`
+		AvgLogprobs    float64        `json:"avgLogprobs"`
+		LogprobsResult LogprobsResult `json:"logprobsResult"`
+		Index          int64          `json:"index"`
 	} `json:"candidates"`
 	PromptFeedback struct{}      `json:"promptFeedback,omitzero"`
 	UsageMetadata  UsageMetadata `json:"usageMetadata"`
@@ -939,7 +942,46 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	// It'd be nice to have citation support, but it's only filled with
 	// https://ai.google.dev/api/semantic-retrieval/question-answering and the likes and as of June 2025, it
 	// only works in English (!)
+
+	if len(c.Candidates[0].LogprobsResult.ChosenCandidates) != 0 {
+		out.Logprobs = &genai.Logprobs{}
+		for i, chosen := range c.Candidates[0].LogprobsResult.ChosenCandidates {
+			genaiLogprobsContent := genai.LogprobsContent{
+				Token:   chosen.Token,
+				Logprob: chosen.LogProbability,
+				Bytes:   []byte(chosen.Token),
+			}
+			if i < len(c.Candidates[0].LogprobsResult.TopCandidates) {
+				for _, tc := range c.Candidates[0].LogprobsResult.TopCandidates[i].Candidates {
+					genaiLogprobsContent.TopLogprobs = append(genaiLogprobsContent.TopLogprobs, genai.TopLogprob{
+						Token:   tc.Token,
+						Logprob: tc.LogProbability,
+						Bytes:   []byte(tc.Token),
+					})
+				}
+			}
+			out.Logprobs.Content = append(out.Logprobs.Content, genaiLogprobsContent)
+		}
+	}
 	return out, err
+}
+
+// LogprobsResult is documented at https://ai.google.dev/api/generate-content#LogprobsResult
+type LogprobsResult struct {
+	TopCandidates    []TopCandidate `json:"topCandidates"`
+	ChosenCandidates []Candidate    `json:"chosenCandidates"`
+}
+
+// TopCandidate is documented at https://ai.google.dev/api/generate-content#TopCandidates
+type TopCandidate struct {
+	Candidates []Candidate `json:"candidates"`
+}
+
+// Candidate is documented at https://ai.google.dev/api/generate-content#Candidate
+type Candidate struct {
+	Token          string  `json:"token"`
+	TokenID        int64   `json:"tokenId"`
+	LogProbability float64 `json:"logProbability"`
 }
 
 // FinishReason is documented at https://ai.google.dev/api/generate-content?hl=en#FinishReason

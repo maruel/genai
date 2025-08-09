@@ -9,7 +9,7 @@ interactions:
         content_length: 233
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"responseLogprobs":true,"logProbs":2,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"responseLogprobs":true,"logprobs":2,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,22 +23,63 @@ interactions:
         uncompressed: true
         body: |
             {
-              "error": {
-                "code": 400,
-                "message": "Invalid JSON payload received. Unknown name \"logProbs\" at 'generation_config': Cannot find field.",
-                "status": "INVALID_ARGUMENT",
-                "details": [
-                  {
-                    "@type": "type.googleapis.com/google.rpc.BadRequest",
-                    "fieldViolations": [
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
                       {
-                        "field": "generation_config",
-                        "description": "Invalid JSON payload received. Unknown name \"logProbs\" at 'generation_config': Cannot find field."
+                        "text": "**My Processing of a Simple Greeting**\n\nOkay, so the user wants me to \"Say hello\" but with a single word. Simple enough, but the constraint makes it interesting. My first step, as always, is to dissect the prompt. The core requirement is clear: a greeting. The constraint is equally clear: just one word.\n\nNext, I need to brainstorm. Let's see... \"Hello,\" \"Hi,\" \"Hey,\" \"Greetings,\" \"Howdy,\" \"Yo,\" \"Aloha,\" \"Ciao.\"  A good list of possibilities. Now, I have to evaluate each one against the prompt's requirements.\n\n\"Hello\" works directly. It *is* a greeting, and it's just one word. \"Hi\" is similar, a bit more informal. \"Hey\" is even more informal. \"Greetings\" is a bit formal, possibly a little archaic. \"Howdy\" is regional, but still technically fits. \"Yo\" is extremely informal. \"Aloha\" is specific to Hawaiian culture, and \"Ciao\" is Italian.\n\nNow, which one is the *best* fit? Well, the prompt *literally* says \"Say hello.\" The most direct, unambiguous response to that is, well, \"Hello.\" It's neutral, universally understood, and exactly what the user asked for, in a word. It's the perfect solution given the constraints.\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Hello"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0,
+                  "logprobsResult": {
+                    "topCandidates": [
+                      {
+                        "candidates": [
+                          {
+                            "token": "Hello",
+                            "logProbability": -0.00012956835,
+                            "tokenId": 9259
+                          },
+                          {
+                            "token": "How",
+                            "logProbability": -9.301575,
+                            "tokenId": 3910
+                          }
+                        ]
+                      }
+                    ],
+                    "chosenCandidates": [
+                      {
+                        "token": "Hello",
+                        "logProbability": -0.00012956835,
+                        "tokenId": 9259
                       }
                     ]
                   }
-                ]
-              }
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 9,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 381,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 9
+                  }
+                ],
+                "thoughtsTokenCount": 371
+              },
+              "modelVersion": "gemini-2.5-pro",
+              "responseId": "edOXaLDDGLPV1MkPkZTGwQs"
             }
         headers:
             Alt-Svc:
@@ -48,7 +89,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=41
+                - gfet4t7; dur=5994
             Vary:
                 - Origin
                 - X-Origin
@@ -59,6 +100,6 @@ interactions:
                 - SAMEORIGIN
             X-Xss-Protection:
                 - "0"
-        status: 400 Bad Request
-        code: 400
-        duration: 53ms
+        status: 200 OK
+        code: 200
+        duration: 6.007s

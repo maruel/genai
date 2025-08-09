@@ -70,6 +70,7 @@ type tableDataRow struct {
 	Files      string `title:"Files"`
 	Citations  string `title:"Citations"`
 	Thinking   string `title:"Thinking"`
+	Logprobs   string `title:"Logprobs"`
 }
 
 func (t *tableDataRow) initFromScenario(s *genai.Scenario) {
@@ -153,6 +154,9 @@ func (t *tableDataRow) initFromScenario(s *genai.Scenario) {
 		if s.GenSync.Seed {
 			t.Seed = "✅"
 		}
+		if s.GenSync.TopLogprobs {
+			t.Logprobs = "✅"
+		}
 	}
 	if s.GenStream != nil {
 		if _, hasTextIn := s.In[genai.ModalityText]; hasTextIn {
@@ -218,6 +222,7 @@ func printTable(provider string) error {
 
 func printSummaryTable(all map[string]func(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error)) error {
 	var rows []tableSummaryRow
+	seen := map[string]struct{}{}
 	for name, f := range all {
 		p, err := f(&genai.OptionsProvider{Model: base.NoModel}, nil)
 		// The function can return an error and still return a client when no API key was found. It's okay here
@@ -226,6 +231,10 @@ func printSummaryTable(all map[string]func(opts *genai.OptionsProvider, wrapper 
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: %v\n", name, err)
 			continue
 		}
+		if _, ok := seen[p.Name()]; ok {
+			continue
+		}
+		seen[p.Name()] = struct{}{}
 		ps, ok := p.(genai.ProviderScoreboard)
 		if !ok {
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: doesn't support scoreboard\n", name)

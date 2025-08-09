@@ -209,6 +209,9 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	if strings.Contains(resp.AsText(), "<think") {
 		return nil, fmt.Errorf("response contains <think: use adapters.ProviderGenThinking")
 	}
+	if resp.Logprobs != nil {
+		return nil, fmt.Errorf("received Logprobs when not supported")
+	}
 
 	// Seed
 	msgs = genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
@@ -233,6 +236,20 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 		f.TopLogprobs = !slices.Contains(uerr.Unsupported, "TopLogprobs")
 	} else if err == nil {
 		f.TopLogprobs = true
+	}
+	if f.TopLogprobs {
+		if resp.Logprobs == nil {
+			// It's not actually supported.
+			f.TopLogprobs = false
+		} else {
+			if len(resp.Logprobs.Content) == 0 {
+				return nil, fmt.Errorf("received empty Logprobs")
+			}
+		}
+	} else {
+		if resp.Logprobs != nil {
+			return nil, fmt.Errorf("received Logprobs when not supported")
+		}
 	}
 
 	// MaxTokens

@@ -62,7 +62,6 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:       genai.True,
 				JSON:             true,
 				JSONSchema:       true,
-				TopLogprobs:      true,
 			},
 			GenStream: &genai.FunctionalityText{
 				NoStopSequence:   true,
@@ -71,7 +70,6 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:       genai.True,
 				JSON:             true,
 				JSONSchema:       true,
-				TopLogprobs:      true,
 			},
 		},
 		// https://platform.openai.com/docs/guides/audio
@@ -99,7 +97,6 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:       genai.True,
 				JSON:             true,
 				JSONSchema:       true,
-				TopLogprobs:      true,
 			},
 			GenStream: &genai.FunctionalityText{
 				NoStopSequence:   true,
@@ -108,7 +105,6 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:       genai.True,
 				JSON:             true,
 				JSONSchema:       true,
-				TopLogprobs:      true,
 			},
 		},
 		{
@@ -371,6 +367,22 @@ func (r *Response) ToResult() (genai.Result, error) {
 		if err := output.To(&res.Message); err != nil {
 			return res, err
 		}
+		if len(output.Content) > 0 && len(output.Content[0].Logprobs) > 0 {
+			res.Logprobs = &genai.Logprobs{
+				Content: make([]genai.LogprobsContent, len(output.Content[0].Logprobs)),
+			}
+			for i, lp := range output.Content[0].Logprobs {
+				res.Logprobs.Content[i].Token = lp.Token
+				res.Logprobs.Content[i].Logprob = lp.Logprob
+				res.Logprobs.Content[i].Bytes = lp.Bytes
+				res.Logprobs.Content[i].TopLogprobs = make([]genai.TopLogprob, len(lp.TopLogprobs))
+				for j, tlp := range lp.TopLogprobs {
+					res.Logprobs.Content[i].TopLogprobs[j].Token = tlp.Token
+					res.Logprobs.Content[i].TopLogprobs[j].Logprob = tlp.Logprob
+					res.Logprobs.Content[i].TopLogprobs[j].Bytes = tlp.Bytes
+				}
+			}
+		}
 	}
 	if r.IncompleteDetails.Reason != "" {
 		if r.IncompleteDetails.Reason == "max_output_tokens" {
@@ -400,6 +412,9 @@ func (r *Response) initOptions(v *genai.OptionsText, model string) ([]string, []
 	}
 	if v.TopK != 0 {
 		unsupported = append(unsupported, "TopK")
+	}
+	if v.TopLogprobs > 0 {
+		r.TopLogprobs = v.TopLogprobs
 	}
 	if len(v.Stop) != 0 {
 		errs = append(errs, errors.New("unsupported option Stop"))

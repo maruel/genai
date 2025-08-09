@@ -9,7 +9,7 @@ interactions:
         content_length: 233
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"responseLogprobs":true,"logProbs":2,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"responseLogprobs":true,"logprobs":2,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,22 +23,82 @@ interactions:
         uncompressed: true
         body: |
             {
-              "error": {
-                "code": 400,
-                "message": "Invalid JSON payload received. Unknown name \"logProbs\" at 'generation_config': Cannot find field.",
-                "status": "INVALID_ARGUMENT",
-                "details": [
-                  {
-                    "@type": "type.googleapis.com/google.rpc.BadRequest",
-                    "fieldViolations": [
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
                       {
-                        "field": "generation_config",
-                        "description": "Invalid JSON payload received. Unknown name \"logProbs\" at 'generation_config': Cannot find field."
+                        "text": "**Concise Greeting**\n\nAlright, the user wants me to greet them with a single word.  It's pretty straightforward, actually. The word \"hello\" fits the bill perfectly, right? One word, clear communication.  So, I'll just say \"Hello\".\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Hello."
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0,
+                  "logprobsResult": {
+                    "topCandidates": [
+                      {
+                        "candidates": [
+                          {
+                            "token": "Hello",
+                            "logProbability": -0.00013540505,
+                            "tokenId": 9259
+                          },
+                          {
+                            "token": "Hi",
+                            "logProbability": -9.922479,
+                            "tokenId": 10979
+                          }
+                        ]
+                      },
+                      {
+                        "candidates": [
+                          {
+                            "token": ".",
+                            "logProbability": -0.20693499,
+                            "tokenId": 236761
+                          },
+                          {
+                            "token": "\u003cctrl100\u003e",
+                            "logProbability": -1.6816015,
+                            "tokenId": 106
+                          }
+                        ]
+                      }
+                    ],
+                    "chosenCandidates": [
+                      {
+                        "token": "Hello",
+                        "logProbability": -0.00013540505,
+                        "tokenId": 9259
+                      },
+                      {
+                        "token": ".",
+                        "logProbability": -0.20693499,
+                        "tokenId": 236761
                       }
                     ]
                   }
-                ]
-              }
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 9,
+                "candidatesTokenCount": 2,
+                "totalTokenCount": 49,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 9
+                  }
+                ],
+                "thoughtsTokenCount": 38
+              },
+              "modelVersion": "gemini-2.5-flash",
+              "responseId": "c9OXaOP1F8af1MkP-a2gwAg"
             }
         headers:
             Alt-Svc:
@@ -48,7 +108,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=45
+                - gfet4t7; dur=1250
             Vary:
                 - Origin
                 - X-Origin
@@ -59,6 +119,6 @@ interactions:
                 - SAMEORIGIN
             X-Xss-Protection:
                 - "0"
-        status: 400 Bad Request
-        code: 400
-        duration: 56ms
+        status: 200 OK
+        code: 200
+        duration: 1.262s

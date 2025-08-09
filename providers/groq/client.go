@@ -52,7 +52,6 @@ var Scoreboard = genai.Scoreboard{
 				IndecisiveTool: genai.Flaky,
 				JSON:           true,
 				Seed:           true,
-				TopLogprobs:    true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.Flaky,
@@ -60,7 +59,6 @@ var Scoreboard = genai.Scoreboard{
 				IndecisiveTool: genai.Flaky,
 				JSON:           true,
 				Seed:           true,
-				TopLogprobs:    true,
 			},
 		},
 		{
@@ -76,7 +74,6 @@ var Scoreboard = genai.Scoreboard{
 				IndecisiveTool: genai.Flaky,
 				JSON:           true, // Only when using ReasoningFormat: ReasoningFormatParsed
 				Seed:           true,
-				TopLogprobs:    true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.Flaky,
@@ -84,7 +81,6 @@ var Scoreboard = genai.Scoreboard{
 				IndecisiveTool: genai.Flaky,
 				JSON:           true, // Only when using ReasoningFormat: ReasoningFormatParsed
 				Seed:           true,
-				TopLogprobs:    true,
 			},
 		},
 		{
@@ -107,7 +103,6 @@ var Scoreboard = genai.Scoreboard{
 				IndecisiveTool: genai.Flaky, // Sometimes tool calling fails.
 				JSON:           true,
 				Seed:           true,
-				TopLogprobs:    true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.Flaky,
@@ -115,7 +110,6 @@ var Scoreboard = genai.Scoreboard{
 				IndecisiveTool: genai.Flaky, // Sometimes tool calling fails.
 				JSON:           true,
 				Seed:           true,
-				TopLogprobs:    true,
 			},
 		},
 		{
@@ -131,7 +125,6 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:     genai.Flaky,
 				JSON:           true, // Only when using ReasoningFormat: ReasoningFormatParsed
 				Seed:           true,
-				TopLogprobs:    true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:          genai.Flaky,
@@ -139,7 +132,6 @@ var Scoreboard = genai.Scoreboard{
 				BiasedTool:     genai.Flaky,
 				JSON:           true, // Only when using ReasoningFormat: ReasoningFormatParsed
 				Seed:           true,
-				TopLogprobs:    true,
 			},
 		},
 		{
@@ -147,18 +139,16 @@ var Scoreboard = genai.Scoreboard{
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:       genai.Flaky,
-				BiasedTool:  genai.Flaky, // Mostly true but tool calling itself is flaky.
-				JSON:        true,
-				Seed:        true,
-				TopLogprobs: true,
+				Tools:      genai.Flaky,
+				BiasedTool: genai.Flaky, // Mostly true but tool calling itself is flaky.
+				JSON:       true,
+				Seed:       true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:       genai.Flaky,
-				BiasedTool:  genai.Flaky, // Mostly true but tool calling itself is flaky.
-				JSON:        true,
-				Seed:        true,
-				TopLogprobs: true,
+				Tools:      genai.Flaky,
+				BiasedTool: genai.Flaky, // Mostly true but tool calling itself is flaky.
+				JSON:       true,
+				Seed:       true,
 			},
 		},
 		// Deprecated models.
@@ -318,6 +308,9 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) ([]string,
 	c.Seed = v.Seed
 	if v.TopK != 0 {
 		unsupported = append(unsupported, "TopK")
+	}
+	if v.TopLogprobs != 0 {
+		unsupported = append(unsupported, "TopLogprobs")
 	}
 	c.Stop = v.Stop
 	if v.DecodeAs != nil {

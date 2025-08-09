@@ -500,6 +500,22 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		// Lie for the benefit of everyone.
 		out.FinishReason = genai.FinishedToolCalls
 	}
+	if len(c.Choices[0].Logprobs.Content) != 0 {
+		out.Logprobs = &genai.Logprobs{
+			Content: make([]genai.LogprobsContent, len(c.Choices[0].Logprobs.Content)),
+		}
+		for i, lp := range c.Choices[0].Logprobs.Content {
+			out.Logprobs.Content[i].Token = lp.Token
+			out.Logprobs.Content[i].Logprob = lp.Logprob
+			out.Logprobs.Content[i].Bytes = lp.Bytes
+			out.Logprobs.Content[i].TopLogprobs = make([]genai.TopLogprob, len(lp.TopLogprobs))
+			for j, tlp := range lp.TopLogprobs {
+				out.Logprobs.Content[i].TopLogprobs[j].Token = tlp.Token
+				out.Logprobs.Content[i].TopLogprobs[j].Logprob = tlp.Logprob
+				out.Logprobs.Content[i].TopLogprobs[j].Bytes = tlp.Bytes
+			}
+		}
+	}
 	return out, err
 }
 
@@ -807,6 +823,25 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				}
 			default:
 				return fmt.Errorf("unexpected content type %q", content.Type)
+			}
+		}
+		if len(pkt.Choices[0].Logprobs.Content) != 0 {
+			if result.Logprobs == nil {
+				result.Logprobs = &genai.Logprobs{}
+			}
+			for _, lp := range pkt.Choices[0].Logprobs.Content {
+				genaiLp := genai.LogprobsContent{
+					Token:   lp.Token,
+					Logprob: lp.Logprob,
+					Bytes:   lp.Bytes,
+				}
+				genaiLp.TopLogprobs = make([]genai.TopLogprob, len(lp.TopLogprobs))
+				for j, tlp := range lp.TopLogprobs {
+					genaiLp.TopLogprobs[j].Token = tlp.Token
+					genaiLp.TopLogprobs[j].Logprob = tlp.Logprob
+					genaiLp.TopLogprobs[j].Bytes = tlp.Bytes
+				}
+				result.Logprobs.Content = append(result.Logprobs.Content, genaiLp)
 			}
 		}
 	}

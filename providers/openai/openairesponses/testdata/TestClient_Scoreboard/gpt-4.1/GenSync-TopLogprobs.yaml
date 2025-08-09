@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 200
+        content_length: 217
         host: api.openai.com
         body: |
-            {"model":"gpt-4.1","background":false,"reasoning":{"summary":"auto"},"store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Say hello. Use only one word."}]}]}
+            {"model":"gpt-4.1","background":false,"reasoning":{"summary":"auto"},"store":false,"top_logprobs":2,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Say hello. Use only one word."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_6897a86755008196a2e6e7a2a0915b11028be39b8f267769",
+              "id": "resp_6897cdbf5f0c819093ad884ee81a77be0a701b73299cbd31",
               "object": "response",
-              "created_at": 1754769511,
+              "created_at": 1754779071,
               "status": "completed",
               "background": false,
               "error": null,
@@ -36,7 +36,7 @@ interactions:
               "model": "gpt-4.1-2025-04-14",
               "output": [
                 {
-                  "id": "msg_6897a86826508196b28c86430fbfb567028be39b8f267769",
+                  "id": "msg_6897cdbfa2ec8190833aa7f5f6f9883b0a701b73299cbd31",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -69,7 +69,7 @@ interactions:
               },
               "tool_choice": "auto",
               "tools": [],
-              "top_logprobs": 0,
+              "top_logprobs": 2,
               "top_p": 1.0,
               "truncation": "disabled",
               "usage": {
@@ -92,13 +92,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96c9d423f8d4a278-YUL
+                - 96cabd8aca96a2de-YUL
             Content-Type:
                 - application/json
             Openai-Organization:
                 - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "867"
+                - "315"
             Openai-Project:
                 - proj_tH6hQUFvA4Bx6SyAb23zzLEg
             Openai-Version:
@@ -110,7 +110,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Envoy-Upstream-Service-Time:
-                - "875"
+                - "323"
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -124,7 +124,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 68ms
             X-Request-Id:
-                - req_b355bcffb5f76a36d3be0efb23d04ba2
+                - req_dda777c3df6ea0abcc208d9c8e6aaa50
         status: 200 OK
         code: 200
-        duration: 1.213s
+        duration: 594ms

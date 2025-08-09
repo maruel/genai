@@ -62,7 +62,6 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 				// At best, tool calling is flaky.
 				flaky = true
 			}
-			err = nil
 		}
 	}
 	if err != nil {
@@ -75,17 +74,6 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 			return err
 		}
 		flaky = true
-		var uerr *genai.UnsupportedContinuableError
-		if errors.As(err, &uerr) {
-			// Cheap trick to make sure the error is not wrapped. Figure out if there's another way!
-			if strings.HasPrefix(err.Error(), "unsupported options: ") {
-				if slices.Contains(uerr.Unsupported, "ToolCallRequest") {
-					// At best, tool calling is flaky.
-					flaky = true
-				}
-				err = nil
-			}
-		}
 	}
 
 	if err != nil || len(resp.ToolCalls) == 0 {

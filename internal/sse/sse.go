@@ -11,6 +11,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+
+	"github.com/maruel/genai/internal"
 )
 
 // Process reads and processes Server-Sent Events (SSE) from the provided reader.
@@ -18,7 +20,7 @@ import (
 // The decoded values are sent to the provided channel.
 //
 // https://developer.mozilla.org/en-US/docs/Web/API/Server-sent%5Fevents/Using%5Fserver-sent%5Fevents
-func Process[T any](body io.Reader, out chan<- T, er any, lenient bool) error {
+func Process[T any](body io.Reader, out chan<- T, er error, lenient bool) error {
 	for r := bufio.NewReader(body); ; {
 		line, err := r.ReadBytes('\n')
 		if line = bytes.TrimSpace(line); err == io.EOF {
@@ -38,26 +40,33 @@ func Process[T any](body io.Reader, out chan<- T, er any, lenient bool) error {
 			if bytes.Equal(suffix, done) {
 				return nil
 			}
-			d := json.NewDecoder(bytes.NewReader(suffix))
+			r := bytes.NewReader(suffix)
+			d := json.NewDecoder(r)
+			var r2 io.ReadSeeker
 			if !lenient {
 				d.DisallowUnknownFields()
+				r2 = r
 			}
-			d.UseNumber()
 			var msg T
-			if err = d.Decode(&msg); err != nil {
+			if foundExtraKeys, err := internal.DecodeJSON(d, &msg, r2); err == nil {
+				out <- msg
+				continue
+			} else if !foundExtraKeys {
 				if er != nil {
-					d = json.NewDecoder(bytes.NewReader(suffix))
+					r = bytes.NewReader(suffix)
+					r2 = nil
+					d = json.NewDecoder(r)
 					if !lenient {
 						d.DisallowUnknownFields()
+						r2 = r
 					}
-					d.UseNumber()
-					if err2 := d.Decode(er); err2 == nil {
-						return fmt.Errorf("%s", er)
+					if _, err := internal.DecodeJSON(d, er, r2); err == nil {
+						return er
 					}
 				}
-				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
 			}
-			out <- msg
+			// Falling back or when in strict mode, return the decoding error instead.
+			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
 		case bytes.Equal(line, keepAlive):
 			// Ignore keep-alive messages. Very few send this.
 		case bytes.Equal(line, keepAliveHuggingface):

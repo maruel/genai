@@ -7,6 +7,8 @@ package internal
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/fs"
@@ -24,6 +26,7 @@ import (
 	"time"
 
 	"github.com/invopop/jsonschema"
+	"github.com/maruel/httpjson"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
@@ -147,6 +150,36 @@ func Logger(ctx context.Context) *slog.Logger {
 // WithLogger injects a slog.Logger into the context. It can be retrieved with Logger().
 func WithLogger(ctx context.Context, logger *slog.Logger) context.Context {
 	return context.WithValue(ctx, contextKey{}, logger)
+}
+
+// DecodeJSON is duplicate from httpjson.go in https://github.com/maruel/httpjson.
+func DecodeJSON(d *json.Decoder, out any, r io.ReadSeeker) (bool, error) {
+	d.UseNumber()
+	if err := d.Decode(out); err != nil {
+		// decode.object() in encoding/json.go does not return a structured error
+		// when an unknown field is found or when the type is wrong. Process it manually.
+		if r != nil {
+			if s := err.Error(); strings.Contains(s, "json: unknown field ") || strings.Contains(s, "json: cannot unmarshal ") {
+				// Decode again but this time capture all errors. Try first as a map (JSON object), then as a slice
+				// (JSON list).
+				for _, t := range []any{map[string]any{}, []any{}} {
+					if _, err2 := r.Seek(0, 0); err2 != nil {
+						// Unexpected.
+						return false, err2
+					}
+					d = json.NewDecoder(r)
+					d.UseNumber()
+					if err2 := d.Decode(&t); err2 == nil {
+						if err2 = errors.Join(httpjson.FindExtraKeys(reflect.TypeOf(out), t)...); err2 != nil {
+							return true, err2
+						}
+					}
+				}
+			}
+		}
+		return false, err
+	}
+	return false, nil
 }
 
 //

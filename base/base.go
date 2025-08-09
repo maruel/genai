@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/httpjson"
@@ -127,7 +128,7 @@ func (c *Provider[PErrorResponse]) DecodeResponse(resp *http.Response, url strin
 		r2 = r
 	}
 	var errs []error
-	if foundExtraKeys, err2 := decodeJSON(d, out, r2); err2 == nil {
+	if foundExtraKeys, err2 := internal.DecodeJSON(d, out, r2); err2 == nil {
 		// It may have succeeded but not decoded anything.
 		if v := reflect.ValueOf(out); !reflect.DeepEqual(out, reflect.Zero(v.Type()).Interface()) {
 			return nil
@@ -144,7 +145,7 @@ func (c *Provider[PErrorResponse]) DecodeResponse(resp *http.Response, url strin
 		r2 = r
 	}
 	er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
-	if foundExtraKeys, err := decodeJSON(d, er, r2); err == nil {
+	if foundExtraKeys, err := internal.DecodeJSON(d, er, r2); err == nil {
 		// It may have succeeded but not decoded anything.
 		if v := reflect.ValueOf(er); !reflect.DeepEqual(out, reflect.Zero(v.Type()).Interface()) {
 			return nil
@@ -186,7 +187,7 @@ func (c *Provider[PErrorResponse]) DecodeError(url string, resp *http.Response) 
 	var errs []error
 	herr := &httpjson.Error{StatusCode: resp.StatusCode, ResponseBody: b}
 	er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
-	if foundExtraKeys, err := decodeJSON(d, er, r2); err == nil {
+	if foundExtraKeys, err := internal.DecodeJSON(d, er, r2); err == nil {
 		errs = append(errs, herr, er)
 	} else if foundExtraKeys {
 		// In strict mode, return the decoding error instead.
@@ -208,36 +209,6 @@ func (c *Provider[PErrorResponse]) lateInit() {
 		c.errorResponse = reflect.TypeOf(in).Elem()
 	}
 	c.mu.Unlock()
-}
-
-// Duplicate from httpjson.go in https://github.com/maruel/httpjson.
-func decodeJSON(d *json.Decoder, out any, r io.ReadSeeker) (bool, error) {
-	d.UseNumber()
-	if err := d.Decode(out); err != nil {
-		// decode.object() in encoding/json.go does not return a structured error
-		// when an unknown field is found or when the type is wrong. Process it manually.
-		if r != nil {
-			if s := err.Error(); strings.Contains(s, "json: unknown field ") || strings.Contains(s, "json: cannot unmarshal ") {
-				// Decode again but this time capture all errors. Try first as a map (JSON object), then as a slice
-				// (JSON list).
-				for _, t := range []any{map[string]any{}, []any{}} {
-					if _, err2 := r.Seek(0, 0); err2 != nil {
-						// Unexpected.
-						return false, err2
-					}
-					d = json.NewDecoder(r)
-					d.UseNumber()
-					if err2 := d.Decode(&t); err2 == nil {
-						if err2 = errors.Join(httpjson.FindExtraKeys(reflect.TypeOf(out), t)...); err2 != nil {
-							return true, err2
-						}
-					}
-				}
-			}
-		}
-		return false, err
-	}
-	return false, nil
 }
 
 //

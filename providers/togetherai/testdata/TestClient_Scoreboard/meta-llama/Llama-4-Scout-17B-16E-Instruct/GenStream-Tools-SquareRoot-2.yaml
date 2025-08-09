@@ -9,7 +9,7 @@ interactions:
         content_length: 818
         host: api.together.xyz
         body: |
-            {"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","stream":true,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"index":0,"id":"call_asylb73ykoeinwk7vesx4uis","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_asylb73ykoeinwk7vesx4uis"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+            {"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","stream":true,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"index":0,"id":"call_b0mzicoe2lqi2a9njylj9leu","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_b0mzicoe2lqi2a9njylj9leu"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,15 +21,15 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"o4dhZ3Q-4Yz4kd-9654fa224e04a320","object":"chat.completion.chunk","created":1753544233,"choices":[{"index":0,"text":"363","logprobs":null,"finish_reason":null,"stop_reason":null,"delta":{"token_id":null,"role":"assistant","content":"363","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
+            data: {"id":"o6WTjti-62bZhn-96ca5b092f43a2a2","object":"chat.completion.chunk","created":1754775036,"choices":[{"index":0,"text":"363","logprobs":null,"finish_reason":null,"stop_reason":null,"delta":{"token_id":null,"role":"assistant","content":"363","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
 
-            data: {"id":"o4dhZ3Q-4Yz4kd-9654fa224e04a320","object":"chat.completion.chunk","created":1753544233,"choices":[{"index":0,"text":".","logprobs":null,"finish_reason":null,"stop_reason":null,"delta":{"token_id":null,"role":"assistant","content":".","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
+            data: {"id":"o6WTjti-62bZhn-96ca5b092f43a2a2","object":"chat.completion.chunk","created":1754775036,"choices":[{"index":0,"text":".","logprobs":null,"finish_reason":null,"stop_reason":null,"delta":{"token_id":null,"role":"assistant","content":".","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
 
-            data: {"id":"o4dhZ3Q-4Yz4kd-9654fa224e04a320","object":"chat.completion.chunk","created":1753544233,"choices":[{"index":0,"text":"89","logprobs":null,"finish_reason":null,"stop_reason":null,"delta":{"token_id":null,"role":"assistant","content":"89","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
+            data: {"id":"o6WTjti-62bZhn-96ca5b092f43a2a2","object":"chat.completion.chunk","created":1754775036,"choices":[{"index":0,"text":"89","logprobs":null,"finish_reason":null,"stop_reason":null,"delta":{"token_id":null,"role":"assistant","content":"89","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
 
-            data: {"id":"o4dhZ3Q-4Yz4kd-9654fa224e04a320","object":"chat.completion.chunk","created":1753544233,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"stop","stop_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
+            data: {"id":"o6WTjti-62bZhn-96ca5b092f43a2a2","object":"chat.completion.chunk","created":1754775036,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"stop","stop_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
 
-            data: {"id":"o4dhZ3Q-4Yz4kd-9654fa224e04a320","object":"chat.completion.chunk","created":1753544233,"choices":[],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":{"prompt_tokens":62,"total_tokens":66,"completion_tokens":4}}
+            data: {"id":"o6WTjti-62bZhn-96ca5b092f43a2a2","object":"chat.completion.chunk","created":1754775036,"choices":[],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":{"prompt_tokens":62,"total_tokens":66,"completion_tokens":4}}
 
             data: [DONE]
 
@@ -43,7 +43,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9654fa224e04a320-YUL
+                - 96ca5b092f43a2a2-YUL
             Content-Type:
                 - text/event-stream;charset=utf-8
             Retry-After:
@@ -55,11 +55,11 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 288e8315-9325-41ba-8029-5d3f6df092ec-noamzn
+                - e3e57a9a-2b56-441f-915b-8600cad7e17d-noamzn
             X-Api-Call-Start:
-                - "2025-07-26T15:37:13.473Z"
+                - "2025-08-09T21:30:36.457Z"
             X-Api-Received:
-                - "2025-07-26T15:37:13.451Z"
+                - "2025-08-09T21:30:36.447Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -69,13 +69,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "1000"
             X-Ratelimit-Remaining:
-                - "0"
+                - "1"
             X-Ratelimit-Remaining-Tokens:
                 - "1000"
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - o4dhZ3Q-4Yz4kd-9654fa224e04a320
+                - o6WTjti-62bZhn-96ca5b092f43a2a2
         status: 200 OK
         code: 200
-        duration: 240ms
+        duration: 245ms

@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 542
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-reasoner","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"27087273-59ea-4c27-918b-7900316f6f72","object":"chat.completion","created":1754774517,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"square_root({\"number\": 132413})","reasoning_content":"We are going to calculate the square root of 132413 using the provided function.\n Since the function requires a number, we will call it with 132413.\n We expect the result to be a number, which we will then output.","tool_calls":[{"index":0,"id":"call_0_e13c6ad0-5029-4266-a367-fcfec6a8d823","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":161,"completion_tokens":78,"total_tokens":239,"prompt_tokens_details":{"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":48},"prompt_cache_hit_tokens":128,"prompt_cache_miss_tokens":33},"system_fingerprint":"fp_393bca965e_prod0623_fp8_kvcache"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 96ca4e5c4ee7a2a8-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            X-Content-Type-Options:
+                - nosniff
+            X-Ds-Trace-Id:
+                - 3548a4f9b061616909cb8caedee9fa00
+        status: 200 OK
+        code: 200
+        duration: 855ms

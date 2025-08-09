@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 551
+        host: localhost
+        body: |
+            {"model":"qwen3:4b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"user","content":"\n\n/think"}],"stream":false,"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1015
+        body: '{"model":"qwen3:4b","created_at":"2025-08-09T21:20:09.57453749Z","message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, the user wants me to calculate the square root of 132413 using the square_root tool. Let me check the function parameters. The function requires a \"number\" parameter, which is a number. So I need to call the square_root function with the argument 132413. The user specified to reply only with the result, so once I get the result from the tool, I should just present it without any explanation. Let me make sure I format the tool call correctly. The function name is square_root, and the arguments should be a JSON object with \"number\": 132413. I''ll put that in the tool_call tags.\n\u003c/think\u003e\n\n","tool_calls":[{"function":{"name":"square_root","arguments":{"number":132413}}}]},"done_reason":"stop","done":true,"total_duration":12243959223,"load_duration":1470484453,"prompt_eval_count":174,"prompt_eval_duration":1903647087,"eval_count":172,"eval_duration":8866023409}'
+        headers:
+            Content-Length:
+                - "1015"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 12.244s

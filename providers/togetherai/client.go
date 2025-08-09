@@ -103,7 +103,6 @@ var Scoreboard = genai.Scoreboard{
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:       genai.Flaky,
-				BiasedTool:  genai.True,
 				JSON:        true,
 				JSONSchema:  true,
 				Seed:        true,
@@ -731,6 +730,7 @@ type ChatStreamChunkResponse struct {
 		} `json:"delta"`
 		Logprobs     LogprobsChunk `json:"logprobs"`
 		FinishReason FinishReason  `json:"finish_reason"`
+		MatchedStop  int64         `json:"matched_stop"`
 		StopReason   int64         `json:"stop_reason"` // Seems to be a token
 		ToolCalls    []ToolCall    `json:"tool_calls"`  // TODO: Implement.
 	} `json:"choices"`
@@ -1088,11 +1088,15 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 	}()
 	pendingCall := ToolCall{}
+	var warnings []string
 	for pkt := range ch {
 		if pkt.Usage.TotalTokens != 0 {
 			result.InputTokens = pkt.Usage.PromptTokens
 			result.InputCachedTokens = pkt.Usage.CachedTokens
 			result.OutputTokens = pkt.Usage.CompletionTokens
+		}
+		for _, w := range pkt.Warnings {
+			warnings = append(warnings, w.Message)
 		}
 		if len(pkt.Choices) != 1 {
 			continue
@@ -1162,6 +1166,17 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			}
 			chunks <- f
 		}
+	}
+	if len(warnings) != 0 {
+		uce := &genai.UnsupportedContinuableError{}
+		for _, w := range warnings {
+			if strings.Contains(w, "tool_choice") {
+				uce.Unsupported = append(uce.Unsupported, "ToolCallRequest")
+			} else {
+				uce.Unsupported = append(uce.Unsupported, w)
+			}
+		}
+		return uce
 	}
 	return nil
 }

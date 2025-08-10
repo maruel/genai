@@ -11,7 +11,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"slices"
 	"sort"
 	"strings"
 
@@ -139,17 +138,8 @@ func LoadProvider(provider, remote, model string) (genai.ProviderGen, error) {
 	if !ok {
 		return nil, fmt.Errorf("provider %q doesn't implement genai.ProviderGen", provider)
 	}
-	if s, ok := c.(genai.ProviderScoreboard); ok {
-		id := c.ModelID()
-		for _, sc := range s.Scoreboard().Scenarios {
-			if slices.Contains(sc.Models, id) {
-				if sc.ThinkingTokenStart != "" {
-					p = &adapters.ProviderGenThinking{ProviderGen: p, ThinkingTokenStart: sc.ThinkingTokenStart, ThinkingTokenEnd: sc.ThinkingTokenEnd}
-				}
-				break
-			}
-		}
-	}
+	// Wrap the provider with an adapter to process "<think>" tokens automatically ONLY if needed.
+	p = adapters.WrapThinking(p)
 	return p, nil
 }
 

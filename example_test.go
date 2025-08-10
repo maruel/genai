@@ -32,7 +32,7 @@ func ExampleProviderGen_genSync_vision() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New(&genai.OptionsProvider{Model: "gemini-2.0-flash-lite"}, nil)
+	c, err := gemini.New(&genai.OptionsProvider{Model: "gemini-2.5-flash-lite"}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -62,7 +62,7 @@ func ExampleClient_GenSync_jSON() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New(&genai.OptionsProvider{Model: "gemini-2.0-flash-lite"}, nil)
+	c, err := gemini.New(&genai.OptionsProvider{Model: "gemini-2.5-flash-lite"}, nil)
 	if err == nil {
 		log.Fatal(err)
 	}
@@ -87,7 +87,7 @@ func ExampleClient_GenSync_jSON_schema() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New(&genai.OptionsProvider{Model: "gemini-2.0-flash-lite"}, nil)
+	c, err := gemini.New(&genai.OptionsProvider{Model: "gemini-2.5-flash-lite"}, nil)
 	if err == nil {
 		log.Fatal(err)
 	}
@@ -114,7 +114,7 @@ func ExampleProviderGen_genSync_pdf() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New(&genai.OptionsProvider{Model: "gemini-2.0-flash-lite"}, nil)
+	c, err := gemini.New(&genai.OptionsProvider{Model: "gemini-2.5-flash-lite"}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -145,7 +145,7 @@ func ExampleProviderGen_genSync_audio() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New(&genai.OptionsProvider{Model: "gemini-2.0-flash-lite"}, nil)
+	c, err := gemini.New(&genai.OptionsProvider{Model: "gemini-2.5-flash-lite"}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -176,7 +176,7 @@ func ExampleProviderGen_genSync_video() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New(&genai.OptionsProvider{Model: "gemini-2.0-flash"}, nil)
+	c, err := gemini.New(&genai.OptionsProvider{Model: "gemini-2.5-flash"}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -203,7 +203,7 @@ func ExampleProviderGen_GenStream() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New(&genai.OptionsProvider{Model: "gemini-2.0-flash-lite"}, nil)
+	c, err := gemini.New(&genai.OptionsProvider{Model: "gemini-2.5-flash-lite"}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}

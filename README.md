@@ -122,6 +122,103 @@ apply):
 
 ## Look and feel
 
+### Sample usage
+
+This selects a good default model based on Anthropic's currently published models, sends a prompt and print
+the response as a string. It uses `ANTHROPIC_API_KEY` environment variable to authenticate.
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	"github.com/maruel/genai"
+	"github.com/maruel/genai/providers/anthropic"
+)
+
+func main() {
+	c, err := anthropic.New(nil, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	msgs := genai.Messages{
+		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice."),
+	}
+	result, err := c.GenSync(context.Background(), msgs, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(result.AsText())
+}
+```
+
+<details>
+  <summary>‼️ Click to see more examples!</summary>
+
+### Any provider
+
+A minimal program that will load a provider and send a prompt. The relevant environment variables (e.g.
+`OPENAI_API_KEY`) will be used automatically. Supports [ollama](https://ollama.com/) and
+[llama-server](https://github.com/ggml-org/llama.cpp) even if they run on a remote host or non-default port.
+
+```go
+package main
+
+import (
+	"context"
+	"flag"
+	"fmt"
+	"log"
+	"strings"
+
+	"github.com/maruel/genai"
+	"github.com/maruel/genai/adapters"
+	"github.com/maruel/genai/providers"
+)
+
+func main() {
+	provider := flag.String("provider", "", "provider to use")
+	model := flag.String("model", "", "model to use")
+	remote := flag.String("remote", "", "url to use, e.g. when using ollama or llama-server on another host")
+	flag.Parse()
+
+	query := strings.Join(flag.Args(), " ")
+	if query == "" {
+		log.Fatal("provide a query")
+	}
+	p, err := LoadProvider(*provider, &genai.OptionsProvider{Model: *model, Remote: *remote})
+	if err != nil {
+		log.Fatal(err)
+	}
+	resp, err := p.GenSync(context.Background(), genai.Messages{genai.NewTextMessage(query)}, nil)
+	if err != nil {
+		log.Fatalf("failed to use provider %q: %s", *provider, err)
+	}
+	fmt.Printf("%s\n", resp.AsText())
+}
+
+// LoadProvider loads a provider.
+func LoadProvider(provider string, opts *genai.OptionsProvider) (genai.ProviderGen, error) {
+	f := providers.All[provider]
+	if f == nil {
+		return nil, fmt.Errorf("unknown provider %q", provider)
+	}
+	c, err := f(opts, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to connect to provider %q: %w", provider, err)
+	}
+	p, ok := c.(genai.ProviderGen)
+	if !ok {
+		return nil, fmt.Errorf("provider %q doesn't implement genai.ProviderGen", provider)
+	}
+	// Wrap the provider with an adapter to process "<think>" tokens automatically ONLY if needed.
+	p = adapters.WrapThinking(p)
+	return p, nil
+}
+```
 
 ### Tool calling using predefined tool
 
@@ -139,15 +236,17 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/genaitools"
-	"github.com/maruel/genai/groq"
+	"github.com/maruel/genai/providers/groq"
 )
 
 func main() {
-	c, err := groq.New("", "llama3-8b-8192")
+	c, err := groq.New(&genai.OptionsProvider{Model: base.PreferredSOTA}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
+	p := adapters.WrapThinking(c)
 	msgs := genai.Messages{
 		genai.NewTextMessage("What is 3214 + 5632? Leverage the tool available to you to tell me the answer. Do not explain. Be terse. Include only the answer."),
 	}
@@ -156,7 +255,7 @@ func main() {
 		// Force the LLM to do a tool call first.
 		ToolCallRequest: genai.ToolCallRequired,
 	}
-	newMsgs, _, err := adapters.GenSyncWithToolCallLoop(context.Background(), c, msgs, &opts)
+	newMsgs, _, err := adapters.GenSyncWithToolCallLoop(context.Background(), p, msgs, &opts)
 	if err != nil {
 		log.Fatalf("Received %#v, got error %s", newMsgs, err)
 	}
@@ -165,12 +264,10 @@ func main() {
 }
 ```
 
-<details>
-  <summary>‼️ Click to see more examples!</summary>
-
 ### Tool calling using a fully custom tool
 
-This example provides all the details to implement a complete custom tool.
+This example provides all the details to implement a complete custom tool. It uses an explicitly thinking
+model.
 
 ```go
 package main
@@ -181,14 +278,16 @@ import (
 	"log"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/groq"
+	"github.com/maruel/genai/adapters"
+	"github.com/maruel/genai/providers/cerebras"
 )
 
 func main() {
-	c, err := groq.New("", "llama3-8b-8192")
+	c, err := cerebras.New(&genai.OptionsProvider{Model: "qwen-3-235b-a22b-thinking-2507"}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
+	p := adapters.WrapThinking(c)
 	type math struct {
 		A int `json:"a"`
 		B int `json:"b"`
@@ -209,7 +308,7 @@ func main() {
 		// Force the LLM to do a tool call.
 		ToolCallRequest: genai.ToolCallRequired,
 	}
-	resp, err := c.GenSync(context.Background(), msgs, &opts)
+	resp, err := p.GenSync(context.Background(), msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -231,7 +330,7 @@ func main() {
 
 	// Follow up so the LLM can interpret the tool call response. Tell the LLM to not do a tool call this time.
 	opts.ToolCallRequest = genai.ToolCallNone
-	resp, err = c.GenSync(context.Background(), msgs, &opts)
+	resp, err = p.GenSync(context.Background(), msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -244,9 +343,9 @@ func main() {
 
 ### Decoding answer as a typed struct
 
-Tell the LLM to use a specific JSON schema to generate the response. This is more lightweight than tool
-calling. It is very useful when we want the LLM to make a choice between values, to return a number or a
-boolean (true/false).
+Tell the LLM to use a specific JSON schema to generate the response. This is much more lightweight than tool
+calling! It is very useful when we want the LLM to make a choice between values, to return a number or a
+boolean (true/false). Enums are supported.
 
 ```go
 package main
@@ -257,11 +356,11 @@ import (
 	"log"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/cerebras"
+	"github.com/maruel/genai/providers/openai"
 )
 
 func main() {
-	c, err := cerebras.New("", "llama3.1-8b")
+	c, err := openai.New(nil, nil)
 	if err != nil {
 		log.Fatal(err)
 	}

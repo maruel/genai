@@ -105,32 +105,31 @@ func Example_all_Full() {
 	// - Processing <think> tokens for explicit Chain-of-Thoughts models (e.g. Qwen3).
 	provider := flag.String("provider", "", "provider to use")
 	model := flag.String("model", "", "model to use")
-	remote := flag.String("remote", "", "url to use")
+	remote := flag.String("remote", "", "url to use, e.g. when using ollama or llama-server on another host")
 	flag.Parse()
 
-	p, err := LoadProvider(*provider, *remote, *model)
+	query := strings.Join(flag.Args(), " ")
+	if query == "" {
+		log.Fatal("provide a query")
+	}
+	p, err := LoadProvider(*provider, &genai.OptionsProvider{Model: *model, Remote: *remote})
 	if err != nil {
 		log.Fatal(err)
 	}
-	msgs := genai.Messages{genai.NewTextMessage("Provide a life tip that sounds good but is actually a bad idea.")}
-	resp, err := p.GenSync(context.Background(), msgs, nil)
+	resp, err := p.GenSync(context.Background(), genai.Messages{genai.NewTextMessage(query)}, nil)
 	if err != nil {
-		if _, ok := err.(*genai.UnsupportedContinuableError); !ok {
-			log.Fatalf("failed to use provider %q: %s", *provider, err)
-		}
+		log.Fatalf("failed to use provider %q: %s", *provider, err)
 	}
 	fmt.Printf("%s\n", resp.AsText())
 }
 
 // LoadProvider loads a provider.
-//
-// It wraps it with an explicit Chain-of-Thought parser if needed.
-func LoadProvider(provider, remote, model string) (genai.ProviderGen, error) {
+func LoadProvider(provider string, opts *genai.OptionsProvider) (genai.ProviderGen, error) {
 	f := providers.All[provider]
 	if f == nil {
 		return nil, fmt.Errorf("unknown provider %q", provider)
 	}
-	c, err := f(&genai.OptionsProvider{Model: model, Remote: remote}, nil)
+	c, err := f(opts, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to provider %q: %w", provider, err)
 	}

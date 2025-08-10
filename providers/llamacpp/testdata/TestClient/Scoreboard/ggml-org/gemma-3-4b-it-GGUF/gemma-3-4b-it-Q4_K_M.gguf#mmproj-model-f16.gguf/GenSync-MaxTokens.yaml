@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 134
+        content_length: 154
         host: localhost
         body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}],"n_predict":16}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}],"n_predict":16,"cache_prompt":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 646
-        body: '{"choices":[{"finish_reason":"length","index":0,"message":{"role":"assistant","content":"Okay, let''s dive into the theory of relativity – a concept that revolutionized"}}],"created":1754046695,"model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion","usage":{"completion_tokens":16,"prompt_tokens":18,"total_tokens":34},"id":"chatcmpl-P9oLZIQHVLqN0hcNN7MNO85JhyoIplGe","timings":{"prompt_n":14,"prompt_ms":384.889,"prompt_per_token_ms":27.49207142857143,"prompt_per_second":36.37412344857868,"predicted_n":16,"predicted_ms":1276.733,"predicted_per_token_ms":79.7958125,"predicted_per_second":12.531985935978783}}'
+        content_length: 605
+        body: '{"choices":[{"finish_reason":"length","index":0,"message":{"role":"assistant","content":"Okay, let''s dive into the theory of relativity – it''s a"}}],"created":1754859873,"model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion","usage":{"completion_tokens":16,"prompt_tokens":18,"total_tokens":34},"id":"chatcmpl-kyTVdIeCxBwQubVCvU7oeWcZgunYNtu1","timings":{"prompt_n":1,"prompt_ms":49.742,"prompt_per_token_ms":49.742,"prompt_per_second":20.103735274013914,"predicted_n":16,"predicted_ms":743.3,"predicted_per_token_ms":46.45625,"predicted_per_second":21.52562895197094}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "646"
+                - "605"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 3.397s
+        duration: 1.658s

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 513
+        content_length: 533
         host: localhost
         body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"cache_prompt":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 733
-        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":null,"tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"id":"tc0fnDZafCdqloYGaKIsAP76dwCEEEnz"}]}}],"created":1754166137,"model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion","usage":{"completion_tokens":43,"prompt_tokens":315,"total_tokens":358},"id":"chatcmpl-JPJlOFdrcn1JMZeym8qlOoNE7bvRksPH","timings":{"prompt_n":239,"prompt_ms":5847.711,"prompt_per_token_ms":24.467410041841006,"prompt_per_second":40.870692823226044,"predicted_n":43,"predicted_ms":3439.325,"predicted_per_token_ms":79.9843023255814,"predicted_per_second":12.502453243005533}}'
+        content_length: 719
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":null,"tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"id":"BUYcFyG2O2Mz5S74tGBPRvXL2Wfuwyko"}]}}],"created":1754859909,"model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion","usage":{"completion_tokens":43,"prompt_tokens":315,"total_tokens":358},"id":"chatcmpl-irS5d2iimoMX7mGZjB4uWtfmMqqj3jBf","timings":{"prompt_n":1,"prompt_ms":72.447,"prompt_per_token_ms":72.447,"prompt_per_second":13.803194059105277,"predicted_n":43,"predicted_ms":2214.359,"predicted_per_token_ms":51.496720930232556,"predicted_per_second":19.418712141978787}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "733"
+                - "719"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 9.29s
+        duration: 11.651s

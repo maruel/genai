@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 801
+        content_length: 821
         host: localhost
         body: |
-            {"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"N8gaWtx0Ec59Iw7IgUkYtKgR0c7r8vhK","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"N8gaWtx0Ec59Iw7IgUkYtKgR0c7r8vhK"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+            {"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"oaDuH5GfR5G572z789Qeb2aCawy0jX1j","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"oaDuH5GfR5G572z789Qeb2aCawy0jX1j"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"cache_prompt":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,21 +23,21 @@ interactions:
             - chunked
         content_length: -1
         body: |+
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1754164383,"id":"chatcmpl-3yx96JOc0bUkSBqZ9J9y37BY1GODKqbe","model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1754859889,"id":"chatcmpl-Z9y2MeGVa6Dn6594ychYtusrRQmHuMYt","model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"3"}}],"created":1754164383,"id":"chatcmpl-3yx96JOc0bUkSBqZ9J9y37BY1GODKqbe","model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"3"}}],"created":1754859889,"id":"chatcmpl-Z9y2MeGVa6Dn6594ychYtusrRQmHuMYt","model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"6"}}],"created":1754164384,"id":"chatcmpl-3yx96JOc0bUkSBqZ9J9y37BY1GODKqbe","model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"6"}}],"created":1754859889,"id":"chatcmpl-Z9y2MeGVa6Dn6594ychYtusrRQmHuMYt","model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"3"}}],"created":1754164384,"id":"chatcmpl-3yx96JOc0bUkSBqZ9J9y37BY1GODKqbe","model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"3"}}],"created":1754859889,"id":"chatcmpl-Z9y2MeGVa6Dn6594ychYtusrRQmHuMYt","model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"."}}],"created":1754164384,"id":"chatcmpl-3yx96JOc0bUkSBqZ9J9y37BY1GODKqbe","model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"."}}],"created":1754859889,"id":"chatcmpl-Z9y2MeGVa6Dn6594ychYtusrRQmHuMYt","model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"8"}}],"created":1754164384,"id":"chatcmpl-3yx96JOc0bUkSBqZ9J9y37BY1GODKqbe","model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"8"}}],"created":1754859889,"id":"chatcmpl-Z9y2MeGVa6Dn6594ychYtusrRQmHuMYt","model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"9"}}],"created":1754164384,"id":"chatcmpl-3yx96JOc0bUkSBqZ9J9y37BY1GODKqbe","model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"9"}}],"created":1754859890,"id":"chatcmpl-Z9y2MeGVa6Dn6594ychYtusrRQmHuMYt","model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1754164385,"id":"chatcmpl-3yx96JOc0bUkSBqZ9J9y37BY1GODKqbe","model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion.chunk","usage":{"completion_tokens":18,"prompt_tokens":457,"total_tokens":475},"timings":{"prompt_n":148,"prompt_ms":5160.622,"prompt_per_token_ms":34.86906756756757,"prompt_per_second":28.678713534918852,"predicted_n":18,"predicted_ms":1558.967,"predicted_per_token_ms":86.60927777777778,"predicted_per_second":11.546107133762293}}
+            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1754859890,"id":"chatcmpl-Z9y2MeGVa6Dn6594ychYtusrRQmHuMYt","model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion.chunk","usage":{"completion_tokens":18,"prompt_tokens":463,"total_tokens":481},"timings":{"prompt_n":160,"prompt_ms":1530.339,"prompt_per_token_ms":9.56461875,"prompt_per_second":104.55199795600845,"predicted_n":18,"predicted_ms":879.548,"predicted_per_token_ms":48.86377777777778,"predicted_per_second":20.46505705203127}}
 
             data: [DONE]
 
@@ -52,4 +52,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 4ms
+        duration: 5ms

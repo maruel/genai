@@ -158,7 +158,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	var errs []error
 	var unsupported []string
 	sp := ""
-	// c.CachePrompt = true
+	c.CachePrompt = true
 	if opts != nil {
 		switch v := opts.(type) {
 		case *genai.OptionsText:

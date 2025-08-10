@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 140
+        content_length: 160
         host: localhost
         body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"stop":["is"]}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"stop":["is"],"cache_prompt":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 617
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Okay, let''s dive deep into Canada!\n\n**Canada "}}],"created":1754046698,"model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion","usage":{"completion_tokens":14,"prompt_tokens":21,"total_tokens":35},"id":"chatcmpl-9Z16ey22yLPeDLSjNZkzuNk9u68utxVN","timings":{"prompt_n":17,"prompt_ms":413.613,"prompt_per_token_ms":24.330176470588235,"prompt_per_second":41.101222640487606,"predicted_n":14,"predicted_ms":819.145,"predicted_per_token_ms":58.51035714285714,"predicted_per_second":17.0909912164513}}'
+        content_length: 671
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Okay, let''s dive deep into Canada – a country of immense diversity, breathtaking landscapes, and a fascinating h"}}],"created":1754859875,"model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion","usage":{"completion_tokens":23,"prompt_tokens":21,"total_tokens":44},"id":"chatcmpl-zfAaaugjAm1IVb7tf71KXi11QPJy4sVA","timings":{"prompt_n":1,"prompt_ms":50.648,"prompt_per_token_ms":50.648,"prompt_per_second":19.7441162533565,"predicted_n":23,"predicted_ms":1100.888,"predicted_per_token_ms":47.86469565217391,"predicted_per_second":20.892225185486627}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "617"
+                - "671"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 2.582s
+        duration: 1.927s

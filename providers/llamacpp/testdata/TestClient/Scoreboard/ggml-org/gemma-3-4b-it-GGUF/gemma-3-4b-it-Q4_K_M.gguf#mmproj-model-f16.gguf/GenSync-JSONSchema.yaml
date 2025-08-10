@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 379
+        content_length: 399
         host: localhost
         body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}},"cache_prompt":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 578
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}\n"}}],"created":1754168826,"model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion","usage":{"completion_tokens":9,"prompt_tokens":26,"total_tokens":35},"id":"chatcmpl-j3WFYLkAeSwBAsyKpKrCgsXd36sAiCix","timings":{"prompt_n":1,"prompt_ms":105.143,"prompt_per_token_ms":105.143,"prompt_per_second":9.510856642857823,"predicted_n":9,"predicted_ms":556.586,"predicted_per_token_ms":61.84288888888889,"predicted_per_second":16.17000786940383}}'
+        content_length: 579
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}\n"}}],"created":1754859881,"model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion","usage":{"completion_tokens":9,"prompt_tokens":26,"total_tokens":35},"id":"chatcmpl-vf9w93EHX5m3JvQOSV5KMqh2zbVm9H3A","timings":{"prompt_n":1,"prompt_ms":67.005,"prompt_per_token_ms":67.005,"prompt_per_second":14.924259383628089,"predicted_n":9,"predicted_ms":3755.438,"predicted_per_token_ms":417.2708888888889,"predicted_per_second":2.3965247196199213}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "578"
+                - "579"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 665ms
+        duration: 4.316s

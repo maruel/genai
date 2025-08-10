@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 108
+        content_length: 128
         host: localhost
         body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"seed":42}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"seed":42,"cache_prompt":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 575
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hello."}}],"created":1754046692,"model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion","usage":{"completion_tokens":3,"prompt_tokens":17,"total_tokens":20},"id":"chatcmpl-d5sfqvfoRQ88ul6FduC5ppjf03CO635A","timings":{"prompt_n":13,"prompt_ms":887.032,"prompt_per_token_ms":68.23323076923077,"prompt_per_second":14.655615580948602,"predicted_n":3,"predicted_ms":129.998,"predicted_per_token_ms":43.33266666666666,"predicted_per_second":23.077278111970955}}'
+        content_length: 559
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hello."}}],"created":1754859871,"model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion","usage":{"completion_tokens":3,"prompt_tokens":17,"total_tokens":20},"id":"chatcmpl-OWMP1ZYVXqjCaJQ3y4iWywJ60riD73Rm","timings":{"prompt_n":1,"prompt_ms":47.985,"prompt_per_token_ms":47.985,"prompt_per_second":20.83984578514119,"predicted_n":3,"predicted_ms":95.541,"predicted_per_token_ms":31.846999999999998,"predicted_per_second":31.4001318805539}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "575"
+                - "559"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 2.659s
+        duration: 287ms

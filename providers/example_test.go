@@ -183,10 +183,19 @@ func LoadDefaultProviderGen() (genai.ProviderGen, error) {
 func Example_available() {
 	// Automatically select the provider available if there's only one. Asserts that the provider implements
 	// ProviderGen.
-	_, err := LoadDefaultProviderGen()
+	c, err := LoadDefaultProviderGen()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 	}
+	// Wrap the provider with an adapter to ignore errors caused by unsupported features. Even if Seed is not
+	// supported, no error will be returned.
+	c = &adapters.ProviderGenIgnoreUnsupported{ProviderGen: c}
+	msgs := genai.Messages{genai.NewTextMessage("Provide a life tip that sounds good but is actually a bad idea.")}
+	resp, err := c.GenSync(context.Background(), msgs, &genai.OptionsText{Seed: 42})
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+	}
+	fmt.Printf("%s\n", resp.AsText())
 }
 
 func Example_all_GetProvidersGenAsync() {

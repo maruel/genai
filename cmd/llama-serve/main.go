@@ -29,7 +29,7 @@ func mainImpl() error {
 		fmt.Fprintf(o, "Usage of %s:\n", os.Args[0])
 		flag.PrintDefaults()
 		fmt.Fprintf(o, "\nExample use:\n")
-		fmt.Fprintf(o, "  %s -model Qwen/Qwen3-30B-A3B-GGUF/Qwen3-30B-A3B-Q4_K_M.gguf -http 0.0.0.0:8080 -- -ngl 99 -fa -sm row --temp 0.6 --top-k 20 --top-p 0.95 --min-p 0 --presence-penalty 1.5 -c 40960 -n 32768 --no-context-shift\n", os.Args[0])
+		fmt.Fprintf(o, "  %s -model Qwen/Qwen3-30B-A3B-GGUF/Qwen3-30B-A3B-Q4_K_M.gguf -http 0.0.0.0:8080 -- --no-warmup -ngl 99 -fa -sm row --temp 0.6 --top-k 20 --top-p 0.95 --min-p 0 --presence-penalty 1.5 -c 40960 -n 32768 --no-context-shift\n", os.Args[0])
 		fmt.Fprintf(o, "  Extended context:\n")
 		fmt.Fprintf(o, "    -c 131072 --rope-scaling yarn --rope-scale 4 --yarn-orig-ctx 32768\n")
 		fmt.Fprintf(o, "  Use Qwen/Qwen3-30B-A3B-GGUF/Qwen3-30B-A3B-Q6_K.gguf for improved quality.\n")

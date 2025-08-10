@@ -79,7 +79,7 @@ func startServer(ctx context.Context, author, repo, modelfile, multimodal string
 	if err != nil {
 		return nil, err
 	}
-	extraArgs := []string{"--jinja", "--flash-attn", "--cache-type-k", "q8_0", "--cache-type-v", "q8_0"}
+	extraArgs := []string{"--no-warmup", "--jinja", "--flash-attn", "--cache-type-k", "q8_0", "--cache-type-v", "q8_0"}
 	mmPath := ""
 	if multimodal != "" {
 		if mmPath, err = hf.EnsureFile(ctx, huggingface.ModelRef{Author: author, Repo: repo}, "HEAD", multimodal); err != nil {

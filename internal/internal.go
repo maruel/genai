@@ -123,7 +123,6 @@ func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Opti
 		recorder.WithHook(trimResponseHeaders, recorder.AfterCaptureHook),
 		recorder.WithHook(trimRecordingCloudflare, recorder.AfterCaptureHook),
 		recorder.WithHook(trimRecordingHostPort, recorder.AfterCaptureHook),
-		recorder.WithHook(trimRecordingGemini, recorder.AfterCaptureHook),
 		recorder.WithMode(mode),
 		recorder.WithSkipRequestLatency(true),
 		recorder.WithRealTransport(h),
@@ -203,6 +202,8 @@ func trimResponseHeaders(i *cassette.Interaction) error {
 	i.Request.Headers.Del("X-Api-Key")
 	i.Request.Headers.Del("X-Goog-Api-Key")
 	i.Request.Headers.Del("X-Key")
+	// OMG What are they thinking? This happens on HTTP 302 redirect when fetching Veo generated videos:
+	i.Response.Headers.Del("X-Goog-Api-Key")
 	// Noise.
 	i.Request.Headers.Del("X-Request-Id")
 	i.Response.Headers.Del("Date")
@@ -231,26 +232,6 @@ func matchCassetteCloudflare(r *http.Request, i cassette.Request) bool {
 	return DefaultMatcher(r, i)
 }
 
-func matchCassetteGemini(r *http.Request, i cassette.Request) bool {
-	// Gemini pass the API key as a query argument (!) so zap it before matching.
-	r = r.Clone(r.Context())
-	r.URL.RawQuery = removeKeyFromQuery(r.URL.RawQuery, "key")
-	_ = r.ParseForm()
-	return matchCassetteCloudflare(r, i)
-}
-
-func trimRecordingGemini(i *cassette.Interaction) error {
-	// Gemini pass the API key as a query argument (!) so zap it before recording.
-	u, err := url.Parse(i.Request.URL)
-	if err != nil {
-		return err
-	}
-	u.RawQuery = removeKeyFromQuery(u.RawQuery, "key")
-	i.Request.URL = u.String()
-	i.Request.Form.Del("key")
-	return nil
-}
-
 // trimRecordingHostPort is a recorder.HookFunc to remove the port number when recording.
 func trimRecordingHostPort(i *cassette.Interaction) error {
 	i.Request.Host = strings.Split(i.Request.Host, ":")[0]
@@ -269,7 +250,7 @@ func matchIgnorePort(r *http.Request, i cassette.Request) bool {
 	r = r.Clone(r.Context())
 	r.URL.Host = strings.Split(r.URL.Host, ":")[0]
 	r.Host = strings.Split(r.Host, ":")[0]
-	return matchCassetteGemini(r, i)
+	return matchCassetteCloudflare(r, i)
 }
 
 func removeKeyFromQuery(query, keyToRemove string) string {

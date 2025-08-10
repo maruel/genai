@@ -9,9 +9,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/maruel/genai"
@@ -48,7 +46,7 @@ func ExampleNew_hTTP_record() {
 			recorder.WithMode(mode),
 			recorder.WithSkipRequestLatency(true),
 			recorder.WithRealTransport(h),
-			recorder.WithMatcher(matchCassette),
+			recorder.WithMatcher(defaultMatcher),
 		)
 		if err != nil {
 			log.Fatal(err)
@@ -75,47 +73,15 @@ func ExampleNew_hTTP_record() {
 
 // trimRecording trims API key and noise from the recording.
 func trimRecording(i *cassette.Interaction) error {
-	// Gemini pass the API key as a query argument (!) so zap it before recording.
-	u, err := url.Parse(i.Request.URL)
-	if err != nil {
-		return err
-	}
-	u.RawQuery = removeKeyFromQuery(u.RawQuery, "key")
-	i.Request.URL = u.String()
-	i.Request.Form.Del("key")
+	// Do not record API key.
+	i.Request.Headers.Del("X-Goog-Api-Key")
+	// OMG What are they thinking? This happens on HTTP 302 redirect when fetching Veo generated videos:
+	i.Response.Headers.Del("X-Goog-Api-Key")
 	// Reduce noise.
 	i.Request.Headers.Del("X-Request-Id")
-	i.Request.Headers.Del("X-Goog-Api-Key")
 	i.Response.Headers.Del("Date")
 	i.Response.Duration = i.Response.Duration.Round(time.Millisecond)
 	return nil
 }
 
-// matchCassette matches the cassette ignoring the query argument
-func matchCassette(r *http.Request, i cassette.Request) bool {
-	// Gemini pass the API key as a query argument (!) so zap it before matching.
-	r = r.Clone(r.Context())
-	r.URL.RawQuery = removeKeyFromQuery(r.URL.RawQuery, "key")
-	_ = r.ParseForm()
-	return defaultMatcher(r, i)
-}
-
 var defaultMatcher = cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Goog-Api-Key", "X-Request-Id"))
-
-// removeKeyFromQuery remove a key from a raw query.
-// Using url.URL.Query() then Encode() reorders the keys, which makes it non-deterministic. Do it manually.
-func removeKeyFromQuery(query, keyToRemove string) string {
-	b := strings.Builder{}
-	for _, part := range strings.Split(query, "&") {
-		if part != "" {
-			if k := strings.SplitN(part, "=", 2)[0]; k == keyToRemove {
-				continue
-			}
-		}
-		if b.Len() != 0 {
-			b.WriteByte('&')
-		}
-		b.WriteString(part)
-	}
-	return b.String()
-}

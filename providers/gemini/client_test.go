@@ -9,7 +9,6 @@ import (
 	_ "embed"
 	"log/slog"
 	"net/http"
-	"net/url"
 	"os"
 	"strings"
 	"testing"
@@ -340,33 +339,17 @@ func getClientInner(t *testing.T, apiKey, m string) (*gemini.Client, error) {
 		apiKey = "<insert_api_key_here>"
 	}
 
-	matchCassetteInternal := func(r *http.Request, i cassette.Request) bool {
-		// Gemini pass the API key as a query argument (!) so zap it before matching.
-		r = r.Clone(r.Context())
-		r.URL.RawQuery = removeKeyFromQuery(r.URL.RawQuery, "key")
-		_ = r.ParseForm()
-		res := internal.DefaultMatcher(r, i)
-		// Useful for debugging.
-		// if !res {
-		// 	t.Logf("Failed to match request\nReq: %v\nInt: %v", r, i)
-		// }
-		return res
-	}
 	wrapper := func(h http.RoundTripper) http.RoundTripper {
-		return testRecorder.Record(t, h, recorder.WithHook(trimRecordingInternal, recorder.AfterCaptureHook), recorder.WithMatcher(matchCassetteInternal))
+		return testRecorder.Record(t, h, recorder.WithHook(trimRecordingInternal, recorder.AfterCaptureHook), recorder.WithMatcher(internal.DefaultMatcher))
 	}
 	return gemini.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, wrapper)
 }
 
 func trimRecordingInternal(i *cassette.Interaction) error {
-	// Gemini pass the API key as a query argument (!) so zap it before recording.
-	u, err := url.Parse(i.Request.URL)
-	if err != nil {
-		return err
-	}
-	u.RawQuery = removeKeyFromQuery(u.RawQuery, "key")
-	i.Request.URL = u.String()
-	i.Request.Form.Del("key")
+	// Do not save the API key.
+	i.Request.Headers.Del("X-Goog-Api-Key")
+	// OMG What are they thinking? This happens on HTTP 302 redirect when fetching Veo generated videos:
+	i.Response.Headers.Del("X-Goog-Api-Key")
 	return nil
 }
 

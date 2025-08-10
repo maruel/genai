@@ -160,7 +160,7 @@ func startServerTest(t testing.TB, author, repo, modelfile, multimodal string) *
 	if err != nil {
 		t.Fatal(err)
 	}
-	extraArgs := []string{"--no-warmup", "--jinja", "--flash-attn", "--cache-type-k", "q8_0", "--cache-type-v", "q8_0"}
+	extraArgs := []string{"--jinja", "--flash-attn", "--cache-type-k", "q8_0", "--cache-type-v", "q8_0"}
 	mmPath := ""
 	if multimodal != "" {
 		if mmPath, err = hf.EnsureFile(ctx, huggingface.ModelRef{Author: author, Repo: repo}, "HEAD", multimodal); err != nil {

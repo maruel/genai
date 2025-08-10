@@ -1,3 +1,45 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 282
+        host: localhost
+        body: |
+            {"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1754860519,"id":"chatcmpl-ydsaqjw3Umg7hSiUQ650H9hli0XCeO4L","model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"Banana"}}],"created":1754860519,"id":"chatcmpl-ydsaqjw3Umg7hSiUQ650H9hli0XCeO4L","model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1754860519,"id":"chatcmpl-ydsaqjw3Umg7hSiUQ650H9hli0XCeO4L","model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion.chunk","usage":{"completion_tokens":2,"prompt_tokens":279,"total_tokens":281},"timings":{"prompt_n":279,"prompt_ms":15982.232,"prompt_per_token_ms":57.28398566308244,"prompt_per_second":17.45688587176059,"predicted_n":2,"predicted_ms":51.776,"predicted_per_token_ms":25.888,"predicted_per_second":38.62793572311495}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Type:
+                - text/event-stream
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 270ms

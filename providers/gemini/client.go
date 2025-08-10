@@ -24,12 +24,14 @@ import (
 	"os"
 	"path"
 	"reflect"
+	"slices"
 	"strings"
 	"time"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -228,6 +230,23 @@ var Scoreboard = genai.Scoreboard{
 			},
 		},
 		{
+			Models: []string{"imagen-4.0-generate-preview-06-06"},
+			In: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityText: {Inline: true},
+			},
+			Out: map[genai.Modality]genai.ModalCapability{
+				genai.ModalityImage: {
+					Inline:           true,
+					SupportedFormats: []string{"image/jpeg"},
+				},
+			},
+			GenDoc: &genai.FunctionalityDoc{
+				Seed:               true,
+				BrokenTokenUsage:   genai.True,
+				BrokenFinishReason: true,
+			},
+		},
+		{
 			Models:   []string{"gemini-2.5-flash-exp-native-audio-thinking-dialog"},
 			Thinking: true,
 		},
@@ -280,7 +299,6 @@ var Scoreboard = genai.Scoreboard{
 				"gemma-3n-e2b-it",
 				"gemma-3n-e4b-it",
 				"imagen-3.0-generate-002",
-				"imagen-4.0-generate-preview-06-06",
 				"imagen-4.0-ultra-generate-preview-06-06",
 				"learnlm-2.0-flash-experimental",
 				"text-embedding-004",
@@ -1475,6 +1493,144 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + url.PathEscape(name)
 	var out struct{}
 	return c.DoRequest(ctx, "DELETE", url, nil, &out)
+}
+
+// ImageRequest is not really documented.
+//
+// See https://ai.google.dev/gemini-api/docs/imagen#imagen
+//
+// See https://pkg.go.dev/google.golang.org/genai#GenerateImagesConfig
+// and generateImagesConfigToMldev() in https://github.com/googleapis/go-genai/blob/main/models.go
+// or GenerateImagesConfig and generateImagesInternal() in
+// https://github.com/googleapis/js-genai/blob/main/src/models.ts and generateImagesParametersToMldev() and
+// generateImagesConfigToMldev()
+type ImageRequest struct {
+	// There should be only one instance.
+	Instances  []ImageInstance `json:"instances"`
+	Parameters ImageParameters `json:"parameters"`
+}
+
+type ImageInstance struct {
+	Prompt string `json:"prompt"`
+}
+
+type ImageParameters struct {
+	SampleCount             int64       `json:"sampleCount,omitzero"` // Number of images to generate. Default to 4.
+	AspectRatio             string      `json:"aspectRatio,omitzero"` // "1:1", "3:4", "4:3", "9:16", and "16:9".
+	GuidanceScale           float64     `json:"guidanceScale,omitzero"`
+	Seed                    int64       `json:"seed,omitzero"`
+	SafetySetting           string      `json:"safetySetting,omitzero"`
+	PersonGeneration        string      `json:"personGeneration"` // "dont_allow", "allow_adult", "allow_all" (not valid in EU, UK, CH, MENA locations)
+	IncludeSafetyAttributes bool        `json:"includeSafetyAttributes,omitzero"`
+	IncludeRAIReason        bool        `json:"includeRAIReason,omitzero"`
+	Language                string      `json:"language,omitzero"`
+	OutputOptions           ImageOutput `json:"outputOptions"`
+	AddWatermark            bool        `json:"addWatermark,omitzero"`
+	SampleImageSize         string      `json:"SampleImageSize,omitzero"`
+	EnhancePrompt           bool        `json:"enhancePrompt,omitzero"`
+	// VertexAI only:
+	// OutputGCSURI             string  `json:"outputGcsUri,omitzero"`
+	// NegativePrompt           string  `json:"negativePrompt,omitzero"`
+}
+
+type ImageOutput struct {
+	MimeType           string  `json:"mimeType,omitzero"` // "image/jpeg"
+	CompressionQuality float64 `json:"compressionQuality,omitzero"`
+}
+
+type ImageResponse struct {
+	Predictions []struct {
+		MimeType         string `json:"mimeType"`
+		SafetyAttributes struct {
+			Categories []string  `json:"categories"`
+			Scores     []float64 `json:"scores"`
+		} `json:"safetyAttributes"`
+		BytesBase64Encoded []byte `json:"bytesBase64Encoded"`
+		ContentType        string `json:"contentType"` // Positive Prompt
+	} `json:"predictions"`
+}
+
+func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
+	if !c.isImage(opts) {
+		return genai.Result{}, errors.New("can only generate images")
+	}
+	res := genai.Result{}
+	if err := c.Validate(); err != nil {
+		return genai.Result{}, err
+	}
+	if err := msg.Validate(); err != nil {
+		return res, err
+	}
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return res, err
+		}
+	}
+	for i := range msg.Contents {
+		if msg.Contents[i].Text == "" {
+			return res, errors.New("only text can be passed as input")
+		}
+	}
+	req := ImageRequest{
+		Instances: []ImageInstance{{Prompt: msg.AsText()}},
+		Parameters: ImageParameters{
+			SampleCount:             1,
+			PersonGeneration:        "allow_adult",
+			IncludeSafetyAttributes: true,
+			IncludeRAIReason:        true,
+			OutputOptions: ImageOutput{
+				MimeType:           "image/jpeg",
+				CompressionQuality: 0,
+			},
+			// Seems like it's not supported?
+			// EnhancePrompt: true,
+		},
+	}
+	var uce *genai.UnsupportedContinuableError
+	if opts != nil {
+		switch v := opts.(type) {
+		case *Options:
+			if v.OptionsImage.Seed != 0 {
+				// To confirm.
+				uce = &genai.UnsupportedContinuableError{Unsupported: []string{"Seed"}}
+			}
+			// TODO: Width and Height
+		case *genai.OptionsImage:
+			if v.Seed != 0 {
+				// To confirm.
+				uce = &genai.UnsupportedContinuableError{Unsupported: []string{"Seed"}}
+			}
+			// TODO: Width and Height
+		default:
+			return res, fmt.Errorf("unsupported options type %T", opts)
+		}
+	}
+	resp := ImageResponse{}
+	u := "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Model) + ":predict"
+	if err := c.DoRequest(ctx, "POST", u, &req, &resp); err != nil {
+		return res, err
+	}
+	res.Role = genai.Assistant
+	res.Contents = make([]genai.Content, len(resp.Predictions))
+	for i := range resp.Predictions {
+		if len(resp.Predictions[i].BytesBase64Encoded) == 0 {
+			continue
+		}
+		if resp.Predictions[i].MimeType != "image/jpeg" {
+			return res, fmt.Errorf("unsupported mime type %q", resp.Predictions[i].MimeType)
+		}
+		n := "content.jpg"
+		if len(resp.Predictions) > 2 {
+			n = fmt.Sprintf("content%d.jpg", i+1)
+		}
+		res.Contents[i].Filename = n
+		res.Contents[i].Document = &bb.BytesBuffer{D: resp.Predictions[i].BytesBase64Encoded}
+	}
+	return res, uce
+}
+
+func (c *Client) isImage(opts genai.Options) bool {
+	return opts != nil && slices.Contains(opts.Modalities(), genai.ModalityImage)
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

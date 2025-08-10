@@ -253,23 +253,6 @@ func matchIgnorePort(r *http.Request, i cassette.Request) bool {
 	return matchCassetteCloudflare(r, i)
 }
 
-func removeKeyFromQuery(query, keyToRemove string) string {
-	// Using url.URL.Query() then Encode() reorders the keys, which makes it non-deterministic. Do it manually.
-	b := strings.Builder{}
-	for part := range strings.SplitSeq(query, "&") {
-		if part != "" {
-			if k := strings.SplitN(part, "=", 2)[0]; k == keyToRemove {
-				continue
-			}
-		}
-		if b.Len() != 0 {
-			b.WriteByte('&')
-		}
-		b.WriteString(part)
-	}
-	return b.String()
-}
-
 // recorderWithBody wraps the POST body in the error message.
 type recorderWithBody struct {
 	*recorder.Recorder

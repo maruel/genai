@@ -155,12 +155,16 @@ func main() {
 }
 ```
 
+This may print:
+
+> Quit your job and follow your dreams, no matter the cost.
+
 <details>
   <summary>‼️ Click to see more examples!</summary>
 
 ### Any provider
 
-A minimal program that will load a provider and send a prompt. The relevant environment variables (e.g.
+A minimal program that will load a provider by name and send a prompt. The relevant environment variables (e.g.
 `OPENAI_API_KEY`) will be used automatically. Supports [ollama](https://ollama.com/) and
 [llama-server](https://github.com/ggml-org/llama.cpp) even if they run on a remote host or non-default port.
 
@@ -172,6 +176,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"sort"
 	"strings"
 
 	"github.com/maruel/genai"
@@ -180,8 +185,17 @@ import (
 )
 
 func main() {
-	provider := flag.String("provider", "", "provider to use")
-	model := flag.String("model", "", "model to use")
+	var names []string
+	for name := range providers.Available() {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	s := strings.Join(names, ", ")
+	if s == "" {
+		s = "set environment variables, e.g. `OPENAI_API_KEY`"
+	}
+	provider := flag.String("provider", "", "provider to use, "+s)
+	model := flag.String("model", "", "model to use; PREFERRED_CHEAP, PREFERRED_GOOD (default) or PREFERRED_SOTA for automatic model selection")
 	remote := flag.String("remote", "", "url to use, e.g. when using ollama or llama-server on another host")
 	flag.Parse()
 
@@ -202,6 +216,9 @@ func main() {
 
 // LoadProvider loads a provider.
 func LoadProvider(provider string, opts *genai.OptionsProvider) (genai.ProviderGen, error) {
+	if provider == "" {
+		return nil, fmt.Errorf("no provider specified")
+	}
 	f := providers.All[provider]
 	if f == nil {
 		return nil, fmt.Errorf("unknown provider %q", provider)

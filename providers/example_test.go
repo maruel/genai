@@ -103,8 +103,17 @@ func Example_all_Full() {
 	// This example includes:
 	// - Making sure the provider implements genai.ProviderGen.
 	// - Processing <think> tokens for explicit Chain-of-Thoughts models (e.g. Qwen3).
-	provider := flag.String("provider", "", "provider to use")
-	model := flag.String("model", "", "model to use")
+	var names []string
+	for name := range providers.Available() {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	s := strings.Join(names, ", ")
+	if s == "" {
+		s = "set environment variables, e.g. `OPENAI_API_KEY`"
+	}
+	provider := flag.String("provider", "", "provider to use, "+s)
+	model := flag.String("model", "", "model to use; PREFERRED_CHEAP, PREFERRED_GOOD (default) or PREFERRED_SOTA for automatic model selection")
 	remote := flag.String("remote", "", "url to use, e.g. when using ollama or llama-server on another host")
 	flag.Parse()
 
@@ -125,6 +134,9 @@ func Example_all_Full() {
 
 // LoadProvider loads a provider.
 func LoadProvider(provider string, opts *genai.OptionsProvider) (genai.ProviderGen, error) {
+	if provider == "" {
+		return nil, fmt.Errorf("no provider specified")
+	}
 	f := providers.All[provider]
 	if f == nil {
 		return nil, fmt.Errorf("unknown provider %q", provider)

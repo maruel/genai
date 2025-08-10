@@ -38,6 +38,7 @@ func mainImpl() error {
 	cacheDir := flag.String("cache", "", "Cache directory for models and server (default: ~/.cache/llama-serve)")
 	hostPort := flag.String("http", "127.0.0.1:8080", "IP and Port to serve on; use 0.0.0.0 to listen on all IPs")
 	threads := flag.Int("threads", 0, "Number of threads to use (default: CPU count - 2)")
+	build := flag.Int("build", llamacppsrv.BuildNumber, "llama.cpp release build number to fetch; see https://github.com/ggml-org/llama.cpp/releases")
 	flag.Parse()
 	if *modelFlag == "" {
 		return fmt.Errorf("-model flag is required")
@@ -63,8 +64,8 @@ func mainImpl() error {
 		filename = parts[2]
 	}
 
-	log.Printf("Ensuring llama-server (build %d)...", llamacppsrv.BuildNumber)
-	exe, err := llamacppsrv.DownloadRelease(ctx, *cacheDir, llamacppsrv.BuildNumber)
+	log.Printf("Ensuring llama-server (build %d)...", *build)
+	exe, err := llamacppsrv.DownloadRelease(ctx, *cacheDir, *build)
 	if err != nil {
 		return err
 	}

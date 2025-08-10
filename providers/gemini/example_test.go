@@ -85,6 +85,7 @@ func trimRecording(i *cassette.Interaction) error {
 	i.Request.Form.Del("key")
 	// Reduce noise.
 	i.Request.Headers.Del("X-Request-Id")
+	i.Request.Headers.Del("X-Goog-Api-Key")
 	i.Response.Headers.Del("Date")
 	i.Response.Duration = i.Response.Duration.Round(time.Millisecond)
 	return nil
@@ -99,7 +100,7 @@ func matchCassette(r *http.Request, i cassette.Request) bool {
 	return defaultMatcher(r, i)
 }
 
-var defaultMatcher = cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Request-Id"))
+var defaultMatcher = cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Goog-Api-Key", "X-Request-Id"))
 
 // removeKeyFromQuery remove a key from a raw query.
 // Using url.URL.Query() then Encode() reorders the keys, which makes it non-deterministic. Do it manually.

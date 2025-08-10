@@ -39,7 +39,7 @@ import (
 var BeLenient = true
 
 // DefaultMatcher ignores authentication via API keys.
-var DefaultMatcher = cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Api-Key", "X-Key", "X-Request-Id"))
+var DefaultMatcher = cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Api-Key", "X-Goog-Api-Key", "X-Key", "X-Request-Id"))
 
 type Recorder interface {
 	http.RoundTripper
@@ -199,6 +199,7 @@ func trimResponseHeaders(i *cassette.Interaction) error {
 	// Authentication via API keys.
 	i.Request.Headers.Del("Authorization")
 	i.Request.Headers.Del("X-Api-Key")
+	i.Request.Headers.Del("X-Goog-Api-Key")
 	i.Request.Headers.Del("X-Key")
 	// Noise.
 	i.Request.Headers.Del("X-Request-Id")

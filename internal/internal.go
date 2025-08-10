@@ -114,8 +114,10 @@ func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Opti
 		}
 	}
 	mode := recorder.ModeRecordOnce
-	if os.Getenv("RECORD") == "1" {
+	if v := os.Getenv("RECORD"); v == "1" {
 		mode = recorder.ModeRecordOnly
+	} else if v == "2" {
+		mode = recorder.ModeReplayWithNewEpisodes
 	}
 	args := []recorder.Option{
 		recorder.WithHook(trimResponseHeaders, recorder.AfterCaptureHook),

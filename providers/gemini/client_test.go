@@ -109,6 +109,45 @@ func TestClient_Preferred(t *testing.T) {
 	}
 }
 
+func TestClient_GenAsync(t *testing.T) {
+	// TODO: "veo-3.0-fast-generate-preview" is cheaper: 25¢/s; 2$/request vs 5$/request for veo 2 when not
+	// requesting audio.
+	// https://cloud.google.com/vertex-ai/generative-ai/pricing#veo
+	c := getClient(t, "veo-2.0-generate-001")
+	ctx := t.Context()
+	const prompt = `Carton video of a shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
+	msgs := genai.Messages{{Role: genai.User, Contents: []genai.Content{{Text: prompt}}}}
+	id, err := c.GenAsync(ctx, msgs, &genai.OptionsImage{})
+	if err != nil {
+		t.Fatalf("%v", err)
+	}
+	t.Log(id)
+	res := genai.Result{Usage: genai.Usage{FinishReason: genai.Pending}}
+	for res.FinishReason == genai.Pending {
+		select {
+		case <-ctx.Done():
+			t.Fatal(ctx.Err())
+		case <-time.After(500 * time.Millisecond):
+			if res, err = c.PokeResult(ctx, id); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	t.Log(res)
+	if len(res.Contents) != 1 {
+		t.Fatalf("got %d contents, want 1", len(res.Contents))
+	}
+	req, err := http.NewRequestWithContext(ctx, "GET", res.Contents[0].URL, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp, err := c.ClientJSON.Client.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(resp)
+}
+
 func TestClient_Cache(t *testing.T) {
 	slow := os.Getenv("GEMINI_SLOW") != ""
 	ctx := t.Context()

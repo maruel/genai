@@ -1081,6 +1081,114 @@ type ChatStreamChunkResponse struct {
 	ResponseID    string        `json:"responseId"`
 }
 
+// Image
+
+// ImageRequest is not really documented.
+//
+// See https://ai.google.dev/gemini-api/docs/imagen#imagen
+//
+// See https://pkg.go.dev/google.golang.org/genai#GenerateImagesConfig
+// and generateImagesConfigToMldev() in https://github.com/googleapis/go-genai/blob/main/models.go
+// or GenerateImagesConfig and generateImagesInternal() in
+// https://github.com/googleapis/js-genai/blob/main/src/models.ts and generateImagesParametersToMldev() and
+// generateImagesConfigToMldev()
+type ImageRequest struct {
+	// There should be only one instance.
+	Instances  []ImageInstance `json:"instances"`
+	Parameters ImageParameters `json:"parameters"`
+}
+
+type ImageInstance struct {
+	Prompt string `json:"prompt"`
+	Image  string `json:"image,omitzero"` // TODO: Confirm.
+	Video  string `json:"video,omitzero"` // Explicitly not supported in Gemini API.
+	// Pricing says there's a way to disable audio when using Veo 3 fast to save on cost.
+	// TODO: Figure out how.
+}
+
+type ImageParameters struct {
+	// Both image and video:
+	SampleCount      int64  `json:"sampleCount,omitzero"` // Number of images to generate. Default to 4.
+	AspectRatio      string `json:"aspectRatio,omitzero"` // "1:1", "3:4", "4:3", "9:16", and "16:9".
+	PersonGeneration string `json:"personGeneration"`     // "dont_allow", "allow_adult", "allow_all" (not valid in EU, UK, CH, MENA locations)
+	EnhancePrompt    bool   `json:"enhancePrompt,omitzero"`
+
+	// Image only.
+	GuidanceScale           float64     `json:"guidanceScale,omitzero"`
+	Seed                    int64       `json:"seed,omitzero"`
+	SafetySetting           string      `json:"safetySetting,omitzero"`
+	IncludeSafetyAttributes bool        `json:"includeSafetyAttributes,omitzero"`
+	IncludeRAIReason        bool        `json:"includeRAIReason,omitzero"`
+	Language                string      `json:"language,omitzero"`
+	OutputOptions           ImageOutput `json:"outputOptions,omitzero"`
+	AddWatermark            bool        `json:"addWatermark,omitzero"`
+	SampleImageSize         string      `json:"SampleImageSize,omitzero"`
+	// VertexAI only:
+	// OutputGCSURI             string  `json:"outputGcsUri,omitzero"`
+	// NegativePrompt           string  `json:"negativePrompt,omitzero"`
+
+	// Video only.
+	DurationSeconds int64  `json:"durationSeconds,omitzero"`
+	NegativePrompt  string `json:"negativePrompt,omitzero"`
+	// VertexAI only:
+	// FPS int64 `json:"fps,omitzero"`
+	// Seed int64 `json:"seed,omitzero"`
+	// Resolution string `json:"resolution,omitzero"`
+	// PubSubTopic string `json:"pubSubTopic,omitzero"`
+	// GenerateAudio string `json:"generateAudio,omitzero"`
+	// LastFrame string `json:"lastFrame,omitzero"`
+	// CompressionQuality string `json:"compressionQuality,omitzero"`
+}
+
+type ImageOutput struct {
+	MimeType           string  `json:"mimeType,omitzero"` // "image/jpeg"
+	CompressionQuality float64 `json:"compressionQuality,omitzero"`
+}
+
+type ImageResponse struct {
+	Predictions []struct {
+		MimeType         string `json:"mimeType"`
+		SafetyAttributes struct {
+			Categories []string  `json:"categories"`
+			Scores     []float64 `json:"scores"`
+		} `json:"safetyAttributes"`
+		BytesBase64Encoded []byte `json:"bytesBase64Encoded"`
+		ContentType        string `json:"contentType"` // "Positive Prompt"
+	} `json:"predictions"`
+}
+
+// Operation is documented at https://ai.google.dev/api/batch-mode#Operation
+//
+// See generateVideosResponseFromMldev in js-genai for more details.
+type Operation struct {
+	Name     string         `json:"name"`
+	Metadata map[string]any `json:"metadata"`
+	Done     bool           `json:"done"`
+	// One of the following:
+	Error    Status `json:"error"`
+	Response struct {
+		Type                  string `json:"@type"` // "type.googleapis.com/google.ai.generativelanguage.v1beta.PredictLongRunningResponse"
+		GenerateVideoResponse struct {
+			GeneratedSamples []struct {
+				Video struct {
+					URI        string `json:"uri"`
+					VideoBytes []byte `json:"videoBytes"` // Not set in Gemini API
+					MimeType   string `json:"mimeType"`   // Not set in Gemini API
+				} `json:"video"`
+				RAIMediaFilteredCount   int64    `json:"raiMediaFilteredCount"`
+				RAIMediaFilteredReasons []string `json:"raiMediaFilteredReasons"`
+			} `json:"generatedSamples"`
+		} `json:"generateVideoResponse"`
+	} `json:"response"`
+}
+
+// Status is documented at https://ai.google.dev/api/files#v1beta.Status
+type Status struct {
+	Code    int64          `json:"code"`
+	Message string         `json:"message"`
+	Details map[string]any `json:"details"`
+}
+
 // Caching
 
 // CachedContent is documented at https://ai.google.dev/api/caching?hl=en#CachedContent
@@ -1157,7 +1265,7 @@ type Model struct {
 	Description                string   `json:"description"`
 	InputTokenLimit            int64    `json:"inputTokenLimit"`
 	OutputTokenLimit           int64    `json:"outputTokenLimit"`
-	SupportedGenerationMethods []string `json:"supportedGenerationMethods"`
+	SupportedGenerationMethods []string `json:"supportedGenerationMethods"` // "batchGenerateContent", "bidiGenerateContent", "createCachedContent", "countTokens", "countTextTokens", "embedText", "generateContent", "predict", "predictLongRunning"
 	Temperature                float64  `json:"temperature"`
 	MaxTemperature             float64  `json:"maxTemperature"`
 	TopP                       float64  `json:"topP"`
@@ -1205,7 +1313,7 @@ func (e *ErrorResponse) Error() string {
 	return fmt.Sprintf("%s (%d): %s", e.ErrorVal.Status, e.ErrorVal.Code, strings.TrimSpace(e.ErrorVal.Message))
 }
 
-func (er *ErrorResponse) IsAPIError() bool {
+func (e *ErrorResponse) IsAPIError() bool {
 	return true
 }
 
@@ -1495,68 +1603,14 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 	return c.DoRequest(ctx, "DELETE", url, nil, &out)
 }
 
-// ImageRequest is not really documented.
-//
-// See https://ai.google.dev/gemini-api/docs/imagen#imagen
-//
-// See https://pkg.go.dev/google.golang.org/genai#GenerateImagesConfig
-// and generateImagesConfigToMldev() in https://github.com/googleapis/go-genai/blob/main/models.go
-// or GenerateImagesConfig and generateImagesInternal() in
-// https://github.com/googleapis/js-genai/blob/main/src/models.ts and generateImagesParametersToMldev() and
-// generateImagesConfigToMldev()
-type ImageRequest struct {
-	// There should be only one instance.
-	Instances  []ImageInstance `json:"instances"`
-	Parameters ImageParameters `json:"parameters"`
-}
-
-type ImageInstance struct {
-	Prompt string `json:"prompt"`
-}
-
-type ImageParameters struct {
-	SampleCount             int64       `json:"sampleCount,omitzero"` // Number of images to generate. Default to 4.
-	AspectRatio             string      `json:"aspectRatio,omitzero"` // "1:1", "3:4", "4:3", "9:16", and "16:9".
-	GuidanceScale           float64     `json:"guidanceScale,omitzero"`
-	Seed                    int64       `json:"seed,omitzero"`
-	SafetySetting           string      `json:"safetySetting,omitzero"`
-	PersonGeneration        string      `json:"personGeneration"` // "dont_allow", "allow_adult", "allow_all" (not valid in EU, UK, CH, MENA locations)
-	IncludeSafetyAttributes bool        `json:"includeSafetyAttributes,omitzero"`
-	IncludeRAIReason        bool        `json:"includeRAIReason,omitzero"`
-	Language                string      `json:"language,omitzero"`
-	OutputOptions           ImageOutput `json:"outputOptions"`
-	AddWatermark            bool        `json:"addWatermark,omitzero"`
-	SampleImageSize         string      `json:"SampleImageSize,omitzero"`
-	EnhancePrompt           bool        `json:"enhancePrompt,omitzero"`
-	// VertexAI only:
-	// OutputGCSURI             string  `json:"outputGcsUri,omitzero"`
-	// NegativePrompt           string  `json:"negativePrompt,omitzero"`
-}
-
-type ImageOutput struct {
-	MimeType           string  `json:"mimeType,omitzero"` // "image/jpeg"
-	CompressionQuality float64 `json:"compressionQuality,omitzero"`
-}
-
-type ImageResponse struct {
-	Predictions []struct {
-		MimeType         string `json:"mimeType"`
-		SafetyAttributes struct {
-			Categories []string  `json:"categories"`
-			Scores     []float64 `json:"scores"`
-		} `json:"safetyAttributes"`
-		BytesBase64Encoded []byte `json:"bytesBase64Encoded"`
-		ContentType        string `json:"contentType"` // Positive Prompt
-	} `json:"predictions"`
-}
-
+// GenDoc is only supported for models that have "predict" reported in their Model.SupportedGenerationMethods.
 func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
 	if !c.isImage(opts) {
 		return genai.Result{}, errors.New("can only generate images")
 	}
 	res := genai.Result{}
 	if err := c.Validate(); err != nil {
-		return genai.Result{}, err
+		return res, err
 	}
 	if err := msg.Validate(); err != nil {
 		return res, err
@@ -1605,13 +1659,18 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 			return res, fmt.Errorf("unsupported options type %T", opts)
 		}
 	}
-	resp := ImageResponse{}
-	u := "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Model) + ":predict"
-	if err := c.DoRequest(ctx, "POST", u, &req, &resp); err != nil {
+	resp, err := c.GenDocRaw(ctx, req)
+	if err != nil {
 		return res, err
 	}
 	res.Role = genai.Assistant
-	res.Contents = make([]genai.Content, len(resp.Predictions))
+	// As of now, the last item in the list contains ContentType = "Positive Prompt".
+	nbImages := 0
+	for i := range resp.Predictions {
+		if len(resp.Predictions[i].BytesBase64Encoded) > 0 {
+			nbImages++
+		}
+	}
 	for i := range resp.Predictions {
 		if len(resp.Predictions[i].BytesBase64Encoded) == 0 {
 			continue
@@ -1620,13 +1679,132 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 			return res, fmt.Errorf("unsupported mime type %q", resp.Predictions[i].MimeType)
 		}
 		n := "content.jpg"
-		if len(resp.Predictions) > 2 {
+		if nbImages > 1 {
 			n = fmt.Sprintf("content%d.jpg", i+1)
 		}
-		res.Contents[i].Filename = n
-		res.Contents[i].Document = &bb.BytesBuffer{D: resp.Predictions[i].BytesBase64Encoded}
+		res.Contents = append(res.Contents, genai.Content{Filename: n, Document: &bb.BytesBuffer{D: resp.Predictions[i].BytesBase64Encoded}})
 	}
-	return res, uce
+	if uce != nil {
+		return res, uce
+	}
+	return res, nil
+}
+
+func (c *Client) GenDocRaw(ctx context.Context, req ImageRequest) (ImageResponse, error) {
+	resp := ImageResponse{}
+	// https://ai.google.dev/api/models?hl=en#method:-models.predict
+	u := "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Model) + ":predict"
+	err := c.DoRequest(ctx, "POST", u, &req, &resp)
+	return resp, err
+}
+
+// GenAsync is only supported for models that have "predictLongRunning" reported in their
+// Model.SupportedGenerationMethods.
+//
+// The resulting file is available for 48 hours. It requires the API key in the HTTP header to be fetched, so
+// use the client's HTTP client.
+func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
+	if !c.isImage(opts) {
+		return "", errors.New("can only generate images")
+	}
+	if err := c.Validate(); err != nil {
+		return "", err
+	}
+	if len(msgs) != 1 {
+		return "", errors.New("only one message can be passed as input")
+	}
+	msg := msgs[0]
+	if err := msg.Validate(); err != nil {
+		return "", err
+	}
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return "", err
+		}
+	}
+	for i := range msg.Contents {
+		if msg.Contents[i].Text == "" {
+			return "", errors.New("only text can be passed as input")
+		}
+	}
+	req := ImageRequest{
+		Instances: []ImageInstance{{Prompt: msg.AsText()}},
+		Parameters: ImageParameters{
+			SampleCount:      1,
+			PersonGeneration: "allow_adult",
+			// Seems like it's not supported?
+			// IncludeSafetyAttributes: true,
+			// IncludeRAIReason:        true,
+			// EnhancePrompt: true,
+		},
+	}
+	var uce *genai.UnsupportedContinuableError
+	if opts != nil {
+		switch v := opts.(type) {
+		case *Options:
+			if v.OptionsImage.Seed != 0 {
+				// To confirm.
+				uce = &genai.UnsupportedContinuableError{Unsupported: []string{"Seed"}}
+			}
+			// TODO: Width and Height
+		case *genai.OptionsImage:
+			if v.Seed != 0 {
+				// To confirm.
+				uce = &genai.UnsupportedContinuableError{Unsupported: []string{"Seed"}}
+			}
+			// TODO: Width and Height
+		default:
+			return "", fmt.Errorf("unsupported options type %T", opts)
+		}
+	}
+	resp, err := c.GenAsyncRaw(ctx, req)
+	fmt.Fprintf(os.Stderr, "%+v\n", resp)
+	if err != nil {
+		return genai.Job(resp.Name), err
+	}
+	if uce != nil {
+		return genai.Job(resp.Name), uce
+	}
+	return genai.Job(resp.Name), nil
+}
+
+func (c *Client) GenAsyncRaw(ctx context.Context, req ImageRequest) (Operation, error) {
+	// https://ai.google.dev/api/models?hl=en#method:-models.predictlongrunning
+	resp := Operation{}
+	u := "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Model) + ":predictLongRunning"
+	err := c.DoRequest(ctx, "POST", u, &req, &resp)
+	return resp, err
+}
+
+// PokeResult retrieves the result for a job ID.
+func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, error) {
+	res := genai.Result{}
+	op, err := c.PokeResultRaw(ctx, id)
+	if err != nil {
+		return res, err
+	}
+	if !op.Done {
+		res.FinishReason = genai.Pending
+		return res, nil
+	}
+	res.Role = genai.Assistant
+	res.FinishReason = genai.FinishedStop
+	for _, p := range op.Response.GenerateVideoResponse.GeneratedSamples {
+		// This requires the Google API key to fetch!
+		res.Contents = []genai.Content{{Filename: "content.mp4", URL: p.Video.URI}}
+	}
+	return res, nil
+}
+
+// PokeResultRaw retrieves the result for a job ID if already available.
+func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (Operation, error) {
+	res := Operation{}
+	u := "https://generativelanguage.googleapis.com/v1beta/" + string(id)
+	err := c.DoRequest(ctx, "GET", u, nil, &res)
+	if err != nil {
+		return res, fmt.Errorf("failed to get job %q: %w", id, err)
+	}
+	return res, err
 }
 
 func (c *Client) isImage(opts genai.Options) bool {

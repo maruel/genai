@@ -206,6 +206,7 @@ func Example_all_GetProvidersGenAsync() {
 	// Output:
 	// anthropic
 	// bfl
+	// gemini
 	// openai
 	// openaichat
 }

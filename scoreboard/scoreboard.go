@@ -711,6 +711,9 @@ func exerciseGenDoc(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 	if err := exerciseGenDocAudio(ctx, pf, prefix+"Audio", &out, &usage); err != nil {
 		return out, usage, err
 	}
+	if err := exerciseGenDocVideo(ctx, pf, prefix+"Video", &out, &usage); err != nil {
+		return out, usage, err
+	}
 	if len(out.In) == 0 || len(out.Out) == 0 {
 		out.GenDoc = nil
 	}
@@ -870,6 +873,11 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 	if isBadError(ctx, err) {
 		return err
 	}
+	return nil
+}
+
+func exerciseGenDocVideo(ctx context.Context, pf ProviderFactory, name string, out *genai.Scenario, usage *genai.Usage) error {
+	// Will be implemented soon.
 	return nil
 }
 

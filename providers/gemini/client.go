@@ -1373,7 +1373,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		return nil, errors.New("unexpected option Remote")
 	}
 	apiKey := opts.APIKey
-	const apiKeyURL = "https://ai.google.dev/gemini-api/docs/getting-started"
+	const apiKeyURL = "https://aistudio.google.com/apikey"
 	var err error
 	if apiKey == "" {
 		if apiKey = os.Getenv("GEMINI_API_KEY"); apiKey == "" {

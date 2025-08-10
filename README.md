@@ -77,6 +77,8 @@ The _high performance_ low level native Go client for LLMs.
 - **Multi-modal**: Process images, PDFs and videos (!) as input or output.
 - **Unit testing friendly**: record and play back API calls at HTTP level to save 💰 and keep tests fast and
   reproducible, via the exposed HTTP transport. See [example](https://pkg.go.dev/github.com/maruel/genai#example-Provider-HTTP_record).
+- **Rate limits and usage**: Parse the provider-specific HTTP headers and JSON response to get the tokens usage
+  and remaining quota.
 - Provide access to HTTP headers to enable [beta features](https://pkg.go.dev/github.com/maruel/genai#example-package-GenSyncWithToolCallLoop_with_custom_HTTP_Header).
 
 Implementation is in flux. :)

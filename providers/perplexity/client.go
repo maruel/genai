@@ -374,8 +374,10 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		// At the moment, Perplexity doesn't support cached tokens.
 		Usage: genai.Usage{
-			InputTokens:  c.Usage.PromptTokens,
-			OutputTokens: c.Usage.CompletionTokens,
+			InputTokens:     c.Usage.PromptTokens,
+			ReasoningTokens: c.Usage.ReasoningTokens,
+			OutputTokens:    c.Usage.CompletionTokens,
+			TotalTokens:     c.Usage.TotalTokens,
 		},
 	}
 	if len(c.Choices) != 1 {

@@ -21,7 +21,9 @@ func TestUsage_String(t *testing.T) {
 	u := Usage{
 		InputTokens:       10,
 		InputCachedTokens: 5,
+		ReasoningTokens:   15,
 		OutputTokens:      20,
+		TotalTokens:       10 + 5 + 15 + 20,
 		Limits: []RateLimit{
 			{
 				Type:      Requests,
@@ -37,7 +39,7 @@ func TestUsage_String(t *testing.T) {
 			},
 		},
 	}
-	want := "in: 10 (cached 5), out: 20, requests (minute): 99/100, tokens (day): 9980/10000"
+	want := "in: 10 (cached 5), reasoning: 15, out: 20, total: 50, requests (minute): 99/100, tokens (day): 9980/10000"
 	if got := u.String(); got != want {
 		t.Errorf("Usage.String()\nwant %q\ngot  %q", want, got)
 	}

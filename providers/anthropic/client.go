@@ -1418,6 +1418,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	res.InputTokens = resp.Result.Message.Usage.InputTokens
 	res.InputCachedTokens = resp.Result.Message.Usage.CacheReadInputTokens
 	res.OutputTokens = resp.Result.Message.Usage.OutputTokens
+	res.TotalTokens = res.InputTokens + res.InputCachedTokens + res.OutputTokens
 	res.FinishReason = resp.Result.Message.StopReason.ToFinishReason()
 	return res, err
 }
@@ -1485,6 +1486,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			result.InputCachedTokens = pkt.Message.Usage.CacheReadInputTokens
 			// There's some tokens listed there. Still save it in case it breaks midway.
 			result.OutputTokens = pkt.Message.Usage.OutputTokens
+			result.TotalTokens = result.InputTokens + result.InputCachedTokens + result.OutputTokens
 			continue
 		case ChunkContentBlockStart:
 			switch pkt.ContentBlock.Type {

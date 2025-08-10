@@ -652,6 +652,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 			InputTokens:       c.Usage.PromptTokens,
 			InputCachedTokens: c.Usage.CachedTokens,
 			OutputTokens:      c.Usage.CompletionTokens,
+			TotalTokens:       c.Usage.TotalTokens,
 		},
 	}
 	if len(c.Choices) != 1 {
@@ -1115,6 +1116,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			result.InputTokens = pkt.Usage.PromptTokens
 			result.InputCachedTokens = pkt.Usage.CachedTokens
 			result.OutputTokens = pkt.Usage.CompletionTokens
+			result.TotalTokens = pkt.Usage.TotalTokens
 		}
 		for _, w := range pkt.Warnings {
 			warnings = append(warnings, w.Message)

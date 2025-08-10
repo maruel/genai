@@ -944,7 +944,9 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		Usage: genai.Usage{
 			InputTokens:       c.UsageMetadata.PromptTokenCount,
 			InputCachedTokens: c.UsageMetadata.CachedContentTokenCount,
-			OutputTokens:      c.UsageMetadata.TotalTokenCount,
+			ReasoningTokens:   c.UsageMetadata.ThoughtsTokenCount,
+			OutputTokens:      c.UsageMetadata.CandidatesTokenCount + c.UsageMetadata.ToolUsePromptTokenCount + c.UsageMetadata.ThoughtsTokenCount,
+			TotalTokens:       c.UsageMetadata.TotalTokenCount,
 		},
 	}
 	if len(c.Candidates) != 1 {
@@ -1833,8 +1835,11 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			continue
 		}
 		if pkt.UsageMetadata.TotalTokenCount != 0 {
+			// Not 100% sure.
 			result.InputTokens = pkt.UsageMetadata.PromptTokenCount
-			result.OutputTokens = pkt.UsageMetadata.TotalTokenCount
+			result.ReasoningTokens = pkt.UsageMetadata.ThoughtsTokenCount
+			result.OutputTokens = pkt.UsageMetadata.CandidatesTokenCount + pkt.UsageMetadata.ToolUsePromptTokenCount + pkt.UsageMetadata.ThoughtsTokenCount
+			result.TotalTokens = pkt.UsageMetadata.TotalTokenCount
 		}
 		if pkt.Candidates[0].FinishReason != "" {
 			result.FinishReason = pkt.Candidates[0].FinishReason.ToFinishReason()

@@ -359,7 +359,9 @@ func (r *Response) ToResult() (genai.Result, error) {
 		Usage: genai.Usage{
 			InputTokens:       r.Usage.InputTokens,
 			InputCachedTokens: r.Usage.InputTokensDetails.CachedTokens,
+			ReasoningTokens:   r.Usage.OutputTokensDetails.ReasoningTokens,
 			OutputTokens:      r.Usage.OutputTokens,
+			TotalTokens:       r.Usage.TotalTokens,
 		},
 	}
 	if len(r.Output) > 1 {
@@ -1415,6 +1417,7 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 		case ResponseCompleted:
 			result.InputTokens = pkt.Response.Usage.InputTokens
 			result.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
+			result.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
 			result.OutputTokens = pkt.Response.Usage.OutputTokens
 			if len(pkt.Response.Output) == 0 {
 				// TODO: Likely failed.
@@ -1443,6 +1446,8 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 			return fmt.Errorf("response failed: %s", pkt.Response.Error.Message)
 		case ResponseIncomplete:
 			result.InputTokens = pkt.Response.Usage.InputTokens
+			result.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
+			result.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
 			result.OutputTokens = pkt.Response.Usage.OutputTokens
 			result.FinishReason = genai.FinishedLength // Likely reason for incomplete
 		case ResponseOutputTextDelta:

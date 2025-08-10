@@ -559,6 +559,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		Usage: genai.Usage{
 			InputTokens:  c.Usage.PromptTokens,
 			OutputTokens: c.Usage.CompletionTokens,
+			TotalTokens:  c.Usage.TotalTokens,
 		},
 	}
 	if len(c.Choices) != 1 {
@@ -845,6 +846,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		if pkt.Xgroq.Usage.TotalTokens != 0 {
 			result.InputTokens = pkt.Xgroq.Usage.PromptTokens
 			result.OutputTokens = pkt.Xgroq.Usage.CompletionTokens
+			result.TotalTokens = pkt.Xgroq.Usage.TotalTokens
 			result.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 		}
 		switch role := pkt.Choices[0].Delta.Role; role {

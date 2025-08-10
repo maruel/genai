@@ -246,6 +246,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		Usage: genai.Usage{
 			InputTokens:  c.Usage.PromptTokens,
 			OutputTokens: c.Usage.CompletionTokens,
+			TotalTokens:  c.Usage.TotalTokens,
 		},
 	}
 	if len(c.Choices) == 1 {
@@ -1367,6 +1368,7 @@ func processChatStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- g
 			result.InputTokens = pkt.Usage.PromptTokens
 			// result.InputCachedTokens = pkt.Usage.TokensCached
 			result.OutputTokens = pkt.Usage.CompletionTokens
+			result.TotalTokens = pkt.Usage.TotalTokens
 			result.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 		}
 		switch role := pkt.Choices[0].Delta.Role; role {

@@ -495,8 +495,10 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		// At the moment, Cerebras doesn't support cached tokens.
 		Usage: genai.Usage{
-			InputTokens:  c.Usage.PromptTokens,
-			OutputTokens: c.Usage.CompletionTokens,
+			InputTokens:       c.Usage.PromptTokens,
+			InputCachedTokens: c.Usage.PromptTokensDetails.CachedTokens,
+			OutputTokens:      c.Usage.CompletionTokens,
+			TotalTokens:       c.Usage.TotalTokens,
 		},
 	}
 	if len(c.Choices) != 1 {
@@ -805,7 +807,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 		if pkt.Usage.TotalTokens != 0 {
 			result.InputTokens = pkt.Usage.PromptTokens
+			result.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
 			result.OutputTokens = pkt.Usage.CompletionTokens
+			result.TotalTokens = pkt.Usage.TotalTokens
 			result.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 		}
 

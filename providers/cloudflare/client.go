@@ -421,6 +421,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		Usage: genai.Usage{
 			InputTokens:  c.Result.Usage.PromptTokens,
 			OutputTokens: c.Result.Usage.CompletionTokens,
+			TotalTokens:  c.Result.Usage.TotalTokens,
 			// Cloudflare doesn't provide FinishReason (!?)
 		},
 	}
@@ -428,6 +429,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	return out, err
 }
 
+// ChatStreamChunkResponse is not documented.
 // If you find the documentation for this please tell me!
 type ChatStreamChunkResponse struct {
 	Response  string     `json:"response"`
@@ -790,6 +792,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		if pkt.Usage.TotalTokens != 0 {
 			result.InputTokens = pkt.Usage.PromptTokens
 			result.OutputTokens = pkt.Usage.CompletionTokens
+			result.TotalTokens = pkt.Usage.TotalTokens
 			// Cloudflare doesn't provide FinishReason.
 		}
 		// TODO: Tools.

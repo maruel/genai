@@ -755,7 +755,9 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		Usage: genai.Usage{
 			InputTokens:       c.Usage.PromptTokens,
 			InputCachedTokens: c.Usage.PromptTokensDetails.CachedTokens,
+			ReasoningTokens:   c.Usage.CompletionTokensDetails.ReasoningTokens,
 			OutputTokens:      c.Usage.CompletionTokens,
+			TotalTokens:       c.Usage.TotalTokens,
 		},
 	}
 	if len(c.Choices) != 1 {
@@ -1538,6 +1540,8 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	for pkt := range ch {
 		if pkt.Usage.PromptTokens != 0 {
 			result.InputTokens = pkt.Usage.PromptTokens
+			result.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
+			result.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
 			result.OutputTokens = pkt.Usage.CompletionTokens
 			if pkt.Usage.CompletionTokensDetails.ReasoningTokens != 0 {
 				// Send a fake Thinking packet to signal that reasoning is happening.

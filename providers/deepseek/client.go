@@ -329,6 +329,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		Usage: genai.Usage{
 			InputTokens:       c.Usage.PromptTokens,
 			InputCachedTokens: c.Usage.PromptCacheHitTokens,
+			ReasoningTokens:   c.Usage.ChatTokensDetails.ReasoningTokens,
 			OutputTokens:      c.Usage.CompletionTokens,
 		},
 	}
@@ -593,6 +594,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		if pkt.Usage.CompletionTokens != 0 {
 			result.InputTokens = pkt.Usage.PromptTokens
 			result.InputCachedTokens = pkt.Usage.PromptCacheHitTokens
+			result.ReasoningTokens = pkt.Usage.ChatTokensDetails.ReasoningTokens
 			result.OutputTokens = pkt.Usage.CompletionTokens
 			result.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 		}

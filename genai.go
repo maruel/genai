@@ -92,7 +92,9 @@ type TopLogprob struct {
 type Usage struct {
 	InputTokens       int64
 	InputCachedTokens int64
+	ReasoningTokens   int64
 	OutputTokens      int64
+	TotalTokens       int64
 
 	// FinishReason indicates why the model stopped generating tokens.
 	FinishReason FinishReason
@@ -103,7 +105,8 @@ type Usage struct {
 
 func (u *Usage) String() string {
 	var s strings.Builder
-	fmt.Fprintf(&s, "in: %d (cached %d), out: %d", u.InputTokens, u.InputCachedTokens, u.OutputTokens)
+	fmt.Fprintf(&s, "in: %d (cached %d), reasoning: %d, out: %d, total: %d",
+		u.InputTokens, u.InputCachedTokens, u.ReasoningTokens, u.OutputTokens, u.TotalTokens)
 	for _, l := range u.Limits {
 		fmt.Fprintf(&s, ", %s", l.String())
 	}
@@ -114,7 +117,9 @@ func (u *Usage) String() string {
 func (u *Usage) Add(r Usage) {
 	u.InputTokens += r.InputTokens
 	u.InputCachedTokens += r.InputCachedTokens
+	u.ReasoningTokens += r.ReasoningTokens
 	u.OutputTokens += r.OutputTokens
+	u.TotalTokens += r.TotalTokens
 }
 
 // RateLimitType defines the type of rate limit.

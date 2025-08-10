@@ -15,6 +15,7 @@ import (
 	"net/url"
 	"os"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -50,6 +51,7 @@ var Scoreboard = genai.Scoreboard{
 				},
 			},
 			GenDoc: &genai.FunctionalityDoc{
+				ReportRateLimits:   true,
 				BrokenTokenUsage:   genai.True,
 				BrokenFinishReason: true,
 				Seed:               true,
@@ -252,6 +254,25 @@ func (c *Client) ModelID() string {
 	return c.Model
 }
 
+func processHeaders(h http.Header) []genai.RateLimit {
+	var limits []genai.RateLimit
+
+	limit, _ := strconv.ParseInt(h.Get("X-Ratelimit-Limit"), 10, 64)
+	remaining, _ := strconv.ParseInt(h.Get("X-Ratelimit-Remaining"), 10, 64)
+	reset, _ := strconv.ParseInt(h.Get("X-Ratelimit-Reset"), 10, 64)
+
+	if limit != 0 {
+		limits = append(limits, genai.RateLimit{
+			Type:      genai.Requests,
+			Period:    genai.PerOther,
+			Limit:     limit,
+			Remaining: remaining,
+			Reset:     time.Unix(reset, 0),
+		})
+	}
+	return limits
+}
+
 // GenDoc synchronously generates a document.
 //
 // Generation can be rather slow, several seconds or minutes.
@@ -267,12 +288,10 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		case <-ctx.Done():
 			return genai.Result{}, ctx.Err()
 		case <-time.After(waitForPoll):
+			if res, err := c.PokeResult(ctx, id); res.FinishReason != genai.Pending {
+				return res, err
+			}
 		}
-		res, err := c.PokeResult(ctx, id)
-		if res.FinishReason == genai.Pending {
-			continue
-		}
-		return res, err
 	}
 }
 
@@ -349,6 +368,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	if err != nil {
 		return res, err
 	}
+	res.Limits = processHeaders(c.Provider.LastResponseHeaders())
 	if imgres.Status == "Pending" {
 		res.FinishReason = genai.Pending
 		return res, nil

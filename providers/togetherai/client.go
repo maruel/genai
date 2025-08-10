@@ -20,6 +20,7 @@ import (
 	"os"
 	"reflect"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -65,19 +66,21 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:          genai.Flaky,
-				IndecisiveTool: genai.Flaky,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
-				TopLogprobs:    true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				IndecisiveTool:   genai.Flaky,
+				JSON:             true,
+				JSONSchema:       true,
+				Seed:             true,
+				TopLogprobs:      true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:          genai.Flaky,
-				IndecisiveTool: genai.Flaky,
-				JSON:           true,
-				JSONSchema:     true,
-				TopLogprobs:    true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				IndecisiveTool:   genai.Flaky,
+				JSON:             true,
+				JSONSchema:       true,
+				TopLogprobs:      true,
 			},
 		},
 		{
@@ -93,21 +96,23 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:       genai.Flaky,
-				BiasedTool:  genai.True,
-				JSON:        true,
-				JSONSchema:  true,
-				Seed:        true,
-				TopLogprobs: true,
-				NoMaxTokens: true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				BiasedTool:       genai.True,
+				JSON:             true,
+				JSONSchema:       true,
+				Seed:             true,
+				TopLogprobs:      true,
+				NoMaxTokens:      true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:       genai.Flaky,
-				JSON:        true,
-				JSONSchema:  true,
-				Seed:        true,
-				TopLogprobs: true,
-				NoMaxTokens: true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				JSON:             true,
+				JSONSchema:       true,
+				Seed:             true,
+				TopLogprobs:      true,
+				NoMaxTokens:      true,
 			},
 		},
 		{
@@ -122,16 +127,18 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:       genai.Flaky,
-				JSONSchema:  true,
-				Seed:        true,
-				TopLogprobs: true,
-				NoMaxTokens: true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				JSONSchema:       true,
+				Seed:             true,
+				TopLogprobs:      true,
+				NoMaxTokens:      true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:       genai.Flaky,
-				JSONSchema:  true,
-				TopLogprobs: true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				JSONSchema:       true,
+				TopLogprobs:      true,
 			},
 		},
 		{
@@ -139,19 +146,21 @@ var Scoreboard = genai.Scoreboard{
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:       genai.Flaky,
-				BiasedTool:  genai.Flaky,
-				JSON:        true,
-				JSONSchema:  true,
-				Seed:        true,
-				TopLogprobs: true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				BiasedTool:       genai.Flaky,
+				JSON:             true,
+				JSONSchema:       true,
+				Seed:             true,
+				TopLogprobs:      true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:       genai.Flaky,
-				JSON:        true,
-				JSONSchema:  true,
-				Seed:        true,
-				TopLogprobs: true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				JSON:             true,
+				JSONSchema:       true,
+				Seed:             true,
+				TopLogprobs:      true,
 			},
 		},
 		{
@@ -159,6 +168,7 @@ var Scoreboard = genai.Scoreboard{
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
+				ReportRateLimits:   true,
 				Tools:              genai.Flaky,
 				BiasedTool:         genai.Flaky,
 				IndecisiveTool:     genai.Flaky,
@@ -168,6 +178,7 @@ var Scoreboard = genai.Scoreboard{
 				BrokenFinishReason: true, // It's actually JSON that is broken.
 			},
 			GenStream: &genai.FunctionalityText{
+				ReportRateLimits:   true,
 				Tools:              genai.Flaky,
 				BiasedTool:         genai.Flaky,
 				IndecisiveTool:     genai.Flaky,
@@ -919,6 +930,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			Model:                model,
 			GenSyncURL:           "https://api.together.xyz/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
+			ProcessHeaders:       processHeaders,
 			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "togetherai",
 				APIKeyURL:    apiKeyURL,
@@ -1205,6 +1217,37 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		return uce
 	}
 	return nil
+}
+
+func processHeaders(h http.Header) []genai.RateLimit {
+	var limits []genai.RateLimit
+	limitReq, _ := strconv.ParseInt(h.Get("X-Ratelimit-Limit"), 10, 64)
+	remainingReq, _ := strconv.ParseInt(h.Get("X-Ratelimit-Remaining"), 10, 64)
+
+	limitTok, _ := strconv.ParseInt(h.Get("X-Ratelimit-Limit-Tokens"), 10, 64)
+	remainingTok, _ := strconv.ParseInt(h.Get("X-Ratelimit-Remaining-Tokens"), 10, 64)
+
+	reset, _ := time.ParseDuration(h.Get("X-Ratelimit-Reset"))
+
+	if limitReq > 0 {
+		limits = append(limits, genai.RateLimit{
+			Type:      genai.Requests,
+			Period:    genai.PerOther,
+			Limit:     limitReq,
+			Remaining: remainingReq,
+			Reset:     time.Now().Add(reset * time.Second), // Just guessing.
+		})
+	}
+	if limitTok > 0 {
+		limits = append(limits, genai.RateLimit{
+			Type:      genai.Tokens,
+			Period:    genai.PerOther,
+			Limit:     limitTok,
+			Remaining: remainingTok,
+			Reset:     time.Now().Add(reset * time.Second), // Just guessing.
+		})
+	}
+	return limits
 }
 
 var (

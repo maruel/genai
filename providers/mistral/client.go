@@ -17,7 +17,9 @@ import (
 	"net/http"
 	"os"
 	"reflect"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
@@ -50,11 +52,12 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
+				ReportRateLimits: true,
+				Tools:            genai.True,
+				BiasedTool:       genai.True,
+				JSON:             true,
+				JSONSchema:       true,
+				Seed:             true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:      genai.True,
@@ -80,11 +83,12 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
+				ReportRateLimits: true,
+				Tools:            genai.True,
+				BiasedTool:       genai.True,
+				JSON:             true,
+				JSONSchema:       true,
+				Seed:             true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:      genai.True,
@@ -110,11 +114,12 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
+				ReportRateLimits: true,
+				Tools:            genai.True,
+				BiasedTool:       genai.True,
+				JSON:             true,
+				JSONSchema:       true,
+				Seed:             true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:      genai.True,
@@ -139,11 +144,12 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
+				ReportRateLimits: true,
+				Tools:            genai.True,
+				BiasedTool:       genai.True,
+				JSON:             true,
+				JSONSchema:       true,
+				Seed:             true,
 			},
 			GenStream: &genai.FunctionalityText{
 				Tools:      genai.True,
@@ -895,6 +901,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			Model:                model,
 			GenSyncURL:           "https://api.mistral.ai/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
+			ProcessHeaders:       processHeaders,
 			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "mistral",
 				APIKeyURL:    apiKeyURL,
@@ -999,6 +1006,48 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 	}
 	return nil
+}
+
+func processHeaders(h http.Header) []genai.RateLimit {
+	var limits []genai.RateLimit
+	requestsLimit, _ := strconv.ParseInt(h.Get("X-Ratelimit-Limit-Req-10-Second"), 10, 64)
+	requestsRemaining, _ := strconv.ParseInt(h.Get("X-Ratelimit-Remaining-Req-10-Second"), 10, 64)
+
+	tokensPerMinLimit, _ := strconv.ParseInt(h.Get("X-Ratelimit-Limit-Tokens-Minute"), 10, 64)
+	tokensPerMinRemaining, _ := strconv.ParseInt(h.Get("X-Ratelimit-Remaining-Tokens-Minute"), 10, 64)
+
+	tokensPerMonthLimit, _ := strconv.ParseInt(h.Get("X-Ratelimit-Limit-Tokens-Month"), 10, 64)
+	tokensPerMonthRemaining, _ := strconv.ParseInt(h.Get("X-Ratelimit-Remaining-Tokens-Month"), 10, 64)
+
+	if requestsLimit > 0 {
+		limits = append(limits, genai.RateLimit{
+			Type:      genai.Requests,
+			Period:    genai.PerOther, // 10 seconds is not a standard period
+			Limit:     requestsLimit,
+			Remaining: requestsRemaining,
+			Reset:     time.Now().Add(10 * time.Second),
+		})
+	}
+	if tokensPerMinLimit > 0 {
+		limits = append(limits, genai.RateLimit{
+			Type:      genai.Tokens,
+			Period:    genai.PerMinute,
+			Limit:     tokensPerMinLimit,
+			Remaining: tokensPerMinRemaining,
+			Reset:     time.Now().Add(time.Minute),
+		})
+	}
+	if tokensPerMonthLimit > 0 {
+		limits = append(limits, genai.RateLimit{
+			Type:      genai.Tokens,
+			Period:    genai.PerMonth,
+			Limit:     tokensPerMonthLimit,
+			Remaining: tokensPerMonthRemaining,
+			// This is not accurate, but there's no reset header.
+			Reset: time.Now().Add(30 * 24 * time.Hour),
+		})
+	}
+	return limits
 }
 
 var (

@@ -16,7 +16,9 @@ import (
 	"net/http"
 	"os"
 	"reflect"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
@@ -47,18 +49,20 @@ var Scoreboard = genai.Scoreboard{
 			In:  map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:          genai.Flaky,
-				BiasedTool:     genai.Flaky,
-				IndecisiveTool: genai.Flaky,
-				JSON:           true,
-				Seed:           true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				BiasedTool:       genai.Flaky,
+				IndecisiveTool:   genai.Flaky,
+				JSON:             true,
+				Seed:             true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:          genai.Flaky,
-				BiasedTool:     genai.Flaky,
-				IndecisiveTool: genai.Flaky,
-				JSON:           true,
-				Seed:           true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				BiasedTool:       genai.Flaky,
+				IndecisiveTool:   genai.Flaky,
+				JSON:             true,
+				Seed:             true,
 			},
 		},
 		{
@@ -69,18 +73,20 @@ var Scoreboard = genai.Scoreboard{
 			In:                 map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:                map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:          genai.Flaky,
-				BiasedTool:     genai.True,
-				IndecisiveTool: genai.Flaky,
-				JSON:           true, // Only when using ReasoningFormat: ReasoningFormatParsed
-				Seed:           true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				BiasedTool:       genai.True,
+				IndecisiveTool:   genai.Flaky,
+				JSON:             true, // Only when using ReasoningFormat: ReasoningFormatParsed
+				Seed:             true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:          genai.Flaky,
-				BiasedTool:     genai.True,
-				IndecisiveTool: genai.Flaky,
-				JSON:           true, // Only when using ReasoningFormat: ReasoningFormatParsed
-				Seed:           true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				BiasedTool:       genai.True,
+				IndecisiveTool:   genai.Flaky,
+				JSON:             true, // Only when using ReasoningFormat: ReasoningFormatParsed
+				Seed:             true,
 			},
 		},
 		{
@@ -98,18 +104,20 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:          genai.Flaky,
-				BiasedTool:     genai.Flaky, // Sometimes tool calling fails.
-				IndecisiveTool: genai.Flaky, // Sometimes tool calling fails.
-				JSON:           true,
-				Seed:           true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				BiasedTool:       genai.Flaky, // Sometimes tool calling fails.
+				IndecisiveTool:   genai.Flaky, // Sometimes tool calling fails.
+				JSON:             true,
+				Seed:             true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:          genai.Flaky,
-				BiasedTool:     genai.Flaky, // Sometimes tool calling fails.
-				IndecisiveTool: genai.Flaky, // Sometimes tool calling fails.
-				JSON:           true,
-				Seed:           true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				BiasedTool:       genai.Flaky, // Sometimes tool calling fails.
+				IndecisiveTool:   genai.Flaky, // Sometimes tool calling fails.
+				JSON:             true,
+				Seed:             true,
 			},
 		},
 		{
@@ -120,18 +128,20 @@ var Scoreboard = genai.Scoreboard{
 			In:                 map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:                map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:          genai.Flaky,
-				IndecisiveTool: genai.Flaky,
-				BiasedTool:     genai.Flaky,
-				JSON:           true, // Only when using ReasoningFormat: ReasoningFormatParsed
-				Seed:           true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				IndecisiveTool:   genai.Flaky,
+				BiasedTool:       genai.Flaky,
+				JSON:             true, // Only when using ReasoningFormat: ReasoningFormatParsed
+				Seed:             true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:          genai.Flaky,
-				IndecisiveTool: genai.Flaky,
-				BiasedTool:     genai.Flaky,
-				JSON:           true, // Only when using ReasoningFormat: ReasoningFormatParsed
-				Seed:           true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				IndecisiveTool:   genai.Flaky,
+				BiasedTool:       genai.Flaky,
+				JSON:             true, // Only when using ReasoningFormat: ReasoningFormatParsed
+				Seed:             true,
 			},
 		},
 		{
@@ -139,16 +149,18 @@ var Scoreboard = genai.Scoreboard{
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:      genai.Flaky,
-				BiasedTool: genai.Flaky, // Mostly true but tool calling itself is flaky.
-				JSON:       true,
-				Seed:       true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				BiasedTool:       genai.Flaky, // Mostly true but tool calling itself is flaky.
+				JSON:             true,
+				Seed:             true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:      genai.Flaky,
-				BiasedTool: genai.Flaky, // Mostly true but tool calling itself is flaky.
-				JSON:       true,
-				Seed:       true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				BiasedTool:       genai.Flaky, // Mostly true but tool calling itself is flaky.
+				JSON:             true,
+				Seed:             true,
 			},
 		},
 		// Deprecated models.
@@ -761,6 +773,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			Model:                model,
 			GenSyncURL:           "https://api.groq.com/openai/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
+			ProcessHeaders:       processHeaders,
 			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "groq",
 				APIKeyURL:    apiKeyURL,
@@ -857,6 +870,37 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 	}
 	return nil
+}
+
+func processHeaders(h http.Header) []genai.RateLimit {
+	var limits []genai.RateLimit
+	requestsLimit, _ := strconv.ParseInt(h.Get("X-Ratelimit-Limit-Requests"), 10, 64)
+	requestsRemaining, _ := strconv.ParseInt(h.Get("X-Ratelimit-Remaining-Requests"), 10, 64)
+	requestsReset, _ := time.ParseDuration(h.Get("X-Ratelimit-Reset-Requests"))
+
+	tokensLimit, _ := strconv.ParseInt(h.Get("X-Ratelimit-Limit-Tokens"), 10, 64)
+	tokensRemaining, _ := strconv.ParseInt(h.Get("X-Ratelimit-Remaining-Tokens"), 10, 64)
+	tokensReset, _ := time.ParseDuration(h.Get("X-Ratelimit-Reset-Tokens"))
+
+	if requestsLimit > 0 {
+		limits = append(limits, genai.RateLimit{
+			Type:      genai.Requests,
+			Period:    genai.PerOther,
+			Limit:     requestsLimit,
+			Remaining: requestsRemaining,
+			Reset:     time.Now().Add(requestsReset),
+		})
+	}
+	if tokensLimit > 0 {
+		limits = append(limits, genai.RateLimit{
+			Type:      genai.Tokens,
+			Period:    genai.PerOther,
+			Limit:     tokensLimit,
+			Remaining: tokensRemaining,
+			Reset:     time.Now().Add(tokensReset),
+		})
+	}
+	return limits
 }
 
 var (

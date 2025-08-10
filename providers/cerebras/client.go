@@ -16,7 +16,9 @@ import (
 	"net/http"
 	"os"
 	"reflect"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
@@ -47,22 +49,24 @@ var Scoreboard = genai.Scoreboard{
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:          genai.Flaky,
-				BiasedTool:     genai.Flaky,
-				IndecisiveTool: genai.Flaky,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
-				TopLogprobs:    true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				BiasedTool:       genai.Flaky,
+				IndecisiveTool:   genai.Flaky,
+				JSON:             true,
+				JSONSchema:       true,
+				Seed:             true,
+				TopLogprobs:      true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:          genai.Flaky,
-				BiasedTool:     genai.Flaky,
-				IndecisiveTool: genai.Flaky,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
-				TopLogprobs:    true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				BiasedTool:       genai.Flaky,
+				IndecisiveTool:   genai.Flaky,
+				JSON:             true,
+				JSONSchema:       true,
+				Seed:             true,
+				TopLogprobs:      true,
 			},
 		},
 		{
@@ -73,16 +77,18 @@ var Scoreboard = genai.Scoreboard{
 			In:                 map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:                map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:       genai.Flaky,
-				BiasedTool:  genai.True,
-				JSON:        true,
-				JSONSchema:  true,
-				Seed:        true,
-				TopLogprobs: true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				BiasedTool:       genai.True,
+				JSON:             true,
+				JSONSchema:       true,
+				Seed:             true,
+				TopLogprobs:      true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Seed:        true,
-				TopLogprobs: true,
+				ReportRateLimits: true,
+				Seed:             true,
+				TopLogprobs:      true,
 			},
 		},
 		{
@@ -92,20 +98,22 @@ var Scoreboard = genai.Scoreboard{
 			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:       genai.Flaky,
-				BiasedTool:  genai.True,
-				JSON:        true,
-				JSONSchema:  true,
-				Seed:        true,
-				TopLogprobs: true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				BiasedTool:       genai.True,
+				JSON:             true,
+				JSONSchema:       true,
+				Seed:             true,
+				TopLogprobs:      true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:       genai.Flaky,
-				BiasedTool:  genai.True,
-				JSON:        true,
-				JSONSchema:  true,
-				Seed:        true,
-				TopLogprobs: true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky,
+				BiasedTool:       genai.True,
+				JSON:             true,
+				JSONSchema:       true,
+				Seed:             true,
+				TopLogprobs:      true,
 			},
 		},
 		{
@@ -713,6 +721,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			Model:                model,
 			GenSyncURL:           "https://api.cerebras.ai/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
+			ProcessHeaders:       processHeaders,
 			LieToolCalls:         true,
 			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "cerebras",
@@ -846,6 +855,37 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 	}
 	return nil
+}
+
+func processHeaders(h http.Header) []genai.RateLimit {
+	requestsLimit, _ := strconv.ParseInt(h.Get("X-Ratelimit-Limit-Requests-Day"), 10, 64)
+	requestsRemaining, _ := strconv.ParseInt(h.Get("X-Ratelimit-Remaining-Requests-Day"), 10, 64)
+	requestsReset, _ := time.ParseDuration(h.Get("X-Ratelimit-Reset-Requests-Day") + "s")
+
+	tokensLimit, _ := strconv.ParseInt(h.Get("X-Ratelimit-Limit-Tokens-Minute"), 10, 64)
+	tokensRemaining, _ := strconv.ParseInt(h.Get("X-Ratelimit-Remaining-Tokens-Minute"), 10, 64)
+	tokensReset, _ := time.ParseDuration(h.Get("X-Ratelimit-Reset-Tokens-Minute") + "s")
+
+	var limits []genai.RateLimit
+	if requestsLimit > 0 {
+		limits = append(limits, genai.RateLimit{
+			Type:      genai.Requests,
+			Period:    genai.PerDay,
+			Limit:     requestsLimit,
+			Remaining: requestsRemaining,
+			Reset:     time.Now().Add(requestsReset),
+		})
+	}
+	if tokensLimit > 0 {
+		limits = append(limits, genai.RateLimit{
+			Type:      genai.Tokens,
+			Period:    genai.PerMinute,
+			Limit:     tokensLimit,
+			Remaining: tokensRemaining,
+			Reset:     time.Now().Add(tokensReset),
+		})
+	}
+	return limits
 }
 
 var (

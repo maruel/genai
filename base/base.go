@@ -89,10 +89,18 @@ type Provider[PErrorResponse ErrAPI] struct {
 
 	mu            sync.Mutex
 	errorResponse reflect.Type
+	lastResp      http.Header
 }
 
 func (c *Provider[PErrorResponse]) Name() string {
 	return c.ProviderName
+}
+
+// LastResponseHeaders returns the HTTP headers of the last response.
+func (c *Provider[PErrorResponse]) LastResponseHeaders() http.Header {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.lastResp
 }
 
 // DoRequest performs an HTTP request and handles error responses.
@@ -109,6 +117,9 @@ func (c *Provider[PErrorResponse]) DoRequest(ctx context.Context, method, url st
 }
 
 func (c *Provider[PErrorResponse]) DecodeResponse(resp *http.Response, url string, out any) error {
+	c.mu.Lock()
+	c.lastResp = resp.Header
+	c.mu.Unlock()
 	if resp.StatusCode != 200 {
 		return c.DecodeError(url, resp)
 	}
@@ -167,6 +178,9 @@ func (c *Provider[PErrorResponse]) DecodeResponse(resp *http.Response, url strin
 // It handles JSON decoding of error responses and provides appropriate error messages
 // with context such as API key URLs for unauthorized errors.
 func (c *Provider[PErrorResponse]) DecodeError(url string, resp *http.Response) error {
+	c.mu.Lock()
+	c.lastResp = resp.Header
+	c.mu.Unlock()
 	c.lateInit()
 	// When we are in lenient mode, we do not want to buffer the result. When in strict mode, we want to buffer
 	// to give more details.
@@ -251,6 +265,8 @@ type ProviderGen[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenRe
 	AllowOpaqueFields bool
 	// ProcessStreamPackets is the function that processes stream packets used by GenStream.
 	ProcessStreamPackets func(ch <-chan GenStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error
+	// ProcessHeaders is the function that processes HTTP headers to extract rate limit information.
+	ProcessHeaders func(http.Header) []genai.RateLimit
 	// LieToolCalls lie the FinishReason on tool calls.
 	LieToolCalls bool
 
@@ -307,6 +323,11 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	if err != nil {
 		return result, err
 	}
+
+	lastResp := c.LastResponseHeaders()
+	if c.ProcessHeaders != nil && lastResp != nil {
+		result.Usage.Limits = c.ProcessHeaders(lastResp)
+	}
 	return result, continuableErr
 }
 
@@ -360,6 +381,10 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
+	lastResp := c.LastResponseHeaders()
+	if c.ProcessHeaders != nil && lastResp != nil {
+		result.Usage.Limits = c.ProcessHeaders(lastResp)
+	}
 	if c.LieToolCalls && len(result.ToolCalls) != 0 && result.FinishReason == genai.FinishedStop {
 		// Lie for the benefit of everyone.
 		result.FinishReason = genai.FinishedToolCalls
@@ -399,6 +424,9 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	if resp.StatusCode != 200 {
 		return c.DecodeError(url, resp)
 	}
+	c.mu.Lock()
+	c.lastResp = resp.Header
+	c.mu.Unlock()
 	er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
 	return sse.Process(resp.Body, out, er, c.ClientJSON.Lenient)
 }

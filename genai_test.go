@@ -17,6 +17,32 @@ import (
 	"github.com/maruel/genai/internal/bb"
 )
 
+func TestUsage_String(t *testing.T) {
+	u := Usage{
+		InputTokens:       10,
+		InputCachedTokens: 5,
+		OutputTokens:      20,
+		Limits: []RateLimit{
+			{
+				Type:      Requests,
+				Period:    PerMinute,
+				Limit:     100,
+				Remaining: 99,
+			},
+			{
+				Type:      Tokens,
+				Period:    PerDay,
+				Limit:     10000,
+				Remaining: 9980,
+			},
+		},
+	}
+	want := "in: 10 (cached 5), out: 20, requests (minute): 99/100, tokens (day): 9980/10000"
+	if got := u.String(); got != want {
+		t.Errorf("Usage.String()\nwant %q\ngot  %q", want, got)
+	}
+}
+
 func TestOptionsText_Validate(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		o := OptionsText{

@@ -58,19 +58,20 @@ type tableModelRow struct {
 
 type tableDataRow struct {
 	// Model specific
-	Inputs     string `title:"➛Inputs"` // Has to be large enough otherwise the emojis warp on github visualization
-	Outputs    string `title:"Outputs➛"`
-	JSON       string `title:"JSON➛"`
-	JSONSchema string `title:"Schema➛"`
-	Chat       string `title:"Chat"`
-	Streaming  string `title:"Stream"`
-	Tools      string `title:"Tools"`
-	Batch      string `title:"Batch"`
-	Seed       string `title:"Seed"`
-	Files      string `title:"Files"`
-	Citations  string `title:"Citations"`
-	Thinking   string `title:"Think"`
-	Logprobs   string `title:"Logprobs"`
+	Inputs           string `title:"➛Inputs"` // Has to be large enough otherwise the emojis warp on github visualization
+	Outputs          string `title:"Outputs➛"`
+	JSON             string `title:"JSON➛"`
+	JSONSchema       string `title:"Schema➛"`
+	Chat             string `title:"Chat"`
+	Streaming        string `title:"Stream"`
+	Tools            string `title:"Tools"`
+	Batch            string `title:"Batch"`
+	Seed             string `title:"Seed"`
+	Files            string `title:"Files"`
+	Citations        string `title:"Citations"`
+	Thinking         string `title:"Think"`
+	Logprobs         string `title:"Logprobs"`
+	ReportRateLimits string `title:"Limits"`
 }
 
 func (t *tableDataRow) initFromScenario(s *genai.Scenario) {
@@ -157,6 +158,9 @@ func (t *tableDataRow) initFromScenario(s *genai.Scenario) {
 		if s.GenSync.TopLogprobs {
 			t.Logprobs = "✅"
 		}
+		if s.GenSync.ReportRateLimits {
+			t.ReportRateLimits = "✅"
+		}
 	}
 	if s.GenStream != nil {
 		if _, hasTextIn := s.In[genai.ModalityText]; hasTextIn {
@@ -180,6 +184,9 @@ func (t *tableDataRow) initFromScenario(s *genai.Scenario) {
 	if s.GenDoc != nil {
 		if s.GenDoc.Seed {
 			t.Seed = "✅"
+		}
+		if s.GenDoc.ReportRateLimits {
+			t.ReportRateLimits = "✅"
 		}
 		if s.GenDoc.BrokenTokenUsage != genai.False || s.GenDoc.BrokenFinishReason {
 			// TODO.

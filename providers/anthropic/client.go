@@ -20,6 +20,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -61,14 +62,16 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.True,
-				Citations:  true,
+				ReportRateLimits: true,
+				Tools:            genai.True,
+				BiasedTool:       genai.True,
+				Citations:        true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.True,
-				Citations:  true,
+				ReportRateLimits: true,
+				Tools:            genai.True,
+				BiasedTool:       genai.True,
+				Citations:        true,
 			},
 		},
 		{
@@ -89,14 +92,16 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.True,
-				Citations:  true,
+				ReportRateLimits: true,
+				Tools:            genai.True,
+				BiasedTool:       genai.True,
+				Citations:        true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.True,
-				Citations:  true,
+				ReportRateLimits: true,
+				Tools:            genai.True,
+				BiasedTool:       genai.True,
+				Citations:        true,
 			},
 		},
 		{
@@ -118,14 +123,16 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:       genai.True,
-				NoMaxTokens: true,
-				Citations:   true,
+				ReportRateLimits: true,
+				Tools:            genai.True,
+				NoMaxTokens:      true,
+				Citations:        true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:       genai.True,
-				NoMaxTokens: true,
-				Citations:   true,
+				ReportRateLimits: true,
+				Tools:            genai.True,
+				NoMaxTokens:      true,
+				Citations:        true,
 			},
 		},
 		// They take more than 10 minutes to run the test, which causes it to timeout. And they cost a lot.
@@ -1309,6 +1316,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			GenSyncURL:           "https://api.anthropic.com/v1/messages",
 			AllowOpaqueFields:    true,
 			ProcessStreamPackets: processStreamPackets,
+			ProcessHeaders:       processHeaders,
 			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "anthropic",
 				APIKeyURL:    apiKeyURL,
@@ -1540,6 +1548,37 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 	}
 	return nil
+}
+
+func processHeaders(h http.Header) []genai.RateLimit {
+	requestsLimit, _ := strconv.ParseInt(h.Get("Anthropic-Ratelimit-Requests-Limit"), 10, 64)
+	requestsRemaining, _ := strconv.ParseInt(h.Get("Anthropic-Ratelimit-Requests-Remaining"), 10, 64)
+	requestsReset, _ := time.Parse(time.RFC3339, h.Get("Anthropic-Ratelimit-Requests-Reset"))
+
+	tokensLimit, _ := strconv.ParseInt(h.Get("Anthropic-Ratelimit-Tokens-Limit"), 10, 64)
+	tokensRemaining, _ := strconv.ParseInt(h.Get("Anthropic-Ratelimit-Tokens-Remaining"), 10, 64)
+	tokensReset, _ := time.Parse(time.RFC3339, h.Get("Anthropic-Ratelimit-Tokens-Reset"))
+
+	var limits []genai.RateLimit
+	if requestsLimit > 0 {
+		limits = append(limits, genai.RateLimit{
+			Type:      genai.Requests,
+			Period:    genai.PerOther,
+			Limit:     requestsLimit,
+			Remaining: requestsRemaining,
+			Reset:     requestsReset,
+		})
+	}
+	if tokensLimit > 0 {
+		limits = append(limits, genai.RateLimit{
+			Type:      genai.Tokens,
+			Period:    genai.PerOther,
+			Limit:     tokensLimit,
+			Remaining: tokensRemaining,
+			Reset:     tokensReset,
+		})
+	}
+	return limits
 }
 
 var (

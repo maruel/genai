@@ -212,6 +212,12 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	if resp.Logprobs != nil {
 		return nil, fmt.Errorf("received Logprobs when not supported")
 	}
+	f.ReportRateLimits = len(resp.Limits) != 0
+	for _, l := range resp.Limits {
+		if err := l.Validate(); err != nil {
+			return nil, err
+		}
+	}
 
 	// Seed
 	msgs = genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
@@ -636,6 +642,12 @@ func exerciseModal(ctx context.Context, cs *callState, f *genai.FunctionalityTex
 			internal.Logger(ctx).DebugContext(ctx, name, "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
 			f.BrokenFinishReason = true
 		}
+		f.ReportRateLimits = len(resp.Limits) != 0
+		for _, l := range resp.Limits {
+			if err := l.Validate(); err != nil {
+				return err
+			}
+		}
 	}
 	return err
 }
@@ -750,6 +762,14 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 			err = nil
 		}
 	}
+	if len(resp.Limits) != 0 {
+		out.GenDoc.ReportRateLimits = true
+		for _, l := range resp.Limits {
+			if err := l.Validate(); err != nil {
+				return err
+			}
+		}
+	}
 	if err == nil {
 		if len(resp.Contents) == 0 {
 			return fmt.Errorf("%s: no content", name)
@@ -820,6 +840,14 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 				out.GenDoc.Seed = false
 			}
 			err = nil
+		}
+	}
+	if len(resp.Limits) != 0 {
+		out.GenDoc.ReportRateLimits = true
+		for _, l := range resp.Limits {
+			if err := l.Validate(); err != nil {
+				return err
+			}
 		}
 	}
 	if err == nil {

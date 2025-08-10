@@ -19,6 +19,7 @@ import (
 	"os"
 	"reflect"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -56,6 +57,7 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
+				ReportRateLimits: true,
 				NoStopSequence:   true,
 				BrokenTokenUsage: genai.Flaky, // When using MaxTokens.
 				Tools:            genai.True,
@@ -91,6 +93,7 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
+				ReportRateLimits: true,
 				NoStopSequence:   true,
 				BrokenTokenUsage: genai.Flaky, // When using MaxTokens.
 				Tools:            genai.True,
@@ -1212,6 +1215,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			GenSyncURL:           "https://api.openai.com/v1/responses",
 			GenStreamURL:         "https://api.openai.com/v1/responses",
 			ProcessStreamPackets: processStreamPackets,
+			ProcessHeaders:       processHeaders,
 			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "openairesponses",
 				APIKeyURL:    "", // OpenAI error message prints the api key URL already.
@@ -1516,6 +1520,36 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 		return errors.New("unexpected pending tool call")
 	}
 	return nil
+}
+
+func processHeaders(h http.Header) []genai.RateLimit {
+	var limits []genai.RateLimit
+	requestsLimit, _ := strconv.ParseInt(h.Get("X-Ratelimit-Limit-Requests"), 10, 64)
+	requestsRemaining, _ := strconv.ParseInt(h.Get("X-Ratelimit-Remaining-Requests"), 10, 64)
+	requestsReset, _ := time.ParseDuration(h.Get("X-Ratelimit-Reset-Requests"))
+	tokensLimit, _ := strconv.ParseInt(h.Get("X-Ratelimit-Limit-Tokens"), 10, 64)
+	tokensRemaining, _ := strconv.ParseInt(h.Get("X-Ratelimit-Remaining-Tokens"), 10, 64)
+	tokensReset, _ := time.ParseDuration(h.Get("X-Ratelimit-Reset-Tokens"))
+
+	if requestsLimit > 0 {
+		limits = append(limits, genai.RateLimit{
+			Type:      genai.Requests,
+			Period:    genai.PerOther,
+			Limit:     requestsLimit,
+			Remaining: requestsRemaining,
+			Reset:     time.Now().Add(requestsReset),
+		})
+	}
+	if tokensLimit > 0 {
+		limits = append(limits, genai.RateLimit{
+			Type:      genai.Tokens,
+			Period:    genai.PerOther,
+			Limit:     tokensLimit,
+			Remaining: tokensRemaining,
+			Reset:     time.Now().Add(tokensReset),
+		})
+	}
+	return limits
 }
 
 var (

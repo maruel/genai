@@ -78,18 +78,20 @@ var Scoreboard = genai.Scoreboard{
 			In:                 map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:                map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:       genai.Flaky, // Uses a quantized version.
-				JSON:        true,
-				JSONSchema:  false, // Doesn't follow instructions.
-				Seed:        true,
-				TopLogprobs: true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky, // Uses a quantized version.
+				JSON:             true,
+				JSONSchema:       false, // Doesn't follow instructions.
+				Seed:             true,
+				TopLogprobs:      true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:       genai.Flaky, // Uses a quantized version.
-				JSON:        true,
-				JSONSchema:  true, // Doesn't follow instructions.
-				Seed:        true,
-				TopLogprobs: true,
+				ReportRateLimits: true,
+				Tools:            genai.Flaky, // Uses a quantized version.
+				JSON:             true,
+				JSONSchema:       true, // Doesn't follow instructions.
+				Seed:             true,
+				TopLogprobs:      true,
 			},
 		},
 	},
@@ -723,6 +725,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			Model:                model,
 			GenSyncURL:           "https://router.huggingface.co/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
+			ProcessHeaders:       processHeaders,
 			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "huggingface",
 				APIKeyURL:    apiKeyURL,
@@ -907,6 +910,35 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		chunks <- f
 	}
 	return nil
+}
+
+func processHeaders(h http.Header) []genai.RateLimit {
+	var limits []genai.RateLimit
+	requestsLimit, _ := strconv.ParseInt(h.Get("X-Ratelimit-Limit-Requests"), 10, 64)
+	requestsRemaining, _ := strconv.ParseInt(h.Get("X-Ratelimit-Remaining-Requests"), 10, 64)
+	tokensLimit, _ := strconv.ParseInt(h.Get("X-Ratelimit-Limit-Tokens"), 10, 64)
+	tokensRemaining, _ := strconv.ParseInt(h.Get("X-Ratelimit-Remaining-Tokens"), 10, 64)
+	reset, _ := time.ParseDuration(h.Get("X-Ratelimit-Dynamic-Period-Remaining"))
+
+	if requestsLimit > 0 {
+		limits = append(limits, genai.RateLimit{
+			Type:      genai.Requests,
+			Period:    genai.PerOther,
+			Limit:     requestsLimit,
+			Remaining: requestsRemaining,
+			Reset:     time.Now().Add(reset),
+		})
+	}
+	if tokensLimit > 0 {
+		limits = append(limits, genai.RateLimit{
+			Type:      genai.Tokens,
+			Period:    genai.PerOther,
+			Limit:     tokensLimit,
+			Remaining: tokensRemaining,
+			Reset:     time.Now().Add(reset),
+		})
+	}
+	return limits
 }
 
 var (

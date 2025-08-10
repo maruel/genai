@@ -24,6 +24,7 @@ import (
 	"os"
 	"reflect"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -62,20 +63,22 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				Tools:          genai.True,
-				IndecisiveTool: genai.True,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
-				TopLogprobs:    true,
+				ReportRateLimits: true,
+				Tools:            genai.True,
+				IndecisiveTool:   genai.True,
+				JSON:             true,
+				JSONSchema:       true,
+				Seed:             true,
+				TopLogprobs:      true,
 			},
 			GenStream: &genai.FunctionalityText{
-				Tools:          genai.True,
-				IndecisiveTool: genai.True,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
-				TopLogprobs:    true,
+				ReportRateLimits: true,
+				Tools:            genai.True,
+				IndecisiveTool:   genai.True,
+				JSON:             true,
+				JSONSchema:       true,
+				Seed:             true,
+				TopLogprobs:      true,
 			},
 		},
 		{
@@ -86,9 +89,13 @@ var Scoreboard = genai.Scoreboard{
 					SupportedFormats: []string{"audio/mp3", "audio/wav"},
 				},
 			},
-			Out:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync:   &genai.FunctionalityText{},
-			GenStream: &genai.FunctionalityText{},
+			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &genai.FunctionalityText{
+				ReportRateLimits: true,
+			},
+			GenStream: &genai.FunctionalityText{
+				ReportRateLimits: true,
+			},
 		},
 		{
 			Models:   []string{"o4-mini"},
@@ -104,20 +111,22 @@ var Scoreboard = genai.Scoreboard{
 			},
 			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &genai.FunctionalityText{
-				NoStopSequence: true,
-				Tools:          genai.True,
-				BiasedTool:     genai.Flaky,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
+				ReportRateLimits: true,
+				NoStopSequence:   true,
+				Tools:            genai.True,
+				BiasedTool:       genai.Flaky,
+				JSON:             true,
+				JSONSchema:       true,
+				Seed:             true,
 			},
 			GenStream: &genai.FunctionalityText{
-				NoStopSequence: true,
-				Tools:          genai.True,
-				BiasedTool:     genai.Flaky,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
+				ReportRateLimits: true,
+				NoStopSequence:   true,
+				Tools:            genai.True,
+				BiasedTool:       genai.Flaky,
+				JSON:             true,
+				JSONSchema:       true,
+				Seed:             true,
 			},
 		},
 		{
@@ -1143,6 +1152,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			Model:                model,
 			GenSyncURL:           "https://api.openai.com/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
+			ProcessHeaders:       processHeaders,
 			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "openai",
 				// OpenAI error message prints the api key URL already.
@@ -1611,6 +1621,37 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 	}
 	return nil
+}
+
+func processHeaders(h http.Header) []genai.RateLimit {
+	var limits []genai.RateLimit
+	requestsLimit, _ := strconv.ParseInt(h.Get("X-Ratelimit-Limit-Requests"), 10, 64)
+	requestsRemaining, _ := strconv.ParseInt(h.Get("X-Ratelimit-Remaining-Requests"), 10, 64)
+	requestsReset, _ := time.ParseDuration(h.Get("X-Ratelimit-Reset-Requests"))
+
+	tokensLimit, _ := strconv.ParseInt(h.Get("X-Ratelimit-Limit-Tokens"), 10, 64)
+	tokensRemaining, _ := strconv.ParseInt(h.Get("X-Ratelimit-Remaining-Tokens"), 10, 64)
+	tokensReset, _ := time.ParseDuration(h.Get("X-Ratelimit-Reset-Tokens"))
+
+	if requestsLimit > 0 {
+		limits = append(limits, genai.RateLimit{
+			Type:      genai.Requests,
+			Period:    genai.PerOther,
+			Limit:     requestsLimit,
+			Remaining: requestsRemaining,
+			Reset:     time.Now().Add(requestsReset),
+		})
+	}
+	if tokensLimit > 0 {
+		limits = append(limits, genai.RateLimit{
+			Type:      genai.Tokens,
+			Period:    genai.PerOther,
+			Limit:     tokensLimit,
+			Remaining: tokensRemaining,
+			Reset:     time.Now().Add(tokensReset),
+		})
+	}
+	return limits
 }
 
 var (

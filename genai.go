@@ -96,10 +96,18 @@ type Usage struct {
 
 	// FinishReason indicates why the model stopped generating tokens.
 	FinishReason FinishReason
+
+	// Limits contains a list of rate limit details from the provider.
+	Limits []RateLimit
 }
 
 func (u *Usage) String() string {
-	return fmt.Sprintf("in: %d (cached %d), out: %d", u.InputTokens, u.InputCachedTokens, u.OutputTokens)
+	var s strings.Builder
+	fmt.Fprintf(&s, "in: %d (cached %d), out: %d", u.InputTokens, u.InputCachedTokens, u.OutputTokens)
+	for _, l := range u.Limits {
+		fmt.Fprintf(&s, ", %s", l.String())
+	}
+	return s.String()
 }
 
 // Add adds the usage from another result.
@@ -107,6 +115,67 @@ func (u *Usage) Add(r Usage) {
 	u.InputTokens += r.InputTokens
 	u.InputCachedTokens += r.InputCachedTokens
 	u.OutputTokens += r.OutputTokens
+}
+
+// RateLimitType defines the type of rate limit.
+type RateLimitType string
+
+const (
+	Requests RateLimitType = "requests"
+	Tokens   RateLimitType = "tokens"
+)
+
+// RateLimitPeriod defines the time period for a rate limit.
+type RateLimitPeriod string
+
+const (
+	PerMinute RateLimitPeriod = "minute"
+	PerDay    RateLimitPeriod = "day"
+	PerMonth  RateLimitPeriod = "month"
+	PerOther  RateLimitPeriod = "other" // For non-standard periods
+)
+
+// RateLimit contains the limit, remaining, and reset values for a metric.
+type RateLimit struct {
+	Type      RateLimitType
+	Period    RateLimitPeriod
+	Limit     int64
+	Remaining int64
+	Reset     time.Time
+}
+
+func (r *RateLimit) String() string {
+	if r.Period == PerOther {
+		if r.Reset.IsZero() {
+			return fmt.Sprintf("%s: %d/%d", r.Type, r.Remaining, r.Limit)
+		}
+		return fmt.Sprintf("%s/%s: %d/%d", r.Type, r.Reset, r.Remaining, r.Limit)
+	}
+	if r.Reset.IsZero() {
+		return fmt.Sprintf("%s (%s): %d/%d", r.Type, r.Period, r.Remaining, r.Limit)
+	}
+	return fmt.Sprintf("%s/%s (%s): %d/%d", r.Type, r.Reset, r.Period, r.Remaining, r.Limit)
+}
+
+func (r *RateLimit) Validate() error {
+	switch r.Type {
+	case Requests, Tokens:
+	default:
+		return fmt.Errorf("unknown limit type %q", r.Type)
+	}
+	if r.Limit == 0 {
+		return errors.New("limit is 0")
+	}
+	// It is valid for Remaining to be zero. It's rare but it happens.
+	switch r.Period {
+	case PerMinute, PerDay, PerMonth, PerOther:
+	default:
+		return fmt.Errorf("unknown limit period %q", r.Period)
+	}
+	if r.Reset.IsZero() {
+		return errors.New("reset is 0")
+	}
+	return nil
 }
 
 // FinishReason is the reason why the model stopped generating tokens.
@@ -945,6 +1014,8 @@ type FunctionalityText struct {
 	// TopLogprobs is set when the provider and model combination supports top_logprobs.
 	TopLogprobs bool
 
+	// ReportRateLimits means that the provider reports rate limits in its Usage.
+	ReportRateLimits bool
 	// BrokenTokenUsage means that the usage is not correctly reported.
 	BrokenTokenUsage TriState
 	// BrokenFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.
@@ -1002,6 +1073,8 @@ type FunctionalityDoc struct {
 	// Seed is set when the provider and model combination supports seed for reproducibility.
 	Seed bool
 
+	// ReportRateLimits means that the provider reports rate limits in its Usage.
+	ReportRateLimits bool
 	// BrokenTokenUsage means that the usage is not correctly reported.
 	BrokenTokenUsage TriState
 	// BrokenFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.
@@ -1074,6 +1147,7 @@ var (
 	_ Validatable = (*Content)(nil)
 	_ Validatable = (*Message)(nil)
 	_ Validatable = (*Messages)(nil)
+	_ Validatable = (*RateLimit)(nil)
 	_ Validatable = (*Role)(nil)
 	_ Validatable = (*ToolCall)(nil)
 	_ Validatable = (*ToolCallResult)(nil)

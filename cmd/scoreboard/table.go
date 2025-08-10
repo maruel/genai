@@ -21,7 +21,7 @@ import (
 
 type tableSummaryRow struct {
 	Provider string `title:"Provider"`
-	Country  string `title:"Country"`
+	Country  string `title:"🌐"`
 
 	tableDataRow
 }
@@ -58,19 +58,19 @@ type tableModelRow struct {
 
 type tableDataRow struct {
 	// Model specific
-	Inputs           string `title:"➛Inputs"` // Has to be large enough otherwise the emojis warp on github visualization
-	Outputs          string `title:"Outputs➛"`
-	JSON             string `title:"JSON➛"`
-	JSONSchema       string `title:"Schema➛"`
+	Inputs           string `title:"➛In"` // Has to be large enough otherwise the emojis warp on github visualization
+	Outputs          string `title:"Out➛"`
+	JSON             string `title:"JSON"`
+	JSONSchema       string `title:"Schema"`
 	Chat             string `title:"Chat"`
 	Streaming        string `title:"Stream"`
-	Tools            string `title:"Tools"`
+	Tools            string `title:"Tool"`
 	Batch            string `title:"Batch"`
 	Seed             string `title:"Seed"`
-	Files            string `title:"Files"`
-	Citations        string `title:"Citations"`
+	Files            string `title:"File"`
+	Citations        string `title:"Cite"`
 	Thinking         string `title:"Think"`
-	Logprobs         string `title:"Logprobs"`
+	Logprobs         string `title:"Probs"`
 	ReportRateLimits string `title:"Limits"`
 }
 
@@ -408,7 +408,7 @@ func visibleWidth(s string) int {
 
 func runeWidth(r rune) int {
 	switch r {
-	case '🏠', '❌', '💬', '✅', '📄', '🎤', '🤪', '🚩', '💨', '💸', '🤷', '📸', '🎥', '💥', '🤐', '🧐':
+	case '🏠', '❌', '💬', '✅', '📄', '🎤', '🤪', '🚩', '💨', '💸', '🤷', '📸', '🎥', '💥', '🤐', '🧐', '🌐':
 		return 2
 	case '🖼', '🎞', '⚖':
 		return 0

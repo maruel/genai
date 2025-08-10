@@ -4,26 +4,26 @@ The _high performance_ low level native Go client for LLMs.
 
 ## Scoreboard
 
-| Provider                                                    | Country | ➛Inputs   | Outputs➛   | JSON➛   | Schema➛   | Chat   | Stream | Tools  | Batch | Seed | Files | Citations | Think | Logprobs | Limits |
-| ----------------------------------------------------------- | ------- | --------- | ---------- | ------- | --------- | ------ | ------ | ------ | ----- | ---- | ----- | --------- | ----- | -------- | ------ |
-| [anthropic](https://console.anthropic.com/settings/billing) | 🇺🇸      | 💬📄📸    | 💬         | ❌      | ❌        | ✅🤪   | ✅🤪   | ✅🧐   | ✅    | ❌   | ❌    | ✅        | ✅    | ❌       | ✅     |
-| [bfl](https://dashboard.bfl.ai/)                            | 🇩🇪      | 💬        | 📸         | ❌      | ❌        | ❌     | ❌     | ❌     | ✅    | ✅   | ❌    | ❌        | ❌    | ❌       | ✅     |
-| [cerebras](https://cloud.cerebras.ai)                       | 🇺🇸      | 💬        | 💬         | 🤪      | 🤪        | ✅     | ✅     | 💨🧐   | ❌    | ✅   | ❌    | ❌        | ✅    | ✅       | ✅     |
-| [cloudflare](https://dash.cloudflare.com)                   | 🇺🇸      | 💬        | 💬         | 🤪      | ✅        | ✅🚩🤪 | ✅🚩🤪 | 💨     | ❌    | ✅   | ❌    | ❌        | ❌    | ❌       | ❌     |
-| [cohere](https://dashboard.cohere.com/billing)              | 🇨🇦      | 💬📸      | 💬         | ✅      | ✅        | ✅     | ✅     | ✅💥   | ❌    | ✅   | ❌    | ✅        | ✅    | ✅       | ❌     |
-| [deepseek](https://platform.deepseek.com)                   | 🇨🇳      | 💬        | 💬         | ✅      | ❌        | ✅     | ✅     | ✅💥   | ❌    | ❌   | ❌    | ❌        | ✅    | ✅       | ❌     |
-| [gemini](http://aistudio.google.com)                        | 🇺🇸      | 🎤💬📄📸  | 💬📸       | ✅      | ✅        | ✅     | ✅     | ✅🧐   | ✅    | ✅   | ✅    | ❌        | ✅    | ✅       | ❌     |
-| [groq](https://console.groq.com/dashboard/usage)            | 🇺🇸      | 💬📸      | 💬         | ✅      | ❌        | ✅     | ✅     | 💨🧐   | ❌    | ✅   | ❌    | ❌        | ✅    | ❌       | ✅     |
-| [huggingface](https://huggingface.co/settings/billing)      | 🇺🇸      | 💬        | 💬         | ✅      | ❌        | ✅     | ✅     | 💨     | ❌    | ✅   | ❌    | ❌        | ✅    | ✅       | ✅     |
-| [llamacpp](https://github.com/ggml-org/llama.cpp)           | 🏠      | 💬📸      | 💬         | ✅      | ✅        | ✅     | ✅     | ✅🧐   | ❌    | ✅   | ❌    | ❌        | ❌    | ✅       | ❌     |
-| [mistral](https://console.mistral.ai/usage)                 | 🇫🇷      | 🎤💬📄📸  | 💬         | ✅      | ✅        | ✅     | ✅     | ✅🧐   | ❌    | ✅   | ❌    | ❌        | ❌    | ❌       | ✅     |
-| [ollama](https://ollama.com/)                               | 🏠      | 💬📸      | 💬         | ✅      | ✅        | ✅     | ✅     | ✅     | ❌    | ✅   | ❌    | ❌        | ✅    | ❌       | ❌     |
-| [openai](https://platform.openai.com/usage)                 | 🇺🇸      | 🎤💬📄📸  | 💬📸       | ✅      | ✅        | ✅🤪   | ✅🤪   | ✅💥🧐 | ✅    | ✅   | ✅    | ❌        | ✅    | ✅       | ✅     |
-| [openairesponses](https://platform.openai.com/usage)        | 🇺🇸      | 💬📄📸    | 💬📸       | ✅      | ✅        | ✅💸🤪 | ✅💸🤪 | ✅🧐   | ❌    | ✅   | ❌    | ❌        | ✅    | ❌       | ✅     |
-| [perplexity](https://www.perplexity.ai/settings/api)        | 🇺🇸      | 💬📸      | 💬         | ❌      | ✅        | ✅🤪   | ✅🤪   | ❌     | ❌    | ❌   | ❌    | ✅        | ✅    | ❌       | ❌     |
-| [pollinations](https://auth.pollinations.ai/)               | 🇩🇪      | 💬📸      | 💬📸       | 🤪      | ❌        | ✅🤪   | ✅💸🤪 | ✅🧐   | ❌    | ✅   | ❌    | ❌        | ❌    | ❌       | ❌     |
-| [togetherai](https://api.together.ai/settings/billing)      | 🇺🇸      | 💬📸      | 💬📸       | ✅      | ✅        | ✅🚩🤪 | ✅🚩🤪 | 💨🧐   | ❌    | ✅   | ❌    | ❌        | ❌    | ✅       | ✅     |
-| openaicompatible                                            | N/A     | 💬        | 💬         | ❌      | ❌        | ✅     | ✅     | ❌     | ❌    | ❌   | ❌    | ❌        | ❌    | ❌       | ❌     |
+| Provider                                                    | 🌐   | ➛In      | Out➛   | JSON | Schema | Chat   | Stream | Tool   | Batch | Seed | File | Cite | Think | Probs | Limits |
+| ----------------------------------------------------------- | ---- | -------- | ------ | ---- | ------ | ------ | ------ | ------ | ----- | ---- | ---- | ---- | ----- | ----- | ------ |
+| [anthropic](https://console.anthropic.com/settings/billing) | 🇺🇸   | 💬📄📸   | 💬     | ❌   | ❌     | ✅🤪   | ✅🤪   | ✅🧐   | ✅    | ❌   | ❌   | ✅   | ✅    | ❌    | ✅     |
+| [bfl](https://dashboard.bfl.ai/)                            | 🇩🇪   | 💬       | 📸     | ❌   | ❌     | ❌     | ❌     | ❌     | ✅    | ✅   | ❌   | ❌   | ❌    | ❌    | ✅     |
+| [cerebras](https://cloud.cerebras.ai)                       | 🇺🇸   | 💬       | 💬     | 🤪   | 🤪     | ✅     | ✅     | 💨🧐   | ❌    | ✅   | ❌   | ❌   | ✅    | ✅    | ✅     |
+| [cloudflare](https://dash.cloudflare.com)                   | 🇺🇸   | 💬       | 💬     | 🤪   | ✅     | ✅🚩🤪 | ✅🚩🤪 | 💨     | ❌    | ✅   | ❌   | ❌   | ❌    | ❌    | ❌     |
+| [cohere](https://dashboard.cohere.com/billing)              | 🇨🇦   | 💬📸     | 💬     | ✅   | ✅     | ✅     | ✅     | ✅💥   | ❌    | ✅   | ❌   | ✅   | ✅    | ✅    | ❌     |
+| [deepseek](https://platform.deepseek.com)                   | 🇨🇳   | 💬       | 💬     | ✅   | ❌     | ✅     | ✅     | ✅💥   | ❌    | ❌   | ❌   | ❌   | ✅    | ✅    | ❌     |
+| [gemini](http://aistudio.google.com)                        | 🇺🇸   | 🎤💬📄📸 | 💬📸   | ✅   | ✅     | ✅     | ✅     | ✅🧐   | ✅    | ✅   | ✅   | ❌   | ✅    | ✅    | ❌     |
+| [groq](https://console.groq.com/dashboard/usage)            | 🇺🇸   | 💬📸     | 💬     | ✅   | ❌     | ✅     | ✅     | 💨🧐   | ❌    | ✅   | ❌   | ❌   | ✅    | ❌    | ✅     |
+| [huggingface](https://huggingface.co/settings/billing)      | 🇺🇸   | 💬       | 💬     | ✅   | ❌     | ✅     | ✅     | 💨     | ❌    | ✅   | ❌   | ❌   | ✅    | ✅    | ✅     |
+| [llamacpp](https://github.com/ggml-org/llama.cpp)           | 🏠   | 💬📸     | 💬     | ✅   | ✅     | ✅     | ✅     | ✅🧐   | ❌    | ✅   | ❌   | ❌   | ❌    | ✅    | ❌     |
+| [mistral](https://console.mistral.ai/usage)                 | 🇫🇷   | 🎤💬📄📸 | 💬     | ✅   | ✅     | ✅     | ✅     | ✅🧐   | ❌    | ✅   | ❌   | ❌   | ❌    | ❌    | ✅     |
+| [ollama](https://ollama.com/)                               | 🏠   | 💬📸     | 💬     | ✅   | ✅     | ✅     | ✅     | ✅     | ❌    | ✅   | ❌   | ❌   | ✅    | ❌    | ❌     |
+| [openai](https://platform.openai.com/usage)                 | 🇺🇸   | 🎤💬📄📸 | 💬📸   | ✅   | ✅     | ✅🤪   | ✅🤪   | ✅💥🧐 | ✅    | ✅   | ✅   | ❌   | ✅    | ✅    | ✅     |
+| [openairesponses](https://platform.openai.com/usage)        | 🇺🇸   | 💬📄📸   | 💬📸   | ✅   | ✅     | ✅💸🤪 | ✅💸🤪 | ✅🧐   | ❌    | ✅   | ❌   | ❌   | ✅    | ❌    | ✅     |
+| [perplexity](https://www.perplexity.ai/settings/api)        | 🇺🇸   | 💬📸     | 💬     | ❌   | ✅     | ✅🤪   | ✅🤪   | ❌     | ❌    | ❌   | ❌   | ✅   | ✅    | ❌    | ❌     |
+| [pollinations](https://auth.pollinations.ai/)               | 🇩🇪   | 💬📸     | 💬📸   | 🤪   | ❌     | ✅🤪   | ✅💸🤪 | ✅🧐   | ❌    | ✅   | ❌   | ❌   | ❌    | ❌    | ❌     |
+| [togetherai](https://api.together.ai/settings/billing)      | 🇺🇸   | 💬📸     | 💬📸   | ✅   | ✅     | ✅🚩🤪 | ✅🚩🤪 | 💨🧐   | ❌    | ✅   | ❌   | ❌   | ❌    | ✅    | ✅     |
+| openaicompatible                                            | N/A  | 💬       | 💬     | ❌   | ❌     | ✅     | ✅     | ❌     | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 
 <details>
   <summary>‼️ Click here for legend of 🏠 ✅ ❌ 💬 📄 📸 🎤 🎥 🤪 💸 🚩 💨 🧐 💥 and columns</summary>
@@ -43,21 +43,22 @@ The _high performance_ low level native Go client for LLMs.
 - 💸: Usage is not reported: we can't know how many tokens were used.
 - 🚩: Broken FinishReason: we can't know if the request was cut off.
 - 💨: Tool calling is flaky.
-- 🧐 Tool calling is **not** biased towards the first value in an enum. If the provider doesn't have this, be
+- 🧐: Tool calling is **not** biased towards the first value in an enum. If the provider doesn't have this, be
   mindful of the order of the values!
-- 💥 Tool calling is undecided when asked a question that has no clear answer and will call both options
+- 💥: Tool calling is undecided when asked a question that has no clear answer and will call both options
   instead of calling ont at random. This is good.
+- 🌐: Country where the company is located.
 - JSON and Schema: ability to output JSON in free form, or with a forced schema specified as a Go struct
 - Chat: Buffered chat.
 - Stream: Streaming output.
-- Tools: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef)
+- Tool: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef)
 - Batch: Process asynchronously batches during off peak hours at a discounts.
 - Seed: Deterministic seed for reproducibility.
-- Files: Upload and store large files.
-- Citations: Citation generation. Especially useful for RAG.
+- File: Upload and store large files.
+- Cite: Citation generation. Especially useful for RAG.
 - Think: Supports chain-of-thought thinking process.
     - Both redacted (Anthropic, Gemini) and explicit (Deepseek R1, Qwen3, etc).
-- Logprobs: return logprobs. Many do not support this in streaming mode.
+- Probs: return logprobs. Many do not support this in streaming mode.
 - Limits: returns the rate limits, including the remaining quota.
 
 </details>

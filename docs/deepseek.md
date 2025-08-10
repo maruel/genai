@@ -1,6 +1,6 @@
 # Scoreboard
 
-| Model             | ➛Inputs   | Outputs➛   | JSON➛   | JSON+Schema➛   | Chat | Streaming | Tools | Batch | Seed | Files | Citations | Thinking |
-| ----------------- | --------- | ---------- | ------- | -------------- | ---- | --------- | ----- | ----- | ---- | ----- | --------- | -------- |
-| deepseek-chat     | 💬        | 💬         | ✅      | ❌             | ✅   | ✅        | ✅💥  | ❌    | ❌   | ❌    | ❌        | ❌       |
-| deepseek-reasoner | 💬        | 💬         | ✅      | ❌             | ✅   | ✅        | 💨    | ❌    | ❌   | ❌    | ❌        | ✅       |
+| Model             | ➛Inputs   | Outputs➛   | JSON➛   | Schema➛   | Chat | Stream | Tools | Batch | Seed | Files | Citations | Think | Logprobs |
+| ----------------- | --------- | ---------- | ------- | --------- | ---- | ------ | ----- | ----- | ---- | ----- | --------- | ----- | -------- |
+| deepseek-chat     | 💬        | 💬         | ✅      | ❌        | ✅   | ✅     | ✅💥  | ❌    | ❌   | ❌    | ❌        | ❌    | ✅       |
+| deepseek-reasoner | 💬        | 💬         | ✅      | ❌        | ✅   | ✅     | 💨    | ❌    | ❌   | ❌    | ❌        | ✅    | ❌       |

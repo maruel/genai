@@ -301,7 +301,14 @@ list-models -provider huggingface
 
 ## TODO
 
-- Server-side MCP
-- Real-time / Live
+- Server-side MCP [Anthropic](https://docs.anthropic.com/en/docs/agents-and-tools/mcp-connector),
+  [OpenAI](https://platform.openai.com/docs/guides/tools-remote-mcp)
+- Real-time / Live [Gemini](https://ai.google.dev/api/live),
+  [OpenAI](https://platform.openai.com/docs/guides/realtime),
+  [TogetherAI](https://docs.together.ai/docs/text-to-speech), ...
 - More comprehensive file/cache abstraction
-- Tokens counting
+- Tokens counting [Anthropic](https://docs.anthropic.com/en/docs/build-with-claude/token-counting),
+  [Cohere](https://docs.cohere.com/reference/tokenize), [Gemini](https://ai.google.dev/api/tokens, ...
+- Embeddings [Anthropic](https://docs.anthropic.com/en/docs/build-with-claude/embeddings),
+  [Cohere](https://docs.cohere.com/reference/embed), [Gemini](https://ai.google.dev/api/embeddings),
+  [OpenAI](https://platform.openai.com/docs/guides/embeddings), [TogetherAI](https://docs.together.ai/docs/embeddings-overview), ...

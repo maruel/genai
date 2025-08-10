@@ -267,7 +267,7 @@ func processHeaders(h http.Header) []genai.RateLimit {
 			Period:    genai.PerOther,
 			Limit:     limit,
 			Remaining: remaining,
-			Reset:     time.Unix(reset, 0),
+			Reset:     time.Unix(reset, 0).Round(10 * time.Millisecond),
 		})
 	}
 	return limits

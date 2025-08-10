@@ -214,7 +214,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	}
 	f.ReportRateLimits = len(resp.Limits) != 0
 	for _, l := range resp.Limits {
-		if err := l.Validate(); err != nil {
+		if err = l.Validate(); err != nil {
 			return nil, err
 		}
 	}
@@ -644,7 +644,7 @@ func exerciseModal(ctx context.Context, cs *callState, f *genai.FunctionalityTex
 		}
 		f.ReportRateLimits = len(resp.Limits) != 0
 		for _, l := range resp.Limits {
-			if err := l.Validate(); err != nil {
+			if err = l.Validate(); err != nil {
 				return err
 			}
 		}
@@ -765,8 +765,8 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 	if len(resp.Limits) != 0 {
 		out.GenDoc.ReportRateLimits = true
 		for _, l := range resp.Limits {
-			if err := l.Validate(); err != nil {
-				return err
+			if err2 := l.Validate(); err2 != nil {
+				return err2
 			}
 		}
 	}
@@ -845,8 +845,8 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 	if len(resp.Limits) != 0 {
 		out.GenDoc.ReportRateLimits = true
 		for _, l := range resp.Limits {
-			if err := l.Validate(); err != nil {
-				return err
+			if err2 := l.Validate(); err2 != nil {
+				return err2
 			}
 		}
 	}

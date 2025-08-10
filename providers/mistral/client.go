@@ -1025,7 +1025,7 @@ func processHeaders(h http.Header) []genai.RateLimit {
 			Period:    genai.PerOther, // 10 seconds is not a standard period
 			Limit:     requestsLimit,
 			Remaining: requestsRemaining,
-			Reset:     time.Now().Add(10 * time.Second),
+			Reset:     time.Now().Add(10 * time.Second).Round(10 * time.Millisecond),
 		})
 	}
 	if tokensPerMinLimit > 0 {
@@ -1034,7 +1034,7 @@ func processHeaders(h http.Header) []genai.RateLimit {
 			Period:    genai.PerMinute,
 			Limit:     tokensPerMinLimit,
 			Remaining: tokensPerMinRemaining,
-			Reset:     time.Now().Add(time.Minute),
+			Reset:     time.Now().Add(time.Minute).Round(10 * time.Millisecond),
 		})
 	}
 	if tokensPerMonthLimit > 0 {
@@ -1044,7 +1044,7 @@ func processHeaders(h http.Header) []genai.RateLimit {
 			Limit:     tokensPerMonthLimit,
 			Remaining: tokensPerMonthRemaining,
 			// This is not accurate, but there's no reset header.
-			Reset: time.Now().Add(30 * 24 * time.Hour),
+			Reset: time.Now().Add(30 * 24 * time.Hour).Round(10 * time.Millisecond),
 		})
 	}
 	return limits

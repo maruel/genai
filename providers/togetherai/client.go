@@ -1235,7 +1235,7 @@ func processHeaders(h http.Header) []genai.RateLimit {
 			Period:    genai.PerOther,
 			Limit:     limitReq,
 			Remaining: remainingReq,
-			Reset:     time.Now().Add(reset * time.Second), // Just guessing.
+			Reset:     time.Now().Add(reset * time.Second).Round(10 * time.Millisecond), // Just guessing.
 		})
 	}
 	if limitTok > 0 {
@@ -1244,7 +1244,7 @@ func processHeaders(h http.Header) []genai.RateLimit {
 			Period:    genai.PerOther,
 			Limit:     limitTok,
 			Remaining: remainingTok,
-			Reset:     time.Now().Add(reset * time.Second), // Just guessing.
+			Reset:     time.Now().Add(reset * time.Second).Round(10 * time.Millisecond), // Just guessing.
 		})
 	}
 	return limits

@@ -301,11 +301,6 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText) ([]string, []error) {
 		errs = append(errs, errors.New("unsupported option DecodeAs"))
 	}
 	if len(v.Tools) != 0 {
-		// We need to discard claude 2 and 3. This is a bit annoying to have to hardcode this.
-		if strings.HasPrefix(c.Model, "claude-2") || strings.HasPrefix(c.Model, "claude-3-haiku") ||
-			strings.HasPrefix(c.Model, "claude-3-sonnet") || strings.HasPrefix(c.Model, "claude-3-opus") {
-			errs = append(errs, errors.New("unsupported option Tools"))
-		}
 		switch v.ToolCallRequest {
 		case genai.ToolCallAny:
 			c.ToolChoice.Type = ToolChoiceAuto

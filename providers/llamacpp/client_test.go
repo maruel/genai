@@ -6,6 +6,9 @@ package llamacpp_test
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/base64"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -24,10 +27,15 @@ import (
 )
 
 func TestClient(t *testing.T) {
-	s := lazyServer{t: t}
+	b := [12]byte{}
+	if _, err := io.ReadFull(rand.Reader, b[:]); err != nil {
+		t.Fatal(err)
+	}
+	apiKey := base64.RawURLEncoding.EncodeToString(b[:])
+	s := lazyServer{t: t, apiKey: apiKey}
 
 	t.Run("ListModels", func(t *testing.T) {
-		c, err := llamacpp.New(&genai.OptionsProvider{Remote: s.lazyStart(t), Model: base.NoModel}, func(h http.RoundTripper) http.RoundTripper {
+		c, err := llamacpp.New(&genai.OptionsProvider{APIKey: apiKey, Remote: s.lazyStart(t), Model: base.NoModel}, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
 		if err != nil {
@@ -44,7 +52,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("Scoreboard", func(t *testing.T) {
 		serverURL := s.lazyStart(t)
-		c, err := llamacpp.New(&genai.OptionsProvider{Remote: serverURL, Model: base.NoModel}, func(h http.RoundTripper) http.RoundTripper {
+		c, err := llamacpp.New(&genai.OptionsProvider{APIKey: apiKey, Remote: serverURL, Model: base.NoModel}, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
 		if err != nil {
@@ -57,7 +65,7 @@ func TestClient(t *testing.T) {
 			}
 		}
 		scoreboardtest.AssertScoreboard(t, func(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-			c2, err2 := llamacpp.New(&genai.OptionsProvider{Remote: serverURL, Model: model.Model}, fn)
+			c2, err2 := llamacpp.New(&genai.OptionsProvider{APIKey: apiKey, Remote: serverURL, Model: model.Model}, fn)
 			if err2 != nil {
 				t.Fatal(err2)
 			}
@@ -68,7 +76,7 @@ func TestClient(t *testing.T) {
 	// Run this at the end so there would be non-zero values.
 	t.Run("Metrics", func(t *testing.T) {
 		serverURL := s.lazyStart(t)
-		c, err := llamacpp.New(&genai.OptionsProvider{Remote: serverURL, Model: base.NoModel}, func(h http.RoundTripper) http.RoundTripper {
+		c, err := llamacpp.New(&genai.OptionsProvider{APIKey: apiKey, Remote: serverURL, Model: base.NoModel}, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
 		if err != nil {
@@ -83,7 +91,9 @@ func TestClient(t *testing.T) {
 }
 
 type lazyServer struct {
-	t   testing.TB
+	t      testing.TB
+	apiKey string
+
 	mu  sync.Mutex
 	url string
 }
@@ -102,7 +112,7 @@ func (l *lazyServer) lazyStart(t testing.TB) string {
 		// Use the context of the parent for server lifecycle management.
 		mains := strings.SplitN(llamacpp.Scoreboard.Scenarios[0].Models[0], "#", 2)
 		parts := strings.Split(mains[0], "/")
-		srv := startServerTest(l.t, parts[0], parts[1], parts[2], mains[1])
+		srv := startServerTest(l.t, parts[0], parts[1], parts[2], mains[1], l.apiKey)
 		l.url = srv.URL()
 		l.t.Cleanup(func() {
 			if err := srv.Close(); err != nil && err != context.Canceled {
@@ -136,7 +146,7 @@ func TestClient_Preferred(t *testing.T) {
 	}
 }
 
-func startServerTest(t testing.TB, author, repo, modelfile, multimodal string) *llamacppsrv.Server {
+func startServerTest(t testing.TB, author, repo, modelfile, multimodal, apiKey string) *llamacppsrv.Server {
 	cache, err := filepath.Abs("testdata/tmp")
 	if err != nil {
 		t.Fatal(err)
@@ -160,7 +170,7 @@ func startServerTest(t testing.TB, author, repo, modelfile, multimodal string) *
 	if err != nil {
 		t.Fatal(err)
 	}
-	extraArgs := []string{"--jinja", "--flash-attn", "--cache-type-k", "q8_0", "--cache-type-v", "q8_0"}
+	extraArgs := []string{"--jinja", "--flash-attn", "--cache-type-k", "q8_0", "--cache-type-v", "q8_0", "--api-key", apiKey}
 	mmPath := ""
 	if multimodal != "" {
 		if mmPath, err = hf.EnsureFile(ctx, huggingface.ModelRef{Author: author, Repo: repo}, "HEAD", multimodal); err != nil {

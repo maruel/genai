@@ -21,6 +21,7 @@ import (
 	"io"
 	"math"
 	"net/http"
+	"os"
 	"path/filepath"
 	"reflect"
 	"slices"
@@ -1044,8 +1045,9 @@ type Client struct {
 // retries, or to throttle outgoing requests.
 func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	var encoding *PromptEncoding
-	if opts.APIKey != "" {
-		return nil, errors.New("option APIKey is not yet implemented")
+	apiKey := opts.APIKey
+	if apiKey == "" {
+		apiKey = os.Getenv("LLAMA_API_KEY")
 	}
 	if opts.AccountID != "" {
 		return nil, errors.New("unexpected option AccountID")
@@ -1061,6 +1063,12 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		baseURL = "http://localhost:8080"
 	}
 	t := base.DefaultTransport
+	if apiKey != "" {
+		t = &roundtrippers.Header{
+			Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+			Transport: t,
+		}
+	}
 	if wrapper != nil {
 		t = wrapper(t)
 	}

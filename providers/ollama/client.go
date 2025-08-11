@@ -207,18 +207,30 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 		}
 	}
 
-	offset := 0
 	if sp != "" {
-		offset = 1
-	}
-	c.Messages = make([]Message, len(msgs)+offset)
-	if sp != "" {
-		c.Messages[0].Role = "system"
-		c.Messages[0].Content = sp
+		c.Messages = append(c.Messages, Message{Role: "system", Content: sp})
 	}
 	for i := range msgs {
-		if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
-			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+		if len(msgs[i].ToolCallResults) > 1 {
+			// Handle messages with multiple tool call results by creating multiple messages
+			for j := range msgs[i].ToolCallResults {
+				// Create a copy of the message with only one tool call result
+				msgCopy := msgs[i]
+				msgCopy.ToolCallResults = []genai.ToolCallResult{msgs[i].ToolCallResults[j]}
+				var newMsg Message
+				if err := newMsg.From(&msgCopy); err != nil {
+					errs = append(errs, fmt.Errorf("message %d, tool result %d: %w", i, j, err))
+				} else {
+					c.Messages = append(c.Messages, newMsg)
+				}
+			}
+		} else {
+			var newMsg Message
+			if err := newMsg.From(&msgs[i]); err != nil {
+				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+			} else {
+				c.Messages = append(c.Messages, newMsg)
+			}
 		}
 	}
 	// If we have unsupported features but no other errors, return a continuable error
@@ -302,8 +314,11 @@ func (m *Message) From(in *genai.Message) error {
 		}
 		// Ollama doesn't use tool ID nor name in the result, hence only one tool can be called at a time.
 		if len(in.ToolCallResults) != 1 {
+			// This should not happen since ChatRequest.Init() works around this.
 			return fmt.Errorf("can't have more than one tool call result at a time")
 		}
+		// Process only the first tool call result in this method.
+		// The Init method handles multiple tool call results by creating multiple messages.
 		m.Role = "tool"
 		m.Content = in.ToolCallResults[0].Result
 	}

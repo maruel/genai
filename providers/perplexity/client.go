@@ -182,8 +182,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	}
 	c.Messages = make([]Message, len(msgs)+offset)
 	if sp != "" {
-		c.Messages[0].Role = "system"
-		c.Messages[0].Content = Contents{Content{Type: "text", Text: sp}}
+		c.Messages[0] = Message{Role: "system", Content: Contents{Content{Type: "text", Text: sp}}}
 	}
 	for i := range msgs {
 		if err := c.Messages[i+offset].From(&msgs[i]); err != nil {

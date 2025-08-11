@@ -98,7 +98,6 @@ var Scoreboard = genai.Scoreboard{
 			GenSync: &genai.FunctionalityText{
 				ReportRateLimits: true,
 				Tools:            genai.Flaky,
-				BiasedTool:       genai.True,
 				JSON:             true,
 				JSONSchema:       true,
 				Seed:             true,
@@ -390,13 +389,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 		}
 	}
-	if len(unsupported) > 0 {
-		// If we have unsupported features but no other errors, return a continuable error
-		if len(errs) == 0 {
-			return &genai.UnsupportedContinuableError{Unsupported: unsupported}
-		}
-		// Otherwise, add the unsupported features to the error list
-		errs = append(errs, &genai.UnsupportedContinuableError{Unsupported: unsupported})
+	// If we have unsupported features but no other errors, return a continuable error
+	if len(unsupported) > 0 && len(errs) == 0 {
+		return &genai.UnsupportedContinuableError{Unsupported: unsupported}
 	}
 	return errors.Join(errs...)
 }
@@ -659,6 +654,15 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
 	}
 	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
+	if len(c.Choices[0].Logprobs.Tokens) != 0 {
+		out.Logprobs = &genai.Logprobs{
+			Content: make([]genai.LogprobsContent, len(c.Choices[0].Logprobs.Tokens)),
+		}
+		for i := range c.Choices[0].Logprobs.Tokens {
+			out.Logprobs.Content[i].Token = c.Choices[0].Logprobs.Tokens[i]
+			out.Logprobs.Content[i].Logprob = c.Choices[0].Logprobs.TokenLogprobs[i]
+		}
+	}
 	err := c.Choices[0].Message.To(&out.Message)
 	if err == nil && len(c.Warnings) != 0 {
 		uce := &genai.UnsupportedContinuableError{}
@@ -669,15 +673,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 				uce.Unsupported = append(uce.Unsupported, w.Message)
 			}
 		}
-	}
-	if len(c.Choices[0].Logprobs.Tokens) != 0 {
-		out.Logprobs = &genai.Logprobs{
-			Content: make([]genai.LogprobsContent, len(c.Choices[0].Logprobs.Tokens)),
-		}
-		for i := range c.Choices[0].Logprobs.Tokens {
-			out.Logprobs.Content[i].Token = c.Choices[0].Logprobs.Tokens[i]
-			out.Logprobs.Content[i].Logprob = c.Choices[0].Logprobs.TokenLogprobs[i]
-		}
+		return out, uce
 	}
 	return out, err
 }

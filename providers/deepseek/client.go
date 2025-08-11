@@ -175,13 +175,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 		}
 	}
-	if len(unsupported) > 0 {
-		// If we have unsupported features but no other errors, return a continuable error
-		if len(errs) == 0 {
-			return &genai.UnsupportedContinuableError{Unsupported: unsupported}
-		}
-		// Otherwise, add the unsupported features to the error list
-		errs = append(errs, &genai.UnsupportedContinuableError{Unsupported: unsupported})
+	// If we have unsupported features but no other errors, return a continuable error
+	if len(unsupported) > 0 && len(errs) == 0 {
+		return &genai.UnsupportedContinuableError{Unsupported: unsupported}
 	}
 	return errors.Join(errs...)
 }
@@ -190,7 +186,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-// https://api-docs.deepseek.com/api/create-chat-completion
+// Message is documented at https://api-docs.deepseek.com/api/create-chat-completion
 type Message struct {
 	Role             string     `json:"role,omitzero"` // "system", "assistant", "user"
 	Name             string     `json:"name,omitzero"` // An optional name for the participant. Provides the model information to differentiate between participants of the same role.

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 819
+        content_length: 566
         host: api.together.xyz
         body: |
-            {"model":"mistralai/Mistral-Small-24B-Instruct-2501","stream":false,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"index":0,"id":"call_azbrbfnmthqry8n2dmr63bb5","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_azbrbfnmthqry8n2dmr63bb5"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+            {"model":"mistralai/Mistral-Small-24B-Instruct-2501","stream":false,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"auto"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "o4dhXHL-4YNCb4-9654f9fceba4a320",
+              "id": "o6evqbA-62bZhn-96d37e5f1c58a2f2",
               "object": "chat.completion",
-              "created": 1753544227,
+              "created": 1754870856,
               "model": "mistralai/Mistral-Small-24B-Instruct-2501",
               "prompt": [],
               "choices": [
@@ -36,15 +36,15 @@ interactions:
                   "seed": null,
                   "message": {
                     "role": "assistant",
-                    "content": "363.89",
+                    "content": "```json\n{\n  \"square_root\": {\"number\":132413.0}\n}\n```",
                     "tool_calls": []
                   }
                 }
               ],
               "usage": {
-                "prompt_tokens": 141,
-                "total_tokens": 148,
-                "completion_tokens": 7
+                "prompt_tokens": 456,
+                "total_tokens": 480,
+                "completion_tokens": 24
               }
             }
         headers:
@@ -55,11 +55,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9654f9fceba4a320-YUL
+                - 96d37e5f1c58a2f2-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"1f8-6RN+ghbgXw3smOYwZkCpPfrnqvc"
+                - W/"22f-AQLJyBN94aLhaBnXHiCAmeXuV4U"
             Retry-After:
                 - "2"
             Server:
@@ -69,13 +69,13 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - f1014686-97ea-47dd-85ac-1788b0221a5d-noamzn
+                - 1fd0eb28-2bac-45fc-94c3-a4d26f04f7de-noamzn
             X-Api-Call-End:
-                - "2025-07-26T15:37:07.641Z"
+                - "2025-08-11T00:07:37.236Z"
             X-Api-Call-Start:
-                - "2025-07-26T15:37:07.537Z"
+                - "2025-08-11T00:07:36.913Z"
             X-Api-Received:
-                - "2025-07-26T15:37:07.531Z"
+                - "2025-08-11T00:07:35.605Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -87,11 +87,11 @@ interactions:
             X-Ratelimit-Remaining:
                 - "1"
             X-Ratelimit-Remaining-Tokens:
-                - "0"
+                - "1000"
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - o4dhXHL-4YNCb4-9654f9fceba4a320
+                - o6evqbA-62bZhn-96d37e5f1c58a2f2
         status: 200 OK
         code: 200
-        duration: 320ms
+        duration: 1.802s

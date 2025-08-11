@@ -234,13 +234,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			errs = append(errs, fmt.Errorf("message %d: must have at least one content or tool call block", i))
 		}
 	}
-	if len(unsupported) > 0 {
-		// If we have unsupported features but no other errors, return a continuable error
-		if len(errs) == 0 {
-			return &genai.UnsupportedContinuableError{Unsupported: unsupported}
-		}
-		// Otherwise, add the unsupported features to the error list
-		errs = append(errs, &genai.UnsupportedContinuableError{Unsupported: unsupported})
+	// If we have unsupported features but no other errors, return a continuable error
+	if len(unsupported) > 0 && len(errs) == 0 {
+		return &genai.UnsupportedContinuableError{Unsupported: unsupported}
 	}
 	return errors.Join(errs...)
 }

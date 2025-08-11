@@ -1,4 +1,4 @@
-# llama-server
+# llama-serve
 
 A simple wrapper over [llama.cpp's llama-server](https://github.com/ggml-org/llama.cpp).
 

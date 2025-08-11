@@ -13,6 +13,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"slices"
 	"strings"
 	"syscall"
 
@@ -60,8 +61,14 @@ func mainImpl() error {
 	}
 	modelRef := huggingface.ModelRef{Author: parts[0], Repo: parts[1]}
 	filename := ""
+	multimodal := ""
 	if len(parts) > 2 {
 		filename = parts[2]
+		mains := strings.SplitN(filename, "#", 2)
+		if len(mains) == 2 {
+			filename = mains[0]
+			multimodal = mains[1]
+		}
 	}
 
 	log.Printf("Ensuring llama-server (build %d)...", *build)
@@ -79,9 +86,17 @@ func mainImpl() error {
 	if err != nil {
 		return err
 	}
+	args := slices.Clone(flag.Args())
+	mmPath := ""
+	if multimodal != "" {
+		if mmPath, err = hf.EnsureFile(ctx, modelRef, "HEAD", multimodal); err != nil {
+			return err
+		}
+		args = append(args, "--mmproj", mmPath)
+	}
 
 	log.Printf("Starting llama-server on %s...", *hostPort)
-	server, err := llamacppsrv.New(ctx, exe, modelPath, os.Stdout, *hostPort, *threads, flag.Args())
+	server, err := llamacppsrv.New(ctx, exe, modelPath, os.Stdout, *hostPort, *threads, args)
 	if err != nil {
 		return err
 	}

@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 557
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana"}}],"created":1754859976,"model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion","usage":{"completion_tokens":2,"prompt_tokens":279,"total_tokens":281},"id":"chatcmpl-ZQa5r7mP0m9hycDn9EwyR1NXiUWqfuRU","timings":{"prompt_n":1,"prompt_ms":91.245,"prompt_per_token_ms":91.245,"prompt_per_second":10.959504630390706,"predicted_n":2,"predicted_ms":2640.807,"predicted_per_token_ms":1320.4035,"predicted_per_second":0.7573442512080588}}'
+        content_length: 565
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana"}}],"created":1754930660,"model":"gpt-3.5-turbo","system_fingerprint":"b6134-be48528b","object":"chat.completion","usage":{"completion_tokens":2,"prompt_tokens":280,"total_tokens":282},"id":"chatcmpl-uaJ0csXMDvYey7ryVx1oTq3BXe8G2Zvh","timings":{"prompt_n":262,"prompt_ms":19987.6,"prompt_per_token_ms":76.2885496183206,"prompt_per_second":13.108127038764035,"predicted_n":2,"predicted_ms":57.767,"predicted_per_token_ms":28.8835,"predicted_per_second":34.62184292069867}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "557"
+                - "565"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 3.021s
+        duration: 40.083s

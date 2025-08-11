@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 719
-        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":null,"tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"id":"BUYcFyG2O2Mz5S74tGBPRvXL2Wfuwyko"}]}}],"created":1754859909,"model":"gpt-3.5-turbo","system_fingerprint":"b5994-c7f3169c","object":"chat.completion","usage":{"completion_tokens":43,"prompt_tokens":315,"total_tokens":358},"id":"chatcmpl-irS5d2iimoMX7mGZjB4uWtfmMqqj3jBf","timings":{"prompt_n":1,"prompt_ms":72.447,"prompt_per_token_ms":72.447,"prompt_per_second":13.803194059105277,"predicted_n":43,"predicted_ms":2214.359,"predicted_per_token_ms":51.496720930232556,"predicted_per_second":19.418712141978787}}'
+        content_length: 718
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":null,"tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"id":"2FXKRc3cmTQ5XwlNd4wIedl2TlNckYCo"}]}}],"created":1754930537,"model":"gpt-3.5-turbo","system_fingerprint":"b6134-be48528b","object":"chat.completion","usage":{"completion_tokens":43,"prompt_tokens":322,"total_tokens":365},"id":"chatcmpl-61eZT7SEyB5NGy8ECu21e4ugRmZGKewH","timings":{"prompt_n":1,"prompt_ms":76.397,"prompt_per_token_ms":76.397,"prompt_per_second":13.089519221958977,"predicted_n":43,"predicted_ms":2351.718,"predicted_per_token_ms":54.69111627906977,"predicted_per_second":18.284505200028235}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "719"
+                - "718"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 11.651s
+        duration: 6.948s

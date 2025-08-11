@@ -18,28 +18,28 @@ interactions:
         body: |
             # HELP llamacpp:prompt_tokens_total Number of prompt tokens processed.
             # TYPE llamacpp:prompt_tokens_total counter
-            llamacpp:prompt_tokens_total 760
+            llamacpp:prompt_tokens_total 2909
             # HELP llamacpp:prompt_seconds_total Prompt process time
             # TYPE llamacpp:prompt_seconds_total counter
-            llamacpp:prompt_seconds_total 24.481
+            llamacpp:prompt_seconds_total 148.3
             # HELP llamacpp:tokens_predicted_total Number of generation tokens processed.
             # TYPE llamacpp:tokens_predicted_total counter
-            llamacpp:tokens_predicted_total 225
+            llamacpp:tokens_predicted_total 420
             # HELP llamacpp:tokens_predicted_seconds_total Predict process time
             # TYPE llamacpp:tokens_predicted_seconds_total counter
-            llamacpp:tokens_predicted_seconds_total 19.277
+            llamacpp:tokens_predicted_seconds_total 44.969
             # HELP llamacpp:n_decode_total Total number of llama_decode() calls
             # TYPE llamacpp:n_decode_total counter
-            llamacpp:n_decode_total 225
+            llamacpp:n_decode_total 421
             # HELP llamacpp:n_busy_slots_per_decode Average number of busy slots per llama_decode() call
             # TYPE llamacpp:n_busy_slots_per_decode counter
             llamacpp:n_busy_slots_per_decode 1
             # HELP llamacpp:prompt_tokens_seconds Average prompt throughput in tokens/s.
             # TYPE llamacpp:prompt_tokens_seconds gauge
-            llamacpp:prompt_tokens_seconds 31.0445
+            llamacpp:prompt_tokens_seconds 19.6156
             # HELP llamacpp:predicted_tokens_seconds Average generation throughput in tokens/s.
             # TYPE llamacpp:predicted_tokens_seconds gauge
-            llamacpp:predicted_tokens_seconds 11.6719
+            llamacpp:predicted_tokens_seconds 9.33977
             # HELP llamacpp:requests_processing Number of requests processing.
             # TYPE llamacpp:requests_processing gauge
             llamacpp:requests_processing 0
@@ -56,7 +56,7 @@ interactions:
             Keep-Alive:
                 - timeout=5, max=100
             Process-Start-Time-Unix:
-                - "141071711424"
+                - "2496763125746"
             Server:
                 - llama.cpp
         status: 200 OK

@@ -331,10 +331,41 @@ func (r *Response) Init(msgs genai.Messages, opts genai.Options, model string) e
 	if len(msgs) == 0 {
 		return fmt.Errorf("no messages provided")
 	}
-	r.Input = make([]Message, len(msgs))
+
 	for i := range msgs {
-		if err := r.Input[i].From(&msgs[i]); err != nil {
-			errs = append(errs, err)
+		if len(msgs[i].ToolCallResults) > 1 {
+			// Handle messages with multiple tool call results by creating multiple messages
+			for j := range msgs[i].ToolCallResults {
+				// Create a copy of the message with only one tool call result
+				msgCopy := msgs[i]
+				msgCopy.ToolCallResults = []genai.ToolCallResult{msgs[i].ToolCallResults[j]}
+				var newMsg Message
+				if err := newMsg.From(&msgCopy); err != nil {
+					errs = append(errs, fmt.Errorf("message %d, tool result %d: %w", i, j, err))
+				} else {
+					r.Input = append(r.Input, newMsg)
+				}
+			}
+		} else if len(msgs[i].ToolCalls) > 1 {
+			// Handle messages with multiple tool calls by creating multiple messages
+			for j := range msgs[i].ToolCalls {
+				// Create a copy of the message with only one tool call
+				msgCopy := msgs[i]
+				msgCopy.ToolCalls = []genai.ToolCall{msgs[i].ToolCalls[j]}
+				var newMsg Message
+				if err := newMsg.From(&msgCopy); err != nil {
+					errs = append(errs, fmt.Errorf("message %d, tool call %d: %w", i, j, err))
+				} else {
+					r.Input = append(r.Input, newMsg)
+				}
+			}
+		} else {
+			var newMsg Message
+			if err := newMsg.From(&msgs[i]); err != nil {
+				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+			} else {
+				r.Input = append(r.Input, newMsg)
+			}
 		}
 	}
 	// If we have unsupported features but no other errors, return a continuable error
@@ -561,7 +592,10 @@ func (m *Message) From(msg *genai.Message) error {
 		return fmt.Errorf("implement role %q", msg.Role)
 	}
 	if len(msg.ToolCallResults) != 0 {
+		// Handle multiple tool call results by creating multiple messages
+		// The caller (Init method) should handle this by creating separate messages
 		if len(msg.ToolCallResults) > 1 {
+			// This should not happen since the Init method works around this.
 			return fmt.Errorf("multiple tool outputs not supported in a single message for OpenAI Responses API")
 		}
 		m.Type = MessageFunctionCallOutput
@@ -571,7 +605,10 @@ func (m *Message) From(msg *genai.Message) error {
 		return nil
 	}
 	if len(msg.ToolCalls) != 0 {
+		// Handle multiple tool calls by creating multiple messages
+		// The caller (Init method) should handle this by creating separate messages
 		if len(msg.ToolCalls) > 1 {
+			// This should not happen since the Init method works around this.
 			return fmt.Errorf("multiple tool calls not supported in a single message for OpenAI Responses API")
 		}
 		m.Type = MessageFunctionCall

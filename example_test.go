@@ -17,7 +17,6 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/base"
-	"github.com/maruel/genai/genaitools"
 	"github.com/maruel/genai/providers/anthropic"
 	"github.com/maruel/genai/providers/gemini"
 	"github.com/maruel/genai/providers/groq"
@@ -328,11 +327,9 @@ func Example_genSyncWithToolCallLoop_with_custom_HTTP_Header() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	msgs := genai.Messages{
-		genai.NewTextMessage("What is 3214 + 5632? Leverage the tool available to you to tell me the answer. Do not explain. Be terse. Include only the answer."),
-	}
+	msgs := genai.Messages{genai.NewTextMessage("What season are we in?")}
 	opts := genai.OptionsText{
-		Tools: []genai.ToolDef{genaitools.Arithmetic},
+		Tools: []genai.ToolDef{GetTodayClockTime},
 		// Force the LLM to do a tool call first.
 		ToolCallRequest: genai.ToolCallRequired,
 	}
@@ -341,7 +338,14 @@ func Example_genSyncWithToolCallLoop_with_custom_HTTP_Header() {
 		log.Fatal(err)
 	}
 	fmt.Printf("%s\n", newMsgs[len(newMsgs)-1].AsText())
-	// Remove this comment line to run the example.
-	// Output:
-	// 8846
 }
+
+var GetTodayClockTime = genai.ToolDef{
+	Name:        "get_today_date_current_clock_time",
+	Description: "Get the current clock time and today's date.",
+	Callback: func(ctx context.Context, e *empty) (string, error) {
+		return time.Now().Format("Monday 2006-01-02 15:04:05"), nil
+	},
+}
+
+type empty struct{}

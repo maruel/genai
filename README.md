@@ -241,54 +241,10 @@ func LoadProvider(provider string, opts *genai.OptionsProvider) (genai.ProviderG
 }
 ```
 
-### Tool calling using predefined tool
+### Tool calling
 
-Tool calling is the idea that a LLM can't know it all, so we provide ways for the LLM to get more knowledge
-on the fly or to have side-effects. It unblocks a whole realm of possibilities. Our design enables dense
-strongly typed code that favorably compares to python.
-
-```go
-package main
-
-import (
-	"context"
-	"fmt"
-	"log"
-
-	"github.com/maruel/genai"
-	"github.com/maruel/genai/adapters"
-	"github.com/maruel/genai/base"
-	"github.com/maruel/genai/genaitools"
-	"github.com/maruel/genai/providers/groq"
-)
-
-func main() {
-	c, err := groq.New(&genai.OptionsProvider{Model: base.PreferredSOTA}, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	p := adapters.WrapThinking(c)
-	msgs := genai.Messages{
-		genai.NewTextMessage("What is 3214 + 5632? Leverage the tool available to you to tell me the answer. Do not explain. Be terse. Include only the answer."),
-	}
-	opts := genai.OptionsText{
-		Tools: []genai.ToolDef{genaitools.Arithmetic},
-		// Force the LLM to do a tool call first.
-		ToolCallRequest: genai.ToolCallRequired,
-	}
-	newMsgs, _, err := adapters.GenSyncWithToolCallLoop(context.Background(), p, msgs, &opts)
-	if err != nil {
-		log.Fatalf("Received %#v, got error %s", newMsgs, err)
-	}
-	// Print the result.
-	fmt.Println(msgs[len(msgs)-1].AsText())
-}
-```
-
-### Tool calling using a fully custom tool
-
-This example provides all the details to implement a complete custom tool. It uses an explicitly thinking
-model.
+A LLM can both retrieve information and act on its environment through tool calling. It unblocks a whole realm
+of possibilities. Our design enables dense strongly typed code that favorably compares to python.
 
 ```go
 package main

@@ -9,10 +9,10 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
-	"github.com/maruel/genai/genaitools"
 	"github.com/maruel/genai/providers/gemini"
 )
 
@@ -26,11 +26,11 @@ func ExampleGenSyncWithToolCallLoop() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	msgs := genai.Messages{
-		genai.NewTextMessage("What is 3214 + 5632? Leverage the tool available to you to tell me the answer. Do not explain. Be terse. Include only the answer."),
-	}
+	msgs := genai.Messages{genai.NewTextMessage("What season are we in?")}
 	opts := genai.OptionsText{
-		Tools: []genai.ToolDef{genaitools.Arithmetic},
+		// GetTodayClockTime returns the current time and day in a format that the LLM
+		// can understand. It includes the weekend.
+		Tools: []genai.ToolDef{GetTodayClockTime},
 		// Force the LLM to do a tool call first.
 		ToolCallRequest: genai.ToolCallRequired,
 	}
@@ -39,9 +39,6 @@ func ExampleGenSyncWithToolCallLoop() {
 		log.Fatal(err)
 	}
 	fmt.Printf("%s\n", newMsgs[len(newMsgs)-1].AsText())
-	// Remove this comment line to run the example.
-	// Output:
-	// 8846
 }
 
 func ExampleGenStreamWithToolCallLoop() {
@@ -54,11 +51,11 @@ func ExampleGenStreamWithToolCallLoop() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	msgs := genai.Messages{
-		genai.NewTextMessage("What is 3214 + 5632? Leverage the tool available to you to tell me the answer. Do not explain. Be terse. Include only the answer."),
-	}
+	msgs := genai.Messages{genai.NewTextMessage("What season are we in?")}
 	opts := genai.OptionsText{
-		Tools: []genai.ToolDef{genaitools.Arithmetic},
+		// GetTodayClockTime returns the current time and day in a format that the LLM
+		// can understand. It includes the weekend.
+		Tools: []genai.ToolDef{GetTodayClockTime},
 		// Force the LLM to do a tool call first.
 		ToolCallRequest: genai.ToolCallRequired,
 	}
@@ -82,7 +79,14 @@ func ExampleGenStreamWithToolCallLoop() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// Remove this comment line to run the example.
-	// Output:
-	// 8846
 }
+
+var GetTodayClockTime = genai.ToolDef{
+	Name:        "get_today_date_current_clock_time",
+	Description: "Get the current clock time and today's date.",
+	Callback: func(ctx context.Context, e *empty) (string, error) {
+		return time.Now().Format("Monday 2006-01-02 15:04:05"), nil
+	},
+}
+
+type empty struct{}

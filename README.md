@@ -421,6 +421,7 @@ list-models -provider huggingface
 
 ## TODO
 
+- Authentication: OAuth, service account, OIDC.
 - Server-side MCP [Anthropic](https://docs.anthropic.com/en/docs/agents-and-tools/mcp-connector),
   [OpenAI](https://platform.openai.com/docs/guides/tools-remote-mcp)
 - Real-time / Live [Gemini](https://ai.google.dev/api/live),

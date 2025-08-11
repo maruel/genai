@@ -287,7 +287,9 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	if isBadError(ctx, err) {
 		return f, err
 	}
-	f.NoStopSequence = err != nil || strings.Count(resp.AsText(), " ")+1 > 20
+	// Some model (in particular Gemma3 4B in Q4_K_M) will not start with "Canada is". They will still stop but
+	// only after a while.
+	f.NoStopSequence = err != nil || strings.Count(resp.AsText(), " ")+1 > 30 && !strings.Contains(resp.AsText(), " is ")
 	if !f.NoStopSequence && (resp.InputTokens == 0 || resp.OutputTokens == 0) {
 		internal.Logger(ctx).DebugContext(ctx, "Stop", "issue", "token usage")
 		f.BrokenTokenUsage = genai.True
@@ -920,12 +922,20 @@ func isBadError(ctx context.Context, err error) bool {
 	// API error are never 'bad'.
 	var ua base.ErrAPI
 	if errors.As(err, &ua) && ua.IsAPIError() {
+		internal.Logger(ctx).DebugContext(ctx, "isBadError", "ErrAPI", true)
 		return false
 	}
 	// Tolerate HTTP 400 as when a model is passed something that it doesn't accept, e.g. sending audio input to
 	// a text-only model, the provider often respond with 400. 500s should not be tolerated at all.
 	var herr *httpjson.Error
-	return errors.As(err, &herr) && herr.StatusCode >= 500
+	if errors.As(err, &herr) && herr.StatusCode >= 500 {
+		internal.Logger(ctx).DebugContext(ctx, "isBadError", "status", herr.StatusCode)
+		return true
+	}
+	if err != nil {
+		internal.Logger(ctx).DebugContext(ctx, "isBadError", "err", err)
+	}
+	return false
 }
 
 func mergeModalities(m1, m2 map[genai.Modality]genai.ModalCapability) map[genai.Modality]genai.ModalCapability {

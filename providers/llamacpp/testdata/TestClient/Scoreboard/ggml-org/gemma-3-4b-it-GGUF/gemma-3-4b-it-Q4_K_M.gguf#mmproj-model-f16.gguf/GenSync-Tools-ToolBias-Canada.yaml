@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 718
-        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":null,"tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"id":"2FXKRc3cmTQ5XwlNd4wIedl2TlNckYCo"}]}}],"created":1754930537,"model":"gpt-3.5-turbo","system_fingerprint":"b6134-be48528b","object":"chat.completion","usage":{"completion_tokens":43,"prompt_tokens":322,"total_tokens":365},"id":"chatcmpl-61eZT7SEyB5NGy8ECu21e4ugRmZGKewH","timings":{"prompt_n":1,"prompt_ms":76.397,"prompt_per_token_ms":76.397,"prompt_per_second":13.089519221958977,"predicted_n":43,"predicted_ms":2351.718,"predicted_per_token_ms":54.69111627906977,"predicted_per_second":18.284505200028235}}'
+        content_length: 733
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":null,"tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"id":"gTsT8mD2zZlH3DU0bNDRkjMJMqQn90yY"}]}}],"created":1754931940,"model":"gpt-3.5-turbo","system_fingerprint":"b6134-be48528b","object":"chat.completion","usage":{"completion_tokens":43,"prompt_tokens":322,"total_tokens":365},"id":"chatcmpl-SJPqrFEBeadv25kjhznx0U54RyIyDLM3","timings":{"prompt_n":166,"prompt_ms":1691.243,"prompt_per_token_ms":10.188210843373493,"prompt_per_second":98.15266049881654,"predicted_n":43,"predicted_ms":2296.123,"predicted_per_token_ms":53.39820930232558,"predicted_per_second":18.727219752600362}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "718"
+                - "733"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 6.948s
+        duration: 17.841s

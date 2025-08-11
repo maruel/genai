@@ -4,7 +4,7 @@ A simple wrapper over [llama.cpp's llama-server](https://github.com/ggml-org/lla
 
 ## Examples
 
-Gemma 3 4B with vision:
+Gemma 3 4B with vision. To make it work, it is critical to pass the mmproj file as well, separated by `#`.
 
 ```bash
 llama-serve -model ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q8_0.gguf#mmproj-model-f16.gguf -- \
@@ -22,6 +22,8 @@ llama-serve -model Menlo/Jan-nano-gguf/jan-nano-4b-Q8_0.gguf -- \
 
 ## Frequently used flags
 
-- `-build 6123` to use a specific build.
-- `-http 0.0.0.0:8080` to be accessible from other machines.
-- `--cache-type-k q8_0 --cache-type-v q8_0` to reduce KV cache memory usage.
+- `-build 1234` to use a specific build instead of the [default
+  one](https://pkg.go.dev/github.com/maruel/genai/providers/llamacpp/llamacppsrv#BuildNumber).
+- `-http 0.0.0.0:8080` to be accessible from other machines. By default, only localhost is accessible.
+- `--cache-type-k q8_0 --cache-type-v q8_0` to reduce KV cache memory usage. May negatively affect both
+  performance and accuracy.

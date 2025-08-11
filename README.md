@@ -364,7 +364,7 @@ func main() {
 
 ## Models
 
-Snapshot of all the supported models: [docs/MODELS.md](docs/MODELS.md).
+Snapshot of all the supported models at [docs/MODELS.md](docs/MODELS.md) is updated weekly.
 
 Try it:
 
@@ -373,6 +373,10 @@ go install github.com/maruel/genai/cmd/...@latest
 
 list-models -provider huggingface
 ```
+
+## Running locally
+
+Use [cmd/llama-serve](cmd/llama-serve) to run a LLM locally, including tool calling and vision!
 
 
 ## TODO

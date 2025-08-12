@@ -503,3 +503,10 @@ func SimulateStream(ctx context.Context, c genai.ProviderGen, msgs genai.Message
 	}
 	return res, err
 }
+
+// MimeByExt wraps mime.TypeByExtension.
+//
+// It overrides audio entries because they vary surprisingly a lot across OSes!
+func MimeByExt(ext string) string {
+	return internal.MimeByExt(ext)
+}

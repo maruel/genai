@@ -810,7 +810,7 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 			}
 			internal.Logger(ctx).DebugContext(ctx, name, "generated", len(body))
 		}
-		v.SupportedFormats = append(v.SupportedFormats, internal.MimeByExt(filepath.Ext(fn)))
+		v.SupportedFormats = append(v.SupportedFormats, base.MimeByExt(filepath.Ext(fn)))
 		out.Out[genai.ModalityImage] = v
 		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 			internal.Logger(ctx).DebugContext(ctx, name, "issue", "token usage")
@@ -891,7 +891,7 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 			}
 			internal.Logger(ctx).DebugContext(ctx, name, "generated", len(body))
 		}
-		v.SupportedFormats = append(v.SupportedFormats, internal.MimeByExt(filepath.Ext(fn)))
+		v.SupportedFormats = append(v.SupportedFormats, base.MimeByExt(filepath.Ext(fn)))
 		out.Out[genai.ModalityAudio] = v
 		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 			internal.Logger(ctx).DebugContext(ctx, name, "issue", "token usage")

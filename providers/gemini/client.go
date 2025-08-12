@@ -784,7 +784,7 @@ func (p *Part) FromContent(in *genai.Content) error {
 			p.InlineData.Data = data
 		}
 	} else {
-		if mimeType = internal.MimeByExt(path.Ext(in.URL)); mimeType == "" {
+		if mimeType = base.MimeByExt(path.Ext(in.URL)); mimeType == "" {
 			return fmt.Errorf("could not determine mime type for URL %q", in.URL)
 		}
 		p.FileData.MimeType = mimeType

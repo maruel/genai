@@ -516,6 +516,7 @@ func (c *Content) ReadDocument(maxSize int64) (string, []byte, error) {
 	if c.Text != "" {
 		return "", nil, errors.New("only document messages can be read as documents")
 	}
+	// genai cannot depend on base as it would cause a circular import.
 	mimeType := internal.MimeByExt(filepath.Ext(c.GetFilename()))
 	if c.URL != "" {
 		// Not all provider require a mime-type so do not error out.

@@ -271,9 +271,15 @@ func (r *recorderWithBody) RoundTrip(req *http.Request) (*http.Response, error) 
 	return resp, err
 }
 
-// MimeByExt wraps mime.TypeByExtension.
+// JSONSchemaFor returns the JSON schema for the given type.
 //
-// It overrides audio entries because they vary surprisingly a lot across OSes!
+// Many providers (including OpenAI) struggle with $ref that jsonschema package uses by default.
+func JSONSchemaFor(t reflect.Type) *jsonschema.Schema {
+	// No need to set an ID on the struct, it's unnecessary data that may confuse the tool.
+	r := jsonschema.Reflector{Anonymous: true, DoNotReference: true}
+	return r.ReflectFromType(t)
+}
+
 func MimeByExt(ext string) string {
 	switch ext {
 	case ".aac":
@@ -285,13 +291,4 @@ func MimeByExt(ext string) string {
 	default:
 		return mime.TypeByExtension(ext)
 	}
-}
-
-// JSONSchemaFor returns the JSON schema for the given type.
-//
-// Many providers (including OpenAI) struggle with $ref that jsonschema package uses by default.
-func JSONSchemaFor(t reflect.Type) *jsonschema.Schema {
-	// No need to set an ID on the struct, it's unnecessary data that may confuse the tool.
-	r := jsonschema.Reflector{Anonymous: true, DoNotReference: true}
-	return r.ReflectFromType(t)
 }

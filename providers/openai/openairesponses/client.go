@@ -1408,7 +1408,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 			return res, errors.New("internal error")
 		}
 	}
-	return res, nil
+	return res, res.Validate()
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

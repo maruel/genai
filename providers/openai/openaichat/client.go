@@ -113,6 +113,7 @@ var Scoreboard = genai.Scoreboard{
 			GenSync: &genai.FunctionalityText{
 				ReportRateLimits: true,
 				NoStopSequence:   true,
+				NoMaxTokens:      true,
 				Tools:            genai.True,
 				BiasedTool:       genai.Flaky,
 				JSON:             true,
@@ -693,6 +694,9 @@ func (c *Content) To(out *genai.Content) error {
 	switch c.Type {
 	case ContentText:
 		out.Text = c.Text
+		if len(c.Text) == 0 {
+			return errors.New("received empty text")
+		}
 	case ContentImageURL, ContentInputAudio, ContentRefusal, ContentAudio, ContentFile:
 		fallthrough
 	default:
@@ -1091,10 +1095,32 @@ type ErrorResponse struct {
 }
 
 func (er *ErrorResponse) Error() string {
-	if er.ErrorVal.Code == "" {
-		return fmt.Sprintf("%s: %s", er.ErrorVal.Type, er.ErrorVal.Message)
+	out := ""
+	if er.ErrorVal.Type != "" {
+		out += er.ErrorVal.Type
 	}
-	return fmt.Sprintf("%s (%s): %s", er.ErrorVal.Code, er.ErrorVal.Status, er.ErrorVal.Message)
+	if er.ErrorVal.Code != "" {
+		if out != "" {
+			out += "/"
+		}
+		out += er.ErrorVal.Code
+	}
+	if er.ErrorVal.Status != "" {
+		out += fmt.Sprintf("(%s)", er.ErrorVal.Status)
+	}
+	if er.ErrorVal.Param != "" {
+		if out != "" {
+			out += " "
+		}
+		out += fmt.Sprintf("for %q", er.ErrorVal.Param)
+	}
+	if er.ErrorVal.Message != "" {
+		if out != "" {
+			out += ": "
+		}
+		out += er.ErrorVal.Message
+	}
+	return out
 }
 
 func (er *ErrorResponse) IsAPIError() bool {
@@ -1331,7 +1357,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 			return res, errors.New("internal error")
 		}
 	}
-	return res, nil
+	return res, res.Validate()
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

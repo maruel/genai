@@ -233,8 +233,8 @@ func (r Role) Validate() error {
 
 // Messages is a list of valid messages in an exchange with a LLM.
 //
-// The messages should be alternating between User and Assistant roles, or in the
-// case of multi-user discussion, with different Users.
+// The messages should be alternating between user input, assistant replies, assistant tool cal requests and
+// computer tool call results. The exception in the case of multi-user discussion, with different Users.
 type Messages []Message
 
 // Validate ensures the messages are valid.
@@ -246,9 +246,9 @@ func (m Messages) Validate() error {
 		} else if m[i].IsZero() {
 			errs = append(errs, fmt.Errorf("message %d: is empty", i))
 		}
-		// if i > 0 && msgs[i-1].Role == m.Role {
-		// 	errs = append(errs, fmt.Errorf("message %d: role must alternate", i))
-		// }
+		if i > 0 && m[i-1].Role == m[i].Role && (m[i].Role != User || m[i-1].User != m[i].User) {
+			errs = append(errs, fmt.Errorf("message %d: role must alternate", i))
+		}
 	}
 	return errors.Join(errs...)
 }

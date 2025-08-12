@@ -782,23 +782,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		// Append a fake Thinking content to signal that reasoning is happening.
 		out.Contents = append(out.Contents, genai.Content{Thinking: "\n\n"})
 	}
-	if len(c.Choices[0].Logprobs.Content) != 0 {
-		out.Logprobs = &genai.Logprobs{
-			Content: make([]genai.LogprobsContent, len(c.Choices[0].Logprobs.Content)),
-		}
-		for i, lp := range c.Choices[0].Logprobs.Content {
-			out.Logprobs.Content[i].Token = lp.Token
-			out.Logprobs.Content[i].Logprob = lp.Logprob
-			out.Logprobs.Content[i].Bytes = lp.Bytes
-			out.Logprobs.Content[i].TopLogprobs = make([]genai.TopLogprob, len(lp.TopLogprobs))
-			for j, tlp := range lp.TopLogprobs {
-				out.Logprobs.Content[i].TopLogprobs[j].Token = tlp.Token
-				out.Logprobs.Content[i].TopLogprobs[j].Logprob = tlp.Logprob
-				out.Logprobs.Content[i].TopLogprobs[j].Bytes = tlp.Bytes
-			}
-		}
-		//  c.Choices[0].Logprobs.Refusal ??
-	}
+	out.Logprobs = c.Choices[0].Logprobs.To()
 	return out, err
 }
 
@@ -851,15 +835,30 @@ type Usage struct {
 type Logprobs struct {
 	Content []struct {
 		Token       string  `json:"token"`
-		Logprob     float64 `json:"logprob"`
 		Bytes       []byte  `json:"bytes"`
+		Logprob     float64 `json:"logprob"`
 		TopLogprobs []struct {
 			Token   string  `json:"token"`
-			Logprob float64 `json:"logprob"`
 			Bytes   []byte  `json:"bytes"`
+			Logprob float64 `json:"logprob"`
 		} `json:"top_logprobs"`
 	} `json:"content"`
 	Refusal string `json:"refusal"`
+}
+
+func (l *Logprobs) To() []genai.Logprobs {
+	if len(l.Content) == 0 {
+		return nil
+	}
+	out := make([]genai.Logprobs, 0, len(l.Content))
+	for i, lp := range l.Content {
+		out = append(out, genai.Logprobs{Text: lp.Token, Bytes: lp.Bytes, Logprob: lp.Logprob, TopLogprobs: make([]genai.TopLogprob, 0, len(lp.TopLogprobs))})
+		for _, tlp := range lp.TopLogprobs {
+			out[i].TopLogprobs = append(out[i].TopLogprobs, genai.TopLogprob{Text: tlp.Token, Bytes: tlp.Bytes, Logprob: tlp.Logprob})
+		}
+	}
+	// TODO: What happens if l.Refusal is not empty?
+	return out
 }
 
 // ChatStreamChunkResponse is not documented?
@@ -1616,26 +1615,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			}
 			chunks <- f
 		}
-		if len(pkt.Choices[0].Logprobs.Content) != 0 {
-			if result.Logprobs == nil {
-				result.Logprobs = &genai.Logprobs{}
-			}
-			for _, lp := range pkt.Choices[0].Logprobs.Content {
-				genaiLp := genai.LogprobsContent{
-					Token:   lp.Token,
-					Logprob: lp.Logprob,
-					Bytes:   lp.Bytes,
-				}
-				genaiLp.TopLogprobs = make([]genai.TopLogprob, len(lp.TopLogprobs))
-				for j, tlp := range lp.TopLogprobs {
-					genaiLp.TopLogprobs[j].Token = tlp.Token
-					genaiLp.TopLogprobs[j].Logprob = tlp.Logprob
-					genaiLp.TopLogprobs[j].Bytes = tlp.Bytes
-				}
-				result.Logprobs.Content = append(result.Logprobs.Content, genaiLp)
-			}
-			// pkt.Choices[0].Logprobs.Refusal ??
-		}
+		result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.To()...)
 	}
 	return nil
 }

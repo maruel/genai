@@ -9,7 +9,7 @@ interactions:
         content_length: 139
         host: api.together.xyz
         body: |
-            {"model":"meta-llama/Llama-Vision-Free","stream":true,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"logprobs":1}
+            {"model":"meta-llama/Llama-Vision-Free","stream":true,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"logprobs":2}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,13 +21,13 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"o6VyhRa-4msxKE-96c9d5747d73a2da","object":"chat.completion.chunk","created":1754769565,"choices":[{"index":0,"text":"","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-Vision-Free","usage":null}
+            data: {"id":"o6sUrg4-57nCBj-96e10a434f96a2b0","object":"chat.completion.chunk","created":1755012900,"choices":[{"index":0,"text":"","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-Vision-Free","usage":null}
 
-            data: {"id":"o6VyhRa-4msxKE-96c9d5747d73a2da","object":"chat.completion.chunk","created":1754769565,"choices":[{"index":0,"text":"Hello","logprobs":{"tokens":["Hello"],"token_logprobs":[-0.00120936194434762],"top_logprobs":[[{"token":"Hello","logprob":-0.00120936194434762}]]},"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"Hello","tool_calls":null}}],"model":"meta-llama/Llama-Vision-Free","usage":null}
+            data: {"id":"o6sUrg4-57nCBj-96e10a434f96a2b0","object":"chat.completion.chunk","created":1755012900,"choices":[{"index":0,"text":"Hello","logprobs":{"tokens":["Hello"],"token_logprobs":[-0.00120936194434762],"top_logprobs":[[{"token":"Hello","logprob":-0.00120936194434762},{"token":"Hi","logprob":-6.829662322998047}]]},"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"Hello","tool_calls":null}}],"model":"meta-llama/Llama-Vision-Free","usage":null}
 
-            data: {"id":"o6VyhRa-4msxKE-96c9d5747d73a2da","object":"chat.completion.chunk","created":1754769565,"choices":[{"index":0,"text":"","logprobs":{"tokens":[""],"token_logprobs":[-0.6241159439086914],"top_logprobs":[[{"token":"","logprob":-0.6241159439086914}]]},"tool_calls":null,"finish_reason":"stop","delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-Vision-Free","usage":null}
+            data: {"id":"o6sUrg4-57nCBj-96e10a434f96a2b0","object":"chat.completion.chunk","created":1755012900,"choices":[{"index":0,"text":"","logprobs":{"tokens":[""],"token_logprobs":[-0.6241159439086914],"top_logprobs":[[{"token":"","logprob":-0.6241159439086914},{"token":"!","logprob":-1.1373682022094727}]]},"tool_calls":null,"finish_reason":"stop","delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-Vision-Free","usage":null}
 
-            data: {"id":"o6VyhRa-4msxKE-96c9d5747d73a2da","object":"chat.completion.chunk","created":1754769565,"choices":[],"model":"meta-llama/Llama-Vision-Free","usage":{"prompt_tokens":18,"total_tokens":20,"completion_tokens":2}}
+            data: {"id":"o6sUrg4-57nCBj-96e10a434f96a2b0","object":"chat.completion.chunk","created":1755012900,"choices":[],"model":"meta-llama/Llama-Vision-Free","usage":{"prompt_tokens":18,"total_tokens":20,"completion_tokens":2}}
 
             data: [DONE]
 
@@ -41,7 +41,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96c9d5747d73a2da-YUL
+                - 96e10a434f96a2b0-YUL
             Content-Type:
                 - text/event-stream;charset=utf-8
             Retry-After:
@@ -53,11 +53,11 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - af944e94-34f5-45a1-9eac-c4d17ef2f706-noamzn
+                - 4295e801-22de-4a4d-8e2a-3d4d041f716b-noamzn
             X-Api-Call-Start:
-                - "2025-08-09T19:59:25.301Z"
+                - "2025-08-12T15:35:00.950Z"
             X-Api-Received:
-                - "2025-08-09T19:59:25.009Z"
+                - "2025-08-12T15:35:00.789Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -73,7 +73,7 @@ interactions:
             X-Ratelimit-Reset:
                 - "6"
             X-Request-Id:
-                - o6VyhRa-4msxKE-96c9d5747d73a2da
+                - o6sUrg4-57nCBj-96e10a434f96a2b0
         status: 200 OK
         code: 200
-        duration: 518ms
+        duration: 657ms

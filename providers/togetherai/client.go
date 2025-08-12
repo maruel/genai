@@ -306,7 +306,7 @@ type ChatRequest struct {
 	TopK                          int64              `json:"top_k,omitzero"`
 	ContextLengthExceededBehavior string             `json:"context_length_exceeded_behavior,omitzero"` // "error", "truncate"
 	RepetitionPenalty             float64            `json:"repetition_penalty,omitzero"`
-	Logprobs                      int32              `json:"logprobs,omitzero"` // bool as 0 or 1
+	Logprobs                      int64              `json:"logprobs,omitzero"` // Actually toplogprobs; [0, 20]
 	Echo                          bool               `json:"echo,omitzero"`
 	N                             int32              `json:"n,omitzero"`                 // Number of completions to generate
 	PresencePenalty               float64            `json:"presence_penalty,omitzero"`  // [-2.0, 2.0]
@@ -336,9 +336,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			c.TopP = v.TopP
 			sp = v.SystemPrompt
 			c.Seed = v.Seed
-			if v.TopLogprobs > 0 {
-				c.Logprobs = 1
-			}
+			c.Logprobs = v.TopLogprobs
+			// TODO: Toplogprobs are not returned unless streaming. lol. Sadly we do not know yet here if streaming
+			// is enabled.
+			// if v.TopLogprobs > 1 && !Stream {
+			// 	unsupported = append(unsupported, "TopLogprobs")
+			// }
 			c.TopK = v.TopK
 			c.Stop = v.Stop
 			if v.DecodeAs != nil {
@@ -668,15 +671,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
 	}
 	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
-	if len(c.Choices[0].Logprobs.Tokens) != 0 {
-		out.Logprobs = &genai.Logprobs{
-			Content: make([]genai.LogprobsContent, len(c.Choices[0].Logprobs.Tokens)),
-		}
-		for i := range c.Choices[0].Logprobs.Tokens {
-			out.Logprobs.Content[i].Token = c.Choices[0].Logprobs.Tokens[i]
-			out.Logprobs.Content[i].Logprob = c.Choices[0].Logprobs.TokenLogprobs[i]
-		}
-	}
+	out.Logprobs = c.Choices[0].Logprobs.To()
 	err := c.Choices[0].Message.To(&out.Message)
 	if err == nil && len(c.Warnings) != 0 {
 		uce := &genai.UnsupportedContinuableError{}
@@ -721,9 +716,21 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 }
 
 type Logprobs struct {
-	Tokens        []string  `json:"tokens"`
-	TokenIDs      []int64   `json:"token_ids"`
-	TokenLogprobs []float64 `json:"token_logprobs"`
+	Tokens        []string   `json:"tokens"`
+	TokenLogprobs []float64  `json:"token_logprobs"`
+	TokenIDs      []struct{} `json:"token_ids"` // Not set.
+}
+
+func (l *Logprobs) To() []genai.Logprobs {
+	if len(l.Tokens) == 0 {
+		return nil
+	}
+	// Toplogprobs are not returned when not streaming (!!)
+	out := make([]genai.Logprobs, 0, len(l.Tokens))
+	for i := range l.Tokens {
+		out = append(out, genai.Logprobs{Text: l.Tokens[i], Logprob: l.TokenLogprobs[i]})
+	}
+	return out
 }
 
 type LogprobsChunk struct {
@@ -733,6 +740,20 @@ type LogprobsChunk struct {
 		Token   string  `json:"token"`
 		Logprob float64 `json:"logprob"`
 	} `json:"top_logprobs"`
+}
+
+func (l *LogprobsChunk) ToLogprobs() []genai.Logprobs {
+	if len(l.Tokens) == 0 {
+		return nil
+	}
+	out := make([]genai.Logprobs, len(l.Tokens))
+	for i := range l.Tokens {
+		out[i] = genai.Logprobs{Text: l.Tokens[i], Logprob: l.TokenLogprobs[i], TopLogprobs: make([]genai.TopLogprob, 0, len(l.TopLogprobs[i]))}
+		for _, tlp := range l.TopLogprobs[i] {
+			out[i].TopLogprobs = append(out[i].TopLogprobs, genai.TopLogprob{Text: tlp.Token, Logprob: tlp.Logprob})
+		}
+	}
+	return out
 }
 
 type Usage struct {
@@ -1200,21 +1221,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			chunks <- f
 		}
 		if len(pkt.Choices[0].Logprobs.Tokens) != 0 {
-			if result.Logprobs == nil {
-				result.Logprobs = &genai.Logprobs{}
-			}
-			for i := range pkt.Choices[0].Logprobs.Tokens {
-				genaiLp := genai.LogprobsContent{
-					Token:   pkt.Choices[0].Logprobs.Tokens[i],
-					Logprob: pkt.Choices[0].Logprobs.TokenLogprobs[i],
-				}
-				genaiLp.TopLogprobs = make([]genai.TopLogprob, len(pkt.Choices[0].Logprobs.TopLogprobs[i]))
-				for j, tlp := range pkt.Choices[0].Logprobs.TopLogprobs[i] {
-					genaiLp.TopLogprobs[j].Token = tlp.Token
-					genaiLp.TopLogprobs[j].Logprob = tlp.Logprob
-				}
-				result.Logprobs.Content = append(result.Logprobs.Content, genaiLp)
-			}
+			result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.ToLogprobs()...)
 		}
 	}
 	if len(warnings) != 0 {

@@ -209,7 +209,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	if strings.Contains(resp.AsText(), "<think") {
 		return nil, fmt.Errorf("response contains <think: use adapters.ProviderGenThinking")
 	}
-	if resp.Logprobs != nil {
+	if len(resp.Logprobs) != 0 {
 		return nil, fmt.Errorf("received Logprobs when not supported")
 	}
 	f.ReportRateLimits = len(resp.Limits) != 0
@@ -241,19 +241,21 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	if errors.As(err, &uerr) {
 		f.TopLogprobs = !slices.Contains(uerr.Unsupported, "TopLogprobs")
 	} else if err == nil {
+		// TODO: We'll need to be more detailed than that. Most don't report the ID or bytes, some only report
+		// logprobs, etc.
 		f.TopLogprobs = true
 	}
 	if f.TopLogprobs {
-		if resp.Logprobs == nil {
+		if len(resp.Logprobs) == 0 {
 			// It's not actually supported.
 			f.TopLogprobs = false
 		} else {
-			if len(resp.Logprobs.Content) == 0 {
+			if len(resp.Logprobs) == 0 {
 				return nil, fmt.Errorf("received empty Logprobs")
 			}
 		}
 	} else {
-		if resp.Logprobs != nil {
+		if len(resp.Logprobs) != 0 {
 			return nil, fmt.Errorf("received Logprobs when not supported")
 		}
 	}

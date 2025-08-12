@@ -391,28 +391,13 @@ func (r *Response) ToResult() (genai.Result, error) {
 			TotalTokens:       r.Usage.TotalTokens,
 		},
 	}
-	if len(r.Output) > 1 {
-		// OpenAI devs smoked crack. We need to merge the messages into one.
-		// return res, fmt.Errorf("multiple outputs not supported: %#v", r.Output)
-	}
 	for _, output := range r.Output {
 		if err := output.To(&res.Message); err != nil {
 			return res, err
 		}
-		if len(output.Content) > 0 && len(output.Content[0].Logprobs) > 0 {
-			res.Logprobs = &genai.Logprobs{
-				Content: make([]genai.LogprobsContent, len(output.Content[0].Logprobs)),
-			}
-			for i, lp := range output.Content[0].Logprobs {
-				res.Logprobs.Content[i].Token = lp.Token
-				res.Logprobs.Content[i].Logprob = lp.Logprob
-				res.Logprobs.Content[i].Bytes = lp.Bytes
-				res.Logprobs.Content[i].TopLogprobs = make([]genai.TopLogprob, len(lp.TopLogprobs))
-				for j, tlp := range lp.TopLogprobs {
-					res.Logprobs.Content[i].TopLogprobs[j].Token = tlp.Token
-					res.Logprobs.Content[i].TopLogprobs[j].Logprob = tlp.Logprob
-					res.Logprobs.Content[i].TopLogprobs[j].Bytes = tlp.Bytes
-				}
+		for i := range output.Content {
+			for j := range output.Content[i].Logprobs {
+				res.Logprobs = append(res.Logprobs, output.Content[i].Logprobs[j].To())
 			}
 		}
 	}
@@ -699,7 +684,7 @@ type Content struct {
 
 	// Type == ContentOutputText
 	Annotations []Annotation `json:"annotations,omitzero"`
-	Logprobs    []Logprobs   `json:"logprobs,omitzero"` // TODO: I believe this is incorrect.
+	Logprobs    []Logprobs   `json:"logprobs,omitzero"`
 
 	// Type == ContentRefusal
 	Refusal string `json:"refusal,omitzero"`
@@ -798,14 +783,22 @@ type Annotation struct {
 }
 
 type Logprobs struct {
-	Bytes       []byte  `json:"bytes,omitzero"`
 	Token       string  `json:"token,omitzero"`
+	Bytes       []byte  `json:"bytes,omitzero"`
 	Logprob     float64 `json:"logprob,omitzero"`
 	TopLogprobs []struct {
-		Bytes   []byte  `json:"bytes,omitzero"`
 		Token   string  `json:"token,omitzero"`
+		Bytes   []byte  `json:"bytes,omitzero"`
 		Logprob float64 `json:"logprob,omitzero"`
 	} `json:"top_logprobs,omitzero"`
+}
+
+func (l *Logprobs) To() genai.Logprobs {
+	out := genai.Logprobs{Text: l.Token, Bytes: l.Bytes, Logprob: l.Logprob, TopLogprobs: make([]genai.TopLogprob, 0, len(l.TopLogprobs))}
+	for _, tlp := range l.TopLogprobs {
+		out.TopLogprobs = append(out.TopLogprobs, genai.TopLogprob{Text: tlp.Token, Bytes: tlp.Bytes, Logprob: tlp.Logprob})
+	}
+	return out
 }
 
 // ReasoningSummary represents reasoning summary content.
@@ -950,7 +943,7 @@ type ResponseStreamChunkResponse struct {
 	Message string `json:"message,omitzero"`
 	Param   string `json:"param,omitzero"`
 
-	Logprobs []struct{} `json:"logprobs,omitzero"` // TODO: I believe this is incorrect.
+	Logprobs []Logprobs `json:"logprobs,omitzero"`
 
 	Obfuscation string `json:"obfuscation,omitzero"`
 
@@ -1445,6 +1438,9 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 	pendingToolCall := genai.ToolCall{}
 	for pkt := range ch {
 		f := genai.ContentFragment{}
+		for _, lp := range pkt.Logprobs {
+			result.Logprobs = append(result.Logprobs, lp.To())
+		}
 		switch pkt.Type {
 		case ResponseCreated, ResponseInProgress:
 		case ResponseCompleted:

@@ -516,15 +516,9 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		},
 	}
 	if len(c.Logprobs) != 0 {
-		out.Logprobs = &genai.Logprobs{
-			Content: make([]genai.LogprobsContent, len(c.Logprobs)),
-		}
+		out.Logprobs = make([]genai.Logprobs, len(c.Logprobs))
 		for i, lp := range c.Logprobs {
-			out.Logprobs.Content[i] = genai.LogprobsContent{
-				Token:   lp.Text,
-				Logprob: lp.Logprobs[0],
-				Bytes:   []byte(lp.Text),
-			}
+			out.Logprobs[i] = lp.To()
 		}
 	}
 	// It is very frustrating that Cohere uses different message response types.
@@ -566,6 +560,14 @@ type Logprobs struct {
 	TokenIDs []int64   `json:"token_ids"`
 	Text     string    `json:"text"`
 	Logprobs []float64 `json:"logprobs"`
+}
+
+func (l *Logprobs) To() genai.Logprobs {
+	out := genai.Logprobs{Text: l.Text, Logprob: l.Logprobs[0], TopLogprobs: make([]genai.TopLogprob, len(l.Logprobs))}
+	for i := range l.Logprobs {
+		out.TopLogprobs[i] = genai.TopLogprob{ID: l.TokenIDs[i], Logprob: l.Logprobs[i]}
+	}
+	return out
 }
 
 type Usage struct {
@@ -1021,14 +1023,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			f.TextFragment = pkt.Delta.Message.Content[0].Text
 		}
 		if pkt.Logprobs.Text != "" {
-			if result.Logprobs == nil {
-				result.Logprobs = &genai.Logprobs{}
-			}
-			result.Logprobs.Content = append(result.Logprobs.Content, genai.LogprobsContent{
-				Token:   pkt.Logprobs.Text,
-				Logprob: pkt.Logprobs.Logprobs[0],
-				Bytes:   []byte(pkt.Logprobs.Text),
-			})
+			result.Logprobs = append(result.Logprobs, pkt.Logprobs.To())
 		}
 		if !f.IsZero() {
 			if err := result.Accumulate(f); err != nil {

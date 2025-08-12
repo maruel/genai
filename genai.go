@@ -64,28 +64,24 @@ type ProviderGen interface {
 type Result struct {
 	Message
 	Usage
-	Logprobs *Logprobs
+	Logprobs []Logprobs
 }
 
-// Logprobs represents log probabilities information for a generated token.
+// Logprobs represents the log probability information for a single token.
 type Logprobs struct {
-	// Content contains a list of token-level log probability information.
-	Content []LogprobsContent `json:"content,omitempty"`
-}
-
-// LogprobsContent represents the log probability information for a single token.
-type LogprobsContent struct {
-	Token       string       `json:"token"`
-	Logprob     float64      `json:"logprob"`
-	Bytes       []byte       `json:"bytes,omitempty"`
-	TopLogprobs []TopLogprob `json:"top_logprobs,omitempty"`
+	ID          int64        `json:"id,omitempty"`           // Input token ID. Not always provided.
+	Text        string       `json:"text,omitempty"`         // Text in UTF-8.
+	Bytes       []byte       `json:"bytes,omitempty"`        // Bytes representation of the text, in case it's not valid UTF-8. Not always provided.
+	Logprob     float64      `json:"logprob"`                // The log probability of the token
+	TopLogprobs []TopLogprob `json:"top_logprobs,omitempty"` // Top candidates.
 }
 
 // TopLogprob represents the log probability information for a top token.
 type TopLogprob struct {
-	Token   string  `json:"token"`
-	Logprob float64 `json:"logprob"`
+	ID      int64   `json:"id,omitempty"`
+	Text    string  `json:"text,omitempty"`
 	Bytes   []byte  `json:"bytes,omitempty"`
+	Logprob float64 `json:"logprob"`
 }
 
 // Usage from the LLM provider.

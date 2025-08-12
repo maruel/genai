@@ -573,6 +573,7 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) ([]string,
 	}
 	c.GenerationConfig.Seed = v.Seed
 	if v.TopLogprobs > 0 {
+		// TODO: It is unsupported when streaming, but we don't know here if streaming is enabled.
 		c.GenerationConfig.Logprobs = v.TopLogprobs
 		c.GenerationConfig.ResponseLogprobs = true
 	}
@@ -959,26 +960,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	// https://ai.google.dev/api/semantic-retrieval/question-answering and the likes and as of June 2025, it
 	// only works in English (!)
 
-	if len(c.Candidates[0].LogprobsResult.ChosenCandidates) != 0 {
-		out.Logprobs = &genai.Logprobs{}
-		for i, chosen := range c.Candidates[0].LogprobsResult.ChosenCandidates {
-			genaiLogprobsContent := genai.LogprobsContent{
-				Token:   chosen.Token,
-				Logprob: chosen.LogProbability,
-				Bytes:   []byte(chosen.Token),
-			}
-			if i < len(c.Candidates[0].LogprobsResult.TopCandidates) {
-				for _, tc := range c.Candidates[0].LogprobsResult.TopCandidates[i].Candidates {
-					genaiLogprobsContent.TopLogprobs = append(genaiLogprobsContent.TopLogprobs, genai.TopLogprob{
-						Token:   tc.Token,
-						Logprob: tc.LogProbability,
-						Bytes:   []byte(tc.Token),
-					})
-				}
-			}
-			out.Logprobs.Content = append(out.Logprobs.Content, genaiLogprobsContent)
-		}
-	}
+	out.Logprobs = c.Candidates[0].LogprobsResult.To()
 	return out, err
 }
 
@@ -986,6 +968,18 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 type LogprobsResult struct {
 	TopCandidates    []TopCandidate `json:"topCandidates"`
 	ChosenCandidates []Candidate    `json:"chosenCandidates"`
+}
+
+func (l *LogprobsResult) To() []genai.Logprobs {
+	var out []genai.Logprobs
+	for i, chosen := range l.ChosenCandidates {
+		lp := genai.Logprobs{ID: chosen.TokenID, Text: chosen.Token, Logprob: chosen.LogProbability, TopLogprobs: make([]genai.TopLogprob, 0, len(l.TopCandidates[i].Candidates))}
+		for _, tc := range l.TopCandidates[i].Candidates {
+			lp.TopLogprobs = append(lp.TopLogprobs, genai.TopLogprob{ID: tc.TokenID, Text: tc.Token, Logprob: tc.LogProbability})
+		}
+		out = append(out, lp)
+	}
+	return out
 }
 
 // TopCandidate is documented at https://ai.google.dev/api/generate-content#TopCandidates

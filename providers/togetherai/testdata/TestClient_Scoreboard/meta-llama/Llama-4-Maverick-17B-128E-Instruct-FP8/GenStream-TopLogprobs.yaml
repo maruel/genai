@@ -9,7 +9,7 @@ interactions:
         content_length: 160
         host: api.together.xyz
         body: |
-            {"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","stream":true,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"logprobs":1}
+            {"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","stream":true,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"logprobs":2}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,15 +21,15 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"o6VyhfJ-zqrih-96c9d577f999a2da","object":"chat.completion.chunk","created":1754769565,"choices":[{"index":0,"text":"","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
+            data: {"id":"o6sUtsf-zqrih-96e10a71ea4fa2c0","object":"chat.completion.chunk","created":1755012908,"choices":[{"index":0,"text":"","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
 
-            data: {"id":"o6VyhfJ-zqrih-96c9d577f999a2da","object":"chat.completion.chunk","created":1754769565,"choices":[{"index":0,"text":"Hello","logprobs":{"tokens":["Hello"],"token_logprobs":[-0.0000756950321374461],"top_logprobs":[[{"token":"Hello","logprob":-0.0000756950321374461}]]},"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"Hello","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
+            data: {"id":"o6sUtsf-zqrih-96e10a71ea4fa2c0","object":"chat.completion.chunk","created":1755012908,"choices":[{"index":0,"text":"Hello","logprobs":{"tokens":["Hello"],"token_logprobs":[-0.00012396997772157192],"top_logprobs":[[{"token":"Hello","logprob":-0.00012396997772157192},{"token":"Hi","logprob":-9.000123977661133}]]},"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"Hello","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
 
-            data: {"id":"o6VyhfJ-zqrih-96c9d577f999a2da","object":"chat.completion.chunk","created":1754769565,"choices":[{"index":0,"text":".","logprobs":{"tokens":["."],"token_logprobs":[-0.01848038099706173],"top_logprobs":[[{"token":".","logprob":-0.01848038099706173}]]},"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":".","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
+            data: {"id":"o6sUtsf-zqrih-96e10a71ea4fa2c0","object":"chat.completion.chunk","created":1755012908,"choices":[{"index":0,"text":".","logprobs":{"tokens":["."],"token_logprobs":[-0.018848245963454247],"top_logprobs":[[{"token":".","logprob":-0.018848245963454247},{"token":"<|eot|>","logprob":-4.018848419189453}]]},"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":".","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
 
-            data: {"id":"o6VyhfJ-zqrih-96c9d577f999a2da","object":"chat.completion.chunk","created":1754769565,"choices":[{"index":0,"text":"","logprobs":{"tokens":["<|eot|>"],"token_logprobs":[-0.000020265373677830212],"top_logprobs":[[{"token":"<|eot|>","logprob":-0.000020265373677830212}]]},"tool_calls":null,"finish_reason":"stop","delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
+            data: {"id":"o6sUtsf-zqrih-96e10a71ea4fa2c0","object":"chat.completion.chunk","created":1755012908,"choices":[{"index":0,"text":"","logprobs":{"tokens":["<|eot|>"],"token_logprobs":[-0.0000040531076592742465],"top_logprobs":[[{"token":"<|eot|>","logprob":-0.0000040531076592742465},{"token":"<|eom|>","logprob":-13.750003814697266}]]},"tool_calls":null,"finish_reason":"stop","delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
 
-            data: {"id":"o6VyhfJ-zqrih-96c9d577f999a2da","object":"chat.completion.chunk","created":1754769565,"choices":[],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":{"prompt_tokens":18,"total_tokens":21,"completion_tokens":3}}
+            data: {"id":"o6sUtsf-zqrih-96e10a71ea4fa2c0","object":"chat.completion.chunk","created":1755012908,"choices":[],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":{"prompt_tokens":18,"total_tokens":21,"completion_tokens":3}}
 
             data: [DONE]
 
@@ -43,7 +43,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96c9d577f999a2da-YUL
+                - 96e10a71ea4fa2c0-YUL
             Content-Type:
                 - text/event-stream;charset=utf-8
             Retry-After:
@@ -55,11 +55,11 @@ interactions:
             Vary:
                 - Accept-Encoding
             X-Amzn-Trace-Id:
-                - 52751787-b4f6-4489-bb83-71ef4229ab6e-noamzn
+                - 8fdfc247-0ed1-4639-8543-6bd913634ece-noamzn
             X-Api-Call-Start:
-                - "2025-08-09T19:59:25.824Z"
+                - "2025-08-12T15:35:08.254Z"
             X-Api-Received:
-                - "2025-08-09T19:59:25.805Z"
+                - "2025-08-12T15:35:08.190Z"
             X-Inference-Version:
                 - v2
             X-Ratelimit:
@@ -71,11 +71,11 @@ interactions:
             X-Ratelimit-Remaining:
                 - "1"
             X-Ratelimit-Remaining-Tokens:
-                - "1000"
+                - "858"
             X-Ratelimit-Reset:
                 - "2"
             X-Request-Id:
-                - o6VyhfJ-zqrih-96c9d577f999a2da
+                - o6sUtsf-zqrih-96e10a71ea4fa2c0
         status: 200 OK
         code: 200
-        duration: 445ms
+        duration: 542ms

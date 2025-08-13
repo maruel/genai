@@ -387,6 +387,32 @@ func (c *Contents) MarshalJSON() ([]byte, error) {
 	return json.Marshal(([]Content)(*c))
 }
 
+// UnmarshalJSON implements custom unmarshalling for Contents type
+// to handle cases where content could be a string or a raw JSON object.
+func (c *Contents) UnmarshalJSON(b []byte) error {
+	if bytes.Equal(b, []byte("null")) {
+		*c = nil
+		return nil
+	}
+	s := ""
+	if err := json.Unmarshal(b, &s); err == nil {
+		*c = Contents{{Type: ContentText, Text: s}}
+		return nil
+	}
+
+	// Otherwise, it's likely a raw JSON object. Convert it back to a string.
+	data := map[string]any{}
+	if err := json.Unmarshal(b, &data); err != nil {
+		return err
+	}
+	raw, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+	*c = Contents{{Type: ContentText, Text: string(raw)}}
+	return nil
+}
+
 type Content struct {
 	Type ContentType `json:"type,omitzero"`
 
@@ -579,7 +605,7 @@ type Usage struct {
 type MessageResponse struct {
 	Role             genai.Role `json:"role"`
 	ReasoningContent string     `json:"reasoning_content"`
-	Content          any        `json:"content"` // Normally a string but can be a JSON object!
+	Content          Contents   `json:"content"`
 	ToolCalls        []ToolCall `json:"tool_calls"`
 	Annotations      []struct{} `json:"annotations"`
 	Refusal          struct{}   `json:"refusal"`
@@ -603,17 +629,12 @@ func (m *MessageResponse) To(out *genai.Message) error {
 			m.ToolCalls[i].To(&out.ToolCalls[i])
 		}
 	}
-	if m.Content != "" {
-		s, ok := m.Content.(string)
-		if !ok {
-			// Assume the request was JSON.
-			b, err := json.Marshal(m.Content)
-			if err != nil {
-				return fmt.Errorf("failed to parse JSON response %w", err)
-			}
-			s = string(b)
+	for i := range m.Content {
+		if m.Content[i].Text != "" {
+			out.Contents = append(out.Contents, genai.Content{Text: m.Content[i].Text})
+		} else {
+			return fmt.Errorf("unsupported content #%d: %q", i, m.Content[i])
 		}
-		out.Contents = append(out.Contents, genai.Content{Text: s})
 	}
 	if m.ReasoningContent != "" {
 		// Paper over broken "deepseek".

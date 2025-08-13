@@ -19,7 +19,7 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: -1
+        content_length: 1400
         body: |+
             data: {"id":"id-1753544295129","created":1753544295,"model":"@cf/meta/llama-4-scout-17b-16e-instruct","object":"chat.completion.chunk","choices":[{"index":0,"delta":{"content":"The"}}]}
 
@@ -45,19 +45,27 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9654fb99fe4ea2df-YUL
+                - 96e99f1bab77a2cf-YUL
+            Content-Length:
+                - "1400"
             Content-Type:
                 - text/event-stream; charset=utf-8
             Server:
                 - cloudflare
+            Strict-Transport-Security:
+                - max-age=0; includeSubDomains; preload
             Vary:
                 - Accept-Encoding
             X-Cache:
-                - MISS
+                - HIT
+            X-Cache-Date:
+                - "2025-07-26T15:38:16.213Z"
             X-Cache-Key:
                 - 2717fa22e033cdb747362a66a237a4dedc042aa2c02bcdd046947dd8faf41661
+            X-Content-Type-Options:
+                - nosniff
             X-Powered-By:
                 - Express
         status: 200 OK
         code: 200
-        duration: 1.846s
+        duration: 399ms

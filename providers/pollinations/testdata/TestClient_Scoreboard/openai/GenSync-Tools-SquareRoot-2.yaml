@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 846
+        content_length: 829
         host: text.pollinations.ai
         body: |
-            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","content":"null","tool_calls":[{"type":"function","id":"call_1MOnlupNmUVXAHEgByUsKqis","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_1MOnlupNmUVXAHEgByUsKqis"}],"model":"openai","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","private":true,"stream_options":{"include_usage":true}}
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"call_1MOnlupNmUVXAHEgByUsKqis","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_1MOnlupNmUVXAHEgByUsKqis"}],"model":"openai","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","private":true,"stream_options":{"include_usage":true}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,24 +21,28 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}},"finish_reason":"stop","index":0,"logprobs":null,"message":{"annotations":[],"content":"363.89","refusal":null,"role":"assistant"}}],"created":1753544297,"id":"pllns_f5cbe17caf618571a774a31c03bcea5d","model":"gpt-4o-mini-2024-07-18","object":"chat.completion","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}],"system_fingerprint":"fp_efad92c60b","usage":{"completion_tokens":4,"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0},"prompt_tokens":343,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"total_tokens":347}}'
+        body: '{"choices":[{"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"protected_material_code":{"filtered":false,"detected":false},"protected_material_text":{"filtered":false,"detected":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}},"finish_reason":"stop","index":0,"logprobs":null,"message":{"annotations":[],"content":"363.89","refusal":null,"role":"assistant"}}],"created":1755102887,"id":"pllns_410c2cc494fffe431601249c74b498b9","model":"gpt-4.1-nano-2025-04-14","object":"chat.completion","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"jailbreak":{"filtered":false,"detected":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}],"system_fingerprint":"fp_368a354b49","usage":{"completion_tokens":4,"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0},"prompt_tokens":338,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"total_tokens":342}}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9654fbaceccea2df-YUL
+                - 96e99f2c7c02a2cf-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"415-Zq84wP4k7haaQLomLpBhVodeWc8"
+                - W/"4c2-SXbNlbDBs/gl2dOy/yMDFPz/Gmo"
             Server:
                 - cloudflare
+            Strict-Transport-Security:
+                - max-age=0; includeSubDomains; preload
             Vary:
                 - Accept-Encoding
+            X-Content-Type-Options:
+                - nosniff
             X-Powered-By:
                 - Express
         status: 200 OK
         code: 200
-        duration: 2.306s
+        duration: 2.737s

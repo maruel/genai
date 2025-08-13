@@ -19,7 +19,7 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: -1
+        content_length: 2429
         body: |+
             data: {"choices":[],"created":0,"id":"","model":"","object":"","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"jailbreak":{"detected":false,"filtered":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}]}
 
@@ -43,19 +43,27 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9654fbad4d63a2df-YUL
+                - 96e99f2cac32a2cf-YUL
+            Content-Length:
+                - "2429"
             Content-Type:
                 - text/event-stream; charset=utf-8
             Server:
                 - cloudflare
+            Strict-Transport-Security:
+                - max-age=0; includeSubDomains; preload
             Vary:
                 - Accept-Encoding
             X-Cache:
-                - MISS
+                - HIT
+            X-Cache-Date:
+                - "2025-07-26T15:38:19.055Z"
             X-Cache-Key:
                 - e046b344e4fe49bbae7b43dcb37e6911b2135ca70d0f89020b90c540b1653002
+            X-Content-Type-Options:
+                - nosniff
             X-Powered-By:
                 - Express
         status: 200 OK
         code: 200
-        duration: 1.863s
+        duration: 392ms

@@ -527,7 +527,7 @@ const (
 	MessageItemReference        MessageType = "item_reference"
 )
 
-// Message represents a message input to the model.
+// Message represents a message input or output to the model.
 type Message struct {
 	Type MessageType `json:"type,omitzero"`
 
@@ -616,6 +616,9 @@ func (m *Message) From(msg *genai.Message) error {
 	return fmt.Errorf("implement message: %#v", msg)
 }
 
+// To is different here because it can be called multiple times on the same out.
+//
+// In the Responses API, Message is actually a mix of Message and Content.
 func (m *Message) To(out *genai.Message) error {
 	switch m.Role {
 	case "assistant", "":

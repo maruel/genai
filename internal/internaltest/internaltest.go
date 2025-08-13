@@ -110,8 +110,7 @@ func ValidateWordResponse(t testing.TB, resp genai.Result, want ...string) {
 // Log returns a slog.Logger that redirects to testing.TB.Log() and adds it to the Context.
 func Log(tb testing.TB) (context.Context, *slog.Logger) {
 	level := &slog.LevelVar{}
-	// Tone down logging by default because it's intense. Need to revisit because tests on CI use -v.
-	if false {
+	if *superVerbose {
 		flag.Visit(func(f *flag.Flag) {
 			if f.Name == "test.v" {
 				level.Set(slog.LevelDebug)
@@ -174,3 +173,5 @@ func (tw *testWriter) Write(p []byte) (n int, err error) {
 	tw.t.Log(strings.TrimSpace(string(p)))
 	return len(p), nil
 }
+
+var superVerbose = flag.Bool("superv", false, "super verbose; enables internaltest.Log() to log more")

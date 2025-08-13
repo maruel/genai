@@ -513,6 +513,7 @@ func (m *Message) From(in *genai.Message) error {
 		m.Content = make([]Content, 0, len(in.Contents))
 		for i := range in.Contents {
 			if in.Contents[i].Thinking != "" {
+				// Ignore thinking messages.
 				continue
 			}
 			c := Content{}
@@ -782,10 +783,6 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	}
 	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
-	if c.Usage.CompletionTokensDetails.ReasoningTokens != 0 {
-		// Append a fake Thinking content to signal that reasoning is happening.
-		out.Contents = append(out.Contents, genai.Content{Thinking: "\n\n"})
-	}
 	out.Logprobs = c.Choices[0].Logprobs.To()
 	return out, err
 }
@@ -1595,14 +1592,6 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			result.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
 			result.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
 			result.OutputTokens = pkt.Usage.CompletionTokens
-			if pkt.Usage.CompletionTokensDetails.ReasoningTokens != 0 {
-				// Send a fake Thinking packet to signal that reasoning is happening.
-				f := genai.ContentFragment{ThinkingFragment: "\n\n"}
-				if err := result.Accumulate(f); err != nil {
-					return err
-				}
-				chunks <- f
-			}
 		}
 		if len(pkt.Choices) != 1 {
 			continue

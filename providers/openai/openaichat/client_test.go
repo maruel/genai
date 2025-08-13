@@ -32,12 +32,14 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 		t.Fatal(err)
 	}
 	if model.Thinking {
-		return &injectOption{
-			Client: c,
-			opts: openaichat.OptionsText{
-				// This will lead to spurious HTTP 500 but it is 25% of the cost.
-				ServiceTier:     openaichat.ServiceTierFlex,
-				ReasoningEffort: openaichat.ReasoningEffortLow,
+		return &injectThinking{
+			injectOption: injectOption{
+				Client: c,
+				opts: openaichat.OptionsText{
+					// This will lead to spurious HTTP 500 but it is 25% of the cost.
+					ServiceTier:     openaichat.ServiceTierFlex,
+					ReasoningEffort: openaichat.ReasoningEffortLow,
+				},
 			},
 		}
 	}
@@ -83,6 +85,29 @@ func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, repli
 	return i.Client.GenStream(ctx, msgs, replies, opts)
 }
 
+func (i *injectOption) Unwrap() genai.Provider {
+	return i.Client
+}
+
+// OpenAI returns the count of reasoning tokens but never return them. Duh. This messes up the scoreboard so
+// inject fake thinking whitespace.
+type injectThinking struct {
+	injectOption
+}
+
+func (i *injectThinking) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	res, err := i.injectOption.GenSync(ctx, msgs, opts)
+	if res.ReasoningTokens > 0 {
+		res.Contents = append(res.Contents, genai.Content{Thinking: "\n"})
+	}
+	return res, err
+}
+
+func (i *injectThinking) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+	res, err := i.injectOption.GenStream(ctx, msgs, replies, opts)
+	return res, err
+}
+
 // imageClient only exposes GenDoc to save on costs.
 type imageClient struct {
 	*openaichat.Client
@@ -100,6 +125,10 @@ func (i *imageClient) GenDoc(ctx context.Context, msg genai.Message, opts genai.
 	// TODO: Specify quality "low"
 	// TODO: Test "jpeg" and "webp".
 	return i.Client.GenDoc(ctx, msg, opts)
+}
+
+func (i *imageClient) Unwrap() genai.Provider {
+	return i.Client
 }
 
 // This is a tricky test since batch operations can take up to 24h to complete.

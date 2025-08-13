@@ -506,6 +506,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			err = &base.ErrAPIKeyRequired{EnvVar: "PERPLEXITY_API_KEY", URL: apiKeyURL}
 		}
 	}
+	// Perplexity doesn't have a list model API.
 	model := opts.Model
 	switch model {
 	case base.NoModel:

@@ -550,32 +550,44 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			},
 		},
 	}
-	if model == base.NoModel {
+	switch model {
+	case base.NoModel:
 		c.Model = ""
-	} else if err == nil && (model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA) {
-		mdls, err2 := c.ListModels(context.Background())
-		if err2 != nil {
-			return nil, err2
-		}
-		cheap := model == base.PreferredCheap
-		c.Model = ""
-		for _, mdl := range mdls {
-			m := mdl.(*Model)
-			if cheap {
-				if strings.Contains(m.ID, "chat") {
-					c.Model = m.ID
-				}
-			} else {
-				if !strings.Contains(m.ID, "chat") {
-					c.Model = m.ID
-				}
+	case base.PreferredCheap, base.PreferredGood, base.PreferredSOTA:
+		if err == nil {
+			if c.Model, err = c.selectBestModel(context.Background(), model); err != nil {
+				return nil, err
 			}
-		}
-		if c.Model == "" {
-			return nil, errors.New("failed to find a model automatically")
 		}
 	}
 	return c, err
+}
+
+// selectBestModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", err
+	}
+
+	cheap := preference == base.PreferredCheap
+	selectedModel := ""
+	for _, mdl := range mdls {
+		m := mdl.(*Model)
+		if cheap {
+			if strings.Contains(m.ID, "chat") {
+				selectedModel = m.ID
+			}
+		} else {
+			if !strings.Contains(m.ID, "chat") {
+				selectedModel = m.ID
+			}
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

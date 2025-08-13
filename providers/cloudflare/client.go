@@ -713,58 +713,66 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		},
 		accountID: accountID,
 	}
-	if model == base.NoModel {
+	switch model {
+	case base.NoModel:
 		c.Model = ""
 		c.GenSyncURL = ""
-	} else if err == nil && (model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA) {
-		mdls, err2 := c.ListModels(context.Background())
-		if err2 != nil {
-			return nil, err2
-		}
-		cheap := model == base.PreferredCheap
-		good := model == base.PreferredGood
-		c.Model = ""
-		c.GenSyncURL = ""
-		price := 100000.
-		if !cheap {
-			price = 0.
-		}
-		for _, mdl := range mdls {
-			m := mdl.(*Model)
-			if strings.Contains(m.Name, "guard") || strings.HasPrefix(m.Name, "@cf/meta/llama-2") {
-				// llama-guard is not a generation model.
-				// @cf/meta/llama-2-7b-chat-fp16 is super expensive.
-				continue
+	case base.PreferredCheap, base.PreferredGood, base.PreferredSOTA:
+		if err == nil {
+			if c.Model, err = c.selectBestModel(context.Background(), model); err != nil {
+				return nil, err
 			}
-			_, out := m.Price()
-			if out == 0 {
-				continue
-			}
-			if cheap {
-				if strings.HasPrefix(m.Name, "@cf/meta/") && out < price {
-					price = out
-					c.Model = m.Name
-					c.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + c.Model
-				}
-			} else if good {
-				if strings.HasPrefix(m.Name, "@cf/meta/") && out > price {
-					price = out
-					c.Model = m.Name
-					c.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + c.Model
-				}
-			} else {
-				if strings.HasPrefix(m.Name, "@cf/deepseek-ai/") && out > price {
-					price = out
-					c.Model = m.Name
-					c.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + c.Model
-				}
-			}
-		}
-		if c.Model == "" {
-			return nil, errors.New("failed to find a model automatically")
+			c.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + c.Model
 		}
 	}
 	return c, err
+}
+
+// selectBestModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", err
+	}
+	cheap := preference == base.PreferredCheap
+	good := preference == base.PreferredGood
+	selectedModel := ""
+	price := 100000.
+	if !cheap {
+		price = 0.
+	}
+	for _, mdl := range mdls {
+		m := mdl.(*Model)
+		if strings.Contains(m.Name, "guard") || strings.HasPrefix(m.Name, "@cf/meta/llama-2") {
+			// llama-guard is not a generation model.
+			// @cf/meta/llama-2-7b-chat-fp16 is super expensive.
+			continue
+		}
+		_, out := m.Price()
+		if out == 0 {
+			continue
+		}
+		if cheap {
+			if strings.HasPrefix(m.Name, "@cf/meta/") && out < price {
+				price = out
+				selectedModel = m.Name
+			}
+		} else if good {
+			if strings.HasPrefix(m.Name, "@cf/meta/") && out > price {
+				price = out
+				selectedModel = m.Name
+			}
+		} else {
+			if strings.HasPrefix(m.Name, "@cf/deepseek-ai/") && out > price {
+				price = out
+				selectedModel = m.Name
+			}
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

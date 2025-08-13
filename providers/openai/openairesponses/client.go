@@ -1259,42 +1259,56 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			},
 		},
 	}
-	if err == nil && (model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA) {
-		mdls, err2 := c.ListModels(context.Background())
-		if err2 != nil {
-			return nil, err2
-		}
-		cheap := model == base.PreferredCheap
-		good := model == base.PreferredGood
+	switch model {
+	case base.NoModel:
 		c.Model = ""
-		var created base.Time
-		for _, mdl := range mdls {
-			m := mdl.(*Model)
-			if cheap {
-				if strings.HasSuffix(m.ID, "-nano") && (created == 0 || m.Created < created) {
-					// For the cheapest, we want the oldest model as it is generally cheaper.
-					created = m.Created
-					c.Model = m.ID
-				}
-			} else if good {
-				if strings.HasSuffix(m.ID, "-mini") && (created == 0 || m.Created > created) {
-					// For the greatest, we want the newest model as it is generally better.
-					created = m.Created
-					c.Model = m.ID
-				}
-			} else {
-				if strings.HasSuffix(m.ID, "-pro") && (created == 0 || m.Created > created) {
-					// For the greatest, we want the newest model as it is generally better.
-					created = m.Created
-					c.Model = m.ID
-				}
+	case base.PreferredCheap, base.PreferredGood, base.PreferredSOTA:
+		if err == nil {
+			if c.Model, err = c.selectBestModel(context.Background(), model); err != nil {
+				return nil, err
 			}
-		}
-		if c.Model == "" {
-			return nil, errors.New("failed to find a model automatically")
 		}
 	}
 	return c, err
+}
+
+// selectBestModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", err
+	}
+
+	cheap := preference == base.PreferredCheap
+	good := preference == base.PreferredGood
+	selectedModel := ""
+	var created base.Time
+	for _, mdl := range mdls {
+		m := mdl.(*Model)
+		if cheap {
+			if strings.HasSuffix(m.ID, "-nano") && (created == 0 || m.Created < created) {
+				// For the cheapest, we want the oldest model as it is generally cheaper.
+				created = m.Created
+				selectedModel = m.ID
+			}
+		} else if good {
+			if strings.HasSuffix(m.ID, "-mini") && (created == 0 || m.Created > created) {
+				// For the greatest, we want the newest model as it is generally better.
+				created = m.Created
+				selectedModel = m.ID
+			}
+		} else {
+			if strings.HasSuffix(m.ID, "-pro") && (created == 0 || m.Created > created) {
+				// For the greatest, we want the newest model as it is generally better.
+				created = m.Created
+				selectedModel = m.ID
+			}
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
 }
 
 // Scoreboard implements genai.ProviderScoreboard.

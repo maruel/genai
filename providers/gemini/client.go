@@ -1406,59 +1406,69 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			},
 		},
 	}
-	if model == base.NoModel {
+	switch model {
+	case base.NoModel:
 		c.Model = ""
 		c.GenSyncURL = ""
 		c.GenStreamURL = ""
-	} else if err == nil && (model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA) {
-		mdls, err2 := c.ListModels(context.Background())
-		if err2 != nil {
-			return nil, err2
-		}
-		cheap := model == base.PreferredCheap
-		good := model == base.PreferredGood
-		c.Model = ""
-		c.GenSyncURL = ""
-		c.GenStreamURL = ""
-		var tokens int64
-		for _, mdl := range mdls {
-			m := mdl.(*Model)
-			if strings.Contains(m.Name, "tts") {
-				continue
+	case base.PreferredCheap, base.PreferredGood, base.PreferredSOTA:
+		if err == nil {
+			if c.Model, err = c.selectBestModel(context.Background(), model); err != nil {
+				return nil, err
 			}
-			// TODO: Do numerical comparison? For now, we select the the unpinned model, without the "-NNN" suffix.
-			name := strings.TrimPrefix(m.Name, "models/")
-			if (tokens == 0 || tokens <= m.OutputTokenLimit) && (c.Model == "" || name > c.Model) {
-				if cheap {
-					if strings.HasPrefix(name, "gemini") && strings.HasSuffix(name, "flash-lite") {
-						tokens = m.OutputTokenLimit
-						c.Model = name
-						c.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/" + m.Name + ":generateContent"
-						c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/" + m.Name + ":streamGenerateContent?alt=sse"
-					}
-				} else if good {
-					// We want flash and not flash-lite.
-					if strings.HasPrefix(name, "gemini") && strings.HasSuffix(name, "flash") {
-						tokens = m.OutputTokenLimit
-						c.Model = name
-						c.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/" + m.Name + ":generateContent"
-						c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/" + m.Name + ":streamGenerateContent?alt=sse"
-					}
-				} else {
-					if strings.HasPrefix(name, "gemini") && strings.HasSuffix(name, "pro") {
-						tokens = m.OutputTokenLimit
-						c.Model = name
-						c.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/" + m.Name + ":generateContent"
-						c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/" + m.Name + ":streamGenerateContent?alt=sse"
-					}
-				}
+			// Update URLs with the selected model
+			if c.Model != "" {
+				modelName := "models/" + c.Model
+				c.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/" + modelName + ":generateContent"
+				c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/" + modelName + ":streamGenerateContent?alt=sse"
 			}
-		}
-		if c.Model == "" {
-			return nil, errors.New("failed to find a model automatically")
 		}
 	}
 	return c, err
+}
+
+// selectBestModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", err
+	}
+
+	cheap := preference == base.PreferredCheap
+	good := preference == base.PreferredGood
+	selectedModel := ""
+	var tokens int64
+	for _, mdl := range mdls {
+		m := mdl.(*Model)
+		if strings.Contains(m.Name, "tts") {
+			continue
+		}
+		// TODO: Do numerical comparison? For now, we select the the unpinned model, without the "-NNN" suffix.
+		name := strings.TrimPrefix(m.Name, "models/")
+		if (tokens == 0 || tokens <= m.OutputTokenLimit) && (selectedModel == "" || name > selectedModel) {
+			if cheap {
+				if strings.HasPrefix(name, "gemini") && strings.HasSuffix(name, "flash-lite") {
+					tokens = m.OutputTokenLimit
+					selectedModel = name
+				}
+			} else if good {
+				// We want flash and not flash-lite.
+				if strings.HasPrefix(name, "gemini") && strings.HasSuffix(name, "flash") {
+					tokens = m.OutputTokenLimit
+					selectedModel = name
+				}
+			} else {
+				if strings.HasPrefix(name, "gemini") && strings.HasSuffix(name, "pro") {
+					tokens = m.OutputTokenLimit
+					selectedModel = name
+				}
+			}
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

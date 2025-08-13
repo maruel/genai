@@ -1323,45 +1323,57 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			},
 		},
 	}
-	if model == base.NoModel {
+	switch model {
+	case base.NoModel:
 		c.Model = ""
-	} else if err == nil && (model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA) {
-		mdls, err2 := c.ListModels(context.Background())
-		if err2 != nil {
-			return nil, err2
-		}
-		cheap := model == base.PreferredCheap
-		good := model == base.PreferredGood
-		c.Model = ""
-		var date time.Time
-		for _, mdl := range mdls {
-			m := mdl.(*Model)
-			// Always select the most recent model.
-			if !date.IsZero() && m.CreatedAt.Before(date) {
-				continue
+	case base.PreferredCheap, base.PreferredGood, base.PreferredSOTA:
+		if err == nil {
+			if c.Model, err = c.selectBestModel(context.Background(), model); err != nil {
+				return nil, err
 			}
-			if cheap {
-				if strings.Contains(m.ID, "-haiku-") {
-					date = m.CreatedAt
-					c.Model = m.ID
-				}
-			} else if good {
-				if strings.Contains(m.ID, "-sonnet-") {
-					date = m.CreatedAt
-					c.Model = m.ID
-				}
-			} else {
-				if strings.Contains(m.ID, "-opus-") {
-					date = m.CreatedAt
-					c.Model = m.ID
-				}
-			}
-		}
-		if c.Model == "" {
-			return nil, errors.New("failed to find a model automatically")
 		}
 	}
 	return c, err
+}
+
+// selectBestModel selects the most recent model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", err
+	}
+
+	cheap := preference == base.PreferredCheap
+	good := preference == base.PreferredGood
+	selectedModel := ""
+	var date time.Time
+	for _, mdl := range mdls {
+		m := mdl.(*Model)
+		// Always select the most recent model.
+		if !date.IsZero() && m.CreatedAt.Before(date) {
+			continue
+		}
+		if cheap {
+			if strings.Contains(m.ID, "-haiku-") {
+				date = m.CreatedAt
+				selectedModel = m.ID
+			}
+		} else if good {
+			if strings.Contains(m.ID, "-sonnet-") {
+				date = m.CreatedAt
+				selectedModel = m.ID
+			}
+		} else {
+			if strings.Contains(m.ID, "-opus-") {
+				date = m.CreatedAt
+				selectedModel = m.ID
+			}
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
 }
 
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {

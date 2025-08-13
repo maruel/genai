@@ -800,38 +800,50 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			},
 		},
 	}
-	if model == base.NoModel {
+	switch model {
+	case base.NoModel:
 		c.Model = ""
-	} else if err == nil && (model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA) {
-		mdls, err2 := c.ListModels(context.Background())
-		if err2 != nil {
-			return nil, err2
-		}
-		cheap := model == base.PreferredCheap
-		good := model == base.PreferredGood
-		c.Model = ""
-		for _, mdl := range mdls {
-			m := mdl.(*Model)
-			// This is meh.
-			if cheap {
-				if strings.HasSuffix(m.ID, "instant") {
-					c.Model = m.ID
-				}
-			} else if good {
-				if strings.Contains(m.ID, "maverick") {
-					c.Model = m.ID
-				}
-			} else {
-				if strings.HasPrefix(m.ID, "qwen") {
-					c.Model = m.ID
-				}
+	case base.PreferredCheap, base.PreferredGood, base.PreferredSOTA:
+		if err == nil {
+			if c.Model, err = c.selectBestModel(context.Background(), model); err != nil {
+				return nil, err
 			}
-		}
-		if c.Model == "" {
-			return nil, errors.New("failed to find a model automatically")
 		}
 	}
 	return c, err
+}
+
+// selectBestModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", err
+	}
+
+	cheap := preference == base.PreferredCheap
+	good := preference == base.PreferredGood
+	selectedModel := ""
+	for _, mdl := range mdls {
+		m := mdl.(*Model)
+		// This is meh.
+		if cheap {
+			if strings.HasSuffix(m.ID, "instant") {
+				selectedModel = m.ID
+			}
+		} else if good {
+			if strings.Contains(m.ID, "maverick") {
+				selectedModel = m.ID
+			}
+		} else {
+			if strings.HasPrefix(m.ID, "qwen") {
+				selectedModel = m.ID
+			}
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

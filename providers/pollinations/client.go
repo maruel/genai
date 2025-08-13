@@ -946,41 +946,52 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			},
 		},
 	}
-	if model == base.NoModel {
+	switch model {
+	case base.NoModel:
 		c.Model = ""
-	} else if model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA {
-		mdls, err := c.ListTextModels(context.Background())
-		if err != nil {
+	case base.PreferredCheap, base.PreferredGood, base.PreferredSOTA:
+		var err error
+		if c.Model, err = c.selectBestModel(context.Background(), model); err != nil {
 			return nil, err
-		}
-		cheap := model == base.PreferredCheap
-		good := model == base.PreferredGood
-		c.Model = ""
-		for _, mdl := range mdls {
-			m := mdl.(*TextModel)
-			if m.Audio || strings.HasSuffix(m.Name, "roblox") {
-				continue
-			}
-			// This is meh.
-			if cheap {
-				if strings.HasPrefix(m.Name, "llama") {
-					c.Model = m.Name
-				}
-			} else if good {
-				if strings.HasPrefix(m.Name, "openai") && !m.Reasoning {
-					c.Model = m.Name
-				}
-			} else {
-				if !strings.HasPrefix(m.Name, "openai") && m.Reasoning {
-					c.Model = m.Name
-				}
-			}
-		}
-		if c.Model == "" {
-			return nil, errors.New("failed to find a model automatically")
 		}
 	}
 	return c, nil
+}
+
+// selectBestModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestModel(ctx context.Context, preference string) (string, error) {
+	// We only list text models here, not images generation ones.
+	mdls, err := c.ListTextModels(ctx)
+	if err != nil {
+		return "", err
+	}
+	cheap := preference == base.PreferredCheap
+	good := preference == base.PreferredGood
+	selectedModel := ""
+	for _, mdl := range mdls {
+		m := mdl.(*TextModel)
+		if m.Audio || strings.HasSuffix(m.Name, "roblox") {
+			continue
+		}
+		// This is meh.
+		if cheap {
+			if strings.HasPrefix(m.Name, "llama") {
+				selectedModel = m.Name
+			}
+		} else if good {
+			if strings.HasPrefix(m.Name, "openai") && !m.Reasoning {
+				selectedModel = m.Name
+			}
+		} else {
+			if !strings.HasPrefix(m.Name, "openai") && m.Reasoning {
+				selectedModel = m.Name
+			}
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

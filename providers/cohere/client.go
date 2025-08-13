@@ -895,51 +895,63 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			},
 		},
 	}
-	if model == base.NoModel {
+	switch model {
+	case base.NoModel:
 		c.Model = ""
-	} else if err == nil && (model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA) {
-		mdls, err2 := c.ListModels(context.Background())
-		if err2 != nil {
-			return nil, err2
-		}
-		// https://cohere.com/pricing
-		// https://docs.cohere.com/v2/docs/models
-		cheap := model == base.PreferredCheap
-		good := model == base.PreferredGood
-		c.Model = ""
-		var context int64
-		for _, mdl := range mdls {
-			m := mdl.(*Model)
-			if !slices.Contains(m.Endpoints, "chat") || strings.Contains(m.Name, "nightly") {
-				continue
+	case base.PreferredCheap, base.PreferredGood, base.PreferredSOTA:
+		if err == nil {
+			if c.Model, err = c.selectBestModel(context.Background(), model); err != nil {
+				return nil, err
 			}
-			if cheap {
-				if strings.Contains(m.Name, "light") && (context == 0 || context > m.ContextLength) {
-					// For the cheapest, we want the smallest context.
-					context = m.ContextLength
-					c.Model = m.Name
-				}
-			} else if good {
-				if strings.Contains(m.Name, "r7b") && (context == 0 || context < m.ContextLength) {
-					// For the greatest, we want the largest context.
-					context = m.ContextLength
-					c.Model = m.Name
-				}
-			} else {
-				// We want to select Command-A. We go by elimination to increase the probability of being future
-				// proof.
-				if !strings.HasPrefix(m.Name, "command-r") && (context == 0 || context < m.ContextLength) {
-					// For the greatest, we want the largest context.
-					context = m.ContextLength
-					c.Model = m.Name
-				}
-			}
-		}
-		if c.Model == "" {
-			return nil, errors.New("failed to find a model automatically")
 		}
 	}
 	return c, err
+}
+
+// selectBestModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", err
+	}
+
+	// https://cohere.com/pricing
+	// https://docs.cohere.com/v2/docs/models
+	cheap := preference == base.PreferredCheap
+	good := preference == base.PreferredGood
+	selectedModel := ""
+	var context int64
+	for _, mdl := range mdls {
+		m := mdl.(*Model)
+		if !slices.Contains(m.Endpoints, "chat") || strings.Contains(m.Name, "nightly") {
+			continue
+		}
+		if cheap {
+			if strings.Contains(m.Name, "light") && (context == 0 || context > m.ContextLength) {
+				// For the cheapest, we want the smallest context.
+				context = m.ContextLength
+				selectedModel = m.Name
+			}
+		} else if good {
+			if strings.Contains(m.Name, "r7b") && (context == 0 || context < m.ContextLength) {
+				// For the greatest, we want the largest context.
+				context = m.ContextLength
+				selectedModel = m.Name
+			}
+		} else {
+			// We want to select Command-A. We go by elimination to increase the probability of being future
+			// proof.
+			if !strings.HasPrefix(m.Name, "command-r") && (context == 0 || context < m.ContextLength) {
+				// For the greatest, we want the largest context.
+				context = m.ContextLength
+				selectedModel = m.Name
+			}
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
 }
 
 func (c *Client) Scoreboard() genai.Scoreboard {

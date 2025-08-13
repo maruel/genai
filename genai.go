@@ -239,8 +239,6 @@ func (m Messages) Validate() error {
 	for i := range m {
 		if err := m[i].Validate(); err != nil {
 			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-		} else if m[i].IsZero() {
-			errs = append(errs, fmt.Errorf("message %d: is empty", i))
 		}
 		if i > 0 && m[i-1].Role == m[i].Role && (m[i].Role != User || m[i-1].User != m[i].User) {
 			errs = append(errs, fmt.Errorf("message %d: role must alternate", i))
@@ -249,14 +247,9 @@ func (m Messages) Validate() error {
 	return errors.Join(errs...)
 }
 
-// Message is a message to send to the LLM as part of the exchange.
+// Message is a part of an exchange with a LLM.
 //
-// The message may contain content, information to communicate between the user
-// and the LLM. This is the Contents section. The content can be text or a
-// document. The document may be audio, video, image, PDF or any other format.
-//
-// The message may also contain tool calls. The tool call is a request from
-// the LLM to answer a specific question, so the LLM can continue its process.
+// It is effectively a union, with the exception of the User field that can be set with In.
 type Message struct {
 	Role Role `json:"role,omitzero"`
 	// User must only be used when Role == User. Only some provider (e.g. OpenAI, Groq, DeepSeek) support it.
@@ -267,8 +260,11 @@ type Message struct {
 	// block and a different block with an explanantion.
 	Contents []Content `json:"contents,omitzero"`
 
-	// ToolCall is a tool call that the LLM requested to make.
-	ToolCalls       []ToolCall       `json:"tool_calls,omitzero"`
+	// ToolCall is a tool call that the LLM requested to make when Role == Assistant.
+	ToolCalls []ToolCall `json:"tool_calls,omitzero"`
+
+	// ToolCallResult is the result for a tool call that the LLM requested to make when Role == Computer (or
+	// User).
 	ToolCallResults []ToolCallResult `json:"tool_call_results,omitzero"`
 
 	_ struct{}
@@ -286,10 +282,7 @@ func (m *Message) IsZero() bool {
 
 // Validate ensures the messages are valid.
 func (m *Message) Validate() error {
-	errs := m.validate()
-	if len(m.Contents) == 0 && len(m.ToolCalls) == 0 && len(m.ToolCallResults) == 0 {
-		errs = append(errs, errors.New("at least one of fields Contents, ToolCalls or ToolCallsResults is required"))
-	}
+	errs := m.validateShallow()
 	for i, b := range m.Contents {
 		if err := b.Validate(); err != nil {
 			errs = append(errs, fmt.Errorf("content %d: %w", i, err))
@@ -314,13 +307,56 @@ func (m *Message) Validate() error {
 	return errors.Join(errs...)
 }
 
-func (m *Message) validate() []error {
+// validateShallow ensures the message is valid but not the inner fields.
+func (m *Message) validateShallow() []error {
 	var errs []error
 	if err := m.Role.Validate(); err != nil {
 		errs = append(errs, fmt.Errorf("field Role: %w", err))
 	}
+	switch m.Role {
+	case User:
+		if len(m.ToolCalls) != 0 {
+			return append(errs, errors.New("field ToolCalls can't be used with role User"))
+		}
+		if len(m.Contents) != 0 && len(m.ToolCallResults) != 0 {
+			return append(errs, errors.New("fields Contents and ToolCallResults can't be used together"))
+		}
+
+	case Assistant:
+		if len(m.ToolCallResults) != 0 {
+			return append(errs, errors.New("field ToolCallResults can't be used with role Assistant"))
+		}
+		// We should not accept content along with tool calls except for thinking. It is tricky to evaluate since
+		// explicit Chain-of-Thought models like Qwen 3 Thinking or Deepseek R1 return their thinking as text
+		// until it is parsed by adapters.ProviderGenThinking.
+		//
+		// It is possible to use a hack to allow it by assuming all explicit CoT models return thinking as text
+		// starting with "<".
+		//
+		// The problem is with deepseek-reasoner. It returns both thinking, text and tool call as a single reply!
+		// The text can be discarded in GenSync which would make this check pass, but the text cannot be discarded
+		// in GenStream because the ordering of the generated content is thinking, then text, then tool call.
+		//
+		// See providers/deepseek/testdata/TestClient_Scoreboard/deepseek-reasoner_thinking/GenStream-Tools-SquareRoot-1-any.yaml
+		// for an example.
+		//
+		// At the very least, assert no document is returned along with tool calls.
+		if len(m.Contents) != 0 && len(m.ToolCalls) != 0 {
+			for i := range m.Contents {
+				if m.Contents[i].Document != nil || m.Contents[i].Filename != "" {
+					return append(errs, errors.New("field Contents can't contain a document along with ToolCalls"))
+				}
+				if m.Contents[i].URL != "" {
+					return append(errs, errors.New("field Contents can't contain a document as URL along with ToolCalls"))
+				}
+			}
+		}
+	}
 	if m.User != "" {
 		errs = append(errs, errors.New("field User: not supported yet"))
+	}
+	if m.IsZero() {
+		errs = append(errs, errors.New("at least one of fields Contents, ToolCalls or ToolCallsResults is required"))
 	}
 	return errs
 }
@@ -329,7 +365,7 @@ func (m *Message) validate() []error {
 //
 // It ignores Thinking or multi-modal content.
 func (m *Message) AsText() string {
-	var data [16]string
+	var data [32]string
 	out := data[:0]
 	for i := range m.Contents {
 		if s := m.Contents[i].Text; s != "" {
@@ -389,7 +425,9 @@ func (m *Message) UnmarshalJSON(b []byte) error {
 	if err := d.Decode(&a); err != nil {
 		return err
 	}
-	return errors.Join(m.validate()...)
+	// We do not need to check each individual fields since they each implement json.Unmarshaler that explicitly
+	// call their own Validate() method.
+	return errors.Join(m.validateShallow()...)
 }
 
 func (m *Message) GoString() string {
@@ -400,6 +438,8 @@ func (m *Message) GoString() string {
 // Content is a block of content in the message meant to be visible in a
 // chat setting.
 //
+// It is effectively a union, only one of the 3 related field groups can be set.
+//
 // The content can be text or a document. The document may be audio, video,
 // image, PDF or any other format.
 //
@@ -409,14 +449,12 @@ func (m *Message) GoString() string {
 type Content struct {
 	// Text is the content of the text message.
 	Text string `json:"text,omitzero"`
-
-	// Thinking is the reasoning done by the LLM.
-	Thinking string `json:"thinking,omitzero"`
-
 	// Citations contains references to source material that support the content.
 	// Only valid when Text is set and the provider supports citations.
 	Citations []Citation `json:"citations,omitzero"`
 
+	// Thinking is the reasoning done by the LLM.
+	Thinking string `json:"thinking,omitzero"`
 	// Opaque is added to keep continuity on the processing. A good example is Anthropic's extended thinking. It
 	// must be kept during an exchange.
 	//
@@ -474,19 +512,29 @@ func (c *Content) Validate() error {
 		if c.URL != "" {
 			return errors.New("field URL can't be used along Text")
 		}
-	} else {
-		if len(c.Citations) != 0 {
-			return errors.New("field Citations can only be used with Text")
-		}
+	} else if len(c.Citations) != 0 {
 		if len(c.Opaque) != 0 {
-			return errors.New("field Opaque can't be used along a document")
+			return errors.New("field Opaque can't be used along a Citations")
 		}
+		if c.Filename != "" {
+			return errors.New("field Filename can't be used along a Citations")
+		}
+		if c.Document != nil {
+			return errors.New("field Document can't be used along a Citations")
+		}
+		if c.URL != "" {
+			return errors.New("field URL can't be used along a Citations")
+		}
+	} else {
 		if c.Document == nil {
 			if c.URL == "" {
 				if c.Filename == "" {
-					return errors.New("no content")
+					return errors.New("an empty Content is invalid")
 				}
 				return errors.New("field Document or URL is required when using Filename")
+			}
+			if len(c.Opaque) != 0 {
+				return errors.New("field Opaque can't be used along a Document")
 			}
 		} else {
 			if c.URL != "" {
@@ -494,6 +542,9 @@ func (c *Content) Validate() error {
 			}
 			if c.GetFilename() == "" {
 				return errors.New("field Filename is required with Document when not implementing Name()")
+			}
+			if len(c.Opaque) != 0 {
+				return errors.New("field Opaque can't be used along an URL")
 			}
 		}
 	}

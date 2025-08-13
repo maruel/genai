@@ -180,7 +180,7 @@ func TestMessages_Validate(t *testing.T) {
 						Contents: []Content{{}},
 					},
 				},
-				errMsg: "message 0: content 0: field Filename can't be used along Text\nmessage 1: content 0: no content",
+				errMsg: "message 0: content 0: field Filename can't be used along Text\nmessage 1: content 0: an empty Content is invalid",
 			},
 		}
 		for _, tt := range tests {
@@ -973,7 +973,7 @@ func TestContent_UnmarshalJSON(t *testing.T) {
 			{
 				name:   "Empty content",
 				json:   `{}`,
-				errMsg: "no content",
+				errMsg: "an empty Content is invalid",
 			},
 		}
 		for _, tt := range tests {
@@ -1323,6 +1323,7 @@ func TestContent_ValidateWithCitations(t *testing.T) {
 				}},
 			},
 		},
+		// Can happen with tool calling, e.g. cohere
 		{
 			name: "citations without text",
 			content: Content{
@@ -1330,7 +1331,6 @@ func TestContent_ValidateWithCitations(t *testing.T) {
 					Text: "example",
 				}},
 			},
-			wantErr: true,
 		},
 		{
 			name: "citations with thinking",

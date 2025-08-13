@@ -201,7 +201,6 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	msgs := genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
 	resp, err := cs.callGen(ctx, prefix+"Text", msgs, &genai.OptionsText{})
 	if err != nil {
-		internal.Logger(ctx).DebugContext(ctx, "Text", "err", err)
 		// It happens when the model is audio gen only.
 		if !isBadError(ctx, err) {
 			err = nil
@@ -714,6 +713,7 @@ func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messag
 		}
 	}
 	if err != nil {
+		internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		return resp, err
 	}
 	cs.usage.InputTokens += resp.InputTokens
@@ -930,13 +930,13 @@ const rootURL = "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/
 func isBadError(ctx context.Context, err error) bool {
 	var uerr *httpjson.UnknownFieldError
 	if errors.Is(err, cassette.ErrInteractionNotFound) || errors.As(err, &uerr) {
-		internal.Logger(ctx).ErrorContext(ctx, "isBadError", "err", err)
+		internal.Logger(ctx).ErrorContext(ctx, "isBadError", "type", "cassette", "err", err)
 		return true
 	}
 	// API error are never 'bad'.
 	var ua base.ErrAPI
 	if errors.As(err, &ua) && ua.IsAPIError() {
-		internal.Logger(ctx).DebugContext(ctx, "isBadError", "ErrAPI", true)
+		internal.Logger(ctx).DebugContext(ctx, "isBadError", "type", "ErrAPI")
 		return false
 	}
 	// Tolerate HTTP 400 as when a model is passed something that it doesn't accept, e.g. sending audio input to
@@ -945,9 +945,6 @@ func isBadError(ctx context.Context, err error) bool {
 	if errors.As(err, &herr) && herr.StatusCode >= 500 {
 		internal.Logger(ctx).DebugContext(ctx, "isBadError", "status", herr.StatusCode)
 		return true
-	}
-	if err != nil {
-		internal.Logger(ctx).DebugContext(ctx, "isBadError", "err", err)
 	}
 	return false
 }

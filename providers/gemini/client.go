@@ -1689,7 +1689,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	if uce != nil {
 		return res, uce
 	}
-	return res, nil
+	return res, res.Validate()
 }
 
 func (c *Client) GenDocRaw(ctx context.Context, req ImageRequest) (ImageResponse, error) {

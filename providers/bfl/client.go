@@ -368,7 +368,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	if err != nil {
 		return res, err
 	}
-	res.Limits = processHeaders(c.Provider.LastResponseHeaders())
+	res.Limits = processHeaders(c.LastResponseHeaders())
 	if imgres.Status == "Pending" {
 		res.FinishReason = genai.Pending
 		return res, nil
@@ -378,7 +378,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	}
 	res.Role = genai.Assistant
 	res.Contents = []genai.Content{{Filename: "content.jpg", URL: imgres.Result.Sample}}
-	return res, nil
+	return res, res.Validate()
 }
 
 // PokeResultRaw retrieves the result for a job ID if already available.

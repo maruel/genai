@@ -1116,7 +1116,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	} else {
 		return res, fmt.Errorf("unknown Content-Type: %s", ct)
 	}
-	return res, nil
+	return res, res.Validate()
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {

@@ -52,131 +52,142 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 		Out:    map[genai.Modality]genai.ModalCapability{},
 	}
 
+	// Make it easy to skip parts of the tests.
+	doSync := true
+	doStream := true
+	doDoc := true
+
 	eg := errgroup.Group{}
 	if _, ok := c.(genai.ProviderGen); ok {
-		eg.Go(func() error {
-			cs := callState{pf: pf, isStream: false}
-			ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenSync"))
-			f, err := exerciseGenTextOnly(ctx2, &cs, "GenSync-")
-			mu.Lock()
-			usage.Add(cs.usage)
-			if f != nil {
-				result.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
-				result.Out[genai.ModalityText] = genai.ModalCapability{Inline: true}
-				if cs.isThinking {
-					result.Thinking = true
-				}
-				if cs.hasCitations {
-					f.Citations = true
-				}
-				result.GenSync = f
-			}
-			mu.Unlock()
-			if err != nil {
-				return fmt.Errorf("failed with GenSync: %w", err)
-			}
-
-			cs = callState{pf: pf, isStream: false}
-			ctx2 = internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenSyncMultiModal"))
-			in, out, f, err := exerciseGenTextMultiModal(ctx2, &cs, "GenSyncMultiModal-")
-			mu.Lock()
-			usage.Add(cs.usage)
-			if len(in) != 0 {
-				result.In = mergeModalities(result.In, in)
-				result.Out = mergeModalities(result.Out, out)
-				if result.GenSync == nil {
+		if doSync {
+			eg.Go(func() error {
+				cs := callState{pf: pf, isStream: false}
+				ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenSync"))
+				f, err := exerciseGenTextOnly(ctx2, &cs, "GenSync-")
+				mu.Lock()
+				usage.Add(cs.usage)
+				if f != nil {
+					result.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
+					result.Out[genai.ModalityText] = genai.ModalCapability{Inline: true}
+					if cs.isThinking {
+						result.Thinking = true
+					}
+					if cs.hasCitations {
+						f.Citations = true
+					}
 					result.GenSync = f
-				} else {
-					if f.BrokenTokenUsage != genai.False {
-						result.GenSync.BrokenTokenUsage = f.BrokenTokenUsage
-					}
-					if f.BrokenFinishReason {
-						result.GenSync.BrokenFinishReason = f.BrokenFinishReason
-					}
 				}
-				if cs.isThinking {
-					result.Thinking = true
+				mu.Unlock()
+				if err != nil {
+					return fmt.Errorf("failed with GenSync: %w", err)
 				}
-				if cs.hasCitations {
-					result.GenSync.Citations = true
-				}
-			}
-			mu.Unlock()
-			if err != nil {
-				return fmt.Errorf("failed with GenSync: %w", err)
-			}
-			return nil
-		})
-		eg.Go(func() error {
-			cs := callState{pf: pf, isStream: true}
-			ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenStream"))
-			f, err := exerciseGenTextOnly(ctx2, &cs, "GenStream-")
-			mu.Lock()
-			usage.Add(cs.usage)
-			if f != nil {
-				result.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
-				result.Out[genai.ModalityText] = genai.ModalCapability{Inline: true}
-				if cs.isThinking {
-					result.Thinking = true
-				}
-				if cs.hasCitations {
-					f.Citations = true
-				}
-				result.GenStream = f
-			}
-			mu.Unlock()
-			if err != nil {
-				return fmt.Errorf("failed with GenStream: %w", err)
-			}
 
-			cs = callState{pf: pf, isStream: true}
-			ctx2 = internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenStreamMultiModal"))
-			in, out, f, err := exerciseGenTextMultiModal(ctx2, &cs, "GenStreamMultiModal-")
-			mu.Lock()
-			usage.Add(cs.usage)
-			if len(in) != 0 {
-				result.In = mergeModalities(result.In, in)
-				result.Out = mergeModalities(result.Out, out)
-				if result.GenStream == nil {
+				cs = callState{pf: pf, isStream: false}
+				ctx2 = internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenSyncMultiModal"))
+				in, out, f, err := exerciseGenTextMultiModal(ctx2, &cs, "GenSyncMultiModal-")
+				mu.Lock()
+				usage.Add(cs.usage)
+				if len(in) != 0 {
+					result.In = mergeModalities(result.In, in)
+					result.Out = mergeModalities(result.Out, out)
+					if result.GenSync == nil {
+						result.GenSync = f
+					} else {
+						if f.BrokenTokenUsage != genai.False {
+							result.GenSync.BrokenTokenUsage = f.BrokenTokenUsage
+						}
+						if f.BrokenFinishReason {
+							result.GenSync.BrokenFinishReason = f.BrokenFinishReason
+						}
+					}
+					if cs.isThinking {
+						result.Thinking = true
+					}
+					if cs.hasCitations {
+						result.GenSync.Citations = true
+					}
+				}
+				mu.Unlock()
+				if err != nil {
+					return fmt.Errorf("failed with GenSync: %w", err)
+				}
+				return nil
+			})
+		}
+		if doStream {
+			eg.Go(func() error {
+				cs := callState{pf: pf, isStream: true}
+				ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenStream"))
+				f, err := exerciseGenTextOnly(ctx2, &cs, "GenStream-")
+				mu.Lock()
+				usage.Add(cs.usage)
+				if f != nil {
+					result.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
+					result.Out[genai.ModalityText] = genai.ModalCapability{Inline: true}
+					if cs.isThinking {
+						result.Thinking = true
+					}
+					if cs.hasCitations {
+						f.Citations = true
+					}
 					result.GenStream = f
-				} else {
-					if f.BrokenTokenUsage != genai.False {
-						result.GenStream.BrokenTokenUsage = f.BrokenTokenUsage
+				}
+				mu.Unlock()
+				if err != nil {
+					return fmt.Errorf("failed with GenStream: %w", err)
+				}
+
+				cs = callState{pf: pf, isStream: true}
+				ctx2 = internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenStreamMultiModal"))
+				in, out, f, err := exerciseGenTextMultiModal(ctx2, &cs, "GenStreamMultiModal-")
+				mu.Lock()
+				usage.Add(cs.usage)
+				if len(in) != 0 {
+					result.In = mergeModalities(result.In, in)
+					result.Out = mergeModalities(result.Out, out)
+					if result.GenStream == nil {
+						result.GenStream = f
+					} else {
+						if f.BrokenTokenUsage != genai.False {
+							result.GenStream.BrokenTokenUsage = f.BrokenTokenUsage
+						}
+						if f.BrokenFinishReason {
+							result.GenStream.BrokenFinishReason = f.BrokenFinishReason
+						}
 					}
-					if f.BrokenFinishReason {
-						result.GenStream.BrokenFinishReason = f.BrokenFinishReason
+					if cs.isThinking {
+						result.Thinking = true
+					}
+					if cs.hasCitations {
+						result.GenStream.Citations = true
 					}
 				}
-				if cs.isThinking {
-					result.Thinking = true
+				mu.Unlock()
+				if err != nil {
+					return fmt.Errorf("failed with GenStream: %w", err)
 				}
-				if cs.hasCitations {
-					result.GenStream.Citations = true
-				}
-			}
-			mu.Unlock()
-			if err != nil {
-				return fmt.Errorf("failed with GenStream: %w", err)
-			}
-			return nil
-		})
+				return nil
+			})
+		}
 	}
 
 	if _, ok := c.(genai.ProviderGenDoc); ok {
-		eg.Go(func() error {
-			ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenDoc"))
-			outDoc, usageDoc, err := exerciseGenDoc(ctx2, pf)
-			mu.Lock()
-			usage.Add(usageDoc)
-			result.In = mergeModalities(result.In, outDoc.In)
-			result.Out = mergeModalities(result.Out, outDoc.Out)
-			result.GenDoc = outDoc.GenDoc
-			mu.Unlock()
-			if err != nil {
-				return fmt.Errorf("failed with GenDoc: %w", err)
-			}
-			return nil
-		})
+		if doDoc {
+			eg.Go(func() error {
+				ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenDoc"))
+				outDoc, usageDoc, err := exerciseGenDoc(ctx2, pf)
+				mu.Lock()
+				usage.Add(usageDoc)
+				result.In = mergeModalities(result.In, outDoc.In)
+				result.Out = mergeModalities(result.Out, outDoc.Out)
+				result.GenDoc = outDoc.GenDoc
+				mu.Unlock()
+				if err != nil {
+					return fmt.Errorf("failed with GenDoc: %w", err)
+				}
+				return nil
+			})
+		}
 	}
 
 	err := eg.Wait()
@@ -667,6 +678,7 @@ type callState struct {
 }
 
 func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	// internal.Logger(ctx).DebugContext(ctx, name, "msgs", msgs)
 	cc, _ := cs.pf(name)
 	c := cc.(genai.ProviderGen)
 	var err error

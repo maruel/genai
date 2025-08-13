@@ -351,6 +351,8 @@ func (m *Message) validateShallow() []error {
 				}
 			}
 		}
+	case Computer:
+		// Will disapear soon.
 	}
 	if m.User != "" {
 		errs = append(errs, errors.New("field User: not supported yet"))

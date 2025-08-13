@@ -381,15 +381,31 @@ Use [cmd/llama-serve](cmd/llama-serve) to run a LLM locally, including tool call
 
 ## TODO
 
-- Authentication: OAuth, service account, OIDC.
-- Server-side MCP [Anthropic](https://docs.anthropic.com/en/docs/agents-and-tools/mcp-connector),
+PRs are appreciated for any of the following. No need to ask! Just send a PR and make it pass CI checks. ❤️
+
+### Features
+
+- Authentication: OAuth, service account, OIDC,
+  [GITHUB_TOKEN](https://docs.github.com/en/github-models/use-github-models/integrating-ai-models-into-your-development-workflow#using-ai-models-with-github-actions).
+- Server-side MCP: [Anthropic](https://docs.anthropic.com/en/docs/agents-and-tools/mcp-connector),
   [OpenAI](https://platform.openai.com/docs/guides/tools-remote-mcp)
-- Real-time / Live [Gemini](https://ai.google.dev/api/live),
+- Real-time / Live: [Gemini](https://ai.google.dev/api/live),
   [OpenAI](https://platform.openai.com/docs/guides/realtime),
   [TogetherAI](https://docs.together.ai/docs/text-to-speech), ...
 - More comprehensive file/cache abstraction
-- Tokens counting [Anthropic](https://docs.anthropic.com/en/docs/build-with-claude/token-counting),
+- Tokens counting: [Anthropic](https://docs.anthropic.com/en/docs/build-with-claude/token-counting),
   [Cohere](https://docs.cohere.com/reference/tokenize), [Gemini](https://ai.google.dev/api/tokens), ...
-- Embeddings [Anthropic](https://docs.anthropic.com/en/docs/build-with-claude/embeddings),
+- Embeddings: [Anthropic](https://docs.anthropic.com/en/docs/build-with-claude/embeddings),
   [Cohere](https://docs.cohere.com/reference/embed), [Gemini](https://ai.google.dev/api/embeddings),
   [OpenAI](https://platform.openai.com/docs/guides/embeddings), [TogetherAI](https://docs.together.ai/docs/embeddings-overview), ...
+
+### Providers
+
+I'm fine with any provider being added, I'm particularly looking forward to these:
+
+- [AWS Bedrock](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_Operations_Amazon_Bedrock.html)
+- [Azure AI](https://learn.microsoft.com/en-us/rest/api/aifoundry/model-inference/get-chat-completions/get-chat-completions)
+- [Fireworks responses](https://fireworks.ai/docs/guides/response-api)
+- [GitHub](https://docs.github.com/en/rest/models/inference) inference API, which works on GitHub Actions (!)
+- [Google's Vertex AI](https://cloud.google.com/vertex-ai/docs/reference/rest)
+- [Runway](https://docs.dev.runwayml.com/api-details/sdks/)

@@ -278,14 +278,28 @@ func (m *Message) From(in *genai.Message) ([]Document, error) {
 		return nil, fmt.Errorf("unsupported role %q", in.Role)
 	}
 	var out []Document
-	if len(in.Contents) != 0 {
-		for i := range in.Contents {
-			if in.Contents[i].Thinking != "" {
+	if len(in.Request) != 0 {
+		for i := range in.Request {
+			c := Content{}
+			d, err := c.From(&in.Request[i])
+			if err != nil {
+				return nil, fmt.Errorf("block %d: %w", i, err)
+			}
+			if d != nil {
+				out = append(out, *d)
+			} else {
+				m.Content = append(m.Content, c)
+			}
+		}
+	}
+	if len(in.Reply) != 0 {
+		for i := range in.Reply {
+			if in.Reply[i].Thinking != "" {
 				// Silently ignore thinking blocks.
 				continue
 			}
 			c := Content{}
-			d, err := c.From(&in.Contents[i])
+			d, err := c.From(&in.Reply[i])
 			if err != nil {
 				return nil, fmt.Errorf("block %d: %w", i, err)
 			}
@@ -303,7 +317,7 @@ func (m *Message) From(in *genai.Message) ([]Document, error) {
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
-		if len(in.Contents) != 0 || len(in.ToolCalls) != 0 {
+		if len(in.Request) != 0 || len(in.ToolCalls) != 0 {
 			// This could be worked around.
 			return out, fmt.Errorf("can't have tool call result along content or tool calls")
 		}
@@ -619,19 +633,19 @@ func (m *MessageResponse) To(out *genai.Message) error {
 		return fmt.Errorf("implement tool call id")
 	}
 	if m.ToolPlan != "" {
-		out.Contents = []genai.Content{{Thinking: m.ToolPlan}}
+		out.Reply = []genai.Content{{Thinking: m.ToolPlan}}
 	}
 	if len(m.Content) != 0 {
 		for i := range m.Content {
-			out.Contents = append(out.Contents, genai.Content{})
-			if err := m.Content[len(m.Content)-1].To(&out.Contents[i]); err != nil {
+			out.Reply = append(out.Reply, genai.Content{})
+			if err := m.Content[len(m.Content)-1].To(&out.Reply[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		}
 		if len(m.Citations) != 0 {
-			for i := range out.Contents {
-				if out.Contents[i].Text != "" {
-					if err := m.Citations.To(&out.Contents[i]); err != nil {
+			for i := range out.Reply {
+				if out.Reply[i].Text != "" {
+					if err := m.Citations.To(&out.Reply[i]); err != nil {
 						return fmt.Errorf("mapping citations: %w", err)
 					}
 					// TODO: handle multiple citations.

@@ -406,13 +406,19 @@ func (m *Message) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", role)
 	}
-	m.Content = make([]Content, len(in.Contents)+len(in.ToolCalls)+len(in.ToolCallResults))
-	for i := range in.Contents {
-		if err := m.Content[i].FromContent(&in.Contents[i]); err != nil {
+	m.Content = make([]Content, len(in.Request)+len(in.Reply)+len(in.ToolCalls)+len(in.ToolCallResults))
+	for i := range in.Request {
+		if err := m.Content[i].FromContent(&in.Request[i]); err != nil {
 			return fmt.Errorf("block %d: %w", i, err)
 		}
 	}
-	offset := len(in.Contents)
+	offset := len(in.Request)
+	for i := range in.Reply {
+		if err := m.Content[i+offset].FromContent(&in.Reply[i]); err != nil {
+			return fmt.Errorf("block %d: %w", i, err)
+		}
+	}
+	offset += len(in.Reply)
 	for i := range in.ToolCalls {
 		if err := m.Content[offset+i].FromToolCall(&in.ToolCalls[i]); err != nil {
 			return fmt.Errorf("block %d: %w", offset+i, err)
@@ -448,7 +454,7 @@ func (m *Message) To(out *genai.Message) error {
 			if skip, err := m.Content[i].ToContent(&c); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			} else if !skip {
-				out.Contents = append(out.Contents, c)
+				out.Reply = append(out.Reply, c)
 			}
 		case ContentToolUse:
 			out.ToolCalls = append(out.ToolCalls, genai.ToolCall{})
@@ -1187,7 +1193,7 @@ func (b *BatchQueryResponse) To(out *genai.Message) error {
 			if skip, err := b.Result.Message.Content[i].ToContent(&c); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			} else if !skip {
-				out.Contents = append(out.Contents, c)
+				out.Reply = append(out.Reply, c)
 			}
 		case ContentToolUse:
 			out.ToolCalls = append(out.ToolCalls, genai.ToolCall{})
@@ -1424,6 +1430,9 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	res.OutputTokens = resp.Result.Message.Usage.OutputTokens
 	res.TotalTokens = res.InputTokens + res.InputCachedTokens + res.OutputTokens
 	res.FinishReason = resp.Result.Message.StopReason.ToFinishReason()
+	if err == nil {
+		err = res.Validate()
+	}
 	return res, err
 }
 

@@ -255,10 +255,16 @@ type Message struct {
 	// User must only be used when Role == User. Only some provider (e.g. OpenAI, Groq, DeepSeek) support it.
 	User string `json:"user,omitzero"`
 
-	// Contents slice is generally one item in text-only mode. It is more frequently multiple items when using
-	// multi-modal content or with advanced LLM providers that can emit multiple content blocks like a code
-	// block and a different block with an explanantion.
-	Contents []Content `json:"contents,omitzero"`
+	// Request is the message from the user.
+	//
+	// It is more frequently multiple items when using multi-modal content.
+	Request []Content `json:"request,omitzero"`
+
+	// Reply is the message from the LLM.
+	//
+	// Some models can emit multiple content blocks, either multi modal or multiple text blocks: a code block
+	// and a different block with an explanantion.
+	Reply []Content `json:"reply,omitzero"`
 
 	// ToolCall is a tool call that the LLM requested to make when Role == Assistant.
 	ToolCalls []ToolCall `json:"tool_calls,omitzero"`
@@ -273,19 +279,24 @@ type Message struct {
 // NewTextMessage is a shorthand function to create a Message with a single
 // text block.
 func NewTextMessage(text string) Message {
-	return Message{Role: User, Contents: []Content{{Text: text}}}
+	return Message{Role: User, Request: []Content{{Text: text}}}
 }
 
 func (m *Message) IsZero() bool {
-	return m.Role == "" && m.User == "" && len(m.Contents) == 0 && len(m.ToolCalls) == 0 && len(m.ToolCallResults) == 0
+	return m.Role == "" && m.User == "" && len(m.Request) == 0 && len(m.Reply) == 0 && len(m.ToolCalls) == 0 && len(m.ToolCallResults) == 0
 }
 
-// Validate ensures the messages are valid.
+// Validate ensures the message is valid.
 func (m *Message) Validate() error {
 	errs := m.validateShallow()
-	for i, b := range m.Contents {
+	for i, b := range m.Request {
 		if err := b.Validate(); err != nil {
-			errs = append(errs, fmt.Errorf("content %d: %w", i, err))
+			errs = append(errs, fmt.Errorf("request %d: %w", i, err))
+		}
+	}
+	for i, b := range m.Reply {
+		if err := b.Validate(); err != nil {
+			errs = append(errs, fmt.Errorf("reply %d: %w", i, err))
 		}
 	}
 	if len(m.ToolCalls) != 0 && m.Role != Assistant {
@@ -315,16 +326,22 @@ func (m *Message) validateShallow() []error {
 	}
 	switch m.Role {
 	case User:
+		if len(m.Reply) != 0 {
+			return append(errs, errors.New("field Reply can't be used with role User"))
+		}
 		if len(m.ToolCalls) != 0 {
 			return append(errs, errors.New("field ToolCalls can't be used with role User"))
 		}
-		if len(m.Contents) != 0 && len(m.ToolCallResults) != 0 {
-			return append(errs, errors.New("fields Contents and ToolCallResults can't be used together"))
+		if len(m.Request) != 0 && len(m.ToolCallResults) != 0 {
+			return append(errs, errors.New("fields Reply and ToolCallResults can't be used together"))
 		}
 
 	case Assistant:
 		if len(m.ToolCallResults) != 0 {
 			return append(errs, errors.New("field ToolCallResults can't be used with role Assistant"))
+		}
+		if len(m.Request) != 0 {
+			return append(errs, errors.New("field Request can't be used with role Assistant"))
 		}
 		// We should not accept content along with tool calls except for thinking. It is tricky to evaluate since
 		// explicit Chain-of-Thought models like Qwen 3 Thinking or Deepseek R1 return their thinking as text
@@ -341,9 +358,9 @@ func (m *Message) validateShallow() []error {
 		// for an example.
 		//
 		// At the very least, assert no document is returned along with tool calls.
-		if len(m.Contents) != 0 && len(m.ToolCalls) != 0 {
-			for i := range m.Contents {
-				if !m.Contents[i].Doc.IsZero() {
+		if len(m.Reply) != 0 && len(m.ToolCalls) != 0 {
+			for i := range m.Reply {
+				if !m.Reply[i].Doc.IsZero() {
 					return append(errs, errors.New("field Contents can't contain a Doc along with ToolCalls"))
 				}
 			}
@@ -355,19 +372,41 @@ func (m *Message) validateShallow() []error {
 		errs = append(errs, errors.New("field User: not supported yet"))
 	}
 	if m.IsZero() {
-		errs = append(errs, errors.New("at least one of fields Contents, ToolCalls or ToolCallsResults is required"))
+		errs = append(errs, errors.New("at least one of fields Request, Reply, ToolCalls or ToolCallsResults is required"))
 	}
+	// Check that only the right fields are in each content.
+	for i, b := range m.Request {
+		if b.Thinking != "" {
+			errs = append(errs, fmt.Errorf("request %d: user request can't have Thinking", i))
+		}
+		if len(b.Citations) != 0 {
+			errs = append(errs, fmt.Errorf("request %d: user request can't have Citations", i))
+		}
+		if len(b.Opaque) != 0 {
+			errs = append(errs, fmt.Errorf("request %d: user request can't have Opaque", i))
+		}
+	}
+	for i, b := range m.Reply {
+		if err := b.Validate(); err != nil {
+			errs = append(errs, fmt.Errorf("reply %d: %w", i, err))
+		}
+	}
+
 	return errs
 }
 
-// AsText is a short hand to get the content as text.
+// AsText is a short hand to get the request or reply content as text.
 //
 // It ignores Thinking or multi-modal content.
 func (m *Message) AsText() string {
 	var data [32]string
 	out := data[:0]
-	for i := range m.Contents {
-		if s := m.Contents[i].Text; s != "" {
+	s := m.Reply
+	if len(m.Request) != 0 {
+		s = m.Request
+	}
+	for i := range s {
+		if s := s[i].Text; s != "" {
 			out = append(out, s)
 		}
 	}
@@ -389,7 +428,7 @@ func (m *Message) Decode(x any) error {
 	d.DisallowUnknownFields()
 	d.UseNumber()
 	if err := d.Decode(x); err != nil {
-		return fmt.Errorf("failed to decode message text as JSON: %w; content: %q", err, s)
+		return fmt.Errorf("failed to decode message text as JSON: %w; reply: %q", err, s)
 	}
 	return nil
 }
@@ -675,10 +714,11 @@ func (m *Message) Accumulate(mf ContentFragment) error {
 	if m.Role == "" {
 		m.Role = Assistant
 	}
+
 	// Generally the first message fragment.
 	if mf.ThinkingFragment != "" {
-		if len(m.Contents) != 0 {
-			if lastBlock := &m.Contents[len(m.Contents)-1]; lastBlock.Thinking != "" {
+		if len(m.Reply) != 0 {
+			if lastBlock := &m.Reply[len(m.Reply)-1]; lastBlock.Thinking != "" {
 				lastBlock.Thinking += mf.ThinkingFragment
 				if len(mf.Opaque) != 0 {
 					if lastBlock.Opaque == nil {
@@ -689,13 +729,13 @@ func (m *Message) Accumulate(mf ContentFragment) error {
 				return nil
 			}
 		}
-		m.Contents = append(m.Contents, Content{Thinking: mf.ThinkingFragment, Opaque: mf.Opaque})
+		m.Reply = append(m.Reply, Content{Thinking: mf.ThinkingFragment, Opaque: mf.Opaque})
 		return nil
 	}
 	if len(mf.Opaque) != 0 {
-		if len(m.Contents) != 0 {
+		if len(m.Reply) != 0 {
 			// Only add Opaque to Thinking block.
-			if lastBlock := &m.Contents[len(m.Contents)-1]; lastBlock.Thinking != "" {
+			if lastBlock := &m.Reply[len(m.Reply)-1]; lastBlock.Thinking != "" {
 				if lastBlock.Opaque == nil {
 					lastBlock.Opaque = map[string]any{}
 				}
@@ -704,29 +744,29 @@ func (m *Message) Accumulate(mf ContentFragment) error {
 			}
 		}
 		// Unlikely.
-		m.Contents = append(m.Contents, Content{Opaque: mf.Opaque})
+		m.Reply = append(m.Reply, Content{Opaque: mf.Opaque})
 		return nil
 	}
 
 	// Content.
 	if mf.TextFragment != "" {
-		if len(m.Contents) != 0 {
-			if lastBlock := &m.Contents[len(m.Contents)-1]; lastBlock.Text != "" {
+		if len(m.Reply) != 0 {
+			if lastBlock := &m.Reply[len(m.Reply)-1]; lastBlock.Text != "" {
 				lastBlock.Text += mf.TextFragment
 				return nil
 			}
 		}
-		m.Contents = append(m.Contents, Content{Text: mf.TextFragment})
+		m.Reply = append(m.Reply, Content{Text: mf.TextFragment})
 		return nil
 	}
 
 	if mf.URL != "" {
-		m.Contents = append(m.Contents, Content{Doc: Doc{Filename: mf.Filename, URL: mf.URL}})
+		m.Reply = append(m.Reply, Content{Doc: Doc{Filename: mf.Filename, URL: mf.URL}})
 		return nil
 	}
 	if mf.DocumentFragment != nil {
-		if len(m.Contents) != 0 {
-			if lastBlock := &m.Contents[len(m.Contents)-1]; lastBlock.Doc.Filename != "" || lastBlock.Doc.Src != nil {
+		if len(m.Reply) != 0 {
+			if lastBlock := &m.Reply[len(m.Reply)-1]; lastBlock.Doc.Filename != "" || lastBlock.Doc.Src != nil {
 				if lastBlock.Doc.Src == nil {
 					lastBlock.Doc.Src = &bb.BytesBuffer{}
 				}
@@ -738,11 +778,11 @@ func (m *Message) Accumulate(mf ContentFragment) error {
 				return nil
 			}
 		}
-		m.Contents = append(m.Contents, Content{Doc: Doc{Filename: mf.Filename, Src: &bb.BytesBuffer{D: mf.DocumentFragment}}})
+		m.Reply = append(m.Reply, Content{Doc: Doc{Filename: mf.Filename, Src: &bb.BytesBuffer{D: mf.DocumentFragment}}})
 		return nil
 	}
 	if mf.Filename != "" {
-		m.Contents = append(m.Contents, Content{Doc: Doc{Filename: mf.Filename}})
+		m.Reply = append(m.Reply, Content{Doc: Doc{Filename: mf.Filename}})
 		return nil
 	}
 
@@ -753,7 +793,7 @@ func (m *Message) Accumulate(mf ContentFragment) error {
 
 	if !mf.Citation.IsZero() {
 		// For now always add a new block.
-		m.Contents = append(m.Contents, Content{Citations: []Citation{mf.Citation}})
+		m.Reply = append(m.Reply, Content{Citations: []Citation{mf.Citation}})
 		return nil
 	}
 

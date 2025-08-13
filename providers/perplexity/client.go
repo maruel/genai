@@ -250,25 +250,53 @@ func (m *Message) From(in *genai.Message) error {
 	if len(in.ToolCallResults) != 0 {
 		return errors.New("perplexity doesn't support tools")
 	}
-	for i := range in.Contents {
-		if in.Contents[i].Text != "" {
-			m.Content = append(m.Content, Content{Type: "text", Text: in.Contents[i].Text})
+	for i := range in.Request {
+		if in.Request[i].Text != "" {
+			m.Content = append(m.Content, Content{Type: "text", Text: in.Request[i].Text})
 		} else {
 			// Check if this is a text/plain document
-			mimeType, data, err := in.Contents[i].Doc.Read(10 * 1024 * 1024)
+			mimeType, data, err := in.Request[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return fmt.Errorf("failed to read document: %w", err)
 			}
 			switch {
 			case strings.HasPrefix(mimeType, "text/plain"):
-				if in.Contents[i].Doc.URL != "" {
+				if in.Request[i].Doc.URL != "" {
 					return errors.New("text/plain documents must be provided inline, not as a URL")
 				}
 				m.Content = append(m.Content, Content{Type: "text", Text: string(data)})
 			case strings.HasPrefix(mimeType, "image/"):
 				c := Content{Type: "image_url"}
-				if in.Contents[i].Doc.URL != "" {
-					c.ImageURL.URL = in.Contents[i].Doc.URL
+				if in.Request[i].Doc.URL != "" {
+					c.ImageURL.URL = in.Request[i].Doc.URL
+				} else {
+					c.ImageURL.URL = "data:" + mimeType + ";base64," + base64.StdEncoding.EncodeToString(data)
+				}
+				m.Content = append(m.Content, c)
+			default:
+				return fmt.Errorf("perplexity only supports text/plain documents, got %s", mimeType)
+			}
+		}
+	}
+	for i := range in.Reply {
+		if in.Reply[i].Text != "" {
+			m.Content = append(m.Content, Content{Type: "text", Text: in.Reply[i].Text})
+		} else {
+			// Check if this is a text/plain document
+			mimeType, data, err := in.Reply[i].Doc.Read(10 * 1024 * 1024)
+			if err != nil {
+				return fmt.Errorf("failed to read document: %w", err)
+			}
+			switch {
+			case strings.HasPrefix(mimeType, "text/plain"):
+				if in.Reply[i].Doc.URL != "" {
+					return errors.New("text/plain documents must be provided inline, not as a URL")
+				}
+				m.Content = append(m.Content, Content{Type: "text", Text: string(data)})
+			case strings.HasPrefix(mimeType, "image/"):
+				c := Content{Type: "image_url"}
+				if in.Reply[i].Doc.URL != "" {
+					c.ImageURL.URL = in.Reply[i].Doc.URL
 				} else {
 					c.ImageURL.URL = "data:" + mimeType + ";base64," + base64.StdEncoding.EncodeToString(data)
 				}
@@ -293,7 +321,7 @@ func (m *Message) To(out *genai.Message) error {
 	}
 	for i := range m.Content {
 		if m.Content[i].Type == "text" {
-			out.Contents = append(out.Contents, genai.Content{Text: m.Content[i].Text})
+			out.Reply = append(out.Reply, genai.Content{Text: m.Content[i].Text})
 		} else {
 			return fmt.Errorf("unsupported content type %q", m.Content[i].Type)
 		}
@@ -380,7 +408,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	}
 	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
-	if len(c.SearchResults) > 0 && len(out.Contents) > 0 {
+	if len(c.SearchResults) > 0 && len(out.Reply) > 0 {
 		ct := genai.Citation{Type: "web", Sources: make([]genai.CitationSource, len(c.SearchResults))}
 		for i := range c.SearchResults {
 			ct.Sources[i].Type = "web"
@@ -390,7 +418,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 				ct.Sources[i].Metadata = map[string]any{"data": c.SearchResults[i].Date}
 			}
 		}
-		out.Contents[0].Citations = append(out.Contents[0].Citations, ct)
+		out.Reply[0].Citations = append(out.Reply[0].Citations, ct)
 		if len(c.Images) > 0 {
 			ct := genai.Citation{Type: "document", Sources: make([]genai.CitationSource, len(c.Images))}
 			for i := range c.Images {
@@ -402,7 +430,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 					"height": c.Images[i].Height,
 				}
 			}
-			out.Contents[0].Citations = append(out.Contents[0].Citations, ct)
+			out.Reply[0].Citations = append(out.Reply[0].Citations, ct)
 		}
 	}
 	return out, err

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 201
+        content_length: 281
         host: api.cerebras.ai
         body: |
-            {"model":"llama-4-scout-17b-16e-instruct","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\nWhat is the capital of Quackiland?\n"}]}
+            {"model":"llama-4-scout-17b-16e-instruct","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\nWhat is the capital of Quackiland?\n"}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-26751466-2274-4815-a4f0-462a2bf0d49f","choices":[{"finish_reason":"stop","index":0,"message":{"content":"The capital of Quackiland is... Quack!\n\n(And, by the way, that''s where the Big Canard Statue is located, according to the information provided.)","role":"assistant"}}],"created":1753569338,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_e439cc65f01febf1121f","object":"chat.completion","usage":{"prompt_tokens":41,"completion_tokens":36,"total_tokens":77,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00014267,"prompt_time":0.001720154,"completion_time":0.022311045,"total_time":0.02594923973083496,"created":1753569338}}'
+        body: '{"id":"chatcmpl-2ef79050-a5f4-4e22-b88e-0898ef482f46","choices":[{"finish_reason":"stop","index":0,"message":{"content":"According to the information provided, the capital of Quackiland is... Quack!\n\n(And, by the way, it seems like the information is repeated, but that''s okay!)","role":"assistant"}}],"created":1755179774,"model":"llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_a8629b0d194e83695960","object":"chat.completion","usage":{"prompt_tokens":63,"completion_tokens":37,"total_tokens":100,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00069781,"prompt_time":0.002124705,"completion_time":0.029060847,"total_time":0.033452510833740234,"created":1755179774}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96575f0abf78a2be-YUL
+                - 96f0f456dce6a2ba-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-26751466-2274-4815-a4f0-462a2bf0d49f
+                - chatcmpl-2ef79050-a5f4-4e22-b88e-0898ef482f46
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -46,15 +46,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14349"
+                - "14400"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "56606"
+                - "60000"
             X-Ratelimit-Reset-Requests-Day:
-                - "5061.8577709198"
+                - "36225.36059641838"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "21.857770919799805"
+                - "45.36059641838074"
             X-Request-Id:
-                - 96575f0abf78a2be-YUL
+                - 96f0f456dce6a2ba-YUL
         status: 200 OK
         code: 200
-        duration: 1.285s
+        duration: 157ms

@@ -603,11 +603,21 @@ func (m *Message) From(msg *genai.Message) error {
 		m.Arguments = msg.ToolCalls[0].Arguments
 		return nil
 	}
-	if len(msg.Contents) != 0 {
+	if len(msg.Request) != 0 {
 		m.Type = MessageMessage
-		m.Content = make([]Content, len(msg.Contents))
-		for j := range msg.Contents {
-			if err := m.Content[j].From(&msg.Contents[j]); err != nil {
+		m.Content = make([]Content, len(msg.Request))
+		for j := range msg.Request {
+			if err := m.Content[j].From(&msg.Request[j]); err != nil {
+				return fmt.Errorf("block %d: %w", j, err)
+			}
+		}
+		return nil
+	}
+	if len(msg.Reply) != 0 {
+		m.Type = MessageMessage
+		m.Content = make([]Content, len(msg.Reply))
+		for j := range msg.Reply {
+			if err := m.Content[j].From(&msg.Reply[j]); err != nil {
 				return fmt.Errorf("block %d: %w", j, err)
 			}
 		}
@@ -635,14 +645,14 @@ func (m *Message) To(out *genai.Message) error {
 			if err := m.Content[i].To(&c); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
-			out.Contents = append(out.Contents, c)
+			out.Reply = append(out.Reply, c)
 		}
 	case MessageReasoning:
 		for i := range m.Summary {
 			if m.Summary[i].Type != "summary_text" {
 				return fmt.Errorf("unsupported summary type %q", m.Summary[i].Type)
 			}
-			out.Contents = append(out.Contents, genai.Content{Thinking: m.Summary[i].Text})
+			out.Reply = append(out.Reply, genai.Content{Thinking: m.Summary[i].Text})
 		}
 	case MessageFunctionCall:
 		out.ToolCalls = append(out.ToolCalls, genai.ToolCall{ID: m.CallID, Name: m.Name, Arguments: m.Arguments})
@@ -1350,8 +1360,8 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 			return res, err
 		}
 	}
-	for i := range msg.Contents {
-		if msg.Contents[i].Text == "" {
+	for i := range msg.Request {
+		if msg.Request[i].Text == "" {
 			return res, errors.New("only text can be passed as input")
 		}
 	}
@@ -1409,16 +1419,16 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		return res, err
 	}
 	res.Role = genai.Assistant
-	res.Contents = make([]genai.Content, len(resp.Data))
+	res.Reply = make([]genai.Content, len(resp.Data))
 	for i := range resp.Data {
 		n := "content.jpg"
 		if len(resp.Data) > 1 {
 			n = fmt.Sprintf("content%d.jpg", i+1)
 		}
 		if url := resp.Data[i].URL; url != "" {
-			res.Contents[i].Doc = genai.Doc{Filename: n, URL: url}
+			res.Reply[i].Doc = genai.Doc{Filename: n, URL: url}
 		} else if d := resp.Data[i].B64JSON; len(d) != 0 {
-			res.Contents[i].Doc = genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Data[i].B64JSON}}
+			res.Reply[i].Doc = genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Data[i].B64JSON}}
 		} else {
 			return res, errors.New("internal error")
 		}

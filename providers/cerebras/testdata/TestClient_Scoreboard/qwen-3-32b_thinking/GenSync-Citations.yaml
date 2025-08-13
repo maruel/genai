@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 220
+        content_length: 300
         host: api.cerebras.ai
         body: |
-            {"model":"qwen-3-32b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\nWhat is the capital of Quackiland?\n"},{"role":"user","content":"\n\n/think"}]}
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\nWhat is the capital of Quackiland?\n"},{"role":"user","content":"\n\n/think"}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-07eed8b9-5676-4732-a015-c5a156cd9713","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, let''s see. The user is asking about the capital of Quackiland. The first thing that comes to mind is that the question is based on provided information. The first sentence says, \"The capital of Quackiland is Quack.\" The second sentence mentions the Big Canard Statue in Quack. Hmm, maybe that''s just extra info to check if I can extract the main point.\n\nWait, but sometimes these types of questions can be tricky. They might include similar-sounding words to create confusion. Let me read again. The country is Quackiland, and its capital is Quack. The Big Canard Statue is in Quack. I need to make sure \"Quack\" is the correct answer here. \n\nI should break it down. The question is a direct test of memory and comprehension of the given text. The key fact is that Quackiland''s capital is specified as Quack. The second sentence about the statue just provides a location within Quack, which is the capital. There''s no other capital mentioned. \n\nI wonder if \"Quack\" is the only possible answer. Since the user wrote that explicitly, and the statue''s location is also in Quack, it''s pretty straightforward. Maybe the purpose of the question is to ensure I ignore the statue part and focus on the capital statement. No contradictions in the info given. \n\nSo the answer should be Quack. I don''t need to overcomplicate it. Just confirm the user''s first statement. I think that''s all there is to it here. Let me double-check if there are any possible typos or if the user intended something else. For example, maybe \"Canard\" is a play on words, but the capital is clearly stated as Quack. Probably a joke on the word quack, which sounds like the duck''s call. The statue''s name is Big Canard, which is French for \"big duck,\" so that aligns with the theme. \n\nNo alternative interpretations come to mind. The user is just asking for the capital as per the given statements. So, based on the information provided, the answer is Quack.\n</think>\n\nThe capital of Quackiland is **Quack**.  \n\nThe first sentence explicitly states this fact, and the second sentence simply provides additional context (the location of the Big Canard Statue) to reinforce the name. No further inference is needed.","role":"assistant"}}],"created":1753569347,"model":"qwen-3-32b","system_fingerprint":"fp_d92e1e5be69bb839ccfe","object":"chat.completion","usage":{"prompt_tokens":45,"completion_tokens":492,"total_tokens":537,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00010429,"prompt_time":0.001734656,"completion_time":0.353091223,"total_time":0.3563051223754883,"created":1753569347}}'
+        body: '{"id":"chatcmpl-34191c06-f161-4c77-9cfd-99b26d09d16b","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, so the user is asking for the capital of Quackiland. Let me look at the information provided.\n\nFirst, the prompt says, \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\" Then they mentioned the same thing again. The user hasn''t provided any new information beyond that. The question is straightforward, just asking for the capital. The answer seems to be clearly stated right there in the initial statement. It mentions that Quack is the capital, so I should just confirm that. I don''t see any conflicting information or anything that would require further analysis. The repetition of Big Canard Statue''s location in Quack doesn''t affect the capital''s name. So the answer is Quack, the capital of Quackiland. Let me check again to make sure I didn''t miss any hidden details. Nope, all the necessary information is given upfront. The user probably just wants a direct answer here.\n</think>\n\nThe capital of Quackiland is Quack.","role":"assistant"}}],"created":1755179774,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion","usage":{"prompt_tokens":66,"completion_tokens":210,"total_tokens":276,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00015118,"prompt_time":0.002897603,"completion_time":0.134365275,"total_time":0.1382451057434082,"created":1755179774}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96575f43cd7aa2f4-YUL
+                - 96f0f454298ea2ba-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-07eed8b9-5676-4732-a015-c5a156cd9713
+                - chatcmpl-34191c06-f161-4c77-9cfd-99b26d09d16b
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -46,15 +46,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "64000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14337"
+                - "14400"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "58585"
+                - "64000"
             X-Ratelimit-Reset-Requests-Day:
-                - "5052.344856977463"
+                - "36225.59678244591"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "12.344856977462769"
+                - "45.59678244590759"
             X-Request-Id:
-                - 96575f43cd7aa2f4-YUL
+                - 96f0f454298ea2ba-YUL
         status: 200 OK
         code: 200
-        duration: 540ms
+        duration: 354ms

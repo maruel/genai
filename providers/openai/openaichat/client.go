@@ -510,15 +510,23 @@ func (m *Message) From(in *genai.Message) error {
 		return fmt.Errorf("unsupported role %q", in.Role)
 	}
 	m.Name = in.User
-	if len(in.Contents) != 0 {
-		m.Content = make([]Content, 0, len(in.Contents))
-		for i := range in.Contents {
-			if in.Contents[i].Thinking != "" {
+	if len(in.Request) != 0 {
+		m.Content = make([]Content, len(in.Request))
+		for i := range in.Request {
+			if err := m.Content[i].From(&in.Request[i]); err != nil {
+				return fmt.Errorf("block %d: %w", i, err)
+			}
+		}
+	}
+	if len(in.Reply) != 0 {
+		m.Content = make([]Content, 0, len(in.Reply))
+		for i := range in.Reply {
+			if in.Reply[i].Thinking != "" {
 				// Ignore thinking messages.
 				continue
 			}
 			c := Content{}
-			if err := c.From(&in.Contents[i]); err != nil {
+			if err := c.From(&in.Reply[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 			m.Content = append(m.Content, c)
@@ -531,7 +539,7 @@ func (m *Message) From(in *genai.Message) error {
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
-		if len(in.Contents) != 0 || len(in.ToolCalls) != 0 {
+		if len(in.Request) != 0 || len(in.ToolCalls) != 0 {
 			// This could be worked around.
 			return fmt.Errorf("can't have tool call result along content or tool calls")
 		}
@@ -557,9 +565,9 @@ func (m *Message) To(out *genai.Message) error {
 		return fmt.Errorf("unsupported role %q", m.Role)
 	}
 	if len(m.Content) != 0 {
-		out.Contents = make([]genai.Content, len(m.Content))
+		out.Reply = make([]genai.Content, len(m.Content))
 		for i := range m.Content {
-			if err := m.Content[i].To(&out.Contents[i]); err != nil {
+			if err := m.Content[i].To(&out.Reply[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		}
@@ -1294,8 +1302,8 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 			return res, err
 		}
 	}
-	for i := range msg.Contents {
-		if msg.Contents[i].Text == "" {
+	for i := range msg.Request {
+		if msg.Request[i].Text == "" {
 			return res, errors.New("only text can be passed as input")
 		}
 	}
@@ -1353,16 +1361,16 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		return res, err
 	}
 	res.Role = genai.Assistant
-	res.Contents = make([]genai.Content, len(resp.Data))
+	res.Reply = make([]genai.Content, len(resp.Data))
 	for i := range resp.Data {
 		n := "content.jpg"
 		if len(resp.Data) > 1 {
 			n = fmt.Sprintf("content%d.jpg", i+1)
 		}
 		if url := resp.Data[i].URL; url != "" {
-			res.Contents[i].Doc = genai.Doc{Filename: n, URL: url}
+			res.Reply[i].Doc = genai.Doc{Filename: n, URL: url}
 		} else if d := resp.Data[i].B64JSON; len(d) != 0 {
-			res.Contents[i].Doc = genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Data[i].B64JSON}}
+			res.Reply[i].Doc = genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Data[i].B64JSON}}
 		} else {
 			return res, errors.New("internal error")
 		}

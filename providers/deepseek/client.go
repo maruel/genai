@@ -219,14 +219,32 @@ func (m *Message) From(in *genai.Message) error {
 		return fmt.Errorf("unsupported role %q", in.Role)
 	}
 	m.Name = in.User
-	for i := range in.Contents {
+	for i := range in.Request {
 		// Thinking content should not be returned to the model.
-		m.Content += in.Contents[i].Text
-		if in.Contents[i].Doc.URL != "" {
+		m.Content += in.Request[i].Text
+		if in.Request[i].Doc.URL != "" {
 			return errors.New("deepseek doesn't support document content blocks with URLs")
 		}
-		if !in.Contents[i].Doc.IsZero() {
-			mimeType, data, err := in.Contents[i].Doc.Read(10 * 1024 * 1024)
+		if !in.Request[i].Doc.IsZero() {
+			mimeType, data, err := in.Request[i].Doc.Read(10 * 1024 * 1024)
+			if err != nil {
+				return fmt.Errorf("failed to read document: %w", err)
+			}
+			if strings.HasPrefix(mimeType, "text/plain") {
+				m.Content += string(data)
+			} else {
+				return fmt.Errorf("deepseek only supports text/plain documents, got %s", mimeType)
+			}
+		}
+	}
+	for i := range in.Reply {
+		// Thinking content should not be returned to the model.
+		m.Content += in.Reply[i].Text
+		if in.Reply[i].Doc.URL != "" {
+			return errors.New("deepseek doesn't support document content blocks with URLs")
+		}
+		if !in.Reply[i].Doc.IsZero() {
+			mimeType, data, err := in.Reply[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return fmt.Errorf("failed to read document: %w", err)
 			}
@@ -244,10 +262,6 @@ func (m *Message) From(in *genai.Message) error {
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
-		if len(in.Contents) != 0 || len(in.ToolCalls) != 0 {
-			// This could be worked around.
-			return fmt.Errorf("can't have tool call result along content or tool calls")
-		}
 		if len(in.ToolCallResults) != 1 {
 			// This should not happen since ChatRequest.Init() works around this.
 			return fmt.Errorf("can't have more than one tool call result at a time")
@@ -278,10 +292,10 @@ func (m *Message) To(out *genai.Message) error {
 	}
 	// Both ReasoningContent and Content can be set on the same reply.
 	if m.ReasoningContent != "" {
-		out.Contents = []genai.Content{{Thinking: m.ReasoningContent}}
+		out.Reply = []genai.Content{{Thinking: m.ReasoningContent}}
 	}
 	if m.Content != "" {
-		out.Contents = append(out.Contents, genai.Content{Text: m.Content})
+		out.Reply = append(out.Reply, genai.Content{Text: m.Content})
 	}
 	return nil
 }

@@ -297,7 +297,7 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
 		for i, msg := range msgs {
-			for j, content := range msg.Contents {
+			for j, content := range msg.Request {
 				if len(content.Opaque) != 0 {
 					return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
 				}
@@ -357,7 +357,7 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
 		for i, msg := range msgs {
-			for j, content := range msg.Contents {
+			for j, content := range msg.Request {
 				if len(content.Opaque) != 0 {
 					return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
 				}
@@ -402,6 +402,7 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 		return result, err
 	}
 	if err := result.Validate(); err != nil {
+		// Catch provider implementation bugs.
 		return result, err
 	}
 	return result, continuableErr
@@ -497,19 +498,19 @@ func ListModels[PErrorResponse ErrAPI, R ListModelsResponse](ctx context.Context
 func SimulateStream(ctx context.Context, c genai.ProviderGen, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
 	res, err := c.GenSync(ctx, msgs, opts)
 	if err == nil {
-		for i := range res.Contents {
-			if !res.Contents[i].Doc.IsZero() {
-				return res, fmt.Errorf("expected Content with Doc, got %#v", res.Contents[i])
+		for i := range res.Reply {
+			if !res.Reply[i].Doc.IsZero() {
+				return res, fmt.Errorf("expected ContentFragment with Doc, got %#v", res.Reply[i])
 			}
-			if url := res.Contents[i].Doc.URL; url != "" {
+			if url := res.Reply[i].Doc.URL; url != "" {
 				chunks <- genai.ContentFragment{
-					Filename: res.Contents[i].Doc.Filename,
-					URL:      res.Contents[i].Doc.URL,
+					Filename: res.Reply[i].Doc.Filename,
+					URL:      res.Reply[i].Doc.URL,
 				}
 			} else {
 				chunks <- genai.ContentFragment{
-					Filename:         res.Contents[i].Doc.Filename,
-					DocumentFragment: res.Contents[i].Doc.Src.(*bb.BytesBuffer).D,
+					Filename:         res.Reply[i].Doc.Filename,
+					DocumentFragment: res.Reply[i].Doc.Src.(*bb.BytesBuffer).D,
 				}
 			}
 		}

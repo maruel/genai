@@ -393,15 +393,24 @@ func (m *Message) From(in *genai.Message) error {
 		return fmt.Errorf("unsupported role %q", in.Role)
 	}
 	m.Name = in.User
-	if len(in.Contents) != 0 {
-		m.Content = make(Contents, 0, len(in.Contents))
-		for i := range in.Contents {
-			if in.Contents[i].Thinking != "" {
+	if len(in.Request) != 0 {
+		m.Content = make(Contents, 0, len(in.Request))
+		for i := range in.Request {
+			m.Content = append(m.Content, Content{})
+			if err := m.Content[len(m.Content)-1].From(&in.Request[i]); err != nil {
+				return fmt.Errorf("block %d: %w", i, err)
+			}
+		}
+	}
+	if len(in.Reply) != 0 {
+		m.Content = make(Contents, 0, len(in.Reply))
+		for i := range in.Reply {
+			if in.Reply[i].Thinking != "" {
 				// DeepSeek and Qwen recommend against passing reasoning back.
 				continue
 			}
 			m.Content = append(m.Content, Content{})
-			if err := m.Content[len(m.Content)-1].From(&in.Contents[i]); err != nil {
+			if err := m.Content[len(m.Content)-1].From(&in.Reply[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		}
@@ -413,7 +422,7 @@ func (m *Message) From(in *genai.Message) error {
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
-		if len(in.Contents) != 0 || len(in.ToolCalls) != 0 {
+		if len(in.Request) != 0 || len(in.ToolCalls) != 0 {
 			// This could be worked around.
 			return fmt.Errorf("can't have tool call result along content or tool calls")
 		}
@@ -642,10 +651,10 @@ func (m *MessageResponse) To(out *genai.Message) error {
 		}
 	}
 	if m.Reasoning != "" {
-		out.Contents = append(out.Contents, genai.Content{Thinking: m.Reasoning})
+		out.Reply = append(out.Reply, genai.Content{Thinking: m.Reasoning})
 	}
 	if m.Content != "" {
-		out.Contents = append(out.Contents, genai.Content{Text: m.Content})
+		out.Reply = append(out.Reply, genai.Content{Text: m.Content})
 	}
 	return nil
 }

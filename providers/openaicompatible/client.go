@@ -174,36 +174,57 @@ func (m *Message) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", in.Role)
 	}
-	if len(in.Contents) > 0 {
-		m.Content = make([]Content, 0, len(in.Contents))
-		for i := range in.Contents {
-			if in.Contents[i].Text != "" {
+	if len(in.Request) > 0 {
+		m.Content = make([]Content, 0, len(in.Request))
+		for i := range in.Request {
+			if in.Request[i].Text != "" {
 				m.Content = append(m.Content, Content{
 					Type: ContentText,
-					Text: in.Contents[i].Text,
+					Text: in.Request[i].Text,
 				})
-			} else if in.Contents[i].Thinking != "" {
+			} else if in.Request[i].Thinking != "" {
 				// Ignore
-			} else if !in.Contents[i].Doc.IsZero() {
+			} else if !in.Request[i].Doc.IsZero() {
 				// Check if this is a text/plain document
-				mimeType, data, err := in.Contents[i].Doc.Read(10 * 1024 * 1024)
+				mimeType, data, err := in.Request[i].Doc.Read(10 * 1024 * 1024)
 				if err != nil {
 					return fmt.Errorf("failed to read document: %w", err)
 				}
 				if strings.HasPrefix(mimeType, "text/plain") {
-					if in.Contents[i].Doc.URL != "" {
+					if in.Request[i].Doc.URL != "" {
 						return errors.New("text/plain documents must be provided inline, not as a URL")
 					}
-					m.Content = append(m.Content, Content{
-						Type: ContentText,
-						Text: string(data),
-					})
+					m.Content = append(m.Content, Content{Type: ContentText, Text: string(data)})
 				} else {
 					return fmt.Errorf("openaicompatible only supports text/plain documents, got %s", mimeType)
 				}
 			} else {
 				// OpenAI compatible providers may have varying document support.
-				return fmt.Errorf("unsupported content type %#v", in.Contents[i])
+				return fmt.Errorf("unsupported content type %#v", in.Request[i])
+			}
+		}
+		for i := range in.Reply {
+			if in.Reply[i].Text != "" {
+				m.Content = append(m.Content, Content{Type: ContentText, Text: in.Reply[i].Text})
+			} else if in.Reply[i].Thinking != "" {
+				// Ignore
+			} else if !in.Reply[i].Doc.IsZero() {
+				// Check if this is a text/plain document
+				mimeType, data, err := in.Reply[i].Doc.Read(10 * 1024 * 1024)
+				if err != nil {
+					return fmt.Errorf("failed to read document: %w", err)
+				}
+				if strings.HasPrefix(mimeType, "text/plain") {
+					if in.Reply[i].Doc.URL != "" {
+						return errors.New("text/plain documents must be provided inline, not as a URL")
+					}
+					m.Content = append(m.Content, Content{Type: ContentText, Text: string(data)})
+				} else {
+					return fmt.Errorf("openaicompatible only supports text/plain documents, got %s", mimeType)
+				}
+			} else {
+				// OpenAI compatible providers may have varying document support.
+				return fmt.Errorf("unsupported content type %#v", in.Reply[i])
 			}
 		}
 	}
@@ -224,10 +245,10 @@ func (m *Message) To(out *genai.Message) error {
 		return fmt.Errorf("unsupported role %q", role)
 	}
 	if len(m.Content) != 0 {
-		out.Contents = make([]genai.Content, len(m.Content))
+		out.Reply = make([]genai.Content, len(m.Content))
 		for i, content := range m.Content {
 			if content.Type == ContentText {
-				out.Contents[i] = genai.Content{Text: content.Text}
+				out.Reply[i] = genai.Content{Text: content.Text}
 			}
 		}
 	}

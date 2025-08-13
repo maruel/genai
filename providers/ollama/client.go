@@ -263,30 +263,59 @@ func (m *Message) From(in *genai.Message) error {
 	}
 	// Ollama only supports one text content per message but multiple images. We need to validate first.
 	txt := 0
-	for i := range in.Contents {
-		if in.Contents[i].Text != "" {
+	for i := range in.Request {
+		if in.Request[i].Text != "" {
 			txt++
 		}
 	}
 	if txt > 1 {
 		return errors.New("ollama only supports one text content per message; todo to implement this transparently")
 	}
-	for i := range in.Contents {
-		if in.Contents[i].Text != "" {
-			m.Content = in.Contents[i].Text
+	for i := range in.Request {
+		if in.Request[i].Text != "" {
+			m.Content = in.Request[i].Text
 		} else {
-			mimeType, data, err := in.Contents[i].Doc.Read(10 * 1024 * 1024)
+			mimeType, data, err := in.Request[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return err
 			}
 			switch {
 			case strings.HasPrefix(mimeType, "image/"):
-				if in.Contents[i].Doc.URL != "" {
+				if in.Request[i].Doc.URL != "" {
 					return errors.New("url are not supported for images")
 				}
 				m.Images = append(m.Images, data)
 			case strings.HasPrefix(mimeType, "text/plain"):
-				if in.Contents[i].Doc.URL != "" {
+				if in.Request[i].Doc.URL != "" {
+					return errors.New("text/plain documents must be provided inline, not as a URL")
+				}
+				// Append text/plain document content to the message content
+				if m.Content != "" {
+					m.Content += "\n" + string(data)
+				} else {
+					m.Content = string(data)
+				}
+			default:
+				return fmt.Errorf("ollama unsupported content type %q", mimeType)
+			}
+		}
+	}
+	for i := range in.Reply {
+		if in.Reply[i].Text != "" {
+			m.Content = in.Reply[i].Text
+		} else {
+			mimeType, data, err := in.Reply[i].Doc.Read(10 * 1024 * 1024)
+			if err != nil {
+				return err
+			}
+			switch {
+			case strings.HasPrefix(mimeType, "image/"):
+				if in.Reply[i].Doc.URL != "" {
+					return errors.New("url are not supported for images")
+				}
+				m.Images = append(m.Images, data)
+			case strings.HasPrefix(mimeType, "text/plain"):
+				if in.Reply[i].Doc.URL != "" {
 					return errors.New("text/plain documents must be provided inline, not as a URL")
 				}
 				// Append text/plain document content to the message content
@@ -309,7 +338,7 @@ func (m *Message) From(in *genai.Message) error {
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
-		if len(in.Contents) != 0 || len(in.ToolCalls) != 0 {
+		if len(in.Request) != 0 || len(in.ToolCalls) != 0 {
 			// This could be worked around.
 			return fmt.Errorf("can't have tool call result along content or tool calls")
 		}
@@ -334,10 +363,10 @@ func (m *Message) To(out *genai.Message) error {
 		return fmt.Errorf("unsupported role %q", m.Role)
 	}
 	if m.Content != "" {
-		out.Contents = []genai.Content{{Text: m.Content}}
+		out.Reply = []genai.Content{{Text: m.Content}}
 	}
 	for i := range m.Images {
-		out.Contents = append(out.Contents, genai.Content{
+		out.Reply = append(out.Reply, genai.Content{
 			Doc: genai.Doc{Filename: "image.jpg", Src: &bb.BytesBuffer{D: m.Images[i]}},
 		})
 	}
@@ -612,7 +641,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 		}
 	}
 	for i, msg := range msgs {
-		for j, content := range msg.Contents {
+		for j, content := range msg.Reply {
 			if len(content.Opaque) != 0 {
 				return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
 			}
@@ -677,7 +706,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 		}
 	}
 	for i, msg := range msgs {
-		for j, content := range msg.Contents {
+		for j, content := range msg.Reply {
 			if len(content.Opaque) != 0 {
 				return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
 			}

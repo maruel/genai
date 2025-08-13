@@ -243,10 +243,18 @@ func (m *Message) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", in.Role)
 	}
-	if len(in.Contents) != 0 {
-		m.Content = make([]Content, len(in.Contents))
-		for i := range in.Contents {
-			if err := m.Content[i].From(&in.Contents[i]); err != nil {
+	if len(in.Request) != 0 {
+		m.Content = make([]Content, len(in.Request))
+		for i := range in.Request {
+			if err := m.Content[i].From(&in.Request[i]); err != nil {
+				return fmt.Errorf("block %d: %w", i, err)
+			}
+		}
+	}
+	if len(in.Reply) != 0 {
+		m.Content = make([]Content, len(in.Reply))
+		for i := range in.Reply {
+			if err := m.Content[i].From(&in.Reply[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		}
@@ -258,7 +266,7 @@ func (m *Message) From(in *genai.Message) error {
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
-		if len(in.Contents) != 0 || len(in.ToolCalls) != 0 {
+		if len(in.Request) != 0 || len(in.ToolCalls) != 0 {
 			// This could be worked around.
 			return fmt.Errorf("can't have tool call result along content or tool calls")
 		}
@@ -517,7 +525,7 @@ func (m *MessageResponse) To(out *genai.Message) error {
 	}
 
 	if m.Content != "" {
-		out.Contents = []genai.Content{{Text: m.Content}}
+		out.Reply = []genai.Content{{Text: m.Content}}
 	}
 	return nil
 }

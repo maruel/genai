@@ -156,7 +156,7 @@ func TestMessages_Validate(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		m := Messages{
 			NewTextMessage("Hello"),
-			Message{Role: Assistant, Contents: []Content{{Text: "I can help with that"}}},
+			Message{Role: Assistant, Reply: []Content{{Text: "I can help with that"}}},
 		}
 		if err := m.Validate(); err != nil {
 			t.Fatalf("unexpected error: %q", err)
@@ -171,10 +171,10 @@ func TestMessages_Validate(t *testing.T) {
 			{
 				name: "Invalid messages",
 				messages: Messages{
-					{Role: User, Contents: []Content{{Text: "Hi", Doc: Doc{Filename: "hi.txt"}}}},
-					{Role: User, Contents: []Content{{}}},
+					{Role: User, Request: []Content{{Text: "Hi", Doc: Doc{Filename: "hi.txt"}}}},
+					{Role: User, Request: []Content{{}}},
 				},
-				errMsg: "message 0: content 0: field Doc can't be used along Text\nmessage 1: content 0: an empty Content is invalid",
+				errMsg: "message 0: request 0: field Doc can't be used along Text\nmessage 1: request 0: an empty Content is invalid",
 			},
 		}
 		for _, tt := range tests {
@@ -201,14 +201,14 @@ func TestMessage_Validate(t *testing.T) {
 				name: "Valid user document message",
 				message: Message{
 					Role: User,
-					Contents: []Content{
+					Request: []Content{
 						{Doc: Doc{Filename: "document.txt", Src: strings.NewReader("document content")}},
 					},
 				},
 			},
 			{
 				name:    "Valid assistant message",
-				message: Message{Role: Assistant, Contents: []Content{{Text: "I can help with that"}}},
+				message: Message{Role: Assistant, Reply: []Content{{Text: "I can help with that"}}},
 			},
 		}
 		for _, tt := range tests {
@@ -228,11 +228,11 @@ func TestMessage_Validate(t *testing.T) {
 			{
 				name:    "empty",
 				message: Message{},
-				errMsg:  "field Role: role \"\" is not supported\nat least one of fields Contents, ToolCalls or ToolCallsResults is required",
+				errMsg:  "field Role: role \"\" is not supported\nat least one of fields Request, Reply, ToolCalls or ToolCallsResults is required",
 			},
 			{
 				name:    "user",
-				message: Message{Role: User, User: "Joe", Contents: []Content{{Text: "Hi"}}},
+				message: Message{Role: User, User: "Joe", Request: []Content{{Text: "Hi"}}},
 				errMsg:  "field User: not supported yet",
 			},
 		}
@@ -296,7 +296,7 @@ func TestContent_Read(t *testing.T) {
 
 func TestMessage_Decode(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
-		m := Message{Role: Assistant, Contents: []Content{{Text: "{\"key\": \"value\"}"}}}
+		m := Message{Role: Assistant, Reply: []Content{{Text: "{\"key\": \"value\"}"}}}
 		if err := m.Decode(&struct{ Key string }{}); err != nil {
 			t.Fatalf("unexpected error: %q", err)
 		}
@@ -309,16 +309,16 @@ func TestMessage_Decode(t *testing.T) {
 		}{
 			{
 				name:    "Invalid JSON message",
-				message: Message{Role: Assistant, Contents: []Content{{Text: "invalid"}}},
-				errMsg:  "failed to decode message text as JSON: invalid character 'i' looking for beginning of value; content: \"invalid\"",
+				message: Message{Role: Assistant, Reply: []Content{{Text: "invalid"}}},
+				errMsg:  "failed to decode message text as JSON: invalid character 'i' looking for beginning of value; reply: \"invalid\"",
 			},
 			{
 				name: "Invalid DecodeAs",
 				message: Message{
-					Role:     Assistant,
-					Contents: []Content{{Doc: Doc{Src: strings.NewReader("document content")}}},
+					Role:  Assistant,
+					Reply: []Content{{Doc: Doc{Src: strings.NewReader("document content")}}},
 				},
-				errMsg: "only text messages can be decoded as JSON, can't decode {\"role\":\"assistant\",\"contents\":[{\"doc\":{\"bytes\":\"ZG9jdW1lbnQgY29udGVudA==\"}}]}",
+				errMsg: "only text messages can be decoded as JSON, can't decode {\"role\":\"assistant\",\"reply\":[{\"doc\":{\"bytes\":\"ZG9jdW1lbnQgY29udGVudA==\"}}]}",
 			},
 		}
 		for _, tt := range tests {
@@ -340,9 +340,9 @@ func TestAccumulateContentFragment(t *testing.T) {
 	}{
 		{
 			name: "Join assistant text",
-			msgs: Messages{Message{Role: Assistant, Contents: []Content{{Text: "Hello"}}}},
+			msgs: Messages{Message{Role: Assistant, Reply: []Content{{Text: "Hello"}}}},
 			f:    ContentFragment{TextFragment: " world"},
-			want: Messages{Message{Role: Assistant, Contents: []Content{{Text: "Hello world"}}}},
+			want: Messages{Message{Role: Assistant, Reply: []Content{{Text: "Hello world"}}}},
 		},
 		{
 			name: "User then assistant",
@@ -350,22 +350,22 @@ func TestAccumulateContentFragment(t *testing.T) {
 			f:    ContentFragment{TextFragment: "No"},
 			want: Messages{
 				NewTextMessage("Make me a sandwich"),
-				Message{Role: Assistant, Contents: []Content{{Text: "No"}}},
+				Message{Role: Assistant, Reply: []Content{{Text: "No"}}},
 			},
 		},
 		{
 			name: "Document then text",
 			msgs: Messages{
 				{
-					Role:     Assistant,
-					Contents: []Content{{Doc: Doc{Filename: "document.txt", Src: &buffer{"document content"}}}},
+					Role:  Assistant,
+					Reply: []Content{{Doc: Doc{Filename: "document.txt", Src: &buffer{"document content"}}}},
 				},
 			},
 			f: ContentFragment{TextFragment: "No"},
 			want: Messages{
 				{
 					Role: Assistant,
-					Contents: []Content{
+					Reply: []Content{
 						{Doc: Doc{Filename: "document.txt", Src: &buffer{"document content"}}},
 						{Text: "No"},
 					},
@@ -380,7 +380,7 @@ func TestAccumulateContentFragment(t *testing.T) {
 				{
 					Role: Assistant,
 					// Merge together.
-					Contents:  []Content{{Text: "No"}},
+					Reply:     []Content{{Text: "No"}},
 					ToolCalls: []ToolCall{{Name: "tool"}},
 				},
 			},
@@ -435,7 +435,7 @@ func TestMessage_Accumulate(t *testing.T) {
 			name:     "Text",
 			message:  Message{Role: Assistant},
 			fragment: ContentFragment{TextFragment: "Hello"},
-			want:     Message{Role: Assistant, Contents: []Content{{Text: "Hello"}}},
+			want:     Message{Role: Assistant, Reply: []Content{{Text: "Hello"}}},
 		},
 		{
 			name:    "Document",
@@ -445,8 +445,8 @@ func TestMessage_Accumulate(t *testing.T) {
 				DocumentFragment: []byte("document content"),
 			},
 			want: Message{
-				Role:     Assistant,
-				Contents: []Content{{Doc: Doc{Filename: "document.txt", Src: &bb.BytesBuffer{D: []byte("document content")}}}},
+				Role:  Assistant,
+				Reply: []Content{{Doc: Doc{Filename: "document.txt", Src: &bb.BytesBuffer{D: []byte("document content")}}}},
 			},
 		},
 		{
@@ -460,15 +460,15 @@ func TestMessage_Accumulate(t *testing.T) {
 		},
 		{
 			name:     "Add text to existing text",
-			message:  Message{Role: Assistant, Contents: []Content{{Text: "Hello"}}},
+			message:  Message{Role: Assistant, Reply: []Content{{Text: "Hello"}}},
 			fragment: ContentFragment{TextFragment: " world"},
-			want:     Message{Role: Assistant, Contents: []Content{{Text: "Hello world"}}},
+			want:     Message{Role: Assistant, Reply: []Content{{Text: "Hello world"}}},
 		},
 		{
 			name:     "Add thinking to existing thinking",
-			message:  Message{Role: Assistant, Contents: []Content{{Thinking: "I think "}}},
+			message:  Message{Role: Assistant, Reply: []Content{{Thinking: "I think "}}},
 			fragment: ContentFragment{ThinkingFragment: "therefore I am"},
-			want:     Message{Role: Assistant, Contents: []Content{{Thinking: "I think therefore I am"}}},
+			want:     Message{Role: Assistant, Reply: []Content{{Thinking: "I think therefore I am"}}},
 		},
 	}
 	for _, tt := range tests {
@@ -784,10 +784,10 @@ func TestMessage_UnmarshalJSON(t *testing.T) {
 		}{
 			{
 				name: "User text message",
-				json: `{"role": "user", "contents": [{"text": "Hello"}]}`,
+				json: `{"role": "user", "request": [{"text": "Hello"}]}`,
 				want: Message{
-					Role:     User,
-					Contents: []Content{{Text: "Hello"}},
+					Role:    User,
+					Request: []Content{{Text: "Hello"}},
 				},
 			},
 			{
@@ -828,24 +828,24 @@ func TestMessage_UnmarshalJSON(t *testing.T) {
 		}{
 			{
 				name:   "Invalid JSON",
-				json:   `{"role": "user", "contents": invalid}`,
+				json:   `{"role": "user", "request": invalid}`,
 				errMsg: "invalid character 'i' looking for beginning of value",
 			},
 			{
 				name:   "Unknown field",
-				json:   `{"role": "user", "contents": [{"text": "Hi"}], "unknown_field": "value"}`,
+				json:   `{"role": "user", "request": [{"text": "Hi"}], "unknown_field": "value"}`,
 				errMsg: "json: unknown field \"unknown_field\"",
 			},
 			{
 				name:   "Invalid role",
-				json:   `{"role": "invalid", "contents": [{"text": "Hi"}]}`,
+				json:   `{"role": "invalid", "request": [{"text": "Hi"}]}`,
 				errMsg: "field Role: role \"invalid\" is not supported",
 			},
 			// Note: Empty message (just role) passes UnmarshalJSON validation,
 			// but would fail full Validate() method. UnmarshalJSON only does partial validation.
 			{
 				name:   "User with User field",
-				json:   `{"role": "user", "user": "joe", "contents": [{"text": "Hi"}]}`,
+				json:   `{"role": "user", "user": "joe", "request": [{"text": "Hi"}]}`,
 				errMsg: "field User: not supported yet",
 			},
 		}

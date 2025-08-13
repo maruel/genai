@@ -63,14 +63,14 @@ func TestProviderGenThinking_GenSync(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			mp := &mockProviderGenSync{
-				response: genai.Result{Message: genai.Message{Role: genai.Assistant, Contents: []genai.Content{{Text: tc.in}}}},
+				response: genai.Result{Message: genai.Message{Role: genai.Assistant, Reply: []genai.Content{{Text: tc.in}}}},
 			}
 			tp := &adapters.ProviderGenThinking{ProviderGen: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
 			got, err := tp.GenSync(t.Context(), genai.Messages{}, tc.opts)
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
-			if diff := cmp.Diff(tc.want, got.Contents); diff != "" {
+			if diff := cmp.Diff(tc.want, got.Reply); diff != "" {
 				t.Fatalf("diff:\n%s", diff)
 			}
 		})
@@ -109,7 +109,7 @@ func TestProviderGenThinking_GenSync_errors(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			mp := &mockProviderGenSync{
-				response: genai.Result{Message: genai.Message{Role: genai.Assistant, Contents: tc.in}},
+				response: genai.Result{Message: genai.Message{Role: genai.Assistant, Reply: tc.in}},
 				err:      tc.err,
 			}
 			tp := &adapters.ProviderGenThinking{ProviderGen: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
@@ -245,7 +245,7 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
-			if diff := cmp.Diff(tc.want, accumulated.Contents); diff != "" {
+			if diff := cmp.Diff(tc.want, accumulated.Reply); diff != "" {
 				t.Fatalf("diff:\n%s", diff)
 			}
 			if diff := cmp.Diff(result.Message, accumulated); diff != "" {

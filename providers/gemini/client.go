@@ -642,13 +642,19 @@ func (c *Content) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", in.Role)
 	}
-	c.Parts = make([]Part, len(in.Contents)+len(in.ToolCalls)+len(in.ToolCallResults))
-	for i := range in.Contents {
-		if err := c.Parts[i].FromContent(&in.Contents[i]); err != nil {
+	c.Parts = make([]Part, len(in.Request)+len(in.Reply)+len(in.ToolCalls)+len(in.ToolCallResults))
+	for i := range in.Request {
+		if err := c.Parts[i].FromContent(&in.Request[i]); err != nil {
 			return fmt.Errorf("part %d: %w", i, err)
 		}
 	}
-	offset := len(in.Contents)
+	offset := len(in.Request)
+	for i := range in.Reply {
+		if err := c.Parts[i].FromContent(&in.Reply[i]); err != nil {
+			return fmt.Errorf("part %d: %w", i, err)
+		}
+	}
+	offset += len(in.Reply)
 	for i := range in.ToolCalls {
 		if err := c.Parts[offset+i].FunctionCall.From(&in.ToolCalls[i]); err != nil {
 			return fmt.Errorf("part %d: %w", offset+i, err)
@@ -679,13 +685,13 @@ func (c *Content) To(out *genai.Message) error {
 
 	for _, part := range c.Parts {
 		if part.Thought {
-			out.Contents = append(out.Contents, genai.Content{Thinking: part.Text})
+			out.Reply = append(out.Reply, genai.Content{Thinking: part.Text})
 			continue
 		}
 		// There's no signal as to what it is, we have to test its content.
 		// We need to split out content from tools.
 		if part.Text != "" {
-			out.Contents = append(out.Contents, genai.Content{Text: part.Text})
+			out.Reply = append(out.Reply, genai.Content{Text: part.Text})
 			continue
 		}
 		if part.InlineData.MimeType != "" {
@@ -696,7 +702,7 @@ func (c *Content) To(out *genai.Message) error {
 			if len(exts) == 0 {
 				return fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
 			}
-			out.Contents = append(out.Contents, genai.Content{
+			out.Reply = append(out.Reply, genai.Content{
 				Doc: genai.Doc{Filename: "content" + exts[0], Src: &bb.BytesBuffer{D: part.InlineData.Data}},
 			})
 			continue
@@ -709,7 +715,7 @@ func (c *Content) To(out *genai.Message) error {
 			if len(exts) == 0 {
 				return fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
 			}
-			out.Contents = append(out.Contents, genai.Content{Doc: genai.Doc{Filename: "content" + exts[0], URL: part.FileData.FileURI}})
+			out.Reply = append(out.Reply, genai.Content{Doc: genai.Doc{Filename: "content" + exts[0], URL: part.FileData.FileURI}})
 			continue
 		}
 		if part.FunctionCall.Name != "" {
@@ -1623,8 +1629,8 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 			return res, err
 		}
 	}
-	for i := range msg.Contents {
-		if msg.Contents[i].Text == "" {
+	for i := range msg.Request {
+		if msg.Request[i].Text == "" {
 			return res, errors.New("only text can be passed as input")
 		}
 	}
@@ -1685,7 +1691,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		if nbImages > 1 {
 			n = fmt.Sprintf("content%d.jpg", i+1)
 		}
-		res.Contents = append(res.Contents, genai.Content{Doc: genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Predictions[i].BytesBase64Encoded}}})
+		res.Reply = append(res.Reply, genai.Content{Doc: genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Predictions[i].BytesBase64Encoded}}})
 	}
 	if uce != nil {
 		return res, uce
@@ -1725,8 +1731,8 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 			return "", err
 		}
 	}
-	for i := range msg.Contents {
-		if msg.Contents[i].Text == "" {
+	for i := range msg.Request {
+		if msg.Request[i].Text == "" {
 			return "", errors.New("only text can be passed as input")
 		}
 	}
@@ -1794,7 +1800,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	res.FinishReason = genai.FinishedStop
 	for _, p := range op.Response.GenerateVideoResponse.GeneratedSamples {
 		// This requires the Google API key to fetch!
-		res.Contents = []genai.Content{{Doc: genai.Doc{Filename: "content.mp4", URL: p.Video.URI}}}
+		res.Reply = []genai.Content{{Doc: genai.Doc{Filename: "content.mp4", URL: p.Video.URI}}}
 	}
 	return res, nil
 }

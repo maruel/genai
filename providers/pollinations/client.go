@@ -341,14 +341,22 @@ func (m *Message) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", in.Role)
 	}
-	if len(in.Contents) != 0 {
-		m.Content = make(Contents, 0, len(in.Contents))
-		for i := range in.Contents {
-			if in.Contents[i].Thinking != "" {
+	if len(in.Request) != 0 {
+		m.Content = make(Contents, len(in.Request))
+		for i := range in.Request {
+			if err := m.Content[i].From(&in.Request[i]); err != nil {
+				return fmt.Errorf("block %d: %w", i, err)
+			}
+		}
+	}
+	if len(in.Reply) != 0 {
+		m.Content = make(Contents, 0, len(in.Reply))
+		for i := range in.Reply {
+			if in.Reply[i].Thinking != "" {
 				continue
 			}
 			m.Content = append(m.Content, Content{})
-			if err := m.Content[len(m.Content)-1].From(&in.Contents[i]); err != nil {
+			if err := m.Content[len(m.Content)-1].From(&in.Reply[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		}
@@ -360,7 +368,7 @@ func (m *Message) From(in *genai.Message) error {
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
-		if len(in.Contents) != 0 || len(in.ToolCalls) != 0 {
+		if len(in.Request) != 0 || len(in.ToolCalls) != 0 {
 			// This could be worked around.
 			return fmt.Errorf("can't have tool call result along content or tool calls")
 		}
@@ -631,21 +639,21 @@ func (m *MessageResponse) To(out *genai.Message) error {
 	}
 	for i := range m.Content {
 		if m.Content[i].Text != "" {
-			out.Contents = append(out.Contents, genai.Content{Text: m.Content[i].Text})
+			out.Reply = append(out.Reply, genai.Content{Text: m.Content[i].Text})
 		} else {
 			return fmt.Errorf("unsupported content #%d: %q", i, m.Content[i])
 		}
 	}
 	if m.ReasoningContent != "" {
 		// Paper over broken "deepseek".
-		if len(out.Contents) == 1 && out.Contents[0].Text != "" {
-			out.Contents = append(out.Contents, genai.Content{Thinking: m.ReasoningContent})
+		if len(out.Reply) == 1 && out.Reply[0].Text != "" {
+			out.Reply = append(out.Reply, genai.Content{Thinking: m.ReasoningContent})
 		} else {
-			out.Contents = append(out.Contents, genai.Content{Text: m.ReasoningContent})
+			out.Reply = append(out.Reply, genai.Content{Text: m.ReasoningContent})
 		}
 	}
 	if len(m.Audio.Data) != 0 {
-		out.Contents = append(out.Contents, genai.Content{
+		out.Reply = append(out.Reply, genai.Content{
 			Doc: genai.Doc{Filename: "sound.wav", Src: &bb.BytesBuffer{D: m.Audio.Data}},
 		})
 	}
@@ -1066,8 +1074,8 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 			return res, fmt.Errorf("modality image not supported, supported: %s", supported)
 		}
 	}
-	for i := range msg.Contents {
-		if msg.Contents[i].Text == "" {
+	for i := range msg.Request {
+		if msg.Request[i].Text == "" {
 			return res, errors.New("only text can be passed as input")
 		}
 	}
@@ -1104,7 +1112,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	qp.Add("safe", "false")
 	// qp.Add("negative_prompt", "worst quality, blurry")
 	qp.Add("quality", "medium")
-	for _, mc := range msg.Contents {
+	for _, mc := range msg.Request {
 		if mc.Doc.Src != nil {
 			return res, errors.New("inline document is not supported")
 		}
@@ -1133,9 +1141,9 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		return res, err
 	}
 	res.Role = genai.Assistant
-	res.Contents = []genai.Content{{Doc: genai.Doc{Src: &bb.BytesBuffer{D: b}}}}
+	res.Reply = []genai.Content{{Doc: genai.Doc{Src: &bb.BytesBuffer{D: b}}}}
 	if ct := resp.Header.Get("Content-Type"); strings.HasPrefix(ct, "image/jpeg") {
-		res.Contents[0].Doc.Filename = "content.jpg"
+		res.Reply[0].Doc.Filename = "content.jpg"
 	} else {
 		return res, fmt.Errorf("unknown Content-Type: %s", ct)
 	}

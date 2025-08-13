@@ -98,7 +98,7 @@ type injectThinking struct {
 func (i *injectThinking) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	res, err := i.injectOption.GenSync(ctx, msgs, opts)
 	if res.ReasoningTokens > 0 {
-		res.Contents = append(res.Contents, genai.Content{Thinking: "\n"})
+		res.Reply = append(res.Reply, genai.Content{Thinking: "\n"})
 	}
 	return res, err
 }

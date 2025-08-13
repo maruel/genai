@@ -328,6 +328,10 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	if err != nil {
 		return result, err
 	}
+	if err := result.Validate(); err != nil {
+		// Catch provider implementation bugs.
+		return result, err
+	}
 
 	lastResp := c.LastResponseHeaders()
 	if c.ProcessHeaders != nil && lastResp != nil {
@@ -395,6 +399,9 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 		result.FinishReason = genai.FinishedToolCalls
 	}
 	if err != nil {
+		return result, err
+	}
+	if err := result.Validate(); err != nil {
 		return result, err
 	}
 	return result, continuableErr

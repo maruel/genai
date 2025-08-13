@@ -123,6 +123,7 @@ var Scoreboard = genai.Scoreboard{
 			GenStream: &genai.FunctionalityText{
 				ReportRateLimits: true,
 				NoStopSequence:   true,
+				NoMaxTokens:      true,
 				Tools:            genai.True,
 				BiasedTool:       genai.Flaky,
 				JSON:             true,

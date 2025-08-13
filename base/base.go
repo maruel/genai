@@ -158,10 +158,11 @@ func (c *Provider[PErrorResponse]) DecodeResponse(resp *http.Response, url strin
 	er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
 	if foundExtraKeys, err := internal.DecodeJSON(d, er, r2); err == nil {
 		// It may have succeeded but not decoded anything.
-		if v := reflect.ValueOf(er); !reflect.DeepEqual(out, reflect.Zero(v.Type()).Interface()) {
-			return nil
+		if v := reflect.ValueOf(er); !reflect.DeepEqual(v, reflect.Zero(c.errorResponse).Interface()) {
+			errs = append(errs, er)
+		} else {
+			errs = append(errs, err)
 		}
-		errs = append(errs, er)
 	} else if foundExtraKeys {
 		// This is confusing, not sure it's a good idea. The problem is that we need to detect when error fields
 		// appear too!
@@ -202,7 +203,11 @@ func (c *Provider[PErrorResponse]) DecodeError(url string, resp *http.Response) 
 	herr := &httpjson.Error{StatusCode: resp.StatusCode, ResponseBody: b}
 	er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
 	if foundExtraKeys, err := internal.DecodeJSON(d, er, r2); err == nil {
-		errs = append(errs, herr, er)
+		errs = append(errs, herr)
+		// It may have succeeded but not decoded anything.
+		if v := reflect.ValueOf(er); !reflect.DeepEqual(v, reflect.Zero(c.errorResponse).Interface()) {
+			errs = append(errs, er)
+		}
 	} else if foundExtraKeys {
 		// In strict mode, return the decoding error instead.
 		errs = append(errs, err)
@@ -326,7 +331,7 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 
 	lastResp := c.LastResponseHeaders()
 	if c.ProcessHeaders != nil && lastResp != nil {
-		result.Usage.Limits = c.ProcessHeaders(lastResp)
+		result.Limits = c.ProcessHeaders(lastResp)
 	}
 	return result, continuableErr
 }
@@ -383,7 +388,7 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	}
 	lastResp := c.LastResponseHeaders()
 	if c.ProcessHeaders != nil && lastResp != nil {
-		result.Usage.Limits = c.ProcessHeaders(lastResp)
+		result.Limits = c.ProcessHeaders(lastResp)
 	}
 	if c.LieToolCalls && len(result.ToolCalls) != 0 && result.FinishReason == genai.FinishedStop {
 		// Lie for the benefit of everyone.

@@ -1336,21 +1336,22 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		var date time.Time
 		for _, mdl := range mdls {
 			m := mdl.(*Model)
+			// Always select the most recent model.
+			if !date.IsZero() && m.CreatedAt.Before(date) {
+				continue
+			}
 			if cheap {
-				if strings.Contains(m.ID, "-haiku-") && (date.IsZero() || m.CreatedAt.Before(date)) {
-					// For the cheapest, we want the oldest model as it is generally cheaper.
+				if strings.Contains(m.ID, "-haiku-") {
 					date = m.CreatedAt
 					c.Model = m.ID
 				}
 			} else if good {
-				if strings.Contains(m.ID, "-sonnet-") && (date.IsZero() || m.CreatedAt.After(date)) {
-					// For the greatest, we want the newest model as it is generally better.
+				if strings.Contains(m.ID, "-sonnet-") {
 					date = m.CreatedAt
 					c.Model = m.ID
 				}
 			} else {
-				if strings.Contains(m.ID, "-opus-") && (date.IsZero() || m.CreatedAt.After(date)) {
-					// For the greatest, we want the newest model as it is generally better.
+				if strings.Contains(m.ID, "-opus-") {
 					date = m.CreatedAt
 					c.Model = m.ID
 				}

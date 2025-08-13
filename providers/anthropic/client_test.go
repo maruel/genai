@@ -118,7 +118,7 @@ func TestClient_Preferred(t *testing.T) {
 		name string
 		want string
 	}{
-		{base.PreferredCheap, "claude-3-haiku-20240307"},
+		{base.PreferredCheap, "claude-3-5-haiku-20241022"},
 		{base.PreferredGood, "claude-sonnet-4-20250514"},
 		{base.PreferredSOTA, "claude-opus-4-20250514"},
 	}

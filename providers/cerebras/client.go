@@ -16,6 +16,7 @@ import (
 	"net/http"
 	"os"
 	"reflect"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -291,8 +292,11 @@ type Message struct {
 	Name       string     `json:"name,omitzero"` // Tool call name.
 }
 
-// From must be called with at most one ToolCallResults.
+// From must be called with at most one Request or ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
+	if len(in.Request) > 1 || len(in.ToolCallResults) > 1 {
+		return errors.New("internal error")
+	}
 	switch r := in.Role(); r {
 	case "user", "assistant":
 		m.Role = r
@@ -302,68 +306,25 @@ func (m *Message) From(in *genai.Message) error {
 		return fmt.Errorf("unsupported role %q", r)
 	}
 	if len(in.Request) > 0 {
-		m.Content = make([]Content, 0, len(in.Request))
+		m.Content = make([]Content, len(in.Request))
 		for i := range in.Request {
-			if in.Request[i].Text != "" {
-				m.Content = append(m.Content, Content{Type: ContentText, Text: in.Request[i].Text})
-			} else if !in.Request[i].Doc.IsZero() {
-				// Check if this is a text/plain document
-				mimeType, data, err := in.Request[i].Doc.Read(10 * 1024 * 1024)
-				if err != nil {
-					return fmt.Errorf("failed to read document: %w", err)
-				}
-				if !strings.HasPrefix(mimeType, "text/plain") {
-					return fmt.Errorf("cerebras only supports text/plain documents, got %s", mimeType)
-				}
-				if in.Request[i].Doc.URL != "" {
-					return errors.New("text/plain documents must be provided inline, not as a URL")
-				}
-				m.Content = append(m.Content, Content{Type: ContentText, Text: string(data)})
-			} else {
-				return errors.New("unknown Request type")
+			if err := m.Content[i].FromRequest(&in.Request[i]); err != nil {
+				return fmt.Errorf("request %d: %w", i, err)
 			}
 		}
 	}
-	if len(in.Reply) > 0 {
-		m.Content = make([]Content, 0, len(in.Reply))
-		for i := range in.Reply {
-			if in.Reply[i].Text != "" {
-				m.Content = append(m.Content, Content{Type: ContentText, Text: in.Reply[i].Text})
-			} else if in.Reply[i].Thinking != "" {
-				// Ignore
-			} else if !in.Reply[i].Doc.IsZero() {
-				// Check if this is a text/plain document
-				mimeType, data, err := in.Reply[i].Doc.Read(10 * 1024 * 1024)
-				if err != nil {
-					return fmt.Errorf("failed to read document: %w", err)
-				}
-				if !strings.HasPrefix(mimeType, "text/plain") {
-					return fmt.Errorf("cerebras only supports text/plain documents, got %s", mimeType)
-				}
-				if in.Reply[i].Doc.URL != "" {
-					return errors.New("text/plain documents must be provided inline, not as a URL")
-				}
-				m.Content = append(m.Content, Content{Type: ContentText, Text: string(data)})
-			} else {
-				return errors.New("unknown Reply type")
-			}
+	for i := range in.Reply {
+		if !in.Reply[i].ToolCall.IsZero() {
+			t := ToolCall{}
+			t.From(&in.Reply[i].ToolCall)
+			m.ToolCalls = append(m.ToolCalls, t)
+			continue
 		}
-	}
-	if len(in.ToolCalls) != 0 {
-		m.ToolCalls = make([]ToolCall, len(in.ToolCalls))
-		for i := range in.ToolCalls {
-			m.ToolCalls[i].From(&in.ToolCalls[i])
+		if err := m.Content[i].FromReply(&in.Reply[i]); err != nil {
+			return fmt.Errorf("reply %d: %w", i, err)
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
-		if len(in.Request) != 0 || len(in.ToolCalls) != 0 {
-			// This could be worked around.
-			return fmt.Errorf("can't have tool call result along content or tool calls")
-		}
-		if len(in.ToolCallResults) != 1 {
-			// This should not happen since ChatRequest.Init() works around this.
-			return fmt.Errorf("can't have more than one tool call result at a time")
-		}
 		// Process only the first tool call result in this method.
 		// The Init method handles multiple tool call results by creating multiple messages.
 		m.Content = Contents{{Type: ContentText, Text: in.ToolCallResults[0].Result}}
@@ -374,19 +335,18 @@ func (m *Message) From(in *genai.Message) error {
 }
 
 func (m *Message) To(out *genai.Message) error {
-	if len(m.ToolCalls) != 0 {
-		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))
-		for i := range m.ToolCalls {
-			m.ToolCalls[i].To(&out.ToolCalls[i])
+	out.Reply = make([]genai.Reply, 0, len(m.Content)+len(m.ToolCalls))
+	for _, content := range m.Content {
+		switch content.Type {
+		case ContentText:
+			out.Reply = append(out.Reply, genai.Reply{Text: content.Text})
+		default:
+			return fmt.Errorf("unsupported content type %q", content.Type)
 		}
 	}
-	if len(m.Content) != 0 {
-		out.Reply = make([]genai.Reply, len(m.Content))
-		for i, content := range m.Content {
-			if content.Type == ContentText {
-				out.Reply[i] = genai.Reply{Text: content.Text}
-			}
-		}
+	for i := range m.ToolCalls {
+		out.Reply = append(out.Reply, genai.Reply{})
+		m.ToolCalls[i].To(&out.Reply[len(out.Reply)-1].ToolCall)
 	}
 	return nil
 }
@@ -394,6 +354,58 @@ func (m *Message) To(out *genai.Message) error {
 type Content struct {
 	Type ContentType `json:"type,omitzero"`
 	Text string      `json:"text,omitzero"`
+}
+
+func (c *Content) FromRequest(in *genai.Request) error {
+	if in.Text != "" {
+		c.Type = ContentText
+		c.Text = in.Text
+		return nil
+	}
+	if !in.Doc.IsZero() {
+		// Check if this is a text/plain document
+		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+		if err != nil {
+			return fmt.Errorf("failed to read document: %w", err)
+		}
+		if !strings.HasPrefix(mimeType, "text/plain") {
+			return fmt.Errorf("cerebras only supports text/plain documents, got %s", mimeType)
+		}
+		if in.Doc.URL != "" {
+			return errors.New("text/plain documents must be provided inline, not as a URL")
+		}
+		c.Type = ContentText
+		c.Text = string(data)
+		return nil
+	}
+	return errors.New("unknown Request type")
+}
+
+func (c *Content) FromReply(in *genai.Reply) error {
+	if in.Text != "" {
+		c.Type = ContentText
+		c.Text = in.Text
+	} else if in.Thinking != "" {
+		// Ignore
+	} else if !in.Doc.IsZero() {
+		// Check if this is a text/plain document
+		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+		if err != nil {
+			return fmt.Errorf("failed to read document: %w", err)
+		}
+		if !strings.HasPrefix(mimeType, "text/plain") {
+			return fmt.Errorf("cerebras only supports text/plain documents, got %s", mimeType)
+		}
+		if in.Doc.URL != "" {
+			return errors.New("text/plain documents must be provided inline, not as a URL")
+		}
+		c.Type = ContentText
+		c.Text = string(data)
+	} else {
+		// Cerebras doesn't support other document types.
+		return errors.New("internal error: unknown Reply type")
+	}
+	return nil
 }
 
 type ContentType string
@@ -518,7 +530,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	}
 	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
-	if len(out.ToolCalls) != 0 && out.FinishReason == genai.FinishedStop {
+	if out.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		// Lie for the benefit of everyone.
 		out.FinishReason = genai.FinishedToolCalls
 	}

@@ -165,6 +165,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 		c.Messages = append(c.Messages, Message{Role: "system", Content: sp})
 	}
 	for i := range msgs {
+		// Split messages into multiple messages as needed.
 		if len(msgs[i].ToolCallResults) > 1 {
 			// Handle messages with multiple tool call results by creating multiple messages
 			for j := range msgs[i].ToolCallResults {
@@ -236,15 +237,14 @@ func (m *Message) From(in *genai.Message) error {
 		return fmt.Errorf("unsupported role %q", r)
 	}
 	m.Name = in.User
-	for i := range in.Request {
-		// Thinking content should not be returned to the model.
-		if in.Request[i].Text != "" {
-			m.Content += in.Request[i].Text
-		} else if !in.Request[i].Doc.IsZero() {
-			if in.Request[i].Doc.URL != "" {
+	if len(in.Request) == 1 {
+		if in.Request[0].Text != "" {
+			m.Content += in.Request[0].Text
+		} else if !in.Request[0].Doc.IsZero() {
+			if in.Request[0].Doc.URL != "" {
 				return errors.New("deepseek doesn't support document content blocks with URLs")
 			}
-			mimeType, data, err := in.Request[i].Doc.Read(10 * 1024 * 1024)
+			mimeType, data, err := in.Request[0].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return fmt.Errorf("failed to read document: %w", err)
 			}
@@ -255,12 +255,11 @@ func (m *Message) From(in *genai.Message) error {
 		} else {
 			return errors.New("unknown Request type")
 		}
+		return nil
 	}
 	for i := range in.Reply {
 		if in.Reply[i].Text != "" {
 			m.Content += in.Reply[i].Text
-		} else if in.Reply[i].Thinking != "" {
-			// Thinking content should not be returned to the model.
 		} else if !in.Reply[i].Doc.IsZero() {
 			mimeType, data, err := in.Reply[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
@@ -273,14 +272,13 @@ func (m *Message) From(in *genai.Message) error {
 				return fmt.Errorf("deepseek only supports text/plain documents, got %s", mimeType)
 			}
 			m.Content += string(data)
+		} else if in.Reply[i].Thinking != "" {
+			// Thinking content should not be returned to the model.
+		} else if !in.Reply[i].ToolCall.IsZero() {
+			m.ToolCalls = append(m.ToolCalls, ToolCall{})
+			m.ToolCalls[len(m.ToolCalls)-1].From(&in.Reply[i].ToolCall)
 		} else {
 			return errors.New("unknown Reply type")
-		}
-	}
-	if len(in.ToolCalls) != 0 {
-		m.ToolCalls = make([]ToolCall, len(in.ToolCalls))
-		for i := range in.ToolCalls {
-			m.ToolCalls[i].From(&in.ToolCalls[i])
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
@@ -293,18 +291,16 @@ func (m *Message) From(in *genai.Message) error {
 }
 
 func (m *Message) To(out *genai.Message) error {
-	if len(m.ToolCalls) != 0 {
-		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))
-		for i := range m.ToolCalls {
-			m.ToolCalls[i].To(&out.ToolCalls[i])
-		}
-	}
 	// Both ReasoningContent and Content can be set on the same reply.
 	if m.ReasoningContent != "" {
-		out.Reply = []genai.Reply{{Thinking: m.ReasoningContent}}
+		out.Reply = append(out.Reply, genai.Reply{Thinking: m.ReasoningContent})
 	}
 	if m.Content != "" {
 		out.Reply = append(out.Reply, genai.Reply{Text: m.Content})
+	}
+	for i := range m.ToolCalls {
+		out.Reply = append(out.Reply, genai.Reply{})
+		m.ToolCalls[i].To(&out.Reply[len(out.Reply)-1].ToolCall)
 	}
 	return nil
 }

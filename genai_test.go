@@ -138,7 +138,7 @@ func TestMessage(t *testing.T) {
 				{
 					name: "Valid assistant with tool calls",
 					in: Message{
-						ToolCalls: []ToolCall{{Name: "tool", Arguments: "{}"}},
+						Reply: []Reply{{ToolCall: ToolCall{Name: "tool", Arguments: "{}"}}},
 					},
 				},
 				{
@@ -150,8 +150,7 @@ func TestMessage(t *testing.T) {
 				{
 					name: "Valid assistant with reply and tool calls",
 					in: Message{
-						Reply:     []Reply{{Text: "I'll call a tool"}},
-						ToolCalls: []ToolCall{{Name: "tool", Arguments: "{}"}},
+						Reply: []Reply{{Text: "I'll call a tool", ToolCall: ToolCall{Name: "tool", Arguments: "{}"}}},
 					},
 				},
 			}
@@ -172,7 +171,7 @@ func TestMessage(t *testing.T) {
 				{
 					name:   "empty",
 					in:     Message{},
-					errMsg: "at least one of fields Request, Reply, ToolCalls or ToolCallsResults is required",
+					errMsg: "at least one of fields Request, Reply or ToolCallsResults is required",
 				},
 				{
 					name:   "User field",
@@ -185,15 +184,19 @@ func TestMessage(t *testing.T) {
 						Request:         []Request{{Text: "request"}},
 						ToolCallResults: []ToolCallResult{{Name: "tool", Result: "result"}},
 					},
-					errMsg: "exactly one of Request, Reply/ToolCalls or ToolCallResults must be set",
+					errMsg: "exactly one of Request, Reply or ToolCallResults must be set",
 				},
 				{
 					name: "reply containing doc and tool calls",
 					in: Message{
-						Reply:     []Reply{{Doc: Doc{Filename: "file.txt", Src: strings.NewReader("content")}}},
-						ToolCalls: []ToolCall{{Name: "tool", Arguments: "{}"}},
+						Reply: []Reply{
+							{
+								Doc:      Doc{Filename: "file.txt", Src: strings.NewReader("content")},
+								ToolCall: ToolCall{Name: "tool", Arguments: "{}"},
+							},
+						},
 					},
-					errMsg: "field Reply can't contain a Doc along with ToolCalls",
+					errMsg: "reply 0: field ToolCall can't be used along Doc",
 				},
 			}
 			for _, tt := range tests {
@@ -256,9 +259,9 @@ func TestMessage(t *testing.T) {
 				},
 				{
 					name: "Assistant message with tool call",
-					in:   `{"tool_calls": [{"id": "1", "name": "tool", "arguments": "{}"}]}`,
+					in:   `{"reply":[{"tool_call": {"id": "1", "name": "tool", "arguments": "{}"}}]}`,
 					want: Message{
-						ToolCalls: []ToolCall{{ID: "1", Name: "tool", Arguments: "{}"}},
+						Reply: []Reply{{ToolCall: ToolCall{ID: "1", Name: "tool", Arguments: "{}"}}},
 					},
 				},
 				{
@@ -344,7 +347,7 @@ func TestMessage(t *testing.T) {
 				name:     "Tool",
 				fragment: ReplyFragment{ToolCall: ToolCall{Name: "tool"}},
 				want: Message{
-					ToolCalls: []ToolCall{{Name: "tool"}},
+					Reply: []Reply{{ToolCall: ToolCall{Name: "tool"}}},
 				},
 			},
 			{
@@ -380,21 +383,26 @@ func TestMessage(t *testing.T) {
 			},
 			{
 				name:     "Tool then text",
-				message:  Message{ToolCalls: []ToolCall{{Name: "tool"}}},
+				message:  Message{Reply: []Reply{{ToolCall: ToolCall{Name: "tool"}}}},
 				fragment: ReplyFragment{TextFragment: "No"},
 				want: Message{
 					// Merge together.
-					Reply:     []Reply{{Text: "No"}},
-					ToolCalls: []ToolCall{{Name: "tool"}},
+					Reply: []Reply{
+						{ToolCall: ToolCall{Name: "tool"}},
+						{Text: "No"},
+					},
 				},
 			},
 			{
 				name:     "Tool then tool",
-				message:  Message{ToolCalls: []ToolCall{{Name: "tool"}}},
+				message:  Message{Reply: []Reply{{ToolCall: ToolCall{Name: "tool"}}}},
 				fragment: ReplyFragment{ToolCall: ToolCall{Name: "tool2"}},
 				want: Message{
 					// Merge together.
-					ToolCalls: []ToolCall{{Name: "tool"}, {Name: "tool2"}},
+					Reply: []Reply{
+						{ToolCall: ToolCall{Name: "tool"}},
+						{ToolCall: ToolCall{Name: "tool2"}},
+					},
 				},
 			},
 		}
@@ -427,12 +435,8 @@ func TestMessage(t *testing.T) {
 			}
 
 			msg := Message{
-				ToolCalls: []ToolCall{
-					{
-						ID:        "call1",
-						Name:      "calculator",
-						Arguments: `{"a": 5, "b": 3}`,
-					},
+				Reply: []Reply{
+					{ToolCall: ToolCall{ID: "call1", Name: "calculator", Arguments: `{"a": 5, "b": 3}`}},
 				},
 			}
 
@@ -467,12 +471,8 @@ func TestMessage(t *testing.T) {
 			}
 
 			msg := Message{
-				ToolCalls: []ToolCall{
-					{
-						ID:        "call1",
-						Name:      "nonexistent",
-						Arguments: `{"a": 5, "b": 3}`,
-					},
+				Reply: []Reply{
+					{ToolCall: ToolCall{ID: "call1", Name: "nonexistent", Arguments: `{"a": 5, "b": 3}`}},
 				},
 			}
 

@@ -270,6 +270,9 @@ type Message struct {
 
 // From must be called with at most one ToolCallResults.
 func (m *Message) From(in *genai.Message) ([]Document, error) {
+	if len(in.ToolCallResults) > 1 {
+		return nil, errors.New("internal error")
+	}
 	switch r := in.Role(); r {
 	case "user", "assistant":
 		m.Role = r
@@ -299,6 +302,12 @@ func (m *Message) From(in *genai.Message) ([]Document, error) {
 				// Silently ignore thinking blocks.
 				continue
 			}
+			if !in.Reply[i].ToolCall.IsZero() {
+				t := ToolCall{}
+				t.From(&in.Reply[i].ToolCall)
+				m.ToolCalls = append(m.ToolCalls, t)
+				continue
+			}
 			c := Content{}
 			d, err := c.FromReply(&in.Reply[i])
 			if err != nil {
@@ -311,21 +320,7 @@ func (m *Message) From(in *genai.Message) ([]Document, error) {
 			}
 		}
 	}
-	if len(in.ToolCalls) != 0 {
-		m.ToolCalls = make([]ToolCall, len(in.ToolCalls))
-		for i := range in.ToolCalls {
-			m.ToolCalls[i].From(&in.ToolCalls[i])
-		}
-	}
 	if len(in.ToolCallResults) != 0 {
-		if len(in.Request) != 0 || len(in.ToolCalls) != 0 {
-			// This could be worked around.
-			return out, fmt.Errorf("can't have tool call result along content or tool calls")
-		}
-		if len(in.ToolCallResults) != 1 {
-			// This should not happen since ChatRequest.Init() works around this.
-			return out, fmt.Errorf("can't have more than one tool call result at a time")
-		}
 		// Process only the first tool call result in this method.
 		// The Init method handles multiple tool call results by creating multiple messages.
 		// Cohere supports Document, but only when using tools.
@@ -356,9 +351,7 @@ func (c *Content) FromRequest(in *genai.Request) (*Document, error) {
 	if in.Text != "" {
 		c.Type = ContentText
 		c.Text = in.Text
-		return nil, nil
-	}
-	if !in.Doc.IsZero() {
+	} else if !in.Doc.IsZero() {
 		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
 		if err != nil {
 			return nil, err
@@ -386,17 +379,17 @@ func (c *Content) FromRequest(in *genai.Request) (*Document, error) {
 		default:
 			return nil, fmt.Errorf("unsupported mime type %s", mimeType)
 		}
+	} else {
+		return nil, errors.New("unknown Request type")
 	}
-	return nil, errors.New("unknown Request type")
+	return nil, nil
 }
 
 func (c *Content) FromReply(in *genai.Reply) (*Document, error) {
 	if in.Text != "" {
 		c.Type = ContentText
 		c.Text = in.Text
-		return nil, nil
-	}
-	if !in.Doc.IsZero() {
+	} else if !in.Doc.IsZero() {
 		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
 		if err != nil {
 			return nil, err
@@ -424,8 +417,10 @@ func (c *Content) FromReply(in *genai.Reply) (*Document, error) {
 		default:
 			return nil, fmt.Errorf("unsupported mime type %s", mimeType)
 		}
+	} else {
+		return nil, errors.New("unknown Reply type")
 	}
-	return nil, errors.New("unknown Reply type")
+	return nil, nil
 }
 
 func (c *Content) To(in *genai.Reply) error {
@@ -657,12 +652,6 @@ type MessageResponse struct {
 }
 
 func (m *MessageResponse) To(out *genai.Message) error {
-	if len(m.ToolCalls) != 0 {
-		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))
-		for i := range m.ToolCalls {
-			m.ToolCalls[i].To(&out.ToolCalls[i])
-		}
-	}
 	if m.ToolCallID != "" && !internal.BeLenient {
 		return fmt.Errorf("implement tool call id")
 	}
@@ -672,8 +661,8 @@ func (m *MessageResponse) To(out *genai.Message) error {
 	if len(m.Content) != 0 {
 		for i := range m.Content {
 			out.Reply = append(out.Reply, genai.Reply{})
-			if err := m.Content[len(m.Content)-1].To(&out.Reply[i]); err != nil {
-				return fmt.Errorf("block %d: %w", i, err)
+			if err := m.Content[len(m.Content)-1].To(&out.Reply[len(out.Reply)-1]); err != nil {
+				return fmt.Errorf("reply %d: %w", i, err)
 			}
 		}
 		if len(m.Citations) != 0 {
@@ -687,6 +676,10 @@ func (m *MessageResponse) To(out *genai.Message) error {
 				}
 			}
 		}
+	}
+	for i := range m.ToolCalls {
+		out.Reply = append(out.Reply, genai.Reply{})
+		m.ToolCalls[i].To(&out.Reply[len(out.Reply)-1].ToolCall)
 	}
 	return nil
 }

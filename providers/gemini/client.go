@@ -640,33 +640,21 @@ func (c *Content) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", r)
 	}
-	c.Parts = make([]Part, len(in.Request)+len(in.Reply)+len(in.ToolCalls)+len(in.ToolCallResults))
+	c.Parts = make([]Part, len(in.Request)+len(in.Reply)+len(in.ToolCallResults))
 	for i := range in.Request {
 		if err := c.Parts[i].FromRequest(&in.Request[i]); err != nil {
-			return fmt.Errorf("part %d: %w", i, err)
+			return fmt.Errorf("request %d: %w", i, err)
 		}
 	}
 	offset := len(in.Request)
 	for i := range in.Reply {
 		if err := c.Parts[i].FromReply(&in.Reply[i]); err != nil {
-			return fmt.Errorf("part %d: %w", i, err)
+			return fmt.Errorf("reply %d: %w", i, err)
 		}
 	}
 	offset += len(in.Reply)
-	for i := range in.ToolCalls {
-		if err := c.Parts[offset+i].FunctionCall.From(&in.ToolCalls[i]); err != nil {
-			return fmt.Errorf("part %d: %w", offset+i, err)
-		}
-		o := in.ToolCalls[i].Opaque
-		if b, ok := o["signature"].([]byte); ok {
-			c.Parts[offset+i].ThoughtSignature = b
-		}
-	}
-	offset += len(in.ToolCalls)
 	for i := range in.ToolCallResults {
-		if err := c.Parts[offset+i].FunctionResponse.From(&in.ToolCallResults[i]); err != nil {
-			return fmt.Errorf("part %d: %w", offset+i, err)
-		}
+		c.Parts[offset+i].FunctionResponse.From(&in.ToolCallResults[i])
 	}
 	return nil
 }
@@ -708,14 +696,14 @@ func (c *Content) To(out *genai.Message) error {
 			continue
 		}
 		if part.FunctionCall.Name != "" {
-			t := genai.ToolCall{}
+			r := genai.Reply{}
 			if len(part.ThoughtSignature) != 0 {
-				t.Opaque = map[string]any{"signature": part.ThoughtSignature}
+				r.ToolCall.Opaque = map[string]any{"signature": part.ThoughtSignature}
 			}
-			if err := part.FunctionCall.To(&t); err != nil {
+			if err := part.FunctionCall.To(&r.ToolCall); err != nil {
 				return err
 			}
-			out.ToolCalls = append(out.ToolCalls, t)
+			out.Reply = append(out.Reply, r)
 			continue
 		}
 		if reflect.ValueOf(part).IsZero() {
@@ -797,6 +785,16 @@ func (p *Part) FromReply(in *genai.Reply) error {
 		p.Text = in.Text
 		return nil
 	}
+	if !in.ToolCall.IsZero() {
+		if err := p.FunctionCall.From(&in.ToolCall); err != nil {
+			return err
+		}
+		o := in.ToolCall.Opaque
+		if b, ok := o["signature"].([]byte); ok {
+			p.ThoughtSignature = b
+		}
+		return nil
+	}
 	if !in.Doc.IsZero() {
 		mimeType := ""
 		var data []byte
@@ -866,12 +864,11 @@ type FunctionResponse struct {
 	Response StructValue `json:"response,omitzero"`
 }
 
-func (f *FunctionResponse) From(in *genai.ToolCallResult) error {
+func (f *FunctionResponse) From(in *genai.ToolCallResult) {
 	f.ID = in.ID
 	f.Name = in.Name
 	// Must match functionResponse
 	f.Response = StructValue{"response": in.Result}
-	return nil
 }
 
 // ExecutableCode is documented at https://ai.google.dev/api/caching?hl=en#ExecutableCode
@@ -991,7 +988,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	// Gemini is the only one returning uppercase so convert down for compatibility.
 	out.FinishReason = c.Candidates[0].FinishReason.ToFinishReason()
 	err := c.Candidates[0].Content.To(&out.Message)
-	if len(out.ToolCalls) != 0 && out.FinishReason == genai.FinishedStop {
+	if out.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		// Lie for the benefit of everyone.
 		out.FinishReason = genai.FinishedToolCalls
 	}

@@ -217,9 +217,6 @@ func (m *Message) From(in *genai.Message) error {
 			}
 		}
 	}
-	if len(in.ToolCalls) != 0 {
-		return errors.New("tool calls not supported")
-	}
 	if len(in.ToolCallResults) != 0 {
 		return errors.New("tool call results not supported")
 	}

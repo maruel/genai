@@ -243,9 +243,6 @@ func (m *Message) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", r)
 	}
-	if len(in.ToolCalls) != 0 {
-		return errors.New("perplexity doesn't support tools")
-	}
 	if len(in.ToolCallResults) != 0 {
 		return errors.New("perplexity doesn't support tools")
 	}
@@ -282,9 +279,7 @@ func (m *Message) From(in *genai.Message) error {
 	for i := range in.Reply {
 		if in.Reply[i].Text != "" {
 			m.Content = append(m.Content, Content{Type: "text", Text: in.Reply[i].Text})
-		} else if in.Reply[i].Thinking != "" {
-			// Ignore.
-		} else if !in.Reply[i].Doc.IsZero() {
+		} else if !in.Request[i].Doc.IsZero() {
 			// Check if this is a text/plain document
 			mimeType, data, err := in.Reply[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
@@ -308,7 +303,7 @@ func (m *Message) From(in *genai.Message) error {
 				return fmt.Errorf("perplexity only supports text/plain documents, got %s", mimeType)
 			}
 		} else {
-			return errors.New("unknown Request type")
+			return errors.New("unknown Reply type")
 		}
 	}
 	return nil

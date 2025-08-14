@@ -427,6 +427,9 @@ type Message struct {
 
 // From must be called with at most one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
+	if len(in.ToolCallResults) > 1 {
+		return errors.New("internal error")
+	}
 	switch r := in.Role(); r {
 	case "user", "assistant":
 		m.Role = r
@@ -445,9 +448,13 @@ func (m *Message) From(in *genai.Message) error {
 		}
 	}
 	if len(in.Reply) != 0 {
-		m.Content = make([]Content, 0, len(in.Reply))
 		for i := range in.Reply {
 			if in.Reply[i].Thinking != "" {
+				continue
+			}
+			if !in.Reply[i].ToolCall.IsZero() {
+				m.ToolCalls = append(m.ToolCalls, ToolCall{})
+				m.ToolCalls[len(m.ToolCalls)-1].From(&in.Reply[i].ToolCall)
 				continue
 			}
 			m.Content = append(m.Content, Content{})
@@ -456,21 +463,7 @@ func (m *Message) From(in *genai.Message) error {
 			}
 		}
 	}
-	if len(in.ToolCalls) != 0 {
-		m.ToolCalls = make([]ToolCall, len(in.ToolCalls))
-		for i := range in.ToolCalls {
-			m.ToolCalls[i].From(&in.ToolCalls[i])
-		}
-	}
 	if len(in.ToolCallResults) != 0 {
-		if len(in.Request) != 0 || len(in.ToolCalls) != 0 {
-			// This could be worked around.
-			return fmt.Errorf("can't have tool call result along content or tool calls")
-		}
-		if len(in.ToolCallResults) != 1 {
-			// This should not happen since ChatRequest.Init() works around this.
-			return fmt.Errorf("can't have more than one tool call result at a time")
-		}
 		// Process only the first tool call result in this method.
 		// The Init method handles multiple tool call results by creating multiple messages.
 		m.Content = Contents{{Type: ContentText, Text: in.ToolCallResults[0].Result}}
@@ -480,12 +473,6 @@ func (m *Message) From(in *genai.Message) error {
 }
 
 func (m *Message) To(out *genai.Message) error {
-	if len(m.ToolCalls) != 0 {
-		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))
-		for i := range m.ToolCalls {
-			m.ToolCalls[i].To(&out.ToolCalls[i])
-		}
-	}
 	if len(m.Content) != 0 {
 		out.Reply = make([]genai.Reply, len(m.Content))
 		for i := range m.Content {
@@ -493,6 +480,10 @@ func (m *Message) To(out *genai.Message) error {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		}
+	}
+	for i := range m.ToolCalls {
+		out.Reply = append(out.Reply, genai.Reply{})
+		m.ToolCalls[i].To(&out.Reply[len(out.Reply)-1].ToolCall)
 	}
 	return nil
 }

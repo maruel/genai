@@ -334,6 +334,7 @@ func (r *Response) Init(msgs genai.Messages, opts genai.Options, model string) e
 	}
 
 	for i := range msgs {
+		// Each "Message" in OpenAI responses API is a content.
 		if len(msgs[i].ToolCallResults) > 1 {
 			// Handle messages with multiple tool call results by creating multiple messages
 			for j := range msgs[i].ToolCallResults {
@@ -347,20 +348,36 @@ func (r *Response) Init(msgs genai.Messages, opts genai.Options, model string) e
 					r.Input = append(r.Input, newMsg)
 				}
 			}
-		} else if len(msgs[i].ToolCalls) > 1 {
-			// Handle messages with multiple tool calls by creating multiple messages
-			for j := range msgs[i].ToolCalls {
-				// Create a copy of the message with only one tool call
+		} else if len(msgs[i].Reply) > 1 {
+			// Goddam OpenAI. Handle messages with multiple tool calls by creating multiple messages.
+			var txt []genai.Reply
+			for j := range msgs[i].Reply {
+				if !msgs[i].Reply[j].ToolCall.IsZero() {
+					msgCopy := msgs[i]
+					msgCopy.Reply = []genai.Reply{msgs[i].Reply[j]}
+					var newMsg Message
+					if err := newMsg.From(&msgCopy); err != nil {
+						errs = append(errs, fmt.Errorf("message %d, tool call %d: %w", i, j, err))
+					} else {
+						r.Input = append(r.Input, newMsg)
+					}
+				} else {
+					txt = append(txt, msgs[i].Reply[j])
+				}
+			}
+			if len(txt) != 0 {
+				// Create a copy of the message with only the non-tool call messages.
 				msgCopy := msgs[i]
-				msgCopy.ToolCalls = []genai.ToolCall{msgs[i].ToolCalls[j]}
+				msgCopy.Reply = txt
 				var newMsg Message
 				if err := newMsg.From(&msgCopy); err != nil {
-					errs = append(errs, fmt.Errorf("message %d, tool call %d: %w", i, j, err))
+					errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 				} else {
 					r.Input = append(r.Input, newMsg)
 				}
 			}
 		} else {
+			// It's a Request, send it as-is.
 			var newMsg Message
 			if err := newMsg.From(&msgs[i]); err != nil {
 				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
@@ -408,7 +425,7 @@ func (r *Response) ToResult() (genai.Result, error) {
 		} else {
 			res.FinishReason = genai.FinishReason(r.IncompleteDetails.Reason)
 		}
-	} else if len(res.ToolCalls) != 0 {
+	} else if slices.ContainsFunc(res.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		res.FinishReason = genai.FinishedToolCalls
 	} else {
 		res.FinishReason = genai.FinishedStop
@@ -503,6 +520,10 @@ type Tool struct {
 	FileSearchVectorStoreIDs []string `json:"vector_store_ids,omitzero"` // for file_search tools
 }
 
+// MessageType controls what kind of content is allowed.
+//
+// This means a single message cannot contain multiple kind of calls at the time time. I really don't know
+// why they did this especially that they have parallel tool calling support.
 type MessageType string
 
 const (
@@ -529,6 +550,9 @@ const (
 )
 
 // Message represents a message input or output to the model.
+//
+// In OpenAI Responses API, Message is a mix of Message and Content because the tool call type is in the
+// Message.Type.
 type Message struct {
 	Type MessageType `json:"type,omitzero"`
 
@@ -570,29 +594,15 @@ type Message struct {
 
 // From must be called with at most one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
+	if len(in.ToolCallResults) > 1 {
+		return errors.New("internal error")
+	}
 	if len(in.ToolCallResults) != 0 {
 		// Handle multiple tool call results by creating multiple messages
 		// The caller (Init method) should handle this by creating separate messages
-		if len(in.ToolCallResults) > 1 {
-			// This should not happen since the Init method works around this.
-			return fmt.Errorf("multiple tool outputs not supported in a single message for OpenAI Responses API")
-		}
 		m.Type = MessageFunctionCallOutput
 		m.CallID = in.ToolCallResults[0].ID
 		m.Output = in.ToolCallResults[0].Result
-		return nil
-	}
-	if len(in.ToolCalls) != 0 {
-		// Handle multiple tool calls by creating multiple messages
-		// The caller (Init method) should handle this by creating separate messages
-		if len(in.ToolCalls) > 1 {
-			// This should not happen since the Init method works around this.
-			return fmt.Errorf("multiple tool calls not supported in a single message for OpenAI Responses API")
-		}
-		m.Type = MessageFunctionCall
-		m.CallID = in.ToolCalls[0].ID
-		m.Name = in.ToolCalls[0].Name
-		m.Arguments = in.ToolCalls[0].Arguments
 		return nil
 	}
 	if len(in.Request) != 0 {
@@ -607,11 +617,20 @@ func (m *Message) From(in *genai.Message) error {
 		return nil
 	}
 	if len(in.Reply) != 0 {
+		// Handle multiple tool calls by creating multiple messages
+		// The caller (Init method) should handle this by creating separate messages
+		if !in.Reply[0].ToolCall.IsZero() {
+			m.Type = MessageFunctionCall
+			m.CallID = in.Reply[0].ToolCall.ID
+			m.Name = in.Reply[0].ToolCall.Name
+			m.Arguments = in.Reply[0].ToolCall.Arguments
+			return nil
+		}
 		m.Type = MessageMessage
 		m.Role = "assistant"
-		m.Content = make([]Content, len(in.Reply))
 		for j := range in.Reply {
-			if err := m.Content[j].FromReply(&in.Reply[j]); err != nil {
+			m.Content = append(m.Content, Content{})
+			if err := m.Content[len(m.Content)-1].FromReply(&in.Reply[j]); err != nil {
 				return fmt.Errorf("reply %d: %w", j, err)
 			}
 		}
@@ -628,11 +647,10 @@ func (m *Message) To(out *genai.Message) error {
 	switch m.Type {
 	case MessageMessage:
 		for i := range m.Content {
-			c := genai.Reply{}
-			if err := m.Content[i].To(&c); err != nil {
-				return fmt.Errorf("block %d: %w", i, err)
+			out.Reply = append(out.Reply, genai.Reply{})
+			if err := m.Content[i].To(&out.Reply[len(out.Reply)-1]); err != nil {
+				return fmt.Errorf("reply %d: %w", i, err)
 			}
-			out.Reply = append(out.Reply, c)
 		}
 	case MessageReasoning:
 		for i := range m.Summary {
@@ -642,7 +660,7 @@ func (m *Message) To(out *genai.Message) error {
 			out.Reply = append(out.Reply, genai.Reply{Thinking: m.Summary[i].Text})
 		}
 	case MessageFunctionCall:
-		out.ToolCalls = append(out.ToolCalls, genai.ToolCall{ID: m.CallID, Name: m.Name, Arguments: m.Arguments})
+		out.Reply = append(out.Reply, genai.Reply{ToolCall: genai.ToolCall{ID: m.CallID, Name: m.Name, Arguments: m.Arguments}})
 	case MessageFileSearchCall, MessageComputerCall, MessageWebSearchCall, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
 		fallthrough
 	default:
@@ -651,6 +669,7 @@ func (m *Message) To(out *genai.Message) error {
 	return nil
 }
 
+// ContentType defines the data being transported. It only includes actual data (text, files), no tool call nor result.
 type ContentType string
 
 const (

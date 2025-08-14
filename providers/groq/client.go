@@ -385,6 +385,9 @@ type Message struct {
 
 // From must be called with at most one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
+	if len(in.ToolCallResults) > 1 {
+		return errors.New("internal error")
+	}
 	switch r := in.Role(); r {
 	case "user", "assistant":
 		m.Role = r
@@ -395,10 +398,9 @@ func (m *Message) From(in *genai.Message) error {
 	}
 	m.Name = in.User
 	if len(in.Request) != 0 {
-		m.Content = make(Contents, 0, len(in.Request))
+		m.Content = make(Contents, len(in.Request))
 		for i := range in.Request {
-			m.Content = append(m.Content, Content{})
-			if err := m.Content[len(m.Content)-1].FromRequest(&in.Request[i]); err != nil {
+			if err := m.Content[i].FromRequest(&in.Request[i]); err != nil {
 				return fmt.Errorf("request %d: %w", i, err)
 			}
 		}
@@ -410,27 +412,18 @@ func (m *Message) From(in *genai.Message) error {
 				// DeepSeek and Qwen recommend against passing reasoning back.
 				continue
 			}
+			if !in.Reply[i].ToolCall.IsZero() {
+				m.ToolCalls = append(m.ToolCalls, ToolCall{})
+				m.ToolCalls[len(m.ToolCalls)-1].From(&in.Reply[i].ToolCall)
+				continue
+			}
 			m.Content = append(m.Content, Content{})
 			if err := m.Content[len(m.Content)-1].FromReply(&in.Reply[i]); err != nil {
 				return fmt.Errorf("reply %d: %w", i, err)
 			}
 		}
 	}
-	if len(in.ToolCalls) != 0 {
-		m.ToolCalls = make([]ToolCall, len(in.ToolCalls))
-		for i := range in.ToolCalls {
-			m.ToolCalls[i].From(&in.ToolCalls[i])
-		}
-	}
 	if len(in.ToolCallResults) != 0 {
-		if len(in.Request) != 0 || len(in.ToolCalls) != 0 {
-			// This could be worked around.
-			return fmt.Errorf("can't have tool call result along content or tool calls")
-		}
-		if len(in.ToolCallResults) != 1 {
-			// This should not happen since ChatRequest.Init() works around this.
-			return fmt.Errorf("can't have more than one tool call result at a time")
-		}
 		// Process only the first tool call result in this method.
 		// The Init method handles multiple tool call results by creating multiple messages.
 		m.Content = Contents{{Type: ContentText, Text: in.ToolCallResults[0].Result}}
@@ -675,17 +668,15 @@ type MessageResponse struct {
 }
 
 func (m *MessageResponse) To(out *genai.Message) error {
-	if len(m.ToolCalls) != 0 {
-		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))
-		for i := range m.ToolCalls {
-			m.ToolCalls[i].To(&out.ToolCalls[i])
-		}
-	}
 	if m.Reasoning != "" {
 		out.Reply = append(out.Reply, genai.Reply{Thinking: m.Reasoning})
 	}
 	if m.Content != "" {
 		out.Reply = append(out.Reply, genai.Reply{Text: m.Content})
+	}
+	for i := range m.ToolCalls {
+		out.Reply = append(out.Reply, genai.Reply{})
+		m.ToolCalls[i].To(&out.Reply[len(out.Reply)-1].ToolCall)
 	}
 	return nil
 }

@@ -395,7 +395,7 @@ func (m *Message) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", r)
 	}
-	m.Content = make([]Content, len(in.Request)+len(in.Reply)+len(in.ToolCalls)+len(in.ToolCallResults))
+	m.Content = make([]Content, len(in.Request)+len(in.Reply)+len(in.ToolCallResults))
 	for i := range in.Request {
 		if err := m.Content[i].FromRequest(&in.Request[i]); err != nil {
 			return fmt.Errorf("request %d: %w", i, err)
@@ -408,15 +408,9 @@ func (m *Message) From(in *genai.Message) error {
 		}
 	}
 	offset += len(in.Reply)
-	for i := range in.ToolCalls {
-		if err := m.Content[offset+i].FromToolCall(&in.ToolCalls[i]); err != nil {
-			return fmt.Errorf("tool call %d: %w", offset+i, err)
-		}
-	}
-	offset += len(in.ToolCalls)
 	for i := range in.ToolCallResults {
 		if err := m.Content[offset+i].FromToolCallResult(&in.ToolCallResults[i]); err != nil {
-			return fmt.Errorf("tool call result %d: %w", offset+i, err)
+			return fmt.Errorf("tool call results %d: %w", offset+i, err)
 		}
 	}
 	return nil
@@ -430,17 +424,12 @@ func (m *Message) To(out *genai.Message) error {
 	// We need to split actual content and tool calls.
 	for i := range m.Content {
 		switch m.Content[i].Type {
-		case ContentText, ContentThinking, ContentRedactedThinking:
+		case ContentText, ContentThinking, ContentRedactedThinking, ContentToolUse:
 			c := genai.Reply{}
-			if skip, err := m.Content[i].ToContent(&c); err != nil {
-				return fmt.Errorf("block %d: %w", i, err)
+			if skip, err := m.Content[i].To(&c); err != nil {
+				return fmt.Errorf("reply %d: %w", i, err)
 			} else if !skip {
 				out.Reply = append(out.Reply, c)
-			}
-		case ContentToolUse:
-			out.ToolCalls = append(out.ToolCalls, genai.ToolCall{})
-			if err := m.Content[i].ToToolCall(&out.ToolCalls[len(out.ToolCalls)-1]); err != nil {
-				return fmt.Errorf("block %d: %w", i, err)
 			}
 		case ContentImage, ContentDocument, ContentToolResult:
 			fallthrough
@@ -620,7 +609,7 @@ func (c *Content) FromRequest(in *genai.Request) error {
 		}
 		return nil
 	}
-	return errors.New("unknown Reply type")
+	return errors.New("unknown Request type")
 }
 
 func (c *Content) FromReply(in *genai.Reply) error {
@@ -646,6 +635,15 @@ func (c *Content) FromReply(in *genai.Reply) error {
 			return nil
 		}
 		return fmt.Errorf("unexpected Opaque %v", in.Opaque)
+	}
+	if !in.ToolCall.IsZero() {
+		c.Type = ContentToolUse
+		c.ID = in.ToolCall.ID
+		c.Name = in.ToolCall.Name
+		if err := json.Unmarshal([]byte(in.ToolCall.Arguments), &c.Input); err != nil {
+			return fmt.Errorf("failed to marshal input: %w; for tool call: %#v", err, in)
+		}
+		return nil
 	}
 	if !in.Doc.IsZero() {
 		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
@@ -694,17 +692,7 @@ func (c *Content) FromReply(in *genai.Reply) error {
 		}
 		return nil
 	}
-	return errors.New("unknown Request type")
-}
-
-func (c *Content) FromToolCall(in *genai.ToolCall) error {
-	c.Type = ContentToolUse
-	c.ID = in.ID
-	c.Name = in.Name
-	if err := json.Unmarshal([]byte(in.Arguments), &c.Input); err != nil {
-		return fmt.Errorf("failed to marshal input: %w; for tool call: %#v", err, in)
-	}
-	return nil
+	return errors.New("unknown Reply type")
 }
 
 func (c *Content) FromToolCallResult(in *genai.ToolCallResult) error {
@@ -717,7 +705,7 @@ func (c *Content) FromToolCallResult(in *genai.ToolCallResult) error {
 	return nil
 }
 
-func (c *Content) ToContent(out *genai.Reply) (bool, error) {
+func (c *Content) To(out *genai.Reply) (bool, error) {
 	switch c.Type {
 	case ContentText:
 		out.Text = c.Text
@@ -738,26 +726,21 @@ func (c *Content) ToContent(out *genai.Reply) (bool, error) {
 		out.Opaque = map[string]any{"signature": c.Signature}
 	case ContentRedactedThinking:
 		out.Opaque = map[string]any{"redacted_thinking": c.Signature}
-	case ContentImage, ContentDocument, ContentToolResult, ContentToolUse:
+	case ContentToolUse:
+		out.ToolCall.ID = c.ID
+		out.ToolCall.Name = c.Name
+		raw, err := json.Marshal(c.Input)
+		if err != nil {
+			return false, fmt.Errorf("failed to marshal input: %w; for tool call: %#v", err, c)
+		}
+		out.ToolCall.Arguments = string(raw)
+		return false, nil
+	case ContentImage, ContentDocument, ContentToolResult:
 		fallthrough
 	default:
 		return false, fmt.Errorf("unsupported content type %q", c.Type)
 	}
 	return false, nil
-}
-
-func (c *Content) ToToolCall(out *genai.ToolCall) error {
-	if c.Type != ContentToolUse {
-		return fmt.Errorf("unsupported content type %q", c.Type)
-	}
-	out.ID = c.ID
-	out.Name = c.Name
-	raw, err := json.Marshal(c.Input)
-	if err != nil {
-		return fmt.Errorf("failed to marshal input: %w; for tool call: %#v", err, c)
-	}
-	out.Arguments = string(raw)
-	return nil
 }
 
 // Citations is a mess.
@@ -1219,20 +1202,15 @@ func (b *BatchQueryResponse) To(out *genai.Message) error {
 	// We need to split actual content and tool calls.
 	for i := range b.Result.Message.Content {
 		switch b.Result.Message.Content[i].Type {
-		case ContentText, ContentThinking, ContentRedactedThinking:
+		case ContentText, ContentThinking, ContentRedactedThinking, ContentToolUse:
 			c := genai.Reply{}
-			if skip, err := b.Result.Message.Content[i].ToContent(&c); err != nil {
+			if skip, err := b.Result.Message.Content[i].To(&c); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			} else if !skip {
 				out.Reply = append(out.Reply, c)
 			}
-		case ContentToolUse:
-			out.ToolCalls = append(out.ToolCalls, genai.ToolCall{})
-			if err := b.Result.Message.Content[i].ToToolCall(&out.ToolCalls[len(out.ToolCalls)-1]); err != nil {
-				return fmt.Errorf("block %d: %w", i, err)
-			}
 		case ContentImage, ContentDocument, ContentToolResult:
-			return fmt.Errorf("unsupported content type %q", b.Result.Message.Content[i].Type)
+			fallthrough
 		default:
 			return fmt.Errorf("unsupported content type %q", b.Result.Message.Content[i].Type)
 		}

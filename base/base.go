@@ -297,13 +297,11 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
 		for i, msg := range msgs {
-			for j, content := range msg.Reply {
-				if len(content.Opaque) != 0 {
+			for j := range msg.Reply {
+				if len(msg.Reply[j].Opaque) != 0 {
 					return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
 				}
-			}
-			for j, tool := range msg.ToolCalls {
-				if len(tool.Opaque) != 0 {
+				if len(msg.Reply[j].ToolCall.Opaque) != 0 {
 					return result, fmt.Errorf("message #%d tool call #%d: field Opaque not supported", i, j)
 				}
 			}
@@ -357,13 +355,11 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
 		for i, msg := range msgs {
-			for j, content := range msg.Reply {
-				if len(content.Opaque) != 0 {
+			for j := range msg.Reply {
+				if len(msg.Reply[j].Opaque) != 0 {
 					return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
 				}
-			}
-			for j, tool := range msg.ToolCalls {
-				if len(tool.Opaque) != 0 {
+				if len(msg.Reply[j].ToolCall.Opaque) != 0 {
 					return result, fmt.Errorf("message #%d tool call #%d: field Opaque not supported", i, j)
 				}
 			}
@@ -394,9 +390,14 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	if c.ProcessHeaders != nil && lastResp != nil {
 		result.Limits = c.ProcessHeaders(lastResp)
 	}
-	if c.LieToolCalls && len(result.ToolCalls) != 0 && result.FinishReason == genai.FinishedStop {
-		// Lie for the benefit of everyone.
-		result.FinishReason = genai.FinishedToolCalls
+	if c.LieToolCalls && result.FinishReason == genai.FinishedStop {
+		for i := range result.Reply {
+			if !result.Reply[i].ToolCall.IsZero() {
+				// Lie for the benefit of everyone.
+				result.FinishReason = genai.FinishedToolCalls
+				break
+			}
+		}
 	}
 	if err != nil {
 		return result, err

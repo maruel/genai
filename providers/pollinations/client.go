@@ -332,6 +332,7 @@ type Message struct {
 	ToolCallID string     `json:"tool_call_id,omitzero"`
 }
 
+// From must be called with at most one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
 	switch r := in.Role(); r {
 	case "user", "assistant":
@@ -345,7 +346,7 @@ func (m *Message) From(in *genai.Message) error {
 		m.Content = make(Contents, len(in.Request))
 		for i := range in.Request {
 			if err := m.Content[i].FromRequest(&in.Request[i]); err != nil {
-				return fmt.Errorf("block %d: %w", i, err)
+				return fmt.Errorf("request %d: %w", i, err)
 			}
 		}
 	}
@@ -357,7 +358,7 @@ func (m *Message) From(in *genai.Message) error {
 			}
 			m.Content = append(m.Content, Content{})
 			if err := m.Content[len(m.Content)-1].FromReply(&in.Reply[i]); err != nil {
-				return fmt.Errorf("block %d: %w", i, err)
+				return fmt.Errorf("reply %d: %w", i, err)
 			}
 		}
 	}
@@ -444,39 +445,41 @@ func (c *Content) FromRequest(in *genai.Request) error {
 		c.Text = in.Text
 		return nil
 	}
-
-	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
-	if err != nil {
-		return err
-	}
-	switch {
-	case strings.HasPrefix(mimeType, "audio/"):
-		// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#speech-to-text-capabilities-audio-input-%EF%B8%8F
-		c.Type = ContentAudio
-		c.InputAudio.Data = data
-		switch mimeType {
-		case "audio/mpeg":
-			c.InputAudio.Format = "mp3"
+	if !in.Doc.IsZero() {
+		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+		if err != nil {
+			return err
+		}
+		switch {
+		case strings.HasPrefix(mimeType, "audio/"):
+			// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#speech-to-text-capabilities-audio-input-%EF%B8%8F
+			c.Type = ContentAudio
+			c.InputAudio.Data = data
+			switch mimeType {
+			case "audio/mpeg":
+				c.InputAudio.Format = "mp3"
+			default:
+				return fmt.Errorf("implement mime type %s conversion", mimeType)
+			}
+		case strings.HasPrefix(mimeType, "image/") || in.Doc.URL != "":
+			c.Type = ContentImageURL
+			if in.Doc.URL == "" {
+				c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+			} else {
+				c.ImageURL.URL = in.Doc.URL
+			}
+		case strings.HasPrefix(mimeType, "text/plain"):
+			c.Type = ContentText
+			if in.Doc.URL != "" {
+				return errors.New("text/plain documents must be provided inline, not as a URL")
+			}
+			c.Text = string(data)
 		default:
-			return fmt.Errorf("implement mime type %s conversion", mimeType)
+			return fmt.Errorf("unsupported mime type %s", mimeType)
 		}
-	case strings.HasPrefix(mimeType, "image/") || in.Doc.URL != "":
-		c.Type = ContentImageURL
-		if in.Doc.URL == "" {
-			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-		} else {
-			c.ImageURL.URL = in.Doc.URL
-		}
-	case strings.HasPrefix(mimeType, "text/plain"):
-		c.Type = ContentText
-		if in.Doc.URL != "" {
-			return errors.New("text/plain documents must be provided inline, not as a URL")
-		}
-		c.Text = string(data)
-	default:
-		return fmt.Errorf("unsupported mime type %s", mimeType)
+		return nil
 	}
-	return nil
+	return errors.New("unknown Request type")
 }
 
 func (c *Content) FromReply(in *genai.Reply) error {
@@ -485,39 +488,41 @@ func (c *Content) FromReply(in *genai.Reply) error {
 		c.Text = in.Text
 		return nil
 	}
-
-	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
-	if err != nil {
-		return err
-	}
-	switch {
-	case strings.HasPrefix(mimeType, "audio/"):
-		// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#speech-to-text-capabilities-audio-input-%EF%B8%8F
-		c.Type = ContentAudio
-		c.InputAudio.Data = data
-		switch mimeType {
-		case "audio/mpeg":
-			c.InputAudio.Format = "mp3"
+	if !in.Doc.IsZero() {
+		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+		if err != nil {
+			return err
+		}
+		switch {
+		case strings.HasPrefix(mimeType, "audio/"):
+			// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#speech-to-text-capabilities-audio-input-%EF%B8%8F
+			c.Type = ContentAudio
+			c.InputAudio.Data = data
+			switch mimeType {
+			case "audio/mpeg":
+				c.InputAudio.Format = "mp3"
+			default:
+				return fmt.Errorf("implement mime type %s conversion", mimeType)
+			}
+		case strings.HasPrefix(mimeType, "image/") || in.Doc.URL != "":
+			c.Type = ContentImageURL
+			if in.Doc.URL == "" {
+				c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+			} else {
+				c.ImageURL.URL = in.Doc.URL
+			}
+		case strings.HasPrefix(mimeType, "text/plain"):
+			c.Type = ContentText
+			if in.Doc.URL != "" {
+				return errors.New("text/plain documents must be provided inline, not as a URL")
+			}
+			c.Text = string(data)
 		default:
-			return fmt.Errorf("implement mime type %s conversion", mimeType)
+			return fmt.Errorf("unsupported mime type %s", mimeType)
 		}
-	case strings.HasPrefix(mimeType, "image/") || in.Doc.URL != "":
-		c.Type = ContentImageURL
-		if in.Doc.URL == "" {
-			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-		} else {
-			c.ImageURL.URL = in.Doc.URL
-		}
-	case strings.HasPrefix(mimeType, "text/plain"):
-		c.Type = ContentText
-		if in.Doc.URL != "" {
-			return errors.New("text/plain documents must be provided inline, not as a URL")
-		}
-		c.Text = string(data)
-	default:
-		return fmt.Errorf("unsupported mime type %s", mimeType)
+		return nil
 	}
-	return nil
+	return errors.New("unknown Reply type")
 }
 
 type ContentType string

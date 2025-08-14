@@ -1,3 +1,42 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 185
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"result":{"response":"The capital of Quackiland is Quack.","tool_calls":[],"usage":{"prompt_tokens":114,"completion_tokens":11,"total_tokens":125}},"success":true,"errors":[],"messages":[]}'
+        headers:
+            Api-Version:
+                - "2025-08-15"
+            Cf-Ai-Req-Id:
+                - 400b475e-e6e0-49a1-8c4b-e0002540b91f
+            Cf-Auditlog-Id:
+                - 0198afa6-2e11-797a-b0e1-6098ed016b20
+            Cf-Ray:
+                - 96fbce500fc923ce-EWR
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 536ms

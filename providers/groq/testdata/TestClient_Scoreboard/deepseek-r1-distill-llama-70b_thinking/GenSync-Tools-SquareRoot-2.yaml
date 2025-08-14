@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 800
+        content_length: 785
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","content":null,"tool_calls":[{"type":"function","id":"rza1jnc1h","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"rza1jnc1h"}],"model":"deepseek-r1-distill-llama-70b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"rza1jnc1h","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"rza1jnc1h"}],"model":"deepseek-r1-distill-llama-70b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-24324146-34a2-427b-9797-f86d69d6f6d0","object":"chat.completion","created":1753570132,"model":"deepseek-r1-distill-llama-70b","choices":[{"index":0,"message":{"role":"assistant","content":"363.89","reasoning":"Alright, so I need to figure out the square root of 132413. Hmm, okay, where do I start? Well, I know that the square root of a number is another number that, when multiplied by itself, gives the original number. So, I'm looking for a number that, when squared, equals 132413.\n\nFirst, I should probably estimate the square root to get a sense of where to start. I know that 300 squared is 90,000, and 400 squared is 160,000. So, the square root of 132,413 must be somewhere between 300 and 400. That's a pretty big range, though. Maybe I can narrow it down further.\n\nLet me try 350 squared. 350 times 350 is 122,500. Okay, that's less than 132,413. So, the square root must be higher than 350. Maybe I'll try 360. 360 squared is 129,600. Still less than 132,413. Getting closer.\n\nHow about 370? 370 squared is 136,900. That's more than 132,413. So, the square root is between 360 and 370. Let's try 365. 365 squared is 133,225. That's still a bit higher than 132,413. So, it's between 360 and 365.\n\nLet's try 363. 363 squared is 131,769. Hmm, that's lower than 132,413. So, the square root is between 363 and 365. Maybe 364. 364 squared is 132,496. That's pretty close to 132,413, but still a bit higher. So, it's between 363 and 364.\n\nPerhaps 363.5. Let's calculate 363.5 squared. 363.5 times 363.5. Well, 363 squared is 131,769, and 0.5 squared is 0.25. Then, the cross term is 2 * 363 * 0.5, which is 363. So, adding those up: 131,769 + 363 + 0.25 = 132,132.25. That's still less than 132,413.\n\nOkay, so 363.5 squared is 132,132.25. The difference between that and 132,413 is 280.75. So, I need to find how much more than 363.5 I need to add to get to 132,413.\n\nLet's say I add x to 363.5, so (363.5 + x)^2 = 132,413. Expanding that, it's 363.5^2 + 2*363.5*x + x^2 = 132,413. We already know 363.5^2 is 132,132.25, so 132,132.25 + 727x + x^2 = 132,413.\n\nSubtracting 132,132.25 from both sides, we get 727x + x^2 = 280.75. Since x is likely to be small, x^2 will be negligible compared to 727x, so we can approximate by ignoring x^2: 727x ≈ 280.75, so x ≈ 280.75 / 727 ≈ 0.386.\n\nSo, the square root is approximately 363.5 + 0.386 = 363.886. Rounding to two decimal places, that's 363.89.\n\nTo verify, let's calculate 363.89 squared. 363.89 * 363.89. Let's break it down:\n\n363 * 363 = 131,769.\n\n363 * 0.89 = 323.47.\n\n0.89 * 363 = 323.47.\n\n0.89 * 0.89 = 0.7921.\n\nNow, adding them up: 131,769 + 323.47 + 323.47 + 0.7921 = 131,769 + 646.94 + 0.7921 = 132,415.9321.\n\nThat's very close to 132,413, so 363.89 squared is approximately 132,415.93, which is slightly higher than 132,413. So, maybe I need to adjust it a bit downward.\n\nPerhaps 363.88 squared. Let's calculate that:\n\n363.88 * 363.88.\n\nAgain, breaking it down:\n\n363 * 363 = 131,769.\n\n363 * 0.88 = 319.44.\n\n0.88 * 363 = 319.44.\n\n0.88 * 0.88 = 0.7744.\n\nAdding them up: 131,769 + 319.44 + 319.44 + 0.7744 = 131,769 + 638.88 + 0.7744 = 132,407.6544.\n\nThat's still slightly less than 132,413. So, 363.88 squared is approximately 132,407.65.\n\nThe difference between 132,407.65 and 132,413 is about 5.35. So, to find the exact value, I might need to do a more precise calculation, but for practical purposes, 363.89 is a good approximation.\n\nTherefore, the square root of 132,413 is approximately 363.89.\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.009642151000000002,"prompt_tokens":84,"prompt_time":0.004402759,"completion_tokens":1149,"completion_time":4.178181818,"total_tokens":1233,"total_time":4.182584577},"usage_breakdown":null,"system_fingerprint":"fp_87eae35036","x_groq":{"id":"req_01k14esgkxehr87683je8dz3hk"},"service_tier":"on_demand"}
+            {"id":"chatcmpl-75fb9ed3-5585-40eb-84a8-22c1fec4844b","object":"chat.completion","created":1755294381,"model":"deepseek-r1-distill-llama-70b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003c｜tool_call＞{\"id\":\"rza1jnc1h\",\"name\":\"square_root\",\"arguments\":{\"number\":132413}}  \n  ＜｜tool_outputs_begin＞363.89＜｜tool_outputs_end＞","reasoning":"Okay, let's see. The user is asking me to calculate the square root of 132413 using the square_root tool and reply only with the result, no explanation. Hmm, in the previous interaction, they provided a tool call and then the result was 363.89. So they want me to do the same now.\n\nWait, but in the new query, they just said \"Use the square_root tool...\" and then immediately provided the tool output. Maybe they're testing if I can recognize the pattern. I should make sure I'm following their instructions correctly.\n\nI need to ensure that I only output the result, without any extra text. So when they give me the number, I'll use the tool to get the square root and then provide the answer as they did before. Got it.\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.001582656,"prompt_tokens":84,"prompt_time":0.017085762,"completion_tokens":212,"completion_time":1.077634509,"total_tokens":296,"total_time":1.094720271},"usage_breakdown":null,"system_fingerprint":"fp_e98d30d035","x_groq":{"id":"req_01k2qv5ckzep9s8n7vck6vjwth"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,7 +31,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 965772709875a273-YUL
+                - 96fbe256faa4a2be-YUL
             Content-Type:
                 - application/json
             Server:
@@ -55,7 +55,7 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 9.4ms
             X-Request-Id:
-                - req_01k14esgkxehr87683je8dz3hk
+                - req_01k2qv5ckzep9s8n7vck6vjwth
         status: 200 OK
         code: 200
-        duration: 4.25s
+        duration: 1.167s

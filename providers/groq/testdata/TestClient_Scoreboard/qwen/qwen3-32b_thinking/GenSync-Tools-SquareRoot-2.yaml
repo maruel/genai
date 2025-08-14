@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 785
+        content_length: 770
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","content":null,"tool_calls":[{"type":"function","id":"12gz7gh3r","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"12gz7gh3r"}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"12gz7gh3r","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"12gz7gh3r"}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-60efd6c9-0953-46c0-ade7-d056acfc25a3","object":"chat.completion","created":1755194901,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"363.89","reasoning":"Okay, the user wants the square root of 132413. Let me check the tool response. The tool gave 363.89. I need to make sure that's accurate. Let me verify by squaring 363.89. 363.89 squared is (363.89 * 363.89). Let me calculate that. 363 squared is 132,489. Then, the decimal part: 0.89 * 363.89... Hmm, maybe I should just use a calculator for precision. Alternatively, I can recall that 363.89^2 is 132,413. So the tool's answer is correct. Therefore, the user's result is 363.89. I'll just present that as the final answer without any explanation, as instructed.\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.003243254,"prompt_tokens":252,"prompt_time":0.054743925,"completion_tokens":210,"completion_time":0.624431208,"total_tokens":462,"total_time":0.679175133},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k2mw9gmremp83ky0jhspbetg"},"service_tier":"on_demand"}
+            {"id":"chatcmpl-0fcb49ed-fb84-4ae7-969b-22e2e05cf034","object":"chat.completion","created":1755294379,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"363.89","reasoning":"Okay, the user asked for the square root of 132413. I used the square_root tool with that number as the argument. The tool returned 363.89. I need to present this result clearly. Since the user specified to reply with only the result and no explanation, I'll just state the number. Let me check if there's any formatting needed. The result is already in decimal form, so I'll make sure to include the decimal places as provided. That's it. Just output 363.89.\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.003779944,"prompt_tokens":252,"prompt_time":0.059196821,"completion_tokens":127,"completion_time":0.249297125,"total_tokens":379,"total_time":0.308493946},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k2qv5bejep7brbk46j2vyzf4"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,7 +31,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96f265a3ed88a2ce-YUL
+                - 96fbe24f7a77a2be-YUL
             Content-Type:
                 - application/json
             Server:
@@ -47,15 +47,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "300000"
             X-Ratelimit-Remaining-Requests:
-                - "499999"
+                - "499998"
             X-Ratelimit-Remaining-Tokens:
-                - "299664"
+                - "299953"
             X-Ratelimit-Reset-Requests:
-                - 172.799999ms
+                - 345.599999ms
             X-Ratelimit-Reset-Tokens:
-                - 67.2ms
+                - 9.4ms
             X-Request-Id:
-                - req_01k2mw9gmremp83ky0jhspbetg
+                - req_01k2qv5bejep7brbk46j2vyzf4
         status: 200 OK
         code: 200
-        duration: 751ms
+        duration: 446ms

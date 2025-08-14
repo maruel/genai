@@ -500,6 +500,7 @@ type Message struct {
 	Annotations []struct{} `json:"annotations,omitzero"`
 }
 
+// From must be called with at most one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
 	switch r := in.Role(); r {
 	case "user", "assistant":
@@ -514,7 +515,7 @@ func (m *Message) From(in *genai.Message) error {
 		m.Content = make([]Content, len(in.Request))
 		for i := range in.Request {
 			if err := m.Content[i].FromRequest(&in.Request[i]); err != nil {
-				return fmt.Errorf("block %d: %w", i, err)
+				return fmt.Errorf("request %d: %w", i, err)
 			}
 		}
 	}
@@ -527,7 +528,7 @@ func (m *Message) From(in *genai.Message) error {
 			}
 			c := Content{}
 			if err := c.FromReply(&in.Reply[i]); err != nil {
-				return fmt.Errorf("block %d: %w", i, err)
+				return fmt.Errorf("reply %d: %w", i, err)
 			}
 			m.Content = append(m.Content, c)
 		}
@@ -633,63 +634,66 @@ func (c *Content) FromRequest(in *genai.Request) error {
 		c.Text = in.Text
 		return nil
 	}
-	// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
-	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
-	if err != nil {
-		return err
-	}
-	// OpenAI require a mime-type to determine if image, sound or PDF.
-	if mimeType == "" {
-		return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
-	}
-	switch {
-	case strings.HasPrefix(mimeType, "image/"):
-		c.Type = ContentImageURL
-		if in.Doc.URL == "" {
-			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-		} else {
-			c.ImageURL.URL = in.Doc.URL
+	if !in.Doc.IsZero() {
+		// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
+		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+		if err != nil {
+			return err
 		}
-	case mimeType == "audio/mpeg":
-		if in.Doc.URL != "" {
-			return errors.New("URL to audio file not supported")
+		// OpenAI require a mime-type to determine if image, sound or PDF.
+		if mimeType == "" {
+			return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
 		}
-		c.Type = ContentInputAudio
-		c.InputAudio.Data = data
-		c.InputAudio.Format = "mp3"
-	case mimeType == "audio/wav":
-		if in.Doc.URL != "" {
-			return errors.New("URL to audio file not supported")
-		}
-		c.Type = ContentInputAudio
-		c.InputAudio.Data = data
-		c.InputAudio.Format = "wav"
-	case strings.HasPrefix(mimeType, "text/plain"):
-		c.Type = ContentText
-		if in.Doc.URL != "" {
-			return errors.New("text/plain documents must be provided inline, not as a URL")
-		}
-		c.Text = string(data)
-	default:
-		if in.Doc.URL != "" {
-			return fmt.Errorf("URL to %s file not supported", mimeType)
-		}
-		filename := in.Doc.GetFilename()
-		if filename == "" {
-			exts, err := mime.ExtensionsByType(mimeType)
-			if err != nil {
-				return err
+		switch {
+		case strings.HasPrefix(mimeType, "image/"):
+			c.Type = ContentImageURL
+			if in.Doc.URL == "" {
+				c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+			} else {
+				c.ImageURL.URL = in.Doc.URL
 			}
-			if len(exts) == 0 {
-				return fmt.Errorf("unknown extension for mime type %s", mimeType)
+		case mimeType == "audio/mpeg":
+			if in.Doc.URL != "" {
+				return errors.New("URL to audio file not supported")
 			}
-			filename = "content" + exts[0]
+			c.Type = ContentInputAudio
+			c.InputAudio.Data = data
+			c.InputAudio.Format = "mp3"
+		case mimeType == "audio/wav":
+			if in.Doc.URL != "" {
+				return errors.New("URL to audio file not supported")
+			}
+			c.Type = ContentInputAudio
+			c.InputAudio.Data = data
+			c.InputAudio.Format = "wav"
+		case strings.HasPrefix(mimeType, "text/plain"):
+			c.Type = ContentText
+			if in.Doc.URL != "" {
+				return errors.New("text/plain documents must be provided inline, not as a URL")
+			}
+			c.Text = string(data)
+		default:
+			if in.Doc.URL != "" {
+				return fmt.Errorf("URL to %s file not supported", mimeType)
+			}
+			filename := in.Doc.GetFilename()
+			if filename == "" {
+				exts, err := mime.ExtensionsByType(mimeType)
+				if err != nil {
+					return err
+				}
+				if len(exts) == 0 {
+					return fmt.Errorf("unknown extension for mime type %s", mimeType)
+				}
+				filename = "content" + exts[0]
+			}
+			c.Type = ContentFile
+			c.File.Filename = filename
+			c.File.FileData = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 		}
-		c.Type = ContentFile
-		c.File.Filename = filename
-		c.File.FileData = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+		return nil
 	}
-	return nil
+	return errors.New("unknown Request type")
 }
 
 func (c *Content) FromReply(in *genai.Reply) error {
@@ -698,63 +702,66 @@ func (c *Content) FromReply(in *genai.Reply) error {
 		c.Text = in.Text
 		return nil
 	}
-	// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
-	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
-	if err != nil {
-		return err
-	}
-	// OpenAI require a mime-type to determine if image, sound or PDF.
-	if mimeType == "" {
-		return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
-	}
-	switch {
-	case strings.HasPrefix(mimeType, "image/"):
-		c.Type = ContentImageURL
-		if in.Doc.URL == "" {
-			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-		} else {
-			c.ImageURL.URL = in.Doc.URL
+	if !in.Doc.IsZero() {
+		// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
+		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+		if err != nil {
+			return err
 		}
-	case mimeType == "audio/mpeg":
-		if in.Doc.URL != "" {
-			return errors.New("URL to audio file not supported")
+		// OpenAI require a mime-type to determine if image, sound or PDF.
+		if mimeType == "" {
+			return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
 		}
-		c.Type = ContentInputAudio
-		c.InputAudio.Data = data
-		c.InputAudio.Format = "mp3"
-	case mimeType == "audio/wav":
-		if in.Doc.URL != "" {
-			return errors.New("URL to audio file not supported")
-		}
-		c.Type = ContentInputAudio
-		c.InputAudio.Data = data
-		c.InputAudio.Format = "wav"
-	case strings.HasPrefix(mimeType, "text/plain"):
-		c.Type = ContentText
-		if in.Doc.URL != "" {
-			return errors.New("text/plain documents must be provided inline, not as a URL")
-		}
-		c.Text = string(data)
-	default:
-		if in.Doc.URL != "" {
-			return fmt.Errorf("URL to %s file not supported", mimeType)
-		}
-		filename := in.Doc.GetFilename()
-		if filename == "" {
-			exts, err := mime.ExtensionsByType(mimeType)
-			if err != nil {
-				return err
+		switch {
+		case strings.HasPrefix(mimeType, "image/"):
+			c.Type = ContentImageURL
+			if in.Doc.URL == "" {
+				c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+			} else {
+				c.ImageURL.URL = in.Doc.URL
 			}
-			if len(exts) == 0 {
-				return fmt.Errorf("unknown extension for mime type %s", mimeType)
+		case mimeType == "audio/mpeg":
+			if in.Doc.URL != "" {
+				return errors.New("URL to audio file not supported")
 			}
-			filename = "content" + exts[0]
+			c.Type = ContentInputAudio
+			c.InputAudio.Data = data
+			c.InputAudio.Format = "mp3"
+		case mimeType == "audio/wav":
+			if in.Doc.URL != "" {
+				return errors.New("URL to audio file not supported")
+			}
+			c.Type = ContentInputAudio
+			c.InputAudio.Data = data
+			c.InputAudio.Format = "wav"
+		case strings.HasPrefix(mimeType, "text/plain"):
+			c.Type = ContentText
+			if in.Doc.URL != "" {
+				return errors.New("text/plain documents must be provided inline, not as a URL")
+			}
+			c.Text = string(data)
+		default:
+			if in.Doc.URL != "" {
+				return fmt.Errorf("URL to %s file not supported", mimeType)
+			}
+			filename := in.Doc.GetFilename()
+			if filename == "" {
+				exts, err := mime.ExtensionsByType(mimeType)
+				if err != nil {
+					return err
+				}
+				if len(exts) == 0 {
+					return fmt.Errorf("unknown extension for mime type %s", mimeType)
+				}
+				filename = "content" + exts[0]
+			}
+			c.Type = ContentFile
+			c.File.Filename = filename
+			c.File.FileData = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 		}
-		c.Type = ContentFile
-		c.File.Filename = filename
-		c.File.FileData = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+		return nil
 	}
-	return nil
+	return errors.New("unknown Reply type")
 }
 
 func (c *Content) To(out *genai.Reply) error {

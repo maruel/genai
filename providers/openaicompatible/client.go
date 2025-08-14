@@ -183,17 +183,15 @@ func (m *Message) From(in *genai.Message) error {
 				if err != nil {
 					return fmt.Errorf("failed to read document: %w", err)
 				}
-				if strings.HasPrefix(mimeType, "text/plain") {
-					if in.Request[i].Doc.URL != "" {
-						return errors.New("text/plain documents must be provided inline, not as a URL")
-					}
-					m.Content = append(m.Content, Content{Type: ContentText, Text: string(data)})
-				} else {
+				if !strings.HasPrefix(mimeType, "text/plain") {
 					return fmt.Errorf("openaicompatible only supports text/plain documents, got %s", mimeType)
 				}
+				if in.Request[i].Doc.URL != "" {
+					return errors.New("text/plain documents must be provided inline, not as a URL")
+				}
+				m.Content = append(m.Content, Content{Type: ContentText, Text: string(data)})
 			} else {
-				// OpenAI compatible providers may have varying document support.
-				return fmt.Errorf("unsupported content type %#v", in.Request[i])
+				return errors.New("unknown Request type")
 			}
 		}
 		for i := range in.Reply {
@@ -207,17 +205,15 @@ func (m *Message) From(in *genai.Message) error {
 				if err != nil {
 					return fmt.Errorf("failed to read document: %w", err)
 				}
-				if strings.HasPrefix(mimeType, "text/plain") {
-					if in.Reply[i].Doc.URL != "" {
-						return errors.New("text/plain documents must be provided inline, not as a URL")
-					}
-					m.Content = append(m.Content, Content{Type: ContentText, Text: string(data)})
-				} else {
+				if !strings.HasPrefix(mimeType, "text/plain") {
 					return fmt.Errorf("openaicompatible only supports text/plain documents, got %s", mimeType)
 				}
+				if in.Reply[i].Doc.URL != "" {
+					return errors.New("text/plain documents must be provided inline, not as a URL")
+				}
+				m.Content = append(m.Content, Content{Type: ContentText, Text: string(data)})
 			} else {
-				// OpenAI compatible providers may have varying document support.
-				return fmt.Errorf("unsupported content type %#v", in.Reply[i])
+				return errors.New("unknown Reply type")
 			}
 		}
 	}

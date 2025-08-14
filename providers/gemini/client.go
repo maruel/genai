@@ -752,36 +752,39 @@ func (p *Part) FromRequest(in *genai.Request) error {
 		p.Text = in.Text
 		return nil
 	}
-	mimeType := ""
-	var data []byte
-	if in.Doc.URL == "" {
-		// If more than 20MB, we need to use
-		// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#large-pdfs-urls
-		// cacheName, err := c.cacheContent(ctx, context, mime, sp)
-		// When using cached content, system instruction, tools or tool_config cannot be used. Weird.
-		// in.CachedContent = cacheName
-		var err error
-		if mimeType, data, err = in.Doc.Read(10 * 1024 * 1024); err != nil {
-			return err
-		}
-		if mimeType == "text/plain" {
-			// Gemini refuses text/plain as attachment.
-			if in.Doc.URL != "" {
-				return fmt.Errorf("text/plain is not supported as inline data for URL %q", in.Doc.URL)
+	if !in.Doc.IsZero() {
+		mimeType := ""
+		var data []byte
+		if in.Doc.URL == "" {
+			// If more than 20MB, we need to use
+			// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#large-pdfs-urls
+			// cacheName, err := c.cacheContent(ctx, context, mime, sp)
+			// When using cached content, system instruction, tools or tool_config cannot be used. Weird.
+			// in.CachedContent = cacheName
+			var err error
+			if mimeType, data, err = in.Doc.Read(10 * 1024 * 1024); err != nil {
+				return err
 			}
-			p.Text = string(data)
+			if mimeType == "text/plain" {
+				// Gemini refuses text/plain as attachment.
+				if in.Doc.URL != "" {
+					return fmt.Errorf("text/plain is not supported as inline data for URL %q", in.Doc.URL)
+				}
+				p.Text = string(data)
+			} else {
+				p.InlineData.MimeType = mimeType
+				p.InlineData.Data = data
+			}
 		} else {
-			p.InlineData.MimeType = mimeType
-			p.InlineData.Data = data
+			if mimeType = base.MimeByExt(path.Ext(in.Doc.URL)); mimeType == "" {
+				return fmt.Errorf("could not determine mime type for URL %q", in.Doc.URL)
+			}
+			p.FileData.MimeType = mimeType
+			p.FileData.FileURI = in.Doc.URL
 		}
-	} else {
-		if mimeType = base.MimeByExt(path.Ext(in.Doc.URL)); mimeType == "" {
-			return fmt.Errorf("could not determine mime type for URL %q", in.Doc.URL)
-		}
-		p.FileData.MimeType = mimeType
-		p.FileData.FileURI = in.Doc.URL
+		return nil
 	}
-	return nil
+	return errors.New("unknown Request type")
 }
 
 func (p *Part) FromReply(in *genai.Reply) error {
@@ -794,36 +797,39 @@ func (p *Part) FromReply(in *genai.Reply) error {
 		p.Text = in.Text
 		return nil
 	}
-	mimeType := ""
-	var data []byte
-	if in.Doc.URL == "" {
-		// If more than 20MB, we need to use
-		// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#large-pdfs-urls
-		// cacheName, err := c.cacheContent(ctx, context, mime, sp)
-		// When using cached content, system instruction, tools or tool_config cannot be used. Weird.
-		// in.CachedContent = cacheName
-		var err error
-		if mimeType, data, err = in.Doc.Read(10 * 1024 * 1024); err != nil {
-			return err
-		}
-		if mimeType == "text/plain" {
-			// Gemini refuses text/plain as attachment.
-			if in.Doc.URL != "" {
-				return fmt.Errorf("text/plain is not supported as inline data for URL %q", in.Doc.URL)
+	if !in.Doc.IsZero() {
+		mimeType := ""
+		var data []byte
+		if in.Doc.URL == "" {
+			// If more than 20MB, we need to use
+			// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#large-pdfs-urls
+			// cacheName, err := c.cacheContent(ctx, context, mime, sp)
+			// When using cached content, system instruction, tools or tool_config cannot be used. Weird.
+			// in.CachedContent = cacheName
+			var err error
+			if mimeType, data, err = in.Doc.Read(10 * 1024 * 1024); err != nil {
+				return err
 			}
-			p.Text = string(data)
+			if mimeType == "text/plain" {
+				// Gemini refuses text/plain as attachment.
+				if in.Doc.URL != "" {
+					return fmt.Errorf("text/plain is not supported as inline data for URL %q", in.Doc.URL)
+				}
+				p.Text = string(data)
+			} else {
+				p.InlineData.MimeType = mimeType
+				p.InlineData.Data = data
+			}
 		} else {
-			p.InlineData.MimeType = mimeType
-			p.InlineData.Data = data
+			if mimeType = base.MimeByExt(path.Ext(in.Doc.URL)); mimeType == "" {
+				return fmt.Errorf("could not determine mime type for URL %q", in.Doc.URL)
+			}
+			p.FileData.MimeType = mimeType
+			p.FileData.FileURI = in.Doc.URL
 		}
-	} else {
-		if mimeType = base.MimeByExt(path.Ext(in.Doc.URL)); mimeType == "" {
-			return fmt.Errorf("could not determine mime type for URL %q", in.Doc.URL)
-		}
-		p.FileData.MimeType = mimeType
-		p.FileData.FileURI = in.Doc.URL
+		return nil
 	}
-	return nil
+	return errors.New("unknown Reply type")
 }
 
 // FunctionCall is documented at https://ai.google.dev/api/caching?hl=en#FunctionCall

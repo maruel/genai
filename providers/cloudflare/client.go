@@ -182,6 +182,17 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 					c.Messages = append(c.Messages, newMsg)
 				}
 			}
+		} else if len(msgs[i].Request) > 1 {
+			for j := range msgs[i].Request {
+				msgCopy := msgs[i]
+				msgCopy.Request = []genai.Request{msgs[i].Request[j]}
+				var newMsg Message
+				if err := newMsg.From(&msgCopy); err != nil {
+					errs = append(errs, fmt.Errorf("message %d, request %d: %w", i, j, err))
+				} else {
+					c.Messages = append(c.Messages, newMsg)
+				}
+			}
 		} else {
 			var newMsg Message
 			if err := newMsg.From(&msgs[i]); err != nil {
@@ -210,6 +221,7 @@ type Message struct {
 	ToolCallID string `json:"tool_call_id,omitzero"`
 }
 
+// From must be called with at most one Request or one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
 	switch r := in.Role(); r {
 	case "user", "assistant":
@@ -219,13 +231,10 @@ func (m *Message) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", r)
 	}
-	if len(in.Request) > 1 {
-		return errors.New("cloudflare doesn't support multiple content blocks; TODO split transparently")
+	if len(in.Request) > 1 || len(in.ToolCalls) > 1 {
+		return errors.New("internal error")
 	}
 	if len(in.ToolCalls) != 0 {
-		if len(in.ToolCalls) > 1 {
-			return errors.New("cloudflare doesn't support multiple tool replies in a single message yet")
-		}
 		if len(in.Request) != 0 {
 			return errors.New("cloudflare can't have both tool calls and contents in one message")
 		}
@@ -251,26 +260,51 @@ func (m *Message) From(in *genai.Message) error {
 		m.Content = in.ToolCallResults[0].Result
 		return nil
 	}
-	if in.Request[0].Text != "" {
-		m.Content = in.Request[0].Text
-	} else if !in.Request[0].Doc.IsZero() {
-		// Check if this is a text/plain document
-		mimeType, data, err := in.Request[0].Doc.Read(10 * 1024 * 1024)
-		if err != nil {
-			return fmt.Errorf("failed to read document: %w", err)
+	if len(in.Request) != 0 {
+		if in.Request[0].Text != "" {
+			m.Content = in.Request[0].Text
+			return nil
 		}
-		if strings.HasPrefix(mimeType, "text/plain") {
+		if !in.Request[0].Doc.IsZero() {
+			// Check if this is a text/plain document
+			mimeType, data, err := in.Request[0].Doc.Read(10 * 1024 * 1024)
+			if err != nil {
+				return fmt.Errorf("failed to read document: %w", err)
+			}
+			if !strings.HasPrefix(mimeType, "text/plain") {
+				return fmt.Errorf("cloudflare only supports text/plain documents, got %s", mimeType)
+			}
 			if in.Request[0].Doc.URL != "" {
 				return errors.New("text/plain documents must be provided inline, not as a URL")
 			}
 			m.Content = string(data)
-		} else {
-			return fmt.Errorf("cloudflare only supports text/plain documents, got %s", mimeType)
+			return nil
 		}
-	} else {
-		return fmt.Errorf("unsupported content type %#v", in.Request[0])
+		return errors.New("unknown Request type")
 	}
-	return nil
+	if len(in.Reply) != 0 {
+		if in.Reply[0].Text != "" {
+			m.Content = in.Reply[0].Text
+			return nil
+		}
+		if !in.Reply[0].Doc.IsZero() {
+			// Check if this is a text/plain document
+			mimeType, data, err := in.Reply[0].Doc.Read(10 * 1024 * 1024)
+			if err != nil {
+				return fmt.Errorf("failed to read document: %w", err)
+			}
+			if !strings.HasPrefix(mimeType, "text/plain") {
+				return fmt.Errorf("cloudflare only supports text/plain documents, got %s", mimeType)
+			}
+			if in.Reply[0].Doc.URL != "" {
+				return errors.New("text/plain documents must be provided inline, not as a URL")
+			}
+			m.Content = string(data)
+			return nil
+		}
+		return errors.New("unknown Reply type")
+	}
+	return errors.New("internal error")
 }
 
 type Tool struct {

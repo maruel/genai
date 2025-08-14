@@ -267,6 +267,7 @@ type Message struct {
 	ToolCalls []ToolCall `json:"tool_calls,omitzero"`
 }
 
+// From must be called with at most one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
 	switch r := in.Role(); r {
 	case "user", "assistant":
@@ -289,7 +290,7 @@ func (m *Message) From(in *genai.Message) error {
 	for i := range in.Request {
 		if in.Request[i].Text != "" {
 			m.Content = in.Request[i].Text
-		} else {
+		} else if !in.Request[i].Doc.IsZero() {
 			mimeType, data, err := in.Request[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return err
@@ -313,12 +314,16 @@ func (m *Message) From(in *genai.Message) error {
 			default:
 				return fmt.Errorf("ollama unsupported content type %q", mimeType)
 			}
+		} else {
+			return errors.New("unknown Request type")
 		}
 	}
 	for i := range in.Reply {
 		if in.Reply[i].Text != "" {
 			m.Content = in.Reply[i].Text
-		} else {
+		} else if in.Reply[i].Thinking != "" {
+			// Ignore.
+		} else if !in.Reply[i].Doc.IsZero() {
 			mimeType, data, err := in.Reply[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return err
@@ -342,6 +347,8 @@ func (m *Message) From(in *genai.Message) error {
 			default:
 				return fmt.Errorf("ollama unsupported content type %q", mimeType)
 			}
+		} else {
+			return errors.New("unknown Reply type")
 		}
 	}
 	if len(in.ToolCalls) != 0 {

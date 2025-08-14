@@ -568,6 +568,7 @@ type Message struct {
 	Summary          []ReasoningSummary `json:"summary,omitzero"`
 }
 
+// From must be called with at most one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
 	if len(in.ToolCallResults) != 0 {
 		// Handle multiple tool call results by creating multiple messages
@@ -600,7 +601,7 @@ func (m *Message) From(in *genai.Message) error {
 		m.Content = make([]Content, len(in.Request))
 		for j := range in.Request {
 			if err := m.Content[j].FromRequest(&in.Request[j]); err != nil {
-				return fmt.Errorf("block %d: %w", j, err)
+				return fmt.Errorf("request %d: %w", j, err)
 			}
 		}
 		return nil
@@ -611,7 +612,7 @@ func (m *Message) From(in *genai.Message) error {
 		m.Content = make([]Content, len(in.Reply))
 		for j := range in.Reply {
 			if err := m.Content[j].FromReply(&in.Reply[j]); err != nil {
-				return fmt.Errorf("block %d: %w", j, err)
+				return fmt.Errorf("reply %d: %w", j, err)
 			}
 		}
 		return nil
@@ -711,44 +712,47 @@ func (c *Content) FromRequest(in *genai.Request) error {
 		c.Text = in.Text
 		return nil
 	}
-	// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
-	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
-	if err != nil {
-		return err
-	}
-	// OpenAI require a mime-type to determine if image, sound or PDF.
-	if mimeType == "" {
-		return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
-	}
-	switch {
-	case strings.HasPrefix(mimeType, "image/"):
-		c.Type = ContentInputImage
-		c.Detail = "auto" // TODO: Make it configurable.
-		if in.Doc.URL == "" {
-			c.ImageURL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-		} else {
-			c.ImageURL = in.Doc.URL
+	if !in.Doc.IsZero() {
+		// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
+		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+		if err != nil {
+			return err
 		}
-	default:
-		if in.Doc.URL != "" {
-			return fmt.Errorf("URL to %s file not supported", mimeType)
+		// OpenAI require a mime-type to determine if image, sound or PDF.
+		if mimeType == "" {
+			return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
 		}
-		filename := in.Doc.GetFilename()
-		if filename == "" {
-			exts, err := mime.ExtensionsByType(mimeType)
-			if err != nil {
-				return err
+		switch {
+		case strings.HasPrefix(mimeType, "image/"):
+			c.Type = ContentInputImage
+			c.Detail = "auto" // TODO: Make it configurable.
+			if in.Doc.URL == "" {
+				c.ImageURL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+			} else {
+				c.ImageURL = in.Doc.URL
 			}
-			if len(exts) == 0 {
-				return fmt.Errorf("unknown extension for mime type %s", mimeType)
+		default:
+			if in.Doc.URL != "" {
+				return fmt.Errorf("URL to %s file not supported", mimeType)
 			}
-			filename = "content" + exts[0]
+			filename := in.Doc.GetFilename()
+			if filename == "" {
+				exts, err := mime.ExtensionsByType(mimeType)
+				if err != nil {
+					return err
+				}
+				if len(exts) == 0 {
+					return fmt.Errorf("unknown extension for mime type %s", mimeType)
+				}
+				filename = "content" + exts[0]
+			}
+			c.Type = ContentInputFile
+			c.Filename = filename
+			c.FileData = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 		}
-		c.Type = ContentInputFile
-		c.Filename = filename
-		c.FileData = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+		return nil
 	}
-	return nil
+	return errors.New("unknown Request type")
 }
 
 func (c *Content) FromReply(in *genai.Reply) error {
@@ -757,44 +761,47 @@ func (c *Content) FromReply(in *genai.Reply) error {
 		c.Text = in.Text
 		return nil
 	}
-	// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
-	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
-	if err != nil {
-		return err
-	}
-	// OpenAI require a mime-type to determine if image, sound or PDF.
-	if mimeType == "" {
-		return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
-	}
-	switch {
-	case strings.HasPrefix(mimeType, "image/"):
-		c.Type = ContentInputImage
-		c.Detail = "auto" // TODO: Make it configurable.
-		if in.Doc.URL == "" {
-			c.ImageURL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-		} else {
-			c.ImageURL = in.Doc.URL
+	if !in.Doc.IsZero() {
+		// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
+		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+		if err != nil {
+			return err
 		}
-	default:
-		if in.Doc.URL != "" {
-			return fmt.Errorf("URL to %s file not supported", mimeType)
+		// OpenAI require a mime-type to determine if image, sound or PDF.
+		if mimeType == "" {
+			return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
 		}
-		filename := in.Doc.GetFilename()
-		if filename == "" {
-			exts, err := mime.ExtensionsByType(mimeType)
-			if err != nil {
-				return err
+		switch {
+		case strings.HasPrefix(mimeType, "image/"):
+			c.Type = ContentInputImage
+			c.Detail = "auto" // TODO: Make it configurable.
+			if in.Doc.URL == "" {
+				c.ImageURL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+			} else {
+				c.ImageURL = in.Doc.URL
 			}
-			if len(exts) == 0 {
-				return fmt.Errorf("unknown extension for mime type %s", mimeType)
+		default:
+			if in.Doc.URL != "" {
+				return fmt.Errorf("URL to %s file not supported", mimeType)
 			}
-			filename = "content" + exts[0]
+			filename := in.Doc.GetFilename()
+			if filename == "" {
+				exts, err := mime.ExtensionsByType(mimeType)
+				if err != nil {
+					return err
+				}
+				if len(exts) == 0 {
+					return fmt.Errorf("unknown extension for mime type %s", mimeType)
+				}
+				filename = "content" + exts[0]
+			}
+			c.Type = ContentInputFile
+			c.Filename = filename
+			c.FileData = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 		}
-		c.Type = ContentInputFile
-		c.Filename = filename
-		c.FileData = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+		return nil
 	}
-	return nil
+	return errors.New("unknown Reply type")
 }
 
 // APIError represents an API error in the response.

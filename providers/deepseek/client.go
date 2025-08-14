@@ -209,6 +209,7 @@ type Message struct {
 	ToolCallID       string     `json:"tool_call_id,omitzero"` // Tool call that this message is responding to, with response in Content field.
 }
 
+// From must be called with at most one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
 	switch r := in.Role(); r {
 	case "user", "assistant":
@@ -221,38 +222,43 @@ func (m *Message) From(in *genai.Message) error {
 	m.Name = in.User
 	for i := range in.Request {
 		// Thinking content should not be returned to the model.
-		m.Content += in.Request[i].Text
-		if in.Request[i].Doc.URL != "" {
-			return errors.New("deepseek doesn't support document content blocks with URLs")
-		}
-		if !in.Request[i].Doc.IsZero() {
+		if in.Request[i].Text != "" {
+			m.Content += in.Request[i].Text
+		} else if !in.Request[i].Doc.IsZero() {
+			if in.Request[i].Doc.URL != "" {
+				return errors.New("deepseek doesn't support document content blocks with URLs")
+			}
 			mimeType, data, err := in.Request[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return fmt.Errorf("failed to read document: %w", err)
 			}
-			if strings.HasPrefix(mimeType, "text/plain") {
-				m.Content += string(data)
-			} else {
+			if !strings.HasPrefix(mimeType, "text/plain") {
 				return fmt.Errorf("deepseek only supports text/plain documents, got %s", mimeType)
 			}
+			m.Content += string(data)
+		} else {
+			return errors.New("unknown Request type")
 		}
 	}
 	for i := range in.Reply {
-		// Thinking content should not be returned to the model.
-		m.Content += in.Reply[i].Text
-		if in.Reply[i].Doc.URL != "" {
-			return errors.New("deepseek doesn't support document content blocks with URLs")
-		}
-		if !in.Reply[i].Doc.IsZero() {
+		if in.Reply[i].Text != "" {
+			m.Content += in.Reply[i].Text
+		} else if in.Reply[i].Thinking != "" {
+			// Thinking content should not be returned to the model.
+		} else if !in.Reply[i].Doc.IsZero() {
 			mimeType, data, err := in.Reply[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return fmt.Errorf("failed to read document: %w", err)
 			}
-			if strings.HasPrefix(mimeType, "text/plain") {
-				m.Content += string(data)
-			} else {
+			if in.Reply[i].Doc.URL != "" {
+				return errors.New("deepseek doesn't support document content blocks with URLs")
+			}
+			if !strings.HasPrefix(mimeType, "text/plain") {
 				return fmt.Errorf("deepseek only supports text/plain documents, got %s", mimeType)
 			}
+			m.Content += string(data)
+		} else {
+			return errors.New("unknown Reply type")
 		}
 	}
 	if len(in.ToolCalls) != 0 {

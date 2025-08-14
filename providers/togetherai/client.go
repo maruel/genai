@@ -425,6 +425,7 @@ type Message struct {
 	ToolCallID string     `json:"tool_call_id,omitzero"`
 }
 
+// From must be called with at most one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
 	switch r := in.Role(); r {
 	case "user", "assistant":
@@ -555,35 +556,38 @@ func (c *Content) FromRequest(in *genai.Request) error {
 		c.Text = in.Text
 		return nil
 	}
-	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
-	if err != nil {
-		return err
+	if !in.Doc.IsZero() {
+		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+		if err != nil {
+			return err
+		}
+		switch {
+		case strings.HasPrefix(mimeType, "image/"):
+			c.Type = ContentImageURL
+			if in.Doc.URL == "" {
+				c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+			} else {
+				c.ImageURL.URL = in.Doc.URL
+			}
+		case strings.HasPrefix(mimeType, "video/"):
+			c.Type = ContentVideoURL
+			if in.Doc.URL == "" {
+				c.VideoURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+			} else {
+				c.VideoURL.URL = in.Doc.URL
+			}
+		case strings.HasPrefix(mimeType, "text/plain"):
+			c.Type = ContentText
+			if in.Doc.URL != "" {
+				return errors.New("text/plain documents must be provided inline, not as a URL")
+			}
+			c.Text = string(data)
+		default:
+			return fmt.Errorf("unsupported mime type %s", mimeType)
+		}
+		return nil
 	}
-	switch {
-	case strings.HasPrefix(mimeType, "image/"):
-		c.Type = ContentImageURL
-		if in.Doc.URL == "" {
-			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-		} else {
-			c.ImageURL.URL = in.Doc.URL
-		}
-	case strings.HasPrefix(mimeType, "video/"):
-		c.Type = ContentVideoURL
-		if in.Doc.URL == "" {
-			c.VideoURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-		} else {
-			c.VideoURL.URL = in.Doc.URL
-		}
-	case strings.HasPrefix(mimeType, "text/plain"):
-		c.Type = ContentText
-		if in.Doc.URL != "" {
-			return errors.New("text/plain documents must be provided inline, not as a URL")
-		}
-		c.Text = string(data)
-	default:
-		return fmt.Errorf("unsupported mime type %s", mimeType)
-	}
-	return nil
+	return errors.New("unknown Request type")
 }
 
 func (c *Content) FromReply(in *genai.Reply) error {
@@ -592,35 +596,38 @@ func (c *Content) FromReply(in *genai.Reply) error {
 		c.Text = in.Text
 		return nil
 	}
-	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
-	if err != nil {
-		return err
+	if !in.Doc.IsZero() {
+		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+		if err != nil {
+			return err
+		}
+		switch {
+		case strings.HasPrefix(mimeType, "image/"):
+			c.Type = ContentImageURL
+			if in.Doc.URL == "" {
+				c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+			} else {
+				c.ImageURL.URL = in.Doc.URL
+			}
+		case strings.HasPrefix(mimeType, "video/"):
+			c.Type = ContentVideoURL
+			if in.Doc.URL == "" {
+				c.VideoURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+			} else {
+				c.VideoURL.URL = in.Doc.URL
+			}
+		case strings.HasPrefix(mimeType, "text/plain"):
+			c.Type = ContentText
+			if in.Doc.URL != "" {
+				return errors.New("text/plain documents must be provided inline, not as a URL")
+			}
+			c.Text = string(data)
+		default:
+			return fmt.Errorf("unsupported mime type %s", mimeType)
+		}
+		return nil
 	}
-	switch {
-	case strings.HasPrefix(mimeType, "image/"):
-		c.Type = ContentImageURL
-		if in.Doc.URL == "" {
-			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-		} else {
-			c.ImageURL.URL = in.Doc.URL
-		}
-	case strings.HasPrefix(mimeType, "video/"):
-		c.Type = ContentVideoURL
-		if in.Doc.URL == "" {
-			c.VideoURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-		} else {
-			c.VideoURL.URL = in.Doc.URL
-		}
-	case strings.HasPrefix(mimeType, "text/plain"):
-		c.Type = ContentText
-		if in.Doc.URL != "" {
-			return errors.New("text/plain documents must be provided inline, not as a URL")
-		}
-		c.Text = string(data)
-	default:
-		return fmt.Errorf("unsupported mime type %s", mimeType)
-	}
-	return nil
+	return errors.New("unknown Reply type")
 }
 
 func (c *Content) To(out *genai.Reply) error {

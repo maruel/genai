@@ -278,7 +278,7 @@ type Message struct {
 	Name       string     `json:"name,omitzero"` // Tool call name.
 }
 
-// From converts from a genai.Message to a Message.
+// From must be called with at most one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
 	switch r := in.Role(); r {
 	case "user", "assistant":
@@ -299,12 +299,7 @@ func (m *Message) From(in *genai.Message) error {
 				if err != nil {
 					return fmt.Errorf("failed to read document: %w", err)
 				}
-				if strings.HasPrefix(mimeType, "text/plain") {
-					if in.Request[i].Doc.URL != "" {
-						return errors.New("text/plain documents must be provided inline, not as a URL")
-					}
-					m.Content = append(m.Content, Content{Type: ContentText, Text: string(data)})
-				} else {
+				if !strings.HasPrefix(mimeType, "text/plain") {
 					return fmt.Errorf("cerebras only supports text/plain documents, got %s", mimeType)
 				}
 				if in.Request[i].Doc.URL != "" {
@@ -312,8 +307,7 @@ func (m *Message) From(in *genai.Message) error {
 				}
 				m.Content = append(m.Content, Content{Type: ContentText, Text: string(data)})
 			} else {
-				// Cerebras doesn't support other document types.
-				return fmt.Errorf("unsupported content type %#v", in.Request[i])
+				return errors.New("unknown Request type")
 			}
 		}
 	}
@@ -330,12 +324,7 @@ func (m *Message) From(in *genai.Message) error {
 				if err != nil {
 					return fmt.Errorf("failed to read document: %w", err)
 				}
-				if strings.HasPrefix(mimeType, "text/plain") {
-					if in.Reply[i].Doc.URL != "" {
-						return errors.New("text/plain documents must be provided inline, not as a URL")
-					}
-					m.Content = append(m.Content, Content{Type: ContentText, Text: string(data)})
-				} else {
+				if !strings.HasPrefix(mimeType, "text/plain") {
 					return fmt.Errorf("cerebras only supports text/plain documents, got %s", mimeType)
 				}
 				if in.Reply[i].Doc.URL != "" {
@@ -343,8 +332,7 @@ func (m *Message) From(in *genai.Message) error {
 				}
 				m.Content = append(m.Content, Content{Type: ContentText, Text: string(data)})
 			} else {
-				// Cerebras doesn't support other document types.
-				return fmt.Errorf("unsupported content type %#v", in.Reply[i])
+				return errors.New("unknown Reply type")
 			}
 		}
 	}

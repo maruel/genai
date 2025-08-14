@@ -235,6 +235,7 @@ type Message struct {
 	Content Contents `json:"content"`
 }
 
+// From converts from a genai.Message to a Message.
 func (m *Message) From(in *genai.Message) error {
 	switch r := in.Role(); r {
 	case "user", "assistant":
@@ -251,7 +252,7 @@ func (m *Message) From(in *genai.Message) error {
 	for i := range in.Request {
 		if in.Request[i].Text != "" {
 			m.Content = append(m.Content, Content{Type: "text", Text: in.Request[i].Text})
-		} else {
+		} else if !in.Request[i].Doc.IsZero() {
 			// Check if this is a text/plain document
 			mimeType, data, err := in.Request[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
@@ -274,12 +275,16 @@ func (m *Message) From(in *genai.Message) error {
 			default:
 				return fmt.Errorf("perplexity only supports text/plain documents, got %s", mimeType)
 			}
+		} else {
+			return errors.New("unknown Request type")
 		}
 	}
 	for i := range in.Reply {
 		if in.Reply[i].Text != "" {
 			m.Content = append(m.Content, Content{Type: "text", Text: in.Reply[i].Text})
-		} else {
+		} else if in.Reply[i].Thinking != "" {
+			// Ignore.
+		} else if !in.Reply[i].Doc.IsZero() {
 			// Check if this is a text/plain document
 			mimeType, data, err := in.Reply[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
@@ -302,6 +307,8 @@ func (m *Message) From(in *genai.Message) error {
 			default:
 				return fmt.Errorf("perplexity only supports text/plain documents, got %s", mimeType)
 			}
+		} else {
+			return errors.New("unknown Request type")
 		}
 	}
 	return nil

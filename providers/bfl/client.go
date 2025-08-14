@@ -312,26 +312,28 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 	}
 	msg := msgs[0]
 	for i := range msg.Request {
-		if msg.Request[i].Text == "" {
-			// Check if this is a text/plain document that we can handle
-			if !msg.Request[i].Doc.IsZero() {
-				mimeType, data, err := msg.Request[i].Doc.Read(10 * 1024 * 1024)
-				if err != nil {
-					return "", fmt.Errorf("failed to read document: %w", err)
-				}
-				if strings.HasPrefix(mimeType, "text/plain") {
-					if msg.Request[i].Doc.URL != "" {
-						return "", errors.New("text/plain documents must be provided inline, not as a URL")
-					}
-					// Convert document content to text content
-					msg.Request[i].Text = string(data)
-					msg.Request[i].Doc = genai.Doc{}
-					continue
-				}
-			}
-			// TODO: kontext
-			return "", errors.New("only text and text/plain documents can be passed as input")
+		if msg.Request[i].Text != "" {
+			continue
 		}
+		// Check if this is a text/plain document that we can handle
+		if !msg.Request[i].Doc.IsZero() {
+			mimeType, data, err := msg.Request[i].Doc.Read(10 * 1024 * 1024)
+			if err != nil {
+				return "", fmt.Errorf("failed to read document: %w", err)
+			}
+			// TODO: kontext support images as imnput
+			if !strings.HasPrefix(mimeType, "text/plain") {
+				return "", errors.New("only text and text/plain documents can be passed as input")
+			}
+			if msg.Request[i].Doc.URL != "" {
+				return "", errors.New("text/plain documents must be provided inline, not as a URL")
+			}
+			// Convert document content to text content
+			msg.Request[i].Text = string(data)
+			msg.Request[i].Doc = genai.Doc{}
+			continue
+		}
+		return "", errors.New("unknown Request type")
 	}
 	req := ImageRequest{
 		Prompt: msg.AsText(),

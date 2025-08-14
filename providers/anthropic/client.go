@@ -398,25 +398,25 @@ func (m *Message) From(in *genai.Message) error {
 	m.Content = make([]Content, len(in.Request)+len(in.Reply)+len(in.ToolCalls)+len(in.ToolCallResults))
 	for i := range in.Request {
 		if err := m.Content[i].FromRequest(&in.Request[i]); err != nil {
-			return fmt.Errorf("block %d: %w", i, err)
+			return fmt.Errorf("request %d: %w", i, err)
 		}
 	}
 	offset := len(in.Request)
 	for i := range in.Reply {
 		if err := m.Content[i+offset].FromReply(&in.Reply[i]); err != nil {
-			return fmt.Errorf("block %d: %w", i, err)
+			return fmt.Errorf("reply %d: %w", i, err)
 		}
 	}
 	offset += len(in.Reply)
 	for i := range in.ToolCalls {
 		if err := m.Content[offset+i].FromToolCall(&in.ToolCalls[i]); err != nil {
-			return fmt.Errorf("block %d: %w", offset+i, err)
+			return fmt.Errorf("tool call %d: %w", offset+i, err)
 		}
 	}
 	offset += len(in.ToolCalls)
 	for i := range in.ToolCallResults {
 		if err := m.Content[offset+i].FromToolCallResult(&in.ToolCallResults[i]); err != nil {
-			return fmt.Errorf("block %d: %w", offset+i, err)
+			return fmt.Errorf("tool call result %d: %w", offset+i, err)
 		}
 	}
 	return nil
@@ -573,52 +573,54 @@ func (c *Content) FromRequest(in *genai.Request) error {
 		c.Text = in.Text
 		return nil
 	}
-
-	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
-	if err != nil {
-		return err
-	}
-	// Anthropic require a mime-type to determine if image or PDF.
-	if mimeType == "" {
-		return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
-	}
-	c.CacheControl.Type = "ephemeral"
-	switch {
-	case strings.HasPrefix(mimeType, "image/"):
-		c.Type = ContentImage
-		if in.Doc.URL != "" {
-			c.Source.Type = SourceURL
-			c.Source.URL = in.Doc.URL
-		} else {
-			c.Source.MediaType = mimeType
-			c.Source.Type = SourceBase64
-			c.Source.Data = base64.StdEncoding.EncodeToString(data)
+	if !in.Doc.IsZero() {
+		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+		if err != nil {
+			return err
 		}
-	case mimeType == "application/pdf":
-		c.Type = ContentDocument
-		if in.Doc.URL != "" {
-			c.Source.Type = SourceURL
-			c.Source.URL = in.Doc.URL
-		} else {
-			c.Source.MediaType = mimeType
-			c.Source.Type = SourceBase64
-			c.Source.Data = base64.StdEncoding.EncodeToString(data)
+		// Anthropic require a mime-type to determine if image or PDF.
+		if mimeType == "" {
+			return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
 		}
-	case strings.HasPrefix(mimeType, "text/plain"):
-		c.Type = ContentDocument
-		if in.Doc.URL != "" {
-			return errors.New("text/plain documents must be provided inline, not as a URL")
+		c.CacheControl.Type = "ephemeral"
+		switch {
+		case strings.HasPrefix(mimeType, "image/"):
+			c.Type = ContentImage
+			if in.Doc.URL != "" {
+				c.Source.Type = SourceURL
+				c.Source.URL = in.Doc.URL
+			} else {
+				c.Source.MediaType = mimeType
+				c.Source.Type = SourceBase64
+				c.Source.Data = base64.StdEncoding.EncodeToString(data)
+			}
+		case mimeType == "application/pdf":
+			c.Type = ContentDocument
+			if in.Doc.URL != "" {
+				c.Source.Type = SourceURL
+				c.Source.URL = in.Doc.URL
+			} else {
+				c.Source.MediaType = mimeType
+				c.Source.Type = SourceBase64
+				c.Source.Data = base64.StdEncoding.EncodeToString(data)
+			}
+		case strings.HasPrefix(mimeType, "text/plain"):
+			c.Type = ContentDocument
+			if in.Doc.URL != "" {
+				return errors.New("text/plain documents must be provided inline, not as a URL")
+			}
+			// In particular, the API refuses "text/plain; charset=utf-8". WTF.
+			c.Source.MediaType = "text/plain"
+			c.Source.Type = SourceText
+			c.Source.Data = string(data)
+			// Enable citations for text/plain documents
+			c.Citations = Citations{Enabled: true}
+		default:
+			return fmt.Errorf("unsupported content mime-type %s", mimeType)
 		}
-		// In particular, the API refuses "text/plain; charset=utf-8". WTF.
-		c.Source.MediaType = "text/plain"
-		c.Source.Type = SourceText
-		c.Source.Data = string(data)
-		// Enable citations for text/plain documents
-		c.Citations = Citations{Enabled: true}
-	default:
-		return fmt.Errorf("unsupported content mime-type %s", mimeType)
+		return nil
 	}
-	return nil
+	return errors.New("unknown Reply type")
 }
 
 func (c *Content) FromReply(in *genai.Reply) error {
@@ -645,52 +647,54 @@ func (c *Content) FromReply(in *genai.Reply) error {
 		}
 		return fmt.Errorf("unexpected Opaque %v", in.Opaque)
 	}
-
-	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
-	if err != nil {
-		return err
-	}
-	// Anthropic require a mime-type to determine if image or PDF.
-	if mimeType == "" {
-		return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
-	}
-	c.CacheControl.Type = "ephemeral"
-	switch {
-	case strings.HasPrefix(mimeType, "image/"):
-		c.Type = ContentImage
-		if in.Doc.URL != "" {
-			c.Source.Type = SourceURL
-			c.Source.URL = in.Doc.URL
-		} else {
-			c.Source.MediaType = mimeType
-			c.Source.Type = SourceBase64
-			c.Source.Data = base64.StdEncoding.EncodeToString(data)
+	if !in.Doc.IsZero() {
+		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+		if err != nil {
+			return err
 		}
-	case mimeType == "application/pdf":
-		c.Type = ContentDocument
-		if in.Doc.URL != "" {
-			c.Source.Type = SourceURL
-			c.Source.URL = in.Doc.URL
-		} else {
-			c.Source.MediaType = mimeType
-			c.Source.Type = SourceBase64
-			c.Source.Data = base64.StdEncoding.EncodeToString(data)
+		// Anthropic require a mime-type to determine if image or PDF.
+		if mimeType == "" {
+			return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
 		}
-	case strings.HasPrefix(mimeType, "text/plain"):
-		c.Type = ContentDocument
-		if in.Doc.URL != "" {
-			return errors.New("text/plain documents must be provided inline, not as a URL")
+		c.CacheControl.Type = "ephemeral"
+		switch {
+		case strings.HasPrefix(mimeType, "image/"):
+			c.Type = ContentImage
+			if in.Doc.URL != "" {
+				c.Source.Type = SourceURL
+				c.Source.URL = in.Doc.URL
+			} else {
+				c.Source.MediaType = mimeType
+				c.Source.Type = SourceBase64
+				c.Source.Data = base64.StdEncoding.EncodeToString(data)
+			}
+		case mimeType == "application/pdf":
+			c.Type = ContentDocument
+			if in.Doc.URL != "" {
+				c.Source.Type = SourceURL
+				c.Source.URL = in.Doc.URL
+			} else {
+				c.Source.MediaType = mimeType
+				c.Source.Type = SourceBase64
+				c.Source.Data = base64.StdEncoding.EncodeToString(data)
+			}
+		case strings.HasPrefix(mimeType, "text/plain"):
+			c.Type = ContentDocument
+			if in.Doc.URL != "" {
+				return errors.New("text/plain documents must be provided inline, not as a URL")
+			}
+			// In particular, the API refuses "text/plain; charset=utf-8". WTF.
+			c.Source.MediaType = "text/plain"
+			c.Source.Type = SourceText
+			c.Source.Data = string(data)
+			// Enable citations for text/plain documents
+			c.Citations = Citations{Enabled: true}
+		default:
+			return fmt.Errorf("unsupported content mime-type %s", mimeType)
 		}
-		// In particular, the API refuses "text/plain; charset=utf-8". WTF.
-		c.Source.MediaType = "text/plain"
-		c.Source.Type = SourceText
-		c.Source.Data = string(data)
-		// Enable citations for text/plain documents
-		c.Citations = Citations{Enabled: true}
-	default:
-		return fmt.Errorf("unsupported content mime-type %s", mimeType)
+		return nil
 	}
-	return nil
+	return errors.New("unknown Request type")
 }
 
 func (c *Content) FromToolCall(in *genai.ToolCall) error {

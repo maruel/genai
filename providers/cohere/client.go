@@ -268,6 +268,7 @@ type Message struct {
 	ToolCallID string `json:"tool_call_id,omitzero"`
 }
 
+// From must be called with at most one ToolCallResults.
 func (m *Message) From(in *genai.Message) ([]Document, error) {
 	switch r := in.Role(); r {
 	case "user", "assistant":
@@ -357,34 +358,36 @@ func (c *Content) FromRequest(in *genai.Request) (*Document, error) {
 		c.Text = in.Text
 		return nil, nil
 	}
-
-	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
-	if err != nil {
-		return nil, err
+	if !in.Doc.IsZero() {
+		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+		if err != nil {
+			return nil, err
+		}
+		switch {
+		case (in.Doc.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
+			c.Type = ContentImageURL
+			if in.Doc.URL != "" {
+				c.ImageURL.URL = in.Doc.URL
+			} else {
+				c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+			}
+			return nil, nil
+		case strings.HasPrefix(mimeType, "text/plain"):
+			if in.Doc.URL != "" {
+				return nil, errors.New("text/plain documents must be provided inline, not as a URL")
+			}
+			name := in.Doc.GetFilename()
+			d := &Document{
+				ID:   name,
+				Data: map[string]any{"title": name, "snippet": string(data)},
+			}
+			// This is handled as ChatRequest.Documents.
+			return d, nil
+		default:
+			return nil, fmt.Errorf("unsupported mime type %s", mimeType)
+		}
 	}
-	switch {
-	case (in.Doc.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
-		c.Type = ContentImageURL
-		if in.Doc.URL != "" {
-			c.ImageURL.URL = in.Doc.URL
-		} else {
-			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-		}
-		return nil, nil
-	case strings.HasPrefix(mimeType, "text/plain"):
-		if in.Doc.URL != "" {
-			return nil, errors.New("text/plain documents must be provided inline, not as a URL")
-		}
-		name := in.Doc.GetFilename()
-		d := &Document{
-			ID:   name,
-			Data: map[string]any{"title": name, "snippet": string(data)},
-		}
-		// This is handled as ChatRequest.Documents.
-		return d, nil
-	default:
-		return nil, fmt.Errorf("unsupported mime type %s", mimeType)
-	}
+	return nil, errors.New("unknown Request type")
 }
 
 func (c *Content) FromReply(in *genai.Reply) (*Document, error) {
@@ -393,34 +396,36 @@ func (c *Content) FromReply(in *genai.Reply) (*Document, error) {
 		c.Text = in.Text
 		return nil, nil
 	}
-
-	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
-	if err != nil {
-		return nil, err
+	if !in.Doc.IsZero() {
+		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+		if err != nil {
+			return nil, err
+		}
+		switch {
+		case (in.Doc.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
+			c.Type = ContentImageURL
+			if in.Doc.URL != "" {
+				c.ImageURL.URL = in.Doc.URL
+			} else {
+				c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+			}
+			return nil, nil
+		case strings.HasPrefix(mimeType, "text/plain"):
+			if in.Doc.URL != "" {
+				return nil, errors.New("text/plain documents must be provided inline, not as a URL")
+			}
+			name := in.Doc.GetFilename()
+			d := &Document{
+				ID:   name,
+				Data: map[string]any{"title": name, "snippet": string(data)},
+			}
+			// This is handled as ChatRequest.Documents.
+			return d, nil
+		default:
+			return nil, fmt.Errorf("unsupported mime type %s", mimeType)
+		}
 	}
-	switch {
-	case (in.Doc.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
-		c.Type = ContentImageURL
-		if in.Doc.URL != "" {
-			c.ImageURL.URL = in.Doc.URL
-		} else {
-			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-		}
-		return nil, nil
-	case strings.HasPrefix(mimeType, "text/plain"):
-		if in.Doc.URL != "" {
-			return nil, errors.New("text/plain documents must be provided inline, not as a URL")
-		}
-		name := in.Doc.GetFilename()
-		d := &Document{
-			ID:   name,
-			Data: map[string]any{"title": name, "snippet": string(data)},
-		}
-		// This is handled as ChatRequest.Documents.
-		return d, nil
-	default:
-		return nil, fmt.Errorf("unsupported mime type %s", mimeType)
-	}
+	return nil, errors.New("unknown Reply type")
 }
 
 func (c *Content) To(in *genai.Reply) error {

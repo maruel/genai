@@ -14,28 +14,40 @@ import (
 func TestOptionsText(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
-			o := OptionsText{
-				Seed:        1,
-				Temperature: 0.5,
-				TopP:        0.5,
-				TopK:        10,
-				MaxTokens:   100,
-				Stop:        []string{"stop"},
-				ReplyAsJSON: true,
-				DecodeAs:    struct{}{},
-				Tools: []ToolDef{
-					{
-						Name:        "tool",
-						Description: "do stuff",
+			tests := []struct {
+				name    string
+				options OptionsText
+			}{
+				{
+					name: "Valid options with all fields set",
+					options: OptionsText{
+						Seed:        1,
+						Temperature: 0.5,
+						TopP:        0.5,
+						TopK:        10,
+						MaxTokens:   100,
+						Stop:        []string{"stop"},
+						ReplyAsJSON: true,
+						DecodeAs:    struct{}{},
+						Tools: []ToolDef{
+							{
+								Name:        "tool",
+								Description: "do stuff",
+							},
+						},
 					},
 				},
+				{
+					name:    "Valid options with only DecodeAs pointer",
+					options: OptionsText{DecodeAs: &struct{}{}},
+				},
 			}
-			if err := o.Validate(); err != nil {
-				t.Fatalf("unexpected error: %q", err)
-			}
-			o = OptionsText{DecodeAs: &struct{}{}}
-			if err := o.Validate(); err != nil {
-				t.Fatalf("unexpected error: %q", err)
+			for _, tt := range tests {
+				t.Run(tt.name, func(t *testing.T) {
+					if err := tt.options.Validate(); err != nil {
+						t.Fatalf("unexpected error: %q", err)
+					}
+				})
 			}
 		})
 		t.Run("error", func(t *testing.T) {
@@ -83,7 +95,7 @@ func TestOptionsText(t *testing.T) {
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
 					if err := tt.options.Validate(); err == nil || err.Error() != tt.errMsg {
-						t.Fatalf("\nwant %q\ngot  %q", tt.errMsg, err)
+						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
 					}
 				})
 			}
@@ -114,7 +126,7 @@ func TestToolDef(t *testing.T) {
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
 					if err := tt.toolDef.Validate(); err != nil {
-						t.Fatalf("Expected no error, got: %v", err)
+						t.Fatalf("unexpected error: %q", err)
 					}
 				})
 			}
@@ -184,7 +196,7 @@ func TestToolDef(t *testing.T) {
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
 					if err := tt.toolDef.Validate(); err == nil || err.Error() != tt.errMsg {
-						t.Fatalf("\nwant %q\ngot  %q", tt.errMsg, err)
+						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
 					}
 				})
 			}

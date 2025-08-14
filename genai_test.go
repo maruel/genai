@@ -90,7 +90,7 @@ func TestMessages(t *testing.T) {
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
 					if err := tt.messages.Validate(); err == nil || err.Error() != tt.errMsg {
-						t.Fatalf("\nwant %q\ngot  %q", tt.errMsg, err)
+						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
 					}
 				})
 			}
@@ -150,9 +150,8 @@ func TestMessage(t *testing.T) {
 			}
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
-					err := tt.message.Validate()
-					if err == nil || err.Error() != tt.errMsg {
-						t.Fatalf("\nwant %q\ngot  %q", tt.errMsg, err)
+					if err := tt.message.Validate(); err == nil || err.Error() != tt.errMsg {
+						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
 					}
 				})
 			}
@@ -188,7 +187,7 @@ func TestMessage(t *testing.T) {
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
 					if err := tt.message.Decode("invalid"); err == nil || err.Error() != tt.errMsg {
-						t.Fatalf("\nwant %q\ngot  %q", tt.errMsg, err)
+						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
 					}
 				})
 			}
@@ -271,12 +270,8 @@ func TestMessage(t *testing.T) {
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
 					var got Message
-					err := got.UnmarshalJSON([]byte(tt.json))
-					if err == nil {
-						t.Fatal("expected error, got nil")
-					}
-					if !strings.Contains(err.Error(), tt.errMsg) {
-						t.Errorf("expected error to contain %q, got %q", tt.errMsg, err.Error())
+					if err := got.UnmarshalJSON([]byte(tt.json)); err == nil || err.Error() != tt.errMsg {
+						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
 					}
 				})
 			}
@@ -374,8 +369,7 @@ func TestMessage(t *testing.T) {
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
 				message := tt.message
-				err := message.Accumulate(tt.fragment)
-				if err != nil {
+				if err := message.Accumulate(tt.fragment); err != nil {
 					t.Fatalf("unexpected error: %v", err)
 				}
 				if diff := cmp.Diff(tt.want, message); diff != "" {
@@ -439,6 +433,7 @@ func TestContent(t *testing.T) {
 			tests := []struct {
 				name    string
 				content Content
+				errMsg  string
 			}{
 				{
 					name: "citations with thinking",
@@ -446,13 +441,13 @@ func TestContent(t *testing.T) {
 						Thinking:  "reasoning",
 						Citations: []Citation{{Text: "example"}},
 					},
+					errMsg: "field Citations can only be used with Text",
 				},
 			}
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
-					err := tt.content.Validate()
-					if err == nil {
-						t.Errorf("Content.Validate() error = %v", err)
+					if err := tt.content.Validate(); err == nil || err.Error() != tt.errMsg {
+						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
 					}
 				})
 			}
@@ -568,12 +563,8 @@ func TestContent(t *testing.T) {
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
 					var got Content
-					err := got.UnmarshalJSON([]byte(tt.json))
-					if err == nil {
-						t.Fatal("expected error, got nil")
-					}
-					if !strings.Contains(err.Error(), tt.errMsg) {
-						t.Errorf("expected error to contain %q, got %q", tt.errMsg, err.Error())
+					if err := got.UnmarshalJSON([]byte(tt.json)); err == nil || err.Error() != tt.errMsg {
+						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
 					}
 				})
 			}
@@ -780,12 +771,8 @@ func TestToolCall(t *testing.T) {
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
 					var got ToolCall
-					err := got.UnmarshalJSON([]byte(tt.json))
-					if err == nil {
-						t.Fatal("expected error, got nil")
-					}
-					if !strings.Contains(err.Error(), tt.errMsg) {
-						t.Errorf("expected error to contain %q, got %q", tt.errMsg, err.Error())
+					if err := got.UnmarshalJSON([]byte(tt.json)); err == nil || err.Error() != tt.errMsg {
+						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
 					}
 				})
 			}
@@ -879,12 +866,8 @@ func TestToolCallResult(t *testing.T) {
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
 					var got ToolCallResult
-					err := got.UnmarshalJSON([]byte(tt.json))
-					if err == nil {
-						t.Fatal("expected error, got nil")
-					}
-					if !strings.Contains(err.Error(), tt.errMsg) {
-						t.Errorf("expected error to contain %q, got %q", tt.errMsg, err.Error())
+					if err := got.UnmarshalJSON([]byte(tt.json)); err == nil || err.Error() != tt.errMsg {
+						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
 					}
 				})
 			}
@@ -894,73 +877,88 @@ func TestToolCallResult(t *testing.T) {
 
 func TestCitation(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
-		tests := []struct {
-			name     string
-			citation Citation
-			wantErr  bool
-		}{
-			{
-				name: "valid citation",
-				citation: Citation{
-					Text:       "example text",
-					StartIndex: 0,
-					EndIndex:   12,
-					Sources:    []CitationSource{{ID: "doc1", Type: "document"}},
+		t.Run("valid", func(t *testing.T) {
+			tests := []struct {
+				name     string
+				citation Citation
+				errMsg   string
+			}{
+				{
+					name: "valid citation",
+					citation: Citation{
+						Text:       "example text",
+						StartIndex: 0,
+						EndIndex:   12,
+						Sources:    []CitationSource{{ID: "doc1", Type: "document"}},
+					},
 				},
-			},
-			{
-				name: "empty text",
-				citation: Citation{
-					Text:       "",
-					StartIndex: 0,
-					EndIndex:   10,
+				{
+					name: "empty text",
+					citation: Citation{
+						Text:       "",
+						StartIndex: 0,
+						EndIndex:   10,
+					},
 				},
-			},
-			{
-				name: "negative start index",
-				citation: Citation{
-					Text:       "example",
-					StartIndex: -1,
-					EndIndex:   10,
+				{
+					name: "zero end index is valid",
+					citation: Citation{
+						Text:       "example",
+						StartIndex: 0,
+						EndIndex:   0, // Zero is allowed as it may indicate position-only citation
+					},
 				},
-				wantErr: true,
-			},
-			{
-				name: "end index before start",
-				citation: Citation{
-					Text:       "example",
-					StartIndex: 10,
-					EndIndex:   5,
+			}
+			for _, tt := range tests {
+				t.Run(tt.name, func(t *testing.T) {
+					if err := tt.citation.Validate(); err != nil {
+						t.Fatalf("unexpected error: %q", err)
+					}
+				})
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			tests := []struct {
+				name     string
+				citation Citation
+				errMsg   string
+			}{
+				{
+					name: "negative start index",
+					citation: Citation{
+						Text:       "example",
+						StartIndex: -1,
+						EndIndex:   10,
+					},
+					errMsg: "start index must be non-negative, got -1",
 				},
-				wantErr: true,
-			},
-			{
-				name: "end index equal to start",
-				citation: Citation{
-					Text:       "example",
-					StartIndex: 10,
-					EndIndex:   10,
+				{
+					name: "end index before start",
+					citation: Citation{
+						Text:       "example",
+						StartIndex: 10,
+						EndIndex:   5,
+					},
+					errMsg: "end index (5) must be greater than start index (10)",
 				},
-				wantErr: true,
-			},
-			{
-				name: "zero end index is valid",
-				citation: Citation{
-					Text:       "example",
-					StartIndex: 0,
-					EndIndex:   0, // Zero is allowed as it may indicate position-only citation
+				{
+					name: "end index equal to start",
+					citation: Citation{
+						Text:       "example",
+						StartIndex: 10,
+						EndIndex:   10,
+					},
+					errMsg: "end index (10) must be greater than start index (10)",
 				},
-			},
-		}
-
-		for _, tt := range tests {
-			t.Run(tt.name, func(t *testing.T) {
-				err := tt.citation.Validate()
-				if (err != nil) != tt.wantErr {
-					t.Errorf("Citation.Validate() error = %v, wantErr %v", err, tt.wantErr)
-				}
-			})
-		}
+			}
+			for _, tt := range tests {
+				t.Run(tt.name, func(t *testing.T) {
+					if err := tt.citation.Validate(); err == nil || err.Error() != tt.errMsg {
+						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
+					}
+				})
+			}
+		})
 	})
 }
 
@@ -986,9 +984,8 @@ func TestCitationSource(t *testing.T) {
 			}
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
-					err := tt.source.Validate()
-					if err != nil {
-						t.Errorf("CitationSource.Validate() error = %v", err)
+					if err := tt.source.Validate(); err != nil {
+						t.Fatalf("unexpected error: %q", err)
 					}
 				})
 			}
@@ -997,17 +994,18 @@ func TestCitationSource(t *testing.T) {
 			tests := []struct {
 				name   string
 				source CitationSource
+				errMsg string
 			}{
 				{
 					name:   "invalid without ID or URL",
 					source: CitationSource{Type: "document"},
+					errMsg: "citation source must have either ID or URL",
 				},
 			}
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
-					err := tt.source.Validate()
-					if err == nil {
-						t.Errorf("CitationSource.Validate() error = %v", err)
+					if err := tt.source.Validate(); err == nil || err.Error() != tt.errMsg {
+						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
 					}
 				})
 			}

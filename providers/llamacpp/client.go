@@ -211,19 +211,15 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 				// Create a copy of the message with only one tool call result
 				msgCopy := msgs[i]
 				msgCopy.ToolCallResults = []genai.ToolCallResult{msgs[i].ToolCallResults[j]}
-				var newMsg Message
-				if err := newMsg.From(&msgCopy); err != nil {
+				c.Messages = append(c.Messages, Message{})
+				if err := c.Messages[len(c.Messages)-1].From(&msgCopy); err != nil {
 					errs = append(errs, fmt.Errorf("message %d, tool result %d: %w", i, j, err))
-				} else {
-					c.Messages = append(c.Messages, newMsg)
 				}
 			}
 		} else {
-			var newMsg Message
-			if err := newMsg.From(&msgs[i]); err != nil {
+			c.Messages = append(c.Messages, Message{})
+			if err := c.Messages[len(c.Messages)-1].From(&msgs[i]); err != nil {
 				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-			} else {
-				c.Messages = append(c.Messages, newMsg)
 			}
 		}
 	}
@@ -625,19 +621,15 @@ func (a *applyTemplateRequest) Init(opts genai.Options, msgs genai.Messages) err
 				// Create a copy of the message with only one tool call result
 				msgCopy := msgs[i]
 				msgCopy.ToolCallResults = []genai.ToolCallResult{msgs[i].ToolCallResults[j]}
-				var newMsg Message
-				if err := newMsg.From(&msgCopy); err != nil {
+				a.Messages = append(a.Messages, Message{})
+				if err := a.Messages[len(a.Messages)-1].From(&msgCopy); err != nil {
 					errs = append(errs, fmt.Errorf("message %d, tool result %d: %w", i, j, err))
-				} else {
-					a.Messages = append(a.Messages, newMsg)
 				}
 			}
 		} else {
-			var newMsg Message
-			if err := newMsg.From(&msgs[i]); err != nil {
+			a.Messages = append(a.Messages, Message{})
+			if err := a.Messages[len(a.Messages)-1].From(&msgs[i]); err != nil {
 				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-			} else {
-				a.Messages = append(a.Messages, newMsg)
 			}
 		}
 	}
@@ -663,6 +655,7 @@ type Message struct {
 	ToolCallID       string     `json:"tool_call_id,omitzero"`
 }
 
+// From must be called with at most one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
 	switch r := in.Role(); r {
 	case "assistant", "user":
@@ -684,6 +677,13 @@ func (m *Message) From(in *genai.Message) error {
 	}
 	if len(in.Reply) != 0 {
 		for i := range in.Reply {
+			if !in.Reply[i].ToolCall.IsZero() {
+				m.ToolCalls = append(m.ToolCalls, ToolCall{})
+				if err := m.ToolCalls[len(m.ToolCalls)-1].From(&in.Reply[i].ToolCall); err != nil {
+					return err
+				}
+				continue
+			}
 			c := Content{}
 			if skip, err := c.FromReply(&in.Reply[i]); err != nil {
 				return err
@@ -692,19 +692,7 @@ func (m *Message) From(in *genai.Message) error {
 			}
 		}
 	}
-	if len(in.ToolCalls) != 0 {
-		m.ToolCalls = make([]ToolCall, len(in.ToolCalls))
-		for i := range m.ToolCalls {
-			if err := m.ToolCalls[i].From(&in.ToolCalls[i]); err != nil {
-				return err
-			}
-		}
-	}
 	if len(in.ToolCallResults) != 0 {
-		if len(in.Request) != 0 || len(in.ToolCalls) != 0 {
-			// This could be worked around.
-			return fmt.Errorf("can't have tool call result along content or tool calls")
-		}
 		if len(in.ToolCallResults) != 1 {
 			// This should not happen since ChatRequest.Init() works around this.
 			return fmt.Errorf("can't have more than one tool call result at a time")
@@ -724,11 +712,9 @@ func (m *Message) To(out *genai.Message) error {
 			return err
 		}
 	}
-	if len(m.ToolCalls) != 0 {
-		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))
-		for i := range m.ToolCalls {
-			m.ToolCalls[i].To(&out.ToolCalls[i])
-		}
+	for i := range m.ToolCalls {
+		out.Reply = append(out.Reply, genai.Reply{})
+		m.ToolCalls[i].To(&out.Reply[len(out.Reply)-1].ToolCall)
 	}
 	return nil
 }
@@ -1184,11 +1170,6 @@ func (c *Client) Completions(ctx context.Context, msgs genai.Messages, opts gena
 				return genai.Result{}, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
 			}
 		}
-		for j, tool := range msg.ToolCalls {
-			if len(tool.Opaque) != 0 {
-				return genai.Result{}, fmt.Errorf("message #%d tool call #%d: field Opaque not supported", i, j)
-			}
-		}
 	}
 	rpcin := CompletionRequest{CachePrompt: true}
 	if err := rpcin.Init(msgs, opts, ""); err != nil {
@@ -1227,11 +1208,6 @@ func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, chu
 		for j, content := range msg.Reply {
 			if len(content.Opaque) != 0 {
 				return result, fmt.Errorf("message #%d content #%d: Opaque field not supported", i, j)
-			}
-		}
-		for j, tool := range msg.ToolCalls {
-			if len(tool.Opaque) != 0 {
-				return result, fmt.Errorf("message #%d tool call #%d: field Opaque not supported", i, j)
 			}
 		}
 	}

@@ -76,7 +76,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 		flaky = true
 	}
 
-	if err != nil || len(resp.ToolCalls) == 0 {
+	if err != nil || !slices.ContainsFunc(resp.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot", "err", err)
 		// Tools are not supported, no need to do the rest.
 		f.Tools = genai.False
@@ -103,7 +103,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-2", "err", err)
 		return err
 	}
-	if err != nil || len(resp.ToolCalls) != 0 {
+	if err != nil || slices.ContainsFunc(resp.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-2", "err", err)
 		f.Tools = genai.Flaky
 		f.BiasedTool = genai.False
@@ -174,7 +174,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 			f.Tools = genai.Flaky
 			continue // Skip to next test case
 		}
-		if len(resp.ToolCalls) == 0 {
+		if !slices.ContainsFunc(resp.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 			// No tool call, even though ToolCallRequired was set.
 			// This also indicates flaky tool support.
 			f.Tools = genai.Flaky
@@ -188,21 +188,35 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 			internal.Logger(ctx).DebugContext(ctx, check, "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
 			f.BrokenFinishReason = true
 		}
-		if len(resp.ToolCalls) == 1 {
-			res, err := resp.ToolCalls[0].Call(context.Background(), opts.Tools)
-			if err != nil {
-				// Error during tool execution. This only happens if the json schema is not followed. For example
-				// I've seen on Huggingface using "country1" and "country2", aka being indecisive with a single
-				// function call.
-				f.Tools = genai.Flaky
-				continue
+		toolCalls := 0
+		for _, r := range resp.Reply {
+			if !r.ToolCall.IsZero() {
+				toolCalls++
 			}
-			biasedResults[i] = res == line.countrySelected
-		} else if len(resp.ToolCalls) == 2 {
+		}
+		if toolCalls == 1 {
+			for j := range resp.Reply {
+				if resp.Reply[j].ToolCall.IsZero() {
+					continue
+				}
+				res, err := resp.Reply[j].ToolCall.Call(ctx, opts.Tools)
+				if err != nil {
+					// Error during tool execution. This only happens if the json schema is not followed. For example
+					// I've seen on Huggingface using "country1" and "country2", aka being indecisive with a single
+					// function call.
+					f.Tools = genai.Flaky
+					continue
+				}
+				biasedResults[i] = res == line.countrySelected
+			}
+		} else if toolCalls == 2 {
 			indecisiveOccurred = true
 			var countries []string
-			for _, tc := range resp.ToolCalls {
-				res, err := tc.Call(context.Background(), opts.Tools)
+			for j := range resp.Reply {
+				if resp.Reply[j].ToolCall.IsZero() {
+					continue
+				}
+				res, err := resp.Reply[j].ToolCall.Call(ctx, opts.Tools)
 				if err != nil {
 					f.Tools = genai.Flaky
 					continue

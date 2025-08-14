@@ -165,25 +165,31 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 		c.Messages = append(c.Messages, Message{Role: "system", Content: sp})
 	}
 	for i := range msgs {
+		// Split messages into multiple messages as needed.
 		if len(msgs[i].ToolCallResults) > 1 {
 			// Handle messages with multiple tool call results by creating multiple messages
 			for j := range msgs[i].ToolCallResults {
 				// Create a copy of the message with only one tool call result
 				msgCopy := msgs[i]
 				msgCopy.ToolCallResults = []genai.ToolCallResult{msgs[i].ToolCallResults[j]}
-				var newMsg Message
-				if err := newMsg.From(&msgCopy); err != nil {
+				c.Messages = append(c.Messages, Message{})
+				if err := c.Messages[len(c.Messages)-1].From(&msgCopy); err != nil {
 					errs = append(errs, fmt.Errorf("message %d, tool result %d: %w", i, j, err))
-				} else {
-					c.Messages = append(c.Messages, newMsg)
+				}
+			}
+		} else if len(msgs[i].Request) > 1 {
+			for j := range msgs[i].Request {
+				msgCopy := msgs[i]
+				msgCopy.Request = []genai.Request{msgs[i].Request[j]}
+				c.Messages = append(c.Messages, Message{})
+				if err := c.Messages[len(c.Messages)-1].From(&msgCopy); err != nil {
+					errs = append(errs, fmt.Errorf("message %d, request %d: %w", i, j, err))
 				}
 			}
 		} else {
-			var newMsg Message
-			if err := newMsg.From(&msgs[i]); err != nil {
+			c.Messages = append(c.Messages, Message{})
+			if err := c.Messages[len(c.Messages)-1].From(&msgs[i]); err != nil {
 				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-			} else {
-				c.Messages = append(c.Messages, newMsg)
 			}
 		}
 	}
@@ -209,6 +215,7 @@ type Message struct {
 	ToolCallID       string     `json:"tool_call_id,omitzero"` // Tool call that this message is responding to, with response in Content field.
 }
 
+// From must be called with at most one Request or one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
 	switch r := in.Role(); r {
 	case "user", "assistant":
@@ -219,14 +226,14 @@ func (m *Message) From(in *genai.Message) error {
 		return fmt.Errorf("unsupported role %q", r)
 	}
 	m.Name = in.User
-	for i := range in.Request {
+	if len(in.Request) == 1 {
 		// Thinking content should not be returned to the model.
-		m.Content += in.Request[i].Text
-		if in.Request[i].Doc.URL != "" {
-			return errors.New("deepseek doesn't support document content blocks with URLs")
-		}
-		if !in.Request[i].Doc.IsZero() {
-			mimeType, data, err := in.Request[i].Doc.Read(10 * 1024 * 1024)
+		m.Content += in.Request[0].Text
+		if !in.Request[0].Doc.IsZero() {
+			if in.Request[0].Doc.URL != "" {
+				return errors.New("deepseek doesn't support document content blocks with URLs")
+			}
+			mimeType, data, err := in.Request[0].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return fmt.Errorf("failed to read document: %w", err)
 			}
@@ -239,6 +246,11 @@ func (m *Message) From(in *genai.Message) error {
 	}
 	for i := range in.Reply {
 		// Thinking content should not be returned to the model.
+		if !in.Reply[i].ToolCall.IsZero() {
+			m.ToolCalls = append(m.ToolCalls, ToolCall{})
+			m.ToolCalls[len(m.ToolCalls)-1].From(&in.Reply[i].ToolCall)
+			continue
+		}
 		m.Content += in.Reply[i].Text
 		if in.Reply[i].Doc.URL != "" {
 			return errors.New("deepseek doesn't support document content blocks with URLs")
@@ -255,17 +267,7 @@ func (m *Message) From(in *genai.Message) error {
 			}
 		}
 	}
-	if len(in.ToolCalls) != 0 {
-		m.ToolCalls = make([]ToolCall, len(in.ToolCalls))
-		for i := range in.ToolCalls {
-			m.ToolCalls[i].From(&in.ToolCalls[i])
-		}
-	}
 	if len(in.ToolCallResults) != 0 {
-		if len(in.ToolCallResults) != 1 {
-			// This should not happen since ChatRequest.Init() works around this.
-			return fmt.Errorf("can't have more than one tool call result at a time")
-		}
 		// Process only the first tool call result in this method.
 		// The Init method handles multiple tool call results by creating multiple messages.
 		m.Content = in.ToolCallResults[0].Result
@@ -275,18 +277,16 @@ func (m *Message) From(in *genai.Message) error {
 }
 
 func (m *Message) To(out *genai.Message) error {
-	if len(m.ToolCalls) != 0 {
-		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))
-		for i := range m.ToolCalls {
-			m.ToolCalls[i].To(&out.ToolCalls[i])
-		}
-	}
 	// Both ReasoningContent and Content can be set on the same reply.
 	if m.ReasoningContent != "" {
-		out.Reply = []genai.Reply{{Thinking: m.ReasoningContent}}
+		out.Reply = append(out.Reply, genai.Reply{Thinking: m.ReasoningContent})
 	}
 	if m.Content != "" {
 		out.Reply = append(out.Reply, genai.Reply{Text: m.Content})
+	}
+	for i := range m.ToolCalls {
+		out.Reply = append(out.Reply, genai.Reply{})
+		m.ToolCalls[i].To(&out.Reply[len(out.Reply)-1].ToolCall)
 	}
 	return nil
 }

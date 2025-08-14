@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 199
+        content_length: 228
         host: api.deepseek.com
         body: |
-            {"model":"deepseek-reasoner","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.What is the capital of Quackiland?"}],"stream":false}
+            {"model":"deepseek-reasoner","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,14 +21,14 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"03e4950b-b2e8-4d1c-9040-908070b953aa","object":"chat.completion","created":1755177517,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"The capital of Quackiland is explicitly stated as Quack in the given information. The detail about the Big Canard Statue being located in Quack is additional and does not affect the capital''s identity.\n\nTherefore, the capital of Quackiland is **Quack**.","reasoning_content":"First, the question is: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\"\n\nThe key information here is that the capital of Quackiland is explicitly stated as Quack. That''s given in the first sentence.\n\nThe second sentence says that the Big Canard Statue is located in Quack. But that doesn''t change the capital; it''s just additional information about Quack.\n\nSo, when asked for the capital of Quackiland, it should be straightforward: Quack.\n\nBut let me make sure there''s no trick here. Is Quackiland a real place? I don''t think so; it sounds fictional, like a play on words. \"Quack\" might refer to the sound a duck makes, and \"canard\" is French for duck, so this is probably a humorous or fictional scenario.\n\nThe question seems to be testing reading comprehension or attention to detail. The answer is directly given in the first sentence.\n\nRephrasing: \"The capital of Quackiland is Quack.\" Therefore, the capital is Quack.\n\nThe statue being in Quack is irrelevant to the capital question. It might be a red herring, but it doesn''t contradict anything.\n\nSo, the answer should be Quack.\n\nNow, how to present this? Since it''s a straightforward question, I can just state the answer.\n\nFinal answer: Quack."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":35,"completion_tokens":354,"total_tokens":389,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":297},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":35},"system_fingerprint":"fp_393bca965e_prod0623_fp8_kvcache"}'
+        body: '{"id":"5689920c-519e-4f55-b5b1-cd64b862cf7a","object":"chat.completion","created":1755214132,"model":"deepseek-reasoner","choices":[{"index":0,"message":{"role":"assistant","content":"Based on the information you provided:  \n\"The capital of Quackiland is Quack.\"  \n\nTherefore, the capital of Quackiland is **Quack**.  \n\n(As an aside, it''s interesting that the Big Canard Statue is also located there—sounds like a must-see landmark for visitors!)","reasoning_content":"First, the user says: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\" Then they ask: \"What is the capital of Quackiland?\"\n\nThe information is given right there. It says \"The capital of Quackiland is Quack.\" So, the capital is Quack.\n\nThe second sentence about the Big Canard Statue being in Quack seems like additional information, but it doesn''t change the fact that the capital is Quack.\n\nThe question is straightforward. Based on the provided statements, the capital of Quackiland is Quack.\n\nI should make sure there''s no trick here. Is \"Quack\" referring to the city or something else? It says \"Quack\" is the capital, and the statue is in \"Quack,\" so it''s consistent.\n\nAlso, \"Quackiland\" sounds like a made-up place, probably for fun, since \"canard\" means duck in French, and \"quack\" is a duck sound. But that doesn''t affect the answer.\n\nSo, the answer should be Quack.\n\nNow, for the response, I need to be helpful and direct. Since the user provided the information and then asked, I can just state the answer based on what they said.\n\nResponse: The capital of Quackiland is Quack.\n\nTo be more engaging, I could add something like: \"As you mentioned, the capital of Quackiland is Quack.\" But it''s not necessary; simplicity is fine.\n\nFinally, since this is a query, I should box the answer as per the instruction."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":36,"completion_tokens":395,"total_tokens":431,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":329},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":36},"system_fingerprint":"fp_393bca965e_prod0623_fp8_kvcache"}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96f0bd3a4fbfa31a-YUL
+                - 96f43b2918aeabe2-YYZ
             Content-Type:
                 - application/json
             Server:
@@ -40,7 +40,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - 34240da3910a566f56c7d94811a3a3bb
+                - 1ca7889b6b0d1142b1d7f57920d6a9aa
         status: 200 OK
         code: 200
-        duration: 285ms
+        duration: 296ms

@@ -640,7 +640,7 @@ func (c *Content) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", r)
 	}
-	c.Parts = make([]Part, len(in.Request)+len(in.Reply)+len(in.ToolCalls)+len(in.ToolCallResults))
+	c.Parts = make([]Part, len(in.Request)+len(in.Reply)+len(in.ToolCallResults))
 	for i := range in.Request {
 		if err := c.Parts[i].FromRequest(&in.Request[i]); err != nil {
 			return fmt.Errorf("part %d: %w", i, err)
@@ -653,20 +653,8 @@ func (c *Content) From(in *genai.Message) error {
 		}
 	}
 	offset += len(in.Reply)
-	for i := range in.ToolCalls {
-		if err := c.Parts[offset+i].FunctionCall.From(&in.ToolCalls[i]); err != nil {
-			return fmt.Errorf("part %d: %w", offset+i, err)
-		}
-		o := in.ToolCalls[i].Opaque
-		if b, ok := o["signature"].([]byte); ok {
-			c.Parts[offset+i].ThoughtSignature = b
-		}
-	}
-	offset += len(in.ToolCalls)
 	for i := range in.ToolCallResults {
-		if err := c.Parts[offset+i].FunctionResponse.From(&in.ToolCallResults[i]); err != nil {
-			return fmt.Errorf("part %d: %w", offset+i, err)
-		}
+		c.Parts[offset+i].FunctionResponse.From(&in.ToolCallResults[i])
 	}
 	return nil
 }
@@ -708,14 +696,14 @@ func (c *Content) To(out *genai.Message) error {
 			continue
 		}
 		if part.FunctionCall.Name != "" {
-			t := genai.ToolCall{}
+			r := genai.Reply{}
 			if len(part.ThoughtSignature) != 0 {
-				t.Opaque = map[string]any{"signature": part.ThoughtSignature}
+				r.ToolCall.Opaque = map[string]any{"signature": part.ThoughtSignature}
 			}
-			if err := part.FunctionCall.To(&t); err != nil {
+			if err := part.FunctionCall.To(&r.ToolCall); err != nil {
 				return err
 			}
-			out.ToolCalls = append(out.ToolCalls, t)
+			out.Reply = append(out.Reply, r)
 			continue
 		}
 		if reflect.ValueOf(part).IsZero() {
@@ -752,36 +740,39 @@ func (p *Part) FromRequest(in *genai.Request) error {
 		p.Text = in.Text
 		return nil
 	}
-	mimeType := ""
-	var data []byte
-	if in.Doc.URL == "" {
-		// If more than 20MB, we need to use
-		// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#large-pdfs-urls
-		// cacheName, err := c.cacheContent(ctx, context, mime, sp)
-		// When using cached content, system instruction, tools or tool_config cannot be used. Weird.
-		// in.CachedContent = cacheName
-		var err error
-		if mimeType, data, err = in.Doc.Read(10 * 1024 * 1024); err != nil {
-			return err
-		}
-		if mimeType == "text/plain" {
-			// Gemini refuses text/plain as attachment.
-			if in.Doc.URL != "" {
-				return fmt.Errorf("text/plain is not supported as inline data for URL %q", in.Doc.URL)
+	if !in.Doc.IsZero() {
+		mimeType := ""
+		var data []byte
+		if in.Doc.URL == "" {
+			// If more than 20MB, we need to use
+			// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#large-pdfs-urls
+			// cacheName, err := c.cacheContent(ctx, context, mime, sp)
+			// When using cached content, system instruction, tools or tool_config cannot be used. Weird.
+			// in.CachedContent = cacheName
+			var err error
+			if mimeType, data, err = in.Doc.Read(10 * 1024 * 1024); err != nil {
+				return err
 			}
-			p.Text = string(data)
+			if mimeType == "text/plain" {
+				// Gemini refuses text/plain as attachment.
+				if in.Doc.URL != "" {
+					return fmt.Errorf("text/plain is not supported as inline data for URL %q", in.Doc.URL)
+				}
+				p.Text = string(data)
+			} else {
+				p.InlineData.MimeType = mimeType
+				p.InlineData.Data = data
+			}
 		} else {
-			p.InlineData.MimeType = mimeType
-			p.InlineData.Data = data
+			if mimeType = base.MimeByExt(path.Ext(in.Doc.URL)); mimeType == "" {
+				return fmt.Errorf("could not determine mime type for URL %q", in.Doc.URL)
+			}
+			p.FileData.MimeType = mimeType
+			p.FileData.FileURI = in.Doc.URL
 		}
-	} else {
-		if mimeType = base.MimeByExt(path.Ext(in.Doc.URL)); mimeType == "" {
-			return fmt.Errorf("could not determine mime type for URL %q", in.Doc.URL)
-		}
-		p.FileData.MimeType = mimeType
-		p.FileData.FileURI = in.Doc.URL
+		return nil
 	}
-	return nil
+	return errors.New("unknown Request type")
 }
 
 func (p *Part) FromReply(in *genai.Reply) error {
@@ -794,36 +785,49 @@ func (p *Part) FromReply(in *genai.Reply) error {
 		p.Text = in.Text
 		return nil
 	}
-	mimeType := ""
-	var data []byte
-	if in.Doc.URL == "" {
-		// If more than 20MB, we need to use
-		// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#large-pdfs-urls
-		// cacheName, err := c.cacheContent(ctx, context, mime, sp)
-		// When using cached content, system instruction, tools or tool_config cannot be used. Weird.
-		// in.CachedContent = cacheName
-		var err error
-		if mimeType, data, err = in.Doc.Read(10 * 1024 * 1024); err != nil {
+	if !in.ToolCall.IsZero() {
+		if err := p.FunctionCall.From(&in.ToolCall); err != nil {
 			return err
 		}
-		if mimeType == "text/plain" {
-			// Gemini refuses text/plain as attachment.
-			if in.Doc.URL != "" {
-				return fmt.Errorf("text/plain is not supported as inline data for URL %q", in.Doc.URL)
-			}
-			p.Text = string(data)
-		} else {
-			p.InlineData.MimeType = mimeType
-			p.InlineData.Data = data
+		o := in.ToolCall.Opaque
+		if b, ok := o["signature"].([]byte); ok {
+			p.ThoughtSignature = b
 		}
-	} else {
-		if mimeType = base.MimeByExt(path.Ext(in.Doc.URL)); mimeType == "" {
-			return fmt.Errorf("could not determine mime type for URL %q", in.Doc.URL)
-		}
-		p.FileData.MimeType = mimeType
-		p.FileData.FileURI = in.Doc.URL
+		return nil
 	}
-	return nil
+	if !in.Doc.IsZero() {
+		mimeType := ""
+		var data []byte
+		if in.Doc.URL == "" {
+			// If more than 20MB, we need to use
+			// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#large-pdfs-urls
+			// cacheName, err := c.cacheContent(ctx, context, mime, sp)
+			// When using cached content, system instruction, tools or tool_config cannot be used. Weird.
+			// in.CachedContent = cacheName
+			var err error
+			if mimeType, data, err = in.Doc.Read(10 * 1024 * 1024); err != nil {
+				return err
+			}
+			if mimeType == "text/plain" {
+				// Gemini refuses text/plain as attachment.
+				if in.Doc.URL != "" {
+					return fmt.Errorf("text/plain is not supported as inline data for URL %q", in.Doc.URL)
+				}
+				p.Text = string(data)
+			} else {
+				p.InlineData.MimeType = mimeType
+				p.InlineData.Data = data
+			}
+		} else {
+			if mimeType = base.MimeByExt(path.Ext(in.Doc.URL)); mimeType == "" {
+				return fmt.Errorf("could not determine mime type for URL %q", in.Doc.URL)
+			}
+			p.FileData.MimeType = mimeType
+			p.FileData.FileURI = in.Doc.URL
+		}
+		return nil
+	}
+	return errors.New("unknown Reply type")
 }
 
 // FunctionCall is documented at https://ai.google.dev/api/caching?hl=en#FunctionCall
@@ -860,12 +864,11 @@ type FunctionResponse struct {
 	Response StructValue `json:"response,omitzero"`
 }
 
-func (f *FunctionResponse) From(in *genai.ToolCallResult) error {
+func (f *FunctionResponse) From(in *genai.ToolCallResult) {
 	f.ID = in.ID
 	f.Name = in.Name
 	// Must match functionResponse
 	f.Response = StructValue{"response": in.Result}
-	return nil
 }
 
 // ExecutableCode is documented at https://ai.google.dev/api/caching?hl=en#ExecutableCode
@@ -985,7 +988,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	// Gemini is the only one returning uppercase so convert down for compatibility.
 	out.FinishReason = c.Candidates[0].FinishReason.ToFinishReason()
 	err := c.Candidates[0].Content.To(&out.Message)
-	if len(out.ToolCalls) != 0 && out.FinishReason == genai.FinishedStop {
+	if out.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		// Lie for the benefit of everyone.
 		out.FinishReason = genai.FinishedToolCalls
 	}

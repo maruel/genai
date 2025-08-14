@@ -48,7 +48,7 @@ func GenSyncWithToolCallLoop(ctx context.Context, p genai.ProviderGen, msgs gena
 		}
 		out = append(out, result.Message)
 		workMsgs = append(workMsgs, result.Message)
-		if len(result.ToolCalls) == 0 {
+		if !slices.ContainsFunc(result.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 			return out, usage, nil
 		}
 		tr, err := result.DoToolCalls(ctx, tools)
@@ -122,7 +122,7 @@ func GenStreamWithToolCallLoop(ctx context.Context, p genai.ProviderGen, msgs ge
 		}
 		out = append(out, reply)
 		workMsgs = append(workMsgs, reply)
-		if len(reply.ToolCalls) == 0 {
+		if !slices.ContainsFunc(result.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 			return out, usage, nil
 		}
 		tr, err := reply.DoToolCalls(ctx, tools)

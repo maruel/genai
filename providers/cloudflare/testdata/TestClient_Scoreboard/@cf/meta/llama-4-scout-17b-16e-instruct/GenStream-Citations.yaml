@@ -1,3 +1,71 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 199
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"response":"","tool_calls":[],"p":"abdefghijklmnoprstu"}
+
+            data: {"response":"The","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abde"}
+
+            data: {"response":" capital","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghi"}
+
+            data: {"response":" of","tool_calls":[],"p":"abdefghijklmnoprstuvx"}
+
+            data: {"response":" Qu","tool_calls":[],"p":"abdefghijklmno"}
+
+            data: {"response":"ack","tool_calls":[],"p":"abdefghijklmnoprstuvxyz12345678"}
+
+            data: {"response":"iland","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234567890abdefghijkl"}
+
+            data: {"response":" is","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234"}
+
+            data: {"response":" Qu","tool_calls":[],"p":"abdefghijklmnoprs"}
+
+            data: {"response":"ack","tool_calls":[],"p":"abdefghi"}
+
+            data: {"response":".","tool_calls":[],"p":"abdefghijklmnoprstuvxyz1234"}
+
+            data: {"response":"","tool_calls":[],"p":"abdefghijklmn"}
+
+            data: {"tool_calls":[],"p":"abdefghijklmnoprstuvxyz"}
+
+            data: {"response":"","usage":{"prompt_tokens":114,"completion_tokens":11,"total_tokens":125}}
+
+            data: [DONE]
+
+        headers:
+            Api-Version:
+                - "2025-08-14"
+            Cf-Ai-Req-Id:
+                - ad746ca5-af94-4e85-94f9-c2518adae0c7
+            Cf-Auditlog-Id:
+                - 0198aab9-9f84-7c45-86b9-fccc110a2a67
+            Cf-Ray:
+                - 96f3ed6bdb91ebba-YYZ
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 352ms

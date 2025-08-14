@@ -20,6 +20,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -197,19 +198,15 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 				// Create a copy of the message with only one tool call result
 				msgCopy := msgs[i]
 				msgCopy.ToolCallResults = []genai.ToolCallResult{msgs[i].ToolCallResults[j]}
-				var newMsg Message
-				if err := newMsg.From(&msgCopy); err != nil {
+				c.Messages = append(c.Messages, Message{})
+				if err := c.Messages[len(c.Messages)-1].From(&msgCopy); err != nil {
 					errs = append(errs, fmt.Errorf("message %d, tool result %d: %w", i, j, err))
-				} else {
-					c.Messages = append(c.Messages, newMsg)
 				}
 			}
 		} else {
-			var newMsg Message
-			if err := newMsg.From(&msgs[i]); err != nil {
+			c.Messages = append(c.Messages, Message{})
+			if err := c.Messages[len(c.Messages)-1].From(&msgs[i]); err != nil {
 				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-			} else {
-				c.Messages = append(c.Messages, newMsg)
 			}
 		}
 	}
@@ -234,6 +231,7 @@ type Message struct {
 	Name      string     `json:"name,omitzero"` // Not really documented
 }
 
+// From must be called with at most one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
 	switch r := in.Role(); r {
 	case "user", "assistant":
@@ -254,27 +252,18 @@ func (m *Message) From(in *genai.Message) error {
 	if len(in.Reply) != 0 {
 		m.Content = make([]Content, len(in.Reply))
 		for i := range in.Reply {
+			if !in.Reply[i].ToolCall.IsZero() {
+				m.ToolCalls = append(m.ToolCalls, ToolCall{})
+				m.ToolCalls[len(m.ToolCalls)-1].From(&in.Reply[i].ToolCall)
+				continue
+			}
 			if err := m.Content[i].FromReply(&in.Reply[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		}
 	}
-	if len(in.ToolCalls) != 0 {
-		m.ToolCalls = make([]ToolCall, len(in.ToolCalls))
-		for j := range in.ToolCalls {
-			m.ToolCalls[j].From(&in.ToolCalls[j])
-		}
-	}
 	if len(in.ToolCallResults) != 0 {
-		if len(in.Request) != 0 || len(in.ToolCalls) != 0 {
-			// This could be worked around.
-			return fmt.Errorf("can't have tool call result along content or tool calls")
-		}
 		// Huggingface doesn't use tool ID in the result, hence only one tool can safely be called at a time.
-		if len(in.ToolCallResults) != 1 {
-			// This should not happen since ChatRequest.Init() works around this.
-			return fmt.Errorf("can't have more than one tool call result at a time")
-		}
 		// Process only the first tool call result in this method.
 		// The Init method handles multiple tool call results by creating multiple messages.
 		m.Content = Contents{{Type: ContentText, Text: in.ToolCallResults[0].Result}}
@@ -540,14 +529,12 @@ type MessageResponse struct {
 }
 
 func (m *MessageResponse) To(out *genai.Message) error {
-	if len(m.ToolCalls) != 0 {
-		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))
-		for i := range m.ToolCalls {
-			m.ToolCalls[i].To(&out.ToolCalls[i])
-		}
-	}
 	if m.Content != "" {
 		out.Reply = []genai.Reply{{Text: m.Content}}
+	}
+	for i := range m.ToolCalls {
+		out.Reply = []genai.Reply{{}}
+		m.ToolCalls[i].To(&out.Reply[len(out.Reply)-1].ToolCall)
 	}
 	return nil
 }
@@ -568,7 +555,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	}
 	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
-	if len(out.ToolCalls) != 0 && out.FinishReason == genai.FinishedStop {
+	if out.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		// Lie for the benefit of everyone.
 		out.FinishReason = genai.FinishedToolCalls
 	}

@@ -292,19 +292,15 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 				// Create a copy of the message with only one tool call result
 				msgCopy := msgs[i]
 				msgCopy.ToolCallResults = []genai.ToolCallResult{msgs[i].ToolCallResults[j]}
-				var newMsg Message
-				if err := newMsg.From(&msgCopy); err != nil {
+				c.Messages = append(c.Messages, Message{})
+				if err := c.Messages[len(c.Messages)-1].From(&msgCopy); err != nil {
 					errs = append(errs, fmt.Errorf("message %d, tool result %d: %w", i, j, err))
-				} else {
-					c.Messages = append(c.Messages, newMsg)
 				}
 			}
 		} else {
-			var newMsg Message
-			if err := newMsg.From(&msgs[i]); err != nil {
+			c.Messages = append(c.Messages, Message{})
+			if err := c.Messages[len(c.Messages)-1].From(&msgs[i]); err != nil {
 				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-			} else {
-				c.Messages = append(c.Messages, newMsg)
 			}
 		}
 	}
@@ -383,6 +379,7 @@ type Message struct {
 	ToolCallID string     `json:"tool_call_id,omitzero"`
 }
 
+// From must be called with at most one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
 	switch r := in.Role(); r {
 	case "user", "assistant":
@@ -394,11 +391,10 @@ func (m *Message) From(in *genai.Message) error {
 	}
 	m.Name = in.User
 	if len(in.Request) != 0 {
-		m.Content = make(Contents, 0, len(in.Request))
+		m.Content = make(Contents, len(in.Request))
 		for i := range in.Request {
-			m.Content = append(m.Content, Content{})
-			if err := m.Content[len(m.Content)-1].FromRequest(&in.Request[i]); err != nil {
-				return fmt.Errorf("block %d: %w", i, err)
+			if err := m.Content[i].FromRequest(&in.Request[i]); err != nil {
+				return fmt.Errorf("request %d: %w", i, err)
 			}
 		}
 	}
@@ -409,27 +405,18 @@ func (m *Message) From(in *genai.Message) error {
 				// DeepSeek and Qwen recommend against passing reasoning back.
 				continue
 			}
+			if !in.Reply[i].ToolCall.IsZero() {
+				m.ToolCalls = append(m.ToolCalls, ToolCall{})
+				m.ToolCalls[len(m.ToolCalls)-1].From(&in.Reply[i].ToolCall)
+				continue
+			}
 			m.Content = append(m.Content, Content{})
 			if err := m.Content[len(m.Content)-1].FromReply(&in.Reply[i]); err != nil {
-				return fmt.Errorf("block %d: %w", i, err)
+				return fmt.Errorf("reply %d: %w", i, err)
 			}
 		}
 	}
-	if len(in.ToolCalls) != 0 {
-		m.ToolCalls = make([]ToolCall, len(in.ToolCalls))
-		for i := range in.ToolCalls {
-			m.ToolCalls[i].From(&in.ToolCalls[i])
-		}
-	}
 	if len(in.ToolCallResults) != 0 {
-		if len(in.Request) != 0 || len(in.ToolCalls) != 0 {
-			// This could be worked around.
-			return fmt.Errorf("can't have tool call result along content or tool calls")
-		}
-		if len(in.ToolCallResults) != 1 {
-			// This should not happen since ChatRequest.Init() works around this.
-			return fmt.Errorf("can't have more than one tool call result at a time")
-		}
 		// Process only the first tool call result in this method.
 		// The Init method handles multiple tool call results by creating multiple messages.
 		m.Content = Contents{{Type: ContentText, Text: in.ToolCallResults[0].Result}}
@@ -442,6 +429,10 @@ func (m *Message) From(in *genai.Message) error {
 //
 // Groq requires this for assistant messages.
 type Contents []Content
+
+func (c *Contents) IsZero() bool {
+	return len(*c) == 0
+}
 
 func (c *Contents) MarshalJSON() ([]byte, error) {
 	if len(*c) == 0 {
@@ -475,28 +466,31 @@ func (c *Content) FromRequest(in *genai.Request) error {
 		c.Text = in.Text
 		return nil
 	}
-	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
-	if err != nil {
-		return err
-	}
-	switch {
-	case (in.Doc.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
-		c.Type = ContentImageURL
-		if in.Doc.URL == "" {
-			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-		} else {
-			c.ImageURL.URL = in.Doc.URL
+	if !in.Doc.IsZero() {
+		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+		if err != nil {
+			return err
 		}
-	case strings.HasPrefix(mimeType, "text/plain"):
-		c.Type = ContentText
-		if in.Doc.URL != "" {
-			return errors.New("text/plain documents must be provided inline, not as a URL")
+		switch {
+		case (in.Doc.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
+			c.Type = ContentImageURL
+			if in.Doc.URL == "" {
+				c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+			} else {
+				c.ImageURL.URL = in.Doc.URL
+			}
+		case strings.HasPrefix(mimeType, "text/plain"):
+			c.Type = ContentText
+			if in.Doc.URL != "" {
+				return errors.New("text/plain documents must be provided inline, not as a URL")
+			}
+			c.Text = string(data)
+		default:
+			return fmt.Errorf("unsupported mime type %s", mimeType)
 		}
-		c.Text = string(data)
-	default:
-		return fmt.Errorf("unsupported mime type %s", mimeType)
+		return nil
 	}
-	return nil
+	return errors.New("unknown Request type")
 }
 
 func (c *Content) FromReply(in *genai.Reply) error {
@@ -529,7 +523,7 @@ func (c *Content) FromReply(in *genai.Reply) error {
 			return fmt.Errorf("unsupported mime type %s", mimeType)
 		}
 	}
-	return nil
+	return errors.New("unknown Request type")
 }
 
 type ContentType string
@@ -666,17 +660,15 @@ type MessageResponse struct {
 }
 
 func (m *MessageResponse) To(out *genai.Message) error {
-	if len(m.ToolCalls) != 0 {
-		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))
-		for i := range m.ToolCalls {
-			m.ToolCalls[i].To(&out.ToolCalls[i])
-		}
-	}
 	if m.Reasoning != "" {
 		out.Reply = append(out.Reply, genai.Reply{Thinking: m.Reasoning})
 	}
 	if m.Content != "" {
 		out.Reply = append(out.Reply, genai.Reply{Text: m.Content})
+	}
+	for i := range m.ToolCalls {
+		out.Reply = append(out.Reply, genai.Reply{})
+		m.ToolCalls[i].To(&out.Reply[len(out.Reply)-1].ToolCall)
 	}
 	return nil
 }

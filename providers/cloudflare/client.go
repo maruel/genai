@@ -169,25 +169,31 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 		c.Messages = append(c.Messages, Message{Role: "system", Content: sp})
 	}
 	for i := range msgs {
+		// Split messages into multiple messages as needed.
 		if len(msgs[i].ToolCallResults) > 1 {
 			// Handle messages with multiple tool call results by creating multiple messages
 			for j := range msgs[i].ToolCallResults {
 				// Create a copy of the message with only one tool call result
 				msgCopy := msgs[i]
 				msgCopy.ToolCallResults = []genai.ToolCallResult{msgs[i].ToolCallResults[j]}
-				var newMsg Message
-				if err := newMsg.From(&msgCopy); err != nil {
+				c.Messages = append(c.Messages, Message{})
+				if err := c.Messages[len(c.Messages)-1].From(&msgCopy); err != nil {
 					errs = append(errs, fmt.Errorf("message %d, tool result %d: %w", i, j, err))
-				} else {
-					c.Messages = append(c.Messages, newMsg)
+				}
+			}
+		} else if len(msgs[i].Request) > 1 {
+			for j := range msgs[i].Request {
+				msgCopy := msgs[i]
+				msgCopy.Request = []genai.Request{msgs[i].Request[j]}
+				c.Messages = append(c.Messages, Message{})
+				if err := c.Messages[len(c.Messages)-1].From(&msgCopy); err != nil {
+					errs = append(errs, fmt.Errorf("message %d, request %d: %w", i, j, err))
 				}
 			}
 		} else {
-			var newMsg Message
-			if err := newMsg.From(&msgs[i]); err != nil {
+			c.Messages = append(c.Messages, Message{})
+			if err := c.Messages[len(c.Messages)-1].From(&msgs[i]); err != nil {
 				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-			} else {
-				c.Messages = append(c.Messages, newMsg)
 			}
 		}
 	}
@@ -210,6 +216,7 @@ type Message struct {
 	ToolCallID string `json:"tool_call_id,omitzero"`
 }
 
+// From must be called with at most one Request or one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
 	switch r := in.Role(); r {
 	case "user", "assistant":
@@ -219,56 +226,62 @@ func (m *Message) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", r)
 	}
-	if len(in.Request) > 1 {
-		return errors.New("cloudflare doesn't support multiple content blocks; TODO split transparently")
-	}
-	if len(in.ToolCalls) != 0 {
-		if len(in.ToolCalls) > 1 {
-			return errors.New("cloudflare doesn't support multiple tool replies in a single message yet")
-		}
-		if len(in.Request) != 0 {
-			return errors.New("cloudflare can't have both tool calls and contents in one message")
-		}
-		if len(in.ToolCallResults) != 0 {
-			return errors.New("cloudflare can't have both tool calls and tool call results in one message")
-		}
-		m.ToolCallID = in.ToolCalls[0].ID
-		m.Content = in.ToolCalls[0].Arguments
-		return nil
-	}
-	if len(in.ToolCallResults) != 0 {
-		if len(in.Request) != 0 || len(in.ToolCalls) != 0 {
-			// This could be worked around.
-			return fmt.Errorf("can't have tool call result along content or tool calls")
-		}
-		if len(in.ToolCallResults) != 1 {
-			// This should not happen since ChatRequest.Init() works around this.
-			return fmt.Errorf("can't have more than one tool call result at a time")
-		}
-		// Process only the first tool call result in this method.
-		// The Init method handles multiple tool call results by creating multiple messages.
-		m.ToolCallID = in.ToolCallResults[0].ID
-		m.Content = in.ToolCallResults[0].Result
-		return nil
-	}
-	if in.Request[0].Text != "" {
-		m.Content = in.Request[0].Text
-	} else if !in.Request[0].Doc.IsZero() {
-		// Check if this is a text/plain document
-		mimeType, data, err := in.Request[0].Doc.Read(10 * 1024 * 1024)
-		if err != nil {
-			return fmt.Errorf("failed to read document: %w", err)
-		}
-		if strings.HasPrefix(mimeType, "text/plain") {
+	if len(in.Request) == 1 {
+		// Process only the first Request in this method.
+		// The Init method handles multiple Request by creating multiple messages.
+		if in.Request[0].Text != "" {
+			m.Content = in.Request[0].Text
+		} else if !in.Request[0].Doc.IsZero() {
+			// Check if this is a text/plain document
+			mimeType, data, err := in.Request[0].Doc.Read(10 * 1024 * 1024)
+			if err != nil {
+				return fmt.Errorf("failed to read document: %w", err)
+			}
+			if !strings.HasPrefix(mimeType, "text/plain") {
+				return fmt.Errorf("cloudflare only supports text/plain documents, got %s", mimeType)
+			}
 			if in.Request[0].Doc.URL != "" {
 				return errors.New("text/plain documents must be provided inline, not as a URL")
 			}
 			m.Content = string(data)
 		} else {
-			return fmt.Errorf("cloudflare only supports text/plain documents, got %s", mimeType)
+			return fmt.Errorf("unsupported content type %#v", in.Request[0])
 		}
-	} else {
-		return fmt.Errorf("unsupported content type %#v", in.Request[0])
+	}
+	if len(in.Reply) != 0 {
+		// We do not expect cloudflare to send multiple replies.
+		if len(in.Reply) > 1 {
+			return fmt.Errorf("cloudflare does not support multiple replies")
+		}
+		if in.Reply[0].Text != "" {
+			m.Content = in.Reply[0].Text
+		} else if !in.Reply[0].Doc.IsZero() {
+			// Check if this is a text/plain document
+			mimeType, data, err := in.Reply[0].Doc.Read(10 * 1024 * 1024)
+			if err != nil {
+				return fmt.Errorf("failed to read document: %w", err)
+			}
+			if !strings.HasPrefix(mimeType, "text/plain") {
+				return fmt.Errorf("cloudflare only supports text/plain documents, got %s", mimeType)
+			}
+			if in.Reply[0].Doc.URL != "" {
+				return errors.New("text/plain documents must be provided inline, not as a URL")
+			}
+			m.Content = string(data)
+		} else if !in.Reply[0].ToolCall.IsZero() {
+			m.ToolCallID = in.Reply[0].ToolCall.ID
+			m.Content = in.Reply[0].ToolCall.Arguments
+			return nil
+		} else {
+			return fmt.Errorf("unsupported content type %#v", in.Reply[0])
+		}
+	}
+	if len(in.ToolCallResults) == 1 {
+		// Process only the first ToolCallResults in this method.
+		// The Init method handles multiple ToolCallResults by creating multiple messages.
+		m.ToolCallID = in.ToolCallResults[0].ID
+		m.Content = in.ToolCallResults[0].Result
+		return nil
 	}
 	return nil
 }
@@ -396,9 +409,9 @@ type MessageResponse struct {
 
 func (msg *MessageResponse) To(out *genai.Message) error {
 	if len(msg.ToolCalls) != 0 {
-		out.ToolCalls = make([]genai.ToolCall, len(msg.ToolCalls))
+		out.Reply = make([]genai.Reply, len(msg.ToolCalls))
 		for i, tc := range msg.ToolCalls {
-			if err := tc.To(&out.ToolCalls[i]); err != nil {
+			if err := tc.To(&out.Reply[i].ToolCall); err != nil {
 				return err
 			}
 		}

@@ -569,7 +569,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -591,7 +591,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		f := genai.ContentFragment{TextFragment: pkt.Choices[0].Delta.Content}
+		f := genai.ReplyFragment{TextFragment: pkt.Choices[0].Delta.Content}
 		if !f.IsZero() {
 			if err := result.Accumulate(f); err != nil {
 				return err
@@ -600,7 +600,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 		// We need to do one packet per citation type.
 		if len(pkt.SearchResults) > 0 {
-			f := genai.ContentFragment{Citation: genai.Citation{Type: "web", Sources: make([]genai.CitationSource, len(pkt.SearchResults))}}
+			f := genai.ReplyFragment{Citation: genai.Citation{Type: "web", Sources: make([]genai.CitationSource, len(pkt.SearchResults))}}
 			for i := range pkt.SearchResults {
 				f.Citation.Sources[i].Type = "web"
 				f.Citation.Sources[i].Title = pkt.SearchResults[i].Title
@@ -615,7 +615,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			chunks <- f
 		}
 		if len(pkt.Images) > 0 {
-			f := genai.ContentFragment{Citation: genai.Citation{Type: "document", Sources: make([]genai.CitationSource, len(pkt.Images))}}
+			f := genai.ReplyFragment{Citation: genai.Citation{Type: "document", Sources: make([]genai.CitationSource, len(pkt.Images))}}
 			for i := range pkt.Images {
 				f.Citation.Sources[i].Type = "image"
 				f.Citation.Sources[i].Title = pkt.Images[i].OriginURL

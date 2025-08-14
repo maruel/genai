@@ -322,17 +322,17 @@ func TestMessage(t *testing.T) {
 		tests := []struct {
 			name     string
 			message  Message
-			fragment ContentFragment
+			fragment ReplyFragment
 			want     Message
 		}{
 			{
 				name:     "Text",
-				fragment: ContentFragment{TextFragment: "Hello"},
+				fragment: ReplyFragment{TextFragment: "Hello"},
 				want:     Message{Reply: []Reply{{Text: "Hello"}}},
 			},
 			{
 				name: "Document",
-				fragment: ContentFragment{
+				fragment: ReplyFragment{
 					Filename:         "document.txt",
 					DocumentFragment: []byte("document content"),
 				},
@@ -342,7 +342,7 @@ func TestMessage(t *testing.T) {
 			},
 			{
 				name:     "Tool",
-				fragment: ContentFragment{ToolCall: ToolCall{Name: "tool"}},
+				fragment: ReplyFragment{ToolCall: ToolCall{Name: "tool"}},
 				want: Message{
 					ToolCalls: []ToolCall{{Name: "tool"}},
 				},
@@ -350,19 +350,19 @@ func TestMessage(t *testing.T) {
 			{
 				name:     "Add text to existing text",
 				message:  Message{Reply: []Reply{{Text: "Hello"}}},
-				fragment: ContentFragment{TextFragment: " world"},
+				fragment: ReplyFragment{TextFragment: " world"},
 				want:     Message{Reply: []Reply{{Text: "Hello world"}}},
 			},
 			{
 				name:     "Add thinking to existing thinking",
 				message:  Message{Reply: []Reply{{Thinking: "I think "}}},
-				fragment: ContentFragment{ThinkingFragment: "therefore I am"},
+				fragment: ReplyFragment{ThinkingFragment: "therefore I am"},
 				want:     Message{Reply: []Reply{{Thinking: "I think therefore I am"}}},
 			},
 			{
 				name:     "Join assistant text",
 				message:  Message{Reply: []Reply{{Text: "Hello"}}},
-				fragment: ContentFragment{TextFragment: " world"},
+				fragment: ReplyFragment{TextFragment: " world"},
 				want:     Message{Reply: []Reply{{Text: "Hello world"}}},
 			},
 			{
@@ -370,7 +370,7 @@ func TestMessage(t *testing.T) {
 				message: Message{
 					Reply: []Reply{{Doc: Doc{Filename: "document.txt", Src: &bb.BytesBuffer{D: []byte("document content")}}}},
 				},
-				fragment: ContentFragment{TextFragment: "No"},
+				fragment: ReplyFragment{TextFragment: "No"},
 				want: Message{
 					Reply: []Reply{
 						{Doc: Doc{Filename: "document.txt", Src: &bb.BytesBuffer{D: []byte("document content")}}},
@@ -381,7 +381,7 @@ func TestMessage(t *testing.T) {
 			{
 				name:     "Tool then text",
 				message:  Message{ToolCalls: []ToolCall{{Name: "tool"}}},
-				fragment: ContentFragment{TextFragment: "No"},
+				fragment: ReplyFragment{TextFragment: "No"},
 				want: Message{
 					// Merge together.
 					Reply:     []Reply{{Text: "No"}},
@@ -391,7 +391,7 @@ func TestMessage(t *testing.T) {
 			{
 				name:     "Tool then tool",
 				message:  Message{ToolCalls: []ToolCall{{Name: "tool"}}},
-				fragment: ContentFragment{ToolCall: ToolCall{Name: "tool2"}},
+				fragment: ReplyFragment{ToolCall: ToolCall{Name: "tool2"}},
 				want: Message{
 					// Merge together.
 					ToolCalls: []ToolCall{{Name: "tool"}, {Name: "tool2"}},
@@ -858,62 +858,62 @@ func TestContentFragment(t *testing.T) {
 	t.Run("IsZero", func(t *testing.T) {
 		tests := []struct {
 			name string
-			in   ContentFragment
+			in   ReplyFragment
 			want bool
 		}{
 			{
 				name: "zero fragment",
-				in:   ContentFragment{},
+				in:   ReplyFragment{},
 				want: true,
 			},
 			{
 				name: "text fragment",
-				in:   ContentFragment{TextFragment: "Hello"},
+				in:   ReplyFragment{TextFragment: "Hello"},
 				want: false,
 			},
 			{
 				name: "thinking fragment",
-				in:   ContentFragment{ThinkingFragment: "thinking"},
+				in:   ReplyFragment{ThinkingFragment: "thinking"},
 				want: false,
 			},
 			{
 				name: "opaque fragment",
-				in:   ContentFragment{Opaque: map[string]any{"key": "value"}},
+				in:   ReplyFragment{Opaque: map[string]any{"key": "value"}},
 				want: false,
 			},
 			{
 				name: "document fragment",
-				in:   ContentFragment{DocumentFragment: []byte("data")},
+				in:   ReplyFragment{DocumentFragment: []byte("data")},
 				want: false,
 			},
 			{
 				name: "tool call fragment",
-				in:   ContentFragment{ToolCall: ToolCall{Name: "tool"}},
+				in:   ReplyFragment{ToolCall: ToolCall{Name: "tool"}},
 				want: false,
 			},
 			{
 				name: "citation fragment",
-				in:   ContentFragment{Citation: Citation{Text: "citation"}},
+				in:   ReplyFragment{Citation: Citation{Text: "citation"}},
 				want: false,
 			},
 		}
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
 				if got := tt.in.IsZero(); got != tt.want {
-					t.Fatalf("ContentFragment.IsZero() = %v, want %v", got, tt.want)
+					t.Fatalf("IsZero() = %v, want %v", got, tt.want)
 				}
 			})
 		}
 	})
 
 	t.Run("GoString", func(t *testing.T) {
-		fragment := ContentFragment{
+		fragment := ReplyFragment{
 			TextFragment: "Hello",
 		}
 		got := fragment.GoString()
 		// Just check that it returns a valid JSON string
 		if !strings.HasPrefix(got, "{") || !strings.HasSuffix(got, "}") {
-			t.Fatalf("ContentFragment.GoString() = %q, want JSON object", got)
+			t.Fatalf("GoString() = %q, want JSON object", got)
 		}
 	})
 }

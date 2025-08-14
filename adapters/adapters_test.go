@@ -18,7 +18,7 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 	provider := &mockProviderGenStream{
 		streamResponses: []streamResponse{
 			{
-				fragments: []genai.ContentFragment{
+				fragments: []genai.ReplyFragment{
 					{TextFragment: "I'll help you calculate that. "},
 					{TextFragment: "Let me use the calculator tool."},
 					{ToolCall: genai.ToolCall{ID: "1", Name: "calculator", Arguments: `{"a": 5, "b": 3, "operation": "add"}`}},
@@ -26,7 +26,7 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 				usage: genai.Usage{InputTokens: 10, OutputTokens: 20},
 			},
 			{
-				fragments: []genai.ContentFragment{
+				fragments: []genai.ReplyFragment{
 					{TextFragment: "The result of 5 + 3 is 8."},
 				},
 				usage: genai.Usage{InputTokens: 15, OutputTokens: 10},
@@ -55,8 +55,8 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 			},
 		},
 	}
-	chunks := make(chan genai.ContentFragment)
-	var frags []genai.ContentFragment
+	chunks := make(chan genai.ReplyFragment)
+	var frags []genai.ReplyFragment
 	ctx := t.Context()
 	go func() error {
 		for {

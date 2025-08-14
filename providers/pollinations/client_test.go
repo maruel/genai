@@ -67,7 +67,7 @@ func (h *hideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts gen
 	return resp, err
 }
 
-func (h *hideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (h *hideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	resp, err := h.Client.GenStream(ctx, msgs, chunks, opts)
 	if err != nil {
 		var herr *httpjson.Error

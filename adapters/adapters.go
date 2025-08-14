@@ -78,8 +78,8 @@ func GenSyncWithToolCallLoop(ctx context.Context, p genai.ProviderGen, msgs gena
 // Warning: If opts.ToolCallRequest == ToolCallRequired, it will be mutated to ToolCallAny after the first
 // tool call.
 //
-// No need to process the tool calls or accumulate the ContentFragment.
-func GenStreamWithToolCallLoop(ctx context.Context, p genai.ProviderGen, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Messages, genai.Usage, error) {
+// No need to process the tool calls or accumulate the ReplyFragment.
+func GenStreamWithToolCallLoop(ctx context.Context, p genai.ProviderGen, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Messages, genai.Usage, error) {
 	usage := genai.Usage{}
 	var out genai.Messages
 	workMsgs := make(genai.Messages, len(msgs))
@@ -90,7 +90,7 @@ func GenStreamWithToolCallLoop(ctx context.Context, p genai.ProviderGen, msgs ge
 	}
 	tools := chatOpts.Tools
 	for {
-		internalReplies := make(chan genai.ContentFragment)
+		internalReplies := make(chan genai.ReplyFragment)
 		reply := genai.Message{}
 		eg := errgroup.Group{}
 		eg.Go(func() error {
@@ -156,7 +156,7 @@ func (c *ProviderGenIgnoreUnsupported) GenSync(ctx context.Context, msgs genai.M
 	return res, err
 }
 
-func (c *ProviderGenIgnoreUnsupported) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (c *ProviderGenIgnoreUnsupported) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	res, err := c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
 	var uce *genai.UnsupportedContinuableError
 	if errors.As(err, &uce) {
@@ -203,7 +203,7 @@ func (c *ProviderGenDocToGen) GenSync(ctx context.Context, msgs genai.Messages, 
 	return c.GenDoc(ctx, msgs[0], opts)
 }
 
-func (c *ProviderGenDocToGen) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (c *ProviderGenDocToGen) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	if len(msgs) != 1 {
 		return genai.Result{}, errors.New("must pass exactly one Message")
 	}
@@ -237,7 +237,7 @@ func (c *ProviderGenUsage) GenSync(ctx context.Context, msgs genai.Messages, opt
 }
 
 // GenStream implements the ProviderGen interface and accumulates usage statistics.
-func (c *ProviderGenUsage) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (c *ProviderGenUsage) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	// Call the wrapped provider and accumulate usage statistics
 	result, err := c.ProviderGen.GenStream(ctx, msgs, replies, opts)
 	c.mu.Lock()
@@ -280,7 +280,7 @@ func (c *ProviderGenAppend) GenSync(ctx context.Context, msgs genai.Messages, op
 	return c.ProviderGen.GenSync(ctx, msgs, opts)
 }
 
-func (c *ProviderGenAppend) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (c *ProviderGenAppend) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	if len(msgs[len(msgs)-1].Request) != 0 {
 		msgs = slices.Clone(msgs)
 		msgs[len(msgs)-1].Request = slices.Clone(msgs[len(msgs)-1].Request)

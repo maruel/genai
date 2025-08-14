@@ -213,7 +213,7 @@ func ExampleProviderGen_GenStream() {
 		Seed:      1,
 		MaxTokens: 50,
 	}
-	chunks := make(chan genai.ContentFragment)
+	chunks := make(chan genai.ReplyFragment)
 	eg := errgroup.Group{}
 	eg.Go(func() error {
 		for {

@@ -269,7 +269,7 @@ type ProviderGen[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenRe
 	// AllowOpaqueFields is true if the client allows the Opaque field in messages.
 	AllowOpaqueFields bool
 	// ProcessStreamPackets is the function that processes stream packets used by GenStream.
-	ProcessStreamPackets func(ch <-chan GenStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error
+	ProcessStreamPackets func(ch <-chan GenStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error
 	// ProcessHeaders is the function that processes HTTP headers to extract rate limit information.
 	ProcessHeaders func(http.Header) []genai.RateLimit
 	// LieToolCalls lie the FinishReason on tool calls.
@@ -340,7 +340,7 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	return result, continuableErr
 }
 
-func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
 	if err := msgs.Validate(); err != nil {
 		return result, err
@@ -495,20 +495,20 @@ func ListModels[PErrorResponse ErrAPI, R ListModelsResponse](ctx context.Context
 }
 
 // SimulateStream simulates GenStream for APIs that do not support streaming.
-func SimulateStream(ctx context.Context, c genai.ProviderGen, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func SimulateStream(ctx context.Context, c genai.ProviderGen, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	res, err := c.GenSync(ctx, msgs, opts)
 	if err == nil {
 		for i := range res.Reply {
 			if !res.Reply[i].Doc.IsZero() {
-				return res, fmt.Errorf("expected ContentFragment with Doc, got %#v", res.Reply[i])
+				return res, fmt.Errorf("expected Reply with Doc, got %#v", res.Reply[i])
 			}
 			if url := res.Reply[i].Doc.URL; url != "" {
-				chunks <- genai.ContentFragment{
+				chunks <- genai.ReplyFragment{
 					Filename: res.Reply[i].Doc.Filename,
 					URL:      res.Reply[i].Doc.URL,
 				}
 			} else {
-				chunks <- genai.ContentFragment{
+				chunks <- genai.ReplyFragment{
 					Filename:         res.Reply[i].Doc.Filename,
 					DocumentFragment: res.Reply[i].Doc.Src.(*bb.BytesBuffer).D,
 				}

@@ -60,8 +60,8 @@ func (c *ProviderGenThinking) GenSync(ctx context.Context, msgs genai.Messages, 
 // GenStream implements the ProviderGen interface for streaming by delegating to the wrapped provider
 // and processing each fragment to extract thinking blocks.
 // If no thinking tags are present, the first part of the message is assumed to be thinking.
-func (c *ProviderGenThinking) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
-	internalReplies := make(chan genai.ContentFragment)
+func (c *ProviderGenThinking) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+	internalReplies := make(chan genai.ReplyFragment)
 	accumulated := genai.Message{}
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
@@ -95,7 +95,7 @@ func (c *ProviderGenThinking) GenStream(ctx context.Context, msgs genai.Messages
 }
 
 // processPacket is the streaming version of message fragment processing.
-func (c *ProviderGenThinking) processPacket(state tagProcessingState, replies chan<- genai.ContentFragment, accumulated *genai.Message, f genai.ContentFragment) (tagProcessingState, error) {
+func (c *ProviderGenThinking) processPacket(state tagProcessingState, replies chan<- genai.ReplyFragment, accumulated *genai.Message, f genai.ReplyFragment) (tagProcessingState, error) {
 	if f.ThinkingFragment != "" {
 		return state, fmt.Errorf("got unexpected thinking fragment: %q; do not use ProviderGenThinking with an explicit thinking CoT model", f.ThinkingFragment)
 	}

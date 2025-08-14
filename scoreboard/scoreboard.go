@@ -684,7 +684,7 @@ func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messag
 	var err error
 	var resp genai.Result
 	if cs.isStream {
-		chunks := make(chan genai.ContentFragment)
+		chunks := make(chan genai.ReplyFragment)
 		done := make(chan struct{})
 		go func() {
 			defer close(done)

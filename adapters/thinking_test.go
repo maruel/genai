@@ -224,10 +224,10 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			mp := &mockProviderGenStream{streamResponses: []streamResponse{{}}}
 			for _, i := range tc.in {
-				mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.ContentFragment{TextFragment: i})
+				mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.ReplyFragment{TextFragment: i})
 			}
 			tp := &adapters.ProviderGenThinking{ProviderGen: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
-			ch := make(chan genai.ContentFragment, 100)
+			ch := make(chan genai.ReplyFragment, 100)
 			eg, ctx := errgroup.WithContext(t.Context())
 			accumulated := genai.Message{}
 			eg.Go(func() error {
@@ -259,7 +259,7 @@ func TestProviderGenThinking_GenStream_errors(t *testing.T) {
 	tests := []struct {
 		name      string
 		in        []string
-		fragments []genai.ContentFragment
+		fragments []genai.ReplyFragment
 		err       error
 		want      string
 	}{
@@ -277,7 +277,7 @@ func TestProviderGenThinking_GenStream_errors(t *testing.T) {
 		{
 			name: "Unexpected thinking fragment in stream",
 			in:   []string{},
-			fragments: []genai.ContentFragment{
+			fragments: []genai.ReplyFragment{
 				{ThinkingFragment: "This is an unexpected thinking fragment"},
 			},
 			want: `got unexpected thinking fragment: "This is an unexpected thinking fragment"; do not use ProviderGenThinking with an explicit thinking CoT model`,
@@ -291,11 +291,11 @@ func TestProviderGenThinking_GenStream_errors(t *testing.T) {
 				mp.streamResponses[0].fragments = tc.fragments
 			} else {
 				for _, i := range tc.in {
-					mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.ContentFragment{TextFragment: i})
+					mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.ReplyFragment{TextFragment: i})
 				}
 			}
 			tp := &adapters.ProviderGenThinking{ProviderGen: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
-			ch := make(chan genai.ContentFragment, 100)
+			ch := make(chan genai.ReplyFragment, 100)
 			eg := errgroup.Group{}
 			eg.Go(func() error {
 				for range ch {
@@ -330,7 +330,7 @@ func (m *mockProviderGenSync) GenSync(ctx context.Context, msgs genai.Messages, 
 	return m.response, m.err
 }
 
-func (m *mockProviderGenSync) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (m *mockProviderGenSync) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	return genai.Result{}, errors.New("unexpected")
 }
 
@@ -339,7 +339,7 @@ func (m *mockProviderGenSync) ModelID() string {
 }
 
 type streamResponse struct {
-	fragments []genai.ContentFragment
+	fragments []genai.ReplyFragment
 	usage     genai.Usage
 }
 
@@ -357,7 +357,7 @@ func (m *mockProviderGenStream) GenSync(ctx context.Context, msgs genai.Messages
 	return genai.Result{}, errors.New("unexpected")
 }
 
-func (m *mockProviderGenStream) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (m *mockProviderGenStream) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	if m.err != nil {
 		return genai.Result{}, m.err
 	}

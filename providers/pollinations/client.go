@@ -1074,7 +1074,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 	return c.ProviderGen.GenSync(ctx, msgs, opts)
 }
 
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	if c.isAudio(opts) || c.isImage(opts) {
 		return base.SimulateStream(ctx, c, msgs, chunks, opts)
 	}
@@ -1216,7 +1216,7 @@ func (c *Client) isImage(opts genai.Options) bool {
 	}
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -1245,7 +1245,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
 			return fmt.Errorf("implement multiple tool calls: %#v", pkt)
 		}
-		f := genai.ContentFragment{
+		f := genai.ReplyFragment{
 			TextFragment:     pkt.Choices[0].Delta.Content,
 			ThinkingFragment: pkt.Choices[0].Delta.ReasoningContent,
 		}

@@ -1089,7 +1089,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 	return c.ProviderGen.GenSync(ctx, msgs, opts)
 }
 
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	if c.isAudio(opts) || c.isImage(opts) {
 		return base.SimulateStream(ctx, c, msgs, chunks, opts)
 	}
@@ -1182,7 +1182,7 @@ func (c *Client) isImage(opts genai.Options) bool {
 	return opts != nil && slices.Contains(opts.Modalities(), genai.ModalityImage)
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -1227,7 +1227,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				// A new call.
 				if pendingCall.ID != "" {
 					// Flush.
-					f := genai.ContentFragment{ToolCall: genai.ToolCall{
+					f := genai.ReplyFragment{ToolCall: genai.ToolCall{
 						ID:        pendingCall.ID,
 						Name:      pendingCall.Function.Name,
 						Arguments: pendingCall.Function.Arguments,
@@ -1248,7 +1248,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		} else {
 			if pendingCall.ID != "" {
 				// Flush.
-				f := genai.ContentFragment{ToolCall: genai.ToolCall{
+				f := genai.ReplyFragment{ToolCall: genai.ToolCall{
 					ID:        pendingCall.ID,
 					Name:      pendingCall.Function.Name,
 					Arguments: pendingCall.Function.Arguments,
@@ -1259,7 +1259,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				chunks <- f
 			}
 		}
-		f := genai.ContentFragment{TextFragment: pkt.Choices[0].Delta.Content}
+		f := genai.ReplyFragment{TextFragment: pkt.Choices[0].Delta.Content}
 		if !f.IsZero() {
 			if err := result.Accumulate(f); err != nil {
 				return err

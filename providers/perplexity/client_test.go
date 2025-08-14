@@ -75,7 +75,7 @@ func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts ge
 	return i.Client.GenSync(ctx, msgs, opts)
 }
 
-func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	if !strings.Contains(msgs[len(msgs)-1].Request[len(msgs[0].Request)-1].Text, "Quackiland") {
 		n := i.opts
 		if opts != nil {

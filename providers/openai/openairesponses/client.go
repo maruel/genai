@@ -1371,7 +1371,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 	return c.ProviderGen.GenSync(ctx, msgs, opts)
 }
 
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	if c.isImage(opts) {
 		return base.SimulateStream(ctx, c, msgs, chunks, opts)
 	}
@@ -1484,7 +1484,7 @@ func (c *Client) isImage(opts genai.Options) bool {
 
 // processStreamPackets processes stream packets for the OpenAI Responses API.
 // This is a placeholder - will be implemented when GenStream is added.
-func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
+func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -1493,7 +1493,7 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 
 	pendingToolCall := genai.ToolCall{}
 	for pkt := range ch {
-		f := genai.ContentFragment{}
+		f := genai.ReplyFragment{}
 		for _, lp := range pkt.Logprobs {
 			result.Logprobs = append(result.Logprobs, lp.To())
 		}

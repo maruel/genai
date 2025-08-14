@@ -1855,7 +1855,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 
 // processStreamPackets is the function used to convert the chunks sent by Gemini's SSE data into
 // contentfragment.
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -1882,7 +1882,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 
 		// Gemini is the only one returning uppercase so convert down for compatibility.
-		f := genai.ContentFragment{}
+		f := genai.ReplyFragment{}
 		for _, part := range pkt.Candidates[0].Content.Parts {
 			if part.Thought {
 				f.ThinkingFragment += part.Text

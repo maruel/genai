@@ -1006,7 +1006,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, "https://api.cohere.com/v1/models?page_size=1000")
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -1027,7 +1027,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		f := genai.ContentFragment{}
+		f := genai.ReplyFragment{}
 		switch pkt.Type {
 		case ChunkMessageStart:
 			// Nothing useful.

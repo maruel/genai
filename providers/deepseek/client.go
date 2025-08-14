@@ -606,7 +606,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 
 // TODO: Caching: https://api-docs.deepseek.com/guides/kv_cache
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -632,7 +632,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		f := genai.ContentFragment{
+		f := genai.ReplyFragment{
 			TextFragment:     pkt.Choices[0].Delta.Content,
 			ThinkingFragment: pkt.Choices[0].Delta.ReasoningContent,
 		}

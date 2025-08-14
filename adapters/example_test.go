@@ -59,7 +59,7 @@ func ExampleGenStreamWithToolCallLoop() {
 		// Force the LLM to do a tool call first.
 		ToolCallRequest: genai.ToolCallRequired,
 	}
-	chunks := make(chan genai.ContentFragment)
+	chunks := make(chan genai.ReplyFragment)
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	go func() {

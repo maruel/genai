@@ -1209,7 +1209,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.DoRequest(ctx, "POST", c.completionsURL, in, out)
 }
 
-func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
 	if err := msgs.Validate(); err != nil {
 		return result, err
@@ -1427,7 +1427,7 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 	return nil
 }
 
-func processChatStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
+func processChatStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -1450,7 +1450,7 @@ func processChatStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- g
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		f := genai.ContentFragment{
+		f := genai.ReplyFragment{
 			TextFragment: pkt.Choices[0].Delta.Content,
 			// ThinkingFragment: pkt.Choices[0].Delta.ReasoningContent,
 		}
@@ -1494,7 +1494,7 @@ func processChatStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- g
 	return nil
 }
 
-func processCompletionsStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
+func processCompletionsStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
 	for msg := range ch {
 		if msg.Timings.PredictedN != 0 {
 			result.InputTokens = msg.Timings.PromptN
@@ -1503,7 +1503,7 @@ func processCompletionsStreamPackets(ch <-chan CompletionStreamChunkResponse, ch
 		if msg.StopType != "" {
 			result.FinishReason = msg.StopType.ToFinishReason()
 		}
-		f := genai.ContentFragment{TextFragment: msg.Content}
+		f := genai.ReplyFragment{TextFragment: msg.Content}
 		if !f.IsZero() {
 			if err := result.Accumulate(f); err != nil {
 				return err

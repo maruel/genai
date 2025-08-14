@@ -57,7 +57,7 @@ type ProviderGen interface {
 	// GenStream runs generation synchronously, streaming the results to channel replies.
 	//
 	// No need to accumulate the replies into the result, the Result contains the accumulated message.
-	GenStream(ctx context.Context, msgs Messages, replies chan<- ContentFragment, opts Options) (Result, error)
+	GenStream(ctx context.Context, msgs Messages, replies chan<- ReplyFragment, opts Options) (Result, error)
 }
 
 // Result is the result of a completion.
@@ -659,9 +659,9 @@ func (d *Doc) Read(maxSize int64) (string, []byte, error) {
 	return mimeType, data, nil
 }
 
-// ContentFragment is a fragment of a content the LLM is sending back as part
+// ReplyFragment is a fragment of a content the LLM is sending back as part
 // of the GenStream().
-type ContentFragment struct {
+type ReplyFragment struct {
 	TextFragment string `json:"text,omitzero"`
 
 	ThinkingFragment string         `json:"thinking,omitzero"`
@@ -679,17 +679,17 @@ type ContentFragment struct {
 	_ struct{}
 }
 
-func (m *ContentFragment) IsZero() bool {
+func (m *ReplyFragment) IsZero() bool {
 	return m.TextFragment == "" && m.ThinkingFragment == "" && len(m.Opaque) == 0 && m.Filename == "" && len(m.DocumentFragment) == 0 && m.URL == "" && m.ToolCall.IsZero() && m.Citation.IsZero()
 }
 
-func (m *ContentFragment) GoString() string {
+func (m *ReplyFragment) GoString() string {
 	b, _ := json.Marshal(m)
 	return string(b)
 }
 
-// Accumulate adds a ContentFragment to the message being streamed.
-func (m *Message) Accumulate(mf ContentFragment) error {
+// Accumulate adds a ReplyFragment to the message being streamed.
+func (m *Message) Accumulate(mf ReplyFragment) error {
 	// Generally the first message fragment.
 	if mf.ThinkingFragment != "" {
 		if len(m.Reply) != 0 {

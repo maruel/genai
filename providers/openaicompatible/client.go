@@ -392,7 +392,7 @@ func (c *Client) Scoreboard() genai.Scoreboard {
 	return Scoreboard
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -416,7 +416,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			for _, content := range pkt.Choices[0].Delta.Content {
 				switch content.Type {
 				case ContentText:
-					f := genai.ContentFragment{TextFragment: content.Text}
+					f := genai.ReplyFragment{TextFragment: content.Text}
 					if !f.IsZero() {
 						if err := result.Accumulate(f); err != nil {
 							return err
@@ -443,7 +443,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			return fmt.Errorf("unexpected role %q", role)
 		}
 		if m.IsZero() {
-			f := genai.ContentFragment{TextFragment: pkt.Delta.Text}
+			f := genai.ReplyFragment{TextFragment: pkt.Delta.Text}
 			if !f.IsZero() {
 				if err := result.Accumulate(f); err != nil {
 					return err
@@ -453,7 +453,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			continue
 		}
 		for _, content := range c {
-			f := genai.ContentFragment{TextFragment: content.Text}
+			f := genai.ReplyFragment{TextFragment: content.Text}
 			if !f.IsZero() {
 				if err := result.Accumulate(f); err != nil {
 					return err

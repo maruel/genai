@@ -72,7 +72,7 @@ func TestClient_Provider_errors(t *testing.T, getClient func(t *testing.T, apiKe
 							}
 							t.Fatal(err)
 						}
-						ch := make(chan genai.ContentFragment, 1)
+						ch := make(chan genai.ReplyFragment, 1)
 						_, err = c.(genai.ProviderGen).GenStream(t.Context(), msgs, ch, &genai.OptionsText{})
 						if err == nil {
 							t.Fatal("expected error")

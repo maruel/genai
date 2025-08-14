@@ -76,7 +76,7 @@ func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts ge
 	return i.Client.GenSync(ctx, msgs, opts)
 }
 
-func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
 		n.OptionsText = *opts.(*genai.OptionsText)
@@ -103,7 +103,7 @@ func (i *injectThinking) GenSync(ctx context.Context, msgs genai.Messages, opts 
 	return res, err
 }
 
-func (i *injectThinking) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (i *injectThinking) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	res, err := i.injectOption.GenStream(ctx, msgs, replies, opts)
 	return res, err
 }
@@ -117,7 +117,7 @@ func (i *imageClient) GenSync(ctx context.Context, msgs genai.Messages, opts gen
 	return genai.Result{}, errors.New("disabled to save on costs")
 }
 
-func (i *imageClient) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
+func (i *imageClient) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	return genai.Result{}, errors.New("disabled to save on costs")
 }
 

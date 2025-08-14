@@ -888,7 +888,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, "https://api.groq.com/openai/v1/models")
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ContentFragment, result *genai.Result) error {
+func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
 		for range ch {
@@ -912,7 +912,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
 			return errors.New("implement multiple tool calls")
 		}
-		f := genai.ContentFragment{
+		f := genai.ReplyFragment{
 			TextFragment:     pkt.Choices[0].Delta.Content,
 			ThinkingFragment: pkt.Choices[0].Delta.Reasoning,
 		}

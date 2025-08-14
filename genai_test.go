@@ -74,27 +74,12 @@ func TestUsage(t *testing.T) {
 	})
 }
 
-func TestRole(t *testing.T) {
-	t.Run("Validate", func(t *testing.T) {
-		for _, role := range []Role{User, Assistant, Computer} {
-			if err := role.Validate(); err != nil {
-				t.Fatalf("unexpected error: %q", err)
-			}
-		}
-		for _, role := range []Role{"invalid", ""} {
-			if err := role.Validate(); err == nil {
-				t.Fatalf("expected error, got nil")
-			}
-		}
-	})
-}
-
 func TestMessages(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			m := Messages{
 				NewTextMessage("Hello"),
-				Message{Role: Assistant, Reply: []Content{{Text: "I can help with that"}}},
+				Message{Reply: []Content{{Text: "I can help with that"}}},
 			}
 			if err := m.Validate(); err != nil {
 				t.Fatalf("unexpected error: %q", err)
@@ -109,10 +94,10 @@ func TestMessages(t *testing.T) {
 				{
 					name: "Invalid messages",
 					in: Messages{
-						{Role: User, Request: []Content{{Text: "Hi", Doc: Doc{Filename: "hi.txt"}}}},
-						{Role: User, Request: []Content{{}}},
+						{Request: []Content{{Text: "Hi", Doc: Doc{Filename: "hi.txt"}}}},
+						{Request: []Content{{}}},
 					},
-					errMsg: "message 0: request 0: field Doc can't be used along Text\nmessage 1: request 0: an empty Content is invalid",
+					errMsg: "message 0: request 0: field Doc can't be used along Text\nmessage 1: request 0: an empty Content is invalid\nmessage 1: role must alternate; got twice \"user\"",
 				},
 			}
 			for _, tt := range tests {
@@ -140,7 +125,6 @@ func TestMessage(t *testing.T) {
 				{
 					name: "Valid user document message",
 					in: Message{
-						Role: User,
 						Request: []Content{
 							{Doc: Doc{Filename: "document.txt", Src: strings.NewReader("document content")}},
 						},
@@ -148,26 +132,23 @@ func TestMessage(t *testing.T) {
 				},
 				{
 					name: "Valid assistant message",
-					in:   Message{Role: Assistant, Reply: []Content{{Text: "I can help with that"}}},
+					in:   Message{Reply: []Content{{Text: "I can help with that"}}},
 				},
 				{
 					name: "Valid assistant with tool calls",
 					in: Message{
-						Role:      Assistant,
 						ToolCalls: []ToolCall{{Name: "tool", Arguments: "{}"}},
 					},
 				},
 				{
 					name: "Valid user with tool call results",
 					in: Message{
-						Role:            User,
 						ToolCallResults: []ToolCallResult{{Name: "tool", Result: "result"}},
 					},
 				},
 				{
 					name: "Valid assistant with reply and tool calls",
 					in: Message{
-						Role:      Assistant,
 						Reply:     []Content{{Text: "I'll call a tool"}},
 						ToolCalls: []ToolCall{{Name: "tool", Arguments: "{}"}},
 					},
@@ -190,46 +171,28 @@ func TestMessage(t *testing.T) {
 				{
 					name:   "empty",
 					in:     Message{},
-					errMsg: "field Role: role \"\" is not supported\nat least one of fields Request, Reply, ToolCalls or ToolCallsResults is required",
+					errMsg: "at least one of fields Request, Reply, ToolCalls or ToolCallsResults is required",
 				},
 				{
-					name:   "user with User field",
-					in:     Message{Role: User, User: "Joe", Request: []Content{{Text: "Hi"}}},
+					name:   "User field",
+					in:     Message{User: "Joe", Request: []Content{{Text: "Hi"}}},
 					errMsg: "field User: not supported yet",
 				},
 				{
-					name: "user with reply",
+					name: "both request and tool call results",
 					in: Message{
-						Role:  User,
-						Reply: []Content{{Text: "reply"}},
-					},
-					errMsg: "field Reply can't be used with role User",
-				},
-				{
-					name: "user with both request and tool call results",
-					in: Message{
-						Role:            User,
 						Request:         []Content{{Text: "request"}},
 						ToolCallResults: []ToolCallResult{{Name: "tool", Result: "result"}},
 					},
-					errMsg: "fields Reply and ToolCallResults can't be used together",
+					errMsg: "exactly one of Request, Reply/ToolCalls or ToolCallResults must be set",
 				},
 				{
-					name: "assistant with request",
+					name: "reply containing doc and tool calls",
 					in: Message{
-						Role:    Assistant,
-						Request: []Content{{Text: "request"}},
-					},
-					errMsg: "field Request can't be used with role Assistant",
-				},
-				{
-					name: "assistant with reply containing doc and tool calls",
-					in: Message{
-						Role:      Assistant,
 						Reply:     []Content{{Doc: Doc{Filename: "file.txt", Src: strings.NewReader("content")}}},
 						ToolCalls: []ToolCall{{Name: "tool", Arguments: "{}"}},
 					},
-					errMsg: "field Contents can't contain a Doc along with ToolCalls",
+					errMsg: "field Reply can't contain a Doc along with ToolCalls",
 				},
 			}
 			for _, tt := range tests {
@@ -243,7 +206,7 @@ func TestMessage(t *testing.T) {
 	})
 	t.Run("Decode", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
-			m := Message{Role: Assistant, Reply: []Content{{Text: "{\"key\": \"value\"}"}}}
+			m := Message{Reply: []Content{{Text: "{\"key\": \"value\"}"}}}
 			if err := m.Decode(&struct{ Key string }{}); err != nil {
 				t.Fatalf("unexpected error: %q", err)
 			}
@@ -256,16 +219,15 @@ func TestMessage(t *testing.T) {
 			}{
 				{
 					name:   "Invalid JSON message",
-					in:     Message{Role: Assistant, Reply: []Content{{Text: "invalid"}}},
+					in:     Message{Reply: []Content{{Text: "invalid"}}},
 					errMsg: "failed to decode message text as JSON: invalid character 'i' looking for beginning of value; reply: \"invalid\"",
 				},
 				{
 					name: "Invalid DecodeAs",
 					in: Message{
-						Role:  Assistant,
 						Reply: []Content{{Doc: Doc{Src: strings.NewReader("document content")}}},
 					},
-					errMsg: "only text messages can be decoded as JSON, can't decode {\"role\":\"assistant\",\"reply\":[{\"doc\":{\"bytes\":\"ZG9jdW1lbnQgY29udGVudA==\"}}]}",
+					errMsg: "only text messages can be decoded as JSON, can't decode {\"reply\":[{\"doc\":{\"bytes\":\"ZG9jdW1lbnQgY29udGVudA==\"}}]}",
 				},
 			}
 			for _, tt := range tests {
@@ -286,25 +248,22 @@ func TestMessage(t *testing.T) {
 			}{
 				{
 					name: "User text message",
-					in:   `{"role": "user", "request": [{"text": "Hello"}]}`,
+					in:   `{"request": [{"text": "Hello"}]}`,
 					want: Message{
-						Role:    User,
 						Request: []Content{{Text: "Hello"}},
 					},
 				},
 				{
 					name: "Assistant message with tool call",
-					in:   `{"role": "assistant", "tool_calls": [{"id": "1", "name": "tool", "arguments": "{}"}]}`,
+					in:   `{"tool_calls": [{"id": "1", "name": "tool", "arguments": "{}"}]}`,
 					want: Message{
-						Role:      Assistant,
 						ToolCalls: []ToolCall{{ID: "1", Name: "tool", Arguments: "{}"}},
 					},
 				},
 				{
 					name: "Computer message with tool result",
-					in:   `{"role": "computer", "tool_call_results": [{"id": "1", "name": "tool", "result": "success"}]}`,
+					in:   `{"tool_call_results": [{"id": "1", "name": "tool", "result": "success"}]}`,
 					want: Message{
-						Role:            Computer,
 						ToolCallResults: []ToolCallResult{{ID: "1", Name: "tool", Result: "success"}},
 					},
 				},
@@ -330,24 +289,17 @@ func TestMessage(t *testing.T) {
 			}{
 				{
 					name:   "Invalid JSON",
-					in:     `{"role": "user", "request": invalid}`,
+					in:     `{"request": invalid}`,
 					errMsg: "invalid character 'i' looking for beginning of value",
 				},
 				{
 					name:   "Unknown field",
-					in:     `{"role": "user", "request": [{"text": "Hi"}], "unknown_field": "value"}`,
+					in:     `{"request": [{"text": "Hi"}], "unknown_field": "value"}`,
 					errMsg: "json: unknown field \"unknown_field\"",
 				},
 				{
-					name:   "Invalid role",
-					in:     `{"role": "invalid", "request": [{"text": "Hi"}]}`,
-					errMsg: "field Role: role \"invalid\" is not supported",
-				},
-				// Note: Empty message (just role) passes UnmarshalJSON validation,
-				// but would fail full Validate() method. UnmarshalJSON only does partial validation.
-				{
 					name:   "User with User field",
-					in:     `{"role": "user", "user": "joe", "request": [{"text": "Hi"}]}`,
+					in:     `{"user": "joe", "request": [{"text": "Hi"}]}`,
 					errMsg: "field User: not supported yet",
 				},
 			}
@@ -370,58 +322,51 @@ func TestMessage(t *testing.T) {
 		}{
 			{
 				name:     "Text",
-				message:  Message{Role: Assistant},
 				fragment: ContentFragment{TextFragment: "Hello"},
-				want:     Message{Role: Assistant, Reply: []Content{{Text: "Hello"}}},
+				want:     Message{Reply: []Content{{Text: "Hello"}}},
 			},
 			{
-				name:    "Document",
-				message: Message{Role: Assistant},
+				name: "Document",
 				fragment: ContentFragment{
 					Filename:         "document.txt",
 					DocumentFragment: []byte("document content"),
 				},
 				want: Message{
-					Role:  Assistant,
 					Reply: []Content{{Doc: Doc{Filename: "document.txt", Src: &bb.BytesBuffer{D: []byte("document content")}}}},
 				},
 			},
 			{
 				name:     "Tool",
-				message:  Message{Role: Assistant},
 				fragment: ContentFragment{ToolCall: ToolCall{Name: "tool"}},
 				want: Message{
-					Role:      Assistant,
 					ToolCalls: []ToolCall{{Name: "tool"}},
 				},
 			},
 			{
 				name:     "Add text to existing text",
-				message:  Message{Role: Assistant, Reply: []Content{{Text: "Hello"}}},
+				message:  Message{Reply: []Content{{Text: "Hello"}}},
 				fragment: ContentFragment{TextFragment: " world"},
-				want:     Message{Role: Assistant, Reply: []Content{{Text: "Hello world"}}},
+				want:     Message{Reply: []Content{{Text: "Hello world"}}},
 			},
 			{
 				name:     "Add thinking to existing thinking",
-				message:  Message{Role: Assistant, Reply: []Content{{Thinking: "I think "}}},
+				message:  Message{Reply: []Content{{Thinking: "I think "}}},
 				fragment: ContentFragment{ThinkingFragment: "therefore I am"},
-				want:     Message{Role: Assistant, Reply: []Content{{Thinking: "I think therefore I am"}}},
+				want:     Message{Reply: []Content{{Thinking: "I think therefore I am"}}},
 			},
 			{
 				name:     "Join assistant text",
-				message:  Message{Role: Assistant, Reply: []Content{{Text: "Hello"}}},
+				message:  Message{Reply: []Content{{Text: "Hello"}}},
 				fragment: ContentFragment{TextFragment: " world"},
-				want:     Message{Role: Assistant, Reply: []Content{{Text: "Hello world"}}},
+				want:     Message{Reply: []Content{{Text: "Hello world"}}},
 			},
 			{
 				name: "Document then text",
 				message: Message{
-					Role:  Assistant,
 					Reply: []Content{{Doc: Doc{Filename: "document.txt", Src: &bb.BytesBuffer{D: []byte("document content")}}}},
 				},
 				fragment: ContentFragment{TextFragment: "No"},
 				want: Message{
-					Role: Assistant,
 					Reply: []Content{
 						{Doc: Doc{Filename: "document.txt", Src: &bb.BytesBuffer{D: []byte("document content")}}},
 						{Text: "No"},
@@ -430,10 +375,9 @@ func TestMessage(t *testing.T) {
 			},
 			{
 				name:     "Tool then text",
-				message:  Message{Role: Assistant, ToolCalls: []ToolCall{{Name: "tool"}}},
+				message:  Message{ToolCalls: []ToolCall{{Name: "tool"}}},
 				fragment: ContentFragment{TextFragment: "No"},
 				want: Message{
-					Role: Assistant,
 					// Merge together.
 					Reply:     []Content{{Text: "No"}},
 					ToolCalls: []ToolCall{{Name: "tool"}},
@@ -441,10 +385,9 @@ func TestMessage(t *testing.T) {
 			},
 			{
 				name:     "Tool then tool",
-				message:  Message{Role: Assistant, ToolCalls: []ToolCall{{Name: "tool"}}},
+				message:  Message{ToolCalls: []ToolCall{{Name: "tool"}}},
 				fragment: ContentFragment{ToolCall: ToolCall{Name: "tool2"}},
 				want: Message{
-					Role: Assistant,
 					// Merge together.
 					ToolCalls: []ToolCall{{Name: "tool"}, {Name: "tool2"}},
 				},
@@ -479,7 +422,6 @@ func TestMessage(t *testing.T) {
 			}
 
 			msg := Message{
-				Role: Assistant,
 				ToolCalls: []ToolCall{
 					{
 						ID:        "call1",
@@ -495,7 +437,6 @@ func TestMessage(t *testing.T) {
 			}
 
 			expected := Message{
-				Role: User,
 				ToolCallResults: []ToolCallResult{
 					{
 						ID:     "call1",
@@ -521,7 +462,6 @@ func TestMessage(t *testing.T) {
 			}
 
 			msg := Message{
-				Role: Assistant,
 				ToolCalls: []ToolCall{
 					{
 						ID:        "call1",
@@ -544,7 +484,6 @@ func TestMessage(t *testing.T) {
 		t.Run("no tool calls", func(t *testing.T) {
 			ctx := t.Context()
 			msg := Message{
-				Role:  Assistant,
 				Reply: []Content{{Text: "Hello"}},
 			}
 

@@ -536,7 +536,6 @@ type CompletionResponse struct {
 func (c *CompletionResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		Message: genai.Message{
-			Role: genai.Assistant,
 			// Mistral Nemo really likes "▁".
 			Request: []genai.Content{{Text: strings.ReplaceAll(c.Content, "\u2581", " ")}},
 		},
@@ -668,8 +667,14 @@ type Message struct {
 }
 
 func (m *Message) From(in *genai.Message) error {
-	// We intentionally do not filter the role here.
-	m.Role = string(in.Role)
+	switch r := in.Role(); r {
+	case "assistant", "user":
+		m.Role = r
+	case "computer":
+		m.Role = "tool"
+	default:
+		return fmt.Errorf("unsupported role %q", r)
+	}
 	if len(in.Request) != 0 {
 		for i := range in.Request {
 			c := Content{}
@@ -709,7 +714,6 @@ func (m *Message) From(in *genai.Message) error {
 		}
 		// Process only the first tool call result in this method.
 		// The Init method handles multiple tool call results by creating multiple messages.
-		m.Role = "tool"
 		m.ToolCallID = in.ToolCallResults[0].ID
 		m.Content = []Content{{Type: "text", Text: in.ToolCallResults[0].Result}}
 	}
@@ -717,7 +721,6 @@ func (m *Message) From(in *genai.Message) error {
 }
 
 func (m *Message) To(out *genai.Message) error {
-	out.Role = genai.Assistant
 	for i := range m.Content {
 		out.Reply = make([]genai.Content, len(m.Content))
 		if err := m.Content[i].To(&out.Reply[i]); err != nil {
@@ -1361,7 +1364,7 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 
 	in.Prompt = c.encoding.BeginOfText
 	for _, m := range msgs {
-		switch m.Role {
+		switch r := m.Role(); r {
 		/* TODO
 		case genai.AvailableTools:
 			in.Prompt += c.encoding.ToolsAvailableTokenStart + m.Text + c.encoding.ToolsAvailableTokenEnd
@@ -1370,20 +1373,18 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 			for _, b := range m.Request {
 				in.Prompt += c.encoding.SystemTokenStart + b.Text + c.encoding.SystemTokenEnd
 			}
-		case genai.User:
+		case "user":
 			for _, b := range m.Request {
 				in.Prompt += c.encoding.UserTokenStart + b.Text + c.encoding.UserTokenEnd
 			}
 			// in.Prompt += c.encoding.ToolCallResultTokenStart + m.Text + c.encoding.ToolCallResultTokenEnd
-		case genai.Assistant:
+		case "assistant":
 			for _, b := range m.Request {
 				in.Prompt += c.encoding.AssistantTokenStart + b.Text + c.encoding.AssistantTokenEnd
 			}
 			// in.Prompt += c.encoding.ToolCallTokenStart + m.Text + c.encoding.ToolCallTokenEnd
-		case genai.Computer:
-			fallthrough
 		default:
-			return fmt.Errorf("unexpected role %q", m.Role)
+			return fmt.Errorf("unexpected role %q", r)
 		}
 	}
 	return nil

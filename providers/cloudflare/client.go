@@ -211,13 +211,13 @@ type Message struct {
 }
 
 func (m *Message) From(in *genai.Message) error {
-	switch in.Role {
-	case genai.User, genai.Assistant:
-		m.Role = string(in.Role)
-	case genai.Computer:
-		fallthrough
+	switch r := in.Role(); r {
+	case "user", "assistant":
+		m.Role = r
+	case "computer":
+		m.Role = "tool"
 	default:
-		return fmt.Errorf("unsupported role %q", in.Role)
+		return fmt.Errorf("unsupported role %q", r)
 	}
 	if len(in.Request) > 1 {
 		return errors.New("cloudflare doesn't support multiple content blocks; TODO split transparently")
@@ -247,7 +247,6 @@ func (m *Message) From(in *genai.Message) error {
 		}
 		// Process only the first tool call result in this method.
 		// The Init method handles multiple tool call results by creating multiple messages.
-		m.Role = "tool"
 		m.ToolCallID = in.ToolCallResults[0].ID
 		m.Content = in.ToolCallResults[0].Result
 		return nil
@@ -396,7 +395,6 @@ type MessageResponse struct {
 }
 
 func (msg *MessageResponse) To(out *genai.Message) error {
-	out.Role = genai.Assistant
 	if len(msg.ToolCalls) != 0 {
 		out.ToolCalls = make([]genai.ToolCall, len(msg.ToolCalls))
 		for i, tc := range msg.ToolCalls {

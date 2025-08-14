@@ -63,7 +63,7 @@ func TestProviderGenThinking_GenSync(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			mp := &mockProviderGenSync{
-				response: genai.Result{Message: genai.Message{Role: genai.Assistant, Reply: []genai.Content{{Text: tc.in}}}},
+				response: genai.Result{Message: genai.Message{Reply: []genai.Content{{Text: tc.in}}}},
 			}
 			tp := &adapters.ProviderGenThinking{ProviderGen: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
 			got, err := tp.GenSync(t.Context(), genai.Messages{}, tc.opts)
@@ -109,7 +109,7 @@ func TestProviderGenThinking_GenSync_errors(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			mp := &mockProviderGenSync{
-				response: genai.Result{Message: genai.Message{Role: genai.Assistant, Reply: tc.in}},
+				response: genai.Result{Message: genai.Message{Reply: tc.in}},
 				err:      tc.err,
 			}
 			tp := &adapters.ProviderGenThinking{ProviderGen: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
@@ -366,10 +366,7 @@ func (m *mockProviderGenStream) GenStream(ctx context.Context, msgs genai.Messag
 	}
 	resp := m.streamResponses[m.callIndex]
 	m.callIndex++
-	result := genai.Result{
-		Usage:   resp.usage,
-		Message: genai.Message{Role: genai.Assistant},
-	}
+	result := genai.Result{Usage: resp.usage}
 	for _, fragment := range resp.fragments {
 		select {
 		case <-ctx.Done():

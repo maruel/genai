@@ -269,13 +269,13 @@ type Message struct {
 }
 
 func (m *Message) From(in *genai.Message) ([]Document, error) {
-	switch in.Role {
-	case genai.User, genai.Assistant:
-		m.Role = string(in.Role)
-	case genai.Computer:
-		fallthrough
+	switch r := in.Role(); r {
+	case "user", "assistant":
+		m.Role = r
+	case "computer":
+		m.Role = "tool"
 	default:
-		return nil, fmt.Errorf("unsupported role %q", in.Role)
+		return nil, fmt.Errorf("unsupported role %q", r)
 	}
 	var out []Document
 	if len(in.Request) != 0 {
@@ -328,7 +328,6 @@ func (m *Message) From(in *genai.Message) ([]Document, error) {
 		// Process only the first tool call result in this method.
 		// The Init method handles multiple tool call results by creating multiple messages.
 		// Cohere supports Document, but only when using tools.
-		m.Role = "tool"
 		m.ToolCallID = in.ToolCallResults[0].ID
 		m.Content = []Content{{Type: ContentText, Text: in.ToolCallResults[0].Result}}
 	}
@@ -448,7 +447,7 @@ func (c Citations) To(dst *genai.Content) error {
 	return nil
 }
 
-// Citation is only used with Role == "assistant"
+// Citation is only used with messages from the LLM.
 type Citation struct {
 	Start   int64            `json:"start,omitzero"`
 	End     int64            `json:"end,omitzero"`
@@ -617,12 +616,6 @@ type MessageResponse struct {
 }
 
 func (m *MessageResponse) To(out *genai.Message) error {
-	switch role := m.Role; role {
-	case "system", "assistant", "user":
-		out.Role = genai.Role(role)
-	default:
-		return fmt.Errorf("unsupported role %q", role)
-	}
 	if len(m.ToolCalls) != 0 {
 		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))
 		for i := range m.ToolCalls {

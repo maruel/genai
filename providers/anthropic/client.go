@@ -233,24 +233,15 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, opts genai.Options, model st
 
 	c.Messages = make([]Message, 0, len(msgs))
 	for i := range msgs {
-		switch msgs[i].Role {
-		case genai.User, genai.Assistant:
-			c.Messages = append(c.Messages, Message{})
-			if err := c.Messages[len(c.Messages)-1].From(&msgs[i]); err != nil {
-				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-			}
-			if i == msgToCache-1 {
-				c.Messages[i].CacheControl.Type = "ephemeral"
-			}
-			if err := c.Messages[len(c.Messages)-1].Validate(); err != nil {
-				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
-			}
-		case genai.Computer:
-			errs = append(errs, fmt.Errorf("message %d: unsupported role %q", i, msgs[i].Role))
-			continue
-		default:
-			errs = append(errs, fmt.Errorf("message %d: unsupported role %q", i, msgs[i].Role))
-			continue
+		c.Messages = append(c.Messages, Message{})
+		if err := c.Messages[len(c.Messages)-1].From(&msgs[i]); err != nil {
+			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+		}
+		if i == msgToCache-1 {
+			c.Messages[i].CacheControl.Type = "ephemeral"
+		}
+		if err := c.Messages[len(c.Messages)-1].Validate(); err != nil {
+			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 		}
 	}
 	// If we have unsupported features but no other errors, return a continuable error
@@ -396,15 +387,13 @@ func (m *Message) Validate() error {
 }
 
 func (m *Message) From(in *genai.Message) error {
-	switch role := in.Role; role {
-	case genai.Assistant, genai.User:
-		m.Role = string(in.Role)
-	case "":
-		return errors.New("message doesn't have role defined")
-	case genai.Computer:
-		return fmt.Errorf("unsupported role %q", role)
+	switch r := in.Role(); r {
+	case "assistant", "user":
+		m.Role = r
+	case "computer":
+		m.Role = "user"
 	default:
-		return fmt.Errorf("unsupported role %q", role)
+		return fmt.Errorf("unsupported role %q", r)
 	}
 	m.Content = make([]Content, len(in.Request)+len(in.Reply)+len(in.ToolCalls)+len(in.ToolCallResults))
 	for i := range in.Request {
@@ -437,14 +426,6 @@ func (m *Message) To(out *genai.Message) error {
 	// Make sure the message was initialized properly before converting.
 	if err := m.Validate(); err != nil {
 		return err
-	}
-	switch role := m.Role; role {
-	case "assistant":
-		out.Role = genai.Role(role)
-	case "":
-		return errors.New("message doesn't have role defined")
-	default:
-		return fmt.Errorf("unsupported role %q", role)
 	}
 	// We need to split actual content and tool calls.
 	for i := range m.Content {
@@ -1177,14 +1158,6 @@ type BatchQueryResponse struct {
 }
 
 func (b *BatchQueryResponse) To(out *genai.Message) error {
-	switch role := b.Result.Message.Role; role {
-	case "assistant":
-		out.Role = genai.Role(role)
-	case "":
-		return errors.New("message doesn't have role defined")
-	default:
-		return fmt.Errorf("unsupported role %q", role)
-	}
 	// We need to split actual content and tool calls.
 	for i := range b.Result.Message.Content {
 		switch b.Result.Message.Content[i].Type {

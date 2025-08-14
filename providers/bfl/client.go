@@ -376,7 +376,6 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	if imgres.Status != "Ready" {
 		return res, fmt.Errorf("unexpected status: %#v", imgres)
 	}
-	res.Role = genai.Assistant
 	res.Reply = []genai.Content{{Doc: genai.Doc{Filename: "content.jpg", URL: imgres.Result.Sample}}}
 	return res, res.Validate()
 }

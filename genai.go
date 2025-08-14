@@ -185,7 +185,7 @@ func (r *RateLimit) Validate() error {
 type FinishReason string
 
 const (
-	// FinishedStop means the assistant was done for the turn. Some providers confuse it with
+	// FinishedStop means the LLM was done for the turn. Some providers confuse it with
 	// FinishedStopSequence.
 	FinishedStop FinishReason = "stop"
 	// FinishedLength means the model reached the maximum number of tokens allowed as set in
@@ -203,33 +203,9 @@ const (
 
 // Messages
 
-// Role is one of the LLM known roles.
-type Role string
-
-// LLM known roles. Not all systems support all roles.
-const (
-	// User is the user's inputs. There can be multiple users in a conversation.
-	// They are differentiated by the Message.User field.
-	User Role = "user"
-	// Assistant is the LLM.
-	Assistant Role = "assistant"
-	// Computer is the user's computer, it replies to tool calls.
-	Computer Role = "computer"
-)
-
-// Validate ensures the role is valid.
-func (r Role) Validate() error {
-	switch r {
-	case User, Assistant, Computer:
-		return nil
-	default:
-		return fmt.Errorf("role %q is not supported", r)
-	}
-}
-
 // Messages is a list of valid messages in an exchange with a LLM.
 //
-// The messages should be alternating between user input, assistant replies, assistant tool cal requests and
+// The messages should be alternating between user input, assistant replies, tool call requests and
 // computer tool call results. The exception in the case of multi-user discussion, with different Users.
 type Messages []Message
 
@@ -240,8 +216,12 @@ func (m Messages) Validate() error {
 		if err := m[i].Validate(); err != nil {
 			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
 		}
-		if i > 0 && m[i-1].Role == m[i].Role && (m[i].Role != User || m[i-1].User != m[i].User) {
-			errs = append(errs, fmt.Errorf("message %d: role must alternate", i))
+		if i > 0 {
+			r := m[i].Role()
+			lastR := m[i-1].Role()
+			if r == lastR {
+				errs = append(errs, fmt.Errorf("message %d: role must alternate; got twice %q", i, r))
+			}
 		}
 	}
 	return errors.Join(errs...)
@@ -251,14 +231,12 @@ func (m Messages) Validate() error {
 //
 // It is effectively a union, with the exception of the User field that can be set with In.
 type Message struct {
-	Role Role `json:"role,omitzero"`
-	// User must only be used when Role == User. Only some provider (e.g. OpenAI, Groq, DeepSeek) support it.
-	User string `json:"user,omitzero"`
-
 	// Request is the message from the user.
 	//
 	// It is more frequently multiple items when using multi-modal content.
 	Request []Content `json:"request,omitzero"`
+	// User must only be used when sent by the user. Only some provider (e.g. OpenAI, Groq, DeepSeek) support it.
+	User string `json:"user,omitzero"`
 
 	// Reply is the message from the LLM.
 	//
@@ -266,11 +244,10 @@ type Message struct {
 	// and a different block with an explanantion.
 	Reply []Content `json:"reply,omitzero"`
 
-	// ToolCall is a tool call that the LLM requested to make when Role == Assistant.
+	// ToolCall is a tool call that the LLM requested to make.
 	ToolCalls []ToolCall `json:"tool_calls,omitzero"`
 
-	// ToolCallResult is the result for a tool call that the LLM requested to make when Role == Computer (or
-	// User).
+	// ToolCallResult is the result for a tool call that the LLM requested to make.
 	ToolCallResults []ToolCallResult `json:"tool_call_results,omitzero"`
 
 	_ struct{}
@@ -279,11 +256,11 @@ type Message struct {
 // NewTextMessage is a shorthand function to create a Message with a single
 // text block.
 func NewTextMessage(text string) Message {
-	return Message{Role: User, Request: []Content{{Text: text}}}
+	return Message{Request: []Content{{Text: text}}}
 }
 
 func (m *Message) IsZero() bool {
-	return m.Role == "" && m.User == "" && len(m.Request) == 0 && len(m.Reply) == 0 && len(m.ToolCalls) == 0 && len(m.ToolCallResults) == 0
+	return m.User == "" && len(m.Request) == 0 && len(m.Reply) == 0 && len(m.ToolCalls) == 0 && len(m.ToolCallResults) == 0
 }
 
 // Validate ensures the message is valid.
@@ -299,16 +276,10 @@ func (m *Message) Validate() error {
 			errs = append(errs, fmt.Errorf("reply %d: %w", i, err))
 		}
 	}
-	if len(m.ToolCalls) != 0 && m.Role != Assistant {
-		errs = append(errs, errors.New("only role assistant can call tools"))
-	}
 	for i, b := range m.ToolCalls {
 		if err := b.Validate(); err != nil {
 			errs = append(errs, fmt.Errorf("tool call %d: %w", i, err))
 		}
-	}
-	if len(m.ToolCallResults) != 0 && m.Role != User {
-		errs = append(errs, errors.New("only role user can provide tool call results"))
 	}
 	for i, b := range m.ToolCallResults {
 		if err := b.Validate(); err != nil {
@@ -321,58 +292,35 @@ func (m *Message) Validate() error {
 // validateShallow ensures the message is valid but not the inner fields.
 func (m *Message) validateShallow() []error {
 	var errs []error
-	if err := m.Role.Validate(); err != nil {
-		errs = append(errs, fmt.Errorf("field Role: %w", err))
+	if m.IsZero() {
+		errs = append(errs, errors.New("at least one of fields Request, Reply, ToolCalls or ToolCallsResults is required"))
+	} else if m.Role() == "invalid" {
+		errs = append(errs, errors.New("exactly one of Request, Reply/ToolCalls or ToolCallResults must be set"))
 	}
-	switch m.Role {
-	case User:
-		if len(m.Reply) != 0 {
-			return append(errs, errors.New("field Reply can't be used with role User"))
-		}
-		if len(m.ToolCalls) != 0 {
-			return append(errs, errors.New("field ToolCalls can't be used with role User"))
-		}
-		if len(m.Request) != 0 && len(m.ToolCallResults) != 0 {
-			return append(errs, errors.New("fields Reply and ToolCallResults can't be used together"))
-		}
-
-	case Assistant:
-		if len(m.ToolCallResults) != 0 {
-			return append(errs, errors.New("field ToolCallResults can't be used with role Assistant"))
-		}
-		if len(m.Request) != 0 {
-			return append(errs, errors.New("field Request can't be used with role Assistant"))
-		}
-		// We should not accept content along with tool calls except for thinking. It is tricky to evaluate since
-		// explicit Chain-of-Thought models like Qwen 3 Thinking or Deepseek R1 return their thinking as text
-		// until it is parsed by adapters.ProviderGenThinking.
-		//
-		// It is possible to use a hack to allow it by assuming all explicit CoT models return thinking as text
-		// starting with "<".
-		//
-		// The problem is with deepseek-reasoner. It returns both thinking, text and tool call as a single reply!
-		// The text can be discarded in GenSync which would make this check pass, but the text cannot be discarded
-		// in GenStream because the ordering of the generated content is thinking, then text, then tool call.
-		//
-		// See providers/deepseek/testdata/TestClient_Scoreboard/deepseek-reasoner_thinking/GenStream-Tools-SquareRoot-1-any.yaml
-		// for an example.
-		//
-		// At the very least, assert no document is returned along with tool calls.
-		if len(m.Reply) != 0 && len(m.ToolCalls) != 0 {
-			for i := range m.Reply {
-				if !m.Reply[i].Doc.IsZero() {
-					return append(errs, errors.New("field Contents can't contain a Doc along with ToolCalls"))
-				}
+	// We should not accept content along with tool calls except for thinking. It is tricky to evaluate since
+	// explicit Chain-of-Thought models like Qwen 3 Thinking or Deepseek R1 return their thinking as text
+	// until it is parsed by adapters.ProviderGenThinking.
+	//
+	// It is possible to use a hack to allow it by assuming all explicit CoT models return thinking as text
+	// starting with "<".
+	//
+	// The problem is with deepseek-reasoner. It returns both thinking, text and tool call as a single reply!
+	// The text can be discarded in GenSync which would make this check pass, but the text cannot be discarded
+	// in GenStream because the ordering of the generated content is thinking, then text, then tool call.
+	//
+	// See providers/deepseek/testdata/TestClient_Scoreboard/deepseek-reasoner_thinking/GenStream-Tools-SquareRoot-1-any.yaml
+	// for an example.
+	//
+	// At the very least, assert no document is returned along with tool calls.
+	if len(m.Reply) != 0 && len(m.ToolCalls) != 0 {
+		for i := range m.Reply {
+			if !m.Reply[i].Doc.IsZero() {
+				return append(errs, errors.New("field Reply can't contain a Doc along with ToolCalls"))
 			}
 		}
-	case Computer:
-		// Will disappear soon.
 	}
 	if m.User != "" {
 		errs = append(errs, errors.New("field User: not supported yet"))
-	}
-	if m.IsZero() {
-		errs = append(errs, errors.New("at least one of fields Request, Reply, ToolCalls or ToolCallsResults is required"))
 	}
 	// Check that only the right fields are in each content.
 	for i, b := range m.Request {
@@ -393,6 +341,23 @@ func (m *Message) validateShallow() []error {
 	}
 
 	return errs
+}
+
+// Role returns one of "user", "assistant" or "computer".
+func (m *Message) Role() string {
+	hasRequest := len(m.Request) != 0
+	hasReplyOrTool := len(m.Reply) != 0 || len(m.ToolCalls) != 0
+	hasToolResult := len(m.ToolCallResults) != 0
+	if hasRequest && !hasReplyOrTool && !hasToolResult {
+		return "user"
+	}
+	if !hasRequest && hasReplyOrTool && !hasToolResult {
+		return "assistant"
+	}
+	if !hasRequest && !hasReplyOrTool && hasToolResult {
+		return "computer"
+	}
+	return "invalid"
 }
 
 // AsText is a short hand to get the request or reply content as text.
@@ -443,8 +408,6 @@ func (m *Message) DoToolCalls(ctx context.Context, tools []ToolDef) (Message, er
 		if err != nil {
 			return out, err
 		}
-		// Set User as the role. Some provider will use "tool".
-		out.Role = User
 		out.ToolCallResults = append(out.ToolCallResults, ToolCallResult{
 			ID:     m.ToolCalls[i].ID,
 			Name:   m.ToolCalls[i].Name,
@@ -708,13 +671,7 @@ func (m *ContentFragment) GoString() string {
 }
 
 // Accumulate adds a ContentFragment to the message being streamed.
-//
-// The role is always implicitly the assistant.
 func (m *Message) Accumulate(mf ContentFragment) error {
-	if m.Role == "" {
-		m.Role = Assistant
-	}
-
 	// Generally the first message fragment.
 	if mf.ThinkingFragment != "" {
 		if len(m.Reply) != 0 {
@@ -1236,7 +1193,6 @@ var (
 	_ Validatable = (*Message)(nil)
 	_ Validatable = (*Messages)(nil)
 	_ Validatable = (*RateLimit)(nil)
-	_ Validatable = (*Role)(nil)
 	_ Validatable = (*ToolCall)(nil)
 	_ Validatable = (*ToolCallResult)(nil)
 )

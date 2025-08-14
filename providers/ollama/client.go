@@ -268,13 +268,13 @@ type Message struct {
 }
 
 func (m *Message) From(in *genai.Message) error {
-	switch in.Role {
-	case genai.User, genai.Assistant:
-		m.Role = string(in.Role)
-	case genai.Computer:
-		fallthrough
+	switch r := in.Role(); r {
+	case "user", "assistant":
+		m.Role = r
+	case "computer":
+		m.Role = "tool"
 	default:
-		return fmt.Errorf("unsupported role %q", in.Role)
+		return fmt.Errorf("unsupported role %q", r)
 	}
 	// Ollama only supports one text content per message but multiple images. We need to validate first.
 	txt := 0
@@ -364,19 +364,12 @@ func (m *Message) From(in *genai.Message) error {
 		}
 		// Process only the first tool call result in this method.
 		// The Init method handles multiple tool call results by creating multiple messages.
-		m.Role = "tool"
 		m.Content = in.ToolCallResults[0].Result
 	}
 	return nil
 }
 
 func (m *Message) To(out *genai.Message) error {
-	switch m.Role {
-	case "assistant", "user":
-		out.Role = genai.Role(m.Role)
-	default:
-		return fmt.Errorf("unsupported role %q", m.Role)
-	}
 	if m.Content != "" {
 		out.Reply = []genai.Content{{Text: m.Content}}
 	}

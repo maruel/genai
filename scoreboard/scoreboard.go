@@ -372,7 +372,6 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	// Force triggering citations for a document provided.
 	msgs = genai.Messages{
 		genai.Message{
-			Role: genai.User,
 			Request: []genai.Content{
 				{
 					Doc: genai.Doc{
@@ -451,7 +450,7 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *genai.Funct
 		if err != nil {
 			return nil, fmt.Errorf("failed to open input file: %w", err)
 		}
-		msgs := genai.Messages{genai.Message{Role: genai.User, Request: []genai.Content{
+		msgs := genai.Messages{genai.Message{Request: []genai.Content{
 			{Text: "What is the word? Reply with only the word."},
 			{Doc: genai.Doc{Src: bytes.NewReader(data), Filename: "document." + format.ext}},
 		}}}
@@ -502,7 +501,7 @@ func exerciseGenInputImage(ctx context.Context, cs *callState, f *genai.Function
 		if err != nil {
 			return nil, fmt.Errorf("failed to open input file: %w", err)
 		}
-		msgs := genai.Messages{genai.Message{Role: genai.User, Request: []genai.Content{
+		msgs := genai.Messages{genai.Message{Request: []genai.Content{
 			{Text: "What fruit is it? Reply with only one word."},
 			{Doc: genai.Doc{Src: bytes.NewReader(data), Filename: "image." + format.ext}},
 		}}}
@@ -553,7 +552,7 @@ func exerciseGenInputAudio(ctx context.Context, cs *callState, f *genai.Function
 		if err != nil {
 			return nil, fmt.Errorf("failed to open input file: %w", err)
 		}
-		msgs := genai.Messages{genai.Message{Role: genai.User, Request: []genai.Content{
+		msgs := genai.Messages{genai.Message{Request: []genai.Content{
 			{Text: "What is the word said? Reply with only the word."},
 			{Doc: genai.Doc{Src: bytes.NewReader(data), Filename: "audio." + format.ext}},
 		}}}
@@ -601,7 +600,7 @@ func exerciseGenInputVideo(ctx context.Context, cs *callState, f *genai.Function
 		if err != nil {
 			return nil, fmt.Errorf("failed to open input file: %w", err)
 		}
-		msgs := genai.Messages{genai.Message{Role: genai.User, Request: []genai.Content{
+		msgs := genai.Messages{genai.Message{Request: []genai.Content{
 			{Text: "What is the word said? Reply with only the word."},
 			{Doc: genai.Doc{Src: bytes.NewReader(data), Filename: "video." + format.ext}},
 		}}}

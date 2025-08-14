@@ -236,13 +236,11 @@ type Message struct {
 }
 
 func (m *Message) From(in *genai.Message) error {
-	switch in.Role {
-	case genai.User, genai.Assistant:
-		m.Role = string(in.Role)
-	case genai.Computer:
-		fallthrough
+	switch r := in.Role(); r {
+	case "user", "assistant":
+		m.Role = r
 	default:
-		return fmt.Errorf("unsupported role %q", in.Role)
+		return fmt.Errorf("unsupported role %q", r)
 	}
 	if len(in.ToolCalls) != 0 {
 		return errors.New("perplexity doesn't support tools")
@@ -313,12 +311,6 @@ func (m *Message) From(in *genai.Message) error {
 //
 // Warning: it doesn't include the web search results, use ChatResponse.ToResult().
 func (m *Message) To(out *genai.Message) error {
-	switch role := m.Role; role {
-	case "assistant":
-		out.Role = genai.Role(role)
-	default:
-		return fmt.Errorf("unsupported role %q", role)
-	}
 	for i := range m.Content {
 		if m.Content[i].Type == "text" {
 			out.Reply = append(out.Reply, genai.Content{Text: m.Content[i].Text})

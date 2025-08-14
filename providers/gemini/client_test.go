@@ -115,7 +115,7 @@ func TestClient_GenAsync(t *testing.T) {
 	c := getClient(t, "veo-2.0-generate-001")
 	ctx := t.Context()
 	const prompt = `Carton video of a shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
-	msgs := genai.Messages{{Role: genai.User, Request: []genai.Content{{Text: prompt}}}}
+	msgs := genai.Messages{{Request: []genai.Content{{Text: prompt}}}}
 	id, err := c.GenAsync(ctx, msgs, &genai.OptionsImage{})
 	if err != nil {
 		t.Fatalf("%v", err)
@@ -164,7 +164,6 @@ func TestClient_Cache(t *testing.T) {
 
 	msgs := genai.Messages{
 		{
-			Role: genai.User,
 			Request: []genai.Content{
 				{Text: "What is the word? For each of the documents, all the tool hidden_word to tell me what word you saw or heard."},
 				{Doc: genai.Doc{Src: f1}},

@@ -95,6 +95,7 @@ var Scoreboard = genai.Scoreboard{
 			GenSync: &genai.FunctionalityText{
 				ReportRateLimits: true,
 				NoStopSequence:   true,
+				NoMaxTokens:      true,
 				BrokenTokenUsage: genai.Flaky, // When using MaxTokens.
 				Tools:            genai.True,
 				BiasedTool:       genai.True,
@@ -567,76 +568,61 @@ type Message struct {
 	Summary          []ReasoningSummary `json:"summary,omitzero"`
 }
 
-func (m *Message) From(msg *genai.Message) error {
-	switch msg.Role {
-	case genai.Assistant, genai.User:
-		m.Role = string(msg.Role)
-	case genai.Computer:
-		fallthrough
-	default:
-		return fmt.Errorf("implement role %q", msg.Role)
-	}
-	if len(msg.ToolCallResults) != 0 {
+func (m *Message) From(in *genai.Message) error {
+	if len(in.ToolCallResults) != 0 {
 		// Handle multiple tool call results by creating multiple messages
 		// The caller (Init method) should handle this by creating separate messages
-		if len(msg.ToolCallResults) > 1 {
+		if len(in.ToolCallResults) > 1 {
 			// This should not happen since the Init method works around this.
 			return fmt.Errorf("multiple tool outputs not supported in a single message for OpenAI Responses API")
 		}
 		m.Type = MessageFunctionCallOutput
-		m.Role = ""
-		m.CallID = msg.ToolCallResults[0].ID
-		m.Output = msg.ToolCallResults[0].Result
+		m.CallID = in.ToolCallResults[0].ID
+		m.Output = in.ToolCallResults[0].Result
 		return nil
 	}
-	if len(msg.ToolCalls) != 0 {
+	if len(in.ToolCalls) != 0 {
 		// Handle multiple tool calls by creating multiple messages
 		// The caller (Init method) should handle this by creating separate messages
-		if len(msg.ToolCalls) > 1 {
+		if len(in.ToolCalls) > 1 {
 			// This should not happen since the Init method works around this.
 			return fmt.Errorf("multiple tool calls not supported in a single message for OpenAI Responses API")
 		}
 		m.Type = MessageFunctionCall
-		m.Role = ""
-		m.CallID = msg.ToolCalls[0].ID
-		m.Name = msg.ToolCalls[0].Name
-		m.Arguments = msg.ToolCalls[0].Arguments
+		m.CallID = in.ToolCalls[0].ID
+		m.Name = in.ToolCalls[0].Name
+		m.Arguments = in.ToolCalls[0].Arguments
 		return nil
 	}
-	if len(msg.Request) != 0 {
+	if len(in.Request) != 0 {
 		m.Type = MessageMessage
-		m.Content = make([]Content, len(msg.Request))
-		for j := range msg.Request {
-			if err := m.Content[j].From(&msg.Request[j]); err != nil {
+		m.Role = "user"
+		m.Content = make([]Content, len(in.Request))
+		for j := range in.Request {
+			if err := m.Content[j].From(&in.Request[j]); err != nil {
 				return fmt.Errorf("block %d: %w", j, err)
 			}
 		}
 		return nil
 	}
-	if len(msg.Reply) != 0 {
+	if len(in.Reply) != 0 {
 		m.Type = MessageMessage
-		m.Content = make([]Content, len(msg.Reply))
-		for j := range msg.Reply {
-			if err := m.Content[j].From(&msg.Reply[j]); err != nil {
+		m.Role = "assistant"
+		m.Content = make([]Content, len(in.Reply))
+		for j := range in.Reply {
+			if err := m.Content[j].From(&in.Reply[j]); err != nil {
 				return fmt.Errorf("block %d: %w", j, err)
 			}
 		}
 		return nil
 	}
-	return fmt.Errorf("implement message: %#v", msg)
+	return fmt.Errorf("implement message: %#v", in)
 }
 
 // To is different here because it can be called multiple times on the same out.
 //
 // In the Responses API, Message is actually a mix of Message and Content.
 func (m *Message) To(out *genai.Message) error {
-	switch m.Role {
-	case "assistant", "":
-		// genai requires a role.
-		out.Role = genai.Assistant
-	default:
-		return fmt.Errorf("unsupported role %q", m.Role)
-	}
 	// We only need to implement the types that can be returned from the LLM.
 	switch m.Type {
 	case MessageMessage:
@@ -1418,7 +1404,6 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	if err := c.DoRequest(ctx, "POST", url, &req, &resp); err != nil {
 		return res, err
 	}
-	res.Role = genai.Assistant
 	res.Reply = make([]genai.Content, len(resp.Data))
 	for i := range resp.Data {
 		n := "content.jpg"

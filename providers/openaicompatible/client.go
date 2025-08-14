@@ -166,13 +166,11 @@ func (c *Contents) UnmarshalJSON(b []byte) error {
 
 // From converts from a genai.Message to a Message.
 func (m *Message) From(in *genai.Message) error {
-	switch in.Role {
-	case genai.User, genai.Assistant:
-		m.Role = string(in.Role)
-	case genai.Computer:
-		fallthrough
+	switch r := in.Role(); r {
+	case "user", "assistant":
+		m.Role = r
 	default:
-		return fmt.Errorf("unsupported role %q", in.Role)
+		return fmt.Errorf("unsupported role %q", r)
 	}
 	if len(in.Request) > 0 {
 		m.Content = make([]Content, 0, len(in.Request))
@@ -238,12 +236,6 @@ func (m *Message) From(in *genai.Message) error {
 }
 
 func (m *Message) To(out *genai.Message) error {
-	switch role := m.Role; role {
-	case "user", "assistant":
-		out.Role = genai.Role(role)
-	default:
-		return fmt.Errorf("unsupported role %q", role)
-	}
 	if len(m.Content) != 0 {
 		out.Reply = make([]genai.Content, len(m.Content))
 		for i, content := range m.Content {

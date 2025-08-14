@@ -426,13 +426,13 @@ type Message struct {
 }
 
 func (m *Message) From(in *genai.Message) error {
-	switch in.Role {
-	case genai.User, genai.Assistant:
-		m.Role = string(in.Role)
-	case genai.Computer:
-		fallthrough
+	switch r := in.Role(); r {
+	case "user", "assistant":
+		m.Role = r
+	case "computer":
+		m.Role = "tool"
 	default:
-		return fmt.Errorf("unsupported role %q", in.Role)
+		return fmt.Errorf("unsupported role %q", r)
 	}
 	if len(in.Request) != 0 {
 		m.Content = make([]Content, 0, len(in.Request))
@@ -472,7 +472,6 @@ func (m *Message) From(in *genai.Message) error {
 		}
 		// Process only the first tool call result in this method.
 		// The Init method handles multiple tool call results by creating multiple messages.
-		m.Role = "tool"
 		m.Content = Contents{{Type: ContentText, Text: in.ToolCallResults[0].Result}}
 		m.ToolCallID = in.ToolCallResults[0].ID
 	}
@@ -480,12 +479,6 @@ func (m *Message) From(in *genai.Message) error {
 }
 
 func (m *Message) To(out *genai.Message) error {
-	switch role := m.Role; role {
-	case "assistant", "user":
-		out.Role = genai.Role(role)
-	default:
-		return fmt.Errorf("unsupported role %q", role)
-	}
 	if len(m.ToolCalls) != 0 {
 		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))
 		for i := range m.ToolCalls {
@@ -784,7 +777,7 @@ type ChatStreamChunkResponse struct {
 		Seed  big.Int `json:"seed"`
 		Delta struct {
 			TokenID   int64      `json:"token_id"`
-			Role      genai.Role `json:"role"`
+			Role      string     `json:"role"`
 			Content   string     `json:"content"`
 			ToolCalls []ToolCall `json:"tool_calls"`
 			Reasoning struct{}   `json:"reasoning"`
@@ -1110,7 +1103,6 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		if err := c.DoRequest(ctx, "POST", "https://api.together.xyz/v1/images/generations", &req, &resp); err != nil {
 			return res, err
 		}
-		res.Role = genai.Assistant
 		res.Reply = make([]genai.Content, len(resp.Data))
 		for i := range resp.Data {
 			n := "content.jpg"
@@ -1178,9 +1170,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			result.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 		}
 		switch role := pkt.Choices[0].Delta.Role; role {
-		case genai.Assistant, "":
-		case genai.User, genai.Computer:
-			fallthrough
+		case "assistant", "":
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}

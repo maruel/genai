@@ -387,13 +387,13 @@ type Message struct {
 }
 
 func (m *Message) From(in *genai.Message) error {
-	switch in.Role {
-	case genai.User, genai.Assistant:
-		m.Role = string(in.Role)
-	case genai.Computer:
-		fallthrough
+	switch r := in.Role(); r {
+	case "user", "assistant":
+		m.Role = r
+	case "computer":
+		m.Role = "tool"
 	default:
-		return fmt.Errorf("unsupported role %q", in.Role)
+		return fmt.Errorf("unsupported role %q", r)
 	}
 	if len(in.Request) != 0 {
 		m.Content = make([]Content, len(in.Request))
@@ -428,7 +428,6 @@ func (m *Message) From(in *genai.Message) error {
 		}
 		// Process only the first tool call result in this method.
 		// The Init method handles multiple tool call results by creating multiple messages.
-		m.Role = "tool"
 		m.ToolCallID = in.ToolCallResults[0].ID
 		m.Name = in.ToolCallResults[0].Name
 		// Mistral supports images urls!!
@@ -592,12 +591,6 @@ type MessageResponse struct {
 }
 
 func (m *MessageResponse) To(out *genai.Message) error {
-	switch role := m.Role; role {
-	case "system", "assistant", "user":
-		out.Role = genai.Role(role)
-	default:
-		return fmt.Errorf("unsupported role %q", role)
-	}
 	if len(m.ToolCalls) != 0 {
 		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))
 		for i := range m.ToolCalls {
@@ -658,7 +651,7 @@ type ChatStreamChunkResponse struct {
 	Choices []struct {
 		Index int64 `json:"index"`
 		Delta struct {
-			Role      genai.Role `json:"role"`
+			Role      string     `json:"role"`
 			Content   string     `json:"content"`
 			ToolCalls []ToolCall `json:"tool_calls"`
 		} `json:"delta"`
@@ -1011,9 +1004,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			result.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 		}
 		switch role := pkt.Choices[0].Delta.Role; role {
-		case genai.Assistant, "":
-		case genai.User, genai.Computer:
-			fallthrough
+		case "assistant", "":
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}

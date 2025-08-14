@@ -210,13 +210,13 @@ type Message struct {
 }
 
 func (m *Message) From(in *genai.Message) error {
-	switch in.Role {
-	case genai.User, genai.Assistant:
-		m.Role = string(in.Role)
-	case genai.Computer:
-		fallthrough
+	switch r := in.Role(); r {
+	case "user", "assistant":
+		m.Role = r
+	case "computer":
+		m.Role = "tool"
 	default:
-		return fmt.Errorf("unsupported role %q", in.Role)
+		return fmt.Errorf("unsupported role %q", r)
 	}
 	m.Name = in.User
 	for i := range in.Request {
@@ -268,7 +268,6 @@ func (m *Message) From(in *genai.Message) error {
 		}
 		// Process only the first tool call result in this method.
 		// The Init method handles multiple tool call results by creating multiple messages.
-		m.Role = "tool"
 		m.Content = in.ToolCallResults[0].Result
 		m.ToolCallID = in.ToolCallResults[0].ID
 	}
@@ -276,14 +275,6 @@ func (m *Message) From(in *genai.Message) error {
 }
 
 func (m *Message) To(out *genai.Message) error {
-	switch role := m.Role; role {
-	case "user":
-		out.Role = genai.Role(role)
-	case "assistant", "model":
-		out.Role = genai.Assistant
-	default:
-		return fmt.Errorf("unsupported role %q", role)
-	}
 	if len(m.ToolCalls) != 0 {
 		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))
 		for i := range m.ToolCalls {

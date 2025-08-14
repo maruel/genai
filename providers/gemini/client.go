@@ -632,15 +632,13 @@ type Content struct {
 }
 
 func (c *Content) From(in *genai.Message) error {
-	switch in.Role {
-	case genai.User:
+	switch r := in.Role(); r {
+	case "user", "computer":
 		c.Role = "user"
-	case genai.Assistant:
+	case "assistant":
 		c.Role = "model"
-	case genai.Computer:
-		fallthrough
 	default:
-		return fmt.Errorf("unsupported role %q", in.Role)
+		return fmt.Errorf("unsupported role %q", r)
 	}
 	c.Parts = make([]Part, len(in.Request)+len(in.Reply)+len(in.ToolCalls)+len(in.ToolCallResults))
 	for i := range in.Request {
@@ -674,15 +672,6 @@ func (c *Content) From(in *genai.Message) error {
 }
 
 func (c *Content) To(out *genai.Message) error {
-	switch role := c.Role; role {
-	case "system", "user":
-		out.Role = genai.Role(role)
-	case "model":
-		out.Role = genai.Assistant
-	default:
-		return fmt.Errorf("unsupported role %q", role)
-	}
-
 	for _, part := range c.Parts {
 		if part.Thought {
 			out.Reply = append(out.Reply, genai.Content{Thinking: part.Text})
@@ -1672,7 +1661,6 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	if err != nil {
 		return res, err
 	}
-	res.Role = genai.Assistant
 	// As of now, the last item in the list contains ContentType = "Positive Prompt".
 	nbImages := 0
 	for i := range resp.Predictions {
@@ -1796,7 +1784,6 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 		res.FinishReason = genai.Pending
 		return res, nil
 	}
-	res.Role = genai.Assistant
 	res.FinishReason = genai.FinishedStop
 	for _, p := range op.Response.GenerateVideoResponse.GeneratedSamples {
 		// This requires the Google API key to fetch!

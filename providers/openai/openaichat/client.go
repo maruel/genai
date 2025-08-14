@@ -501,13 +501,13 @@ type Message struct {
 }
 
 func (m *Message) From(in *genai.Message) error {
-	switch in.Role {
-	case genai.User, genai.Assistant:
-		m.Role = string(in.Role)
-	case genai.Computer:
-		fallthrough
+	switch r := in.Role(); r {
+	case "user", "assistant":
+		m.Role = r
+	case "computer":
+		m.Role = "tool"
 	default:
-		return fmt.Errorf("unsupported role %q", in.Role)
+		return fmt.Errorf("unsupported role %q", r)
 	}
 	m.Name = in.User
 	if len(in.Request) != 0 {
@@ -549,7 +549,6 @@ func (m *Message) From(in *genai.Message) error {
 		}
 		// Process only the first tool call result in this method.
 		// The Init method handles multiple tool call results by creating multiple messages.
-		m.Role = "tool"
 		m.Content = Contents{{Type: ContentText, Text: in.ToolCallResults[0].Result}}
 		m.ToolCallID = in.ToolCallResults[0].ID
 	}
@@ -557,13 +556,6 @@ func (m *Message) From(in *genai.Message) error {
 }
 
 func (m *Message) To(out *genai.Message) error {
-	switch m.Role {
-	case "assistant", "user":
-		out.Role = genai.Role(m.Role)
-	default:
-		// case "developer":
-		return fmt.Errorf("unsupported role %q", m.Role)
-	}
 	if len(m.Content) != 0 {
 		out.Reply = make([]genai.Content, len(m.Content))
 		for i := range m.Content {
@@ -1360,7 +1352,6 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	if err := c.DoRequest(ctx, "POST", url, &req, &resp); err != nil {
 		return res, err
 	}
-	res.Role = genai.Assistant
 	res.Reply = make([]genai.Content, len(resp.Data))
 	for i := range resp.Data {
 		n := "content.jpg"

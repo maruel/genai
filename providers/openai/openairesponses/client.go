@@ -599,7 +599,7 @@ func (m *Message) From(in *genai.Message) error {
 		m.Role = "user"
 		m.Content = make([]Content, len(in.Request))
 		for j := range in.Request {
-			if err := m.Content[j].From(&in.Request[j]); err != nil {
+			if err := m.Content[j].FromRequest(&in.Request[j]); err != nil {
 				return fmt.Errorf("block %d: %w", j, err)
 			}
 		}
@@ -610,7 +610,7 @@ func (m *Message) From(in *genai.Message) error {
 		m.Role = "assistant"
 		m.Content = make([]Content, len(in.Reply))
 		for j := range in.Reply {
-			if err := m.Content[j].From(&in.Reply[j]); err != nil {
+			if err := m.Content[j].FromReply(&in.Reply[j]); err != nil {
 				return fmt.Errorf("block %d: %w", j, err)
 			}
 		}
@@ -627,7 +627,7 @@ func (m *Message) To(out *genai.Message) error {
 	switch m.Type {
 	case MessageMessage:
 		for i := range m.Content {
-			c := genai.Content{}
+			c := genai.Reply{}
 			if err := m.Content[i].To(&c); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
@@ -638,7 +638,7 @@ func (m *Message) To(out *genai.Message) error {
 			if m.Summary[i].Type != "summary_text" {
 				return fmt.Errorf("unsupported summary type %q", m.Summary[i].Type)
 			}
-			out.Reply = append(out.Reply, genai.Content{Thinking: m.Summary[i].Text})
+			out.Reply = append(out.Reply, genai.Reply{Thinking: m.Summary[i].Text})
 		}
 	case MessageFunctionCall:
 		out.ToolCalls = append(out.ToolCalls, genai.ToolCall{ID: m.CallID, Name: m.Name, Arguments: m.Arguments})
@@ -689,7 +689,7 @@ type Content struct {
 	Refusal string `json:"refusal,omitzero"`
 }
 
-func (c *Content) To(out *genai.Content) error {
+func (c *Content) To(out *genai.Reply) error {
 	if len(c.Annotations) != 0 {
 		// Citations!!
 		return fmt.Errorf("implement citations: %#v", c.Annotations)
@@ -705,7 +705,53 @@ func (c *Content) To(out *genai.Content) error {
 	return nil
 }
 
-func (c *Content) From(in *genai.Content) error {
+func (c *Content) FromRequest(in *genai.Request) error {
+	if in.Text != "" {
+		c.Type = ContentInputText
+		c.Text = in.Text
+		return nil
+	}
+	// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
+	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+	if err != nil {
+		return err
+	}
+	// OpenAI require a mime-type to determine if image, sound or PDF.
+	if mimeType == "" {
+		return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
+	}
+	switch {
+	case strings.HasPrefix(mimeType, "image/"):
+		c.Type = ContentInputImage
+		c.Detail = "auto" // TODO: Make it configurable.
+		if in.Doc.URL == "" {
+			c.ImageURL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+		} else {
+			c.ImageURL = in.Doc.URL
+		}
+	default:
+		if in.Doc.URL != "" {
+			return fmt.Errorf("URL to %s file not supported", mimeType)
+		}
+		filename := in.Doc.GetFilename()
+		if filename == "" {
+			exts, err := mime.ExtensionsByType(mimeType)
+			if err != nil {
+				return err
+			}
+			if len(exts) == 0 {
+				return fmt.Errorf("unknown extension for mime type %s", mimeType)
+			}
+			filename = "content" + exts[0]
+		}
+		c.Type = ContentInputFile
+		c.Filename = filename
+		c.FileData = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+	}
+	return nil
+}
+
+func (c *Content) FromReply(in *genai.Reply) error {
 	if in.Text != "" {
 		c.Type = ContentInputText
 		c.Text = in.Text
@@ -1404,7 +1450,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	if err := c.DoRequest(ctx, "POST", url, &req, &resp); err != nil {
 		return res, err
 	}
-	res.Reply = make([]genai.Content, len(resp.Data))
+	res.Reply = make([]genai.Reply, len(resp.Data))
 	for i := range resp.Data {
 		n := "content.jpg"
 		if len(resp.Data) > 1 {

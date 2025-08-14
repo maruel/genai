@@ -6,6 +6,7 @@ package genai
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -79,7 +80,7 @@ func TestMessages(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			m := Messages{
 				NewTextMessage("Hello"),
-				Message{Reply: []Content{{Text: "I can help with that"}}},
+				Message{Reply: []Reply{{Text: "I can help with that"}}},
 			}
 			if err := m.Validate(); err != nil {
 				t.Fatalf("unexpected error: %q", err)
@@ -94,10 +95,10 @@ func TestMessages(t *testing.T) {
 				{
 					name: "Invalid messages",
 					in: Messages{
-						{Request: []Content{{Text: "Hi", Doc: Doc{Filename: "hi.txt"}}}},
-						{Request: []Content{{}}},
+						{Request: []Request{{Text: "Hi", Doc: Doc{Filename: "hi.txt"}}}},
+						{Request: []Request{{}}},
 					},
-					errMsg: "message 0: request 0: field Doc can't be used along Text\nmessage 1: request 0: an empty Content is invalid\nmessage 1: role must alternate; got twice \"user\"",
+					errMsg: "message 0: request 0: field Doc can't be used along Text\nmessage 1: request 0: an empty Request is invalid\nmessage 1: role must alternate; got twice \"user\"",
 				},
 			}
 			for _, tt := range tests {
@@ -125,14 +126,14 @@ func TestMessage(t *testing.T) {
 				{
 					name: "Valid user document message",
 					in: Message{
-						Request: []Content{
+						Request: []Request{
 							{Doc: Doc{Filename: "document.txt", Src: strings.NewReader("document content")}},
 						},
 					},
 				},
 				{
 					name: "Valid assistant message",
-					in:   Message{Reply: []Content{{Text: "I can help with that"}}},
+					in:   Message{Reply: []Reply{{Text: "I can help with that"}}},
 				},
 				{
 					name: "Valid assistant with tool calls",
@@ -149,7 +150,7 @@ func TestMessage(t *testing.T) {
 				{
 					name: "Valid assistant with reply and tool calls",
 					in: Message{
-						Reply:     []Content{{Text: "I'll call a tool"}},
+						Reply:     []Reply{{Text: "I'll call a tool"}},
 						ToolCalls: []ToolCall{{Name: "tool", Arguments: "{}"}},
 					},
 				},
@@ -175,13 +176,13 @@ func TestMessage(t *testing.T) {
 				},
 				{
 					name:   "User field",
-					in:     Message{User: "Joe", Request: []Content{{Text: "Hi"}}},
+					in:     Message{User: "Joe", Request: []Request{{Text: "Hi"}}},
 					errMsg: "field User: not supported yet",
 				},
 				{
 					name: "both request and tool call results",
 					in: Message{
-						Request:         []Content{{Text: "request"}},
+						Request:         []Request{{Text: "request"}},
 						ToolCallResults: []ToolCallResult{{Name: "tool", Result: "result"}},
 					},
 					errMsg: "exactly one of Request, Reply/ToolCalls or ToolCallResults must be set",
@@ -189,7 +190,7 @@ func TestMessage(t *testing.T) {
 				{
 					name: "reply containing doc and tool calls",
 					in: Message{
-						Reply:     []Content{{Doc: Doc{Filename: "file.txt", Src: strings.NewReader("content")}}},
+						Reply:     []Reply{{Doc: Doc{Filename: "file.txt", Src: strings.NewReader("content")}}},
 						ToolCalls: []ToolCall{{Name: "tool", Arguments: "{}"}},
 					},
 					errMsg: "field Reply can't contain a Doc along with ToolCalls",
@@ -206,7 +207,7 @@ func TestMessage(t *testing.T) {
 	})
 	t.Run("Decode", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
-			m := Message{Reply: []Content{{Text: "{\"key\": \"value\"}"}}}
+			m := Message{Reply: []Reply{{Text: "{\"key\": \"value\"}"}}}
 			if err := m.Decode(&struct{ Key string }{}); err != nil {
 				t.Fatalf("unexpected error: %q", err)
 			}
@@ -219,13 +220,13 @@ func TestMessage(t *testing.T) {
 			}{
 				{
 					name:   "Invalid JSON message",
-					in:     Message{Reply: []Content{{Text: "invalid"}}},
+					in:     Message{Reply: []Reply{{Text: "invalid"}}},
 					errMsg: "failed to decode message text as JSON: invalid character 'i' looking for beginning of value; reply: \"invalid\"",
 				},
 				{
 					name: "Invalid DecodeAs",
 					in: Message{
-						Reply: []Content{{Doc: Doc{Src: strings.NewReader("document content")}}},
+						Reply: []Reply{{Doc: Doc{Src: strings.NewReader("document content")}}},
 					},
 					errMsg: "only text messages can be decoded as JSON, can't decode {\"reply\":[{\"doc\":{\"bytes\":\"ZG9jdW1lbnQgY29udGVudA==\"}}]}",
 				},
@@ -250,7 +251,7 @@ func TestMessage(t *testing.T) {
 					name: "User text message",
 					in:   `{"request": [{"text": "Hello"}]}`,
 					want: Message{
-						Request: []Content{{Text: "Hello"}},
+						Request: []Request{{Text: "Hello"}},
 					},
 				},
 				{
@@ -271,7 +272,9 @@ func TestMessage(t *testing.T) {
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
 					var got Message
-					if err := got.UnmarshalJSON([]byte(tt.in)); err != nil {
+					d := json.NewDecoder(strings.NewReader(tt.in))
+					d.DisallowUnknownFields()
+					if err := d.Decode(&got); err != nil {
 						t.Fatalf("unexpected error: %v", err)
 					}
 					if diff := cmp.Diff(tt.want, got); diff != "" {
@@ -306,7 +309,9 @@ func TestMessage(t *testing.T) {
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
 					var got Message
-					if err := got.UnmarshalJSON([]byte(tt.in)); err == nil || err.Error() != tt.errMsg {
+					d := json.NewDecoder(strings.NewReader(tt.in))
+					d.DisallowUnknownFields()
+					if err := d.Decode(&got); err == nil || err.Error() != tt.errMsg {
 						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
 					}
 				})
@@ -323,7 +328,7 @@ func TestMessage(t *testing.T) {
 			{
 				name:     "Text",
 				fragment: ContentFragment{TextFragment: "Hello"},
-				want:     Message{Reply: []Content{{Text: "Hello"}}},
+				want:     Message{Reply: []Reply{{Text: "Hello"}}},
 			},
 			{
 				name: "Document",
@@ -332,7 +337,7 @@ func TestMessage(t *testing.T) {
 					DocumentFragment: []byte("document content"),
 				},
 				want: Message{
-					Reply: []Content{{Doc: Doc{Filename: "document.txt", Src: &bb.BytesBuffer{D: []byte("document content")}}}},
+					Reply: []Reply{{Doc: Doc{Filename: "document.txt", Src: &bb.BytesBuffer{D: []byte("document content")}}}},
 				},
 			},
 			{
@@ -344,30 +349,30 @@ func TestMessage(t *testing.T) {
 			},
 			{
 				name:     "Add text to existing text",
-				message:  Message{Reply: []Content{{Text: "Hello"}}},
+				message:  Message{Reply: []Reply{{Text: "Hello"}}},
 				fragment: ContentFragment{TextFragment: " world"},
-				want:     Message{Reply: []Content{{Text: "Hello world"}}},
+				want:     Message{Reply: []Reply{{Text: "Hello world"}}},
 			},
 			{
 				name:     "Add thinking to existing thinking",
-				message:  Message{Reply: []Content{{Thinking: "I think "}}},
+				message:  Message{Reply: []Reply{{Thinking: "I think "}}},
 				fragment: ContentFragment{ThinkingFragment: "therefore I am"},
-				want:     Message{Reply: []Content{{Thinking: "I think therefore I am"}}},
+				want:     Message{Reply: []Reply{{Thinking: "I think therefore I am"}}},
 			},
 			{
 				name:     "Join assistant text",
-				message:  Message{Reply: []Content{{Text: "Hello"}}},
+				message:  Message{Reply: []Reply{{Text: "Hello"}}},
 				fragment: ContentFragment{TextFragment: " world"},
-				want:     Message{Reply: []Content{{Text: "Hello world"}}},
+				want:     Message{Reply: []Reply{{Text: "Hello world"}}},
 			},
 			{
 				name: "Document then text",
 				message: Message{
-					Reply: []Content{{Doc: Doc{Filename: "document.txt", Src: &bb.BytesBuffer{D: []byte("document content")}}}},
+					Reply: []Reply{{Doc: Doc{Filename: "document.txt", Src: &bb.BytesBuffer{D: []byte("document content")}}}},
 				},
 				fragment: ContentFragment{TextFragment: "No"},
 				want: Message{
-					Reply: []Content{
+					Reply: []Reply{
 						{Doc: Doc{Filename: "document.txt", Src: &bb.BytesBuffer{D: []byte("document content")}}},
 						{Text: "No"},
 					},
@@ -379,7 +384,7 @@ func TestMessage(t *testing.T) {
 				fragment: ContentFragment{TextFragment: "No"},
 				want: Message{
 					// Merge together.
-					Reply:     []Content{{Text: "No"}},
+					Reply:     []Reply{{Text: "No"}},
 					ToolCalls: []ToolCall{{Name: "tool"}},
 				},
 			},
@@ -484,7 +489,7 @@ func TestMessage(t *testing.T) {
 		t.Run("no tool calls", func(t *testing.T) {
 			ctx := t.Context()
 			msg := Message{
-				Reply: []Content{{Text: "Hello"}},
+				Reply: []Reply{{Text: "Hello"}},
 			}
 
 			result, err := msg.DoToolCalls(ctx, []ToolDef{})
@@ -500,45 +505,20 @@ func TestMessage(t *testing.T) {
 	})
 }
 
-func TestContent(t *testing.T) {
+func TestRequest(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			tests := []struct {
 				name string
-				in   Content
+				in   Request
 			}{
 				{
 					name: "Valid text block",
-					in:   Content{Text: "Hello"},
+					in:   Request{Text: "Hello"},
 				},
 				{
 					name: "Valid document block",
-					in:   Content{Doc: Doc{Filename: "document.txt", Src: strings.NewReader("document content")}},
-				},
-				{
-					name: "valid text with citations",
-					in: Content{
-						Text: "The capital is Paris.",
-						Citations: []Citation{{
-							Text:       "Paris",
-							StartIndex: 15,
-							EndIndex:   20,
-							Sources:    []CitationSource{{ID: "doc1", Type: "document"}},
-						}},
-					},
-				},
-				// Can happen with tool calling, e.g. cohere
-				{
-					name: "citations without text",
-					in:   Content{Citations: []Citation{{Text: "example"}}},
-				},
-				{
-					// Technically it need a source. wantErr: true,
-					name: "invalid citation",
-					in: Content{
-						Text:      "The capital is Paris.",
-						Citations: []Citation{{Text: ""}}, // Empty text
-					},
+					in:   Request{Doc: Doc{Filename: "document.txt", Src: strings.NewReader("document content")}},
 				},
 			}
 			for _, tt := range tests {
@@ -552,16 +532,13 @@ func TestContent(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
 			tests := []struct {
 				name   string
-				in     Content
+				in     Request
 				errMsg string
 			}{
 				{
-					name: "citations with thinking",
-					in: Content{
-						Thinking:  "reasoning",
-						Citations: []Citation{{Text: "example"}},
-					},
-					errMsg: "field Citations can only be used with Text",
+					name:   "empty",
+					in:     Request{},
+					errMsg: "an empty Request is invalid",
 				},
 			}
 			for _, tt := range tests {
@@ -575,7 +552,7 @@ func TestContent(t *testing.T) {
 	})
 	t.Run("Read", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
-			c := Content{
+			c := Request{
 				Doc: Doc{Filename: "document.txt", Src: strings.NewReader("document content")},
 			}
 			mime, got, err := c.Doc.Read(1000)
@@ -596,38 +573,30 @@ func TestContent(t *testing.T) {
 			tests := []struct {
 				name string
 				in   string
-				want Content
+				want Request
 			}{
 				{
 					name: "Text content",
 					in:   `{"text": "Hello world"}`,
-					want: Content{Text: "Hello world"},
-				},
-				{
-					name: "Thinking content",
-					in:   `{"thinking": "Let me think about this"}`,
-					want: Content{Thinking: "Let me think about this"},
-				},
-				{
-					name: "Opaque content",
-					in:   `{"opaque": {"key": "value", "num": 42}}`,
-					want: Content{Opaque: map[string]any{"key": "value", "num": float64(42)}},
+					want: Request{Text: "Hello world"},
 				},
 				{
 					name: "URL content",
 					in:   `{"doc":{"filename": "image.jpg", "url": "https://example.com/image.jpg"}}`,
-					want: Content{Doc: Doc{Filename: "image.jpg", URL: "https://example.com/image.jpg"}},
+					want: Request{Doc: Doc{Filename: "image.jpg", URL: "https://example.com/image.jpg"}},
 				},
 				{
 					name: "Document content",
 					in:   `{"doc":{"filename": "doc.txt", "bytes": "SGVsbG8gV29ybGQ="}}`,
-					want: Content{Doc: Doc{Filename: "doc.txt", Src: strings.NewReader("Hello World")}},
+					want: Request{Doc: Doc{Filename: "doc.txt", Src: strings.NewReader("Hello World")}},
 				},
 			}
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
-					var got Content
-					if err := got.UnmarshalJSON([]byte(tt.in)); err != nil {
+					var got Request
+					d := json.NewDecoder(strings.NewReader(tt.in))
+					d.DisallowUnknownFields()
+					if err := d.Decode(&got); err != nil {
 						t.Fatalf("unexpected error: %v", err)
 					}
 					// For Document comparison, read the content since we can't directly compare io.ReadSeeker
@@ -642,7 +611,198 @@ func TestContent(t *testing.T) {
 						got.Doc.Src = nil
 					}
 					if diff := cmp.Diff(tt.want, got); diff != "" {
-						t.Fatalf("Content mismatch (-want +got):\n%s", diff)
+						t.Fatalf("Request mismatch (-want +got):\n%s", diff)
+					}
+				})
+			}
+		})
+
+		t.Run("error", func(t *testing.T) {
+			tests := []struct {
+				name   string
+				in     string
+				errMsg string
+			}{
+				{
+					name:   "Invalid JSON",
+					in:     `{"text": invalid}`,
+					errMsg: "invalid character 'i' looking for beginning of value",
+				},
+				{
+					name:   "Unknown field",
+					in:     `{"text": "Hi", "unknown_field": "value"}`,
+					errMsg: "json: unknown field \"unknown_field\"",
+				},
+				{
+					name:   "Document without filename",
+					in:     `{"doc":{"bytes": "SGVsbG8="}}`,
+					errMsg: "field Filename is required with Document when not implementing Name()",
+				},
+				{
+					name:   "Empty content",
+					in:     `{}`,
+					errMsg: "an empty Request is invalid",
+				},
+			}
+			for _, tt := range tests {
+				t.Run(tt.name, func(t *testing.T) {
+					var got Request
+					d := json.NewDecoder(strings.NewReader(tt.in))
+					d.DisallowUnknownFields()
+					if err := d.Decode(&got); err == nil || err.Error() != tt.errMsg {
+						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
+					}
+				})
+			}
+		})
+	})
+}
+
+func TestReply(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			tests := []struct {
+				name string
+				in   Reply
+			}{
+				{
+					name: "Valid text block",
+					in:   Reply{Text: "Hello"},
+				},
+				{
+					name: "Valid document block",
+					in:   Reply{Doc: Doc{Filename: "document.txt", Src: strings.NewReader("document content")}},
+				},
+				{
+					name: "valid text with citations",
+					in: Reply{
+						Text: "The capital is Paris.",
+						Citations: []Citation{{
+							Text:       "Paris",
+							StartIndex: 15,
+							EndIndex:   20,
+							Sources:    []CitationSource{{ID: "doc1", Type: "document"}},
+						}},
+					},
+				},
+				// Can happen with tool calling, e.g. cohere
+				{
+					name: "citations without text",
+					in:   Reply{Citations: []Citation{{Text: "example"}}},
+				},
+				{
+					// Technically it need a source. wantErr: true,
+					name: "invalid citation",
+					in: Reply{
+						Text:      "The capital is Paris.",
+						Citations: []Citation{{Text: ""}}, // Empty text
+					},
+				},
+			}
+			for _, tt := range tests {
+				t.Run(tt.name, func(t *testing.T) {
+					if err := tt.in.Validate(); err != nil {
+						t.Fatalf("unexpected error: %q", err)
+					}
+				})
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			tests := []struct {
+				name   string
+				in     Reply
+				errMsg string
+			}{
+				{
+					name: "citations with thinking",
+					in: Reply{
+						Thinking:  "reasoning",
+						Citations: []Citation{{Text: "example"}},
+					},
+					errMsg: "field Citations can only be used with Text",
+				},
+			}
+			for _, tt := range tests {
+				t.Run(tt.name, func(t *testing.T) {
+					if err := tt.in.Validate(); err == nil || err.Error() != tt.errMsg {
+						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
+					}
+				})
+			}
+		})
+	})
+	t.Run("Read", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			c := Reply{
+				Doc: Doc{Filename: "document.txt", Src: strings.NewReader("document content")},
+			}
+			mime, got, err := c.Doc.Read(1000)
+			if err != nil {
+				t.Fatalf("unexpected error: %q", err)
+			}
+			if mime != "text/plain; charset=utf-8" {
+				t.Fatalf("unexpected mime type: %q", mime)
+			}
+			if string(got) != "document content" {
+				t.Fatalf("unexpected content: %q", got)
+			}
+		})
+		// TODO: error
+	})
+	t.Run("UnmarshalJSON", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			tests := []struct {
+				name string
+				in   string
+				want Reply
+			}{
+				{
+					name: "Text content",
+					in:   `{"text": "Hello world"}`,
+					want: Reply{Text: "Hello world"},
+				},
+				{
+					name: "Thinking content",
+					in:   `{"thinking": "Let me think about this"}`,
+					want: Reply{Thinking: "Let me think about this"},
+				},
+				{
+					name: "Opaque content",
+					in:   `{"opaque": {"key": "value", "num": 42}}`,
+					want: Reply{Opaque: map[string]any{"key": "value", "num": float64(42)}},
+				},
+				{
+					name: "URL content",
+					in:   `{"doc":{"filename": "image.jpg", "url": "https://example.com/image.jpg"}}`,
+					want: Reply{Doc: Doc{Filename: "image.jpg", URL: "https://example.com/image.jpg"}},
+				},
+				{
+					name: "Document content",
+					in:   `{"doc":{"filename": "doc.txt", "bytes": "SGVsbG8gV29ybGQ="}}`,
+					want: Reply{Doc: Doc{Filename: "doc.txt", Src: strings.NewReader("Hello World")}},
+				},
+			}
+			for _, tt := range tests {
+				t.Run(tt.name, func(t *testing.T) {
+					var got Reply
+					d := json.NewDecoder(strings.NewReader(tt.in))
+					d.DisallowUnknownFields()
+					if err := d.Decode(&got); err != nil {
+						t.Fatalf("unexpected error: %v", err)
+					}
+					// For Document comparison, read the content since we can't directly compare io.ReadSeeker
+					if tt.want.Doc.Src != nil {
+						wantData, _ := io.ReadAll(tt.want.Doc.Src)
+						gotData, _ := io.ReadAll(got.Doc.Src)
+						if string(wantData) != string(gotData) {
+							t.Fatalf("Document content mismatch: want %q, got %q", string(wantData), string(gotData))
+						}
+						// Reset Document field for comparison
+						tt.want.Doc.Src = nil
+						got.Doc.Src = nil
+					}
+					if diff := cmp.Diff(tt.want, got); diff != "" {
+						t.Fatalf("Reply mismatch (-want +got):\n%s", diff)
 					}
 				})
 			}
@@ -677,13 +837,15 @@ func TestContent(t *testing.T) {
 				{
 					name:   "Empty content",
 					in:     `{}`,
-					errMsg: "an empty Content is invalid",
+					errMsg: "an empty Reply is invalid",
 				},
 			}
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
-					var got Content
-					if err := got.UnmarshalJSON([]byte(tt.in)); err == nil || err.Error() != tt.errMsg {
+					var got Reply
+					d := json.NewDecoder(strings.NewReader(tt.in))
+					d.DisallowUnknownFields()
+					if err := d.Decode(&got); err == nil || err.Error() != tt.errMsg {
 						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
 					}
 				})
@@ -920,7 +1082,9 @@ func TestToolCall(t *testing.T) {
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
 					var got ToolCall
-					if err := got.UnmarshalJSON([]byte(tt.in)); err != nil {
+					d := json.NewDecoder(strings.NewReader(tt.in))
+					d.DisallowUnknownFields()
+					if err := d.Decode(&got); err != nil {
 						t.Fatalf("unexpected error: %v", err)
 					}
 					if diff := cmp.Diff(tt.want, got); diff != "" {
@@ -955,7 +1119,9 @@ func TestToolCall(t *testing.T) {
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
 					var got ToolCall
-					if err := got.UnmarshalJSON([]byte(tt.in)); err == nil || err.Error() != tt.errMsg {
+					d := json.NewDecoder(strings.NewReader(tt.in))
+					d.DisallowUnknownFields()
+					if err := d.Decode(&got); err == nil || err.Error() != tt.errMsg {
 						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
 					}
 				})
@@ -991,7 +1157,9 @@ func TestToolCallResult(t *testing.T) {
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
 					var got ToolCallResult
-					if err := got.UnmarshalJSON([]byte(tt.in)); err != nil {
+					d := json.NewDecoder(strings.NewReader(tt.in))
+					d.DisallowUnknownFields()
+					if err := d.Decode(&got); err != nil {
 						t.Fatalf("unexpected error: %v", err)
 					}
 					if diff := cmp.Diff(tt.want, got); diff != "" {
@@ -1031,7 +1199,9 @@ func TestToolCallResult(t *testing.T) {
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
 					var got ToolCallResult
-					if err := got.UnmarshalJSON([]byte(tt.in)); err == nil || err.Error() != tt.errMsg {
+					d := json.NewDecoder(strings.NewReader(tt.in))
+					d.DisallowUnknownFields()
+					if err := d.Decode(&got); err == nil || err.Error() != tt.errMsg {
 						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
 					}
 				})

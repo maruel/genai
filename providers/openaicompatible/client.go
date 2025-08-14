@@ -176,12 +176,7 @@ func (m *Message) From(in *genai.Message) error {
 		m.Content = make([]Content, 0, len(in.Request))
 		for i := range in.Request {
 			if in.Request[i].Text != "" {
-				m.Content = append(m.Content, Content{
-					Type: ContentText,
-					Text: in.Request[i].Text,
-				})
-			} else if in.Request[i].Thinking != "" {
-				// Ignore
+				m.Content = append(m.Content, Content{Type: ContentText, Text: in.Request[i].Text})
 			} else if !in.Request[i].Doc.IsZero() {
 				// Check if this is a text/plain document
 				mimeType, data, err := in.Request[i].Doc.Read(10 * 1024 * 1024)
@@ -237,10 +232,10 @@ func (m *Message) From(in *genai.Message) error {
 
 func (m *Message) To(out *genai.Message) error {
 	if len(m.Content) != 0 {
-		out.Reply = make([]genai.Content, len(m.Content))
+		out.Reply = make([]genai.Reply, len(m.Content))
 		for i, content := range m.Content {
 			if content.Type == ContentText {
-				out.Reply[i] = genai.Content{Text: content.Text}
+				out.Reply[i] = genai.Reply{Text: content.Text}
 			}
 		}
 	}

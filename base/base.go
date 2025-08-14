@@ -297,7 +297,7 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
 		for i, msg := range msgs {
-			for j, content := range msg.Request {
+			for j, content := range msg.Reply {
 				if len(content.Opaque) != 0 {
 					return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
 				}
@@ -357,7 +357,7 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
 		for i, msg := range msgs {
-			for j, content := range msg.Request {
+			for j, content := range msg.Reply {
 				if len(content.Opaque) != 0 {
 					return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
 				}

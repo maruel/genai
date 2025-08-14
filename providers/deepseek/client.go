@@ -283,10 +283,10 @@ func (m *Message) To(out *genai.Message) error {
 	}
 	// Both ReasoningContent and Content can be set on the same reply.
 	if m.ReasoningContent != "" {
-		out.Reply = []genai.Content{{Thinking: m.ReasoningContent}}
+		out.Reply = []genai.Reply{{Thinking: m.ReasoningContent}}
 	}
 	if m.Content != "" {
-		out.Reply = append(out.Reply, genai.Content{Text: m.Content})
+		out.Reply = append(out.Reply, genai.Reply{Text: m.Content})
 	}
 	return nil
 }

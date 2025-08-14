@@ -398,7 +398,7 @@ func (m *Message) From(in *genai.Message) error {
 	if len(in.Request) != 0 {
 		m.Content = make([]Content, len(in.Request))
 		for i := range in.Request {
-			if err := m.Content[i].From(&in.Request[i]); err != nil {
+			if err := m.Content[i].FromRequest(&in.Request[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		}
@@ -406,7 +406,7 @@ func (m *Message) From(in *genai.Message) error {
 	if len(in.Reply) != 0 {
 		m.Content = make([]Content, len(in.Reply))
 		for i := range in.Reply {
-			if err := m.Content[i].From(&in.Reply[i]); err != nil {
+			if err := m.Content[i].FromReply(&in.Reply[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		}
@@ -463,7 +463,51 @@ type Content struct {
 	InputAudio []byte `json:"input_audio,omitzero"`
 }
 
-func (c *Content) From(in *genai.Content) error {
+func (c *Content) FromRequest(in *genai.Request) error {
+	if in.Text != "" {
+		c.Type = ContentText
+		c.Text = in.Text
+		return nil
+	}
+	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+	if err != nil {
+		return err
+	}
+	switch {
+	case strings.HasPrefix(mimeType, "audio/"):
+		if in.Doc.URL != "" {
+			return errors.New("unsupported URL audio reference")
+		}
+		c.Type = ContentInputAudio
+		c.InputAudio = data
+	case strings.HasPrefix(mimeType, "image/"):
+		c.Type = ContentImageURL
+		if in.Doc.URL == "" {
+			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+		} else {
+			c.ImageURL.URL = in.Doc.URL
+		}
+	case mimeType == "application/pdf":
+		c.Type = ContentDocumentURL
+		if in.Doc.URL == "" {
+			// Inexplicably, Mistral supports inline images but not PDF.
+			return errors.New("unsupported inline document")
+		}
+		c.DocumentName = in.Doc.GetFilename()
+		c.DocumentURL = in.Doc.URL
+	case strings.HasPrefix(mimeType, "text/plain"):
+		c.Type = ContentText
+		if in.Doc.URL != "" {
+			return errors.New("text/plain documents must be provided inline, not as a URL")
+		}
+		c.Text = string(data)
+	default:
+		return fmt.Errorf("unsupported mime type %s", mimeType)
+	}
+	return nil
+}
+
+func (c *Content) FromReply(in *genai.Reply) error {
 	if in.Text != "" {
 		c.Type = ContentText
 		c.Text = in.Text
@@ -598,7 +642,7 @@ func (m *MessageResponse) To(out *genai.Message) error {
 		}
 	}
 	if m.Content != "" {
-		out.Reply = []genai.Content{{Text: m.Content}}
+		out.Reply = []genai.Reply{{Text: m.Content}}
 	}
 	return nil
 }

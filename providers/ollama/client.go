@@ -232,7 +232,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 			for j := range msgs[i].Request {
 				// Create a copy of the message with only one request
 				msgCopy := msgs[i]
-				msgCopy.Request = []genai.Content{msgs[i].Request[j]}
+				msgCopy.Request = []genai.Request{msgs[i].Request[j]}
 				var newMsg Message
 				if err := newMsg.From(&msgCopy); err != nil {
 					errs = append(errs, fmt.Errorf("message %d, request %d: %w", i, j, err))
@@ -371,10 +371,10 @@ func (m *Message) From(in *genai.Message) error {
 
 func (m *Message) To(out *genai.Message) error {
 	if m.Content != "" {
-		out.Reply = []genai.Content{{Text: m.Content}}
+		out.Reply = []genai.Reply{{Text: m.Content}}
 	}
 	for i := range m.Images {
-		out.Reply = append(out.Reply, genai.Content{
+		out.Reply = append(out.Reply, genai.Reply{
 			Doc: genai.Doc{Filename: "image.jpg", Src: &bb.BytesBuffer{D: m.Images[i]}},
 		})
 	}

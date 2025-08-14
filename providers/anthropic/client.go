@@ -397,13 +397,13 @@ func (m *Message) From(in *genai.Message) error {
 	}
 	m.Content = make([]Content, len(in.Request)+len(in.Reply)+len(in.ToolCalls)+len(in.ToolCallResults))
 	for i := range in.Request {
-		if err := m.Content[i].FromContent(&in.Request[i]); err != nil {
+		if err := m.Content[i].FromRequest(&in.Request[i]); err != nil {
 			return fmt.Errorf("block %d: %w", i, err)
 		}
 	}
 	offset := len(in.Request)
 	for i := range in.Reply {
-		if err := m.Content[i+offset].FromContent(&in.Reply[i]); err != nil {
+		if err := m.Content[i+offset].FromReply(&in.Reply[i]); err != nil {
 			return fmt.Errorf("block %d: %w", i, err)
 		}
 	}
@@ -431,7 +431,7 @@ func (m *Message) To(out *genai.Message) error {
 	for i := range m.Content {
 		switch m.Content[i].Type {
 		case ContentText, ContentThinking, ContentRedactedThinking:
-			c := genai.Content{}
+			c := genai.Reply{}
 			if skip, err := m.Content[i].ToContent(&c); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			} else if !skip {
@@ -567,7 +567,61 @@ func (c *Content) Validate() error {
 	return nil
 }
 
-func (c *Content) FromContent(in *genai.Content) error {
+func (c *Content) FromRequest(in *genai.Request) error {
+	if in.Text != "" {
+		c.Type = ContentText
+		c.Text = in.Text
+		return nil
+	}
+
+	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+	if err != nil {
+		return err
+	}
+	// Anthropic require a mime-type to determine if image or PDF.
+	if mimeType == "" {
+		return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
+	}
+	c.CacheControl.Type = "ephemeral"
+	switch {
+	case strings.HasPrefix(mimeType, "image/"):
+		c.Type = ContentImage
+		if in.Doc.URL != "" {
+			c.Source.Type = SourceURL
+			c.Source.URL = in.Doc.URL
+		} else {
+			c.Source.MediaType = mimeType
+			c.Source.Type = SourceBase64
+			c.Source.Data = base64.StdEncoding.EncodeToString(data)
+		}
+	case mimeType == "application/pdf":
+		c.Type = ContentDocument
+		if in.Doc.URL != "" {
+			c.Source.Type = SourceURL
+			c.Source.URL = in.Doc.URL
+		} else {
+			c.Source.MediaType = mimeType
+			c.Source.Type = SourceBase64
+			c.Source.Data = base64.StdEncoding.EncodeToString(data)
+		}
+	case strings.HasPrefix(mimeType, "text/plain"):
+		c.Type = ContentDocument
+		if in.Doc.URL != "" {
+			return errors.New("text/plain documents must be provided inline, not as a URL")
+		}
+		// In particular, the API refuses "text/plain; charset=utf-8". WTF.
+		c.Source.MediaType = "text/plain"
+		c.Source.Type = SourceText
+		c.Source.Data = string(data)
+		// Enable citations for text/plain documents
+		c.Citations = Citations{Enabled: true}
+	default:
+		return fmt.Errorf("unsupported content mime-type %s", mimeType)
+	}
+	return nil
+}
+
+func (c *Content) FromReply(in *genai.Reply) error {
 	if in.Text != "" {
 		c.Type = ContentText
 		c.Text = in.Text
@@ -659,7 +713,7 @@ func (c *Content) FromToolCallResult(in *genai.ToolCallResult) error {
 	return nil
 }
 
-func (c *Content) ToContent(out *genai.Content) (bool, error) {
+func (c *Content) ToContent(out *genai.Reply) (bool, error) {
 	switch c.Type {
 	case ContentText:
 		out.Text = c.Text
@@ -1162,7 +1216,7 @@ func (b *BatchQueryResponse) To(out *genai.Message) error {
 	for i := range b.Result.Message.Content {
 		switch b.Result.Message.Content[i].Type {
 		case ContentText, ContentThinking, ContentRedactedThinking:
-			c := genai.Content{}
+			c := genai.Reply{}
 			if skip, err := b.Result.Message.Content[i].ToContent(&c); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			} else if !skip {

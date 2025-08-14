@@ -344,7 +344,7 @@ func (m *Message) From(in *genai.Message) error {
 	if len(in.Request) != 0 {
 		m.Content = make(Contents, len(in.Request))
 		for i := range in.Request {
-			if err := m.Content[i].From(&in.Request[i]); err != nil {
+			if err := m.Content[i].FromRequest(&in.Request[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		}
@@ -356,7 +356,7 @@ func (m *Message) From(in *genai.Message) error {
 				continue
 			}
 			m.Content = append(m.Content, Content{})
-			if err := m.Content[len(m.Content)-1].From(&in.Reply[i]); err != nil {
+			if err := m.Content[len(m.Content)-1].FromReply(&in.Reply[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		}
@@ -438,7 +438,48 @@ type Content struct {
 	} `json:"input_audio,omitzero"`
 }
 
-func (c *Content) From(in *genai.Content) error {
+func (c *Content) FromRequest(in *genai.Request) error {
+	if in.Text != "" {
+		c.Type = ContentText
+		c.Text = in.Text
+		return nil
+	}
+
+	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+	if err != nil {
+		return err
+	}
+	switch {
+	case strings.HasPrefix(mimeType, "audio/"):
+		// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#speech-to-text-capabilities-audio-input-%EF%B8%8F
+		c.Type = ContentAudio
+		c.InputAudio.Data = data
+		switch mimeType {
+		case "audio/mpeg":
+			c.InputAudio.Format = "mp3"
+		default:
+			return fmt.Errorf("implement mime type %s conversion", mimeType)
+		}
+	case strings.HasPrefix(mimeType, "image/") || in.Doc.URL != "":
+		c.Type = ContentImageURL
+		if in.Doc.URL == "" {
+			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+		} else {
+			c.ImageURL.URL = in.Doc.URL
+		}
+	case strings.HasPrefix(mimeType, "text/plain"):
+		c.Type = ContentText
+		if in.Doc.URL != "" {
+			return errors.New("text/plain documents must be provided inline, not as a URL")
+		}
+		c.Text = string(data)
+	default:
+		return fmt.Errorf("unsupported mime type %s", mimeType)
+	}
+	return nil
+}
+
+func (c *Content) FromReply(in *genai.Reply) error {
 	if in.Text != "" {
 		c.Type = ContentText
 		c.Text = in.Text
@@ -630,7 +671,7 @@ func (m *MessageResponse) To(out *genai.Message) error {
 	}
 	for i := range m.Content {
 		if m.Content[i].Text != "" {
-			out.Reply = append(out.Reply, genai.Content{Text: m.Content[i].Text})
+			out.Reply = append(out.Reply, genai.Reply{Text: m.Content[i].Text})
 		} else {
 			return fmt.Errorf("unsupported content #%d: %q", i, m.Content[i])
 		}
@@ -638,13 +679,13 @@ func (m *MessageResponse) To(out *genai.Message) error {
 	if m.ReasoningContent != "" {
 		// Paper over broken "deepseek".
 		if len(out.Reply) == 1 && out.Reply[0].Text != "" {
-			out.Reply = append(out.Reply, genai.Content{Thinking: m.ReasoningContent})
+			out.Reply = append(out.Reply, genai.Reply{Thinking: m.ReasoningContent})
 		} else {
-			out.Reply = append(out.Reply, genai.Content{Text: m.ReasoningContent})
+			out.Reply = append(out.Reply, genai.Reply{Text: m.ReasoningContent})
 		}
 	}
 	if len(m.Audio.Data) != 0 {
-		out.Reply = append(out.Reply, genai.Content{
+		out.Reply = append(out.Reply, genai.Reply{
 			Doc: genai.Doc{Filename: "sound.wav", Src: &bb.BytesBuffer{D: m.Audio.Data}},
 		})
 	}
@@ -1131,7 +1172,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	if err != nil {
 		return res, err
 	}
-	res.Reply = []genai.Content{{Doc: genai.Doc{Src: &bb.BytesBuffer{D: b}}}}
+	res.Reply = []genai.Reply{{Doc: genai.Doc{Src: &bb.BytesBuffer{D: b}}}}
 	if ct := resp.Header.Get("Content-Type"); strings.HasPrefix(ct, "image/jpeg") {
 		res.Reply[0].Doc.Filename = "content.jpg"
 	} else {

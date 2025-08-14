@@ -281,7 +281,7 @@ func (m *Message) From(in *genai.Message) ([]Document, error) {
 	if len(in.Request) != 0 {
 		for i := range in.Request {
 			c := Content{}
-			d, err := c.From(&in.Request[i])
+			d, err := c.FromRequest(&in.Request[i])
 			if err != nil {
 				return nil, fmt.Errorf("block %d: %w", i, err)
 			}
@@ -299,7 +299,7 @@ func (m *Message) From(in *genai.Message) ([]Document, error) {
 				continue
 			}
 			c := Content{}
-			d, err := c.From(&in.Reply[i])
+			d, err := c.FromReply(&in.Reply[i])
 			if err != nil {
 				return nil, fmt.Errorf("block %d: %w", i, err)
 			}
@@ -351,7 +351,7 @@ func (c *Content) IsZero() bool {
 	return c.Type == "" && c.Text == "" && c.ImageURL.URL == "" && len(c.Document.Data) == 0 && c.Document.ID == ""
 }
 
-func (c *Content) From(in *genai.Content) (*Document, error) {
+func (c *Content) FromRequest(in *genai.Request) (*Document, error) {
 	if in.Text != "" {
 		c.Type = ContentText
 		c.Text = in.Text
@@ -387,7 +387,43 @@ func (c *Content) From(in *genai.Content) (*Document, error) {
 	}
 }
 
-func (c *Content) To(in *genai.Content) error {
+func (c *Content) FromReply(in *genai.Reply) (*Document, error) {
+	if in.Text != "" {
+		c.Type = ContentText
+		c.Text = in.Text
+		return nil, nil
+	}
+
+	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+	if err != nil {
+		return nil, err
+	}
+	switch {
+	case (in.Doc.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
+		c.Type = ContentImageURL
+		if in.Doc.URL != "" {
+			c.ImageURL.URL = in.Doc.URL
+		} else {
+			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+		}
+		return nil, nil
+	case strings.HasPrefix(mimeType, "text/plain"):
+		if in.Doc.URL != "" {
+			return nil, errors.New("text/plain documents must be provided inline, not as a URL")
+		}
+		name := in.Doc.GetFilename()
+		d := &Document{
+			ID:   name,
+			Data: map[string]any{"title": name, "snippet": string(data)},
+		}
+		// This is handled as ChatRequest.Documents.
+		return d, nil
+	default:
+		return nil, fmt.Errorf("unsupported mime type %s", mimeType)
+	}
+}
+
+func (c *Content) To(in *genai.Reply) error {
 	switch c.Type {
 	case ContentText:
 		in.Text = c.Text
@@ -437,7 +473,7 @@ func (c *Citations) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (c Citations) To(dst *genai.Content) error {
+func (c Citations) To(dst *genai.Reply) error {
 	dst.Citations = make([]genai.Citation, len(c))
 	for i := range c {
 		if err := c[i].To(&dst.Citations[i]); err != nil {
@@ -626,11 +662,11 @@ func (m *MessageResponse) To(out *genai.Message) error {
 		return fmt.Errorf("implement tool call id")
 	}
 	if m.ToolPlan != "" {
-		out.Reply = []genai.Content{{Thinking: m.ToolPlan}}
+		out.Reply = []genai.Reply{{Thinking: m.ToolPlan}}
 	}
 	if len(m.Content) != 0 {
 		for i := range m.Content {
-			out.Reply = append(out.Reply, genai.Content{})
+			out.Reply = append(out.Reply, genai.Reply{})
 			if err := m.Content[len(m.Content)-1].To(&out.Reply[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}

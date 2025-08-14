@@ -397,7 +397,7 @@ func (m *Message) From(in *genai.Message) error {
 		m.Content = make(Contents, 0, len(in.Request))
 		for i := range in.Request {
 			m.Content = append(m.Content, Content{})
-			if err := m.Content[len(m.Content)-1].From(&in.Request[i]); err != nil {
+			if err := m.Content[len(m.Content)-1].FromRequest(&in.Request[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		}
@@ -410,7 +410,7 @@ func (m *Message) From(in *genai.Message) error {
 				continue
 			}
 			m.Content = append(m.Content, Content{})
-			if err := m.Content[len(m.Content)-1].From(&in.Reply[i]); err != nil {
+			if err := m.Content[len(m.Content)-1].FromReply(&in.Reply[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		}
@@ -468,7 +468,38 @@ type Content struct {
 	} `json:"image_url,omitzero"`
 }
 
-func (c *Content) From(in *genai.Content) error {
+func (c *Content) FromRequest(in *genai.Request) error {
+	// DeepSeek and Qwen recommend against passing reasoning back to the model.
+	if in.Text != "" {
+		c.Type = ContentText
+		c.Text = in.Text
+		return nil
+	}
+	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+	if err != nil {
+		return err
+	}
+	switch {
+	case (in.Doc.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
+		c.Type = ContentImageURL
+		if in.Doc.URL == "" {
+			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+		} else {
+			c.ImageURL.URL = in.Doc.URL
+		}
+	case strings.HasPrefix(mimeType, "text/plain"):
+		c.Type = ContentText
+		if in.Doc.URL != "" {
+			return errors.New("text/plain documents must be provided inline, not as a URL")
+		}
+		c.Text = string(data)
+	default:
+		return fmt.Errorf("unsupported mime type %s", mimeType)
+	}
+	return nil
+}
+
+func (c *Content) FromReply(in *genai.Reply) error {
 	// DeepSeek and Qwen recommend against passing reasoning back to the model.
 	if in.Text != "" {
 		c.Type = ContentText
@@ -635,11 +666,6 @@ type MessageResponse struct {
 }
 
 func (m *MessageResponse) To(out *genai.Message) error {
-	switch role := m.Role; role {
-	case "assistant", "user":
-	default:
-		return fmt.Errorf("unsupported role %q", role)
-	}
 	if len(m.ToolCalls) != 0 {
 		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))
 		for i := range m.ToolCalls {
@@ -647,10 +673,10 @@ func (m *MessageResponse) To(out *genai.Message) error {
 		}
 	}
 	if m.Reasoning != "" {
-		out.Reply = append(out.Reply, genai.Content{Thinking: m.Reasoning})
+		out.Reply = append(out.Reply, genai.Reply{Thinking: m.Reasoning})
 	}
 	if m.Content != "" {
-		out.Reply = append(out.Reply, genai.Content{Text: m.Content})
+		out.Reply = append(out.Reply, genai.Reply{Text: m.Content})
 	}
 	return nil
 }

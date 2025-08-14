@@ -410,7 +410,7 @@ func (msg *MessageResponse) To(out *genai.Message) error {
 		if strings.HasPrefix(v, "<tool_call>") {
 			return fmt.Errorf("hacked up XML tool calls are not supported")
 		} else {
-			out.Reply = []genai.Content{{Text: v}}
+			out.Reply = []genai.Reply{{Text: v}}
 		}
 	default:
 		// Marshal back into JSON.
@@ -418,7 +418,7 @@ func (msg *MessageResponse) To(out *genai.Message) error {
 		if err != nil {
 			return fmt.Errorf("failed to JSON marshal type %T: %v: %w", v, v, err)
 		}
-		out.Reply = []genai.Content{{Text: string(b)}}
+		out.Reply = []genai.Reply{{Text: string(b)}}
 	}
 	return nil
 }

@@ -231,10 +231,10 @@ func (m Messages) Validate() error {
 //
 // It is effectively a union, with the exception of the User field that can be set with In.
 type Message struct {
-	// Request is the message from the user.
+	// Request is the message from the user or the computer.
 	//
 	// It is more frequently multiple items when using multi-modal content.
-	Request []Content `json:"request,omitzero"`
+	Request []Request `json:"request,omitzero"`
 	// User must only be used when sent by the user. Only some provider (e.g. OpenAI, Groq, DeepSeek) support it.
 	User string `json:"user,omitzero"`
 
@@ -242,7 +242,7 @@ type Message struct {
 	//
 	// Some models can emit multiple content blocks, either multi modal or multiple text blocks: a code block
 	// and a different block with an explanantion.
-	Reply []Content `json:"reply,omitzero"`
+	Reply []Reply `json:"reply,omitzero"`
 
 	// ToolCall is a tool call that the LLM requested to make.
 	ToolCalls []ToolCall `json:"tool_calls,omitzero"`
@@ -256,7 +256,7 @@ type Message struct {
 // NewTextMessage is a shorthand function to create a Message with a single
 // text block.
 func NewTextMessage(text string) Message {
-	return Message{Request: []Content{{Text: text}}}
+	return Message{Request: []Request{{Text: text}}}
 }
 
 func (m *Message) IsZero() bool {
@@ -266,23 +266,23 @@ func (m *Message) IsZero() bool {
 // Validate ensures the message is valid.
 func (m *Message) Validate() error {
 	errs := m.validateShallow()
-	for i, b := range m.Request {
-		if err := b.Validate(); err != nil {
+	for i := range m.Request {
+		if err := m.Request[i].Validate(); err != nil {
 			errs = append(errs, fmt.Errorf("request %d: %w", i, err))
 		}
 	}
-	for i, b := range m.Reply {
-		if err := b.Validate(); err != nil {
+	for i := range m.Reply {
+		if err := m.Reply[i].Validate(); err != nil {
 			errs = append(errs, fmt.Errorf("reply %d: %w", i, err))
 		}
 	}
-	for i, b := range m.ToolCalls {
-		if err := b.Validate(); err != nil {
+	for i := range m.ToolCalls {
+		if err := m.ToolCalls[i].Validate(); err != nil {
 			errs = append(errs, fmt.Errorf("tool call %d: %w", i, err))
 		}
 	}
-	for i, b := range m.ToolCallResults {
-		if err := b.Validate(); err != nil {
+	for i := range m.ToolCallResults {
+		if err := m.ToolCallResults[i].Validate(); err != nil {
 			errs = append(errs, fmt.Errorf("tool result %d: %w", i, err))
 		}
 	}
@@ -322,24 +322,6 @@ func (m *Message) validateShallow() []error {
 	if m.User != "" {
 		errs = append(errs, errors.New("field User: not supported yet"))
 	}
-	// Check that only the right fields are in each content.
-	for i, b := range m.Request {
-		if b.Thinking != "" {
-			errs = append(errs, fmt.Errorf("request %d: user request can't have Thinking", i))
-		}
-		if len(b.Citations) != 0 {
-			errs = append(errs, fmt.Errorf("request %d: user request can't have Citations", i))
-		}
-		if len(b.Opaque) != 0 {
-			errs = append(errs, fmt.Errorf("request %d: user request can't have Opaque", i))
-		}
-	}
-	for i, b := range m.Reply {
-		if err := b.Validate(); err != nil {
-			errs = append(errs, fmt.Errorf("reply %d: %w", i, err))
-		}
-	}
-
 	return errs
 }
 
@@ -366,12 +348,14 @@ func (m *Message) Role() string {
 func (m *Message) AsText() string {
 	var data [32]string
 	out := data[:0]
-	s := m.Reply
-	if len(m.Request) != 0 {
-		s = m.Request
+	// Only one of the two slices will be non-empty.
+	for i := range m.Request {
+		if s := m.Request[i].Text; s != "" {
+			out = append(out, s)
+		}
 	}
-	for i := range s {
-		if s := s[i].Text; s != "" {
+	for i := range m.Reply {
+		if s := m.Reply[i].Text; s != "" {
 			out = append(out, s)
 		}
 	}
@@ -436,20 +420,56 @@ func (m *Message) GoString() string {
 	return string(b)
 }
 
-// Content is a block of content in the message meant to be visible in a
+// Request is a block of content in the message meant to be visible in a
 // chat setting.
 //
-// It is effectively a union, only one of the 3 related field groups can be set.
-//
-// The content can be text or a document. The document may be audio, video,
-// image, PDF or any other format.
-//
-// Only Text, Thinking, Opaque or the rest can be set.
-//
-// If Text and Thinking are not set, then, one of Document or URL must be set.
-type Content struct {
+// It is effectively a union, only one of the 2 related field groups can be set.
+type Request struct {
 	// Text is the content of the text message.
 	Text string `json:"text,omitzero"`
+
+	// Doc can be audio, video, image, PDF or any other format, including reference text.
+	Doc Doc `json:"doc,omitzero"`
+
+	_ struct{}
+}
+
+// Validate ensures the block is valid.
+func (r *Request) Validate() error {
+	if r.Text != "" {
+		if !r.Doc.IsZero() {
+			return errors.New("field Doc can't be used along Text")
+		}
+	} else if !r.Doc.IsZero() {
+		if err := r.Doc.Validate(); err != nil {
+			return err
+		}
+	} else {
+		return errors.New("an empty Request is invalid")
+	}
+	return nil
+}
+
+func (r *Request) UnmarshalJSON(b []byte) error {
+	type Alias Request
+	a := struct{ *Alias }{Alias: (*Alias)(r)}
+	d := json.NewDecoder(bytes.NewReader(b))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&a); err != nil {
+		return err
+	}
+	return r.Validate()
+}
+
+// Reply is a block of content in the message meant to be visible in a
+// chat setting.
+type Reply struct {
+	// Text is the content of the text message.
+	Text string `json:"text,omitzero"`
+
+	// Doc can be audio, video, image, PDF or any other format, including reference text.
+	Doc Doc `json:"doc,omitzero"`
+
 	// Citations contains references to source material that support the content.
 	// Only valid when Text is set and the provider supports citations.
 	Citations []Citation `json:"citations,omitzero"`
@@ -462,62 +482,60 @@ type Content struct {
 	// A message with only Opaque set is valid.
 	Opaque map[string]any `json:"opaque,omitzero"`
 
-	Doc Doc `json:"doc,omitzero"`
-
 	_ struct{}
 }
 
 // Validate ensures the block is valid.
-func (c *Content) Validate() error {
-	if c.Text != "" {
-		if c.Thinking != "" {
-			return errors.New("field Thinking can't be used along Text")
+func (r *Reply) Validate() error {
+	// Validate citations when text is present
+	for i, citation := range r.Citations {
+		if err := citation.Validate(); err != nil {
+			return fmt.Errorf("citation %d: %w", i, err)
 		}
-		if len(c.Opaque) != 0 {
-			return errors.New("field Opaque can't be used along Text")
-		}
-		if !c.Doc.IsZero() {
+	}
+	if r.Text != "" {
+		if !r.Doc.IsZero() {
 			return errors.New("field Doc can't be used along Text")
 		}
-		// Validate citations when text is present
-		for i, citation := range c.Citations {
-			if err := citation.Validate(); err != nil {
-				return fmt.Errorf("citation %d: %w", i, err)
-			}
+		if r.Thinking != "" {
+			return errors.New("field Thinking can't be used along Text")
 		}
-	} else if c.Thinking != "" || len(c.Opaque) != 0 {
-		if len(c.Citations) != 0 {
-			return errors.New("field Citations can only be used with Text")
+		if len(r.Opaque) != 0 {
+			return errors.New("field Opaque can't be used along Text")
 		}
-		if !c.Doc.IsZero() {
-			return errors.New("field Doc can't be used along Thinking")
-		}
-	} else if len(c.Citations) != 0 {
-		if len(c.Opaque) != 0 {
-			return errors.New("field Opaque can't be used along a Citations")
-		}
-		if !c.Doc.IsZero() {
-			return errors.New("field Doc can't be used along Citations")
-		}
-	} else if !c.Doc.IsZero() {
-		if err := c.Doc.Validate(); err != nil {
+	} else if !r.Doc.IsZero() {
+		if err := r.Doc.Validate(); err != nil {
 			return err
 		}
+	} else if r.Thinking != "" || len(r.Opaque) != 0 {
+		if len(r.Citations) != 0 {
+			return errors.New("field Citations can only be used with Text")
+		}
+		if !r.Doc.IsZero() {
+			return errors.New("field Doc can't be used along Thinking")
+		}
+	} else if len(r.Citations) != 0 {
+		if len(r.Opaque) != 0 {
+			return errors.New("field Opaque can't be used along a Citations")
+		}
+		if !r.Doc.IsZero() {
+			return errors.New("field Doc can't be used along Citations")
+		}
 	} else {
-		return errors.New("an empty Content is invalid")
+		return errors.New("an empty Reply is invalid")
 	}
 	return nil
 }
 
-func (c *Content) UnmarshalJSON(b []byte) error {
-	type Alias Content
-	a := struct{ *Alias }{Alias: (*Alias)(c)}
+func (r *Reply) UnmarshalJSON(b []byte) error {
+	type Alias Reply
+	a := struct{ *Alias }{Alias: (*Alias)(r)}
 	d := json.NewDecoder(bytes.NewReader(b))
 	d.DisallowUnknownFields()
 	if err := d.Decode(&a); err != nil {
 		return err
 	}
-	return c.Validate()
+	return r.Validate()
 }
 
 // Doc is a document.
@@ -686,7 +704,7 @@ func (m *Message) Accumulate(mf ContentFragment) error {
 				return nil
 			}
 		}
-		m.Reply = append(m.Reply, Content{Thinking: mf.ThinkingFragment, Opaque: mf.Opaque})
+		m.Reply = append(m.Reply, Reply{Thinking: mf.ThinkingFragment, Opaque: mf.Opaque})
 		return nil
 	}
 	if len(mf.Opaque) != 0 {
@@ -701,7 +719,7 @@ func (m *Message) Accumulate(mf ContentFragment) error {
 			}
 		}
 		// Unlikely.
-		m.Reply = append(m.Reply, Content{Opaque: mf.Opaque})
+		m.Reply = append(m.Reply, Reply{Opaque: mf.Opaque})
 		return nil
 	}
 
@@ -713,12 +731,12 @@ func (m *Message) Accumulate(mf ContentFragment) error {
 				return nil
 			}
 		}
-		m.Reply = append(m.Reply, Content{Text: mf.TextFragment})
+		m.Reply = append(m.Reply, Reply{Text: mf.TextFragment})
 		return nil
 	}
 
 	if mf.URL != "" {
-		m.Reply = append(m.Reply, Content{Doc: Doc{Filename: mf.Filename, URL: mf.URL}})
+		m.Reply = append(m.Reply, Reply{Doc: Doc{Filename: mf.Filename, URL: mf.URL}})
 		return nil
 	}
 	if mf.DocumentFragment != nil {
@@ -735,11 +753,11 @@ func (m *Message) Accumulate(mf ContentFragment) error {
 				return nil
 			}
 		}
-		m.Reply = append(m.Reply, Content{Doc: Doc{Filename: mf.Filename, Src: &bb.BytesBuffer{D: mf.DocumentFragment}}})
+		m.Reply = append(m.Reply, Reply{Doc: Doc{Filename: mf.Filename, Src: &bb.BytesBuffer{D: mf.DocumentFragment}}})
 		return nil
 	}
 	if mf.Filename != "" {
-		m.Reply = append(m.Reply, Content{Doc: Doc{Filename: mf.Filename}})
+		m.Reply = append(m.Reply, Reply{Doc: Doc{Filename: mf.Filename}})
 		return nil
 	}
 
@@ -750,7 +768,7 @@ func (m *Message) Accumulate(mf ContentFragment) error {
 
 	if !mf.Citation.IsZero() {
 		// For now always add a new block.
-		m.Reply = append(m.Reply, Content{Citations: []Citation{mf.Citation}})
+		m.Reply = append(m.Reply, Reply{Citations: []Citation{mf.Citation}})
 		return nil
 	}
 
@@ -1189,10 +1207,11 @@ type Scoreboard struct {
 var (
 	_ Validatable = (*Citation)(nil)
 	_ Validatable = (*CitationSource)(nil)
-	_ Validatable = (*Content)(nil)
 	_ Validatable = (*Message)(nil)
 	_ Validatable = (*Messages)(nil)
 	_ Validatable = (*RateLimit)(nil)
+	_ Validatable = (*Reply)(nil)
+	_ Validatable = (*Request)(nil)
 	_ Validatable = (*ToolCall)(nil)
 	_ Validatable = (*ToolCallResult)(nil)
 )

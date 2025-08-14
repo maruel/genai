@@ -642,13 +642,13 @@ func (c *Content) From(in *genai.Message) error {
 	}
 	c.Parts = make([]Part, len(in.Request)+len(in.Reply)+len(in.ToolCalls)+len(in.ToolCallResults))
 	for i := range in.Request {
-		if err := c.Parts[i].FromContent(&in.Request[i]); err != nil {
+		if err := c.Parts[i].FromRequest(&in.Request[i]); err != nil {
 			return fmt.Errorf("part %d: %w", i, err)
 		}
 	}
 	offset := len(in.Request)
 	for i := range in.Reply {
-		if err := c.Parts[i].FromContent(&in.Reply[i]); err != nil {
+		if err := c.Parts[i].FromReply(&in.Reply[i]); err != nil {
 			return fmt.Errorf("part %d: %w", i, err)
 		}
 	}
@@ -674,13 +674,13 @@ func (c *Content) From(in *genai.Message) error {
 func (c *Content) To(out *genai.Message) error {
 	for _, part := range c.Parts {
 		if part.Thought {
-			out.Reply = append(out.Reply, genai.Content{Thinking: part.Text})
+			out.Reply = append(out.Reply, genai.Reply{Thinking: part.Text})
 			continue
 		}
 		// There's no signal as to what it is, we have to test its content.
 		// We need to split out content from tools.
 		if part.Text != "" {
-			out.Reply = append(out.Reply, genai.Content{Text: part.Text})
+			out.Reply = append(out.Reply, genai.Reply{Text: part.Text})
 			continue
 		}
 		if part.InlineData.MimeType != "" {
@@ -691,7 +691,7 @@ func (c *Content) To(out *genai.Message) error {
 			if len(exts) == 0 {
 				return fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
 			}
-			out.Reply = append(out.Reply, genai.Content{
+			out.Reply = append(out.Reply, genai.Reply{
 				Doc: genai.Doc{Filename: "content" + exts[0], Src: &bb.BytesBuffer{D: part.InlineData.Data}},
 			})
 			continue
@@ -704,7 +704,7 @@ func (c *Content) To(out *genai.Message) error {
 			if len(exts) == 0 {
 				return fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
 			}
-			out.Reply = append(out.Reply, genai.Content{Doc: genai.Doc{Filename: "content" + exts[0], URL: part.FileData.FileURI}})
+			out.Reply = append(out.Reply, genai.Reply{Doc: genai.Doc{Filename: "content" + exts[0], URL: part.FileData.FileURI}})
 			continue
 		}
 		if part.FunctionCall.Name != "" {
@@ -747,7 +747,44 @@ type Part struct {
 	VideoMetadata VideoMetadata `json:"videoMetadata,omitzero"`
 }
 
-func (p *Part) FromContent(in *genai.Content) error {
+func (p *Part) FromRequest(in *genai.Request) error {
+	if in.Text != "" {
+		p.Text = in.Text
+		return nil
+	}
+	mimeType := ""
+	var data []byte
+	if in.Doc.URL == "" {
+		// If more than 20MB, we need to use
+		// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#large-pdfs-urls
+		// cacheName, err := c.cacheContent(ctx, context, mime, sp)
+		// When using cached content, system instruction, tools or tool_config cannot be used. Weird.
+		// in.CachedContent = cacheName
+		var err error
+		if mimeType, data, err = in.Doc.Read(10 * 1024 * 1024); err != nil {
+			return err
+		}
+		if mimeType == "text/plain" {
+			// Gemini refuses text/plain as attachment.
+			if in.Doc.URL != "" {
+				return fmt.Errorf("text/plain is not supported as inline data for URL %q", in.Doc.URL)
+			}
+			p.Text = string(data)
+		} else {
+			p.InlineData.MimeType = mimeType
+			p.InlineData.Data = data
+		}
+	} else {
+		if mimeType = base.MimeByExt(path.Ext(in.Doc.URL)); mimeType == "" {
+			return fmt.Errorf("could not determine mime type for URL %q", in.Doc.URL)
+		}
+		p.FileData.MimeType = mimeType
+		p.FileData.FileURI = in.Doc.URL
+	}
+	return nil
+}
+
+func (p *Part) FromReply(in *genai.Reply) error {
 	if in.Thinking != "" {
 		p.Thought = true
 		p.Text = in.Thinking
@@ -1679,7 +1716,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		if nbImages > 1 {
 			n = fmt.Sprintf("content%d.jpg", i+1)
 		}
-		res.Reply = append(res.Reply, genai.Content{Doc: genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Predictions[i].BytesBase64Encoded}}})
+		res.Reply = append(res.Reply, genai.Reply{Doc: genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Predictions[i].BytesBase64Encoded}}})
 	}
 	if uce != nil {
 		return res, uce
@@ -1787,7 +1824,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	res.FinishReason = genai.FinishedStop
 	for _, p := range op.Response.GenerateVideoResponse.GeneratedSamples {
 		// This requires the Google API key to fetch!
-		res.Reply = []genai.Content{{Doc: genai.Doc{Filename: "content.mp4", URL: p.Video.URI}}}
+		res.Reply = []genai.Reply{{Doc: genai.Doc{Filename: "content.mp4", URL: p.Video.URI}}}
 	}
 	return res, nil
 }

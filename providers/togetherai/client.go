@@ -438,7 +438,7 @@ func (m *Message) From(in *genai.Message) error {
 		m.Content = make([]Content, 0, len(in.Request))
 		for i := range in.Request {
 			m.Content = append(m.Content, Content{})
-			if err := m.Content[len(m.Content)-1].From(&in.Request[i]); err != nil {
+			if err := m.Content[len(m.Content)-1].FromRequest(&in.Request[i]); err != nil {
 				return fmt.Errorf("request #%d: %w", i, err)
 			}
 		}
@@ -450,7 +450,7 @@ func (m *Message) From(in *genai.Message) error {
 				continue
 			}
 			m.Content = append(m.Content, Content{})
-			if err := m.Content[len(m.Content)-1].From(&in.Reply[i]); err != nil {
+			if err := m.Content[len(m.Content)-1].FromReply(&in.Reply[i]); err != nil {
 				return fmt.Errorf("reply #%d: %w", i, err)
 			}
 		}
@@ -486,7 +486,7 @@ func (m *Message) To(out *genai.Message) error {
 		}
 	}
 	if len(m.Content) != 0 {
-		out.Reply = make([]genai.Content, len(m.Content))
+		out.Reply = make([]genai.Reply, len(m.Content))
 		for i := range m.Content {
 			if err := m.Content[i].To(&out.Reply[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
@@ -549,7 +549,7 @@ type Content struct {
 	} `json:"video_url,omitzero"`
 }
 
-func (c *Content) From(in *genai.Content) error {
+func (c *Content) FromRequest(in *genai.Request) error {
 	if in.Text != "" {
 		c.Type = ContentText
 		c.Text = in.Text
@@ -586,7 +586,44 @@ func (c *Content) From(in *genai.Content) error {
 	return nil
 }
 
-func (c *Content) To(out *genai.Content) error {
+func (c *Content) FromReply(in *genai.Reply) error {
+	if in.Text != "" {
+		c.Type = ContentText
+		c.Text = in.Text
+		return nil
+	}
+	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+	if err != nil {
+		return err
+	}
+	switch {
+	case strings.HasPrefix(mimeType, "image/"):
+		c.Type = ContentImageURL
+		if in.Doc.URL == "" {
+			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+		} else {
+			c.ImageURL.URL = in.Doc.URL
+		}
+	case strings.HasPrefix(mimeType, "video/"):
+		c.Type = ContentVideoURL
+		if in.Doc.URL == "" {
+			c.VideoURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+		} else {
+			c.VideoURL.URL = in.Doc.URL
+		}
+	case strings.HasPrefix(mimeType, "text/plain"):
+		c.Type = ContentText
+		if in.Doc.URL != "" {
+			return errors.New("text/plain documents must be provided inline, not as a URL")
+		}
+		c.Text = string(data)
+	default:
+		return fmt.Errorf("unsupported mime type %s", mimeType)
+	}
+	return nil
+}
+
+func (c *Content) To(out *genai.Reply) error {
 	switch c.Type {
 	case ContentText:
 		out.Text = c.Text
@@ -1103,7 +1140,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		if err := c.DoRequest(ctx, "POST", "https://api.together.xyz/v1/images/generations", &req, &resp); err != nil {
 			return res, err
 		}
-		res.Reply = make([]genai.Content, len(resp.Data))
+		res.Reply = make([]genai.Reply, len(resp.Data))
 		for i := range resp.Data {
 			n := "content.jpg"
 			if len(resp.Data) > 1 {

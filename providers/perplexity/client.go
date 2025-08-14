@@ -313,7 +313,7 @@ func (m *Message) From(in *genai.Message) error {
 func (m *Message) To(out *genai.Message) error {
 	for i := range m.Content {
 		if m.Content[i].Type == "text" {
-			out.Reply = append(out.Reply, genai.Content{Text: m.Content[i].Text})
+			out.Reply = append(out.Reply, genai.Reply{Text: m.Content[i].Text})
 		} else {
 			return fmt.Errorf("unsupported content type %q", m.Content[i].Type)
 		}

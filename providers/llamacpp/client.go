@@ -535,10 +535,7 @@ type CompletionResponse struct {
 
 func (c *CompletionResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
-		Message: genai.Message{
-			// Mistral Nemo really likes "▁".
-			Request: []genai.Content{{Text: strings.ReplaceAll(c.Content, "\u2581", " ")}},
-		},
+		Message: genai.Message{Reply: []genai.Reply{{Text: c.Content}}},
 		Usage: genai.Usage{
 			InputTokens:       c.TokensPredicted,
 			InputCachedTokens: c.TokensCached,
@@ -678,7 +675,7 @@ func (m *Message) From(in *genai.Message) error {
 	if len(in.Request) != 0 {
 		for i := range in.Request {
 			c := Content{}
-			if skip, err := c.From(&in.Request[i]); err != nil {
+			if skip, err := c.FromRequest(&in.Request[i]); err != nil {
 				return err
 			} else if !skip {
 				m.Content = append(m.Content, c)
@@ -688,7 +685,7 @@ func (m *Message) From(in *genai.Message) error {
 	if len(in.Reply) != 0 {
 		for i := range in.Reply {
 			c := Content{}
-			if skip, err := c.From(&in.Reply[i]); err != nil {
+			if skip, err := c.FromReply(&in.Reply[i]); err != nil {
 				return err
 			} else if !skip {
 				m.Content = append(m.Content, c)
@@ -722,7 +719,7 @@ func (m *Message) From(in *genai.Message) error {
 
 func (m *Message) To(out *genai.Message) error {
 	for i := range m.Content {
-		out.Reply = make([]genai.Content, len(m.Content))
+		out.Reply = make([]genai.Reply, len(m.Content))
 		if err := m.Content[i].To(&out.Reply[i]); err != nil {
 			return err
 		}
@@ -782,7 +779,47 @@ type Content struct {
 	} `json:"input_audio,omitzero"`
 }
 
-func (c *Content) From(in *genai.Content) (bool, error) {
+func (c *Content) FromRequest(in *genai.Request) (bool, error) {
+	if in.Text != "" {
+		c.Type = "text"
+		c.Text = in.Text
+		return false, nil
+	}
+	// Check if this is a text/plain document
+	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+	if err != nil {
+		return false, fmt.Errorf("failed to read document: %w", err)
+	}
+	switch {
+	case strings.HasPrefix(mimeType, "text/plain"):
+		if in.Doc.URL != "" {
+			return false, errors.New("text/plain documents must be provided inline, not as a URL")
+		}
+		c.Type = "text"
+		c.Text = string(data)
+	case strings.HasPrefix(mimeType, "audio/"):
+		c.Type = "input_audio"
+		if in.Doc.URL != "" {
+			return false, errors.New("audio doesn't support URLs")
+		}
+		c.InputAudio.Data = data
+		c.InputAudio.Format, _ = strings.CutPrefix(mimeType, "audio/")
+		return false, nil
+	case strings.HasPrefix(mimeType, "image/"):
+		c.Type = "image_url"
+		if in.Doc.URL != "" {
+			c.ImageURL.URL = in.Doc.URL
+		} else {
+			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+		}
+		return false, nil
+	default:
+		return false, fmt.Errorf("mime type %s is unsupported", mimeType)
+	}
+	return false, fmt.Errorf("unsupported content type %v", in)
+}
+
+func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 	if len(in.Citations) != 0 {
 		return false, errors.New("citations are not supported")
 	}
@@ -831,7 +868,7 @@ func (c *Content) From(in *genai.Content) (bool, error) {
 	return false, fmt.Errorf("unsupported content type %v", in)
 }
 
-func (c *Content) To(out *genai.Content) error {
+func (c *Content) To(out *genai.Reply) error {
 	switch c.Type {
 	case "text":
 		if c.Text == "" {

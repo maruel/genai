@@ -268,7 +268,7 @@ func (c *ProviderGenUsage) Unwrap() genai.Provider {
 type ProviderGenAppend struct {
 	genai.ProviderGen
 
-	Append genai.Content
+	Append genai.Request
 }
 
 func (c *ProviderGenAppend) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {

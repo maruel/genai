@@ -513,7 +513,7 @@ func (m *Message) From(in *genai.Message) error {
 	if len(in.Request) != 0 {
 		m.Content = make([]Content, len(in.Request))
 		for i := range in.Request {
-			if err := m.Content[i].From(&in.Request[i]); err != nil {
+			if err := m.Content[i].FromRequest(&in.Request[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		}
@@ -526,7 +526,7 @@ func (m *Message) From(in *genai.Message) error {
 				continue
 			}
 			c := Content{}
-			if err := c.From(&in.Reply[i]); err != nil {
+			if err := c.FromReply(&in.Reply[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 			m.Content = append(m.Content, c)
@@ -557,7 +557,7 @@ func (m *Message) From(in *genai.Message) error {
 
 func (m *Message) To(out *genai.Message) error {
 	if len(m.Content) != 0 {
-		out.Reply = make([]genai.Content, len(m.Content))
+		out.Reply = make([]genai.Reply, len(m.Content))
 		for i := range m.Content {
 			if err := m.Content[i].To(&out.Reply[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
@@ -627,7 +627,7 @@ type Content struct {
 	} `json:"file,omitzero"`
 }
 
-func (c *Content) From(in *genai.Content) error {
+func (c *Content) FromRequest(in *genai.Request) error {
 	if in.Text != "" {
 		c.Type = ContentText
 		c.Text = in.Text
@@ -692,7 +692,72 @@ func (c *Content) From(in *genai.Content) error {
 	return nil
 }
 
-func (c *Content) To(out *genai.Content) error {
+func (c *Content) FromReply(in *genai.Reply) error {
+	if in.Text != "" {
+		c.Type = ContentText
+		c.Text = in.Text
+		return nil
+	}
+	// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
+	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+	if err != nil {
+		return err
+	}
+	// OpenAI require a mime-type to determine if image, sound or PDF.
+	if mimeType == "" {
+		return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
+	}
+	switch {
+	case strings.HasPrefix(mimeType, "image/"):
+		c.Type = ContentImageURL
+		if in.Doc.URL == "" {
+			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+		} else {
+			c.ImageURL.URL = in.Doc.URL
+		}
+	case mimeType == "audio/mpeg":
+		if in.Doc.URL != "" {
+			return errors.New("URL to audio file not supported")
+		}
+		c.Type = ContentInputAudio
+		c.InputAudio.Data = data
+		c.InputAudio.Format = "mp3"
+	case mimeType == "audio/wav":
+		if in.Doc.URL != "" {
+			return errors.New("URL to audio file not supported")
+		}
+		c.Type = ContentInputAudio
+		c.InputAudio.Data = data
+		c.InputAudio.Format = "wav"
+	case strings.HasPrefix(mimeType, "text/plain"):
+		c.Type = ContentText
+		if in.Doc.URL != "" {
+			return errors.New("text/plain documents must be provided inline, not as a URL")
+		}
+		c.Text = string(data)
+	default:
+		if in.Doc.URL != "" {
+			return fmt.Errorf("URL to %s file not supported", mimeType)
+		}
+		filename := in.Doc.GetFilename()
+		if filename == "" {
+			exts, err := mime.ExtensionsByType(mimeType)
+			if err != nil {
+				return err
+			}
+			if len(exts) == 0 {
+				return fmt.Errorf("unknown extension for mime type %s", mimeType)
+			}
+			filename = "content" + exts[0]
+		}
+		c.Type = ContentFile
+		c.File.Filename = filename
+		c.File.FileData = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+	}
+	return nil
+}
+
+func (c *Content) To(out *genai.Reply) error {
 	switch c.Type {
 	case ContentText:
 		out.Text = c.Text
@@ -1352,7 +1417,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	if err := c.DoRequest(ctx, "POST", url, &req, &resp); err != nil {
 		return res, err
 	}
-	res.Reply = make([]genai.Content, len(resp.Data))
+	res.Reply = make([]genai.Reply, len(resp.Data))
 	for i := range resp.Data {
 		n := "content.jpg"
 		if len(resp.Data) > 1 {

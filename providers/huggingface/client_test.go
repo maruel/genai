@@ -27,12 +27,12 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if strings.HasPrefix(model.Model, "Qwen/Qwen3") {
 		if model.Thinking {
 			return &adapters.ProviderGenThinking{
-				ProviderGen:        &adapters.ProviderGenAppend{ProviderGen: c, Append: genai.Content{Text: "\n\n/think"}},
+				ProviderGen:        &adapters.ProviderGenAppend{ProviderGen: c, Append: genai.Request{Text: "\n\n/think"}},
 				ThinkingTokenStart: "<think>",
 				ThinkingTokenEnd:   "</think>",
 			}
 		} else {
-			return &adapters.ProviderGenAppend{ProviderGen: c, Append: genai.Content{Text: "\n\n/no_think"}}
+			return &adapters.ProviderGenAppend{ProviderGen: c, Append: genai.Request{Text: "\n\n/no_think"}}
 		}
 	}
 	return c

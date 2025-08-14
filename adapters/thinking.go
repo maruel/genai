@@ -204,7 +204,7 @@ func (c *ProviderGenThinking) processThinkingMessage(m *genai.Message) error {
 		remainingText := strings.TrimLeftFunc(textAfterStartTag[tEnd+len(c.ThinkingTokenEnd):], unicode.IsSpace)
 		m.Reply[0].Thinking = thinkingContent
 		if len(m.Reply) == 1 {
-			m.Reply = append(m.Reply, genai.Content{})
+			m.Reply = append(m.Reply, genai.Reply{})
 		}
 		m.Reply[len(m.Reply)-1].Text = remainingText
 	} else {

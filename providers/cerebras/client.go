@@ -278,79 +278,6 @@ type Message struct {
 	Name       string     `json:"name,omitzero"` // Tool call name.
 }
 
-type Content struct {
-	Type ContentType `json:"type,omitzero"`
-	Text string      `json:"text,omitzero"`
-}
-
-type ContentType string
-
-const (
-	ContentText ContentType = "text"
-)
-
-// Contents represents a slice of Content with custom unmarshalling to handle
-// both string and Content struct types.
-type Contents []Content
-
-func (c *Contents) MarshalJSON() ([]byte, error) {
-	// If there's only one content and it's a string, marshal as a string.
-	if len(*c) == 1 && (*c)[0].Type == ContentText {
-		return json.Marshal((*c)[0].Text)
-	}
-	onlyText := true
-	for i := range *c {
-		if (*c)[i].Type != ContentText {
-			onlyText = false
-		}
-	}
-	if onlyText {
-		// Merge everything together as a string. This is only needed for a few models like qwen-3-32b and
-		// qwen-3-235b-a22b.
-		b := strings.Builder{}
-		for i := range *c {
-			b.WriteString((*c)[i].Text)
-			b.WriteString("\n")
-		}
-		return json.Marshal(b.String())
-	}
-	// If there's many contents, marshal as an array of Content.
-	return json.Marshal(([]Content)(*c))
-}
-
-// UnmarshalJSON implements custom unmarshalling for Contents type
-// to handle cases where content could be a string or Content struct.
-func (c *Contents) UnmarshalJSON(b []byte) error {
-	if bytes.Equal(b, []byte("null")) {
-		*c = nil
-		return nil
-	}
-	d := json.NewDecoder(bytes.NewReader(b))
-	if !internal.BeLenient {
-		d.DisallowUnknownFields()
-	}
-	if err := d.Decode((*[]Content)(c)); err == nil {
-		return nil
-	}
-
-	v := Content{}
-	d = json.NewDecoder(bytes.NewReader(b))
-	if !internal.BeLenient {
-		d.DisallowUnknownFields()
-	}
-	if err := d.Decode(&v); err == nil {
-		*c = Contents{v}
-		return nil
-	}
-
-	s := ""
-	if err := json.Unmarshal(b, &s); err != nil {
-		return err
-	}
-	*c = Contents{{Type: ContentText, Text: s}}
-	return nil
-}
-
 // From converts from a genai.Message to a Message.
 func (m *Message) From(in *genai.Message) error {
 	switch r := in.Role(); r {
@@ -460,6 +387,79 @@ func (m *Message) To(out *genai.Message) error {
 			}
 		}
 	}
+	return nil
+}
+
+type Content struct {
+	Type ContentType `json:"type,omitzero"`
+	Text string      `json:"text,omitzero"`
+}
+
+type ContentType string
+
+const (
+	ContentText ContentType = "text"
+)
+
+// Contents represents a slice of Content with custom unmarshalling to handle
+// both string and Content struct types.
+type Contents []Content
+
+func (c *Contents) MarshalJSON() ([]byte, error) {
+	// If there's only one content and it's a string, marshal as a string.
+	if len(*c) == 1 && (*c)[0].Type == ContentText {
+		return json.Marshal((*c)[0].Text)
+	}
+	onlyText := true
+	for i := range *c {
+		if (*c)[i].Type != ContentText {
+			onlyText = false
+		}
+	}
+	if onlyText {
+		// Merge everything together as a string. This is only needed for a few models like qwen-3-32b and
+		// qwen-3-235b-a22b.
+		b := strings.Builder{}
+		for i := range *c {
+			b.WriteString((*c)[i].Text)
+			b.WriteString("\n")
+		}
+		return json.Marshal(b.String())
+	}
+	// If there's many contents, marshal as an array of Content.
+	return json.Marshal(([]Content)(*c))
+}
+
+// UnmarshalJSON implements custom unmarshalling for Contents type
+// to handle cases where content could be a string or Content struct.
+func (c *Contents) UnmarshalJSON(b []byte) error {
+	if bytes.Equal(b, []byte("null")) {
+		*c = nil
+		return nil
+	}
+	d := json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
+	}
+	if err := d.Decode((*[]Content)(c)); err == nil {
+		return nil
+	}
+
+	v := Content{}
+	d = json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
+	}
+	if err := d.Decode(&v); err == nil {
+		*c = Contents{v}
+		return nil
+	}
+
+	s := ""
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	*c = Contents{{Type: ContentText, Text: s}}
 	return nil
 }
 

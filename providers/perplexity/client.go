@@ -255,20 +255,20 @@ func (m *Message) From(in *genai.Message) error {
 			m.Content = append(m.Content, Content{Type: "text", Text: in.Contents[i].Text})
 		} else {
 			// Check if this is a text/plain document
-			mimeType, data, err := in.Contents[i].ReadDocument(10 * 1024 * 1024)
+			mimeType, data, err := in.Contents[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return fmt.Errorf("failed to read document: %w", err)
 			}
 			switch {
 			case strings.HasPrefix(mimeType, "text/plain"):
-				if in.Contents[i].URL != "" {
+				if in.Contents[i].Doc.URL != "" {
 					return errors.New("text/plain documents must be provided inline, not as a URL")
 				}
 				m.Content = append(m.Content, Content{Type: "text", Text: string(data)})
 			case strings.HasPrefix(mimeType, "image/"):
 				c := Content{Type: "image_url"}
-				if in.Contents[i].URL != "" {
-					c.ImageURL.URL = in.Contents[i].URL
+				if in.Contents[i].Doc.URL != "" {
+					c.ImageURL.URL = in.Contents[i].Doc.URL
 				} else {
 					c.ImageURL.URL = "data:" + mimeType + ";base64," + base64.StdEncoding.EncodeToString(data)
 				}

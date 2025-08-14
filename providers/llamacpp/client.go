@@ -785,20 +785,20 @@ func (c *Content) From(in *genai.Content) (bool, error) {
 		return false, nil
 	}
 	// Check if this is a text/plain document
-	mimeType, data, err := in.ReadDocument(10 * 1024 * 1024)
+	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
 	if err != nil {
 		return false, fmt.Errorf("failed to read document: %w", err)
 	}
 	switch {
 	case strings.HasPrefix(mimeType, "text/plain"):
-		if in.URL != "" {
+		if in.Doc.URL != "" {
 			return false, errors.New("text/plain documents must be provided inline, not as a URL")
 		}
 		c.Type = "text"
 		c.Text = string(data)
 	case strings.HasPrefix(mimeType, "audio/"):
 		c.Type = "input_audio"
-		if in.URL != "" {
+		if in.Doc.URL != "" {
 			return false, errors.New("audio doesn't support URLs")
 		}
 		c.InputAudio.Data = data
@@ -806,8 +806,8 @@ func (c *Content) From(in *genai.Content) (bool, error) {
 		return false, nil
 	case strings.HasPrefix(mimeType, "image/"):
 		c.Type = "image_url"
-		if in.URL != "" {
-			c.ImageURL.URL = in.URL
+		if in.Doc.URL != "" {
+			c.ImageURL.URL = in.Doc.URL
 		} else {
 			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 		}

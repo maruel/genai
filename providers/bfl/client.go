@@ -314,18 +314,18 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 	for i := range msg.Contents {
 		if msg.Contents[i].Text == "" {
 			// Check if this is a text/plain document that we can handle
-			if msg.Contents[i].Document != nil {
-				mimeType, data, err := msg.Contents[i].ReadDocument(10 * 1024 * 1024)
+			if !msg.Contents[i].Doc.IsZero() {
+				mimeType, data, err := msg.Contents[i].Doc.Read(10 * 1024 * 1024)
 				if err != nil {
 					return "", fmt.Errorf("failed to read document: %w", err)
 				}
 				if strings.HasPrefix(mimeType, "text/plain") {
-					if msg.Contents[i].URL != "" {
+					if msg.Contents[i].Doc.URL != "" {
 						return "", errors.New("text/plain documents must be provided inline, not as a URL")
 					}
 					// Convert document content to text content
 					msg.Contents[i].Text = string(data)
-					msg.Contents[i].Document = nil
+					msg.Contents[i].Doc = genai.Doc{}
 					continue
 				}
 			}
@@ -377,7 +377,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 		return res, fmt.Errorf("unexpected status: %#v", imgres)
 	}
 	res.Role = genai.Assistant
-	res.Contents = []genai.Content{{Filename: "content.jpg", URL: imgres.Result.Sample}}
+	res.Contents = []genai.Content{{Doc: genai.Doc{Filename: "content.jpg", URL: imgres.Result.Sample}}}
 	return res, res.Validate()
 }
 

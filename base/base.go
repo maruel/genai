@@ -498,18 +498,19 @@ func SimulateStream(ctx context.Context, c genai.ProviderGen, msgs genai.Message
 	res, err := c.GenSync(ctx, msgs, opts)
 	if err == nil {
 		for i := range res.Contents {
-			if url := res.Contents[i].URL; url != "" {
+			if !res.Contents[i].Doc.IsZero() {
+				return res, fmt.Errorf("expected Content with Doc, got %#v", res.Contents[i])
+			}
+			if url := res.Contents[i].Doc.URL; url != "" {
 				chunks <- genai.ContentFragment{
-					Filename: res.Contents[i].Filename,
-					URL:      res.Contents[i].URL,
-				}
-			} else if d := res.Contents[i].Document; d != nil {
-				chunks <- genai.ContentFragment{
-					Filename:         res.Contents[i].Filename,
-					DocumentFragment: res.Contents[i].Document.(*bb.BytesBuffer).D,
+					Filename: res.Contents[i].Doc.Filename,
+					URL:      res.Contents[i].Doc.URL,
 				}
 			} else {
-				return res, fmt.Errorf("expected ContentFragment with URL or Document, got %#v", res.Contents)
+				chunks <- genai.ContentFragment{
+					Filename:         res.Contents[i].Doc.Filename,
+					DocumentFragment: res.Contents[i].Doc.Src.(*bb.BytesBuffer).D,
+				}
 			}
 		}
 	}

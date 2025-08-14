@@ -634,31 +634,31 @@ func (c *Content) From(in *genai.Content) error {
 		return nil
 	}
 	// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
-	mimeType, data, err := in.ReadDocument(10 * 1024 * 1024)
+	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
 	if err != nil {
 		return err
 	}
 	// OpenAI require a mime-type to determine if image, sound or PDF.
 	if mimeType == "" {
-		return fmt.Errorf("unspecified mime type for URL %q", in.URL)
+		return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
 	}
 	switch {
 	case strings.HasPrefix(mimeType, "image/"):
 		c.Type = ContentImageURL
-		if in.URL == "" {
+		if in.Doc.URL == "" {
 			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 		} else {
-			c.ImageURL.URL = in.URL
+			c.ImageURL.URL = in.Doc.URL
 		}
 	case mimeType == "audio/mpeg":
-		if in.URL != "" {
+		if in.Doc.URL != "" {
 			return errors.New("URL to audio file not supported")
 		}
 		c.Type = ContentInputAudio
 		c.InputAudio.Data = data
 		c.InputAudio.Format = "mp3"
 	case mimeType == "audio/wav":
-		if in.URL != "" {
+		if in.Doc.URL != "" {
 			return errors.New("URL to audio file not supported")
 		}
 		c.Type = ContentInputAudio
@@ -666,15 +666,15 @@ func (c *Content) From(in *genai.Content) error {
 		c.InputAudio.Format = "wav"
 	case strings.HasPrefix(mimeType, "text/plain"):
 		c.Type = ContentText
-		if in.URL != "" {
+		if in.Doc.URL != "" {
 			return errors.New("text/plain documents must be provided inline, not as a URL")
 		}
 		c.Text = string(data)
 	default:
-		if in.URL != "" {
+		if in.Doc.URL != "" {
 			return fmt.Errorf("URL to %s file not supported", mimeType)
 		}
-		filename := in.GetFilename()
+		filename := in.Doc.GetFilename()
 		if filename == "" {
 			exts, err := mime.ExtensionsByType(mimeType)
 			if err != nil {
@@ -1360,11 +1360,9 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 			n = fmt.Sprintf("content%d.jpg", i+1)
 		}
 		if url := resp.Data[i].URL; url != "" {
-			res.Contents[i].Filename = n
-			res.Contents[i].URL = url
+			res.Contents[i].Doc = genai.Doc{Filename: n, URL: url}
 		} else if d := resp.Data[i].B64JSON; len(d) != 0 {
-			res.Contents[i].Filename = n
-			res.Contents[i].Document = &bb.BytesBuffer{D: resp.Data[i].B64JSON}
+			res.Contents[i].Doc = genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Data[i].B64JSON}}
 		} else {
 			return res, errors.New("internal error")
 		}

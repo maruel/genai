@@ -12,7 +12,6 @@ package gemini
 // See official client at https://github.com/google/generative-ai-go
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -697,7 +696,9 @@ func (c *Content) To(out *genai.Message) error {
 			if len(exts) == 0 {
 				return fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
 			}
-			out.Contents = append(out.Contents, genai.Content{Filename: "content" + exts[0], Document: bytes.NewReader(part.InlineData.Data)})
+			out.Contents = append(out.Contents, genai.Content{
+				Doc: genai.Doc{Filename: "content" + exts[0], Src: &bb.BytesBuffer{D: part.InlineData.Data}},
+			})
 			continue
 		}
 		if part.FileData.MimeType != "" {
@@ -708,7 +709,7 @@ func (c *Content) To(out *genai.Message) error {
 			if len(exts) == 0 {
 				return fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
 			}
-			out.Contents = append(out.Contents, genai.Content{Filename: "content" + exts[0], URL: part.FileData.FileURI})
+			out.Contents = append(out.Contents, genai.Content{Doc: genai.Doc{Filename: "content" + exts[0], URL: part.FileData.FileURI}})
 			continue
 		}
 		if part.FunctionCall.Name != "" {
@@ -763,20 +764,20 @@ func (p *Part) FromContent(in *genai.Content) error {
 	}
 	mimeType := ""
 	var data []byte
-	if in.URL == "" {
+	if in.Doc.URL == "" {
 		// If more than 20MB, we need to use
 		// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#large-pdfs-urls
 		// cacheName, err := c.cacheContent(ctx, context, mime, sp)
 		// When using cached content, system instruction, tools or tool_config cannot be used. Weird.
 		// in.CachedContent = cacheName
 		var err error
-		if mimeType, data, err = in.ReadDocument(10 * 1024 * 1024); err != nil {
+		if mimeType, data, err = in.Doc.Read(10 * 1024 * 1024); err != nil {
 			return err
 		}
 		if mimeType == "text/plain" {
 			// Gemini refuses text/plain as attachment.
-			if in.URL != "" {
-				return fmt.Errorf("text/plain is not supported as inline data for URL %q", in.URL)
+			if in.Doc.URL != "" {
+				return fmt.Errorf("text/plain is not supported as inline data for URL %q", in.Doc.URL)
 			}
 			p.Text = string(data)
 		} else {
@@ -784,11 +785,11 @@ func (p *Part) FromContent(in *genai.Content) error {
 			p.InlineData.Data = data
 		}
 	} else {
-		if mimeType = base.MimeByExt(path.Ext(in.URL)); mimeType == "" {
-			return fmt.Errorf("could not determine mime type for URL %q", in.URL)
+		if mimeType = base.MimeByExt(path.Ext(in.Doc.URL)); mimeType == "" {
+			return fmt.Errorf("could not determine mime type for URL %q", in.Doc.URL)
 		}
 		p.FileData.MimeType = mimeType
-		p.FileData.FileURI = in.URL
+		p.FileData.FileURI = in.Doc.URL
 	}
 	return nil
 }
@@ -1684,7 +1685,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		if nbImages > 1 {
 			n = fmt.Sprintf("content%d.jpg", i+1)
 		}
-		res.Contents = append(res.Contents, genai.Content{Filename: n, Document: &bb.BytesBuffer{D: resp.Predictions[i].BytesBase64Encoded}})
+		res.Contents = append(res.Contents, genai.Content{Doc: genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Predictions[i].BytesBase64Encoded}}})
 	}
 	if uce != nil {
 		return res, uce
@@ -1793,7 +1794,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	res.FinishReason = genai.FinishedStop
 	for _, p := range op.Response.GenerateVideoResponse.GeneratedSamples {
 		// This requires the Google API key to fetch!
-		res.Contents = []genai.Content{{Filename: "content.mp4", URL: p.Video.URI}}
+		res.Contents = []genai.Content{{Doc: genai.Doc{Filename: "content.mp4", URL: p.Video.URI}}}
 	}
 	return res, nil
 }

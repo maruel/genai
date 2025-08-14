@@ -345,24 +345,24 @@ func (c *Content) From(in *genai.Content) (*Document, error) {
 		return nil, nil
 	}
 
-	mimeType, data, err := in.ReadDocument(10 * 1024 * 1024)
+	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
 	if err != nil {
 		return nil, err
 	}
 	switch {
-	case (in.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
+	case (in.Doc.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
 		c.Type = ContentImageURL
-		if in.URL != "" {
-			c.ImageURL.URL = in.URL
+		if in.Doc.URL != "" {
+			c.ImageURL.URL = in.Doc.URL
 		} else {
 			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 		}
 		return nil, nil
 	case strings.HasPrefix(mimeType, "text/plain"):
-		if in.URL != "" {
+		if in.Doc.URL != "" {
 			return nil, errors.New("text/plain documents must be provided inline, not as a URL")
 		}
-		name := in.GetFilename()
+		name := in.Doc.GetFilename()
 		d := &Document{
 			ID:   name,
 			Data: map[string]any{"title": name, "snippet": string(data)},

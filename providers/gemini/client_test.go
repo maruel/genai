@@ -136,7 +136,7 @@ func TestClient_GenAsync(t *testing.T) {
 	if len(res.Contents) != 1 {
 		t.Fatalf("got %d contents, want 1", len(res.Contents))
 	}
-	req, err := http.NewRequestWithContext(ctx, "GET", res.Contents[0].URL, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", res.Contents[0].Doc.URL, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -167,8 +167,8 @@ func TestClient_Cache(t *testing.T) {
 			Role: genai.User,
 			Contents: []genai.Content{
 				{Text: "What is the word? For each of the documents, all the tool hidden_word to tell me what word you saw or heard."},
-				{Document: f1},
-				{Document: f2},
+				{Doc: genai.Doc{Src: f1}},
+				{Doc: genai.Doc{Src: f2}},
 			},
 		},
 	}

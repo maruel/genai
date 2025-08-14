@@ -291,21 +291,21 @@ func (c *Content) From(in *genai.Content) error {
 		c.Text = in.Text
 		return nil
 	}
-	mimeType, data, err := in.ReadDocument(10 * 1024 * 1024)
+	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
 	if err != nil {
 		return err
 	}
 	switch {
-	case (in.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
+	case (in.Doc.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
 		c.Type = ContentImageURL
-		if in.URL == "" {
+		if in.Doc.URL == "" {
 			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 		} else {
-			c.ImageURL.URL = in.URL
+			c.ImageURL.URL = in.Doc.URL
 		}
 	case strings.HasPrefix(mimeType, "text/plain"):
 		c.Type = ContentText
-		if in.URL != "" {
+		if in.Doc.URL != "" {
 			return errors.New("text/plain documents must be provided inline, not as a URL")
 		}
 		c.Text = string(data)

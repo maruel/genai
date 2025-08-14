@@ -438,7 +438,7 @@ func (c *Content) From(in *genai.Content) error {
 		return nil
 	}
 
-	mimeType, data, err := in.ReadDocument(10 * 1024 * 1024)
+	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
 	if err != nil {
 		return err
 	}
@@ -453,16 +453,16 @@ func (c *Content) From(in *genai.Content) error {
 		default:
 			return fmt.Errorf("implement mime type %s conversion", mimeType)
 		}
-	case strings.HasPrefix(mimeType, "image/") || in.URL != "":
+	case strings.HasPrefix(mimeType, "image/") || in.Doc.URL != "":
 		c.Type = ContentImageURL
-		if in.URL == "" {
+		if in.Doc.URL == "" {
 			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 		} else {
-			c.ImageURL.URL = in.URL
+			c.ImageURL.URL = in.Doc.URL
 		}
 	case strings.HasPrefix(mimeType, "text/plain"):
 		c.Type = ContentText
-		if in.URL != "" {
+		if in.Doc.URL != "" {
 			return errors.New("text/plain documents must be provided inline, not as a URL")
 		}
 		c.Text = string(data)
@@ -645,7 +645,9 @@ func (m *MessageResponse) To(out *genai.Message) error {
 		}
 	}
 	if len(m.Audio.Data) != 0 {
-		out.Contents = append(out.Contents, genai.Content{Filename: "sound.wav", Document: bytes.NewReader(m.Audio.Data)})
+		out.Contents = append(out.Contents, genai.Content{
+			Doc: genai.Doc{Filename: "sound.wav", Src: &bb.BytesBuffer{D: m.Audio.Data}},
+		})
 	}
 	return nil
 }
@@ -1103,11 +1105,11 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	// qp.Add("negative_prompt", "worst quality, blurry")
 	qp.Add("quality", "medium")
 	for _, mc := range msg.Contents {
-		if mc.Document != nil {
+		if mc.Doc.Src != nil {
 			return res, errors.New("inline document is not supported")
 		}
-		if mc.URL != "" {
-			qp.Add("image", mc.URL)
+		if mc.Doc.URL != "" {
+			qp.Add("image", mc.Doc.URL)
 		}
 	}
 
@@ -1131,9 +1133,9 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		return res, err
 	}
 	res.Role = genai.Assistant
-	res.Contents = []genai.Content{{Document: &bb.BytesBuffer{D: b}}}
+	res.Contents = []genai.Content{{Doc: genai.Doc{Src: &bb.BytesBuffer{D: b}}}}
 	if ct := resp.Header.Get("Content-Type"); strings.HasPrefix(ct, "image/jpeg") {
-		res.Contents[0].Filename = "content.jpg"
+		res.Contents[0].Doc.Filename = "content.jpg"
 	} else {
 		return res, fmt.Errorf("unknown Content-Type: %s", ct)
 	}

@@ -171,16 +171,10 @@ func TestMessages_Validate(t *testing.T) {
 			{
 				name: "Invalid messages",
 				messages: Messages{
-					{
-						Role:     User,
-						Contents: []Content{{Text: "Hi", Filename: "hi.txt"}},
-					},
-					{
-						Role:     User,
-						Contents: []Content{{}},
-					},
+					{Role: User, Contents: []Content{{Text: "Hi", Doc: Doc{Filename: "hi.txt"}}}},
+					{Role: User, Contents: []Content{{}}},
 				},
-				errMsg: "message 0: content 0: field Filename can't be used along Text\nmessage 1: content 0: an empty Content is invalid",
+				errMsg: "message 0: content 0: field Doc can't be used along Text\nmessage 1: content 0: an empty Content is invalid",
 			},
 		}
 		for _, tt := range tests {
@@ -208,10 +202,7 @@ func TestMessage_Validate(t *testing.T) {
 				message: Message{
 					Role: User,
 					Contents: []Content{
-						{
-							Filename: "document.txt",
-							Document: strings.NewReader("document content"),
-						},
+						{Doc: Doc{Filename: "document.txt", Src: strings.NewReader("document content")}},
 					},
 				},
 			},
@@ -269,8 +260,7 @@ func TestContent_Validate(t *testing.T) {
 			{
 				name: "Valid document block",
 				in: Content{
-					Filename: "document.txt",
-					Document: strings.NewReader("document content"),
+					Doc: Doc{Filename: "document.txt", Src: strings.NewReader("document content")},
 				},
 			},
 		}
@@ -285,13 +275,12 @@ func TestContent_Validate(t *testing.T) {
 	// TODO: error
 }
 
-func TestContent_ReadDocument(t *testing.T) {
+func TestContent_Read(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		c := Content{
-			Filename: "document.txt",
-			Document: strings.NewReader("document content"),
+			Doc: Doc{Filename: "document.txt", Src: strings.NewReader("document content")},
 		}
-		mime, got, err := c.ReadDocument(1000)
+		mime, got, err := c.Doc.Read(1000)
 		if err != nil {
 			t.Fatalf("unexpected error: %q", err)
 		}
@@ -326,14 +315,10 @@ func TestMessage_Decode(t *testing.T) {
 			{
 				name: "Invalid DecodeAs",
 				message: Message{
-					Role: Assistant,
-					Contents: []Content{
-						{
-							Document: strings.NewReader("document content"),
-						},
-					},
+					Role:     Assistant,
+					Contents: []Content{{Doc: Doc{Src: strings.NewReader("document content")}}},
 				},
-				errMsg: "only text messages can be decoded as JSON, can't decode {\"role\":\"assistant\",\"contents\":[{\"document\":\"ZG9jdW1lbnQgY29udGVudA==\"}]}",
+				errMsg: "only text messages can be decoded as JSON, can't decode {\"role\":\"assistant\",\"contents\":[{\"doc\":{\"bytes\":\"ZG9jdW1lbnQgY29udGVudA==\"}}]}",
 			},
 		}
 		for _, tt := range tests {
@@ -373,7 +358,7 @@ func TestAccumulateContentFragment(t *testing.T) {
 			msgs: Messages{
 				{
 					Role:     Assistant,
-					Contents: []Content{{Filename: "document.txt", Document: &buffer{"document content"}}},
+					Contents: []Content{{Doc: Doc{Filename: "document.txt", Src: &buffer{"document content"}}}},
 				},
 			},
 			f: ContentFragment{TextFragment: "No"},
@@ -381,13 +366,8 @@ func TestAccumulateContentFragment(t *testing.T) {
 				{
 					Role: Assistant,
 					Contents: []Content{
-						{
-							Filename: "document.txt",
-							Document: &buffer{"document content"},
-						},
-						{
-							Text: "No",
-						},
+						{Doc: Doc{Filename: "document.txt", Src: &buffer{"document content"}}},
+						{Text: "No"},
 					},
 				},
 			},
@@ -466,7 +446,7 @@ func TestMessage_Accumulate(t *testing.T) {
 			},
 			want: Message{
 				Role:     Assistant,
-				Contents: []Content{{Filename: "document.txt", Document: &bb.BytesBuffer{D: []byte("document content")}}},
+				Contents: []Content{{Doc: Doc{Filename: "document.txt", Src: &bb.BytesBuffer{D: []byte("document content")}}}},
 			},
 		},
 		{
@@ -908,16 +888,13 @@ func TestContent_UnmarshalJSON(t *testing.T) {
 			},
 			{
 				name: "URL content",
-				json: `{"filename": "image.jpg", "url": "https://example.com/image.jpg"}`,
-				want: Content{Filename: "image.jpg", URL: "https://example.com/image.jpg"},
+				json: `{"doc":{"filename": "image.jpg", "url": "https://example.com/image.jpg"}}`,
+				want: Content{Doc: Doc{Filename: "image.jpg", URL: "https://example.com/image.jpg"}},
 			},
 			{
 				name: "Document content",
-				json: `{"filename": "doc.txt", "document": "SGVsbG8gV29ybGQ="}`,
-				want: Content{
-					Filename: "doc.txt",
-					Document: strings.NewReader("Hello World"),
-				},
+				json: `{"doc":{"filename": "doc.txt", "bytes": "SGVsbG8gV29ybGQ="}}`,
+				want: Content{Doc: Doc{Filename: "doc.txt", Src: strings.NewReader("Hello World")}},
 			},
 		}
 		for _, tt := range tests {
@@ -927,15 +904,15 @@ func TestContent_UnmarshalJSON(t *testing.T) {
 					t.Fatalf("unexpected error: %v", err)
 				}
 				// For Document comparison, read the content since we can't directly compare io.ReadSeeker
-				if tt.want.Document != nil {
-					wantData, _ := io.ReadAll(tt.want.Document)
-					gotData, _ := io.ReadAll(got.Document)
+				if tt.want.Doc.Src != nil {
+					wantData, _ := io.ReadAll(tt.want.Doc.Src)
+					gotData, _ := io.ReadAll(got.Doc.Src)
 					if string(wantData) != string(gotData) {
 						t.Errorf("Document content mismatch: want %q, got %q", string(wantData), string(gotData))
 					}
 					// Reset Document field for comparison
-					tt.want.Document = nil
-					got.Document = nil
+					tt.want.Doc.Src = nil
+					got.Doc.Src = nil
 				}
 				if diff := cmp.Diff(tt.want, got); diff != "" {
 					t.Errorf("Content mismatch (-want +got):\n%s", diff)
@@ -967,7 +944,7 @@ func TestContent_UnmarshalJSON(t *testing.T) {
 			},
 			{
 				name:   "Document without filename",
-				json:   `{"document": "SGVsbG8="}`,
+				json:   `{"doc":{"bytes": "SGVsbG8="}}`,
 				errMsg: "field Filename is required with Document when not implementing Name()",
 			},
 			{

@@ -26,6 +26,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
@@ -274,18 +275,18 @@ func (m *Message) From(in *genai.Message) error {
 		if in.Contents[i].Text != "" {
 			m.Content = in.Contents[i].Text
 		} else {
-			mimeType, data, err := in.Contents[i].ReadDocument(10 * 1024 * 1024)
+			mimeType, data, err := in.Contents[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return err
 			}
 			switch {
 			case strings.HasPrefix(mimeType, "image/"):
-				if in.Contents[i].URL != "" {
+				if in.Contents[i].Doc.URL != "" {
 					return errors.New("url are not supported for images")
 				}
 				m.Images = append(m.Images, data)
 			case strings.HasPrefix(mimeType, "text/plain"):
-				if in.Contents[i].URL != "" {
+				if in.Contents[i].Doc.URL != "" {
 					return errors.New("text/plain documents must be provided inline, not as a URL")
 				}
 				// Append text/plain document content to the message content
@@ -336,7 +337,9 @@ func (m *Message) To(out *genai.Message) error {
 		out.Contents = []genai.Content{{Text: m.Content}}
 	}
 	for i := range m.Images {
-		out.Contents = append(out.Contents, genai.Content{Filename: "image.jpg", Document: bytes.NewReader(m.Images[i])})
+		out.Contents = append(out.Contents, genai.Content{
+			Doc: genai.Doc{Filename: "image.jpg", Src: &bb.BytesBuffer{D: m.Images[i]}},
+		})
 	}
 	if len(m.ToolCalls) != 0 {
 		out.ToolCalls = make([]genai.ToolCall, len(m.ToolCalls))

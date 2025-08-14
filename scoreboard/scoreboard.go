@@ -375,8 +375,10 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 			Role: genai.User,
 			Contents: []genai.Content{
 				{
-					Document: strings.NewReader("The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."),
-					Filename: "capital_info.txt",
+					Doc: genai.Doc{
+						Src:      strings.NewReader("The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."),
+						Filename: "capital_info.txt",
+					},
 				},
 				{Text: "What is the capital of Quackiland?"},
 			},
@@ -451,7 +453,7 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *genai.Funct
 		}
 		msgs := genai.Messages{genai.Message{Role: genai.User, Contents: []genai.Content{
 			{Text: "What is the word? Reply with only the word."},
-			{Document: bytes.NewReader(data), Filename: "document." + format.ext},
+			{Doc: genai.Doc{Src: bytes.NewReader(data), Filename: "document." + format.ext}},
 		}}}
 		name := prefix + format.ext + "-Inline"
 		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
@@ -467,7 +469,7 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *genai.Funct
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
-		msgs[0].Contents[1] = genai.Content{URL: rootURL + "document." + format.ext}
+		msgs[0].Contents[1] = genai.Content{Doc: genai.Doc{URL: rootURL + "document." + format.ext}}
 		name = prefix + format.ext + "-URL"
 		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
@@ -502,7 +504,7 @@ func exerciseGenInputImage(ctx context.Context, cs *callState, f *genai.Function
 		}
 		msgs := genai.Messages{genai.Message{Role: genai.User, Contents: []genai.Content{
 			{Text: "What fruit is it? Reply with only one word."},
-			{Document: bytes.NewReader(data), Filename: "image." + format.ext},
+			{Doc: genai.Doc{Src: bytes.NewReader(data), Filename: "image." + format.ext}},
 		}}}
 		name := prefix + format.ext + "-Inline"
 		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
@@ -518,7 +520,7 @@ func exerciseGenInputImage(ctx context.Context, cs *callState, f *genai.Function
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
-		msgs[0].Contents[1] = genai.Content{URL: rootURL + "image." + format.ext}
+		msgs[0].Contents[1] = genai.Content{Doc: genai.Doc{URL: rootURL + "image." + format.ext}}
 		name = prefix + format.ext + "-URL"
 		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
@@ -553,7 +555,7 @@ func exerciseGenInputAudio(ctx context.Context, cs *callState, f *genai.Function
 		}
 		msgs := genai.Messages{genai.Message{Role: genai.User, Contents: []genai.Content{
 			{Text: "What is the word said? Reply with only the word."},
-			{Document: bytes.NewReader(data), Filename: "audio." + format.ext},
+			{Doc: genai.Doc{Src: bytes.NewReader(data), Filename: "audio." + format.ext}},
 		}}}
 		name := prefix + format.ext + "-Inline"
 		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
@@ -569,7 +571,7 @@ func exerciseGenInputAudio(ctx context.Context, cs *callState, f *genai.Function
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
-		msgs[0].Contents[1] = genai.Content{URL: rootURL + "audio." + format.ext}
+		msgs[0].Contents[1] = genai.Content{Doc: genai.Doc{URL: rootURL + "audio." + format.ext}}
 		name = prefix + format.ext + "-URL"
 		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
@@ -601,7 +603,7 @@ func exerciseGenInputVideo(ctx context.Context, cs *callState, f *genai.Function
 		}
 		msgs := genai.Messages{genai.Message{Role: genai.User, Contents: []genai.Content{
 			{Text: "What is the word said? Reply with only the word."},
-			{Document: bytes.NewReader(data), Filename: "video." + format.ext},
+			{Doc: genai.Doc{Src: bytes.NewReader(data), Filename: "video." + format.ext}},
 		}}}
 		name := prefix + format.ext + "-Inline"
 		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
@@ -617,7 +619,7 @@ func exerciseGenInputVideo(ctx context.Context, cs *callState, f *genai.Function
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
-		msgs[0].Contents[1] = genai.Content{URL: rootURL + "video." + format.ext}
+		msgs[0].Contents[1] = genai.Content{Doc: genai.Doc{URL: rootURL + "video." + format.ext}}
 		name = prefix + format.ext + "-URL"
 		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
@@ -791,17 +793,17 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 			return fmt.Errorf("%s: no content", name)
 		}
 		c := resp.Contents[0]
-		fn := c.GetFilename()
+		fn := c.Doc.GetFilename()
 		if fn == "" {
 			return fmt.Errorf("%s: no content filename", name)
 		}
 		out.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
 		v := out.Out[genai.ModalityImage]
-		if c.URL != "" {
+		if c.Doc.URL != "" {
 			v.URL = true
 			// Retrieve the result file.
 			internal.Logger(ctx).ErrorContext(ctx, name, "rt", fmt.Sprintf("%T", rt))
-			resp2, err2 := (&http.Client{Transport: rt}).Get(c.URL)
+			resp2, err2 := (&http.Client{Transport: rt}).Get(c.Doc.URL)
 			if err2 != nil {
 				return fmt.Errorf("failed to download generated result: %w", err2)
 			}
@@ -813,10 +815,10 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 			if err2 != nil {
 				return fmt.Errorf("failed to download generated result: %w", err2)
 			}
-			internal.Logger(ctx).DebugContext(ctx, name, "generated", len(body), "url", c.URL)
+			internal.Logger(ctx).DebugContext(ctx, name, "generated", len(body), "url", c.Doc.URL)
 		} else {
 			v.Inline = true
-			_, body, err2 := c.ReadDocument(10 * 1024 * 1024)
+			_, body, err2 := c.Doc.Read(10 * 1024 * 1024)
 			if err2 != nil {
 				return fmt.Errorf("failed to download generated result: %w", err2)
 			}
@@ -871,18 +873,18 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 			return fmt.Errorf("%s: no content", name)
 		}
 		c := resp.Contents[0]
-		fn := c.GetFilename()
+		fn := c.Doc.GetFilename()
 		if fn == "" {
 			return fmt.Errorf("%s: no content filename", name)
 		}
 		out.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
 		out.Out[genai.ModalityAudio] = genai.ModalCapability{Inline: true}
 		v := out.Out[genai.ModalityAudio]
-		if c.URL != "" {
+		if c.Doc.URL != "" {
 			v.URL = true
 			// Retrieve the result file.
 			internal.Logger(ctx).ErrorContext(ctx, name, "rt", fmt.Sprintf("%T", rt))
-			resp2, err2 := (&http.Client{Transport: rt}).Get(c.URL)
+			resp2, err2 := (&http.Client{Transport: rt}).Get(c.Doc.URL)
 			if err2 != nil {
 				return fmt.Errorf("failed to download generated result: %w", err2)
 			}
@@ -894,10 +896,10 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 			if err2 != nil {
 				return fmt.Errorf("failed to download generated result: %w", err2)
 			}
-			internal.Logger(ctx).DebugContext(ctx, name, "generated", len(body), "url", c.URL)
+			internal.Logger(ctx).DebugContext(ctx, name, "generated", len(body), "url", c.Doc.URL)
 		} else {
 			v.Inline = true
-			_, body, err2 := c.ReadDocument(10 * 1024 * 1024)
+			_, body, err2 := c.Doc.Read(10 * 1024 * 1024)
 			if err2 != nil {
 				return fmt.Errorf("failed to download generated result: %w", err2)
 			}

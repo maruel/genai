@@ -553,28 +553,28 @@ func (c *Content) From(in *genai.Content) error {
 		c.Text = in.Text
 		return nil
 	}
-	mimeType, data, err := in.ReadDocument(10 * 1024 * 1024)
+	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
 	if err != nil {
 		return err
 	}
 	switch {
 	case strings.HasPrefix(mimeType, "image/"):
 		c.Type = ContentImageURL
-		if in.URL == "" {
+		if in.Doc.URL == "" {
 			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 		} else {
-			c.ImageURL.URL = in.URL
+			c.ImageURL.URL = in.Doc.URL
 		}
 	case strings.HasPrefix(mimeType, "video/"):
 		c.Type = ContentVideoURL
-		if in.URL == "" {
+		if in.Doc.URL == "" {
 			c.VideoURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 		} else {
-			c.VideoURL.URL = in.URL
+			c.VideoURL.URL = in.Doc.URL
 		}
 	case strings.HasPrefix(mimeType, "text/plain"):
 		c.Type = ContentText
-		if in.URL != "" {
+		if in.Doc.URL != "" {
 			return errors.New("text/plain documents must be provided inline, not as a URL")
 		}
 		c.Text = string(data)
@@ -1109,11 +1109,9 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 				n = fmt.Sprintf("content%d.jpg", i+1)
 			}
 			if url := resp.Data[i].URL; url != "" {
-				res.Contents[i].Filename = n
-				res.Contents[i].URL = url
+				res.Contents[i].Doc = genai.Doc{Filename: n, URL: url}
 			} else if d := resp.Data[i].B64JSON; len(d) != 0 {
-				res.Contents[i].Filename = n
-				res.Contents[i].Document = &bb.BytesBuffer{D: resp.Data[i].B64JSON}
+				res.Contents[i].Doc = genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Data[i].B64JSON}}
 			} else {
 				return res, errors.New("internal error")
 			}

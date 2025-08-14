@@ -343,16 +343,13 @@ func (m *Message) validateShallow() []error {
 		// At the very least, assert no document is returned along with tool calls.
 		if len(m.Contents) != 0 && len(m.ToolCalls) != 0 {
 			for i := range m.Contents {
-				if m.Contents[i].Document != nil || m.Contents[i].Filename != "" {
-					return append(errs, errors.New("field Contents can't contain a document along with ToolCalls"))
-				}
-				if m.Contents[i].URL != "" {
-					return append(errs, errors.New("field Contents can't contain a document as URL along with ToolCalls"))
+				if !m.Contents[i].Doc.IsZero() {
+					return append(errs, errors.New("field Contents can't contain a Doc along with ToolCalls"))
 				}
 			}
 		}
 	case Computer:
-		// Will disapear soon.
+		// Will disappear soon.
 	}
 	if m.User != "" {
 		errs = append(errs, errors.New("field User: not supported yet"))
@@ -463,16 +460,7 @@ type Content struct {
 	// A message with only Opaque set is valid.
 	Opaque map[string]any `json:"opaque,omitzero"`
 
-	// Filename is the name of the file. For many providers, only the extension
-	// is relevant. They only use mime-type, which is derived from the filename's
-	// extension. When an URL is provided or when the object provided to Document
-	// implements a method with the signature `Name() string`, like an
-	// `*os.File`, Filename is optional.
-	Filename string `json:"filename,omitzero"`
-	// Document is raw document data. It is perfectly fine to use a bytes.NewReader() or *os.File.
-	Document io.ReadSeeker `json:"document,omitzero"`
-	// URL is the reference to the raw data. When set, the mime-type is derived from the URL.
-	URL string `json:"url,omitzero"`
+	Doc Doc `json:"doc,omitzero"`
 
 	_ struct{}
 }
@@ -486,14 +474,8 @@ func (c *Content) Validate() error {
 		if len(c.Opaque) != 0 {
 			return errors.New("field Opaque can't be used along Text")
 		}
-		if c.Filename != "" {
-			return errors.New("field Filename can't be used along Text")
-		}
-		if c.Document != nil {
-			return errors.New("field Document can't be used along Text")
-		}
-		if c.URL != "" {
-			return errors.New("field URL can't be used along Text")
+		if !c.Doc.IsZero() {
+			return errors.New("field Doc can't be used along Text")
 		}
 		// Validate citations when text is present
 		for i, citation := range c.Citations {
@@ -505,49 +487,68 @@ func (c *Content) Validate() error {
 		if len(c.Citations) != 0 {
 			return errors.New("field Citations can only be used with Text")
 		}
-		if c.Filename != "" {
-			return errors.New("field Filename can't be used along Text")
-		}
-		if c.Document != nil {
-			return errors.New("field Document can't be used along Text")
-		}
-		if c.URL != "" {
-			return errors.New("field URL can't be used along Text")
+		if !c.Doc.IsZero() {
+			return errors.New("field Doc can't be used along Thinking")
 		}
 	} else if len(c.Citations) != 0 {
 		if len(c.Opaque) != 0 {
 			return errors.New("field Opaque can't be used along a Citations")
 		}
-		if c.Filename != "" {
-			return errors.New("field Filename can't be used along a Citations")
+		if !c.Doc.IsZero() {
+			return errors.New("field Doc can't be used along Citations")
 		}
-		if c.Document != nil {
-			return errors.New("field Document can't be used along a Citations")
-		}
-		if c.URL != "" {
-			return errors.New("field URL can't be used along a Citations")
+	} else if !c.Doc.IsZero() {
+		if err := c.Doc.Validate(); err != nil {
+			return err
 		}
 	} else {
-		if c.Document == nil {
-			if c.URL == "" {
-				if c.Filename == "" {
-					return errors.New("an empty Content is invalid")
-				}
-				return errors.New("field Document or URL is required when using Filename")
-			}
-			if len(c.Opaque) != 0 {
-				return errors.New("field Opaque can't be used along a Document")
-			}
-		} else {
-			if c.URL != "" {
-				return errors.New("field Document and URL are mutually exclusive")
-			}
-			if c.GetFilename() == "" {
-				return errors.New("field Filename is required with Document when not implementing Name()")
-			}
-			if len(c.Opaque) != 0 {
-				return errors.New("field Opaque can't be used along an URL")
-			}
+		return errors.New("an empty Content is invalid")
+	}
+	return nil
+}
+
+func (c *Content) UnmarshalJSON(b []byte) error {
+	type Alias Content
+	a := struct{ *Alias }{Alias: (*Alias)(c)}
+	d := json.NewDecoder(bytes.NewReader(b))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&a); err != nil {
+		return err
+	}
+	return c.Validate()
+}
+
+// Doc is a document.
+type Doc struct {
+	// Filename is the name of the file. For many providers, only the extension
+	// is relevant. They only use mime-type, which is derived from the filename's
+	// extension. When an URL is provided or when the object provided to Document
+	// implements a method with the signature `Name() string`, like an
+	// `*os.File`, Filename is optional.
+	Filename string `json:"filename,omitzero"`
+	// Src is raw document data. It is perfectly fine to use a bytes.NewReader() or *os.File.
+	Src io.ReadSeeker `json:"bytes,omitzero"`
+	// URL is the reference to the raw data. When set, the mime-type is derived from the URL.
+	URL string `json:"url,omitzero"`
+
+	_ struct{}
+}
+
+func (d *Doc) IsZero() bool {
+	return d.Filename == "" && d.Src == nil && d.URL == ""
+}
+
+// Validate ensures the block is valid.
+func (d *Doc) Validate() error {
+	if d.Src != nil && d.URL != "" {
+		return errors.New("field Document and URL are mutually exclusive")
+	}
+	if d.Filename != "" && d.Src == nil && d.URL == "" {
+		return errors.New("field Document or URL is required when using Filename")
+	}
+	if d.Filename == "" && d.Src != nil {
+		if _, ok := d.Src.(interface{ Name() string }); !ok {
+			return errors.New("field Filename is required with Document when not implementing Name()")
 		}
 	}
 	return nil
@@ -555,97 +556,87 @@ func (c *Content) Validate() error {
 
 // GetFilename returns the filename to use for the document, querying the
 // Document's name if available.
-func (c *Content) GetFilename() string {
-	if c.Filename == "" {
-		if namer, ok := c.Document.(interface{ Name() string }); ok {
+func (d *Doc) GetFilename() string {
+	if d.Filename == "" {
+		if namer, ok := d.Src.(interface{ Name() string }); ok {
 			return filepath.Base(namer.Name())
 		}
 	}
-	return c.Filename
+	return d.Filename
 }
 
-// ReadDocument reads the document content into memory.
-func (c *Content) ReadDocument(maxSize int64) (string, []byte, error) {
-	if c.Text != "" {
-		return "", nil, errors.New("only document messages can be read as documents")
+type serializedDoc struct {
+	Filename string `json:"filename,omitzero"`
+	Bytes    []byte `json:"bytes,omitzero"`
+	URL      string `json:"url,omitzero"`
+}
+
+func (d *Doc) MarshalJSON() ([]byte, error) {
+	dd := serializedDoc{Filename: d.Filename, URL: d.URL}
+	if d.Src != nil {
+		if _, err := d.Src.Seek(0, io.SeekStart); err != nil {
+			return nil, err
+		}
+		var err error
+		if dd.Bytes, err = io.ReadAll(d.Src); err != nil {
+			return nil, err
+		}
+		if d.Filename == "" {
+			if namer, ok := d.Src.(interface{ Name() string }); ok {
+				dd.Filename = filepath.Base(namer.Name())
+			}
+		}
 	}
+	return json.Marshal(&dd)
+}
+
+func (d *Doc) UnmarshalJSON(b []byte) error {
+	dd := serializedDoc{}
+	de := json.NewDecoder(bytes.NewReader(b))
+	de.DisallowUnknownFields()
+	if err := de.Decode(&dd); err != nil {
+		return err
+	}
+	d.Filename = dd.Filename
+	d.URL = dd.URL
+	if len(dd.Bytes) != 0 {
+		d.Src = &bb.BytesBuffer{D: dd.Bytes}
+	}
+	return d.Validate()
+}
+
+// Read reads the document content into memory.
+func (d *Doc) Read(maxSize int64) (string, []byte, error) {
 	// genai cannot depend on base as it would cause a circular import.
-	mimeType := internal.MimeByExt(filepath.Ext(c.GetFilename()))
-	if c.URL != "" {
+	mimeType := internal.MimeByExt(filepath.Ext(d.GetFilename()))
+	if d.URL != "" {
 		// Not all provider require a mime-type so do not error out.
 		if mimeType == "" {
-			mimeType = internal.MimeByExt(filepath.Ext(path.Base(c.URL)))
+			mimeType = internal.MimeByExt(filepath.Ext(path.Base(d.URL)))
 		}
 		return mimeType, nil, nil
 	}
 	if mimeType == "" {
 		return "", nil, errors.New("failed to determine mime-type, pass a filename with an extension")
 	}
-	size, err := c.Document.Seek(0, io.SeekEnd)
+	size, err := d.Src.Seek(0, io.SeekEnd)
 	if err != nil {
 		return "", nil, fmt.Errorf("failed to seek data: %w", err)
 	}
 	if size > maxSize {
 		return "", nil, fmt.Errorf("large files are not yet supported, max %dMiB", maxSize/1024/1024)
 	}
-	if _, err = c.Document.Seek(0, io.SeekStart); err != nil {
+	if _, err = d.Src.Seek(0, io.SeekStart); err != nil {
 		return "", nil, fmt.Errorf("failed to seek data: %w", err)
 	}
 	var data []byte
-	if data, err = io.ReadAll(c.Document); err != nil {
+	if data, err = io.ReadAll(d.Src); err != nil {
 		return "", nil, fmt.Errorf("failed to read data: %w", err)
 	}
 	if len(data) == 0 {
 		return "", nil, errors.New("empty data")
 	}
 	return mimeType, data, nil
-}
-
-type contentSerialized struct {
-	Text     string         `json:"text,omitzero"`
-	Thinking string         `json:"thinking,omitzero"`
-	Opaque   map[string]any `json:"opaque,omitzero"`
-	Filename string         `json:"filename,omitzero"`
-	Document []byte         `json:"document,omitzero"`
-	URL      string         `json:"url,omitzero"`
-}
-
-func (c *Content) MarshalJSON() ([]byte, error) {
-	cc := contentSerialized{
-		Text:     c.Text,
-		Thinking: c.Thinking,
-		Opaque:   c.Opaque,
-		Filename: c.Filename,
-		URL:      c.URL,
-	}
-	if c.Document != nil {
-		if _, err := c.Document.Seek(0, io.SeekStart); err != nil {
-			return nil, err
-		}
-		var err error
-		if cc.Document, err = io.ReadAll(c.Document); err != nil {
-			return nil, err
-		}
-	}
-	return json.Marshal(&cc)
-}
-
-func (c *Content) UnmarshalJSON(b []byte) error {
-	cc := contentSerialized{}
-	d := json.NewDecoder(bytes.NewReader(b))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&cc); err != nil {
-		return err
-	}
-	c.Text = cc.Text
-	c.Thinking = cc.Thinking
-	c.Opaque = cc.Opaque
-	c.Filename = cc.Filename
-	c.URL = cc.URL
-	if len(cc.Document) != 0 {
-		c.Document = &bb.BytesBuffer{D: cc.Document}
-	}
-	return c.Validate()
 }
 
 // ContentFragment is a fragment of a content the LLM is sending back as part
@@ -730,28 +721,28 @@ func (m *Message) Accumulate(mf ContentFragment) error {
 	}
 
 	if mf.URL != "" {
-		m.Contents = append(m.Contents, Content{Filename: mf.Filename, URL: mf.URL})
+		m.Contents = append(m.Contents, Content{Doc: Doc{Filename: mf.Filename, URL: mf.URL}})
 		return nil
 	}
 	if mf.DocumentFragment != nil {
 		if len(m.Contents) != 0 {
-			if lastBlock := &m.Contents[len(m.Contents)-1]; lastBlock.Filename != "" || lastBlock.Document != nil {
-				if lastBlock.Document == nil {
-					lastBlock.Document = &bb.BytesBuffer{}
+			if lastBlock := &m.Contents[len(m.Contents)-1]; lastBlock.Doc.Filename != "" || lastBlock.Doc.Src != nil {
+				if lastBlock.Doc.Src == nil {
+					lastBlock.Doc.Src = &bb.BytesBuffer{}
 				}
-				if lastBlock.Filename == "" {
+				if lastBlock.Doc.Filename == "" {
 					// Unlikely.
-					lastBlock.Filename = mf.Filename
+					lastBlock.Doc.Filename = mf.Filename
 				}
-				_, _ = lastBlock.Document.(*bb.BytesBuffer).Write(mf.DocumentFragment)
+				_, _ = lastBlock.Doc.Src.(*bb.BytesBuffer).Write(mf.DocumentFragment)
 				return nil
 			}
 		}
-		m.Contents = append(m.Contents, Content{Filename: mf.Filename, Document: &bb.BytesBuffer{D: mf.DocumentFragment}})
+		m.Contents = append(m.Contents, Content{Doc: Doc{Filename: mf.Filename, Src: &bb.BytesBuffer{D: mf.DocumentFragment}}})
 		return nil
 	}
 	if mf.Filename != "" {
-		m.Contents = append(m.Contents, Content{Filename: mf.Filename})
+		m.Contents = append(m.Contents, Content{Doc: Doc{Filename: mf.Filename}})
 		return nil
 	}
 
@@ -836,10 +827,12 @@ func (t *ToolCall) Call(ctx context.Context, tools []ToolDef) (string, error) {
 	return s, nil
 }
 
-func (t *ToolCall) UnmarshalJSON(data []byte) error {
+func (t *ToolCall) UnmarshalJSON(b []byte) error {
 	type Alias ToolCall
 	a := struct{ *Alias }{Alias: (*Alias)(t)}
-	if err := json.Unmarshal(data, &a); err != nil {
+	d := json.NewDecoder(bytes.NewReader(b))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&a); err != nil {
 		return err
 	}
 	return t.Validate()

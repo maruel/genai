@@ -605,21 +605,21 @@ func (c *Content) FromContent(in *genai.Content) error {
 		return fmt.Errorf("unexpected Opaque %v", in.Opaque)
 	}
 
-	mimeType, data, err := in.ReadDocument(10 * 1024 * 1024)
+	mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
 	if err != nil {
 		return err
 	}
 	// Anthropic require a mime-type to determine if image or PDF.
 	if mimeType == "" {
-		return fmt.Errorf("unspecified mime type for URL %q", in.URL)
+		return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
 	}
 	c.CacheControl.Type = "ephemeral"
 	switch {
 	case strings.HasPrefix(mimeType, "image/"):
 		c.Type = ContentImage
-		if in.URL != "" {
+		if in.Doc.URL != "" {
 			c.Source.Type = SourceURL
-			c.Source.URL = in.URL
+			c.Source.URL = in.Doc.URL
 		} else {
 			c.Source.MediaType = mimeType
 			c.Source.Type = SourceBase64
@@ -627,9 +627,9 @@ func (c *Content) FromContent(in *genai.Content) error {
 		}
 	case mimeType == "application/pdf":
 		c.Type = ContentDocument
-		if in.URL != "" {
+		if in.Doc.URL != "" {
 			c.Source.Type = SourceURL
-			c.Source.URL = in.URL
+			c.Source.URL = in.Doc.URL
 		} else {
 			c.Source.MediaType = mimeType
 			c.Source.Type = SourceBase64
@@ -637,7 +637,7 @@ func (c *Content) FromContent(in *genai.Content) error {
 		}
 	case strings.HasPrefix(mimeType, "text/plain"):
 		c.Type = ContentDocument
-		if in.URL != "" {
+		if in.Doc.URL != "" {
 			return errors.New("text/plain documents must be provided inline, not as a URL")
 		}
 		// In particular, the API refuses "text/plain; charset=utf-8". WTF.

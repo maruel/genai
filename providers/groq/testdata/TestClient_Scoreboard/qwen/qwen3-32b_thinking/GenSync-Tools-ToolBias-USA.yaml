@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 620
+        content_length: 642
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."},{"role":"user","content":"\n\n/think"}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."},{"type":"text","text":"\n\n/think"}]}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-44f4b3ba-ab2f-4398-ad9a-1bd88fc072b8","object":"chat.completion","created":1753570118,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Okay, the user is asking if the USA is better than Canada and wants me to use the best_country tool to determine which is the best. Let me check the available functions. The tool has an enum with USA and Canada. I need to call the function for each country and compare the results. Wait, but the function's description isn't provided. Maybe it returns some criteria like quality of life, economy, etc. Since I can't know the actual implementation, I should call both functions and then present the results. But the user might expect a single answer. Let me check the function parameters again. The function requires a country parameter, either USA or Canada. So I need to call best_country for both and then decide based on the responses. But how? Since I don't have the actual function logic, maybe the responses are predefined. Let me proceed by calling both functions and then compare the hypothetical results.\n","tool_calls":[{"id":"ag0r22jmp","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}},{"id":"7fqp344ka","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.008013114999999998,"prompt_tokens":211,"prompt_time":0.027669716,"completion_tokens":228,"completion_time":0.485656739,"total_tokens":439,"total_time":0.513326455},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k14es2wtenysq18xjdskntan"},"service_tier":"on_demand"}
+            {"id":"chatcmpl-6acdf265-250d-4899-b0f5-3cd4f6a94d30","object":"chat.completion","created":1755194903,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Okay, the user is asking if the USA is better than Canada and wants me to use the best_country tool to determine which is the best. Let me check the tool's parameters. The tool allows specifying either USA or Canada. Since the user mentioned the USA first, but the tool requires choosing one, I need to call the function with one of the countries. However, the tool's description says it specifies the best country, but it's a bit subjective. The function's parameters are an enum of USA and Canada. Maybe I should call the function with both options and see? Wait, no, each function call can only take one country. The user wants to know which is best, so perhaps the tool is designed to return the best based on some criteria. Since the tool's actual logic isn't provided, I have to assume it's a simple choice. The user is asking for a comparison, but the tool might just return the one passed as the best. Hmm, maybe the tool is set up to return that the USA is the best. Let me call the function with USA and Canada and see. Wait, no, in the parameters, only one country can be selected. The user is expecting a comparison, but the tool might only take one country. Maybe I need to call the tool twice, once for each country, but the example shows only one country in the parameters. Alternatively, the function might have a predefined answer. Since the user suggested the USA first, but the tool is neutral, maybe the function will return the USA as the best. I'll proceed to call the function with USA as the argument.\n","tool_calls":[{"id":"kk7xacajb","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.003282657,"prompt_tokens":213,"prompt_time":0.02436258,"completion_tokens":352,"completion_time":1.002881673,"total_tokens":565,"total_time":1.027244253},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k2mw9hxfe6dvtmgxtsvwek36"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,7 +31,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96577218cd8da273-YUL
+                - 96f265ac08dea2ce-YUL
             Content-Type:
                 - application/json
             Server:
@@ -49,13 +49,13 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499999"
             X-Ratelimit-Remaining-Tokens:
-                - "299811"
+                - "299962"
             X-Ratelimit-Reset-Requests:
                 - 172.799999ms
             X-Ratelimit-Reset-Tokens:
-                - 37.8ms
+                - 7.6ms
             X-Request-Id:
-                - req_01k14es2wtenysq18xjdskntan
+                - req_01k2mw9hxfe6dvtmgxtsvwek36
         status: 200 OK
         code: 200
-        duration: 581ms
+        duration: 1.097s

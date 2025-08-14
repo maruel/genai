@@ -225,6 +225,21 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 					c.Messages = append(c.Messages, newMsg)
 				}
 			}
+		} else if len(msgs[i].Request) > 1 {
+			// Handle messages with multiple messages by creating multiple messages
+			// TODO: For multi-modal requests we could put them together. It's only a problem for text-only
+			// messages.
+			for j := range msgs[i].Request {
+				// Create a copy of the message with only one request
+				msgCopy := msgs[i]
+				msgCopy.Request = []genai.Content{msgs[i].Request[j]}
+				var newMsg Message
+				if err := newMsg.From(&msgCopy); err != nil {
+					errs = append(errs, fmt.Errorf("message %d, request %d: %w", i, j, err))
+				} else {
+					c.Messages = append(c.Messages, newMsg)
+				}
+			}
 		} else {
 			var newMsg Message
 			if err := newMsg.From(&msgs[i]); err != nil {

@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 948
-        body: '{"model":"qwen3:4b","created_at":"2025-08-03T09:33:54.863156655Z","message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, the user wants me to calculate the square root of 132413 using the square_root tool. Let me check the function parameters. The function requires a \"number\" parameter, which is a number. So I need to call the function with the number 132413. The user specified to reply only with the result, no explanations. So once I get the result from the tool, I just need to output it. Let me make sure I format the tool call correctly. The function name is square_root, and the argument is {\"number\": 132413}. That should do it.\n\u003c/think\u003e\n\n","tool_calls":[{"function":{"name":"square_root","arguments":{"number":132413}}}]},"done_reason":"stop","done":true,"total_duration":19359202809,"load_duration":19825681,"prompt_eval_count":174,"prompt_eval_duration":54450853,"eval_count":161,"eval_duration":8538721754}'
+        content_length: 977
+        body: '{"model":"qwen3:4b","created_at":"2025-08-14T18:22:52.432911046Z","message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, the user wants me to calculate the square root of 132413 using the square_root tool. Let me check the function parameters. The function requires a \"number\" parameter, which is a number. So I need to call square_root with the number 132413. The user specified to reply only with the result, no explanation. So I should generate the tool call first, then present the result without any text. Let me make sure the JSON is correctly formatted with the function name and arguments. Once I get the result from the tool, I''ll just output it as instructed.\n\u003c/think\u003e\n\n","tool_calls":[{"function":{"name":"square_root","arguments":{"number":132413}}}]},"done_reason":"stop","done":true,"total_duration":20695100649,"load_duration":19842382,"prompt_eval_count":174,"prompt_eval_duration":71245795,"eval_count":156,"eval_duration":9540278232}'
         headers:
             Content-Length:
-                - "948"
+                - "977"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 19.359s
+        duration: 20.695s

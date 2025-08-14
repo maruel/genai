@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 193
+        content_length: 215
         host: router.huggingface.co
         body: |
-            {"model":"Qwen/Qwen3-4B","stream":false,"messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"},{"role":"user","content":"\n\n/think"}],"stop":["is"]}
+            {"model":"Qwen/Qwen3-4B","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"},{"type":"text","text":"\n\n/think"}]}],"stop":["is"]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,8 +19,9 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 645
-        body: '{"id":"chatcmpl-c0bb76a484ae4bcb866a20ebac4b908b","choices":[{"finish_reason":"stop","index":0,"logprobs":null,"message":{"content":"<think>\nOkay, the user wants a detailed talk about Canada starting with \"Canada ","refusal":null,"role":"assistant","annotations":null,"audio":null,"function_call":null,"tool_calls":[],"reasoning_content":null},"stop_reason":"is"}],"created":1753570471,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion","service_tier":null,"system_fingerprint":null,"usage":{"completion_tokens":17,"prompt_tokens":27,"total_tokens":44,"completion_tokens_details":null,"prompt_tokens_details":null},"prompt_logprobs":null}'
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-8474ee8e65df4df7a4942325336563c8","choices":[{"finish_reason":"stop","index":0,"logprobs":null,"message":{"content":"<think>\nOkay, the user wants me to talk about Canada in great detail, starting with \"Canada ","refusal":null,"role":"assistant","annotations":null,"audio":null,"function_call":null,"tool_calls":[],"reasoning_content":null},"stop_reason":"is"}],"created":1755194875,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion","service_tier":null,"system_fingerprint":null,"usage":{"completion_tokens":21,"prompt_tokens":23,"total_tokens":44,"completion_tokens_details":null,"prompt_tokens_details":null},"prompt_logprobs":null}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
@@ -28,8 +29,6 @@ interactions:
                 - '*'
             Access-Control-Expose-Headers:
                 - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
-            Content-Length:
-                - "645"
             Content-Type:
                 - application/json
             Cross-Origin-Opener-Policy:
@@ -39,17 +38,19 @@ interactions:
             Strict-Transport-Security:
                 - max-age=31536000; includeSubDomains
             Vary:
-                - Origin
+                - Accept-Encoding, Origin
             Via:
-                - 1.1 2080aae7ace369c71819923852e1b17e.cloudfront.net (CloudFront)
+                - 1.1 412b0215b557780a6efcc1651037dc90.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - 67ZN2OdCiqfdgF5qLTBZqXvmZj6Ae8jY9tqNl8t6W6uOrtQwRsdYuw==
+                - LWkgkt4ZVXLsJAecIKtDc1vuFp3axd6CWjwG8Qj0IZawLUGa1rlwjQ==
             X-Amz-Cf-Pop:
-                - YUL62-P2
+                - YTO50-P1
             X-Cache:
                 - Miss from cloudfront
             X-Inference-Id:
-                - chatcmpl-c0bb76a484ae4bcb866a20ebac4b908b
+                - chatcmpl-8474ee8e65df4df7a4942325336563c8
+            X-Inference-Provider:
+                - nebius
             X-Powered-By:
                 - huggingface-moon
             X-Ratelimit-Dynamic-Period-Remaining:
@@ -71,9 +72,9 @@ interactions:
             X-Ratelimit-Remaining-Tokens:
                 - "400000"
             X-Request-Id:
-                - qj3iRlYoLAUMN2t0
+                - kKeXhKTpBkFsEdWS
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 756ms
+        duration: 392ms

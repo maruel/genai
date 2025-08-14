@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 366
+        content_length: 363
         host: router.huggingface.co
         body: |
-            {"model":"Qwen/Qwen3-4B","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]},{"role":"user","content":"\n\n/think"}],"stream_options":{"include_usage":true}}
+            {"model":"Qwen/Qwen3-4B","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}},{"type":"text","text":"\n\n/think"}]}],"stream_options":{"include_usage":true}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -41,17 +41,19 @@ interactions:
             Vary:
                 - Origin
             Via:
-                - 1.1 2080aae7ace369c71819923852e1b17e.cloudfront.net (CloudFront)
+                - 1.1 412b0215b557780a6efcc1651037dc90.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - 1GtxaEYlMwo-i8pjKaU6Fq-aRyNchhjf1kY-TVzXHZpr7H_cstTEyA==
+                - joVoSALyeL0z4S0Vxa01Ql6lv6XFwCLJhz2-UuFmeixnQnbrI0OQGg==
             X-Amz-Cf-Pop:
-                - YUL62-P2
+                - YTO50-P1
             X-Cache:
                 - Error from cloudfront
+            X-Inference-Provider:
+                - nebius
             X-Powered-By:
                 - huggingface-moon
             X-Ratelimit-Dynamic-Period-Remaining:
-                - 890s
+                - 885s
             X-Ratelimit-Dynamic-Period-Usage-Requests:
                 - 0%
             X-Ratelimit-Dynamic-Period-Usage-Tokens:
@@ -71,9 +73,9 @@ interactions:
             X-Ratelimit-Reset-Requests:
                 - 1s
             X-Request-Id:
-                - VQYhSnu56l6ODo49
+                - OQJ9AiZMafVFYO1S
             X-Robots-Tag:
                 - none
         status: 400 Bad Request
         code: 400
-        duration: 401ms
+        duration: 1.577s

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 452
+        content_length: 427
         host: api.cerebras.ai
         body: |
-            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."},{"role":"user","content":"\n\n/think"}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"stream":true}
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\n\n\n/think\n"}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -27,7 +27,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96575f29ae3fa300-YUL
+                - 96f268fc8810ac57-YYZ
             Content-Length:
                 - "186"
             Content-Type:
@@ -42,4 +42,4 @@ interactions:
                 - nosniff
         status: 400 Bad Request
         code: 400
-        duration: 1.307s
+        duration: 152ms

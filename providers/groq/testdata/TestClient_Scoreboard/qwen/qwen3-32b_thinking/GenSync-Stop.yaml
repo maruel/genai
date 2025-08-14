@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 194
+        content_length: 216
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"},{"role":"user","content":"\n\n/think"}],"model":"qwen/qwen3-32b","stop":["is"],"stream":false}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"},{"type":"text","text":"\n\n/think"}]}],"model":"qwen/qwen3-32b","stop":["is"],"stream":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-f1176c00-e321-40c0-80b1-a673e2ca4a7e","object":"chat.completion","created":1753570110,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, the user asked for a detailed talk about Canada, and I provided an initial response. Now, they're following up with the same query but maybe expecting more depth or a different angle. Let me see... The initial response covered geography, politics, economy, demographics, culture, and challenges. Since they asked again, perhaps they want more specific information or maybe a different structure. Let me check the user's h"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.006145072,"prompt_tokens":32,"prompt_time":0.001176875,"completion_tokens":1800,"completion_time":5.072423115,"total_tokens":1832,"total_time":5.07359999},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k14erty8enr9dqt3gks6v2bj"},"service_tier":"on_demand"}
+            {"id":"chatcmpl-1eb77838-6951-44c3-8849-92ddfce85dba","object":"chat.completion","created":1755194899,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, I need to write a detailed description of Canada starting with \"Canada "},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.001513191,"prompt_tokens":23,"prompt_time":0.007071123,"completion_tokens":2457,"completion_time":8.33355725,"total_tokens":2480,"total_time":8.340628373},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k2mw96h8e5gtajt7wsv0ytqh"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,7 +31,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 965771e5de25a273-YUL
+                - 96f265633ca7a2ce-YUL
             Content-Type:
                 - application/json
             Server:
@@ -47,15 +47,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "300000"
             X-Ratelimit-Remaining-Requests:
-                - "499998"
+                - "499994"
             X-Ratelimit-Remaining-Tokens:
-                - "299816"
+                - "299978"
             X-Ratelimit-Reset-Requests:
-                - 253.599999ms
+                - 944.799999ms
             X-Ratelimit-Reset-Tokens:
-                - 36.8ms
+                - 4.4ms
             X-Request-Id:
-                - req_01k14erty8enr9dqt3gks6v2bj
+                - req_01k2mw96h8e5gtajt7wsv0ytqh
         status: 200 OK
         code: 200
-        duration: 5.149s
+        duration: 8.408s

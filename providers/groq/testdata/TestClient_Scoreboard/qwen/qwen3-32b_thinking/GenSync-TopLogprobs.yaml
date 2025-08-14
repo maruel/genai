@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 152
+        content_length: 174
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":"Say hello. Use only one word."},{"role":"user","content":"\n\n/think"}],"model":"qwen/qwen3-32b","stream":false}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."},{"type":"text","text":"\n\n/think"}]}],"model":"qwen/qwen3-32b","stream":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-8c869d11-53c3-4f38-9869-5200e268b1a7","object":"chat.completion","created":1754769495,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, the user asked to say hello using only one word. The previous response was \"Hello.\" Now, the user has sent a new query, but the message is empty. Maybe they're testing if I'll follow the same instruction again. Since the empty input doesn't change the original command, I should stick to the one-word greeting. But wait, maybe they want a different approach now? Hmm. Let me check the instructions again. The user said \"Use only one word,\" so even if the input is empty, the response should be a single word. The most appropriate is still \"Hello.\" No need to overcomplicate. Just repeat the same response. Alright, I'll go with that.\n\u003c/think\u003e\n\nHello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.00157389,"prompt_tokens":28,"prompt_time":0.006843124,"completion_tokens":150,"completion_time":0.400418713,"total_tokens":178,"total_time":0.407261837},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k286k5bzerav2dp2vc23nmgc"},"service_tier":"on_demand"}
+            {"id":"chatcmpl-983976a3-23fd-4f34-8b44-a0afb14a5f91","object":"chat.completion","created":1755194890,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, the user wants me to say hello using only one word. Let me think.\n\nThe most straightforward one-word greeting is \"Hello\" itself. But maybe they want a different approach. Common alternatives could be \"Hi\" or \"Hey\". Both are single words and commonly used. Let me check if there are any other possibilities. Maybe \"Yo\" or \"Salutations\", but those might be less standard. The user probably expects a simple and polite response. \"Hi\" is concise and appropriate. Yeah, I'll go with \"Hi\".\n\u003c/think\u003e\n\nHi."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.002260534,"prompt_tokens":18,"prompt_time":0.007360767,"completion_tokens":117,"completion_time":0.313466025,"total_tokens":135,"total_time":0.320826792},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k2mw9628eknapteb3ycrb0jv"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,7 +31,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96c9d3c1fa72a2f0-YUL
+                - 96f2656038d5a2ce-YUL
             Content-Type:
                 - application/json
             Server:
@@ -47,15 +47,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "300000"
             X-Ratelimit-Remaining-Requests:
-                - "499998"
+                - "499996"
             X-Ratelimit-Remaining-Tokens:
-                - "299980"
+                - "299985"
             X-Ratelimit-Reset-Requests:
-                - 338.599999ms
+                - 545.199999ms
             X-Ratelimit-Reset-Tokens:
-                - 4ms
+                - 3ms
             X-Request-Id:
-                - req_01k286k5bzerav2dp2vc23nmgc
+                - req_01k2mw9628eknapteb3ycrb0jv
         status: 200 OK
         code: 200
-        duration: 549ms
+        duration: 390ms

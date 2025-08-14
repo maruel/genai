@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 620
+        content_length: 642
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."},{"role":"user","content":"\n\n/think"}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."},{"type":"text","text":"\n\n/think"}]}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-666af364-bda1-4ff0-8167-6f1e46898552","object":"chat.completion","created":1753570118,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Okay, the user is asking if Canada is a better country than the USA and wants me to use the best_country tool to determine which is best. Let me check the available functions. The tool has a function called best_country that takes a country parameter, which can be either Canada or USA. Since the user is comparing the two, I need to call this function for each country and then compare the results.\n\nFirst, I'll call best_country with Canada as the argument. Then, I'll call it again with the USA. Once I have both responses, I can analyze the returned data to see which country the tool deems better. The user might be looking for factors like quality of life, economic status, social programs, or other metrics. Since the function's output isn't specified, I'll assume it returns a score or a set of criteria. I'll present the results of both calls and then provide a conclusion based on the data. Make sure to mention that the answer is based on the tool's evaluation and that personal preferences might vary.\n","tool_calls":[{"id":"8391kpb1f","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}},{"id":"a1f37vpzc","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.007517803000000002,"prompt_tokens":211,"prompt_time":0.008641893,"completion_tokens":255,"completion_time":0.483241899,"total_tokens":466,"total_time":0.491883792},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k14es2bbeh7r260yga14grxb"},"service_tier":"on_demand"}
+            {"id":"chatcmpl-a3a244a8-e167-4ad8-b456-3c99689cfffe","object":"chat.completion","created":1755194902,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Okay, the user is asking if Canada is better than the USA and wants me to use the best_country tool to determine which is the best. Let me check the available functions. The tool has an enum with Canada and USA. I need to call the function for each country and compare the results. Wait, but the function's description says it specifies the best country. Maybe the function returns a score or a reason. Since I can only call the function once per country, I should call both and then decide. But the user might expect a single answer. Hmm, the tool might return a value that indicates which is better. Let me call the function for both countries and then compare the outputs. That way, I can present the better one based on the tool's response.\n","tool_calls":[{"id":"x4am9sqqr","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}},{"id":"01575snq1","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.00364802,"prompt_tokens":213,"prompt_time":0.023380322,"completion_tokens":200,"completion_time":0.440562637,"total_tokens":413,"total_time":0.463942959},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k2mw9hc8emt9hsrhkdrz33xz"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,7 +31,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 965772154f71a273-YUL
+                - 96f265a89bb1a2ce-YUL
             Content-Type:
                 - application/json
             Server:
@@ -47,15 +47,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "300000"
             X-Ratelimit-Remaining-Requests:
-                - "499998"
+                - "499999"
             X-Ratelimit-Remaining-Tokens:
-                - "299484"
+                - "299840"
             X-Ratelimit-Reset-Requests:
-                - 257.599999ms
+                - 172.799999ms
             X-Ratelimit-Reset-Tokens:
-                - 103.2ms
+                - 32ms
             X-Request-Id:
-                - req_01k14es2bbeh7r260yga14grxb
+                - req_01k2mw9hc8emt9hsrhkdrz33xz
         status: 200 OK
         code: 200
-        duration: 556ms
+        duration: 550ms

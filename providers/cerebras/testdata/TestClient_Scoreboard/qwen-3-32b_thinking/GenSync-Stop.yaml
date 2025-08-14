@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 175
+        content_length: 150
         host: api.cerebras.ai
         body: |
-            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"},{"role":"user","content":"\n\n/think"}],"stop":["is"]}
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is\n\n\n/think\n"}],"stop":["is"]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-5fe184ee-9ab9-458a-bf79-6ead727beacc","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, the user asked me to talk about Canada in great detail, starting with \"Canada ","role":"assistant"}}],"created":1753569341,"model":"qwen-3-32b","system_fingerprint":"fp_d92e1e5be69bb839ccfe","object":"chat.completion","usage":{"prompt_tokens":27,"completion_tokens":22,"total_tokens":49,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00066447,"prompt_time":0.001339883,"completion_time":0.011634201,"total_time":0.015657901763916016,"created":1753569341}}'
+        body: '{"id":"chatcmpl-efda4def-2c0e-45e1-9d88-2fe08988ebf4","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, the user wants me to talk about Canada in great detail. Let me start by outlining the main points to cover. First, I need to follow the instruction to start with \"Canada ","role":"assistant"}}],"created":1755195037,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion","usage":{"prompt_tokens":24,"completion_tokens":42,"total_tokens":66,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.363233866,"prompt_time":0.003276473,"completion_time":0.039302214,"total_time":0.408555269241333,"created":1755195037}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96575f204956a300-YUL
+                - 96f268f89b18ac57-YYZ
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-5fe184ee-9ab9-458a-bf79-6ead727beacc
+                - chatcmpl-efda4def-2c0e-45e1-9d88-2fe08988ebf4
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -46,15 +46,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "64000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14345"
+                - "14389"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "63085"
+                - "62155"
             X-Ratelimit-Reset-Requests-Day:
-                - "5058.277792453766"
+                - "20961.947338581085"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "18.27779245376587"
+                - "21.947338581085205"
             X-Request-Id:
-                - 96575f204956a300-YUL
+                - 96f268f89b18ac57-YYZ
         status: 200 OK
         code: 200
-        duration: 1.418s
+        duration: 563ms

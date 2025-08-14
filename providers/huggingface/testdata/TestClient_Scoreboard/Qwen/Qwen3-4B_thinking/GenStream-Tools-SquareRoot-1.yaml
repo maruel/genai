@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 619
+        content_length: 641
         host: router.huggingface.co
         body: |
-            {"model":"Qwen/Qwen3-4B","stream":true,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"user","content":"\n\n/think"}],"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+            {"model":"Qwen/Qwen3-4B","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"type":"text","text":"\n\n/think"}]}],"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -20,14 +20,13 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
+        uncompressed: true
         body: |+
-            data: {"id":"chatcmpl-c140497e46c6486aae8ec4dde2edfd23","choices":[{"delta":{"content":"","role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570472,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-181c27bb0f084111a34152d6bd8cdb7b","choices":[{"delta":{"content":"","role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"created":1755194879,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-c140497e46c6486aae8ec4dde2edfd23","choices":[{"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{","name":"square_root"},"type":"function"}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570472,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-181c27bb0f084111a34152d6bd8cdb7b","choices":[{"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{}","name":"square_root"},"type":"function"}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1755194879,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-c140497e46c6486aae8ec4dde2edfd23","choices":[{"delta":{"tool_calls":[{"index":0,"function":{"arguments":"}","name":null},"type":"function"}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570472,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-c140497e46c6486aae8ec4dde2edfd23","choices":[],"created":1753570472,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk","usage":{"completion_tokens":17,"prompt_tokens":164,"total_tokens":181}}
+            data: {"id":"chatcmpl-181c27bb0f084111a34152d6bd8cdb7b","choices":[],"created":1755194879,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk","usage":{"completion_tokens":16,"prompt_tokens":159,"total_tokens":175}}
 
             data: [DONE]
 
@@ -47,21 +46,23 @@ interactions:
             Strict-Transport-Security:
                 - max-age=31536000; includeSubDomains
             Vary:
-                - Origin
+                - Accept-Encoding, Origin
             Via:
-                - 1.1 2080aae7ace369c71819923852e1b17e.cloudfront.net (CloudFront)
+                - 1.1 412b0215b557780a6efcc1651037dc90.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - T6dzhX83z0Ng2jpbTU2jfmFBk3vz3plb3cD0pr1BlUWiuFlUzmuP5g==
+                - Hmb05AOmJb8wtbTeqK-hkstq6eh9WT58rhy38-avcq0fcym0mNZl4g==
             X-Amz-Cf-Pop:
-                - YUL62-P2
+                - YTO50-P1
             X-Cache:
                 - Miss from cloudfront
             X-Inference-Id:
-                - chatcmpl-c140497e46c6486aae8ec4dde2edfd23
+                - chatcmpl-181c27bb0f084111a34152d6bd8cdb7b
+            X-Inference-Provider:
+                - nebius
             X-Powered-By:
                 - huggingface-moon
             X-Ratelimit-Dynamic-Period-Remaining:
-                - 895s
+                - 891s
             X-Ratelimit-Dynamic-Period-Usage-Requests:
                 - 0%
             X-Ratelimit-Dynamic-Period-Usage-Tokens:
@@ -75,7 +76,7 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "400000"
             X-Ratelimit-Remaining-Requests:
-                - "599"
+                - "598"
             X-Ratelimit-Remaining-Tokens:
                 - "399460"
             X-Ratelimit-Reset-Requests:
@@ -83,9 +84,9 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 1s
             X-Request-Id:
-                - NgAf-tuhHBgUirUP
+                - 7g4toIKfGqB4ALfF
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 182ms
+        duration: 235ms

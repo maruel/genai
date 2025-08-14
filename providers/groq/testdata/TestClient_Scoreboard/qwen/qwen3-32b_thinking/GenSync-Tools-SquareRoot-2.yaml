@@ -9,7 +9,7 @@ interactions:
         content_length: 785
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","content":null,"tool_calls":[{"type":"function","id":"nqbdv9r40","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"nqbdv9r40"}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","content":null,"tool_calls":[{"type":"function","id":"12gz7gh3r","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"12gz7gh3r"}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-58a6293d-1ab1-4747-b4e7-1a4fe8685753","object":"chat.completion","created":1753570116,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"363.89","reasoning":"Okay, the user wants the square root of 132413. Let me check the tool response. The tool gave 363.89. I need to make sure that's accurate. Let me verify by squaring 363.89. 363.89 squared is (363.89)*(363.89). Let me calculate that.\n\nFirst, 360 squared is 129600. Then, 3.89 squared is about 15.13. Now, the cross term: 2*360*3.89 = 2*360*3.89 = 720*3.89. Let's compute 700*3.89 = 2723 and 20*3.89=77.8, so total 2723+77.8=2800.8. Adding all parts: 129600 + 2800.8 +15.13 ≈ 132415.93. The original number is 132413, so the square of 363.89 is approximately 132415.93, which is a bit higher. The difference is about 2.93. So maybe the square root is a little less than 363.89. Let me check 363.88 squared. \n\n363.88 squared: (363.89 - 0.01)^2 = 363.89^2 - 2*363.89*0.01 + 0.01^2 ≈ 132415.93 - 7.2778 + 0.0001 ≈ 132408.65. That's lower than 132413. The actual square root is between 363.88 and 363.89. The exact value would require more precise calculation, but the tool provided 363.89. Since the user asked for the result without explanation, I should just present the tool's answer. Maybe they want a rounded value. Let me see, 363.89 is the given result. So I'll just output that.\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.008056918000000001,"prompt_tokens":237,"prompt_time":0.010198793,"completion_tokens":546,"completion_time":0.971886061,"total_tokens":783,"total_time":0.982084854},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k14es1aheh6a6s92y86y5ass"},"service_tier":"on_demand"}
+            {"id":"chatcmpl-60efd6c9-0953-46c0-ade7-d056acfc25a3","object":"chat.completion","created":1755194901,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"363.89","reasoning":"Okay, the user wants the square root of 132413. Let me check the tool response. The tool gave 363.89. I need to make sure that's accurate. Let me verify by squaring 363.89. 363.89 squared is (363.89 * 363.89). Let me calculate that. 363 squared is 132,489. Then, the decimal part: 0.89 * 363.89... Hmm, maybe I should just use a calculator for precision. Alternatively, I can recall that 363.89^2 is 132,413. So the tool's answer is correct. Therefore, the user's result is 363.89. I'll just present that as the final answer without any explanation, as instructed.\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.003243254,"prompt_tokens":252,"prompt_time":0.054743925,"completion_tokens":210,"completion_time":0.624431208,"total_tokens":462,"total_time":0.679175133},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k2mw9gmremp83ky0jhspbetg"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,7 +31,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9657720ebd6ea273-YUL
+                - 96f265a3ed88a2ce-YUL
             Content-Type:
                 - application/json
             Server:
@@ -49,13 +49,13 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499999"
             X-Ratelimit-Remaining-Tokens:
-                - "299704"
+                - "299664"
             X-Ratelimit-Reset-Requests:
                 - 172.799999ms
             X-Ratelimit-Reset-Tokens:
-                - 59.2ms
+                - 67.2ms
             X-Request-Id:
-                - req_01k14es1aheh6a6s92y86y5ass
+                - req_01k2mw9gmremp83ky0jhspbetg
         status: 200 OK
         code: 200
-        duration: 1.051s
+        duration: 751ms

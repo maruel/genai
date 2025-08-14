@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 152
+        content_length: 174
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":"Say hello. Use only one word."},{"role":"user","content":"\n\n/think"}],"model":"qwen/qwen3-32b","stream":false}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."},{"type":"text","text":"\n\n/think"}]}],"model":"qwen/qwen3-32b","stream":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-9c04b7ad-5c43-49f5-912b-19697e2a9593","object":"chat.completion","created":1753570106,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, the user wants me to say hello using only one word. Let me think... They previously said \"Say hello. Use only one word.\" and I responded with \"Hello,\" which was correct. Now, the user has just sent an empty message.\n\nHmm, maybe they want another greeting but in the same way. Wait, but I already used \"Hello\" before. Should I use a different greeting? Like \"Hi\" or \"Hey\"? But the user didn't specify a different word, just to use one word again. Since the first response was \"Hello,\" maybe they just want me to repeat it. But perhaps they want to test if I can respond with a one-word greeting again. However, they might be expecting the same word unless there's a reason to change it. Let me check if there's any context or pattern here. The user's messages are simple, maybe just testing one-word responses. I should stick with \"Hello\" again to be consistent. Wait, but if they sent an empty message, maybe it's a mistake, so the best approach is to reply with the same one-word greeting as before. So, \"Hello\" is the correct response here.\n\u003c/think\u003e\n\nHello"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.006459888,"prompt_tokens":28,"prompt_time":0.00727202,"completion_tokens":247,"completion_time":0.771515934,"total_tokens":275,"total_time":0.778787954},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k14erqdqegstfkqbbf6bav4b"},"service_tier":"on_demand"}
+            {"id":"chatcmpl-892c089d-d9a2-4082-aba1-5a60b3fe1f8c","object":"chat.completion","created":1755194889,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, the user asked me to say hello using only one word. Let me think about the best way to respond. The word \"hello\" itself is the most straightforward and appropriate here. I need to make sure it's exactly one word. Let me check if there's any hidden characters or spaces. Nope, just \"hello\". That should work. I'll go with that.\n\u003c/think\u003e\n\nHello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.001831728,"prompt_tokens":18,"prompt_time":0.00719352,"completion_tokens":84,"completion_time":0.206398331,"total_tokens":102,"total_time":0.213591851},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k2mw95f6e5dvz7qpxx2a1zpj"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,7 +31,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 965771cf5beea273-YUL
+                - 96f2655c4b3ea2ce-YUL
             Content-Type:
                 - application/json
             Server:
@@ -49,13 +49,13 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499999"
             X-Ratelimit-Remaining-Tokens:
-                - "299980"
+                - "299985"
             X-Ratelimit-Reset-Requests:
                 - 172.799999ms
             X-Ratelimit-Reset-Tokens:
-                - 4ms
+                - 3ms
             X-Request-Id:
-                - req_01k14erqdqegstfkqbbf6bav4b
+                - req_01k2mw95f6e5dvz7qpxx2a1zpj
         status: 200 OK
         code: 200
-        duration: 908ms
+        duration: 325ms

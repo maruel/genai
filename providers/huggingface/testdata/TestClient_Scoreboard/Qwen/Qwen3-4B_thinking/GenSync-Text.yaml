@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 151
+        content_length: 173
         host: router.huggingface.co
         body: |
-            {"model":"Qwen/Qwen3-4B","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."},{"role":"user","content":"\n\n/think"}]}
+            {"model":"Qwen/Qwen3-4B","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."},{"type":"text","text":"\n\n/think"}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,8 +19,9 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 1734
-        body: '{"id":"chatcmpl-b5ed08b03e504b8aae330b8bcd830979","choices":[{"finish_reason":"stop","index":0,"logprobs":null,"message":{"content":"<think>\nOkay, the user asked me to say hello using only one word. Let me think about the best way to respond.\n\nFirst, I need to make sure I understand the request correctly. They want a greeting that''s just one word. So, I can''t use a phrase or multiple words. The standard greeting \"Hello\" is two words, so that''s not allowed. \n\nWhat single-word greetings are there? \"Hi\" is one word. \"Hey\" is another. \"Salutations\" is longer. Maybe \"Greetings\" but that''s two words. \"Salve\" is a different term but might not be as common. \n\nThe user might be looking for a simple, common word. \"Hi\" is the most straightforward. It''s friendly and widely used. \"Hey\" is more casual. Which one is better? The original instruction was to say hello, so \"Hi\" is a direct alternative. \n\nI should check if there''s any cultural or context-specific consideration. Since the user didn''t specify, I''ll go with the most universal choice. \"Hi\" is safe and appropriate. \n\nAlso, the user might be testing if I can follow instructions strictly. Making sure I don''t add anything extra. Just the one word. Alright, I think \"Hi\" is the right answer here.\n</think>\n\nHi","refusal":null,"role":"assistant","annotations":null,"audio":null,"function_call":null,"tool_calls":[],"reasoning_content":null},"stop_reason":null}],"created":1753570466,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion","service_tier":null,"system_fingerprint":null,"usage":{"completion_tokens":271,"prompt_tokens":23,"total_tokens":294,"completion_tokens_details":null,"prompt_tokens_details":null},"prompt_logprobs":null}'
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-aa4849373e8041e993320928ae8cacd1","choices":[{"finish_reason":"stop","index":0,"logprobs":null,"message":{"content":"<think>\nOkay, the user said, \"Say hello. Use only one word.\" Alright, let''s break this down. They want a greeting, but it has to be just one word. The most common greeting is \"Hello,\" but that''s two words. Wait, maybe they mean a single word that''s a greeting. Like \"Hi\" or \"Hey.\" But \"Hello\" is often used as a greeting. However, the user specified \"only one word,\" so maybe they want something like \"Hi\" which is one word. Alternatively, maybe they want the word \"Hello\" but with a single word count. Wait, \"Hello\" is one word, right? It''s spelled as one word. So maybe that''s the answer. But maybe the user is being tricky. Let me check. The instruction says \"Use only one word,\" so \"Hello\" is a single word. So the answer should be \"Hello.\" But sometimes people might think \"Hi\" is more concise. But the user didn''t specify length, just one word. So \"Hello\" is appropriate. I should confirm that \"Hello\" is considered one word. Yes, it''s one word. So the answer is \"Hello.\"\n</think>\n\nHello.","refusal":null,"role":"assistant","annotations":null,"audio":null,"function_call":null,"tool_calls":[],"reasoning_content":null},"stop_reason":null}],"created":1755194869,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion","service_tier":null,"system_fingerprint":null,"usage":{"completion_tokens":251,"prompt_tokens":18,"total_tokens":269,"completion_tokens_details":null,"prompt_tokens_details":null},"prompt_logprobs":null}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
@@ -28,8 +29,6 @@ interactions:
                 - '*'
             Access-Control-Expose-Headers:
                 - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
-            Content-Length:
-                - "1734"
             Content-Type:
                 - application/json
             Cross-Origin-Opener-Policy:
@@ -39,17 +38,19 @@ interactions:
             Strict-Transport-Security:
                 - max-age=31536000; includeSubDomains
             Vary:
-                - Origin
+                - Accept-Encoding, Origin
             Via:
-                - 1.1 2080aae7ace369c71819923852e1b17e.cloudfront.net (CloudFront)
+                - 1.1 412b0215b557780a6efcc1651037dc90.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - srzOVDEyU5AWxG-rJyyNNtCdgryb-Dda3JhMtCvz9-e-SjYvvk3TmA==
+                - qdY-pTQmP1KUyTgFhcfF_6iv7EPohYugKeUtuFMszSn1_VK1Z3B8Hw==
             X-Amz-Cf-Pop:
-                - YUL62-P2
+                - YTO50-P1
             X-Cache:
                 - Miss from cloudfront
             X-Inference-Id:
-                - chatcmpl-b5ed08b03e504b8aae330b8bcd830979
+                - chatcmpl-aa4849373e8041e993320928ae8cacd1
+            X-Inference-Provider:
+                - nebius
             X-Powered-By:
                 - huggingface-moon
             X-Ratelimit-Dynamic-Period-Remaining:
@@ -71,9 +72,9 @@ interactions:
             X-Ratelimit-Remaining-Tokens:
                 - "400000"
             X-Request-Id:
-                - B9Lnwnt4N3bMELm_
+                - 3prrqNlrN2XKT_jQ
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 2.012s
+        duration: 1.893s

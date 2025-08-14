@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 326
+        content_length: 323
         host: router.huggingface.co
         body: |
-            {"model":"Qwen/Qwen3-4B","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]},{"role":"user","content":"\n\n/think"}]}
+            {"model":"Qwen/Qwen3-4B","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}},{"type":"text","text":"\n\n/think"}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -41,17 +41,19 @@ interactions:
             Vary:
                 - Origin
             Via:
-                - 1.1 2080aae7ace369c71819923852e1b17e.cloudfront.net (CloudFront)
+                - 1.1 412b0215b557780a6efcc1651037dc90.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - HtrbI0_eS1teZ7Yb3StCphO_2exxSeDlDiAaIudBuOlZl-wdAmwsgQ==
+                - tJ6ZoAkSxWwQjXXDgOAxirAJxmwSmJP0mT0tzKCIvqE5YKmP5cvTHw==
             X-Amz-Cf-Pop:
-                - YUL62-P2
+                - YTO50-P1
             X-Cache:
                 - Error from cloudfront
+            X-Inference-Provider:
+                - nebius
             X-Powered-By:
                 - huggingface-moon
             X-Ratelimit-Dynamic-Period-Remaining:
-                - 890s
+                - 891s
             X-Ratelimit-Dynamic-Period-Usage-Requests:
                 - 0%
             X-Ratelimit-Dynamic-Period-Usage-Tokens:
@@ -71,9 +73,9 @@ interactions:
             X-Ratelimit-Reset-Requests:
                 - 1s
             X-Request-Id:
-                - wwIn9PEigYgb1T7V
+                - PbzfGk-1CG5TNF_h
             X-Robots-Tag:
                 - none
         status: 400 Bad Request
         code: 400
-        duration: 484ms
+        duration: 244ms

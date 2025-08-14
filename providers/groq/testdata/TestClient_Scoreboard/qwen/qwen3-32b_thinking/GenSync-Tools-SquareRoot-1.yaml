@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 610
+        content_length: 632
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"user","content":"\n\n/think"}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"type":"text","text":"\n\n/think"}]}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-900fbb52-5290-4348-be72-583a48303397","object":"chat.completion","created":1753570116,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Okay, so the user wants me to use the square_root tool to calculate the square root of 132413 and just give the result without any explanation. Let me think about how to approach this.\n\nFirst, I need to check if the square_root function is available. The user provided the function signature in the tools section. The function takes a number as a parameter. The number here is 132413. \n\nI should make sure that 132413 is a non-negative number because the square root of a negative number isn't a real number. Since 132413 is positive, it's valid. \n\nNow, I need to call the square_root function with number=132413. The tool call should be in the specified JSON format within the tool_call tags. \n\nWait, the user said to reply with only the result and not give an explanation. So the final answer should just be the square root value. But I need to first correctly make the tool call so the system can process it and then provide the result. \n\nLet me double-check the function parameters. The function requires a \"number\" property of type number. The value 132413 is a number, so that's correct. \n\nI'll structure the tool_call as follows:\n{\n  \"name\": \"square_root\",\n  \"arguments\": {\n    \"number\": 132413\n  }\n}\n\nOnce this is processed, the system will return the square root, which I can then present as the final answer. The user wants no explanation, just the result. So after the tool returns the value, I'll box it as the final output.\n","tool_calls":[{"id":"nqbdv9r40","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.00759666,"prompt_tokens":206,"prompt_time":0.008256398,"completion_tokens":383,"completion_time":0.722400634,"total_tokens":589,"total_time":0.730657032},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k14es0hffh5tap8q99k9va58"},"service_tier":"on_demand"}
+            {"id":"chatcmpl-278361cf-9504-4204-b0c8-ce0c1bb47073","object":"chat.completion","created":1755194901,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Okay, let's see. The user wants me to use the square_root function to calculate the square root of 132413 and just return the result without any explanation. Alright, first I need to check if the function is available.\n\nLooking at the tools provided, there's a function called square_root that takes a number as a parameter. The parameters require a \"number\" of type number. So, 132413 is a valid input. I just need to call that function with 132413 as the argument. \n\nWait, the user said to reply with only the result. So after getting the square root, I should output it directly. Let me make sure I don't add any extra text. The function will return the square root, so I just need to pass that number back in the response. \n\nLet me test the calculation quickly. The square of 364 is 132,496, which is a bit higher than 132,413. The square of 363 is 131,769. So the square root of 132,413 should be between 363 and 364. Maybe around 363.8? But the exact value would depend on the function's calculation. \n\nBut I don't need to compute it manually; the function will handle that. So I'll call the function with 132413 and then output the result as instructed. No need for any additional steps or explanations. Let me structure the tool call correctly. The name is \"square_root\" and the arguments should be {\"number\": 132413}. \n\nDouble-checking the parameters: the function requires an object with \"number\" property. Yep, that's there. Alright, that's all. Just make sure the response is the result from the function, no extra words.\n","tool_calls":[{"id":"12gz7gh3r","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.003180741,"prompt_tokens":211,"prompt_time":0.01896327,"completion_tokens":433,"completion_time":1.267999811,"total_tokens":644,"total_time":1.2869630810000001},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k2mw9fa5emev47ahcgxa5xmx"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,7 +31,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96577209ad8ba273-YUL
+                - 96f2659b69b1a2ce-YUL
             Content-Type:
                 - application/json
             Server:
@@ -49,13 +49,13 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499999"
             X-Ratelimit-Remaining-Tokens:
-                - "299957"
+                - "299962"
             X-Ratelimit-Reset-Requests:
                 - 172.799999ms
             X-Ratelimit-Reset-Tokens:
-                - 8.6ms
+                - 7.6ms
             X-Request-Id:
-                - req_01k14es0hffh5tap8q99k9va58
+                - req_01k2mw9fa5emev47ahcgxa5xmx
         status: 200 OK
         code: 200
-        duration: 806ms
+        duration: 1.359s

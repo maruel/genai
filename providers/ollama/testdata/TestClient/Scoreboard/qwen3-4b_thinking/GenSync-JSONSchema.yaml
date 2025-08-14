@@ -20,7 +20,7 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 319
-        body: '{"model":"qwen3:4b","created_at":"2025-08-03T09:33:35.503475233Z","message":{"role":"assistant","content":"{\n  \"is_fruit\": true\n}"},"done_reason":"stop","done":true,"total_duration":1271939141,"load_duration":20535285,"prompt_eval_count":27,"prompt_eval_duration":52688456,"eval_count":11,"eval_duration":546035156}'
+        body: '{"model":"qwen3:4b","created_at":"2025-08-14T18:22:31.737380034Z","message":{"role":"assistant","content":"{\n  \"is_fruit\": true\n}"},"done_reason":"stop","done":true,"total_duration":1414435295,"load_duration":21898389,"prompt_eval_count":27,"prompt_eval_duration":67195334,"eval_count":11,"eval_duration":602583247}'
         headers:
             Content-Length:
                 - "319"
@@ -28,4 +28,4 @@ interactions:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 1.272s
+        duration: 1.415s

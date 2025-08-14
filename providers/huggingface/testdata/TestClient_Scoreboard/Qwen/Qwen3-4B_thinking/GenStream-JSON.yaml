@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 328
+        content_length: 350
         host: router.huggingface.co
         body: |
-            {"model":"Qwen/Qwen3-4B","stream":true,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."},{"role":"user","content":"\n\n/think"}],"response_format":{"type":"json_object"},"stream_options":{"include_usage":true}}
+            {"model":"Qwen/Qwen3-4B","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."},{"type":"text","text":"\n\n/think"}]}],"response_format":{"type":"json_object"},"stream_options":{"include_usage":true}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -20,32 +20,33 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
+        uncompressed: true
         body: |+
-            data: {"id":"chatcmpl-321b628116314c3a88f6e1227772dd89","choices":[{"delta":{"content":"","role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570470,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-9568aa348a454a94a6bc60c43388d3b2","choices":[{"delta":{"content":"","role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"created":1755194878,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-321b628116314c3a88f6e1227772dd89","choices":[{"delta":{"content":"{\n"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570470,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-9568aa348a454a94a6bc60c43388d3b2","choices":[{"delta":{"content":"{\n"},"finish_reason":null,"index":0,"logprobs":null}],"created":1755194878,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-321b628116314c3a88f6e1227772dd89","choices":[{"delta":{"content":" "},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570470,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-9568aa348a454a94a6bc60c43388d3b2","choices":[{"delta":{"content":" "},"finish_reason":null,"index":0,"logprobs":null}],"created":1755194878,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-321b628116314c3a88f6e1227772dd89","choices":[{"delta":{"content":" \""},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570470,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-9568aa348a454a94a6bc60c43388d3b2","choices":[{"delta":{"content":" \""},"finish_reason":null,"index":0,"logprobs":null}],"created":1755194878,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-321b628116314c3a88f6e1227772dd89","choices":[{"delta":{"content":"is"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570470,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-9568aa348a454a94a6bc60c43388d3b2","choices":[{"delta":{"content":"is"},"finish_reason":null,"index":0,"logprobs":null}],"created":1755194878,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-321b628116314c3a88f6e1227772dd89","choices":[{"delta":{"content":"_f"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570470,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-9568aa348a454a94a6bc60c43388d3b2","choices":[{"delta":{"content":"_f"},"finish_reason":null,"index":0,"logprobs":null}],"created":1755194878,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-321b628116314c3a88f6e1227772dd89","choices":[{"delta":{"content":"ruit"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570470,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-9568aa348a454a94a6bc60c43388d3b2","choices":[{"delta":{"content":"ruit"},"finish_reason":null,"index":0,"logprobs":null}],"created":1755194878,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-321b628116314c3a88f6e1227772dd89","choices":[{"delta":{"content":"\":"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570470,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-9568aa348a454a94a6bc60c43388d3b2","choices":[{"delta":{"content":"\":"},"finish_reason":null,"index":0,"logprobs":null}],"created":1755194878,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-321b628116314c3a88f6e1227772dd89","choices":[{"delta":{"content":" true"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570470,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-9568aa348a454a94a6bc60c43388d3b2","choices":[{"delta":{"content":" true"},"finish_reason":null,"index":0,"logprobs":null}],"created":1755194878,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-321b628116314c3a88f6e1227772dd89","choices":[{"delta":{"content":"\n"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570470,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-9568aa348a454a94a6bc60c43388d3b2","choices":[{"delta":{"content":"\n"},"finish_reason":null,"index":0,"logprobs":null}],"created":1755194878,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-321b628116314c3a88f6e1227772dd89","choices":[{"delta":{"content":"}"},"finish_reason":null,"index":0,"logprobs":null}],"created":1753570470,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-9568aa348a454a94a6bc60c43388d3b2","choices":[{"delta":{"content":"}"},"finish_reason":null,"index":0,"logprobs":null}],"created":1755194878,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-321b628116314c3a88f6e1227772dd89","choices":[{"delta":{"content":""},"finish_reason":"stop","index":0,"logprobs":null,"stop_reason":null}],"created":1753570470,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-9568aa348a454a94a6bc60c43388d3b2","choices":[{"delta":{"content":""},"finish_reason":"stop","index":0,"logprobs":null,"stop_reason":null}],"created":1755194878,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-321b628116314c3a88f6e1227772dd89","choices":[],"created":1753570470,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk","usage":{"completion_tokens":11,"prompt_tokens":44,"total_tokens":55}}
+            data: {"id":"chatcmpl-9568aa348a454a94a6bc60c43388d3b2","choices":[],"created":1755194878,"model":"Qwen/Qwen3-4B-fast","object":"chat.completion.chunk","usage":{"completion_tokens":11,"prompt_tokens":40,"total_tokens":51}}
 
             data: [DONE]
 
@@ -65,21 +66,23 @@ interactions:
             Strict-Transport-Security:
                 - max-age=31536000; includeSubDomains
             Vary:
-                - Origin
+                - Accept-Encoding, Origin
             Via:
-                - 1.1 2080aae7ace369c71819923852e1b17e.cloudfront.net (CloudFront)
+                - 1.1 412b0215b557780a6efcc1651037dc90.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - TfhFoOGrsKUguadYFq_B9dkXswQ8YNQ2vfwcr1RyRsmUNUNjbjDs0w==
+                - auJV7j_uJS7XDLhkXEmcegO4S1SZy1UvTGG8UDiF1bE1hdCUHtS7uw==
             X-Amz-Cf-Pop:
-                - YUL62-P2
+                - YTO50-P1
             X-Cache:
                 - Miss from cloudfront
             X-Inference-Id:
-                - chatcmpl-321b628116314c3a88f6e1227772dd89
+                - chatcmpl-9568aa348a454a94a6bc60c43388d3b2
+            X-Inference-Provider:
+                - nebius
             X-Powered-By:
                 - huggingface-moon
             X-Ratelimit-Dynamic-Period-Remaining:
-                - 897s
+                - 891s
             X-Ratelimit-Dynamic-Period-Usage-Requests:
                 - 0%
             X-Ratelimit-Dynamic-Period-Usage-Tokens:
@@ -101,9 +104,9 @@ interactions:
             X-Ratelimit-Reset-Tokens:
                 - 1s
             X-Request-Id:
-                - utI2F8H1U2Bcorb9
+                - E0rVnrbdNlu0NC1c
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 390ms
+        duration: 700ms

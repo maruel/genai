@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 286
+        content_length: 283
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]},{"role":"user","content":"\n\n/think"}],"model":"qwen/qwen3-32b","stream":false}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"},{"type":"text","text":"\n\n/think"}]}],"model":"qwen/qwen3-32b","stream":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,7 +21,8 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: "{\"id\":\"chatcmpl-fcf07cc8-16c9-4c22-8164-23395238fe4e\",\"object\":\"chat.completion\",\"created\":1753570119,\"model\":\"qwen/qwen3-32b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\\u003cthink\\u003e\\nOkay, let's see. The user asked, \\\"What is the capital of Quackiland?\\\" Earlier, they provided some information that the capital of Quackiland is Quack and that the Big Canard Statue is located there. Now, the user is asking again for the capital.\\n\\nFirst, I need to check if there's any new information or if the user is changing the question. They didn't add any new details; it's the same question as before. So the answer should still be Quack. But wait, maybe there's a trick here? Like, could it be a test of my memory or a setup for a follow-up? I should stick to the facts given. The initial statement clearly states the capital is Quack. The mention of the Big Canard Statue is probably just extra info to confirm the location but isn't relevant to the question.\\n\\nIs there any reason to doubt that? Like, maybe the user is asking to test if I can recognize the same question again? Since the user is using the same terms, Quackiland and Quack, the answer is straightforward. I should just reiterate that the capital is Quack. No need to complicate it. Also, the user might be reinforcing the information through repetition, so confirming it again makes sense. The answer is Quack.\\n\\u003c/think\\u003e\\n\\nThe capital of Quackiland is **Quack**, as explicitly stated in your initial question. The mention of the Big Canard Statue in Quack serves to reinforce the location but does not alter the fact that Quack remains the capital. \U0001F60A\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.006565395999999999,\"prompt_tokens\":49,\"prompt_time\":0.001983426,\"completion_tokens\":322,\"completion_time\":0.759195546,\"total_tokens\":371,\"total_time\":0.761178972},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_78ac7f3229\",\"x_groq\":{\"id\":\"req_01k14es3f6ehaa2bhbav9mn7mz\"},\"service_tier\":\"on_demand\"}\n"
+        body: |
+            {"id":"chatcmpl-e837483d-8a20-46a0-aa8f-03222526b798","object":"chat.completion","created":1755194904,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nAlright, let's see. The problem states that the capital of Quackiland is Quack, and the Big Canard Statue is located in Quack. Then it asks, \"What is the capital of Quackiland?\" \n\nHmm, this seems straightforward, but maybe there's a trick here. Let me parse the information again carefully. The first sentence says, \"The capital of Quackiland is Quack.\" The second sentence adds that the Big Canard Statue is in Quack. The question repeats the first part: What is the capital of Quackiland? \n\nWait, maybe the mention of the Big Canard Statue is a distraction, but the question is just asking for the capital of Quackiland again, which is stated as Quack. So the answer should just be Quack. But let me check if there's any wordplay here. The word \"Quack\" is associated with ducks, and \"Canard\" is French for \"duck.\" Maybe there's a play on words here where \"Canard\" is part of the country's name. Let me think.\n\nQuackiland's capital is Quack. The Big Canard Statue is in Quack. The question is the same as the first statement. Unless \"Big Canard\" is a place or another name for Quack, but the problem doesn't state that. It just says the statue is located there. Since the question is the same as the first statement, the answer must be Quack. Maybe trying to trick the user into overthinking, but the answer is straightforward from the first sentence given.\n\nI think the answer is Quack because the first sentence explicitly states it, and the rest is just redundant information. So the capital is Quack.\n\u003c/think\u003e\n\nThe question asks: \"What is the capital of Quackiland?\" The first part of the statement clearly answers it: **Quack** is the capital of Quackiland. The additional information about the Big Canard Statue is provided for context but does not affect the answer.\n\n**Answer:** The capital of Quackiland is **Quack**."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.002090071,"prompt_tokens":39,"prompt_time":0.010464248,"completion_tokens":429,"completion_time":1.019775599,"total_tokens":468,"total_time":1.030239847},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k2mw9jzqemx8r343y44byjgk"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -30,7 +31,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9657721c6b19a273-YUL
+                - 96f265b2eac7a2ce-YUL
             Content-Type:
                 - application/json
             Server:
@@ -48,13 +49,13 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499999"
             X-Ratelimit-Remaining-Tokens:
-                - "299870"
+                - "299724"
             X-Ratelimit-Reset-Requests:
                 - 172.799999ms
             X-Ratelimit-Reset-Tokens:
-                - 26ms
+                - 55.2ms
             X-Request-Id:
-                - req_01k14es3f6ehaa2bhbav9mn7mz
+                - req_01k2mw9jzqemx8r343y44byjgk
         status: 200 OK
         code: 200
-        duration: 832ms
+        duration: 1.129s

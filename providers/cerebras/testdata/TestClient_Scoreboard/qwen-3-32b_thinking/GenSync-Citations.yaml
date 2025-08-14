@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 300
+        content_length: 273
         host: api.cerebras.ai
         body: |
-            {"model":"qwen-3-32b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\nWhat is the capital of Quackiland?\n"},{"role":"user","content":"\n\n/think"}]}
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\nWhat is the capital of Quackiland?\n\n\n/think\n"}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-34191c06-f161-4c77-9cfd-99b26d09d16b","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, so the user is asking for the capital of Quackiland. Let me look at the information provided.\n\nFirst, the prompt says, \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\" Then they mentioned the same thing again. The user hasn''t provided any new information beyond that. The question is straightforward, just asking for the capital. The answer seems to be clearly stated right there in the initial statement. It mentions that Quack is the capital, so I should just confirm that. I don''t see any conflicting information or anything that would require further analysis. The repetition of Big Canard Statue''s location in Quack doesn''t affect the capital''s name. So the answer is Quack, the capital of Quackiland. Let me check again to make sure I didn''t miss any hidden details. Nope, all the necessary information is given upfront. The user probably just wants a direct answer here.\n</think>\n\nThe capital of Quackiland is Quack.","role":"assistant"}}],"created":1755179774,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion","usage":{"prompt_tokens":66,"completion_tokens":210,"total_tokens":276,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00015118,"prompt_time":0.002897603,"completion_time":0.134365275,"total_time":0.1382451057434082,"created":1755179774}}'
+        body: '{"id":"chatcmpl-6420832d-1cf6-4b6d-aadc-2dc2a905ecf6","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, let''s see. The user asked, \"What is the capital of Quackiland?\" And the first thing I notice is that the provided information is repeated twice: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\" Hmm, maybe that''s just a typo or a mistake in the input? But I should focus on the actual question.\n\nSo, the question is straightforward: asking for the capital of Quackiland. The answer is directly given in the first sentence. But wait, the second sentence mentions the Big Canard Statue being in Quack. Maybe that''s a hint or a red herring? Let me think. Since the name of the capital is Quack, and there''s a statue called Big Canard there... Could \"Quack\" be a play on words or part of a joke? I remember that \"Canard\" is a French word for \"duck,\" which is related to the term \"Quackland\"—wait, Quackiland in the question. So maybe the country is named Quackiland, and the capital is Quack? That makes sense, because if the country is Quackiland, then its capital being Quack is similar to how the USA''s capital is Washington, D.C., but in this case, it''s a bit more onomatopoeic with \"quack.\"\n\nBut the user is probably just testing if I can extract the correct answer from the given data. The repetition might be to make sure the answer is clear. The key point is that the answer is stated in the first line: \"The capital of Quackiland is Quack.\" So the answer would naturally be Quack. Let me just make sure there''s no trick here. The mention of the Big Canard Statue in Quack might be there to see if I can recognize that \"Canard\" is French for duck, and \"Quack\" is an onomatopoeia for a duck''s sound, but in the context of the question, it''s just providing a detail that''s not necessary for answering the main question. Since the question is about the capital, and the first two sentences both confirm Quack as the capital, the answer is Quack. \n\nWait, could there be confusion with the word \"Quack\" itself? Like, maybe it''s a play on words, but no, the question states that the capital is Quack, so unless there''s a hidden trick where the actual answer is different, but given the information, there''s nothing to suggest that. The repetition of the capital''s name is clear. I should also check if there''s a possible mistake in the capital''s name. For example, in some fictional places, they might have similar-sounding names. But here, both instances state the capital is Quack. The Big Canard Statue just gives a landmark in Quack, which again, might be a nod to the duck theme. \"Canard\" is duck in French, so Quack is the capital, and the Big Duck Statue is there. But even if that''s the case, the capital is explicitly named as Quack. \n\nI think the answer is Quack. The user might be testing attention to the repeated answer in the text. Unless there''s a trick question where the answer is different, but based on the provided data, there''s no other information. The presence of the same sentence twice is likely to emphasize the answer, maybe to mimic a situation where you have duplicate entries and need to spot the correct one quickly. So the answer is Quack.\n</think>\n\nThe capital of Quackiland is **Quack**, as explicitly stated in the provided information. The repeated mention of the Big Canard Statue in Quack serves to reinforce the location but does not alter the answer. \n\n**Answer:**  \nQuack.","role":"assistant"}}],"created":1755195053,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion","usage":{"prompt_tokens":62,"completion_tokens":785,"total_tokens":847,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":1.884282476,"prompt_time":0.004282362,"completion_time":0.661835482,"total_time":2.5517690181732178,"created":1755195053}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96f0f454298ea2ba-YUL
+                - 96f269593bafa2e4-YUL
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-34191c06-f161-4c77-9cfd-99b26d09d16b
+                - chatcmpl-6420832d-1cf6-4b6d-aadc-2dc2a905ecf6
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -46,15 +46,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "64000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14400"
+                - "14381"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "64000"
+                - "54830"
             X-Ratelimit-Reset-Requests-Day:
-                - "36225.59678244591"
+                - "20944.3065097332"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "45.59678244590759"
+                - "4.306509733200073"
             X-Request-Id:
-                - 96f0f454298ea2ba-YUL
+                - 96f269593bafa2e4-YUL
         status: 200 OK
         code: 200
-        duration: 354ms
+        duration: 2.763s

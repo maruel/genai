@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 113
+        content_length: 220
         host: localhost
         body: |
-            {"model":"gemma3:4b","messages":[{"role":"user","content":"What is the capital of Quackiland?"}],"stream":false}
+            {"model":"gemma3:4b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 470
-        body: "{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-03T08:34:47.736534158Z\",\"message\":{\"role\":\"assistant\",\"content\":\"This is a fun question! Since Quackiland is a fictional country, its capital is **Duckburg**. \\n\\nIt’s the home of Superman Duck and the Mystery Inc. detectives! \U0001F986\U0001F389\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":10073871028,\"load_duration\":120389490,\"prompt_eval_count\":18,\"prompt_eval_duration\":981008952,\"eval_count\":43,\"eval_duration\":8971385407}"
+        content_length: 378
+        body: "{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:30:27.744127939Z\",\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is Quack. \\n\\nThe question is a bit of a trick! \U0001F60A\\n\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":3163224142,\"load_duration\":1464607356,\"prompt_eval_count\":40,\"prompt_eval_duration\":431592015,\"eval_count\":24,\"eval_duration\":1251821950}"
         headers:
             Content-Length:
-                - "470"
+                - "378"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 10.075s
+        duration: 3.164s

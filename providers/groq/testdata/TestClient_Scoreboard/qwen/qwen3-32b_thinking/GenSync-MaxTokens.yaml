@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 200
+        content_length: 222
         host: api.groq.com
         body: |
-            {"max_completion_tokens":16,"messages":[{"role":"user","content":"Explain the theory of relativity in great details."},{"role":"user","content":"\n\n/think"}],"model":"qwen/qwen3-32b","stream":false}
+            {"max_completion_tokens":16,"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."},{"type":"text","text":"\n\n/think"}]}],"model":"qwen/qwen3-32b","stream":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-98dd3f94-11b2-4ffa-93a7-20e4eb8e07e6","object":"chat.completion","created":1753570110,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, the user asked for an explanation of the theory of relativity"},"logprobs":null,"finish_reason":"length"}],"usage":{"queue_time":0.006156661,"prompt_tokens":31,"prompt_time":0.001259575,"completion_tokens":16,"completion_time":0.024354087,"total_tokens":47,"total_time":0.025613662},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k14ertvcfh58vpzx7949gm0d"},"service_tier":"on_demand"}
+            {"id":"chatcmpl-b642d81b-8dbd-4cf0-b655-2d590389e259","object":"chat.completion","created":1755194890,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, so I need to explain the theory of relativity in great"},"logprobs":null,"finish_reason":"length"}],"usage":{"queue_time":0.001656953,"prompt_tokens":21,"prompt_time":0.010084007,"completion_tokens":16,"completion_time":0.016771037,"total_tokens":37,"total_time":0.026855044},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k2mw96edfj9rk3pd047qbywj"},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,7 +31,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 965771e53d49a273-YUL
+                - 96f26562abeda2ce-YUL
             Content-Type:
                 - application/json
             Server:
@@ -47,15 +47,15 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "300000"
             X-Ratelimit-Remaining-Requests:
-                - "499999"
+                - "499995"
             X-Ratelimit-Remaining-Tokens:
-                - "299405"
+                - "299980"
             X-Ratelimit-Reset-Requests:
-                - 172.799999ms
+                - 735ms
             X-Ratelimit-Reset-Tokens:
-                - 119ms
+                - 4ms
             X-Request-Id:
-                - req_01k14ertvcfh58vpzx7949gm0d
+                - req_01k2mw96edfj9rk3pd047qbywj
         status: 200 OK
         code: 200
-        duration: 97ms
+        duration: 92ms

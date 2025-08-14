@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 326
+        content_length: 323
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]},{"role":"user","content":"\n\n/think"}],"model":"qwen/qwen3-32b","stream":true}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}},{"type":"text","text":"\n\n/think"}]}],"model":"qwen/qwen3-32b","stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,9 +19,9 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 91
+        content_length: 92
         body: |
-            {"error":{"message":"message[0].content must be a string","type":"invalid_request_error"}}
+            {"error":{"message":"messages[0].content must be a string","type":"invalid_request_error"}}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -30,9 +30,9 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9657721e3de9a273-YUL
+                - 96f265c4cec0a2ce-YUL
             Content-Length:
-                - "91"
+                - "92"
             Content-Type:
                 - application/json
             Server:
@@ -44,7 +44,7 @@ interactions:
             X-Groq-Region:
                 - msp
             X-Request-Id:
-                - req_01k14es3r2ep0s5enp8hd4yrbk
+                - req_01k2mw9ns9fmft8smhfnc8tz2k
         status: 400 Bad Request
         code: 400
-        duration: 65ms
+        duration: 75ms

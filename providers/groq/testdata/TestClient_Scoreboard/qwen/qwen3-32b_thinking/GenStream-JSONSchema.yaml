@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 467
+        content_length: 489
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."},{"role":"user","content":"\n\n/think"}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"],"name":"response"}},"stream":true}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."},{"type":"text","text":"\n\n/think"}]}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"],"name":"response"}},"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -30,7 +30,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 965771fa9ddea273-YUL
+                - 96f26589b962a2ce-YUL
             Content-Length:
                 - "204"
             Content-Type:
@@ -44,7 +44,7 @@ interactions:
             X-Groq-Region:
                 - msp
             X-Request-Id:
-                - req_01k14ery68eh1rc9as0axj7879
+                - req_01k2mw9cjwem5twgy0v0gxv8m0
         status: 400 Bad Request
         code: 400
-        duration: 79ms
+        duration: 142ms

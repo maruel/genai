@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 609
+        content_length: 631
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"user","content":"\n\n/think"}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":true,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"type":"text","text":"\n\n/think"}]}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":true,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,11 +21,11 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-407a492c-07cc-493c-9148-574e5e06eda6","object":"chat.completion.chunk","created":1753570113,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-3691e317-d7e4-4c9c-a9e5-d7b681c40d16","object":"chat.completion.chunk","created":1755194897,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01k2mw9cpmem6bsn2jw4w4tw3q"}}
 
-            data: {"id":"chatcmpl-407a492c-07cc-493c-9148-574e5e06eda6","object":"chat.completion.chunk","created":1753570114,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"tool_calls":[{"id":"xqvgxqfwk","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-3691e317-d7e4-4c9c-a9e5-d7b681c40d16","object":"chat.completion.chunk","created":1755194897,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"tool_calls":[{"id":"bamtdfwdh","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-407a492c-07cc-493c-9148-574e5e06eda6","object":"chat.completion.chunk","created":1753570114,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01k14ery8henvana3azz04aztf","usage":{"queue_time":0.007712667999999999,"prompt_tokens":206,"prompt_time":0.010672647,"completion_tokens":125,"completion_time":0.231732758,"total_tokens":331,"total_time":0.242405405}}}
+            data: {"id":"chatcmpl-3691e317-d7e4-4c9c-a9e5-d7b681c40d16","object":"chat.completion.chunk","created":1755194897,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01k2mw9cpmem6bsn2jw4w4tw3q","usage":{"queue_time":0.013899826,"prompt_tokens":211,"prompt_time":0.017437273,"completion_tokens":121,"completion_time":0.201926691,"total_tokens":332,"total_time":0.219363964}}}
 
             data: [DONE]
 
@@ -37,7 +37,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 965771fb1e96a273-YUL
+                - 96f2658aaaaba2ce-YUL
             Content-Type:
                 - text/event-stream
             Server:
@@ -55,13 +55,13 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499999"
             X-Ratelimit-Remaining-Tokens:
-                - "299957"
+                - "299962"
             X-Ratelimit-Reset-Requests:
                 - 172.799999ms
             X-Ratelimit-Reset-Tokens:
-                - 8.6ms
+                - 7.6ms
             X-Request-Id:
-                - req_01k14ery8henvana3azz04aztf
+                - req_01k2mw9cpmem6bsn2jw4w4tw3q
         status: 200 OK
         code: 200
-        duration: 315ms
+        duration: 293ms

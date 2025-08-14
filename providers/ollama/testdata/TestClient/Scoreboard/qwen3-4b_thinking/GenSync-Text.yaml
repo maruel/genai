@@ -19,69 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 62
-        body: '{"error":"model \"qwen3:4b\" not found, try pulling it first"}'
+        content_length: 880
+        body: '{"model":"qwen3:4b","created_at":"2025-08-14T18:21:47.116299269Z","message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, the user said \"Say hello. Use only one word.\" So they want a greeting in a single word. Let me think... The most common one-word greeting is \"Hi\" or \"Hello\" itself, but \"Hello\" is two words. Wait, maybe \"Hi\" is the answer. But the user might be looking for something more specific. Let me check if there''s a one-word alternative. \"Hey\" is another possibility. But \"Hi\" is the most straightforward. I should confirm if \"Hi\" is acceptable. Yes, \"Hi\" is a single word and a common greeting. So the answer is \"Hi\".\n\u003c/think\u003e\n\nHi."},"done_reason":"stop","done":true,"total_duration":21733450110,"load_duration":2215060728,"prompt_eval_count":18,"prompt_eval_duration":67031025,"eval_count":138,"eval_duration":8076025977}'
         headers:
             Content-Length:
-                - "62"
-            Content-Type:
-                - application/json; charset=utf-8
-        status: 404 Not Found
-        code: 404
-        duration: 1ms
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 53
-        host: localhost
-        body: |
-            {"model":"qwen3:4b","insecure":false,"stream":false}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: http://localhost/api/pull
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 20
-        body: '{"status":"success"}'
-        headers:
-            Content-Length:
-                - "20"
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 29.516s
-    - id: 2
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 146
-        host: localhost
-        body: |
-            {"model":"qwen3:4b","messages":[{"role":"user","content":"Say hello. Use only one word."},{"role":"user","content":"\n\n/think"}],"stream":false}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: http://localhost/api/chat
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 967
-        body: '{"model":"qwen3:4b","created_at":"2025-08-03T09:33:15.687068922Z","message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, the user said \"Say hello. Use only one word.\" So I need to respond with a single word that means hello. The most common one is \"Hi,\" but maybe they want something more formal? Like \"Hello\" itself, but that''s two words. Wait, the instruction says \"only one word,\" so \"Hi\" is acceptable. Alternatively, \"Hey\" is another possibility. But \"Hi\" is the most standard. Let me check if there''s any other single-word greeting. Maybe \"Salut\" in French, but that''s not English. The user probably expects an English word. So \"Hi\" is the safest choice. I should make sure not to use any other words. Just \"Hi.\"\n\u003c/think\u003e\n\nHi."},"done_reason":"stop","done":true,"total_duration":20528556055,"load_duration":1269603933,"prompt_eval_count":18,"prompt_eval_duration":49895592,"eval_count":155,"eval_duration":7917664228}'
-        headers:
-            Content-Length:
-                - "967"
+                - "880"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 20.529s
+        duration: 21.734s

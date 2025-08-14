@@ -261,25 +261,30 @@ func (c *ProviderGenUsage) Unwrap() genai.Provider {
 
 //
 
-// ProviderGenAppend wraps a ProviderGen and appends a Message before processing.
+// ProviderGenAppend wraps a ProviderGen and appends a Request before processing when the messages end with a
+// user message.
 //
 // Useful to inject a "/think" for Qwen3 models.
 type ProviderGenAppend struct {
 	genai.ProviderGen
 
-	Append genai.Message
+	Append genai.Content
 }
 
 func (c *ProviderGenAppend) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	if len(msgs[len(msgs)-1].ToolCallResults) == 0 {
-		msgs = append(slices.Clone(msgs), c.Append)
+	if len(msgs[len(msgs)-1].Request) != 0 {
+		msgs = slices.Clone(msgs)
+		msgs[len(msgs)-1].Request = slices.Clone(msgs[len(msgs)-1].Request)
+		msgs[len(msgs)-1].Request = append(msgs[len(msgs)-1].Request, c.Append)
 	}
 	return c.ProviderGen.GenSync(ctx, msgs, opts)
 }
 
 func (c *ProviderGenAppend) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ContentFragment, opts genai.Options) (genai.Result, error) {
-	if len(msgs[len(msgs)-1].ToolCallResults) == 0 {
-		msgs = append(slices.Clone(msgs), c.Append)
+	if len(msgs[len(msgs)-1].Request) != 0 {
+		msgs = slices.Clone(msgs)
+		msgs[len(msgs)-1].Request = slices.Clone(msgs[len(msgs)-1].Request)
+		msgs[len(msgs)-1].Request = append(msgs[len(msgs)-1].Request, c.Append)
 	}
 	return c.ProviderGen.GenStream(ctx, msgs, replies, opts)
 }

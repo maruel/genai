@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 198
+        content_length: 223
         host: api.cerebras.ai
         body: |
-            {"model":"llama-3.3-70b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\nWhat is the capital of Quackiland?\n"}],"stream":true}
+            {"model":"llama-3.3-70b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,31 +21,31 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-fe3bc6ff-07f0-4bc5-ba0e-8ad5d82c0dba","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1755291896,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-e9e39241-4f96-428b-ba45-18f694153cba","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1755299399,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-fe3bc6ff-07f0-4bc5-ba0e-8ad5d82c0dba","choices":[{"delta":{"content":"The"},"index":0}],"created":1755291896,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-e9e39241-4f96-428b-ba45-18f694153cba","choices":[{"delta":{"content":"The"},"index":0}],"created":1755299399,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-fe3bc6ff-07f0-4bc5-ba0e-8ad5d82c0dba","choices":[{"delta":{"content":" capital"},"index":0}],"created":1755291896,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-e9e39241-4f96-428b-ba45-18f694153cba","choices":[{"delta":{"content":" capital"},"index":0}],"created":1755299399,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-fe3bc6ff-07f0-4bc5-ba0e-8ad5d82c0dba","choices":[{"delta":{"content":" of"},"index":0}],"created":1755291896,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-e9e39241-4f96-428b-ba45-18f694153cba","choices":[{"delta":{"content":" of"},"index":0}],"created":1755299399,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-fe3bc6ff-07f0-4bc5-ba0e-8ad5d82c0dba","choices":[{"delta":{"content":" Qu"},"index":0}],"created":1755291896,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-e9e39241-4f96-428b-ba45-18f694153cba","choices":[{"delta":{"content":" Qu"},"index":0}],"created":1755299399,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-fe3bc6ff-07f0-4bc5-ba0e-8ad5d82c0dba","choices":[{"delta":{"content":"ack"},"index":0}],"created":1755291896,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-e9e39241-4f96-428b-ba45-18f694153cba","choices":[{"delta":{"content":"ack"},"index":0}],"created":1755299399,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-fe3bc6ff-07f0-4bc5-ba0e-8ad5d82c0dba","choices":[{"delta":{"content":"iland"},"index":0}],"created":1755291896,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-e9e39241-4f96-428b-ba45-18f694153cba","choices":[{"delta":{"content":"iland"},"index":0}],"created":1755299399,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-fe3bc6ff-07f0-4bc5-ba0e-8ad5d82c0dba","choices":[{"delta":{"content":" is"},"index":0}],"created":1755291896,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-e9e39241-4f96-428b-ba45-18f694153cba","choices":[{"delta":{"content":" is"},"index":0}],"created":1755299399,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-fe3bc6ff-07f0-4bc5-ba0e-8ad5d82c0dba","choices":[{"delta":{"content":" Qu"},"index":0}],"created":1755291896,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-e9e39241-4f96-428b-ba45-18f694153cba","choices":[{"delta":{"content":" Qu"},"index":0}],"created":1755299399,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-fe3bc6ff-07f0-4bc5-ba0e-8ad5d82c0dba","choices":[{"delta":{"content":"ack"},"index":0}],"created":1755291896,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-e9e39241-4f96-428b-ba45-18f694153cba","choices":[{"delta":{"content":"ack"},"index":0}],"created":1755299399,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-fe3bc6ff-07f0-4bc5-ba0e-8ad5d82c0dba","choices":[{"delta":{"content":"."},"index":0}],"created":1755291896,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-e9e39241-4f96-428b-ba45-18f694153cba","choices":[{"delta":{"content":"."},"index":0}],"created":1755299399,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-fe3bc6ff-07f0-4bc5-ba0e-8ad5d82c0dba","choices":[{"delta":{},"index":0}],"created":1755291896,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-e9e39241-4f96-428b-ba45-18f694153cba","choices":[{"delta":{},"index":0}],"created":1755299399,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-fe3bc6ff-07f0-4bc5-ba0e-8ad5d82c0dba","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1755291896,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk","usage":{"prompt_tokens":65,"completion_tokens":11,"total_tokens":76,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.243027807,"prompt_time":0.038320372,"completion_time":0.003036867,"total_time":0.2864251136779785,"created":1755291896}}
+            data: {"id":"chatcmpl-e9e39241-4f96-428b-ba45-18f694153cba","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1755299399,"model":"llama-3.3-70b","system_fingerprint":"fp_b6a51bb1d26f03ea3772","object":"chat.completion.chunk","usage":{"prompt_tokens":70,"completion_tokens":11,"total_tokens":81,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.070847814,"prompt_time":0.045884767,"completion_time":0.006138361,"total_time":0.12539029121398926,"created":1755299399}}
 
         headers:
             Alt-Svc:
@@ -53,11 +53,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96fba5ae5b93ac2d-YYZ
+                - 96fc5ce12af4abbe-YYZ
             Content-Type:
                 - text/event-stream; charset=utf-8
             Inference-Id:
-                - chatcmpl-fe3bc6ff-07f0-4bc5-ba0e-8ad5d82c0dba
+                - chatcmpl-e9e39241-4f96-428b-ba45-18f694153cba
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -71,15 +71,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "64000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14399"
+                - "14395"
             X-Ratelimit-Remaining-Tokens-Minute:
                 - "64000"
             X-Ratelimit-Reset-Requests-Day:
-                - "10503.83840918541"
+                - "3000.019802093506"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "3.838409185409546"
+                - "0.019802093505859375"
             X-Request-Id:
-                - 96fba5ae5b93ac2d-YYZ
+                - 96fc5ce12af4abbe-YYZ
         status: 200 OK
         code: 200
-        duration: 209ms
+        duration: 239ms

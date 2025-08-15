@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 156
+        content_length: 181
         host: api.cerebras.ai
         body: |
-            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Explain the theory of relativity in great details.\n\n\n/think\n"}],"max_completion_tokens":16}
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Explain the theory of relativity in great details."},{"role":"user","content":"\n\n/think"}],"max_completion_tokens":16}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-eb08ce12-ce87-464c-a735-4d7bec887b32","choices":[{"finish_reason":"length","index":0,"message":{"content":"<think>\nOkay, I need to explain the theory of relativity in great detail","role":"assistant"}}],"created":1755195036,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion","usage":{"prompt_tokens":22,"completion_tokens":16,"total_tokens":38,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.628942802,"prompt_time":0.272382755,"completion_time":0.01241578,"total_time":0.914980411529541,"created":1755195036}}'
+        body: '{"id":"chatcmpl-32ac9758-3b40-4594-8233-8ed8257df426","choices":[{"finish_reason":"length","index":0,"message":{"content":"<think>\nOkay, so the user asked me to explain the Theory of Relativity","role":"assistant"}}],"created":1755298800,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion","usage":{"prompt_tokens":26,"completion_tokens":16,"total_tokens":42,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000290272,"prompt_time":0.00099228,"completion_time":0.014273744,"total_time":0.016623973846435547,"created":1755298800}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96f268f1da3cac57-YYZ
+                - 96fc4e3d3f5836d0-YYZ
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-eb08ce12-ce87-464c-a735-4d7bec887b32
+                - chatcmpl-32ac9758-3b40-4594-8233-8ed8257df426
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -48,13 +48,13 @@ interactions:
             X-Ratelimit-Remaining-Requests-Day:
                 - "14393"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "62501"
+                - "64000"
             X-Ratelimit-Reset-Requests-Day:
-                - "20962.519293546677"
+                - "3599.639457464218"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "22.519293546676636"
+                - "59.63945746421814"
             X-Request-Id:
-                - 96f268f1da3cac57-YYZ
+                - 96fc4e3d3f5836d0-YYZ
         status: 200 OK
         code: 200
-        duration: 1.089s
+        duration: 213ms

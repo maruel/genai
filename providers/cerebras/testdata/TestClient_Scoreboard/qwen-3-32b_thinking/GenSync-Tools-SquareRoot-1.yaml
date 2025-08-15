@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 565
+        content_length: 590
         host: api.cerebras.ai
         body: |
-            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\n\n\n/think\n"}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"user","content":"\n\n/think"}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-5bc88976-4427-46f2-98a5-259c6a1030f5","choices":[{"finish_reason":"tool_calls","index":0,"message":{"tool_calls":[{"id":"57d419e12","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}],"role":"assistant"}}],"created":1755195041,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion","usage":{"prompt_tokens":231,"completion_tokens":501,"total_tokens":732,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.295757582,"prompt_time":0.007769408,"completion_time":0.349197971,"total_time":0.6538059711456299,"created":1755195041}}'
+        body: '{"id":"chatcmpl-6bc41782-3d9c-4ff0-a067-fc232db093f6","choices":[{"finish_reason":"tool_calls","index":0,"message":{"tool_calls":[{"id":"727ed3c37","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}],"role":"assistant"}}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion","usage":{"prompt_tokens":235,"completion_tokens":111,"total_tokens":346,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":1.533069593,"prompt_time":0.013235745,"completion_time":0.083733275,"total_time":1.6352367401123047,"created":1755298807}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96f2691338e8a2e4-YUL
+                - 96fc4e68dd7236d0-YYZ
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-5bc88976-4427-46f2-98a5-259c6a1030f5
+                - chatcmpl-6bc41782-3d9c-4ff0-a067-fc232db093f6
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -48,13 +48,13 @@ interactions:
             X-Ratelimit-Remaining-Requests-Day:
                 - "14386"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "61335"
+                - "62932"
             X-Ratelimit-Reset-Requests-Day:
-                - "20957.432161808014"
+                - "3591.0764825344086"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "17.432161808013916"
+                - "51.07648253440857"
             X-Request-Id:
-                - 96f2691338e8a2e4-YUL
+                - 96fc4e68dd7236d0-YYZ
         status: 200 OK
         code: 200
-        duration: 818ms
+        duration: 1.797s

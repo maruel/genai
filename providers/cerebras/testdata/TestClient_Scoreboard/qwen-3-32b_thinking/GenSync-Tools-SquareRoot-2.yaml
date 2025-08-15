@@ -9,7 +9,7 @@ interactions:
         content_length: 772
         host: api.cerebras.ai
         body: |
-            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"57d419e12","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"57d419e12","name":"square_root"}],"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"727ed3c37","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"727ed3c37","name":"square_root"}],"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-ed520b4f-5f14-497d-8eb7-fd47040983bc","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, so the user asked for the square root of 132413 using the square_root tool. The tool returned 363.89. Let me check if that''s accurate.\n\nFirst, I''ll calculate 363.89 squared. 363.89 times 363.89. Let me do this step by step. \n\n363.89^2 = (360 + 3.89)^2 = 360^2 + 2*360*3.89 + 3.89^2. \n\n360 squared is 129600. Then, 2*360*3.89 is 720*3.89. Let''s compute that: 700*3.89 = 2723 and 20*3.89 = 77.8, so total is 2723 + 77.8 = 2800.8. \n\nNext, 3.89 squared is approximately 15.1321. Adding them all together: 129600 + 2800.8 = 132400.8, plus 15.1321 gives around 132,415.93. \n\nHmm, the original number is 132,413, so 363.89 squared gives about 132,415.93, which is a bit higher. The actual square root might be slightly less than 363.89. \n\nLet me try 363.88. 363.88^2 = (363.89 - 0.01)^2. Using the formula (a - b)^2 = a^2 - 2ab + b^2. \n\nSo, 363.89^2 is approximately 132,415.93 as before. Subtract 2*363.89*0.01 = 7.2778 and add 0.0001. \n\nThat gives 132,415.93 - 7.2778 + 0.0001 ≈ 132,408.6523. \n\nBut 132,408.65 is still higher than 132,413. Wait, maybe I did the math wrong. Let me check again. \n\nWait, no, if 363.89^2 is ~132,415.93 and we need 132,413, the difference is about 2.93. So maybe the square root is 363.89 minus a small fraction. \n\nLet me use linear approximation. Let f(x) = x^2. We know f(363.89) ≈ 132,415.93. We need to find x such that f(x) = 132,413. \n\nThe derivative f''(x) = 2x. At x=363.89, f''(x) ≈ 727.78. \n\nThe difference between desired value and current value is Δy = 132,413 - 132,415.93 = -2.93. \n\nSo, the approximate change in x is Δx ≈ Δy / f''(x) = -2.93 / 727.78 ≈ -0.004025. \n\nTherefore, the square root should be approximately 363.89 - 0.004025 ≈ 363.885975. \n\nRounded to two decimal places, that would be 363.89, but if the tool reports 363.89, the actual value is maybe 363.886 or so. However, depending on the tool''s precision, it might round up. \n\nAlternatively, maybe the tool uses a different method. Let me verify with a calculator. Let''s see, 363.88 squared is 363.88 * 363.88. \n\nFirst, 360 * 360 = 129,600. Then, 360 * 3.88 = 1,396.8, and 3.88 squared is 15.0544. So adding those cross terms twice (since (a+b)^2 expands to a^2 + 2ab + b^2). Wait, actually, 363.88 is 360 + 3.88. \n\nSo, correct expansion is 360² + 2*360*3.88 + 3.88². \n\n360² is 129,600. 2*360*3.88 = 720*3.88. Let''s compute that: 700*3.88 = 2,716 and 20*3.88 = 77.6, so total is 2,716 + 77.6 = 2,793.6. \n\n3.88² is 15.0544. \n\nAdding all together: 129,600 + 2,793.6 = 132,393.6 + 15.0544 = 132,408.6544. \n\nThat''s 363.88 squared is ~132,408.65, which is still less than 132,413. The difference is 132,413 - 132,408.65 = 4.35. \n\nSo, to find the next decimal, perhaps 363.88 + 4.35/(2*363.88). Let me calculate that. 4.35 divided by (2*363.88) is 4.35 / 727.76 ≈ 0.00598. \n\nSo, adding that to 363.88 gives approx 363.88598, which rounds to 363.89 when rounded to two decimal places. \n\nTherefore, the square_root tool''s result of 363.89 is correct when rounded to two decimal places. The actual value is approximately 363.886, which rounds up to 363.89. So the answer provided is accurate.\n</think>\n\n363.89","role":"assistant"}}],"created":1755195042,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion","usage":{"prompt_tokens":83,"completion_tokens":1545,"total_tokens":1628,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00345939,"prompt_time":0.003007797,"completion_time":0.814482369,"total_time":0.8224561214447021,"created":1755195042}}'
+        body: '{"id":"chatcmpl-a9a9d55d-9791-4095-b8ca-26614d633d1a","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, the user asked for the square root of 132413 using the square_root tool. The tool returned 363.89. Let me check if that''s accurate. First, I''ll square 363.89 to see if it gets close to 132413. \n\nCalculating 363.89 squared: 363.89 * 363.89. Let''s break this down. 360 squared is 129,600. Then, 3.89 squared is about 15.13. Now, the cross term is 2*360*3.89. Let''s see, 360*3.89 is 1,399.8, multiplied by 2 gives 2,799.6. Adding all together: 129,600 + 2,799.6 + 15.13 = 132,414.73. Hmm, that''s very close to 132,413. The tool''s result seems correct, maybe rounded to two decimal places. \n\nWait, the exact value might be a bit less. Let me verify with a calculator. If I take 363.89^2, it''s approximately 132,414.73, which is just 1.73 more than 132,413. So, the square root of 132,413 is slightly less than 363.89. The tool probably rounded up, so the user gets an approximate value. Since the user only asked for the result without explanation, I should just present the given answer. Unless there''s a need for higher precision, but the instructions don''t mention that. Alright, I''ll go with the provided result.\n</think>\n\n363.89","role":"assistant"}}],"created":1755298809,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion","usage":{"prompt_tokens":83,"completion_tokens":424,"total_tokens":507,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.00018356,"prompt_time":0.004239302,"completion_time":0.313968983,"total_time":0.3202998638153076,"created":1755298809}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96f269185eeda2e4-YUL
+                - 96fc4e7419d936d0-YYZ
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-ed520b4f-5f14-497d-8eb7-fd47040983bc
+                - chatcmpl-a9a9d55d-9791-4095-b8ca-26614d633d1a
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -46,15 +46,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "64000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14384"
+                - "14385"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "60165"
+                - "62586"
             X-Ratelimit-Reset-Requests-Day:
-                - "20956.495614767075"
+                - "3590.6463651657104"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "16.495614767074585"
+                - "50.64636516571045"
             X-Request-Id:
-                - 96f269185eeda2e4-YUL
+                - 96fc4e7419d936d0-YYZ
         status: 200 OK
         code: 200
-        duration: 939ms
+        duration: 429ms

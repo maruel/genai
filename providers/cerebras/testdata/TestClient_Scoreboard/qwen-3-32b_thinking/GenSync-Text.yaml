@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 108
+        content_length: 133
         host: api.cerebras.ai
         body: |
-            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Say hello. Use only one word.\n\n\n/think\n"}]}
+            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Say hello. Use only one word."},{"role":"user","content":"\n\n/think"}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-350deccd-73b1-4e95-8d87-b5be76c4fde0","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, the user told me to say hello using only one word. Let me think about this.\n\nFirst, \"hello\" is the most straightforward word, but maybe they want a different approach. They specified one word, so I need to find a single word equivalent. Words like \"hi\" or \"hey\" are common, but perhaps even shorter. \"Hey\" is three letters, \"hi\" is two. But \"hello\" itself is one word and five letters. Wait, they said \"use only one word,\" not to shorten it. So technically, \"hello\" is already a single word. Maybe they just want that. I should check if there''s a specific reason they want another word, but the instruction is just to use one word. \"Hello\" fits perfectly. I don''t see any issue. So the answer is \"hello\".\n</think>\n\nhello.","role":"assistant"}}],"created":1755195034,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion","usage":{"prompt_tokens":19,"completion_tokens":180,"total_tokens":199,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000798234,"prompt_time":0.00096388,"completion_time":0.156671697,"total_time":0.15952467918395996,"created":1755195034}}'
+        body: '{"id":"chatcmpl-220f342f-33b2-4f1a-afaa-02b26dd05b2c","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, the user asked me to say hello using only one word. Let me think about how to approach this. The simplest way is to use the word \"Hello\" itself. It''s a single word and appropriately conveys the greeting. I need to make sure there are no extra words or explanations. Let me check if \"Hello\" is the correct and only word required. Since the instruction specifies \"use only one word,\" I should confirm that \"Hello\" fits that constraint. There''s no need for punctuation or additional characters, so it''s straightforward. The response should just be the word \"Hello\" without any other text. I''ll go with that.\n</think>\n\nHello.","role":"assistant"}}],"created":1755298798,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion","usage":{"prompt_tokens":23,"completion_tokens":140,"total_tokens":163,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":9.223e-05,"prompt_time":0.001397378,"completion_time":0.086096138,"total_time":0.08874130249023438,"created":1755298798}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96f268e1dcafa300-YUL
+                - 96fc4e34ddbb36d0-YYZ
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-350deccd-73b1-4e95-8d87-b5be76c4fde0
+                - chatcmpl-220f342f-33b2-4f1a-afaa-02b26dd05b2c
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -46,15 +46,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "64000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14397"
+                - "14398"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "63750"
+                - "64000"
             X-Ratelimit-Reset-Requests-Day:
-                - "20965.6142141819"
+                - "3600.942107439041"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "25.614214181900024"
+                - "0.9421074390411377"
             X-Request-Id:
-                - 96f268e1dcafa300-YUL
+                - 96fc4e34ddbb36d0-YYZ
         status: 200 OK
         code: 200
-        duration: 624ms
+        duration: 299ms

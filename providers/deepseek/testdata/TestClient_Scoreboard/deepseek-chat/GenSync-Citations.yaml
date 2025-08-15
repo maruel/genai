@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 195
+        content_length: 224
         host: api.deepseek.com
         body: |
-            {"model":"deepseek-chat","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.What is the capital of Quackiland?"}],"stream":false}
+            {"model":"deepseek-chat","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,14 +21,14 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"bd786760-6156-4b0b-beb2-2f1b4d1106e3","object":"chat.completion","created":1755177509,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"Based on the information provided:\n\n1. The capital of Quackiland is Quack.\n2. The Big Canard Statue is located in Quack (this is an additional detail that confirms Quack is a significant city in Quackiland, but doesn''t change the answer about the capital).\n\nTherefore, the capital of Quackiland is **Quack**."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":33,"completion_tokens":73,"total_tokens":106,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":33},"system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache"}'
+        body: '{"id":"ed431087-0f0b-4685-af38-192b1243184a","object":"chat.completion","created":1755297831,"model":"deepseek-chat","choices":[{"index":0,"message":{"role":"assistant","content":"Based on the information provided, the capital of Quackiland is **Quack**. \n\nHere''s the reasoning:\n1. The first sentence states: \"The capital of Quackiland is Quack.\"\n2. The second sentence about the Big Canard Statue is irrelevant to the question about the capital.\n3. Thus, the answer is directly given in the first sentence. \n\nAnswer: The capital of Quackiland is **Quack**."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":34,"completion_tokens":90,"total_tokens":124,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":34},"system_fingerprint":"fp_8802369eaa_prod0623_fp8_kvcache"}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96f0bd074aeda31a-YUL
+                - 96fc36988b00ab08-YYZ
             Content-Type:
                 - application/json
             Server:
@@ -40,7 +40,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Ds-Trace-Id:
-                - 5fed155ecf37a0a945661b585f4c82d6
+                - af53f7b049d8acfebf6f9e93b8e5c3a2
         status: 200 OK
         code: 200
-        duration: 337ms
+        duration: 556ms

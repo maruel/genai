@@ -246,6 +246,19 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 					c.Messages = append(c.Messages, newMsg)
 				}
 			}
+		} else if len(msgs[i].Request) > 1 {
+			// Handle messages with multiple Request by creating multiple messages
+			for j := range msgs[i].Request {
+				// Create a copy of the message with only one request
+				msgCopy := msgs[i]
+				msgCopy.Request = []genai.Request{msgs[i].Request[j]}
+				var newMsg Message
+				if err := newMsg.From(&msgCopy); err != nil {
+					errs = append(errs, fmt.Errorf("message %d, request %d: %w", i, j, err))
+				} else {
+					c.Messages = append(c.Messages, newMsg)
+				}
+			}
 		} else {
 			var newMsg Message
 			if err := newMsg.From(&msgs[i]); err != nil {
@@ -397,22 +410,6 @@ func (c *Contents) MarshalJSON() ([]byte, error) {
 	// If there's only one content and it's a string, marshal as a string.
 	if len(*c) == 1 && (*c)[0].Type == ContentText {
 		return json.Marshal((*c)[0].Text)
-	}
-	onlyText := true
-	for i := range *c {
-		if (*c)[i].Type != ContentText {
-			onlyText = false
-		}
-	}
-	if onlyText {
-		// Merge everything together as a string. This is only needed for a few models like qwen-3-32b and
-		// qwen-3-235b-a22b.
-		b := strings.Builder{}
-		for i := range *c {
-			b.WriteString((*c)[i].Text)
-			b.WriteString("\n")
-		}
-		return json.Marshal(b.String())
 	}
 	// If there's many contents, marshal as an array of Content.
 	return json.Marshal(([]Content)(*c))

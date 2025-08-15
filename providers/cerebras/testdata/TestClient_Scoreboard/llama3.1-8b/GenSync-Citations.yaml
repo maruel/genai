@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 182
+        content_length: 207
         host: api.cerebras.ai
         body: |
-            {"model":"llama3.1-8b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\nWhat is the capital of Quackiland?\n"}]}
+            {"model":"llama3.1-8b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-4a011ec6-f45e-4a77-b7cc-e561dfc265de","choices":[{"finish_reason":"stop","index":0,"message":{"content":"The capital of Quackiland is Quack.","role":"assistant"}}],"created":1755291896,"model":"llama3.1-8b","system_fingerprint":"fp_6ed12e4cb640a38f703b","object":"chat.completion","usage":{"prompt_tokens":65,"completion_tokens":11,"total_tokens":76,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000175159,"prompt_time":0.003259108,"completion_time":0.004865549,"total_time":0.009520769119262695,"created":1755291896}}'
+        body: '{"id":"chatcmpl-15c2b6fe-c21b-4b76-a8f8-693718558d4d","choices":[{"finish_reason":"stop","index":0,"message":{"content":"The capital of Quackiland is Quack.","role":"assistant"}}],"created":1755299401,"model":"llama3.1-8b","system_fingerprint":"fp_6ed12e4cb640a38f703b","object":"chat.completion","usage":{"prompt_tokens":70,"completion_tokens":11,"total_tokens":81,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000511551,"prompt_time":0.003466509,"completion_time":0.004860509,"total_time":0.009499073028564453,"created":1755299401}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96fba5b70cf7ac2d-YYZ
+                - 96fc5ceb1f0cabbe-YYZ
             Content-Type:
                 - application/json
             Inference-Id:
-                - chatcmpl-4a011ec6-f45e-4a77-b7cc-e561dfc265de
+                - chatcmpl-15c2b6fe-c21b-4b76-a8f8-693718558d4d
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Server:
@@ -46,15 +46,15 @@ interactions:
             X-Ratelimit-Limit-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "14400"
+                - "14396"
             X-Ratelimit-Remaining-Tokens-Minute:
                 - "60000"
             X-Ratelimit-Reset-Requests-Day:
-                - "10502.446807146072"
+                - "2998.3968505859375"
             X-Ratelimit-Reset-Tokens-Minute:
-                - "2.4468071460723877"
+                - "58.3968505859375"
             X-Request-Id:
-                - 96fba5b70cf7ac2d-YYZ
+                - 96fc5ceb1f0cabbe-YYZ
         status: 200 OK
         code: 200
-        duration: 157ms
+        duration: 247ms
